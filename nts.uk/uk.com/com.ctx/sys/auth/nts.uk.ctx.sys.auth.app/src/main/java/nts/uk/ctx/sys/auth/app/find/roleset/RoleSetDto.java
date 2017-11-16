@@ -1,6 +1,9 @@
 package nts.uk.ctx.sys.auth.app.find.roleset;
 
+import java.util.Optional;
+
 import lombok.Data;
+import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 
 @Data
@@ -19,22 +22,22 @@ public class RoleSetDto {
 	private boolean approvalAuthority;
 
 	/** ロールID: オフィスヘルパーロール */
-	private String officeHelperRoleCd;
+	private String officeHelperRoleId;
 
 	/** ロールID: マイナンバーロール */
-	private String myNumberRoleCd;
+	private String myNumberRoleId;
 
 	/** ロールID: 人事ロール */
-	private String hRRoleCd;
+	private String hRRoleId;
 
 	/** ロールID: 個人情報ロール */
-	private String personInfRoleCd;
+	private String personInfRoleId;
 
 	/** ロールID: 就業ロール */
-	private String employmentRoleCd;
+	private String employmentRoleId;
 
 	/** ロールID: 給与ロール */
-	private String salaryRoleCd;
+	private String salaryRoleId;
 	
 	/**
 	 * Transfer data from Domain into Dto to response to client
@@ -45,14 +48,14 @@ public class RoleSetDto {
 		RoleSetDto result = new RoleSetDto();
 		result.setApprovalAuthority(roleSet.hasApprovalAuthority());
 		result.setCompanyId(roleSet.getCompanyId());
-		result.setEmploymentRoleCd(RoleSet.getRoleTypeCd(roleSet.getEmploymentRole()));
-		result.setHRRoleCd(RoleSet.getRoleTypeCd(roleSet.getHRRole()));
-		result.setMyNumberRoleCd(RoleSet.getRoleTypeCd(roleSet.getMyNumberRole()));
-		result.setOfficeHelperRoleCd(RoleSet.getRoleTypeCd(roleSet.getOfficeHelperRole()));
-		result.setPersonInfRoleCd(RoleSet.getRoleTypeCd(roleSet.getPersonInfRole()));
+		result.setEmploymentRoleId(RoleSet.getRoleId(roleSet.getEmploymentRole()));
+		result.setHRRoleId(RoleSet.getRoleId(roleSet.getHRRole()));
+		result.setMyNumberRoleId(RoleSet.getRoleId(roleSet.getMyNumberRole()));
+		result.setOfficeHelperRoleId(RoleSet.getRoleId(roleSet.getOfficeHelperRole()));
+		result.setPersonInfRoleId(RoleSet.getRoleId(roleSet.getPersonInfRole()));
 		result.setRoleSetCd(roleSet.getRoleSetCd().v());
 		result.setRoleSetName(roleSet.getRoleSetName().v());
-		result.setSalaryRoleCd(RoleSet.getRoleTypeCd(roleSet.getSalaryRole()));
+		result.setSalaryRoleId(RoleSet.getRoleId(roleSet.getSalaryRole()));
 		return result;
 	}
 }

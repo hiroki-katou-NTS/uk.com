@@ -35,7 +35,7 @@ public interface RoleSetAndWebMenuPub {
 	 * Delete the RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void deleteRoleSetAndWebMenuByRoleSetCdAndCompanyId(String roleSetCd, String companyId);
+	void deleteRoleSetAndWebMenuByRoleSetCd(String roleSetCd);
 	
 	
 	

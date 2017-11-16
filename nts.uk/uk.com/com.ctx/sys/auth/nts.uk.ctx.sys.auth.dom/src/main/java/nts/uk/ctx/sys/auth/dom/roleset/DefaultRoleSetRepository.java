@@ -47,5 +47,9 @@ public interface DefaultRoleSetRepository {
 	 */
 	void delete(String companyId);
 	
+	/**
+	 * Perform check if the RoleSet is existed then update, else insert
+	 * @param domain
+	 */
 	void addOrUpdate(DefaultRoleSet domain);
 }

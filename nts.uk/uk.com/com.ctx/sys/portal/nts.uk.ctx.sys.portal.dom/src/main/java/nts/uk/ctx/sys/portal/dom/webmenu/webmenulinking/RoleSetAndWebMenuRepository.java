@@ -52,9 +52,9 @@ public interface RoleSetAndWebMenuRepository {
 	void update(RoleSetAndWebMenu domain);
 	
 	/**
-	 * Delete alls RoleSetAndWebMenu
+	 * Delete the RoleSetAndWebMenu
 	 * @param roleSetCd
-	 * @param companyId: login company id
+	 * @param companyId
 	 */
 	void deleteAllByRoleCd(String companyId, String roleSetCd);
 	

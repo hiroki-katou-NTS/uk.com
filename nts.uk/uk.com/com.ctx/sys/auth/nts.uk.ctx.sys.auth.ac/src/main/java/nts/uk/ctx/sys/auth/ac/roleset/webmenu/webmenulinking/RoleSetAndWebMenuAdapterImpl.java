@@ -63,10 +63,7 @@ public class RoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapter {
 	@Override
 	public void deleteAllRoleSetAndWebMenu(String roleSetCd) {
 		//Get company Id
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			this.roleSetAndWebMenuPub.deleteRoleSetAndWebMenuByRoleSetCdAndCompanyId(roleSetCd, companyId);
-		}
+		this.roleSetAndWebMenuPub.deleteRoleSetAndWebMenuByRoleSetCd(roleSetCd);
 	}
 	
 }

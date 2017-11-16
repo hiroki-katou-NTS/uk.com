@@ -13,6 +13,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.command.roleset.AddOrUpdateDefaultRoleSetCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.roleset.AddRoleSetCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.roleset.DefaultRoleSetCommand;
+import nts.uk.ctx.sys.auth.app.command.roleset.DeleteRoleSetCommand;
 import nts.uk.ctx.sys.auth.app.command.roleset.DeleteRoleSetCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.roleset.RoleSetCommand;
 import nts.uk.ctx.sys.auth.app.command.roleset.UpdateRoleSetCommandHandler;
@@ -83,7 +84,7 @@ public class RoleSetWebservice extends WebService {
 
 	@POST
 	@Path("deleteRoleSet")
-	public void removeSelectionItem(RoleSetCommand command) {
+	public void removeSelectionItem(DeleteRoleSetCommand command) {
 		this.deleteRoleSetCommandHandler.handle(command);
 	}
 

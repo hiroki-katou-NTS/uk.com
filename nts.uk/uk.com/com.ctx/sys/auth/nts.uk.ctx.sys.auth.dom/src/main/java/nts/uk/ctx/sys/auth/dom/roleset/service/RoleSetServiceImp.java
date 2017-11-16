@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.dom.roleset;
+package nts.uk.ctx.sys.auth.dom.roleset.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
+import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -42,7 +44,7 @@ public class RoleSetServiceImp implements RoleSetService{
 		roleSet.validate();
 		
 		//check duplicate RoleSetCd - ロールセットコードが重複してはならない
-		if (isDublicateRoleSetCd(roleSet.getRoleSetCd().v(), roleSet.getCompanyId())) {
+		if (roleSetRepository.isDuplicateRoleSetCd(roleSet.getRoleSetCd().v(), roleSet.getCompanyId())) {
 			throw new BusinessException("Msg_3");
 		}
 
@@ -58,13 +60,6 @@ public class RoleSetServiceImp implements RoleSetService{
 		this.roleSetRepository.insert(roleSet);
 	}
 	
-	/**
-	 * check if there are existed Role Set Code
-	 * @return
-	 */
-	private boolean isDublicateRoleSetCd(String roleSetCd, String companyId) {
-		return roleSetRepository.isDuplicateRoleSetCd(roleSetCd, companyId);
-	}
 	/**
 	 * Update Role Set - ロールセット更新登録
 	 * @param roleSet

@@ -149,7 +149,7 @@ public class RoleSet extends AggregateRoot {
 		this.approvalAuthority 	= approvalAuthority;
 		this.officeHelperRole 	= getRoleById(officeHelperRoleCd);
 		this.myNumberRole 		= getRoleById(myNumberRoleCd);
-		this.hRRole 				= getRoleById(hRRoleCd);
+		this.hRRole 			= getRoleById(hRRoleCd);
 		this.personInfRole 		= getRoleById(personInfRoleCd);
 		this.employmentRole 	= getRoleById(employmentRoleCd);
 		this.salaryRole 		= getRoleById(salaryRoleCd);
@@ -210,8 +210,8 @@ public class RoleSet extends AggregateRoot {
 		return StringUtils.isNoneEmpty(roleId) ? null : roleRepository.findByRoleId(roleId);
 	}
 
-	public static String getRoleTypeCd(Optional<Role> opRole) {
-		return opRole.isPresent() ? opRole.get().getRoleId() : null;
+	public static String getRoleId(Optional<Role> opRole) {
+		return opRole. isPresent() ? opRole.get().getRoleId() : null;
 	}
 			
 	/**
