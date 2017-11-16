@@ -34,6 +34,52 @@ public class ScheCreExeErrorLogHandler {
 	
 	
 	/**
+	 * Adds the error.
+	 *
+	 * @param command the command
+	 * @param employeeId the employee id
+	 * @param messageId the message id
+	 */
+	public void addError(ScheduleCreatorExecutionCommand command, String employeeId, String messageId) {
+		// check exist error
+		if (!this.checkExistError(command, employeeId)) {
+			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId));
+		}
+	}
+	
+	/**
+	 * Check exist error.
+	 *
+	 * @param command the command
+	 * @param employeeId the employee id
+	 * @return true, if successful
+	 */
+	public boolean checkExistError(ScheduleCreatorExecutionCommand command, String employeeId) {
+		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository
+				.findByEmployeeId(command.getContent().getExecutionId(), employeeId);
+
+		// check empty list log error
+		if (CollectionUtil.isEmpty(errorLogs)) {
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * To schedule error log.
+	 *
+	 * @param command the command
+	 * @param employeeId the employee id
+	 * @param messageId the message id
+	 * @return the schedule error log
+	 */
+	private ScheduleErrorLog toScheduleErrorLog(ScheduleCreatorExecutionCommand command, String employeeId,
+			String messageId) {
+		return new ScheduleErrorLog(new ScheduleErrorLogGetMementoImpl(command,employeeId,messageId)); 
+	}
+	
+	
+	
+	/**
 	 * The Class ScheduleErrorLogGetMementoImpl.
 	 */
 	class ScheduleErrorLogGetMementoImpl implements ScheduleErrorLogGetMemento{
@@ -96,48 +142,4 @@ public class ScheCreExeErrorLogHandler {
 		
 	}
 	
-	/**
-	 * To schedule error log.
-	 *
-	 * @param command the command
-	 * @param employeeId the employee id
-	 * @param messageId the message id
-	 * @return the schedule error log
-	 */
-	private ScheduleErrorLog toScheduleErrorLog(ScheduleCreatorExecutionCommand command, String employeeId,
-			String messageId) {
-		return new ScheduleErrorLog(new ScheduleErrorLogGetMementoImpl(command,employeeId,messageId)); 
-	}
-	
-	/**
-	 * Adds the error.
-	 *
-	 * @param command the command
-	 * @param employeeId the employee id
-	 * @param messageId the message id
-	 */
-	public void addError(ScheduleCreatorExecutionCommand command, String employeeId, String messageId) {
-		// check exist error
-		if (!this.checkExistError(command, employeeId)) {
-			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId));
-		}
-	}
-	
-	/**
-	 * Check exist error.
-	 *
-	 * @param command the command
-	 * @param employeeId the employee id
-	 * @return true, if successful
-	 */
-	public boolean checkExistError(ScheduleCreatorExecutionCommand command, String employeeId) {
-		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository
-				.findByEmployeeId(command.getContent().getExecutionId(), employeeId);
-		
-		// check empty list log error
-		if (CollectionUtil.isEmpty(errorLogs)) {
-			return false;
-		}
-		return true;
-	}
 }

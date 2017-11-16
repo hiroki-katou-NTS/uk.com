@@ -135,7 +135,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * command.CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
+	public void handle(CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		
 		
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -143,35 +143,55 @@ public class ScheduleCreatorExecutionCommandHandler
 		// get company id
 		String companyId = loginUserContext.companyId();
 
+		// get command
 		ScheduleCreatorExecutionCommand command = context.getCommand();
+		
+		// update command
 		command.setCompanyId(companyId);
 		command.setIsConfirm(false);
 		command.setIsDeleteBeforInsert(false);
 
-		Optional<ScheduleExecutionLog> optionalScheduleExecutionLog;
-		optionalScheduleExecutionLog = this.scheduleExecutionLogRepository.findById(companyId,
-				command.getExecutionId());
+		// find execution log by id
+		Optional<ScheduleExecutionLog> optionalScheduleExecutionLog = this.scheduleExecutionLogRepository
+				.findById(companyId, command.getExecutionId());
 
 		// check exist data
 		if (optionalScheduleExecutionLog.isPresent()) {
+			
+			// update execution time to now
 			ScheduleExecutionLog domain = optionalScheduleExecutionLog.get();
 			domain.setExecutionTimeToNow();
+			
+			// update domain execution log
 			this.scheduleExecutionLogRepository.update(domain);
+			
+			// find execution content by id
 			Optional<ScheduleCreateContent> optionalContent = this.contentRepository
 					.findByExecutionId(command.getExecutionId());
 
+			// check exist data content 
 			if (optionalContent.isPresent()) {
 				command.setContent(optionalContent.get());
 			}
 
-			List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository
-					.findAll(command.getExecutionId());
+			// get all data creator
+			List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(command.getExecutionId());
 
+			// register personal schedule
 			this.registerPersonalSchedule(command, domain, scheduleCreators, context);
 		}
 
 	}
 
+	/**
+	 * Next day.
+	 *
+	 * @param day the day
+	 * @return the general date
+	 */
+	public GeneralDate nextDay(GeneralDate day) {
+		return day.addDays(NEXT_DAY_MONTH);
+	}
 	/**
 	 * Register personal schedule.
 	 *
@@ -186,19 +206,21 @@ public class ScheduleCreatorExecutionCommandHandler
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		val asyncTask = context.asAsync();
 		for (ScheduleCreator domain : scheduleCreators) {
+			
+			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
+				
 				asyncTask.finishedAsCancelled();
 				break;
 			}
 			
 			// check processExecutionAtr reconfig
-			if (command.getContent().getReCreateContent()
-					.getProcessExecutionAtr().value == ProcessExecutionAtr.RECONFIG.value) {
+			if (command.getContent().getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
 				this.resetSchedule(command, domain, scheduleExecutionLog);
 			} else {
 
 				// check parameter CreateMethodAtr
-				if (command.getContent().getCreateMethodAtr().value == CreateMethodAtr.PERSONAL_INFO.value) {
+				if (command.getContent().getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
 					this.createScheduleBasedPerson(command, domain, scheduleExecutionLog);
 				}
 			}
@@ -223,15 +245,13 @@ public class ScheduleCreatorExecutionCommandHandler
 		command.setToDate(domain.getPeriod().start());
 
 		// loop start period date => end period date
-		while (command.getToDate().before(this.nextDay(domain.getPeriod().end()))) {
+		while (command.getToDate().beforeOrEquals(domain.getPeriod().end())) {
 
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
 					.find(creator.getEmployeeId(), command.getToDate());
 			if (optionalBasicSchedule.isPresent()
-					&& command.getContent().getReCreateContent().getReCreateAtr()
-							.equals(ReCreateAtr.ONLYUNCONFIRM)
-					&& optionalBasicSchedule.get().getConfirmedAtr()
-							.equals(ConfirmedAtr.CONFIRMED)) {
+					&& command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ONLY_UNCONFIRM
+					&& optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.CONFIRMED) {
 			}
 			// (button Interrupt)
 			command.setToDate(this.nextDay(command.getToDate()));
@@ -300,11 +320,10 @@ public class ScheduleCreatorExecutionCommandHandler
 		command.setToDate(domain.getPeriod().start());
 
 		// loop start period date => end period date
-		while (command.getToDate().before(this.nextDay(domain.getPeriod().end()))) {
+		while (command.getToDate().beforeOrEquals(domain.getPeriod().end())) {
 
 			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
-					.findById(personalWorkScheduleCreSet.getEmployeeId(),
-							command.getToDate());
+					.findById(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
 
 			// check is use manager
 			if (optionalPersonalLaborCondition.isPresent()
@@ -388,7 +407,7 @@ public class ScheduleCreatorExecutionCommandHandler
 
 		// check parameter ReCreateAtr onlyUnconfirm
 		if (command.getContent().getReCreateContent()
-				.getReCreateAtr().value == ReCreateAtr.ONLYUNCONFIRM.value) {
+				.getReCreateAtr().value == ReCreateAtr.ONLY_UNCONFIRM.value) {
 
 			// check confirmedAtr of basic schedule
 			if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
@@ -399,14 +418,4 @@ public class ScheduleCreatorExecutionCommandHandler
 		}
 	}
 	
-		
-	/**
-	 * Next day.
-	 *
-	 * @param day the day
-	 * @return the general date
-	 */
-	public GeneralDate nextDay(GeneralDate day) {
-		return day.addDays(NEXT_DAY_MONTH);
-	}
 }
