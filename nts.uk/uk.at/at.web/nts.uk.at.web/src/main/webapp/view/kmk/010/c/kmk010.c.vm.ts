@@ -77,7 +77,7 @@ module nts.uk.at.view.kmk010.c {
                    return;
                }
                if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
-                   
+
                    // convert model to dto
                    var breakdownItems: OutsideOTBRDItemDto[] = [];
                    for (var model of self.lstOutsideOTBRDItemModel) {
@@ -87,10 +87,12 @@ module nts.uk.at.view.kmk010.c {
                    // call service save all overtime
                    service.saveAllOutsideOTBRDItem(breakdownItems).done(function() {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                           nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
                        nts.uk.ui.dialog.alertError(error).then(function() {
+                           nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.windows.close();
                        });
                    });
@@ -107,13 +109,15 @@ module nts.uk.at.view.kmk010.c {
                    // call service save all overtime language name
                    service.saveAllOvertimeLanguageBRDItem(overtimeLangNames).done(function() {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                           nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
                        nts.uk.ui.dialog.alertError(error).then(function() {
+                           nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.windows.close();
                        });
-                       
+
                    });
                }
            }
@@ -143,7 +147,6 @@ module nts.uk.at.view.kmk010.c {
              * function by click button close dialog
              */
            private closeSaveOutsideOTBRDItem(): void {
-               nts.uk.ui.windows.setShared("isClose", true);
                nts.uk.ui.windows.close();
            }
         }

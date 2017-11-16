@@ -150,8 +150,8 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("languageId", self.languageId);
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/b/index.xhtml").onClosed(function() {
-                    var isClose: boolean = nts.uk.ui.windows.getShared("isClose");
-                    if (!isClose) {
+                    var isSave: number = nts.uk.ui.windows.getShared("isSave");
+                    if (isSave && isSave == 1) {
                         self.startPage().done(() => {
                             service.initTooltip();
                         });
@@ -165,8 +165,8 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("languageId", self.languageId);
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/c/index.xhtml").onClosed(function() {
-                    var isClose: boolean = nts.uk.ui.windows.getShared("isClose");
-                    if (!isClose) {
+                    var isSave: number = nts.uk.ui.windows.getShared("isSave");
+                    if (isSave && isSave == 1) {
                         self.startPage().done(() => {
                             service.initTooltip();
                         });
