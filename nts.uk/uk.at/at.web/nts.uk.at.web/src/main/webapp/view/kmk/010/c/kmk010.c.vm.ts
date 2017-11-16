@@ -35,7 +35,7 @@ module nts.uk.at.view.kmk010.c {
                        self.lstOutsideOTBRDItemModel = [];
                        for (var dto of data) {
                            var model: OutsideOTBRDItemModel = new OutsideOTBRDItemModel();
-                           model.updateData(dto);
+                           model.updateData(dto, false);
                            model.updateEnableCheck(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
                            model.setUpdateData(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
                            self.lstOutsideOTBRDItemModel.push(model);
@@ -78,6 +78,8 @@ module nts.uk.at.view.kmk010.c {
                if (self.validateDomainSave()) {
                    return;
                }
+               // block ui.
+               nts.uk.ui.block.invisible();
                if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
 
                    // convert model to dto
@@ -90,11 +92,13 @@ module nts.uk.at.view.kmk010.c {
                    service.saveAllOutsideOTBRDItem(breakdownItems).done(function() {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
+                           nts.uk.ui.block.clear();
                            nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
                        nts.uk.ui.dialog.alertError(error).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
+                           nts.uk.ui.block.clear();
                            nts.uk.ui.windows.close();
                        });
                    });
@@ -112,11 +116,13 @@ module nts.uk.at.view.kmk010.c {
                    service.saveAllOvertimeLanguageBRDItem(overtimeLangNames).done(function() {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
+                           nts.uk.ui.block.clear();
                            nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
                        nts.uk.ui.dialog.alertError(error).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
+                           nts.uk.ui.block.clear();
                            nts.uk.ui.windows.close();
                        });
 

@@ -198,6 +198,7 @@ module nts.uk.at.view.kmk010.a {
                 
                 // check exist error
                 if (!nts.uk.ui.errors.hasError()) {
+                    nts.uk.ui.block.invisible();
                     var dtoSuper: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
                     dtoSuper.premiumExtra60HRates = self.toArrayRateDto();
                     // save all
@@ -205,6 +206,7 @@ module nts.uk.at.view.kmk010.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             self.startPage().done(() => {
                                 service.initTooltip();
+                                nts.uk.ui.block.clear();
                             });
                         });
                     }).fail(function(error) {
@@ -385,7 +387,7 @@ module nts.uk.at.view.kmk010.a {
                 this.requiredText = ko.observable(true);
             }
 
-           public updateData(dto: OutsideOTBRDItemDto) {
+           public updateData(dto: OutsideOTBRDItemDto, isUpdate: boolean) {
                 var self = this;
                 this.useClassification(dto.useClassification);
                 this.breakdownItemNo(dto.breakdownItemNo);
@@ -393,19 +395,19 @@ module nts.uk.at.view.kmk010.a {
                 this.languageName(dto.name);
                 this.productNumber(dto.productNumber);
                 self.attendanceItemIds(dto.attendanceItemIds);
-               if(self.attendanceItemIds() && self.attendanceItemIds().length > 0){
-                   nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(data) {
-                       var selectedName: string[] = [];
-                       for (var item of data) {
-                           for (var id of self.attendanceItemIds()) {
-                               if (id == item.attendanceItemId) {
-                                   selectedName.push(item.attendanceItemName);
-                               }
-                           }
-                       }
-                       self.attendanceItemName(selectedName.join(' + '));
-                   });
-               }
+                if (isUpdate && self.attendanceItemIds() && self.attendanceItemIds().length > 0) {
+                    nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(data) {
+                        var selectedName: string[] = [];
+                        for (var item of data) {
+                            for (var id of self.attendanceItemIds()) {
+                                if (id == item.attendanceItemId) {
+                                    selectedName.push(item.attendanceItemName);
+                                }
+                            }
+                        }
+                        self.attendanceItemName(selectedName.join(' + '));
+                    });
+                }
             }
 
             public toDto(): OutsideOTBRDItemDto {
@@ -500,7 +502,7 @@ module nts.uk.at.view.kmk010.a {
                 var dataBreakdownItemModel : OutsideOTBRDItemModel[] = [];
                 for (var overtimeBRD of dto.breakdownItems) {
                     var modelBRD: OutsideOTBRDItemModel = new OutsideOTBRDItemModel();
-                    modelBRD.updateData(overtimeBRD);
+                    modelBRD.updateData(overtimeBRD, true);
                     dataBreakdownItemModel.push(modelBRD);
                 }
                 this.breakdownItems(dataBreakdownItemModel);
