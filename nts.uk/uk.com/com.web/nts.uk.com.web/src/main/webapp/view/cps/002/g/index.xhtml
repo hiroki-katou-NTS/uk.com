@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+		
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 610,
+					height : 530
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cps002.g.style.css" />
+			<com:scriptfile path="cps002.g.service.js" />
+			<com:scriptfile path="cps002.g.vm.js" />
+			<com:scriptfile path="cps002.g.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" class="cf coverBlock">
+				
+				<div>
+					<table class="tblContent">
+						<tr>
+							<td colspan="2" class="txtTopLable">
+							<div>#{i18n.getText('CPS002_76')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_77')}</div></td>
+							<td>
+								<div>
+									<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" value="1" name="employCode" data-bind="checked: empCodeValue" />
+											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_78')}</span>
+									</label>
+									</span>
+									<input type="text" class="txtEmpCodeFirstChar" maxLength="11" data-bind="value: txtEmpCodeLetter" />
+									<span>#{i18n.getText('CPS002_82')}</span>
+								</div>
+								<div>
+									<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" value="3" name="employCode" data-bind="checked: empCodeValue" />
+											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_79')}</span>
+									</label>
+									</span>
+								</div>
+								<div>
+									<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" value="2" name="employCode" data-bind="checked: empCodeValue" />
+											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_80')}</span>
+									</label>
+									</span>
+								</div>
+							</td>
+						</tr>
+						<!--  -->
+						<tr>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_83')}</div></td>
+							<td>
+								<div>
+									<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" value="1" name="cardNo" data-bind="checked: cardNoValue" />
+											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_78')}</span>
+									</label>
+									</span>
+									<input type="text" class="txtEmpCodeFirstChar" maxLength='20' data-bind="value: txtCardNo" />
+									<span>#{i18n.getText('CPS002_87')}</span>
+								</div>
+								<div>
+									<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" value="4" name="cardNo" data-bind="checked: cardNoValue" />
+											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_84')}</span>
+									</label>
+									</span>
+								</div>
+								<div>
+									<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" value="3" name="cardNo" data-bind="checked: cardNoValue" />
+											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_85')}</span>
+									</label>
+									</span>
+								</div>
+								<div>
+									<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" value="5" name="cardNo" data-bind="checked: cardNoValue" />
+											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_86')}</span>
+									</label>
+									</span>
+								</div>
+								<div>
+									<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" value="2" name="textRadio" data-bind="checked: cardNoValue" />
+											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_80')}</span>
+									</label>
+									</span>
+								</div>
+							</td>
+						</tr>
+						<!--  -->
+						<tr>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_88')}</div></td>
+							<td>
+								<div class="cf" data-bind="ntsSwitchButton: {
+									options: roundingRules,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedRuleCode,
+									enable: true }">
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: register">#{i18n.getText('CPS002_91')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS002_92')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

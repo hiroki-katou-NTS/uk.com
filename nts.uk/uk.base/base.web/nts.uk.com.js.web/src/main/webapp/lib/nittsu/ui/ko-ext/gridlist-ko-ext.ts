@@ -10,6 +10,7 @@ module nts.uk.ui.koExtentions {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             let HEADER_HEIGHT = 27;
             let ROW_HEIGHT = 23;
+            let DIFF_NUMBER = 2;
             
             var $grid = $(element);
             let gridId = $grid.attr('id');
@@ -30,11 +31,19 @@ module nts.uk.ui.koExtentions {
             $grid.data("init", true);
             
             if (data.multiple){
-                ROW_HEIGHT = 24;            
+                ROW_HEIGHT = 24;      
+                
+                // Internet Explorer 6-11
+                var isIE = /*@cc_on!@*/false || !!document.documentMode;
+                
+                // Edge 20+
+                var isEdge = !isIE && !!window.StyleMedia; 
+                if (isIE || isEdge) {
+                    DIFF_NUMBER = -2;    
+                }
             }
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
-//            features.push({ name: 'Sorting', type: 'local' });
             if(data.multiple || showNumbering){ 
                 features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });    
             }
@@ -93,7 +102,7 @@ module nts.uk.ui.koExtentions {
                 if (isDeleteButton){
                     ROW_HEIGHT = 30;        
                 }
-                height = rows * ROW_HEIGHT + HEADER_HEIGHT;   
+                height = rows * ROW_HEIGHT + HEADER_HEIGHT - DIFF_NUMBER;   
                 
                 let colSettings = [];
                 _.forEach(iggridColumns, function (c){
@@ -145,32 +154,26 @@ module nts.uk.ui.koExtentions {
             $grid.ntsGridList('setupSelecting');
             
             if (data.multiple){
-                $grid.bind('iggridrowselectorscheckboxstatechanging', (evt: Event, uiX: any) => {
-//                console.log(ui);
-                if($grid.data("enable") === false){ 
-                    return false;        
-                }
-            }); 
+                $grid.bind('iggridrowselectorscheckboxstatechanging', (eventObject: JQueryEventObject) => {
+                    return (String($grid.data("enable")) === "false") ? false : true;
+                });
             }
-            $grid.bind('iggridselectionrowselectionchanging', (evt: Event, uiX: any) => {
-//                console.log(ui);
-                if($grid.data("enable") === false){ 
-                    return false;        
-                }
+            $grid.bind('iggridselectionrowselectionchanging', (eventObject: JQueryEventObject) => {
+                return (String($grid.data("enable")) === "false") ? false : true;
             });
 
             $grid.bind('selectionchanged', () => {
                 $grid.data("ui-changed", true);
                 if (data.multiple) {
                     let selected: Array<any> = $grid.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         data.value(_.map(selected, s => s.id));
                     } else {
                         data.value([]);
                     }
                 } else {
                     let selected = $grid.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         data.value(selected.id);
                     } else {
                         data.value('');
@@ -203,9 +206,9 @@ module nts.uk.ui.koExtentions {
             
             $grid.data("enable", enable);
             
-            if (!($grid.attr("filtered") === true || $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
-//                let scrollTop = $("#" + $grid.attr("id") + "_scrollContainer").scrollTop();
+            if (!(String($grid.attr("filtered")) === "true") && $grid.data("ui-changed") !== true) {
                 let currentSources = sources.slice();
+                
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                     return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
@@ -218,13 +221,24 @@ module nts.uk.ui.koExtentions {
                         });
                     });    
                 }
-                $grid.igGrid('option', 'dataSource', currentSources);
-                $grid.igGrid("dataBind");
-//                if(!nts.uk.util.isNullOrUndefined(scrollTop) && scrollTop !== 0){
-//                    setTimeout(function (){
-//                        $("#" + $grid.attr("id") + "_scrollContainer").scrollTop(scrollTop);        
-//                    }, 10);
-//                }
+                if (!_.isEqual(currentSources, $grid.igGrid('option', 'dataSource'))) {
+                    $grid.igGrid('option', 'dataSource', currentSources);
+                    $grid.igGrid("dataBind");
+                }
+            } else if(String($grid.attr("filtered")) === "true"){
+                let filteredSource = [];
+                _.forEach(currentSource, function(item){
+                    let itemX = _.find(sources, function (s){
+                        return s[optionsValue] === item[optionsValue];        
+                    });
+                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        filteredSource.push(itemX);
+                    }     
+                });     
+                if(!_.isEqual(filteredSource, currentSource)){
+                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
+                    $grid.igGrid("dataBind");    
+                }
             }
 
             var currentSelectedItems = $grid.ntsGridList('getSelected');
@@ -234,6 +248,7 @@ module nts.uk.ui.koExtentions {
                 }
             })
             if (!isEqual) {
+                _.defer(() => {$grid.trigger("selectChange");});  
                 $grid.ntsGridList('setSelected', data.value());
             }
             $grid.data("ui-changed", false);
@@ -279,7 +294,7 @@ module nts.uk.ui.koExtentions {
             this.model.$grid.sortable(options).disableSelection();
         }
         
-        private _createHelper(evt: any, ui: any): void {
+        private _createHelper(evt: Event, ui: any): Element {
             var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
             // Set the orders same as on grid
             selectedRowElms.sort(function(one, two) {

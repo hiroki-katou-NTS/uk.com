@@ -29,9 +29,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.ccgmtStandardMenuPK.system = :system "
 			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification ORDER BY s.ccgmtStandardMenuPK.code ASC";
-	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION_OR_AFTER_LOGIN_DIS = SEL
+	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION_AND_AFTER_LOGIN_DIS = SEL
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId " + "AND s.ccgmtStandardMenuPK.system = :system "
-			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay "
+			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification AND s.afterLoginDisplay = :afterLoginDisplay "
 			+ "ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
 
 	private final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
@@ -95,12 +95,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	/**
 	 * added by sonnh1
 	 * 
-	 * find by COMPANYID and SYSTEM and MENU_CLASSIFICATION or AFTER_LOGIN_DISPLAY
+	 * find by COMPANYID and SYSTEM and MENU_CLASSIFICATION and AFTER_LOGIN_DISPLAY
 	 */
 	@Override
 	public List<StandardMenu> findDataForAfterLoginDis(String companyId, int afterLoginDisplay, int system,
 			int menu_classification) {
-		return this.queryProxy().query(FIND_BY_SYSTEM_MENUCLASSIFICATION_OR_AFTER_LOGIN_DIS, CcgstStandardMenu.class)
+		return this.queryProxy().query(FIND_BY_SYSTEM_MENUCLASSIFICATION_AND_AFTER_LOGIN_DIS, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId).setParameter("system", system)
 				.setParameter("menu_classification", menu_classification)
 				.setParameter("afterLoginDisplay", afterLoginDisplay).getList(t -> toDomain(t));

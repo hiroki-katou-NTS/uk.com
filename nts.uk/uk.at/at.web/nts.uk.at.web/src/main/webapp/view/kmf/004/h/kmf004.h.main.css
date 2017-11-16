@@ -1,0 +1,24 @@
+#label {
+	margin-left: 50px;
+	margin-top: 30px;
+}
+
+.nts-input {
+	width: 45px;
+	margin-top: 20px;
+}
+
+#inpPattern {
+	width: 170px;
+}
+
+#left-content {
+	width: 360px;
+	height: 400px;
+	float: left;
+	clear: right;
+}
+
+#content-area {
+	padding: 20px !important;
+}

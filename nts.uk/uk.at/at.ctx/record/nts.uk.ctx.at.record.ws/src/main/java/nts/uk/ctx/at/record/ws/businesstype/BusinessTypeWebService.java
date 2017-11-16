@@ -23,11 +23,11 @@ public class BusinessTypeWebService extends WebService {
 	@Inject
 	private BusinessTypesFinder findAll;
 	@Inject
-	private AddBusinessTypeNameCommandHandler addBusinessName;
+	private AddBusinessTypeNameCommandHandler add;
 	@Inject
-	private UpdateBusinessTypeNameCommandHandler updateBusinessName;
+	private UpdateBusinessTypeNameCommandHandler update;
 	@Inject
-	private DeleteBusinessTypeNameCommandHandler deleteBusinessName;
+	private DeleteBusinessTypeNameCommandHandler delete;
 	/**
 	 * get all data to list
 	 * @return
@@ -37,27 +37,32 @@ public class BusinessTypeWebService extends WebService {
 	public List<BusinessTypeDto> getAll(){
 		return this.findAll.findAll();
 	}
+	@POST
+	@Path("findByCode")
+	public BusinessTypeDto getBusinessType(String businessTypeCode){
+		return this.findAll.findByCode(businessTypeCode);
+	}
 	/**
 	 * insert new business type name
 	 * @param command
 	 */
 	@POST
-	@Path("addBusinessName")
-	public void AddBusinessTypeName(AddBusinessTypeNameCommand command){
-		this.addBusinessName.handle(command);
+	@Path("add")
+	public void addBusinessTypeName(AddBusinessTypeNameCommand command){
+		this.add.handle(command);
 	}
 	/**
 	 * update a business type name
 	 * @param command
 	 */
 	@POST
-	@Path("updateBusinessName")
-	public void UpdateBusinessTypeName(UpdateBusinessTypeNameCommand command){
-		this.updateBusinessName.handle(command);
+	@Path("update")
+	public void updateBusinessTypeName(UpdateBusinessTypeNameCommand command){
+		this.update.handle(command);
 	}
 	@POST
-	@Path("deleteBusinessName")
-	public void DeleteBusinessTypeName(DeleteBusinessTypeNameCommand command){
-		this.deleteBusinessName.handle(command);
+	@Path("delete")
+	public void deleteBusinessTypeName(DeleteBusinessTypeNameCommand command){
+		this.delete.handle(command);
 	}
 }

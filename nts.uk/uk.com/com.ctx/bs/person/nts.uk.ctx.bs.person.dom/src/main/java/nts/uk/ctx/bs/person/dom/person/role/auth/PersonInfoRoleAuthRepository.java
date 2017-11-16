@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PersonInfoRoleAuthRepository {
 	List<PersonInfoRoleAuth> getAllPersonInfoRoleAuth();
 
-	Optional<PersonInfoRoleAuth> getDetailPersonRoleAuth(String roleId);
+	Optional<PersonInfoRoleAuth> getDetailPersonRoleAuth(String roleId, String companyId);
 
 	void add(PersonInfoRoleAuth domain);
 

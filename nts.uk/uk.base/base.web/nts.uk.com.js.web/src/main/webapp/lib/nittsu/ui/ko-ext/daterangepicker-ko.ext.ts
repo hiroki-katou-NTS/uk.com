@@ -26,6 +26,7 @@ module nts.uk.ui.koExtentions {
             
             let id = nts.uk.util.randomId();
             let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+            $container.data("tabindex", tabIndex);
             $container.removeAttr("tabindex");
             
             $container.append("<div class='ntsDateRange_Container' id='"+ id +"' />");
@@ -151,7 +152,7 @@ module nts.uk.ui.koExtentions {
                     if (endDate.isBefore(startDate)) {
                         $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]));    
                     } else if(dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth"){
-                        let maxDate = startDate.add(1, "months");
+                        let maxDate = startDate.add(31, "days");
                         if(endDate.isAfter(maxDate)){
                             $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]));         
                         }
@@ -285,7 +286,11 @@ module nts.uk.ui.koExtentions {
                     }       
                 } 
             }
-            
+            if(enable === false){
+                $container.find(".ntsDateRange_Component").removeAttr("tabindex");    
+            } else {
+                $container.find(".ntsDateRange_Component").attr("tabindex", $container.data("tabindex"));         
+            } 
             $input.prop("disabled", !enable);
             $container.find(".ntsDateRangeButton").prop("disabled", !enable);
             let $datePickerArea = $container.find(".ntsDateRange_Container"); 

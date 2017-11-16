@@ -27,8 +27,11 @@ public class BPTimeItemSettingAddCommandHandler extends CommandHandler<List<BPTi
 
 	private BPTimeItemSetting toBPTimeItemSettingDomain(BPTimeItemSettingAddCommand bpTimeItemSettingAddCommand,String companyId) {
 		return BPTimeItemSetting.createFromJavaType(companyId,
-				bpTimeItemSettingAddCommand.getTimeItemId(), bpTimeItemSettingAddCommand.holidayCalSettingAtr,
-				bpTimeItemSettingAddCommand.overtimeCalSettingAtr, bpTimeItemSettingAddCommand.worktimeCalSettingAtr);
+				bpTimeItemSettingAddCommand.timeItemNo,
+				bpTimeItemSettingAddCommand.holidayCalSettingAtr,
+				bpTimeItemSettingAddCommand.overtimeCalSettingAtr,
+				bpTimeItemSettingAddCommand.worktimeCalSettingAtr,
+				bpTimeItemSettingAddCommand.timeItemTypeAtr);
 	}
 
 }

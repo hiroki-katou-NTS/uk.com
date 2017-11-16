@@ -1,0 +1,481 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div tabindex="9" id="tab-panel" class="tabPanel"
+			data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+			<div class="tab-content-1">
+				<div class="control-group">
+					<div class="pull-left">
+						<div data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KMK006_17')}</label>
+						</div>
+					</div>
+					<div tabindex="-1" class="pull-left helpButton">
+						<button tabindex="-1"
+							data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_4.png', position: 'right top', enable: true }">?</button>
+					</div>
+					<br></br> <br></br> <br></br>
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_19]',
+									options: autoCalAtrOvertimeEnumWithoutTimeRecorder,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorLegAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_20]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorLegLi, 
+ 									enable: enableEnumNorLegLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_19]',
+									options: autoCalAtrOvertimeEnumWithoutTimeRecorder,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorLegMidAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_20]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorLegMidLi, 
+ 									enable: enableEnumNorLegMidLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="tab-content-2">
+				<div class="control-group">
+					<div class="pull-left">
+						<div data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KMK006_22')}</label>
+						</div>
+					</div>
+					<br></br> <br></br> <br></br>
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_19]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorNorAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_20]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorNorLi, 
+ 									enable: enableEnumNorNorLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_19]',
+									options: autoCalAtrOvertimeEnumWithoutTimeRecorder,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorNorMidAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_20]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorNorMidLi, 
+ 									enable: enableEnumNorNorMidLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="pull-left">
+						<div data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KMK006_23')}</label>
+						</div>
+					</div>
+					<br></br> <br></br> <br></br>
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_19]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorEarAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_20]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorEarLi, 
+ 									enable: enableEnumNorEarLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_19]',
+									options: autoCalAtrOvertimeEnumWithoutTimeRecorder,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorEarMidAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_20]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumNorEarMidLi, 
+ 									enable: enableEnumNorEarMidLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="pull-left">
+						<div data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KMK006_24')}</label>
+						</div>
+					</div>
+					<br></br> <br></br> <br></br>
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_19]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumFleTimeAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK006_20]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumFleTimeLi, 
+ 									enable: enableEnumFleTimeLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="tab-content-3">
+				<div class="control-group">
+
+					<div class="pull-left">
+						<div data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KMK006_25')}</label>
+						</div>
+					</div>
+					<br></br> <br></br> <br></br>
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumResResAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumResResLi, 
+ 									enable: enableEnumResResLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div>
+						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
+					</div>
+					<br></br>
+					<div style="margin-left: 60px;">
+						<table tabindex="10" class="whole-company-tbl"
+							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
+							<tr class="row">
+								<td>
+									<div class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
+								</td>
+								<td>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnumWithoutTimeRecorder,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumResLatAtr, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnumResLatLi, 
+ 									enable: enableEnumResLatLi,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>

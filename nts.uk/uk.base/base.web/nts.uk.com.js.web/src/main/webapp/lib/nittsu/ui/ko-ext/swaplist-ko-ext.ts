@@ -42,7 +42,9 @@ module nts.uk.ui.koExtentions {
             var height = ko.unwrap(data.height);
             var showSearchBox = ko.unwrap(data.showSearchBox);
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
-            var columns: KnockoutObservableArray<any> = data.columns;
+            var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
+            var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
+            var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
 
             $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
             if (totalWidth !== undefined) {
@@ -51,10 +53,18 @@ module nts.uk.ui.koExtentions {
             $swap.parent().height(height);
             $swap.addClass("ntsSwapList-container");
 
-            var gridWidth = _.sumBy(columns(), c => {
+            let leftGridWidth = _.sumBy(leftColumns(), c => {
                 return c.width;
             });
-            var iggridColumns = _.map(columns(), c => {
+            let rightGridWidth = _.sumBy(rightColumns(), c => {
+                return c.width;
+            });
+            var leftIggridColumns = _.map(leftColumns(), c => {
+                c["key"] = c.key === undefined ? c.prop : c.key;
+                c["dataType"] = 'string';
+                return c;
+            });
+            var rightIggridColumns = _.map(rightColumns(), c => {
                 c["key"] = c.key === undefined ? c.prop : c.key;
                 c["dataType"] = 'string';
                 return c;
@@ -63,9 +73,10 @@ module nts.uk.ui.koExtentions {
             
             var grid1Id = "#" + elementId + "-grid1";
             var grid2Id = "#" + elementId + "-grid2";
-            if (!util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showEright)) {
+            var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
+            if (!util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
                 
-                var initSearchArea = function ($SearchArea, targetId, searchMode){
+                var initSearchArea = function ($SearchArea, searchMode, searchText){
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                         .append("<div class='ntsSearchButtonContainer'/>");
                     if(searchMode === "filter"){
@@ -78,7 +89,7 @@ module nts.uk.ui.koExtentions {
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                     $SearchArea.find(".ntsSearchButtonContainer")
                         .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
-                    $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").wrap("<span class='nts-editor-wrapped ntsControl'/>");
+                    $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
                     $SearchArea.find(".search-btn").text("検索");  
                 }
                 
@@ -88,23 +99,25 @@ module nts.uk.ui.koExtentions {
                 $searchArea.append("<div class='ntsSwapSearchLeft'/>")
                     .append("<div class='ntsSwapSearchRight'/>");
                 $searchArea.css({position: "relative"});
-                var searchAreaWidth = gridWidth + CHECKBOX_WIDTH;
+                var searchAreaWidth = leftGridWidth + CHECKBOX_WIDTH;
                 if(showSearchBox.showLeft){
                     var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                     
                     $searchLeftContainer.width(searchAreaWidth).css({position: "absolute", left: 0});
                     
-                    initSearchArea($searchLeftContainer, grid1Id, data.searchMode);
+                    initSearchArea($searchLeftContainer, data.searchMode, data.leftSearchBoxText || defaultSearchText);
+                    $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                 }
                 
                 if(showSearchBox.showRight){
                     var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                     
-                    $searchRightContainer.width(gridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
+                    $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
                     
-                    initSearchArea($searchRightContainer, grid2Id, data.searchMode);
+                    initSearchArea($searchRightContainer, data.searchMode, data.rightSearchBoxText || defaultSearchText);
+                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                 }
-                $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                
                 $searchArea.height(SEARCH_AREA_HEIGHT);
                 gridHeight -= SEARCH_AREA_HEIGHT;
             }
@@ -121,24 +134,26 @@ module nts.uk.ui.koExtentions {
 
             var features = [{ name: 'Selection', multipleSelection: true },
 //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
           
-            $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
+            $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
+            $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
             
-            var criterion = _.map(columns(), c => { return c.key === undefined ? c.prop : c.key; });
-            
+            var leftCriterion = _.map(leftColumns(), c => { return c.key === undefined ? c.prop : c.key; });
+            var rightCriterion = _.map(rightColumns(), c => { return c.key === undefined ? c.prop : c.key; });
             var swapParts: Array<SwapPart> = new Array<SwapPart>();
             swapParts.push(new GridSwapPart().listControl($grid1)
                                 .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn")) 
                                 .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
                                 .setDataSource(originalSource)
-                                .setSearchCriterion(data.searchCriterion || criterion)
+                                .setSearchCriterion(data.leftSearchCriterion || data.searchCriterion || leftCriterion)
                                 .setSearchMode(data.searchMode || "highlight")
-                                .setColumns(columns())
+                                .setColumns(leftColumns())
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.left !== undefined) ? data.innerDrag.left : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
+                                .setItemsLimit((data.itemsLimit && data.itemsLimit.left !== undefined) ? data.itemsLimit.left : null)
                                 .build());
             
             swapParts.push(new GridSwapPart().listControl($grid2)
@@ -146,21 +161,22 @@ module nts.uk.ui.koExtentions {
                                 .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .setDataSource(data.value())
-                                .setSearchCriterion(data.searchCriterion || criterion) 
+                                .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion) 
                                 .setSearchMode(data.searchMode || "highlight")
-                                .setColumns(columns())  
+                                .setColumns(rightColumns())  
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.right !== undefined) ? data.outerDrag.right : true)
+                                .setItemsLimit((data.itemsLimit && data.itemsLimit.right !== undefined) ? data.itemsLimit.right : null)
                                 .build());
             
             this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
             
             $grid1.igGrid({
-                width: gridWidth + CHECKBOX_WIDTH, 
+                width: leftGridWidth + CHECKBOX_WIDTH, 
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
-                columns: iggridColumns,
+                columns: leftIggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 features: features,
@@ -175,10 +191,10 @@ module nts.uk.ui.koExtentions {
             $grid1.ntsGridList('setupSelecting');
 
             $grid2.igGrid({
-                width: gridWidth + CHECKBOX_WIDTH,
+                width: rightGridWidth + CHECKBOX_WIDTH,
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
-                columns: iggridColumns,
+                columns: rightIggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 features: features,
@@ -202,17 +218,28 @@ module nts.uk.ui.koExtentions {
             $grid2.ntsGridList('setupSelecting');
 
             var $moveArea = $swap.find("#" + elementId + "-move-data")
-                .append("<button class = 'move-button move-forward ntsSwap_Component'><i class='icon icon-button-arrow-right'></i></button>")
-                .append("<button class = 'move-button move-back ntsSwap_Component'><i class='icon icon-button-arrow-left'></i></button>");
+                .append("<button class='move-button move-forward-all ntsSwap_Component'><i class='img-icon icon-next-all'></i></button>")
+                .append("<button class='move-button move-forward ntsSwap_Component'><i class='img-icon icon-next'></i></button>")
+                .append("<button class='move-button move-back ntsSwap_Component'><i class='img-icon icon-prev'></i></button>")
+                .append("<button class='move-button move-back-all ntsSwap_Component'><i class='img-icon icon-prev-all'></i></button>");
+            
             var $moveForward = $moveArea.find(".move-forward");
+            var $moveForwardAll = $moveArea.find(".move-forward-all");
             var $moveBack = $moveArea.find(".move-back");
+            var $moveBackAll = $moveArea.find(".move-back-all");
 
             var swapper = this.swapper;
             $moveForward.click(function() {
-                swapper.Model.move(true, data.value);
+                swapper.Model.move(true, data.value, false);
             });
             $moveBack.click(function() {
-                swapper.Model.move(false, data.value);
+                swapper.Model.move(false, data.value, false);
+            });
+            $moveForwardAll.click(function() {
+                swapper.Model.move(true, data.value, true);
+            });
+            $moveBackAll.click(function() {
+                swapper.Model.move(false, data.value, true);
             });
             
             $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
@@ -358,17 +385,23 @@ module nts.uk.ui.koExtentions {
             var partId = model.transportBuilder.startAt === "first" ? 0 : 1;
             var destPartId = model.receiver(ui) === "first" ? 0 : 1;
             model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+            let max = model.swapParts[destPartId].itemsLimit;
             // In case of multiple selections
             if (ui.helper.hasClass("select-drag") === true) {
                 var rowsInHelper = ui.helper.find("tr");
-                var rows = rowsInHelper.toArray(); 
+                var rows = rowsInHelper.toArray();
+                 
                 if (model.transportBuilder.startAt === model.receiver(ui)
                     || (model.swapParts[partId].outerDrop === false
-                        && model.transportBuilder.startAt !== model.receiver(ui))) {
+                        && model.transportBuilder.startAt !== model.receiver(ui))
+                    || (!util.isNullOrUndefined(max) && (rows.length + model.swapParts[destPartId].dataSource.length > max))) {
                     $(this).sortable("cancel");
                     for (var idx in rows) {
                         model.swapParts[partId].$listControl.find("tbody").children()
                                                 .eq($(rows[idx]).data("row-idx")).show();
+                    }
+                    if (!util.isNullOrUndefined(max) && (rows.length + model.swapParts[destPartId].dataSource.length > max)) {
+                        model.$container.trigger($.Event("swaplistgridsizeexceed"), [ model.swapParts[destPartId].$listControl, max ]);
                     }
                     return;
                 } else {
@@ -395,8 +428,12 @@ module nts.uk.ui.koExtentions {
             } else if ((model.swapParts[partId].innerDrop === false
                 && model.transportBuilder.startAt === model.receiver(ui))
                 || (model.swapParts[partId].outerDrop === false
-                    && model.transportBuilder.startAt !== model.receiver(ui))) {
+                    && model.transportBuilder.startAt !== model.receiver(ui))
+                || (!util.isNullOrUndefined(max) && model.swapParts[destPartId].dataSource.length >= max)) {
                 $(this).sortable("cancel");
+                if (!util.isNullOrUndefined(max) && model.swapParts[destPartId].dataSource.length >= max) {
+                    model.$container.trigger($.Event("swaplistgridsizeexceed"), [ model.swapParts[destPartId].$listControl, max ]);
+                }
             }
         }
         
@@ -439,7 +476,7 @@ module nts.uk.ui.koExtentions {
         abstract neighbor(param: any): string;
         abstract dropDone(): void;
         abstract enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>): void;
+        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void;
     }
     
     interface ISwapAction {
@@ -449,7 +486,7 @@ module nts.uk.ui.koExtentions {
         neighbor(param: any): string;
         dropDone(): void;
         enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>): void;
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void;
     }
     
     class SearchResult {
@@ -475,6 +512,7 @@ module nts.uk.ui.koExtentions {
         primaryKey: string;
         innerDrop: boolean = true;
         outerDrop: boolean = true;
+        itemsLimit: number;
         
         constructor() {
         }
@@ -531,6 +569,11 @@ module nts.uk.ui.koExtentions {
         
         setOuterDrop(outerDrop: boolean) {
             this.outerDrop = outerDrop;
+            return this;
+        }
+        
+        setItemsLimit(itemsLimit: number) {
+            this.itemsLimit = itemsLimit;
             return this;
         }
         
@@ -721,24 +764,44 @@ module nts.uk.ui.koExtentions {
             }
         }
         
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>): void {
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void {
+            var primaryKey = this.transportBuilder.primaryKey;
+            
             var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
             var sourceList = forward === true ? this.swapParts[0].dataSource : this.swapParts[1].dataSource;
             var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
             var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
-            var selectedRows = $source.igGrid("selectedRows");
-            if (nts.uk.util.isNullOrEmpty(selectedRows)) {
-                return;        
+            var max = forward === true ? this.swapParts[1].itemsLimit : this.swapParts[0].itemsLimit;
+            
+            if (moveAll) {
+                var selectedIds = sourceList.map(function(row) { return row[primaryKey]; });
+                if (!util.isNullOrUndefined(max) && (selectedIds.length + destList.length > max)) {
+                    this.$container.trigger($.Event("swaplistgridsizeexceed"), [ $dest, max ]);
+                    return;
+                }
+                
+                this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
+                        .toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);           
+            } else {
+                var selectedRows = $source.igGrid("selectedRows");
+                if (nts.uk.util.isNullOrEmpty(selectedRows)) {
+                    return;        
+                }
+                if (!util.isNullOrUndefined(max) && (selectedRows.length + destList.length > max)) {
+                    this.$container.trigger($.Event("swaplistgridsizeexceed"), [ $dest, max ]);
+                    return;
+                }
+                selectedRows.sort(function(one, two) {
+                    return one.index - two.index; 
+                });
+                
+                var firstSelected = selectedRows[0];
+                
+                var selectedIds = selectedRows.map(function(row) { return row.id; });
+                
+                this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
+                        .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);    
             }
-            selectedRows.sort(function(one, two) {
-                return one.index - two.index; 
-            });
-            
-            var firstSelected = selectedRows[0];
-            
-            var selectedIds = selectedRows.map(function(row) { return row.id; });
-            this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
-                    .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
             
             var firstSource = this.transportBuilder.getFirst();
             var secondSource = this.transportBuilder.getSecond();
@@ -749,7 +812,6 @@ module nts.uk.ui.koExtentions {
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
             
-            var primaryKey = this.transportBuilder.primaryKey;
             if (forward){
                 var selectIndex = firstSource.length === 0 ? -1 
                     : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index); 
@@ -838,7 +900,15 @@ module nts.uk.ui.koExtentions {
             return _.findIndex(list, elm => elm[this.primaryKey].toString() === targetId.toString());
         }
         
-        move(src: Array<any>, dest: Array<any>) {
+        move(src: Array<any>, dest: Array<any>, moveAll: boolean) {
+            if(moveAll){
+                this.moveAllItems(src, dest);        
+            } else {
+                this.moveNormal(src, dest);     
+            }
+        }
+        
+        moveNormal(src: Array<any>, dest: Array<any>) {
             for (var i = 0; i < this.targetIds.length; i++) { 
                 this.outcomeIndex = this.indexOf(src, this.targetIds[i]);
                 if (this.outcomeIndex === -1) return;
@@ -855,6 +925,12 @@ module nts.uk.ui.koExtentions {
             }
         }
         
+        moveAllItems(src: Array<any>, dest: Array<any>){
+            dest.push.apply(dest, src)
+//            dest.splice(0, 0, src);       
+            _.remove(src); 
+        }
+        
         determineDirection() : string {
             if (this.startAt.toLowerCase() !== this.direction.toLowerCase()
                 && this.direction.toLowerCase() === "second") {
@@ -868,19 +944,19 @@ module nts.uk.ui.koExtentions {
             } else return "insideSecond";
         }
         
-        update() : void {
+        update(moveAll: boolean) : void {
             switch (this.determineDirection()) {
                 case "firstToSecond":
-                    this.move(this.firstList, this.secondList);
+                    this.move(this.firstList, this.secondList, moveAll);
                     break;
                 case "secondToFirst":
-                    this.move(this.secondList, this.firstList);
+                    this.move(this.secondList, this.firstList, moveAll);
                     break;
                 case "insideFirst":
-                    this.move(this.firstList, this.firstList);
+                    this.move(this.firstList, this.firstList, moveAll);
                     break;
                 case "insideSecond":
-                    this.move(this.secondList, this.secondList);
+                    this.move(this.secondList, this.secondList, moveAll);
                     break;
             }
         }

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:scriptfile path="test.service.js" />
+			<com:scriptfile path="test.start.js" />
+			<com:scriptfile path="test.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button style= "margin-left: 100px;" data-bind ="click : openDialog">Open KDL 032</button>
+			</div>
+			<div id="contents-area" >
+				<div>Please enter from 1-5. Other will not have data</div>
+				<div class="row2" >
+					<p style = "display: inline ;padding-left: 200px;"> DeviationTime ID :</p>
+					<input style = "display: inline; margin-left: 45px;margin-top: 30px;" data-bind="ntsTextEditor: {value: divergenceTimeID }" />
+				</div>
+				<div class="row1" >
+					<p style = "display: inline ;padding-left: 200px;"> reasonCD  :</p>
+					<input style = "display: inline; margin-left: 45px;margin-top: 30px;" data-bind="ntsTextEditor: {value: reasonCD}" />
+				</div>
+				<hr/>
+				<div>Result: <span data-bind="text: reasonCD"></span></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

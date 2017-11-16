@@ -11,13 +11,13 @@ $(function() {
     $("#roles").igGrid({
         columns: [
             {
-                headerText: text('CAS001_7'), key: 'check', width: "40px", height: "40px",
-                template: "<input data-id='${roleCode}' type='checkbox' tabindex='1'/>"
+                headerText: "", key: 'check', width: "30px", height: "40px",
+                template: "<input data-id='${roleId}' type='checkbox' tabindex='1'/>"
             }
             ,
             { headerText: "roleID", key: "roleId", dataType: "string", width: "90px", height: "40px", hidden: true},
-            { headerText: text('CAS001_8'), key: "roleCode", dataType: "string", width: "90px", height: "40px" },
-            { headerText: text('CAS001_9'), key: "roleName", dataType: "string", width: "120px", height: "40px" },
+            { headerText: text('CAS001_8'), key: "roleCode", dataType: "string", width: "80px", height: "40px" },
+            { headerText: text('CAS001_9'), key: "roleName", dataType: "string", width: "100px", height: "40px" },
         ],
         primaryKey: 'roleCode',
         autoGenerateColumns: false,

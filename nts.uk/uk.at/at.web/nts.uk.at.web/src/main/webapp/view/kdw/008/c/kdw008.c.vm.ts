@@ -1,103 +1,83 @@
 module nts.uk.at.view.kdw008.c {
     export module viewmodel {
         export class ScreenModel {
-            idList:KnockoutObservable<string>;
-            itemsSwap: KnockoutObservableArray<ItemModel>;
+            idList: KnockoutObservable<string>;
+            businessTypeSortedList: KnockoutObservableArray<BusinessTypeSortedModel>;
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             testSingle: KnockoutObservable<any>;
 
             constructor() {
                 var self = this;
                 this.idList = ko.observable('');
-                this.itemsSwap = ko.observableArray([]);
-
-                var array = [];
-                for (var i = 0; i < 13; i++) {
-                    var x = {
-                        id: "test"+i,
-                        code: "test"+i,
-                        name: '基本給'
-                    };
-                    array.push(new ItemModel(x));
-                }
-                this.itemsSwap(array);
+                this.businessTypeSortedList = ko.observableArray([]);
 
                 this.columns = ko.observableArray([
-                    { headerText: '', key: 'code', width: 100 },
-                    { headerText: '', key: 'name', width: 150 }
+                    { headerText: '', key: 'dislayNumber', width: 100 },
+                    { headerText: '', key: 'attendanceItemId', hidden: true, width: 150 },
+                    { headerText: '', key: 'attendanceItemName', width: 150 }
                 ]);
                 this.testSingle = ko.observable(null);
             }
 
-            findAll(): JQueryPromise<any> {
+            update(): void {
                 let self = this;
-                let dfd = $.Deferred();
-                var idList = this.idList();
-                service.findAll(idList).done(function(data) {
-                    //Convert list Object from server to list UnitPrice view model
-                    let items = _.map(data, item => {
-                        return new ItemModel(item);
+//                let dfd = $.Deferred();
+                var businessTypeSortedUpdateList = _.map(self.businessTypeSortedList(), item => {
+                    var indexOfDaily = _.findIndex(self.businessTypeSortedList(), { attendanceItemId: item.attendanceItemId });
+                    var update = {
+                        attendanceItemId: item.attendanceItemId,
+                        dislayNumber: item.dislayNumber,
+                        attendanceItemName: item.attendanceItemName,
+                        order: indexOfDaily,
+                    }
+                    return new BusinessTypeSortedModel(update);
+                });
+                nts.uk.ui.block.grayout();
+                new service.Service().updateBusinessTypeSorted(businessTypeSortedUpdateList).done(function(data) {
+                    //self.findAll();
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
+                        nts.uk.ui.windows.close();
                     });
-                    self.itemsSwap(items);
-                    dfd.resolve();
+//                    dfd.resolve();
+                    
                 });
-                return dfd.promise();
-            }
-            
-            update(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-                var idList = this.idList();
-                var itemsSwap = this.itemsSwap();
-                service.update(new UpdateData(idList, itemsSwap)).done(function(data) {
-                    self.findAll();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_3" });
-                    dfd.resolve();
-                });
-                return dfd.promise();
+//                return dfd.promise();
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-//                $.when(self.findAll()).done(function() {
-//                    dfd.resolve();
-//                });
-                dfd.resolve();
+                self.businessTypeSortedList([]);
+                new service.Service().findAll().done(function(data) {
+                    data = _.sortBy(data, ["order"]);
+                    self.businessTypeSortedList(data);
+                    dfd.resolve();
+                }).fail(error => {
+
+                });
                 return dfd.promise();
+            }
+            
+            closeDialog() {
+                nts.uk.ui.windows.close();
             }
         }
 
-        export class UpdateData{
-            idList: string;
-            itemsSwap: ItemModel[];
-            constructor(idList:string, itemsSwap: ItemModel[]){
-                this.idList = idList;
-                this.itemsSwap = itemsSwap;
+
+        export class BusinessTypeSortedModel {
+            attendanceItemId: number;
+            dislayNumber: number;
+            attendanceItemName: string;
+            order: number;
+            constructor(data: any) {
+                if (!data) return;
+                this.attendanceItemId = data.attendanceItemId;
+                this.dislayNumber = data.dislayNumber;
+                this.attendanceItemName = data.attendanceItemName;
+                this.order = data.order;
             }
         }
-        
-        export class ItemModel {
-            id: string;
-            code: string;
-            name: string;
-            constructor(x:ItemModelInterface) {
-                if(x){
-                    this.id = x.id;
-                    this.code = x.code;
-                    this.name = x.name;
-                }else{
-                    this.id ='';
-                    this.code = '';
-                    this.name = '';
-                }    
-            }
-        }
-        
-        export interface ItemModelInterface{
-            id: string;
-            code: string;
-            name: string;
-        }
+
     }
 }

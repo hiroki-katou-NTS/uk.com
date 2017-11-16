@@ -1,14 +1,8 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div id="contents-area cf">
-		<div id="set-work-type">
-			<div id="label" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
-			<div id="combo-box1"
-				data-bind="ntsComboBox: {
+<div id="contents-area cf">
+	<div id="set-work-type">
+		<div id="label" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
+		<div tabindex="30" id="combo-box1"
+			data-bind="ntsComboBox: {
 								options: listWorkType,
 								optionsValue: 'workTypeCode',
 								value: selectedWorkTypeCode,
@@ -16,46 +10,48 @@
 								editable:  false,
 								enable: true,
 								columns: [
-									{ prop: 'labelDisplay', length: 30 }]}">
-			</div>
-			<div id="group-button">
-				<button>#{i18n.getText('KSU001_69')}</button>
-				<button>#{i18n.getText('KSU001_70')}</button>
-				<button id="stick-undo">
-					<img src="undo.png" style="width: 15px;" />
-				</button>
-				<button></button>
-			</div>
+									{ prop: 'workTypeCode', length: 2 },
+									{ prop: 'symbolicName', length: 2 },
+									{ prop: 'name', length: 6 },
+									{ prop: 'memo', length: 10 }]}">
 		</div>
-		<div id="set-work-time">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
-			<input id="time-edit1" data-bind="ntsTimeEditor: {value: time1, inputFormat: 'time'}" /> 
-			<span id="spelcial">~</span> 
-			<input id="time-edit2" data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
-			<!-- KSU001_67 -->
-			<button class="reserved">#{i18n.getText('検索')}</button>
-			<!-- KSU001_68 -->
-			<button>#{i18n.getText('解除')}</button>
-			<div id="combo-box2"
-				data-bind="ntsComboBox: {
+		<div id="group-button">
+			<button tabindex="37">#{i18n.getText('KSU001_69')}</button>
+			<button tabindex="38">#{i18n.getText('KSU001_70')}</button>
+			<button tabindex="40" id="image100" data-bind="click: openDialogO1"></button>
+		</div>
+	</div>
+	<div id="set-work-time">
+		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
+		<input tabindex="31" id="time-edit1"
+			data-bind="ntsTimeEditor: {value: time1, inputFormat: 'time'}" /> <span>#{i18n.getText('KSU001_66')}</span> <input
+			tabindex="32" id="time-edit2"
+			data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
+		<button tabindex="33" class="reserved">#{i18n.getText('KSU001_67')}</button>
+		<button tabindex="34">#{i18n.getText('KSU001_68')}</button>
+		<div tabindex="35" id="combo-box2"
+			data-bind="ntsComboBox: {
 										options: listWorkTime,
-										optionsValue: 'siftCd',
+										optionsValue: 'codeName',
 										value: selectedWorkTimeCode,
 										optionsText: 'labelDisplay', 
 										editable:  false,
 										enable: true,
 										columns: [
-											{ prop: 'labelDisplay', length: 50 },]}">
-			</div>
+											{ prop: 'siftCd', length: 2 },
+											{ prop: 'symbol', length: 2 },
+											{ prop: 'name', length: 5 },
+											{ prop: 'timeZone1', length: 5 },
+											{ prop: 'timeZone2', length: 5 },
+											{ prop: 'note', length: 5 },]}">
+		</div>
 
-			<div id="switch-o" class="cf1"
-				data-bind="ntsSwitchButton: {
+		<div tabindex="36" id="switch-o" class="cf1"
+			data-bind="ntsSwitchButton: {
 											options: roundingRules,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedRuleCode}">
-			</div>
 		</div>
 	</div>
-
-</ui:composition>
+</div>

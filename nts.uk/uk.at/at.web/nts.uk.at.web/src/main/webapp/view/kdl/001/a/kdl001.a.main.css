@@ -55,5 +55,8 @@ div.nts-column{
 	margin-right: 10px;
 }
 
+#contents-area{
+	overflow: hidden !important;
+}
 
 

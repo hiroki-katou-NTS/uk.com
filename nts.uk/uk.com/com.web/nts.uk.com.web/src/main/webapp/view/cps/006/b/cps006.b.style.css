@@ -1,0 +1,37 @@
+@import url("base.css");
+
+.line_col_1 {
+	width: 200px;
+	float: left;
+}
+
+.line_col_2 {
+	width: 200px;
+	float: left;
+}
+
+#content-left {
+	padding: 10px;
+}
+
+#content-right {
+	margin-left: 20px;
+	float: left;
+	width: 530px;
+}
+
+.line_col_2>span {
+	line-height: 37px;
+}
+
+#content_main {
+	width: 950px;
+}
+
+#B1_3 tr>td:NTH-CHILD(2) {
+	text-align: center;
+}
+
+#B_3 {
+	margin-left: 130px !important;
+}

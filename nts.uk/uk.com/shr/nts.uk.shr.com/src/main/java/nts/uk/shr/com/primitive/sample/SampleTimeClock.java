@@ -13,8 +13,7 @@ public class SampleTimeClock extends TimeClockPrimitiveValue<SampleTimeClock> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SampleTimeClock(int hour, int minute, int second) {
-		super(hour, minute, second);
+	public SampleTimeClock(int minutesFromZeroOClock) {
+		super(minutesFromZeroOClock);
 	}
-	
 }

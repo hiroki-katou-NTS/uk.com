@@ -3,7 +3,7 @@ module nts.uk.com.view.cas001.c.service {
     import format = nts.uk.text.format;
     var paths = {
         getAllPersonRole: "ctx/bs/person/roles/findAll",
-        update: "ctx/bs/person/roles/update"
+        update: "ctx/bs/person/roles/auth/update"
     }
     /**
      * Get All Person Role

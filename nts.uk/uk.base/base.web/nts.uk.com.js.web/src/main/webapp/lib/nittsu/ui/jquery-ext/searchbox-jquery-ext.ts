@@ -25,10 +25,14 @@ module nts.uk.ui.jqueryExtentions {
                     } else {
                         row = $grid.igGrid("selectedRow");
                     }
-//                    if (row) $grid.igGrid("virtualScrollTo", getSelectRowIndex($grid, row.id));
                     if (row) {
-                        let index = $(row.element).attr("data-row-idx");
-                        $grid.igGrid("virtualScrollTo", index === undefined ? getSelectRowIndex($grid, row.id) : parseInt(index));
+                        let rowScrollTop = row.index * row.element.height();
+                        let scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
+                        if (isNaN(rowScrollTop) // In case virtualization not render row 
+                            || rowScrollTop < scrollContainer.scrollTop()
+                            || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
+                            $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
+                        }
                     }
                 });
             } else {
@@ -78,7 +82,27 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function setupIgTreeScroll($control: JQuery) {
-            //implement later if needed
+            var id = $control.attr('id');
+            $control.on("selectChange", function() {
+                var selectedRows = $control.ntsTreeDrag("getSelected");   
+                if ($.isArray(selectedRows)) {
+                    selectedRows = selectedRows[0];
+                } 
+                if (!nts.uk.util.isNullOrUndefined(selectedRows)) {
+                    $control.igTree("expandToNode", selectedRows.element);
+                    let index = _.findIndex($control.find("li"), function(e){
+                        return  $(e).is(selectedRows.element);     
+                    });
+                    if(index >= 0){
+                        let scrollTo = index * 29;
+                        let scrollTop = $control.scrollTop();
+                        let height = $control.height();
+                        if(scrollTo < scrollTop || scrollTo > scrollTop + height - 28){
+                            $control.scrollTop(scrollTo);     
+                        }       
+                    }
+                }
+            });
             return $control;
         }
     }

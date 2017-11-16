@@ -102,7 +102,6 @@ module nts.uk.ui.koExtentions {
              
             
             container.bind('iggridselectionrowselectionchanging', (evt: Event, uiX: any) => {
-//                console.log(ui);
                 if(container.data("enable") === false){ 
                     return false;        
                 }
@@ -130,14 +129,14 @@ module nts.uk.ui.koExtentions {
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         itemSelected = _.map(selected, s => s.id);
                     } else {
                         itemSelected = [];
                     }
                 } else {
                     let selected = container.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         itemSelected = selected.id;
                     } else {
                         itemSelected = ('');
@@ -189,7 +188,7 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             // Get options.
-            var options: Array<any> = ko.unwrap(data.options);
+            var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
 
             // Get options value.
             var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
@@ -201,6 +200,7 @@ module nts.uk.ui.koExtentions {
             var rows = data.rows;
             // Container.
             var container = $(element).find(".ntsListBox");
+            var currentSource = container.igGrid('option', 'dataSource');
             if(container.data("enable") !== enable){
                 if(!enable){
                     container.ntsGridList('unsetupSelecting');
@@ -215,8 +215,8 @@ module nts.uk.ui.koExtentions {
             
             container.data("enable", enable);
             
-            if (!((container.attr("filtered") === true || container.attr("filtered") === "true") || container.data("ui-changed") === true)) {
-                let currentSources = options.slice();
+            if (!((String(container.attr("filtered")) === "true") || container.data("ui-changed") === true)) {
+                let currentSources = sources.slice();
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                     return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
@@ -226,9 +226,25 @@ module nts.uk.ui.koExtentions {
                         let key = c["key"] === undefined ? c["prop"] : c["key"];
                         s[key] = moment(s[key]).format(c["format"]);
                     });        
-                }); 
-                container.igGrid('option', 'dataSource', currentSources);
-                container.igGrid("dataBind");        
+                });
+                if (!_.isEqual(currentSources, container.igGrid('option', 'dataSource'))) {
+                    container.igGrid('option', 'dataSource', currentSources);
+                    container.igGrid("dataBind");        
+                }
+            } else if(String(container.attr("filtered")) === "true"){
+                let filteredSource = [];
+                _.forEach(currentSource, function(item){
+                    let itemX = _.find(sources, function (s){
+                        return s[optionValue] === item[optionValue];
+                    });
+                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        filteredSource.push(itemX);
+                    }     
+                });     
+                if(!_.isEqual(filteredSource, currentSource)){
+                    container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
+                    container.igGrid("dataBind");    
+                }
             }
             
             let isMultiOld = container.igGridSelection('option', 'multipleSelection');
@@ -282,6 +298,7 @@ module nts.uk.ui.koExtentions {
                 
                 var isEqual = _.isEqual(currentSelectedItems, dataValue);
                 if (!isEqual) {
+                    _.defer(() => {container.trigger("selectChange");});  
                     container.ntsGridList('setSelected', dataValue);
                 }    
             }

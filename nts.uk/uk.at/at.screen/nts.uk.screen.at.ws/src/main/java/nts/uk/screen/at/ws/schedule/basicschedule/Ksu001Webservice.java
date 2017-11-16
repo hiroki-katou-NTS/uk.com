@@ -9,8 +9,13 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
-import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
+import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
+import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
+import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenParams;
+import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenProcessor;
 
 /**
  * 
@@ -23,10 +28,36 @@ public class Ksu001Webservice extends WebService {
 
 	@Inject
 	private BasicScheduleScreenProcessor bScheduleScreenProces;
+	
+	@Inject
+	private WorkScheduleStateScreenProcessor workScheduleStateScreenProces;
 
 	@POST
 	@Path("getData")
 	public List<BasicScheduleScreenDto> getData(BasicScheduleScreenParams params) {
 		return this.bScheduleScreenProces.getByListSidAndDate(params);
+	}
+
+	@POST
+	@Path("getListWorkTime")
+	public List<WorkTimeScreenDto> getWorkTime() {
+		return this.bScheduleScreenProces.getListWorkTime();
+	}
+
+	/**
+	 * Gets worktype base on Cid and deprecateCls
+	 *
+	 * @return the by Cid and deprecateCls
+	 */
+	@POST
+	@Path("getListWorkType")
+	public List<WorkTypeScreenDto> getByCIdAndDeprecateCls() {
+		return this.bScheduleScreenProces.findByCIdAndDeprecateCls();
+	}
+	
+	@POST
+	@Path("getDataWorkScheduleState")
+	public List<WorkScheduleStateScreenDto> getDataWorkScheduleState(WorkScheduleStateScreenParams params) {
+		return this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
 	}
 }

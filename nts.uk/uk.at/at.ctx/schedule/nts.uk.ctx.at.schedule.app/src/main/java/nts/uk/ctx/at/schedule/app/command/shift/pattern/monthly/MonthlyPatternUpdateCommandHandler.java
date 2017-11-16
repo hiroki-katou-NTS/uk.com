@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
@@ -55,10 +54,12 @@ public class MonthlyPatternUpdateCommandHandler extends CommandHandler<MonthlyPa
 		Optional<MonthlyPattern> monthlyPattern = this.repository.findById(companyId,
 				domain.getMonthlyPatternCode().v());
 		
-		// show message 
-		if(!monthlyPattern.isPresent()){
-			throw new BusinessException("Msg_XXX");
+		// add
+		if (!monthlyPattern.isPresent()) {
+			this.repository.add(domain);
+			return;
 		}
+		
 		// call repository update domain
 		this.repository.update(domain);
 	}

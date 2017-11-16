@@ -8,5 +8,7 @@ public interface IPersonInfoItemGroupRepository {
 	Optional<PersonInfoItemGroup> getById(String groupId);
 
 	List<PersonInfoItemGroup> getAll();
+	
+	List<String> getListItemIdByGrId(String groupId);
 
 }

@@ -137,7 +137,7 @@ module nts.uk.at.view.kmk005.k {
                                 unblock();
                             }).fail(x => alertE(x.message).then(unblock));
                         
-                    }
+                    });
                 }
             }
 

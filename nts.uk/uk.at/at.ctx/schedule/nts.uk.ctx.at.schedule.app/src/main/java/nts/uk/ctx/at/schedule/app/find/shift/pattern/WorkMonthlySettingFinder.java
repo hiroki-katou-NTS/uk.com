@@ -19,8 +19,13 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class WorkMonthlySettingFinder.
@@ -40,9 +45,26 @@ public class WorkMonthlySettingFinder {
 	/** The Constant MONTH_MUL. */
 	public static final int MONTH_MUL = 100;
 	
-	/** The repository. */
+	 /** The Constant HOLIDAY. */
+ 	public static final int HOLIDAY = 0;
+     
+     /** The Constant ATTENDANCE. */
+     public static final int ATTENDANCE = 1;
+     
+     /** The Constant NONE_SETTING. */
+     public static final String NONE_SETTING = "KSM005_43";
+     
+	/** The work monthly setting repository. */
 	@Inject
-	private WorkMonthlySettingRepository repository;
+	private WorkMonthlySettingRepository workMonthlySettingRepository;
+	
+	/** The work time repository. */
+	@Inject
+	private WorkTimeRepository workTimeRepository;
+	
+	/** The work type repository. */
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
 	/**
 	 * Find by month.
@@ -72,7 +94,7 @@ public class WorkMonthlySettingFinder {
 		String companyId = loginUserContext.companyId();
 		
 		// call repository find by month
-		List<WorkMonthlySettingDto> workMonthlySettings = this.repository
+		List<WorkMonthlySettingDto> workMonthlySettings = this.workMonthlySettingRepository
 				.findByStartEndDate(companyId, monthlyPatternCode, this.getYearMonthDay(startMonth),
 						this.getYearMonthDay(endMonth))
 				.stream()
@@ -83,24 +105,101 @@ public class WorkMonthlySettingFinder {
 				}).collect(Collectors.toList());
 		
 		// convert to map
-		Map<Integer, WorkMonthlySettingDto> map = workMonthlySettings.stream()
+		Map<Integer, WorkMonthlySettingDto> mapWorkMonthlySetting = workMonthlySettings.stream()
 				.collect(Collectors.toMap((settings) -> {
 					return settings.getYmdk();
 				}, Function.identity()));
 
 		List<WorkMonthlySettingDto> resDataWorkMonthlySetting  = new ArrayList<>();
 		
+		// list work time of company id
+		List<WorkTime> workTimes = workTimeRepository.findByCompanyID(companyId);
+		
+		// convert to map work time map
+		Map<String, WorkTime> mapWorkTime = workTimes.stream()
+				.collect(Collectors.toMap((worktime) -> {
+					return worktime.getSiftCD().v();
+				}, Function.identity()));
+		
+		// list work type of company id
+		List<WorkType> workTypes = workTypeRepository.findByCompanyId(companyId);
+		
+		// convert to map work type map
+		Map<String, WorkType> mapWorkType = workTypes.stream()
+				.collect(Collectors.toMap((worktype) -> {
+					return worktype.getWorkTypeCode().v();
+				}, Function.identity()));
+
 		// loop in month setting
 		while (this.getYearMonth(startMonth) == yearMonth) {
+			
 			// check exist data
-			if (map.containsKey(this.getYearMonthDay(startMonth))) {
-				resDataWorkMonthlySetting.add(map.get(this.getYearMonthDay(startMonth)));
+			if (mapWorkMonthlySetting.containsKey(this.getYearMonthDay(startMonth))) {
+				
+				WorkType worktype = null;
+				WorkTime worktime = null;
+				
+				// get data object by year month day of start month
+				WorkMonthlySettingDto dto = mapWorkMonthlySetting
+						.get(this.getYearMonthDay(startMonth));
+
+				// check type color
+				if (mapWorkTime.containsKey(dto.getWorkingCode())
+						&& mapWorkType.containsKey(dto.getWorkTypeCode())) {
+					
+					// set type color ATTENDANCE
+					dto.setTypeColor(ATTENDANCE);
+					
+					// get work type of map
+					worktype = mapWorkType.get(dto.getWorkTypeCode());
+					
+					// set work type name
+					dto.setWorkTypeName(worktype.getName().v());
+					
+					// get work time of map
+					worktime = mapWorkTime.get(dto.getWorkingCode());
+					
+					// set work time name
+					dto.setWorkingName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
+				}
+				else {
+					
+					// set type color HOLIDAY
+					dto.setTypeColor(HOLIDAY);
+
+					// check exist work type of map
+					if (mapWorkType.containsKey(dto.getWorkTypeCode())) {
+						// get work type of map
+						worktype = mapWorkType.get(dto.getWorkTypeCode());
+
+						// set work type name
+						dto.setWorkTypeName(worktype.getName().v());
+					} else {
+						// set work type name NONE_SETTING
+						dto.setWorkTypeName(TextResource.localize(NONE_SETTING));
+					}
+					
+					// set work time name ""
+					dto.setWorkingName("");
+				}
+				resDataWorkMonthlySetting.add(dto);
+				
 			} else {
 				// data default
 				WorkMonthlySettingDto dto = new WorkMonthlySettingDto();
 				WorkMonthlySetting domain = new WorkMonthlySetting(
 						BigDecimal.valueOf(this.getYearMonthDay(startMonth)), monthlyPatternCode);
 				domain.saveToMemento(dto);
+				
+				// set type color HOLIDAY
+				dto.setTypeColor(HOLIDAY);
+				
+				// set work type name ""
+				dto.setWorkTypeName("");
+
+				// set work time name ""
+				dto.setWorkingName("");
+				
 				resDataWorkMonthlySetting.add(dto);
 			}
 			startMonth = startMonth.addDays(NEXT_DAY);

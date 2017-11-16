@@ -48,12 +48,7 @@ public enum WorkdayDivision {
 	 * @param value the value
 	 * @return the work day division
 	 */
-	public static WorkdayDivision valuesOf(Integer value) {
-		// Invalid value
-		if (value == null) {
-			return null;
-		}
-
+	public static WorkdayDivision valuesOf(int value) {
 		// Find value
 		for (WorkdayDivision val : WorkdayDivision.values) {
 			if (val.value == value) {

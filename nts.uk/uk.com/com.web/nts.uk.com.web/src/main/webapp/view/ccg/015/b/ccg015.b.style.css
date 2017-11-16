@@ -1,6 +1,7 @@
 #contents-area {
 	padding: 20px !important;
 	width: 800px !important;
+	overflow: hidden;
 }
 #tab_url{
 	height: 350px;

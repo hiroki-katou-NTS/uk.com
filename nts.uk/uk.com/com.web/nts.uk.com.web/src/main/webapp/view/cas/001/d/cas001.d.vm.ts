@@ -2,61 +2,89 @@ module nts.uk.com.view.cas001.d.viewmodel {
     import close = nts.uk.ui.windows.close;
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
-
+    import alert = nts.uk.ui.dialog.alert;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
-        categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);;
+        categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
-        currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole({ roleId: "99900000-0000-0000-0000-000000000001", roleCode: "0001", roleName: 'A1' }));
+        currentRole: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
+        isCanceled: boolean;
 
         constructor() {
             var self = this;
-            self.categoryList.subscribe(data => {
-                if (data) {
-                    $("#grid").igGrid("option", "dataSource", data);
-                }
-            });
-            self.start();
 
+            self.start();
         }
 
         start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred(),
+                role: IPersonRole = ko.toJS(self.currentRole);
+
             self.categoryList.removeAll();
-            service.getAllCategory(self.currentRole().roleCode).done(function(data: Array<any>) {
-                console.log(data);
+            service.getAllCategory(role.roleId).done(function(data: Array<any>) {
                 if (data.length > 0) {
-                    _.each(data, function(obj) {
-                        self.categoryList.push(new CategoryAuth({
-                            categoryId: obj.categoryId,
-                            categoryCode: obj.categoryCode,
-                            categoryName: obj.categoryName,
-                            selfAuth: obj.allowPersonRef == 1 ? true : false,
-                            otherAuth: obj.allowOtherRef == 1 ? true : false
-                        }));
-                    })
+                    self.categoryList(_.map(data, x => new CategoryAuth({
+                        categoryId: x.categoryId,
+                        categoryCode: x.categoryCode,
+                        categoryName: x.categoryName,
+                        selfAuth: !!x.allowPersonRef,
+                        otherAuth: !!x.allowOtherRef
+                    })));
+                    dfd.resolve();
                 }
-
             });
-
             return dfd.promise();
-
         }
 
         creatCategory() {
-            let self = this;
+            let self = this,
+                role: IPersonRole = ko.toJS(self.currentRole);
+            self.update(self.categoryList(), role.roleId);
 
-            close();
         }
+
         closeDialog() {
+            let self = this;
+            self.isCanceled = true;
+            setShared('isCanceled', self.isCanceled);
             close();
         }
+
+        update(items: Array<CategoryAuth>, roleId: string) {
+            let self = this,
+                data: Array<ICategoryAuth> = _.uniqBy(items, 'categoryId'),
+                datas: Array<any> = _(data)
+                    .map((x: ICategoryAuth) => {
+                        return {
+                            roleId: roleId,
+                            categoryId: x.categoryId,
+                            allowPersonRef: Number(x.selfAuth),
+                            allowOtherRef: Number(x.otherAuth)
+                        };
+                    })
+                    .value();
+            service.updateCategory({ lstCategory: datas }).done(function(data) {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    close();
+                });
+            }).fail(function(res) {
+                alert(res.message);
+            })
+
+            self.isCanceled = false;
+            setShared('isCanceled', self.isCanceled);
+        }
+
     }
+
     interface IPersonRole {
         roleId: string;
         roleCode: string;
         roleName: string;
     }
+
     export class PersonRole {
         roleId: string;
         roleCode: string;
@@ -68,6 +96,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
             this.roleName = params.roleName;
         }
     }
+
     interface ICategoryAuth {
         categoryId: string;
         categoryCode: string;
@@ -75,6 +104,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
         selfAuth?: boolean;
         otherAuth?: boolean;
     }
+
     class CategoryAuth {
         categoryId: string;
         categoryCode: string;

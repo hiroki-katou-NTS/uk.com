@@ -5,52 +5,51 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth
 
 @Value
 public class PersonInfoCategoryAuthDto {
-	String roleId;
-	
-	String personInfoCategoryAuthId;
+	private String roleId;
 
-	int allowPersonRef;
+	private String personInfoCategoryAuthId;
 
-	int allowOtherRef;
+	private int allowPersonRef;
 
-	int allowOtherCompanyRef;
+	private int allowOtherRef;
 
-	int selfPastHisAuth;
+	private int allowOtherCompanyRef;
 
-	int selfFutureHisAuth;
+	private int selfPastHisAuth;
 
-	int selfAllowAddHis;
+	private int selfFutureHisAuth;
 
-	int selfAllowDelHis;
+	private int selfAllowAddHis;
 
-	int otherPastHisAuth;
+	private int selfAllowDelHis;
 
-	int otherFutureHisAuth;
+	private int otherPastHisAuth;
 
-	int otherAllowAddHis;
+	private int otherFutureHisAuth;
 
-	int otherAllowDelHis;
+	private int otherAllowAddHis;
 
-	int selfAllowAddMulti;
+	private int otherAllowDelHis;
 
-	int selfAllowDelMulti;
+	private int selfAllowAddMulti;
 
-	int otherAllowAddMulti;
+	private int selfAllowDelMulti;
 
-	int otherAllowDelMulti;
+	private int otherAllowAddMulti;
+
+	private int otherAllowDelMulti;
+
 	public static PersonInfoCategoryAuthDto fromDomain(PersonInfoCategoryAuth domain) {
-		return new PersonInfoCategoryAuthDto(
-				domain.getRoleId(),domain.getPersonInfoCategoryAuthId(),
+		return new PersonInfoCategoryAuthDto(domain.getRoleId(), domain.getPersonInfoCategoryAuthId(),
 				domain.getAllowPersonRef().value, domain.getAllowOtherRef().value,
-				domain.getAllowOtherCompanyRef().value,
-				domain.getSelfFutureHisAuth().value, domain.getSelfPastHisAuth().value,
-				domain.getSelfAllowAddHis().value,domain.getSelfAllowDelHis().value,
-				domain.getOtherFutureHisAuth().value, domain.getOtherPastHisAuth().value,
-				domain.getOtherAllowAddHis().value, domain.getOtherAllowDelHis().value,
-				domain.getSelfAllowAddMulti().value, domain.getSelfAllowDelMulti().value,
-				domain.getOtherAllowAddMulti().value, domain.getOtherAllowDelMulti().value
-				);
-		
+				domain.getAllowOtherCompanyRef().value, domain.getSelfPastHisAuth().value,
+				domain.getSelfFutureHisAuth().value, domain.getSelfAllowAddHis().value,
+				domain.getSelfAllowDelHis().value, domain.getOtherPastHisAuth().value,
+				domain.getOtherFutureHisAuth().value, domain.getOtherAllowAddHis().value,
+				domain.getOtherAllowDelHis().value, domain.getSelfAllowAddMulti().value,
+				domain.getSelfAllowDelMulti().value, domain.getOtherAllowAddMulti().value,
+				domain.getOtherAllowDelMulti().value);
+
 	}
 
 }

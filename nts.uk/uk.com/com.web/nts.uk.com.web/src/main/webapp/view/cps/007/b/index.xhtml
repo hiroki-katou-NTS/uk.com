@@ -10,7 +10,7 @@
 			<title>#{i18n.getText('CPS007_2')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 570,
+					width : 580,
 					height : 540
 				};
 			</script>
@@ -25,7 +25,7 @@
 			<div id="contents-area">
 				<div>
 					<div class="form-group" data-bind="with: category">
-						<div data-bind="ntsFormLabel: {}"><span data-bind="text: name"></span></div>
+						<div data-bind="ntsFormLabel: {}"><span data-bind="text: categoryName"></span></div>
 					</div>
 					<div class="form-group two-cols">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS007_12')}</div>
@@ -39,13 +39,13 @@
 						height: 300,
 						dataSource: allItems,
 						primaryKey: 'id',
-						columns: ko.observableArray([{ headerText: 'コード', key: 'id', width: 0 },{ headerText: '#{i18n.getText('CPS007_14')}', key: 'name', width: 150 }]),
+						columns: ko.observableArray([{ headerText: 'コード', key: 'id', width: 0, hidden: true },{ headerText: '#{i18n.getText('CPS007_14')}', key: 'itemName', width: 150 }]),
 						value: chooseItems,
-						searchCriterion: ['name'],
+						searchCriterion: ['itemName'],
 						draggable: true,
-						multipleDrag: { left: true, right: false },
+						multipleDrag: { left: false, right: false },
 						innerDrag: { left: false, right: true },
-						outerDrag: { left: true, right: true } 
+						outerDrag: { left: false, right: false } 
 					}"></div>
 					<div id="swap-list-updown"
 						data-bind="ntsUpDown: {

@@ -14,8 +14,8 @@
 				};
 			</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.newlayout.LayoutCode
-					nts.uk.ctx.bs.person.dom.person.newlayout.LayoutName
+					nts.uk.ctx.bs.person.dom.person.layout.LayoutCode
+					nts.uk.ctx.bs.person.dom.person.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps008.c.style.css" />
@@ -26,9 +26,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="cf">
-					<div></div>
-					<br /> <br /> <br />
+				<div class="cf" data-bind="with: layout">
 					<table class="table_content">
 						<colgroup>
 							<col width="150px" />
@@ -43,58 +41,46 @@
 								<div data-bind="ntsFormLabel: {}">
 									#{i18n.getText('CPS008_33')}</div>
 							</td>
-
-							<td class="row_1">
-								<span data-bind="text: layoutCode"></span>
-								<span style="margin-left: 76px" data-bind="text: layoutName"></span></td>
+							<td class="row_1"><span data-bind="text: code"></span> <span
+								style="margin-left: 76px" data-bind="text: name"></span></td>
 						</tr>
-
 						<tr>
 							<td class="row_2">
 								<div>#{i18n.getText('CPS008_34')}</div>
 							</td>
 							<td class="row_2">
 								<div data-bind="ntsFormLabel: {}">
-									 #{i18n.getText('CPS008_35')}</div>
+									#{i18n.getText('CPS008_35')}</div>
 							</td>
-
 							<td class="row_2">
 								<div>
 									<div class="input_002 input_code">
 										<input id="C_INP_CODE" style="width: 80px"
 											data-bind="ntsTextEditor: {
-											value: A_INP_LAYOUT_CODE,
+											value: newCode,
 											constraint: 'LayoutCode',
-											enable: A_INP_LAYOUT_CODE_ENABLE}" />
+											required:true,
+											enable: true}" />
 									</div>
-
 									<div class="input_002 input_name">
 										<input id="C_INP_NAME" style="width: 180px"
 											data-bind="ntsTextEditor: {
-											value: A_INP_LAYOUT_NAME,
+											value: newName,
 											constraint: 'LayoutName',
-											enable: A_INP_LAYOUT_NAME_ENABLE
+											required:true,
+											enable: true
 											}" />
 									</div>
 								</div>
 							</td>
 						</tr>
-						<tr>
-							<td><hr></hr></td>
-							<td><hr></hr></td>
-							<td><hr></hr></td>
-							
-						</tr>
 					</table>
-					<div style="margin-left: 148px" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CPS008_43')}' }"></div>
+					<div style="margin-left: 148px"
+						data-bind="ntsCheckBox: { checked: overrideMode, enable: true, text: '#{i18n.getText('CPS008_43')}' }"></div>
 				</div>
-				<br />
-				
-				
-				<div class="bottomStype">
-					<button class="x-large proceed" id="BTN_DECIDE" data-bind ="click : updateBtn">決定</button>
-					<button class="large" id="BTN_CANCEL" >キャンセル</button>
-					<br />
+				<div id="functions-area-bottom">
+					<button class="x-large proceed" id="BTN_DECIDE" data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
+					<button  id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button>
 				</div>
 			</div>
 		</ui:define>

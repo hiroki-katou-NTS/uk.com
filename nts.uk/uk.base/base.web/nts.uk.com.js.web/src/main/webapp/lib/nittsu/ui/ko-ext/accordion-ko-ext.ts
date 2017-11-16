@@ -20,13 +20,10 @@ module nts.uk.ui.koExtentions {
             var header: any = (data.header !== undefined) ? ko.unwrap(data.header) : "> li > :first-child,> :not(li):even";
             var heightStyle: any = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            var activate: any = (data.activate !== undefined) ? (data.activate) : function(event, ui) {};
-            var create: any = (data.create !== undefined) ? (data.create) : function(event, ui) {};
+            var activate: any = (data.activate !== undefined) ? (data.activate) : (event, ui) => {};
+            var create: any = (data.create !== undefined) ? (data.create) : (event, ui) => {};
             
-            var container = $(element);
-            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
-	            container.attr("tabindex", "0");
-
+            var container = $(element);            
             container.accordion({
 				active: realActive,
 				animate: animate,
@@ -57,6 +54,8 @@ module nts.uk.ui.koExtentions {
 			    	"ui-accordion-content": "ui-corner-bottom nts-accordion-content"
 				}
         	});
+            
+            
         }
 
         /**
@@ -88,5 +87,6 @@ module nts.uk.ui.koExtentions {
         }
     }
 
+    
     ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
 }

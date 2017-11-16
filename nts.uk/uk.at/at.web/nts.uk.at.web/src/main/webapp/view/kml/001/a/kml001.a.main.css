@@ -28,7 +28,7 @@ input, textarea {
 
 .caret-background {
 	width: 240px; 
-	height: auto;
+	height: 315px;
 	margin-left: 10px;
 	margin-top: 10px;
 	padding: 15px;
@@ -38,7 +38,7 @@ input, textarea {
 .dateControlBtn:FIRST-CHILD{ margin-left: 10px; }
 .dateControlBtn:LAST-CHILD{ margin-left: 50px; }
 
-#dateRange-list-container { 
+#dateRange-list-content { 
 	margin-left: 10px;
 	margin-top: 10px;
 }
@@ -56,9 +56,6 @@ input, textarea {
 #memo {
 	width: 390px;
 	height: 100px;
-}
-#dateRange-list_dateRange {
-	display: none;
 }
 #premium-set-div {
 	outline-style: solid;
@@ -168,16 +165,4 @@ img {
 }
 #combo-box {
 	width: 132px;
-}
-.percenSymbol {
-	margin-left: -25px;
-    display: inline-block;
-}
-.premiumPercent { height: 30px; }
-.premiumPercent.nts-editor.nts-input{
-	padding-right: 20px;
-}
-.premiumItems.nts-editor.nts-input { 
-	height: 18px;
-	margin-right: -80px;
 }

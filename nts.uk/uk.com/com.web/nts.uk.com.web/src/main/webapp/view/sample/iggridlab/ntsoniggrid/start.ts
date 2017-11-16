@@ -76,17 +76,24 @@ module nts.uk.ui.gridlist {
                             primaryKey: 'id',
                             virtualization: true,
                             virtualizationMode: 'continuous',
+//                            enter: 'right',
                             columns: [
                                 { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                                { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', ntsControl: 'Checkbox' },
+                                { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                                 { headerText: 'RULECODE', key: 'ruleCode', dataType: 'string', width: '290px', ntsControl: 'SwitchButtons' },
                                 { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' },
                                 { headerText: 'Text', key: 'text1', dataType: 'string', width: '120px' },
                                 { headerText: 'Button', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
                                 { headerText: 'Delete', key: 'delete', dataType: 'string', width: '80px', unbound: true, ntsControl: 'DeleteButton' }
                             ], 
-                            features: [{ name: 'Resizing' }],
-                            ntsFeatures: [{ name: 'CopyPaste' }],
+                            features: [{ name: 'Resizing' },
+                                        { 
+                                            name: 'Selection',
+                                            mode: 'row',
+                                            multipleSelection: true
+                                        }
+                            ],
+//                            ntsFeatures: [{ name: 'CopyPaste' }],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
                                                 optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true },
@@ -94,6 +101,7 @@ module nts.uk.ui.gridlist {
                                             { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
                                             { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
                             });
+        $("#grid2").setupSearchScroll("igGrid", true);
         $("#run").on("click", function() {
             var source = $("#grid2").igGrid("option", "dataSource");
             alert(source[1].flag);
@@ -106,6 +114,12 @@ module nts.uk.ui.gridlist {
         });
         $("#disable-ctrl").on("click", function() {
             $("#grid2").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
+        });
+        $("#disable-all").on("click", function() {
+            $("#grid2").ntsGrid("disableNtsControls", "ruleCode", "SwitchButtons");
+        });
+        $("#enable-all").on("click", function() {
+            $("#grid2").ntsGrid("enableNtsControls", "ruleCode", "SwitchButtons");
         });
         this.bind(model);
     });

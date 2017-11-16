@@ -1,22 +1,44 @@
-module cmm013.d.service {
-      var paths = {
-          //xem lai duong dan
-          updateHist: "basic/organization/position/updateHist",
-          deleteHist: "basic/organization/position/deleteHist"  
-      }
+module nts.uk.com.view.cmm013.d {
     
-
-    //xoa lich su position
-    export function deleteHistory(history: viewmodel.model.ListHistoryDto){
-        history.oldStartDate = moment(history.oldStartDate).format("YYYY-MM-DD");
-        history.newStartDate = moment(history.newStartDate).format("YYYY-MM-DD");
-        return nts.uk.request.ajax("com", paths.deleteHist, history);    
+    import SaveHistory = base.SaveHistory;
+    import SaveJobTitleHistoryCommand = service.model.SaveJobTitleHistoryCommand;
+    
+    export module service {
+        
+        /**
+         *  Service paths
+         */
+        var servicePath: any = {
+            saveJobTitleHistory: "bs/employee/jobtitle/history/save",
+        };
+                
+        /**
+         * saveWorkplaceHistory
+         */
+        export function saveJobTitleHistory(command: SaveJobTitleHistoryCommand): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveJobTitleHistory, command);
+        }
+        
+        /**
+        * Model namespace.
+        */
+        export module model {
+            
+            /**
+             * JobTitleHistory save command
+             */
+            export class SaveJobTitleHistoryCommand {
+                
+                isCreateMode: boolean;
+                jobTitleId: string;
+                jobTitleHistory: SaveHistory;
+                
+                constructor(isCreateMode: boolean, jobTitleId: string, jobTitleHistory: SaveHistory) {
+                    this.isCreateMode = isCreateMode;
+                    this.jobTitleId = jobTitleId;
+                    this.jobTitleHistory = jobTitleHistory;
+                }
+            }
+        }
     }
-    //update lich su position
-    export function updateHistory(history: viewmodel.model.ListHistoryDto){
-        history.oldStartDate = moment(history.oldStartDate).format("YYYY-MM-DD");
-        history.newStartDate = moment(history.newStartDate).format("YYYY-MM-DD");
-        return nts.uk.request.ajax("com", paths.updateHist, history);    
-    }
-
 }

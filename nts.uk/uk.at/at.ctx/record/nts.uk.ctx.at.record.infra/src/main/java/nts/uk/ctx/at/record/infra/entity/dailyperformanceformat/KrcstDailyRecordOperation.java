@@ -31,8 +31,8 @@ public class KrcstDailyRecordOperation extends UkJpaEntity implements Serializab
 	@Column(name = "SETTING_UNIT")
 	public BigDecimal settingUnit;
 
-	@Column(name = "COMMENT")
-	public BigDecimal comment;
+	@Column(name = "OPERATION_COMMENT")
+	public String comment;
 
 	@Override
 	protected Object getKey() {

@@ -34,19 +34,20 @@ public class UpdateSpecificDateItemCommandHandler extends CommandHandler<List<Sp
 		List<SpecificDateItem> lstAdd = new ArrayList<>();
 		List<SpecificDateItem> lstUpdate = new ArrayList<>();
 		List<SpecificDateItem> listUpdate = lstItem.stream().map(c -> {
-			return SpecificDateItem.createFromJavaType(companyId, c.getTimeItemId(), BigDecimal.valueOf(c.getUseAtr()),
+			return SpecificDateItem.createFromJavaType(companyId, BigDecimal.valueOf(c.getUseAtr()),
 					BigDecimal.valueOf(c.getSpecificDateItemNo()),c.getSpecificName());
 		}).collect(Collectors.toList());
 		
 		if (listUpdate == null) {
 			return;
 		}
+		List<SpecificDateItem> lstOld = repo.getAll(companyId);
 		for (SpecificDateItem specificDateItem : listUpdate) {
-			if(specificDateItem.getTimeItemId().equals("")){
-				specificDateItem.setTimeItemId(UUID.randomUUID().toString());
-				lstAdd.add(specificDateItem);
-			}else{
+			if(lstOld.stream()
+		            .anyMatch(c -> c.getSpecificDateItemNo().equals(specificDateItem.getSpecificDateItemNo()))){
 				lstUpdate.add(specificDateItem);
+			}else{
+				lstAdd.add(specificDateItem);
 			}
 		}
 		if(lstUpdate.size()>0){

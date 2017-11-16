@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.dailyperformanceformat;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -23,5 +22,5 @@ public class KrcmtBusinessTypeMonthlyPK implements Serializable{
 	public String businessTypeCode;
 	
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	public BigDecimal attendanceItemId;
+	public int attendanceItemId;
 }

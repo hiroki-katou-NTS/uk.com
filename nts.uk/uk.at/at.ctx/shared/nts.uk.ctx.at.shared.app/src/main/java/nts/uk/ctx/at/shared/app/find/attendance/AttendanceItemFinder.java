@@ -23,4 +23,10 @@ public class AttendanceItemFinder {
 		return lst;
 	}
 
+	
+	public List<AttItemDto> getAttendanceItems() {
+		return this.attendanceRepo.getAttendanceItems(AppContexts.user().companyId()).stream()
+				.map(c -> AttItemDto.fromDomain(c)).collect(Collectors.toList());
+	}
+
 }

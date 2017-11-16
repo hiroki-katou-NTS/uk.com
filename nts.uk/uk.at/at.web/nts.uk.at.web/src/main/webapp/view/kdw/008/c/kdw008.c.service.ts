@@ -1,24 +1,23 @@
 module nts.uk.at.view.kdw008.c {
     export module service {
-        let servicePath = {
-            findAll: '',
-            update: ''
-        };
+        export class Service {
+            paths = {
+                findAll: "at/record/businesstype/findBusinessTypeSorted",
+                updateBusinessTypeSorted: "at/record/businesstype/updateBusinessTypeSorted"
+            };
 
-        export function findAll(idList: any) {
-            var dfd = $.Deferred();
-            request.ajax(servicePath.findAll + idList).done(function(res) {
-                dfd.resolve(res);
-            });
-            return dfd.promise();
-        };
-        
-        export function update(updateData: any) {
-            var dfd = $.Deferred();
-            request.ajax(servicePath.update, updateData).done(function(res) {
-                dfd.resolve(res);
-            });
-            return dfd.promise();
-        };
+            constructor() {
+
+            }
+
+            findAll(): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.findAll);
+                return nts.uk.request.ajax("at", _path);
+            };
+
+            updateBusinessTypeSorted(UpdateBusinessTypeSortedCommand: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.updateBusinessTypeSorted, {businessTypeSortedDtos: UpdateBusinessTypeSortedCommand});
+            };
+        }
     }
 }

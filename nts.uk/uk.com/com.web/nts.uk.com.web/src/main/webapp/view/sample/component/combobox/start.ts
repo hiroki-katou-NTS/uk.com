@@ -1,0 +1,43 @@
+__viewContext.ready(function() {
+    class ScreenModel {
+        itemList: KnockoutObservableArray<ItemModel>;
+        selectedCode: KnockoutObservable<string>;
+        isEnable: KnockoutObservable<boolean>;
+        isEditable: KnockoutObservable<boolean>;
+
+        /**
+         * Constructor.
+         */
+        constructor() {
+            var self = this;
+            self.itemList = ko.observableArray([
+                new ItemModel('1', '基本給'),
+                new ItemModel('2', '役職手当'),
+                new ItemModel('3', '基本給')
+            ]);
+
+            self.selectedCode = ko.observable('1');
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+        }
+
+        setDefault() {
+            var self = this;
+            nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
+        }
+
+    };
+
+    class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    this.bind(new ScreenModel());
+
+});

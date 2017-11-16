@@ -48,5 +48,5 @@ public class SavePersonInfoCategoryAuthCommand {
 
 	private int otherAllowAddMulti;
 
-	List<PersonInfoItemAuthCommand> listItems;
+	List<PersonInfoItemAuthCommand> roleItemList;
 }

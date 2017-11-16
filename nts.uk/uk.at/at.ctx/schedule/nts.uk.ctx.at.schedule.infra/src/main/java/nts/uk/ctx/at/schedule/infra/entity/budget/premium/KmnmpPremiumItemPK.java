@@ -17,6 +17,6 @@ public class KmnmpPremiumItemPK {
 	@Column(name="CID")
 	public String companyID;
 	
-	@Column(name="ID")
-	public Integer iD;
+	@Column(name="PREMIUM_NO")
+	public Integer displayNumber;
 }

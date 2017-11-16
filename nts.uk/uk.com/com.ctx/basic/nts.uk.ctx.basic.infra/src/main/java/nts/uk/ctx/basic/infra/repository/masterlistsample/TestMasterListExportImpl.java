@@ -9,15 +9,18 @@ import java.util.Random;
 import javax.ejb.Stateless;
 
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 @Stateless
 @DomainID(value = "test") 
 public class TestMasterListExportImpl implements MasterListData{
 
 	@Override
-	public List<MasterData> getMasterDatas() {
+	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
 		
 		int i = 1;
@@ -33,6 +36,20 @@ public class TestMasterListExportImpl implements MasterListData{
 			i++;
 		}
 		return datas;
+	}
+
+	@Override
+	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
+		List<MasterHeaderColumn> columns = new ArrayList<>();
+		
+		int i = 1;
+		
+		while (i <= 100) {
+			columns.add(new MasterHeaderColumn("Column " + i, "", ColumnTextAlign.CENTER, "", true));
+			i++;
+		}
+		
+		return columns;
 	}
 
 }

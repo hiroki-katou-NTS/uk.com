@@ -5,9 +5,13 @@
 package nts.uk.ctx.at.schedule.dom.shift.pattern.daily;
 
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -39,6 +43,25 @@ public class DailyPattern extends AggregateRoot {
 		this.patternCode = memento.getPatternCode();
 		this.patternName = memento.getPatternName();
 		this.listDailyPatternVal = memento.getListDailyPatternVal();
+
+		// Check validate dailypattern all not setting
+		if (CollectionUtil.isEmpty(listDailyPatternVal)) {
+			throw new BusinessException("Msg_31");
+		}
+
+		this.listDailyPatternVal.stream().filter(Objects::nonNull).forEach(item -> {
+			// check validate eap and find msg25
+			if (!StringUtil.isNullOrEmpty(item.getWorkTypeSetCd().v(), true)
+					&& item.getDays() == null) {
+				throw new BusinessException("Msg_25");
+			}
+
+			// check validate eap and find msg25
+			if (StringUtil.isNullOrEmpty(item.getWorkTypeSetCd().v(), true)
+					&& item.getDays() != null) {
+				throw new BusinessException("Msg_22");
+			}
+		});
 	}
 
 	/**

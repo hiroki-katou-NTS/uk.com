@@ -1,4 +1,8 @@
-.extable .xheader td.color-pink {
+#master-wrapper {
+	overflow-x: hidden;
+}
+
+/* .extable .xheader td.color-pink {
 	background-color: #FFB9B9;
 }
 
@@ -7,20 +11,24 @@
 }
 
 .extable td.text-color-red {
-	color: red ;
+	color: red;
 }
 
 .extable td.text-color-blue {
-	color: blue ;
-}
+	color: blue;
+} */
 
 .text-align-center {
 	text-align: center;
 }
 
 #extable {
-	top: 10px;
+	top: 5px;
 	left: 85px;
+}
+
+.ml-30 {
+	margin-left: 30px
 }
 
 table th, table td {
@@ -65,15 +73,13 @@ table th, table td {
 	margin-left: 80px;
 }
 
-.landscape-setting, .vertical-scale-setting, .team-setting,
-	.people-setting, .rank-setting, .external-budget-record,
-	.support-setting {
-	width: 109px;
-	margin-top: 10px;
+#work-setting, #company-setting {
+	margin-left: 10px;
 }
 
-.sort-order-setting {
+#work-setting button, #company-setting button {
 	width: 109px;
+	margin-bottom: 10px;
 }
 
 #top-area {
@@ -82,26 +88,35 @@ table th, table td {
 	padding-bottom: 7px;
 }
 
-.img-icon {
-	margin: -4px -4px 0 -4px;
-	vertical-align: middle;
-}
-
 #top-area div:first-child {
 	height: 20px
 }
 
-.oViewModelDisplay {
-	margin-left: 80px;
-	margin-top: 5px;
-	height: 85px
+#oViewModel, #qViewModel {
+	float: left;
+	width: 92%
+}
+
+#group-bt {
+	float: left;
+	width: 8%;
 }
 
 .setting-button {
-	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
-	width: 37px;
-	top: 3px;
-	margin-left: 40px;
+	vertical-align: middle;
+	background: url(../image/image008.png) no-repeat center;
+	background-size: 25px 25px;
+	height: 30px;
+	width: 30px;
+}
+
+.color-button {
+	vertical-align: middle;
+	background: url(../image/image099.png) no-repeat center;
+	background-size: 25px 25px;
+	height: 30px;
+	width: 30px;
+	margin-left: 45px;
 }
 
 .icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
@@ -114,10 +129,6 @@ table th, table td {
 
 .nts-switch-button {
 	min-width: 55px;
-}
-
-#nextMonth {
-	margin-left: 10px;
 }
 
 #button-top {
@@ -138,12 +149,14 @@ table th, table td {
 	width: 307px !important;
 }
 
-#popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6 {
+#popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6,
+	#popup-area7, #popup-area8, #popup-area9 {
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
 	padding: 12px;
 	background-color: #F8EFD4 !important;
+	visibility: hidden;
 }
 
 #multi-list {
@@ -151,10 +164,107 @@ table th, table td {
 }
 
 #generally-created, #simulation-explanation, #capture-explanation,
-	#date-time-prev, #date-time-after, #spelcial {
+	#date-time-after, #special {
 	margin-left: 10px;
 }
 
 #alarm-check-explanation {
 	margin-left: 7px;
+}
+
+#popup-area6 {
+	width: 390px
+}
+
+#popup6-radioBox {
+	width: 120px;
+}
+
+#popup6-radioBox>.ntsRadioBox, .div-popup {
+	margin-bottom: 10px
+}
+
+#popup-area7>div {
+	margin-top: 15px
+}
+
+#popup-area7>div>button {
+	margin-left: 70px
+}
+
+#popup-area9 {
+	width: 470px
+}
+
+.square {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	vertical-align: text-top;
+}
+
+.popup-div {
+	width: 140px;
+	display: inline-block;
+	margin-bottom: 10px
+}
+
+.ml-20 {
+	margin-left: 20px
+}
+
+#color-7 {
+	background-color: #0000ff
+}
+
+#color-8 {
+	background-color: #ff0000
+}
+
+#color-9 {
+	background-color: #008000
+}
+
+#paste {
+	background: url(../image/image102.png) no-repeat center;
+	background-size: 32px 32px;
+	height: 35px;
+	width: 35px;
+}
+
+#copy {
+	background: url(../image/image104.png) no-repeat center;
+	background-size: 32px 32px;
+	height: 35px;
+	width: 35px;
+}
+
+#undo {
+	margin: 5px 0 0 41px;
+	background: url(../image/image030.png) no-repeat center;
+	background-size: 32px 32px;
+	height: 35px;
+	width: 35px;
+}
+
+#prevMonth {
+	vertical-align: middle;
+	background: url(../image/image050.png) no-repeat center;
+	background-size: 30px 30px;
+	height: 30px;
+	width: 30px;
+}
+
+#nextMonth {
+	vertical-align: middle;
+	background: url(../image/image053.png) no-repeat center;
+	background-size: 30px 30px;
+	height: 30px;
+	width: 30px;
+}
+
+#contain-view {
+	margin-left: 80px;
+	margin-top: 5px;
+	height: 85px;
 }

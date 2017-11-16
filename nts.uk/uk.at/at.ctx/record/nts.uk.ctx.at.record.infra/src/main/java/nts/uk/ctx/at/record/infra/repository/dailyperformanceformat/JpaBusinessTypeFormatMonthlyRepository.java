@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -27,7 +26,7 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
 		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode = :businessTypeCode ");
 		FIND = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -48,7 +47,7 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	@Override
 	public List<BusinessTypeFormatMonthly> getMonthlyDetail(String companyId, String businessTypeCode) {
 		return this.queryProxy().query(FIND, KrcmtBusinessTypeMonthly.class).setParameter("companyId", companyId)
-				.setParameter("workTypeCode", businessTypeCode).getList(f -> toDomain(f));
+				.setParameter("businessTypeCode", businessTypeCode).getList(f -> toDomain(f));
 	}
 
 	@Override
@@ -65,7 +64,7 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	 * Remove attendanceItemId not exist in list that need update
 	 */
 	@Override
-	public void deleteExistData(List<BigDecimal> attendanceItemIds) {
+	public void deleteExistData(List<Integer> attendanceItemIds) {
 		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
 				.executeUpdate();
 	}

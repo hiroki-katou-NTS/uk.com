@@ -39,13 +39,13 @@ module nts.uk.at.view.kml001.shr {
                 premiumItems.forEach(function(premiumItem, index){
                     if(premiumItem.useAtr()){
                         let premiumSet = _.find(premiumSets, function(o) { 
-                            return o.premiumID == index+1; 
+                            return o.displayNumber == index+1; 
                         })
                         if(premiumSet) {
                             koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));        
                         } else {
                             koPremiumSets.push(
-                                new vmbase.PremiumSetting("", "", premiumItem.iD(), 1, premiumItem.attendanceID(), premiumItem.name(), premiumItem.displayNumber(), premiumItem.useAtr(), [])
+                                new vmbase.PremiumSetting("", "", premiumItem.displayNumber(), 1, premiumItem.name(), premiumItem.useAtr(), [])
                             );    
                         }
                     }
@@ -57,11 +57,9 @@ module nts.uk.at.view.kml001.shr {
         export interface PremiumSettingInterface {
             companyID: string;
             historyID: string;
-            premiumID: number;
-            rate: number;
-            attendanceID: number;
-            name: string;
             displayNumber: number;
+            rate: number;
+            name: string;
             useAtr: number;
             attendanceItems: Array<AttendanceItem>;
         }
@@ -69,23 +67,19 @@ module nts.uk.at.view.kml001.shr {
         export class PremiumSetting {
             companyID: KnockoutObservable<string>;
             historyID: KnockoutObservable<string>;
-            premiumID: KnockoutObservable<number>; 
-            rate: KnockoutObservable<number>;
-            attendanceID: KnockoutObservable<number>;
-            name: KnockoutObservable<string>;
             displayNumber: KnockoutObservable<number>;
+            rate: KnockoutObservable<number>;
+            name: KnockoutObservable<string>;
             useAtr: KnockoutObservable<number>;
             attendanceItems: KnockoutObservableArray<AttendanceItem>;
-            constructor(companyID: string, historyID: string, premiumID: number, rate: number, attendanceID: number, 
-                name: string, displayNumber: number, useAtr: number, attendanceItems: Array<AttendanceItem>) {
+            constructor(companyID: string, historyID: string, displayNumber: number, rate: number,
+                name: string, useAtr: number, attendanceItems: Array<AttendanceItem>) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
                 self.historyID = ko.observable(historyID);
-                self.premiumID = ko.observable(premiumID);
-                self.rate = ko.observable(rate);
-                self.attendanceID = ko.observable(attendanceID);
-                self.name = ko.observable(name);
                 self.displayNumber = ko.observable(displayNumber);
+                self.rate = ko.observable(rate);
+                self.name = ko.observable(name);
                 self.useAtr = ko.observable(useAtr);
                 let koAttendanceItems = [];
                 attendanceItems.forEach(function(item){
@@ -108,19 +102,15 @@ module nts.uk.at.view.kml001.shr {
         
         export class PremiumItem {
             companyID: KnockoutObservable<string>;
-            iD: KnockoutObservable<number>; 
-            attendanceID: KnockoutObservable<number>;
+            displayNumber: KnockoutObservable<number>; 
             name: KnockoutObservable<string>;
-            displayNumber: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
             isChange: KnockoutObservable<boolean>;
-            constructor(companyID: string, iD: number, attendanceID: number, name: string, displayNumber: number, useAtr: number, isChange: boolean) {
+            constructor(companyID: string, displayNumber: number, name: string, useAtr: number, isChange: boolean) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
-                self.iD = ko.observable(iD);
-                self.attendanceID = ko.observable(attendanceID);
-                self.name = ko.observable(name);
                 self.displayNumber = ko.observable(displayNumber);
+                self.name = ko.observable(name);
                 self.useAtr = ko.observable(useAtr);
                 self.isChange = ko.observable(isChange);
             }
@@ -167,11 +157,9 @@ module nts.uk.at.view.kml001.shr {
                 return new PremiumSetting(
                     object.companyID,
                     object.historyID,
-                    object.premiumID,
-                    object.rate,
-                    object.attendanceID,
-                    object.name,
                     object.displayNumber,
+                    object.rate,
+                    object.name,
                     object.useAtr,
                     object.attendanceItems);
             }
@@ -183,11 +171,9 @@ module nts.uk.at.view.kml001.shr {
                 return {
                     companyID: koObject.companyID(),
                     historyID: koObject.historyID(),
-                    premiumID: koObject.premiumID(), 
+                    displayNumber: koObject.displayNumber(), 
                     rate: koObject.rate(),
-                    attendanceID: koObject.attendanceID(),
                     name: koObject.name(),
-                    displayNumber: koObject.displayNumber(),
                     useAtr: koObject.useAtr(),
                     attendanceItems: _.map(koObject.attendanceItems() , function(item){ return {shortAttendanceID: item.shortAttendanceID, name: item.name}})   
                 };    

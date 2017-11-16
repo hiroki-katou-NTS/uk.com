@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 
 /**
  * @author hungnm
@@ -42,6 +46,12 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	/* エラー表示項目 */
 	private BigDecimal errorDisplayItem;
+	
+	/* エラー解除ロールID */
+	private String cancelRoleId;
+	
+	/* エラーアラーム条件 */
+	private ErrorAlarmCondition errorAlarmCondition;
 
 	/* Constructor */
 	private ErrorAlarmWorkRecord() {
@@ -78,5 +88,9 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
 				ErrorAlarmMessage.createFromJavaType(displayMessage, boldAtr, messageColor), cancelableAtr,
 				errorDisplayItem);
+	}
+	
+	public void setCondition(ErrorAlarmCondition condition){
+		this.errorAlarmCondition = condition;
 	}
 }

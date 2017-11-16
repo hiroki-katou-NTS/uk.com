@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1070,
+					width : 1100,
 					height : 550
 				};
 			</script>
@@ -31,7 +31,7 @@
 					<div>
 						<!-- BEGIN C2_1 ~ C2_2 -->
 							<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_302')}</div>
-							<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: {
+							<div id="dateRangePickerLog" tabindex="1" data-bind="ntsDateRangePicker: {
 									name: '#[KSU006_303]',
 									startName: '#[KSU006_304]',
 									endName: '#[KSU006_305]',
@@ -68,13 +68,14 @@
 							columns: listColumn,
 							multiple: false,
 							value: rowSelected,
-							rows: 11}"></table></div><!-- END C3 -->
+							enable: false,
+							rows: 10}, rended: dataLog"></table></div><!-- END C3 -->
 					
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<div id="process">
-					<button class="large" data-bind="click: closeDialog" tabindex="8">#{i18n.getText('KSU006_320')}</button>
+					<button class="large" data-bind="click: closeDialog" tabindex="7">#{i18n.getText('KSU006_320')}</button>
 				</div>
 			</div>
 		</ui:define>

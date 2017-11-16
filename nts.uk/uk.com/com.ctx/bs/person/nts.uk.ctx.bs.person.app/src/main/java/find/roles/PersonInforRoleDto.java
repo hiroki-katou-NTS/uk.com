@@ -8,10 +8,10 @@ import nts.uk.ctx.bs.person.dom.person.role.PersonInforRole;
  */
 @Value
 public class PersonInforRoleDto {
-	String companyId;
-	String roleId;
-	String roleCode;
-	String roleName;
+	private String companyId;
+	private String roleId;
+	private String roleCode;
+	private String roleName;
 	
 	public static PersonInforRoleDto fromDomain(PersonInforRole domain) {
 		

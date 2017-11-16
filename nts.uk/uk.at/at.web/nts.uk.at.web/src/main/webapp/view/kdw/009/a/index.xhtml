@@ -22,7 +22,7 @@
 				<!-- A1_1: Button New -->
 				<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="click: newMode">#{i18n.getText('KDW009_2')}</button>
 				<!-- A1_2: Button Registration -->
-				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register">#{i18n.getText('KDW009_3')}</button>
+				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KDW009_3')}</button>
 				<!-- A1_3: Button Delete -->
 				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable:lstBusinessType().length>0, click: remove" >#{i18n.getText('KDW009_4')}</button>
 			</div>
@@ -31,7 +31,7 @@
 					<div style="float: left; margin: 20px" >
 						<!-- A2_2: List -->
 						<table id="lstBusinessType" tabindex="4" data-bind="ntsGridList: {								
-						height: 370,
+						height: 362,
 						options: lstBusinessType,
 						optionsValue: 'businessTypeCode',
 						columns: gridListColumns,
@@ -42,7 +42,7 @@
 				<div id="right-content" style="float: left;">
 					<table>
 						<colgroup>
-							<col width="213px" />
+							<col width="280px" />
 							<col width="*" />
 						</colgroup>
 						<tr class="row">
@@ -55,10 +55,14 @@
 								<input tabindex="5" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
 																												constraint: 'BusinessTypeCode',
 																												required: true,
+																												name: '#[KDW009_9]',
+																												immediate: true,
+																												option: {autofill:true, filldirection:'left'},
 																												enable: check}"/>
 								<!-- A3_3: Name--> 
 								<input tabindex="6" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
 																												constraint: 'BusinessTypeName',
+																												name: '#[KDW009_10]',
 																												required: true,
 																												enable: true}"/>
 							</td>

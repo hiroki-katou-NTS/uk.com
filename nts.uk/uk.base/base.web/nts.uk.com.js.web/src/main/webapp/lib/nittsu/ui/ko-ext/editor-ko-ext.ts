@@ -11,7 +11,7 @@ module nts.uk.ui.koExtentions {
 
         init($input: JQuery, data: any) {
             var self = this;
-            var value: (newText: string) => {} = data.value;
+            var value: KnockoutObservable<any> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
@@ -21,7 +21,7 @@ module nts.uk.ui.koExtentions {
             this.editorOption = $.extend(this.getDefaultOption(), option);
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
-                var autoWidth = constraint.maxLength * characterWidth;
+                let autoWidth = constraint.maxLength * characterWidth;
                 $input.width(autoWidth);
             }
             $input.addClass('nts-editor nts-input');
@@ -34,6 +34,7 @@ module nts.uk.ui.koExtentions {
                 if (result.isValid) {
                     $input.ntsError('clear');
                     value(result.parsedValue);
+                    value.valueHasMutated();
                 } else {
                     let error = $input.ntsError('getError');
                     if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
@@ -83,7 +84,7 @@ module nts.uk.ui.koExtentions {
         }
 
         update($input: JQuery, data: any) {
-            var value: (val: any) => string = data.value;
+            var value: (val?: any) => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -113,10 +114,11 @@ module nts.uk.ui.koExtentions {
             $input.attr('placeholder', placeholder);
             $input.css('text-align', textalign);
             if (width.trim() != "")
-                $input.width(width, false);
+                $input.width(width);
             // Format value
             var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
             $input.val(formatted);
+//            $input.trigger("validate");
         }
 
         getDefaultOption(): any {
@@ -138,6 +140,7 @@ module nts.uk.ui.koExtentions {
     class TextEditorProcessor extends EditorProcessor {
 
         init($input: JQuery, data: any) {
+            let self = this;
             var value: KnockoutObservable<string> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
@@ -150,10 +153,10 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
-            let validator = this.getValidator(data);
             $input.on("keyup", (e) => {
                 var code = e.keyCode || e.which;
                 if (!readonly && code.toString() !== '9') {
+                let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
@@ -166,6 +169,7 @@ module nts.uk.ui.koExtentions {
             // Format on blur
             $input.blur(() => {
                 if (!$input.attr('readonly')) {
+                    let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
@@ -177,6 +181,7 @@ module nts.uk.ui.koExtentions {
 
             $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
+                    let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });
                     $input.ntsError('clear');
@@ -194,6 +199,7 @@ module nts.uk.ui.koExtentions {
             });
 
             $input.on('validate', (function(e: Event) {
+                let validator = self.getValidator(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
@@ -225,6 +231,7 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
+            this.editorOption.autofill = (constraint && constraint.isZeroPadded) ? constraint.isZeroPadded : this.editorOption.autofill;
             return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
         }
 
@@ -288,13 +295,15 @@ module nts.uk.ui.koExtentions {
         init($input: JQuery, data: any) {
             super.init($input, data);
             $input.focus(() => {
-                var selectionType = document.getSelection().type;
-                // Remove separator (comma)
-                $input.val(data.value());
-                // If focusing is caused by Tab key, select text
-                // this code is needed because removing separator deselects.
-                if (selectionType === 'Range') {
-                    $input.select();
+                if (!$input.attr('readonly')) {
+                    var selectionType = document.getSelection().type;
+                    // Remove separator (comma)
+                    $input.val(data.value());
+                    // If focusing is caused by Tab key, select text
+                    // this code is needed because removing separator deselects.
+                    if (selectionType === 'Range') {
+                        $input.select();
+                    }
                 }
             });
         }
@@ -307,7 +316,6 @@ module nts.uk.ui.koExtentions {
             if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 $parent.css({ 'width': '100%' });
             }
-            $input.css("box-sizing", "border-box");
             
             if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                 $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
@@ -371,7 +379,7 @@ module nts.uk.ui.koExtentions {
 
         update($input: JQuery, data: any) {
             super.update($input, data);
-            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            var option: nts.uk.ui.option.ITimeEditorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var width: string = option.width;
             var $parent = $input.parent();
             var parentTag = $parent.parent().prop("tagName").toLowerCase();
@@ -386,6 +394,11 @@ module nts.uk.ui.koExtentions {
                 
                 let css = data.mode === "year" ? {"padding-right": "20px"} : {"padding-right": "35px"};
                 $input.css(css);
+            }
+            
+            if(!nts.uk.util.isNullOrEmpty(option.defaultValue) 
+                && nts.uk.util.isNullOrEmpty(data.value())){
+                data.value(option.defaultValue);        
             }
         }
 
@@ -407,10 +420,64 @@ module nts.uk.ui.koExtentions {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
             var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-            return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
+            
+            let validateOption = $.extend({ required: required, outputFormat: inputFormat, mode: mode }, option);
+            return new validation.TimeValidator(name, constraintName, validateOption);
         }
     }
+    
+    /**
+     * TimeWithDayAttrEditor Processor
+     */
+    class TimeWithDayAttrEditorProcessor extends EditorProcessor {
+        
+        init($input: JQuery, data: any) {
+            super.init($input, data);
+            $input.focus(() => {
+                if ($input.attr('readonly')) {
+                    return;
+                }
+                if ($input.ntsError('hasError')) {
+                    return;
+                } 
+                
+                var selectionTypeOnFocusing = document.getSelection().type;
+                
+                if(!nts.uk.util.isNullOrEmpty(data.value())){
+                    let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
+                    $input.val(timeWithDayAttr.shortText);    
+                } else {
+                    $input.val("");
+                }
 
+                // If focusing is caused by Tab key, select text
+                // this code is needed because removing separator deselects.
+                if (selectionTypeOnFocusing === 'Range') {
+                    $input.select();
+                }
+                
+            });
+        }
+        
+        getDefaultOption(): any {
+            return new nts.uk.ui.option.TimeWithDayAttrEditorOption();
+        }
+
+        getFormatter(data: any): format.IFormatter {
+            var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            return new text.TimeWithDayFormatter(option);
+        }
+
+        getValidator(data: any): validation.IValidator {
+            //TODO: 
+            var name = data.name !== undefined ? ko.unwrap(data.name) : "";
+            name = nts.uk.resource.getControlName(name);
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            return new validation.TimeWithDayValidator(name, constraintName, { required: required });
+        }
+    }
+    
     /**
      * Base Editor
      */
@@ -511,9 +578,30 @@ module nts.uk.ui.koExtentions {
             new MultilineEditorProcessor().update($(element), valueAccessor());
         }
     }
+    
+    /**
+     * TimeWithDayAttr
+     */
+    class NtsTimeWithDayAttrEditorBindingHandler extends NtsEditorBindingHandler {
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new TimeWithDayAttrEditorProcessor().init($(element), valueAccessor());
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new TimeWithDayAttrEditorProcessor().update($(element), valueAccessor());
+        }
+    }
 
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
     ko.bindingHandlers['ntsMultilineEditor'] = new NtsMultilineEditorBindingHandler();
+    ko.bindingHandlers['ntsTimeWithDayEditor'] = new NtsTimeWithDayAttrEditorBindingHandler();
 }

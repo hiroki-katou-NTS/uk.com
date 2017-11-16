@@ -1,65 +1,60 @@
-#label, #combo-box1, #group-button, #set-work-type {
+#oViewModel #label, #oViewModel  #combo-box1, #oViewModel  #group-button,
+	#oViewModel  #set-work-type {
 	float: left;
 }
 
-#combo-box1 {
+#oViewModel #combo-box1 {
 	top: 2px;
 	margin-left: 35px
 }
 
-#time-edit1 {
+#oViewModel #time-edit1 {
 	text-align: center !important;
 	width: 43px !important;
 	margin-left: 16px
 }
 
-#time-edit2 {
+#oViewModel #time-edit2 {
 	text-align: center !important;
 	width: 43px !important;
 }
 
-#set-work-time {
+#oViewModel #set-work-time {
 	float: left;
 	margin-top: 2px;
 }
 
-.reserved {
+#oViewModel .reserved {
 	margin-left: 10px;
 }
 
-.switchButton-wrapper {
+#oViewModel .switchButton-wrapper {
 	margin-left: 30px;
 }
 
-#combo-box2 {
+#oViewModel #combo-box2 {
 	top: 9px;
-	margin-left: 30px;
-	min-width: 516px !important;
+	margin-left: 16px;
+	min-width: 425px !important;
 }
 
-#combo-box1 {
+#oViewModel #combo-box1 {
 	min-width: 310px !important;
 }
 
-#group-button {
-	margin-left: 265px;
+#oViewModel #group-button {
+	margin-left: 170px;
 }
 
-#group-button>button:last-child {
-	width: 20px;
-	top: -5px;
-	height: 20px;
+#oViewModel .cf1 .nts-switch-button {
+	width: 114px !important;
 }
 
-
-#spelcial, #time-edit2 {
-	margin-left: 10px;
-}
-
-#stick-undo {
-	margin-right: 180px;
-}
-
-.cf1 .nts-switch-button {
-	width: 96px !important;
+#oViewModel #image100 {
+	margin-left: 210px;
+	vertical-align: middle;
+	background: url(../image/image100.png) no-repeat center;
+	background-size: 20px 20px;
+	height: 30px;
+	width: 30px;
 }

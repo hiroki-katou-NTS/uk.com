@@ -79,4 +79,47 @@ public class WorkMonthlySetting extends AggregateRoot {
 		memento.setYmdK(this.ymdk);
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result
+				+ ((monthlyPatternCode == null) ? 0 : monthlyPatternCode.hashCode());
+		result = prime * result + ((ymdk == null) ? 0 : ymdk.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WorkMonthlySetting other = (WorkMonthlySetting) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (monthlyPatternCode == null) {
+			if (other.monthlyPatternCode != null)
+				return false;
+		} else if (!monthlyPatternCode.equals(other.monthlyPatternCode))
+			return false;
+		if (ymdk == null) {
+			if (other.ymdk != null)
+				return false;
+		} else if (!ymdk.equals(other.ymdk))
+			return false;
+		return true;
+	}
+	
+	
 }

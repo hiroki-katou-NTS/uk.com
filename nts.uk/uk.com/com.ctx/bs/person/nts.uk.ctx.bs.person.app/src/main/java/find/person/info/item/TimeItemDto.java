@@ -1,10 +1,22 @@
 package find.person.info.item;
 
-import lombok.Value;
+import lombok.Getter;
+import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeValue;
 
-@Value
-public class TimeItemDto {
-	private int dataTypeValue;
+@Getter
+public class TimeItemDto extends DataTypeStateDto{
+
 	private long max;
 	private long min;
+	
+	private TimeItemDto(long max, long min) {
+		super();
+		this.dataTypeValue = DataTypeValue.TIME.value;
+		this.max = max;
+		this.min = min;
+	}
+
+	public static TimeItemDto createFromJavaType(long max, long min) {
+		return new TimeItemDto(max, min);
+	}
 }

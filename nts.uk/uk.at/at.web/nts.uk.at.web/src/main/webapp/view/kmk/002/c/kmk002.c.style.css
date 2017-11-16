@@ -1,0 +1,11 @@
+.action-center {
+	margin-right: 40px;
+	margin-left: 20px;
+}
+.action-center button {
+	margin-bottom: 20px;
+	min-width: 59px;
+}
+#btn-back {
+	margin-top: 40px;
+}

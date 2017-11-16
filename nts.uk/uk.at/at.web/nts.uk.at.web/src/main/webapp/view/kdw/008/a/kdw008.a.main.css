@@ -1,0 +1,38 @@
+#tab-panel{
+    margin: 20px 0px 0px 51px;
+	display: inline-block;
+}
+
+#label2, #label3, #label4, #label5, #checkbox1{
+	margin-left: 55px;
+}
+
+#single-list_container{
+	float: left;
+	display: inline-block;
+}
+
+#contents-area{
+	padding-left: 20px;
+}
+
+#functions-area{
+	padding-top: 20px;
+    padding-bottom: 13px;
+}
+
+#button3{
+	margin-left: 256px;
+}
+
+#button2{
+	margin-left: 20px;
+}
+
+#button1{
+	margin-left: 37px;
+}
+
+#swap-list2_container, #swap-list_container{
+	display: inline-block;;
+}

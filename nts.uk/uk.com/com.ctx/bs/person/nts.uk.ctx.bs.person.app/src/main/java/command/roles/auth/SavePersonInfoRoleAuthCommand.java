@@ -26,5 +26,5 @@ public class SavePersonInfoRoleAuthCommand {
 	
 	private int allowAvatarRef;
 	
-	private SavePersonInfoCategoryAuthCommand category;
+	private SavePersonInfoCategoryAuthCommand currentCategory;
 }

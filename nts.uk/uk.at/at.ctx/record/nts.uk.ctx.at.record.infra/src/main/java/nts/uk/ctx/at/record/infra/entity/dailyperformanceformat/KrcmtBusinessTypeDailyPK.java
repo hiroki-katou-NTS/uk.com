@@ -23,7 +23,7 @@ public class KrcmtBusinessTypeDailyPK implements Serializable {
 	public String businessTypeCode;
 
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	public BigDecimal attendanceItemId;
+	public int attendanceItemId;
 
 	@Column(name = "SHEET_NO")
 	public BigDecimal sheetNo;

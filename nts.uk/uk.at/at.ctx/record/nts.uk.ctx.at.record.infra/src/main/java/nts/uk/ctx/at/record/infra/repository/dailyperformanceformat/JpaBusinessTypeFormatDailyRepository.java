@@ -2,18 +2,17 @@ package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessFormatSheet;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
-import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
-import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheetPK;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDailyPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implements BusinessTypeFormatDailyRepository {
@@ -26,19 +25,22 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 
 	private static final String REMOVE_EXIST_DATA;
 
+	private final static String SEL_FORMAT_BY_ATD_ITEM = "SELECT f FROM KrcmtBusinessTypeDaily f WHERE f.krcmtBusinessTypeDailyPK.companyId = :companyId AND f.krcmtBusinessTypeDailyPK.attendanceItemId IN :lstItem";
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
 		FIND = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("UPDATE KrcmtBusinessTypeDaily a ");
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		FIND_DETAIl = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -73,7 +75,7 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public void deleteExistData(List<BigDecimal> attendanceItemIds) {
+	public void deleteExistData(List<Integer> attendanceItemIds) {
 		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
 				.executeUpdate();
 	}
@@ -117,4 +119,17 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		
 		return entity;
 	}
+	
+	@Override
+	public void updateColumnsWidth(Map<Integer, Integer> lstHeader) {
+		List<KrcmtBusinessTypeDaily> lstBusDailyItem = this.queryProxy()
+				.query(SEL_FORMAT_BY_ATD_ITEM, KrcmtBusinessTypeDaily.class)
+				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstItem", lstHeader.keySet())
+				.getList();
+		for(KrcmtBusinessTypeDaily busItem: lstBusDailyItem){
+			busItem.columnWidth =  new BigDecimal(lstHeader.get(busItem.krcmtBusinessTypeDailyPK.attendanceItemId));
+		}
+		this.commandProxy().updateAll(lstBusDailyItem);
+	}
+	
 }

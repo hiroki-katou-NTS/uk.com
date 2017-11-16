@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.at.request.dom.application.AppReason
+					nts.uk.shr.com.time.TimeWithDayAttr
+					nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../005/cm/kaf005.cm.main.css" />
+			<com:stylefile path="../../000/a/kaf000.a.main.css" />
+			<com:scriptfile path="../../005/shr/kaf005.shr.service.js" />
+			<com:scriptfile path="../../000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="../../005/shr/kaf005.shr.vm.js" />
+			<com:scriptfile path="kaf005.a.start.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="kaf005.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area" data-bind="">
+				<!--A1_1 登録ボタン--> 
+				<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerClick" tabindex="1">#{i18n.getText('KAF005_10')}</button>
+				<!--A1_2 実績参照ボタン--> 				
+				<button tabindex="2" id="btnSpecSetting" data-bind="">#{i18n.getText('KAF005_11')}</button>
+				<!--A1_3 承認者変更ボタン--> 				
+				<button tabindex="3" data-bind="click: openCMM018">#{i18n.getText('KAF005_12')}</button>
+				<!--A1_4 登録時にメールを送信する--> 				
+				<div class="btnSendMail"
+					data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF005_13')}' }"></div>
+			</div>
+			<div id="contents-area" class="">
+					<!-- Message area -->
+				<div style ="background-color: #f8efd4; width :839px; margin-left: 38px">	
+					<div class="cf valign-center control-group" style ="background-color: #f8efd4; margin-left: 48px" data-bind = "enable: instructInforFlag">
+						<div class="pull-left">#{i18n.getText('KAF005_20')}</div>
+						<label data-bind="text : instructInfor"></label>
+					</div>
+					<div data-bind="with: kaf000_a" class="">
+						<ui:include src="../../000/a/index1.xhtml" />
+					</div>
+					<div class="cf valign-center control-group" data-bind="if: indicationOvertimeFlg" style = "margin-left: 48px">
+						<!--A5_1 休憩時間ラベル--> 			
+						<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
+						<div class="pull-left">
+						<table id="fixed-table-indicate">
+							<colgroup>
+								<col width="109px" />
+								<col width="109px" />
+								<col width="109px" />
+								<col width="109px" />
+								<col width="109px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_24')}</th>
+									<!--A5_3 開始ラベル--> 						
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_25')}</th>
+									<!--A5_4 終了ラベル--> 						
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_26')}</th>
+									<!--A5_4 終了ラベル--> 	
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_27')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_28')}</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: overtimeWork">
+								<tr>
+									<!--A5_5 休憩時間順序--> 						
+									<td class="header" data-bind="text: yearMonth"></td>
+									<!--A5_6 開始時刻--> 						
+									<td><input
+										data-bind="ntsTimeWithDayEditor: {value: limitTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+									<!--A5_7 終了時刻--> 						
+									<td><input
+										data-bind="ntsTimeWithDayEditor: {value: actualTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+										<td><input
+										data-bind="ntsTimeWithDayEditor: {value: appTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+										<td><input
+										data-bind="ntsTimeWithDayEditor: {value: totalTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								</tr>
+							</tbody>
+						</table>
+						</div>
+					</div>
+				</div>	
+				<!-- Main -->
+				<div class="mainScreen container cf" data-bind="">
+					<ui:include src="../cm/index.xhtml"></ui:include>
+				</div>
+				<!-- Footer -->
+				<div class="lstApprover" data-bind="with: kaf000_a">
+					<ui:include src="../../000/a/index2.xhtml" />
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

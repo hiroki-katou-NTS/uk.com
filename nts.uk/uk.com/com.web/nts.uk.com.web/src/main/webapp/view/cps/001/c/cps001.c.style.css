@@ -1,0 +1,46 @@
+#functions-area div.ntsControl:nth-child(1) {
+	margin-left: 70px;
+}
+
+#contents-area {
+	padding: 25px;
+	height: initial !important;
+	height: auto !important;
+}
+
+#contents-area>.left-area, #contents-area>.right-area {
+	float: left;
+}
+
+#contents-area>.left-area {
+	width: 350px;
+}
+
+#contents-area>.right-area {
+	padding-left: 45px;
+}
+
+#contents-area>.left-area>div {
+	padding: 15px;
+}
+
+#contents-area .nts-searchbbox-wrapper {
+	width: 100% !important;
+	box-sizing: border-box;
+}
+
+#contents-area .nts-searchbbox-wrapper .nts-editor-wrapped.ntsControl {
+	width: calc(100% - 140px);
+}
+
+#contents-area .ntsSearchBox.nts-editor {
+	width: 100% !important;
+}
+
+#contents-area .form-group {
+	margin-bottom: 25px;
+}
+
+#contents-area .form-group .form-label {
+	min-width: 160px;
+}

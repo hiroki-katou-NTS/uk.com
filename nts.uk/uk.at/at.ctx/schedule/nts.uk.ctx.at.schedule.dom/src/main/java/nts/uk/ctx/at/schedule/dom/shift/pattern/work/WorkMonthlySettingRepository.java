@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,4 +51,24 @@ public interface WorkMonthlySettingRepository  {
 	 */
 	public List<WorkMonthlySetting> findByStartEndDate(String companyId, String monthlyPatternCode,
 			int startDate, int endDate);
+	
+	
+	/**
+	 * Find by YMD.
+	 *
+	 * @param companyId the company id
+	 * @param monthlyPatternCode the monthly pattern code
+	 * @param baseDates the base dates
+	 * @return the list
+	 */
+	public List<WorkMonthlySetting> findByYMD(String companyId, String monthlyPatternCode, List<BigDecimal> baseDates);
+	
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param monthlyPatternCode the monthly pattern code
+	 */
+	public void remove(String companyId, String monthlyPatternCode);
 }

@@ -2,13 +2,23 @@
 	float: right !important;
 }
 
+.display_flex {
+	display: flex;
+}
+
+
 #contents-area {
 	padding: 20px 0px 0px 20px;
 }
-.float_left{
-	
-		float: left !important;
+
+.float_left {
+	float: left !important;
 }
+
+.display_block {
+	display: block;
+}
+
 #content-left {
 	float: left;
 	padding: 5px;
@@ -34,6 +44,14 @@
 	float: right;
 	line-height: 37px;
 }
-hr{
+
+hr {
 	clear: both;
+}
+
+.ellipsis {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	line-height: 37px;
 }

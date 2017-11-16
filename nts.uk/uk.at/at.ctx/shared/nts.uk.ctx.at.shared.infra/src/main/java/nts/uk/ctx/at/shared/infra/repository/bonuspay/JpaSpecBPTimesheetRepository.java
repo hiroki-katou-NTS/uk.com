@@ -66,7 +66,7 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 	private SpecBonusPayTimesheet toSpecBPTimesheetDomain(KbpmtSpecBPTimesheet KbpmtSpecBPTimesheet) {
 		return SpecBonusPayTimesheet.createFromJavaType(KbpmtSpecBPTimesheet.kbpstSpecBPTimesheetPK.getTimeSheetNO(),
 				KbpmtSpecBPTimesheet.useAtr.intValue(), KbpmtSpecBPTimesheet.timeItemId,
-				KbpmtSpecBPTimesheet.startTime.longValue(), KbpmtSpecBPTimesheet.endTime.longValue(),
+				KbpmtSpecBPTimesheet.startTime.intValue(), KbpmtSpecBPTimesheet.endTime.intValue(),
 				KbpmtSpecBPTimesheet.roundingTimeAtr.intValue(), KbpmtSpecBPTimesheet.roundingAtr.intValue(),
 				KbpmtSpecBPTimesheet.specialDateItemNO.intValue());
 

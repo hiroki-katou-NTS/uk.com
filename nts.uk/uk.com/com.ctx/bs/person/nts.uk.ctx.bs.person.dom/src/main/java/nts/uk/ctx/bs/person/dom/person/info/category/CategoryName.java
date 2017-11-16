@@ -1,13 +1,10 @@
 package nts.uk.ctx.bs.person.dom.person.info.category;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
-
 @StringMaxLength(value = 30)
-@StringCharType(value = CharType.ANY_HALF_WIDTH)
-public class CategoryName extends StringPrimitiveValue<CategoryName>{
+//@StringRegEx("[a-zA-Z0-9\\u3040-\\u309F\\u30A0-\\u30FF-\\uFF61-\\uFF9F-\\u3040-\\u309F\\u30A0-\\u30FF-\\u3040-\\u309F-\\u4E00-\\u9FBF]+$")
+public class CategoryName extends StringPrimitiveValue<CategoryName> {
 
 	private static final long serialVersionUID = 1L;
 

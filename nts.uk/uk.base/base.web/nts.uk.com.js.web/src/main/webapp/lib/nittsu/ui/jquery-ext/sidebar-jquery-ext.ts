@@ -7,24 +7,24 @@ interface JQuery {
 module nts.uk.ui.jqueryExtentions {
 
     module ntsSideBar {
-    	export interface SideBarSetting {
-    		active?: number;
-    		beforeActivate?: (event, ui) => void,
-    		activate?: (event, ui) => void,
-    	};
-    	export interface SideBarEventInfo {
-			oldIndex: number,
-			newIndex: number,
-			oldTab: JQuery,
-			newTab: JQuery
-    	}
-    	
-    	var defaultOption: SideBarSetting = {
-			active: 0,
-			beforeActivate: function(event, info) {},
-			activate: function(event, info) {},
-    	};
-    	
+        export interface SideBarSetting {
+            active?: number;
+            beforeActivate?: (event, ui) => void,
+            activate?: (event, ui) => void,
+        };
+        export interface SideBarEventInfo {
+            oldIndex: number,
+            newIndex: number,
+            oldTab: JQuery,
+            newTab: JQuery
+        }
+
+        var defaultOption: SideBarSetting = {
+            active: 0,
+            beforeActivate: function(event, info) { },
+            activate: function(event, info) { },
+        };
+
         $.fn.ntsSideBar = function(action?: string, option?: any): any {
             var $control = $(this);
             if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
@@ -55,19 +55,19 @@ module nts.uk.ui.jqueryExtentions {
 
         function init(control: JQuery, option: any): JQuery {
             $("html").addClass("sidebar-html");
-            control.find("div[role=tabpanel]").addClass("disappear");
-            
+            control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
+
             var settings: SideBarSetting = $.extend({}, defaultOption, option);
-            
-            control.off("click", "#sidebar-area .navigator a");
-            control.on("click", "#sidebar-area .navigator a", function(event) {
-            	event.preventDefault();
-            	var info: SideBarEventInfo = {
-        			oldIndex: getCurrent(control),
-        			newIndex: $(this).closest("li").index(),
-        			oldTab: control.find("#sidebar-area .navigator a.active").closest("li"),
-        			newTab: $(this).closest("li")
-            	};
+
+            control.off("click.sideBarClick", "#sidebar-area .navigator a");
+            control.on("click.sideBarClick", "#sidebar-area .navigator a", function(event) {
+                event.preventDefault();
+                var info: SideBarEventInfo = {
+                    oldIndex: getCurrent(control),
+                    newIndex: $(this).closest("li").index(),
+                    oldTab: control.find("#sidebar-area .navigator a.active").closest("li"),
+                    newTab: $(this).closest("li")
+                };
                 if ($(this).attr("disabled") !== "true" && $(this).attr("disabled") !== "disabled") {
                     settings.beforeActivate.call(this, event, info);
                     if ($(this).attr("href") !== undefined)
@@ -75,7 +75,7 @@ module nts.uk.ui.jqueryExtentions {
                     settings.activate.call(this, event, info);
                 }
             });
-            
+
             active(control, settings.active);
             return control;
         }
@@ -83,7 +83,7 @@ module nts.uk.ui.jqueryExtentions {
         function active(control: JQuery, index: number): JQuery {
             control.find("#sidebar-area .navigator a").removeClass("active");
             control.find("#sidebar-area .navigator a").eq(index).addClass("active");
-            control.find("div[role=tabpanel]").addClass("disappear");
+            control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
             var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
             if ($displayPanel.length > 0) {
                 $displayPanel.removeClass("disappear");
@@ -91,13 +91,13 @@ module nts.uk.ui.jqueryExtentions {
             }
             return control;
         }
-        
-        function setErrorPosition($displayPanel: JQuery){
-            setTimeout(function (){ 
-                if($displayPanel.find(".sidebar-content-header") > 0){
-                    $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });         
-                }else { 
-                    setErrorPosition($displayPanel);      
+
+        function setErrorPosition($displayPanel: JQuery) {
+            setTimeout(function() {
+                if ($displayPanel.find(".sidebar-content-header").length > 0) {
+                    $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                } else {
+                    setErrorPosition($(".sidebar-content"));
                 }
             }, 10);
         }

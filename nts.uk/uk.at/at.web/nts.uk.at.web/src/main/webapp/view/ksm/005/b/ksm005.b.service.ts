@@ -7,9 +7,7 @@ module nts.uk.at.view.ksm005.b {
             updateMonthlyPattern: "ctx/at/schedule/pattern/monthly/update",
             deleteMonthlyPattern: "ctx/at/schedule/pattern/monthly/delete",
             findByMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/findByMonth",
-            saveMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/saveMonth",
-            findAllWorkType : "at/share/worktype/findAll",
-            findAllWorkTime: "at/shared/worktime/findByCompanyID"
+            saveMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/saveMonth"
         }
         
         /**
@@ -35,6 +33,7 @@ module nts.uk.at.view.ksm005.b {
          * call service add monthly pattern
          */
         export function addMonthlyPattern(dto: model.MonthlyPatternDto) :JQueryPromise<void> {
+            dto.code = nts.uk.text.padLeft(dto.code, '0', 3);
             return nts.uk.request.ajax('at', paths.addMonthlyPattern, {dto: dto});
         }
         /**
@@ -49,26 +48,14 @@ module nts.uk.at.view.ksm005.b {
         export function deleteMonthlyPattern(code: string) :JQueryPromise<void> {
             return nts.uk.request.ajax('at', paths.deleteMonthlyPattern, {monthlyPattnernCode: code});
         }
-        
-        /**
-         * call service find all work type of company login
-         */
-        export function findAllWorkType(): JQueryPromise<model.WorkTypeDto[]> {
-            return nts.uk.request.ajax('at', paths.findAllWorkType);
-        }
-        
-        /**
-         * call service find all work time of company login
-         */
-        export function findAllWorkTime(): JQueryPromise<model.WorkTimeDto[]> {
-            return nts.uk.request.ajax('at', paths.findAllWorkTime);
-        }
+                
         
         /**
          * call service save all work monthly setting by month
          */
-        export function saveMonthWorkMonthlySetting(settings: model.WorkMonthlySettingDto[]): JQueryPromise<void> {
-            return nts.uk.request.ajax('at', paths.saveMonthWorkMonthlySetting, {workMonthlySetting: settings});
+        export function saveMonthWorkMonthlySetting(settings: model.WorkMonthlySettingDto[], dto: model.MonthlyPatternDto, mode: number): JQueryPromise<void> {
+            dto.code = nts.uk.text.padLeft(dto.code, '0', 3);
+            return nts.uk.request.ajax('at', paths.saveMonthWorkMonthlySetting, {workMonthlySetting: settings, mode: mode, monthlyPattern: dto});
         }
         export module model {
 
@@ -81,6 +68,9 @@ module nts.uk.at.view.ksm005.b {
                 workingCode: string;
                 ymdk: number;
                 monthlyPatternCode: string;
+                workTypeName: string;
+                typeColor: number;
+                workingName: string;
             }
                 
              export interface WorkTypeDto {

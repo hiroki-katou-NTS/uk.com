@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.role.auth.item;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,36 +9,32 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class PersonInfoItemDetail {
-	@Setter
-	@Getter
+
 	private String roleId;
-	@Setter
-	@Getter
+
 	private String personInfoCategoryAuthId;
-	@Setter
-	@Getter
+
 	private String personItemDefId;
-	@Setter
-	@Getter
+
 	private int selfAuthType;
-	@Setter
-	@Getter
+
 	private int otherPersonAuth;
-	@Setter
-	@Getter
+
 	private String itemCd;
-	@Setter
-	@Getter
+
 	private String itemName;
-	@Setter
-	@Getter
+
 	private int abolitionAtr;
-	@Setter
-	@Getter
+
 	private int requiredAtr;
-	@Setter
-	@Getter
+
 	private boolean setting;
+
+	private String itemParentCd;
+
+	List<PersonInfoItemDetail> setItems;
 
 }

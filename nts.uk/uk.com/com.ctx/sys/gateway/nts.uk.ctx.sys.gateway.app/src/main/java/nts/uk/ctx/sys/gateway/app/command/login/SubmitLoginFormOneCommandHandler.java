@@ -10,21 +10,34 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.dom.login.Contract;
+import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 
+/**
+ * The Class SubmitLoginFormOneCommandHandler.
+ */
 @Stateless
-public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLoginFormOneCommand> {
+public class SubmitLoginFormOneCommandHandler extends LoginBaseCommand<SubmitLoginFormOneCommand> {
 
 	/** The user repository. */
 	@Inject
-	UserRepository userRepository;
-
+	private UserRepository userRepository;
+	
+	/** The contract repository. */
+	@Inject
+	private ContractRepository contractRepository;
+	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
-	protected void handle(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
+	protected void internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
 
 		SubmitLoginFormOneCommand command = context.getCommand();
 		String loginId = command.getLoginId();
@@ -32,10 +45,16 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 		// check validate input
 		this.checkInput(command);
 
+		//reCheck contract
+		//pre check contract
+		this.checkContractInput(command);
+		//contract auth
+		this.contractAccAuth(command);
+		
 		// find user by login id
 		Optional<User> user = userRepository.getByLoginId(loginId);
 		if (!user.isPresent()) {
-			throw new BusinessException("#Msg_301");
+			throw new BusinessException("Msg_301");
 		}
 
 		// check password
@@ -43,33 +62,87 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 
 		// check time limit
 		this.checkLimitTime(user);
-
-		// TODO check save to local storage(client incharge)
-		// if check -> save
-		// else -> remove
-
+		
+//		//set info to session
+//		this.setLoggedInfo(user.get());
+//		
+//		//set role Id for LoginUserContextManager
+//		this.setRoleId(user.get().getUserId());
 	}
 
+	/**
+	 * Check input.
+	 *
+	 * @param command the command
+	 */
 	private void checkInput(SubmitLoginFormOneCommand command) {
-		if (command.getLoginId().isEmpty() || command.getLoginId() == null) {
-			throw new BusinessException("#Msg_309");
+		//check input loginId
+		if (command.getLoginId().trim().isEmpty() || command.getLoginId() == null) {
+			throw new BusinessException("Msg_309");
 		}
-
-		if (command.getPassword().isEmpty() || command.getPassword() == null) {
-			throw new BusinessException("#Msg_310");
+		//check input password
+		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+			throw new BusinessException("Msg_310");
+		}
+	}
+	
+	/**
+	 * Check contract input.
+	 *
+	 * @param command the command
+	 */
+	private void checkContractInput(SubmitLoginFormOneCommand command) {
+		if (StringUtil.isNullOrEmpty(command.getContractCode(),true)) {
+			throw new RuntimeException();
+		}
+		if (StringUtil.isNullOrEmpty(command.getContractPassword(),true)) {
+			throw new RuntimeException();
 		}
 	}
 
+	/**
+	 * Contract acc auth.
+	 *
+	 * @param command the command
+	 */
+	private void contractAccAuth(SubmitLoginFormOneCommand command) {
+		Optional<Contract> contract = contractRepository.getContract(command.getContractCode());
+		if (contract.isPresent()) {
+			// check contract pass
+			if (!PasswordHash.verifyThat(command.getContractPassword(), contract.get().getContractCode().v())
+					.isEqualTo(contract.get().getPassword().v())) {
+				throw new RuntimeException();
+			}
+			// check contract time
+			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
+					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
+				throw new RuntimeException();
+			}
+		} else {
+			throw new RuntimeException();
+		}
+	}
+	
+	/**
+	 * Compare hash password.
+	 *
+	 * @param user the user
+	 * @param password the password
+	 */
 	private void compareHashPassword(Optional<User> user, String password) {
-		// TODO compare hash string here
-		if (!user.get().getPassword().v().equals(password)) {
-			throw new BusinessException("#Msg_302");
+		if (!PasswordHash.verifyThat(password, user.get().getUserId()).isEqualTo(user.get().getPassword().v())) {
+			throw new BusinessException("Msg_302");
 		}
 	}
 
+	/**
+	 * Check limit time.
+	 *
+	 * @param user the user
+	 */
 	private void checkLimitTime(Optional<User> user) {
-		if (!user.get().getExpirationDate().after(GeneralDate.today())) {
-			throw new BusinessException("#Msg_316");
+		if (user.get().getExpirationDate().before(GeneralDate.today())) {
+			throw new BusinessException("Msg_316");
 		}
 	}
 }

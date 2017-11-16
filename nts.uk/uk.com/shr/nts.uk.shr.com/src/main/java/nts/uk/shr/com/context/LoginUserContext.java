@@ -1,28 +1,67 @@
 package nts.uk.shr.com.context;
 
-public class LoginUserContext {
+import nts.uk.shr.com.context.loginuser.SelectedLanguage;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
-	public String companyCode() {
-		return "0001";
-	}
+public interface LoginUserContext {
 	
-	public String employeeCode() {
-		return "1234567890AB";
-	} 
+	public static final String KEY_SESSION_SCOPED = "LoginUserContext";
 	
-	public String personId(){
-		return "000426a2-181b-4c7f-abc8-6fff9f4f983a";
-	} 
+	boolean hasLoggedIn();
 	
-	public String employeeId(){
-		return "000426a2-181b-4c7f-abc8-6fff9f4f983a";
-	}
+	boolean isEmployee();
 	
-	public String contractCode() {
-		return "000000000000";
-	}
+	/**
+	 * Returns user ID.
+	 * @return user ID
+	 */
+	String userId();
 	
-	public String companyId() {
-		return this.contractCode() + "-" + this.companyCode();
-	}
+	/**
+	 * Returns person ID.
+	 * @return person ID
+	 */
+	String personId();
+	
+	/**
+	 * Returns contract code.
+	 * @return contract code
+	 */
+	String contractCode();
+	
+	/**
+	 * Returns company ID.
+	 * @return company ID
+	 */
+	String companyId();
+	
+	/**
+	 * Returns company code.
+	 * @return company code
+	 */
+	String companyCode();
+	
+	/**
+	 * Returns employee ID.
+	 * @return employee ID
+	 */
+	String employeeId();
+	
+	/**
+	 * Returns employee code.
+	 * @return employee code
+	 */
+	String employeeCode();
+	
+	/**
+	 * Returns roles.
+	 * @return roles
+	 */
+	LoginUserRoles roles();
+	
+	/**
+	 * Returns language ID
+	 * @return language ID
+	 */
+	SelectedLanguage language();
 }

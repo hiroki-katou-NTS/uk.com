@@ -1,0 +1,5 @@
+table {border-collapse: collapse;}
+
+table, td {border: 1px solid black;}
+td.fixcolor {background-color: #CFF1A5;text-align: left; padding :5px;}
+td.fix_padding{padding :5px;}

@@ -5,23 +5,25 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
 import lombok.Getter;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * Gets the contract period.
- *
- * @return the contract period
+ * The Class Contract.
  */
 @Getter
 public class Contract {
 
+	//パスワード
 	/** The password. */
-	private RawPassword password;
+	private HashPassword password;
 
+	//契約コード
 	/** The contract code. */
 	private ContractCode contractCode;
 
+	//契約期間
 	/** The contract period. */
-	private Period contractPeriod;
+	private DatePeriod contractPeriod;
 
 	/**
 	 * @param password

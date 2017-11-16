@@ -5,7 +5,7 @@ import nts.arc.layer.dom.AggregateRoot;
 
 public class ReferenceTypeState extends AggregateRoot {
 	@Getter
-	protected ReferenceType referenceType;
+	protected ReferenceTypes referenceType;
 
 	public static ReferenceTypeState createMasterReferenceCondition(String masterType) {
 		return MasterReferenceCondition.createFromJavaType(masterType);

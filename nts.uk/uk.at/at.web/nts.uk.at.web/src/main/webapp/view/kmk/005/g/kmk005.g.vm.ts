@@ -21,13 +21,16 @@ module nts.uk.at.view.kmk005 {
             ]);
 
             constructor() {
-                let self = this;
-                //get use setting 
+                let self = this,
+                    tabs = self.tabs();
+                //get use setting
                 nts.uk.at.view.kmk005.g.service.getUseSetting()
-                    .done((useSetting) => {
-                        self.tabs()[1].display(useSetting.workplaceUseAtr);
-                        self.tabs()[2].display(useSetting.personalUseAtr);
-                        self.tabs()[3].display(useSetting.workingTimesheetUseAtr);
+                    .done(x => {
+                        if (x) {
+                            tabs[1].display(x.workplaceUseAtr);
+                            tabs[2].display(x.personalUseAtr);
+                            tabs[3].display(x.workingTimesheetUseAtr);
+                        }
                     });
 
                 self.tabs().map((t) => {

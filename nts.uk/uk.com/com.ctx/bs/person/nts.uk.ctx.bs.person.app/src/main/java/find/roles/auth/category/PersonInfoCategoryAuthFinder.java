@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PersonInfoCategoryAuthFinder
@@ -22,17 +23,26 @@ public class PersonInfoCategoryAuthFinder {
 	private PersonInfoCategoryAuthRepository personCategoryAuthRepository;
 
 	public List<PersonInfoCategoryDetailDto> getAllCategory(String roleId) {
-		return this.personCategoryAuthRepository.getAllCategory(roleId).stream()
+		return this.personCategoryAuthRepository
+				.getAllCategory(roleId, AppContexts.user().contractCode(), AppContexts.user().companyId()).stream()
 				.map(x -> PersonInfoCategoryDetailDto.fromDomain(x)).collect(Collectors.toList());
 
 	}
+	
+	public List<PersonInfoCategoryAuthDto> getAllCategoryAuth(String roleId) {
+		return this.personCategoryAuthRepository
+				.getAllCategoryAuthByRoleId(roleId).stream()
+				.map(x -> PersonInfoCategoryAuthDto.fromDomain(x)).collect(Collectors.toList());
 
-	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+	}
+
+	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId) {
 		Optional<PersonInfoCategoryAuth> opt = this.personCategoryAuthRepository
-				.getDetailPersonCategoryAuthByPId(personCategoryAuthId);
+				.getDetailPersonCategoryAuthByPId(roleId, personCategoryAuthId);
 		if (!opt.isPresent())
 			return null;
 		return opt.map(c -> PersonInfoCategoryAuthDto.fromDomain(c)).get();
 
 	}
+
 }

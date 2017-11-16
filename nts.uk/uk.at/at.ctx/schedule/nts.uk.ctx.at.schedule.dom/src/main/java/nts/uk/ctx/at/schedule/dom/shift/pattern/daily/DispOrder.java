@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 /**
  * The Class NumberDayCalendar.
  */
-@IntegerRange(max = 99, min = 1)
+@IntegerRange(max = 99, min = 0)
 public class DispOrder extends IntegerPrimitiveValue<DispOrder> {
 
 	/** The Constant serialVersionUID. */

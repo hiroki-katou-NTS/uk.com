@@ -5,31 +5,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonInfoCategoryDetail {
-	@Setter
-	@Getter
 	private String categoryId;
-	@Setter
-	@Getter
+
 	private String categoryCode;
-	@Setter
-	@Getter
+	
 	private String categoryName;
-	@Setter
-	@Getter
+	
 	private int categoryType;
-	@Setter
-	@Getter
+	
 	private int allowPersonRef;
 	
-	@Setter
-	@Getter
 	private int allowOtherRef;
 	
-	@Setter
-	@Getter
-	private boolean isSetting;
+	private int personEmployeeType;
 	
+	private boolean isSetting;	
 }

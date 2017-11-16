@@ -23,7 +23,7 @@ public class BPTimeItemUpdateCommandhandler extends CommandHandler<List<BPTimeIt
 	}
 	private BonusPayTimeItem toBonusPayTimeItemDomain(BPTimeItemUpdateCommand bpTimeItemUpdateCommand,String companyId ) {
 		return BonusPayTimeItem.createFromJavaType(companyId,
-				bpTimeItemUpdateCommand.getTimeItemId(), bpTimeItemUpdateCommand.getUseAtr(),
+				bpTimeItemUpdateCommand.getUseAtr(),
 				bpTimeItemUpdateCommand.getTimeItemName(), bpTimeItemUpdateCommand.getTimeItemNo(),
 				bpTimeItemUpdateCommand.getTimeItemTypeAtr());
 

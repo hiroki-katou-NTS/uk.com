@@ -11,17 +11,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.BasicWorkSettingFindDto;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.WorkplaceBasicWorkFindDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class WorkplaceBasicWorkFinder.
@@ -40,10 +40,6 @@ public class WorkplaceBasicWorkFinder {
 	/** The worktime repo. */
 	@Inject
 	private WorkTimeRepository worktimeRepo;
-
-	/** The internationalization. */
-	@Inject
-	private IInternationalization internationalization;
 	
 	/**
 	 * Find.
@@ -102,7 +98,7 @@ public class WorkplaceBasicWorkFinder {
 			}).findFirst().orElse(null);
 			// Set WorkTypeDisplayName to Dto
 			if (worktype == null) {
-				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
+				item.setWorkTypeDisplayName(TextResource.localize("KSM006_13"));
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
@@ -114,7 +110,7 @@ public class WorkplaceBasicWorkFinder {
 
 			// Set WorkingDisplayName
 			if (worktime == null) {
-				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
+				item.setWorkTypeDisplayName(TextResource.localize("KSM006_13"));
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}

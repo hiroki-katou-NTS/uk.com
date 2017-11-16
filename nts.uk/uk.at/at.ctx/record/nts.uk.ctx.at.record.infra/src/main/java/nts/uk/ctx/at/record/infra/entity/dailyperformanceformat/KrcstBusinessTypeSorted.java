@@ -28,7 +28,7 @@ public class KrcstBusinessTypeSorted extends UkJpaEntity implements Serializable
 	@EmbeddedId
     public KrcstBusinessTypeSortedPK krcstBusinessTypeSortedPK;
 	
-	@Column(name ="ORDER")
+	@Column(name ="ORDER_SORTED")
 	public BigDecimal order;
 	
 	@Override

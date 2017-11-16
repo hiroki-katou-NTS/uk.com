@@ -121,6 +121,8 @@ module nts.uk.ui.gridlist {
         for (let i = 0; i < 400; i++) {
             if (i % 7 === 0) {
                 colorsTable.push(new TextColor(i, "id", "text-color1"));
+            } else if (i % 3 === 0) {
+                colorsTable.push(new TextColor(i, "id", "#B3AEF1"));    
             }
         }
         
@@ -146,15 +148,18 @@ module nts.uk.ui.gridlist {
                             virtualization: true,
                             virtualizationMode: 'continuous',
                             enter: 'right',
+                            autoFitWindow: true,
                             preventEditInError: false,
+                            hidePrimaryKey: true,
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
 //                            adjustVirtualHeights: false,
                             columns: [
-                                { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
+                                { headerText: 'ID', key: 'id', dataType: 'number', width: '60px', ntsControl: 'Label', hidden: false },
+                                { headerText: 'Picture', key: "picture", dataType: "string", width: '60px', ntsControl: 'Image' },
 //                                 headerText: 'Common1',
 //                                    group: [
-                                        { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '190px', ntsControl: 'Checkbox' },
+                                        { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox' },
                                             { headerText: 'RULECODE', key: 'ruleCode', dataType: 'number', width: '100px',
                                                             constraint: { 
                                                                 primitiveValue: 'ProcessingNo',
@@ -162,7 +167,7 @@ module nts.uk.ui.gridlist {
                                                             }
                                             },
 //                                    ],
-                                { headerText: 'Inbound time', key: 'time', dataType: 'string', width: '140px', 
+                                { headerText: 'Inbound time', key: 'time', dataType: 'string', width: '140px',
                                                 constraint: { 
                                                                 primitiveValue: 'SampleTimeClock',
                                                                 required: true
@@ -210,27 +215,35 @@ module nts.uk.ui.gridlist {
                             ], 
                             features: [
 //                                { name: 'Sorting', type: 'local' },
-                                        { name: 'Resizing' },
+                                        { name: 'Resizing',
+                                            columnSettings: [{
+                                                columnKey: 'id', allowResizing: false, minimumWidth: 0
+                                            }]
+                                        },
                                         { name: 'MultiColumnHeaders'},
 //                                        { name: "Responsive",
 //                                            enableVerticalRendering: true
 //                                        },
                                         {
                                             name: 'Paging',
-                                            pageSize: 50,
+                                            pageSize: 100,
                                             currentPageIndex: 0
                                         },
                                         { name: 'ColumnFixing', fixingDirection: 'left',
 //                                            syncRowHeights: true,
                                             showFixButtons: false,
-                                            columnSettings: [{ columnKey: 'id', isFixed: true },
+                                            columnSettings: [
+                                                            { columnKey: 'id', isFixed: true },
+                                                            { columnKey: 'picture', isFixed: true },
                                                              { columnKey: 'flag', isFixed: true },
                                                              { columnKey: 'ruleCode', isFixed: true } ]},
                                         { name: 'Summaries', 
                                           showSummariesButton: false,
                                           showDropDownButton: false,
                                           columnSettings: [
-                                            { columnKey: 'id', allowSummaries: true, 
+                                            { columnKey: 'id', allowSummaries: false, 
+                                                summaryOperands: [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }] },
+                                            { columnKey: 'picture', allowSummaries: true,
                                                 summaryOperands: [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }] },
                                             { columnKey: 'flag', allowSummaries: false },
                                             { columnKey: 'addressCode1', allowSummaries: false },
@@ -276,6 +289,11 @@ module nts.uk.ui.gridlist {
                                       ],
                             ntsFeatures: [{ name: 'CopyPaste' },
                                             { name: 'CellEdit' },
+                                            { name: 'Storage',
+                                                type: 'Remote',
+                                                loadPath: 'sample/store/load',
+                                                savePath: 'sample/store/save'
+                                            },
                                             { name: 'CellColor', columns: [ 
                                                   { 
                                                     key: 'ruleCode', 
@@ -313,7 +331,8 @@ module nts.uk.ui.gridlist {
                                                     { key: 'ruleCode', color: 'header1' },
                                                     { key: 'combo', color: 'header2' },
                                                     { key: 'header3', color: 'header2' },
-                                                    { key: 'header0', color: 'header1' }
+                                                    { key: 'header0', color: 'header1' },
+                                                    { key: 'time', color: '#E9AEF1' }
                                                 ]
                                             },
                                             { name: "Sheet", 
@@ -336,7 +355,8 @@ module nts.uk.ui.gridlist {
                                             { name: 'Combobox2', options: comboItems2, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'name', controlType: 'ComboBox', enable: true },
                                             { name: 'Combobox3', options: comboItems3, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'name', controlType: 'ComboBox', enable: true },
                                             { name: 'Link1', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
-                                            { name: 'Link2', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' } ]
+                                            { name: 'Link2', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
+                                            { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' }]
                             });
         $("#run").on("click", function() {
             var source = $("#grid2").igGrid("option", "dataSource");
@@ -350,6 +370,12 @@ module nts.uk.ui.gridlist {
         });
         $("#disable-ctrl").on("click", function() {
             $("#grid2").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
+        });
+        $("#enable-ctrls").on("click", function() {
+            $("#grid2").ntsGrid("enableNtsControls", "header01", "ComboBox");
+        });
+        $("#disable-ctrls").on("click", function() {
+            $("#grid2").ntsGrid("disableNtsControls", "header01", "ComboBox");
         });
         
         function totalNumber(data) {

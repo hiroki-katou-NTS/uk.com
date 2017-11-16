@@ -1,0 +1,323 @@
+<div>
+	<div class="table m5-table">
+		<div class="cell m5-column1">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_16')}</div>
+		</div>
+		<div class="cell m5-column2">
+			<div class="cf m5-switch" data-bind="ntsSwitchButton: {
+						name: '#[KAF002_16]',
+						options: stampAtrList,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: stampAtr,
+						enable: true }"></div>
+		</div>
+	</div>
+	<div class="table m5-table">
+		<div class="cell m5-column1">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
+		</div>
+		<div class="cell m5-column2">
+			<div data-bind="if: stampAtr() == 0">
+				<div id="m5-div-a">
+					<div id="m5-backgroud-a"></div>
+					<table id="m5-table-a">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label">Demo</span>	
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: startTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]',
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>
+									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
+										<div class="m5-inline-div" data-bind="with: startLocation">
+											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
+										</div>
+									</div>	
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: endTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]', 
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>	
+									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
+										<div class="m5-inline-div" data-bind="with: endLocation">
+											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
+										</div>
+									</div>
+								</td>
+							</tr>	
+						</tbody>
+					</table>	
+				</div>
+			</div>
+			<div data-bind="if: stampAtr() == 1">
+				<div id="m5-div-b">
+					<div id="m5-backgroud-b"></div>	
+					<table id="m5-table-b">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_24')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label" data-bind="text: '外出時間 '+($index()+1)"></span>	
+								</td>
+								<td>
+									<span class="m5-combo-box" data-bind="ntsComboBox: {
+												name: '#[KAF002_24]',
+												options: $parent.stampGoOutAtrList,
+												optionsValue: 'code',
+												value: stampGoOutAtr,
+												optionsText: 'name',
+												enable: true,
+												columns: [
+													{ prop: 'name', length: 3 },
+												]}"></span>	
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: startTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]',
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>
+									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
+										<div class="m5-inline-div" data-bind="with: startLocation">
+											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
+										</div>
+									</div>
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: endTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]', 
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>	
+									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
+										<div class="m5-inline-div" data-bind="with: endLocation">
+											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
+										</div>
+									</div>
+								</td>
+							</tr>	
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div data-bind="if: stampAtr() == 2">
+				<div id="m5-div-c">
+					<div id="m5-backgroud-c"></div>
+					<table id="m5-table-c">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label" data-bind="text: '育児時間 '+($index()+1)"></span>	
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: startTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]',
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: endTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]', 
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>
+								</td>
+							</tr>	
+						</tbody>
+					</table>	
+				</div>
+			</div>
+			<div data-bind="if: stampAtr() == 3">
+				<div id="m5-div-d">
+					<div id="m5-backgroud-d"></div>
+					<table id="m5-table-d">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label" data-bind="text: '介護時間 '+($index()+1)"></span>	
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: startTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]',
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: endTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]', 
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>
+								</td>
+							</tr>	
+						</tbody>
+					</table>	
+				</div>
+			</div>
+			<div data-bind="if: stampAtr() == 4">
+				<div id="m5-div-e" data-bind="style: { width: stampPlaceDisplay() == 1 ? '874px' : '653px' }">
+					<div id="m5-backgroud-e"></div>
+					<table id="m5-table-e">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_25')}</span>
+								</td>
+								<td data-bind="style: { display: stampPlaceDisplay() == 1 ? '' : 'none' }">
+									<span class="label">#{i18n.getText('KAF002_26')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label" data-bind="text: '応援時間 '+($index()+1)"></span>	
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: startTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]',
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>
+								</td>
+								<td>
+									<div class="m5-inline-div" data-bind="with: endTime">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: '#[KAF002_20]', 
+														constraint:'TimeWithDayAttr', 
+														value: value,
+														required: checked,
+														enable: checked }" />	
+									</div>
+								</td>
+								<td>	
+									<div class="m5-inline-div" data-bind="with: supportCard">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
+										<button data-bind="click: function(){ $parents[1].openSelectCardDialog() }, enable: checked">#{i18n.getText('KAF002_15')}</button>
+										<span class="label m5-label limited-label" data-bind="name: '#[KAF002_25]', text: name, css: { m5DisableEdit: !checked() }"></span>	
+									</div>
+								</td>
+								<td data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? '' : 'none' }">
+									<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+										<div class="m5-inline-div" data-bind="with: supportLocation">
+											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('support', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
+										</div>
+									</div>
+								</td>
+							</tr>	
+						</tbody>
+					</table>	
+				</div>
+			</div>		
+		</div>
+	</div>
+</div>

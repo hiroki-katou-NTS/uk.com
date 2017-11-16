@@ -54,7 +54,7 @@ module cmm044.a.viewmodel {
         selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
-
+        baseDate: KnockoutObservable<Date>;
         isShow: KnockoutObservable<boolean>;
 
         constructor() {
@@ -69,6 +69,7 @@ module cmm044.a.viewmodel {
             ]);
 
             self.dateValue = ko.observable({});
+            self.baseDate = ko.observable(new Date());
 
             self.displayEmployeeInfo1 = ko.observable(true);
             self.displayEmployeeInfo2 = ko.observable(true);
@@ -191,9 +192,17 @@ module cmm044.a.viewmodel {
             var dfd = $.Deferred();
             self.currentItem(new model.AgentAppDto(null, "", "", "", "", null, "", null, "", null, "", null));
             self.initCCG001();
+
             if (self.empItems().length == 0) {
                 self.isEnableDelete(false);
                 self.isEnableAdd(false);
+                service.searchEmployeeByLogin(self.baseDate()).done(data => {
+                    if (data.length > 0) {
+                        self.searchEmployee(data);
+                    }
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });
             }
             _.defer(() => {
                 $("#daterangepicker").find(".ntsStartDatePicker").focus();
@@ -293,6 +302,10 @@ module cmm044.a.viewmodel {
          */
         addAgent() {
             var self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+
             nts.uk.ui.block.invisible();
             self.currentItem().agentAppType1(self.agentAppType1());
             self.currentItem().agentAppType2(self.agentAppType2());

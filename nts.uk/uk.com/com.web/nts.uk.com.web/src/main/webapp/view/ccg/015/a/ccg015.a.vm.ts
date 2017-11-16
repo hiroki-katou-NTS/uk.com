@@ -12,9 +12,9 @@ module nts.uk.com.view.ccg015.a {
             languageListOption: KnockoutObservableArray<ItemCbbModel>;
             languageSelectedCode: KnockoutObservable<string>;
             listLinkScreen: KnockoutObservableArray<any>;
-            
+
             isProcess: KnockoutObservable<boolean>;
-            breakNewMode: boolean; 
+            breakNewMode: boolean;
             constructor() {
                 var self = this;
                 var linkIconImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAlCAYAAADWSWD3AAAF7ElEQVRYR82Y209UVxTG197nMsyAQJyRVhqQi5pQQExMDI2XVFIjJn2wiXhJXxrTpH9TH5r0oYkPJH3wAUiqqVHjiFARuWMDgs5hqFgY5sCZM2dfmnWYOYLO6IxnsO5HmH32b3/7W2uvvQjs8pBSEoBeOgmgfAnAAXoEIUT6WZZkJ299/LayBLO6BqqyBgHvf34W0IEoqmVXSKoEGadJGWKrDfCD7QecZGFXYC5opmhYl2qtoKKKACh+YD0xCNFBQDikNu7ZFPPPhGSPRYAYfsCJlH+q8xtL4QBNH5QqadMU2S4I2Q8g9VJAw9bmKyLwnWqy6VlTzv4hpBP1A04M+XOIOXqrQsi3r2LkxPO/lWZFgSogpVEaJOBp0rOnrkqisuV1Z/SByZ8OAHEGywIiHoEmC+BrXoxdyEv5y56UTU+oOr22MElPTz9Qw4ouUZ2SeBpPS0oJV672SE3TbCEtI8HGhywxe5fL1BiVZXNO0Fkpxi7kqfytMmjz04oOPy1O09MzD9VKVfcV3G+5CqF7enpA0zT8sM2ltWKKibkNNjvGiX1XShgqxi4fG9oVHgC4kJZl8sl4UkwPSrAHhCQF+/z/gPYSi5CWbYopw3RmooJa/YWC54XGI2WMASH+ra0oStYeLnA6nQZVVYFSKoVM2aaYNkxnqmDwnNCKJkDXdaitrXWDyM/A+QsLC3Dp0iX0tPupmZkZ2Lt3L+zbt8+1i5B2RvHJqKCp9yqeE5ooDCKRCHR3d/vh9eb29vbChQsXPOj+/n4IBAJw9OhRF34LPJ0Bn4gK6vQLKfJ6PC90OByG8+fP+4ZGpUdGRqCjowPQJjhu3rwJi4uL0NzcDG1tbYBruZkRHNvkk0bSeTf4rkPn2vWtW7fAMAzXenV1dXDkyJFt4Mw2+ZSRdEajgvKcivuGxoWL8T2l1FU6Ho+7ymOwY+ygVV4rLmyTT+QF9w29uroKyWQSM0FBVsKs8ejRI8B52Tmcc6ipqYFjx4554ADSTvLx3OC5bkQMxEI9PTQ0BOPj4262KXRgGn0zlQoh3DWPHz/uBSfenklX8ZEdVvGt9PDwMExMTBQFnW9zaLOqqiro7OzcpjiCT8ZMPnqPg32DMzX6SUFni6vKykro6uqCUCiEfxIAkEzw4dEkm/0dIN33SUGjRcrKyqC9vR0OHz6crVPstFyJ/evcvsfAusEZ8a90qTyNwVheXu7m7UOHDr0GFi+NVXY36kDSS3++lcYremlpya0lChmYMfBi2dzc9IIRgSsqKlzggwebsZR3S1hb/GOssXs7gN2622/2wDyLixY6MMtgnl5eXvbyNHoYgZuamnAjGeC4scbuvw1MiPQNXSjs9t/hjYing9miuroaWltboaGhwa36UOGUiBkJNpgTGL+z69AIFovF3Fsve5kgNFoEizJU+MCBA9uAXxgJNhR1YD1v0bTr0JgR+vr64Ny5c16VNzAwALZtu0VUfX19BljaKfHcSLCRqAOv3lmefhTo69evu4+A7K2JGQdL0sbGRg/YEovGOnv8XuB32qOU9TRCX7x40VM6kUhAeXkIVBUfutLe5M+MJH9SEHBeaHy5BINBaGlpKSozvBmUWF+gPcbGxnZAZ373QcB5obGFgAGEb7lSvBHxmZVpIWT3tQ0YLbH63ifWdkEyzRr1pKrDjwuT9MzUA7Va1bEZWbqRadZk7ZEBnjOSfDTqwFpRwK7S2BYTVlkH1eDySoycfT5L9ytqiVpiW10qRYLUvzl1maqqJgCEtcHm46YYGXRgvah+R1ZGtwEZs2Kfg8I7gcBJRYW6EjYf8W4PA8i6z8j3FQTUtQ0+P5cQw2NcbhTdWdoGLckz+DWgWVoEgNdJCtWlavMCIUEJ0AKSd9XqV2pSYml8jT28w2XqCZVq0T08DzpTw+5KQ13ZoEFdSbdJAt1V2lc1685f9xlhd8p158WHdEt3QJcu5HZ+ybMeZR0gISwUORXUxHQErpnFtHbfSqW7BZw9QbQebEA1VWVISSuJL/bUJwg5w/ys+x++EQQ4vh/yigAAAABJRU5ErkJggg==";
@@ -27,7 +27,7 @@ module nts.uk.com.view.ccg015.a {
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
-                    if (selectedTopPageCode && selectedTopPageCode!="") {
+                    if (selectedTopPageCode && selectedTopPageCode != "") {
                         service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
                             self.loadTopPageItemDetail(data);
                             $('.save-error').ntsError('clear');
@@ -54,10 +54,19 @@ module nts.uk.com.view.ccg015.a {
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_18"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/014/a/index.xhtml"); } },
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) {/*TODO go to ccg018*/ } },
                 ]);
-                
+
                 self.isProcess = ko.observable(false);
                 self.breakNewMode = false;
                 //end constructor
+
+                $("#preview-iframe").on("load", function() {
+                    console.log("done");
+                    if (self.isNewMode() == true)
+                        $("#inp_code").focus();
+                    else
+                        $("#inp_name").focus();
+                });
+
             }
 
             start(): JQueryPromise<void> {
@@ -107,7 +116,7 @@ module nts.uk.com.view.ccg015.a {
             private collectData(): TopPageDto {
                 var self = this;
                 //mock data
-                var data: TopPageDto = { topPageCode: _.escape(nts.uk.text.padLeft(self.topPageModel().topPageCode(), '0', 4)), topPageName: _.escape(self.topPageModel().topPageName()), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
+                var data: TopPageDto = { topPageCode: _.escape(self.topPageModel().topPageCode()), topPageName: _.escape(self.topPageModel().topPageName()), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
                 return data;
             }
 
@@ -129,7 +138,7 @@ module nts.uk.com.view.ccg015.a {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
                                 self.isProcess(false);
                             });
-//                            nts.uk.ui.dialog.alert(res.message);
+                            //                            nts.uk.ui.dialog.alert(res.message);
                         });
                     }
                     else {
@@ -186,7 +195,7 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 var layoutId = self.topPageModel().layoutId();
                 var topPageCode = self.topPageModel().topPageCode();
-                var transferData: commonModel.TransferLayoutInfo = {parentCode: topPageCode, layoutID: layoutId, pgType: 0};
+                var transferData: commonModel.TransferLayoutInfo = { parentCode: topPageCode, layoutID: layoutId, pgType: 0 };
                 nts.uk.ui.windows.setShared('layout', transferData);
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
                     title: "レイアウトの設定",
@@ -208,12 +217,10 @@ module nts.uk.com.view.ccg015.a {
                     nts.uk.ui.errors.clearAll();
                 }
                 //wait clear error
-                setTimeout(function() {
-                    $("#inp_code").focus();
-                }, 500);
                 self.changePreviewIframe(null);
+                $("#preview-iframe").trigger("load");
             }
-            
+
             private removeTopPage() {
                 var self = this;
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
@@ -222,17 +229,19 @@ module nts.uk.com.view.ccg015.a {
                     var listLength = self.listTopPage().length;
                     service.deleteTopPage(self.toppageSelectedCode()).done(function() {
                         //delete success
-                        //remove follow
-                        self.loadTopPageList().done(function() {
-                            var lst = self.listTopPage();
-                            if (lst.length > 0) {
-                                if (removeIndex < listLength - 1) {
-                                    self.toppageSelectedCode(lst[removeIndex].code);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            //remove follow
+                            self.loadTopPageList().done(function() {
+                                var lst = self.listTopPage();
+                                if (lst.length > 0) {
+                                    if (removeIndex < listLength - 1) {
+                                        self.toppageSelectedCode(lst[removeIndex].code);
+                                    }
+                                    else {
+                                        self.toppageSelectedCode(lst[removeIndex - 1].code);
+                                    }
                                 }
-                                else {
-                                    self.toppageSelectedCode(lst[removeIndex - 1].code);
-                                }
-                            }
+                            });
                         });
                     }).fail();
                 }).ifNo(function() {
@@ -240,7 +249,7 @@ module nts.uk.com.view.ccg015.a {
             }
             //for frame review layout
             private changePreviewIframe(layoutID: string): void {
-                    $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
+                $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
             }
             private getIndexOfRemoveItem(code: string): number {
                 var self = this;

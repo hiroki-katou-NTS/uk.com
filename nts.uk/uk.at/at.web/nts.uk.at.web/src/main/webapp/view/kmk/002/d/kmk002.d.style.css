@@ -1,0 +1,16 @@
+#tbl-formulaSetting td {
+	padding-bottom: 10px;
+	padding-left: 20px;
+}
+
+#cbb-operator {
+	width: 60px;
+}
+
+.inline-table {
+	display: inline-table;
+}
+
+.inputNumberic {
+	width: 178px
+}

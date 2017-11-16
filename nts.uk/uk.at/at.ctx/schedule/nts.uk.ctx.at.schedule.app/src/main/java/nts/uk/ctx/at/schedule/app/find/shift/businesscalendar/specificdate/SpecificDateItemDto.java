@@ -7,8 +7,6 @@ import lombok.Value;
 @Value
 public class SpecificDateItemDto {
 
-	public String timeItemId;
-	
 	public int useAtr;
 	
 	public BigDecimal specificDateItemNo;

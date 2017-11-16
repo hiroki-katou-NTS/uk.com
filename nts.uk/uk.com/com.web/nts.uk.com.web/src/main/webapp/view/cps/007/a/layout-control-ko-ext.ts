@@ -1,30 +1,34 @@
 module nts.custombinding {
-
     import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
     import text = nts.uk.resource.getText;
+    import info = nts.uk.ui.dialog.info;
+    import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import parseTime = nts.uk.time.parseTime;
+
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraints'];
 
     export class LayoutControl implements KnockoutBindingHandler {
-        $tmp = $(`<div>
-                <style type="text/css" rel="stylesheet">
-                    .layout-control.editable{
-                        width: 1000px;
-                    }                    
+        private style = `<style type="text/css" rel="stylesheet" id="layout_style">
+                    .layout-control.dragable{
+                        width: 1245px;
+                    }
                     .layout-control .left-area,
                     .layout-control .right-area,
                     .layout-control .add-buttons,
                     .layout-control .drag-panel {
                         float: left;
                     }
-                    
+
                     .layout-control .left-area {
                         margin-right: 15px;
                     }
-                    
+
                     .layout-control .form-group {
                         margin-bottom: 5px;
                     }
@@ -41,7 +45,7 @@ module nts.custombinding {
                     .layout-control #cps007_cbx_control {
                         min-width: 248px;
                     }
-                    
+
                     .layout-control .ntsControl.radio-control {
                         width: 100%;
                         padding-bottom: 3px;
@@ -52,41 +56,45 @@ module nts.custombinding {
                         padding-right: 5px;
                         box-sizing: border-box;
                     }
-                    
+
                     .layout-control .ntsControl.search-control .nts-editor {
                         width: 178px !important;
                     }
-                    
+
+                    .layout-control .ui-iggrid-scrolldiv {
+                        background-color: #fff;
+                    }
+
                     .layout-control .add-buttons {
                         margin-right: 15px;
                         padding-top: 220px;
                     }
-                    
+
                     .layout-control .drag-panel {
                         border: 1px solid #ccc;
                         border-radius: 10px;
-                        width: 572px;
+                        width: 810px;
                         height: 615px;
                         padding: 10px;
                         box-sizing: border-box;
                     }
-                    
+
                     .layout-control div.ui-sortable {
                         overflow-x: hidden;
                         overflow-y: scroll;
                         padding-right: 10px;
                         box-sizing: border-box;
                     }
-                    
+
                     .layout-control.readonly div.ui-sortable {
                         height: 100%;
                     }
-                    
-                    .layout-control.editable div.ui-sortable {
+
+                    .layout-control.dragable div.ui-sortable {
                         max-height: 94%;
                         margin-bottom: 3px;
                     }
-                    
+
                     .layout-control .item-classification {
                         padding: 3px;
                         position: relative;
@@ -94,67 +102,214 @@ module nts.custombinding {
                         background-color: #fff;
                         border: 1px dashed transparent;
                     }
-                    
-                    .layout-control .item-classification>div.item-control>*,
-                    .layout-control .item-classification>div.item-controls>* {
-                        overflow: hidden;
-                        display: inline-block;
-                        vertical-align: middle;
-                    }
 
-                    .layout-control .item-classification>div.item-controls>* {
+                    .layout-control .item-classification div.item-control>*,
+                    .layout-control .item-classification div.item-controls>* {
                         vertical-align: top;
+                        display: inline-block;
                     }
 
-                    .layout-control .item-classification>div.item-controls table,
-                    .layout-control .item-classification>div.item-controls table th,
-                    .layout-control .item-classification>div.item-controls table td {
-                        width: 380px;
-                        border: 1px solid #ccc;
+                    .layout-control .item-classification div.item-control>.set-items,
+                    .layout-control .item-classification div.item-control>.single-items {
+                        margin-top: 3px;
                     }
 
-                    .layout-control .item-classification>div.item-controls table th {
+                    .layout-control .item-classification div.set-item-list,
+                    .layout-control .item-classification div.multiple-items {
+                        margin-left: 5px;
+                    }
+
+                    .layout-control .item-classification div.multiple-items {
+                        overflow: hidden;
+                    }
+
+                    .layout-control .item-classification div.set-item-list div.set-item,
+                    .layout-control .item-classification div.item-control .single-item-list>div {
+                        display: inline-block;
+                    }
+
+                    .layout-control .item-classification .table-container {
+                        max-width: calc(100% - 225px);
+                        color: #000;
+                        padding-top: 35px;
+                        position: relative;
+                        border: 1px solid #aaa;
+                        background-color: #CFF1A5;
+                        background: -webkit-repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
+                        background: -o-repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
+                        background: -moz-repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
+                        background: repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
+                    }
+
+                    .layout-control.dragable .item-classification .table-container {
+                        max-width: calc(100% - 240px);
+                    }
+                
+                    .layout-control .item-classification .table-container.header-2rows {
+                        padding-top: 70px;
+                    }
+                
+                    .layout-control .item-classification .table-container.header-3rows {
+                        padding-top: 105px;
+                    }
+                
+                    .layout-control .item-classification .table-container>div {
+                        overflow-y: auto;
+                        max-height: 205px;
+                        border-top: 1px solid #aaa;
+                    }
+                
+                    .layout-control .item-classification .table-container>div table {
+                        border-collapse: collapse;
+                    }
+                
+                    .layout-control .item-classification td {
+                        background-color: #fff;
+                        border-left: 1px solid #aaa;
+                    }
+                
+                    .layout-control .item-classification td,
+                    .layout-control .item-classification th {
+                        padding: 0px;
+                        border: 1px solid #aaa;
+                    }
+                
+                    .layout-control .item-classification td:first-child {
+                        border-left: none;
+                    }
+                
+                    .layout-control .item-classification td:last-child {
+                        border-right: none;
+                    }
+                
+                    .layout-control .item-classification th {
+                        height: 0;
+                        line-height: 0;
+                        border: none;
+                        color: transparent;
+                        white-space: nowrap;
+                    }
+                
+                    .layout-control .item-classification th div {
+                        top: 0;    
+                        height: 35px;
                         padding: 3px;
-                        line-height: 24px;
-                        background-color: #E0F59E;
+                        color: #000;
+                        overflow: hidden;
+                        line-height: 32px;
+                        position: absolute;
+                        box-sizing: border-box;
+                        background: transparent;
+                        border-left: 1px solid #aaa;
+                    }
+                
+                    .layout-control .item-classification thead>tr:first-child div {
+                        top: 0;
+                    }
+                
+                    .layout-control .item-classification thead>tr:nth-child(2) div {
+                        top: 35px;
+                    }
+                
+                    .layout-control .item-classification thead>tr:nth-child(3) div {
+                        top: 70px;
                     }
 
-                    .layout-control .item-classification>div.item-controls table td {
-                        line-height: 24px;
+                    .layout-control .item-classification th.index,
+                    .layout-control .item-classification td.index {
+                        min-width: 30px;
+                        text-align: center;
                     }
-                    
-                    .layout-control .item-classification>div.item-sperator>hr {
+
+                    .layout-control .item-classification td input,
+                    .layout-control .item-classification td textarea {
+                        border: 1px solid transparent;
+                        border-radius: 0;
+                    }
+
+                    .layout-control .item-classification td input:focus,
+                    .layout-control .item-classification td textarea:focus {
+                        border: 1px dashed #0096f2;
+                        box-shadow: none;
+                    }
+                
+                    .layout-control .item-classification th:first-child div {
+                      border: none;
+                    }
+                
+                    .layout-control .item-classification tbody tr:first-child td {
+                      border-top: none;
+                    }
+                
+                    .layout-control .item-classification tbody tr:last-child td {
+                      border-bottom: none;
+                    }
+
+                    .layout-control .item-classification div.item-sperator>hr {
                         padding: 0;
-                        margin: 6px 0;
+                        margin: 6px 2px 6px 0;
+                    }
+
+                    .layout-control.dragable .item-classification div.item-sperator>hr {
                         margin-right: 20px;
                     }
-                    
+
                     .layout-control .item-classification.ui-sortable-helper {
                         cursor: pointer;
                     }
-                    
+
                     .layout-control .item-classification.ui-sortable-placeholder {
                         border: 1px dashed #ddd;
                         visibility: visible !important;
                     }
-                    
-                    .layout-control.editable .item-classification:hover,
-                    .layout-control.editable .item-classification.selected {
+
+                    .layout-control.dragable .item-classification:hover,
+                    .layout-control.dragable .item-classification.selected {
                         background-color: #eee;
                         border: 1px dashed #aaa;
                     }
-                    
-                    .layout-control .item-classification textarea.nts-editor {
+
+                    .layout-control .item-classification .item-control textarea.nts-editor,
+                    .layout-control .item-classification .item-controls textarea.nts-editor {
                         width: 280px;
                         height: 70px;
+                        overflow-y: scroll;
                     }
-                    
+
+                    .layout-control .item-classification .item-controls .ntsControl,
+                    .layout-control .item-classification .item-controls textarea.nts-editor,
+                    .layout-control .item-classification .item-controls .ui-igcombo-wrapper {
+                        display: block;
+                    }
+
+                    .layout-control .item-classification .item-controls .ui-igcombo-wrapper {
+                        height: 30px;
+                    }
+
+                    .layout-control .item-classification .item-controls .ui-igcombo.ui-state-default {
+                        border: none;
+                    }
+
+                    .layout-control .item-classification .item-control .ui-igcombo-wrapper .ui-igcombo-buttonicon,
+                    .layout-control .item-classification .item-controls .ui-igcombo-wrapper .ui-igcombo-buttonicon {
+                        display: none;    
+                    }
+
+                    .layout-control .item-classification .item-control .ui-igcombo-wrapper .ui-igcombo-button:before,
+                    .layout-control .item-classification .item-controls .ui-igcombo-wrapper .ui-igcombo-button:before {
+                        top: 3px;
+                        left: 4px;
+                        font-size: 1.5em;
+                        content: '▾';
+                        display: block;
+                        position: absolute;
+                    }
+
                     .layout-control .item-classification .form-label {
-                        width: 100px;
-                        line-height: 37px;
+                        width: 210px;
                         white-space: nowrap;
                     }
-                    
+
                     .layout-control .item-classification>.close-btn {
                         top: 0;
                         right: 5px;
@@ -162,16 +317,94 @@ module nts.custombinding {
                         cursor: pointer;
                         position: absolute;
                     }
-                    
+
                     .layout-control .item-classification>.close-btn:hover {
                         color: #f00;
                     }
-                    
-                    .layout-control.editable .item-classification:hover>.close-btn {
+
+                    .layout-control.dragable .item-classification:hover>.close-btn {
                         display: block;
                     }
-                </style>
-                <div class="left-area">
+
+                    .layout-control.readonly [disabled],
+                    .layout-control.dragable [disabled] {
+                        background-color: #fff;
+                    }
+
+                    .layout-control .index .remove-btn,
+                    .layout-control.dragable .index:hover .remove-btn {
+                        display: none;
+                    }
+
+                    .layout-control.inputable tr:hover .number,
+                    .layout-control.inputable .index:hover .number {
+                        display: none;
+                    }
+
+                    .layout-control.inputable tr:hover .remove-btn,
+                    .layout-control.inputable .index:hover .remove-btn {
+                        display: block;
+                    }
+
+                    .layout-control.inputable .remove-btn:hover {
+                        color: #f00;
+                        cursor: pointer;
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -khtml-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                    }
+
+                    .layout-control .item-classification th.index div,
+                    .layout-control .item-classification td.index div {
+                        width:30px;
+                        cursor: pointer;
+                        font-weight:bold;
+                    }
+
+                    .layout-control .item-classification th.index div:hover,
+                    .layout-control .item-classification td.index div:hover {
+                        color: #f00;
+                    }
+
+                    .layout-control.dragable .add-rows,
+                    .layout-control.dragable .add-rows button,
+                    .layout-control.inputable .add-rows,
+                    .layout-control.inputable .add-rows button,
+                    .layout-control.readonly:not(.inputable) .add-rows,
+                    .layout-control.readonly:not(.inputable) .add-rows button {
+                        display: none;
+                    }
+
+                    .layout-control .add-rows button {
+                        width: 100%;
+                        height: 27px;
+                        margin: 0;
+                        border: none;
+                        box-shadow: none;
+                    } 
+
+                    .layout-control .add-rows button:focus,
+                    .layout-control .add-rows button:active {
+                        top: 0;
+                        height: 27px;
+                        margin: 0;
+                        border: none;
+                        box-shadow: none;
+                    }
+
+                    .layout-control .add-rows button:not(:active) {
+                        border: none;
+                    }
+                    
+                    .layout-control .item-classification tbody tr td.index>div {
+                        line-height: 27px;
+                    }
+                </style>`;
+
+        private tmp = `<div class="left-area">
                     <div id="cps007_lbl_control"></div>
                     <div class="control-group">
                         <div class="form-group">
@@ -193,383 +426,910 @@ module nts.custombinding {
                         <button id="cps007_btn_add"></button>
                     </div>
                     <div class="drag-panel">
-                        <div id="cps007_srt_control">                        
-                            <div class="form-group item-classification">
-                                <div data-bind="if: $data.typeId != 1 && $data.typeId != 2" class="item-control">
-                                    <div data-bind="ntsFormLabel: {}, text: name"></div>
-                                    <input tabindex="-1" data-bind="ntsTextEditor: {
-                                                value: ko.observable(''),
-                                                constraint: '',
-                                                option: {},
-                                                required: false,
-                                                enable: true,
-                                                readonly: true,
-                                                immediate: false}" />
-                                </div>
-                                <div data-bind="if: $data.typeId == 1" class="item-controls">
-                                    <div data-bind="ntsFormLabel: {}, text: name"></div>
-                                    <div>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th>0</th>
-                                                    <th>1</th>
-                                                    <th>2</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody data-bind="foreach: [1, 2, 3]">
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                        <div id="cps007_srt_control">
+                            <div class="form-group item-classification"
+                                    data-bind="let: { 
+                                        cls: $data, 
+                                        _item: items && _.find(items(), function(x, i) { return i == 0}), 
+                                        _items: items && _.filter(items(), function(x, i) { return i > 0}),
+                                        __items: items && _.filter(items(), function(x, i) { return i >= 0})
+                                    }">
+                               <div data-bind="if: layoutItemType == 'ITEM'">
+                                    <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
+                                            .filter(function(x) { return [3, 4, 5, 6].indexOf((x.item||{}).dataTypeValue) == -1})
+                                            .map(function(x) { return x.itemDefId.replace(/-/g, '') })
+                                            .value() }">
+                                        <div data-bind="ntsFormLabel: { 
+                                            text: className || '',
+                                            cssClass: ko.computed(function() {
+                                                if(!!_.find(__items, function(x) { return x.value() })) {
+                                                     return '';
+                                                }
+                                                return 'color-operation-case-character'; 
+                                            }),
+                                            required: !!_.find(__items, function(x) { return x.required }),
+                                            constraint: _constraint.length && _constraint || undefined  }"></div>
+                                        <div data-bind="if: (_item || {}).type == 1" class="set-items">
+                                            <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
+                                                <div data-bind="template: {
+                                                        data: set,
+                                                        name: 'itemtemplate'
+                                                    }" class="set-item"></div>
+                                            </div>
+                                        </div>
+                                        <div data-bind="if: (_item || {}).type == 2" class="single-items">
+                                            <div data-bind="foreach: {data: __items, as: 'single'}" class="single-item-list">
+                                                <div data-bind="template: { 
+                                                        data: single,
+                                                        name: 'itemtemplate'
+                                                    }" class="single-item"></div>
+                                            </div>            
+                                        </div>
                                     </div>
                                 </div>
-                                <div data-bind="if: $data.typeId == 2" class="item-sperator">
+                                <div data-bind="if: layoutItemType == 'LIST'">            
+                                    <div class="item-controls">
+                                        <div data-bind="ntsFormLabel: { required: !!_.find(_items, function(x) { return !!x.required }), text: className || '' }"></div>
+                                        <div class="multiple-items table-container header-1rows">
+                                            <div class="table-scroll" data-bind="event: { scroll: function(viewModel, event) { $(event.target).find('table th div').css('margin-left', $(event.target).find('table th:first').offset().left - $(event.target).offset().left + 'px') } }">
+                                                <table>
+                                                    <thead>
+                                                        <tr data-bind="foreach: { data: _item, as: 'header' }">
+                                                            <!-- ko if: $index() == 0 -->
+                                                            <th class="index"><div>⁝</div></th>
+                                                            <!-- /ko -->
+                                                            <th data-bind="template: { afterRender: function(childs, data) { let div = $(childs[1]); setInterval(function() { div.css('width', (div.parent().width() - 3) + 'px') }, 0); } }">
+                                                                <div data-bind="ntsFormLabel: { constraint: [3, 4, 5, 6].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/-/g, '') : undefined, required: header.required, text: header.itemName || '', inline: true }"></div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- ko foreach: { data: __items, as: '_row' } -->
+                                                        <tr data-bind="foreach: { data: _row, as: '_column' }">
+                                                            <!-- ko if: $index() == 0 -->
+                                                            <td class="index">
+                                                                <div class="number" data-bind="text: ($parentContext.$index() + 1)"></div>
+                                                                <div class="remove-btn" data-bind="click: function(viewModel, event) { if(cls.items().length > 1) { cls.items.remove(function(x) { return _row == x; }) }}">✖</div>
+                                                            </td>
+                                                            <!-- /ko -->
+                                                            <td data-bind="template: { 
+                                                                    data: _column,
+                                                                    name: 'itemtemplate'
+                                                                }, click: function(data, event) { $(event.target).find('input').focus(); }">
+                                                            </td>
+                                                        </tr>
+                                                        <!-- /ko -->
+                                                        <tr class="add-rows">
+                                                            <td data-bind="attr: { colspan: _item.length + 1 }">
+                                                                <button tabindex="-1" title="挿す" data-bind="click: function(item, event) {
+                                                                        let row = [];
+                                                                        _.each(_item, function(_obj) {
+                                                                            let def = {
+                                                                                itemCode: _obj.itemCode,
+                                                                                itemName: _obj.itemName,
+                                                                                required: _obj.required,
+                                                                                itemDefId: _obj.itemDefId,
+                                                                                value: ko.observable(undefined),
+                                                                                readonly: ko.observable(false),
+                                                                                editable: ko.observable(true),
+                                                                                'type': _obj.type,
+                                                                                item: $.extend({}, _obj.item)
+                                                                            };
+                                                                            row.push(def);
+                                                                        });
+                                                                        cls.items.push(row);
+                                                                        $(event.target).closest('.table-scroll').trigger('scroll').animate({
+                                                                            scrollTop: $(event.target).offset().top
+                                                                        }, 0);
+                                                                    }">▼</button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-bind="if: layoutItemType == 'SeparatorLine'" class="item-sperator">
                                     <hr />
                                 </div>
-                                <span class="close-btn" data-bind="click: function() { ko.bindingHandlers['ntsLayoutControl'].options.sortable.removeItem($data); }">✖</span>
+                                <span class="close-btn" data-bind="click: function($data, event) { ko.bindingHandlers['ntsLayoutControl'].remove(cls, event); }">✖</span>
                             </div>
                         </div>
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
-            </div>`);
+                <script type="text/html" id="itemtemplate">
+                    <div data-bind="if: item.dataTypeValue == 1" class="string">
+                        <div data-bind="if: item.stringItemType == 4 || item.stringItemLength < 40">
+                            <input data-bind="attr: { title: itemName, id: itemCode },
+                                ntsTextEditor: {
+                                    value: value,
+                                    constraint: itemDefId.replace(/-/g, ''),
+                                    required: false, 
+                                    option: {
+                                        textmode: 'text',
+                                        placeholder: itemName
+                                    },
+                                    enable: editable,
+                                    readonly: readonly,
+                                    immediate: false
+                                }" />
+                        </div>
+                        <div data-bind="if: item.stringItemType != 4 && item.stringItemLength >= 40">
+                            <textarea data-bind="ntsMultilineEditor: {
+                                value: value,
+                                constraint: itemDefId.replace(/-/g, ''),
+                                option: {
+                                    textmode: 'text',
+                                    placeholder: itemName
+                                },
+                                enable: editable,
+                                readonly: readonly,
+                                immediate: false}, attr: {id: itemCode}" />
+                        </div>
+                    </div>
+                    <div data-bind="if: item.dataTypeValue == 2" class="numeric">
+                        <input data-bind="ntsNumberEditor: { 
+                                    value: value,
+                                    constraint: itemDefId.replace(/-/g, ''),
+                                    option: {
+                                        grouplength: 3,
+                                        decimallength: 2,
+                                        placeholder: itemName,
+                                        width: '',
+                                        textalign: 'left'
+                                    },
+                                    enable: editable,
+                                    readonly: readonly }, attr: {id: itemCode}" />
+                    </div>
+                    <div data-bind="if: item.dataTypeValue == 3" class="date">
+                        <div data-bind="ntsDatePicker: {
+                                    value: value,
+                                    constraint: itemDefId.replace(/-/g, ''),
+                                    dateFormat: 'YYYY/MM/DD',
+                                    enable: editable,
+                                    readonly: readonly
+                                }"></div>
+                    </div>
+                    <div data-bind="if: item.dataTypeValue == 4" class="time">
+                        <input data-bind="ntsTimeEditor: {
+                            value: value,
+                            constraint: itemDefId.replace(/-/g, ''),
+                            inputFormat: 'HH:mm',
+                            enable: editable,
+                            readonly: readonly }, attr: { placeholder: itemName, id: itemCode }" />
+                    </div>
+                    <div data-bind="if: item.dataTypeValue == 5" class="timepoint">
+                        <input data-bind="ntsTimeEditor: {
+                            value: value, 
+                            constraint: itemDefId.replace(/-/g, ''),
+                            inputFormat: 'HH:mm',
+                            enable: editable,
+                            readonly: readonly
+                        }, attr: { placeholder: itemName, id: itemCode }" />
+                    </div>
+                    <div data-bind="if: item.dataTypeValue == 6" class="selection">
+                        <div data-bind="ntsComboBox: {
+                            options: ko.observableArray([{
+                                code: 1,
+                                name: '等級区分 1'
+                            },{
+                                code: 2,
+                                name: '等級区分 2'
+                            },{
+                                code: 3,
+                                name: '等級区分 3'
+                            }]),
+                            optionsValue: 'code',
+                            visibleItemsCount: 5,
+                            value: value,
+                            /*constraint: itemCode,*/
+                            optionsText: 'name',
+                            /*editable: !editable,*/
+                            enable: editable,
+                            dropDownAttachedToBody: true,
+                            columns: [{ prop: 'name', length: 10 }]}, attr: {id: itemCode}"></div>
+                    </div>
+                </script>`;
 
-        api = {
-            getCats: '',
-            getGroups: '',
-            getItemCats: '/{0}',
-            getItemGroups: '/{0}',
-            getItemsByIds: '/{0}',
+        private api = {
+            getCat: 'ctx/bs/person/info/category/find/companyby/{0}',
+            getCats: "ctx/bs/person/info/category/findby/company",
+            getGroups: 'ctx/bs/person/groupitem/getAll',
+            getItemCats: 'ctx/bs/person/info/ctgItem/layout/findby/categoryId/{0}',
+            getItemGroups: 'ctx/bs/person/groupitem/getAllItemDf/{0}',
+            getItemsById: 'ctx/bs/person/info/ctgItem/layout/findby/itemId/{0}',
+            getItemsByIds: 'ctx/bs/person/info/ctgItem/layout/findby/listItemId',
         };
 
-        services = {
+        private services = {
+            getCat: (cid) => {
+                let self = this,
+                    api = self.api;
+
+                return ajax(format(api.getCat, cid));
+            },
             getCats: () => {
                 let self = this,
                     api = self.api;
 
-                return $.Deferred().resolve([
-                    {
-                        id: random(),
-                        code: 'COD1',
-                        name: 'CATEGORY 01',
-                        typeId: IT_CAT_TYPE.SINGLE
-                    },
-                    {
-                        id: random(),
-                        code: 'COD2',
-                        name: 'CATEGORY 02',
-                        typeId: IT_CAT_TYPE.MULTI
-                    },
-                    {
-                        id: random(),
-                        code: 'COD3',
-                        name: 'CATEGORY 03',
-                        typeId: IT_CAT_TYPE.CONTINU
-                    },
-                    {
-                        id: random(),
-                        code: 'COD4',
-                        name: 'CATEGORY 04',
-                        typeId: IT_CAT_TYPE.NODUPLICATE
-                    },
-                    {
-                        id: random(),
-                        code: 'COD5',
-                        name: 'CATEGORY 05',
-                        typeId: IT_CAT_TYPE.DUPLICATE
-                    }
-                ]).promise();
-
-                //return ajax(api.getCats);
+                return ajax(api.getCats);
             },
             getGroups: () => {
                 let self = this,
                     api = self.api;
 
-                return $.Deferred().resolve([
-                    {
-                        id: random(),
-                        code: 'COD1',
-                        name: 'GROUP 01',
-                        typeId: 1
-                    },
-                    {
-                        id: random(),
-                        code: 'COD2',
-                        name: 'GROUP 02',
-                        typeId: 2
-                    },
-                    {
-                        id: random(),
-                        code: 'COD3',
-                        name: 'GROUP 03',
-                        typeId: 3
-                    },
-                    {
-                        id: random(),
-                        code: 'COD4',
-                        name: 'GROUP 04',
-                        typeId: 4
-                    },
-                    {
-                        id: random(),
-                        code: 'COD5',
-                        name: 'GROUP 05',
-                        typeId: 5
-                    }
-                ]).promise();
-
-                //return ajax(api.getGroups);
+                return ajax(api.getGroups);
             },
             getItemByCat: (cid) => {
                 let self = this,
                     api = self.api;
 
-                return $.Deferred().resolve([
-                    {
-                        id: random(),
-                        code: 'COD1',
-                        name: 'ITEM CAT [' + cid + '] ' + 1,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD2',
-                        name: 'ITEM CAT [' + cid + '] ' + 2,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD3',
-                        name: 'ITEM CAT [' + cid + '] ' + 3,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD4',
-                        name: 'ITEM CAT [' + cid + '] ' + 4,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD5',
-                        name: 'ITEM CAT [' + cid + '] ' + 5,
-                        typeId: 0
-                    }
-                ]).promise();
-
-                //return ajax(format(api.getItemCats, cid));
+                return ajax(format(api.getItemCats, cid));
             },
             getItemByGroup: (gid) => {
                 let self = this,
                     api = self.api;
 
-                return $.Deferred().resolve([
-                    {
-                        id: random(),
-                        code: 'COD1',
-                        name: 'GROUP [' + gid + '] ' + 1,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD2',
-                        name: 'GROUP [' + gid + '] ' + 2,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD3',
-                        name: 'GROUP [' + gid + '] ' + 3,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD4',
-                        name: 'GROUP [' + gid + '] ' + 4,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD5',
-                        name: 'GROUP [' + gid + '] ' + 5,
-                        typeId: 1
-                    }
-                ]).promise();
+                return ajax(format(api.getItemGroups, gid));
+            },
+            getItemsById: (id: string) => {
+                let self = this,
+                    api = self.api;
 
-                //return ajax(format(api.getItemGroups, gid));
+                return ajax(format(api.getItemsById, id));
             },
             getItemsByIds: (ids: Array<any>) => {
                 let self = this,
                     api = self.api;
 
-                //return ajax(format(api.getItemsByIds, ids));
+                return ajax(api.getItemsByIds, ids);
             }
         };
 
-        controls = {
-            label: undefined,
-            radios: undefined,
-            combobox: undefined,
-            searchbox: undefined,
-            listbox: undefined,
-            button: undefined,
-            sortable: undefined,
-            line: undefined,
+        remove = (item, sender) => {
+            let target = $(sender.target),
+                layout = target.parents('.layout-control'),
+                opts = layout.data('options');
+
+            opts.sortable.removeItem(item, false);
         };
 
-        options = {
-            radios: {
-                enable: ko.observable(true),
-                value: ko.observable(0),
-                options: ko.observableArray([{
-                    id: CAT_OR_GROUP.CATEGORY,
-                    name: text('CPS007_6')
-                }, {
-                        id: CAT_OR_GROUP.GROUP,
-                        name: text('CPS007_7')
-                    }]),
-                optionsValue: 'id',
-                optionsText: 'name'
-            },
-            comboxbox: {
-                enable: ko.observable(true),
-                editable: ko.observable(false),
-                value: ko.observable(''),
-                options: ko.observableArray([]),
-                optionsValue: 'id',
-                optionsText: 'name',
-                columns: [{ prop: 'name', length: 15 }]
-            },
-            searchbox: {
-                targetKey: undefined,
-                mode: 'igGrid',
-                comId: 'grid',
-                items: ko.observableArray([]),
-                selected: ko.observableArray([]),
-                selectedKey: 'id',
-                fields: ['name']
-            },
-            listbox: {
-                enable: ko.observable(true),
-                multiple: ko.observable(false),
-                rows: 15,
-                options: ko.observableArray([]),
-                value: ko.observable(undefined),
-                optionsValue: 'id',
-                optionsText: 'name',
-                columns: [{ key: 'name', length: 15 }]
-            },
-            sortable: {
-                data: ko.observableArray([]),
-                isEnabled: ko.observable(true),
-                beforeMove: (data, evt, ui) => {
-                    let self = this,
-                        opts = self.options,
-                        item = data.item,
-                        sindex = data.sourceIndex,
-                        tindex = data.targetIndex,
-                        direct = sindex > tindex,
-                        source = ko.unwrap(opts.sortable.data);
+        private _constructor = (element?: HTMLElement, valueAccessor?: any) => {
+            let self = this,
+                services = self.services,
+                $element = $(element),
+                opts = {
+                    callback: () => {
+                    },
+                    radios: {
+                        enable: ko.observable(true),
+                        value: ko.observable(0),
+                        options: ko.observableArray([{
+                            id: CAT_OR_GROUP.CATEGORY,
+                            name: text('CPS007_6'),
+                            enable: ko.observable(true)
+                        }, {
+                                id: CAT_OR_GROUP.GROUP,
+                                name: text('CPS007_7'),
+                                enable: ko.observable(true)
+                            }]),
+                        optionsValue: 'id',
+                        optionsText: 'name'
+                    },
+                    comboxbox: {
+                        enable: ko.observable(true),
+                        editable: ko.observable(false),
+                        visibleItemsCount: 10,
+                        value: ko.observable(''),
+                        options: ko.observableArray([]),
+                        optionsValue: 'id',
+                        optionsText: 'categoryName',
+                        columns: [{ prop: 'categoryName', length: 15 }]
+                    },
+                    searchbox: {
+                        mode: 'listbox',
+                        comId: 'cps007_lst_control',
+                        items: ko.observableArray([]),
+                        selected: ko.observableArray([]),
+                        targetKey: 'id',
+                        selectedKey: 'id',
+                        fields: ['itemName'],
+                        placeHolder: '名称で検索…'
+                    },
+                    listbox: {
+                        enable: ko.observable(true),
+                        multiple: ko.observable(true),
+                        rows: 15,
+                        options: ko.observableArray([]),
+                        value: ko.observableArray([]),
+                        optionsValue: 'id',
+                        optionsText: 'itemName',
+                        columns: [{ key: 'itemName', headerText: text('CPS007_9'), length: 15 }]
+                    },
+                    sortable: {
+                        data: ko.observableArray([]),
+                        isEnabled: ko.observable(true),
+                        isEditable: ko.observable(0),
+                        beforeMove: (data, evt, ui) => {
+                            let sindex: number = data.sourceIndex,
+                                tindex: number = data.targetIndex,
+                                direct: boolean = sindex > tindex,
+                                item: IItemClassification = data.item,
+                                source: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
 
 
-                    // cancel drop if two line is sibling
-                    if (item.typeId == IT_CLA_TYPE.SPER) {
-                        let front = source[tindex - 1] || { id: '-1', typeId: -1 },
-                            replc = source[tindex] || { id: '-1', typeId: -1 },
-                            next = source[tindex + 1] || { id: '-1', typeId: -1 };
+                            // cancel drop if two line is sibling
+                            if (item.layoutItemType == IT_CLA_TYPE.SPER) {
+                                let front = source[tindex - 1] || { layoutID: '-1', layoutItemType: -1 },
+                                    replc = source[tindex] || { layoutID: '-1', layoutItemType: -1 },
+                                    next = source[tindex + 1] || { layoutID: '-1', layoutItemType: -1 };
 
-                        if (!direct) { // drag from top to below
-                            if ([next.typeId, replc.typeId].indexOf(IT_CLA_TYPE.SPER) > -1) {
-                                data.cancelDrop = true;
+                                if (!direct) { // drag from top to below
+                                    if ([next.layoutItemType, replc.layoutItemType].indexOf(IT_CLA_TYPE.SPER) > -1) {
+                                        data.cancelDrop = true;
+                                    }
+                                } else {  // drag from below to top
+                                    if ([replc.layoutItemType, front.layoutItemType].indexOf(IT_CLA_TYPE.SPER) > -1) {
+                                        data.cancelDrop = true;
+                                    }
+                                }
+                            } else { // if item is list or object
+                                let front = source[sindex - 1] || { layoutID: '-1', layoutItemType: -1 },
+                                    next = source[sindex + 1] || { layoutID: '-1', layoutItemType: -1 };
+
+                                if (front.layoutItemType == IT_CLA_TYPE.SPER && next.layoutItemType == IT_CLA_TYPE.SPER) {
+                                    data.cancelDrop = true;
+                                }
                             }
-                        } else {  // drag from below to top
-                            if ([replc.typeId, front.typeId].indexOf(IT_CLA_TYPE.SPER) > -1) {
-                                data.cancelDrop = true;
-                            }
-                        }
-                    } else { // if item is list or object
-                        let front = source[sindex - 1] || { id: '-1', typeId: -1 },
-                            next = source[sindex + 1] || { id: '-1', typeId: -1 };
+                        },
+                        afterMove: (data, evt, ui) => {
+                            /*let self = this,
+                                opts = self.options,
+                                source: Array<any> = ko.unwrap(opts.sortable.data),
+                                maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
+                                    .filter(x => x != -1).value();
+        
+                            // remove next line if two line is sibling
+                            _.each(maps, (x, i) => {
+                                if (maps[i + 1] == x + 1) {
+                                    opts.sortable.data.remove(m => {
+                                        let item = ko.unwrap(opts.sortable.data)[maps[i + 1]];
+                                        return item.typeId == IT_CLA_TYPE.SPER && item.id == m.id;
+                                    });
+                                }
+                            });*/
+                        },
+                        removeItem: (data: IItemClassification, byItemId?: boolean) => {
+                            let items = opts.sortable.data;
 
-                        if (front.typeId == IT_CLA_TYPE.SPER && next.typeId == IT_CLA_TYPE.SPER) {
-                            data.cancelDrop = true;
+                            if (!byItemId) { // remove item by classification id (virtual id)
+                                items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
+                            } else if (data.listItemDf) { // remove item by item definition id
+                                items.remove((x: IItemClassification) => x.listItemDf && x.listItemDf[0].id == data.listItemDf[0].id);
+                            }
+
+                            let source: Array<any> = ko.unwrap(items),
+                                maps: Array<number> = _(source).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
+                                    .filter(x => x != -1)
+                                    .orderBy(x => x).value()
+
+                            // remove next line if two line is sibling
+                            _.each(maps, (x, i) => {
+                                if (maps[i + 1] == x + 1) {
+                                    items.remove((m: IItemClassification) => {
+                                        let item: IItemClassification = ko.unwrap(items)[maps[i + 1]];
+                                        return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
+                                    });
+                                }
+                            });
+
+                            return opts.sortable;
+                        },
+                        findExist: (ids: Array<string>) => {
+                            let items = opts.sortable.data();
+
+                            if (!ids || !ids.length) {
+                                return [];
+                            }
+
+                            // return items if it's exist in list
+                            return _(items)
+                                .map((x: IItemClassification) => x.listItemDf)
+                                .flatten()
+                                .filter((x: IItemDefinition) => x && ids.indexOf(x.id) > -1)
+                                .value();
+                        },
+                        pushItem: (data: IItemClassification) => {
+                            let items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
+
+                            switch (data.layoutItemType) {
+                                case IT_CLA_TYPE.ITEM:
+                                    let item = _.find(ko.unwrap(items), (x: IItemClassification) => x.layoutItemType == IT_CLA_TYPE.ITEM && x.listItemDf[0].id == data.listItemDf[0].id);
+                                    if (!item) {
+                                        items.push(data);
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                                case IT_CLA_TYPE.LIST:
+                                    items.push(data);
+                                    return true;
+                                case IT_CLA_TYPE.SPER:
+                                    // add line to list sortable
+                                    let last: any = _.last(ko.unwrap(items));
+
+                                    if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
+                                        items.push(data);
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                            }
+                        },
+                        pushItems: (defs: Array<IItemDefinition>, groupMode?: boolean) => {
+                            let self = this,
+                                services = self.services,
+                                removeItems = (data: Array<IItemClassification>) => {
+                                    if (data && data.length) {
+                                        _.each(data, x => opts.sortable.removeItem(x, true));
+                                    }
+                                },
+                                pushItems = (defs: Array<IItemDefinition>) => {
+                                    _(defs)
+                                        .filter(x => !x.isAbolition) // remove all item if it's abolition
+                                        .each(def => {
+                                            let item: IItemClassification = {
+                                                layoutID: random(),
+                                                dispOrder: -1,
+                                                personInfoCategoryID: undefined,
+                                                layoutItemType: IT_CLA_TYPE.ITEM,
+                                                listItemDf: []
+                                            };
+
+                                            def.dispOrder = -1;
+                                            item.listItemDf = [def];
+                                            item.className = def.itemName;
+                                            item.personInfoCategoryID = def.perInfoCtgId;
+
+                                            // setitem
+                                            if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                                services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
+                                                    if (defs && defs.length) {
+                                                        _(defs).filter(x => !x.isAbolition).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+
+                                                        opts.sortable.pushItem(item);
+                                                    }
+                                                });
+                                            } else {
+                                                opts.sortable.pushItem(item);
+                                            }
+                                        });
+                                };
+
+                            if (!defs || !defs.length) {
+                                return;
+                            }
+
+                            // remove all item if it's cancelled by user
+                            defs = _.filter(defs, x => !x.isAbolition);
+
+                            // find duplicate items
+                            let dups = opts.sortable.findExist(defs.map(x => x.id));
+
+                            if (groupMode) {
+                                if (dups && dups.length) {
+                                    // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
+                                    // Show Msg_204 if itemdefinition is exist
+                                    info(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_204'))
+                                        .then(() => {
+                                            removeItems(dups.map((x: IItemDefinition) => {
+                                                return {
+                                                    layoutID: random(),
+                                                    dispOrder: -1,
+                                                    personInfoCategoryID: undefined,
+                                                    layoutItemType: IT_CLA_TYPE.ITEM,
+                                                    listItemDf: [x]
+                                                };
+                                            }));
+                                            pushItems(defs);
+                                        });
+                                } else {
+                                    pushItems(defs);
+                                }
+                            } else {
+                                let dupids = dups.map((x: IItemDefinition) => x.id),
+                                    nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
+
+                                if (dupids && dupids.length) {
+                                    // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                                    // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                                    alert(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_202'));
+                                }
+
+                                pushItems(nodups);
+                            }
+
+                            // remove all item selected in list box
+                            opts.listbox.value.removeAll();
                         }
                     }
                 },
-                afterMove: (data, evt, ui) => {
-                    /*let self = this,
-                        opts = self.options,
-                        source: Array<any> = ko.unwrap(opts.sortable.data),
-                        maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
-                            .filter(x => x != -1).value();
-
-                    // remove next line if two line is sibling
-                    _.each(maps, (x, i) => {
-                        if (maps[i + 1] == x + 1) {
-                            opts.sortable.data.remove(m => {
-                                let item = ko.unwrap(opts.sortable.data)[maps[i + 1]];
-                                return item.typeId == IT_CLA_TYPE.SPER && item.id == m.id;
-                            });
-                        }
-                    });*/
+                ctrls = {
+                    label: undefined,
+                    radios: undefined,
+                    combobox: undefined,
+                    searchbox: undefined,
+                    listbox: undefined,
+                    button: undefined,
+                    sortable: undefined,
+                    line: undefined,
                 },
-                removeItem: (data) => {
-                    let self = this,
-                        opts = self.options,
-                        items = opts.sortable.data;
+                access = valueAccessor(),
+                editable = (x: any) => {
+                    if (typeof x == 'number') {
+                        opts.sortable.isEditable(x);
 
-                    items.remove(x => x.id == data.id);
-
-                    let source: Array<any> = ko.unwrap(items),
-                        maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
-                            .filter(x => x != -1)
-                            .orderBy(x => x).value()
-
-                    // remove next line if two line is sibling
-                    _.each(maps, (x, i) => {
-                        if (maps[i + 1] == x + 1) {
-                            items.remove(m => {
-                                let item = ko.unwrap(items)[maps[i + 1]];
-                                return item && item.typeId == IT_CLA_TYPE.SPER && item.id == m.id;
-                            });
+                        if (x == 1) {
+                            opts.sortable.isEnabled(true);
+                        } else {
+                            opts.sortable.isEnabled(false);
                         }
-                    });
+
+                        if (x == 2) {
+                            $element.addClass("inputable");
+                        }
+                    } else {
+                        opts.sortable.isEditable(0);
+
+                        if (x) {
+                            opts.sortable.isEnabled(true);
+                        } else {
+                            opts.sortable.isEnabled(false);
+                        }
+                    }
+                },
+                // render primative value to viewContext
+                primitiveConst = () => {
+                    //xx
+                    /*
+                    ConstraintDescriptor{
+                        itemCode: string;
+                        required?: boolean;
+                    }
+                    
+                    StringConstraintDescriptor extends ConstraintDescriptor{
+                        maxLength: number;
+                        charType: string;
+                        paddingCharacter: string;
+                        isPaddingLeft: boolean;
+                        isPadding: boolean;
+                        stringExpression: string;
+                    }
+                    
+                    NumericConstraintDescriptor extends ConstraintDescriptor{
+                        min: number;
+                        max: number;
+                        valueType: string;
+                        mantissaMaxLength: number; 
+                    }
+                    
+                    TimeConstraintDescriptor extends ConstraintDescriptor{
+                        min: string;
+                        max: string;
+                        valueType: string;
+                    }*/
+
+                    let constraints = _(ko.unwrap(opts.sortable.data))
+                        .map((x: IItemClassification) => x.items && x.items())
+                        .flatten()
+                        .flatten()
+                        .filter((x: any) => !!x && !_.isEqual(x.item, {}))
+                        .map((x: any) => {
+                            let dts = x.item,//(x.itemTypeState || <IItemTypeState>{}).dataTypeState,
+                                constraint: any = {
+                                    itemName: x.itemName,
+                                    itemCode: x.itemDefId.replace(/-/g, ""),
+                                    required: x.required// !!x.isRequired
+                                };
+
+                            if (dts) {
+                                switch (dts.dataTypeValue) {
+                                    default:
+                                    case ITEM_SINGLE_TYPE.STRING:
+                                        constraint.valueType = "String";
+                                        constraint.maxLength = dts.stringItemLength || undefined;
+                                        constraint.stringExpression = '';
+
+                                        switch (dts.stringItemType) {
+                                            default:
+                                            case ITEM_STRING_TYPE.ANY:
+                                                constraint.charType = 'Alphabet';
+                                                break;
+                                            case ITEM_STRING_TYPE.ANYHALFWIDTH:
+                                                constraint.charType = 'AnyHalfWidth';
+                                                break;
+                                            case ITEM_STRING_TYPE.ALPHANUMERIC:
+                                                constraint.charType = 'AlphaNumeric';
+                                                break;
+                                            case ITEM_STRING_TYPE.NUMERIC:
+                                                constraint.charType = 'Numeric';
+                                                if (dts.decimalPart > 0) {
+                                                    constraint.valueType = "Decimal";
+                                                    constraint.mantissaMaxLength = dts.decimalPart;
+                                                } else {
+                                                    constraint.valueType = "Integer";
+                                                }
+                                                constraint.max = dts.numericItemMax || undefined;
+                                                constraint.min = dts.numericItemMin || 0;
+                                                break;
+                                            case ITEM_STRING_TYPE.KANA:
+                                                constraint.charType = 'Kana';
+                                                break;
+                                        }
+                                        break;
+                                    case ITEM_SINGLE_TYPE.NUMERIC:
+                                        if (dts.decimalPart == 0) {
+                                            constraint.valueType = "Integer";
+                                        } else {
+                                            constraint.valueType = "Decimal";
+                                            constraint.mantissaMaxLength = dts.decimalPart;
+                                        }
+                                        constraint.charType = 'Numeric';
+                                        constraint.max = dts.numericItemMax || undefined;
+                                        constraint.min = dts.numericItemMin || 0;
+                                        break;
+                                    case ITEM_SINGLE_TYPE.DATE:
+                                        constraint.valueType = "Date";
+                                        constraint.max = parseTime(dts.max, true).format() || undefined;
+                                        constraint.min = parseTime(dts.min, true).format() || undefined;
+                                        break;
+                                    case ITEM_SINGLE_TYPE.TIME:
+                                        constraint.valueType = "Time";
+                                        constraint.max = parseTime(dts.max, true).format();
+                                        constraint.min = parseTime(dts.min, true).format();
+                                        break;
+                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                        constraint.valueType = "Clock";
+                                        constraint.max = parseTime(dts.timePointItemMax, true).format();
+                                        constraint.min = parseTime(dts.timePointItemMin, true).format();
+                                        break;
+                                    case ITEM_SINGLE_TYPE.SELECTION:
+                                        constraint.valueType = "Selection";
+                                        break;
+                                }
+                            }
+
+                            return constraint;
+                        }).value();
+                    if (constraints && constraints.length) {
+                        writeConstraint(constraints);
+                    }
+                };
+
+            if (!$('#layout_style').length) {
+                $('head').append(self.style);
+            }
+
+            $element
+                .append(self.tmp)
+                .addClass('ntsControl layout-control');
+
+            // bindding callback function to control
+            if (access.callback) {
+                $.extend(opts, { callback: access.callback });
+            }
+
+            // validate editAble
+            if (ko.unwrap(access.editAble) != undefined) {
+                if (ko.isObservable(access.editAble)) {
+                    access.editAble.subscribe(editable);
+                    access.editAble.valueHasMutated();
+                } else {
+                    editable(access.editAble);
                 }
             }
-        };
 
-        constructor() {
-            let self = this,
-                opts = self.options,
-                ctrls = self.controls,
-                services = self.services;
+            // sortable
+            opts.sortable.isEnabled.subscribe(x => {
+                if (!x) {
+                    $element
+                        .addClass('readonly')
+                        .removeClass('dragable');
+
+                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
+                } else {
+                    $element
+                        .addClass('dragable')
+                        .removeClass('readonly');
+
+                    $element.find('.left-area, .add-buttons, #cps007_btn_line').show();
+                }
+            });
+            opts.sortable.isEnabled.valueHasMutated();
+
+            // inputable (editable)
+            opts.sortable.isEditable.subscribe(x => {
+                let data: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
+                _.each(data, icl => {
+                    _.each(icl.listItemDf, (e: IItemDefinition) => {
+                        if (e.itemTypeState && e.itemTypeState.dataTypeState) {
+                            let state = e.itemTypeState.dataTypeState;
+                            if (x == 2) {
+                                if (state.editable && ko.isObservable(state.editable)) {
+                                    state.editable(true);
+                                } else {
+                                    state.editable = ko.observable(true);
+                                }
+
+                                if (state.readonly && ko.isObservable(state.readonly)) {
+                                    state.readonly(false);
+                                } else {
+                                    state.readonly = ko.observable(false);
+                                }
+                            } else {
+                                if (state.editable && ko.isObservable(state.editable)) {
+                                    state.editable(false);
+                                } else {
+                                    state.editable = ko.observable(false);
+                                }
+
+                                if (state.readonly && ko.isObservable(state.readonly)) {
+                                    state.readonly(true);
+                                } else {
+                                    state.readonly = ko.observable(true);
+                                }
+                            }
+                            state.editable.valueHasMutated();
+                        }
+                    });
+                });
+            });
+            opts.sortable.isEditable.valueHasMutated();
 
             // extend option
-            $.extend(opts.comboxbox, {
-                enable: ko.computed(() => !opts.radios.value())
-            });
+            $.extend(opts.comboxbox, { enable: ko.computed(() => !opts.radios.value()) });
 
             $.extend(opts.searchbox, {
-                targetKey: 'cps007_lst_control',
                 items: ko.computed(opts.listbox.options),
                 selected: opts.listbox.value
             });
 
+            // extend data of sortable with valueAccessor data prop
+            $.extend(opts.sortable, { data: access.data });
+            opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
+                // remove all sibling sperators
+                let maps: Array<number> = _(data)
+                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                    .filter(x => x != -1).value();
+
+                _.each(maps, (t, i) => {
+                    if (maps[i + 1] == t + 1) {
+                        _.remove(data, (m: IItemClassification) => {
+                            let item: IItemClassification = data[maps[i + 1]];
+                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                        });
+                    }
+                });
+
+                opts.sortable.isEditable.valueHasMutated();
+
+                _.each(data, (x, i) => {
+                    // define common function for init new item value
+                    let modifitem = (def: any, item: any) => {
+                        def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
+                        def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
+
+                        def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
+                        def.required = _.has(def, "required") && def.required || !!item.isRequired;
+
+                        def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
+
+                        def.hidden = _.has(def, "actionRole") ? def.actionRole == 0 : true;
+                        def.readonly = _.has(def, "actionRole") ? def.actionRole == 1 : !!opts.sortable.isEnabled();
+                        def.editable = _.has(def, "actionRole") ? def.actionRole == 2 : !!opts.sortable.isEditable();;
+
+                        def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
+                        def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+                    };
+
+                    x.dispOrder = i + 1;
+                    x.layoutID = random();
+
+                    if (!x.items) {
+                        x.items = ko.observableArray([]);
+                    }
+
+                    if (!ko.isObservable(x.items)) {
+                        if (!_.isArray(x.items)) {
+                            x.items = ko.observableArray([]);
+                        } else {
+                            x.items = ko.observableArray(x.items);
+                        }
+                    }
+
+                    if (x.listItemDf) {
+                        switch (x.layoutItemType) {
+                            case IT_CLA_TYPE.ITEM:
+                                _.each((x.listItemDf || []), (item, i) => {
+                                    let def = _.find(x.items(), (m: any) => m.itemDefId == item.id);
+                                    if (!def) {
+                                        def = {
+                                            itemCode: item.itemCode,
+                                            itemName: item.itemName,
+                                            itemDefId: item.id,
+                                            value: ko.observable()
+                                        };
+                                        x.items.push(def);
+                                    }
+
+                                    modifitem(def, item);
+                                });
+                                break;
+                            case IT_CLA_TYPE.LIST:
+                                // define row number
+                                let rn = _.map(ko.toJS(x.items), x => x).length;
+                                if (rn < 3) {
+                                    rn = 3;
+                                }
+
+                                _.each(_.range(rn), i => {
+                                    let row = x.items()[i];
+
+                                    if (!row || !_.isArray(row)) {
+                                        row = [];
+                                    }
+
+                                    x.items()[i] = row;
+
+                                    _.each((x.listItemDf || []), (item, j) => {
+                                        let def = _.find(row, (m: any) => m.itemDefId == item.id);
+
+                                        if (!def) {
+                                            def = {
+                                                itemCode: item.itemCode,
+                                                itemName: item.itemName,
+                                                itemDefId: item.id,
+                                                value: ko.observable()
+                                            };
+                                            row.push(def);
+                                        }
+                                        modifitem(def, item);
+                                    });
+                                });
+                                break;
+                            case IT_CLA_TYPE.SPER:
+                                x.items = undefined;
+                                break;
+                        }
+                    }
+                });
+                // write primitive constraints to viewContext
+                primitiveConst();
+            });
+            opts.sortable.data.valueHasMutated();
+
+            // extend data of sortable with valueAccessor beforeMove prop
+            if (access.beforeMove) {
+                $.extend(opts.sortable, { beforeMove: access.beforeMove });
+            }
+
+            // extend data of sortable with valueAccessor afterMove prop
+            if (access.afterMove) {
+                $.extend(opts.sortable, { afterMove: access.afterMove });
+            }
+
             // get all id of controls
-            $.extend(self.controls, {
-                label: self.$tmp.find('#cps007_lbl_control')[0],
-                radios: self.$tmp.find('#cps007_rdg_control')[0],
-                combobox: self.$tmp.find('#cps007_cbx_control')[0],
-                searchbox: self.$tmp.find('#cps007_sch_control')[0],
-                listbox: self.$tmp.find('#cps007_lst_control')[0],
-                button: self.$tmp.find('#cps007_btn_add')[0],
-                sortable: self.$tmp.find('#cps007_srt_control')[0],
-                line: self.$tmp.find('#cps007_btn_line')[0]
+            $.extend(ctrls, {
+                label: $element.find('#cps007_lbl_control')[0],
+                radios: $element.find('#cps007_rdg_control')[0],
+                combobox: $element.find('#cps007_cbx_control')[0],
+                searchbox: $element.find('#cps007_sch_control')[0],
+                listbox: $element.find('#cps007_lst_control')[0],
+                button: $element.find('#cps007_btn_add')[0],
+                sortable: $element.find('#cps007_srt_control')[0],
+                line: $element.find('#cps007_btn_line')[0]
             });
 
             // change text of label
@@ -581,40 +1341,51 @@ module nts.custombinding {
             // subscribe handle
             // load combobox data
             opts.radios.value.subscribe(mode => {
-                if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
-                    services.getCats().done((data: Array<IItemCategory>) => {
-                        if (data && data.length) {
-                            opts.comboxbox.options(data);
-                            opts.comboxbox.value(data[0].id);
-                        }
-                        else {
-                            opts.comboxbox.value(undefined);
-                            opts.comboxbox.options.removeAll();
+                // remove all data in listbox
+                opts.listbox.options.removeAll();
 
-                            // remove listbox data
-                            opts.listbox.value(undefined);
-                            opts.listbox.options.removeAll();
+                if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
+                    opts.comboxbox.options.removeAll();
+                    services.getCats().done((data: any) => {
+                        if (data && data.categoryList && data.categoryList.length) {
+                            let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
+                            if (cats && cats.length) {
+                                opts.comboxbox.options(cats);
+                            } else {
+                                // show message if hasn't any category
+                                if (ko.toJS(opts.sortable.isEnabled)) {
+                                    alert(text('Msg_288')).then(opts.callback);
+                                }
+                            }
+                        } else {
+                            // show message if hasn't any category
+                            if (ko.toJS(opts.sortable.isEnabled)) {
+                                alert(text('Msg_288')).then(opts.callback);
+                            }
                         }
-                        opts.comboxbox.value.valueHasMutated();
                     });
                 } else { // get item by group
-                    // remove comboxbox data
-                    opts.comboxbox.value(undefined);
-                    opts.comboxbox.options.removeAll();
-
-                    // update list box to group data
-                    opts.listbox.options.removeAll();
-                    services.getGroups().done((data: Array<IItemDefinition>) => {
+                    // change text in add-button to [グループを追加　→]
+                    $(ctrls.button).text(text('CPS007_20'));
+                    services.getGroups().done((data: Array<IItemGroup>) => {
                         if (data && data.length) {
-                            opts.listbox.options(data);
-                            opts.listbox.value(data[0].id);
-                        } else {
-                            opts.listbox.value(undefined);
+                            // map Array<IItemGroup> to Array<IItemDefinition>
+                            // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
+                            // remove groups when it does not contains any item definition (by hql)
+                            _.each(data, group => {
+                                opts.listbox.options.push({
+                                    id: group.personInfoItemGroupID,
+                                    itemName: group.fieldGroupName,
+                                    itemTypeState: undefined,
+                                    dispOrder: group.dispOrder
+                                });
+                            });
                         }
                     });
-
-                    $(ctrls.button).text(text('CPS007_20'));
                 }
+
+                // remove listbox data
+                opts.listbox.value.removeAll();
             });
             opts.radios.value.valueHasMutated();
 
@@ -622,22 +1393,26 @@ module nts.custombinding {
             opts.comboxbox.value.subscribe(cid => {
                 if (cid) {
                     let data: Array<IItemCategory> = ko.toJS(opts.comboxbox.options),
-                        item = _.find(data, x => x.id == cid);
+                        item: IItemCategory = _.find(data, x => x.id == cid);
 
                     // remove all item in list item for init new data
                     opts.listbox.options.removeAll();
-
                     if (item) {
-                        switch (item.typeId) {
+                        switch (item.categoryType) {
                             case IT_CAT_TYPE.SINGLE:
                             case IT_CAT_TYPE.CONTINU:
                             case IT_CAT_TYPE.NODUPLICATE:
                                 $(ctrls.button).text(text('CPS007_11'));
+                                services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
+                                    if (data && data.length) {
+                                        // get all item defined in category with abolition = 0
+                                        // order by dispOrder asc
+                                        data = _(data)
+                                            .filter(m => !m.isAbolition)
+                                            .orderBy(m => m.dispOrder).value();
 
-                                services.getItemByCat(item.id).done((data) => {
-                                    if (data) {
                                         opts.listbox.options(data);
-                                        opts.listbox.value(data[0].id);
+                                        opts.listbox.value.removeAll();
                                     }
                                 });
                                 break;
@@ -649,40 +1424,58 @@ module nts.custombinding {
                                 // itemname: categoryname + text('CPS007_21')
                                 let def: IItemDefinition = {
                                     id: item.id,
-                                    code: item.code,
-                                    name: item.name + text('CPS007_21'),
-                                    typeId: item.typeId
+                                    itemName: item.categoryName + text('CPS007_21'),
+                                    itemTypeState: undefined, // item.categoryType
                                 };
-                                opts.listbox.value(def.id);
+                                opts.listbox.value.removeAll();
                                 opts.listbox.options.push(def);
                                 break;
                         }
                     } else {
-                        // select undefine 
-                        opts.listbox.value(undefined);
+                        // select undefine
+                        opts.listbox.value.removeAll();
                     }
                 }
             });
-            opts.comboxbox.value.valueHasMutated();
 
-            // events handler
-            $(ctrls.line).on('click', function() {
-                // add line to list sortable
-                let data: Array<any> = ko.unwrap(opts.sortable.data),
-                    last = _.last(data),
-                    item: any = {
-                        id: 'ID' + (data.length + 1),
-                        code: 'COD' + (data.length + 1),
-                        name: 'Line Item ' + (data.length + 1),
-                        typeId: IT_CLA_TYPE.SPER
-                    };
-
-                if (last && last.typeId != IT_CLA_TYPE.SPER) {
-                    opts.sortable.data.push(item);
+            opts.listbox.options.subscribe(x => {
+                if (!x || !x.length) {
+                    $(ctrls.button).prop('disabled', true);
+                } else {
+                    $(ctrls.button).prop('disabled', false);
                 }
             });
 
+            // disable group if not has any group
+            services.getGroups().done((data: Array<any>) => {
+                if (!data || !data.length) {
+                    opts.radios.options().filter(x => x.id == CAT_OR_GROUP.GROUP).forEach(x => x.enable(false));
+                }
+            });
+
+            // events handler
+            $(ctrls.line).on('click', function() {
+                let item: IItemClassification = {
+                    layoutID: random(),
+                    dispOrder: -1,
+                    personInfoCategoryID: undefined,
+                    listItemDf: undefined,
+                    layoutItemType: IT_CLA_TYPE.SPER
+                };
+
+                // add line to list sortable
+                opts.sortable.pushItem(item);
+            });
+
             $(ctrls.button).on('click', () => {
+                // アルゴリズム「項目追加処理」を実行する
+                // Execute the algorithm "項目追加処理"
+                let ids: Array<string> = ko.toJS(opts.listbox.value);
+                if (!ids || !ids.length) {
+                    alert(text('Msg_203'));
+                    return;
+                }
+
                 // category mode
                 if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
                     let cid: string = ko.toJS(opts.comboxbox.value),
@@ -691,53 +1484,103 @@ module nts.custombinding {
 
                     if (cat) {
                         // multiple items
-                        if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.typeId) > -1) {
-                            setShared('CPS007_PARAM', { category: { id: 'ID1' }, chooseItems: [] });
-                            modal('../b/index.xhtml').onClosed(() => {
-                                let data = getShared('CPS007_VALUE') || { chooseItems: [] };
-                                if (data.chooseItems && data.chooseItems.length) {
-                                    let data = ko.unwrap(opts.sortable.data),
-                                        item: any = {
-                                            id: data.length + 1,
-                                            name: '0000' + (data.length + 1),
-                                            typeId: 1
-                                        };
-                                    opts.sortable.data.push(item);
+                        if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
+                            // 画面項目「カテゴリ選択」で選択している情報が、既に配置されているかチェックする
+                            // if category is exist in sortable box.
+                            let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
+                            if (_catcls) {
+                                alert(text('Msg_202'));
+                                return;
+                            }
+
+                            setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
+                            modal('../../007/b/index.xhtml').onClosed(() => {
+                                let data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
+
+                                if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
+                                    services.getCat(data.category.id).done((_cat: IItemCategory) => {
+
+                                        if (!_cat || !!_cat.isAbolition) {
+                                            return;
+                                        }
+
+                                        let ids: Array<string> = data.chooseItems.map(x => x.id);
+                                        services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
+                                            // sort againt by ids
+                                            _.each(_data, x => x.dispOrder = ids.indexOf(x.id) + 1);
+
+                                            _data = _.orderBy(_data, x => x.dispOrder);
+
+                                            let item: IItemClassification = {
+                                                layoutID: random(),
+                                                dispOrder: -1,
+                                                className: _cat.categoryName,
+                                                personInfoCategoryID: _cat.id,
+                                                layoutItemType: IT_CLA_TYPE.LIST,
+                                                listItemDf: _data
+                                            };
+                                            opts.sortable.data.push(item);
+                                            opts.listbox.value.removeAll();
+                                        });
+                                    });
                                 }
                             });
                         }
-                        else { // single item
-                            let data = ko.unwrap(opts.sortable.data),
-                                item: any = {
-                                    id: data.length + 1,
-                                    code: 'COD' + data.length + 1,
-                                    name: 'Single Item ' + (data.length + 1)
-                                };
-                            opts.sortable.data.push(item);
+                        else { // set or single item
+                            let idefid: Array<string> = ko.toJS(opts.listbox.value),
+                                idefs = _.filter(ko.toJS(opts.listbox.options), (x: IItemDefinition) => idefid.indexOf(x.id) > -1);
+
+                            if (idefs && idefs.length) {
+                                services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
+                                    if (defs && defs.length) {
+                                        opts.sortable.pushItems(defs, false);
+                                    }
+                                });
+                            }
                         }
                     }
                 } else { // group mode
-                    let id = ko.toJS(opts.listbox.value),
+                    let ids: Array<string> = ko.toJS(opts.listbox.value),
                         groups: Array<any> = ko.unwrap(opts.listbox.options),
-                        group: any = _.find(groups, x => x.id == id);
+                        filters: Array<any> = _.filter(groups, x => ids.indexOf(x.id) > -1);
 
-                    if (group) {
-                        services.getItemByGroup(group.id).done((data: Array<any>) => {
-                            if (data && data.length) {
-                                _.each(data, x => opts.sortable.data.push(x));
+                    if (filters && filters.length) {
+                        let dfds: Array<JQueryDeferred<any>> = [];
+
+                        _.each(filters, group => {
+                            let dfd = $.Deferred<any>();
+                            services.getItemByGroup(group.id).done((data: Array<IItemDefinition>) => {
+                                dfd.resolve(data);
+                            }).fail(x => dfd.reject(false));
+
+                            dfds.push(dfd);
+                        });
+
+                        // push all item to sortable when done
+                        $.when.apply($, dfds).then(function() {
+                            // remove all item if it's abolition
+                            let items = _.filter(_.flatten(arguments) as Array<IItemDefinition>, x => !x.isAbolition);
+                            if (items && items.length) {
+                                opts.sortable.pushItems(items, true);
                             }
                         });
                     }
                 }
             });
+
+            // set data controls and option to element
+            $element.data('options', opts);
+            $element.data('controls', ctrls);
         }
 
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
-            let self = this,
-                opts = self.options,
-                ctrls = self.controls,
-                $element = $(element),
-                access = valueAccessor();
+
+            // call private constructor
+            this._constructor(element, valueAccessor);
+
+            let $element = $(element),
+                opts = $element.data('options'),
+                ctrls = $element.data('controls');
 
             ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, function() {
                 return {};
@@ -759,59 +1602,9 @@ module nts.custombinding {
                 return opts.listbox;
             }, allBindingsAccessor, viewModel, bindingContext);
 
-            // validate editAble
-            if (ko.unwrap(access.editAble) != undefined) {
-                if (typeof access.editAble == 'function') {
-                    $.extend(opts.sortable, {
-                        isEnabled: access.editAble
-                    });
-                }
-                else {
-                    $.extend(opts.sortable, {
-                        isEnabled: ko.observable(access.editAble)
-                    });
-                }
-                opts.sortable.isEnabled.subscribe(x => {
-                    if (!x) {
-                        self.$tmp.find('.left-area, .add-buttons, #cps007_btn_line').hide();
-                        $element
-                            .addClass('readonly')
-                            .removeClass('editable');
-                    } else {
-                        $element
-                            .addClass('editable')
-                            .removeClass('readonly');
-
-                        self.$tmp.find('.left-area, .add-buttons, #cps007_btn_line').show();
-                    }
-                });
-                opts.sortable.isEnabled.valueHasMutated();
-            } else {
-                $.extend(opts.sortable, {
-                    isEnabled: ko.observable(true)
-                });
-            }
-
-            // extend data of sortable with valueAccessor data prop
-            $.extend(opts.sortable, { data: access.data });
-
-            // extend data of sortable with valueAccessor beforeMove prop
-            if (access.beforeMove) {
-                $.extend(opts.sortable, { beforeMove: access.beforeMove });
-            }
-
-            // extend data of sortable with valueAccessor afterMove prop
-            if (access.afterMove) {
-                $.extend(opts.sortable, { afterMove: access.afterMove });
-            }
-
             ko.bindingHandlers['ntsSortable'].init(ctrls.sortable, function() {
                 return opts.sortable;
             }, allBindingsAccessor, viewModel, bindingContext);
-
-            $element
-                .addClass('ntsControl layout-control')
-                .append(self.$tmp);
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
@@ -819,10 +1612,9 @@ module nts.custombinding {
 
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let self = this,
-                opts = self.options,
-                ctrls = self.controls,
                 $element = $(element),
-                access = valueAccessor();
+                opts = $element.data('options'),
+                ctrls = $element.data('controls');
 
             ko.bindingHandlers['ntsFormLabel'].update(ctrls.label, function() {
                 return {};
@@ -853,35 +1645,122 @@ module nts.custombinding {
         }
     }
 
-    interface IItemGroup {
+    interface IItemCategory {
         id: string;
-        name: string;
+        categoryName: string;
+        categoryType: IT_CAT_TYPE;
+        isAbolition?: number;
+        categoryParentCode?: string;
+    }
+
+    interface IItemGroup {
+        personInfoItemGroupID: string;
+        fieldGroupName: string;
         dispOrder: number;
     }
 
-    interface IItemCategory {
-        id: string;
-        code: string;
-        name: string;
-        typeId: number;
-    }
-
     interface IItemClassification {
-
+        layoutID?: string;
+        dispOrder?: number;
+        className?: string; // only for display if classification is set or duplication item
+        personInfoCategoryID?: string;
+        layoutItemType: IT_CLA_TYPE;
+        listItemDf: Array<IItemDefinition>; // layoutItemType == 0 ? [1] : layoutItemType == 1 ? [A, B, C] : undefined;
+        items?: any; // [{value: }] || [{c: 1, value: }, {c: 2, value: }], [[{r: 1, c: 1, value: }, {}], [{}, {}], [{}, {}], [{}, {}]] , undefined
+        values?: any;
     }
 
     interface IItemDefinition {
         id: string;
-        code: string;
-        name: string;
-        typeId?: number;
+        dispOrder?: number;
+        perInfoCtgId?: string;
+        itemCode?: string;
+        itemName: string;
+        isAbolition?: number;
+        isFixed?: number;
+        isRequired?: number;
+        systemRequired?: number;
+        requireChangable?: number;
+        itemTypeState: IItemTypeState;
+    }
+
+    interface IItemDefinitionValue {
+        id: string;
+        row?: number;
+        col?: number;
+        itemCode?: string;
+        itemName?: string;
+        itemValue: any;
+    }
+
+    interface IItemTypeState extends ISetItem, ISingleItem {
+        itemType: ITEM_TYPE; // Set || Single
+    }
+
+    interface ISetItem {
+        items?: Array<string>; // Set ids value
+    }
+
+    interface ISingleItem {
+        dataTypeState?: IItemDefinitionData // Single item value
+    }
+
+    interface IItemDefinitionData extends IItemTime, IItemDate, IItemString, IItemTimePoint, IItemNumeric {
+        dataTypeValue: ITEM_SINGLE_TYPE; // type of value of item
+        editable?: KnockoutObservable<boolean>;
+        readonly?: KnockoutObservable<boolean>;
+    }
+
+    interface IItemTime {
+        min?: number;
+        max?: number;
+    }
+
+    interface IItemDate {
+        dateItemType?: number;
+    }
+
+    interface IItemString {
+        stringItemDataType?: ITEM_STRING_DTYPE;
+        stringItemLength?: number;
+        stringItemType?: ITEM_STRING_TYPE;
+    }
+
+    interface IItemTimePoint {
+        timePointItemMin?: number;
+        timePointItemMax?: number;
+    }
+
+    interface IItemNumeric {
+        numericItemMinus?: number;
+        numericItemAmount?: number;
+        integerPart?: number;
+        decimalPart?: number;
+        numericItemMin?: number;
+        numericItemMax?: number;
+    }
+
+    interface IItemSelection extends IItemMasterSelection, IItemEnumSelection, IItemCodeNameSelection {
+        referenceType?: number;
+    }
+
+    interface IItemMasterSelection {
+        masterType?: string;
+    }
+
+    interface IItemEnumSelection {
+        typeCode?: string;
+    }
+
+    interface IItemCodeNameSelection {
+        enumName?: string;
     }
 
     // define ITEM_CLASSIFICATION_TYPE
     enum IT_CLA_TYPE {
-        ITEM = 0, // single item
-        LIST = 1, // list item
-        SPER = 2 // line item
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 
     // define ITEM_CATEGORY_TYPE
@@ -897,6 +1776,52 @@ module nts.custombinding {
     enum CAT_OR_GROUP {
         CATEGORY = 0, // category mode
         GROUP = 1 // group mode
+    }
+
+    // define ITEM_TYPE is set or single item
+    enum ITEM_TYPE {
+        SET = 1, // List item info
+        SINGLE = 2 // Single item info
+    }
+
+    // define ITEM_SINGLE_TYPE
+    // type of item if it's single item
+    enum ITEM_SINGLE_TYPE {
+        STRING = 1,
+        NUMERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6
+    }
+
+    // define ITEM_STRING_DATA_TYPE
+    enum ITEM_STRING_DTYPE {
+        FIXED_LENGTH = 1, // fixed length
+        VARIABLE_LENGTH = 2 // variable length
+    }
+
+    enum ITEM_STRING_TYPE {
+        ANY = 1,
+        // 2:全ての半角文字(AnyHalfWidth)
+        ANYHALFWIDTH = 2,
+        // 3:半角英数字(AlphaNumeric)
+        ALPHANUMERIC = 3,
+        // 4:半角数字(Numeric)
+        NUMERIC = 4,
+        // 5:全角カタカナ(Kana)
+        KANA = 5
+    }
+
+    // define ITEM_SELECT_TYPE
+    // type of item if it's selection item
+    enum ITEM_SELECT_TYPE {
+        // 1:専用マスタ(DesignatedMaster)
+        DESIGNATED_MASTER = 1,
+        // 2:コード名称(CodeName)
+        CODE_NAME = 2,
+        // 3:列挙型(Enum)
+        ENUM = 3
     }
 }
 

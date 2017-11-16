@@ -4,16 +4,29 @@ module nts.uk.at.view.ksu006.a {
          *  Service paths
          */
         var servicePath: any = {
-            findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
             
+            findCharsetList: "at/schedule/budget/external/find/charsetlist",
+            findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
+            checkUnitAtr: "at/schedule/budget/external/validate/isDailyUnit",
             findDataPreview: "at/schedule/budget/external/find/preview",
-            executeImportFile: "at/schedule/budget/external/import/execute",
+            validateFile: "at/schedule/budget/external/import/validate",
+            exportDetailError: "at/schedule/budget/external/log/export",
         };
         
+        /**
+         * findCharsetList
+         */
+        export function findCharsetList(): JQueryPromise<Array<model.EnumerationModel>> {
+            return nts.uk.request.ajax(servicePath.findCharsetList);
+        }
+        
+        /**
+         * findExternalBudgetList
+         */
         export function findExternalBudgetList(): JQueryPromise<any> {
             let dfd = $.Deferred();
-            nts.uk.request.ajax("at", servicePath.findExternalBudgetList).done(function(res: model.ExternalBudgetModel) {
-                let list = _.map(res, function(item) {
+            nts.uk.request.ajax(servicePath.findExternalBudgetList).done(function(res: any) {
+                let list = _.map(res, function(item: any) {
                     return new model.ExternalBudgetModel(item.externalBudgetCode, item.externalBudgetName);
                 });
 
@@ -22,28 +35,44 @@ module nts.uk.at.view.ksu006.a {
             return dfd.promise();
         }
         
+        /**
+         * checkUnitAtr: check is daily or time zone?
+         */
+        export function checkUnitAtr(externalBudgetCd: string): JQueryPromise<boolean> {
+            return nts.uk.request.ajax(servicePath.checkUnitAtr + "/" + externalBudgetCd);
+        }
+        
+        /**
+         * findDataPreview
+         */
         export function findDataPreview(extractCondition: any): JQueryPromise<model.DataPreviewModel> {
             return nts.uk.request.ajax(servicePath.findDataPreview, extractCondition);
         }
         
-        export function executeImportFile(command: any): JQueryPromise<any> {
-            let dfd = $.Deferred();
-            nts.uk.request.ajax(servicePath.executeImportFile, command).then((taskId: any) => {
-                dfd.resolve(taskId);
-            }).done((res: any) => {
-                dfd.resolve(res);
-            }).fail(res => {
-                dfd.reject(res);
-            });
-            return dfd.promise();
+        /**
+         * validateFile
+         */
+        export function validateFile(extractCondition: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.validateFile, extractCondition);
         }
-        
         
         /**
         * Model namespace.
         */
         export module model {
             
+            /**
+             * EnumerationModel
+             */
+            export class EnumerationModel {
+                value: number;
+                fieldName: string;
+                localizedName: string;
+            }
+            
+            /**
+             * ExternalBudgetModel
+             */
             export class ExternalBudgetModel {
                 code: string;
                 name: string;
@@ -55,31 +84,22 @@ module nts.uk.at.view.ksu006.a {
                 }
             }
             
-            export class DataPreviewModel {
+            /**
+             * DataPreviewModel
+             */
+            export interface DataPreviewModel {
                 isDailyUnit: boolean;
                 data: Array<ExternalBudgetValueModel>;
                 totalRecord: number;
-                
-                constructor(isDailyUnit: boolean, data: Array<ExternalBudgetValueModel>, totalRecord: number) {
-                    let self = this;
-                    self.isDailyUnit = isDailyUnit;
-                    self.data = data;
-                    self.totalRecord = totalRecord;
-                }
             }
             
-            export class ExternalBudgetValueModel {
+            /**
+             * ExternalBudgetValueModel
+             */
+            export interface ExternalBudgetValueModel {
                 code: string;
                 date: string;
                 listValue: Array<any>;
-                
-                
-                constructor(code: string, date: string, listValue: Array<any>) {
-                    let self = this;
-                    self.code = code;
-                    self.date = date;
-                    self.listValue = listValue;
-                }
             }
         }
     }

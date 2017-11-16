@@ -53,16 +53,10 @@ table.bottom_tbl td {
 .width200{
 	width: 200px;	
 }
-.pad_top_5{
-	padding-top: 5px;
-}
-.style_caret.caret-bottom:after {
-	cursor: pointer;
-	color: #888888;
-	border-width: 15px 100px;
-	margin-top: -10px;
-}
 
 #contents-area {
 	overflow: hidden;
+}
+.bg-green-kdl-003 {
+	background-color: #C7F391;
 }

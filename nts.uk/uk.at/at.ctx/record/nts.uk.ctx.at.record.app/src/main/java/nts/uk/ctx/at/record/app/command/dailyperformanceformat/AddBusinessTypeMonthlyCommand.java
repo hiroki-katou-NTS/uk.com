@@ -16,6 +16,6 @@ public class AddBusinessTypeMonthlyCommand {
 	
 	private String businesstypeCode;
 
-	private List<BusinessTypeFormatDetailDto> workTypeFormatDetailDtos;
+	private List<BusinessTypeFormatDetailDto> businessTypeFormatDetailDtos;
 
 }

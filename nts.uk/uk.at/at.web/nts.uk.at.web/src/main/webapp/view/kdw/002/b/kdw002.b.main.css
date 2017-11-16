@@ -1,5 +1,6 @@
-#functions-area>button {
-	width: 80px;
+#contents-area {
+	width: 100%;
+	box-sizing: border-box;
 }
 
 #functions-area {
@@ -9,7 +10,6 @@
 .myLinkButton {
 	margin-top: 20px;
 	display: inline-block;
-	margin-left: 100px;
 }
 
 .myLinkButtonIcon {
@@ -31,6 +31,10 @@
 	color: black;
 }
 
+#grid_container {
+	width: 1200px !important;
+}
+
 .proceed {
 	margin-left: 80px !important;
 }
@@ -38,7 +42,7 @@
 .mylabel {
 	margin-top: 56px;
 	float: right;
-	margin-right: 400px;
+	margin-right: 70px;
 }
 
 td:nth-child(3), td:nth-child(4), td:nth-child(5) {
@@ -66,7 +70,7 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 	padding: 6px 30px 6px 15px;
 	vertical-align: top;
 	transition: width 0.4s ease-in-out;
-	margin-top: 100px;
+	margin-top: 20px;
 	margin-bottom: 20px;
 }
 
@@ -75,7 +79,7 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 	margin-left: 20px;
 	min-width: 65px;
 	margin-bottom: 20px;
-	margin-top: 100px;
+	margin-top: 20px;
 }
 
 .searchButton:hover {
@@ -85,9 +89,10 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 .leftpanel {
 	float: left;
 }
-#grid_container {
-	width: 1158px !important;
-}
+
 .leftLabel {
 	
+}
+.copy{
+	margin-left: 540px !important;
 }

@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.UpdatePremiumItemCommand;
@@ -28,9 +27,6 @@ public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdateP
 	
 	@Inject
 	private PremiumItemRepository premiumItemRepository;
-	
-	@Inject
-	IInternationalization internationalization;
 
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdatePremiumItemCommand>> context) {
@@ -50,10 +46,8 @@ public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdateP
 				this.premiumItemRepository.update(
 						new PremiumItem(
 								companyID, 
-								command.getID(), 
-								command.getAttendanceID(),
+								command.getDisplayNumber(),
 								new PremiumName(command.getName()), 
-								command.getDisplayNumber(), 
 								EnumAdaptor.valueOf(command.getUseAtr(), UseAttribute.class) 
 						)
 				);					

@@ -1,24 +1,18 @@
 module cps008.c.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
     let paths = {
-        getDetailMaintenanceLayout: "ctx/bs/person/maintenance/coppy"
+        getDetails: "ctx/bs/person/maintenance/findOne/{0}"
     };
 
-    /**
-    * Get list Maintenance Layout
-    */
-    export function updateOrRegisterlMaintenanceLayout(obj : any): JQueryPromise<viewmodel.UpdateMaintenanceLayoutCommand> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax("com", paths.getDetailMaintenanceLayout , obj)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function getDetails(lid) {
+        return ajax(format(paths.getDetails, lid));
     }
 
-      
+
+
+
 
 
 

@@ -28,6 +28,16 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	/** The working code. */
 	private String workingCode;
 	
+	/** The work type name. */
+	private String workTypeName;
+	
+	/** The type color. */
+	// ATTENDANCE = 1 , HOLIDAY = 0
+	private int typeColor;
+	
+	/** The working name. */
+	private String workingName;
+	
 	/** The date. */
 	private int ymdk;
 	

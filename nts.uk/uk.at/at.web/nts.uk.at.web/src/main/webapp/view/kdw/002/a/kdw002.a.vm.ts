@@ -1,52 +1,110 @@
 module nts.uk.at.view.kdw002.a {
     export module viewmodel {
+        import href = nts.uk.request.jump;
         import getText = nts.uk.resource.getText;
+        import infor = nts.uk.ui.dialog.info;
         export class ScreenModel {
-            value: KnockoutObservable<string>;
+            headerColorValue: KnockoutObservable<string>;
             unitRoundings: KnockoutObservableArray<any>;
             selectedOption: KnockoutObservable<any>;
-            dataSource: KnockoutObservableArray<ItemModel>;
-            singleSelectedCode: any;
-            columns: KnockoutObservableArray<any>;
+            attendanceItems: KnockoutObservableArray<any>;
+            aICurrentCode: KnockoutObservable<any>;
+            attendanceItemColumn: KnockoutObservableArray<any>;
+            txtItemId: KnockoutObservable<any>;
+            txtItemName: KnockoutObservable<any>;
+            timeInputCurrentCode: KnockoutObservable<any>;
+            linebreak: KnockoutObservable<any>;
             constructor() {
                 var self = this;
-                self.value = ko.observable('');
-                self.unitRoundings = ko.observableArray(['1分', '5分', '10分', '15分', '30分', '60分']),
-                    self.selectedOption = ko.observableArray(['1分'])
+                self.headerColorValue = ko.observable('');
+                self.linebreak = ko.observable(0);
+                self.unitRoundings = ko.observableArray([]);
+                self.timeInputCurrentCode = ko.observable();
+                self.txtItemId = ko.observable(null);
+                self.txtItemName = ko.observable('');
+                self.attendanceItems = ko.observableArray([]);
+                self.aICurrentCode = ko.observable(null);
+                self.aICurrentCode.subscribe(attendanceItemId => {
+                    var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
+                    self.txtItemName(attendanceItem.attendanceItemName);
+                    // self.txtItemName(cAttendanceItem.attandanceItemName);
+                    if (attendanceItem.dailyAttendanceAtr == 6) {
+                        self.unitRoundings([
+                            { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
+                            { timeInputValue: 3, timeInputName: '15分' }, { timeInputValue: 4, timeInputName: '30分' }
+                            , { timeInputValue: 5, timeInputName: '60分' }]);
+                        self.timeInputCurrentCode(0);
+                    } else {
+                        self.unitRoundings([{ timeInputValue: -1, timeInputName: '' }]);
+                        self.timeInputCurrentCode(-1);
+                    }
+                    self.linebreak(attendanceItem.nameLineFeedPosition);
 
-                this.dataSource = ko.observableArray([]);
-                for (var i = 1; i < 10; i++) {
-                    var code = '0' + i;
-                    var name = 'name' + i;
-                    this.dataSource.push(new ItemModel(code, name));
-                }
-                self.singleSelectedCode = ko.observable(null);
-                 this.columns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100 },
-                { headerText: '名称', key: 'name', width: 230 }
-            ]);
+                    service.getControlOfAttendanceItem(attendanceItemId).done(cAttendanceItem => {
+                        if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
+                            self.txtItemId(cAttendanceItem.attendanceItemId);
+                            self.headerColorValue(cAttendanceItem.headerBackgroundColorOfDailyPerformance);
+                            self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                        }
+                    });
+
+                });
+
+                self.attendanceItemColumn = ko.observableArray([
+                    { headerText: 'コード', key: 'attendanceItemId', width: 100, dataType: "number" },
+                    { headerText: '名称', key: 'attendanceItemName', width: 230, dataType: "string" },
+                    { key: 'dailyAttendanceAtr', dataType: "number", hidden: true },
+                    { key: 'nameLineFeedPosition', dataType: "number", hidden: true }
+                ]);
                 $(".clear-btn").hide();
+                var attendanceItems = [];
+                service.getAttendanceItems().done(atItems => {
+                    if (!nts.uk.util.isNullOrUndefined(atItems)) {
+                        atItems.forEach(attendanceItem => {
+                            attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceItemName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
+                        });
+                        self.attendanceItems(attendanceItems);
+                        self.aICurrentCode(atItems[0].attendanceItemId);
+                    }
+                });
+
             }
 
-            startPage(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-                dfd.resolve();
-                return dfd.promise();
+            navigateView(): void {
+                var self = this;
+                var path = "/view/kdw/006/a/index.xhtml";
+                href(path);
             }
+
+            submitData(): void {
+                var self = this;
+                var AtItems = { attandanceTimeId: self.txtItemId(), inputUnitOfTimeItem: self.timeInputCurrentCode(), headerBackgroundColorOfDailyPerformance: self.headerColorValue(), nameLineFeedPosition: self.linebreak() };
+                service.updateControlOfAttendanceItem(AtItems).done(x => {
+                    infor(nts.uk.resource.getMessage("Msg_15", []));
+                });
+
+            }
+
+
+
 
 
         }
 
-        class ItemModel {
-            code: string;
-            name: string;
+        interface IAttendanceItem {
+            attendanceItemId: number;
+            attendanceItemName: string;
+        }
 
-            constructor(code: string, name: string) {
+
+        class AttendanceItem {
+            attendanceItemId: number;
+            attendanceItemName: string;
+
+            constructor(params: IAttendanceItem) {
                 var self = this;
-                self.code = code;
-                self.name = name;
-
+                self.attendanceItemId = params.attendanceItemId;
+                self.attendanceItemName = params.attendanceItemName;
             }
         }
     }

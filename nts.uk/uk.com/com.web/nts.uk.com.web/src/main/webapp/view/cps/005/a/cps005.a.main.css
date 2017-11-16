@@ -1,18 +1,18 @@
-#contents-area {
-	
+#content {
+	width: 1300px;
 }
 
 #contents-area-right {
 	width: 360px;
-	height: 520px;
+	height: 555px;
 	float: left;
 	clear: right;
 	margin-left: 10px;
 }
 
 #contents-area-left {
-	width: 900px;
-	height: 520px;
+	width: 800px;
+	height: 555px;
 	float: left;
 	clear: right;
 	padding-left: 50px;
@@ -36,6 +36,7 @@
 
 #item-info-list_container {
 	border: 1px solid #999999 !important;
+	overflow: hidden !important;
 }
 
 #item-setting-button {
@@ -43,5 +44,5 @@
 }
 
 .ntsHelpButton {
-	margin-left: 15px !important;	
+	margin-left: 15px !important;
 }

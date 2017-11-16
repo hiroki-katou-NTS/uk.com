@@ -34,7 +34,8 @@ public class WorkLocationFinder {
 	
 	public Optional<WorkLocationDto> getWorkPlace(String workLocationCD){
 		String companyID = AppContexts.user().companyId();
-		return this.workPlaceRepository.findByCode(companyID, workLocationCD).map(workPlace -> WorkLocationDto.fromDomain(workPlace));
+		return this.workPlaceRepository.findByCode(companyID, workLocationCD)
+				.map(workPlace -> WorkLocationDto.fromDomain(workPlace));
 	}
 	
 }

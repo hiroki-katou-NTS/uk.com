@@ -491,6 +491,7 @@ module ccg013.a.viewmodel {
                         imageName: data.imageName,
                         imageSize: data.imageSize,
                     }));
+                    self.setupTitleMenu();
                 }
             });
         }
@@ -521,6 +522,7 @@ module ccg013.a.viewmodel {
                             }));
                         });
                     }
+                    self.setupTreeMenu();
                 }
             });
         }
@@ -604,8 +606,6 @@ module ccg013.a.viewmodel {
                             item.imageSize(data.imageSize);
                         }
                     });
-
-
                 }
             });
         }

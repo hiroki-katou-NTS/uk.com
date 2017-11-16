@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.find.attendance.AttItemDto;
 import nts.uk.ctx.at.shared.app.find.attendance.AttendanceItemDto;
 import nts.uk.ctx.at.shared.app.find.attendance.AttendanceItemFinder;
 
@@ -26,6 +27,13 @@ public class AttandanceItemWebService extends WebService {
 	@Path("getPossibleAttendanceItem")
 	public List<AttendanceItemDto> getPossibleAttendanceItem(List<Integer> lstPossible) {
 		return this.find.getPossibleAttendanceItem(lstPossible);
+	}
+	
+	@POST
+	@Path("getAttendanceItems")
+	public List<AttItemDto> getAttendanceItems(){
+		return this.find.getAttendanceItems();
+		
 	}
 
 }

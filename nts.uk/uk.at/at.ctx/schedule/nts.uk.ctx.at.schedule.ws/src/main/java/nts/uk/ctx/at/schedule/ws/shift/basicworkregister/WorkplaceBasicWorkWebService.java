@@ -51,7 +51,7 @@ public class WorkplaceBasicWorkWebService extends WebService {
 	public WorkplaceBasicWorkFindDto findAll(@PathParam("workplaceId") String workplaceId) {
 		return this.finder.find(workplaceId);
 	}
-	
+
 	/**
 	 * Find setting.
 	 *

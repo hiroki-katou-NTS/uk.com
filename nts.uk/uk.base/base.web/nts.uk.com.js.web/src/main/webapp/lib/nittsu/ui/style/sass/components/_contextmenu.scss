@@ -7,14 +7,30 @@
 	padding: 4px 0;
 	border-radius: 2px;
 	box-shadow: 0 1px 2px 1px rgba(0,0,0,0.2);
+	z-index: 120050;
+
+	&:after {
+		content: '';
+		display: block;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		background-color: #FAFAFA;
+		width: 30px;
+		border-right: 1px solid #EEEEEE;
+		box-sizing: border-box;
+		z-index: 1;
+	}
 	
 	li {
 		position: relative;
 		display: block;
 		list-style: none;
-		padding: 0 10px 0 30px;
+		padding: 0 10px 0 37px;
 		line-height: 28px;
 		cursor: pointer;
+		z-index: 2;
 		
 		&:hover {
 			background: rgba(0,0,0,0.075);
@@ -28,7 +44,7 @@
 		
 		.menu-icon {
 			position: absolute;
-			left: 6px;
+			left: 7px;
 			top: 50%;
 			margin-top: -8px;
 		}

@@ -22,6 +22,7 @@ module nts.uk.ui.koExtentions {
             var options: Array<any> = ko.unwrap(data.steps);
             var theme: string = ko.unwrap(data.theme);
             var cssClass: string = "nts-wizard " + "theme-" + theme;
+            var active: KnockoutObservable<number> = ko.isObservable(data.active) ? data.active : ko.observable(data.active || 0);
             // Container
             var container = $(element);
 
@@ -51,6 +52,7 @@ module nts.uk.ui.koExtentions {
                 enablePagination: false,
                 enableFinishButton: false,
                 autoFocus: false,
+                enableKeyNavigation: false,
                 onStepChanged: function() {
                     // Remove old class.
                     container.children('.steps').children('ul').children('li').removeClass('step-current');
@@ -62,7 +64,13 @@ module nts.uk.ui.koExtentions {
                     container.children('.steps').children('ul').children('.current').addClass('step-current');
                     container.children('.steps').children('ul').children('.done').addClass('step-prev');
                     container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
-
+                    
+                    active(container.steps("getCurrentIndex"));
+                    
+                    if(container.data("waitStepShowed")){
+                        container.trigger("stepShowed");
+                    }
+                    
                     return true;
                 }
             }).data("length", options.length);
@@ -98,6 +106,16 @@ module nts.uk.ui.koExtentions {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var data = valueAccessor();
+            var active: number = (data.active !== undefined) ? ko.unwrap(data.active) : 0;
+            
+            // Container
+            var container = $(element);
+            
+            if (container.steps("getCurrentIndex") != active) {
+                container.setStep(active);
+            }
+            
         }
     }
     

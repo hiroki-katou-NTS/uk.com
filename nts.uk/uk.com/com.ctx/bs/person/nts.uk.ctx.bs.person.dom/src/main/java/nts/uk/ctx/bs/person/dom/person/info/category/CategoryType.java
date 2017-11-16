@@ -15,7 +15,9 @@ public enum CategoryType {
 	// 4:非連続履歴(NoDuplicateHistory)
 	NODUPLICATEHISTORY(4),
 	// 5:重複履歴(DuplicateHistory)
-	DUPLICATEHISTORY(5);
-
+	DUPLICATEHISTORY(5),
+	//6: 連続履歴（期間指定）
+	CONTINUOUS_HISTORY(6);
+	
 	public final int value;
 }

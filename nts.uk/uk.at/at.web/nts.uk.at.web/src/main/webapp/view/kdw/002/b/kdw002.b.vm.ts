@@ -1,381 +1,104 @@
 module nts.uk.at.view.kdw002.b {
     import alert = nts.uk.ui.dialog.alert;
     export module viewmodel {
+        import href = nts.uk.request.jump;
         import getText = nts.uk.resource.getText;
+        import infor = nts.uk.ui.dialog.info;
         export class ScreenModel {
-            bussinessCodeItems: KnockoutObservableArray<ItemModel>;
-            columns2: KnockoutObservableArray<any>;
-            currentCode: KnockoutObservable<any>;
+            bussinessCodeItems: KnockoutObservableArray<BusinessType>;
+            bussinessColumn: KnockoutObservableArray<any>;
+            bussinessCurrentCode: KnockoutObservable<any>;
             txtSearch: KnockoutObservable<string>;
             constructor() {
                 var self = this;
-                this.bussinessCodeItems = ko.observableArray([]);
+                self.bussinessCodeItems = ko.observableArray([]);
 
-                for (let i = 1; i < 3; i++) {
-                    this.bussinessCodeItems.push(new ItemModel('00' + i, '基本給'));
-                }
-                this.columns2 = ko.observableArray([
-                    { headerText: getText('KDW002_12'), key: 'code', width: 100 },
-                    { headerText: getText('KDW002_4'), key: 'name', width: 150 },
+                this.bussinessColumn = ko.observableArray([
+                    { headerText: getText('KDW002_12'), key: 'businessTypeCode', width: 100 },
+                    { headerText: getText('KDW002_4'), key: 'businessTypeName', width: 150, formatter: _.escape },
                 ]);
-                this.currentCode = ko.observable();
 
-                var data = [
-                    {
-                        "attendanceItemId": 1,
-                        "attendanceItemName": "name1",
-                        "use": true,
-                        "youCanChangeIt": true,
-                        "canBeChangedByOthers": true,
-                        "userCanSet": false
+                self.bussinessCurrentCode = ko.observable('');
+                self.bussinessCurrentCode.subscribe(businessTypeCode => {
 
-                    },
-                    {
-                        "attendanceItemId": 2,
-                        "attendanceItemName": "name2",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 3,
-                        "attendanceItemName": "name3",
-                        "use": true,
-                        "youCanChangeIt": true,
-                        "canBeChangedByOthers": true,
-                        "userCanSet": false
-                    },
-                    {
-                        "attendanceItemId": 4,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 5,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 6,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 7,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 8,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 9,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 10,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 11,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 12,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 13,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 14,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 15,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 26,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 16,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 17,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 18,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 19,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 20,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 21,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 22,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 23,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 24,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    },
-                    {
-                        "attendanceItemId": 25,
-                        "attendanceItemName": "name4",
-                        "use": false,
-                        "youCanChangeIt": false,
-                        "canBeChangedByOthers": false,
-                        "userCanSet": true
-                    }
+                    self.bussinessCurrentCode(businessTypeCode);
 
-                ];
-                //                  var useTemplate = "<span style=\"width:100%;display:inline-block;overflow:hidden;text-align:center;\">" +
-                //                    "<span class=\"ui-state-default ui-corner-all ui-igcheckbox-small\">" +
-                //                    "<span class=\"ui-icon ui-icon-check ui-igcheckbox-small-on\"" +
-                //                    " data-rowid=\"${attendanceItem"useChanged(event, 'use');\"/></span></span>";
+                    $.when(service.getListDailyServiceTypeControl(businessTypeCode), service.getAttendanceItems()).done(
+                        (DailyServiceTypeControls, attendanceItems) => {
+                            $('#useCheckAll').prop('checked', false);
+                            $('#youCanCheckAll').prop('checked', false);
+                            $('#otherCheckAll').prop('checked', false);
+                            if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls) && !nts.uk.util.isNullOrUndefined(attendanceItems)) {
+                                var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
+                                var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
+                                $("#grid").igGrid("dataSourceObject", _.sortBy(dstControls, 'attendanceItemId')).igGrid("dataBind");
+                                var dataSource = $('#grid').data('igGrid').dataSource;
+                                var filteredData = dataSource.transformedData('afterfilteringandpaging');
+                                var i;
+                                var l = filteredData.length;
+                                for (i = 0; i < l; i++) {
+                                    if (!filteredData[i].userCanSet || !filteredData[i].use) {
+                                        var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+                                        var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+                                        cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                                        cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
 
-                //                var useTemplate = "<span style=\"width:100%;display:inline-block;overflow:hidden;text-align:center;\">" +
-                //                    "<span class=\"ui-state-default ui-corner-all ui-igcheckbox-small\">" +
-                //                    "<span class=\"ui-icon ui-icon-check ui-igcheckbox-normal-on{{if ${use} === \"true\"}} {{else}} ui-igcheckbox-normal-off{{/if}}\"" +
-                //                    " data-rowid=\"${attendanceItemId}\"  onclick=\"useChanged(event, 'use');\"/></span></span>";
-                //                var youCanChangeItTemplate = "<span style=\"width:100%;display:inline-block;overflow:hidden;text-align:center;\">" +
-                //                    "<span class=\"ui-state-default ui-corner-all ui-igcheckbox-small\">" +
-                //                    "<span class=\"ui-icon ui-icon-check ui-igcheckbox-normal-on{{if ${youCanChangeIt} === \"true\"}} {{else}} ui-igcheckbox-normal-off{{/if}}\"" +
-                //                    " data-rowid=\"${attendanceItemId}\"  onclick=\"youCanChangeItChanged(event, 'youCanChangeIt');\"/></span></span>";
-                //                var canBeChangedByOthersTemplate = "<span style=\"width:100%;display:inline-block;overflow:hidden;text-align:center;\">" +
-                //                    "<span class=\"ui-state-default ui-corner-all ui-igcheckbox-small\">" +
-                //                    "<span class=\"ui-icon ui-icon-check ui-igcheckbox-normal-on{{dByOthers} === \"true\"}} {{else}} ui-igcheckbox-normal-off{{/if}}\"" +
-                //                    " data-rowid=\"${attendanceItemId}\"  onclick=\"canBeChangedByOthersChanged(event, 'canBeChangedByOthers');\"/></span></span>";
-
-                var useTemplate = "<input type='checkbox' {{if ${use} }} checked {{/if}} onclick='useChanged(this, ${attendanceItemId})' />";
-                var youCanChangeItTemplate = "<input type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${attendanceItemId})' />";
-                var canBeChangedByOthersTemplate = "<input type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${attendanceItemId})' />";
-
-                //                $("#grid").igGrid({
-                //                    primaryKey: "attendanceItemId",
-                //                    height: 550,
-                //                    dataSource: data,
-                //                    autoGenerateColumns: false,
-                //                    renderCheckboxes: true,
-                //                    dataSourceType: "json",
-                //                    autoCommit: true,
-                //                    alternateRowStyles: false,
-                //                    cellClick: function(evt, ui) {
-                //                        check(evt, ui);
-                //                    },
-                //                    columns: [
-                //                        { key: "attendanceItemId", width: "50px", headerText: getText('KDW002_3'), dataType: "number" },
-                //                        { key: "attendanceItemName", width: "250px", headerText: getText('KDW002_4'), dataType: "string" },
-                //                        { key: "use", width: "250px", headerText: getText('KDW002_5'), dataType: "bool" },
-                //                        { key: "youCanChangeIt", width: "250px", headerText: getText('KDW002_6'), dataType: "bool" },
-                //                        { key: "canBeChangedByOthers", width: "250px", headerText: getText('KDW002_7'), dataType: "bool" }
-                //                    ]
-                ////                    ,
-                ////                    features: [
-                ////                        {
-                ////                            name: 'Updating',
-                ////                            showDoneCancelButtons: false,
-                ////                            enableAddRow: false,
-                ////                            enableDeleteRow: false,
-                ////                            editMode: 'cell',
-                ////                            columnSettings: [
-                ////                                {
-                ////                                    columnKey: 'use',
-                ////                                    readOnly: true
-                ////                                }
-                ////                            ]
-                ////                        }, {
-                ////                            name: "Updatin     c
-                ////                                { columnKey: "attendanceItemId", readOnly: false }
-                ////                            ]
-                ////                        },
-                ////                        {
-                ////                            name: "Updating",
-                ////                            columnSettings: [
-                ////                                { columnKey: "attendanceItemName", readOnly: false }
-                ////                            ]
-                ////                        }
-                ////
-                ////                    ]
-                //                });    
-
-
-
-
-                $("#grid").igGrid({
-                    primaryKey: "attendanceItemId",
-                    height: 400,
-                    dataSource: data,
-                    autoGenerateColumns: false,
-                    alternateRowStyles: false,
-                    dataSourceType: "json",
-                    autoCommit: true,
-                    columns: [
-                        { key: "attendanceItemId", width: "100px", headerText: getText('KDW002_3'), dataType: "number", columnCssClass: "readOnlyColor" },
-                        { key: "attendanceItemName", width: "250px", headerText: getText('KDW002_4'), dataType: "string", columnCssClass: "readOnlyColor" },
-                        { key: "use", width: "150px", headerText: getText('KDW002_5'), dataType: "bool", template: useTemplate },
-                        { key: "youCanChangeIt", width: "150px", headerText: getText('KDW002_6'), dataType: "bool", template: youCanChangeItTemplate },
-                        { key: "canBeChangedByOthers", width: "150px", headerText: getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
-                        { key: "userCanSet", dataType: "bool", hidden: true }
-                    ],
-                    features: [
-                        {
-                            name: "Updating",
-                            showDoneCancelButtons: false,
-                            enableAddRow: false,
-                            enableDeleteRow: false,
-                            editMode: 'cell',
-                            columnSettings: [
-                                { columnKey: "attendanceItemId", readOnly: true },
-                                { columnKey: "attendanceItemName", readOnly: true },
-                                { columnKey: "use", readOnly: true },
-                                { columnKey: "youCanChangeIt", readOnly: true },
-                                { columnKey: "canBeChangedByOthers", readOnly: true },
-                                { columnKey: "userCanSet", allowHiding: false, hidden: true }
-                            ]
-                        },
-                        {
-                            name: "Selection",
-                            mode: "row",
-                            multipleSelection: false,
-                            touchDragSelect: false, // this is true by default
-                            multipleCellSelectOnClick: false
+                                        if (!filteredData[i].userCanSet) {
+                                            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
+                                        }
+                                    }
+                                }
+                            }
                         }
+                    );
 
 
 
-                    ]
+
+
+
+
+
                 });
 
-                var dataSource = $('#grid').data('igGrid').dataSource;
-                var filteredData = dataSource.transformedData('afterfilteringandpaging');
 
-                for (var i = 0; i < filteredData.length; i++) {
-                    if (!filteredData[i].userCanSet) {
-                        var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                        var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                        cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
-                        cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
-                        $("#grid").igGridUpdating("setCellValue", i + 1, "youCanChangeIt", false);
-                        $("#grid").igGridUpdating("setCellValue", i + 1, "canBeChangedByOthers", false);
+
+                loadIgrid();
+
+                service.getBusinessTypes().done(businessTypes => {
+
+                    if (!nts.uk.util.isNullOrUndefined(businessTypes) && businessTypes.length > 0) {
+                        let bussinessCodeItems = [];
+                        businessTypes.forEach(businessType => {
+                            bussinessCodeItems.push(new BusinessType(businessType));
+                            //   self.bussinessCodeItems.push(new BusinessType(businessType));
+                        });
+                        var bTypes = _.sortBy(bussinessCodeItems, 'businessTypeCode');
+                        self.bussinessCodeItems(bTypes);
+                        var businessTypeCode = bTypes[0].businessTypeCode;
+                        self.bussinessCurrentCode(businessTypeCode);
+
                     }
-                }
 
-                //  $('#grid').igGridSelection('selectRow', 1);
+                });
+
+
                 self.txtSearch = ko.observable("");
 
-
-                //   $("ui-iggrid-addrow ui-widget-header").hide();
-                //  $("td").removeClass("ui-iggrid-editingcell");
-
-
-                // $('#grid').igGridUpdating('updateRow', 1, { use: false });
-
-
             }
+
+            copy(): void {
+                var self = this;
+                var bussinessCodeItems = self.bussinessCodeItems();
+                var bussinessCurrentCode = self.bussinessCurrentCode();
+                var bussinessCodeItem = _.find(self.bussinessCodeItems(), { businessTypeCode: self.bussinessCurrentCode() });
+                var businessTypeName = bussinessCodeItem.businessTypeName;
+                var data = {
+                    code: bussinessCurrentCode, name: businessTypeName, bussinessItems: bussinessCodeItems
+                }
+                nts.uk.ui.windows.setShared("KDW002_B_BUSINESSTYPE", data);
+            }
+
 
             startPage(): JQueryPromise<any> {
                 let self = this;
@@ -385,9 +108,34 @@ module nts.uk.at.view.kdw002.b {
             }
 
             submitData(): void {
+                var self = this;
                 var dataSource = $('#grid').data('igGrid').dataSource;
                 var filteredData = dataSource.transformedData('afterfilteringandpaging');
+                let DailyServiceTypeControls = [];
+                filteredData.forEach(dstc => {
+                    DailyServiceTypeControls.push(new DailyServiceTypeControl({
+                        attendanceItemId: dstc.attendanceItemId,
+                        businessTypeCode: self.bussinessCurrentCode(),
+                        youCanChangeIt: dstc.youCanChangeIt,
+                        canBeChangedByOthers: dstc.canBeChangedByOthers,
+                        use: dstc.use
+                    }));
+                });
+                nts.uk.ui.block.invisible();
+                service.updateDailyService(DailyServiceTypeControls).done(x => {
+                    infor(nts.uk.resource.getMessage("Msg_15", []));
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
             }
+
+            navigateView(): void {
+                let self = this;
+                var path = "/view/kdw/006/a/index.xhtml";
+                href(path);
+            }
+
+
             searchData(): void {
                 var self = this;
                 if (self.txtSearch().length === 0) {
@@ -406,41 +154,83 @@ module nts.uk.at.view.kdw002.b {
                     }
                 }
                 var keynotExist = true;
-                for (var i = index; i < filteredData.length; i++) {
-                    var rowIndex = i + 1;
-                    var idValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemId");
-                    var nameValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemName");
+                var i;
+                var l = filteredData.length;
+                for (i = index; i < l; i++) {
+                    var rowId = filteredData[i].attendanceItemId;
+                    var nameValue = filteredData[i].attendanceItemName;
+                    var idValue = rowId.toString();
+
                     if (_.includes(idValue, self.txtSearch()) || _.includes(nameValue, self.txtSearch())) {
                         $('#grid').igGridSelection('selectRow', i);
+                        $('#grid').igGrid("virtualScrollTo", i);
                         keynotExist = false;
                         break;
                     }
                 }
                 if (keynotExist) {
-                    alert("該当する項目が見つかりませんでした");
+                    for (i = 0; i < index; i++) {
+                        var rowId = filteredData[i].attendanceItemId;
+                        var nameValue = filteredData[i].attendanceItemName;
+                        var idValue = rowId.toString();
+                        if (_.includes(idValue, self.txtSearch()) || _.includes(nameValue, self.txtSearch())) {
+                            $('#grid').igGridSelection('selectRow', i);
+                            $('#grid').igGrid("virtualScrollTo", i);
+                            keynotExist = false;
+                            break;
+                        }
+                    }
                 }
 
 
 
+                if (keynotExist) {
+                    alert("該当する項目が見つかりませんでした");
+                }
 
-                // var row1 = $(".selector").igGridSelection("selectedRow");
-                // var row2 = $(".selector").get();
-                //var cell = $(".selector").igGrid("selectedCell");
-                // var rows = $(".selector").igGrid("selectedRows");
-                //var row = $(".selector").igGridSelection("activeRow");
+
             }
 
         }
 
-        class ItemModel {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+        interface IBusinessType {
+            businessTypeCode: string;
+            businessTypeName: string;
+        }
 
+        class BusinessType {
+            businessTypeCode: string;
+            businessTypeName: string;
+            constructor(param: IBusinessType) {
+                let self = this;
+                self.businessTypeCode = param.businessTypeCode;
+                self.businessTypeName = param.businessTypeName;
             }
         }
+        interface IDailyServiceTypeControl {
+            attendanceItemId: number;
+            businessTypeCode: string;
+            youCanChangeIt: boolean;
+            canBeChangedByOthers: boolean;
+            use: boolean
+        }
+
+        class DailyServiceTypeControl {
+            attendanceItemId: number;
+            businessTypeCode: string;
+            youCanChangeIt: boolean;
+            canBeChangedByOthers: boolean;
+            use: boolean
+            constructor(param: IDailyServiceTypeControl) {
+                let self = this;
+                self.attendanceItemId = param.attendanceItemId;
+                self.businessTypeCode = param.businessTypeCode;
+                self.youCanChangeIt = param.youCanChangeIt;
+                self.canBeChangedByOthers = param.canBeChangedByOthers;
+                self.use = param.use;
+            }
+        }
+
 
 
     }
@@ -451,6 +241,23 @@ function useChanged(element, rowId) {
         $("#grid").igGridUpdating('endEdit', true);
     }
     $("#grid").igGridUpdating("setCellValue", rowId, "use", value != true);
+
+
+    // var rowIndex = $('#grid').igGrid( "getVisibleIndexByKey","2") ;
+    // var rowIndex = $('#grid').igGrid("getVisibleIndexByKey", "attendanceItemId");
+    //  var row = $('#grid').igGrid("rowById", rowId);
+    var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
+    var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
+    if (!(value != true) && $("#grid").igGrid("getCellValue", rowId, "userCanSet")) {
+
+        cellYouCanChangeIt.addClass('readOnlyColorIsUse');
+        cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
+    } else if (value != true && $("#grid").igGrid("getCellValue", rowId, "userCanSet")) {
+        cellYouCanChangeIt.removeClass('readOnlyColorIsUse');
+        cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
+
+    }
+
 }
 
 
@@ -469,21 +276,172 @@ function canBeChangedByOthersChanged(element, rowId) {
     $("#grid").igGridUpdating("setCellValue", rowId, "canBeChangedByOthers", value != true);
 }
 
+function userCanSetChanged(element, rowId) {
+    var value = $("#grid").igGrid("getCellValue", rowId, "userCanSet");
+    if ($("#grid").igGridUpdating('isEditing')) {
+        $("#grid").igGridUpdating('endEdit', true);
+    }
+    $("#grid").igGridUpdating("setCellValue", rowId, "userCanSet", value != true);
+}
+
+function useHeaderChanged(element) {
+    var dataSource = $('#grid').data('igGrid').dataSource;
+    var filteredData = dataSource.transformedData('afterfilteringandpaging');
+    if (element.checked) {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", true);
+            if (filteredData[i].userCanSet) {
+                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+                if (cellYouCanChangeIt.classList.contains('readOnlyColorIsUse')) {
+                    cellYouCanChangeIt.classList.remove('readOnlyColorIsUse');
+                }
+
+                if (cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
+                    cellCanBeChangedByOthers.classList.remove('readOnlyColorIsUse');
+                }
+
+            }
+        }
+
+    } else {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", false);
+            if (filteredData[i].userCanSet) {
+                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+                if (!cellYouCanChangeIt.classList.contains('readOnlyColorIsUse')) {
+                    cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                }
+
+                if (!cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
+                    cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+                }
+
+            }
+        }
+
+    }
+}
 
 
-//function check(evt, ui) {
-//    var self = this;
-//    var ids = ["use"];
-//    if (_.includes(ids, ui.colKey)) {
-//        var value = $("#grid").igGrid("getCellValue", ui.rowKey, ui.colKey);
-//        if ($("#grid").igGridUpdating('isEditing')) {
-//            $("#grid").igGridUpdating('endEdit', true);
-//        }
-//        $("#grid").igGridUpdating("setCellValue", ui.rowKey, ui.colKey, value != true);
-//    }
-//}
+function youCanChangeItHeaderChanged(element) {
+    var dataSource = $('#grid').data('igGrid').dataSource;
+    var filteredData = dataSource.transformedData('afterfilteringandpaging');
+    if (element.checked) {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            if (filteredData[i].userCanSet && filteredData[i].use) {
+                $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "youCanChangeIt", true);
+            }
+        }
+    } else {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            if (filteredData[i].userCanSet && filteredData[i].use) {
+                $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "youCanChangeIt", false);
+            }
+        }
+
+    }
+
+}
+
+function canBeChangedByOthersHeaderChanged(element) {
+    var dataSource = $('#grid').data('igGrid').dataSource;
+    var filteredData = dataSource.transformedData('afterfilteringandpaging');
+    if (element.checked) {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            if (filteredData[i].userCanSet && filteredData[i].use) {
+                $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", true);
+            }
+        }
+    } else {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            if (filteredData[i].userCanSet && filteredData[i].use) {
+                $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
+            }
+        }
+
+    }
+
+}
 
 
+
+
+function loadIgrid() {
+    //load igrid
+    var DailyServiceTypeControls = [];
+    var useTemplate = "<input type='checkbox' {{if ${use} }} checked {{/if}} onclick='useChanged(this, ${attendanceItemId})' />";
+    var youCanChangeItTemplate = "<input type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${attendanceItemId})' />";
+    var canBeChangedByOthersTemplate = "<input type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${attendanceItemId})' />";
+    var useHeader = "<input type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
+    var youCanChangeItHeader = "<input type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> ";
+    var canBeChangedByOthersHeader = "<input type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
+    $("#grid").igGrid({
+        primaryKey: "attendanceItemId",
+        height: 400,
+        dataSource: DailyServiceTypeControls,
+        autoGenerateColumns: false,
+        alternateRowStyles: false,
+        dataSourceType: "json",
+        autoCommit: true,
+        // virtualization: true,
+        rowVirtualization: false,
+        // virtualizationMode: "continuous",
+        virtualizationMode: "fixed",
+        columns: [
+            { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number" },
+            { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string" },
+            { key: "use", width: "100px", headerText: useHeader + nts.uk.resource.getText('KDW002_5'), dataType: "bool", template: useTemplate },
+            { key: "youCanChangeIt", width: "120px", headerText: youCanChangeItHeader + nts.uk.resource.getText('KDW002_6'), dataType: "bool", template: youCanChangeItTemplate },
+            { key: "canBeChangedByOthers", width: "120px", headerText: canBeChangedByOthersHeader + nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
+            { key: "userCanSet", dataType: "bool", hidden: true }
+        ],
+        features: [
+            {
+                name: "Updating",
+                showDoneCancelButtons: false,
+                enableAddRow: false,
+                enableDeleteRow: false,
+                editMode: 'cell',
+                columnSettings: [
+                    { columnKey: "attendanceItemId", readOnly: true },
+                    { columnKey: "attendanceItemName", readOnly: true },
+                    { columnKey: "use", readOnly: true },
+                    { columnKey: "youCanChangeIt", readOnly: true },
+                    { columnKey: "canBeChangedByOthers", readOnly: true },
+                    { columnKey: "userCanSet", hidden: true }
+                    //, allowHiding: false,
+                ]
+            },
+            {
+                name: "Selection",
+                mode: "row",
+                multipleSelection: false,
+                touchDragSelect: false, // this is true by default
+                multipleCellSelectOnClick: false
+            }
+
+
+        ]
+    });
+
+
+    //
+
+}
 
 
 

@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1250, height: 750 };</script>
+				<script>var dialogSize = { width: 1280, height: 780 };</script>
 				<com:stylefile path="ksm005.b.main.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
@@ -31,18 +31,19 @@
 					<button tabindex="1" data-bind="click: resetData">#{i18n.getText('KSM005_8')}</button>
 					<button tabindex="2" class="proceed" data-bind="click: saveDataMonthlyPattern">#{i18n.getText('KSM005_9')}</button>
 					<button tabindex="3" data-bind="click: openBatchSettingDialog">#{i18n.getText('KSM005_10')}</button>
-					<button tabindex="5" class="danger" data-bind="click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
+					<button tabindex="5" class="danger" data-bind="enable: enableDelete, click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">
 					<div tabindex="-1" class="pull-left monthlyPatternContents caret-right caret-background bg-green">
-						<table id="lstMonthlyPattern" 
+						<table tabindex="-1" id="lstMonthlyPattern" 
 							data-bind="ntsGridList: {								
 							height: 350,
 							dataSource: lstMonthlyPattern,
 							primaryKey: 'code',
 							columns: columnMonthlyPatterns,
 							multiple: false,
-							value: selectMonthlyPattern
+							value: selectMonthlyPattern,
+							rows: 10
 						}"></table>	
 					</div>
 					<div class="pull-left monthlyPatternDetail">
@@ -60,8 +61,7 @@
 								option: textEditorOption,
 								required: true,
 								name:'#[KSM005_17]', 
-								enable: enableMonthlyPatternCode,
-								immediate: false}" />
+								enable: enableMonthlyPatternCode}" />
 								
 							<input tabindex="7" id="inp_monthlyPatternName" 
 								class="nts-input" 

@@ -19,16 +19,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KbpstBonusPayTimeItem extends UkJpaEntity implements Serializable {
 
 	public static final long serialVersionUID = 1L;
+	
 	@EmbeddedId
 	public KbpstBonusPayTimeItemPK kbpstBonusPayTimeItemPK;
+	
 	@Column(name = "USE_ATR")
 	public BigDecimal useAtr;
+	
 	@Column(name = "TIME_ITEM_NAME")
 	public String timeItemName;
-	@Column(name = "TIME_ITME_NO")
-	public BigDecimal timeItemNo;
-	@Column(name = "TYPE_ATR")
-	public BigDecimal timeItemTypeAtr;
 
 	@Override
 	protected Object getKey() {

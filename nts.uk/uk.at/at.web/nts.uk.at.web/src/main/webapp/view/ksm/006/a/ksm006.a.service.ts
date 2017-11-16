@@ -18,7 +18,13 @@ module nts.uk.at.view.ksm006.a {
             findClassifyBasicWork: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/find',
             saveClassifyBasicWork: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/save',
             removeClassifyBasicWork: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/remove',
-            findClassifySetting: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/findSetting'
+            findClassifySetting: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/findSetting',
+            
+            // Find WorkTypeCode List
+            findWorktypeCodeList: 'at/share/worktype/findSelectAble',
+            
+            // Find WorkTimeCode List
+            findWorktimeCodeList: 'at/shared/worktime/findByCompanyID'
             
         };
 
@@ -96,7 +102,20 @@ module nts.uk.at.view.ksm006.a {
             return nts.uk.request.ajax(paths.findClassifySetting);
         }
         
+        /**
+         * Find WorktypeCode List
+         */
+        export function findWorktypeCodeList(command: Array<number>): JQueryPromise<any> {
+            let data = {workStyleLst: command};
+            return nts.uk.request.ajax(paths.findWorktypeCodeList, data);
+        }
         
+        /**
+         * Find WorkTimeCode List
+         */
+        export function findWorktimeCodeList(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findWorktimeCodeList);
+        }
 
         /**
         * Model namespace.

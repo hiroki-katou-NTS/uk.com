@@ -11,7 +11,6 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
@@ -22,7 +21,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class BusinessTypesFinder {
 
 	@Inject
-	private BusinessTypesRepository workTypeRepository;
+	private BusinessTypesRepository businessTypeRepository;
 
 	/**
 	 * find All business type
@@ -30,14 +29,22 @@ public class BusinessTypesFinder {
 	 */
 	public List<BusinessTypeDto> findAll() {
 		String companyId = AppContexts.user().companyId();
-		return this.workTypeRepository.findAll(companyId).stream().map(item -> {
+		return this.businessTypeRepository.findAll(companyId).stream().map(item -> {
 			return new BusinessTypeDto(item.getBusinessTypeCode().v(), item.getBusinessTypeName().v());
 		}).collect(Collectors.toList());
 	}
-	public Optional<BusinessTypeDto> findBusinessType(String businessTypeCode){
+	/**
+	 * find business type by business type code
+	 * @param businessTypeCode
+	 * @return
+	 */
+	public BusinessTypeDto findByCode(String businessTypeCode){
 		String companyId = AppContexts.user().companyId();
-		Optional<BusinessType> businessType = workTypeRepository.findBusinessType(companyId, businessTypeCode);
-		BusinessTypeDto aaa = new BusinessTypeDto(businessType.get().getBusinessTypeCode().v(),businessType.get().getBusinessTypeName().v());
-		return Optional.of(aaa);
+		Optional<BusinessType> businessType = businessTypeRepository.findByCode(companyId, businessTypeCode);
+		if(!businessType.isPresent()){
+			return null;
+		}
+		BusinessTypeDto businessTypeDto = new BusinessTypeDto(businessType.get().getBusinessTypeCode().v(),businessType.get().getBusinessTypeName().v());
+		return businessTypeDto;
 	}
 }

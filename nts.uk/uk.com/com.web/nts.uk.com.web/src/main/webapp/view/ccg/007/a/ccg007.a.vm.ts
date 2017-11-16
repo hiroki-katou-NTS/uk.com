@@ -1,14 +1,10 @@
 module nts.uk.pr.view.ccg007.a {
     export module viewmodel {
         import ContractDto = service.ContractDto;
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             contractCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
-            parentLayoutId: KnockoutObservable<string>;
-            newTopPageCode: KnockoutObservable<string>;
-            newTopPageName: KnockoutObservable<string>;
-            isDuplicateCode: KnockoutObservable<boolean>;
-            check: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
                 self.contractCode = ko.observable('');
@@ -22,13 +18,20 @@ module nts.uk.pr.view.ccg007.a {
             }
             private AuthContract() {
                 var self = this;
-                service.submitForm({ contractCode: self.contractCode(), password: self.password() }).done(function() {
-                    nts.uk.characteristics.remove("contractInfo");
-                    nts.uk.characteristics.save("contractInfo", { contractCode: self.contractCode(), contractPassword: self.password() });
-                    nts.uk.ui.windows.close();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                });
+                blockUI.invisible();
+                if (!nts.uk.ui.errors.hasError()) {
+                    service.submitForm({ contractCode: _.escape(self.contractCode()), password: _.escape(self.password()) }).done(function() {
+                        nts.uk.characteristics.remove("contractInfo");
+                        nts.uk.characteristics.save("contractInfo", { contractCode: _.escape(self.contractCode()), contractPassword: _.escape(self.password()) });
+                        nts.uk.ui.windows.setShared('contractCode', _.escape(self.contractCode()));
+                        nts.uk.ui.windows.setShared('contractPassword', _.escape(self.password()));
+                        nts.uk.ui.windows.close();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                        }).always(() => {
+                            blockUI.clear();
+                        });
+                }
             }
         }
     }

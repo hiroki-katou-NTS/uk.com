@@ -21,6 +21,6 @@ public class UpdateBusinessTypeDailyCommand {
 	
 	private String sheetName;
 
-	private List<BusinessTypeFormatDetailDto> workTypeFormatDetailDtos;
+	private List<BusinessTypeFormatDetailDto> businessTypeFormatDetailDtos;
 	
 }

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
+import nts.uk.shr.infra.file.report.masterlist.webservice.ReportType;
 
 @Data
 @AllArgsConstructor
@@ -17,4 +18,6 @@ public class MasterListExportSource {
 	private List<MasterHeaderColumn> headerColumns;
 	
 	private List<MasterData> masterList;
+	
+	private ReportType reportType;
 }

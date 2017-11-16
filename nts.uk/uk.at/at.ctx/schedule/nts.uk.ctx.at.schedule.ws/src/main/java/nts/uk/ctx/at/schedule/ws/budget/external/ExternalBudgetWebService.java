@@ -9,12 +9,14 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.task.AsyncTaskInfo;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.external.InsertExternalBudgetCommand;
@@ -23,13 +25,13 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCo
 import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.ExecutionProcessCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.ExecutionProcessCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetExtractCondition;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetQuery;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
+import nts.uk.ctx.at.schedule.app.find.budget.external.ParamExternalBudget;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetDataPreviewDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetExtractCondition;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
 
 /**
  * The Class ExternalBudgetWebService.
@@ -70,6 +72,18 @@ public class ExternalBudgetWebService extends WebService {
 	}
 	
 	/**
+	 * get External Budget by atr 
+	 * @param param
+	 * @return
+	 * author: Hoang Yen
+	 */
+	@POST
+	@Path("findByAtr")
+	public List<ExternalBudgetDto> getByAtr(ParamExternalBudget param){
+		return this.find.findByAtr(param);
+	}
+	
+	/**
 	 * Insertbudget.
 	 *
 	 * @param command the command
@@ -102,6 +116,26 @@ public class ExternalBudgetWebService extends WebService {
 		this.delete.handle(command);
 	}
 
+	
+	
+	@POST
+    @Path("find/charsetlist")
+    public List<EnumConstant> findCompletionList() {
+        return EnumAdaptor.convertToValueNameList(ExtBudgetCharset.class);
+    }
+	
+	/**
+	 * Checks if is daily unit.
+	 *
+	 * @param externalBudgetCd the external budget cd
+	 * @return true, if is daily unit
+	 */
+	@POST
+    @Path("validate/isDailyUnit/{externalBudgetCd}")
+    public boolean isDailyUnit(@PathParam("externalBudgetCd") String externalBudgetCd) {
+        return this.find.isDailyUnit(externalBudgetCd);
+    }
+	
     /**
      * Find data preview.
      *
@@ -114,6 +148,12 @@ public class ExternalBudgetWebService extends WebService {
         return this.find.findDataPreview(extractCondition);
     }
     
+    @POST
+    @Path("import/validate")
+    public void validateFile(ExtBudgetExtractCondition extractCondition) {
+        this.find.validateFile(extractCondition);
+    }
+    
     /**
      * Execute import file.
      *
@@ -121,30 +161,14 @@ public class ExternalBudgetWebService extends WebService {
      */
     @POST
     @Path("import/execute")
-    public JavaTypeResult<String> executeImportFile(ExecutionProcessCommand command) {
-        return new JavaTypeResult<String>(this.executeProcessHandler.handle(command));
-    }
-    
-    /**
-     * Find completion list.
-     *
-     * @return the list
-     */
-    @POST
-    @Path("find/completionenum")
-    public List<EnumConstant> findCompletionList() {
-        return EnumAdaptor.convertToValueNameList(CompletionState.class);
-    }
-    
-    /**
-     * Find all external budget log.
-     *
-     * @param query the query
-     * @return the list
-     */
-    @POST
-    @Path("findAll/log")
-    public List<ExternalBudgetLogDto> findAllExternalBudgetLog(ExternalBudgetQuery query) {
-        return this.find.findExternalBudgetLog(query);
+    public ExecutionInfor executeImportFile(ExecutionProcessCommand command) {
+        // GUID
+        String executeId = IdentifierUtil.randomUniqueId();
+        command.setExecuteId(executeId);
+        AsyncTaskInfo taskInfor = this.executeProcessHandler.handle(command);
+        return ExecutionInfor.builder()
+                .taskInfor(taskInfor)
+                .executeId(executeId)
+                .build();
     }
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSe
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class MonthlyPatternSettingFinder.
@@ -33,6 +35,9 @@ public class MonthlyPatternSettingFinder {
 	/** The monthly pattern repository. */
 	@Inject
 	private MonthlyPatternRepository monthlyPatternRepository;
+	
+    /** The Constant NONE_SETTING. */
+    public static final String NONE_SETTING = "KSM005_43";
 	
 	/**
 	 * Find by id.
@@ -58,12 +63,24 @@ public class MonthlyPatternSettingFinder {
 		if(monthlyPatternSetting.isPresent()){
 			Optional<MonthlyPattern> monthlyPattern = this.monthlyPatternRepository
 					.findById(companyId, monthlyPatternSetting.get().getMonthlyPatternCode().v());
-			if(monthlyPattern.isPresent()){
+
+			MonthlyPatternDto info = new MonthlyPatternDto();
+			
+			// check setting begin
+			if (!StringUtil.isNullOrEmpty(monthlyPatternSetting.get().getMonthlyPatternCode().v(),
+					true)) {
 				dto.setSetting(true);
-				MonthlyPatternDto info = new MonthlyPatternDto();
-				monthlyPattern.get().saveToMemento(info);
-				dto.setInfo(info);
+				info.setCode(monthlyPatternSetting.get().getMonthlyPatternCode().v());
 			}
+			
+			// setting info exist
+			if(monthlyPattern.isPresent()){
+				monthlyPattern.get().saveToMemento(info);
+			}
+			else {
+				info.setName(TextResource.localize(NONE_SETTING));
+			}
+			dto.setInfo(info);
 		}
 		return dto;
 	}

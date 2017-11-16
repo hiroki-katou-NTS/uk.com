@@ -1,11 +1,25 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class AttendanceItemDto {
+
+	private int attendanceItemId;
+
+	private String attendanceItemName;
+
+	private int attendanceItemDisplayNumber;
 	
-	private String workTypeCode;
-	
-	private String workTypeName;
+	public AttendanceItemDto() {
+		super();
+	}
+
+	public AttendanceItemDto(int attendanceItemId, String attendanceItemName, int attendanceItemDisplayNumber) {
+		super();
+		this.attendanceItemId = attendanceItemId;
+		this.attendanceItemName = attendanceItemName;
+		this.attendanceItemDisplayNumber = attendanceItemDisplayNumber;
+	}
+
 }

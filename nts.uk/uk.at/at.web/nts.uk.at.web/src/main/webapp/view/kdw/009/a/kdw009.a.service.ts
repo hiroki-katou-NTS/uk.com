@@ -2,9 +2,9 @@ module nts.uk.at.view.kdw009.a.service {
     
     var paths: any = {
         getAll: "at/record/businesstype/findAll",
-        update: "at/record/businesstype/updateBusinessName",
-        insert: "at/record/businesstype/addBusinessName",
-        remove: "at/record/businesstype/deleteBusinessName"
+        update: "at/record/businesstype/update",
+        insert: "at/record/businesstype/add",
+        remove: "at/record/businesstype/delete"
     }
     
     export function getAll(){

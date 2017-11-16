@@ -66,4 +66,10 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeId
 	 */
 	void deleteItemId(String companyId, int divTimeId);
+	
+	/**
+	 * NamPT
+	 * getDivergenceTimeName for mapping AttendanceItemName
+	 */
+	List<DivergenceTime> getDivergenceTimeName(String companyId, List<Integer> divTimeIds);
 }

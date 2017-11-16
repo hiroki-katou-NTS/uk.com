@@ -4,14 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.find.login.dto;
 
+import lombok.Data;
+
 /**
  * The Class CompanyDto.
  */
+@Data
 public class CompanyDto {
 
 	/** The code. */
-	public String code;
+	private String code;
 	
 	/** The name. */
-	public String name;
+	private String name;
 }

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 520, height: 250 };</script>
+			<com:stylefile path="ksu001.c.main.css" />
+			<com:scriptfile path="ksu001.c.vm.js" />
+			<com:scriptfile path="ksu001.c.start.js" />
+			<com:scriptfile path="ksu001.c.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<span>#{i18n.getText('KSU001_201')}</span>
+				<div>
+					<table id="processing-state">
+						<tr>
+							<th>#{i18n.getText('KSU001_202')}</th>
+							<td><ul class="countdown">
+									<li><span class="hours">00</span> <!-- <p class="hours_ref">hours</p> --></li>
+									<li class="seperator">:</li>
+									<li><span class="minutes">00</span> <!-- <p class="minutes_ref">minutes</p> --></li>
+									<li class="seperator">:</li>
+									<li><span class="seconds">00</span> <!-- <p class="seconds_ref">seconds</p> --></li>
+								</ul></td>
+						</tr>
+						<tr>
+							<th>#{i18n.getText('KSU001_203')}</th>
+							<td><span id="processingState" data-bind="text:processingState"></span> 
+							<span id="state" data-bind="text:state"></span> 
+							<span id="number-error" data-bind="text:numberError"></span></td>
+						</tr>
+					</table>
+					<button id="error-output"
+						data-bind="click: exportExcel, hasfocus : isError, visible: !isError">#{i18n.getText('KSU001_210')}</button>
+					<table id="error-status" data-bind="visible: !isError">
+						<thead>
+							<tr>
+								<th>#{i18n.getText('KSU001_204')}</th>
+								<th>#{i18n.getText('KSU001_205')}</th>
+								<th>#{i18n.getText('KSU001_206')}</th>
+								<th>#{i18n.getText('KSU001_207')}</th>
+								<th>#{i18n.getText('KSU001_208')}</th>
+								<th>#{i18n.getText('KSU001_209')}</th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach:inforError ">
+							<tr>
+								<td data-bind="text: employeeCode"></td>
+								<td data-bind="text: employeeName"></td>
+								<td data-bind="text: date"></td>
+								<td data-bind="text: category"></td>
+								<td data-bind="text: condition"></td>
+								<td data-bind="text: message"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="close-button"
+					data-bind="click: closeDialog , hasfocus:!isError()">#{i18n.getText('KSU001_211')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

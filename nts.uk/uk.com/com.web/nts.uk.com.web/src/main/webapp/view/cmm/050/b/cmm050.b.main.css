@@ -1,0 +1,12 @@
+.form-input{
+	padding: 10px 50px;
+}
+
+.form-input > .label_style{
+	display: inline-block;
+}
+
+.form-input > .input{
+	display: inline-block;
+	vertical-align: top;
+}

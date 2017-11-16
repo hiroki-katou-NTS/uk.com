@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -18,7 +19,7 @@ public class KsmstSpecificDateItemPK implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 	
-	@Column(name = "TIME_ITEM_ID")
-	public String itemItemId;
+	@Column(name = "SPECIFIC_DATE_ITEM_NO")
+	public BigDecimal itemNo;
 
 }

@@ -6,26 +6,28 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 
-public class PersonInfoRoleAuth extends AggregateRoot{
-	@Getter
+@Getter
+public class PersonInfoRoleAuth extends AggregateRoot {
+
 	private String roleId;
-	@Getter
+
 	private String companyId;
-	@Getter
+
 	private PersonInfoPermissionType allowMapUpload;
-	@Getter
+
 	private PersonInfoPermissionType allowMapBrowse;
-	@Getter
+
 	private PersonInfoPermissionType allowDocUpload;
-	@Getter
+
 	private PersonInfoPermissionType allowDocRef;
-	@Getter
+
 	private PersonInfoPermissionType allowAvatarUpload;
-	@Getter
+
 	private PersonInfoPermissionType allowAvatarRef;
-	
+
 	/**
 	 * contructors
+	 * 
 	 * @param roleId
 	 * @param companyId
 	 * @param allowMapUpload
@@ -36,8 +38,9 @@ public class PersonInfoRoleAuth extends AggregateRoot{
 	 * @param allowAvatarRef
 	 */
 	public PersonInfoRoleAuth(String roleId, String companyId, PersonInfoPermissionType allowMapUpload,
-			PersonInfoPermissionType allowMapBrowse, PersonInfoPermissionType allowDocUpload, PersonInfoPermissionType allowDocRef,
-			PersonInfoPermissionType allowAvatarUpload, PersonInfoPermissionType allowAvatarRef) {
+			PersonInfoPermissionType allowMapBrowse, PersonInfoPermissionType allowDocUpload,
+			PersonInfoPermissionType allowDocRef, PersonInfoPermissionType allowAvatarUpload,
+			PersonInfoPermissionType allowAvatarRef) {
 		super();
 		this.roleId = roleId;
 		this.companyId = companyId;
@@ -48,19 +51,38 @@ public class PersonInfoRoleAuth extends AggregateRoot{
 		this.allowAvatarUpload = allowAvatarUpload;
 		this.allowAvatarRef = allowAvatarRef;
 	}
-	
+
 	public static PersonInfoRoleAuth createFromJavaType(String roleId, String companyId, int allowMapUpload,
-			int allowMapBrowse, int allowDocUpload, int allowDocRef, int allowAvatarUpload, int allowAvatarRef){
-		if(roleId.isEmpty()){
+			int allowMapBrowse, int allowDocUpload, int allowDocRef, int allowAvatarUpload, int allowAvatarRef) {
+		if (roleId.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
 		}
 		return new PersonInfoRoleAuth(roleId, companyId,
 				EnumAdaptor.valueOf(allowMapUpload, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowMapBrowse, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowDocUpload, PersonInfoPermissionType.class),
-				EnumAdaptor.valueOf(allowMapUpload, PersonInfoPermissionType.class), 
+				EnumAdaptor.valueOf(allowDocRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowAvatarUpload, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowAvatarRef, PersonInfoPermissionType.class));
 	}
-	
+
+	public static PersonInfoRoleAuth createFromDefaultValue(String roleId, String companyId) {
+		return new PersonInfoRoleAuth(roleId, companyId, EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class));
+	}
+
+	public void updateFromJavaType(int allowMapUpload, int allowMapBrowse, int allowDocUpload, int allowDocRef,
+			int allowAvatarUpload, int allowAvatarRef) {
+		this.allowMapUpload = EnumAdaptor.valueOf(allowMapUpload, PersonInfoPermissionType.class);
+		this.allowAvatarRef = EnumAdaptor.valueOf(allowMapBrowse, PersonInfoPermissionType.class);
+		this.allowDocUpload = EnumAdaptor.valueOf(allowDocUpload, PersonInfoPermissionType.class);
+		this.allowDocRef = EnumAdaptor.valueOf(allowDocRef, PersonInfoPermissionType.class);
+		this.allowAvatarUpload = EnumAdaptor.valueOf(allowAvatarUpload, PersonInfoPermissionType.class);
+		this.allowAvatarRef = EnumAdaptor.valueOf(allowAvatarRef, PersonInfoPermissionType.class);
+	}
+
 }

@@ -6,12 +6,13 @@ package nts.uk.ctx.at.schedule.infra.entity.dailypattern;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.query.DBCharPaddingAs;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternCode;
 
 /**
  * The Class KdpstDailyPatternValPK.
@@ -36,6 +37,7 @@ public class KdpstDailyPatternValPK implements Serializable {
 	private String cid;
 
 	/** The pattern cd. */
+//	@DBCharPaddingAs(PatternCode.class)
 	@Column(name = "PATTERN_CD")
 	private String patternCd;
 

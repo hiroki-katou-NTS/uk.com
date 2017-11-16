@@ -1,0 +1,118 @@
+@CHARSET "UTF-8";
+
+#contents-area {
+	display: table;
+}
+
+.display-none {
+	display: none;
+}
+
+.right-content {
+	width: 75%;
+	padding-left: 50px;
+	display: table-cell;
+}
+
+#single-list>tbody>tr>td:last-child {
+	text-align: center;
+}
+
+#single-list .icon icon-dot {
+	vertical-align: middle;
+	font-size: 0px;
+}
+
+#duty-type-set-oneday {
+	background: lightyellow;
+	height: 250px;
+	width: 800px;
+	margin-top: 25px;
+	border: 1px solid;
+}
+
+#input-workTypeCode {
+	width: 30px !important;
+	margin-left: 45px;
+}
+
+#input-workTypeName {
+	width: 230px !important;
+}
+
+#morning, #afternoon {
+	display: inline-table;
+	height: 250px;
+	width: 440px;
+	background: beige;
+	border: 1px solid;
+	margin-top: 15px;
+}
+
+#oneday-set-1, #oneday-set-5, #oneday-set-6, #oneday-set-7,
+	#oneday-set-8 {
+	margin-left: 180px;
+	margin-top: 20px;
+}
+
+#morning-set-1, #morning-set-5, #morning-set-6, #morning-set-8 {
+	margin-left: 70px;
+	margin-top: 20px;
+}
+
+#afternoon-set-1, #afternoon-set-5, #afternoon-set-6, #afternoon-set-8 {
+	margin-left: 70px;
+	margin-top: 20px;
+}
+
+#oneday-set-2 {
+	
+}
+
+#oneday-set-3 {
+	
+}
+
+#oneday-set-4 {
+	margin-left: 180px;
+	margin-top: 20px;
+}
+
+#switch-language {
+	display: inline-block;
+}
+
+.haftday-combo-box {
+	vertical-align: middle;
+	margin-left: 4px;
+	min-width: 150px !important;
+	width: 150px
+}
+
+.calulator-method-combo-box {
+	vertical-align: middle;
+	margin-left: 10px;
+	width: 250px;
+	margin-left: 100px;
+}
+
+#abbreviation-name-input {
+	width: 100px !important;
+	margin-left: 142px;
+	vertical-align: bottom;
+}
+
+#symbolic-name-input {
+	width: 40px !important;
+	vertical-align: bottom;
+}
+
+#memo-input {
+	width: 400px;
+	margin-left: 135px;
+	vertical-align: bottom;
+}
+
+button.ntsSwitchLanguage {
+	height: 30px !important;
+}

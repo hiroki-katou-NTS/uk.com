@@ -12,6 +12,6 @@ public class BusinessTypeFormatDailyDto {
 	
 	private String sheetName;
 
-	private List<BusinessTypeFormatDetailDto> workTypeFormatDetailDtos;
+	private List<BusinessTypeFormatDetailDto> businessTypeFormatDetailDtos;
 
 }

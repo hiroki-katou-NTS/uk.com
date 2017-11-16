@@ -1,0 +1,17 @@
+td {
+	border: solid black 1px;
+	padding: 5px;
+}
+
+#func-apply-all {
+	margin-bottom: 10px;
+	margin-right: 5px;
+}
+
+#lbl-desc {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.nts-switch-button {
+	min-width: 62px;
+}

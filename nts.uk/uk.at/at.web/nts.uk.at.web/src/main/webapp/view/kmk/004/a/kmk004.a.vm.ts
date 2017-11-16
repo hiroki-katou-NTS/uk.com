@@ -140,44 +140,68 @@ module nts.uk.at.view.kmk004.a {
             /**
              * Start page.
              */
-            public startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<void> {
+                nts.uk.ui.block.invisible();
                 let self = this;
-                let dfd = $.Deferred<any>();
+                let dfd = $.Deferred<void>();
                 $.when(self.loadUsageUnitSetting(),
-                    self.setStartMonth(), self.onSelectCompany())
+                    self.setStartMonth())
                     .done(() => {
-                        dfd.resolve();
+                        self.onSelectCompany().done(() => dfd.resolve());
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 return dfd.promise();
             }
-            
+
+            /**
+             * Handle tabindex in tabpanel control.
+             */
             public initNextTabFeature() {
                 let self = this;
                 // Auto next tab when press tab key.
                 $("[tabindex='22']").on('keydown', function(e) {
                     if (e.which == 9) {
-                        self.companyWTSetting.selectedTab('tab-2');
-                        self.employmentWTSetting.selectedTab('tab-2');
-                        self.workplaceWTSetting.selectedTab('tab-2');
+                        if (self.isCompanySelected()) {
+                            self.companyWTSetting.selectedTab('tab-2');
+                        }
+                        if (self.isEmploymentSelected()) {
+                            self.employmentWTSetting.selectedTab('tab-2');
+                        }
+                        if (self.isWorkplaceSelected()) {
+                            self.workplaceWTSetting.selectedTab('tab-2');
+                        }
                     }
                 });
 
                 $("[tabindex='48']").on('keydown', function(e) {
                     if (e.which == 9) {
-                        self.companyWTSetting.selectedTab('tab-3');
-                        self.employmentWTSetting.selectedTab('tab-3');
-                        self.workplaceWTSetting.selectedTab('tab-3');
+                        if (self.isCompanySelected()) {
+                            self.companyWTSetting.selectedTab('tab-3');
+                        }
+                        if (self.isEmploymentSelected()) {
+                            self.employmentWTSetting.selectedTab('tab-3');
+                        }
+                        if (self.isWorkplaceSelected()) {
+                            self.workplaceWTSetting.selectedTab('tab-3');
+                        }
                     }
                 });
                 $("[tabindex='7']").on('keydown', function(e) {
                     if (e.which == 9 && !$(e.target).parents("[tabindex='7']")[0]) {
-                        self.companyWTSetting.selectedTab('tab-1');
-                        self.employmentWTSetting.selectedTab('tab-1');
-                        self.workplaceWTSetting.selectedTab('tab-1');
+                        if (self.isCompanySelected()) {
+                            self.companyWTSetting.selectedTab('tab-1');
+                        }
+                        if (self.isEmploymentSelected()) {
+                            self.employmentWTSetting.selectedTab('tab-1');
+                        }
+                        if (self.isWorkplaceSelected()) {
+                            self.workplaceWTSetting.selectedTab('tab-1');
+                        }
                     }
                 });
             }
-            
+
             /**
              * Event on select company.
              */
@@ -197,6 +221,7 @@ module nts.uk.at.view.kmk004.a {
                     self.isWorkplaceSelected(false);
                     self.isLoading(false);
                     $('#companyYearPicker').focus();
+                    self.initNextTabFeature();
                     dfd.resolve();
                 });
                 return dfd.promise();

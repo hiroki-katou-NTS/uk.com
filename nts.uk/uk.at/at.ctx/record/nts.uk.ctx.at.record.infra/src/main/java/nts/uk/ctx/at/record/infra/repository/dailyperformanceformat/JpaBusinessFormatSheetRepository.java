@@ -19,14 +19,16 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 	private static final String FIND;
 
 	private static final String UPDATE_BY_KEY;
+	
+	private static final String IS_EXIST_DATA;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtBusinessFormatSheet a ");
 		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
-		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.sheetNo = :sheetNo ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.sheetNo = :sheetNo ");
 		FIND = builderString.toString();
 		
 		builderString = new StringBuilder();
@@ -36,6 +38,15 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 		builderString.append("AND a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
 		builderString.append("AND a.krcmtBusinessFormatSheetPK.sheetNo = :sheetNo ");
 		UPDATE_BY_KEY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KrcmtBusinessFormatSheet a ");
+		builderString
+				.append("WHERE a.krcmtBusinessFormatSheetPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.sheetNo = :sheetNo ");
+		IS_EXIST_DATA = builderString.toString();
 	}
 
 	@Override
@@ -50,7 +61,7 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 	public void update(BusinessFormatSheet businessFormatSheet) {
 		this.getEntityManager().createQuery(UPDATE_BY_KEY)
 				.setParameter("companyId", businessFormatSheet.getCompanyId())
-				.setParameter("businessTypeCode", businessFormatSheet.getBusinessTypeCode())
+				.setParameter("businessTypeCode", businessFormatSheet.getBusinessTypeCode().v())
 				.setParameter("sheetNo", businessFormatSheet.getSheetNo())
 				.setParameter("sheetName", businessFormatSheet.getSheetName()).executeUpdate();
 	}
@@ -58,6 +69,13 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 	@Override
 	public void add(BusinessFormatSheet businessFormatSheet) {
 		this.commandProxy().insert(toEntity(businessFormatSheet));
+	}
+
+	@Override
+	public boolean checkExistData(String companyId, BusinessTypeCode businessTypeCode, BigDecimal sheetNo) {
+		return this.queryProxy().query(IS_EXIST_DATA, long.class).setParameter("companyId", companyId)
+				.setParameter("businessTypeCode", businessTypeCode.v())
+				.setParameter("sheetNo", sheetNo).getSingle().get() > 0;
 	}
 
 	private static BusinessFormatSheet toDomain(KrcmtBusinessFormatSheet krcmtBusinessFormatSheet) {

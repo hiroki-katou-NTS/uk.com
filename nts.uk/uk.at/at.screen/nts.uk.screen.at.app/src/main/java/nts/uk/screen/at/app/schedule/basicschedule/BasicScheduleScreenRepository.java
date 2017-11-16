@@ -19,4 +19,20 @@ public interface BasicScheduleScreenRepository {
 	 * @return
 	 */
 	List<BasicScheduleScreenDto> getByListSidAndDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
+
+	/**
+	 * Get data from WorkTime and WorkTimeDay
+	 * 
+	 * @return
+	 */
+	List<WorkTimeScreenDto> getListWorkTime(String companyId, int displayAtr);
+
+	/**
+	 * Find by companyId and deprecateCls.
+	 *
+	 * @param companyId
+	 * @param deprecateCls
+	 * @return List WorkType
+	 */
+	List<WorkTypeScreenDto> findByCIdAndDeprecateCls(String companyId, int deprecateCls);
 }

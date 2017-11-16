@@ -20,7 +20,7 @@ public class MonthDay extends DomainObject {
 	static {
 		MAX_DAYS = new HashMap<>();
 		MAX_DAYS.put(1, 31);
-		MAX_DAYS.put(2, 29);
+		MAX_DAYS.put(2, 28);
 		MAX_DAYS.put(3, 31);
 		MAX_DAYS.put(4, 30);
 		MAX_DAYS.put(5, 31);
