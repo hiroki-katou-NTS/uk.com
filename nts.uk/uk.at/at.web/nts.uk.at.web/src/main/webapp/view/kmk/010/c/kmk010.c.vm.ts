@@ -29,43 +29,45 @@ module nts.uk.at.view.kmk010.c {
            public startPage(): JQueryPromise<any> {
                var self = this;
                var dfd = $.Deferred();
-               service.findAllProductNumber().done(function(data){
-                  self.lstProductNumber = data; 
-               });
-               nts.uk.at.view.kmk010.a.service.findAllOutsideOTBRDItem().done(function(data) {
-                   self.lstOutsideOTBRDItemModel = [];
-                   for (var dto of data) {
-                       var model: OutsideOTBRDItemModel = new OutsideOTBRDItemModel();
-                       model.updateData(dto);
-                       model.updateEnableCheck(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
-                       model.setUpdateData(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
-                       self.lstOutsideOTBRDItemModel.push(model);
-                   }
-                   // equal language id 
-                   if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
-                       self.textOvertimeName(nts.uk.resource.getText('KMK010_45'));
-                       self.enableCheckbox(true);
-                   } else {
-                       self.textOvertimeName(nts.uk.resource.getText('KMK010_64'));
-                       self.enableCheckbox(false);
-                       nts.uk.at.view.kmk010.a.service.findAllOvertimeLanguageBRDItem(self.languageId).done(function(dataLanguageBRDItem){
-                           if (dataLanguageBRDItem && dataLanguageBRDItem.length > 0) {
-                               for(var dataLang of dataLanguageBRDItem){
-                                    for(var model of self.lstOutsideOTBRDItemModel){
-                                        if(model.breakdownItemNo() == dataLang.breakdownItemNo){
-                                            model.name(dataLang.name);    
-                                        }    
-                                    }    
+               service.findAllProductNumber().done(function(data) {
+                   self.lstProductNumber = data;
+                   nts.uk.at.view.kmk010.a.service.findAllOutsideOTBRDItem().done(function(data) {
+                       self.lstOutsideOTBRDItemModel = [];
+                       for (var dto of data) {
+                           var model: OutsideOTBRDItemModel = new OutsideOTBRDItemModel();
+                           model.updateData(dto);
+                           model.updateEnableCheck(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
+                           model.setUpdateData(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
+                           self.lstOutsideOTBRDItemModel.push(model);
+                       }
+                       // equal language id 
+                       if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
+                           self.textOvertimeName(nts.uk.resource.getText('KMK010_45'));
+                           self.enableCheckbox(true);
+                       } else {
+                           self.textOvertimeName(nts.uk.resource.getText('KMK010_64'));
+                           self.enableCheckbox(false);
+                           nts.uk.at.view.kmk010.a.service.findAllOvertimeLanguageBRDItem(self.languageId).done(function(dataLanguageBRDItem) {
+                               if (dataLanguageBRDItem && dataLanguageBRDItem.length > 0) {
+                                   for (var dataLang of dataLanguageBRDItem) {
+                                       for (var model of self.lstOutsideOTBRDItemModel) {
+                                           if (model.breakdownItemNo() == dataLang.breakdownItemNo) {
+                                               model.name(dataLang.name);
+                                           }
+                                       }
+                                   }
+                               } else {
+                                   for (var model of self.lstOutsideOTBRDItemModel) {
+                                       model.name('');
+                                   }
                                }
-                           }else {
-                               for (var model of self.lstOutsideOTBRDItemModel) {
-                                   model.name('');
-                               }
-                           }
-                       });
-                   }
-                   dfd.resolve(self);
+                               dfd.resolve(self);
+                           });
+                       }
+                       dfd.resolve(self);
+                   });
                });
+
                return dfd.promise();
            }
             /**
