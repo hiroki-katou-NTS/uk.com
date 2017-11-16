@@ -77,7 +77,90 @@ module nts.uk.at.view.kdw001.j {
                 });
                 self.dScreenmodel.periodDate(getText('KDW001_34', [self.params.periodStartDate, self.params.periodEndDate]));
                 self.dScreenmodel.numberEmployee(getText('KDW001_21', [self.params.lstEmployeeID.length]));
-                $("#wizard").ntsWizard("next");
+                service.getCaseSpecExeContentById(self.currentCode()).done((data) => {
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                        if (!nts.uk.util.isNullOrUndefined(data.dailyCreationSetInfo)) {
+                            var dailyCreatedText = getText('KDW001_9');
+                            self.dScreenmodel.dailyCreated(dailyCreatedText);
+                            self.dScreenmodel.dailyCreatedVisible(true);
+                            var partResetClassification = data.dailyCreationSetInfo.partResetClassification;
+                            if(!nts.uk.util.isNullOrUndefined(partResetClassification)){
+                                   if (partResetClassification.calculationClassificationResetting) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_58'));
+                                    }
+                                    if (partResetClassification.specificDateClassificationResetting) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_60'));
+                                    }
+                                    if (partResetClassification.refNumberFingerCheck) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_62'));
+                                    }
+                                    if (partResetClassification.masterReconfiguration) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_59'));
+                                    }
+                                    if (partResetClassification.resetTimeChildOrNurseCare) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_61'));
+                                    }
+                                    if (partResetClassification.closedHolidays) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_63'));
+                                    }
+                                    if (partResetClassification.resettingWorkingHours) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_71'));
+                                    }
+                                    if (partResetClassification.resetTimeAssignment) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_72'));
+                                    }
+                            }
+                            
+                            
+                        } else {
+                            self.dScreenmodel.dailyCreated('');
+                            self.dScreenmodel.dailyCreatedVisible(false);
+
+                        }
+                        
+                        
+                          if (!nts.uk.util.isNullOrUndefined(data.dailyCalSetInfo)) {
+                            var dailyCalText = getText('KDW001_10');
+                            self.dScreenmodel.dailyCal(dailyCalText);
+                            self.dScreenmodel.dailyCalVisible(true);
+                            if (data.dailyCalSetInfo.executionType == 1) {
+                                self.dScreenmodel.dailyCal(dailyCalText += '(' + getText('KDW001_65') + ')');
+                            }
+                        } else {
+                            self.dScreenmodel.dailyCal('');
+                            self.dScreenmodel.dailyCalVisible(false);
+                        }
+
+                        if (data.reflectApprovalSetInfo) {
+                            var approvalResultText = getText('KDW001_11');
+                            self.dScreenmodel.approvalResult(approvalResultText);
+                            self.dScreenmodel.approvalVisible(true);
+                            if (data.reflectApprovalSetInfo.executionType == 1) {
+                                self.dScreenmodel.approvalResult(approvalResultText += '(' + getText('KDW001_67') + ')');
+                            }
+                        } else {
+                            self.dScreenmodel.approvalResult('');
+                            self.dScreenmodel.approvalVisible(false);
+                        }
+
+                        if (data.monlyAggregationSetInfo) {
+                            var monthCountText = getText('KDW001_12');
+                            self.dScreenmodel.monthCount(monthCountText);
+                            self.dScreenmodel.monthCountVisible(true);
+                            if (data.monlyAggregationSetInfo.executionType == 1) {
+                                self.dScreenmodel.monthCount(monthCountText += '(' + getText('KDW001_70') + ')');
+                            }
+
+                        } else {
+                            self.dScreenmodel.monthCount('');
+                            self.dScreenmodel.monthCountVisible(false);
+                        }
+                    
+                    
+                    }
+
+                }));
+                    $("#wizard").ntsWizard("next");
             }
 
             opendScreenC() {
