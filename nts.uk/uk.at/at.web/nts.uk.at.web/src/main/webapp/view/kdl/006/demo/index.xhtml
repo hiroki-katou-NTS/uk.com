@@ -8,6 +8,8 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/sample/catalog/catalog.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/sample/catalog/catalog.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="kdl006.parent.service.js" />
 			<com:scriptfile path="kdl006.parent.start.js" />
 			<com:scriptfile path="kdl006.parent.vm.js" />
@@ -17,7 +19,6 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<div id="functions-area">
-						<label>KDL006 demo page</label>
 						<button class="large" data-bind="click: openDialog" >KDL006</button>
 					</div>				
 				</div>
