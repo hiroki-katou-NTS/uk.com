@@ -1,9 +1,6 @@
 package nts.uk.ctx.sys.auth.app.find.roleset;
 
-import java.util.Optional;
-
 import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 
 @Data

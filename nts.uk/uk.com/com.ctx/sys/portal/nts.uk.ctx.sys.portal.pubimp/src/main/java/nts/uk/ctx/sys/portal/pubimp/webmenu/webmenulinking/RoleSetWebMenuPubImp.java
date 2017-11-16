@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.service.RoleSetAndWebMenuService;

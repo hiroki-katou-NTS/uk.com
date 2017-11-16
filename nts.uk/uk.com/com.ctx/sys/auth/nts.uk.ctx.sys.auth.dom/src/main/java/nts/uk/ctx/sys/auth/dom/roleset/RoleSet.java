@@ -210,6 +210,11 @@ public class RoleSet extends AggregateRoot {
 		return StringUtils.isNoneEmpty(roleId) ? null : roleRepository.findByRoleId(roleId);
 	}
 
+	/**
+	 * Get role id from Optional<Role>
+	 * @param opRole
+	 * @return role id if it is present, else null
+	 */
 	public static String getRoleId(Optional<Role> opRole) {
 		return opRole. isPresent() ? opRole.get().getRoleId() : null;
 	}
