@@ -62,6 +62,45 @@ public class ScheCreExeWorkTypeHandler {
 	/** The Constant FIRST_DATA. */
 	public static final int FIRST_DATA = 0;
 	
+	
+	/**
+	 * Creates the work schedule.
+	 *
+	 * @param command the command
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 */
+	// 営業日カレンダーで勤務予定を作成する
+	public void createWorkSchedule(ScheduleCreatorExecutionCommand command,
+			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+
+		Optional<String> optionalWorktypeCode = this.getWorktype(command, personalWorkScheduleCreSet);
+
+		if (optionalWorktypeCode.isPresent()) {
+
+			String workTypeCode = optionalWorktypeCode.get();
+
+				Optional<Object> optionalWorkTimeObj = this.scheCreExeWorkTimeHandler.getWorktime(command,
+						workTypeCode, personalWorkScheduleCreSet);
+
+				// object return is String
+				if (optionalWorkTimeObj.isPresent() && optionalWorkTimeObj.get() instanceof String) {
+					// update all basic schedule
+					this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
+							personalWorkScheduleCreSet.getEmployeeId(), workTypeCode,
+							optionalWorkTimeObj.get().toString());
+				}
+
+				// object return is WorkTimeSet
+				if (optionalWorkTimeObj.isPresent() && optionalWorkTimeObj.get() instanceof WorkTimeSet) {
+					WorkTimeSet workTimeSet = (WorkTimeSet) optionalWorkTimeObj.get();
+					// update all basic schedule
+					this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
+							personalWorkScheduleCreSet.getEmployeeId(), workTypeCode, workTimeSet.getSiftCD());
+				}
+		}
+
+	}
+	
 	/**
 	 * Gets the worktype code in office.
 	 *
@@ -71,26 +110,32 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return the worktype code in office
 	 */
 	// 在職の勤務種類コードを返す
-	private String getWorktypeCodeInOffice(ScheduleCreatorExecutionCommand command,
-			BasicWorkSetting basicWorkSetting,
+	private String getWorktypeCodeInOffice(ScheduleCreatorExecutionCommand command, BasicWorkSetting basicWorkSetting,
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
 		// check default work time code
 		if (this.scheCreExeWorkTimeHandler.checkDefaultWorkTimeCode(basicWorkSetting)) {
 			return basicWorkSetting.getWorktypeCode().v();
 		} else {
-			String worktime = this.scheCreExeWorkTimeHandler
-					.getWorkTimeCodeOfDayOfWeekPersonalCondition(command, basicWorkSetting,
-							personalWorkScheduleCreSet);
-			if (this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktime)) {
+
+			// find work time code by day of week
+			String worktimeCode = this.scheCreExeWorkTimeHandler.getWorkTimeCodeOfDayOfWeekPersonalCondition(command,
+					basicWorkSetting, personalWorkScheduleCreSet);
+
+			// check default work time code
+			if (this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktimeCode)) {
 				return basicWorkSetting.getWorktypeCode().v();
 			}
 
+			// find personal condition by id
 			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
 					.findById(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
+
+			// check exist data personal condition
 			if (optionalPersonalLaborCondition.isPresent()) {
-				return optionalPersonalLaborCondition.get().getWorkCategory().getHolidayTime()
-						.getWorkTypeCode().v();
+
+				// return work type code by holiday time
+				return optionalPersonalLaborCondition.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
 			}
 		}
 
@@ -108,11 +153,9 @@ public class ScheCreExeWorkTypeHandler {
 	 */
 	// 休業休職の勤務種類コードを返す
 	private String getWorktypeCodeLeaveHolidayType(ScheduleCreatorExecutionCommand command,
-			BasicWorkSetting basicWorkSetting,
-			PersonalWorkScheduleCreSet personalWorkScheduleCreSet,
+			BasicWorkSetting basicWorkSetting, PersonalWorkScheduleCreSet personalWorkScheduleCreSet,
 			EmploymentStatusDto employmentStatus) {
-		WorkStyle workStyle = this.basicScheduleService
-				.checkWorkDay(basicWorkSetting.getWorktypeCode().v());
+		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(basicWorkSetting.getWorktypeCode().v());
 		if (workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 			return basicWorkSetting.getWorktypeCode().v();
 		}
@@ -124,13 +167,16 @@ public class ScheCreExeWorkTypeHandler {
 			// 休日出勤
 			return basicWorkSetting.getWorktypeCode().v();
 		} else {
-			List<WorkTypeSet> worktypeSets = this.workTypeRepository.findWorkTypeSetCloseAtr(
-					command.getCompanyId(), employmentStatus.getLeaveHolidayType());
+			
+			// find work type set by close atr employment status 
+			List<WorkTypeSet> worktypeSets = this.workTypeRepository.findWorkTypeSetCloseAtr(command.getCompanyId(),
+					employmentStatus.getLeaveHolidayType());
 
+			// check empty work type set
 			if (CollectionUtil.isEmpty(worktypeSets)) {
+				
 				// add message error log 601
-				this.scheCreExeErrorLogHandler.addError(command,
-						personalWorkScheduleCreSet.getEmployeeId(), "Msg_601");
+				this.scheCreExeErrorLogHandler.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_601");
 				return ScheCreExeWorkTimeHandler.DEFAULT_CODE;
 			}
 			return worktypeSets.get(FIRST_DATA).getWorkTypeCd().v();
@@ -207,75 +253,42 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param personalWorkScheduleCreSet the personal work schedule cre set
 	 * @return the worktype code
 	 */
-	// 在職状態に対応する「勤務種類コード」を取得する
-	private Optional<String> getWorktypeCode(ScheduleCreatorExecutionCommand command,
-			BasicWorkSetting basicWorkSetting,
+	// 勤務種類を取得する
+	private Optional<String> getWorktype(ScheduleCreatorExecutionCommand command,
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
-		String worktypeCode = null;
-		// check 就業時間帯の参照先 of 勤務予定の時間帯マスタ参照区分 == 個人曜日別
-		if (personalWorkScheduleCreSet.getWorkScheduleBusCal()
-				.getReferenceWorkingHours().value == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-			worktypeCode = this.convertWorktypeCodeByDayOfWeekPersonal(command, basicWorkSetting,
-					personalWorkScheduleCreSet);
-		} else
-		// マスタ参照区分に従う、個人勤務日別
-		{
-			worktypeCode = this.convertWorktypeCodeByWorkingStatus(command, basicWorkSetting,
-					personalWorkScheduleCreSet);
-		}
-		Optional<WorkType> optionalWorktype = this.workTypeRepository
-				.findByPK(command.getCompanyId(), worktypeCode);
+		// get basic work setting.
+		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
+				.getBasicWorkSetting(command, personalWorkScheduleCreSet);
 
-		if (!optionalWorktype.isPresent()) {
+		if (optionalBasicWorkSetting.isPresent()) {
+			BasicWorkSetting basicWorkSetting = optionalBasicWorkSetting.get();
+			String worktypeCode = null;
+			// check 就業時間帯の参照先 of 勤務予定の時間帯マスタ参照区分 == 個人曜日別
+			if (personalWorkScheduleCreSet.getWorkScheduleBusCal()
+					.getReferenceWorkingHours().value == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
+				worktypeCode = this.convertWorktypeCodeByDayOfWeekPersonal(command, basicWorkSetting,
+						personalWorkScheduleCreSet);
+			} else
+			// マスタ参照区分に従う、個人勤務日別
+			{
+				worktypeCode = this.convertWorktypeCodeByWorkingStatus(command, basicWorkSetting,
+						personalWorkScheduleCreSet);
+			}
 
-			// add error log message 590 
-			this.scheCreExeErrorLogHandler.addError(command,
-					personalWorkScheduleCreSet.getEmployeeId(), "Msg_590");
-		} else {
-			return Optional.of(worktypeCode);
+			// get work type by code
+			Optional<WorkType> optionalWorktype = this.workTypeRepository.findByPK(command.getCompanyId(),
+					worktypeCode);
+
+			if (optionalWorktype.isPresent()) {
+				return Optional.of(worktypeCode);
+			} else {
+				// add error log message 590
+				this.scheCreExeErrorLogHandler.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_590");
+			}
 		}
+
 		return Optional.empty();
 	}
 
-	/**
-	 * Gets the worktype.
-	 *
-	 * @param command the command
-	 * @param personalWorkScheduleCreSet the personal work schedule cre set
-	 * @return the worktype
-	 */
-	// 勤務種類を取得する
-	public void getWorktype(ScheduleCreatorExecutionCommand command,
-			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
-		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
-				.getBasicWorkSetting(command, personalWorkScheduleCreSet);
-		if (optionalBasicWorkSetting.isPresent()) {
-			Optional<String> optionalWorktypeCode = this.getWorktypeCode(command,
-					optionalBasicWorkSetting.get(), personalWorkScheduleCreSet);
-			if (!this.scheCreExeErrorLogHandler.checkExistError(command,
-					personalWorkScheduleCreSet.getEmployeeId())) {
-				Optional<Object> optionalWorkTimeObj = this.scheCreExeWorkTimeHandler.getWorktime(
-						command, optionalWorktypeCode.get(), personalWorkScheduleCreSet);
-
-				// object return is String
-				if (optionalWorkTimeObj.isPresent()
-						&& optionalWorkTimeObj.get() instanceof String) {
-					// update all basic schedule
-					this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
-							personalWorkScheduleCreSet.getEmployeeId(), optionalWorktypeCode.get(),
-							optionalWorkTimeObj.get().toString());
-				}
-				// object return is WorkTimeSet
-				if (optionalWorkTimeObj.isPresent()
-						&& optionalWorkTimeObj.get() instanceof WorkTimeSet) {
-					WorkTimeSet workTimeSet = (WorkTimeSet) optionalWorkTimeObj.get();
-					// update all basic schedule
-					this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
-							personalWorkScheduleCreSet.getEmployeeId(), optionalWorktypeCode.get(),
-							workTimeSet.getSiftCD());
-				}
-			}
-		}
-	}
 }

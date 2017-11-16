@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobPosMainHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobTitleMain;
 
 @Stateless
@@ -74,6 +75,72 @@ public class JpaJobTitleMain extends JpaRepository implements JobTitleMainReposi
 				.getList();
 
 		return toListJobTitleMain(listEntity);
+	}
+	
+	/**
+	 * Convert from domain to entity
+	 * @param domain
+	 * @return
+	 */
+	private BsymtJobTitleMain toEntityJobTitleMain(JobTitleMain domain){
+		BsymtJobTitleMain entity = new BsymtJobTitleMain();
+		entity.histId = domain.getDateHistoryItem().identifier();
+		entity.jobTitleId = domain.getJobTitleId();
+		entity.sId = domain.getSid();
+		return entity;
+	}
+	
+	/**
+	 * Convert from domain to entity BsymtJobPosMainHist
+	 * @param domain
+	 * @return
+	 */
+	private BsymtJobPosMainHist toBsymtJobPosMainHist(JobTitleMain domain){
+		BsymtJobPosMainHist entity = new BsymtJobPosMainHist();
+		entity.histId = domain.getDateHistoryItem().identifier();
+		entity.startDate = domain.getDateHistoryItem().start();
+		entity.endDate = domain.getDateHistoryItem().end();
+		return entity;
+	}
+	/**
+	 * Update entity
+	 * @param domain
+	 * @return
+	 */
+	private void toEntityJobTitleMain(JobTitleMain domain, BsymtJobTitleMain entity){
+		entity.histId = domain.getDateHistoryItem().identifier();
+		entity.jobTitleId = domain.getJobTitleId();
+		entity.sId = domain.getSid();
+	}
+	
+	/**
+	 * Update entity BsymtJobPosMainHist
+	 * @param domain
+	 * @return
+	 */
+	private void updateBsymtJobPosMainHist(JobTitleMain domain, BsymtJobPosMainHist entity){
+		entity.histId = domain.getDateHistoryItem().identifier();
+		entity.startDate = domain.getDateHistoryItem().start();
+		entity.endDate = domain.getDateHistoryItem().end();
+	}
+	@Override
+	public void addJobTitleMain(JobTitleMain domain) {
+		this.commandProxy().insert(toEntityJobTitleMain(domain));
+		this.commandProxy().insert(toBsymtJobPosMainHist(domain));
+	}
+
+	@Override
+	public void updateJobTitleMain(JobTitleMain domain) {
+		// TODO Auto-generated method stub
+		Optional<BsymtJobTitleMain> existItem = this.queryProxy().find(domain.getJobTitleId(), BsymtJobTitleMain.class);
+		Optional<BsymtJobPosMainHist> existItemHst = this.queryProxy().find(domain,BsymtJobPosMainHist.class);
+		
+		if (!existItem.isPresent() || !existItemHst.isPresent()){
+			return;
+		}
+		updateBsymtJobPosMainHist(domain, existItemHst.get());
+		
+		this.commandProxy().update(existItemHst.get());
 	}
 
 }

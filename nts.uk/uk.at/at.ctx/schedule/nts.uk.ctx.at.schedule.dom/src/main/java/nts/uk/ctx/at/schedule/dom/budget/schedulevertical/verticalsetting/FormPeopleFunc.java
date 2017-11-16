@@ -16,6 +16,9 @@ public class FormPeopleFunc {
     /* 汎用縦計項目ID */
     private String verticalCalItemId;
     
+    /* 順番 */
+    private int dispOrder;
+    
     /* 外部予算実績項目コード */
     private String externalBudgetCd;
     
@@ -24,9 +27,6 @@ public class FormPeopleFunc {
     
     /* 演算子区分 */
     private OperatorAtr operatorAtr;
-    
-    /* 順番 */
-    private int dispOrder;
     
     /**
      * create From Java Type
@@ -41,14 +41,14 @@ public class FormPeopleFunc {
      * author: Hoang Yen
      */
     public static FormPeopleFunc createFromJavaType(String companyId, String verticalCalCd, 
-    												String verticalCalItemId, String externalBudgetCd, 
-    												int categoryAtr, int operatorAtr, int dispOrder){
+    												String verticalCalItemId, int dispOrder, String externalBudgetCd, 
+    												int categoryAtr, int operatorAtr){
     	return new FormPeopleFunc(companyId, 
     								verticalCalCd, 
-    								verticalCalItemId, 
+    								verticalCalItemId,
+    								dispOrder,
     								externalBudgetCd, 
     								EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class), 
-    								EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class), 
-    								dispOrder);
+    								EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class));
     }
 }

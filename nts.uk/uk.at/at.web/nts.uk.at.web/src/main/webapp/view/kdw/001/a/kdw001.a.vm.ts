@@ -22,9 +22,13 @@ module nts.uk.at.view.kdw001.a {
                 });
                 
                 service.getMaxClosure().done((data)=>{
-                 self.closureID =  data.closureID;
+                    if(!nts.uk.util.isNullOrUndefined(data)){
+                        self.closureID =  data.closureID;
+                    }else{
+                        self.closureID = '1';
+                        nts.uk.ui.dialog.alert("closureID doesn't exist!");
+                    }
                 });
-                
                 
             }
 

@@ -41,6 +41,8 @@ public class VerticalCalItemCommand {
     /** 端数処理*/
  	private int rounding;
  	
+ 	private int roundingProcessing;
+ 	
  	/** 順番 */
  	private int dispOrder;
  	
@@ -76,7 +78,7 @@ public class VerticalCalItemCommand {
  				? this.priceCommand.toDomainUnitPrice(companyId, verticalCalCd, itemId)
  						: null;		
 		return VerticalCalItem.createFromJavatype(companyId, verticalCalCd, itemId, itemId, calculateAtr, displayAtr, cumulativeAtr, attributes, rounding, 
-				dispOrder, built, time, formPeople1,amount, numerical,unitprice);
+				roundingProcessing, dispOrder, built, time, formPeople1,amount, numerical,unitprice);
  	}
 
 }

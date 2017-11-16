@@ -22,7 +22,11 @@ public class CaseSpecExeContent extends AggregateRoot {
 	 * ID (運用ケース)
 	 */
 	private String caseSpecExeContentID;
-
+	
+	/**
+	 * 実行実施内容ID
+	 */
+	private String executionContentID;
 	/**
 	 * 並び順
 	 */
@@ -61,8 +65,9 @@ public class CaseSpecExeContent extends AggregateRoot {
 	@Setter
 	private Optional<CalExeSettingInfor> monlyAggregationSetInfo;
 
-	public CaseSpecExeContent(String caseSpecExeContentID, int orderNumber, UseCaseName useCaseName) {
+	public CaseSpecExeContent(String caseSpecExeContentID,String executionContentID, int orderNumber, UseCaseName useCaseName) {
 		super();
+		this.executionContentID = executionContentID;
 		this.caseSpecExeContentID = caseSpecExeContentID;
 		this.orderNumber = orderNumber;
 		this.useCaseName = useCaseName;
@@ -72,9 +77,9 @@ public class CaseSpecExeContent extends AggregateRoot {
 		this.monlyAggregationSetInfo =  Optional.empty();
 	}
 
-	public static CaseSpecExeContent createFromJavaType(String caseSpecExeContentID, int orderNumber,
+	public static CaseSpecExeContent createFromJavaType(String caseSpecExeContentID,String executionContentID, int orderNumber,
 			String useCaseName) {
-		return new CaseSpecExeContent(caseSpecExeContentID, orderNumber, new UseCaseName(useCaseName));
+		return new CaseSpecExeContent(caseSpecExeContentID,executionContentID, orderNumber, new UseCaseName(useCaseName));
 	}
 
 }

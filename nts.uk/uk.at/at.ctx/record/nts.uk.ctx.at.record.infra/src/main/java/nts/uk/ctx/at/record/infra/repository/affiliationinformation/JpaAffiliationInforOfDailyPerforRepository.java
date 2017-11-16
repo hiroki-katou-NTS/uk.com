@@ -43,7 +43,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@Override
-	public void addEmploymentCode(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
+	public void add(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
 		this.commandProxy().insert(toEntity(affiliationInforOfDailyPerfor));
 	}
 

@@ -48,6 +48,7 @@ public class VerticalSettingCommand {
 					x.getCumulativeAtr(),	
 					x.getAttributes(),
 					x.getRounding(),
+					x.getRoundingProcessing(),
 					x.getDispOrder(),
 					x.getFormBuilt() != null ? x.getFormBuilt().toDomainFormBuilt(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
 					x.getFormTime() != null ? x.getFormTime().toDomainFormTime(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
