@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum CalculationState {
 	
-	/* しない区分 */
-	Not_use(0),
-	/* する区分 */
-	Use(1);
+	/* 計算済み*/
+	Calculated(0),
+	/* 未計算*/
+	No_Calculated(1);
 	
 	public final int value;
 
