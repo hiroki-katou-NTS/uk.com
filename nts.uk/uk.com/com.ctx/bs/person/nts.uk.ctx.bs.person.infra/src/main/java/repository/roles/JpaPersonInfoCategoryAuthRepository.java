@@ -5,13 +5,13 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.roles.auth.category.PpemtPersonCategoryAuth;
-import entity.roles.auth.category.PpemtPersonCategoryAuthPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
+import nts.uk.ctx.bs.person.infra.entity.roles.auth.category.PpemtPersonCategoryAuth;
+import nts.uk.ctx.bs.person.infra.entity.roles.auth.category.PpemtPersonCategoryAuthPk;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

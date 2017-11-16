@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.roles.PpemtPersonRole;
-import entity.roles.PpemtPersonRolePk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.role.PersonInforRole;
 import nts.uk.ctx.bs.person.dom.person.role.PersonInforRoleRepository;
+import nts.uk.ctx.bs.person.infra.entity.roles.PpemtPersonRole;
+import nts.uk.ctx.bs.person.infra.entity.roles.PpemtPersonRolePk;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

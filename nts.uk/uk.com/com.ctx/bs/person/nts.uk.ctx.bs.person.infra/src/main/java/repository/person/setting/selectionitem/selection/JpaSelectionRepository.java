@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.setting.selectionitem.selection.PpemtSelection;
-import entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelection;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 
 /**
  * 

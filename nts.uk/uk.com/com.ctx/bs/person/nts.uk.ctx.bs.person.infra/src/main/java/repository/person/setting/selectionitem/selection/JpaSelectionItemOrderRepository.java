@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import entity.person.setting.selectionitem.PpemtSelectionItem;
-import entity.person.setting.selectionitem.selection.PpemtSelItemOrder;
-import entity.person.setting.selectionitem.selection.PpemtSelItemOrderPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtSelectionItem;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrder;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrderPK;
 
 /**
  * 

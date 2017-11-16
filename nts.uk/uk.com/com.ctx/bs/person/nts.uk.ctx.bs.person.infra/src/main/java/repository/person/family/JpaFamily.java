@@ -6,13 +6,13 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.family.BpsmtFamily;
-import entity.person.family.BpsmtFamilyPk;
 import entity.person.info.widowhistory.BpsmtWidowHis;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamily;
+import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamilyPk;
 
 @Stateless
 public class JpaFamily extends JpaRepository implements FamilyRepository {

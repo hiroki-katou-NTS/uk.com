@@ -9,13 +9,13 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.currentaddress.BpsmtCurrentaddress;
-import entity.person.currentaddress.BpsmtCurrentaddressPK;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.currentaddress.BpsmtCurrentaddress;
+import nts.uk.ctx.bs.person.infra.entity.person.currentaddress.BpsmtCurrentaddressPK;
 
 /**
  * @author danpv

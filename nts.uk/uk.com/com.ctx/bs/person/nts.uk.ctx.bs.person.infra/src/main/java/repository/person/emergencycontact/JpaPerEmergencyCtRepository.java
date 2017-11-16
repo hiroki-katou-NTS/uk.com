@@ -6,12 +6,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.emergencycontact.BpsmtEmergencyContact;
-import entity.person.emergencycontact.BpsmtEmergencyContactPK;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.emergencycontact.BpsmtEmergencyContact;
+import nts.uk.ctx.bs.person.infra.entity.person.emergencycontact.BpsmtEmergencyContactPK;
 
 @Stateless
 public class JpaPerEmergencyCtRepository extends JpaRepository implements PersonEmergencyCtRepository {

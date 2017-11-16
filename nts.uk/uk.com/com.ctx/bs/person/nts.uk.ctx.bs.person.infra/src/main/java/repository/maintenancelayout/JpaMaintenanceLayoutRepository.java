@@ -10,14 +10,14 @@ import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.text.translate.NumericEntityUnescaper.OPTION;
 
-import entity.layout.PpemtMaintenanceLayout;
-import entity.layout.PpemtMaintenanceLayoutPk;
-import entity.layout.classification.PpemtLayoutItemCls;
-import entity.layout.classification.difination.PpemtLayoutItemClsDf;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
+import nts.uk.ctx.bs.person.infra.entity.layout.PpemtMaintenanceLayout;
+import nts.uk.ctx.bs.person.infra.entity.layout.PpemtMaintenanceLayoutPk;
+import nts.uk.ctx.bs.person.infra.entity.layout.cls.PpemtLayoutItemCls;
+import nts.uk.ctx.bs.person.infra.entity.layout.cls.definition.PpemtLayoutItemClsDf;
 
 /**
  * @author laitv

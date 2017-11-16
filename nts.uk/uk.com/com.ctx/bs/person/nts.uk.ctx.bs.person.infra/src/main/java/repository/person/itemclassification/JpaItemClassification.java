@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.layout.classification.PpemtLayoutItemCls;
-import entity.layout.classification.PpemtLayoutItemClsPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
+import nts.uk.ctx.bs.person.infra.entity.layout.cls.PpemtLayoutItemCls;
+import nts.uk.ctx.bs.person.infra.entity.layout.cls.PpemtLayoutItemClsPk;
 
 @Stateless
 public class JpaItemClassification extends JpaRepository implements ILayoutPersonInfoClsRepository {

@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.person.personinfoctgdata.PpemtPerInfoItemData;
-import entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.ctx.bs.person.infra.entity.person.personinfoctgdata.PpemtPerInfoItemData;
+import nts.uk.ctx.bs.person.infra.entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
 
 /**
  * @author danpv

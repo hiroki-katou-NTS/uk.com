@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.setting.selectionitem.PpemtSelectionItem;
-import entity.person.setting.selectionitem.PpemtSelectionItemPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtSelectionItem;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtSelectionItemPK;
 
 @Stateless
 public class JpaPerInfoSelectionItemRepository extends JpaRepository implements IPerInfoSelectionItemRepository {

@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.person.personinfoctgdata.PpemtPerInfoCtgData;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.personinfoctgdata.PpemtPerInfoCtgData;
 
 /**
  * @author danpv

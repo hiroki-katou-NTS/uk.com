@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.layout.PpemtNewLayout;
-import entity.layout.PpemtNewLayoutPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
+import nts.uk.ctx.bs.person.infra.entity.layout.PpemtNewLayout;
+import nts.uk.ctx.bs.person.infra.entity.layout.PpemtNewLayoutPk;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.roles.auth.PpemtPersonRoleAuth;
-import entity.roles.auth.PpemtPersonRoleAuthPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
+import nts.uk.ctx.bs.person.infra.entity.roles.auth.PpemtPersonRoleAuth;
+import nts.uk.ctx.bs.person.infra.entity.roles.auth.PpemtPersonRoleAuthPk;
 
 @Stateless
 public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements PersonInfoRoleAuthRepository {

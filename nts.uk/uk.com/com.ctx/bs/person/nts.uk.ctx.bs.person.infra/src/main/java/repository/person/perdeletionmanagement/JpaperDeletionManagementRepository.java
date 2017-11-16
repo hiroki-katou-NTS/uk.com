@@ -2,10 +2,10 @@ package repository.person.perdeletionmanagement;
 
 import javax.ejb.Stateless;
 
-import entity.person.perdeletionmanagement.Bsymtperinfdeletemng;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.deletemanagement.PersonDeleteManagement;
 import nts.uk.ctx.bs.person.dom.person.perdeletionmanagement.IperDeletionManagementRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.perdeletionmanage.Bsymtperinfdeletemng;
 @Stateless
 public class JpaperDeletionManagementRepository extends JpaRepository implements IperDeletionManagementRepository {
 	

@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.roles.auth.item.PpemtPersonItemAuth;
-import entity.roles.auth.item.PpemtPersonItemAuthPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemDetail;
+import nts.uk.ctx.bs.person.infra.entity.roles.auth.item.PpemtPersonItemAuth;
+import nts.uk.ctx.bs.person.infra.entity.roles.auth.item.PpemtPersonItemAuthPk;
 
 @Stateless
 public class JpaPersonInfoItemAuthRepository extends JpaRepository implements PersonInfoItemAuthRepository {
