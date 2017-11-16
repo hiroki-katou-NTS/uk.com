@@ -2,13 +2,16 @@ package command.person.emergencycontact;
 
 import lombok.Getter;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregPersonId;
 
 @Getter
 public class PerEmergencyContactCommand {
 	/** 緊急連絡先ID */
+	@PeregPersonId
 	private String emgencyContactId;
 
 	/** 個人ID */
+	@PeregPersonId
 	private String pid;
 	
 	/** 個人名 */
