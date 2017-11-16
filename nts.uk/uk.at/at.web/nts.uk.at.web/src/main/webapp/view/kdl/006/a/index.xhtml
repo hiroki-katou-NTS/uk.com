@@ -10,13 +10,14 @@
 			
 			<script>
 				var dialogSize = {
-					width : 1015,
+					width : 1010,
 					height : 500
 				};
 				
 				$(function() {
 					var currentScreen = nts.uk.ui.windows.getSelf();
 					$(currentScreen.$dialog).resizable({
+						minHeight: 460,
 						handles: "n,s",
 						alsoResize: "#grid-data-body"
 	                });
@@ -40,7 +41,7 @@
 			</div>
 				
 			<div id="contents-area">				
-				<table id="grid-list">
+				<table id="grid-list" name="#[KDL006_4]">
 					<thead>
 						<tr>
 							<th class="header-workplace">#{i18n.getText('KDL006_4')}</th>							

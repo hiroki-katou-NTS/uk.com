@@ -8,14 +8,19 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="kdl006.b.service.js" />
-			<com:scriptfile path="kdl006.b.start.js" />
-			<com:scriptfile path="kdl006.b.vm.js" />
+			<com:scriptfile path="kdl006.parent.service.js" />
+			<com:scriptfile path="kdl006.parent.start.js" />
+			<com:scriptfile path="kdl006.parent.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-		
-			<div>
-				<button class="btnMenu" data-bind="click: openDialog">006</button>
+			<div id="contents-area">
+				<div id="side-menu" class="cf"></div>
+				<div id="content" class="cf">
+					<div id="functions-area">
+						<label>KDL006 demo page</label>
+						<button class="large" data-bind="click: openDialog" >KDL006</button>
+					</div>				
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

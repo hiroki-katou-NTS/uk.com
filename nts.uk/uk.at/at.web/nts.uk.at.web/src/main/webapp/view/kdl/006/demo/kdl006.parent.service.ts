@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl006.b {
+module nts.uk.at.view.kdl006.parent {
     
     export module service {
         
