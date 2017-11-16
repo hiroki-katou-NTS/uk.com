@@ -8,11 +8,11 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtimework.overtimeworkframe.OverTimeWorkFrameNo;
 
 @Value
 public class OverTimeWorkFrameTime {
-	private int OverWorkFrameNo;
+	private OverTimeWorkFrameNo OverWorkFrameNo;
 	private TimeWithCalculation OverTimeWork;
 	private TimeWithCalculation TransferTime;
 	private AttendanceTime BeforeApplicationTime;
