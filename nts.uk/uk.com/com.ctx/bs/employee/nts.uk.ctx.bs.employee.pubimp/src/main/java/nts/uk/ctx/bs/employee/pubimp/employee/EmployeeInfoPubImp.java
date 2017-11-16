@@ -84,18 +84,15 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			List<Person> listPersonDomain = personRepo.getPersonByPersonIds(pids);
 
 			if (!listPersonDomain.isEmpty()) {
-				
-				for (int i = 0; i < listPersonDomain.size(); i++) {
-					for (int j = 0; j < listResult.size(); j++) {
-						if (listPersonDomain.get(i).getPersonId() == listResult.get(j).getPId()) {
-							listResult.get(j).setPersonMailAddress(listPersonDomain.get(i).getMailAddress().v());
-							listResult.get(j).setPersonName(listPersonDomain.get(i).getPersonNameGroup().getPersonName().v());
-							listResult.get(j).setGender(listPersonDomain.get(i).getGender().value);
-							listResult.get(j).setBirthDay(listPersonDomain.get(i).getBirthDate());
-						}
-					}
+				for (int j = 0; j < listResult.size(); j++) {
+					EmpBasicInfoExport resultItem = listResult.get(j);
+					Person per = listPersonDomain.stream()
+							.filter(m -> m.getPersonId() == resultItem.getPId()).collect(Collectors.toList()).get(0);
+					listResult.get(j).setPersonMailAddress(per.getMailAddress().v());
+					listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().v());
+					listResult.get(j).setGender(per.getGender().value);
+					listResult.get(j).setBirthDay(per.getBirthDate());
 				}
-
 			}
 		}
 

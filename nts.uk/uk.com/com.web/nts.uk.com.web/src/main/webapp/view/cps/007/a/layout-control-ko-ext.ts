@@ -123,7 +123,8 @@ module nts.custombinding {
                         overflow: hidden;
                     }
 
-                    .layout-control .item-classification div.set-item-list div.set-item {
+                    .layout-control .item-classification div.set-item-list div.set-item,
+                    .layout-control .item-classification div.item-control .single-item-list>div {
                         display: inline-block;
                     }
 
@@ -370,6 +371,8 @@ module nts.custombinding {
 
                     .layout-control.dragable .add-rows,
                     .layout-control.dragable .add-rows button,
+                    .layout-control.inputable .add-rows,
+                    .layout-control.inputable .add-rows button,
                     .layout-control.readonly:not(.inputable) .add-rows,
                     .layout-control.readonly:not(.inputable) .add-rows button {
                         display: none;
@@ -427,7 +430,7 @@ module nts.custombinding {
                             <div class="form-group item-classification"
                                     data-bind="let: { 
                                         cls: $data, 
-                                        _item: items && items()[0], 
+                                        _item: items && _.find(items(), function(x, i) { return i == 0}), 
                                         _items: items && _.filter(items(), function(x, i) { return i > 0}),
                                         __items: items && _.filter(items(), function(x, i) { return i >= 0})
                                     }">
@@ -437,7 +440,13 @@ module nts.custombinding {
                                             .map(function(x) { return x.itemDefId.replace(/-/g, '') })
                                             .value() }">
                                         <div data-bind="ntsFormLabel: { 
-                                            text: className || '', 
+                                            text: className || '',
+                                            cssClass: ko.computed(function() {
+                                                if(!!_.find(__items, function(x) { return x.value() })) {
+                                                     return '';
+                                                }
+                                                return 'color-operation-case-character'; 
+                                            }),
                                             required: !!_.find(__items, function(x) { return x.required }),
                                             constraint: _constraint.length && _constraint || undefined  }"></div>
                                         <div data-bind="if: (_item || {}).type == 1" class="set-items">
@@ -499,6 +508,7 @@ module nts.custombinding {
                                                                                 itemCode: _obj.itemCode,
                                                                                 itemName: _obj.itemName,
                                                                                 required: _obj.required,
+                                                                                itemDefId: _obj.itemDefId,
                                                                                 value: ko.observable(undefined),
                                                                                 readonly: ko.observable(false),
                                                                                 editable: ko.observable(true),
