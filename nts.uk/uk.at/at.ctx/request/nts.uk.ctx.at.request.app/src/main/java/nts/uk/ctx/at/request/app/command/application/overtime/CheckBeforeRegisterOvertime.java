@@ -65,7 +65,7 @@ public class CheckBeforeRegisterOvertime {
 	public OvertimeCheckResultDto CheckBeforeRegister(Application app, AppOverTime overtime) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
-		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0,0,0);
+		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0,0,0, false);
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(app);
 		// 登録前エラーチェック
@@ -83,14 +83,15 @@ public class CheckBeforeRegisterOvertime {
 				return result;
 			}
 		}
-		//実績超過チェック
+		//TODO: 実績超過チェック
 		beforeCheck.OvercountCheck(app.getCompanyID(), app.getApplicationDate(), app.getPrePostAtr());
-		//３６協定時間上限チェック（月間）
+		//TODO: ３６協定時間上限チェック（月間）
 		beforeCheck.TimeUpperLimitMonthCheck();
-		//３６協定時間上限チェック（年間）
+		//TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
 		//事前否認チェック
-		beforeCheck.preliminaryDenialCheck();
+		OvertimeCheckResult res = beforeCheck.preliminaryDenialCheck(app.getCompanyID(), app.getApplicationDate(), app.getInputDate(), app.getPrePostAtr());
+		result.setConfirm(res.isConfirm());
 		
 		return result;
 	}
