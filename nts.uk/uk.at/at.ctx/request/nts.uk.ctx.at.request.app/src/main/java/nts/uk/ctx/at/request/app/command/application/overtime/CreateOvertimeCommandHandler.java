@@ -13,14 +13,13 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
@@ -32,12 +31,17 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeCommand> {
 
-
 	@Inject
 	private IFactoryOvertime factoryOvertime;
 
 	@Inject
 	private OvertimeService overTimeService;
+
+	@Inject
+	private NewAfterRegister newAfterRegister;
+
+	@Inject
+	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Override
 	protected void handle(CommandHandlerContext<CreateOvertimeCommand> context) {
@@ -48,24 +52,29 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
-		
+
 		// Phase list
 		List<AppApprovalPhase> pharseList = getAppApprovalPhaseList(command, companyId, appID);
 		// Create Application
 		Application appRoot = factoryOvertime.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(), pharseList);
+				command.getPrePostAtr(), command.getApplicationReason(),
+				command.getApplicationReason().replaceFirst(":", System.lineSeparator()), pharseList);
 
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
 				command.getWorkTypeCode(), command.getSiftTypeCode(), command.getWorkClockFrom1(),
 				command.getWorkClockTo1(), command.getWorkClockFrom2(), command.getWorkClockTo2(),
-				command.getDivergenceReasonContent(), command.getFlexExessTime(), command.getOverTimeShiftNight(),
-				getOverTimeInput(command, companyId, appID));		
+				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				command.getFlexExessTime(), command.getOverTimeShiftNight(),
+				getOverTimeInput(command, companyId, appID));
+
+		// 2-2.新規画面登録時承認反映情報の整理
+		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getApplicantSID(), appRoot);
 		
 		// ドメインモデル「残業申請」の登録処理を実行する(INSERT)
 		overTimeService.CreateOvertime(overTimeDomain, appRoot);
-		
-		//2-3.新規画面登録後の処理を実行
-		
+
+		// 2-3.新規画面登録後の処理を実行
+		newAfterRegister.processAfterRegister(appRoot);
 
 	}
 
@@ -102,7 +111,7 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 	}
 
 	private List<OverTimeInput> getOverTimeInput(CreateOvertimeCommand command, String Cid, String appId) {
-		List<OverTimeInput> overTimeInputs = new ArrayList<OverTimeInput>();		
+		List<OverTimeInput> overTimeInputs = new ArrayList<OverTimeInput>();
 		/**
 		 * 休出時間 ATTENDANCE_ID = 0
 		 */
@@ -120,11 +129,11 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 		 * 加給時間 ATTENDANCE_ID = 2
 		 */
 		if (null != command.getRestTime()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceAtr.NumberOfTime.value));
+			overTimeInputs
+					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceAtr.NumberOfTime.value));
 		}
 		/**
-		 * 加給時間
-		 * ATTENDANCE_ID = 3
+		 * 加給時間 ATTENDANCE_ID = 3
 		 */
 		if (null != command.getBonusTimes()) {
 			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceAtr.Attribute.value));

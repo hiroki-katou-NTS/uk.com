@@ -116,8 +116,14 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 * remove application
 	 */
 	@Override
-	public void deleteApplication(String companyID, String applicationID) {
-		this.commandProxy().remove(KafdtApplication.class, new KafdtApplicationPK(companyID, applicationID));
+	public void deleteApplication(String companyID, String applicationID, Long version) {
+		Optional<KafdtApplication> opKafdtApplication = this.queryProxy().find(new KafdtApplicationPK(companyID, applicationID), KafdtApplication.class);
+		if(!opKafdtApplication.isPresent()){
+			throw new RuntimeException("Khong ton tai Application entity phu hop de xoa");
+		}
+		KafdtApplication kafdtApplication = opKafdtApplication.get();
+		kafdtApplication.version = version;
+		this.commandProxy().remove(kafdtApplication);
 		this.getEntityManager().flush();
 	}
 

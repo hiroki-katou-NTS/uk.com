@@ -153,4 +153,9 @@ public class OverTimeDto {
 	 */
 	private boolean preAppPanelFlg;
 	
+	/**
+	 * manualSendMailAtr
+	 */
+	private boolean manualSendMailAtr;
+	
 }

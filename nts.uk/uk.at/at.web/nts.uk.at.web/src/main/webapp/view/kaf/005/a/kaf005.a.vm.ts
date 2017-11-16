@@ -7,6 +7,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
+        //manualSendMailAtr
+        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
@@ -66,8 +68,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
 
-        instructInforFlag: KnockoutObservable<boolean> = ko.observable(true);
-        instructInfor: KnockoutObservable<string> = ko.observable('');
+        // 参照
+        referencePanelFlg: KnockoutObservable<boolean> = ko.observable(false);
+        preAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
+        
+        instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
+        instructInfor : KnockoutObservable <string> = ko.observable('');
+
         overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -112,6 +119,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.manualSendMailAtr(data.manualSendMailAtr);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.prePostSelected(data.application.prePostAtr);
             self.displayCaculationTime(data.displayCaculationTime);
@@ -136,14 +144,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.timeEnd2(data.workClockTo2);
 
             self.reasonCombo(_.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); }));
-            self.selectedReason(data.application.appReasonID);
+            self.selectedReason(_.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID);
             self.multilContent(data.application.applicationReason);
             self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-            self.selectedReason2(data.divergenceReasonID);
+            self.selectedReason2(data.divergenceReasonDtos.divergenceReasonIdDefault);
             self.multilContent2(data.divergenceReasonContent);
             self.instructInforFlag(data.displayOvertimeInstructInforFlg);
             self.instructInfor(data.overtimeInstructInformation);
-
+            self.referencePanelFlg(data.referencePanelFlg);
+            self.preAppPanelFlg(data.preAppPanelFlg);
             // 休憩時間
             for (let i = 0; i < 11; i++) {
                 self.restTime.push(new common.OverTimeInput("", "", 0, "", i, i, 0, 0, null));
@@ -208,7 +217,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             //登録前エラーチェック
             service.checkBeforeRegister(overtime).done((data) => {
                 if (data.errorCode == 0) {
-                    if (data.isConfirm) {
+                    if (data.confirm) {
                         //メッセージNO：829
                         dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {
                             //登録処理を実行
@@ -221,9 +230,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         //登録処理を実行
                         self.registerData(overtime);
                     }
-                } else {
+                } else if (data.errorCode == 1){
                     //Change background color
-                    dialog.alertError("Change backgroud:attendanceId=" + data.attendanceId + "frameNo:" + data.frameNo);
+                    self.changeColor( data.attendanceId, data.frameNo);
                 }
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
@@ -243,11 +252,30 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 //      - メールを送信する(新規) Sending mail (new) (Đã có common xử lý)      
                 //      - 画面をクリアする(起動時と同じ画面) Clear the screen (same screen as at startup)
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    location.reload();
+                    //location.reload();
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             });
+        }
+        
+        changeColor(attendanceId, frameNo){
+            //休憩時間
+            if(attendanceId == 0){
+                $('td#restTime_'+attendanceId+'_'+frameNo).css('background', 'pink')
+            }
+            // 残業時間
+            if(attendanceId == 1){
+                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
+            }
+            // 休出時間
+            if(attendanceId == 2){
+                $('td#breakTimesCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
+            }
+            //加給時間
+            if(attendanceId == 3){
+                $('td#breakTimesCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
+            }
         }
         /**
          * KDL003

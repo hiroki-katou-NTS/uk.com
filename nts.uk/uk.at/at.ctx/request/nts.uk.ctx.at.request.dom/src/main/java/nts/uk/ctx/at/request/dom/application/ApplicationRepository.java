@@ -52,7 +52,7 @@ public interface ApplicationRepository {
 	 * @param companyID
 	 * @param applicationID
 	 */
-	void deleteApplication(String companyID,String applicationID);
+	void deleteApplication(String companyID,String applicationID, Long version);
 	
 	
 	List<Application> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
