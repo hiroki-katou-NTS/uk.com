@@ -8,6 +8,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
+ * ロール
  * The Class Role.
  */
 @Getter

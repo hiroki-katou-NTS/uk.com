@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.app.command.workrecord.log;
 
 import java.util.List;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 /**
  * 
  * @author hieult
@@ -11,13 +10,18 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 @Getter
 public class ExecutionProcessingCommand {
 
-	/** ＜画面Aから受け取るパラメータ＞ (param nhận từ man A) 締めID */
+    /** Screen B or J*/
+    private String screen;
+	
+	/** ＜画面Aから受け取るパラメータ＞ | Params from A screen */
+    /** 締めID */
     private int closureID;
-    /** ＜画面Bから受け取るパラメータ＞ */
+    
+    /** ＜画面Bから受け取るパラメータ＞ | Params from B screen */
     /** 日別作成(打刻反映)実施区分 */
     private boolean dailyCreation;
     /** 作成区分 */
-     private int creationType;
+    private int creationType;
     /** 再作成区分 */
     private int resetClass;
     /** 計算区分を再度設定 */
@@ -50,24 +54,17 @@ public class ExecutionProcessingCommand {
     private boolean monthlyAggregation;
     /** 集計区分 */
     private int summaryClass;
-    /** 就業計算と集計実行ログID*/
-    private String empCalAndSumExecLogID;
-    /** ＜画面Cから受け取るパラメータ＞ */
+
+    /** ＜画面Cから受け取るパラメータ＞  | Params from C screen*/
     /** List 社員ID */
     private List<String> lstEmployeeID;
     /** 対象期間開始日 */
     private String periodStartDate;
-    
+    /** 対象期間終了日 */
     private String periodEndDate;
     
-    /** 対象期間終了日 */
-    private String targetEndDate;
-    /**＜画面 J から受け取るパラメータ＞  */
+    /**＜画面 J から受け取るパラメータ＞  | Params from J screen */
     /** ケース別実行実施内容ID */
     private String caseSpecExeContentID;
-    /** 実行内容*/
-    private ExecutionContent excutionContent;
-	/** 実行したメニュー */    
-    private int executedMenu;
-
+    
 }

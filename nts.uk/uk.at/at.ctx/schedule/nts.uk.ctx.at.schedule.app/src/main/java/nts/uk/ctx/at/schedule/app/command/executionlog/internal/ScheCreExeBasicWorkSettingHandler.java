@@ -82,6 +82,41 @@ public class ScheCreExeBasicWorkSettingHandler {
 	public static  final int MUL_MONTH = 100;
 	
 	/**
+	 * Gets the workday division by wkp.
+	 *
+	 * @param employeeId the employee id
+	 * @param workplaceIds the workplace ids
+	 * @return the workday division by wkp
+	 */
+	// 職場の稼働日区分を取得する
+	public Optional<Integer> getWorkdayDivisionByWkp(ScheduleCreatorExecutionCommand command, String employeeId,
+			List<String> workplaceIds) {
+		for (String workplaceId : workplaceIds) {
+
+			// find calendar work place by id
+			Optional<CalendarWorkplace> optionalCalendarWorkplace = this.calendarWorkPlaceRepository
+					.findCalendarWorkplaceByDate(workplaceId, this.toYearMonthDate(command.getToDate()));
+
+			// check exist data calendar work place
+			if (optionalCalendarWorkplace.isPresent()) {
+				return Optional.of(optionalCalendarWorkplace.get().getWorkingDayAtr().value);
+			}
+		}
+
+		// find calendar company by id
+		Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
+				.findCalendarCompanyByDate(command.getCompanyId(), this.toYearMonthDate(command.getToDate()));
+		
+		// check exist data calendar company
+		if (optionalCalendarCompany.isPresent()) {
+			return Optional.of(optionalCalendarCompany.get().getWorkingDayAtr().value);
+		}
+		// add error messageId Msg_588
+		this.scheCreExeErrorLogHandler.addError(command, employeeId, "Msg_588");
+		return Optional.empty();
+	}
+	
+	/**
 	 * To basic work setting.
 	 *
 	 * @param domain the domain
@@ -90,6 +125,8 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 */
 	private Optional<BasicWorkSetting> toBasicWorkSetting(WorkplaceBasicWork domain,
 			int workdayAtr) {
+		
+		// check of basic work by work day atr
 		for (BasicWorkSetting basicWorkSetting : domain.getBasicWorkSetting()) {
 			if (basicWorkSetting.getWorkdayDivision().value == workdayAtr) {
 				return Optional.ofNullable(basicWorkSetting);
@@ -107,6 +144,8 @@ public class ScheCreExeBasicWorkSettingHandler {
 	// 職場の基本勤務設定を取得する
 	private Optional<BasicWorkSetting> getBasicWorkSetting(List<String> workplaceIds, int workdayAtr) {
 		for (String workplaceId : workplaceIds) {
+
+			// find basic work by id
 			Optional<WorkplaceBasicWork> optionalWorkplaceBasicWork = this.workplaceBasicWorkRepository
 					.findById(workplaceId);
 
@@ -317,6 +356,8 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 */
 	private Optional<BasicWorkSetting> toBasicWorkSettingClassification(
 			ClassificationBasicWork domain, int workdayAtr) {
+		
+		// find by work day atr
 		for (BasicWorkSetting basicWorkSetting : domain.getBasicWorkSetting()) {
 			if (basicWorkSetting.getWorkdayDivision().value == workdayAtr) {
 				return Optional.ofNullable(basicWorkSetting);
@@ -334,6 +375,8 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 */
 	private Optional<BasicWorkSetting> toBasicWorkSettingCompany(CompanyBasicWork domain,
 			int workdayAtr) {
+		
+		// find by work day atr
 		for (BasicWorkSetting basicWorkSetting : domain.getBasicWorkSetting()) {
 			if (basicWorkSetting.getWorkdayDivision().value == workdayAtr) {
 				return Optional.ofNullable(basicWorkSetting);
@@ -377,40 +420,6 @@ public class ScheCreExeBasicWorkSettingHandler {
 				this.scheCreExeErrorLogHandler.addError(command, employeeId, "Msg_589");
 			}
 		}
-		return Optional.empty();
-	}
-	/**
-	 * Gets the workday division by wkp.
-	 *
-	 * @param employeeId the employee id
-	 * @param workplaceIds the workplace ids
-	 * @return the workday division by wkp
-	 */
-	// 職場の稼働日区分を取得する
-	public Optional<Integer> getWorkdayDivisionByWkp(ScheduleCreatorExecutionCommand command, String employeeId,
-			List<String> workplaceIds) {
-		for (String workplaceId : workplaceIds) {
-
-			// find calendar work place by id
-			Optional<CalendarWorkplace> optionalCalendarWorkplace = this.calendarWorkPlaceRepository
-					.findCalendarWorkplaceByDate(workplaceId, this.toYearMonthDate(command.getToDate()));
-
-			// check exist data calendar work place
-			if (optionalCalendarWorkplace.isPresent()) {
-				return Optional.of(optionalCalendarWorkplace.get().getWorkingDayAtr().value);
-			}
-		}
-
-		// find calendar company by id
-		Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
-				.findCalendarCompanyByDate(command.getCompanyId(), this.toYearMonthDate(command.getToDate()));
-		
-		// check exist data calendar company
-		if (optionalCalendarCompany.isPresent()) {
-			return Optional.of(optionalCalendarCompany.get().getWorkingDayAtr().value);
-		}
-		// add error messageId Msg_588
-		this.scheCreExeErrorLogHandler.addError(command, employeeId, "Msg_588");
 		return Optional.empty();
 	}
 }
