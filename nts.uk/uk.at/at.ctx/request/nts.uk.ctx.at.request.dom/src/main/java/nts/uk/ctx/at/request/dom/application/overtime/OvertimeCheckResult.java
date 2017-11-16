@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class OvertimeCheckResult {
 	private int ErrorCode;
 	private int FrameNo;
+	private boolean isConfirm = false;
 }

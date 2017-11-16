@@ -5,7 +5,6 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 
@@ -28,12 +27,14 @@ public interface IErrorCheckBeforeRegister {
 	void calculateButtonCheck(int CalculateFlg, String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate);
 	
 	/**
-	 * 事前申請超過チェック
+	 * 03-01_事前申請超過チェック
 	 * @param companyId: 会社ID
-	 * @param refPlan: 申請.実績反映状態
+	 * @param appDate: 申請日
+	 * @param inputDate: 入力日
+	 * @param prePostAtr: 事前事後区分
+	 * @param attendanceId: 勤怠種類
 	 * @param overtimeInputs: 申請時間(input time in a ATTENDANCE)
 	 * @return 0: Normal. 1: 背景色を設定する
-	 * 
 	 */
 	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDate inputDate, PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs) ;
 	
@@ -51,6 +52,13 @@ public interface IErrorCheckBeforeRegister {
 	//３６協定時間上限チェック（年間）
 	void TimeUpperLimitYearCheck();
 	
-	//事前否認チェック
-	void preliminaryDenialCheck();
+	/**
+	 * 03-05_事前否認チェック
+	 * @param companyId: 会社ID
+	 * @param appDate: 申請日
+	 * @param inputDate: 入力日
+	 * @param prePostAtr: 事前事後区分
+	 * @return true: show confirm dialog,
+	 */
+	OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDate inputDate, PrePostAtr prePostAtr);
 }
