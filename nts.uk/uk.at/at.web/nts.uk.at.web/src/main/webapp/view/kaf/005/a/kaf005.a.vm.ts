@@ -67,12 +67,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
+
         // 参照
         referencePanelFlg: KnockoutObservable<boolean> = ko.observable(false);
         preAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
         
         instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
         instructInfor : KnockoutObservable <string> = ko.observable('');
+
         overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -128,11 +130,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.displayBonusTime(data.displayBonusTime);
             self.restTimeDisFlg(data.displayRestTime);
             self.employeeName(data.employeeName);
-            if(data.siftType != null){
+            if (data.siftType != null) {
                 self.siftCD(data.siftType.siftCode);
                 self.siftName(data.siftType.siftName);
             }
-            if(data.workType != null){
+            if (data.workType != null) {
                 self.workTypeCd(data.workType.workTypeCode);
                 self.workTypeName(data.workType.workTypeName);
             }
@@ -213,42 +215,49 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 divergenceReasonContent: divergenceReason
             };
             //登録前エラーチェック
-            service.checkBeforeRegister(overtime).done((data) => {    
-                if(data.errorCode == 0){
-                    //メッセージNO：829
-                    dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {
-                        //登録処理を実行
-                        service.createOvertime(overtime).done(() => {
-                            //2-3.新規画面登録後の処理を実行
-                            //TODO:
-                            //メッセージを表示（Msg_15）
-                            //TODO:
-                            //  - 送信先リストに項目がいる 
-                            //      情報メッセージに（Msg_392）を表示する Display (Msg_392) in information message
-                            //  - 送信先リストに項目がない (There are no items in the destination list)
-                            //      - 情報メッセージを閉じる Close information message
-                            //      - メールを送信する(新規) Sending mail (new) (Đã có common xử lý)      
-                            //      - 画面をクリアする(起動時と同じ画面) Clear the screen (same screen as at startup)
-                            dialog.info({ messageId: "Msg_15" }).then(function() {
-                                location.reload();
-                            });
-                        }).fail((res) => {
-                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+            service.checkBeforeRegister(overtime).done((data) => {
+                if (data.errorCode == 0) {
+                    if (data.isConfirm) {
+                        //メッセージNO：829
+                        dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {
+                            //登録処理を実行
+                            self.registerData(overtime);
+                        }).ifNo(() => {
+                            //終了状態：処理をキャンセル
+                            return;
                         });
-                    }).ifNo(() => {
-                        //終了状態：処理をキャンセル
-                        return;
-                    });                           
-                    
-                }else{
+                    } else {
+                        //登録処理を実行
+                        self.registerData(overtime);
+                    }
+                } else {
                     //Change background color
-                    dialog.alertError("Change backgroud:attendanceId=" + data.attendanceId + "frameNo:"+ data.frameNo);
-                }        
+                    dialog.alertError("Change backgroud:attendanceId=" + data.attendanceId + "frameNo:" + data.frameNo);
+                }
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             });
         }
-
+        //登録処理を実行
+        registerData(overtime) {
+            service.createOvertime(overtime).done(() => {
+                //2-3.新規画面登録後の処理を実行
+                //TODO:
+                //メッセージを表示（Msg_15）
+                //TODO:
+                //  - 送信先リストに項目がいる 
+                //      情報メッセージに（Msg_392）を表示する Display (Msg_392) in information message
+                //  - 送信先リストに項目がない (There are no items in the destination list)
+                //      - 情報メッセージを閉じる Close information message
+                //      - メールを送信する(新規) Sending mail (new) (Đã có common xử lý)      
+                //      - 画面をクリアする(起動時と同じ画面) Clear the screen (same screen as at startup)
+                dialog.info({ messageId: "Msg_15" }).then(function() {
+                    location.reload();
+                });
+            }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+            });
+        }
         /**
          * KDL003
          */

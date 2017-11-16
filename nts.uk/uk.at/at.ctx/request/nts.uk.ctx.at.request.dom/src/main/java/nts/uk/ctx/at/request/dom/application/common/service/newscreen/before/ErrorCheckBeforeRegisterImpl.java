@@ -95,12 +95,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
-		ApplicationType apptype = ApplicationType.OVER_TIME_APPLICATION;
 		List<Application> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
-				apptype.value, prePostAtr.value);
+				ApplicationType.OVER_TIME_APPLICATION.value, prePostAtr.value);
 		if (beforeApplication.isEmpty()) {
 			// TODO: QA Pending
-			result.setErrorCode(1);
+			result.setErrorCode(0);
 			return result;
 		}
 		// 事前申請否認チェック
@@ -187,10 +186,30 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 
 	}
 
+	/**
+	 * 03-05_事前否認チェック
+	 */
 	@Override
-	public void preliminaryDenialCheck() {
-		// TODO Auto-generated method stub
-
+	public OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDate inputDate,
+			PrePostAtr prePostAtr) {
+		OvertimeCheckResult result = new OvertimeCheckResult();
+		result.setErrorCode(0);
+		// ドメインモデル「申請」
+		List<Application> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
+				ApplicationType.OVER_TIME_APPLICATION.value, prePostAtr.value);
+		if (beforeApplication.isEmpty()) {
+			return result;
+		}
+		//承認区分が否認かチェック
+		//ドメインモデル「申請」．「反映情報」．実績反映状態をチェックする
+		ReflectPlanPerState stateLatestApp = beforeApplication.get(0).getReflectPlanState();
+		//否認、差戻しの場合
+		if (stateLatestApp.equals(ReflectPlanPerState.DENIAL) || stateLatestApp.equals(ReflectPlanPerState.REMAND)) {
+			result.setConfirm(true);
+			return result;
+		}
+		//その以外
+		return result;
 	}
 
 	/**

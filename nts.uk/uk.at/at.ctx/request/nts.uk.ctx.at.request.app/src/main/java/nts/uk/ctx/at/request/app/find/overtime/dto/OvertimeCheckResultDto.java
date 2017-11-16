@@ -9,5 +9,5 @@ public class OvertimeCheckResultDto {
 	private int ErrorCode;
 	private int AttendanceId;
 	private int FrameNo;
-	
+	private boolean isConfirm;
 }
