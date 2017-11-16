@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.dom.roleset.service;
+package nts.uk.ctx.sys.auth.dom.roleset;
 
 import java.util.List;
 
