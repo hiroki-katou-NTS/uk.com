@@ -35,7 +35,7 @@ public class SaumtRoleSetGrantedJobTitle extends UkJpaEntity implements Serializ
 	@Column(name = "APPLY_CONCURRENT_PERSON")
 	public boolean applyToConcurrentPerson;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="SaumtRoleSetGrantedJobTitleDetail", orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="roleSetGrantedJobTitle", orphanRemoval = true)
 	public List<SaumtRoleSetGrantedJobTitleDetail> details;
 
 	@Override
