@@ -37,43 +37,23 @@ public class RoleSetWebMenuPubImp implements RoleSetAndWebMenuPub {
 				.collect(Collectors.toList());
 	}
 
+
 	@Override
-	public void addListOfRoleSetAndWebMenu(List<RoleSetWebMenuPubDto> roleSetWebMenuPubDto) {
-		if (!CollectionUtil.isEmpty(roleSetWebMenuPubDto)) {
-			roleSetWebMenuPubDto.forEach(item -> {
-				RoleSetAndWebMenu domain = new RoleSetAndWebMenu(
-						item.getRoleSetCd()
-						, item.getWebMenuCd()
-						, item.getCompanyId());
-				roleSetAndWebMenuRepository.insert(domain);
-			});
-		}
+	public void addRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId) {
+		RoleSetAndWebMenu domain = new RoleSetAndWebMenu(roleSetCd, webMenuCd, companyId);
+		roleSetAndWebMenuRepository.insert(domain);
 	}
 
 	@Override
-	public void updateListOfRoleSetAndWebMenu(List<RoleSetWebMenuPubDto> roleSetWebMenuPubDto) {
-		if (!CollectionUtil.isEmpty(roleSetWebMenuPubDto)) {
-			roleSetWebMenuPubDto.forEach(item -> {
-				RoleSetAndWebMenu domain = new RoleSetAndWebMenu(
-						item.getRoleSetCd()
-						, item.getWebMenuCd()
-						, item.getCompanyId());
-				roleSetAndWebMenuRepository.update(domain);
-			});
-		}
+	public void updateRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId) {
+		RoleSetAndWebMenu domain = new RoleSetAndWebMenu(roleSetCd, webMenuCd, companyId);
+		roleSetAndWebMenuRepository.update(domain);
+		
 	}
 
 	@Override
-	public void deleteRoleSetAndWebMenuByCompanyIdAndRoleSetCd(List<RoleSetWebMenuPubDto> roleSetWebMenuPubDto) {
-		if (!CollectionUtil.isEmpty(roleSetWebMenuPubDto)) {
-			roleSetWebMenuPubDto.forEach(item -> {
-				RoleSetAndWebMenu domain = new RoleSetAndWebMenu(
-						item.getRoleSetCd()
-						, item.getWebMenuCd()
-						, item.getCompanyId());
-				roleSetAndWebMenuRepository.delete(domain);
-			});
-		}
+	public void deleteRoleSetAndWebMenuByRoleSetCdAndCompanyId(String roleSetCd, String companyId) {
+		roleSetAndWebMenuRepository.delete(roleSetCd,companyId);
 	}
 	
 	

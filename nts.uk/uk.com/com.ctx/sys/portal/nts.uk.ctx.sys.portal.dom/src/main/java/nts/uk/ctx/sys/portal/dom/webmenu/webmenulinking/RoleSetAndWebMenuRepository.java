@@ -56,5 +56,5 @@ public interface RoleSetAndWebMenuRepository {
 	 * @param roleSetCd
 	 * @param companyId
 	 */
-	void delete(RoleSetAndWebMenu domain);
+	void delete(String companyId, String roleSetCd);
 }
