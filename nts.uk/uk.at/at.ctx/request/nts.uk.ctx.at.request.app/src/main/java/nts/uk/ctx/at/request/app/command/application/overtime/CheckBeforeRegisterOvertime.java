@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -85,7 +84,7 @@ public class CheckBeforeRegisterOvertime {
 			}
 		}
 		//実績超過チェック
-		beforeCheck.OvercountCheck(app.getCompanyID(), app.getApplicationDate(), null);
+		beforeCheck.OvercountCheck(app.getCompanyID(), app.getApplicationDate(), app.getPrePostAtr());
 		//３６協定時間上限チェック（月間）
 		beforeCheck.TimeUpperLimitMonthCheck();
 		//３６協定時間上限チェック（年間）

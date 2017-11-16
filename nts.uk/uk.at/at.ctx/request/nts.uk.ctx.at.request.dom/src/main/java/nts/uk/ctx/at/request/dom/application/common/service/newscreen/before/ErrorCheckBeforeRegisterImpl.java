@@ -100,7 +100,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				apptype.value, prePostAtr.value);
 		if (beforeApplication.isEmpty()) {
 			// TODO: QA Pending
-			result.setErrorCode(1);
+			result.setErrorCode(0);
 			return result;
 		}
 		// 事前申請否認チェック
