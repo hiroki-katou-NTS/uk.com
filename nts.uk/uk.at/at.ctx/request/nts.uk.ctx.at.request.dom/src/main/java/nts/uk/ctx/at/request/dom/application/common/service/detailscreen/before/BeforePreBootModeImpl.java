@@ -56,7 +56,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		// Output variables
-		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false);
+		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false);
+		if(applicationData.getEnteredPersonSID().contains(employeeID)) {
+			outputData.setLoginInputOrApproval(true);
+		}
 		//4.社員の当月の期間を算出する
 		PeriodCurrentMonth listDate = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID,
 				employeeID, baseDate);
@@ -73,14 +76,14 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		// get User
 		// "Application".Applicant = login If employee ID is true
 		//ログイン者が承認者かチェックする(Check xem login có phải là người approve ko?)
-		// ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
+		
 		if (decideByApprover(applicationData)) {
+			outputData.setLoginInputOrApproval(true);
 			//ログイン者が申請本人かチェックする(Check xem login có phải là 申請本人 không)
-			//ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
+			// ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
 			if (applicationData.getApplicantSID().equals(employeeID)) {
-				//利用者 = 申請本人&承認者
+				//利用者 = 申請本人&承認者				
 				outputData.setUser(User.APPLICANT_APPROVER);
-				
 			} else {
 				//利用者 = 承認者
 				outputData.setUser(User.APPROVER);
@@ -341,7 +344,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				y.getListApproveAccepted().stream().forEach(z -> {
 					
 					listApproverID.add(z.getApproverSID());
-					if(!z.getRepresenterSID().isEmpty()) {
+					if(z.getRepresenterSID() != null) {
 						listRepresenter.add(z.getRepresenterSID());
 					}
 				});

@@ -47,11 +47,6 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	public Long version;
 	
 	/**
-	 * 申請理由ID
-	 */
-	@Column(name="APP_REASON_ID")
-	public String appReasonId;
-	/**
 	 * 事前事後区分
 	 */
 	@Column(name="PRE_POST_ATR")
@@ -175,7 +170,6 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 				domain.getCompanyID(), 
 				domain.getApplicationID()), 
 			domain.getVersion(),
-			domain.getAppReasonID(),
 			domain.getPrePostAtr().value, 
 			domain.getInputDate() , 
 			domain.getEnteredPersonSID(),
@@ -206,7 +200,6 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 			this.inputDate, this.enteredPersonSID,
 			new AppReason(this.reversionReason), 
 			this.applicationDate, 
-			this.appReasonId,
 			new AppReason(this.applicationReason),
 			EnumAdaptor.valueOf(this.applicationType,ApplicationType.class),
 			this.applicantSID, 

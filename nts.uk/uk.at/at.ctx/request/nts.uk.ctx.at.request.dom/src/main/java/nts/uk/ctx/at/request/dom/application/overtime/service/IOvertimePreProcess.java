@@ -11,6 +11,8 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 
 /**
  * 01_初期データ取得
@@ -29,7 +31,13 @@ public interface IOvertimePreProcess {
 	 * 01-03_残業枠を取得
 	 * @param overtimeAtr
 	 */
-	public void getOvertimeHours(int overtimeAtr);
+	public List<OvertimeFrame> getOvertimeHours(int overtimeAtr,String companyID);
+	
+	/**
+	 * @param companyID
+	 * @return
+	 */
+	public List<BreaktimeFrame> getBreaktimeFrame(String companyID);
 	
 	/**
 	 * 01-04_加給時間を取得
@@ -37,7 +45,7 @@ public interface IOvertimePreProcess {
 	 * @param overtimeRestAppCommonSet
 	 * @param appDate
 	 */
-	public Optional<BonusPaySetting> getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, String companyID, String siftCode);
+	public Optional<BonusPaySetting> getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, String companyID, SiftType siftType);
 	/**
 	 * 01-05_申請定型理由を取得
 	 * @param companyID
@@ -93,13 +101,20 @@ public interface IOvertimePreProcess {
 	 * @param appDate
 	 * @param requestAppDetailSetting
 	 */
-	public void getWorkingHours(String companyID,String employeeID,String appDate,Optional<RequestAppDetailSetting> requestAppDetailSetting);
+	public void getWorkingHours(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting);
 	/**
 	 *  01-17_休憩時間取得
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public boolean getRestTime(Optional<RequestAppDetailSetting> requestAppDetailSetting);
+	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting);
+	
+	/**
+	 * 01-18_実績の内容を表示し直す
+	 * @param prePostAtr
+	 * @return
+	 */
+	public void getResultContentActual(int prePostAtr,String siftCode,String companyID);
 	
 	
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
@@ -18,9 +19,9 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	
 	//Get all log by companyID and EmployeeID and empCalAndSumExecLogID DESC
 	private final String SELECT_All_LOG_BY_EMPLOYEEID = SELECT_FROM_LOG 
-			+ " WHERE c.krcmtEmpExecutionLogPK.companyID = :companyID "
-			+ " AND c.krcmtEmpExecutionLogPK.employeeID =: emmployeeID"
-			+ " ORDER BY c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID DESC";
+			+ " WHERE c.companyID = :companyID "
+			+ " AND c.employeeID = :employeeID"
+			+ " ORDER BY c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID DESC";
 	
 	private final String SELECT_All_LOG = SELECT_FROM_LOG 
 			+ " WHERE c.companyID = :companyID ";
@@ -75,15 +76,16 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 
 	@Override
 	public Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID) {
-		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
+		Optional<EmpCalAndSumExeLog> data = this.queryProxy()
+				.query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle(c -> c.toDomain());
 		return data;
 	}
 
 	@Override
-	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
-			GeneralDate endDate) {
-		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_LOG_BY_DATE, KrcdtEmpExecutionLog.class)
+	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate, GeneralDate endDate) {
+		List<EmpCalAndSumExeLog> data = this.queryProxy()
+				.query(SELECT_LOG_BY_DATE, KrcdtEmpExecutionLog.class)
 				.setParameter("companyID", companyID).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(c -> c.toDomain());
 		return data;

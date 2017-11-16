@@ -93,7 +93,21 @@ public class KrqstWpAppConfigDetail  extends UkJpaEntity implements Serializable
 	 */
 	@Column(name = "REQUIRED_INSTRUCTION_FLG")
 	public int requiredInstructionFlg;
-	
+	/**
+	 * 指示利用設定 - 指示区分
+	 */
+	@Column(name = "INSTRUCTION_ATR")
+	public int instructionAtr;
+	/**
+	 * 指示利用設定 - 備考
+	 */
+	@Column(name = "INSTRUCTION_MEMO")
+	public String instructionMemo;
+	/**
+	 * 指示利用設定 - 利用区分
+	 */
+	@Column(name ="INSTRUCTION_USE_ATR")
+	public int instructionUseAtr;
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),

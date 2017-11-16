@@ -13,6 +13,7 @@ public interface SubJobPosRepository {
 
 	public List<SubJobPosition> getByEmpId(String employeeId);
 
+	public Optional<SubJobPosition> getById(String id);
 	/**
 	 * ドメインモデル「職務職位（兼務）」を新規登録する
 	 * 

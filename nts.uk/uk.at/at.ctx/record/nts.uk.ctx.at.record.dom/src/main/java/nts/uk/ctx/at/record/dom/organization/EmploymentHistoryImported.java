@@ -14,20 +14,14 @@ public class EmploymentHistoryImported {
 	// 雇用コード
 	private String employmentCode;
 
-	/** The job title name. */
-	// 雇用名称
-	private String employmentName;
-
 	/** The period. */
 	// 配属期間
 	private DatePeriod period;
 
-	public EmploymentHistoryImported(String employeeId, String employmentCode, String employmentName,
-			DatePeriod period) {
+	public EmploymentHistoryImported(String employeeId, String employmentCode, DatePeriod period) {
 		super();
 		this.employeeId = employeeId;
 		this.employmentCode = employmentCode;
-		this.employmentName = employmentName;
 		this.period = period;
 	}
 

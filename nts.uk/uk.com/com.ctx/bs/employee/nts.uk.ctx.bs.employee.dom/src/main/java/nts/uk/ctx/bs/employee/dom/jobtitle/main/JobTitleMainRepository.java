@@ -15,4 +15,16 @@ public interface JobTitleMainRepository {
 	// get listbypid
 	List<JobTitleMain> getListBiSid(String sid);
 	
+	/**
+	 * ドメインモデル「職務職位」を新規登録する
+	 * @param domain
+	 */
+	void addJobTitleMain(JobTitleMain domain);
+	
+	/**
+	 * 取得した「職務職位」を更新する
+	 * @param domain
+	 */
+	void updateJobTitleMain(JobTitleMain domain);
+	
 }

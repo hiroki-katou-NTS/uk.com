@@ -7,6 +7,7 @@ import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDept;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
@@ -401,6 +402,28 @@ public class ItemDefFactoryNew {
 		}
 		return layoutPerInfoClsDto;
 	}
+	
+	//Affiliation Department
+	public static LayoutPersonInfoClsDto matchInformation(String categoryCode, List<PerInfoItemDefDto> listItemDef, ActionRole actionRole, AffiliationDepartment affiDept) {
+		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+		layoutPerInfoClsDto.setListItemDf(listItemDef);
+		layoutPerInfoClsDto.setItems(new ArrayList<>());
+		//LayoutPersonInfoClsDto
+		for (PerInfoItemDefDto itemDef : listItemDef) {
+			Object data = null;
+			switch (itemDef.getItemCode()) {
+			case "":
+				break;
+			}
+			if (data != null) {
+				LayoutPersonInfoValueDto obj = LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data);
+				obj.setActionRole(actionRole);
+				layoutPerInfoClsDto.getItems().add(obj);
+			}				
+		}
+		return layoutPerInfoClsDto;
+	}
+	
 	
 	//CurrentAffiDept
 	public static LayoutPersonInfoClsDto matchInformation(String categoryCode, List<PerInfoItemDefDto> listItemDef, ActionRole actionRole, CurrentAffiDept currentAffiDept) {
