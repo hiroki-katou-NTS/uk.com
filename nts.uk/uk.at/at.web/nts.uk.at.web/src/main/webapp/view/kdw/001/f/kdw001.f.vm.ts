@@ -102,7 +102,7 @@ module nts.uk.at.view.kdw001.f {
                     let temp = [];
                     _.each(data, (value) => {
                         
-                        if (self.listSid.indexOf(value.employeeID) != -1)
+                        if (self.listSid.indexOf(value.employeeID) == -1)
                             self.listSid.push(value.employeeID);
                         
                         let item = new model.EmpCalAndSumExeLog(value);

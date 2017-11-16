@@ -19,7 +19,7 @@ public class RoleWebservice extends WebService {
 	
 	@POST
 	@Path("getlistrolebytype/{roleType}")
-	public List<RoleDto> getRoleSet(@PathParam("roleSetCd") int roleType) {
+	public List<RoleDto> getListRoleByRoleType(@PathParam("roleType") int roleType) {
 		return this.personInforRoleFinder.getListRoleByRoleType(roleType);
 	}
 

@@ -15,7 +15,18 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area" style="margin-top: 30px;margin-left: 30px">
-				<div id="pannel-top" data-bind="ntsPanel:{width: '915px', height: '500px', direction: '', showIcon: true, visible: true}">
+				<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '370px', direction: '', showIcon: true, visible: true}">
+					<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'roleCode', comId: 'multi-list', 
+						items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" />																																														
+					<table id="multi-list" data-bind="ntsGridList: {
+							height: 320,
+							options: listRole ,
+							optionsValue: 'roleCode',
+							columns: columns,
+							multiple: false,
+							value: currentCodeList
+						}">
+					</table>
 				</div>
 			</div>
 		</ui:define>
