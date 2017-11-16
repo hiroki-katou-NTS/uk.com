@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -28,9 +27,7 @@ public class KscstScheQualifySet extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KscstScheQualifySetPK kscstScheQualifySetPK;
 
-	/** 資格コード */
-	@Column(name = "QUALIFY_CD")
-	public String qualifyCode;
+
 
 	@Override
 	protected Object getKey() {

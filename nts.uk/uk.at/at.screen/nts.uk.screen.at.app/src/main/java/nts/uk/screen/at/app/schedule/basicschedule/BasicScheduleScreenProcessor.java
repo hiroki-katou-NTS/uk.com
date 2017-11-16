@@ -55,9 +55,26 @@ public class BasicScheduleScreenProcessor {
 	 */
 	public List<StateWorkTypeCodeDto> checkStateWorkTypeCode(List<String> lstWorkTypeCode) {
 		List<StateWorkTypeCodeDto> lstStateWorkTypeCode = lstWorkTypeCode.stream()
-				.filter(x-> bScheduleService.checkWorkDay(x) != null)
+				.filter(x -> bScheduleService.checkWorkDay(x) != null)
 				.map(x -> new StateWorkTypeCodeDto(x, bScheduleService.checkWorkDay(x).value))
 				.collect(Collectors.toList());
 		return lstStateWorkTypeCode;
+	}
+	/**
+	 * 
+	 * @param params
+	 * @return WorkEmpCombineDto
+	 */
+	public WorkEmpCombineDto getListWorkEmpCombine(ScheduleScreenSymbolParams params) {
+		String companyId = AppContexts.user().companyId();
+		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.workTypeCode, params.workTimeCode);
+	}
+	/**
+	 * 
+	 * @return ScheduleDisplayControlDto
+	 */
+	public ScheduleDisplayControlDto getScheduleDisplayControl() {
+		String companyId = AppContexts.user().companyId();
+		return this.bScheduleScreenRepo.getListScheduleDisControl(companyId);
 	}
 }

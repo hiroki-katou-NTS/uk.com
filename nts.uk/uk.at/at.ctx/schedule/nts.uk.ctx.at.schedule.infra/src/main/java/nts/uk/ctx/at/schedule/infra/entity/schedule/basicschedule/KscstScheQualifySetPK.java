@@ -18,4 +18,8 @@ public class KscstScheQualifySetPK implements Serializable {
 	/** 資格コード */
 	@Column(name = "CID")
 	public String companyId;
+	
+	/** 資格コード */
+	@Column(name = "QUALIFY_CD")
+	public String qualifyCode;
 }
