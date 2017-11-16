@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.auth.dom.role;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -14,7 +15,7 @@ import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+@Stateless
 public class DefaultRoleService implements RoleService{
 
 	@Inject 
