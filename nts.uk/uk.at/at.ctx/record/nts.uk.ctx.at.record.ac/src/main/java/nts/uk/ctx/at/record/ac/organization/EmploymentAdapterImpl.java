@@ -45,7 +45,7 @@ public class EmploymentAdapterImpl implements EmploymentAdapter {
 	public Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId,
 			GeneralDate baseDate) {
 		return this.empPub.findSEmpHistBySid(companyId, employeeId, baseDate).map(f -> 
-			new EmploymentHistoryImported(f.getEmployeeId(), f.getEmploymentCode(), f.getEmploymentName(), f.getPeriod())
+			new EmploymentHistoryImported(f.getEmployeeId(), f.getEmploymentCode(), f.getPeriod())
 		);
 	}
 

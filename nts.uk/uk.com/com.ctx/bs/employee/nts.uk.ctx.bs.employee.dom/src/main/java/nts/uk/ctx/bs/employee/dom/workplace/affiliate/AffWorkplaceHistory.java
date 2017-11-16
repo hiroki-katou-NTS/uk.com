@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -55,5 +56,9 @@ public class AffWorkplaceHistory extends AggregateRoot {
 		memento.setPeriod(this.period);
 		memento.setEmployeeId(this.employeeId);
 		memento.setWorkplaceId(this.workplaceId);
+	}
+	
+	public static AffWorkplaceHistory createFromJavaType(String workplaceId, GeneralDate startDate, GeneralDate endDate, String employeeId){
+		return new AffWorkplaceHistory(new DatePeriod(startDate, endDate), employeeId, new WorkplaceId(workplaceId));
 	}
 }

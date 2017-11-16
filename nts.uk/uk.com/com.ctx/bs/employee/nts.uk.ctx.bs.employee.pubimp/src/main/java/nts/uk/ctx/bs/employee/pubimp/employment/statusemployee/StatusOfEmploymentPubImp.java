@@ -57,8 +57,8 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 
 			List<GeneralDate> listJointDate = new ArrayList<>();
 			// lấy toàn bộ ngày vào cty của employee
-			for (int i = 0; i < listEntryJobHist.size(); i++) {
-				listJointDate.add(listEntryJobHist.get(i).getJoinDate());
+			for (int i = 0; i < employee.getListEntryJobHist().size(); i++) {
+				listJointDate.add(employee.getListEntryJobHist().get(i).getJoinDate());
 			}
 			// lấy ngày vào cty đầu tiên
 			GeneralDate firtJointDate = Collections.min(listJointDate);

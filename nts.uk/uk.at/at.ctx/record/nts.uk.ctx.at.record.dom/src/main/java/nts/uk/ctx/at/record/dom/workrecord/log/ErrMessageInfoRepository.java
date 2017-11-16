@@ -18,5 +18,11 @@ public interface ErrMessageInfoRepository {
 	List<ErrMessageInfo> getAllErrMessageInfoByEmpID(String empCalAndSumExecLogID);
 	
 	void add(ErrMessageInfo errMessageInfo);
+	
+	/**
+	 * For KIF 001
+	 * @param errMessageInfos
+	 */
+	void addList(List<ErrMessageInfo> errMessageInfos);
 
 }
