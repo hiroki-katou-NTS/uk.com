@@ -763,6 +763,16 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
                         self.dataE = nts.uk.ui.windows.getShared("KML002_E_DATA");
+                        
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataE == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataE.verticalCalItemId) {
+                                self.calculatorItems()[i].amount = self.dataE;
+                            }
+                        }
                     }); 
                 } else if(attribute == 2) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
@@ -783,11 +793,31 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/f/index.xhtml").onClosed(() => {
                         self.dataF = nts.uk.ui.windows.getShared("KML002_F_DATA");
+                        
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataF == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataF.verticalCalItemId) {
+                                self.calculatorItems()[i].numerical = self.dataF;
+                            }
+                        }
                     }); 
                 } else if(attribute == 4) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
                         self.dataG = nts.uk.ui.windows.getShared("KML002_G_DATA");
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataG == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataG.verticalCalItemId) {
+                                self.calculatorItems()[i].unitPrice = self.dataG;
+                            }
+                        }
+                        
                     }); 
                 }
             }
