@@ -3,6 +3,8 @@ package command.person.currentaddress;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregPersonId;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class CurrentAddressCommand {
@@ -10,9 +12,11 @@ public class CurrentAddressCommand {
 	 *  現住所
 	 */
 	/** 現住所ID */
+	@PeregRecordId
 	private String currentAddressId;
 	
 	/** 個人ID */
+	@PeregPersonId
 	private String pid;
 	
 	/** 国 */

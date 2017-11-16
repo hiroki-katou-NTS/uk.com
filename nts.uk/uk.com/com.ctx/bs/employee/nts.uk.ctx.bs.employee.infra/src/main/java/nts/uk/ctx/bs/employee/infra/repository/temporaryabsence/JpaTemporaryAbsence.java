@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsence;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsenceHist;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsenceHist;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsencePK;
 
 @Stateless
@@ -34,12 +34,16 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 
 	private TemporaryAbsence toTemporaryAbsence(Object[] entity) {
 		TemporaryAbsence temporaryAbsence = TemporaryAbsence.createSimpleFromJavaType(
-				String.valueOf(entity[1].toString()), String.valueOf(entity[0].toString()),
-				Integer.valueOf(entity[2].toString()), String.valueOf(entity[3].toString()),
-				GeneralDate.fromString(entity[4].toString(), "yyyy-MM-dd"),
-				GeneralDate.fromString(entity[5].toString(), "yyyy-MM-dd"), String.valueOf(entity[6].toString()),
-				String.valueOf(entity[7].toString()), GeneralDate.fromString(entity[8].toString(), "yyyy-MM-dd"),
-				Integer.valueOf(entity[9].toString()));
+				String.valueOf(entity[1].toString()), 
+				String.valueOf(entity[0].toString()),
+				Integer.valueOf(entity[2].toString()), 
+				String.valueOf(entity[3].toString()),
+				entity[4] == null? null :GeneralDate.fromString(entity[4].toString(), "yyyy-MM-dd"),
+				GeneralDate.fromString(entity[5].toString(), "yyyy-MM-dd"), 
+				entity[6] == null ? null:String.valueOf(entity[6].toString()),
+				entity[7] == null ? null:String.valueOf(entity[7].toString()), 
+				entity[8] == null ? null:GeneralDate.fromString(entity[8].toString(), "yyyy-MM-dd"),
+				entity[9] == null ? null:Integer.valueOf(entity[9].toString()));
 		return temporaryAbsence;
 	}
 
@@ -96,8 +100,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 				domain.getBirthDate(), domain.getMulPregnancySegment());
 	}
 
-	private BsymtTemporaryAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain) {
-		return new BsymtTemporaryAbsenceHist(domain.getDateHistoryItem().identifier(),
+	private BsymtTempAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain) {
+		return new BsymtTempAbsenceHist(domain.getDateHistoryItem().identifier(),
 				domain.getDateHistoryItem().start(), domain.getDateHistoryItem().end());
 	}
 
@@ -117,7 +121,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		entity.multiple = domain.getMulPregnancySegment();
 	}
 
-	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTemporaryAbsenceHist entity) {
+	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTempAbsenceHist entity) {
 		entity.historyId = domain.getDateHistoryItem().identifier();
 		entity.strD = domain.getDateHistoryItem().start();
 		entity.endD = domain.getDateHistoryItem().end();
@@ -144,8 +148,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		// Get exist item
 		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
 		Optional<BsymtTemporaryAbsence> existItem = this.queryProxy().find(key, BsymtTemporaryAbsence.class);
-		Optional<BsymtTemporaryAbsenceHist> existItemHist = this.queryProxy()
-				.find(domain.getDateHistoryItem().identifier(), BsymtTemporaryAbsenceHist.class);
+		Optional<BsymtTempAbsenceHist> existItemHist = this.queryProxy()
+				.find(domain.getDateHistoryItem().identifier(), BsymtTempAbsenceHist.class);
 		if (!existItem.isPresent()) {
 			return;
 		}

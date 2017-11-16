@@ -18,7 +18,7 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 public class ItemsByCategory {
 
 	/** category ID */
-	private final String categoryId;
+	private final String categoryCd;
 	
 	/** Record Id, but this is null when new record */
 	private final String recordId;

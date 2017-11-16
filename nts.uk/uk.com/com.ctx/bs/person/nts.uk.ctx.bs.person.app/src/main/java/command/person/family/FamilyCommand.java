@@ -3,6 +3,8 @@ package command.person.family;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregPersonId;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class FamilyCommand {
@@ -23,6 +25,7 @@ public class FamilyCommand {
 	private GeneralDate expelledDate;
 	
 	/** 家族ID  */
+	@PeregRecordId
 	private String familyId;
 	
 	/** 氏名  */
@@ -58,7 +61,7 @@ public class FamilyCommand {
 	private String occupationName;
 	
 	/** 個人ID  */
-	@PeregItem("IS00047")
+	@PeregPersonId
 	private String personId;
 	
 	/** 続柄  */
