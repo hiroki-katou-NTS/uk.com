@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.dto;
@@ -20,7 +20,10 @@ public class ReferenceConditionDto {
 	/** The monthly display condition. */
 	private int monthlyDisplayCondition;
 
-	/** The alarm check condition. */
-	private int alarmCheckCondition;
+	/** The yearly alarm ck condition. */
+	private int yearlyAlarmCkCondition;
+	
+	/** The monthly alarm ck condition. */
+	private int monthlyAlarmCkCondition;
 
 }

@@ -18,6 +18,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceType;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -64,29 +65,38 @@ public class EmployeeInDesignatedFinder {
 	 * @return the list
 	 */
 	public List<EmployeeSearchOutput> searchEmpByWorkplaceList(SearchEmpInput input) {
-	
-		// CompanyId
-		String companyId = AppContexts.user().companyId();
-
+		// Check empty for List Employee Status acquired from screen
+		if (CollectionUtil.isEmpty(input.getEmpStatus())) {
+				return null;
+		}
 		// List Output
 		List<EmployeeSearchOutput> outputData = new ArrayList<>();
 		
 		// EmployeeInDesignatedDto
 		List<EmployeeInDesignatedDto> empListInDesignatedTotal = new ArrayList<>();
-		// ForEach Workplace Id (Input), get Employees In Designated
+		// ForEach Workplace Id (Input), get Employees In Designated (Employee with Status)
 		input.getWorkplaceIdList().stream().forEach(wp-> {
-			List<EmployeeInDesignatedDto> empListInDesignated = this.getEmpInDesignated(wp, input.getReferenceDate(), input.getEmpStatus());
-			empListInDesignatedTotal.addAll(empListInDesignated);
+			List<EmployeeInDesignatedDto> empListInDesignated = this.getEmpInDesignated(wp, input.getReferenceDate(),
+					input.getEmpStatus());
+			if (!CollectionUtil.isEmpty(empListInDesignated)) {
+				empListInDesignatedTotal.addAll(empListInDesignated);
+			}
 		});
 		empListInDesignatedTotal.stream().distinct();
 		
+		// Check isEmpty of Employee In Designated List
+		if (CollectionUtil.isEmpty(empListInDesignatedTotal)) {
+			return null;
+		}
 		// Employee Id List from Employees In Designated
 		List<String> empIdList = empListInDesignatedTotal.stream().map(EmployeeInDesignatedDto::getEmployeeId)
 				.collect(Collectors.toList());
 		// Get All AffWorkplaceHistory
 		List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo
 				.searchWorkplaceOfCompanyId(empIdList, input.getReferenceDate());
-		
+		if (CollectionUtil.isEmpty(affWorkplaceHistList)) {
+			return null;
+		}
 		// Get Workplace Id list from All AffWorkplaceHistory acquired above
 		List<String> workplaceList = affWorkplaceHistList.stream().map(a-> {
 			return a.getWorkplaceId().v();
@@ -104,7 +114,7 @@ public class EmployeeInDesignatedFinder {
 		});
 		
 		// Get All Employee Domain from Employee Id List Above 
-		List<Employee> employeeList = this.empRepo.findByListEmployeeId(companyId, empIdList);
+		List<Employee> employeeList = this.empRepo.findByListEmployeeId(AppContexts.user().companyId(), empIdList);
 		
 		// Get PersonIds from Employee List acquired above
 		List<String> personIds = employeeList.stream().map(Employee::getPId)
@@ -115,14 +125,17 @@ public class EmployeeInDesignatedFinder {
 		// Add Employee Data 
 		employeeList.stream().forEach(employee -> {
 			// Get Person by personId
-			Person person = personList.stream().filter(p -> {
-				return employee.getPId().equals(p.getPersonId());
-			}).findFirst().orElse(null);
+			Person person = new Person();
+			if (!CollectionUtil.isEmpty(personList)) {
+				person = personList.stream().filter(p -> {
+					return employee.getPId().equals(p.getPersonId());
+				}).findFirst().orElse(null);
+			}
 			
 			// Get AffWorkplaceHistory
 			AffWorkplaceHistory affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
-				return employee.getSId().equals(aff.getEmployeeId());
-			}).findFirst().orElse(null);
+					return employee.getSId().equals(aff.getEmployeeId());
+				}).findFirst().orElse(null);
 			
 			// Get WorkplaceInfo
 			WorkplaceInfo wkpInfo = workplaceInfoList.stream().filter(wkp -> {
@@ -133,9 +146,11 @@ public class EmployeeInDesignatedFinder {
 			EmployeeSearchOutput empData = EmployeeSearchOutput.builder()
 					.employeeId(employee.getSId())
 					.employeeCode((employee.getSCd() == null) ? null : employee.getSCd().v())
-					.employeeName((person.getPersonNameGroup().getPersonName() == null)
-									? null : person.getPersonNameGroup().getPersonName().v())
-					.workplaceId(affWkpHist.getWorkplaceId().v())
+					.employeeName((person == null || person.getPersonNameGroup() == null
+							|| (person.getPersonNameGroup().getPersonName() == null)) ? null
+									: person.getPersonNameGroup().getPersonName().v())
+					.workplaceId(affWkpHist == null || (affWkpHist.getWorkplaceId() == null) ? null
+							: affWkpHist.getWorkplaceId().v())
 					.workplaceCode((wkpInfo == null) || (wkpInfo.getWorkplaceCode() == null) ? null
 							: wkpInfo.getWorkplaceCode().v())
 					.workplaceName((wkpInfo == null) || (wkpInfo.getWorkplaceName() == null) ? null
@@ -172,7 +187,7 @@ public class EmployeeInDesignatedFinder {
 		// Output List
 		List<EmployeeInDesignatedDto> empsInDesignated = new ArrayList<>();
 		empIdList.stream().forEach(empId -> {
-			// 在職状態を取�
+			// 在職状態を取得
 			EmploymentStatusDto employmentStatus = this.getStatusOfEmployment(empId,
 					referenceDate);
 			//check if null
@@ -201,9 +216,7 @@ public class EmployeeInDesignatedFinder {
 	 * @return the status of employment
 	 */
 	public EmploymentStatusDto getStatusOfEmployment(String employeeId, GeneralDate referenceDate) {
-
 		Optional<Employee> empOpt = empRepo.getBySid(employeeId);
-
 		if (!empOpt.isPresent()) {
 			return null;
 		}
@@ -214,17 +227,27 @@ public class EmployeeInDesignatedFinder {
 		
 		Employee employee = empOpt.get();
 
+		// List Entry Job History
+		List<JobEntryHistory> listEntryJobHist = employee.getListEntryJobHist();
+		
+		// Solution for a Temporary Case (DB is unavailable: List of JobEntryHistory is empty)
+		if (CollectionUtil.isEmpty(listEntryJobHist)) {
+			statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
+			return statusOfEmploymentExport;
+		}
+		// End of Solution
+		
 		// Filter ListEntryJobHist: JoinDate <= BaseDate <= RetirementDate
-		List<JobEntryHistory> listEntryJobHist = employee.getListEntryJobHist().stream()
+		List<JobEntryHistory> filteredEntryJobHist = listEntryJobHist.stream()
 				.filter(x -> (x.getJoinDate().beforeOrEquals(referenceDate)
 						&& x.getRetirementDate().afterOrEquals(referenceDate)))
 				.collect(Collectors.toList());
 
-		if (listEntryJobHist.size() == 0) {
+		if (filteredEntryJobHist.isEmpty()) {
 			// Case: Filtered ListEntryJobHist (Condition: JoinDate <= BaseDate <= RetirementDate) is empty
 			List<GeneralDate> listJointDate = new ArrayList<>();
-			// List Entry Job History
-			for (int i = 0; i < employee.getListEntryJobHist().size(); i++) {
+			
+			for (int i = 0; i < listEntryJobHist.size(); i++) {
 				listJointDate.add(listEntryJobHist.get(i).getJoinDate());
 			}
 			// The First Joining Date
@@ -238,11 +261,10 @@ public class EmployeeInDesignatedFinder {
 			} else {
 				// StatusOfEmployment = RETIREMENT
 				statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.RETIREMENT.value);
-
 			}
 		} else {// Case: Filtered ListEntryJobHist (Condition: JoinDate <= BaseDate <= RetirementDate) is not empty
 
-			// Get TemporaryAbsence By employee ID
+			// Get TemporaryAbsence By employee ID and BaseDate
 			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
 				// Domain TemporaryAbsence is Present
@@ -251,7 +273,7 @@ public class EmployeeInDesignatedFinder {
 				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
 
 				// Check if TempAbsenceType = TEMP_LEAVE
-				if (temporaryAbsenceDomain.getTempAbsenceType().value == 1) {
+				if (temporaryAbsenceDomain.getTempAbsenceType().value == TempAbsenceType.TEMP_LEAVE.value) {
 					// StatusOfEmployment = LEAVE_OF_ABSENCE
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
 				} else {
@@ -259,7 +281,7 @@ public class EmployeeInDesignatedFinder {
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.HOLIDAY.value);
 				}
 			} else {
-				// StatusOfEmployment = INCUMBENT
+				// StatusOfEmployment = INCUMBENT 在籍
 				statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.INCUMBENT.value);
 			}
 		}

@@ -122,12 +122,17 @@ module nts.uk.com.view.cdl009.a {
                     empStatus: empStatusList
                 };
                 service.findEmployees(query).done(function(res: Array<service.model.EmployeeResult>) {
-                    // Set Employee List
-                    let empList: Array<any> = [];
-                    res.forEach(item => {
-                        empList.push({ id: item.employeeId, code: item.employeeCode, name: item.employeeName, workplaceName: item.workplaceName });
-                    });
-                    self.employeeList(empList);
+                    if (res) {
+                        // Set Employee List
+                        let empList: Array<any> = [];
+                        res.forEach(item => {
+                            empList.push({ id: item.employeeId, code: item.employeeCode, name: item.employeeName, workplaceName: item.workplaceName });
+                        });
+                        self.employeeList(empList);
+                    } else {
+                        self.employeeList([]);
+                    }
+                    
                     dfd.resolve();
                 }).fail(function(error) {
                     dfd.reject(error);
