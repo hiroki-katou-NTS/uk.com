@@ -55,11 +55,11 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 		// add or update init item
 		List<UpdateItemInitValueSettingCommand> itemCommand = command.getItemLst();
 
-		List<UpdateItemInitValueSettingCommand> itemNoSetting = itemCommand.stream()
+		List<UpdateItemInitValueSettingCommand> itemSetting = itemCommand.stream()
 				.filter(c -> (c.getSelectedRuleCode() != 1)).collect(Collectors.toList());
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 		boolean isError = false;
-		for (UpdateItemInitValueSettingCommand c : itemNoSetting) {
+		for (UpdateItemInitValueSettingCommand c : itemSetting) {
 			if (c.getSelectedRuleCode() == 2) {
 				if (c.getDataType() == 1 && (c.getStringValue().equals(null) || c.getStringValue().equals(""))) {
 
@@ -114,101 +114,20 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 
 		if (command.isSetting()) {
 
-			if (itemNoSetting.size() == 0 || itemNoSetting == null) {
+			if (itemSetting.size() == 0 || itemSetting == null) {
 				itemCommand.stream().forEach(c -> {
 					PerInfoInitValueSetItem item = new PerInfoInitValueSetItem();
 
-					Optional<PerInfoInitValueSetItem> itemExist = this.itemRepo.getDetailItem(command.getSettingId(),
-							command.getPerInfoCtgId(), c.getPerInfoItemDefId());
-					if (itemExist.isPresent()) {
-
-						if (c.getSelectedRuleCode() == 2) {
-							if (c.getDataType() == 0 || c.getDataType() == 1) {
-								itemExist.get().setStringValue(new StringValue(c.getStringValue()));
-								itemExist.get().setRefMethodType(EnumAdaptor
-										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
-								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
-								this.itemRepo.update(itemExist.get());
-
-							} else if (c.getDataType() == 2) {
-								itemExist.get().setRefMethodType(EnumAdaptor
-										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
-								itemExist.get().setIntValue(new IntValue(c.getNumberValue()));
-								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
-								this.itemRepo.update(itemExist.get());
-
-							} else if (c.getDataType() == 3) {
-								if (c.getDateType() == 1) {
-									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(),
-											3, GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
-								} else if (c.getDateType() == 2) {
-									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(),
-											3, GeneralDate.fromString(c.getDateVal() + "/01", "yyyy/MM/dd"));
-
-								} else if (c.getDateType() == 3) {
-									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(),
-											3, GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
-
-								}
-								this.itemRepo.update(item);
-
-							} else if (c.getDataType() == 4) {
-
-								// time item
-
-								itemExist.get().setRefMethodType(EnumAdaptor
-										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
-								itemExist.get().setIntValue(new IntValue(c.getTime()));
-								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
-								this.itemRepo.update(itemExist.get());
-
-							} else if (c.getDataType() == 5) {
-
-								// time point
-								itemExist.get().setRefMethodType(EnumAdaptor
-										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
-								itemExist.get().setIntValue(new IntValue(c.getTime()));
-								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
-								this.itemRepo.update(itemExist.get());
-
-							} else if (c.getDataType() == 6) {
-								itemExist.get().setRefMethodType(EnumAdaptor
-										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
-								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
-								itemExist.get().setStringValue(new StringValue(c.getSelectionId()));
-								this.itemRepo.update(itemExist.get());
-
-							}
-						} else if (c.getSelectedRuleCode() > 2) {
-
-							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
-							this.itemRepo.update(item);
-
-						} else if (c.getSelectedRuleCode() == 1) {
-							Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(
-									command.getSettingId(), command.getPerInfoCtgId(), c.getPerInfoItemDefId());
-							if (item_1.isPresent()) {
-								this.itemRepo.delete(c.getPerInfoItemDefId(), command.getPerInfoCtgId(),
-										command.getSettingId());
-							}
-						}
-
-					} else {
-
-						item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-								command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
-						this.itemRepo.addItem(item);
-
+					Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(
+							command.getSettingId(), command.getPerInfoCtgId(), c.getPerInfoItemDefId());
+					if (item_1.isPresent()) {
+						this.itemRepo.delete(c.getPerInfoItemDefId(), command.getPerInfoCtgId(),
+								command.getSettingId());
 					}
-
 				});
 
 			} else {
-				itemCommand.stream().forEach(c -> {
+				itemSetting.stream().forEach(c -> {
 					PerInfoInitValueSetItem item = new PerInfoInitValueSetItem();
 
 					Optional<PerInfoInitValueSetItem> itemExist = this.itemRepo.getDetailItem(command.getSettingId(),
@@ -348,7 +267,6 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								item.setStringValue(new StringValue(c.getSelectionId()));
 								this.itemRepo.addItem(item);
 
-
 							}
 						} else if (c.getSelectedRuleCode() > 2) {
 
@@ -380,7 +298,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 				this.ctgRepo.add(ctgDomain);
 			}
 
-			if (itemNoSetting.size() == 0) {
+			if (itemSetting.size() == 0) {
 				throw new BusinessException("Msg_454");
 			} else {
 
@@ -519,7 +437,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								item.setRefMethodType(EnumAdaptor.valueOf(2, ReferenceMethodType.class));
 								item.setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
 								item.setStringValue(new StringValue(c.getSelectionId()));
-								this.itemRepo.update(item);
+								this.itemRepo.addItem(item);
 
 							}
 						} else if (c.getSelectedRuleCode() > 2) {
