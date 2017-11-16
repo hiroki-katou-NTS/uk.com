@@ -340,6 +340,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             numberValue: obj.numbereditor.value,
                             dateType: obj.dateType,
                             time: obj.dateWithDay,
+                            isRequired : obj.isRequired
 
                         };
                     })
