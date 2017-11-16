@@ -57,6 +57,7 @@ module nts.uk.at.view.kml002.a.service {
         cumulativeAtr: number,
         attributes: number,
         rounding: number,
+        roundingProcessing: number,
         dispOrder: number
     }
 }

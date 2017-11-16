@@ -36,6 +36,8 @@ public class VerticalCalItem extends DomainObject {
     // 端数処理
  	private int rounding;
  	
+ 	private int roundingProcessing;
+ 	
  	private int dispOrder;
  	
  	// B
@@ -63,7 +65,8 @@ public class VerticalCalItem extends DomainObject {
  													String itemId, String itemName, 
  													int calculateAtr, int displayAtr, 
  													int cumulativeAtr, int attributes, 
- 													int rounding, int dispOrder, 
+ 													int rounding, int roundingProcessing,
+ 													int dispOrder, 
  													FormBuilt formBuilt,
  													FormTime formTime,
  													FormPeople formPeople,
@@ -76,6 +79,7 @@ public class VerticalCalItem extends DomainObject {
  				cumulativeAtr, 
  				EnumAdaptor.valueOf(attributes, Attributes.class),
  				rounding,
+ 				roundingProcessing,
  				dispOrder,
  				formBuilt,
  				formTime,

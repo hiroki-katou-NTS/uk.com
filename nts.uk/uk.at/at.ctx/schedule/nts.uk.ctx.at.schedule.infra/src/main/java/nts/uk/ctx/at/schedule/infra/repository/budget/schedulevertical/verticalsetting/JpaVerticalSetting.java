@@ -481,6 +481,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 					t.cumulativeAtr,
 					t.attributes,
 					t.rounding,
+					t.roundingProcessing,
 					t.genVertOrder.dispOrder,
 					formBuilt,
 					formTime,
@@ -615,7 +616,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
-					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), kscstVerticalItemOrder,
+					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), x.getRoundingProcessing(), kscstVerticalItemOrder,
 					built, time, entity, amount);
 		}).collect(Collectors.toList());
 
@@ -722,7 +723,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
-					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), kscstVerticalItemOrder,
+					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), x.getRoundingProcessing(), kscstVerticalItemOrder,
 					built, time, entity, amount);
 		}).collect(Collectors.toList());
 
