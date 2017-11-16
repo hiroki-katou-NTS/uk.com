@@ -36,15 +36,19 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtDaiPerWorkInfoPK krcdtDaiPerWorkInfoPK;
 	
+	// 勤務実績の勤務情報. 勤務種類コード
 	@Column(name = "RECORD_WORK_WORKTYPE_CODE")
 	public String recordWorkWorktypeCode;
-
+	
+	// 勤務実績の勤務情報. 就業時間帯コード
 	@Column(name = "RECORD_WORK_WORKTIME_CODE") 
 	public String recordWorkWorktimeCode;
 
+	// 勤務予定の勤務情報. 勤務種類コード
 	@Column(name = "SCHEDULE_WORK_WORKTYPE_CODE")
 	public String scheduleWorkWorktypeCode;
 	
+	// 勤務予定の勤務情報. 勤務種類コード
 	@Column(name = "SCHEDULE_WORK_WORKTIME_CODE")
 	public String scheduleWorkWorktimeCode;
 
