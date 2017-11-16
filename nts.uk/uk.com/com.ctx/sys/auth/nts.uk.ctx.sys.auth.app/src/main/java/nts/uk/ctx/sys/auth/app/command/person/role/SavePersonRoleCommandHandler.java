@@ -1,28 +1,22 @@
 package nts.uk.ctx.sys.auth.app.command.person.role;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.auth.dom.role.PersonRole;
-import nts.uk.ctx.sys.auth.dom.role.PersonRoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.role.RoleService;
+import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
+import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
 public class SavePersonRoleCommandHandler extends CommandHandler<SavePersonRoleCommand> {
 	@Inject
-	private RoleRepository roleRepo;
-	@Inject
 	private PersonRoleRepository personRoleRepo;
-
+	@Inject
+	private RoleService roleService;	
 	@Override
 	protected void handle(CommandHandlerContext<SavePersonRoleCommand> context) {
 		final SavePersonRoleCommand command = context.getCommand();
@@ -37,11 +31,7 @@ public class SavePersonRoleCommandHandler extends CommandHandler<SavePersonRoleC
 
 	private void insertPersonInfoRole(SavePersonRoleCommand command) {
 		
-		List<Role> roles = roleRepo.findByType(AppContexts.user().companyId(), command.getRoleType());
-		if (roles !=null && roles.get(0).getRoleCode().toString().equals(command.getRoleCode()))
-			throw new BusinessException("Msg_3");
-		
-		roleRepo.insert(command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode()));
+		roleService.insertRole(command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode()));
 		
 		PersonRole personRole = new PersonRole();
 		personRole.setRoleId(command.getRoleId());
@@ -50,6 +40,6 @@ public class SavePersonRoleCommandHandler extends CommandHandler<SavePersonRoleC
 	}
 
 	private void updatePersonInfoRole(SavePersonRoleCommand command) {
-		roleRepo.update(command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode()));
+		roleService.updateRole(command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode()));
 	}
 }
