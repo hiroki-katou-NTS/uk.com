@@ -21,7 +21,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "BSYMT_TEMP_ABSENCE_HIST")
-public class BsymtTemporaryAbsenceHist {
+public class BsymtTempAbsenceHist {
 	
 	@Id
 	/** The end D. */

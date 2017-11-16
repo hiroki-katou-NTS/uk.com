@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsence;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsenceHist;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsenceHist;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsencePK;
 
 @Stateless
@@ -96,8 +96,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 				domain.getBirthDate(), domain.getMulPregnancySegment());
 	}
 
-	private BsymtTemporaryAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain) {
-		return new BsymtTemporaryAbsenceHist(domain.getDateHistoryItem().identifier(),
+	private BsymtTempAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain) {
+		return new BsymtTempAbsenceHist(domain.getDateHistoryItem().identifier(),
 				domain.getDateHistoryItem().start(), domain.getDateHistoryItem().end());
 	}
 
@@ -117,7 +117,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		entity.multiple = domain.getMulPregnancySegment();
 	}
 
-	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTemporaryAbsenceHist entity) {
+	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTempAbsenceHist entity) {
 		entity.historyId = domain.getDateHistoryItem().identifier();
 		entity.strD = domain.getDateHistoryItem().start();
 		entity.endD = domain.getDateHistoryItem().end();
@@ -144,8 +144,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		// Get exist item
 		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
 		Optional<BsymtTemporaryAbsence> existItem = this.queryProxy().find(key, BsymtTemporaryAbsence.class);
-		Optional<BsymtTemporaryAbsenceHist> existItemHist = this.queryProxy()
-				.find(domain.getDateHistoryItem().identifier(), BsymtTemporaryAbsenceHist.class);
+		Optional<BsymtTempAbsenceHist> existItemHist = this.queryProxy()
+				.find(domain.getDateHistoryItem().identifier(), BsymtTempAbsenceHist.class);
 		if (!existItem.isPresent()) {
 			return;
 		}
