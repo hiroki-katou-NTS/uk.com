@@ -425,7 +425,7 @@ project (':at.screen:nts.uk.screen.at.app') {
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
 	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile (group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: '0.7.1')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.8.8')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.8.9')
 		compile (group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.5.3')
 	}
 }
@@ -602,7 +602,7 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: '0.1')
 		
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.8.5')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.8.8')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.8.9')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.8.13')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.8.12')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.8.14')
