@@ -34,12 +34,16 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 
 	private TemporaryAbsence toTemporaryAbsence(Object[] entity) {
 		TemporaryAbsence temporaryAbsence = TemporaryAbsence.createSimpleFromJavaType(
-				String.valueOf(entity[1].toString()), String.valueOf(entity[0].toString()),
-				Integer.valueOf(entity[2].toString()), String.valueOf(entity[3].toString()),
-				GeneralDate.fromString(entity[4].toString(), "yyyy-MM-dd"),
-				GeneralDate.fromString(entity[5].toString(), "yyyy-MM-dd"), String.valueOf(entity[6].toString()),
-				String.valueOf(entity[7].toString()), GeneralDate.fromString(entity[8].toString(), "yyyy-MM-dd"),
-				Integer.valueOf(entity[9].toString()));
+				String.valueOf(entity[1].toString()), 
+				String.valueOf(entity[0].toString()),
+				Integer.valueOf(entity[2].toString()), 
+				String.valueOf(entity[3].toString()),
+				entity[4] == null? null :GeneralDate.fromString(entity[4].toString(), "yyyy-MM-dd"),
+				GeneralDate.fromString(entity[5].toString(), "yyyy-MM-dd"), 
+				entity[6] == null ? null:String.valueOf(entity[6].toString()),
+				entity[7] == null ? null:String.valueOf(entity[7].toString()), 
+				entity[8] == null ? null:GeneralDate.fromString(entity[8].toString(), "yyyy-MM-dd"),
+				entity[9] == null ? null:Integer.valueOf(entity[9].toString()));
 		return temporaryAbsence;
 	}
 
