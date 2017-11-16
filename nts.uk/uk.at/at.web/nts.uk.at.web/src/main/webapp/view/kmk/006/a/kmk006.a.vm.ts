@@ -717,11 +717,11 @@ module nts.uk.at.view.kmk006.a {
                      self.loadJobAlreadySettingList().done(function() {
                         // show message 15
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+//                            $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                                 // reload pa    
                                 self.selectedCode(jobId);
                                 self.loadJobAutoCal(jobId);
-                            });
+//                            });
                         });
                     });
                 }).fail(function(error) {
@@ -883,10 +883,10 @@ module nts.uk.at.view.kmk006.a {
                         self.loadJobAlreadySettingList().done(function() {
                             // show message 16
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+//                                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                                     self.loadJobAutoCal(self.selectedCurrentJob());
                                     self.selectedCode(self.selectedCurrentJob());
-                                });
+//                                });
                             });
                         });
                        

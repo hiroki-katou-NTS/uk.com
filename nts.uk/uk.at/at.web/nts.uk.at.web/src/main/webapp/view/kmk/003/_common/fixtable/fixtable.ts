@@ -11,12 +11,12 @@ module kmk003.common.fixtable {
         /**
          * height table
          */
-        height: number;
+        maxRows: number;
         
         /**
          * data source table
          */
-        dataSource: Array<any>;
+        dataSource: KnockoutObservableArray<any>;
 
         /**
          * is Multiple select.
@@ -53,7 +53,7 @@ module kmk003.common.fixtable {
          * width column
          */
         width: number;
-        
+
         /**
          * Control type (control of Kiban team)
          */
@@ -62,7 +62,7 @@ module kmk003.common.fixtable {
         /**
          * Option control type if have
          */
-        options?: any;
+        properties?: any;
     }
 
     /************************************************ SCREEN MODEL ************************************************
@@ -83,7 +83,6 @@ module kmk003.common.fixtable {
      */
     interface TableStyle {
         height: number;
-        lstColumnTemplate: Array<string>;
     }
     
     /**
@@ -96,8 +95,12 @@ module kmk003.common.fixtable {
         // needed when model multiple select
         isSelectAll: KnockoutObservable<boolean>;
         
+        // needed when has comboBox, ...
+        lstDataSource: any;
+        
         isMultiple: boolean;
         columns: Array<FixColumn>;
+        maxRows: number;
         tableStyle: TableStyle;
         
         $tableSelector: any;
@@ -109,32 +112,14 @@ module kmk003.common.fixtable {
             self.isSelectAll = ko.observable(false);
             
             self.tableStyle = {
-                height: 0,
-                lstColumnTemplate: null
+                height: 0
             };
+            self.lstDataSource = {};
             
             // subscribe
-            self.itemList.subscribe((newList) => {
-                if (!newList || newList.length <= 0) {
-                    return;
-                }
-                // add properties isChecked when multiple select
-                if (self.isMultiple) {
-                    self.addCheckBoxItemAtr(newList);
-                }
-            });
             self.isSelectAll.subscribe(newValue => {
-                return self.subscribeChanged(newValue);
+                self.computedChange(newValue);
             });
-            
-            // Create Customs handle For event rened nts grid.
-            (<any>ko.bindingHandlers).rended = {
-            update: function(element: any, valueAccessor: any, allBindings: KnockoutAllBindingsAccessor) {
-                    let itemList: Array<any> = ko.unwrap(valueAccessor());
-                    // event changed combo box
-                    self.computedChangeCheckbox(itemList);
-                }
-            }
         }
 
         /**
@@ -148,44 +133,102 @@ module kmk003.common.fixtable {
             
             // set data parameter
             self.isMultiple = data.isMultipleSelect;
-            
-            self.itemList(data.dataSource);
             self.columns = data.columns;
+            self.maxRows = data.maxRows;
+            self.itemList = data.dataSource;
+            
+            // add properties isChecked when multiple select
+            if (self.isMultiple) {
+                self.addCheckBoxItemAtr();
+            }
 
-            let webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/_common/fixtable/fixtable.xhtml').serialize();
-
-            $input.load(webserviceLocator, function() {
-                self.$tableSelector = $('#fixed-table-custom');
+            // subscribe itemList
+            self.itemList.subscribe((newList) => {
+                if (!newList || newList.length <= 0) {
+                    self.isSelectAll(false);
+                    return;
+                }
+                // add properties isChecked when multiple select
+                if (self.isMultiple) {
+                    self.addCheckBoxItemAtr();
+                }
                 
-                // render table
-                self.renderTable().done(() => {
-                    ko.cleanNode($input[0]);
-                    ko.applyBindings(self, $input[0]);
-                    dfd.resolve();
-                });
+                // re-load table
+                self.loadTable($input);
+            });
+
+            // render table
+            self.loadTable($input).done(() => {
+                dfd.resolve();
             });
             
             return dfd.promise();
         }
         
         /**
-         * computedChangeCheckbox
+         * loadTable
          */
-        private computedChangeCheckbox(itemList: Array<any>) {
+        private loadTable($input: JQuery): JQueryPromise<void> {
             let self = this;
-            if (self.isSelectAll()) {
-                return;
-            }
-            self.isSelectAll(itemList.every(item => item.isChecked() == true));
+            let dfd = $.Deferred<void>();
+            
+            let webserviceLocator = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
+                .mergeRelativePath('/view/kmk/003/_common/fixtable/fixtable.xhtml').serialize();
+            $input.load(webserviceLocator, function() {
+                self.$tableSelector = $('#fixed-table-custom');
+                ko.cleanNode(self.$tableSelector[0]);
+                
+                // calculate height table
+                self.calHeightTable();
+                
+                // render table
+                self.renderTable().done(() => {
+                    ko.cleanNode($input[0]);
+                    ko.applyBindings(self, $input[0]);
+                    
+                    dfd.resolve();
+                });
+            });
+            return dfd.promise();
         }
         
         /**
-         * subscribeChanged
+         * calHeightTable
          */
-        private subscribeChanged(newValue: boolean) {
+        private calHeightTable() {
             let self = this;
+            let heigthCell = 36;
+            self.tableStyle.height = heigthCell * self.maxRows;
+        }
+        
+        /**
+         * subscribeChangeCheckbox
+         */
+        private subscribeChangeCheckbox() {
+            let self = this;
+            // case empty list
+            if (!self.itemList() || self.itemList().length <= 0) {
+                self.isSelectAll(false);
+                return;
+            }
+            let selectAll: any = self.itemList().every(item => item.isChecked() == true);
+            if (selectAll == false) {
+                selectAll = null;
+            }
+            self.isSelectAll(selectAll);
+        }
+        
+        /**
+         * computedChange
+         */
+        private computedChange(newValue: boolean) {
+            let self = this;
+            
+            // select all true
+            if (newValue == null) {
+                return;
+            }
             _.forEach(self.itemList(), row => {
                 row.isChecked(newValue);
             });
@@ -233,11 +276,20 @@ module kmk003.common.fixtable {
         /**
          * addCheckBoxItemAtr
          */
-        private addCheckBoxItemAtr(itemList: Array<any>) {
+        private addCheckBoxItemAtr() {
             let self = this;
             // if mode multiple, set default check box false
-            _.forEach(itemList, row => {
-                row.isChecked = ko.observable(false);
+            _.forEach(self.itemList(), row => {
+                
+                // if not has property isChecked
+                if (!row.hasOwnProperty('isChecked')) {
+                    row.isChecked = ko.observable(false);
+                    
+                    // subscribe
+                    row.isChecked.subscribe((newList) => {
+                        self.subscribeChangeCheckbox();
+                    });
+                }
             });
         }
         
@@ -272,20 +324,20 @@ module kmk003.common.fixtable {
          */
         private getCheckBoxHtml(columnSetting: FixColumn): string {
             
-            let options: any = columnSetting.options;
+            let properties: any = columnSetting.properties;
             
             // define option of check box
             let checkBoxHtml: string = "<div data-bind=\"ntsCheckBox: { checked: " + columnSetting.key + ",";
             
-            if (!options) {
+            if (!properties) {
                 return checkBoxHtml.substring(0, checkBoxHtml.length -1).concat("}\"/></div>");
             }
             
-            if (options.enable != undefined) {
-                checkBoxHtml += "enable: " + options.enable + ",";
+            if (properties.enable != undefined) {
+                checkBoxHtml += "enable: " + properties.enable + ",";
             }
-            if (options.text) {
-                checkBoxHtml += "text: '" + options.text + "',";
+            if (properties.text) {
+                checkBoxHtml += "text: '" + properties.text + "',";
             }
             return checkBoxHtml.substring(0, checkBoxHtml.length -1).concat("}\"/></div>");
         }
@@ -294,40 +346,37 @@ module kmk003.common.fixtable {
          * getTimeEditorHtml
          */
         private getTimeEditorHtml(columnSetting: FixColumn): string {
-            let options: any = columnSetting.options;
+            let properties: any = columnSetting.properties;
             
             let timeEditorHtml: string = `<div><input data-bind="ntsTimeEditor: {
-                                        value: ` + columnSetting.key + ",";
-            if (!options) {
+                                        value: ` + columnSetting.key + ",option: {width: '80'},";
+            if (!properties) {
                 return timeEditorHtml.substring(0, timeEditorHtml.length -1).concat("}\" /></div>");
             }
             
-            if (options.name) {
-                timeEditorHtml += "name: '" + options.name + "',";
+            if (properties.name) {
+                timeEditorHtml += "name: '" + properties.name + "',";
             }
-            if (options.constraint) {
-                timeEditorHtml += "constraint: " + options.constraint + ",";
+            if (properties.constraint) {
+                timeEditorHtml += "constraint: " + properties.constraint + ",";
             }
-            if (options.option) {
-                timeEditorHtml += "option: " + options.option + ",";
+            if (properties.required) {
+                timeEditorHtml += "required: " + properties.required + ",";
             }
-            if (options.required) {
-                timeEditorHtml += "required: " + options.required + ",";
+            if (properties.enable) {
+                timeEditorHtml += "enable: " + properties.enable + ",";
             }
-            if (options.enable) {
-                timeEditorHtml += "enable: " + options.enable + ",";
+            if (properties.readonly) {
+                timeEditorHtml += "readonly: " + properties.readonly + ",";
             }
-            if (options.readonly) {
-                timeEditorHtml += "readonly: " + options.readonly + ",";
+            if (properties.inputFormat) {
+                timeEditorHtml += "inputFormat: '" + properties.inputFormat + "',";
             }
-            if (options.inputFormat) {
-                timeEditorHtml += "inputFormat: '" + options.inputFormat + "',";
+            if (properties.immediate) {
+                timeEditorHtml += "immediate: " + properties.immediate + ",";
             }
-            if (options.immediate) {
-                timeEditorHtml += "immediate: " + options.immediate + ",";
-            }
-            if (options.mode) {
-                timeEditorHtml += "mode: '" + options.mode + "',";
+            if (properties.mode) {
+                timeEditorHtml += "mode: '" + properties.mode + "',";
             }
             return timeEditorHtml.substring(0, timeEditorHtml.length -1).concat("}\" /></div>");
         }
@@ -336,36 +385,36 @@ module kmk003.common.fixtable {
          * getDateRangeEditorHtml
          */
         private getDateRangeEditorHtml(columnSetting: FixColumn): string {
-            let options: any = columnSetting.options;
+            let properties: any = columnSetting.properties;
             
             let html: string = "<div data-bind=\"ntsDateRangePicker: {value: " + columnSetting.key + ","; 
-            if (!options) {
+            if (!properties) {
                 return html.substring(0, html.length -1).concat("}\" /></div>");
             }
             
-            if (options.type) {
-                html += "type: '" + options.type + "',";
+            if (properties.type) {
+                html += "type: '" + properties.type + "',";
             }
-            if (options.maxRange) {
-                html += "maxRange: '" + options.maxRange + "',";
+            if (properties.maxRange) {
+                html += "maxRange: '" + properties.maxRange + "',";
             }
-            if (options.name) {
-                html += "name: '#[" + options.name + "]',";
+            if (properties.name) {
+                html += "name: '#[" + properties.name + "]',";
             }
-            if (options.startName) {
-                html += "startName: '#[" + options.startName + "]',";
+            if (properties.startName) {
+                html += "startName: '#[" + properties.startName + "]',";
             }
-            if (options.endName) {
-                html += "endName: '#[" + options.endName + "]',";
+            if (properties.endName) {
+                html += "endName: '#[" + properties.endName + "]',";
             }
-            if (options.enable) {
-                html += "enable: " + options.enable + ",";
+            if (properties.enable) {
+                html += "enable: " + properties.enable + ",";
             }
-            if (options.required) {
-                html += "required: " + options.required + ",";
+            if (properties.required) {
+                html += "required: " + properties.required + ",";
             }
-            if (options.showNextPrevious) {
-                html += "showNextPrevious: " + options.showNextPrevious + ",";
+            if (properties.showNextPrevious) {
+                html += "showNextPrevious: " + properties.showNextPrevious + ",";
             }
             return html.substring(0, html.length -1).concat("}\" /></div>");
         }
@@ -374,22 +423,27 @@ module kmk003.common.fixtable {
          * getComboBoxHtml
          */
         private getComboBoxHtml(columnSetting: FixColumn): string {
-            let options: any = columnSetting.options;
+            let self = this;
+            let properties: any = columnSetting.properties;
             
-            let html: string = "<div data-bind=\"ntsComboBox: {options: " + ko.observableArray(options.options) + ", optionsValue: '"
-                + options.optionsValue + "',value: " + columnSetting.key + ",optionsText: '" + options.optionsText + "',"; 
-            if (!options) {
+            // add data source
+            self.lstDataSource[columnSetting.key] = properties.options;
+            
+            // render html
+            let html: string = "<div data-bind=\"ntsComboBox: {options: $parent.lstDataSource." + columnSetting.key + ", optionsValue: '"
+                + properties.optionsValue + "',value: " + columnSetting.key + ",optionsText: '" + properties.optionsText + "',"; 
+            if (!properties) {
                 return html.substring(0, html.length -1).concat("}\" /></div>");
             }
-            html += "columns: " + JSON.stringify(options.columns ? options.columns : []) + ",";
-            if (options.visibleItemsCount) {
-                html += "visibleItemsCount: " + options.visibleItemsCount + ",";
+            html += "columns: " + (properties.columns ? properties.columns : []) + ",";
+            if (properties.visibleItemsCount) {
+                html += "visibleItemsCount: " + properties.visibleItemsCount + ",";
             }
-            if (options.editable) {
-                html += "editable: " + options.editable + ",";
+            if (properties.editable) {
+                html += "editable: " + properties.editable + ",";
             }
-            if (options.enable) {
-                html += "enable: " + options.enable + ",";
+            if (properties.enable) {
+                html += "enable: " + properties.enable + ",";
             }
             return html.substring(0, html.length -1).concat("}\" /></div>");
         }

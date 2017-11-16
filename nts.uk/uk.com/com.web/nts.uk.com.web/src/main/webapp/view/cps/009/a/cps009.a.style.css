@@ -35,11 +35,14 @@
 	margin-right: 3px !important;
 	border: 0px !important;
 	text-align: right !important;
-	max-height: 8px !important;
+	max-height: 12px !important;
 }
 
 .nts-datepicker-wrapper .ntsDatepicker {
 	width: 161px !important;
+}
+#date{
+	border: 0px solid #999999 !important;
 }
 
 #content-right {
