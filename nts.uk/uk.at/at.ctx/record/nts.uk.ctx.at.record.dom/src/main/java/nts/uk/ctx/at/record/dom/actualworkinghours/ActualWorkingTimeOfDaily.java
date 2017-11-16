@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -8,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 /**
  * 
  * @author nampt
- * 日別実績の実働時間
+ * 日別実績の勤務実績時間
  *
  */
 @Getter
@@ -34,4 +35,23 @@ public class ActualWorkingTimeOfDaily {
 	
 	//乖離時間
 	private DivergenceTimeOfDaily divTime;
+	
+	/**
+	 * 総労働時間のみを埋めるConstructor(Byほしな 2017.11.15)
+	 */
+	private ActualWorkingTimeOfDaily(TotalWorkingTime totalWorkingTime) {
+		this.totalWorkingTime = totalWorkingTime;
+	}
+	
+	
+	/**
+	 * 日別実績の実働時間の計算
+	 */
+	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay) {
+		/*総労働時間の計算*/
+		return new ActualWorkingTimeOfDaily(TotalWorkingTime.calcAllDailyRecord(oneDay));
+		/*拘束時間の計算*/
+		/*割増時間の計算*/
+		/*乖離時間の計算*/
+	}
 }

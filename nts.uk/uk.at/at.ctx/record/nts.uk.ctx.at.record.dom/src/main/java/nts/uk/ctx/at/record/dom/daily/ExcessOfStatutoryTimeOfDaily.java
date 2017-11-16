@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
 
 /**
@@ -11,9 +13,11 @@ import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
  *
  */
 @Getter
+@AllArgsConstructor
 public class ExcessOfStatutoryTimeOfDaily {
-	private OverTimeWorkOfDaily WorkHolidayTime;
-	private HolidayWorkTimeOfDaily OverTimeWork;
 	@Setter
-	private ExcessOverTimeWorkMidNightTime ExcessOfStatutoryMidNightTime;
+	private ExcessOfStatutoryMidNightTime ExcessOfStatutoryMidNightTime;
+	private Optional<OverTimeWorkOfDaily> OverTimeWork;
+	private Optional<HolidayWorkTimeOfDaily> WorkHolidayTime;
+
 }

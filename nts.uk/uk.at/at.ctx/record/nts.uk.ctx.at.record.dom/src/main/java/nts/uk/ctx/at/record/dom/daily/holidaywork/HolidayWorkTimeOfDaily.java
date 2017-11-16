@@ -2,34 +2,19 @@ package nts.uk.ctx.at.record.dom.daily.holidaywork;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
-import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverDayEnd;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 日別実績の休出時間
@@ -40,47 +25,14 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public class HolidayWorkTimeOfDaily {
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	private List<HolidayWorkFrameTime> holidayWorkFrameTime;
-	private HolidayMidnightWork holidayMidNightWork;
+	private Finally<HolidayMidnightWork> holidayMidNightWork;
+	private AttendanceTime holidayTimeSpentAtWork = new AttendanceTime(0);
 	
-	private HolidayWorkTimeOfDaily(List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet,List<HolidayWorkFrameTime> holidayWorkFrameTime) {
+	public HolidayWorkTimeOfDaily(List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet,List<HolidayWorkFrameTime> holidayWorkFrameTime,
+								   Finally<HolidayMidnightWork> holidayMidNightWork) {
 		this.holidayWorkFrameTimeSheet = holidayWorkFrameTimeSheet;
 		this.holidayWorkFrameTime = holidayWorkFrameTime;
-	}
-	
-	/**
-	 * 休出時間帯の作成と時間計算
-	 * @param attendanceTime
-	 * @param oneDayRange　１日の計算範囲.１日の範囲
-	 * @return
-	 */
-	public static OverDayEnd.SplitHolidayWorkTime getHolidayWorkTimeOfDaily(List<FixRestSetting> fixTimeSet ,AttendanceLeavingWork attendanceLeave,
-			OverDayEndCalcSet dayEndSet,WorkTimeCommonSet overDayEndSet ,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,
-			WorkType beforeDay,WorkType toDay,WorkType afterDay) {
-		
-		List<HolidayWorkFrameTimeSheet> holidayWorkTimeSheetList = new ArrayList<HolidayWorkFrameTimeSheet>();
-		List<HolidayWorkFrameTime> holidayWorkFrameTimeList = new ArrayList<HolidayWorkFrameTime>();
-		Optional<TimeSpanForCalc> timeSpan;
-		TimeSpanForCalc attendanceLeaveSheet = new TimeSpanForCalc(attendanceLeave.getAttendance().getEngrave().getTimesOfDay(),attendanceLeave.getLeaveWork().getEngrave().getTimesOfDay());
-		for(FixRestSetting holidayTimeSheet : fixTimeSet) {
-			/*計算範囲の判断*/
-			timeSpan = attendanceLeaveSheet.getDuplicatedWith(holidayTimeSheet.getHours().getSpan());
-			/*控除時間帯を分割*/
-			/*控除時間帯を保持(控除時間帯を分割で取得したListに対してmapを使う)*/
-			
-			/*遅刻早退処理*/
-		//	if(/*遅刻早退どっちの設定を見てもOKなので、どちらかの休出の場合でも計算するを見る*/) {
-		//	}
-			
-			/*休出時間帯の作成*/
-			holidayWorkTimeSheetList.add(new HolidayWorkFrameTimeSheet(new TimeSpanWithRounding(timeSpan.get().getStart(),timeSpan.get().getEnd(),Finally.empty()),
-																	   timeSpan.get(),
-																	   ));
-		}
-		/*0時跨ぎ*/
-		OverDayEnd overEnd = new OverDayEnd();
-		OverDayEnd.SplitHolidayWorkTime splitOverTimeWork = overEnd.new SplitHolidayWorkTime(dayEndSet,overDayEndSet ,holidayTimeWorkItem,beforeDay,toDay,afterDay);
-		
-		return splitOverTimeWork;
+		this.holidayMidNightWork = holidayMidNightWork;
 	}
 	
 	/**
@@ -129,13 +81,16 @@ public class HolidayWorkTimeOfDaily {
 	 * 休出時間が含んでいる深夜時間の算出
 	 * @return
 	 */
-	public HolidayWorkMidNightTime calcMidNightTimeIncludeHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
-		EachStatutoryHolidayWorkTime eachTime;
+	public HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
+		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheet  frameTime : holidayWorkFrameTimeSheet) {
 			eachTime.addTime(frameTime.getStatutoryAtr(), frameTime.calcMidNight(autoCalcSet.getLateNightTime().getCalculationClassification()));
 		}
-		return new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(eachTime.getTimeBaseOnAtr(/*ナベさんへの質問回答待ち*/)))
-											,/*ナベさんへの質問回答待ち*/);
+		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
+		holidayWorkList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(eachTime.getStatutory())),StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
+		holidayWorkList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(eachTime.getExcess())),StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
+		holidayWorkList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(eachTime.getPublicholiday())),StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		return new HolidayMidnightWork(holidayWorkList);
 	}
 	
 	/**
@@ -145,7 +100,7 @@ public class HolidayWorkTimeOfDaily {
 	public int calcTotalFrameTime() {
 		int totalTime = 0;
 		for(HolidayWorkFrameTime holidayWorkFrameTime : holidayWorkFrameTime) {
-			totalTime += holidayWorkFrameTime.getHolidayWorkTime().getTime().valueAsMinutes();
+			totalTime += holidayWorkFrameTime.getHolidayWorkTime().get().getTime().valueAsMinutes();
 		}
 		return totalTime;
 	}

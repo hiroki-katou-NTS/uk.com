@@ -2,24 +2,21 @@ package nts.uk.ctx.at.record.dom.daily;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -29,13 +26,26 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Value
 public class OverTimeWorkOfDaily {
-	
+	//残業枠時間帯
 	private List<OverTimeWorkFrameTimeSheet> overTimeWorkFrameTimeSheet;
-	
+	//残業枠時間
 	private List<OverTimeWorkFrameTime> overTimeWorkFrameTime;
+	//法定外深夜時間
+	private Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime;
+	//変形法定内残業
+	private AttendanceTime irregularWithinPrescribedOverTimeWork = new AttendanceTime(0);
+	//フレックス時間
+	private FlexTime flexTime = new FlexTime(new AttendanceTimeOfExistMinus(0),new AttendanceTime(0)); 
+	//残業拘束時間
+	private AttendanceTime overTimeWorkSpentAtWork = new AttendanceTime(0);
 	
-	private OverTimeWorkOfDaily(List<OverTimeWorkFrameTimeSheet> frameTimeList) {
-		this.overTimeWorkFrameTimeSheet = frameTimeList;
+	
+	
+	public OverTimeWorkOfDaily(List<OverTimeWorkFrameTimeSheet> frameTimeSheetList, List<OverTimeWorkFrameTime> frameTimeList
+							   ,Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime) {
+		this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
+		this.overTimeWorkFrameTime = frameTimeList;
+		this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
 	}
 	
 	/**
@@ -102,12 +112,12 @@ public class OverTimeWorkOfDaily {
 	 * 残業時間が含んでいる深夜時間の算出
 	 * @return 日別実績の深夜時間帯クラス
 	 */
-	public ExcessOfStatutoryMidNightTime calcMidNightTimeIncludeOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
+	public ExcessOverTimeWorkMidNightTime calcMidNightTimeIncludeOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
 		int totalTime = 0;
 		for(OverTimeWorkFrameTimeSheet frameTime : overTimeWorkFrameTimeSheet) {
 			/*↓分岐の条件が明確になったら記述*/
 			AutoCalcSet setting;
-			if(frameTime.getWithinStatutoryAtr().isWithinStatutory()) {
+			if(frameTime.getWithinStatutoryAtr().isStatutory()) {
 				setting = autoCalcSet.getLegalOvertimeHours();
 			}
 			else if(frameTime.isGoEarly()) {
@@ -118,7 +128,7 @@ public class OverTimeWorkOfDaily {
 			}
 			totalTime += frameTime.calcMidNight(setting.getCalculationClassification());
 		}
-		return new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime)));
+		return new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime)));
 	}
 	
 	/**
