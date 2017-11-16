@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Getter
 @AllArgsConstructor
-public class JobTitleImport {
+public class JobTitleValueImport {
 
 	/** The company id. */
 	private String companyId;
@@ -29,7 +29,7 @@ public class JobTitleImport {
 	/** The end date. */
 	private GeneralDate endDate;
 	
-	public boolean isGreaterThan(JobTitleImport compared) {
+	public boolean isGreaterThan(JobTitleValueImport compared) {
 		return this.getSequenceCode().compareTo(compared.getSequenceCode()) > 0;
 	}
 
