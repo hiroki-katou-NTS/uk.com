@@ -73,7 +73,10 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 				c.goOutTimeBeginDisFlg, 
 				c.timeCalUseAtr, 
 				c.timeInputUseAtr,
-				c.requiredInstructionFlg);
+				c.requiredInstructionFlg,
+				c.instructionAtr,
+				c.instructionMemo,
+				c.instructionUseAtr);
 	}
 
 }

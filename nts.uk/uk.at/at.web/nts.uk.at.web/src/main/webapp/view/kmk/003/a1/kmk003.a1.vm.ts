@@ -37,10 +37,12 @@ module a1 {
         oneDay: KnockoutObservable<number>;
         morning: KnockoutObservable<number>;
         afternoon: KnockoutObservable<number>;
+
+        data: KnockoutObservable<any>;
         /**
         * Constructor.
         */
-        constructor(data: any, screenMode: string, settingMethod: string,workTimeCode: string) {
+        constructor(data: any, screenMode: any, settingMethod: string, workTimeCode: string) {
             let self = this;
 
             //day start Time
@@ -92,9 +94,40 @@ module a1 {
             self.oneDay = ko.observable(0);
             self.morning = ko.observable(0);
             self.afternoon = ko.observable(0);
+
+            self.data = ko.observable(data());
+            screenMode.subscribe(function(val: any) {
+                var oldData = data();
+                oldData.var2 = "changeValue";
+                data(oldData);
+            });
         }
 
-
+        //bind data to screen items
+        public bindDataToScreen(data: any) {
+            let self = this;
+            self.dayStartTime(data().startDateClock);
+            self.oneDayRangeTime(data().rangeTimeDay);
+            self.nightWorkShift(data().nightShift);
+//            self.beforeUpdateWorkTime();//diff time
+//            self.afterUpdateWorkTime();//diff time
+            let timezone1 = data().prescribedTimezoneSetting.timezone[0];
+            let timezone2 = data().prescribedTimezoneSetting.timezone[1];
+            
+            self.firstFixedStartTime(timezone1.start.inDayTimeWithFormat);
+            self.firstFixedEndTime(timezone1.end.inDayTimeWithFormat);
+            self.secondFixedStartTime(timezone2.start.inDayTimeWithFormat);
+            self.secondFixedEndTime(timezone2.end.inDayTimeWithFormat);
+            self.useCoreTime();
+            self.coreTimeStart();
+            self.coreTimeEnd();
+            self.leastWorkTime();
+            self.morningEndTime();
+            self.afternoonStartTime();
+            self.oneDay();
+            self.morning();
+            self.afternoon();
+        }
 
     }
     export class Item {
@@ -118,35 +151,33 @@ module a1 {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/a1/index.xhtml').serialize();
-
-            //get data
-            let input = valueAccessor();
-            let data = input.data;
-            let screenMode = ko.unwrap(input.screenMode);
-            let settingMethod = ko.unwrap(input.settingMethod);
-            let workTimeCode = input.workTimeCode;
-            
-            var screenModel = new ScreenModel(data, screenMode, settingMethod,workTimeCode);
-            $(element).load(webserviceLocator, function() {
-                ko.cleanNode($(element)[0]);
-                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-            });
         }
-        
-        private getData()
-        {
-        let self =this;
-            service.findWorkTimeSetByCode()    
+
+        private getData() {
+            let self = this;
+            //            service.findWorkTimeSetByCode()
         }
 
         /**
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var webserviceLocator = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
+                .mergeRelativePath('/view/kmk/003/a1/index.xhtml').serialize();
+            //get data
+            let input = valueAccessor();
+            let data = input.data;
+            let screenMode = input.screenMode;
+            let settingMethod = ko.unwrap(input.settingMethod);
+            let workTimeCode = input.workTimeCode;
 
+            let screenModel = new ScreenModel(data, screenMode, settingMethod, workTimeCode);
+            $(element).load(webserviceLocator, function() {
+                ko.cleanNode($(element)[0]);
+                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                screenModel.bindDataToScreen(data);
+            });
         }
 
     }

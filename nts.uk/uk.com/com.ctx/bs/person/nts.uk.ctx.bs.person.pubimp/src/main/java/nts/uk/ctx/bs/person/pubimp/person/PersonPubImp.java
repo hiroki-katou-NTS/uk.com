@@ -40,20 +40,31 @@ public class PersonPubImp implements PersonPub {
 				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.bs.person.pub.person.PersonPub#findById(java.lang.String)
+	 * 
+	 * @Override public PersonInfoExport findById(String personId) { Person person =
+	 * this.personRepository.getByPersonId(personId).get(); PersonInfoExport
+	 * personInfo = PersonInfoExport.builder() .personId(person.getPersonId())
+	 * .personName(person.getPersonNameGroup().getPersonName().v())
+	 * .birthDay(person.getBirthDate()) .pMailAddr(new
+	 * MailAddress(person.getMailAddress().v())) .build();
+	 * 
+	 * return personInfo; }
 	 */
+
 	@Override
-	public PersonInfoExport findById(String personId) {
-		Person person = this.personRepository.getByPersonId(personId).get();
-		PersonInfoExport personInfo = PersonInfoExport.builder()
-				.personId(person.getPersonId())
-				.personName(person.getPersonNameGroup().getPersonName().v())
-				.birthDay(person.getBirthDate())
-				.pMailAddr(new MailAddress(person.getMailAddress().v()))
-				.build();
-				
-		return personInfo;
+	public List<PersonInfoExport> findByListId(List<String> personIds) {
+		return personRepository.getPersonByPersonIds(personIds).stream()
+				.map(item -> new PersonInfoExport(
+						item.getPersonId(),
+						item.getPersonNameGroup().getPersonName() == null ? "" : item.getPersonNameGroup().getPersonName().v(),
+						item.getBirthDate(), 
+						item.getMailAddress() == null ? "" : item.getMailAddress().v(),
+						item.getMailAddress() == null ? 0 : item.getGender().value))
+				.collect(Collectors.toList());
 	}
 
 }

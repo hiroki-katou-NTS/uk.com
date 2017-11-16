@@ -70,7 +70,7 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * 乖離定型理由
 	 */
-	private String divergenceReasonID;
+	private String divergenceReason;
 	/**
 	 * フレックス超過時間
 	 */
@@ -89,7 +89,7 @@ public class AppOverTime extends AggregateRoot{
 						int workClockTo1,
 						int workClockFrom2,
 						int workClockTo2,
-						String divergenceReasonID,
+						String divergenceReason,
 						int flexExessTime,
 						int overTimeShiftNight){
 		this.companyID = companyID;
@@ -101,7 +101,7 @@ public class AppOverTime extends AggregateRoot{
 		this.workClockTo1 = workClockTo1;
 		this.workClockFrom2 = workClockFrom2;
 		this.workClockTo2 = workClockTo2;
-		this.divergenceReasonID = divergenceReasonID;
+		this.divergenceReason = divergenceReason;
 		this.flexExessTime = flexExessTime;
 		this.overTimeShiftNight = overTimeShiftNight;
 	}
@@ -115,7 +115,7 @@ public class AppOverTime extends AggregateRoot{
 														int workClockTo1,
 														int workClockFrom2,
 														int workClockTo2,
-														String divergenceReasonID,
+														String divergenceReason,
 														int flexExessTime,
 														int overTimeShiftNight ){
 		return new AppOverTime(companyID,
@@ -127,7 +127,7 @@ public class AppOverTime extends AggregateRoot{
 								workClockTo1,
 								workClockFrom2,
 								workClockTo2, 
-								divergenceReasonID, 
+								divergenceReason, 
 								flexExessTime,
 								overTimeShiftNight);
 		

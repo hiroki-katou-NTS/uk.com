@@ -51,7 +51,7 @@ module nts.uk.at.view.kmk003.a {
             selectedTab: KnockoutObservable<string>;
 
             //data
-            data: any;
+            data: KnockoutObservable<any>;
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
@@ -147,7 +147,7 @@ module nts.uk.at.view.kmk003.a {
                 self.selectedTab = ko.observable('tab-1');
 
                 //data get from service
-                self.data = { test: "abc" };
+                self.data = ko.observable();
             }
 
             /**
@@ -157,12 +157,18 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                //                service.
+                service.findWorkTimeSetByCode("AAC").done(function(data: any) {
+                    self.data(data);
+                });
                 // set ntsFixedTable style
                 dfd.resolve();
                 return dfd.promise();
             }
 
+            private test() {
+                let self = this;
+                self.tabMode('2');
+            }
         }
 
         export class ItemWorkForm {

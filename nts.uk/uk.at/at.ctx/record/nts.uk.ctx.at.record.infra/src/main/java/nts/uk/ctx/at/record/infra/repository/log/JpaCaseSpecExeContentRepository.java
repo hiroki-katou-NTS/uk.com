@@ -28,6 +28,7 @@ public class JpaCaseSpecExeContentRepository extends JpaRepository implements Ca
 
 	@Override
 	public List<CaseSpecExeContent> getAllCaseSpecExeContent() {
+		List<KrcstCaseSpecExeContent> entities = this.queryProxy().query(SELECT_FROM_CASE,KrcstCaseSpecExeContent.class).getList();
 		List<CaseSpecExeContent> data = this.queryProxy().query(SELECT_FROM_CASE,KrcstCaseSpecExeContent.class)
 				.getList(c->c.toDomain());
 		return data;
