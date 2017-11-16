@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.employee;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 @Getter
 	
@@ -11,11 +12,12 @@ public class EmployeeCommand {
 	private String companyId;
 
 	/** The employeeId */
+	@PeregEmployeeId
 	private String sId;
 
 	/** The HiringType */
 	@PeregItem("")
-	private int hiringType;
+	private String hiringType;
 
 	/** The RetireDate */
 	@PeregItem("")
