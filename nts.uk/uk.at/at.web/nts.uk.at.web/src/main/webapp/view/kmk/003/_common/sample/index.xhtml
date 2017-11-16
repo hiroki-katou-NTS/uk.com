@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kmk/003/_common/fixtable/fixtable.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="kmk003.sample.start.js" />
+			<com:scriptfile path="kmk003.sample.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area"></div>
+			<div id="contents-area">
+				<div id="nts-fix-table"></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
