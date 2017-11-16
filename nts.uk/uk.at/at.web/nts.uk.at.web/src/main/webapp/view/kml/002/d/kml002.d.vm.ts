@@ -127,25 +127,27 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 
                 var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             
-                if(data.formPeople.lstPeopleFunc.length > 0) {
-                    let dataItems = [];
-                    
-                    _.forEach(data.formPeople.lstPeopleFunc, function(item){
-                        let curItem = _.find(self.items(), function(o) { return o.code == item.externalBudgetCd; });
+                if(data.formPeople != null) {
+                    if(data.formPeople.lstPeopleFunc.length > 0) {
+                        let dataItems = [];
                         
-                        let data = {
-                            id: item.dispOrder,
-                            code: item.externalBudgetCd,
-                            operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
-                            name: curItem.name
-                        }
-        
-                        dataItems.push(data);
-                    });
-                    
-                    self.rightItems.removeAll();
-                    var sortedItems = _.sortBy(dataItems, [function(o) { return o.id; }]);
-                    self.rightItems(sortedItems);
+                        _.forEach(data.formPeople.lstPeopleFunc, function(item){
+                            let curItem = _.find(self.items(), function(o) { return o.code == item.externalBudgetCd; });
+                            
+                            let data = {
+                                id: item.dispOrder,
+                                code: item.externalBudgetCd,
+                                operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
+                                name: curItem.name
+                            }
+            
+                            dataItems.push(data);
+                        });
+                        
+                        self.rightItems.removeAll();
+                        var sortedItems = _.sortBy(dataItems, [function(o) { return o.id; }]);
+                        self.rightItems(sortedItems);
+                    }
                 }
                     
                 dfd.resolve();

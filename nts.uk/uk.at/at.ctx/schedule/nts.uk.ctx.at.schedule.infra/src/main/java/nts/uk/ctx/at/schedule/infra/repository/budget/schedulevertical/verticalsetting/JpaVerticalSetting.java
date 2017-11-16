@@ -307,8 +307,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	private static FormPeopleFunc toDomainFormPeopleFunc(KscmtFormPeopleFunc entity) {
 		FormPeopleFunc domain = FormPeopleFunc.createFromJavaType(entity.kscmtFormPeopleFuncPK.companyId,
 				entity.kscmtFormPeopleFuncPK.verticalCalCd, entity.kscmtFormPeopleFuncPK.verticalCalItemId,
-				entity.kscmtFormPeopleFuncPK.externalBudgetCd, entity.categoryAtr, entity.operatorAtr,
-				entity.dispOrder);
+				entity.kscmtFormPeopleFuncPK.dispOrder, entity.externalBudgetCd, entity.categoryAtr, entity.operatorAtr);
 		return domain;
 	}
 
@@ -441,8 +440,8 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	public static KscmtFormPeopleFunc toEntityFormPeopleFunc(FormPeopleFunc domain) {
 		val entity = new KscmtFormPeopleFunc();
 		entity.kscmtFormPeopleFuncPK = new KscmtFormPeopleFuncPK(domain.getCompanyId(), domain.getVerticalCalCd(),
-				domain.getVerticalCalItemId(), domain.getExternalBudgetCd());
-		entity.dispOrder = domain.getDispOrder();
+				domain.getVerticalCalItemId(), domain.getDispOrder());
+		entity.externalBudgetCd = domain.getExternalBudgetCd();
 		entity.categoryAtr = domain.getCategoryAtr().value;
 		entity.operatorAtr = domain.getOperatorAtr().value;
 		return entity;
@@ -616,7 +615,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
-					x.getCumulativeAtr().value, x.getAttributes().value, x.getRounding().value, kscstVerticalItemOrder,
+					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), kscstVerticalItemOrder,
 					built, time, entity, amount);
 		}).collect(Collectors.toList());
 
@@ -723,7 +722,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
-					x.getCumulativeAtr().value, x.getAttributes().value, x.getRounding().value, kscstVerticalItemOrder,
+					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), kscstVerticalItemOrder,
 					built, time, entity, amount);
 		}).collect(Collectors.toList());
 
