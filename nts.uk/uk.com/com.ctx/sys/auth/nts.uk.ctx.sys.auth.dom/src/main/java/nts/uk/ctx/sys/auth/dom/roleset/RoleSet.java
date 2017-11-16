@@ -4,17 +4,24 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
-import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 
 /**
  * ロールセット - Class RoleSet.
@@ -37,6 +44,9 @@ public class RoleSet extends AggregateRoot {
 	
 	@Inject
 	private RoleSetGrantedJobTitleRepository roleSetGrantedJobTitleRepository;
+	
+	@Inject
+	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
 	
 	/** ロールセットコード. */
 	private RoleSetCode roleSetCd;
@@ -68,6 +78,8 @@ public class RoleSet extends AggregateRoot {
 	/** ロールID: 給与ロール */
 	private Optional<Role> salaryRole;
 
+	/** list of Web menu link */
+	List<RoleSetAndWebMenu> roleSetAndWebMenus;
 	/**
 	 * Instantiates a new role set.
 	 *
@@ -103,8 +115,60 @@ public class RoleSet extends AggregateRoot {
 		this.personInfRole 		= getRoleById(personInfRoleCd);
 		this.employmentRole 	= getRoleById(employmentRoleCd);
 		this.salaryRole 		= getRoleById(salaryRoleCd);
+		this.buildRoleSetAndWebMenu();
 	}
 	
+	/**
+	 * Initial a new RoleSet with list of WebMenu code.
+	 * @param roleSetCd
+	 * @param companyId
+	 * @param roleSetName
+	 * @param approvalAuthority
+	 * @param officeHelperRoleCd
+	 * @param myNumberRoleCd
+	 * @param hRRoleCd
+	 * @param personInfRoleCd
+	 * @param employmentRoleCd
+	 * @param salaryRoleCd
+	 * @param webMenuCds
+	 */
+	public RoleSet(String roleSetCd
+			, String companyId
+			, String roleSetName
+			, ApprovalAuthority approvalAuthority
+			, String officeHelperRoleCd
+			, String myNumberRoleCd
+			, String hRRoleCd
+			, String personInfRoleCd
+			, String employmentRoleCd
+			, String salaryRoleCd
+			, List<String> webMenuCds) {
+		this.roleSetCd 			= new RoleSetCode(roleSetCd);
+		this.companyId 			= companyId;
+		this.roleSetName 		= new RoleSetName(roleSetName);
+		this.approvalAuthority 	= approvalAuthority;
+		this.officeHelperRole 	= getRoleById(officeHelperRoleCd);
+		this.myNumberRole 		= getRoleById(myNumberRoleCd);
+		this.hRRole 				= getRoleById(hRRoleCd);
+		this.personInfRole 		= getRoleById(personInfRoleCd);
+		this.employmentRole 	= getRoleById(employmentRoleCd);
+		this.salaryRole 		= getRoleById(salaryRoleCd);
+		//build list of RoleSetAndWebMenu from list of WebMenu code
+		if (CollectionUtil.isEmpty(webMenuCds)) {
+			this.roleSetAndWebMenus = webMenuCds.stream()
+				.map(webMenuCd -> new RoleSetAndWebMenu(companyId, webMenuCd, roleSetCd)
+				).collect(Collectors.toList());
+		} else {
+			this.roleSetAndWebMenus = new ArrayList<>();
+		}
+	}
+	
+	/**
+	 * Get list of Web menu
+	 */
+	private void buildRoleSetAndWebMenu() {
+		this.roleSetAndWebMenus = roleSetAndWebMenuAdapter.findAllWebMenuByRoleSetCd(this.roleSetCd.v());
+	}
 	/**
 	 * If has approval Authority right.
 	 *
@@ -143,62 +207,18 @@ public class RoleSet extends AggregateRoot {
 	 * @return
 	 */
 	private Optional<Role> getRoleById(String roleId) {
-		//TODO - > why is it list?
-		//return StringUtil.isNullOrEmpty(officeHelperRole, true) ? null : roleRepository.findById(roleId).get(0);
-		return null;
+		return StringUtils.isNoneEmpty(roleId) ? null : roleRepository.findByRoleId(roleId);
 	}
 
 	public static String getRoleTypeCd(Optional<Role> opRole) {
 		return opRole.isPresent() ? opRole.get().getRoleId() : null;
 	}
-	
-	
-	@Override
-	public void validate() {
-		super.validate();
-		//check duplicate RoleSetCd - ロールセットコードが重複してはならない
-		if (isDublicateRoleSetCd()) {
-			BundledBusinessException bbe = BundledBusinessException.newInstance();
-			bbe.addMessage("Msg_3");
-			bbe.throwExceptions();
-		}
-		
-		//throw error if there are not any role 
-		if (!hasRole()) {
-			BundledBusinessException bbe = BundledBusinessException.newInstance();
-			bbe.addMessage("Msg_???");
-			bbe.throwExceptions();
-		}
-
-	}
-		
-	/**
-	 * check if there are existed Role Set Code
-	 * @return
-	 */
-	private boolean isDublicateRoleSetCd() {
-		return roleSetRepository.isDuplicateRoleSetCd(this.roleSetCd.v(), this.companyId);
-	}
-	
-	/**
-	 * Validate for update
-	 */
-	public void validateForUpdate() {
-		super.validate();
-	
-		//throw error if there are not any role 
-		if (!hasRole()) {
-			BundledBusinessException bbe = BundledBusinessException.newInstance();
-			bbe.addMessage("Msg_???");
-			bbe.throwExceptions();
-		}
-
-	}
+			
 	/**
 	 * Check are there any role ?
 	 * @return
 	 */
-	private boolean hasRole() {
+	public boolean hasAnyRole() {
 		return this.employmentRole.isPresent()
 				|| this.officeHelperRole.isPresent()
 				|| this.myNumberRole.isPresent()
@@ -209,36 +229,12 @@ public class RoleSet extends AggregateRoot {
 
 	}
 	
-	/**
-	 * Validate constrains before perform deleting
-	 */
-	public void validateForDelete() {
-		// ロールセット個人別付与で使用されている場合は削除できない
-		if (isGrantedForPerson()) {
-			BundledBusinessException bbe = BundledBusinessException.newInstance();
-			bbe.addMessage("Msg_???");
-			bbe.throwExceptions();
-		}
-		// ロールセット職位別付与で使用されている場合は削除できない
-		if (isGrantedForPosition()) {
-			BundledBusinessException bbe = BundledBusinessException.newInstance();
-			bbe.addMessage("Msg_???");
-			bbe.throwExceptions();
-		}
-
-		// ドメインモデル「既定のロールセット」を取得する
-		if (isDefault()) {
-			BundledBusinessException bbe = BundledBusinessException.newInstance();
-			bbe.addMessage("Msg_585");
-			bbe.throwExceptions();
-		}		
-	}
 	
 	/**
 	 * Check setting default of Role set
 	 * @return
 	 */
-	private boolean isDefault() {
+	public boolean isDefault() {
 		return defaultRoleSetRepository.find(companyId, roleSetCd.v()).isPresent();
 	}
 	
@@ -246,7 +242,7 @@ public class RoleSet extends AggregateRoot {
 	 * Check if this Role Set is granted for member
 	 * @return
 	 */
-	private boolean isGrantedForPerson() {
+	public boolean isGrantedForPerson() {
 		/**check from CAS014 */
 		return roleSetGrantedPersonRepository.checkRoleSetCdExist(this.roleSetCd.v(), this.companyId);
 	}
@@ -255,7 +251,7 @@ public class RoleSet extends AggregateRoot {
 	 * Check if this Role Set is granted for Position (manager)
 	 * @return
 	 */
-	private boolean isGrantedForPosition() {
+	public boolean isGrantedForPosition() {
 		/** check from CAS014 */
 		return roleSetGrantedJobTitleRepository.checkRoleSetCdExist(this.roleSetCd.v(), this.companyId);
 	}

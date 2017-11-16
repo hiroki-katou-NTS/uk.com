@@ -9,8 +9,8 @@ import java.util.List;
 public interface RoleSetAndWebMenuAdapter {
 
 	/**
-	 * Get all Web Menu that link by RoleSet
-	 * companyId is companyId of login user
+	 * Get all Web Menu that link by RoleSet. 
+	 * CompanyId is companyId of login user
 	 * @return
 	 */
 	// RequestList #???
@@ -30,8 +30,8 @@ public interface RoleSetAndWebMenuAdapter {
 
 	/**
 	 * delete by roleSetCd 
-	 * @param companyId
+	 * @param companyId: CompanyId is companyId of login user
 	 * @param roleSetCd
 	 */
-	void deleteListOfRoleSetAndWebMenu(String roleSetCd, String companyId);
+	void deleteAllRoleSetAndWebMenu(String roleSetCd);
 }

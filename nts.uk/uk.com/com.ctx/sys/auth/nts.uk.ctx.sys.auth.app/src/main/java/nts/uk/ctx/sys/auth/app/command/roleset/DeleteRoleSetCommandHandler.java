@@ -10,46 +10,30 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @javax.transaction.Transactional
-public class DeleteRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCommand, String> {
+public class DeleteRoleSetCommandHandler extends CommandHandlerWithResult<DeleteRoleSetCommand, String> {
 
 	@Inject
-	private RoleSetRepository roleSetRepository;
+	private RoleSetService roleSetService;
 
 	@Inject
 	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
 	
 	@Override
-	protected String handle(CommandHandlerContext<RoleSetCommand> context) {
-		RoleSetCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()
-					, companyId
-					, command.getRoleSetName()
-					, command.isApprovalAuthority() ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
-					, command.getOfficeHelperRoleCd()
-					, command.getMyNumberRoleCd()
-					, command.getHRRoleCd()
-					, command.getPersonInfRoleCd()
-					, command.getEmploymentRoleCd()
-					, command.getSalaryRoleCd());
-	
-			// Confirm preconditions - 事前条件を確認する - ドメインモデル「既定のロールセット」を取得する
-			roleSetDom.validateForDelete();
+	protected String handle(CommandHandlerContext<DeleteRoleSetCommand> context) {
+		DeleteRoleSetCommand command = context.getCommand();
 
-			// remove web menu link - ドメインモデル「ロールセット別紐付け」を削除する
-			roleSetAndWebMenuAdapter.deleteListOfRoleSetAndWebMenu(command.getRoleSetCd(), companyId);
-
-			// remove Role Set from DB - ドメインモデル「ロールセット」を削除する
-			this.roleSetRepository.delete(command.getRoleSetCd(), companyId);
-			
-			return command.getRoleSetCd();
-		}
-		return null;
+		// remove Role Set from DB - ドメインモデル「ロールセット」を削除する
+		this.roleSetService.deleteRoleSet(command.getRoleSetCd());
+					
+		// remove web menu link - ドメインモデル「ロールセット別紐付け」を削除する
+		roleSetAndWebMenuAdapter.deleteAllRoleSetAndWebMenu(command.getRoleSetCd());
+		
+		return command.getRoleSetCd();
 	}
 }

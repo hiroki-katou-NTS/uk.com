@@ -5,7 +5,6 @@
 package nts.uk.ctx.sys.auth.ac.roleset.webmenu.webmenulinking;
 
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetAndWebMenuPub;
-import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetWebMenuPubDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -63,8 +61,12 @@ public class RoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapter {
 	}
 
 	@Override
-	public void deleteListOfRoleSetAndWebMenu(String roleSetCd, String companyId) {
-		this.roleSetAndWebMenuPub.deleteRoleSetAndWebMenuByRoleSetCdAndCompanyId(roleSetCd, companyId);
+	public void deleteAllRoleSetAndWebMenu(String roleSetCd) {
+		//Get company Id
+		String companyId = AppContexts.user().companyId();
+		if (!StringUtils.isNoneEmpty(companyId)) {
+			this.roleSetAndWebMenuPub.deleteRoleSetAndWebMenuByRoleSetCdAndCompanyId(roleSetCd, companyId);
+		}
 	}
 	
 }

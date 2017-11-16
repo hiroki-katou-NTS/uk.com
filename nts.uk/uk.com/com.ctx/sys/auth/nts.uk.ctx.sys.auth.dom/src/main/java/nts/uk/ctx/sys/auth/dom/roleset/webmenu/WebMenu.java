@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.auth.dom.roleset.webmenu;
 
-import lombok.Data;
-@Data
+import lombok.Value;
+@Value
 public class WebMenu {
 
 	/** Webメニューコード */
@@ -16,19 +16,10 @@ public class WebMenu {
 	/** 既定メニュー */
 	private boolean defaultMenu;
 
-
-	/**
-	 * Transfer data from Domain into Dto to response to client
-	 * @param roleSet
-	 * @return
-	 */
-	/*	public static WebMenu build(WebMenuPubDto webMenuPubDto) {
-		WebMenu result = new WebMenu();
-		result.webMenuCd(webMenuPubDto.webMenuCd);
-		result.webMenuName(webMenuPubDto.webMenuName);
-		result.companyId(webMenuPubDto.companyId);
-		result.defaultMenu(webMenuPubDto.defaultMenu);
-		return result;
+	public WebMenu(String webMenuCd, String webMenuName, String companyId, boolean defaultMenu) {
+		this.webMenuCd = webMenuCd;
+		this.webMenuName = webMenuName;
+		this.companyId = companyId;
+		this.defaultMenu = defaultMenu;
 	}
-	*/
 }

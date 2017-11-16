@@ -22,6 +22,8 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSet;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSetPK;
 
 /**
  * The Class JpaRoleRepository.
@@ -133,6 +135,13 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 			return entities.stream().map(x ->new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
 		}
 		return result;
+	}
+
+	@Override
+	public Optional<Role> findByRoleId(String roleId) {
+		String query ="SELECT e FROM SacmtRole e WHERE e.Id = :roleId ";
+		return this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("roleId", roleId).getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
 	}
 
 }
