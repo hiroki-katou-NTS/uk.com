@@ -9,14 +9,18 @@ import lombok.AllArgsConstructor;
  * @author hungnm
  *
  */
+//予実比較による絞り込み
 @AllArgsConstructor
 public enum FilterByCompare {
 	
-	DO_NOT_COMPARE(0, "ENUM_DO_NOT_COMPARE"),
+	//予定と実績の比較をしない
+	DO_NOT_COMPARE(0, "Enum_FilterByCompare_NotCompare"),
 	
-	EXTRACT_SAME(1, "ENUM_EXTRACT_SAME"),
+	//予定と実績が同じものを抽出する
+	EXTRACT_SAME(1, "Enum_FilterByCompare_Extract_Same"),
 	
-	EXTRACT_DIFFERENT(2, "ENUM_EXTRACT_DIFFERENT");
+	//予定と実績が異なるものを抽出する
+	EXTRACT_DIFFERENT(2, "Enum_FilterByCompare_Extract_Different");
 
 	public final int value;
 

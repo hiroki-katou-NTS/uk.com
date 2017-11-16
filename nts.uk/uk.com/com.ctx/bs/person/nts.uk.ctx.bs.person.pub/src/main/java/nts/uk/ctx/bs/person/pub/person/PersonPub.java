@@ -14,17 +14,16 @@ public interface PersonPub {
 	/**
 	 * Find by person ids.
 	 *
-	 * @param personIds the person ids
+	 * @param personIds
+	 *            the person ids
 	 * @return the list
 	 */
 	List<PubPersonDto> findByPersonIds(List<String> personIds);
-	
+
 	/**
-	 * Find by id.
-	 *
-	 * @param personId the person id
-	 * @return the person info export
+	 *  RequestList #86
+	 * @param personIds
+	 * @return
 	 */
-	// RequestList #86
-	PersonInfoExport findById(String personId);
+	List<PersonInfoExport> findByListId(List<String> personIds);
 }
