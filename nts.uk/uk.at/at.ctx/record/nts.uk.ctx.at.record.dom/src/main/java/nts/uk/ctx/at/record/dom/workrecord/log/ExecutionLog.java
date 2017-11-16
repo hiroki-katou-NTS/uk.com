@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;

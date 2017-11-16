@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -37,16 +40,20 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
     
     @Column(name = "APPLICATION_TIME")
     private int applicationTime;
-    
-    @Column(name = "PRE_APPLICATION_TIME")
-    private int preApplicationTime;
-    
-    @Column(name = "INDICATED_TIME")
-    private int indicatedTime;
-    
-    @Column(name = "CALCULATION_TIME")
-    private int calculationTime;
 
+    @ManyToOne
+	@JoinColumns({
+        @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+        @JoinColumn(name="APP_ID", referencedColumnName="APP_ID", insertable = false, updatable = false)
+    })
+	public KrqdtAppOvertime appOvertime;
+    
+    public KrqdtOvertimeInput(KrqdtOvertimeInputPK pk , int startTime, int endTime, int appTime){
+    	this.krqdtOvertimeInputPK = pk;
+    	this.startTime = startTime;
+    	this.endTime = endTime;
+    	this.applicationTime = appTime;
+    }
 	@Override
 	protected Object getKey() {
 		return krqdtOvertimeInputPK;
