@@ -267,28 +267,28 @@ module nts.uk.at.view.kdw001.b {
                                 self.dScreenmodel.dailyCreated(dailyCreatedText += '(' + getText('KDW001_55') + ')');
                                 if (self.enableAll()) {
                                     if (self.calDivisionCheck()) {
-                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_58'));
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_58'));
                                     }
                                     if (self.dateDivisionCheck()) {
-                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_60'));
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_60'));
                                     }
                                     if (self.reflectEmbossingCheck()) {
-                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_62'));
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_62'));
                                     }
                                     if (self.masterInforCheck()) {
-                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_59'));
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_59'));
                                     }
                                     if (self.childCareCheck()) {
-                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_61'));
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_61'));
                                     }
                                     if (self.closedResetCheck()) {
-                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_63'));
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_63'));
                                     }
                                     if (self.workingTimeCheck()) {
-                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_71'));
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_71'));
                                     }
                                     if (self.transferTimeCheck()) {
-                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_72'));
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_72'));
                                     }
                                 }
                             }
@@ -370,28 +370,28 @@ module nts.uk.at.view.kdw001.b {
                             self.dScreenmodel.dailyCreated(dailyCreatedText += '(' + getText('KDW001_55') + ')');
                             if (self.enableAll()) {
                                 if (self.calDivisionCheck()) {
-                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_58'));
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+ '→' + getText('KDW001_58'));
                                 }
                                 if (self.dateDivisionCheck()) {
-                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_60'));
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_60'));
                                 }
                                 if (self.reflectEmbossingCheck()) {
-                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_62'));
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_62'));
                                 }
                                 if (self.masterInforCheck()) {
-                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_59'));
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_59'));
                                 }
                                 if (self.childCareCheck()) {
-                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_61'));
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_61'));
                                 }
                                 if (self.closedResetCheck()) {
-                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_63'));
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_63'));
                                 }
                                 if (self.workingTimeCheck()) {
-                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_71'));
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_71'));
                                 }
                                 if (self.transferTimeCheck()) {
-                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '→' + getText('KDW001_72'));
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_72'));
                                 }
                             }
                         }
