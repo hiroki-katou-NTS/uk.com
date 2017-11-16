@@ -2,7 +2,9 @@ package nts.uk.ctx.bs.employee.app.command.workplace.affiliate;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class AffWorkplaceHistoryCommand {
@@ -16,10 +18,10 @@ public class AffWorkplaceHistoryCommand {
 	private GeneralDate endDate;
 
 	/** 社員ID */
-	@PeregItem("")
+	@PeregEmployeeId
 	private String employeeId;
 
 	/** 職場ID */
-	@PeregItem("")
+	@PeregRecordId
 	private String workplaceId;
 }
