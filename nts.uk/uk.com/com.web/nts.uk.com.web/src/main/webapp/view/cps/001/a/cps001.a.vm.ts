@@ -447,9 +447,13 @@ module cps001.a.vm {
 
         age: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
-            birthDay = self.birthDate();
-            
-            return moment.duration(moment().diff(moment(birthDay))).years() + '歳';
+                birthDay = self.birthDate(),
+                duration = moment.duration(moment().diff(moment(birthDay))),
+                years = duration.years(),
+                months = duration.months(),
+                days = duration.days();
+
+            return (years + (months > 0 || days > 0 ? 1 : 0)) + '歳';
         });
     }
 
