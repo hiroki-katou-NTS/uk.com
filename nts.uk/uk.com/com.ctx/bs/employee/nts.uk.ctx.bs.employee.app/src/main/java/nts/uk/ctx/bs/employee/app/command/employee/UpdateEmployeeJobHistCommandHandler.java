@@ -12,7 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
-public class UpdateEmployeeCommandHandler extends CommandHandler<UpdateEmployeeCommand>
+public class UpdateEmployeeJobHistCommandHandler extends CommandHandler<UpdateEmployeeCommand>
 	implements PeregUpdateCommandHandler<UpdateEmployeeCommand>{
 	
 	@Inject
