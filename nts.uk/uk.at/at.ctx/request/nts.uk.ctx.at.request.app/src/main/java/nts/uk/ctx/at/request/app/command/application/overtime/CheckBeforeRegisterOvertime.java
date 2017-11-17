@@ -40,14 +40,13 @@ public class CheckBeforeRegisterOvertime {
 	private IErrorCheckBeforeRegister beforeCheck;
 	@Inject
 	private IFactoryOvertime factoryOvertime;
-	
-	public OvertimeCheckResultDto CheckBeforeRegister(CreateOvertimeCommand command)
-	{
+
+	public OvertimeCheckResultDto CheckBeforeRegister(CreateOvertimeCommand command) {
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
-		
+
 		// Phase list
 		List<AppApprovalPhase> pharseList = getAppApprovalPhaseList(command, companyId, appID);
 		// Create Application
@@ -58,14 +57,16 @@ public class CheckBeforeRegisterOvertime {
 				command.getWorkTypeCode(), command.getSiftTypeCode(), command.getWorkClockFrom1(),
 				command.getWorkClockTo1(), command.getWorkClockFrom2(), command.getWorkClockTo2(),
 				command.getDivergenceReasonContent(), command.getFlexExessTime(), command.getOverTimeShiftNight(),
-				getOverTimeInput(command, companyId, appID));	
-		
+				getOverTimeInput(command, companyId, appID));
+
 		return CheckBeforeRegister(appRoot, overTimeDomain);
 	}
+
 	public OvertimeCheckResultDto CheckBeforeRegister(Application app, AppOverTime overtime) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
-		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0,0,0, false);
+		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false);
+		OvertimeCheckResult res = new OvertimeCheckResult();
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(app);
 		// 登録前エラーチェック
@@ -73,29 +74,35 @@ public class CheckBeforeRegisterOvertime {
 		beforeCheck.calculateButtonCheck(0, app.getCompanyID(), employeeId, 1, ApplicationType.OVER_TIME_APPLICATION,
 				app.getApplicationDate());
 		// 事前申請超過チェック
-		Map<AttendanceID, List<OverTimeInput>> findMap = overtime.getOverTimeInput().stream().collect(groupingBy(OverTimeInput::getAttendanceID));
-		for (Map.Entry<AttendanceID, List<OverTimeInput>> pair : findMap.entrySet()) {
-			OvertimeCheckResult res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(), app.getInputDate(), app.getPrePostAtr(), pair.getKey().value, pair.getValue());
+		Map<AttendanceID, List<OverTimeInput>> findMap = overtime.getOverTimeInput().stream()
+				.collect(groupingBy(OverTimeInput::getAttendanceID));
+		// Only check for [残業時間]
+		//時間①～フレ超過時間　まで　背景色をピンク
+		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceID.NORMALOVERTIME);
+		if (!overtimeInputs.isEmpty()) {
+			res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(),
+					app.getInputDate(), app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
 			if (res.getErrorCode() != 0) {
 				result.setErrorCode(res.getErrorCode());
 				result.setFrameNo(res.getFrameNo());
-				result.setAttendanceId(pair.getKey().value);
+				result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
 				return result;
 			}
 		}
-		//TODO: 実績超過チェック
+		// TODO: 実績超過チェック
 		beforeCheck.OvercountCheck(app.getCompanyID(), app.getApplicationDate(), app.getPrePostAtr());
-		//TODO: ３６協定時間上限チェック（月間）
+		// TODO: ３６協定時間上限チェック（月間）
 		beforeCheck.TimeUpperLimitMonthCheck();
-		//TODO: ３６協定時間上限チェック（年間）
+		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
-		//事前否認チェック
-		OvertimeCheckResult res = beforeCheck.preliminaryDenialCheck(app.getCompanyID(), app.getApplicationDate(), app.getInputDate(), app.getPrePostAtr());
+		// 事前否認チェック
+		res = beforeCheck.preliminaryDenialCheck(app.getCompanyID(), app.getApplicationDate(), app.getInputDate(),
+				app.getPrePostAtr());
 		result.setConfirm(res.isConfirm());
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Convert Phase command list to Approve Phase list
 	 * 
@@ -129,7 +136,7 @@ public class CheckBeforeRegisterOvertime {
 	}
 
 	private List<OverTimeInput> getOverTimeInput(CreateOvertimeCommand command, String Cid, String appId) {
-		List<OverTimeInput> overTimeInputs = new ArrayList<OverTimeInput>();		
+		List<OverTimeInput> overTimeInputs = new ArrayList<OverTimeInput>();
 		/**
 		 * 休出時間 ATTENDANCE_ID = 0
 		 */
@@ -147,11 +154,11 @@ public class CheckBeforeRegisterOvertime {
 		 * 加給時間 ATTENDANCE_ID = 2
 		 */
 		if (null != command.getRestTime()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceAtr.NumberOfTime.value));
+			overTimeInputs
+					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceAtr.NumberOfTime.value));
 		}
 		/**
-		 * 加給時間
-		 * ATTENDANCE_ID = 3
+		 * 加給時間 ATTENDANCE_ID = 3
 		 */
 		if (null != command.getBonusTimes()) {
 			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceAtr.Attribute.value));

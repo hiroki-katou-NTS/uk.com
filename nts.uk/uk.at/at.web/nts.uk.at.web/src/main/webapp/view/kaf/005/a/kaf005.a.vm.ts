@@ -232,8 +232,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         self.registerData(overtime);
                     }
                 } else if (data.errorCode == 1){
-                    //Change background color
-                    self.changeColor( data.attendanceId, data.frameNo);
+                    if(data.frameNo == -1){
+                        for (let i = 0; i < self.overtimeHours().length; i++) {
+                            self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
+                        }
+                    }else{
+                      //Change background color
+                        self.changeColor( data.attendanceId, data.frameNo);
+                    }
+                    
                 }
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
@@ -261,22 +268,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         
         changeColor(attendanceId, frameNo){
-            //休憩時間
+            /*//休憩時間
             if(attendanceId == 0){
                 $('td#restTime_'+attendanceId+'_'+frameNo).css('background', 'pink')
-            }
+            }*/
             // 残業時間
             if(attendanceId == 1){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
             }
-            // 休出時間
+            /*// 休出時間
             if(attendanceId == 2){
                 $('td#breakTimesCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
             }
             //加給時間
             if(attendanceId == 3){
                 $('td#breakTimesCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
-            }
+            }*/
         }
         /**
          * KDL003

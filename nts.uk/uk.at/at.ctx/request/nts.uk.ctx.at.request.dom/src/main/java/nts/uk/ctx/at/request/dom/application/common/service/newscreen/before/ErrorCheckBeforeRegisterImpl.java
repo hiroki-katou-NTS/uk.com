@@ -86,6 +86,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDate inputDate,
 			PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs) {
 		OvertimeCheckResult result = new OvertimeCheckResult();
+		result.setFrameNo(-1);
 		// 社員ID
 		// String EmployeeId = AppContexts.user().employeeId();
 		// チェック条件を確認

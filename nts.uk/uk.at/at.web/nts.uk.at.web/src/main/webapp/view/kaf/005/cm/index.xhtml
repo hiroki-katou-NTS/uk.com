@@ -132,12 +132,12 @@
 				<tbody data-bind="foreach: restTime">
 					<tr>
 						<!--A5_5 休憩時間順序--> 						
-						<td class="header" data-bind="attr: { id: 'restTimeCheck_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
+						<td class="header" data-bind="text: frameName"></td>
 						<!--A5_6 開始時刻--> 						
-						<td data-bind="attr: { id: 'restTimeCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="12"
+						<td><input tabindex="12"
 							data-bind="ntsTimeWithDayEditor: {value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻--> 						
-						<td data-bind="attr: { id: 'restTimeCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="13"
+						<td><input tabindex="13"
 							data-bind="ntsTimeWithDayEditor: {value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -171,14 +171,14 @@
 				<tbody data-bind="foreach: overtimeHours">
 					<tr>
 						<!--A6_7 残業時間名称--> 						
-						<td class="header" data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
+						<td class="header" data-bind="text: frameName"></td>
 						<!--A6_8 残業申請時間入力--> 						
 						<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15"
 							data-bind="ntsTimeEditor: {name: '#{i18n.getText('KAF005_55')}',value: startTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
 						<!--A6_9 残業事前申請時間--> 						
-						<td class="right-content" data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, text: endTime"></td>
+						<td class="right-content" data-bind="text: endTime"></td>
 						<!--A6_11 実績時間--> 						
-						<td class="right-content" data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, text: applicationTime"  id="overtimeHoursCheck#{frameNo}"></td>
+						<td class="right-content" data-bind="text: applicationTime"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -238,12 +238,12 @@
 				<tbody data-bind="foreach: bonusTimes">
 					<tr>
 						<!--A8_6 加給時間名称ラベル--> 												
-						<td class="header" data-bind="attr: { id: 'bonusTimesCheck_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
+						<td class="header" data-bind="text: frameName"></td>
 						<!--A8_7 加給時間入力--> 
-						<td data-bind="attr: { id: 'bonusTimesCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="17"
+						<td><input tabindex="17"
 							data-bind="ntsTimeEditor: {name: '#[KAF005_85]',value: startTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}" /></td>
 						<!--A8_8 事前申請時間--> 
-						<td class="right-content" data-bind="attr: { id: 'bonusTimesCheck_'+attendanceID()+'_'+frameNo()}, text: endTime"></td>
+						<td class="right-content" data-bind="text: endTime"></td>
 					</tr>
 				</tbody>
 			</table>
