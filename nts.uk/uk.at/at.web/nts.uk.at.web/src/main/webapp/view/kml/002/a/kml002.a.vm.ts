@@ -121,71 +121,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 $(this).siblings('#popup-area').ntsPopup('toggle');              
             });
             
-            self.allSelectedItems.subscribe(function(value) {
-                var items = [];
-                if(value == true) {
-                    for(var i = 0; i < self.calculatorItems().length; i++) {
-                        var item : ICalculatorItem = {
-                            isChecked: true,
-                            itemCd: self.calculatorItems()[i].itemCd(),
-                            attribute: self.calculatorItems()[i].attribute(),
-                            itemName: self.calculatorItems()[i].itemName(),
-                            settingMethod: self.calculatorItems()[i].settingMethod(),
-                            formula: self.calculatorItems()[i].formula(),
-                            displayAtr: self.calculatorItems()[i].displayAtr(),
-                            total: self.calculatorItems()[i].total(),
-                            rounding: self.calculatorItems()[i].rounding(),
-                            fraction: self.calculatorItems()[i].fraction(),
-                            order: self.calculatorItems()[i].order(),
-                            formBuilt: self.calculatorItems()[i].formBuilt,
-                            formTime: self.calculatorItems()[i].formTime,
-                            formPeople: self.calculatorItems()[i].formPeople,
-                            amount: self.calculatorItems()[i].amount,
-                            numerical: self.calculatorItems()[i].numerical,
-                            unitPrice: self.calculatorItems()[i].unitPrice
-                        };
-                        
-                        items.push(new CalculatorItem(item));
-                    }
-                    
-                    self.calculatorItems([]);
-                    self.calculatorItems(items);
-                } else {
-                    //Just remove check all checkbox
-                    var flag = self.checkSelectedItems();
-                    
-                    if(!flag) {
-                        //Remove all selected checkbox
-                        for(var i = 0; i < self.calculatorItems().length; i++) {
-                            var item : ICalculatorItem = {
-                                isChecked: false,
-                                itemCd: self.calculatorItems()[i].itemCd(),
-                                attribute: self.calculatorItems()[i].attribute(),
-                                itemName: self.calculatorItems()[i].itemName(),
-                                settingMethod: self.calculatorItems()[i].settingMethod(),
-                                formula: self.calculatorItems()[i].formula(),
-                                displayAtr: self.calculatorItems()[i].displayAtr(),
-                                total: self.calculatorItems()[i].total(),
-                                rounding: self.calculatorItems()[i].rounding(),
-                                fraction: self.calculatorItems()[i].fraction(),
-                                order: self.calculatorItems()[i].order(),
-                                formBuilt: self.calculatorItems()[i].formBuilt,
-                                formTime: self.calculatorItems()[i].formTime,
-                                formPeople: self.calculatorItems()[i].formPeople,
-                                amount: self.calculatorItems()[i].amount,
-                                numerical: self.calculatorItems()[i].numerical,
-                                unitPrice: self.calculatorItems()[i].unitPrice
-                            };
-                            
-                            items.push(new CalculatorItem(item));
-                        }
-                        
-                        self.calculatorItems([]);
-                        self.calculatorItems(items);
-                    }
-                }
-            });  
-            
             //Bind data to from when user select item on grid
             self.singleSelectedCode.subscribe(function(value) {
                 // clear all error
@@ -235,12 +170,122 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         
                         self.calculatorItems([]);
                         var sortedItems = _.sortBy(items, [function(o) { return o.order(); }]);
+                        
+                        for(var i = 0; i < sortedItems.length; i++) {
+                            var curDataItem = null;
+                            var beforeFormula = "";
+                            
+                            if(sortedItems[i].formBuilt != null) {
+                                curDataItem = sortedItems[i].formBuilt
+                            } else if(sortedItems[i].formTime != null) {
+                                curDataItem = sortedItems[i].formTime
+                            } else if(sortedItems[i].formPeople != null) {
+                                curDataItem = sortedItems[i].formPeople
+                            } else if(sortedItems[i].amount != null) {
+                                curDataItem = sortedItems[i].amount
+                            } else if(sortedItems[i].numerical != null) {
+                                curDataItem = sortedItems[i].numerical
+                            } else if(sortedItems[i].unitPrice != null) {
+                                curDataItem = sortedItems[i].unitPrice
+                            }
+                            
+                            if(i > 0) {
+                                beforeFormula = sortedItems[i].formula();
+                            }
+                            
+                            var formulaResult = self.formulaGeneration(sortedItems[i].itemName(), sortedItems[i].settingMethod(), sortedItems[i].attribute(), 
+                                                    i, curDataItem, beforeFormula, true);
+                            sortedItems[i].formula(formulaResult);
+                        }
+                        
                         self.calculatorItems(sortedItems);
                     }).fail(function(res) {
                           
                     });
                 }
             });
+            
+            self.allSelectedItems.subscribe(function(value) {
+                var items = [];
+                var flag = false;
+                
+                if(value == true) {
+                    for(var i = 0; i < self.calculatorItems().length; i++) {
+                        if(i == 0) {
+                            flag = true;
+                        }
+                        
+                        var item : ICalculatorItem = {
+                            isChecked: true,
+                            itemCd: self.calculatorItems()[i].itemCd(),
+                            attribute: self.calculatorItems()[i].attribute(),
+                            itemName: self.calculatorItems()[i].itemName(),
+                            settingMethod: self.calculatorItems()[i].settingMethod(),
+                            settingMethodEnable: flag == false ? false : self.calculatorItems()[i].settingMethodEnable(),
+                            formula: self.calculatorItems()[i].formula(),
+                            displayAtr: self.calculatorItems()[i].displayAtr(),
+                            total: self.calculatorItems()[i].total(),
+                            rounding: self.calculatorItems()[i].rounding(),
+                            fraction: self.calculatorItems()[i].fraction(),
+                            order: self.calculatorItems()[i].order(),
+                            formBuilt: self.calculatorItems()[i].formBuilt,
+                            formTime: self.calculatorItems()[i].formTime,
+                            formPeople: self.calculatorItems()[i].formPeople,
+                            amount: self.calculatorItems()[i].amount,
+                            numerical: self.calculatorItems()[i].numerical,
+                            unitPrice: self.calculatorItems()[i].unitPrice,
+                            attrEnable: self.calculatorItems()[i].attrEnable(),
+                            totalEnable: self.calculatorItems()[i].totalEnable()
+                        };
+                        
+                        items.push(new CalculatorItem(item));
+                    }
+                    
+                    self.calculatorItems([]);
+                    self.calculatorItems(items);
+                } else {
+                    //Just remove check all checkbox
+                    var flag = self.checkSelectedItems();
+                    var isFirst = false;
+                    
+                    if(!flag) {
+                        //Remove all selected checkbox
+                        for(var i = 0; i < self.calculatorItems().length; i++) {
+                            if(i == 0) {
+                                isFirst = true;
+                            }
+                                
+                            var item : ICalculatorItem = {
+                                isChecked: false,
+                                itemCd: self.calculatorItems()[i].itemCd(),
+                                attribute: self.calculatorItems()[i].attribute(),
+                                itemName: self.calculatorItems()[i].itemName(),
+                                settingMethod: self.calculatorItems()[i].settingMethod(),
+                                settingMethodEnable: isFirst == false ? false : self.calculatorItems()[i].settingMethodEnable(),
+                                formula: self.calculatorItems()[i].formula(),
+                                displayAtr: self.calculatorItems()[i].displayAtr(),
+                                total: self.calculatorItems()[i].total(),
+                                rounding: self.calculatorItems()[i].rounding(),
+                                fraction: self.calculatorItems()[i].fraction(),
+                                order: self.calculatorItems()[i].order(),
+                                formBuilt: self.calculatorItems()[i].formBuilt,
+                                formTime: self.calculatorItems()[i].formTime,
+                                formPeople: self.calculatorItems()[i].formPeople,
+                                amount: self.calculatorItems()[i].amount,
+                                numerical: self.calculatorItems()[i].numerical,
+                                unitPrice: self.calculatorItems()[i].unitPrice,
+                                attrEnable: self.calculatorItems()[i].attrEnable(),
+                                totalEnable: self.calculatorItems()[i].totalEnable()
+                            };
+                            
+                            items.push(new CalculatorItem(item));
+                        }
+                        
+                        self.calculatorItems([]);
+                        self.calculatorItems(items);
+                    }
+                }
+            });  
         }
 
         /**
@@ -328,7 +373,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 fraction: 0,
                 order: 1,
                 attrEnable: true,
-                settingMethodEnable: true,
+                settingMethodEnable: false,
                 totalEnable: true,
                 formBuilt: null,
                 formTime: null,
@@ -516,6 +561,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
          */
         addLineBtn() {
             var self = this;
+            var flag = false;
+            
+            if(self.calculatorItems().length > 0) {
+                flag = true;
+            }
             
             var item : ICalculatorItem = {
                 isChecked: false,
@@ -530,7 +580,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 fraction: 0,
                 order: self.calculatorItems().length + 1,
                 attrEnable: true,
-                settingMethodEnable: true,
+                settingMethodEnable: flag,
                 totalEnable: true,
                 formBuilt: null,
                 formTime: null,
@@ -590,8 +640,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
             
             self.calculatorItems([]);
+            var flag = false;
             
             for(var i = 0; i < selectedItems.length; i++) {
+                if(i > 0) {
+                    flag = true;
+                }
+                
                 var newItem : ICalculatorItem = {
                     isChecked: selectedItems[i].isChecked(),
                     itemCd: nts.uk.util.randomId(),
@@ -605,7 +660,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     fraction: selectedItems[i].fraction(),
                     order: i + 1,
                     attrEnable: selectedItems[i].attrEnable(),
-                    settingMethodEnable: selectedItems[i].settingMethodEnable(),
+                    settingMethodEnable: flag == false ? false : selectedItems[i].settingMethodEnable(),
                     totalEnable: selectedItems[i].totalEnable(),
                     formBuilt: selectedItems[i].formBuilt,
                     formTime: selectedItems[i].formTime,
@@ -741,6 +796,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         
                         if(self.calculatorItems()[i].itemCd() == self.dataB.verticalCalItemId) {
                             self.calculatorItems()[i].formBuilt = self.dataB;
+                            var formulaResult = self.formulaGeneration(itemName, settingMethod, attribute, i, self.dataB, "", false);
+                            self.calculatorItems()[i].formula(formulaResult);
                         }
                     }
                 }); 
@@ -757,6 +814,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             
                             if(self.calculatorItems()[i].itemCd() == self.dataC.verticalCalItemId) {
                                 self.calculatorItems()[i].formTime = self.dataC;
+                                var formulaResult = self.formulaGeneration(itemName, settingMethod, attribute, i, self.dataC, "", false);
+                                self.calculatorItems()[i].formula(formulaResult);
                             }
                         }
                     }); 
@@ -787,6 +846,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             
                             if(self.calculatorItems()[i].itemCd() == self.dataD.verticalCalItemId) {
                                 self.calculatorItems()[i].formPeople = self.dataD;
+                                var formulaResult = self.formulaGeneration(itemName, settingMethod, attribute, i, self.dataD, "", false);
+                                self.calculatorItems()[i].formula(formulaResult);
                             }
                         }
                     }); 
@@ -822,6 +883,91 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     }); 
                 }
             }
+        }
+        
+        /**
+         * Generate the formula when the dialog setting passed data to A screen.
+         */
+        formulaGeneration(itemName: string, settingMethod: number, attribute: number, index: number, data: any, beforeFormula: string, isFirstLoad: boolean) {
+            let self = this;
+            var formulaResult = "";
+            
+            // 計算式設定
+            if(settingMethod == 1) {
+                
+            } else { // 項目選択
+                // 平均単価
+                if(attribute == 4) {
+                    
+                } else { // Other attributes
+                    // If is first item
+                    if(index == 0) {
+                        if(attribute == 0) {  
+                            if(data.lstFormTimeFunc.length <= 0) {
+                                formulaResult = nts.uk.resource.getText("KML002_153");
+                            } else {
+                                for(var i = 0; i < data.lstFormTimeFunc.length; i++) {
+                                    var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    formulaResult += data.lstFormTimeFunc[i].name + " " + operator + " ";
+                                } 
+                            }
+                        } else if (attribute == 1) {
+                            
+                        } else if (attribute == 2) {
+                            if(data.lstPeopleFunc.length <= 0) {
+                                formulaResult = nts.uk.resource.getText("KML002_153");
+                            } else {
+                                for(var i = 0; i < data.lstPeopleFunc.length; i++) {
+                                    var operator = data.lstPeopleFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    formulaResult += data.lstPeopleFunc[i].name + " " + operator + " ";
+                                } 
+                            }
+                        } else if (attribute == 3) {
+                            
+                        } else if (attribute == 4) {
+                            
+                        }
+                    } else {
+                        var before = "";
+                        
+                        if(isFirstLoad) {
+                            before = beforeFormula;
+                        } else {
+                            before = self.calculatorItems()[index - 1].formula();
+                        }
+                        
+                        if(attribute == 0) {  
+                            if(data.lstFormTimeFunc.length <= 0) {
+                                formulaResult = nts.uk.resource.getText("KML002_153");
+                            } else {
+                                for(var i = 0; i < data.lstFormTimeFunc.length; i++) {
+                                    var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    formulaResult += data.lstFormTimeFunc[i].name + " " + operator + " ";
+                                } 
+                            }
+                        } else if (attribute == 1) {
+                            
+                        } else if (attribute == 2) {
+                            if(data.lstPeopleFunc.length <= 0) {
+                                formulaResult = nts.uk.resource.getText("KML002_153");
+                            } else {
+                                for(var i = 0; i < data.lstPeopleFunc.length; i++) {
+                                    var operator = data.lstPeopleFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    formulaResult += data.lstPeopleFunc[i].name + " " + operator + " ";
+                                } 
+                            }
+                        } else if (attribute == 3) {
+                            
+                        } else if (attribute == 4) {
+                            
+                        }
+                        
+                        formulaResult = before + " " + formulaResult;
+                    }
+                }
+            }
+            
+            return formulaResult;
         }
     }
     

@@ -3,20 +3,27 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.management.RuntimeErrorException;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCompany;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplace;
@@ -41,7 +48,8 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	
+	@Inject
+	private AppEmploymentSettingRepository appEmploymentSetting;
 	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate){
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
 		GeneralDate baseDate = null;
@@ -80,12 +88,16 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 			// ドメインモデル「職場別申請承認設定」を取得する ( Acquire domain model "Application approval setting by workplace" )
 			Optional<RequestOfEachWorkplace> requestOfEarchWorkplaceOp = requestOfEachWorkplaceRepository.getRequest(companyID, workPlaceID);
 			if(requestOfEarchWorkplaceOp.isPresent()) {
-				loopResult.add(requestOfEarchWorkplaceOp.get());
-				break;
+				List<RequestAppDetailSetting> requestAppDetailSettings = requestOfEarchWorkplaceOp.get().getRequestAppDetailSettings().stream().filter(x -> x.getAppType() == targetApp).collect(Collectors.toList());
+				if(!CollectionUtil.isEmpty(requestAppDetailSettings)) {
+					loopResult.add(requestOfEarchWorkplaceOp.get());
+					break;
+				}
 			}
 		}
 		// ドメインモデル「職場別申請承認設定」を取得できたかチェックする ( Check whether domain model "application approval setting by workplace" could be acquired )
 		if(loopResult.size() == 0) {
+			//ドメインモデル「会社別申請承認設定」を取得する ( Acquire the domain model "application approval setting by company" )
 			Optional<RequestOfEachCompany> rqOptional = requestOfEachCompanyRepository.getRequestByCompany(companyID);
 			if(rqOptional.isPresent())
 				appCommonSettingOutput.requestOfEachCommon = rqOptional.get();
@@ -95,14 +107,15 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		}
 		
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する ( Execute the algorithm "Acquire employee affiliation employment history" )
-		/*String employeeCD = employeeAdaptor.getEmploymentCode(companyID, employeeID, baseDate);
-		if(employeeCD!=null) {
+		String employmentCD = employeeAdaptor.getEmploymentCode(companyID, employeeID, baseDate);
+		if(employmentCD ==null) {
 			throw new BusinessException("Msg_426");
-		}*/
+		}
 		// ドメインモデル「雇用別申請承認設定」を取得する ( Acquire the domain model "application approval setting by employment" )
 		// ApplicationCommonSetting obj1 = ApplicationApprovalSettingByEmployment.find(companyID, employeeCD);
 		// return obj1
-		
+		List<AppEmploymentSetting> lstEmploymentWt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCD, targetApp.value);
+		appCommonSettingOutput.appEmploymentWorkType = lstEmploymentWt;
 		return appCommonSettingOutput;
 	}
 	

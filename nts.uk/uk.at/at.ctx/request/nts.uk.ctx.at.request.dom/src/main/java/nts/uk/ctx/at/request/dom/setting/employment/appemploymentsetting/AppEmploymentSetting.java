@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,4 +43,8 @@ public class AppEmploymentSetting extends AggregateRoot{
 	 * 表示する勤務種類を設定する
 	 */
 	private boolean displayFlag;
+	/**
+	 * 申請別対象勤務種類-勤務種類リスト
+	 */
+	List<AppEmployWorkType> lstWorkType;
 }

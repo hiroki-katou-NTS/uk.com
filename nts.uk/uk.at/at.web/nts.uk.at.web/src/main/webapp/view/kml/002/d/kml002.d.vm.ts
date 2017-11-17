@@ -172,7 +172,8 @@ module nts.uk.at.view.kml002.d.viewmodel {
                     externalBudgetCd: item.code,
                     categoryAtr: 1,
                     operatorAtr: item.operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
-                    dispOrder: index
+                    dispOrder: index,
+                    name: item.name
                 }
 
                 dataItems.push(data);
