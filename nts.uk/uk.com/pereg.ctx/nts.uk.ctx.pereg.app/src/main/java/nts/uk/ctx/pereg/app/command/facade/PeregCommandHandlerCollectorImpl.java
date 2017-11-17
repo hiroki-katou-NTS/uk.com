@@ -59,10 +59,6 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){}
 			);
-//	private static final List<TypeLiteral<?>> ADD_HANDLER_CLASSES = Arrays.asList();
-//	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
-//				new TypeLiteral<PeregUpdateCommandHandler<SampleUpdatePersonBaseCommand>>(){});
-	
 	
 	@Override
 	public Set<PeregAddCommandHandler<?>> collectAddHandlers() {
