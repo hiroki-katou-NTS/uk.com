@@ -19,7 +19,6 @@ module nts.uk.com.view.cas014.a {
             constructor() {
                 let self = this;
                 self.date = ko.observable(new Date().toISOString());
-
             }
 
             //startPage(): void {
@@ -28,7 +27,7 @@ module nts.uk.com.view.cas014.a {
                     dfd = $.Deferred();
                 block.invisible();
 
-                new service.Service().getAllData(self.date()).done(function(data: any) {
+                new service.Service().getAllData(self.date()).done(function(data: RoleSetJobTitle) {
                     if (data) {
                         self.roleSetList = [
                             new RoleSet('01', '基本給'),
@@ -84,79 +83,28 @@ module nts.uk.com.view.cas014.a {
                     dfd.reject();
                 });
                 block.clear();
-
-                /*copy from ccg013
-                // Get list jobtitle
-                service.getAllJobTitle(self.date()).done(function(listJobTitle: Array<viewmodel.TitleMenu>) {
-                    listJobTitle = _.orderBy(listJobTitle, ["code"], ["asc"]);
-                    _.each(listJobTitle, function(obj: viewmodel.TitleMenu) {
-                        self.listJobTitle.push(new TitleMenu(obj.code, obj.name, obj.id, obj.startDate, obj.endDate));
-                        self.listJobId.push(obj.id);
-                    });
-                    // get list for combobox
-                    self.getListCombobox();
-                    dfd.resolve();
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
-                    dfd.reject();
-                });
-                */
-                //alert('input date: ' + self.date());
                 return dfd.promise();
-            }
-
-            //            setDefault() {
-            //                var self = this;
-            //                nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValuned);
-            //            }
-
-            reloadData() {
-                //alert('input date: ' + self.);
             }
 
             register() {
                 let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails = [];
-                _.each(data.details, d => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
+                _.each(data.details(), d => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
 
                 let command: any = {
                     applyToConcurrentPerson: data.applyToConcurrentPerson,
                     details: regDetails
                 };
+
                 block.invisible();
-                //                if (!self.currentData().currentCtgSelected().perInfoCtgName()) {
-                //                    return;
-                //                }
-                //                if (self.isUpdate) {
-                //                    let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
+
                 new service.Service().registerData(command).done(function() {
-                    info({ messageId: "Msg_15" }).then(() => { block.clear(); });
+                    info({ messageId: "Msg_15" }).then(() => {
+                        block.clear();
+                    });
                 }).fail(error => {
                     alertError({ messageId: error.message });
                     block.clear();
                 });
-                //                } else {
-                //                    let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
-                //                    new service.Service().addPerInfoCtg(newCategory).done(() => {
-                //                        self.reloadData(newCategory.categoryName);
-                //                        info({ messageId: "Msg_15" }).then(() => {
-                //                            confirm({ messageId: "Msg_213" }).ifYes(() => {
-                //                                setShared('categoryId', self.currentData().perInfoCtgSelectCode());
-                //                                modal("/view/cps/005/b/index.xhtml").onClosed(() => {
-                //                                    let ctgCode = self.currentData().perInfoCtgSelectCode();
-                //                                    self.currentData().perInfoCtgSelectCode("");
-                //                                    self.currentData().perInfoCtgSelectCode(ctgCode);
-                //                                    block.clear();
-                //                                });
-                //                            }).ifNo(() => {
-                //                                block.clear();
-                //                                return;
-                //                            })
-                //                        });
-                //                    }).fail(error => {
-                //                        alertError({ messageId: error.message });
-                //                         block.clear();
-                //                    });
-                //                }
             }
 
         }
