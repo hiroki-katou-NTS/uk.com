@@ -373,7 +373,8 @@ module nts.uk.at.view.kml002.c.viewmodel {
                     attendanceItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.DAILY ? self.rightItems()[i].trueCode : null,
                     presetItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.SCHEDULE ? self.rightItems()[i].trueCode : null,
                     operatorAtr: self.rightItems()[i].operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
-                    dispOrder: self.rightItems()[i].order
+                    dispOrder: self.rightItems()[i].order,
+                    name: self.rightItems()[i].name
                 };
                 
                 formTimeFunc.push(item);
