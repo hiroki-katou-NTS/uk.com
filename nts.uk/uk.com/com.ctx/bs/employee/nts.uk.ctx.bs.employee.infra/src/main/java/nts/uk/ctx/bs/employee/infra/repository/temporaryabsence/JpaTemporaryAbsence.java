@@ -33,18 +33,16 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	private static final String GETLIST_BY_SID = SELECT_NO_WHERE + " WHERE c.sid = :sid";
 
 	private TemporaryAbsence toTemporaryAbsence(Object[] entity) {
-		TemporaryAbsence temporaryAbsence = TemporaryAbsence.createSimpleFromJavaType(
-				String.valueOf(entity[1].toString()), 
-				String.valueOf(entity[0].toString()),
-				Integer.valueOf(entity[2].toString()), 
-				String.valueOf(entity[3].toString()),
-				entity[4] == null? null :GeneralDate.fromString(entity[4].toString(), "yyyy-MM-dd"),
-				GeneralDate.fromString(entity[5].toString(), "yyyy-MM-dd"), 
-				entity[6] == null ? null:String.valueOf(entity[6].toString()),
-				entity[7] == null ? null:String.valueOf(entity[7].toString()), 
-				entity[8] == null ? null:GeneralDate.fromString(entity[8].toString(), "yyyy-MM-dd"),
-				entity[9] == null ? null:Integer.valueOf(entity[9].toString()));
-		return temporaryAbsence;
+		boolean p = entity[4].toString().indexOf("-") > 0;
+
+		return TemporaryAbsence.createSimpleFromJavaType(String.valueOf(entity[1]), String.valueOf(entity[0]),
+				Integer.valueOf(entity[2].toString()), String.valueOf(entity[3]),
+				entity[4] == null ? null : GeneralDate.fromString(entity[4].toString(), p ? "yyyy-MM-dd" : "yyyy/MM/dd"),
+				GeneralDate.fromString(entity[5].toString(), p ? "yyyy-MM-dd" : "yyyy/MM/dd"),
+				entity[6] == null ? null : String.valueOf(entity[6]),
+				entity[7] == null ? null : String.valueOf(entity[7]),
+				entity[8] == null ? null : GeneralDate.fromString(entity[8].toString(), p ? "yyyy-MM-dd" : "yyyy/MM/dd"),
+				entity[9] == null ? null : Integer.valueOf(entity[9].toString()));
 	}
 
 	private List<TemporaryAbsence> toListTemporaryAbsence(List<Object[]> listEntity) {
@@ -101,8 +99,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	}
 
 	private BsymtTempAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain) {
-		return new BsymtTempAbsenceHist(domain.getDateHistoryItem().identifier(),
-				domain.getDateHistoryItem().start(), domain.getDateHistoryItem().end());
+		return new BsymtTempAbsenceHist(domain.getDateHistoryItem().identifier(), domain.getDateHistoryItem().start(),
+				domain.getDateHistoryItem().end());
 	}
 
 	/**
@@ -148,8 +146,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		// Get exist item
 		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
 		Optional<BsymtTemporaryAbsence> existItem = this.queryProxy().find(key, BsymtTemporaryAbsence.class);
-		Optional<BsymtTempAbsenceHist> existItemHist = this.queryProxy()
-				.find(domain.getDateHistoryItem().identifier(), BsymtTempAbsenceHist.class);
+		Optional<BsymtTempAbsenceHist> existItemHist = this.queryProxy().find(domain.getDateHistoryItem().identifier(),
+				BsymtTempAbsenceHist.class);
 		if (!existItem.isPresent()) {
 			return;
 		}
