@@ -173,7 +173,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		Optional<BpsmtPerson> existItem = this.queryProxy().find(new BpsmtPersonPk(person.getPersonId()),
 				BpsmtPerson.class);
 		if (!existItem.isPresent()) {
-			return;
+			throw new RuntimeException("invalid Person");
 		}
 		// Update entity
 		updateEntity(person, existItem.get());

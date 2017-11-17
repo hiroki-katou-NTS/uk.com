@@ -87,7 +87,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
 		Optional<PpemtPerInfoItemData> existItem = this.queryProxy().find(key, PpemtPerInfoItemData.class);
 		if (!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid PersonInfoItemData");
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());
