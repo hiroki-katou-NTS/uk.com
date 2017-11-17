@@ -78,8 +78,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
-        //　初期起動時、計算フラグ=1とする。
-        calculateFlag: KnockoutObservable<number> = ko.observable(1);
+        
+
         // preAppOvertime
         appDatePre: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
         workTypeCodePre:  KnockoutObservable<string> = ko.observable("");
@@ -95,6 +95,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         overtimeHoursPre: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         overTimeShiftNightPre: KnockoutObservable<number> = ko.observable(null);
         flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
+        //　初期起動時、計算フラグ=1とする。
+        //calculateFlag: KnockoutObservable<number> = ko.observable(1);
+        //TODO: test-setting calculateFlag = 0
+        calculateFlag: KnockoutObservable<number> = ko.observable(0);
         constructor() {
 
             let self = this;
@@ -243,7 +247,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if (!nts.uk.util.isNullOrUndefined(self.multilContent2())) {
                 divergenceReason = divergenceReason + ":" + self.multilContent2();
             }
-            let overtime: AppOverTime = {
+            let overtime: common.AppOverTime = {
                 applicationDate: self.appDate(),
                 prePostAtr: self.prePostSelected(),
                 applicantSID: self.employeeID,
@@ -283,6 +287,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                 } else if (data.errorCode == 1){
                     if(data.frameNo == -1){
+                        //Setting color for item error
                         for (let i = 0; i < self.overtimeHours().length; i++) {
                             self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
                         }
