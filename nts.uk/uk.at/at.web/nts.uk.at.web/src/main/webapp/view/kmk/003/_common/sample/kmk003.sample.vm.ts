@@ -22,7 +22,7 @@ module nts.uk.at.view.kmk003.sample {
                 self.fixTableOption = {
                     maxRows: 5,
                     dataSource: self.dataSource,
-                    isMultipleSelect: true,
+                    isMultipleSelect: false,
                     columns: self.columnSetting(),
                     tabindex: 10
                 }

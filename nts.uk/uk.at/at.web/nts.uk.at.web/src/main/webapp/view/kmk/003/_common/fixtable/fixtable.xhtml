@@ -9,7 +9,9 @@
 		<!-- BEGIN BINDING HEADER -->
 		<table data-bind="style: {width: tableStyle.width + 'px'}" class="ui-iggrid-headertable ui-widget-header ui-helper-reset" >
 			<colgroup>
-				<col width="36"></col>
+				<com:ko tag="if" bind="isMultiple">
+					<col width="36"></col>
+				</com:ko>
 				<com:ko-foreach bind="columns">
 					<col data-bind="attr: {width: width}"></col>
 				</com:ko-foreach>
@@ -34,7 +36,9 @@
 		<!-- BEGIN BINDING CONTENT -->
 		<table id="fixed-table-custom" data-bind="style: {height: tableStyle.height + 'px'}" style="overflow: auto;display: inline-block;">
 			<colgroup>
-				<col width="35"></col>
+				<com:ko tag="if" bind="isMultiple">
+					<col width="36"></col>
+				</com:ko>
 				<com:ko-foreach bind="columns">
 					<col data-bind="attr: {width: width}"></col>
 				</com:ko-foreach>
