@@ -23,6 +23,11 @@ public class OvertimeInputDto {
 	private int frameNo;
 	
 	/**
+	 * timeItemTypeAtr
+	 */
+	private int timeItemTypeAtr;
+	
+	/**
 	 * 勤怠項目Name
 	 */
 	private String frameName;

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 
@@ -45,7 +47,7 @@ public interface IOvertimePreProcess {
 	 * @param overtimeRestAppCommonSet
 	 * @param appDate
 	 */
-	public Optional<BonusPaySetting> getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, String companyID, SiftType siftType);
+	public List<BonusPayTimeItem> getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, String companyID, SiftType siftType);
 	/**
 	 * 01-05_申請定型理由を取得
 	 * @param companyID
@@ -116,5 +118,5 @@ public interface IOvertimePreProcess {
 	 */
 	public void getResultContentActual(int prePostAtr,String siftCode,String companyID);
 	
-	
+	public Optional<BonusPaySetting> getBonusPaySetting(String employeeID,String siftCode,String companyID,SWkpHistImport sWkpHistImport);
 }

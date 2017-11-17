@@ -19,22 +19,36 @@ public class CheckConvertPrePost {
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	
 	
-	public OverTimeDto convertFromPreToPost(String appDate){
+	public OverTimeDto convertPrePost(String prePostAtr){
 		
 		String companyID = AppContexts.user().companyId();
-		
 		OverTimeDto result = new OverTimeDto();
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
-		if(overtimeRestAppCommonSet.isPresent()){
-			if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
-				result.setReferencePanelFlg(true);
-				//to do....
+		if(prePostAtr.equals("1")){
+			if(overtimeRestAppCommonSet.isPresent()){
+				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
+					result.setReferencePanelFlg(true);
+					//to do....
+				}
+				if(overtimeRestAppCommonSet.get().getPreDisplayAtr() == UseAtr.USE ){
+					result.setPreAppPanelFlg(true);
+					//to do....
+				}
 			}
-			if(overtimeRestAppCommonSet.get().getPreDisplayAtr() == UseAtr.USE ){
-				result.setPreAppPanelFlg(true);
-				//to do....
+		}else if(prePostAtr.equals("0")){
+			if(overtimeRestAppCommonSet.isPresent()){
+				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
+					result.setReferencePanelFlg(false);
+					//to do....
+				}
+				if(overtimeRestAppCommonSet.get().getPreDisplayAtr() == UseAtr.USE ){
+					result.setPreAppPanelFlg(false);
+					//to do....
+				}
 			}
 		}
+		
+		
 		return result;
 	}
 	

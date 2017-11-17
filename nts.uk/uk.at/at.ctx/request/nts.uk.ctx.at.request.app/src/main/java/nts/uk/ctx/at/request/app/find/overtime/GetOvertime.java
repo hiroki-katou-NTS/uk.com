@@ -48,6 +48,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
@@ -149,10 +150,11 @@ public class GetOvertime {
 		return result;
 	}
 	
-	public OverTimeDto getOvertimeByAppID(String appID){
-		OverTimeDto result = new OverTimeDto();
-		return result;
-	}
+	/**
+	 * @param appDate
+	 * @param prePostAtr
+	 * @return
+	 */
 	public OverTimeDto findByChangeAppDate(String appDate,int prePostAtr ){
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
@@ -303,7 +305,7 @@ public class GetOvertime {
 			overTimeInputs.add(overtimeInputDto);
 		}
 		
-		
+		// lay breakTime
 		List<BreaktimeFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
 		for(BreaktimeFrame breaktimeFrame :breaktimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
@@ -325,7 +327,15 @@ public class GetOvertime {
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				result.setDisplayBonusTime(true);
-				iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID, result.getSiftType());
+				List<BonusPayTimeItem> bonusPayTimeItems= this.iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID, result.getSiftType());
+				for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
+					OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
+					overtimeInputDto.setAttendanceID(AttendanceID.BONUSPAYTIME.value);
+					overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
+					overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
+					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
+					overTimeInputs.add(overtimeInputDto);
+				}
 			}else{
 				result.setDisplayBonusTime(false);
 			}
