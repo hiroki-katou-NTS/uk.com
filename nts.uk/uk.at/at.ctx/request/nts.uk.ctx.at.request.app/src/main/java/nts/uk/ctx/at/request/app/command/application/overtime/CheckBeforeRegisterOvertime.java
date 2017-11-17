@@ -71,7 +71,7 @@ public class CheckBeforeRegisterOvertime {
 		newBeforeRegister.processBeforeRegister(app);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
-		beforeCheck.calculateButtonCheck(0, app.getCompanyID(), employeeId, 1, ApplicationType.OVER_TIME_APPLICATION,
+		beforeCheck.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1, ApplicationType.OVER_TIME_APPLICATION,
 				app.getApplicationDate());
 		// 事前申請超過チェック
 		Map<AttendanceID, List<OverTimeInput>> findMap = overtime.getOverTimeInput().stream()
@@ -79,15 +79,19 @@ public class CheckBeforeRegisterOvertime {
 		// Only check for [残業時間]
 		//時間①～フレ超過時間　まで　背景色をピンク
 		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceID.NORMALOVERTIME);
-		if (!overtimeInputs.isEmpty()) {
-			res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(),
-					app.getInputDate(), app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
-			if (res.getErrorCode() != 0) {
-				result.setErrorCode(res.getErrorCode());
-				result.setFrameNo(res.getFrameNo());
-				result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
-				return result;
-			}
+		if (overtimeInputs == null || overtimeInputs.isEmpty()) {
+			result.setErrorCode(1);
+			result.setFrameNo(-1);
+			result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
+			return result;
+		}
+		res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(),
+				app.getInputDate(), app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
+		if (res.getErrorCode() != 0) {
+			result.setErrorCode(res.getErrorCode());
+			result.setFrameNo(res.getFrameNo());
+			result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
+			return result;
 		}
 		// TODO: 実績超過チェック
 		beforeCheck.OvercountCheck(app.getCompanyID(), app.getApplicationDate(), app.getPrePostAtr());
