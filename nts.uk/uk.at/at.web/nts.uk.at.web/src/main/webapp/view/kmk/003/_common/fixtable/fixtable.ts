@@ -68,26 +68,22 @@ module kmk003.common.fixtable {
          * temple html
          */
         template: string;
+        
+        /**
+         * class JQuery
+         */
+        cssClassName?: string;
     }
 
     /************************************************ SCREEN MODEL ************************************************
     ***************************************************************************************************************/
     
     /**
-     * ControlType
-     */
-    class ControlType {
-        static CheckBox: number = 1;
-        static TimeEditor: number = 2;
-        static DateRangeEditor: number = 3;
-        static ComboBox: number = 4;
-    }
-    
-    /**
      * TableStyle
      */
     interface TableStyle {
         height: number;
+        width: number;
     }
     
     /**
@@ -110,6 +106,7 @@ module kmk003.common.fixtable {
         
         $tableSelector: any;
         mapControl: Array<IControl>;
+        tabindex: number;
         
         constructor() {
             let self = this;
@@ -118,7 +115,8 @@ module kmk003.common.fixtable {
             self.isSelectAll = ko.observable(false);
             
             self.tableStyle = {
-                height: 0
+                height: 0,
+                width: 0
             };
             self.lstDataSource = {};
             self.mapControl = self.createMapControl();
@@ -142,6 +140,13 @@ module kmk003.common.fixtable {
             self.isMultiple = data.isMultipleSelect;
             self.columns = data.columns;
             self.maxRows = data.maxRows;
+            if (!self.maxRows) {
+                self.maxRows = 10;
+            }
+            self.tabindex = data.tabindex;
+            if (!self.tabindex) {
+                self.tabindex = -1;
+            }
             self.itemList = data.dataSource;
             
             // add properties isChecked when multiple select
@@ -187,12 +192,15 @@ module kmk003.common.fixtable {
                 ko.cleanNode(self.$tableSelector[0]);
                 
                 // calculate height table
-                self.calHeightTable();
+                self.calStyleTable();
                 
                 // render table
                 self.renderTable().done(() => {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
+
+                    // override width control
+                    self.overrideWidthControl();
                     
                     dfd.resolve();
                 });
@@ -200,17 +208,32 @@ module kmk003.common.fixtable {
             return dfd.promise();
         }
         
+        /**
+         * Override width control
+         */
         private overrideWidthControl() {
+            let self = this;
             
+            // control ntsTimeEditor
+            let timeColumn: FixColumn = self.columns.filter(column => column.template.indexOf('TimeEditor') > -1)[0]; 
+            $('.' + timeColumn.cssClassName).find("span input").width(timeColumn.width - 27);
+            
+            // control ntsComboBox
+            let comboBoxColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ComboBox') > -1)[0]; 
+            $('.' + comboBoxColumn.cssClassName).each(function() {
+                $(this).find("div").first().width(comboBoxColumn.width - 5);
+            });
         }
         
         /**
-         * calHeightTable
+         * calStyleTable
          */
-        private calHeightTable() {
+        private calStyleTable() {
             let self = this;
             let heigthCell = 36;
-            self.tableStyle.height = heigthCell * self.maxRows;
+            self.tableStyle.height = heigthCell * self.maxRows + 1;
+            
+            self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
         }
         
         /**
@@ -272,15 +295,13 @@ module kmk003.common.fixtable {
             // mode multiple
             if (self.isMultiple) {
                 rowHtml += "<td style='text-align: center;'><div data-bind=\"ntsCheckBox: { checked: isChecked, "
-                    + "enable: true}, rended: $parent.itemList\"></div></td>";
+                    + "enable: true, text:''}, rended: $parent.itemList\"></div></td>";
             }
             
             // add html column base setting
             _.forEach(self.columns, (item: FixColumn) => {
                 rowHtml += self.generateColumnHtml(item);
             });
-            
-            console.log(rowHtml);
             
             // add html row in table
             self.$tableSelector.append("<tr>" + rowHtml + "</tr>");
@@ -362,7 +383,7 @@ module kmk003.common.fixtable {
             
             template = template.replace(oldProperties, newProperties.replace(/"/g, "'"));
             
-            return "<td style='text-align: center;'>" + template + "</td>";
+            return "<td style='text-align: center;' class='" + columnSetting.cssClassName + "'>" + template + "</td>";
         }
         
         /**
