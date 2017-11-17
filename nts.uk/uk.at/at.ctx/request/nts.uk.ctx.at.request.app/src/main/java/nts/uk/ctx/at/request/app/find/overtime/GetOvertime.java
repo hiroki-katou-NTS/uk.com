@@ -169,6 +169,8 @@ public class GetOvertime {
 		OvertimeInstructInfomation overtimeInstructInfomation = iOvertimePreProcess.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
 		result.setDisplayOvertimeInstructInforFlg(overtimeInstructInfomation.isDisplayOvertimeInstructInforFlg());
 		result.setOvertimeInstructInformation(overtimeInstructInfomation.getOvertimeInstructInfomation());
+		applicationDto.setPrePostAtr(prePostAtr);
+		result.setApplication(applicationDto);
 		// 01-09_事前申請を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
@@ -215,10 +217,29 @@ public class GetOvertime {
 			}
 		}
 		}
+		String employeeName = "";
+		if(Strings.isNotBlank(applicationDto.getApplicantSID())){
+			employeeName = employeeAdapter.getEmployeeName(applicationDto.getApplicantSID());
+		} else {
+			employeeName = employeeAdapter.getEmployeeName(employeeID);
+		}
+		result.setEmployeeName(employeeName);
+		
 		return result;
 		
 	}
 	
+	/**
+	 * @param result
+	 * @param uiType
+	 * @param appDate
+	 * @param companyID
+	 * @param employeeID
+	 * @param appCommonSettingOutput
+	 * @param applicationDto
+	 * @param overtimeAtr
+	 * @param overTimeInputs
+	 */
 	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID, AppCommonSettingOutput appCommonSettingOutput,ApplicationDto applicationDto,int overtimeAtr,List<OvertimeInputDto> overTimeInputs){
 		//申請日付を取得 : lay thong tin lam them
 				applicationDto.setApplicationDate(appDate);
