@@ -26,8 +26,8 @@ public class KrqstAppEmploymentSetPK implements Serializable {
     @Column(name = "CID")
     private String cid;
 	
-    @Column(name = "EMPLOYEEMENT_CODE")
-    private String employeementCode;
+    @Column(name = "EMPLOYMENT_CODE")
+    private String employmentCode;
     
     @Column(name = "APP_TYPE")
     private int appType;
