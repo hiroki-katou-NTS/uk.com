@@ -376,6 +376,8 @@ module cps001.a.vm {
         daysOfEntire: KnockoutObservable<number> = ko.observable(0);
         daysOfTemporaryAbsence: KnockoutObservable<number> = ko.observable(0);
 
+
+        // calc days of work process
         entire: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
                 days = self.daysOfEntire(),
@@ -453,7 +455,7 @@ module cps001.a.vm {
                 months = duration.months(),
                 days = duration.days();
 
-            return (years + (months > 0 || days > 0 ? 1 : 0)) + '歳';
+            return (years + Number(!!(months || days))) + '歳';
         });
     }
 
