@@ -151,7 +151,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		Optional<BsymtTempAbsenceHist> existItemHist = this.queryProxy()
 				.find(domain.getDateHistoryItem().identifier(), BsymtTempAbsenceHist.class);
 		if (!existItem.isPresent()) {
-			return;
+			throw new RuntimeException("invalid TemporaryAbsence");
 		}
 		// Update entity BsymtTemporaryAbsence
 		updateEntityBsymtTemporaryAbsence(domain, existItem.get());
