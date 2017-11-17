@@ -4,15 +4,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
+import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 @Stateless
-public class AddPerEmergencyContactCommandHandler extends CommandHandler<AddPerEmergencyContactCommand>
+public class AddPerEmergencyContactCommandHandler extends CommandHandlerWithResult<AddPerEmergencyContactCommand,PeregAddCommandResult>
  	implements PeregAddCommandHandler<AddPerEmergencyContactCommand>{
 
 	@Inject
@@ -29,7 +30,7 @@ public class AddPerEmergencyContactCommandHandler extends CommandHandler<AddPerE
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<AddPerEmergencyContactCommand> context) {
+	protected PeregAddCommandResult handle(CommandHandlerContext<AddPerEmergencyContactCommand> context) {
 		val command = context.getCommand();
 		// Create new id
 		String newId = IdentifierUtil.randomUniqueId();
@@ -40,6 +41,8 @@ public class AddPerEmergencyContactCommandHandler extends CommandHandler<AddPerE
 		// Add person emergency contact
 		
 		perEmergencyContact.addPersonEmergencyContact(emergencyContact);
+		
+		return new PeregAddCommandResult(newId);
 	}
 
 }

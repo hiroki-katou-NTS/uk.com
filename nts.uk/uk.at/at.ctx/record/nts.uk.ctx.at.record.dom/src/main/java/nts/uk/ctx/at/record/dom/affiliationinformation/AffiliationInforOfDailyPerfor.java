@@ -30,4 +30,16 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 	
 	private BonusPaySettingCode bonusPaySettingCode;
 
+	public AffiliationInforOfDailyPerfor(EmploymentCode employmentCode, String employeeId, String jobTitleID,
+			String wplID, GeneralDate ymd, ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode) {
+		super();
+		this.employmentCode = employmentCode;
+		this.employeeId = employeeId;
+		this.jobTitleID = jobTitleID;
+		this.wplID = wplID;
+		this.ymd = ymd;
+		this.clsCode = clsCode;
+		this.bonusPaySettingCode = bonusPaySettingCode;
+	}
+
 }
