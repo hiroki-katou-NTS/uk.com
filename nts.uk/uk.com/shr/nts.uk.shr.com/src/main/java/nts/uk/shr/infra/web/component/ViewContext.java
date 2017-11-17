@@ -107,7 +107,7 @@ public class ViewContext extends UIComponentBase {
 	}
 	
 	private void writeRole (LoginUserRoles role, StringBuilder builder) {
-		builder.append("user: { ");
+		builder.append("role: { ");
 		if(role != null){
 			builder.append("attendance: '" + role.forAttendance() + "', ");
 			builder.append("companyAdmin: '" + role.forCompanyAdmin() + "', ");
