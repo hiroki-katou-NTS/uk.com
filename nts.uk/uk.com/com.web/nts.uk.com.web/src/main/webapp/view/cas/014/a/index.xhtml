@@ -35,11 +35,11 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('CAS014_2')}</span>
-					<button class="proceed">#{i18n.getText('CAS014_11')}</button>
+					<button class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
 				</div>
-				<div class="contents-area">
+				<div class="contents-area" data-bind="with: roleSetJobTitle">
 					<div class="valign-center control-group">
-						<div data-bind="ntsCheckBox: { checked: checked, enable: true }">#{i18n.getText('CAS014_20')}</div>
+						<div data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
 					</div>
 					<div class="valign-center control-group" style="padding-left: 32px">
 						<label>#{i18n.getText('CAS014_21')}</label>
@@ -48,8 +48,8 @@
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
 						<div
-							data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
-						<button class="caret-bottom">#{i18n.getText('CAS014_23')}</button>
+							data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: $parent.date, dateFormat: 'YYYY/MM/DD' }"></div>
+						<button class="caret-bottom" data-bind="click : $parent.startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
 					</div>
 					<br />
 					<table class="fixed-table">
@@ -65,17 +65,17 @@
 								<th class="ui-widget-header">#{i18n.getText('CAS014_26')}</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody data-bind = "foreach: details">
 							<tr>
-								<td>就業承認</td>
-								<td>000000000001</td>
+								<td><div data-bind = "text: jobTitle.code" style="display: inline-block;"></div></td>
+								<td><div data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
 								<td>
 									<div class="combo-box"
 										data-bind="ntsComboBox: {
 										options: roleSetList,
 										optionsValue: 'code',
 										visibleItemsCount: 10,
-										value: selectedCode,
+										value: roleSetCd,
 										optionsText: 'name',
 										editable: false,
 										enable: true,
@@ -85,127 +85,7 @@
 										]}">
 									</div>
 								</td>
-							</tr>
-							<tr>
-								<td>就業承認</td>
-								<td>000000000001</td>
-								<td>
-									<div class="combo-box"
-										data-bind="ntsComboBox: {
-										options: roleSetList,
-										optionsValue: 'code',
-										visibleItemsCount: 10,
-										value: selectedCode,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'code', length: 2 },
-											{ prop: 'name', length: 8 },
-										]}">
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>就業承認</td>
-								<td>000000000001</td>
-								<td>
-									<div class="combo-box"
-										data-bind="ntsComboBox: {
-										options: roleSetList,
-										optionsValue: 'code',
-										visibleItemsCount: 10,
-										value: selectedCode,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'code', length: 2 },
-											{ prop: 'name', length: 8 },
-										]}">
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>就業承認</td>
-								<td>000000000001</td>
-								<td>
-									<div class="combo-box"
-										data-bind="ntsComboBox: {
-										options: roleSetList,
-										optionsValue: 'code',
-										visibleItemsCount: 10,
-										value: selectedCode,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'code', length: 2 },
-											{ prop: 'name', length: 8 },
-										]}">
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>就業承認</td>
-								<td>000000000001</td>
-								<td>
-									<div class="combo-box"
-										data-bind="ntsComboBox: {
-										options: roleSetList,
-										optionsValue: 'code',
-										visibleItemsCount: 10,
-										value: selectedCode,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'code', length: 2 },
-											{ prop: 'name', length: 8 },
-										]}">
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>就業承認</td>
-								<td>000000000001</td>
-								<td>
-									<div class="combo-box"
-										data-bind="ntsComboBox: {
-										options: roleSetList,
-										optionsValue: 'code',
-										visibleItemsCount: 10,
-										value: selectedCode,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'code', length: 2 },
-											{ prop: 'name', length: 8 },
-										]}">
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>就業承認</td>
-								<td>000000000001</td>
-								<td>
-									<div class="combo-box"
-										data-bind="ntsComboBox: {
-										options: roleSetList,
-										optionsValue: 'code',
-										visibleItemsCount: 10,
-										value: selectedCode,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'code', length: 2 },
-											{ prop: 'name', length: 8 },
-										]}">
-									</div>
-								</td>
-							</tr>
+							</tr>							
 						</tbody>
 					</table>
 				</div>
@@ -239,30 +119,7 @@
 										<td>就業承認</td>
 										<td>000000000001</td>
 									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-									</tr>
+									
 								</tbody>
 							</table>
 						</div>
@@ -289,36 +146,7 @@
 										<td>000000000001</td>
 										<td>000000000001</td>
 									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-										<td>000000000001</td>
-									</tr>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-										<td>000000000001</td>
-									</tr>
+									
 								</tbody>
 							</table>
 						</div>

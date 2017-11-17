@@ -9,112 +9,131 @@ module nts.uk.com.view.cas014.a {
     import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
-            //            currentData: KnockoutObservable<DataModel>;
-            //            isUpdate: boolean = false;
-            //            isEnableButtonProceedA: KnockoutObservable<boolean>;
-            checked: KnockoutObservable<boolean>;
             date: KnockoutObservable<string>;
-            
-            roleSetList: KnockoutObservableArray<RoleSet>;
-            selectedCode: KnockoutObservable<string>;
-            
+
+            roleSetList: Array<RoleSet>;
+            jobTitleList: Array<JobTitle>;
+
+            roleSetJobTitle: KnockoutObservable<RoleSetJobTitle>;
+
             constructor() {
                 let self = this;
-                self.checked = ko.observable(true);
                 self.date = ko.observable(new Date().toISOString());
-                self.roleSetList = ko.observableArray([
-                    new RoleSet('01', '基本給'),
-                    new RoleSet('02', '役職手当'),
-                    new RoleSet('03', '役職手当'),
-                    new RoleSet('04', '役職手当'),
-                    new RoleSet('05', '役職手当'),
-                    new RoleSet('06', '基本給')
-                ]);
-        
-                self.selectedCode = ko.observable('1');
-                
-                $(".fixed-table").ntsFixedTable({ height: 200 });
-                //                let self = this,
-                //                    dataModel = new DataModel(null);
-                //                self.currentData = ko.observable(dataModel);
-                //                self.isEnableButtonProceedA = ko.observable(true);
+
             }
 
             //startPage(): void {
-            startPage(): JQueryPromise<any> {
+            startPage(date?: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
                 block.invisible();
-                //                new service.Service().getAllPerInfoCtg().done(function(data: IData) {
-                //                    self.isUpdate = false;
-                //                    self.currentData(new DataModel(data));
-                //                    if (data && data.categoryList && data.categoryList.length > 0) {
-                //                        self.isUpdate = true;
-                //                        self.currentData().perInfoCtgSelectCode(data.categoryList[0].id);
-                //                        self.currentData().isEnableButtonProceed(true);
-                //                    } else {
-                //                        self.register();
-                //                    }
+
+                new service.Service().getAllData(self.date()).done(function(data: any) {
+                    if (data) {
+                        self.roleSetList = [
+                            new RoleSet('01', '基本給'),
+                            new RoleSet('02', '役職手当'),
+                            new RoleSet('03', '役職手当'),
+                            new RoleSet('04', '役職手当'),
+                            new RoleSet('05', '役職手当'),
+                            new RoleSet('06', '基本給')
+                        ];
+
+                        self.jobTitleList = [
+                            new JobTitle('000001', '01', 'job title 1'),
+                            new JobTitle('000002', '02', 'job title 2'),
+                            new JobTitle('000003', '03', 'job title 3'),
+                            new JobTitle('000004', '04', 'job title 4'),
+                            new JobTitle('000005', '05', 'job title 5'),
+                            new JobTitle('000006', '06', 'job title 6'),
+                            new JobTitle('000007', '07', 'job title 7'),
+                            new JobTitle('000008', '08', 'job title 8'),
+                            new JobTitle('000009', '09', 'job title 9'),
+                        ];
+
+                        self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(false, self.jobTitleList, self.roleSetList));
+                    } else {
+                        self.roleSetList = [
+                            new RoleSet('01', 'Role Set 1'),
+                            new RoleSet('02', 'Role Set 2'),
+                            new RoleSet('03', 'Role Set 3'),
+                            new RoleSet('04', 'Role Set 4'),
+                            new RoleSet('05', 'Role Set 5'),
+                            new RoleSet('06', 'Role Set 6')
+                        ];
+
+                        self.jobTitleList = [
+                            new JobTitle('000001', '01', 'job title 1'),
+                            new JobTitle('000002', '02', 'job title 2'),
+                            new JobTitle('000003', '03', 'job title 3'),
+                            new JobTitle('000004', '04', 'job title 4'),
+                            new JobTitle('000005', '05', 'job title 5'),
+                            new JobTitle('000006', '06', 'job title 6'),
+                            new JobTitle('000007', '07', 'job title 7'),
+                            new JobTitle('000008', '08', 'job title 8'),
+                            new JobTitle('000009', '09', 'job title 9'),
+                            new JobTitle('000010', '10', 'job title 10')
+                        ];
+
+                        self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(false, self.jobTitleList, self.roleSetList));
+                    }
+                    $(".fixed-table").ntsFixedTable({ height: 200 });
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError("shit happened!");
+                    dfd.reject();
+                });
                 block.clear();
-                dfd.resolve();
-                //                })
-                //
+
+                /*copy from ccg013
+                // Get list jobtitle
+                service.getAllJobTitle(self.date()).done(function(listJobTitle: Array<viewmodel.TitleMenu>) {
+                    listJobTitle = _.orderBy(listJobTitle, ["code"], ["asc"]);
+                    _.each(listJobTitle, function(obj: viewmodel.TitleMenu) {
+                        self.listJobTitle.push(new TitleMenu(obj.code, obj.name, obj.id, obj.startDate, obj.endDate));
+                        self.listJobId.push(obj.id);
+                    });
+                    // get list for combobox
+                    self.getListCombobox();
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                    dfd.reject();
+                });
+                */
+                //alert('input date: ' + self.date());
                 return dfd.promise();
             }
 
-//            setDefault() {
-//                var self = this;
-//                nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
-//            }
-            
-            reloadData(newCtgName?: string) {
-                //                let self = this,
-                //                    dfd = $.Deferred();
-                //                new service.Service().getAllPerInfoCtg().done(function(data: IData) {
-                //                    self.isUpdate = false;
-                //                    if (data && data.categoryList && data.categoryList.length > 0) {
-                //                        self.currentData().categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
-                //                        self.isUpdate = true;
-                //                        self.currentData().isEnableButtonProceed(true);
-                //                        if (newCtgName) {
-                //                            let newCtg = _.find(data.categoryList, item => { return item.categoryName == newCtgName });
-                //                            self.currentData().perInfoCtgSelectCode(newCtg ? newCtg.id : "");
-                //                        }
-                //                    } else {
-                //                        self.register();
-                //                    }
-                //                    dfd.resolve();
-                //                })
-                //                return dfd.promise();
+            //            setDefault() {
+            //                var self = this;
+            //                nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValuned);
+            //            }
+
+            reloadData() {
+                //alert('input date: ' + self.);
             }
 
             register() {
-                //                let self = this;
-                //                nts.uk.ui.errors.clearAll();
-                //                self.currentData().perInfoCtgSelectCode("");
-                //                self.currentData().currentCtgSelected(new PerInfoCtgModel(null));
-                //                self.isUpdate = false;
-                //                $("#category-name-control").focus();
-                //                self.currentData().isEnableButtonProceed(true);
-                //                self.currentData().isEnableButtonOpenDialog(false);
-                //                self.currentData().isHisTypeUpdateModel(false);
-            }
+                let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails = [];
+                _.each(data.details, d => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
 
-            addUpdateData() {
-                //                let self = this;
-                //                block.invisible();
+                let command: any = {
+                    applyToConcurrentPerson: data.applyToConcurrentPerson,
+                    details: regDetails
+                };
+                block.invisible();
                 //                if (!self.currentData().currentCtgSelected().perInfoCtgName()) {
                 //                    return;
                 //                }
                 //                if (self.isUpdate) {
                 //                    let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
-                //                    new service.Service().updatePerInfoCtg(updateCategory).done(function() {
-                //                        self.reloadData();
-                //                        info({ messageId: "Msg_15" }).then(() => { block.clear(); });
-                //                    }).fail(error => {
-                //                        alertError({ messageId: error.message });
-                //                         block.clear();
-                //                    });
+                new service.Service().registerData(command).done(function() {
+                    info({ messageId: "Msg_15" }).then(() => { block.clear(); });
+                }).fail(error => {
+                    alertError({ messageId: error.message });
+                    block.clear();
+                });
                 //                } else {
                 //                    let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
                 //                    new service.Service().addPerInfoCtg(newCategory).done(() => {
@@ -140,185 +159,53 @@ module nts.uk.com.view.cas014.a {
                 //                }
             }
 
-            openDialogB() {
-                //                let self = this;
-                //                block.invisible();
-                //                setShared('categoryId', self.currentData().perInfoCtgSelectCode());
-                //                modal("/view/cps/005/b/index.xhtml").onClosed(() => {
-                //                    let ctgCode = self.currentData().perInfoCtgSelectCode();
-                //                    self.currentData().perInfoCtgSelectCode("");
-                //                    self.currentData().perInfoCtgSelectCode(ctgCode);
-                //                    block.clear();
-                //                });
-            }
         }
     }
 
-    //    export class DataModel {
-    //        categoryList: KnockoutObservableArray<PerInfoCtgModel> = ko.observableArray([]);
-    //        perInfoCtgSelectCode: KnockoutObservable<string> = ko.observable("");
-    //        currentCtgSelected: KnockoutObservable<PerInfoCtgModel> = ko.observable(new PerInfoCtgModel(null));
-    //        isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(true);
-    //        isEnableButtonOpenDialog: KnockoutObservable<boolean> = ko.observable(false);
-    //        isHisTypeUpdateModel: KnockoutObservable<boolean> = ko.observable(false);
-    //        historyClassification: Array<any> = [
-    //            { code: 1, name: getText("CPS005_53") },
-    //            { code: 2, name: getText("CPS005_54") },
-    //        ];
-    //        //<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
-    //        historyTypes: Array<any> = new Array<any>();
-    //        //mapping CategoryType enum value = 1 or 2. Theo thiết kế không lấy từ enum CategoryType
-    //        singleMultipleType: Array<any> = [
-    //            { value: 1, name: getText("CPS005_55") },
-    //            { value: 2, name: getText("CPS005_56") },
-    //        ];
-    //        constructor(data: IData) {
-    //            let self = this;
-    //            if (data) {
-    //                self.categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
-    //                self.historyTypes = data.historyTypes ? data.historyTypes.splice(0, 3) : [];
-    //            }
-    //            //subscribe select category code
-    //            self.perInfoCtgSelectCode.subscribe(newId => {
-    //                if (textUK.isNullOrEmpty(newId)) return;
-    //                nts.uk.ui.errors.clearAll();
-    //                new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
-    //                    self.currentCtgSelected(new PerInfoCtgModel(data));
-    //                    self.isHisTypeUpdateModel(true);
-    //                    self.isEnableButtonProceed(true);
-    //                    self.isEnableButtonOpenDialog(true);
-    //                    if (self.currentCtgSelected().fixedIsSelected()) {
-    //                        self.isEnableButtonProceed(false);
-    //                    }
-    //                    $('#category-name-control').focus();
-    //                });
-    //            });
-    //        }
-    //    }
-
-    //    export class PerInfoCtgModel {
-    //        id: string = "";
-    //        categoryName: string = "";
-    //        perInfoCtgName: KnockoutObservable<string> = ko.observable("");
-    //        historyFixedName: string = "";
-    //        categoryType: number = 1;
-    //        categoryTypeName: string = "";
-    //        historyClassSelected: KnockoutObservable<number> = ko.observable(1);
-    //        historyClassSelectedText: KnockoutObservable<string> = ko.observable("");
-    //        // historyTypesSelected and singleMulTypeSelected == categoryType
-    //        historyTypesSelected: KnockoutObservable<number> = ko.observable(1);
-    //        singleMulTypeSelected: KnockoutObservable<number> = ko.observable(1);
-    //        itemNameList: KnockoutObservableArray<PerInfoItemModel> = ko.observableArray([]);
-    //        //all visiable
-    //        historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    //        fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
-    //        constructor(data: IPersonInfoCtg) {
-    //            let self = this;
-    //            if (data) {
-    //                self.id = data.id || "";
-    //                self.categoryName = data.categoryName || "";
-    //                self.perInfoCtgName(data.categoryName || "");
-    //                self.itemNameList(_.map(data.itemNameList, item => { return new PerInfoItemModel(item) }));
-    //                self.historyFixedName = (data.categoryType == 1 || data.categoryType == 2) ? getText("CPS005_54") : getText("CPS005_53");
-    //                self.categoryType = data.categoryType;
-    //                switch (self.categoryType) {
-    //                    case 1:
-    //                        self.categoryTypeName = getText("CPS005_55");
-    //                        break;
-    //                    case 2:
-    //                        self.categoryTypeName = getText("CPS005_56");
-    //                        break;
-    //                    case 3:
-    //                        self.categoryTypeName = getText("Enum_HistoryTypes_CONTINUOUS");
-    //                        break;
-    //                    case 4:
-    //                        self.categoryTypeName = getText("Enum_HistoryTypes_NO_DUPLICATE");
-    //                        break;
-    //                    case 5:
-    //                        self.categoryTypeName = getText("Enum_HistoryTypes_DUPLICATE");
-    //                        break;
-    //                }
-    //                self.historyClassSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);
-    //                self.singleMulTypeSelected(data.categoryType || 1);
-    //                self.historyTypesDisplay(false);
-    //                if (self.historyClassSelected() == 1) {
-    //                    self.historyTypesSelected(data.categoryType - 2);
-    //                    self.singleMulTypeSelected(1);
-    //                    self.historyTypesDisplay(true);
-    //                    self.historyClassSelectedText(getText("CPS005_53"));
-    //                } else {
-    //                    self.historyClassSelectedText(getText("CPS005_54"));
-    //                }
-    //                self.fixedIsSelected(data.isFixed == 1 ? true : false);
-    //            }
-    //            //subscribe select history type (1: history, 2: not history)
-    //            self.historyClassSelected.subscribe(newHisClassification => {
-    //                if (textUK.isNullOrEmpty(newHisClassification)) return;
-    //                self.historyTypesDisplay(false);
-    //                if (newHisClassification == 1) {
-    //                    self.historyTypesDisplay(true);
-    //                }
-    //            });
-    //        }
-    //    }
-
-    //    export class PerInfoItemModel {
-    //        itemName: string;
-    //        constructor(itemName: string) {
-    //            let self = this;
-    //            self.itemName = itemName;
-    //        }
-    //    }
-    //
-    //    export class AddPerInfoCtgModel {
-    //        categoryName: string;
-    //        categoryType: number;
-    //        constructor(data: PerInfoCtgModel) {
-    //            let self = this;
-    //            self.categoryName = data.perInfoCtgName();
-    //            if (data.historyClassSelected() == 2) {
-    //                self.categoryType = data.singleMulTypeSelected();
-    //            } else {
-    //                self.categoryType = data.historyTypesSelected() + 2;
-    //            }
-    //        }
-    //    }
-    //
-    //    export class UpdatePerInfoCtgModel {
-    //        id: string
-    //        categoryName: string;
-    //        categoryType: number;
-    //        constructor(data: PerInfoCtgModel) {
-    //            let self = this;
-    //            self.id = data.id;
-    //            self.categoryName = data.perInfoCtgName();
-    //            if (data.historyClassSelected() == 2) {
-    //                self.categoryType = data.singleMulTypeSelected();
-    //            } else {
-    //                self.categoryType = data.historyTypesSelected() + 2;
-    //            }
-    //        }
-    //    }
-    //
-    //    interface IData {
-    //        historyTypes: any;
-    //        categoryList: Array<IPersonInfoCtg>;
-    //    }
-    //
-    //    interface IPersonInfoCtg {
-    //        id: string;
-    //        categoryName: string;
-    //        isFixed?: number;
-    //        categoryType?: number;
-    //        itemNameList?: Array<string>;
-    //    }
-    class RoleSet {
+    export class RoleSet {
         code: string;
         name: string;
-    
+
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    export class JobTitle {
+        id: string;
+        code: string;
+        name: string;
+
+        constructor(id: string, code: string, name: string) {
+            this.id = id;
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    export class RoleSetJobTitleDetail {
+        roleSetCd: KnockoutObservable<string>;
+        jobTitleId: string;
+        roleSetList: Array<RoleSet>;
+        jobTitle: JobTitle;
+
+        constructor(jobTitle: JobTitle, roleSetList: Array<RoleSet>) {
+            this.roleSetCd = ko.observable(roleSetList[0].code);
+            this.jobTitleId = jobTitle.id;
+            this.jobTitle = jobTitle;
+            this.roleSetList = roleSetList;
+        }
+    }
+
+    export class RoleSetJobTitle {
+        applyToConcurrentPerson: KnockoutObservable<boolean>;
+        details: KnockoutObservableArray<RoleSetJobTitleDetail>;
+
+        constructor(applyToConcurrentPerson: boolean, jobTitleList: Array<JobTitle>, roleSetList: Array<RoleSet>) {
+            this.applyToConcurrentPerson = ko.observable(applyToConcurrentPerson);
+            this.details = ko.observableArray([]);
+            _.each(jobTitleList, j => this.details.push(new RoleSetJobTitleDetail(j, roleSetList)));
         }
     }
 }
