@@ -300,4 +300,19 @@ body>div:nth-child(4) {
 	margin-top: -8px;
 }
 
+.ntsCheckBox-label{
+	width: 130px;
+}
 
+#faxNo{
+	margin-left: -50px;
+}
+
+.cf1{
+	margin-left: -70px;
+}
+
+#switchhelpbtn{
+    margin-left: 30px;
+    height: 27px;
+}

@@ -3,6 +3,9 @@ module cmm001.a.service {
         getAll: "bs/company/findCom",
         findDiv: "bs/employee/workplacedifferinfor/findDiv",
         findSys: "sys/env/usatr/findSys",
+        findPost: "contact/postalcode/findAll",
+        findPostId: "contact/postalcode/find",
+        findPostCd: "contact/postalcode/findByCode", 
         
         getCompanyDetail: "ctx/proto/company/findCompanyDetail",
         addCompany: "ctx/proto/company/adddata",
@@ -17,8 +20,20 @@ module cmm001.a.service {
         return nts.uk.request.ajax(paths.findDiv, param);     
     }
      
-    export function getSys(param: any): JQueryPromise<void>{
+    export function getSys(vari: any): JQueryPromise<void>{
         return nts.uk.request.ajax(paths.findSys, vari);     
+    }
+    
+    export function findPost(){
+        return nts.uk.request.ajax(paths.findPost);    
+    }
+    
+    export function findPostId(vari: String): JQueryPromise<void>{
+        return nts.uk.request.ajax("com", paths.findPostId + "/" + vari);     
+    }
+    
+    export function findPostCd(vari: String): JQueryPromise<void>{
+        return nts.uk.request.ajax("com", paths.findPostCd + "/" + vari);     
     }
 //    /**
 //     * get list company

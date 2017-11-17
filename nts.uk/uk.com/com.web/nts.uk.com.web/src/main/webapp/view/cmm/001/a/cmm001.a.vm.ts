@@ -16,7 +16,13 @@ module cmm001.a {
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
         itemList: KnockoutObservable<any>;
         hasFocus: KnockoutObservable<boolean> = ko.observable(true);
-
+        selectedRuleCode: KnockoutObservable<number>;
+        roundingRules:  KnockoutObservableArray<RoundingRule>;
+        selectedRuleCode1: KnockoutObservable<number>;
+        selectedRuleCode2: KnockoutObservable<number>;
+        roundingRules3: KnockoutObservableArray<RoundingRule>;
+        selectedRuleCode3: KnockoutObservable<number>;
+        
         constructor() {
             let self = this;
             self.tabs = ko.observableArray([
@@ -43,7 +49,7 @@ module cmm001.a {
                 { headerText: '会社コード', prop: 'companyCode', width: 80 },
                 { headerText: '名称', prop: 'companyName', width: 220 },
                 { headerText: '廃止', prop: 'isAbolition', width: 75,
-                    template: '{{if ${isAbolition} == 1}} <img src="../images/78.png" style="margin-left: 20px; width: 20px; height: 20px;" /> {{/if}}', }
+                    template:  '{{if ${isAbolition} == 1}} <img src="../images/78.png" style="margin-left: 20px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'}
             ]);
             self.sel001Data = ko.observableArray([]);
             self.itemList = ko.observableArray(itemArray);
@@ -51,6 +57,48 @@ module cmm001.a {
             self.currentCompany = ko.observable(null);
             self.currentCompanyCode = ko.observable('');
             self.sel001Data = ko.observableArray([]);
+            self.selectedRuleCode = ko.observable(0);
+            self.selectedRuleCode1 =  ko.observable(0);
+            self.selectedRuleCode2 =  ko.observable(0);
+            self.selectedRuleCode3 = ko.observable(0);
+            
+            self.roundingRules = ko.observableArray([
+                new RoundingRule(1, nts.uk.resource.getText("CMM001_31")),
+                new RoundingRule(0, nts.uk.resource.getText("CMM001_32"))
+            ]);
+            self.roundingRules3= ko.observableArray([
+                new RoundingRule(1, nts.uk.resource.getText("CMM001_35")),
+                new RoundingRule(0, nts.uk.resource.getText("CMM001_35"))
+            ]);
+            
+            self.currentCompanyCode.subscribe((value) => {
+                if (value) {
+                    let foundItem = _.find(self.sel001Data(), (item) => {
+                        return item.companyCode == value;
+                    });
+                    self.currentCompany(new CompanyModel(foundItem));
+                    self.currentCompany().addinfor(new AddInfor(foundItem.addinfor));
+                    console.log(self.currentCompany());
+                    let param = {
+                        companyId: self.currentCompany().companyId(),
+                        companyCode: self.currentCompany().companyCode()    
+                    }
+                    service.getDiv(param).done((div) => {
+                        console.log(div);
+                        self.currentCompany().regWorkDiv(div.regWorkDiv); 
+                        self.selectedRuleCode3(self.currentCompany().regWorkDiv());   
+                    })
+                    service.getSys(param).done((sys) => {
+                        console.log(sys); 
+                        self.currentCompany().jinji(sys.jinji);
+                        self.currentCompany().kyuyo(sys.kyuyo);
+                        self.currentCompany().shugyo(sys.shugyo);   
+                        self.selectedRuleCode(self.currentCompany().jinji());
+                        self.selectedRuleCode1(self.currentCompany().shugyo());
+                        self.selectedRuleCode2(self.currentCompany().kyuyo());
+                    })
+                }
+            })
         }
 
         
@@ -67,14 +115,8 @@ module cmm001.a {
                     companyId: '000000000000-0001',
                     companyCode: '0001'    
                 }
-                service.getDiv(param).done((div) => {
-                    console.log(div);    
-                })
-                
-                
                 self.sel001Data(lst);  
-                    
-               console.log(self.sel001Data());
+                self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 dfd.resolve(); 
             }).fail(function(error){
                     dfd.reject();
@@ -171,21 +213,50 @@ module cmm001.a {
 //        editMode: boolean = true;// mode reset or not reset
         // yen
         companyCode: KnockoutObservable<string>;
-        comNameKana?: KnockoutObservable<string>;
+        comNameKana: KnockoutObservable<string>;
         companyId: KnockoutObservable<string>;
-        companyName?: KnockoutObservable<string>;
+        companyName: KnockoutObservable<string>;
         contractCd: KnockoutObservable<string>;
-        isAbolition: KnockoutObservable<any> = ko.observable();
-        repJob?: KnockoutObservable<string>;
-        repname?: KnockoutObservable<string>;
-        shortComName?: KnockoutObservable<string>;
+        isAbolition: KnockoutObservable<number> ;
+        repJob: KnockoutObservable<string>;
+        repname: KnockoutObservable<string>;
+        shortComName: KnockoutObservable<string>;
         startMonth: KnockoutObservable<number>;
-        taxNum?: KnockoutObservable<number>;
-        addinfor?: KnockoutObservable<IAddInfor>;
-        regWorkDiv?: KnockoutObservable<number>;
+        taxNum: KnockoutObservable<number>;
+        addinfor: KnockoutObservable<AddInfor>;
+        regWorkDiv: KnockoutObservable<number>;
+        jinji: KnockoutObservable<number>;
+        kyuyo: KnockoutObservable<number>;
+        shugyo: KnockoutObservable<number>;
         constructor(param: ICompany) {
             let self = this;
-
+            this.companyCode = ko.observable(param.companyCode);
+            this.comNameKana = ko.observable(param.comNameKana);
+            this.companyId = ko.observable(param.companyId);
+            this.companyName = ko.observable(param.companyName);
+            this.contractCd = ko.observable(param.contractCd);
+            this.isAbolition = ko.observable(param.isAbolition);
+            this.repJob = ko.observable(param.repJob);
+            this.repname = ko.observable(param.repname);
+            this.shortComName = ko.observable(param.shortComName);
+            this.startMonth = ko.observable(param.startMonth);
+            this.taxNum = ko.observable(param.taxNum);
+            this.addinfor = ko.observable(new AddInfor({
+                addKana_1: "",
+                addKana_2: "",
+                add_1: "",
+                add_2: "",
+                companyCode: "",
+                companyId: "",
+                contractCd: "",
+                faxNum: "",
+                phoneNum: "",
+                postCd: ""    
+            }));
+            this.regWorkDiv = ko.observable(param.regWorkDiv);
+            this.jinji = ko.observable(param.jinji);
+            this.kyuyo = ko.observable(param.kyuyo);
+            this.shugyo = ko.observable(param.shugyo);
         }
     }
 
@@ -215,7 +286,7 @@ module cmm001.a {
         companyId: string;
         companyName?: string;
         contractCd: string;
-        isAbolition: any;
+        isAbolition: number;
         repJob?: string;
         repname?: string;
         shortComName?: string;
@@ -223,6 +294,10 @@ module cmm001.a {
         taxNum?: number;
         addinfor?:  IAddInfor;
         regWorkDiv?: number;
+        jinji?: number;
+        kyuyo?: number;
+        shugyo?: number;
+        roundingRules: RoundingRule;
     }
 
     interface IAddInfor{
@@ -239,27 +314,27 @@ module cmm001.a {
     } 
     
     export class AddInfor{
-        addKana_1: string;
-        addKana_2: string;
-        add_1: string;
-        add_2: string;
-        companyCode: string;
-        companyId: string;
-        contractCd: string;
-        faxNum: string;  
-        phoneNum: string;
-        postCd: string;
+        addKana_1: KnockoutObservable<string>;
+        addKana_2: KnockoutObservable<string>;
+        add_1: KnockoutObservable<string>;
+        add_2: KnockoutObservable<string>;
+        companyCode: KnockoutObservable<string>;
+        companyId: KnockoutObservable<string>;
+        contractCd: KnockoutObservable<string>;
+        faxNum: KnockoutObservable<string>;  
+        phoneNum: KnockoutObservable<string>;
+        postCd: KnockoutObservable<string>;
         constructor(param: IAddInfor){
-            this.addKana_1 = param.addKana_1;
-            this.addKana_2 = param.addKana_2;
-            this.add_1 = param.add_1;
-            this.add_2 = param.add_2;
-            this.companyCode = param.companyCode;
-            this.companyId = param.companyId;
-            this.contractCd = param.contractCd;
-            this.faxNum = param.faxNum;
-            this.phoneNum = param.phoneNum;
-            this.postCd = param.postCd;    
+            this.addKana_1 = ko.observable(param.addKana_1 || "");
+            this.addKana_2 = ko.observable(param.addKana_2 || "");
+            this.add_1 = ko.observable(param.add_1 || "");
+            this.add_2 = ko.observable(param.add_2 || "");
+            this.companyCode = ko.observable(param.companyCode || "");
+            this.companyId = ko.observable(param.companyId || "");
+            this.contractCd = ko.observable(param.contractCd || "");
+            this.faxNum = ko.observable(param.faxNum || "");
+            this.phoneNum = ko.observable(param.phoneNum || "");
+            this.postCd = ko.observable(param.postCd || "");    
         }
     }
       
@@ -270,9 +345,9 @@ module cmm001.a {
 //    }
     
     class RoundingRule {
-        code: string;
+        code: number;
         name: string;
-        constructor(code: string, name: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }
