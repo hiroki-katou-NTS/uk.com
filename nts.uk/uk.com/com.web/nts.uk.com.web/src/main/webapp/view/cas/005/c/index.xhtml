@@ -5,20 +5,21 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 1130, height: 680 };</script>
+			<com:stylefile path="csa005.c.main.css" />
+			
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="ccg025.a.main.css" />
-			<com:scriptfile path="ccg025.a.start.js" />
-			<com:scriptfile path="ccg025.a.vm.js" />
-			<com:scriptfile path="ccg025.a.service.js" />
-			<com:scriptfile path="component/component.service.js" />
-			<com:scriptfile path="component/component.vm.js" />
-			<com:stylefile path="component/component.main.css" />
+			<com:scriptfile path="csa005.cb.vm.js" />
+			<com:scriptfile path="csa005.c.service.js" />
+			<com:scriptfile path="csa005.c.start.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area" style="margin-top: 30px;margin-left: 30px">
-				<ui:include src="component/index.xhtml" />
+				<div id="pannel-top" data-bind="ntsPanel:{width: '400px', height: '430px', direction: '', showIcon: true, visible: true}">
+					
+				</div> 
 			</div>
 		</ui:define>
 
