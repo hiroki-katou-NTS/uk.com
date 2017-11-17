@@ -26,6 +26,8 @@ public class UpdateItemInitValueSettingCommand {
 	
 	private int itemType;
 	
+	private int isRequired;
+	
 	// dataType của item
 	private int dataType;
 	
