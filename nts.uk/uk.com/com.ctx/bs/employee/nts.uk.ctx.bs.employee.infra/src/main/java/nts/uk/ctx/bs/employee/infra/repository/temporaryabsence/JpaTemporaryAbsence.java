@@ -42,8 +42,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 				entity[5] == null ? null : (GeneralDate) entity[5],
 				entity[6] == null ? null : entity[6].toString(), 
 				entity[7] == null ? null : entity[7].toString(), 
-				entity[8] == null ? null :(GeneralDate) entity[8],
-				entity[9] == null ? null :(Integer) entity[9]);
+				entity[8] == null ? null : (GeneralDate) entity[8],
+				entity[9] == null ? null : (Integer) entity[9]);
 	}
 
 	private List<TemporaryAbsence> toListTemporaryAbsence(List<Object[]> listEntity) {
