@@ -232,6 +232,10 @@ module nts.uk.at.view.kmk006.a {
                     } else {
                         self.treeItemCode("");
                         self.treeItemName("");
+                        if (self.itemWkpAutoCalModel) {
+                            self.itemWkpAutoCalModel.resetData();
+                            self.reLoadListEnum(self.itemWkpAutoCalModel);
+                        }                        
                     }  
                 });
 
@@ -255,6 +259,10 @@ module nts.uk.at.view.kmk006.a {
                     } else {
                         self.treeItemCode("");
                         self.treeItemName("");
+                        if (self.itemWkpJobAutoCalModel) {
+                            self.itemWkpJobAutoCalModel.resetData();
+                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);                       
+                        }
                     }  
                 });
 
@@ -271,7 +279,11 @@ module nts.uk.at.view.kmk006.a {
                     }
                     if (nts.uk.text.isNullOrEmpty(codeChanged)) {
                         self.componentItemCode("");
-                        self.componentItemName("");     
+                        self.componentItemName("");  
+                        if (self.itemWkpJobAutoCalModel) {
+                            self.itemWkpJobAutoCalModel.resetData();
+                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);
+                        }   
                     }
                 });
 
@@ -289,6 +301,10 @@ module nts.uk.at.view.kmk006.a {
                     if (nts.uk.text.isNullOrEmpty(codeChanged)) {
                         self.componentItemCode("");
                         self.componentItemName("");    
+                        if (self.itemJobAutoCalModel) {
+                            self.itemJobAutoCalModel.resetData();
+                            self.reLoadListEnum(self.itemJobAutoCalModel);
+                        }
                     }
                 });
 
