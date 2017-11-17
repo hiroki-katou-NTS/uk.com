@@ -1,25 +1,39 @@
 module cmm001.a.service {
     var paths = {
-        getAllCompanys: "ctx/proto/company/findallcompany",
+        getAll: "bs/company/findCom",
+        findDiv: "bs/employee/workplacedifferinfor/findDiv",
+        findSys: "sys/env/usatr/findSys",
+        
         getCompanyDetail: "ctx/proto/company/findCompanyDetail",
         addCompany: "ctx/proto/company/adddata",
         updateCompany: "ctx/proto/company/updatedata"
     }
-    
-    /**
-     * get list company
-     */
-    export function getAllCompanys(): JQueryPromise<Array<model.CompanyDto>> {
-        let dfd = $.Deferred<Array<model.CompanyDto>>();
-        nts.uk.request.ajax(paths.getAllCompanys)
-            .done(function(res: Array<model.CompanyDto>) {   
-                dfd.resolve(res);
-            })
-            .fail(function(res: model.CompanyDto) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+       
+     export function getAll(){
+        return nts.uk.request.ajax(paths.getAll);    
     }
+    
+    export function getDiv(param: any): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.findDiv, param);     
+    }
+     
+    export function getSys(param: any): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.findSys, vari);     
+    }
+//    /**
+//     * get list company
+//     */
+//    export function getAllCompanys(): JQueryPromise<Array<model.CompanyDto>> {
+//        let dfd = $.Deferred<Array<model.CompanyDto>>();
+//        nts.uk.request.ajax(paths.getAllCompanys)
+//            .done(function(res: Array<model.CompanyDto>) {   
+//                dfd.resolve(res);
+//            })
+//            .fail(function(res: model.CompanyDto) {
+//                dfd.reject(res);
+//            })
+//        return dfd.promise();
+//    }
     
     export function getCompanyDetail(companyCd: string): JQueryPromise<model.CompanyDto> {
         let dfd = $.Deferred<model.CompanyDto>();

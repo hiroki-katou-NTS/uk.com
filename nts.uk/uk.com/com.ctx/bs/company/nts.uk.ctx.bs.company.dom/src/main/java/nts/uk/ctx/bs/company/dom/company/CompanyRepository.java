@@ -25,7 +25,7 @@ public interface CompanyRepository {
 	
 	/** 
 	 * get all company from database
-	 * author: Hoang Yen
+	 * @author: Hoang Yen
 	 */
 	List<CompanyInforNew> findAll(String contractCd);
 	
@@ -34,8 +34,9 @@ public interface CompanyRepository {
 	 * @param contractCd
 	 * @param companyId
 	 * @param companyCd
+	 * @author: Hoang Yen
 	 * @return
-	 * author: Hoang Yen
+	 * 
 	 */
 	Optional<CompanyInforNew> findComByCode(String contractCd, String companyId, String companyCd);
 	
@@ -43,33 +44,33 @@ public interface CompanyRepository {
 	 * get address
 	 * @param companyId
 	 * @return
-	 * author: Hoang Yen
+	 * @author Hoang Yen
 	 */
 	List<AddInfor> findAdd(String companyId, String companyCode, String contractCd);
 	
 	/** 
 	 * update a company
-	 * author: Hoang Yen
+	 * @author: Hoang Yen
 	 */
 	void updateCom(CompanyInforNew company);
 	
 	/**
 	 * update add infor
 	 * @param addInfor
-	 * author: Hoang Yen
+	 * @author: Hoang Yen
 	 */
 	void updateAdd(AddInfor addInfor);
 	
 	/** 
 	 * insert a company 
-	 * author: Hoang Yen
+	 * @author: Hoang Yen
 	 */
 	void insertCom(CompanyInforNew company);
 
 	/**
 	 * insert Address information company
 	 * @param addInfor
-	 * author: Hoang Yen
+	 * @author: Hoang Yen
 	 */
 	void insertAdd(AddInfor addInfor);
 	
@@ -78,7 +79,7 @@ public interface CompanyRepository {
 	 * @param comId
 	 * @param contractCd
 	 * @param companyCode
-	 * author: Hoang Yen
+	 * @author: Hoang Yen
 	 */
 	void deleteCom(String comId, String contractCd, String companyCode);
 	

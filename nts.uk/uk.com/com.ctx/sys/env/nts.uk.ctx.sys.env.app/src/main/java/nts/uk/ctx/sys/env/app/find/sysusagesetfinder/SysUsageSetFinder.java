@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.env.app.find.sysusagesetfinder;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -19,14 +17,14 @@ public class SysUsageSetFinder {
 	 * author: Hoang Yen
 	 */
 	
-	public Optional<SysUsageSetDto> finder(ParamFinder param){
+	public SysUsageSetDto finder(ParamFinder param){
 		String contractCd = AppContexts.user().contractCode();
-		return  this.sysRep.findUsageSet(param.companyId, param.companyCode, contractCd)
+		return  this.sysRep.findUsageSet(param.getCompanyId(), param.getCompanyCode(), contractCd)
 											.map(c -> {
-												return new SysUsageSetDto(param.companyId, param.companyCode, contractCd,
+												return new SysUsageSetDto(param.getCompanyId(), param.getCompanyCode(), contractCd,
 														c.getJinji().value,
 														c.getShugyo().value,
 														c.getKyuyo().value);
-											});
+											}).orElse(null);
 	}
 }

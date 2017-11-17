@@ -30,6 +30,9 @@ public class CompanyInforFinder {
 			adddto = null;
 			return adddto;
 		}
+		adddto.setCompanyId(add.getCompanyId().v());
+		adddto.setCompanyCode(add.getCompanyCode().v());
+		adddto.setContractCd(add.getContractCd().v());
 		adddto.setFaxNum(add.getFaxNum().v());
 		adddto.setAdd_1(add.getAdd_1().v());
 		adddto.setAdd_2(add.getAdd_2().v());
@@ -55,7 +58,7 @@ public class CompanyInforFinder {
 															x.getIsAbolition().value, x.getRepname().v(),
 															x.getRepjob().v(), x.getComNameKana().v(),
 															x.getShortComName().v(), contractCd, 
-															x.getTaxNo(), fromDomainAdd(x.getAddInfor()));
+															x.getTaxNo().v(), fromDomainAdd(x.getAddInfor()));
 							}).collect(Collectors.toList());
 	}
 }

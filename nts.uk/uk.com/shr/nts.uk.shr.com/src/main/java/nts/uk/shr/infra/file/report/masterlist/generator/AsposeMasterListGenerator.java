@@ -31,7 +31,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private final String REPORT_ID = "MASTER_LIST";
 	
-	private final String REPORT_FILE_NAME = "マスターリスト_{TYPE}_{DATE}.xlsx";
+	private final String REPORT_FILE_NAME = "マスターリスト_{TYPE}_{DATE}";
 	
 	private final int HEADER_INFOR_START_ROW = 0;
 	
@@ -82,13 +82,13 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		
 		switch (dataSource.getReportType()) {
 		case CSV:
-			reportContext.saveAsCSV(this.createNewFile(generatorContext, reportName));
+			reportContext.saveAsCSV(this.createNewFile(generatorContext, reportName + ".csv"));
 			break;
 		case EXCEL:
-			reportContext.saveAsExcel(this.createNewFile(generatorContext, reportName));
+			reportContext.saveAsExcel(this.createNewFile(generatorContext, reportName + ".xlsx"));
 			break;
 		case PDF:
-			reportContext.saveAsPdf(this.createNewFile(generatorContext, reportName));
+			reportContext.saveAsPdf(this.createNewFile(generatorContext, reportName + ".pdf"));
 			break;
 		default:
 			break;

@@ -2,7 +2,9 @@ package nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.socialinsura
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class FamilySocialInsuranceCommand {
@@ -12,11 +14,11 @@ public class FamilySocialInsuranceCommand {
 	private String familyMemberId;
 	
 	/**  社員ID*/
-	@PeregItem("")
+	@PeregEmployeeId
 	private String sid;
 	
 	/** 家族社会保険ID */
-	@PeregItem("")
+	@PeregRecordId
 	private String socailInsuaranceId;
 	
 	/** 開始日 */

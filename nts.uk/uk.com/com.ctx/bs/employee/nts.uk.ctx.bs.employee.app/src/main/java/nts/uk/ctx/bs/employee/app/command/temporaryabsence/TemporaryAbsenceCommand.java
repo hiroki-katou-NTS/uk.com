@@ -2,16 +2,20 @@ package nts.uk.ctx.bs.employee.app.command.temporaryabsence;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class TemporaryAbsenceCommand {
 
 	
 	/**社員ID*/
+	@PeregEmployeeId
 	private String employeeId;
 	
 	/**休職休業ID*/
+	@PeregRecordId
 	private String tempAbsenceId;
 	
 	/**temporary absence state*/
