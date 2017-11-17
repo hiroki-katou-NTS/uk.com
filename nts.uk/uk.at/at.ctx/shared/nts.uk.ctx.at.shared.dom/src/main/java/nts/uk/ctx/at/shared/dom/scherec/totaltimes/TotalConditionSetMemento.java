@@ -37,4 +37,5 @@ public interface TotalConditionSetMemento {
 	 */
 	void  setThresoldLowerLimit(ConditionThresholdLimit setThresoldLowerLimit);
 
+	void setAtdItemId(Integer atdItemId);
 }

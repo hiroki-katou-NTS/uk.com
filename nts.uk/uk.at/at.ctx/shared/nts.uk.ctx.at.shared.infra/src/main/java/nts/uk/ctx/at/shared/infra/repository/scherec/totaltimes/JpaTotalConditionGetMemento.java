@@ -74,5 +74,11 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	public ConditionThresholdLimit getThresoldLowerLimit() {
 		return new ConditionThresholdLimit((int)this.entity.getThresoldLowerLimit());
 	}
+	
+	
+	@Override
+	public Integer getAtdItemId() {
+		return (int)this.entity.getAtdItemId();
+	}
 
 }
