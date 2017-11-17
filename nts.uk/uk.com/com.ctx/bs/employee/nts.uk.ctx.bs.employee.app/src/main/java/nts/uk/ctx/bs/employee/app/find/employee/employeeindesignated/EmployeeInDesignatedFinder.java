@@ -55,9 +55,6 @@ public class EmployeeInDesignatedFinder {
 	@Inject
 	private PersonRepository personRepo;
 	
-//	@Inject
-//	private StatusOfEmploymentPub employmentStatusPub;
-	
 	/**
 	 * Search emp by workplace list.
 	 *
@@ -74,14 +71,13 @@ public class EmployeeInDesignatedFinder {
 		
 		// EmployeeInDesignatedDto
 		List<EmployeeInDesignatedDto> empListInDesignatedTotal = new ArrayList<>();
-		// ForEach Workplace Id (Input), get Employees In Designated (Employee with Status)
-		input.getWorkplaceIdList().stream().forEach(wp-> {
-			List<EmployeeInDesignatedDto> empListInDesignated = this.getEmpInDesignated(wp, input.getReferenceDate(),
-					input.getEmpStatus());
-			if (!CollectionUtil.isEmpty(empListInDesignated)) {
-				empListInDesignatedTotal.addAll(empListInDesignated);
-			}
-		});
+		// Workplace Id List (Input), get Employees In Designated (Employee
+		// with Status)
+		List<EmployeeInDesignatedDto> empListInDesignated = this.getEmpInDesignated(input.getWorkplaceIdList(),
+				input.getReferenceDate(), input.getEmpStatus());
+		if (!CollectionUtil.isEmpty(empListInDesignated)) {
+			empListInDesignatedTotal.addAll(empListInDesignated);
+		}
 		empListInDesignatedTotal.stream().distinct();
 		
 		// Check isEmpty of Employee In Designated List
@@ -103,15 +99,7 @@ public class EmployeeInDesignatedFinder {
 		}).collect(Collectors.toList());
 		
 		// List WorkplaceInfo
-		List<WorkplaceInfo> workplaceInfoList = new ArrayList<>();
-		// ForEach Workplace Id List: Get WorkplaceInfo By Workplace Id
-		workplaceList.stream().forEach(wkpId -> {
-			// find workplace Info by workplace Id
-			Optional<WorkplaceInfo> workplaceInfoOpt = this.workplaceInfoRepo.findByWkpId(wkpId, input.getReferenceDate());
-			if (workplaceInfoOpt.isPresent()) {
-				workplaceInfoList.add(workplaceInfoOpt.get());
-			}
-		});
+		List<WorkplaceInfo> workplaceInfoList = this.workplaceInfoRepo.getByWkpIds(workplaceList, input.getReferenceDate());
 		
 		// Get All Employee Domain from Employee Id List Above 
 		List<Employee> employeeList = this.empRepo.findByListEmployeeId(AppContexts.user().companyId(), empIdList);
@@ -173,9 +161,9 @@ public class EmployeeInDesignatedFinder {
 	 * @param empStatus the emp status
 	 * @return the emp in designated
 	 */
-	public List<EmployeeInDesignatedDto> getEmpInDesignated(String workplaceId, GeneralDate referenceDate,
+	public List<EmployeeInDesignatedDto> getEmpInDesignated(List<String> workplaceIds, GeneralDate referenceDate,
 			List<Integer> empStatus) {
-		List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo.getByWorkplaceID(workplaceId,
+		List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo.getByWorkplaceIDs(workplaceIds,
 				referenceDate);
 		// check exist data
 		if (CollectionUtil.isEmpty(affWorkplaceHistList)) {
@@ -230,10 +218,11 @@ public class EmployeeInDesignatedFinder {
 		// List Entry Job History
 		List<JobEntryHistory> listEntryJobHist = employee.getListEntryJobHist();
 		
-		// Solution for a Temporary Case (DB is unavailable: List of JobEntryHistory is empty)
+		// TODO: Solution for a Temporary Case (DB is unavailable: List of JobEntryHistory is empty)
 		if (CollectionUtil.isEmpty(listEntryJobHist)) {
 			statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
 			return statusOfEmploymentExport;
+			//	throw new RuntimeException("Data is invalid. Please check again.")
 		}
 		// End of Solution
 		

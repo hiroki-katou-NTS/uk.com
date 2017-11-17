@@ -76,15 +76,12 @@ module nts.uk.com.view.cdl009.a {
              */
             private searchEmp(): void {
                 let self = this;
-//                console.log(self.multiSelectedTree() + "search");
                 if (!self.multiSelectedTree() || self.multiSelectedTree().length == 0) {
                     if (self.target() == TargetClassification.WORKPLACE) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                     } else {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_647" });
                     }
-                    
-//                    .then(() => nts.uk.ui.windows.close());
                     return;
                 }
 
@@ -157,7 +154,6 @@ module nts.uk.com.view.cdl009.a {
                 if (self.isMultiSelect()) {
                     if ((!self.selectedEmps() || self.selectedEmps().length == 0)) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
-//                        return;
                     } else {
                         setShared('CDL009Output', self.selectedEmps());
                         close();
@@ -165,7 +161,6 @@ module nts.uk.com.view.cdl009.a {
                     
                 } else if (!self.selectedEmployeeId() && !isNoSelectRowSelected) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
-//                    return;
                 } else {
                     setShared('CDL009Output', self.selectedEmployeeId());
                     close();

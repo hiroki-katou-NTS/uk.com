@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.info;
@@ -273,6 +273,38 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#
+	 * getByWkpIds(java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<WorkplaceInfo> getByWkpIds(List<String> wkpIds, GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder.createQuery(BsymtWorkplaceInfo.class);
+		Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.wkpcd).in(wkpIds));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD), baseDate));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		return em.createQuery(cq).getResultList().stream()
+				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item))).collect(Collectors.toList());
 	}
 
 }
