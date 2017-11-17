@@ -112,7 +112,7 @@ module nts.uk.at.view.ksu001.n.viewmodel {
             let self = this;
             $("#grid2").ntsGrid({
                 width: '400px',
-                height: '310px',
+                height: '315px',
                 dataSource: self.listRank(),
                 primaryKey: 'employeeCode',
                 virtualization: true,
