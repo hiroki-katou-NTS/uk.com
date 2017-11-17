@@ -56,6 +56,11 @@ module nts.uk.ui.gridlist {
                 this.currentCode(null);
                 this.currentCodeList.removeAll();
             }
+            
+            updateItem() {
+                this.items()[0].name = "test";
+                this.items.valueHasMutated();
+            }
 
             addItem() {
                 this.items.push(new ItemModel(this.count.toString(), '基本給', "description " + this.count, true, "other " + this.count));
