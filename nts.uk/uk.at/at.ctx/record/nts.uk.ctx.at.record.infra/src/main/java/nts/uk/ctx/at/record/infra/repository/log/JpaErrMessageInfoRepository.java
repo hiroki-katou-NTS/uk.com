@@ -70,6 +70,12 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 	@Override
 	public void add(ErrMessageInfo errMessageInfo) {
 		this.commandProxy().insert(toEntity(errMessageInfo));
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void addList(List<ErrMessageInfo> errMessageInfos) {
+		errMessageInfos.forEach(f -> this.commandProxy().insert(toEntity(f)));		
 	}
 
 }

@@ -18,11 +18,14 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 
 	private static final String SELECT_SUB_JOB_POS_BY_DEPT_ID = "SELECT s FROM BsymtSubJobPosition s"
 			+ " WHERE s.affiDeptId = :affiDeptId";
+	
+	private static final String SELECT_SUB_JOB_POS_BY_ID = "SELECT s FROM BsymtSubJobPosition s"
+			+ " WHERE s.subJobPosId = :subJobPosId";
 
 	private static final String SELECT_BY_EID_STD = "select s from BsymtSubJobPosition s"
 			+ " where s.bsymtCurrAffiDept.sid = :empId and s.strD <= :std and s.endD >= :std";
 
-	private SubJobPosition toDomainEmployee(BsymtSubJobPosition entity) {
+	private SubJobPosition toDomain(BsymtSubJobPosition entity) {
 		val domain = SubJobPosition.createFromJavaType(entity.subJobPosId, entity.affiDeptId, entity.jobTitleId,
 				entity.strD, entity.endD);
 		return domain;
@@ -31,7 +34,7 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 	@Override
 	public List<SubJobPosition> getSubJobPosByDeptId(String deptId) {
 		return this.queryProxy().query(SELECT_SUB_JOB_POS_BY_DEPT_ID, BsymtSubJobPosition.class)
-				.setParameter("affiDeptId", deptId).getList().stream().map(x -> this.toDomainEmployee(x))
+				.setParameter("affiDeptId", deptId).getList().stream().map(x -> this.toDomain(x))
 				.collect(Collectors.toList());
 	}
 
@@ -98,5 +101,11 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 	@Override
 	public void deleteSubJobPosition(SubJobPosition domain){
 		this.commandProxy().remove(BsymtSubJobPosition.class,domain.getSubJobPosId());
+	}
+
+	@Override
+	public Optional<SubJobPosition> getById(String id) {
+		return this.queryProxy().query(SELECT_SUB_JOB_POS_BY_ID, BsymtSubJobPosition.class)
+				.setParameter("subJobPosId", id).getSingle(x -> this.toDomain(x));
 	}
 }

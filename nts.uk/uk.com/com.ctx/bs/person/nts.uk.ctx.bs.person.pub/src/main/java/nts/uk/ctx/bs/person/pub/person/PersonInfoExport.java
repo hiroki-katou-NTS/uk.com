@@ -31,5 +31,20 @@ public class PersonInfoExport {
 	
 	/** The p mail addr. */
 	// 個人メールアドレス
-	private MailAddress pMailAddr;
+	private String pMailAddr;
+	
+	/** The p mail addr. */
+	// 個人メールアドレス
+	private int gender;
+
+	public PersonInfoExport(String personId, String personName, GeneralDate birthDay, String pMailAddr, int gender) {
+		super();
+		this.personId = personId;
+		this.personName = personName;
+		this.birthDay = birthDay;
+		this.pMailAddr = pMailAddr;
+		this.gender = gender;
+	}
+	
+	
 }
