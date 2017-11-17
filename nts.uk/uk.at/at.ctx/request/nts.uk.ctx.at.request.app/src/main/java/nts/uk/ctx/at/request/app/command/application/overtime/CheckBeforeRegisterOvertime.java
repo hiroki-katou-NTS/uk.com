@@ -59,10 +59,10 @@ public class CheckBeforeRegisterOvertime {
 				command.getDivergenceReasonContent(), command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				getOverTimeInput(command, companyId, appID));
 
-		return CheckBeforeRegister(appRoot, overTimeDomain);
+		return CheckBeforeRegister(command.getCalculateFlag(), appRoot, overTimeDomain);
 	}
 
-	public OvertimeCheckResultDto CheckBeforeRegister(Application app, AppOverTime overtime) {
+	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application app, AppOverTime overtime) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false);

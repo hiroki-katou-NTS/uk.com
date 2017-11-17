@@ -78,7 +78,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
-
+        //　初期起動時、計算フラグ=1とする。
+        calculateFlag: KnockoutObservable<number> = ko.observable(1);
         constructor() {
 
             let self = this;
@@ -234,7 +235,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 restTime: ko.toJS(self.restTime()),
                 overTimeShiftNight: 100,
                 flexExessTime: 100,
-                divergenceReasonContent: divergenceReason
+                divergenceReasonContent: divergenceReason,
+                sendMail: self.manualSendMailAtr(),
+                calculateFlag: self.calculateFlag()
             };
             //登録前エラーチェック
             service.checkBeforeRegister(overtime).done((data) => {
@@ -281,7 +284,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 //      - メールを送信する(新規) Sending mail (new) (Đã có common xử lý)      
                 //      - 画面をクリアする(起動時と同じ画面) Clear the screen (same screen as at startup)
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    //location.reload();
+                    location.reload();
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });

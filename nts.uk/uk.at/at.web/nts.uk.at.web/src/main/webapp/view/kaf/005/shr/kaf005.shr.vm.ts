@@ -193,6 +193,8 @@ module nts.uk.at.view.kaf005.share {
             overTimeShiftNight: number
             flexExessTime: number
             divergenceReasonContent: string
+            sendMail:boolean
+            calculateFlag: number
         }
         export class OverTimeInput {
             companyID: KnockoutObservable<string>
