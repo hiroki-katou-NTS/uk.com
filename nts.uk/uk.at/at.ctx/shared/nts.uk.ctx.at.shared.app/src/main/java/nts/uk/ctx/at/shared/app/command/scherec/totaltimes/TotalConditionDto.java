@@ -30,7 +30,8 @@ public class TotalConditionDto {
 	/** The thresold lower limit. */
 	private Long thresoldLowerLimit;
 	
-	private Integer atdItemId;
+	/** The attendance item id. */
+	private Integer attendanceItemId;
 
 	/**
 	 * To domain.
@@ -107,12 +108,13 @@ public class TotalConditionDto {
 			return new ConditionThresholdLimit(this.command.getThresoldLowerLimit().intValue());
 		}
 
+		
 		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionGetMemento#getAtdItemId()
+		 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionGetMemento#getAttendanceItemId()
 		 */
 		@Override
-		public Integer getAtdItemId() {
-			return this.command.getAtdItemId();
+		public Integer getAttendanceItemId() {
+			return this.command.getAttendanceItemId();
 		}
 
 	}

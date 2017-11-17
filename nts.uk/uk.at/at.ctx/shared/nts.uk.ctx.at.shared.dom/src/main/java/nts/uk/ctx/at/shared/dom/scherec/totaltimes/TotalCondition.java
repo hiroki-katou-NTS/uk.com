@@ -53,7 +53,7 @@ public class TotalCondition {
 		this.lowerLimitSettingAtr = memento.getLowerLimitSettingAtr();
 		this.thresoldUpperLimit = memento.getThresoldUpperLimit();
 		this.thresoldLowerLimit = memento.getThresoldLowerLimit();
-		this.atdItemId = memento.getAtdItemId();
+		this.atdItemId = memento.getAttendanceItemId();
 
 		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
 				&& thresoldUpperLimit.greaterThanOrEqualTo(thresoldLowerLimit)) {
@@ -72,7 +72,7 @@ public class TotalCondition {
 		memento.setThresoldLowerLimit(this.thresoldLowerLimit);
 		memento.setThresoldUpperLimit(this.thresoldUpperLimit);
 		memento.setUpperLimitSettingAtr(this.upperLimitSettingAtr);
-		memento.setAtdItemId(this.atdItemId);
+		memento.setAttendanceItemId(this.atdItemId);
 	}
 
 }

@@ -77,8 +77,8 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	
 	
 	@Override
-	public Integer getAtdItemId() {
-		return (int)this.entity.getAtdItemId();
+	public Integer getAttendanceItemId() {
+		return this.entity.getAttendanceItemId();
 	}
 
 }

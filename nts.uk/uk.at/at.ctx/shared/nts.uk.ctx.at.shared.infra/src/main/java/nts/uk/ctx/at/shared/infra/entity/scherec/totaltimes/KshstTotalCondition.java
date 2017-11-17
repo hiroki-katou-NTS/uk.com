@@ -49,9 +49,10 @@ public class KshstTotalCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "THRESOLD_LOWER_LIMIT")
 	private long thresoldLowerLimit;
 	
-	/** The atd item id. */
+	
+	/** The attendance item id. */
 	@Column(name = "ATD_ITEM_ID")
-	private int atdItemId;
+	private int attendanceItemId;
 
 	/**
 	 * Instantiates a new kshst total condition.
