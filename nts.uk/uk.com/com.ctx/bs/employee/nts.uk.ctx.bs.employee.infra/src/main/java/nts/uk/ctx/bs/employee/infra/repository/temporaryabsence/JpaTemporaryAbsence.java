@@ -33,16 +33,17 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	private static final String GETLIST_BY_SID = SELECT_NO_WHERE + " WHERE c.sid = :sid";
 
 	private TemporaryAbsence toTemporaryAbsence(Object[] entity) {
-		boolean p = entity[4].toString().indexOf("-") > 0;
-
-		return TemporaryAbsence.createSimpleFromJavaType(String.valueOf(entity[1]), String.valueOf(entity[0]),
-				Integer.valueOf(entity[2].toString()), String.valueOf(entity[3]),
-				entity[4] == null ? null : GeneralDate.fromString(entity[4].toString(), p ? "yyyy-MM-dd" : "yyyy/MM/dd"),
-				GeneralDate.fromString(entity[5].toString(), p ? "yyyy-MM-dd" : "yyyy/MM/dd"),
-				entity[6] == null ? null : String.valueOf(entity[6]),
-				entity[7] == null ? null : String.valueOf(entity[7]),
-				entity[8] == null ? null : GeneralDate.fromString(entity[8].toString(), p ? "yyyy-MM-dd" : "yyyy/MM/dd"),
-				entity[9] == null ? null : Integer.valueOf(entity[9].toString()));
+		return TemporaryAbsence.createSimpleFromJavaType(
+				entity[1] == null ? null : entity[1].toString(), 
+				entity[0] == null ? null : entity[0].toString(),
+				entity[2] == null ? null : (Integer) entity[2], 
+				entity[3] == null ? null : entity[3].toString(),
+				entity[4] == null ? null : (GeneralDate) entity[4], 
+				entity[5] == null ? null : (GeneralDate) entity[5],
+				entity[6] == null ? null : entity[6].toString(), 
+				entity[7] == null ? null : entity[7].toString(), 
+				entity[8] == null ? null :(GeneralDate) entity[8],
+				entity[9] == null ? null :(Integer) entity[9]);
 	}
 
 	private List<TemporaryAbsence> toListTemporaryAbsence(List<Object[]> listEntity) {
