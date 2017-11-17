@@ -171,7 +171,7 @@ public class CheckBeforeRegisterOvertime {
 		return inputCommand.stream()
 				.filter(item -> item.getStartTime() != 0 || item.getEndTime() != 0 || item.getApplicationTime() != 0)
 				.map(item -> OverTimeInput.createSimpleFromJavaType(Cid, appId, attendanceId, item.getFrameNo(),
-						item.getStartTime(), item.getEndTime(), item.getApplicationTime()))
+						item.getStartTime(), item.getEndTime(), item.getApplicationTime(),item.getTimeItemTypeAtr()))
 				.collect(Collectors.toList());
 	}
 }

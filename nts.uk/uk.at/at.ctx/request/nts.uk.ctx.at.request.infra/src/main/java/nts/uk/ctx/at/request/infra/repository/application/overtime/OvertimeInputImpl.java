@@ -38,7 +38,8 @@ public class OvertimeInputImpl extends JpaRepository implements OvertimeInputRep
 				entity.getKrqdtOvertimeInputPK().getFrameNo(),
 				entity.getStartTime(),
 				entity.getEndTime(),
-				entity.getApplicationTime());
+				entity.getApplicationTime(),
+				entity.getKrqdtOvertimeInputPK().getTimeItemTypeAtr());
 	}
 
 }

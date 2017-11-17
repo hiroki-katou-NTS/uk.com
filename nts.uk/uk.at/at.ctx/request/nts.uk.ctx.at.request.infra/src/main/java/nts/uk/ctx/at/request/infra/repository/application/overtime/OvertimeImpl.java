@@ -43,7 +43,7 @@ public class OvertimeImpl extends JpaRepository implements OvertimeRepository {
 		List<KrqdtOvertimeInput> overtimeInputs = domain.getOverTimeInput().stream()
 				.map(item -> {
 					KrqdtOvertimeInputPK pk =  new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
-							item.getAttendanceID().value, item.getFrameNo());
+							item.getAttendanceID().value, item.getFrameNo(),item.getTimeItemTypeAtr().value);
 					return new KrqdtOvertimeInput(pk, item.getStartTime().v(), item.getEndTime().v(),
 							item.getApplicationTime().v());
 				})
