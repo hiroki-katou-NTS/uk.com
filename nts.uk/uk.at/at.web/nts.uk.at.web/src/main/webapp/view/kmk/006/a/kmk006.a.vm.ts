@@ -212,7 +212,7 @@ module nts.uk.at.view.kmk006.a {
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 
 
-                //subscribe 
+                //subscribe
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
                     if(!nts.uk.text.isNullOrEmpty(codeChanged)){                        
@@ -229,7 +229,10 @@ module nts.uk.at.view.kmk006.a {
                             nts.uk.ui.block.clear();
                             self.treeItemName(data.workplaceName);                    
                         });
-                    }   
+                    } else {
+                        self.treeItemCode("");
+                        self.treeItemName("");
+                    }  
                 });
 
                 //subscribe 
@@ -249,7 +252,10 @@ module nts.uk.at.view.kmk006.a {
                             nts.uk.ui.block.clear();
                             self.treeItemName(data.workplaceName);                    
                         });
-                    }
+                    } else {
+                        self.treeItemCode("");
+                        self.treeItemName("");
+                    }  
                 });
 
                 //subscribe 
@@ -263,6 +269,10 @@ module nts.uk.at.view.kmk006.a {
                             self.componentItemCode(ent.code);
                         }
                     }
+                    if (nts.uk.text.isNullOrEmpty(codeChanged)) {
+                        self.componentItemCode("");
+                        self.componentItemName("");     
+                    }
                 });
 
                 //subscribe 
@@ -275,6 +285,10 @@ module nts.uk.at.view.kmk006.a {
                             self.componentItemName(ent.name);
                             self.componentItemCode(ent.code);
                         }
+                    }
+                    if (nts.uk.text.isNullOrEmpty(codeChanged)) {
+                        self.componentItemCode("");
+                        self.componentItemName("");    
                     }
                 });
 
@@ -511,7 +525,7 @@ module nts.uk.at.view.kmk006.a {
                         if (data) {
                             self.itemWkpAutoCalModel.updateData(data);
                         } else {
-                            self.itemWkpAutoCalModel.updateData(new WkpAutoCalSettingModel());
+                            self.itemWkpAutoCalModel.resetData();
                         }
                         if (self.itemWkpAutoCalModel) {
                             // load get all value enum
@@ -524,6 +538,8 @@ module nts.uk.at.view.kmk006.a {
                     }).always(() => {
                         //nts.uk.ui.block.clear();
                     });
+                } else {
+                    dfd.resolve();    
                 }               
 
                 return dfd.promise();
@@ -542,7 +558,7 @@ module nts.uk.at.view.kmk006.a {
                         if (data) {
                             self.itemJobAutoCalModel.updateData(data);                           
                         } else {
-                            self.itemJobAutoCalModel.updateData(new JobAutoCalSettingModel());
+                            self.itemJobAutoCalModel.resetData();
                         }
                         if (self.itemJobAutoCalModel) {
                             // load get all value enum
@@ -555,6 +571,8 @@ module nts.uk.at.view.kmk006.a {
                     }).always(() => {
                         //nts.uk.ui.block.clear();
                     });
+                } else {
+                    dfd.resolve();    
                 }               
 
                 return dfd.promise();
@@ -571,7 +589,7 @@ module nts.uk.at.view.kmk006.a {
                         if (data) {
                             self.itemWkpJobAutoCalModel.updateData(data);
                         } else {
-                            self.itemWkpJobAutoCalModel.updateData(new WkpJobAutoCalSettingModel());
+                            self.itemWkpJobAutoCalModel.resetData();
                         }                       
                         if (self.itemWkpJobAutoCalModel) {
                             // load get all value enum
@@ -584,7 +602,9 @@ module nts.uk.at.view.kmk006.a {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-                }
+                } else {
+                    dfd.resolve();    
+                } 
                 
                 return dfd.promise();
             }
@@ -1000,7 +1020,7 @@ module nts.uk.at.view.kmk006.a {
                 self.loadWkpAlreadySettingList().done(function() {
                     $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
                         self.loadWkpAutoCal(self.multiSelectedWorkplaceId()).then(() => {nts.uk.ui.block.clear();});                       
-                    });
+                    });                  
                 });
             }
 
