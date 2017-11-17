@@ -3,14 +3,21 @@ module nts.uk.at.view.kdw001.j {
     import shareModel = nts.uk.at.view.kdw001.share.model;
     export module viewmodel {
         export class ScreenModel {
+
             params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
             closureID: any = __viewContext.transferred.value.closureID;
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
 
+            //model bind at right screen data-bind:with
+            currentItem: KnockoutObservable<CaseSpecExeContent>;
+
             //Declare for grid list
-            items: KnockoutObservableArray<ItemModel>;
+            items: KnockoutObservableArray<model.CaseSpecExeContentJS>;
+            //Declare for binding to right screen side
+            items2: KnockoutObservableArray<model.CaseSpecExeContent>;
+
             //columns: KnockoutObservableArray<NtsGridListColumn>;
             columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
@@ -26,19 +33,18 @@ module nts.uk.at.view.kdw001.j {
                 var self = this;
                 self.params.setParamsScreenA({ closure: self.closureID });
 
-                //import cScreenModel, dScreenModel
-                self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
-                self.dScreenmodel = new nts.uk.at.view.kdw001.d.viewmodel.ScreenModel();
+                self.currentItem = ko.observable();
 
                 //Init for grid list
-                this.items = ko.observableArray([]);
+                self.items = ko.observableArray([]);
+                self.items2 = ko.observableArray([]);
 
-                this.columns2 = ko.observableArray([
+                self.columns2 = ko.observableArray([
                     { headerText: getText('KDW001_32'), key: 'caseSpecExeContentID', width: 70, hidden: false },
                     { headerText: getText('KDW001_85'), key: 'useCaseName', width: 200 }
                 ]);
 
-                this.currentCode = ko.observable();
+                self.currentCode = ko.observable();
 
                 //Init wizard
                 self.stepList = [
@@ -48,20 +54,38 @@ module nts.uk.at.view.kdw001.j {
                 ];
                 self.activeStep = ko.observable(0);
 
-                //Get activeStep value from a screen or c screen
-                __viewContext.transferred.ifPresent(data => {
-                    self.activeStep(data.activeStep);
+                //import cScreenModel, dScreenModel
+                self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
+                self.dScreenmodel = new nts.uk.at.view.kdw001.d.viewmodel.ScreenModel();
+
+                self.currentCode.subscribe(newValue => {
+
+                    let itemSelection = _.find(self.items2(), function(item: model.CaseSpecExeContent) {
+                        return item.caseSpecExeContentID() == newValue;
+                    });
+
+                    //Set data cho view model data-binding: with
+                    self.currentItem(itemSelection);
+
                 });
-                //self.stepSelected = ko.observable({ id: 'step-2', content: '.step-2' });
             }
 
             start() {
                 let self = this;
                 service.getAllCaseSpecExeContent().done(function(data) {
+
+                    //List ObjectJS
                     let items = _.map(data, item => {
-                        return new CaseSpecExeContent(item);
+                        return new model.CaseSpecExeContentJS(item);
                     });
                     self.items(items);
+
+
+                    //List Object Knockout
+                    let items2 = _.map(data, item => {
+                        return new model.CaseSpecExeContent(item);
+                    });
+                    self.items2(items2);
 
                     //Set first select
                     self.currentCode(self.items()[0].caseSpecExeContentID);
@@ -197,10 +221,8 @@ module nts.uk.at.view.kdw001.j {
 
             }
 
+      
             opendScreenC() {
-                //nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0 });
-                //                let self = this;
-                //                self.activeStep(0);
                 $("#wizard").ntsWizard("prev");
             }
 
@@ -209,25 +231,198 @@ module nts.uk.at.view.kdw001.j {
             }
         }
 
-        //Define CaseSpecExeContent 
-        export class CaseSpecExeContent {
-            caseSpecExeContentID: string;
-            orderNumber: number;
-            useCaseName: string;
+        //module model
+        export module model {
 
-            constructor(x: ICaseSpecExeContent) {
-                let self = this;
-                self.caseSpecExeContentID = x.caseSpecExeContentID;
-                self.orderNumber = x.orderNumber;
-                self.useCaseName = x.useCaseName;
+            //Define CaseSpecExeContent JS
+            export class CaseSpecExeContentJS {
+                caseSpecExeContentID: string;
+                orderNumber: number;
+                useCaseName: string;
+
+                reflectApprovalSetInfo: SetInforReflAprResult;
+                dailyCreationSetInfo: SettingInforForDailyCreation;
+                dailyCalSetInfo: CalExeSettingInfor;
+                monlyAggregationSetInfo: CalExeSettingInfor;
+
+                constructor(x: ICaseSpecExeContent) {
+                    let self = this;
+                    self.caseSpecExeContentID = x.caseSpecExeContentID;
+                    self.orderNumber = x.orderNumber;
+                    self.useCaseName = x.useCaseName;
+
+                    self.reflectApprovalSetInfo = x.reflectApprovalSetInfo;
+                    self.dailyCreationSetInfo = x.dailyCreationSetInfo;
+                    self.dailyCalSetInfo = x.dailyCalSetInfo;
+                    self.monlyAggregationSetInfo = x.monlyAggregationSetInfo;
+                }
             }
-        }
 
-        export interface ICaseSpecExeContent {
-            caseSpecExeContentID: string;
-            orderNumber: number;
-            useCaseName: string;
-        }
+            //Define CaseSpecExeContent knockout
+            export class CaseSpecExeContent {
+                caseSpecExeContentID: KnockoutObservable<string>;
+                orderNumber: KnockoutObservable<number>;
+                useCaseName: KnockoutObservable<string>;
+
+                reflectApprovalSetInfo: KnockoutObservable<SetInforReflAprResult>;
+                dailyCreationSetInfo: KnockoutObservable<SettingInforForDailyCreation>;
+                dailyCalSetInfo: KnockoutObservable<CalExeSettingInfor>;
+                monlyAggregationSetInfo: KnockoutObservable<CalExeSettingInfor>;
+
+                constructor(x: ICaseSpecExeContent) {
+                    let self = this;
+                    if (x) {
+                        self.caseSpecExeContentID = ko.observable(x.caseSpecExeContentID);
+                        self.orderNumber = ko.observable(x.orderNumber);
+                        self.useCaseName = ko.observable(x.useCaseName);
+
+                        self.reflectApprovalSetInfo = ko.observable(x.reflectApprovalSetInfo);
+                        self.dailyCreationSetInfo = ko.observable(x.dailyCreationSetInfo);
+                        self.dailyCalSetInfo = ko.observable(x.dailyCalSetInfo);
+                        self.monlyAggregationSetInfo = ko.observable(x.monlyAggregationSetInfo);
+                    } else {
+                        self.caseSpecExeContentID = ko.observable("");
+                        self.orderNumber = ko.observable(0);
+                        self.useCaseName = ko.observable("");
+
+                        self.reflectApprovalSetInfo = ko.observable(null);
+                        self.dailyCreationSetInfo = ko.observable(null);
+                        self.dailyCalSetInfo = ko.observable(null);
+                        self.monlyAggregationSetInfo = ko.observable(null);
+                    }
+                }
+            }
+
+            export interface ICaseSpecExeContent {
+                caseSpecExeContentID: string;
+                orderNumber: number;
+                useCaseName: string;
+
+                reflectApprovalSetInfo: SetInforReflAprResult;
+                dailyCreationSetInfo: SettingInforForDailyCreation;
+                dailyCalSetInfo: CalExeSettingInfor;
+                monlyAggregationSetInfo: CalExeSettingInfor;
+            }
+
+            /**
+             * class SetInforReflAprResult 
+             */
+            export class SetInforReflAprResult {
+                executionType: number;
+                executionTypeName: string;
+                forciblyReflect: boolean;
+
+                constructor(x: any) {
+                    let self = this;
+                    if (x) {
+                        self.executionType = x.executionType;
+                        self.executionTypeName = x.executionTypeName;
+                        self.forciblyReflect = x.forciblyReflect;
+                    } else {
+                        self.executionType = 0;
+                        self.executionTypeName = "";
+                        self.forciblyReflect = false;
+                    }
+                }
+            }//end classSetInforReflAprResult
+
+            /**
+             * class SettingInforForDailyCreation
+             */
+            export class SettingInforForDailyCreation {
+                executionType: number;
+                executionTypeName: string;
+                creationType: number;
+                partResetClassification: PartResetClassification;
+
+                constructor(x: any) {
+                    let self = this;
+                    if (x) {
+                        self.executionType = x.executionType;
+                        self.executionTypeName = x.executionTypeName;
+                        self.creationType = x.creationType;
+                        self.partResetClassification = x.partResetClassification;
+                    } else {
+                        self.executionType = 0;
+                        self.executionTypeName = "";
+                        self.creationType = 0;
+                        self.partResetClassification = null;
+                    }
+                }
+            }//end class SettingInforForDailyCreation
+
+            /**
+             * class CalExeSettingInfor
+             */
+            export class CalExeSettingInfor {
+                executionContent: number;
+                executionType: number;
+                executionTypeName: string;
+                calExecutionSetInfoID: string;
+                caseSpecExeContentID: string;
+
+                constructor(x: any) {
+                    let self = this;
+                    if (x) {
+                        self.executionContent = x.executionContent;
+                        self.executionType = x.executionType;
+                        self.executionTypeName = x.executionTypeName;
+                        self.calExecutionSetInfoID = x.calExecutionSetInfoID;
+                        self.caseSpecExeContentID = x.caseSpecExeContentID;
+                    } else {
+                        self.executionContent = 0;
+                        self.executionType = 0;
+                        self.executionTypeName = "";
+                        self.calExecutionSetInfoID = "";
+                        self.caseSpecExeContentID = "";
+                    }
+                }//end class ExecutionTime
+            }//end class CalExeSettingInfor
+
+            /**
+             * class PartResetClassification
+             */
+            export class PartResetClassification {
+                //マスタ再設定
+                masterReconfiguration: boolean;
+                //休業再設定
+                closedHolidays: boolean;
+                // 就業時間帯再設定
+                resettingWorkingHours: boolean;
+                // 打刻のみ再度反映
+                reflectsTheNumberOfFingerprintChecks: boolean;
+                // 特定日区分再設定
+                specificDateClassificationResetting: boolean;
+                // 申し送り時間再設定
+                resetTimeAssignment: boolean;
+                // 育児・介護短時間再設定
+                resetTimeChildOrNurseCare: boolean;
+                // 計算区分再設定
+                calculationClassificationResetting: boolean;
+                constructor(
+                    masterReconfiguration: boolean,
+                    closedHolidays: boolean,
+                    resettingWorkingHours: boolean,
+                    reflectsTheNumberOfFingerprintChecks: boolean,
+                    specificDateClassificationResetting: boolean,
+                    resetTimeAssignment: boolean,
+                    resetTimeChildOrNurseCare: boolean,
+                    calculationClassificationResetting: boolean) {
+
+                    this.masterReconfiguration = masterReconfiguration;
+                    this.closedHolidays = closedHolidays;
+                    this.resettingWorkingHours = resettingWorkingHours;
+                    this.reflectsTheNumberOfFingerprintChecks = reflectsTheNumberOfFingerprintChecks;
+                    this.specificDateClassificationResetting = specificDateClassificationResetting;
+                    this.resetTimeAssignment = resetTimeAssignment;
+                    this.resetTimeChildOrNurseCare = resetTimeChildOrNurseCare;
+                    this.calculationClassificationResetting = calculationClassificationResetting;
+
+                }
+            }//end class PartResetClassification
+
+        }//end module model
+
     }
 
 }
