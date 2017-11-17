@@ -295,7 +295,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }*/
             // 残業時間
             if(attendanceId == 1){
-                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
+                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D')
+                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D')
             }
             /*// 休出時間
             if(attendanceId == 2){
