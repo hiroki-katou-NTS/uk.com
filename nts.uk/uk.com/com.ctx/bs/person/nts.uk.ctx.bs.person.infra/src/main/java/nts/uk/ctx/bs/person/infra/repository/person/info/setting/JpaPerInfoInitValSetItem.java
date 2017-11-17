@@ -43,15 +43,17 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
-
+			+ " AND CM.itemType = 2"
 			+ " INNER JOIN  PpemtPerInfoItem ITEM" + " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
 			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =  ITEM.perInfoCtgId " + " AND ITEM.perInfoCtgId =:perInfoCtgId"
+			+ " AND ITEM.abolitionAtr = 0 "
 
 			+ " INNER JOIN PpemtPerInfoItemOrder E"
 			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "
 			+ " AND ITEM.perInfoCtgId = E.perInfoCtgId"
+	
 			
-			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"			
+			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"	
 			+ " ORDER BY E.disporder";
 	
 	// SONNLB
@@ -480,5 +482,14 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		} else {
 			this.commandProxy().insert(toEntity(item));
 		}
+	}
+
+	@Override
+	public boolean isExistItem(String settingId, String perInfoCtgId) {
+		List<PerInfoInitValueSetItem> itemlist = this.getAllItem(settingId, perInfoCtgId);
+		if(itemlist.size() > 0) {
+			return true;
+		}
+		return false;
 	}
 }
