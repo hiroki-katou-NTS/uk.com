@@ -61,7 +61,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	private MailSender mailSender;
 	
 	@Override
-	public List<String> screenAfterDelete(String companyID,String appID) {
+	public List<String> screenAfterDelete(String companyID,String appID, Long version) {
 		ApplicationType appType = applicationRepo.getAppById(companyID, appID).get().getApplicationType();
 		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
 				.get().getSendMailWhenRegisterFlg();
@@ -130,7 +130,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		}
 
 		//TODO delete domaim Application
-		applicationRepo.deleteApplication(companyID, appID);
+		applicationRepo.deleteApplication(companyID, appID, version);
 		//TODO hien thi thong tin Msg_16 
 		/*if (converList != null) {
 			//TODO Hien thi thong tin 392

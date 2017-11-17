@@ -258,13 +258,15 @@ module nts.uk.at.view.kaf009.share {
             reasonID: string;
             displayOrder: number;
             reasonTemp: string;
-            constructor(companyId: string, appType: number, reasonID: string, displayOrder: number, reasonTemp: string) {
+            defaultFlg: number
+            constructor(companyId: string, appType: number, reasonID: string, displayOrder: number, reasonTemp: string, defaultFlg: number) {
                 var self = this;
                 self.companyId = companyId;
                 self.appType = appType;
                 self.reasonID = reasonID;
                 self.displayOrder = displayOrder;
                 self.reasonTemp = reasonTemp;
+                self.defaultFlg = defaultFlg;
             }
 
         };
