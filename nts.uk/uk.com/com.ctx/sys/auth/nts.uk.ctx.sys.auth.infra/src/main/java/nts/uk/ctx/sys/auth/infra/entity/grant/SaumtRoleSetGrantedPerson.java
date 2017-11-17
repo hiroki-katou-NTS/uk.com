@@ -44,12 +44,12 @@ public class SaumtRoleSetGrantedPerson extends UkJpaEntity implements Serializab
 	@Basic(optional = false)
 	@Column(name = "START_DATE")
     @Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate startDate;
+	public GeneralDate startDate;
     
 	@Basic(optional = false)
     @Column(name = "END_DATE")
     @Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate endDate;
+	public GeneralDate endDate;
 
 	@Override
 	protected Object getKey() {

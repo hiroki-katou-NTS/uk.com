@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.dom.grant;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -25,5 +26,15 @@ public class RoleSetGrantedPerson extends AggregateRoot {
 
 	// 社員ID
 	private String employeeID;
+
+	public RoleSetGrantedPerson(String roleSetCd, String companyId, GeneralDate startDate, GeneralDate endDate, String employeeID) {
+		super();
+		this.roleSetCd = new RoleSetCode(roleSetCd);
+		this.companyId = companyId;
+		this.validPeriod = new DatePeriod(startDate, endDate);
+		this.employeeID = employeeID;
+	}
+	
+	
 
 }
