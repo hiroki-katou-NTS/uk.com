@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
 import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
 
 @Stateless
-public class JobTitleAdapterImpl implements JobTitleAdapter {
+public class AuthJobTitleAdapterImpl implements JobTitleAdapter {
 	@Inject
 	private SyJobTitlePub syJobTitlePub;
 
