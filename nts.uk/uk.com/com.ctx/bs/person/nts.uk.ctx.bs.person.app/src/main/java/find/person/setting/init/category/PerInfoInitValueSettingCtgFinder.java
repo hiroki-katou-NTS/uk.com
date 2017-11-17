@@ -30,6 +30,9 @@ public class PerInfoInitValueSettingCtgFinder {
 		String companyId = AppContexts.user().companyId();
 
 		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId, settingId);
+//				.stream()
+//				.filter(c -> (this.settingItemRepo.isExistItem(settingId, c.getPerInfoCtgId())))
+//				.collect(Collectors.toList());
 
 		if (ctgLst.size() > 0) {
 

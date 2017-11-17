@@ -23,6 +23,8 @@ public class PerInfoInitValueSetItemFinder {
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
+//				.stream().filter(c -> (c.getDataType() != 0))
+//				.collect(Collectors.toList());
 		if (item != null) {
 			List<PerInfoInitValueSettingItemDto> itemDto = item.stream().map(c -> {
 				if (c.getDataType() == 6) {
