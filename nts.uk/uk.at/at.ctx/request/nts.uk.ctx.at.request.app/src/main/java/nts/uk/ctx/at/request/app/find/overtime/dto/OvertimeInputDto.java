@@ -25,7 +25,7 @@ public class OvertimeInputDto {
 	/**
 	 * 勤怠項目Name
 	 */
-	private String attendanceName;
+	private String frameName;
 	
 	/**
 	 * 開始時間

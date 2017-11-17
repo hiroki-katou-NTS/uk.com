@@ -5,7 +5,6 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 
 @AllArgsConstructor
 @Getter
@@ -29,13 +28,15 @@ public class VerticalCalItem extends DomainObject {
     private DisplayAtr displayAtr;
     
     /* 累計区分 */
-    private CumulativeAtr cumulativeAtr;
+    private int cumulativeAtr;
     
     /* 属性 */
     private Attributes attributes;
     
     // 端数処理
- 	private Rounding rounding;
+ 	private int rounding;
+ 	
+ 	private int roundingProcessing;
  	
  	private int dispOrder;
  	
@@ -54,6 +55,9 @@ public class VerticalCalItem extends DomainObject {
  	// F
  	private FormulaNumerical numerical;
  	
+ 	//G
+ 	private FormulaUnitprice unitprice;
+ 	
  	/**
  	 * author: Hoang Yen
  	 */
@@ -61,24 +65,28 @@ public class VerticalCalItem extends DomainObject {
  													String itemId, String itemName, 
  													int calculateAtr, int displayAtr, 
  													int cumulativeAtr, int attributes, 
- 													int rounding, int dispOrder, 
+ 													int rounding, int roundingProcessing,
+ 													int dispOrder, 
  													FormBuilt formBuilt,
  													FormTime formTime,
  													FormPeople formPeople,
  													FormulaAmount formulaAmount,
- 													FormulaNumerical numerical){
+ 													FormulaNumerical numerical,
+ 													FormulaUnitprice unitprice){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
  				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
- 				EnumAdaptor.valueOf(cumulativeAtr, CumulativeAtr.class), 
+ 				cumulativeAtr, 
  				EnumAdaptor.valueOf(attributes, Attributes.class),
- 				EnumAdaptor.valueOf(rounding, Rounding.class),
+ 				rounding,
+ 				roundingProcessing,
  				dispOrder,
  				formBuilt,
  				formTime,
  				formPeople,
  				formulaAmount,
- 				numerical);
+ 				numerical,
+ 				unitprice);
  	}
  	
  	public void validate(int index) {
@@ -113,9 +121,9 @@ public class VerticalCalItem extends DomainObject {
 					break;
 					
 				case AVERAGE_PRICE:
-		//			if (this.formPeople == null) {
-		//				throw new BusinessException("Msg_111", String.valueOf(index));
-		//			}
+					if (this.unitprice == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
 					break;
 					
 				default:

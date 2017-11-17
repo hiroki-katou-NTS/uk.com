@@ -16,5 +16,5 @@ public class KrcstCaseSpecExeContentPK implements Serializable {
 	
 	@Column(name = "OPERATION_CASE_ID")
 	public String caseSpecExeContentID;
-
+	
 }

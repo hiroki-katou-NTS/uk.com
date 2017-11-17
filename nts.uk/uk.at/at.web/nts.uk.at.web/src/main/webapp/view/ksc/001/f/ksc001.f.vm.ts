@@ -59,8 +59,11 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                         self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                         self.executionTotal = ko.observable('0');
                         self.executionError = ko.observable('0');
-                        self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate).format("YYYY/MM/DD HH:mm:ss");
-                        self.periodInfo = nts.uk.resource.getText("KSC001_46", [moment(data.period.startDate).format('YYYY/MM/DD'), (moment(data.period.endDate).format('YYYY/MM/DD'))])
+                        self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate)
+                            .format("YYYY/MM/DD HH:mm:ss");
+                        self.periodInfo = nts.uk.resource.getText("KSC001_46",
+                            [data.period.startDate,
+                            data.period.endDate])
                         self.inputData = inputData;
                         dfd.resolve();
                     });
@@ -105,14 +108,18 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 service.findScheduleExecutionLogById(self.inputData.executionId).done(function(data) {
                     self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                     service.findAllScheduleErrorLog(self.inputData.executionId).done(function(errorLogs){
+                        // check error log
                         if (errorLogs && errorLogs.length > 0) {
                             self.isError(true);
+                            
+                            // resize windows
                             var windowSize = nts.uk.ui.windows.getSelf();
                             windowSize.$dialog.dialog('option', {
                                 width: 650,
                                 height: 700
                             });
                             windowSize.$dialog.resize();
+                            // update error to view
                             self.errorLogs(errorLogs); 
                         }
                     });

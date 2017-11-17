@@ -24,8 +24,7 @@ public class FormulaUnitPriceCommand {
 	/** 単価 **/
 	private int unitPrice;
 
-	public FormulaUnitprice toDomainUnitPrice(String companyId, String verticalCalCd, String verticalCalItemId,
-			int attendanceAtr, int unitPrice) {
+	public FormulaUnitprice toDomainUnitPrice(String companyId, String verticalCalCd, String verticalCalItemId) {
 		return FormulaUnitprice.createFromJavatype(companyId, verticalCalCd, verticalCalItemId, attendanceAtr,
 				unitPrice);
 	}

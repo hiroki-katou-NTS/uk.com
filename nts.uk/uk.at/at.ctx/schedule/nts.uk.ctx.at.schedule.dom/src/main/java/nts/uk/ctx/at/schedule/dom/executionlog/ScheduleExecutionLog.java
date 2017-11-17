@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -32,7 +33,6 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The execution date time. */
 	// 実行日時
-	@Setter
 	private ExecutionDateTime executionDateTime;
 
 	/** The execution employee id. */
@@ -70,6 +70,13 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		memento.setExecutionDateTime(this.executionDateTime);
 		memento.setExecutionEmployeeId(this.executionEmployeeId);
 		memento.setPeriod(this.period);
+	}
+	
+	/**
+	 * Sets the execution time to now.
+	 */
+	public void setExecutionTimeToNow() {
+		this.executionDateTime = new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now());
 	}
 	
 }

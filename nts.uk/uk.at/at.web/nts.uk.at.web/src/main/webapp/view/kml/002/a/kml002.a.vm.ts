@@ -66,16 +66,16 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             //A3_10 + A3_11
             self.workSchedule = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_Include") },
-                { code: '1', name: nts.uk.resource.getText("Enum_Exclude") }
+                { code: '0', name: nts.uk.resource.getText("Enum_IncludeAtr_Include") },
+                { code: '1', name: nts.uk.resource.getText("Enum_IncludeAtr_Exclude") }
             ]);
             
             self.workScheduleSelected = ko.observable(0); 
             
             //A3_6 + A3_7
             self.units = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_Daily") },
-                { code: '1', name: nts.uk.resource.getText("Enum_Time_Zone") }
+                { code: '0', name: nts.uk.resource.getText("Enum_Unit_DAILY") },
+                { code: '1', name: nts.uk.resource.getText("Enum_Unit_BY_TIME_ZONE") }
             ]);
             
             self.unitSelected = ko.observable(0); 
@@ -141,7 +141,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             formTime: self.calculatorItems()[i].formTime,
                             formPeople: self.calculatorItems()[i].formPeople,
                             amount: self.calculatorItems()[i].amount,
-                            numerical: self.calculatorItems()[i].numerical
+                            numerical: self.calculatorItems()[i].numerical,
+                            unitPrice: self.calculatorItems()[i].unitPrice
                         };
                         
                         items.push(new CalculatorItem(item));
@@ -172,7 +173,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 formTime: self.calculatorItems()[i].formTime,
                                 formPeople: self.calculatorItems()[i].formPeople,
                                 amount: self.calculatorItems()[i].amount,
-                                numerical: self.calculatorItems()[i].numerical
+                                numerical: self.calculatorItems()[i].numerical,
+                                unitPrice: self.calculatorItems()[i].unitPrice
                             };
                             
                             items.push(new CalculatorItem(item));
@@ -213,18 +215,19 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 settingMethod: data.verticalCalItems[i].calculateAtr,
                                 formula: "",
                                 displayAtr: data.verticalCalItems[i].displayAtr,
-                                total: 0,
+                                total: data.verticalCalItems[i].cumulativeAtr,
                                 rounding: data.verticalCalItems[i].rounding,
-                                fraction: 0,
+                                fraction: data.verticalCalItems[i].roundingProcessing,
                                 order: data.verticalCalItems[i].dispOrder,
                                 attrEnable: false,
                                 settingMethodEnable: false,
                                 totalEnable: data.verticalCalItems[i].attributes == 4 ? false : true,
-                                formBuilt: data.verticalCalItems[0].formBuilt,
-                                formTime: data.verticalCalItems[0].formTime,
-                                formPeople: data.verticalCalItems[0].formPeople,
-                                amount: data.verticalCalItems[0].amount,
-                                numerical: data.verticalCalItems[0].numerical
+                                formBuilt: data.verticalCalItems[i].formBuilt,
+                                formTime: data.verticalCalItems[i].formTime,
+                                formPeople: data.verticalCalItems[i].formPeople,
+                                amount: data.verticalCalItems[i].amount,
+                                numerical: data.verticalCalItems[i].numerical,
+                                unitPrice: data.verticalCalItems[i].unitPrice
                             };
 
                             items.push(new CalculatorItem(item));
@@ -318,7 +321,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 attribute: 0,
                 itemName: '',
                 settingMethod: 0,
-                formula: 'A + B + C',
+                formula: '',
                 displayAtr: 0,
                 total: 0,
                 rounding: 0,
@@ -331,10 +334,20 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 formTime: null,
                 formPeople: null,
                 amount: null,
-                numerical: null
+                numerical: null,
+                unitPrice: null
             };
             
             self.calculatorItems.push(new CalculatorItem(item)); 
+        }
+        
+        /**
+         * Formula filter.
+         */
+        formularFilter() {
+            let self = this;
+            
+            
         }
         
         /**
@@ -394,6 +407,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 var dataB = self.dataB == null ? self.calculatorItems()[i].formBuilt : self.dataB;
                 var dataC = self.dataC == null ? self.calculatorItems()[i].formTime : self.dataC;
                 var dataD = self.dataD == null ? self.calculatorItems()[i].formPeople : self.dataD;
+                var dataE = self.dataE == null ? self.calculatorItems()[i].amount : self.dataE;
+                var dataF = self.dataF == null ? self.calculatorItems()[i].numerical : self.dataF;
+                var dataG = self.dataG == null ? self.calculatorItems()[i].unitPrice : self.dataG;
                 
                 var item = {
                     verticalCalCd: code,
@@ -401,9 +417,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     itemName: self.calculatorItems()[i].itemName(),
                     calculateAtr: self.calculatorItems()[i].settingMethod(),
                     displayAtr: self.calculatorItems()[i].displayAtr(),
-                    cumulativeAtr: self.calculatorItems()[i].fraction(),
+                    cumulativeAtr: self.calculatorItems()[i].total(),
                     attributes: self.calculatorItems()[i].attribute(),
                     rounding: self.calculatorItems()[i].rounding(),
+                    roundingProcessing: self.calculatorItems()[i].fraction(),
                     dispOrder: self.calculatorItems()[i].order(),
                     //for B screen
                     formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? dataB : null,
@@ -412,11 +429,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     //for D screen
                     formPeople: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 2 ? dataD : null,
                     //for E screen
-                    
+                    amount: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 1 ? dataE : null,
                     //for F screen
-                    
+                    numerical: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 3 ? dataF : null,
                     //for G screen
-                    
+                    unitPrice: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 4 ? dataG : null
                 };
                 
                 verticalCalItems.push(item);
@@ -506,7 +523,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 attribute: 0,
                 itemName: '',
                 settingMethod: 0,
-                formula: 'A + B + C',
+                formula: '',
                 displayAtr: 0,
                 total: 0,
                 rounding: 0,
@@ -519,7 +536,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 formTime: null,
                 formPeople: null,
                 amount: null,
-                numerical: null
+                numerical: null,
+                unitPrice: null
             };
             
             self.calculatorItems.push(new CalculatorItem(item));
@@ -563,7 +581,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         formTime: self.calculatorItems()[i].formTime,
                         formPeople: self.calculatorItems()[i].formPeople,
                         amount: self.calculatorItems()[i].amount,
-                        numerical: self.calculatorItems()[i].numerical
+                        numerical: self.calculatorItems()[i].numerical,
+                        unitPrice: self.calculatorItems()[i].unitPrice
                     };
                     
                     selectedItems.push(new CalculatorItem(item));
@@ -592,7 +611,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     formTime: selectedItems[i].formTime,
                     formPeople: selectedItems[i].formPeople,
                     amount: selectedItems[i].amount,
-                    numerical: selectedItems[i].numerical
+                    numerical: selectedItems[i].numerical,
+                    unitPrice: selectedItems[i].unitPrice
                 };
                 
                 self.calculatorItems.push(new CalculatorItem(newItem));
@@ -678,7 +698,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             // Get data form db to display on Dialog
             var dataTranfer = _.find(self.calculatorItems(), function(o) { return o.itemName() == itemName; });
-            
+                        
             var data = {
                 verticalCalCd: self.code(),
                 itemId: itemCd,
@@ -691,7 +711,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 formTime: dataTranfer.formTime,
                 formPeople: dataTranfer.formPeople,
                 amount: dataTranfer.amount,
-                numerical: dataTranfer.numerical
+                numerical: dataTranfer.numerical,
+                unitPrice: dataTranfer.unitPrice
             };
             
             nts.uk.ui.windows.setShared("KML002_A_DATA", data);
@@ -709,35 +730,95 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
 
             if(settingMethod == 1) {
-                self.passDataToDialogs(itemCd, attribute, itemName);            
-                nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {
+                self.passDataToDialogs(itemCd, attribute, itemName);
+                nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {                    
                     self.dataB = nts.uk.ui.windows.getShared("KML002_B_DATA");
+                    
+                    for(var i = 0; i < self.calculatorItems().length; i++){
+                        if(self.dataB == null) {
+                            return;
+                        }
+                        
+                        if(self.calculatorItems()[i].itemCd() == self.dataB.verticalCalItemId) {
+                            self.calculatorItems()[i].formBuilt = self.dataB;
+                        }
+                    }
                 }); 
             } else {
                 if(attribute == 0) {
                     self.passDataToDialogs(itemCd, attribute, itemName);            
                     nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {
                         self.dataC = nts.uk.ui.windows.getShared("KML002_C_DATA");
+                        
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataC == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataC.verticalCalItemId) {
+                                self.calculatorItems()[i].formTime = self.dataC;
+                            }
+                        }
                     }); 
                 } else if(attribute == 1) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
                         self.dataE = nts.uk.ui.windows.getShared("KML002_E_DATA");
+                        
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataE == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataE.verticalCalItemId) {
+                                self.calculatorItems()[i].amount = self.dataE;
+                            }
+                        }
                     }); 
                 } else if(attribute == 2) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/d/index.xhtml").onClosed(() => {
                         self.dataD = nts.uk.ui.windows.getShared("KML002_D_Budget");
+                        
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataD == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataD.verticalCalItemId) {
+                                self.calculatorItems()[i].formPeople = self.dataD;
+                            }
+                        }
                     }); 
                 } else if(attribute == 3) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/f/index.xhtml").onClosed(() => {
                         self.dataF = nts.uk.ui.windows.getShared("KML002_F_DATA");
+                        
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataF == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataF.verticalCalItemId) {
+                                self.calculatorItems()[i].numerical = self.dataF;
+                            }
+                        }
                     }); 
                 } else if(attribute == 4) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
                         self.dataG = nts.uk.ui.windows.getShared("KML002_G_DATA");
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataG == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataG.verticalCalItemId) {
+                                self.calculatorItems()[i].unitPrice = self.dataG;
+                            }
+                        }
+                        
                     }); 
                 }
             }
@@ -819,12 +900,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
         formPeople: any;
         amount: any;
         numerical: any;
+        unitPrice: any;
         
         constructor(param: ICalculatorItem) {
             var self = this;
             self.isChecked = ko.observable(param.isChecked);
             self.itemCd = ko.observable(param.itemCd);
-            self.attribute = ko.observable(param.attribute);
+            self.attribute = ko.observable(0);
             self.itemName = ko.observable(param.itemName);
             self.settingMethod = ko.observable(param.settingMethod);
             self.formula = ko.observable(param.formula);
@@ -834,20 +916,20 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.fraction = ko.observable(param.fraction);
             self.order = ko.observable(param.order);
             self.roundingItems = ko.observableArray([
-                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
-                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
-                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
-                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
-                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
-                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
-                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
-                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
-            ]);
+                        { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
+                        { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
+                        { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
+                        { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
+                        { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
+                        { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
+                        { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
+                        { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
+                    ]);
             self.fractionItems = ko.observableArray([
-                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
-                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
-                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
-            ]);
+                        { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
+                        { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
+                        { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
+                    ]);
             
             self.attrEnable = ko.observable(param.attrEnable);
             self.settingMethodEnable = ko.observable(param.settingMethodEnable);
@@ -903,12 +985,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     ]);
                 }
             });  
-            
+            self.attribute(param.attribute);
             self.formBuilt = param.formBuilt;
             self.formTime = param.formTime;
             self.formPeople = param.formPeople;
             self.amount = param.amount;
             self.numerical = param.numerical;
+            self.unitPrice = param.unitPrice;
         }
     }
         
@@ -934,5 +1017,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
         formPeople: any;
         amount: any;
         numerical: any;
+        unitPrice: any;
     }
 }

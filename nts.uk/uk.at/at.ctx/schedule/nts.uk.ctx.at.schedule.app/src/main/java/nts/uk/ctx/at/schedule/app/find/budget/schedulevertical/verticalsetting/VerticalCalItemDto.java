@@ -36,6 +36,8 @@ public class VerticalCalItemDto {
     /**端数処理 */
  	private int rounding;
  	
+ 	private int roundingProcessing;
+ 	
  	/** 順番 */
  	private int dispOrder;
  	
@@ -88,9 +90,10 @@ public class VerticalCalItemDto {
 				domain.getItemName(),
 				domain.getCalculateAtr().value,
 				domain.getDisplayAtr().value,
-				domain.getCumulativeAtr().value,
+				domain.getCumulativeAtr(),
 				domain.getAttributes().value,
-				domain.getRounding().value,
+				domain.getRounding(),
+				domain.getRoundingProcessing(),
 				domain.getDispOrder(),
 				formBuiltDto,
 				formTimeDto,

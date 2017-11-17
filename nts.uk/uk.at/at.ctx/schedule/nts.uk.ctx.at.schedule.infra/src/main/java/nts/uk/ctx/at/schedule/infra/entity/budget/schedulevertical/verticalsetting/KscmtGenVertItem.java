@@ -50,6 +50,9 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	@Column(name = "ROUNDING_ATR")
 	public int rounding;
 	
+	@Column(name = "ROUNDING_PROCESSING")
+	public int roundingProcessing;
+	
 	@ManyToOne
 	@JoinColumns( {
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
@@ -70,10 +73,13 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	public KscmtFormPeople formPeople;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
-	public KscstFormulaAmount amount;
+	public KscstFormAmount amount;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
-	public KscstFormulaNumerical numerical;
+	public KscstFormNumerical numerical;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
+	public KscstFormulaUnitPrice price;
 	
 	@Override
 	protected Object getKey() {
@@ -82,7 +88,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	}
 	
 	public KscmtGenVertItem(KscmtGenVertItemPK kscmtGenVertItemPK, String itemName, int calculateAtr, int displayAtr, int cumulativeAtr, 
-			int attributes, int rounding, KscmtGenVertOrder genVertOrder, KscmtFormBuilt formBuilt, KscmtFormTime formTime, KscmtFormPeople formPeople, KscstFormulaAmount amount) {
+			int attributes, int rounding, int roundingProcessing, KscmtGenVertOrder genVertOrder, KscmtFormBuilt formBuilt, KscmtFormTime formTime, KscmtFormPeople formPeople, KscstFormAmount amount) {
 		this.kscmtGenVertItemPK = kscmtGenVertItemPK;
 		this.itemName = itemName;
 		this.calculateAtr = calculateAtr;
@@ -90,6 +96,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 		this.cumulativeAtr = cumulativeAtr;
 		this.attributes = attributes;
 		this.rounding = rounding;
+		this.roundingProcessing = roundingProcessing;
 		this.genVertOrder = genVertOrder;
 		this.formBuilt = formBuilt;
 		this.formTime = formTime;

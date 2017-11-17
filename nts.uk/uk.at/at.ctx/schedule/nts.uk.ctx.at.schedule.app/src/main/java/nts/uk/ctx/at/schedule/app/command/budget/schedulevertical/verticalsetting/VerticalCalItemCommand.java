@@ -8,6 +8,7 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPe
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTime;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaAmount;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaNumerical;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaUnitprice;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 
 @Data
@@ -40,6 +41,8 @@ public class VerticalCalItemCommand {
     /** 端数処理*/
  	private int rounding;
  	
+ 	private int roundingProcessing;
+ 	
  	/** 順番 */
  	private int dispOrder;
  	
@@ -53,6 +56,7 @@ public class VerticalCalItemCommand {
  	
  	private FormulaNumericalCommand formulaNumerical;
  	
+ 	private FormulaUnitPriceCommand priceCommand;
  	
  	public VerticalCalItem toDomainCalItem(String companyId, String verticalCalCd, String itemId){
  		FormBuilt built = this.formBuilt != null
@@ -70,7 +74,11 @@ public class VerticalCalItemCommand {
  		FormulaNumerical numerical = this.formulaNumerical != null
  				? this.formulaNumerical.toDomainNumerical(companyId, verticalCalCd, itemId)
  						: null;
+ 		FormulaUnitprice unitprice = this.priceCommand != null
+ 				? this.priceCommand.toDomainUnitPrice(companyId, verticalCalCd, itemId)
+ 						: null;		
 		return VerticalCalItem.createFromJavatype(companyId, verticalCalCd, itemId, itemId, calculateAtr, displayAtr, cumulativeAtr, attributes, rounding, 
-				dispOrder, built, time, formPeople1,amount, numerical);
+				roundingProcessing, dispOrder, built, time, formPeople1,amount, numerical,unitprice);
  	}
+
 }

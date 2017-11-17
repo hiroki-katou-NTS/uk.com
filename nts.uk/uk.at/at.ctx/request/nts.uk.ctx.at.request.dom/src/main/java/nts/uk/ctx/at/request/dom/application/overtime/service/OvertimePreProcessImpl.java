@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,6 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -53,6 +53,12 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrameRepository;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 
 @Stateless
 public class OvertimePreProcessImpl implements IOvertimePreProcess{
@@ -93,23 +99,32 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	@Inject
 	private BPSettingRepository bPSettingRepository;
 	@Inject
+	private OvertimeFrameRepository overtimeFrameRepository;
+	@Inject
 	private SpecBPTimesheetRepository specBPTimesheetRepository;
+	@Inject
+	private BreaktimeFrameRepository breaktimeFrameRep;
+	@Inject
+	private WorkTimeSetRepository workTimeSetRepository;
+	
 	
 	@Override
 	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID) {
 		OvertimeInstructInfomation overtimeInstructInformation = new OvertimeInstructInfomation();
 		if(appCommonSettingOutput != null){
-			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0).getUserAtr().value;
+			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0).getInstructionUseSetting().getInstructionUseDivision().value;
 			if(useAtr == UseAtr.USE.value){
 				if(appDate != null){
 					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
 					OverTimeInstruct overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
 					if(overtimeInstruct != null){
 						overtimeInstructInformation.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() 
-								+" "+ overtimeInstruct.getStartClock()
-								+"~"+ overtimeInstruct.getEndClock() 
-								+" "+ overtimeInstruct.getTargetPerson()
-								+" ("+ overtimeInstruct.getInstructor() + ")");
+								+" "+ convert(overtimeInstruct.getStartClock().v())
+								+"~"+ convert(overtimeInstruct.getEndClock().v()) 
+								+" "+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson())
+								+" ("+employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
+					}else{
+						overtimeInstructInformation.setOvertimeInstructInfomation(GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
 					}
 				}
 			}else{
@@ -153,10 +168,10 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 
 	@Override
 	public void getWorkingHours(String companyID, String employeeID, String appDate,
-			Optional<RequestAppDetailSetting> requestAppDetailSetting) {
-		if(requestAppDetailSetting.isPresent()){
+			RequestAppDetailSetting requestAppDetailSetting) {
+		if(requestAppDetailSetting != null){
 			if(appDate != null){
-				int atWorkAtr = requestAppDetailSetting.get().getAtworkTimeBeginDisFlg().value;
+				int atWorkAtr = requestAppDetailSetting.getAtworkTimeBeginDisFlg().value;
 				if(atWorkAtr == AtWorkAtr.DISPLAY.value){
 					// team anh lương
 				}
@@ -165,9 +180,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public boolean getRestTime(Optional<RequestAppDetailSetting> requestAppDetailSetting) {
-		if(requestAppDetailSetting.isPresent()){
-			if(requestAppDetailSetting.get().getBreakTimeDisFlg().value == DisplayFlg.DISPLAY.value){
+	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting) {
+		if(requestAppDetailSetting != null){
+			if(requestAppDetailSetting.getBreakTimeDisFlg().value == DisplayFlg.DISPLAY.value){
 				return true;
 			}else{
 				return false;
@@ -177,33 +192,43 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public void getOvertimeHours(int overtimeAtr) {
+	public List<OvertimeFrame> getOvertimeHours(int overtimeAtr,String companyID) {
+		List<OvertimeFrame> overtimeFrames = new ArrayList<>();
 		//早出残業の場合
 		if(overtimeAtr == OverTimeAtr.PREOVERTIME.value){
-			
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID,UseAtr.USE.value);
 		}
 		//通常残業の場合
 		if(overtimeAtr == OverTimeAtr.REGULAROVERTIME.value){
-			
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID,UseAtr.USE.value);
 		}
 		//早出残業・通常残業の場合
 		if(overtimeAtr == OverTimeAtr.ALL.value){
-			
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID,UseAtr.USE.value);
 		}
+		return overtimeFrames;
 	}
-
+	@Override
+	public List<BreaktimeFrame> getBreaktimeFrame(String companyID) {
+		
+		return this.breaktimeFrameRep.getBreaktimeFrameByCID(companyID, UseAtr.USE.value);
+	}
+	
 	@Override
 	public Optional<BonusPaySetting> getBonusTime(String employeeID, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,
-			String appDate,String companyID,String siftCode) {
+			String appDate,String companyID,SiftType siftType) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
 		if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 			// アルゴリズム「社員所属職場履歴を取得」を実行する
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 			//アルゴリズム「職場の特定日設定を取得する」を実行する (hung lam)
 			if(sWkpHistImport != null){
-				WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
+				//WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
-			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyID, new WorkingTimesheetCode(siftCode));
+			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = Optional.empty();
+			if(siftType != null){
+				workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyID, new WorkingTimesheetCode(siftType.getSiftCode()));
+			}
 			if(!workingTimesheetBonusPaySetting.isPresent()){
 				Optional<PersonalBonusPaySetting> personalBonusPaySetting =this.pSBonusPaySettingRepository.getPersonalBonusPaySetting(employeeID);
 				
@@ -297,4 +322,30 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 		}
 		return result;
 	}
+
+	@Override
+	public void getResultContentActual(int prePostAtr,String siftCode,String companyID) {
+		// TODO Auto-generated method stub
+		if(PrePostAtr.POSTERIOR.value == prePostAtr){
+			Optional<WorkTimeSet> workTimeSet = workTimeSetRepository.findByCode(companyID, siftCode);
+			if(workTimeSet.isPresent()){
+				
+				
+			}
+		}
+	}
+	private String convert(int minute){
+		String hourminute ="";
+		if(minute == -1){
+			return null;
+		}else if (minute == 0) {
+			hourminute = "00:00";
+		}else{
+			int hour = minute/60;
+			int minutes = minute%60;
+			hourminute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+		}
+		return hourminute;
+	}
+	
 }

@@ -24,6 +24,10 @@ public class KscmtFormPeopleFunc extends UkJpaEntity implements Serializable {
 	/* 主キー */
 	@EmbeddedId
 	public KscmtFormPeopleFuncPK kscmtFormPeopleFuncPK;
+	
+	/* 外部予算実績項目コード */
+	@Column(name = "EXTERNAL_BUDGET_CD")
+	public String externalBudgetCd;
 
 	/* カテゴリ区分 */
 	@Column(name = "CATEGORY_ATR")
@@ -32,10 +36,6 @@ public class KscmtFormPeopleFunc extends UkJpaEntity implements Serializable {
 	/* 演算子区分 */
 	@Column(name = "OPERATOR_ATR")
 	public int operatorAtr;
-	
-	/* 順番 */
-	@Column(name = "DISPORDER")
-	public int dispOrder;
 	
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_FORM_PEOPLE.CID", insertable = false, updatable = false),

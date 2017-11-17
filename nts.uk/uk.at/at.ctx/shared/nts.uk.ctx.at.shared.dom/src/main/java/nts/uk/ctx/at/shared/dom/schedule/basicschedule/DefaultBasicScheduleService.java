@@ -107,7 +107,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId, workTypeCode);
 
 		if (!workTypeOpt.isPresent()) {
-			throw new RuntimeException("NOT FOUND WORK TYPE");
+			return null;
 		}
 		
 		WorkType workType = workTypeOpt.get();

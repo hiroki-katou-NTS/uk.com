@@ -34,10 +34,10 @@ public class FormPeopleCommand {
     			? this.lstPeopleFunc.stream().map(c -> c.toDomainFunc(companyId, 
 																	c.getVerticalCalCd(), 
 																	c.getVerticalCalItemId(), 
+																	c.getDispOrder(), 
 																	c.getExternalBudgetCd(), 
 																	c.getCategoryAtr(), 
-																	c.getOperatorAtr(), 
-																	c.getDispOrder())).collect(Collectors.toList())
+																	c.getOperatorAtr())).collect(Collectors.toList())
 				: null;
 		return FormPeople.createFromJavaType(companyId, verticalCalCd, verticalCalItemId, actualDisplayAtr, formPeopleLst);
     }	

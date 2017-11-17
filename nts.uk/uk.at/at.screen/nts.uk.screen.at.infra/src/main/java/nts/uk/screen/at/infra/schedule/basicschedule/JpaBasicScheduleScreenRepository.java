@@ -7,8 +7,12 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscstScheQualifySet;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenRepository;
+import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 
@@ -34,14 +38,21 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 
 	private final String SELECT_BY_CID_DEPRECATE_CLS = "SELECT NEW " + WorkTypeScreenDto.class.getName()
 			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo)"
-			+ " FROM KshmtWorkType c"
-			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " FROM KshmtWorkType c" + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.deprecateAtr = :deprecateClassification";
+	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c WHERE "
+			+ " c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode =:workTypeCode "
+			+ " AND c.workTimeCode =:workTimeCode";
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
 		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
 				entity.workTypeCode, entity.workTimeCode);
 	}
+
+	private static final String GET_SCHEDULE_DIS_CONTROL = "SELECT c FROM KscmtScheDispControl c WHERE "
+			+ " c.kscmtScheDispControlPK.companyId = :companyId ";
+	private static final String GET_SCHEDULE_QUALIFY_SET = "SELECT c FROM KscstScheQualifySet c WHERE "
+			+ "c.kscstScheQualifySetPK.companyId = :companyId";
 
 	/**
 	 * get list BasicSchedule by list String and startDate and endDate
@@ -49,8 +60,9 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	@Override
 	public List<BasicScheduleScreenDto> getByListSidAndDate(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.queryProxy().query(SEL_BY_LIST_SID_AND_DATE, KscdtBasicSchedule.class).setParameter("sId", employeeId)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(x -> toDto(x));
+		return this.queryProxy().query(SEL_BY_LIST_SID_AND_DATE, KscdtBasicSchedule.class)
+				.setParameter("sId", employeeId).setParameter("startDate", startDate).setParameter("endDate", endDate)
+				.getList(x -> toDto(x));
 	}
 
 	/**
@@ -71,5 +83,28 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 		return this.queryProxy().query(SELECT_BY_CID_DEPRECATE_CLS, WorkTypeScreenDto.class)
 				.setParameter("companyId", companyId).setParameter("deprecateClassification", deprecateClassification)
 				.getList();
+	}
+
+	@Override
+	public WorkEmpCombineDto getListWorkEmpCobine(String companyId, String workTypeCode, String workTimeCode) {
+		return this.queryProxy().query(GET_WORK_EMP_COMBINE, WorkEmpCombineDto.class)
+				.setParameter("companyId", companyId).setParameter("workTypeCode", workTypeCode)
+				.setParameter("workTimeCode", workTimeCode).getSingleOrNull();
+	}
+
+	@Override
+	public ScheduleDisplayControlDto getListScheduleDisControl(String companyId) {
+		List<String> qualifyCodes = this.queryProxy().query(GET_SCHEDULE_QUALIFY_SET, KscstScheQualifySet.class)
+				.setParameter("companyId", companyId).getList(x -> x.kscstScheQualifySetPK.qualifyCode);
+		KscmtScheDispControl scheDispControl = this.queryProxy()
+				.query(GET_SCHEDULE_DIS_CONTROL, KscmtScheDispControl.class).setParameter("companyId", companyId)
+				.getSingleOrNull();
+		if (scheDispControl == null) {
+			return null;
+		}
+		return new ScheduleDisplayControlDto(companyId, scheDispControl.personInforAtr,
+				scheDispControl.personDisplayAtr, scheDispControl.personSyQualify,
+				scheDispControl.pubHolidayShortageAtr, scheDispControl.pubHolidayExcessAtr, scheDispControl.symbolAtr,
+				scheDispControl.symbolHalfDayAtr, scheDispControl.symbolHalfDayName, qualifyCodes);
 	}
 }

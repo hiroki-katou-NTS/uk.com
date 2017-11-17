@@ -1,6 +1,5 @@
 package command.person.setting.init;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,10 +9,10 @@ import javax.inject.Inject;
 
 import command.person.setting.init.item.UpdateItemInitValueSettingCommand;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSetting;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSettingRepository;
@@ -25,7 +24,6 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.StringValue;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The class UpdateInitValueSettingHandler
@@ -58,7 +56,54 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 		List<UpdateItemInitValueSettingCommand> itemCommand = command.getItemLst();
 
 		List<UpdateItemInitValueSettingCommand> itemNoSetting = itemCommand.stream()
-				.filter(c -> (c.getSelectedRuleCode() == 2)).collect(Collectors.toList());
+				.filter(c -> (c.getSelectedRuleCode() != 1)).collect(Collectors.toList());
+		BundledBusinessException exceptions = BundledBusinessException.newInstance();
+		boolean isError = false;
+		for (UpdateItemInitValueSettingCommand c : itemNoSetting) {
+			if (c.getSelectedRuleCode() == 2) {
+				if (c.getDataType() == 1 && (c.getStringValue().equals(null) || c.getStringValue().equals(""))) {
+
+					BusinessException message = new BusinessException("Msg_824", c.getItemName());
+					message.setSuppliment("NameID", c.getItemName());
+					exceptions.addMessage(message);
+					isError = true;
+
+				} else if (c.getDataType() == 2 && c.getNumberValue() == null) {
+
+					BusinessException message = new BusinessException("Msg_824", c.getItemName());
+					message.setSuppliment("NameID", c.getItemName());
+					exceptions.addMessage(message);
+					isError = true;
+				} else if (c.getDataType() == 3 && (c.getDateVal() == null)) {
+
+					BusinessException message = new BusinessException("Msg_824", c.getItemName());
+					message.setSuppliment("NameID", c.getItemName());
+					exceptions.addMessage(message);
+
+					isError = true;
+
+				} else if (c.getDataType() == 4 && c.getTime() == null) {
+
+					BusinessException message = new BusinessException("Msg_824", c.getItemName());
+					message.setSuppliment("NameID", c.getItemName());
+					exceptions.addMessage(message);
+
+					isError = true;
+
+				} else if (c.getDataType() == 5 && c.getTime() == null) {
+
+					BusinessException message = new BusinessException("Msg_824", c.getItemName());
+					message.setSuppliment("NameID", c.getItemName());
+					exceptions.addMessage(message);
+					isError = true;
+
+				}
+			}
+		}
+		// Has error, throws message
+		if (isError) {
+			exceptions.throwExceptions();
+		}
 
 		// update name of setting
 		if (setting.isPresent()) {
@@ -77,9 +122,80 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							command.getPerInfoCtgId(), c.getPerInfoItemDefId());
 					if (itemExist.isPresent()) {
 
-						item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-								command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
-						this.itemRepo.update(item);
+						if (c.getSelectedRuleCode() == 2) {
+							if (c.getDataType() == 0 || c.getDataType() == 1) {
+								itemExist.get().setStringValue(new StringValue(c.getStringValue()));
+								itemExist.get().setRefMethodType(EnumAdaptor
+										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
+								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
+								this.itemRepo.update(itemExist.get());
+
+							} else if (c.getDataType() == 2) {
+								itemExist.get().setRefMethodType(EnumAdaptor
+										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
+								itemExist.get().setIntValue(new IntValue(c.getNumberValue()));
+								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
+								this.itemRepo.update(itemExist.get());
+
+							} else if (c.getDataType() == 3) {
+								if (c.getDateType() == 1) {
+									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+											command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(),
+											3, GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
+								} else if (c.getDateType() == 2) {
+									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+											command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(),
+											3, GeneralDate.fromString(c.getDateVal() + "/01", "yyyy/MM/dd"));
+
+								} else if (c.getDateType() == 3) {
+									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+											command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(),
+											3, GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
+
+								}
+								this.itemRepo.update(item);
+
+							} else if (c.getDataType() == 4) {
+
+								// time item
+
+								itemExist.get().setRefMethodType(EnumAdaptor
+										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
+								itemExist.get().setIntValue(new IntValue(c.getTime()));
+								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
+								this.itemRepo.update(itemExist.get());
+
+							} else if (c.getDataType() == 5) {
+
+								// time point
+								itemExist.get().setRefMethodType(EnumAdaptor
+										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
+								itemExist.get().setIntValue(new IntValue(c.getTime()));
+								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
+								this.itemRepo.update(itemExist.get());
+
+							} else if (c.getDataType() == 6) {
+								itemExist.get().setRefMethodType(EnumAdaptor
+										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
+								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
+								itemExist.get().setStringValue(new StringValue(c.getSelectionId()));
+								this.itemRepo.update(itemExist.get());
+
+							}
+						} else if (c.getSelectedRuleCode() > 2) {
+
+							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
+							this.itemRepo.update(item);
+
+						} else if (c.getSelectedRuleCode() == 1) {
+							Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(
+									command.getSettingId(), command.getPerInfoCtgId(), c.getPerInfoItemDefId());
+							if (item_1.isPresent()) {
+								this.itemRepo.delete(c.getPerInfoItemDefId(), command.getPerInfoCtgId(),
+										command.getSettingId());
+							}
+						}
 
 					} else {
 
@@ -224,11 +340,14 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 
 							} else if (c.getDataType() == 6) {
 								// selection
+								item.setSettingId(command.getSettingId());
 								item.setPerInfoCtgId(command.getPerInfoCtgId());
 								item.setPerInfoItemDefId(c.getPerInfoItemDefId());
 								item.setRefMethodType(EnumAdaptor.valueOf(2, ReferenceMethodType.class));
 								item.setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
 								item.setStringValue(new StringValue(c.getSelectionId()));
+								this.itemRepo.addItem(item);
+
 
 							}
 						} else if (c.getSelectedRuleCode() > 2) {

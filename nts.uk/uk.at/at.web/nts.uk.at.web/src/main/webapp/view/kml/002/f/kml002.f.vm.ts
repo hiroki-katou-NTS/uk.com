@@ -140,7 +140,7 @@ module nts.uk.at.view.kml002.f.viewmodel {
                 let sortedData= _.orderBy(lst, ['externalBudgetCode'], ['asc']);
                 _.map(sortedData, function(item: any){
                     array.push({
-                        id: i,
+                        id: i, 
                         code: item.externalBudgetCode,
                         name: item.externalBudgetName + nts.uk.resource.getText("KML002_44")                             
                     })

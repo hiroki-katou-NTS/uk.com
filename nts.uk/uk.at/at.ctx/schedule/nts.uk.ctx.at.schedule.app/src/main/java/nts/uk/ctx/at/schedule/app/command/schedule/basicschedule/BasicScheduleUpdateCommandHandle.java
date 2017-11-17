@@ -21,12 +21,11 @@ public class BasicScheduleUpdateCommandHandle extends CommandHandler<BasicSchedu
 
 	@Override
 	protected void handle(CommandHandlerContext<BasicScheduleUpdateCommand> context) {
-		// TODO Auto-generated method stub
 		BasicScheduleUpdateCommand command = context.getCommand();
 		List<String> employeeIds = command.getEmployeeIds();
 		List<GeneralDate> dates = command.getDates();
 		int confirmedAtrValue = command.getConfirmedAtr();
-		boolean checkedHandler = command.isCheckedHandler();
+		//boolean checkedHandler = command.isCheckedHandler();
 
 		employeeIds.stream().forEach((employeeId) -> {
 			dates.stream().forEach(date -> {
