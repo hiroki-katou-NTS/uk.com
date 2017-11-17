@@ -202,7 +202,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 		//承認区分が否認かチェック
 		//ドメインモデル「申請」．「反映情報」．実績反映状態をチェックする
-		ReflectPlanPerState stateLatestApp = beforeApplication.get(0).getReflectPlanState();
+		ReflectPlanPerState stateLatestApp = beforeApplication.get(0).getReflectPerState();
 		//否認、差戻しの場合
 		if (stateLatestApp.equals(ReflectPlanPerState.DENIAL) || stateLatestApp.equals(ReflectPlanPerState.REMAND)) {
 			result.setConfirm(true);

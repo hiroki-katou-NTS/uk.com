@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import javax.management.RuntimeErrorException;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCompany;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplace;
@@ -85,8 +88,11 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 			// ドメインモデル「職場別申請承認設定」を取得する ( Acquire domain model "Application approval setting by workplace" )
 			Optional<RequestOfEachWorkplace> requestOfEarchWorkplaceOp = requestOfEachWorkplaceRepository.getRequest(companyID, workPlaceID);
 			if(requestOfEarchWorkplaceOp.isPresent()) {
-				loopResult.add(requestOfEarchWorkplaceOp.get());
-				break;
+				List<RequestAppDetailSetting> requestAppDetailSettings = requestOfEarchWorkplaceOp.get().getRequestAppDetailSettings().stream().filter(x -> x.getAppType() == targetApp).collect(Collectors.toList());
+				if(!CollectionUtil.isEmpty(requestAppDetailSettings)) {
+					loopResult.add(requestOfEarchWorkplaceOp.get());
+					break;
+				}
 			}
 		}
 		// ドメインモデル「職場別申請承認設定」を取得できたかチェックする ( Check whether domain model "application approval setting by workplace" could be acquired )
