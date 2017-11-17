@@ -39,10 +39,11 @@ module a1 {
         afternoon: KnockoutObservable<number>;
 
         data: KnockoutObservable<any>;
+        isDetailMode: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
-        constructor(data: any, screenMode: any, settingMethod: string, workTimeCode: string) {
+        constructor(data: any, screenMode: any, settingMethod: string, workTimeCode: string, isClickSave: any) {
             let self = this;
 
             //day start Time
@@ -96,10 +97,15 @@ module a1 {
             self.afternoon = ko.observable(0);
 
             self.data = ko.observable(data());
-            screenMode.subscribe(function(val: any) {
-                var oldData = data();
-                oldData.var2 = "changeValue";
-                data(oldData);
+            self.isDetailMode = ko.observable(true);
+            screenMode.subscribe(function(value: any) {
+                value == "2" ? self.isDetailMode(true) : self.isDetailMode(false);
+            });
+            isClickSave.subscribe(function(value: any) {
+                if (value) {
+                    var oldData = data();
+                    self.collectData(oldData);
+                }
             });
         }
 
@@ -109,11 +115,11 @@ module a1 {
             self.dayStartTime(data().startDateClock);
             self.oneDayRangeTime(data().rangeTimeDay);
             self.nightWorkShift(data().nightShift);
-//            self.beforeUpdateWorkTime();//diff time
-//            self.afterUpdateWorkTime();//diff time
+            //            self.beforeUpdateWorkTime();//diff time
+            //            self.afterUpdateWorkTime();//diff time
             let timezone1 = data().prescribedTimezoneSetting.timezone[0];
             let timezone2 = data().prescribedTimezoneSetting.timezone[1];
-            
+
             self.firstFixedStartTime(timezone1.start.inDayTimeWithFormat);
             self.firstFixedEndTime(timezone1.end.inDayTimeWithFormat);
             self.secondFixedStartTime(timezone2.start.inDayTimeWithFormat);
@@ -127,6 +133,12 @@ module a1 {
             self.oneDay();
             self.morning();
             self.afternoon();
+        }
+
+        public collectData(oldData: any) {
+            let self = this;
+            oldData.startDateClock = self.dayStartTime();
+            self.data(oldData);
         }
 
     }
@@ -171,8 +183,9 @@ module a1 {
             let screenMode = input.screenMode;
             let settingMethod = ko.unwrap(input.settingMethod);
             let workTimeCode = input.workTimeCode;
+            let isClickSave = input.saveAction;
 
-            let screenModel = new ScreenModel(data, screenMode, settingMethod, workTimeCode);
+            let screenModel = new ScreenModel(data, screenMode, settingMethod, workTimeCode, isClickSave);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

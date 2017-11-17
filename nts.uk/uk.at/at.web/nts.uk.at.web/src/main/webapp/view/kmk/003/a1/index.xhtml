@@ -76,7 +76,7 @@
 		</tr>
 		<tr>
 			<td class="a1-td"><div
-					data-bind="ntsFormLabel: {required: true}">//TODO</div></td>
+					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_216')}</div></td>
 			<td class="a1-td"><span>#{i18n.getText('KMK003_36')}</span> <span>#{i18n.getText('KMK003_209')}</span>
 			</td>
 			<td class="a1-td"><input
@@ -110,7 +110,7 @@
 			<td class="a1-td"><div
 					data-bind="ntsCheckBox: { checked: secondTimes }">#{i18n.getText('KMK003_37')}</div>
 				<span>#{i18n.getText('KMK003_209')}</span></td>
-			<td class="a1-td"><input
+			<td data-bind="visible:isDetailMode" class="a1-td"><input
 				data-bind="ntsTimeEditor: {
 							value: secondFixedStartTime,
 							constraint: '',
@@ -118,11 +118,11 @@
 							mode: 'time',
 							option: beforeUpdateWorkTimeOption,
 							required: true,
-							enable: true,
+							enable: secondTimes,
 							readonly: false,
 							immediate: false}" /></td>
 			<td class="a1-td"><span>#{i18n.getText('KMK003_210')}</span></td>
-			<td class="a1-td"><input
+			<td data-bind="visible:isDetailMode" class="a1-td"><input
 				data-bind="ntsTimeEditor: {
 							value: secondFixedEndTime,
 							constraint: '',
@@ -130,7 +130,7 @@
 							mode: 'time',
 							option: afterUpdateWorkTimeOption,
 							required: true,
-							enable: true,
+							enable: secondTimes,
 							readonly: false,
 							immediate: false}" /></td>
 		</tr>

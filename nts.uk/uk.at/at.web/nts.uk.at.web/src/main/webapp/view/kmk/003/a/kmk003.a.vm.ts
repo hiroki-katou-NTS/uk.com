@@ -52,6 +52,7 @@ module nts.uk.at.view.kmk003.a {
 
             //data
             data: KnockoutObservable<any>;
+            isClickSave: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
@@ -114,7 +115,7 @@ module nts.uk.at.view.kmk003.a {
                     { code: "2", name: nts.uk.resource.getText("KMK003_191") }
                 ]);
 
-                self.tabMode = ko.observable("1");
+                self.tabMode = ko.observable("2");
 
                 //use half day
 
@@ -148,6 +149,7 @@ module nts.uk.at.view.kmk003.a {
 
                 //data get from service
                 self.data = ko.observable();
+                self.isClickSave = ko.observable(false);
             }
 
             /**
@@ -165,9 +167,14 @@ module nts.uk.at.view.kmk003.a {
                 return dfd.promise();
             }
 
-            private test() {
+            private save() {
                 let self = this;
+                let data = self.data();
                 self.tabMode('2');
+                self.isClickSave(true);
+                service.savePred(data).done(function() {
+                    self.isClickSave(false);
+                });
             }
         }
 
