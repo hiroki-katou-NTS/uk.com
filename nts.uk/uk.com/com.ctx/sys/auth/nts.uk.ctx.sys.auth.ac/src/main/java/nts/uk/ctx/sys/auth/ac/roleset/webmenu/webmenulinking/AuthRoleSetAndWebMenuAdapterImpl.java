@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author HieuNV
  */
 @Stateless
-public class RoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapter {
+public class AuthRoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapter {
 	
 	/** The web menu pub. */
 	@Inject

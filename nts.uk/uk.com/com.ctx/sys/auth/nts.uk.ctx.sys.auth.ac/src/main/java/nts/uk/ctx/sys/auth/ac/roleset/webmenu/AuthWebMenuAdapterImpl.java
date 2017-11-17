@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author HieuNV
  */
 @Stateless
-public class WebMenuAdapterImpl implements WebMenuAdapter {
+public class AuthWebMenuAdapterImpl implements WebMenuAdapter {
 	
 	/** The web menu pub. */
 	@Inject

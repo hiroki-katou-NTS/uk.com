@@ -1,7 +1,12 @@
 package nts.uk.ctx.sys.auth.app.find.roleset;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Data;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 
 @Data
 public class RoleSetDto {
@@ -36,6 +41,9 @@ public class RoleSetDto {
 	/** ロールID: 給与ロール */
 	private String salaryRoleId;
 	
+	/** list of web menu code */
+	private List<String> webMenuCds;
+	
 	/**
 	 * Transfer data from Domain into Dto to response to client
 	 * @param roleSet
@@ -53,6 +61,19 @@ public class RoleSetDto {
 		result.setRoleSetCd(roleSet.getRoleSetCd().v());
 		result.setRoleSetName(roleSet.getRoleSetName().v());
 		result.setSalaryRoleId(RoleSet.getRoleId(roleSet.getSalaryRole()));
+		result.setWebMenuCds(convertWebMenuToWebMunuCd(roleSet.getRoleSetAndWebMenus()));
 		return result;
+	}
+	
+	/**
+	 * Convert from list of RoleSet and WebMenu.
+	 * @param lstWebMenu
+	 * @return list of web menu code.
+	 */
+	private static List<String> convertWebMenuToWebMunuCd(List<RoleSetAndWebMenu> lstWebMenu) {
+		if (CollectionUtil.isEmpty(lstWebMenu)) {
+			return null;
+		}
+		return lstWebMenu.stream().map(item -> item.getWebMenuCd()).collect(Collectors.toList());
 	}
 }
