@@ -158,4 +158,9 @@ public class OverTimeDto {
 	 */
 	private boolean manualSendMailAtr;
 	
+	/**
+	 * preAppOvertimeDto
+	 */
+	private PreAppOvertimeDto preAppOvertimeDto;
+	
 }

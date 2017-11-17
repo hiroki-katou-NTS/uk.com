@@ -17,7 +17,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         workState: KnockoutObservable<boolean> = ko.observable(true);;
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
+        appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(null);
         timeEnd1: KnockoutObservable<number> = ko.observable(null);
@@ -80,6 +80,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         //　初期起動時、計算フラグ=1とする。
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
+        // preAppOvertime
+        appDatePre: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
+        workTypeCodePre:  KnockoutObservable<string> = ko.observable("");
+        workTypeNamePre:  KnockoutObservable<string> = ko.observable("");
+        siftCodePre:  KnockoutObservable<string> = ko.observable("");
+        siftNamePre:  KnockoutObservable<string> = ko.observable("");
+        //TIME LINE 1
+        workClockFrom1Pre: KnockoutObservable<number> = ko.observable(null);
+        workClockTo1Pre: KnockoutObservable<number> = ko.observable(null);
+        //TIME LINE 2
+        workClockFrom2Pre: KnockoutObservable<number> = ko.observable(null);
+        workClockTo2Pre: KnockoutObservable<number> = ko.observable(null);
+        overtimeHoursPre: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
+        overTimeShiftNightPre: KnockoutObservable<number> = ko.observable(null);
+        flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
         constructor() {
 
             let self = this;

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationRe
 import nts.uk.ctx.at.request.app.find.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OvertimeInputDto;
+import nts.uk.ctx.at.request.app.find.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -123,6 +124,7 @@ public class GetOvertime {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		int rootAtr = 1;
+		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 		
 		
 		//1-1.新規画面起動前申請共通設定を取得する
@@ -137,7 +139,7 @@ public class GetOvertime {
 		// 02_残業区分チェック : check loai lam them
 		int overtimeAtr = overtimeService.checkOvertime(url);
 		// 01_初期データ取得
-		getData(result,uiType,appDate,companyID,employeeID,appCommonSettingOutput,applicationDto,overtimeAtr,overTimeInputs);
+		getData(result,uiType,appDate,companyID,employeeID,appCommonSettingOutput,applicationDto,overtimeAtr,overTimeInputs,preAppOvertimeDto);
 		
 		result.setApplication(applicationDto);
 		String employeeName = "";
@@ -161,6 +163,7 @@ public class GetOvertime {
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto applicationDto = new ApplicationDto();
 		List<OvertimeInputDto> overTimeInputs = new ArrayList<>();
+		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 		// 申請日を変更する : chưa xử lí
 		
 		// 01-01_残業通知情報を取得
@@ -176,8 +179,14 @@ public class GetOvertime {
 		// 01-09_事前申請を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
+			
 			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,prePostAtr);
-			convertOverTimeDto(companyID,applicationDto,result,appOvertime,overTimeInputs);
+			if(appOvertime != null){
+				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
+			}else{
+				result.setPreAppPanelFlg(false);
+			}
+			
 		}
 		// 01-18_実績の内容を表示し直す : chưa xử lí
 		
@@ -242,7 +251,9 @@ public class GetOvertime {
 	 * @param overtimeAtr
 	 * @param overTimeInputs
 	 */
-	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID, AppCommonSettingOutput appCommonSettingOutput,ApplicationDto applicationDto,int overtimeAtr,List<OvertimeInputDto> overTimeInputs){
+	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID,
+			AppCommonSettingOutput appCommonSettingOutput,ApplicationDto applicationDto,int overtimeAtr,
+			List<OvertimeInputDto> overTimeInputs,PreAppOvertimeDto preAppOvertimeDto){
 		//申請日付を取得 : lay thong tin lam them
 				applicationDto.setApplicationDate(appDate);
 		// 01-01_残業通知情報を取得
@@ -377,7 +388,12 @@ public class GetOvertime {
 				//01-09_事前申請を取得
 				if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
 					AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
-					convertOverTimeDto(companyID,applicationDto,result,appOvertime,overTimeInputs);
+					if(appOvertime != null){
+						convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
+					}else{
+						result.setPreAppPanelFlg(false);
+					}
+					
 				}
 		
 	}
@@ -407,10 +423,10 @@ public class GetOvertime {
 	 * @param result
 	 * @param appOvertime
 	 */
-	private void convertOverTimeDto(String companyID,ApplicationDto applicationDto, OverTimeDto result,AppOverTime appOvertime,List<OvertimeInputDto> overtimeInputDtos){
+	private void convertOverTimeDto(String companyID,PreAppOvertimeDto preAppOvertimeDto, OverTimeDto result,AppOverTime appOvertime){
 		if(appOvertime.getApplication() != null){
 			if(appOvertime.getApplication().getApplicationDate() != null){
-				applicationDto.setApplicationDate(appOvertime.getApplication().getApplicationDate().toString(DATE_FORMAT));
+				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getApplicationDate().toString(DATE_FORMAT));
 			}
 		}
 		
@@ -422,7 +438,7 @@ public class GetOvertime {
 			if (workType.isPresent()) {
 				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
 			}
-			result.setWorkType(workTypeOvertime);
+			preAppOvertimeDto.setWorkTypePre(workTypeOvertime);
 		}
 		if (appOvertime.getSiftCode() != null) {
 			SiftType siftType = new SiftType();
@@ -433,14 +449,15 @@ public class GetOvertime {
 			if (workTime.isPresent()) {
 				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().toString());
 			}
-			result.setSiftType(siftType);
+			preAppOvertimeDto.setSiftTypePre(siftType);
 		}
-		result.setWorkClockFrom1(appOvertime.getWorkClockFrom1());
-		result.setWorkClockTo1(appOvertime.getWorkClockTo1());
-		result.setWorkClockFrom2(appOvertime.getWorkClockFrom2());
-		result.setWorkClockTo2(appOvertime.getWorkClockTo2());
-		List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInput(companyID,
-				appOvertime.getAppID());
+		preAppOvertimeDto.setWorkClockFrom1Pre(appOvertime.getWorkClockFrom1());
+		preAppOvertimeDto.setWorkClockTo1Pre(appOvertime.getWorkClockTo1());
+		preAppOvertimeDto.setWorkClockFrom2Pre(appOvertime.getWorkClockFrom2());
+		preAppOvertimeDto.setWorkClockTo2Pre(appOvertime.getWorkClockTo2());
+		
+		List<OvertimeInputDto> overtimeInputDtos = new ArrayList<>();
+		List<OverTimeInput> overtimeInputs = appOvertime.getOverTimeInput();
 		if (overtimeInputs != null && !overtimeInputs.isEmpty()) {
 			List<Integer> frameNo = new ArrayList<>();
 			for (OverTimeInput overTimeInput : overtimeInputs) {

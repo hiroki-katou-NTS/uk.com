@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
@@ -297,17 +298,18 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
 						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
 						
-						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInput(appOvertime.get().getCompanyID(), appOvertime.get().getAppID());
+						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceID.NORMALOVERTIME.value);
 						result.setOverTimeInput(overtimeInputs);
 						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
 						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
 						result.setApplication(application.get());
 						result.setAppID(appOvertime.get().getAppID());
+						return result;
 					}
 				}
 			}
 		}
-		return result;
+		return null;
 	}
 
 	@Override
