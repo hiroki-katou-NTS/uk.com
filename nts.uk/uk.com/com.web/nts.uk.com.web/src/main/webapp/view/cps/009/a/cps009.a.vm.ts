@@ -34,7 +34,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.initValue();
             self.start(undefined);
             self.initSettingId.subscribe(function(value: string) {
-                $('#ctgName').focus();
+
                 nts.uk.ui.errors.clearAll();
                 if (value) {
                     service.getAllCtg(value).done((data: any) => {
@@ -44,16 +44,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             ctgList: data.ctgList
                         });
                         self.currentCategory.valueHasMutated();
-                    });
-                    if (self.currentCategory().currentItemId() === undefined || self.currentCategory().currentItemId() === "") {
-                        return;
-                    } else {
                         self.getItemList(value, self.currentCategory().currentItemId());
-                    }
+                    });
                 } else {
 
                     return;
                 }
+                $('#ctgName').focus();
             });
 
             self.currentCategory().currentItemId.subscribe(function(value: string) {
@@ -76,36 +73,38 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
                         primitiveConst(obj);
-                        return new PerInfoInitValueSettingItemDto({
-                            perInfoItemDefId: obj.perInfoItemDefId,
-                            settingId: obj.settingId,
-                            perInfoCtgId: obj.perInfoCtgId,
-                            itemName: obj.itemName,
-                            isRequired: obj.isRequired,
-                            refMethodType: obj.refMethodType,
-                            saveDataType: obj.saveDataType,
-                            stringValue: obj.stringValue,
-                            intValue: obj.intValue,
-                            dateValue: obj.dateValue,
-                            itemType: obj.itemType,
-                            dataType: obj.dataType,
-                            itemCode: obj.itemCode,
-                            ctgCode: obj.ctgCode,
-                            constraint: obj.constraint,
-                            numberIntegerPart: obj.numberIntegerPart,
-                            numberDecimalPart: obj.numberDecimalPart,
-                            timeItemMin: obj.timeItemMin,
-                            timeItemMax: obj.timeItemMax,
-                            selectionItemId: obj.selectionItemId,
-                            selection: obj.selection,
-                            selectionItemRefType: obj.selectionItemRefType,
-                            dateType: obj.dateType,
-                            timepointItemMin: obj.timepointItemMin,
-                            timepointItemMax: obj.timepointItemMax,
-                            dateWithDay: obj.intValue,
-                            numericItemMin: obj.numericItemMin,
-                            numericItemMax: obj.numericItemMax
-                        });
+                        
+                            return new PerInfoInitValueSettingItemDto({
+                                perInfoItemDefId: obj.perInfoItemDefId,
+                                settingId: obj.settingId,
+                                perInfoCtgId: obj.perInfoCtgId,
+                                itemName: obj.itemName,
+                                isRequired: obj.isRequired,
+                                refMethodType: obj.refMethodType,
+                                saveDataType: obj.saveDataType,
+                                stringValue: obj.stringValue,
+                                intValue: obj.intValue,
+                                dateValue: obj.dateValue,
+                                itemType: obj.itemType,
+                                dataType: obj.dataType,
+                                itemCode: obj.itemCode,
+                                ctgCode: obj.ctgCode,
+                                constraint: obj.constraint,
+                                numberIntegerPart: obj.numberIntegerPart,
+                                numberDecimalPart: obj.numberDecimalPart,
+                                timeItemMin: obj.timeItemMin,
+                                timeItemMax: obj.timeItemMax,
+                                selectionItemId: obj.selectionItemId,
+                                selection: obj.selection,
+                                selectionItemRefType: obj.selectionItemRefType,
+                                dateType: obj.dateType,
+                                timepointItemMin: obj.timepointItemMin,
+                                timepointItemMax: obj.timepointItemMax,
+                                dateWithDay: obj.intValue,
+                                numericItemMin: obj.numericItemMin,
+                                numericItemMax: obj.numericItemMax
+                            });
+                        
                     });
 
                     self.currentCategory().itemList.removeAll();
@@ -143,21 +142,25 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 } else {
                     self.isUpdate = false;
                     self.openDDialog();
-                    self.refresh();
+                    self.refresh(undefined);
 
                 }
             });
             return dfd.promise();
         }
 
-        refresh() {
+        refresh(id: string) {
             let self = this;
 
             service.getAll().done((data: Array<any>) => {
                 self.initValSettingLst.removeAll();
                 self.initValSettingLst(data);
                 if (self.initValSettingLst().length > 0) {
-                    self.initSettingId(self.initValSettingLst()[0].settingId);
+                    if (id === undefined) {
+                        self.initSettingId(self.initValSettingLst()[0].settingId);
+                    } else {
+                        self.initSettingId(id);
+                    }
                 } else {
                     self.initSettingId("");
 
@@ -250,8 +253,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
 
             modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
-               $('#ctgName').focus();
-                self.start(params.settingId);
+                $('#ctgName').focus();
+                let initSetId: string = getShared('CPS009C_COPY');
+                self.refresh(initSetId);
                 block.clear();
             });
 
@@ -262,13 +266,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             let self = this;
 
-            //setShared('categoryInfo', self.currentCategory());
-
             block.invisible();
 
             modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
-                $('#ctgName').focus();
-                self.start(undefined);
+                let id: string = getShared('CPS009D_PARAMS');
+                self.refresh(id);
                 block.clear();
             });
 
@@ -344,20 +346,19 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             selectionId: obj.selectedCode,
                             numberValue: obj.numbereditor.value,
                             dateType: obj.dateType,
-                            time: obj.dateWithDay,
-                            isRequired : obj.isRequired
+                            time: obj.dateWithDay
 
                         };
                     })
                 },
-                dateInputList = $(".contents-data").find('tbody').find('tr').find('#date'),
+                dateInputList = $(".table-container").find('tbody').find('tr').find('#date'),
                 itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item: PerInfoInitValueSettingItemDto) {
                     return item.dataType === 3 && item.selectedRuleCode === 2;
                 });
             if (dateInputList.length > 0) {
                 let i: number = 0;
                 _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
-                    let $input1 = $(".contents-data").find('tbody').find('tr').find('#date')[i];
+                    let $input1 = $(".table-container").find('tbody').find('tr').find('#date')[i];
                     $input1.setAttribute("nameid", item.itemName);
                     i++;
                 });
@@ -366,14 +367,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
             service.update(updateObj).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                     $('#ctgName').focus();
+                    $('#ctgName').focus();
                     self.initSettingId("");
                     self.initSettingId(updateObj.settingId);
-                    self.initSettingId.valueHasMutated();
                     self.currentCategory().currentItemId("");
                     self.currentCategory().currentItemId(updateObj.perInfoCtgId);
                     self.currentCategory().currentItemId.valueHasMutated();
-                    self.getItemList(updateObj.settingId, updateObj.perInfoCtgId);
+                    self.initSettingId.valueHasMutated();
                 });
 
                 block.clear();

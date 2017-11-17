@@ -273,7 +273,7 @@ span.caret-background.caret-right.direction-right {
 .table-container>div {
 	overflow-y: auto;
 	overflow-x: hidden;
-	height: 400px !important;
+	height: 360px !important;
 	border-top: 1px solid #ccc;
 }
 
@@ -317,6 +317,11 @@ tbody tr:first-child td {
 }
 
 label[for] {
-	line-height: 20px  !important;
+	line-height: 20px !important;
 	right: 48px !important;
 }
+
+/* #category_grid_headers  colgroup col:nth-child(1),
+	#category_grid_displayContainer colgroup col:nth-child(1) {
+	width: 15px !important;
+} */
