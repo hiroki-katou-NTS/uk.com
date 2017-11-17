@@ -127,6 +127,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });
                     return dfd.promise();
                 });
+                self.prePostSelected.subscribe(function(value){
+                    let dfd =$.Deferred();
+                    service.checkConvertPrePost(value.toString()).done((data) =>{
+                        self.referencePanelFlg(data.referencePanelFlg);
+                        self.preAppPanelFlg(data.preAppPanelFlg);
+                    }).fail((res) =>{
+                        dfd.reject(res);    
+                    });
+                     return dfd.promise();
+                });
+                
                 dfd.resolve(data);
             }).fail((res) => {
                 dfd.reject(res);
@@ -378,7 +389,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.instructInfor(data.overtimeInstructInformation);
             // 休憩時間
             for (let i = 0; i < 11; i++) {
-                self.restTime.push(new common.OverTimeInput("", "", 0, "", i, i, 0, 0, null));
+                self.restTime.push(new common.OverTimeInput("", "", 0, "", i, 0,i, 0, 0, null));
             }
             // 残業時間
             if (data.overTimeInputs != null) {

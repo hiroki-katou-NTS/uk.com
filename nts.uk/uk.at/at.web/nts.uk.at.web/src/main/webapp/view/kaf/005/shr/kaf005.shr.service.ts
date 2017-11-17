@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf005.shr.service {
     var paths: any = {
         getOvertimeByUI: "at/request/application/overtime/getOvertimeByUI",
         findByChangeAppDate: "at/request/application/overtime/findByChangeAppDate",
+        checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
         createOvertime: "at/request/application/overtime/create",
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",
@@ -15,6 +16,10 @@ module nts.uk.at.view.kaf005.shr.service {
     
     export function findByChangeAppDate(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.findByChangeAppDate, param);
+    }
+    
+    export function checkConvertPrePost(prePostAtr: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkConvertPrePost, prePostAtr);
     }
     
     export function createOvertime(overtime: any): JQueryPromise<void> {

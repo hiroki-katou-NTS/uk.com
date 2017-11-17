@@ -333,6 +333,7 @@ public class GetOvertime {
 					overtimeInputDto.setAttendanceID(AttendanceID.BONUSPAYTIME.value);
 					overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
 					overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
+					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
 					overTimeInputs.add(overtimeInputDto);
 				}
 			}else{

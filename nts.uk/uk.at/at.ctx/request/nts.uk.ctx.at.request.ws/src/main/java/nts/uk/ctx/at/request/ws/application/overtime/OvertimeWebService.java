@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegisterOvertime;
+import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommandHandler;
 import nts.uk.ctx.at.request.app.find.overtime.GetOvertime;
@@ -25,6 +26,9 @@ public class OvertimeWebService extends WebService{
 	private CreateOvertimeCommandHandler createHandler;
 	@Inject
 	private CheckBeforeRegisterOvertime checkBefore;
+	@Inject
+	private CheckConvertPrePost checkConvertPrePost;
+	
 	@POST
 	@Path("getOvertimeByUI")
 	public OverTimeDto getOvertimeByUIType(Param param) {
@@ -36,6 +40,12 @@ public class OvertimeWebService extends WebService{
 	public OverTimeDto findByChangeAppDate(ParamChangeAppDate param) {
 		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr());
 	}
+	@POST
+	@Path("checkConvertPrePost")
+	public OverTimeDto convertPrePost(String prePostAtr) {
+		return this.checkConvertPrePost.convertPrePost(prePostAtr);
+	}
+	
 	
 	@POST
 	@Path("create")
