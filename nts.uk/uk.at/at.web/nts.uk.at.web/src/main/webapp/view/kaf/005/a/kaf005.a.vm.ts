@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //manualSendMailAtr
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(false);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
