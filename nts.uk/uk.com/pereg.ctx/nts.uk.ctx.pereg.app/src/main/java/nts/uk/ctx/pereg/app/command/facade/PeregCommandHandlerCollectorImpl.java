@@ -40,7 +40,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddCurrentAddressCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddPerEmergencyContactCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddFamilyCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddWidowHistoryCommand>>(){}
+			new TypeLiteral<PeregAddCommandHandler<AddWidowHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddEmployeeCommand>>(){}
 			);
 	
 	/** Update handlers */
@@ -57,7 +58,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerEmergencyContactCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilyCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeCommand>>(){}
 			);
 	
 	@Override
