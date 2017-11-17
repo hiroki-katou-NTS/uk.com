@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.app.find.roleset.RoleSetDto;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
+import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
 import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,6 +29,9 @@ public class RoleSetGrantedJobTitleFinder {
 
 	@Inject
 	private RoleSetGrantedJobTitleRepository roleSetJobRepo;
+	
+	@Inject
+	private JobTitleAdapter jobTitleAdapter;
 
 	public GrantRoleSetJobDto getAllData(GeneralDate refDate) {
 		String companyId = AppContexts.user().companyId();
@@ -34,14 +39,7 @@ public class RoleSetGrantedJobTitleFinder {
 			return null;
 
 		// get Job Title by date, companyId
-		/*List<JobTitleInfo> jobs = this.jobTitleInfoRepository.findAll(companyId, baseDate);
-
-		return jobs.stream()
-				.map(job -> JobTitleItemDto.builder().id(job.getJobTitleId())
-				.code(job.getJobTitleCode().v()).name(job.getJobTitleName().v()).build())
-				.sorted((job1, job2) -> job1.getCode().compareTo(job2.getCode()))
-				.collect(Collectors.toList());
-		*/
+		List<JobTitleValueImport> listJobTitle = jobTitleAdapter.findAll(companyId, refDate);
 
 		// get Sequence Master
 
@@ -54,7 +52,7 @@ public class RoleSetGrantedJobTitleFinder {
 		RoleSetGrantedJobTitleDto roleSetJob = roleSetJobRepo.getOneByCompanyId(companyId)
 				.map(item -> RoleSetGrantedJobTitleDto.fromDomain(item)).get();
 
-		return new GrantRoleSetJobDto(listRoleSet, roleSetJob);
+		return new GrantRoleSetJobDto(listRoleSet, roleSetJob, listJobTitle);
 	}
 
 }
