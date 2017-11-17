@@ -566,11 +566,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.updateData(self.stash.toDto());
                 saveData.useAtr(0);
             }
-            if (self.selectUse() == "1" && ( self.enableUnder() == true || self.enableUpper() == true)) {
-                saveData.totalCondition.atdItemId(self.attendanceModel.attendanceItemId());
+            if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true)) {
+                saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
             }
         }
-
     }
 
 
@@ -697,20 +696,20 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         lowerLimitSettingAtr: KnockoutObservable<number>;
         thresoldUpperLimit: KnockoutObservable<number>;
         thresoldLowerLimit: KnockoutObservable<number>;
-        atdItemId: KnockoutObservable<number>;
+        attendanceItemId: KnockoutObservable<number>;
         constructor() {
             this.upperLimitSettingAtr = ko.observable(1);
             this.lowerLimitSettingAtr = ko.observable(1);
             this.thresoldUpperLimit = ko.observable(1);
             this.thresoldLowerLimit = ko.observable(1);
-            this.atdItemId = ko.observable(null);
+            this.attendanceItemId = ko.observable(null);
         }
         updateData(dto: TotalConditionDto) {
             this.upperLimitSettingAtr(dto.upperLimitSettingAtr);
             this.lowerLimitSettingAtr(dto.lowerLimitSettingAtr);
             this.thresoldUpperLimit(dto.thresoldUpperLimit);
             this.thresoldLowerLimit(dto.thresoldLowerLimit);
-            this.atdItemId = ko.observable(dto.atdItemId);
+            this.attendanceItemId = ko.observable(dto.attendanceItemId);
         }
 
         toDto(): TotalConditionDto {
@@ -719,7 +718,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 lowerLimitSettingAtr: this.lowerLimitSettingAtr(),
                 thresoldUpperLimit: this.thresoldUpperLimit(),
                 thresoldLowerLimit: this.thresoldLowerLimit(),
-                atdItemId: this.atdItemId()
+                attendanceItemId: this.attendanceItemId()
             };
             return dto;
         }
@@ -728,7 +727,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             this.lowerLimitSettingAtr(0);
             this.thresoldUpperLimit(0);
             this.thresoldLowerLimit(0);
-            this.atdItemId(null);
+            this.attendanceItemId(null);
         }
     }
 
@@ -751,6 +750,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             };
             return dto; 
         }
+    }
+        
+    export enum SelectUseConst {
+        Use = "1",
+        NoUse = "0",
     }
 
 }
