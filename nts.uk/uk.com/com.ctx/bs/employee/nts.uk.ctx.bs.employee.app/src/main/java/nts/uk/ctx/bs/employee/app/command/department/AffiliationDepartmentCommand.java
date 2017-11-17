@@ -2,12 +2,15 @@ package nts.uk.ctx.bs.employee.app.command.department;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class AffiliationDepartmentCommand {
 
 	/** The id. */
+	@PeregRecordId
 	private String id;
 
 	/** The period. */
@@ -18,7 +21,7 @@ public class AffiliationDepartmentCommand {
 	private GeneralDate endDate;
 
 	/** The employee id. */
-	@PeregItem("")
+	@PeregEmployeeId
 	private String employeeId;
 
 	/** The department id. */

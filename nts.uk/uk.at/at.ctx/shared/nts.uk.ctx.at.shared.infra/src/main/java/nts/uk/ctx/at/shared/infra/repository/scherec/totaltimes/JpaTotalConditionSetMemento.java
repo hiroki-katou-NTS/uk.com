@@ -86,4 +86,11 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	public void setThresoldLowerLimit(ConditionThresholdLimit setThresoldLowerLimit) {
 		this.entity.setThresoldLowerLimit(setThresoldLowerLimit.v());
 	}
+
+	
+	@Override
+	public void setAtdItemId(Integer atdItemId) {
+		this.entity.setAtdItemId(atdItemId);
+	}
+	
 }

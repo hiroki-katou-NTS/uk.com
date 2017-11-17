@@ -3269,6 +3269,10 @@ var nts;
                         else if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber, undefined, message)) {
                             validateFail = true;
                         }
+                        if (!(/^-?\d*(\.\d+)?$/).test(inputText)) {
+                            result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
+                            return result;
+                        }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
                         if (!util.isNullOrUndefined(this.constraint.max)) {
@@ -6578,7 +6582,7 @@ var nts;
                         var data = valueAccessor();
                         var enable = ko.unwrap(data.enable);
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
-                        var currentSource = $grid.igGrid('option', 'dataSource');
+                        var gridSource = $grid.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
                         if ($grid.data("enable") !== enable) {
                             if (!enable) {
@@ -6605,14 +6609,14 @@ var nts;
                                     });
                                 });
                             }
-                            if (!_.isEqual(currentSources, $grid.igGrid('option', 'dataSource'))) {
-                                $grid.igGrid('option', 'dataSource', currentSources);
+                            if (!_.isEqual(currentSources, gridSource)) {
+                                $grid.igGrid('option', 'dataSource', _.cloneDeep(currentSources));
                                 $grid.igGrid("dataBind");
                             }
                         }
                         else if (String($grid.attr("filtered")) === "true") {
                             var filteredSource_1 = [];
-                            _.forEach(currentSource, function (item) {
+                            _.forEach(gridSource, function (item) {
                                 var itemX = _.find(sources, function (s) {
                                     return s[optionsValue] === item[optionsValue];
                                 });
@@ -6620,7 +6624,7 @@ var nts;
                                     filteredSource_1.push(itemX);
                                 }
                             });
-                            if (!_.isEqual(filteredSource_1, currentSource)) {
+                            if (!_.isEqual(filteredSource_1, gridSource)) {
                                 $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
                                 $grid.igGrid("dataBind");
                             }

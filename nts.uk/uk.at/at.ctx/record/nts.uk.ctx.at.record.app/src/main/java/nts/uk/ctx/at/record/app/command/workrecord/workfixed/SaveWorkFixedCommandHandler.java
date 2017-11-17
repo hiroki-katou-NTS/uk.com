@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.workrecord.workfixed;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -56,11 +54,11 @@ public class SaveWorkFixedCommandHandler extends CommandHandler<SaveWorkFixedCom
 		}		
 
 		// Find exist WorkFixed
-		Optional<WorkFixed> opWorkFixed = this.repository.findByWorkPlaceIdAndClosureId(command.getWkpId(),
-				command.getClosureId(), companyId);
+//		Optional<WorkFixed> opWorkFixed = this.repository.findByWorkPlaceIdAndClosureId(command.getWkpId(),
+//				command.getClosureId(), companyId);
 		
 		// Save/Update new WorkFixed
-		if (opWorkFixed.isPresent()) {
+		if (command.isEdited()) {
 			this.repository.update(workFixed);
 			return;
 		}

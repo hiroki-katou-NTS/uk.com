@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
@@ -10,6 +10,10 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.ReflectionFl
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 
+/**
+ * @author loivt
+ * 申請設定/申請承認設定/申請表示設定/申請制限設定
+ */
 @Value
 public class ApplicationSetting {
 	/** 会社ID */

@@ -60,17 +60,25 @@ module nts.uk.at.view.kmk003.sample {
             private columnSetting(): Array<any> {
                 let self = this;
                 return [
-                    {headerText: "カラム1", key: "column1", width: 107,controlType: ControlType.TimeEditor, properties: {
-                        inputFormat: 'time', mode: 'time'}},
-                    {headerText: "カラム2", key: "column2", width: 60, controlType: ControlType.CheckBox, properties: {
-                        enable: true}},
-                    {headerText: "カラム3", key: "column3", width: 243, controlType: ControlType.DateRangeEditor,
-                        properties: {enable: true, showNextPrevious: false, maxRange: 'oneMonth'}},
-                    {headerText: "カラム4", key: "column4", width: 255, controlType: ControlType.ComboBox,
-                        properties: {
-                            options: self.itemList(), optionsValue: 'code', optionsText: 'name',
-                            value: self.selectedCode(), columns: "[{ prop: 'code', length: 4 },{ prop: 'name', length: 10 }]",
-                            enable: true, editable: false}}
+                    {headerText: "カラム1", key: "column1", width: 107, template: `<input data-bind=\"ntsTimeEditor: {
+                        inputFormat: 'date', option: {width: '80'}}\" />`},
+                    {headerText: "カラム2", key: "column2", width: 60, template: `<div data-bind=\"ntsCheckBox: {
+                        enable: true}\"></div>`},
+                    {headerText: "カラム3", key: "column3", width: 243, template: `<div data-bind="ntsDateRangePicker: {
+                        required: true, enable: true,showNextPrevious: false, value: dateValue, maxRange: 'oneMonth'}"/>`},
+                    {headerText: "カラム4", key: "column4", width: 255, dataSource: self.itemList(), template: `<div data-bind="ntsComboBox: {
+                                            options: itemListCbb1,
+                                            optionsValue: 'code',
+                                            visibleItemsCount: 5,
+                                            value: selectedCode,
+                                            optionsText: 'name',
+                                            editable: false,
+                                            enable: true,
+                                            columns: [
+                                                { prop: 'code', length: 4 },
+                                                { prop: 'name', length: 10 },
+                                            ]}"></div>
+                    `}
                 ];
             }
             

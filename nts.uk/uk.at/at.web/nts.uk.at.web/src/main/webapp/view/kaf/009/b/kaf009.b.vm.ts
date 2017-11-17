@@ -160,7 +160,6 @@ module nts.uk.at.view.kaf009.b {
                         self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
                         self.multilContent(detailData.appReason);
-                        self.selectedReason(detailData.appReasonId);
                         self.appDate(detailData.appDate);
                         self.employeeName(detailData.employeeName);
                         //Set Value of control
@@ -307,9 +306,13 @@ module nts.uk.at.view.kaf009.b {
                 goBackCommand.workLocationCD1 = self.workLocationCD();
                 goBackCommand.workLocationCD2 = self.workLocationCD2();
                 
-                let textReason = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});
+                let txtReasonTmp = self.selectedReason();
+                if(!nts.uk.text.isNullOrEmpty(self.selectedReason())){
+                    let reasonText = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});;
+                    txtReasonTmp = reasonText.reasonName;
+                }
                 let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
-                    textReason.reasonName,
+                    txtReasonTmp,
                     self.prePostSelected(),
                     self.appDate(),
                     self.employeeID,
@@ -393,11 +396,12 @@ module nts.uk.at.view.kaf009.b {
             setReasonControl(data: Array<common.ReasonDto>) {
                 let self = this;
                 let comboSource: Array<common.ComboReason> = [];
-                comboSource.push(new common.ComboReason(0, '選択してください', ''));
                 _.forEach(data, function(value: common.ReasonDto) {
-                    comboSource.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                    self.reasonCombo.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                    if(value.defaultFlg === 1){
+                        self.selectedReason(value.reasonID);
+                    }
                 });
-                self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
             }
 
             /**

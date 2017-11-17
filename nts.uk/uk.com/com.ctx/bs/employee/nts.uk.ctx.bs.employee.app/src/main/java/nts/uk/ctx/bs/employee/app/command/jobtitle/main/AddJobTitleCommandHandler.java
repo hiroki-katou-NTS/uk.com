@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.command.jobtitle.main;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -10,7 +11,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
-
+@Stateless
 public class AddJobTitleCommandHandler extends CommandHandlerWithResult<AddJobTitleHistCommand, PeregAddCommandResult>
 	implements PeregAddCommandHandler<AddJobTitleHistCommand>{
 

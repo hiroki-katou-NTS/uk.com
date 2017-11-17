@@ -193,7 +193,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	}
 	
 	public Application toDomain() {
-		return new Application(
+		Application app = new Application(
 			this.kafdtApplicationPK.companyID,
 			this.kafdtApplicationPK.applicationID,
 			EnumAdaptor.valueOf(this.prePostAtr,PrePostAtr.class), 
@@ -215,6 +215,8 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 			this.endDate,
 			this.appApprovalPhases.stream().map(c -> c.toDomain()).collect(Collectors.toList())
 		);
+		app.setVersion(this.version);
+		return app;
 	}
 	
 }

@@ -60,9 +60,14 @@ module kmk003.common.fixtable {
         controlType: number;
 
         /**
-         * Option control type if have
+         * dataSource control if has. Ex: option comboBox, ...
          */
-        properties?: any;
+        dataSource: Array<any>;
+
+        /**
+         * temple html
+         */
+        template: string;
     }
 
     /************************************************ SCREEN MODEL ************************************************
@@ -104,6 +109,7 @@ module kmk003.common.fixtable {
         tableStyle: TableStyle;
         
         $tableSelector: any;
+        mapControl: Array<IControl>;
         
         constructor() {
             let self = this;
@@ -115,6 +121,7 @@ module kmk003.common.fixtable {
                 height: 0
             };
             self.lstDataSource = {};
+            self.mapControl = self.createMapControl();
             
             // subscribe
             self.isSelectAll.subscribe(newValue => {
@@ -193,6 +200,10 @@ module kmk003.common.fixtable {
             return dfd.promise();
         }
         
+        private overrideWidthControl() {
+            
+        }
+        
         /**
          * calHeightTable
          */
@@ -266,8 +277,10 @@ module kmk003.common.fixtable {
             
             // add html column base setting
             _.forEach(self.columns, (item: FixColumn) => {
-                rowHtml += self.renderColumnHtml(item);
+                rowHtml += self.generateColumnHtml(item);
             });
+            
+            console.log(rowHtml);
             
             // add html row in table
             self.$tableSelector.append("<tr>" + rowHtml + "</tr>");
@@ -294,159 +307,128 @@ module kmk003.common.fixtable {
         }
         
         /**
-         * renderColumnHtml
+         * Define key word of control
+         * 
          */
-        private renderColumnHtml(columnSetting: FixColumn): string {
+        private createMapControl(): any {
             let self = this;
-            let htmlColumn: string = "";
             
-            switch (columnSetting.controlType) {
-                case ControlType.CheckBox:
-                    htmlColumn = self.getCheckBoxHtml(columnSetting);
-                    break;
-                case ControlType.TimeEditor:
-                    htmlColumn = self.getTimeEditorHtml(columnSetting);
-                    break;
-                case ControlType.DateRangeEditor:
-                    htmlColumn = self.getDateRangeEditorHtml(columnSetting);
-                    break;
-                case ControlType.ComboBox:
-                    htmlColumn = self.getComboBoxHtml(columnSetting);
-                    break;
-                default:
-                    break;
-            }
-            return "<td style='text-align: center;'>" + htmlColumn + "</td>";
+            // define infor control
+            let mapControl: Array<IControl> = [
+                {controlType: 'ntsCheckBox', keyValue: 'checked:'},
+                {controlType: 'ntsTimeEditor', keyValue: 'value:'},
+                {controlType: 'ntsComboBox', keyValue: 'value:', keyOptionValue: 'options:'},
+                {controlType: 'ntsDateRangePicker', keyValue: 'value:'}
+            ];
+            return mapControl;
         }
         
         /**
-         * getCheckBoxControl
+         * Generate control html
          */
-        private getCheckBoxHtml(columnSetting: FixColumn): string {
-            
-            let properties: any = columnSetting.properties;
-            
-            // define option of check box
-            let checkBoxHtml: string = "<div data-bind=\"ntsCheckBox: { checked: " + columnSetting.key + ",";
-            
-            if (!properties) {
-                return checkBoxHtml.substring(0, checkBoxHtml.length -1).concat("}\"/></div>");
-            }
-            
-            if (properties.enable != undefined) {
-                checkBoxHtml += "enable: " + properties.enable + ",";
-            }
-            if (properties.text) {
-                checkBoxHtml += "text: '" + properties.text + "',";
-            }
-            return checkBoxHtml.substring(0, checkBoxHtml.length -1).concat("}\"/></div>");
-        }
-        
-        /**
-         * getTimeEditorHtml
-         */
-        private getTimeEditorHtml(columnSetting: FixColumn): string {
-            let properties: any = columnSetting.properties;
-            
-            let timeEditorHtml: string = `<div><input data-bind="ntsTimeEditor: {
-                                        value: ` + columnSetting.key + ",option: {width: '80'},";
-            if (!properties) {
-                return timeEditorHtml.substring(0, timeEditorHtml.length -1).concat("}\" /></div>");
-            }
-            
-            if (properties.name) {
-                timeEditorHtml += "name: '" + properties.name + "',";
-            }
-            if (properties.constraint) {
-                timeEditorHtml += "constraint: " + properties.constraint + ",";
-            }
-            if (properties.required) {
-                timeEditorHtml += "required: " + properties.required + ",";
-            }
-            if (properties.enable) {
-                timeEditorHtml += "enable: " + properties.enable + ",";
-            }
-            if (properties.readonly) {
-                timeEditorHtml += "readonly: " + properties.readonly + ",";
-            }
-            if (properties.inputFormat) {
-                timeEditorHtml += "inputFormat: '" + properties.inputFormat + "',";
-            }
-            if (properties.immediate) {
-                timeEditorHtml += "immediate: " + properties.immediate + ",";
-            }
-            if (properties.mode) {
-                timeEditorHtml += "mode: '" + properties.mode + "',";
-            }
-            return timeEditorHtml.substring(0, timeEditorHtml.length -1).concat("}\" /></div>");
-        }
-        
-        /**
-         * getDateRangeEditorHtml
-         */
-        private getDateRangeEditorHtml(columnSetting: FixColumn): string {
-            let properties: any = columnSetting.properties;
-            
-            let html: string = "<div data-bind=\"ntsDateRangePicker: {value: " + columnSetting.key + ","; 
-            if (!properties) {
-                return html.substring(0, html.length -1).concat("}\" /></div>");
-            }
-            
-            if (properties.type) {
-                html += "type: '" + properties.type + "',";
-            }
-            if (properties.maxRange) {
-                html += "maxRange: '" + properties.maxRange + "',";
-            }
-            if (properties.name) {
-                html += "name: '#[" + properties.name + "]',";
-            }
-            if (properties.startName) {
-                html += "startName: '#[" + properties.startName + "]',";
-            }
-            if (properties.endName) {
-                html += "endName: '#[" + properties.endName + "]',";
-            }
-            if (properties.enable) {
-                html += "enable: " + properties.enable + ",";
-            }
-            if (properties.required) {
-                html += "required: " + properties.required + ",";
-            }
-            if (properties.showNextPrevious) {
-                html += "showNextPrevious: " + properties.showNextPrevious + ",";
-            }
-            return html.substring(0, html.length -1).concat("}\" /></div>");
-        }
-        
-        /**
-         * getComboBoxHtml
-         */
-        private getComboBoxHtml(columnSetting: FixColumn): string {
+        private generateColumnHtml(columnSetting: FixColumn): string {
             let self = this;
-            let properties: any = columnSetting.properties;
             
-            // add data source
-            self.lstDataSource[columnSetting.key] = properties.options;
+            // get template
+            let template: string = columnSetting.template;
             
-            // render html
-            let html: string = "<div data-bind=\"ntsComboBox: {options: $parent.lstDataSource." + columnSetting.key + ", optionsValue: '"
-                + properties.optionsValue + "',value: " + columnSetting.key + ",optionsText: '" + properties.optionsText + "',"; 
-            if (!properties) {
-                return html.substring(0, html.length -1).concat("}\" /></div>");
+            // get infor key word control
+            let infoControl: IControl = self.getInfoControl(template);
+            
+            let keyValue: string = infoControl.keyValue;
+            
+            // not found control
+            if (!keyValue) {
+                return;
             }
-            html += "columns: " + (properties.columns ? properties.columns : []) + ",";
-            if (properties.visibleItemsCount) {
-                html += "visibleItemsCount: " + properties.visibleItemsCount + ",";
+            let oldProperties: string = template.substring(template.indexOf("{") + 1, template.indexOf("}"));
+            
+            // remove spaces
+            let newProperties: string = oldProperties.replace(/\s/g, '');
+            
+            // insert key value of control
+            newProperties = self.updateElement(newProperties, keyValue, columnSetting.key);
+            
+            // insert option value of control if has
+            let keyOptionValue: string = infoControl.keyOptionValue;
+            if (keyOptionValue) {
+                // add data source for control
+                self.lstDataSource[columnSetting.key] = columnSetting.dataSource;
+                
+                // update option cotrol html
+                newProperties = self.updateElement(newProperties, keyOptionValue,
+                    "$parent.lstDataSource." + columnSetting.key);
             }
-            if (properties.editable) {
-                html += "editable: " + properties.editable + ",";
-            }
-            if (properties.enable) {
-                html += "enable: " + properties.enable + ",";
-            }
-            return html.substring(0, html.length -1).concat("}\" /></div>");
+            
+            template = template.replace(oldProperties, newProperties.replace(/"/g, "'"));
+            
+            return "<td style='text-align: center;'>" + template + "</td>";
         }
+        
+        /**
+         * Get control infor
+         */
+        private getInfoControl(template: string): IControl {
+            let self = this;
+            return self.mapControl.filter(item => template.indexOf(item.controlType) > -1)[0];
+        }
+        
+        /**
+         * update element html
+         */
+        private updateElement(input: string, keyValue: string, value: string): string {
+            let self = this;
+            
+            // get index
+            let idxKey: number = input.indexOf(keyValue);
+            
+            // keyValue not found
+            if (idxKey == undefined || idxKey == -1) {
+                input = keyValue + "" + value + "," + input; 
+            } else {
+                input = input.replace(self.subString(input, idxKey), keyValue + "" + value);
+            }
+            return input;
+        }
+        
+        /**
+         * substring
+         */
+        private subString(input: string, idxStart: number): string {
+            let result: string = "";
+            let charComma: string = ',';
+            
+            for (var i = idxStart; i < input.length; i++) {
+                
+                // first char comma
+                if (input.charAt(i) == charComma) {
+                    break;
+                }
+                result += input.charAt(i);
+            }
+            return result;
+        }
+    }
+    
+    /**
+     * IControl
+     */
+    interface IControl {
+        
+        /**
+         * control type kiban team
+         */
+        controlType: string;
+        
+        /**
+         * key value of control
+         */
+        keyValue: string;
+        
+        /**
+         * needed when control has option.Ex: comboBox, ...
+         */
+        keyOptionValue?: string;
     }
 }
 
