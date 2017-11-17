@@ -176,11 +176,12 @@ module nts.uk.com.view.cps005.b {
                         $("#integerPart").focus();
                         block.clear();
                         return;
-                    } else if (newItemDef.singleItem.decimalPart === null) {
-                        $("#decimalPart").focus();
-                        block.clear();
-                        return;
-                    }
+                    } 
+//                    else if (newItemDef.singleItem.decimalPart === null) {
+//                        $("#decimalPart").focus();
+//                        block.clear();
+//                        return;
+//                    }
                 }
 
                 if (newItemDef.singleItem.dataType === 4) {
