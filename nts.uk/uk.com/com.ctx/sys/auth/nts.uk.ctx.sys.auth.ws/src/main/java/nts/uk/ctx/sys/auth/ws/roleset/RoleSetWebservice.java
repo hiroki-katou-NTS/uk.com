@@ -91,7 +91,7 @@ public class RoleSetWebservice extends WebService {
 	// Default Role Set
 	@POST
 	@Path("findDefaultRoleSet")
-	public DefaultRoleSetDto getDefaultRoleSet() {
+	public DefaultRoleSetDto getCurrentDefaultRoleSet() {
 		return this.defaultRoleSetFinder.findByCompanyId();
 	}
 	
