@@ -1,7 +1,5 @@
 package nts.uk.ctx.bs.employee.ws.workplacedifferinfor;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -37,7 +35,7 @@ public class workPlaceDifferinforWs extends WebService{
 	 */
 	@POST
 	@Path("findDiv")
-	public Optional<DivWorkPlaceDifferInforDto> finderDiv(ParamFinder param){
+	public DivWorkPlaceDifferInforDto finderDiv(ParamFinder param){
 		return this.findDiv.finder(param);
 	}
 	

@@ -8,12 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.command.AddCompanyInforCommand;
-import nts.uk.ctx.command.AddCompanyInforCommandHandler;
-import nts.uk.ctx.command.DeleteCompanyInforCommand;
-import nts.uk.ctx.command.DeleteCompanyInforCommandHandler;
-import nts.uk.ctx.command.UpdateCompanyInforCommand;
-import nts.uk.ctx.command.UpdateCompanyInforCommandHandler;
 import nts.uk.ctx.find.CompanyInforDto;
 import nts.uk.ctx.find.CompanyInforFinder;
 
@@ -23,14 +17,14 @@ public class CompanyNewWs extends WebService{
 	@Inject
 	private CompanyInforFinder finderCom;
 	
-	@Inject
-	private UpdateCompanyInforCommandHandler updateCom;
-	
-	@Inject
-	private AddCompanyInforCommandHandler addCom;
-	
-	@Inject
-	private DeleteCompanyInforCommandHandler delCom;
+//	@Inject
+//	private UpdateCompanyInforCommandHandler updateCom;
+//	
+//	@Inject
+//	private AddCompanyInforCommandHandler addCom;
+//	
+//	@Inject
+//	private DeleteCompanyInforCommandHandler delCom;
 	
 	/**
 	 * find all company 
@@ -42,34 +36,34 @@ public class CompanyNewWs extends WebService{
 		return this.finderCom.finder();
 	}
 	
-	/**
-	 * update a company
-	 * @param com
-	 */
-	@POST
-	@Path("updateCom")
-	public void update(UpdateCompanyInforCommand com){
-		this.updateCom.handle(com);
-	}
-	
-	/**
-	 * insert a company
-	 * @param com
-	 */
-	@POST
-	@Path("addCom")
-	public void add(AddCompanyInforCommand com){
-		this.addCom.handle(com);
-	}
-	
-	/**
-	 * delete a company
-	 * @param com
-	 */
-	@POST
-	@Path("deleteCom")
-	public void delete(DeleteCompanyInforCommand com){
-		this.delCom.handle(com);
-	}
+//	/**
+//	 * update a company
+//	 * @param com
+//	 */
+//	@POST
+//	@Path("updateCom")
+//	public void update(UpdateCompanyInforCommand com){
+//		this.updateCom.handle(com);
+//	}
+//	
+//	/**
+//	 * insert a company
+//	 * @param com
+//	 */
+//	@POST
+//	@Path("addCom")
+//	public void add(AddCompanyInforCommand com){
+//		this.addCom.handle(com);
+//	}
+//	
+//	/**
+//	 * delete a company
+//	 * @param com
+//	 */
+//	@POST
+//	@Path("deleteCom")
+//	public void delete(DeleteCompanyInforCommand com){
+//		this.delCom.handle(com);
+//	}
 	
 }

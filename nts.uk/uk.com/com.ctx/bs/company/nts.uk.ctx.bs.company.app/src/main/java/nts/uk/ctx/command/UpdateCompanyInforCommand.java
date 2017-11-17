@@ -1,5 +1,7 @@
 package nts.uk.ctx.command;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -46,7 +48,7 @@ public class UpdateCompanyInforCommand {
 		private String contractCd;
 		
 		/** 法人マイナンバー */
-		private String taxNo;
+		private BigDecimal taxNo;
 		
 		private AddInforCommand addinfor;
 }

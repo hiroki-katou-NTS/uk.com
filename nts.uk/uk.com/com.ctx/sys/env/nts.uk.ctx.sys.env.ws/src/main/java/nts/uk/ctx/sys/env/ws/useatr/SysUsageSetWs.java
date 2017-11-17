@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.env.ws.useatr;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -40,7 +38,7 @@ public class SysUsageSetWs extends WebService{
 	 */
 	@POST
 	@Path("findSys")
-	public Optional<SysUsageSetDto> finderSys(ParamFinder param){
+	public SysUsageSetDto finderSys(ParamFinder param){
 		return this.finderSys.finder(param);
 	}
 	

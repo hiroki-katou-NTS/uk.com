@@ -1,6 +1,9 @@
 package nts.uk.ctx.sys.env.app.find.sysusagesetfinder;
 
+import lombok.Value;
+
+@Value
 public class ParamFinder {
-	String companyId;
-	String companyCode;
+	private String companyId;
+	private String companyCode;
 }

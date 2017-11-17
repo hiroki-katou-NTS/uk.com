@@ -1,15 +1,18 @@
 package nts.uk.ctx.bs.company.dom.company;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.company.dom.company.primitive.KNName;
-import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
-import nts.uk.ctx.bs.company.dom.company.primitive.RepName;
-import nts.uk.ctx.bs.company.dom.company.primitive.RepJob;
 import nts.uk.ctx.bs.company.dom.company.primitive.ABName;
+import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
+import nts.uk.ctx.bs.company.dom.company.primitive.KNName;
+import nts.uk.ctx.bs.company.dom.company.primitive.RepJob;
+import nts.uk.ctx.bs.company.dom.company.primitive.RepName;
+import nts.uk.ctx.bs.company.dom.company.primitive.TaxNo;
 @Getter
 @AllArgsConstructor
 public class CompanyInforNew extends AggregateRoot{
@@ -50,7 +53,7 @@ public class CompanyInforNew extends AggregateRoot{
 	private ContractCd contractCd;
 	
 	/** 法人マイナンバー */
-	private String taxNo;
+	private TaxNo taxNo;
 	private AddInfor addInfor;
 	
 	public void createCompanyId(String companyCode, String contractCd){
@@ -61,7 +64,7 @@ public class CompanyInforNew extends AggregateRoot{
 			String companyId, int startMonth, int isAbolition,
 			String repname, String repjob, 
 			String comNameKana, String shortComName,
-			String contractCd, String taxNum, AddInfor addInfor) {
+			String contractCd, BigDecimal taxNo, AddInfor addInfor) {
 				return new CompanyInforNew(new CCD(companyCode), 
 				new Name(companyName), 
 				companyId,
@@ -72,7 +75,8 @@ public class CompanyInforNew extends AggregateRoot{
 				new KNName(comNameKana),
 				new ABName(shortComName),
 				new ContractCd(contractCd),
-				taxNum, addInfor);
+				new TaxNo(taxNo), 
+				addInfor);
 				}
 	
 	@Override

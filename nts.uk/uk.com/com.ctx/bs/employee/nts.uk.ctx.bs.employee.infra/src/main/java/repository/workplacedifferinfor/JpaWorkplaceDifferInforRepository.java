@@ -14,7 +14,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforReposi
 public class JpaWorkplaceDifferInforRepository extends JpaRepository implements DivWorkDifferInforRepository{
 	// division workplace difference information
 		private final String SELECT_NO_WHERE = "SELECT c FROM BcmmtDivWorkDifferInfor c ";
-		private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.bcmmtDivWorkDifferInforPK.companyId = :companyId";
+		private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.bcmmtDivWorkDifferInforPK.companyId = :companyId AND c.bcmmtDivWorkDifferInforPK.companyCode = :companyCode AND c.bcmmtDivWorkDifferInforPK.contractCd = :contractCd";
 	
 		/**
 		 * convert from DivWorkDifferInfor entity to DivWorkDifferInfor domain
@@ -51,11 +51,8 @@ public class JpaWorkplaceDifferInforRepository extends JpaRepository implements 
 		 */
 		@Override
 		public Optional<DivWorkDifferInfor> findDivWork(String companyId, String companyCode, String contractCd) {
-			return this.queryProxy().query(SELECT_ITEM, BcmmtDivWorkDifferInfor.class)
-					.setParameter("companyId", companyId)
-					.setParameter("companyCode", companyCode)
-					.setParameter("contractCd", contractCd)
-					.getSingle(c->toDomainDiv(c));
+			return this.queryProxy().find(new BcmmtDivWorkDifferInforPK(companyId, companyCode, contractCd), BcmmtDivWorkDifferInfor.class)
+					.map(c -> toDomainDiv(c));
 		}
 
 		/**

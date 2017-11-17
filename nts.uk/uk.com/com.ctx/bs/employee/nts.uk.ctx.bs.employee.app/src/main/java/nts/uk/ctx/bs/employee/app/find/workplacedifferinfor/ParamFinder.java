@@ -1,6 +1,9 @@
 package nts.uk.ctx.bs.employee.app.find.workplacedifferinfor;
 
+import lombok.Value;
+
+@Value
 public class ParamFinder {
-	String companyId;
-	String companyCode;
+	private String companyId;
+	private String companyCode;
 }

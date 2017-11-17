@@ -42,8 +42,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * Bcmmt Company Infor author: Hoang Yen
 	 */
 	private final String SELECT_NO_WHERE = "SELECT c FROM BcmmtCompanyInfor c ";
-	private final String SELECT_COM = SELECT_NO_WHERE + "WHERE c.bcmmtCompanyInforPK.companyId = :companyId";
-	private final String SELECT_COM_CD = SELECT_COM + " AND c.bcmmtCompanyInforPK.companyCode = :companyCode AND c.bcmmtCompanyInforPK.contractCd = :contractCd";
+	private final String SELECT_COM = SELECT_NO_WHERE + "WHERE c.bcmmtCompanyInforPK.contractCd = :contractCd";
+	private final String SELECT_COM_CD = SELECT_COM + " AND c.bcmmtCompanyInforPK.companyCode = :companyCode AND c.bcmmtCompanyInforPK.companyId = :companyId";
 	// bcmmt add infor
 	private final String SELECT_ADD_NO_WHERE = "SELECT  c FROM BcmmtAddInfor c ";
 	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
@@ -109,7 +109,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * @return author Hoang Yen
 	 */
 	private static CompanyInforNew toDomainCom(BcmmtCompanyInfor entity) {
-		AddInfor add = toDomainAdd(entity.bcmmtAddInfor);
+		AddInfor add = entity.bcmmtAddInfor == null ? null : toDomainAdd(entity.bcmmtAddInfor);
 		CompanyInforNew domain = CompanyInforNew.createFromJavaType(entity.bcmmtCompanyInforPK.companyCode,
 				entity.companyName, entity.bcmmtCompanyInforPK.companyId, entity.startMonth, entity.isAbolition,
 				entity.repname, entity.repost, entity.comNameKana, entity.shortComName,
@@ -147,7 +147,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.shortComName = domain.getShortComName().v();
 		entity.isAbolition = domain.getIsAbolition().value;
 		entity.startMonth = domain.getStartMonth().value;
-		entity.taxNo = domain.getTaxNo();
+		entity.taxNo = domain.getTaxNo().v();
 		if (domain.getAddInfor() != null) {
 			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor());
 		}

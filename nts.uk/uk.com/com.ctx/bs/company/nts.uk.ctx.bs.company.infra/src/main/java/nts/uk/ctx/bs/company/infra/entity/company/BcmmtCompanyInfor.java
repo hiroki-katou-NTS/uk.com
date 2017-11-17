@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.company.infra.entity.company;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "BCMMT_COMPANY")
+@Table(name = "BCMMT_COMPANY1")
 public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -34,11 +35,11 @@ public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	public int isAbolition;
 	
 	/** 代表者名 */
-	@Column(name = "REP_NAME")
+	@Column(name = "REPRESENTATIVE_NAME")
 	public String repname;
 	
 	/** 代表者職位 */
-	@Column(name ="REP_JOB")
+	@Column(name ="REPRESENTATIVE_JOB")
 	public String repost;
 	
 	/** 会社名カナ */
@@ -51,7 +52,7 @@ public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	
 	/** 法人マイナンバー */
 	@Column(name = "TAX_NO")
-	public String taxNo;
+	public BigDecimal taxNo;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "bcmmtCompanyInfor", orphanRemoval = true)
 	public BcmmtAddInfor bcmmtAddInfor;

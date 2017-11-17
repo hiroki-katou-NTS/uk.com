@@ -40,32 +40,31 @@
 							class="cf minimalist ntsCheckbox-left"></div>
 							<!-- A2_1 -->
 						<i class="icon icon-searchbox"></i>
-						<div style="margin-left: 30px; margin-top: 5px"
+						<div style="margin-left: 20px; margin-top: 5px"
 							class="flex valign-center">
 							<!-- A2_11 -->
-							<div data-bind="ntsFormLabel: {}">
+							<div id="codeNameLb" data-bind="ntsFormLabel: {}">
 								<label id="codeName">#{i18n.getText('CMM001_40')}</label>
 							</div>
 							<!-- A2_3 -->
-							<!-- <div
+							<div
 								data-bind="ntsSearchBox: 
                     	       {comId: 'gridCompany',
                     	        items: sel001Data, 
                     	        selected: currentCompanyCode,
                     	        selectedKey: 'companyCode',
-                    	        fields: ['companyName', 'companyCode']}" /> -->
+                    	        fields: ['companyName', 'companyCode']}" />
 						</div>
 						<!-- A2_4 -->
 						<div class="div-table">
-							<!-- <table id="gridCompany"
+							<table id="gridCompany"
 								data-bind="ntsGridList: {								
 								height: 380,
-								width: 400,
 								options: sel001Data,
 								optionsValue: 'companyCode',
 								columns: gridColumns,
 								value: currentCompanyCode }"
-								class="cf"></table> -->
+								class="cf"></table>
 
 						</div>
 					</div>
@@ -94,7 +93,7 @@
 							<div data-name="Check box"
 								class="cf minimalist ntsCheckBox-right" data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM001_10')}' }"></div>
 							<!-- A3_4 -->
-							<button id = "checkbtn" data-bind="ntsHelpButton: {image: '../images/CMM001_02.png', position: 'right top',enable: true}" >?</button>
+							<button id = "checkbtn" data-bind="ntsHelpButton: {image: '../images/CMM001_02.png', position: 'left top',enable: true}" >?</button>
 						</div>
 					</div>
 					<!-- table --> 
@@ -394,13 +393,11 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<div id="colum1">
 													<!-- data-bind="ntsTextEditor: {value: faxNo,
 																					   constraint: 'FaxNo',
 																					   required: true,																						required: true,
 																					   immediate: true}"  -->
-														<input id="faxNo" tabindex="8"class="save-error" data-name="#{i18n.getText('CMM001_29')}"></input>
-													</div>
+														<input id="faxNo" tabindex="8" class="save-error" />
 												</th>
 											</tr>
 

@@ -1,7 +1,5 @@
 package nts.uk.ctx.bs.employee.app.find.workplacedifferinfor;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -22,12 +20,12 @@ public class DivWorkPlaceDifferInforFinder {
 	 * @param companyCode
 	 * @return
 	 */
-	public Optional<DivWorkPlaceDifferInforDto> finder(ParamFinder param){
+	public DivWorkPlaceDifferInforDto finder(ParamFinder param){
 		String contractCd = AppContexts.user().contractCode();
-		return this.divRep.findDivWork(param.companyId, param.companyCode, contractCd)
+		return this.divRep.findDivWork(param.getCompanyId(), param.getCompanyCode(), contractCd)
 							.map(c -> {
-								return new DivWorkPlaceDifferInforDto(param.companyId, param.companyCode, contractCd,
+								return new DivWorkPlaceDifferInforDto(param.getCompanyId(), param.getCompanyCode(), contractCd,
 																	c.getRegWorkDiv().value);
-							});
+							}).orElse(null);
 	}
 }
