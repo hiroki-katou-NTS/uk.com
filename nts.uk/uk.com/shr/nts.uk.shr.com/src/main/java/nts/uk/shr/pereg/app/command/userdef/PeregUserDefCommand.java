@@ -15,6 +15,10 @@ public abstract class PeregUserDefCommand {
 	/** Record Id, but this is null when new record */
 	private final String recordId;
 	
+	private String employeeId;
+	
+	private String personId;
+	
 	/** input items */
 	private final List<ItemValue> items;
 	
@@ -25,6 +29,14 @@ public abstract class PeregUserDefCommand {
 	public PeregUserDefCommand(String categoryId, String recordId, List<ItemValue> items) {
 		this.categoryId = categoryId;
 		this.recordId = recordId;
+		this.items = items;
+	}
+	
+	public PeregUserDefCommand(String categoryId, String recordId, String employeeId, String personId,List<ItemValue> items) {
+		this.categoryId = categoryId;
+		this.recordId = recordId;
+		this.employeeId = employeeId;
+		this.personId = personId;
 		this.items = items;
 	}
 }
