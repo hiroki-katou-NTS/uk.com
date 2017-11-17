@@ -332,13 +332,17 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             goBackCommand.workTimeEnd2 = self.timeEnd2();
             goBackCommand.workLocationCD1 = self.workLocationCD();
             goBackCommand.workLocationCD2 = self.workLocationCD2();
-            let textReason = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});
+            let txtReasonTmp = self.selectedReason();
+            if(!nts.uk.text.isNullOrEmpty(self.selectedReason())){
+                let reasonText = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});;
+                txtReasonTmp = reasonText.reasonName;
+            }
             let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
-                textReason.reasonName,
+                txtReasonTmp,
                 self.prePostSelected(),
-                self.appDate(),
+                moment().format('YYYY/MM/DD'),
                 self.employeeID,
-                self.multilContent(),
+                "",
                 self.appDate(),
                 self.multilContent(),
                 self.employeeID,
@@ -417,12 +421,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         setReasonControl(data: Array<common.ReasonDto>) {
             var self = this;
             let comboSource: Array<common.ComboReason> = [];
-            // comboSource.push(new common.ComboReason(0,'選択してください',""));
             _.forEach(data, function(value: common.ReasonDto) {
-                comboSource.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                self.reasonCombo.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                if(value.defaultFlg === 1){
+                    self.selectedReason(value.reasonID);
+                }
             });
-            self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
-            self.selectedReason(_.first(self.reasonCombo()).reasonId);
         }
 
         /**

@@ -182,7 +182,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	@Override
 	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting) {
 		if(requestAppDetailSetting != null){
-			if(requestAppDetailSetting.getBreakTimeDisFlg().value == DisplayFlg.DISPLAY.value){
+			if(requestAppDetailSetting.getBreakInputFieldDisFlg().value == DisplayFlg.DISPLAY.value){
 				return true;
 			}else{
 				return false;
