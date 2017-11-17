@@ -6,47 +6,41 @@ module nts.uk.com.view.cps017.b.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
+    import close = nts.uk.ui.windows.close;
     export class ScreenModel {
-        listSelection: KnockoutObservableArray<ISelection> = ko.observableArray([]);
-        selection: KnockoutObservable<Selection> = ko.observable(new Selection({ selectionID: '', histId: '' }));
-
-        currentSelList: KnockoutObservableArray<any>;
-
+        listSelection: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
-            let self = this;
-            self.currentSelList = ko.observableArray([]);
-
         }
 
         //開始
         start(): JQueryPromise<any> {
             let self = this,
-                currentItem: Selection = self.selection(),
-                listSelection: Array<Selection> = self.listSelection(),
-                selectedHisId = getShared('selectedHisId');//get histId ben screen A
-
-
-            //comand: Selection = ko.toJS(currentItem);
-
-            dfd = $.Deferred();
+            selectedHisId = getShared('selectedHisId');//get histId ben screen A
+            let dfd = $.Deferred();
             nts.uk.ui.errors.clearAll();
-
+            
+            self.listSelection.subscribe(function(newSource){
+                if(!nts.uk.util.isNullOrEmpty(newSource) && !nts.uk.util.isNullOrEmpty($('#item_register_grid2').children())){
+                    let source = ko.toJS(newSource);
+                    $('#item_register_grid2').igGrid("option", "dataSource", source);
+                    $('#item_register_grid2').igGrid("dataBind");    
+                }
+            });
             service.getAllOrderSetting(selectedHisId).done((itemList: Array<ISelection>) => {
                 if (itemList && itemList.length > 0) {
+                    let i = 1;
                     itemList.forEach(x => {
-                        self.listSelection.push(x)
-                        if (x.initSelection === 1) {
-                            self.currentSelList().push(x.selectionID);
-                        }
+                        self.listSelection.push({id: i, 
+                            selectionID: x.selectionID,
+                            histId: x.histId,
+                            selectionCD: x.selectionCD,
+                            selectionName: x.selectionName,
+                            externalCD: x.externalCD,
+                            memoSelection: x.memoSelection,
+                            initSelection: x.initSelection == 1? true : false });
+                        i++;
                     });
-                    //test:
-                    self.currentSelList().push(itemList[0].selectionID);
-//
-//                    self.currentSelList().push(itemList[0].selectionID);
-//                     self.currentSelList().push(itemList[3].selectionID);
-
                 }
                 dfd.resolve();
             }).fail(error => {
@@ -55,17 +49,60 @@ module nts.uk.com.view.cps017.b.viewmodel {
 
             return dfd.promise();
         }
+        /**
+         * register
+         */
+        register(){
+            let self = this;
+            let row = $("#item_register_grid2").igGridSelection("selectedRow");
+            if(row == null || row == undefined){
+                return;
+            }
+            let itemSeleted: ISelection = self.findItemSelected(row.id);
+            let data = {
+                selectionID: itemSeleted.selectionID,
+                histId: itemSeleted.histId,
+                selectionCD: itemSeleted.selectionCD,
+                selectionName: itemSeleted.selectionName,
+                externalCD: itemSeleted.externalCD,
+                memoSelection: itemSeleted.memoSelection
+            };
+//            service.updateDataSelection(data).done(function(){
+//                //情報メッセージ（#Msg_15）を表示する (Hiển thị InfoMessage Msg_15)
+//                info({ messageId: "Msg_15" }).then(function() {
+//                    //close dialog
+////                    close();
+//                });
+//            }).always(() => {
+//                block.clear();
+//            });;
+        }
+        /**
+         * find item is selected.
+         */
+        findItemSelected(id: any): any{
+            let self = this;
+            return _.find(self.listSelection(), function(item){
+                return item.id = id;
+            })
+        }
+        
+        close(){
+            close();
+        }
     }
-
+    
+    
     //Selection
     interface ISelection {
+        id?: number;
         selectionID?: string;
         histId?: string;
         selectionCD: string;
         selectionName: string;
         externalCD: string;
         memoSelection: string;
-        initSelection: number;
+        initSelection: any;
     }
     class Selection {
         selectionID: KnockoutObservable<string> = ko.observable('');
@@ -74,8 +111,7 @@ module nts.uk.com.view.cps017.b.viewmodel {
         selectionName: KnockoutObservable<string> = ko.observable('');
         externalCD: KnockoutObservable<string> = ko.observable('');
         memoSelection: KnockoutObservable<string> = ko.observable('');
-        initSelection: KnockoutObservable<number> = ko.observable();
-
+        initSelection: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(param: ISelection) {
             let self = this;
@@ -85,8 +121,7 @@ module nts.uk.com.view.cps017.b.viewmodel {
             self.selectionName(param.selectionName || '');
             self.externalCD(param.externalCD || '');
             self.memoSelection(param.memoSelection || '');
-            self.initSelection(param.initSelection || '');
-
+            self.initSelection(param.initSelection|| false);
         }
     }
 }

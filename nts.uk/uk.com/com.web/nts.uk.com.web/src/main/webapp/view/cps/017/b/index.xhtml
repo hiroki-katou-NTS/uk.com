@@ -9,10 +9,11 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 600,
-					height : 400
+					width : 500,
+					height : 450
 				};
 			</script>
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps017.b.style.css" />
 			<com:scriptfile path="cps017.b.service.js" />
 			<com:scriptfile path="cps017.b.start.js" />
@@ -23,37 +24,26 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_001" class="proceed" tabindex="1">#{i18n.getText('CPS017_27')}</button>
-				<button id="A1_002" tabindex="2">#{i18n.getText('CPS017_28')}</button>
+				<!-- B1_1: button 登録 -->
+				<button id="buton-register" class="proceed" data-bind = "click: register" tabindex="1">#{i18n.getText('CPS017_27')}</button>
+				<!-- B1_2: button 閉じる -->
+				<button id="button-close" data-bind = "click: close" tabindex="2">#{i18n.getText('CPS017_28')}</button>
 			</div>
 			<div id="contents-area">
-				<div>
-					<div style="display: inline-block;">
-						<table id="item_register_grid"
-							data-bind="ntsGridList: {
-									height: 300,
-									options: listSelection,
-									primaryKey: 'selectionID',
-									showNumbering:true,
-									columns: [
-						                { headerText: '', key: 'selectionID', width: 20 ,hidden:true},
-						                { headerText: '#{i18n.getText('CPS017_18')}', key: 'initSelection', width: 100},
-						                { headerText: '#{i18n.getText('CPS017_16')}', key: 'selectionCD', width: 120 },
-						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 140}
-						            ],
-									multiple: true,
-									value: currentSelList
-									}">
-						</table>
-<!-- 						<TABLE id="item_register_grid"></TABLE> -->
+				<div style="margin-left: 20px;">
+					<!-- B2_2: grid list  -->
+					<div id="table-grid-selection">
+					<table id="item_register_grid2" class="pull-left"></table>
 					</div>
-					<div id="grid-up-down" 
+					<div id="grid-up-down"
 						data-bind="ntsUpDown: {
-								targetSource: listSelection, 
- 								primaryKey: 'selectionID', 
-								comId: '#item_register_grid', 
- 								type: 'grid' 
-							}"></div>
+								targetSource: listSelection,
+								primaryKey: 'id',
+								comId: '#item_register_grid2',
+								type: 'grid'
+							}"
+						style="margin-left: 10px;"
+					 ></div>
 				</div>
 
 			</div>
