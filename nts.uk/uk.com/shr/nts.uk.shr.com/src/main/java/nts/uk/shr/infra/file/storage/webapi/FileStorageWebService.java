@@ -1,7 +1,6 @@
 package nts.uk.shr.infra.file.storage.webapi;
 
 import java.io.InputStream;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -11,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
@@ -33,6 +31,14 @@ public class FileStorageWebService {
 		return this.fileInfoRepository.find(fileId).map(fileInfo -> this.buildFileResponse(fileInfo))
 				.orElseThrow(() -> new RuntimeException("stored file info is not found."));
 	}
+	
+	@GET
+	@Path("get/{fileid}/{entry}")
+	public Response download(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
+		return this.fileInfoRepository.findZipEntry(fileId, entryName)
+				.map(fileInfo -> this.buildFileResponse(fileInfo))
+				.orElseThrow(() -> new RuntimeException("File not found."));
+	}
 
 	private Response buildFileResponse(StoredFileInfo fileInfo) {
 
@@ -52,7 +58,11 @@ public class FileStorageWebService {
 	}
 
 	static String contentDisposition(StoredFileInfo fileInfo) {
-		String encodedName = URLEncode.encodeAsUtf8(fileInfo.getOriginalName());
+		String originalName = fileInfo.getOriginalName();
+		if (fileInfo.getOriginalName().indexOf("/") > -1) {
+			 originalName = fileInfo.getOriginalName().split("/")[1];
+		}
+		String encodedName = URLEncode.encodeAsUtf8(originalName);
 		return String.format("attachment; filename=\"%s\"", encodedName);
 	}
 
@@ -63,29 +73,45 @@ public class FileStorageWebService {
 		return this.fileInfoRepository.find(fileId).map(fileInfo -> this.buildFileResponseInLine(fileInfo))
 				.orElseThrow(() -> new RuntimeException("stored file info is not found."));
 	}
+	
+	@GET
+	@Path("liveview/{fileid}/{entry}")
+	public Response liveviewZipEntry(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
+		return this.fileInfoRepository.findZipEntry(fileId, entryName)
+				.map(fileInfo -> this.buildFileResponseInLine(fileInfo))
+				.orElseThrow(() -> new RuntimeException("File not found."));
+	}
 
 	private Response buildFileResponseInLine(StoredFileInfo fileInfo) {
-
 		val fileInputStream = this.getInputStream(fileInfo);
-
-		return Response.ok(fileInputStream, fileInfo.getMimeType()).encoding("UTF-8")
-				.header("Content-Disposition", "inline").build();
+		return Response.ok(fileInputStream, fileInfo.getMimeType())
+				.encoding("UTF-8").header("Content-Disposition", "inline").build();
 	}
 
 	@POST
 	@Path("infor/{fileid}")
 	public StoredFileInfo getFileInfor(@PathParam("fileid") String fileId) {
-		Optional<StoredFileInfo> storagedFileInfor = this.fileInfoRepository.find(fileId);
-		if (!storagedFileInfor.isPresent()) {
-			new RuntimeException("stored file info is not found.");
-		}
-		return storagedFileInfor.get();
+		return this.fileInfoRepository.find(fileId)
+				.orElseThrow(() -> new RuntimeException("stored file info is not found."));
+	}
+	
+	@POST
+	@Path("infor/{fileid}/{entry}")
+	public StoredFileInfo getZipEntryInfo(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
+		return this.fileInfoRepository.findZipEntry(fileId, entryName)
+				.orElseThrow(() -> new RuntimeException("File not found."));
 	}
 
 	@POST
 	@Path("isexist/{fileid}")
 	public boolean checkFileExist(@PathParam("fileid") String fileId) {
 		return this.fileInfoRepository.find(fileId).isPresent();
+	}
+	
+	@POST
+	@Path("isexist/{fileid}/{entry}")
+	public boolean zipEntryExists(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
+		return this.fileInfoRepository.findZipEntry(fileId, entryName).isPresent();
 	}
 
 }
