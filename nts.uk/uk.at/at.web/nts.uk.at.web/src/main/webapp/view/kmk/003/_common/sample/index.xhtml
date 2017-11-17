@@ -23,8 +23,20 @@
 				
 				<div style="margin-left: 30px" id="content" class="cf">
 					<div style="margin-bottom: 10px;">
-						<button data-bind="click: addRowItem" style="margin-right: 10px;">Add row item</button>
-						<button data-bind="click: removeItem">Remove item</button>
+						<div style="margin-bottom: 15px;">
+							<button data-bind="click: addRowItem" style="margin-right: 10px;">Add
+								row item</button>
+							<button data-bind="click: removeItem, enable: enable">Remove
+								item</button>
+						</div>
+
+						<div class="cf"
+								data-bind="ntsSwitchButton: {
+														options: selectionOption,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectedType,
+														enable: true }"></div>
 					</div>	
 					<div id="nts-fix-table"></div>
 					
