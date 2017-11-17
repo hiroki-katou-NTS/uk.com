@@ -6,7 +6,7 @@ public class PeregUserDefAddCommand extends PeregUserDefCommand {
 	
 	public PeregUserDefAddCommand(String newRecordId, ItemsByCategory itemsByCategory) {
 		super(
-				itemsByCategory.getCategoryId(),
+				itemsByCategory.getCategoryCd(),
 				newRecordId,
 				itemsByCategory.collectItemsDefinedByUser());
 	}

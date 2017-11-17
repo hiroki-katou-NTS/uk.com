@@ -39,7 +39,15 @@ public class BsymtJobEntryHistory extends UkJpaEntity implements Serializable {
 	
 	@Column(name = "ADOPT_DATE")
 	public GeneralDate adoptDate;
-
+	
+	public BsymtJobEntryHistory(BsymtJobEntryHistoryPk key, String cId, String hiringType, GeneralDate retireDate,
+			GeneralDate adoptDate){
+		this.bsymtJobEntryHistoryPk = key;
+		this.companyId = cId;
+		this.hiringType = hiringType;
+		this.retireDate = retireDate;
+		this.adoptDate = adoptDate;
+	}
 	
 	@ManyToOne
 	@JoinColumns({

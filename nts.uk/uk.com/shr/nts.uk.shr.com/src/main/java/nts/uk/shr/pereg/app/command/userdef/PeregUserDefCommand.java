@@ -19,7 +19,7 @@ public abstract class PeregUserDefCommand {
 	private final List<ItemValue> items;
 	
 	public PeregUserDefCommand(ItemsByCategory itemsByCategory) {
-		this(itemsByCategory.getCategoryId(), itemsByCategory.getRecordId(), itemsByCategory.collectItemsDefinedByUser());
+		this(itemsByCategory.getCategoryCd(), itemsByCategory.getRecordId(), itemsByCategory.collectItemsDefinedByUser());
 	}
 	
 	public PeregUserDefCommand(String categoryId, String recordId, List<ItemValue> items) {

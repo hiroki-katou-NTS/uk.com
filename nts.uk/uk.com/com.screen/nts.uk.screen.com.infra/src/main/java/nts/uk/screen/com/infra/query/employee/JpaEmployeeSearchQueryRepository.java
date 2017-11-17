@@ -9,12 +9,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
-import entity.person.info.BpsmtPerson;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtDepartmentInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
+import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 
 /**
  * The Class JpaEmployeeSearchQueryRepository.
