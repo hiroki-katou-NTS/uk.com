@@ -8,6 +8,7 @@ module cps001.a.vm {
     import showDialog = nts.uk.ui.dialog;
     import clearError = nts.uk.ui.errors.clearAll;
     import liveView = nts.uk.request.liveView;
+    import permision = service.getCurrentEmpPermision;
 
     let DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
@@ -59,6 +60,10 @@ module cps001.a.vm {
             }
         };
 
+        // permision of current employee (current login).
+        auth: KnockoutObservable<PersonAuth> = ko.observable(new PersonAuth());
+
+        // current tab active id (layout/category)
         tabActive: KnockoutObservable<string> = ko.observable('layout');
 
         person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
@@ -74,20 +79,29 @@ module cps001.a.vm {
         // for case: combobox
         listCategory: KnockoutObservableArray<ICategory> = ko.observableArray([]);
         currentCategory: KnockoutObservable<Category> = ko.observable(new Category({ id: '' }));
-        
+
         // for case: category with childs
         listTabCategory: KnockoutObservableArray<ICategory> = ko.observableArray([]);
-        currentTabCategory: KnockoutObservable<string> = ko.observable('');
+        currentTabCategory: KnockoutObservable<string> = ko.observable('cat1');
 
         constructor() {
             let self = this,
+                auth = self.auth(),
                 person = self.person(),
                 employee = self.employee(),
                 layout = self.currentLayout(),
                 category = self.currentCategory();
 
+            permision().done((data: IPersonAuth) => {
+                if (data) {
+                    auth.allowDocRef(!!data.allowDocRef);
+                    auth.allowAvatarRef(!!data.allowAvatarRef);
+                    auth.allowMapBrowse(!!data.allowMapBrowse);
+                }
+            });
+
             self.tabActive.subscribe(x => {
-                let employeeId = employee.employeeId()
+                let employeeId = employee.employeeId();
                 if (!!employeeId) {
                     if (x) {
                         // clear all error message
@@ -113,8 +127,13 @@ module cps001.a.vm {
             employee.employeeId.subscribe(x => {
                 if (x) {
 
-                    service.getAvatar(x).done((data: any) => {
-                        person.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                    permision().done((perm: IPersonAuth) => {
+                        // Current Employee has permision view other employee avatar
+                        if (!!perm.allowAvatarRef) {
+                            service.getAvatar(x).done((data: any) => {
+                                person.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                            });
+                        }
                     });
 
                     service.getPerson(x).done((data: IPersonInfo) => {
@@ -125,6 +144,13 @@ module cps001.a.vm {
                         }
                     });
                     self.tabActive.valueHasMutated();
+
+                    service.getEmpInfo(x).done((data: IEmployeeInfo) => {
+                        employee.daysOfEntire(data.daysOfEntire);
+                        employee.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                    }).fail(() => {
+                        employee.daysOfEntire(0);
+                    });
 
                     let emp = _.find(self.listEmployee(), e => e.employeeId == x);
                     if (emp) {
@@ -156,7 +182,7 @@ module cps001.a.vm {
                             x.items = ko.observableArray([]);
 
                             // kiểm tra kiểu item
-                            if (x.layoutItemType == 'ITEM') {
+                            /*if (x.layoutItemType == 'ITEM') {
                                 if (x.listItemDf && x.listItemDf[0]) {
                                     _.each(x.listItemDf, m => {
                                         x.items.push({
@@ -178,7 +204,7 @@ module cps001.a.vm {
                                     });
                                     x.items.push(rows);
                                 });
-                            }
+                            }*/
                         });
 
                         layout.listItemClsDto(data.listItemClsDto || []);
@@ -221,10 +247,14 @@ module cps001.a.vm {
                 return;
             }
 
-            setShared("CPS001D_PARAMS", employee);
-            modal('../d/index.xhtml').onClosed(() => {
-                let data = getShared("CPS001D_VALUES");
-                person.avatar(data.fileId ? liveView(data.fileId) : undefined);
+            permision().done((perm: IPersonAuth) => {
+                if (!!perm.allowAvatarUpload) {
+                    setShared("CPS001D_PARAMS", employee);
+                    modal('../d/index.xhtml').onClosed(() => {
+                        let data = getShared("CPS001D_VALUES");
+                        person.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                    });
+                }
             });
         }
 
@@ -237,13 +267,21 @@ module cps001.a.vm {
         pickLocation() {
             let self = this;
 
-            modal('../e/index.xhtml').onClosed(() => { });
+            permision().done((perm: IPersonAuth) => {
+                if (!!perm.allowMapBrowse) {
+                    modal('../e/index.xhtml').onClosed(() => { });
+                }
+            });
         }
 
         uploadebook() {
             let self = this;
 
-            modal('../f/index.xhtml').onClosed(() => { });
+            permision().done((perm: IPersonAuth) => {
+                if (!!perm.allowDocRef) {
+                    modal('../f/index.xhtml').onClosed(() => { });
+                }
+            });
         }
 
         saveData() {
@@ -324,6 +362,8 @@ module cps001.a.vm {
         workplaceId: string;
         workplaceCode?: string;
         workplaceName?: string;
+        daysOfEntire?: number;
+        daysOfTemporaryAbsence?: number;
     }
 
     class EmployeeInfo {
@@ -333,6 +373,27 @@ module cps001.a.vm {
         workplaceId: KnockoutObservable<string> = ko.observable('');
         workplaceCode: KnockoutObservable<string> = ko.observable('');
         workplaceName: KnockoutObservable<string> = ko.observable('');
+        daysOfEntire: KnockoutObservable<number> = ko.observable(0);
+        daysOfTemporaryAbsence: KnockoutObservable<number> = ko.observable(0);
+
+        entire: KnockoutComputed<string> = ko.computed(() => {
+            let self = this,
+                days = self.daysOfEntire(),
+                dayotas = self.daysOfTemporaryAbsence();
+
+            if (!days) {
+                return 0 + '年';
+            }
+
+            days -= dayotas;
+
+            let year = Math.floor(days / 365),
+                month = Math.floor((days - (year * 365)) / 30),
+                day = Math.floor(days - (year * 365) - (month * 30));
+
+            return (year > 0 ? year + '年' : '') + (month > 0 ? month + '月' : '') + (day > 0 ? day + '日' : '');
+        });
+
 
         constructor(param: IEmployeeInfo) {
         }
@@ -382,6 +443,38 @@ module cps001.a.vm {
                     self.avatar(DEF_AVATAR);
                 }
             });
+        }
+
+        age: KnockoutComputed<string> = ko.computed(() => {
+            let self = this,
+            birthDay = self.birthDate();
+            
+            return moment.duration(moment().diff(moment(birthDay))).years() + '歳';
+        });
+    }
+
+    interface IPersonAuth {
+        roleId: string;
+        allowMapUpload: number;
+        allowMapBrowse: number;
+        allowDocRef: number;
+        allowDocUpload: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
+    }
+
+    class PersonAuth {
+        allowAvatarRef: KnockoutObservable<boolean> = ko.observable(false);
+        allowDocRef: KnockoutObservable<boolean> = ko.observable(false);
+        allowMapBrowse: KnockoutObservable<boolean> = ko.observable(false);
+
+        constructor(param?: IPersonAuth) {
+            let self = this;
+            if (param) {
+                self.allowAvatarRef(!!param.allowAvatarRef);
+                self.allowDocRef(!!param.allowDocRef);
+                self.allowMapBrowse(!!param.allowMapBrowse);
+            }
         }
     }
 
