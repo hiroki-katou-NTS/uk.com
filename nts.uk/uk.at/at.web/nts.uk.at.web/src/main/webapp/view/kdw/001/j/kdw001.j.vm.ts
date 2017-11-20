@@ -173,10 +173,8 @@ module nts.uk.at.view.kdw001.j {
                                         self.dScreenmodel.monthCount('');
                                         self.dScreenmodel.monthCountVisible(false);
                                     }
-
-                                    $("#wizard").ntsWizard("next");
-
                                     self.dScreenmodel.dailyCal(dailyCalText += '(' + getText('KDW001_65') + ')');
+                                    $("#wizard").ntsWizard("next");
                                 });
 
                             }
@@ -221,7 +219,7 @@ module nts.uk.at.view.kdw001.j {
 
             }
 
-      
+
             opendScreenC() {
                 $("#wizard").ntsWizard("prev");
             }
