@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.infra.repository.roleset;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
@@ -27,7 +29,9 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 
 	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSet rs"
 			+ " WHERE rs.roleSetPK.companyId = :companyId ";
-
+	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE = "SELECT rs FROM SacmtRoleSet rs"
+			+ " WHERE rs.roleSetPK.companyId = :companyId AND rs.personInfRole = :personRoleId ";
+	
 	private RoleSet toDomain(SacmtRoleSet entity) {
 	
 		return new RoleSet(entity.roleSetPK.roleSetCd
@@ -113,5 +117,15 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		return this.queryProxy().find(pk, SacmtRoleSet.class).isPresent();
 		
 	}
-
+	
+	public List<RoleSet> findByCompanyIdAndPersonRole(String companyId, String personRoleId) {
+		List<RoleSet> result = new ArrayList<RoleSet>();
+		List<SacmtRoleSet> entities = this.queryProxy()
+				.query(SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE, SacmtRoleSet.class)
+				.setParameter("companyId", companyId).setParameter("personRoleId", personRoleId).getList();
+		if(entities !=null && !entities.isEmpty()){
+			result = entities.stream().map(e ->toDomain(e)).collect(Collectors.toList());
+		}
+		return result;
+	}
 }

@@ -58,4 +58,13 @@ public interface RoleSetRepository {
 	 */
 	
 	void delete(String roleSetCd, String companyId);
+	
+	/**
+	 * find by company id and person role id
+	 * 
+	 * @param companyId
+	 * @param personRoleId
+	 * @return
+	 */
+	List<RoleSet> findByCompanyIdAndPersonRole(String companyId, String personRoleId);
 }
