@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.overtime;
+package nts.uk.ctx.at.request.app.find.application.overtime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +14,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
-import nts.uk.ctx.at.request.app.find.overtime.dto.DivergenceReasonDto;
-import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
-import nts.uk.ctx.at.request.app.find.overtime.dto.OvertimeInputDto;
-import nts.uk.ctx.at.request.app.find.overtime.dto.PreAppOvertimeDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -30,7 +30,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeInstructInfomation;
@@ -48,7 +47,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
@@ -80,9 +78,6 @@ public class GetOvertime {
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 	
-	@Inject 
-	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;
-	
 	@Inject
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	
@@ -97,9 +92,6 @@ public class GetOvertime {
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	
-	@Inject
-	private OvertimeInputRepository overtimeInputRepository;
 	
 	@Inject
 	private OvertimeFrameRepository overtimeFrameRepository;
@@ -162,7 +154,6 @@ public class GetOvertime {
 		String employeeID = AppContexts.user().employeeId();
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto applicationDto = new ApplicationDto();
-		List<OvertimeInputDto> overTimeInputs = new ArrayList<>();
 		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 		// 申請日を変更する : chưa xử lí
 		
