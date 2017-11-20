@@ -359,6 +359,9 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	 */
 	@Override
 	public List<AffWorkplaceHistory> getByWorkplaceIDs(List<String> workplaceIds, GeneralDate baseDate) {
+		if (CollectionUtil.isEmpty(workplaceIds)) {
+			return null;
+		}
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
