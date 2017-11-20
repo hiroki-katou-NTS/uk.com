@@ -52,7 +52,7 @@ public class RoleSet extends AggregateRoot {
 	private RoleSetCode roleSetCd;
 
 	/** 会社ID */
-	private String companyId = "000000000000-0000";
+	private String companyId;
 
 	/** ロールセット名称*/
 	private RoleSetName roleSetName;
@@ -220,22 +220,6 @@ public class RoleSet extends AggregateRoot {
 		return opRole. isPresent() ? opRole.get().getRoleId() : null;
 	}
 			
-	/**
-	 * Check are there any role ?
-	 * @return
-	 */
-	public boolean hasAnyRole() {
-		return this.employmentRole.isPresent()
-				|| this.officeHelperRole.isPresent()
-				|| this.myNumberRole.isPresent()
-				|| this.hRRole.isPresent()
-				|| this.personInfRole.isPresent()
-				|| this.employmentRole.isPresent()
-				|| this.salaryRole.isPresent();
-
-	}
-	
-	
 	/**
 	 * Check setting default of Role set
 	 * @return
