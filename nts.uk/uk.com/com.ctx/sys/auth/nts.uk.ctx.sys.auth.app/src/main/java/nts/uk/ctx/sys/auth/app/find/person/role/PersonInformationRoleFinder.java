@@ -45,9 +45,8 @@ public class PersonInformationRoleFinder {
 				personInfoRole.setRoleCode(role.getRoleCode().toString());
 				
 				// get domain PersonRole
-				Optional<PersonRole> personRoleOpt = personRoleRepo.find(role.getRoleId());
-				if (personRoleOpt.isPresent())
-					personInfoRole.setReferFutureDate(personRoleOpt.get().getReferFutureDate());
+				PersonRole personRole = mapPerson.get(role.getRoleId());				
+				personInfoRole.setReferFutureDate(personRole.getReferFutureDate());
 				result.add(personInfoRole);
 			});
 		}	
