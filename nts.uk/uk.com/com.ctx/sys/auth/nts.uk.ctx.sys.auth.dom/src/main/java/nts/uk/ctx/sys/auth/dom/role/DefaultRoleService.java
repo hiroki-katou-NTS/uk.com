@@ -48,6 +48,7 @@ public class DefaultRoleService implements RoleService{
 
 	@Override
 	public void updateRole(Role role) {
+		role.canUpdate();
 		roleRepo.update(role);		
 	}
 
