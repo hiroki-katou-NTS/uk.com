@@ -1,5 +1,7 @@
 module nts.uk.com.view.cas005.a {
     import getText = nts.uk.resource.getText;
+    import ccg = nts.uk.com.view.ccg025.a;
+    import modelComponent = nts.uk.com.view.ccg025.a.component.model;
     export module viewmodel {
         export class ScreenModel {
             //text
@@ -17,6 +19,9 @@ module nts.uk.com.view.cas005.a {
             currentCodeList: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
             items: KnockoutObservableArray<model.ItemModel2>;
+            //table-left
+            component: ccg.component.viewmodel.ComponentModel;
+            listRole : KnockoutObservableArray<modelComponent.Role>;
             constructor() {
                 let self = this;
                 //text
@@ -54,6 +59,12 @@ module nts.uk.com.view.cas005.a {
                     { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' }
                 ]);
                 self.currentCodeList = ko.observableArray([]);
+                //table-left
+                self.component = new ccg.component.viewmodel.ComponentModel({ 
+                    roleType: 1,
+                    multiple: true
+                });
+                self.listRole = ko.observableArray([]);
                 
                 
             }
@@ -64,7 +75,10 @@ module nts.uk.com.view.cas005.a {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                dfd.resolve();
+                self.component.startPage().done(function(){
+                    self.listRole(self.component.listRole());
+                    dfd.resolve();    
+                });
                 return dfd.promise();
             }//end start page
             

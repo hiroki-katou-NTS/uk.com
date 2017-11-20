@@ -8,9 +8,9 @@
 	<ui:composition template="../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="cdl025.a.main.css" />
-			<com:stylefile path="../../ccg/025/component/component.css" />
 			
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../ccg/025/component/component.css" />
 			<com:scriptfile path="../../ccg/025/component/component.service.js" />
 			<com:scriptfile path="../../ccg/025/component/component.vm.js" />
 			<com:scriptfile path="cdl025.a.vm.js" />
@@ -19,12 +19,16 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area" style="margin-top: 30px;margin-left: 30px">
-				<ui:include src="../../ccg/025/component/index.xhtml" />
-				<!-- <div id="pannel-top" data-bind="ntsPanel:{width: '400px', height: '430px', direction: '', showIcon: true, visible: true}">
-					
-				</div> -->
+				<div data-bind="with: component">
+					<ui:include src="../../ccg/025/component/index.xhtml" />
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button  class="x-large proceed" data-bind="click: decision">#{i18n.getText('CDL025_6')}</button>
+				<button  data-bind="click: cancel">#{i18n.getText('CDL025_7')}</button>
 			</div>
 		</ui:define>
+		
 
 
 	</ui:composition>

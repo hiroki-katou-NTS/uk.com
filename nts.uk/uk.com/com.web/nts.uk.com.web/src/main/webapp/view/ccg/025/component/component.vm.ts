@@ -1,52 +1,65 @@
 module nts.uk.com.view.ccg025.a.component {
     import getText = nts.uk.resource.getText;
+    
+    export interface Option {
+        roleType?: number;
+        multiple?: boolean;
+    }
+    
     export module viewmodel {
         export class ComponentModel { 
             listRole : KnockoutObservableArray<model.Role>;
-            columns: KnockoutObservableArray<any>;
-            currentCodeList: KnockoutObservableArray<any>;
-            constructor() {
+            currentCode: any;
+            private columns: KnockoutObservableArray<any>;
+            private defaultOption: Option = {
+                multiple: true
+            }
+            private setting: Option;
+            private searchMode: string;
+            
+            constructor(option: Option) {
                 let self = this;
+                self.setting = $.extend({}, self.defaultOption, option);
+                self.searchMode = (self.setting.multiple) ? "highlight" : "filter";
                 self.listRole = ko.observableArray([]);
-                this.currentCodeList = ko.observableArray([]);
-                this.columns = ko.observableArray([
-                    { headerText: 'コード', prop: 'roleCode', width: 100 },
-                    { headerText: '名称', prop: 'name', width: 230 }
-                ]);
+                if (self.setting.multiple)
+                    self.currentCode = ko.observableArray([]);
+                else
+                    self.currentCode = ko.observable("");
+                if(self.setting.multiple){
+                    self.columns = ko.observableArray([
+                        { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
+                        { headerText: getText("CCG025_4"), prop: 'name',  width: 180 }
+                    ]);
+                }else{
+                    self.columns = ko.observableArray([
+                        { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
+                        { headerText: getText("CCG025_4"), prop: 'name',  width: 200 }
+                    ]);    
+                }
                 
-                  
             }
 
-            /**
-             * functiton start page
-             */
+            /** functiton start page */
             startPage(): JQueryPromise<any> {
                 let self = this;
-                let dfd = $.Deferred();
-                let dfdGetListRoleByRoleType = self.getListRoleByRoleType(1);
-                $.when(dfdGetListRoleByRoleType).done((dfdGetListRoleByRoleTypeData) => {
-
-                        dfd.resolve();
-                    });
-                return dfd.promise();
+                return self.getListRoleByRoleType(self.setting.roleType);
             }//end start page
-            /**
-             * function getListRoleByRoleType
-             */
-            getListRoleByRoleType(roleType :number){
+            
+            /** Get list Role by Type */
+            private getListRoleByRoleType(roleType :number): JQueryPromise<Array<model.Role>>{
                 let self = this;
                 let dfd = $.Deferred();
-                service.getListRoleByRoleType(roleType).done(function(data){
-                    _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
+                service.getListRoleByRoleType(roleType).done((data: Array<model.Role>) => {
+                    data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
                     self.listRole(data);
-                    dfd.resolve();
+                    dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 });
+                return dfd.promise();
             }
-
-            
             
         }//end screenModel
     }//end viewmodel
