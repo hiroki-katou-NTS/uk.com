@@ -345,6 +345,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             numberValue: obj.numbereditor.value,
                             dateType: obj.dateType,
                             time: obj.dateWithDay,
+                            isRequired : obj.isRequired
 
                         };
                     })
@@ -357,7 +358,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 let i: number = 0;
                 _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
                     let $input1 = $(".contents-data").find('tbody').find('tr').find('#date')[i];
-                    $input1.setAttribute("nameid", item.itemName)
+                    $input1.setAttribute("nameid", item.itemName);
                     i++;
                 });
             }
@@ -365,15 +366,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
             service.update(updateObj).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    $('#ctgName').focus();
-//                    self.initSettingId("");
-//                    self.initSettingId.valueHasMutated();
-//                    self.initSettingId(updateObj.settingId);
-//                    self.initSettingId.valueHasMutated();
-//                    self.currentCategory().currentItemId("");
-//                    self.currentCategory().currentItemId.valueHasMutated();
-//                    self.currentCategory().currentItemId(updateObj.perInfoCtgId);
-//                    self.currentCategory().currentItemId.valueHasMutated();
+                     $('#ctgName').focus();
+                    self.initSettingId("");
+                    self.initSettingId(updateObj.settingId);
+                    self.initSettingId.valueHasMutated();
+                    self.currentCategory().currentItemId("");
+                    self.currentCategory().currentItemId(updateObj.perInfoCtgId);
+                    self.currentCategory().currentItemId.valueHasMutated();
                     self.getItemList(updateObj.settingId, updateObj.perInfoCtgId);
                 });
 
@@ -401,15 +400,25 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 _.each(itemIdLst, function(item) {
 
                     let itemList: Array<any> = ko.toJS(self.currentCategory().itemList()),
-                        i: number = _.indexOf(_.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
-                            return obj.selectionItemId;
-                        }), item);
-                    if (i > -1) {
+                        indexList: Array<any> = [],
+                        itemIndex: number = 0;
+                    _.each(itemList, function(obj: PerInfoInitValueSettingItemDto) {
+                        if (obj.selectionItemId === item) {
+                            indexList.push(itemIndex);
+                        }
+                        itemIndex++;
+                    });
+
+
+                    if (indexList.length > 0) {
                         service.getAllSelByHistory(item, baseDate).done(function(data: Array<any>) {
                             if (data) {
-                                self.currentCategory().itemList()[i].selection([]);
-                                self.currentCategory().itemList()[i].selection(data);
-                                self.currentCategory().itemList()[i].selection.valueHasMutated();
+                                _.each(indexList, function(index) {
+                                    self.currentCategory().itemList()[index].selection([]);
+                                    self.currentCategory().itemList()[index].selection(data);
+                                    self.currentCategory().itemList()[index].selection.valueHasMutated();
+                                });
+
                             }
                         });
                     }
@@ -801,6 +810,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         }
+    }
 
     export interface IPerInfoInitValueSettingDto {
         companyId?: string;

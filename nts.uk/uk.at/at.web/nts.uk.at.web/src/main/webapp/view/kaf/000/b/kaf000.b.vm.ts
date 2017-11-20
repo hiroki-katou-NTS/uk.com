@@ -90,7 +90,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.appType = ko.observable(currentApp.appType);
             self.appID = ko.observable(currentApp.appID);
 
-            self.inputCommandEvent = ko.observable(new model.InputCommandEvent(self.appID(), self.appReasonEvent()));
+            self.inputCommandEvent = ko.observable(new model.InputCommandEvent(0, self.appID(), self.appReasonEvent()));
 
             /**
              * List
@@ -163,224 +163,267 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             });
             return dfd.promise();
         }   //end start
-        // check display start
+        // check display start 表示するか非表示するか
         checkDisplayStart() {
             let self = this;
             if (self.outputDetailCheck() != null) {
-                //check 利用者
+                //※5
                 let user = self.outputDetailCheck().user;
-                switch(user){
-                    case 2: {
-                        // 利用者 = 申請本人
+                switch(user){                    
+                    case 1:{ //承認者 
+                        //登録  ×
                         self.displayButtonControl().displayUpdate(true);
+                        //承認, 否認, 差し戻し, 【承認】, 【否認】  補足②
+                        self.isFlagApproval();
+                        //解除  ○
+                        self.displayButtonControl().displayRelease(false);
+                        //削除  ×
                         self.displayButtonControl().displayDelete(true);
-                        self.displayButtonControl().displayCancel(true);    
+                        //取消 ×
+                        self.displayButtonControl().displayCancel(true);
+                        //承認コメント ○
+                        self.displayButtonControl().displayReturnReason(false);
                         break;
                     }
-                    case 1: {
-                        // 利用者 = 承認者
-                        // check ログイン者の承認区分
-                        let approvalATR = self.outputDetailCheck().approvalATR;
-                        switch(approvalATR){
-                            case 1: {
-                                // ログイン者の承認区分 = 承認済
-                                self.displayButtonControl().displayDeny(true);
-                                self.displayButtonControl().displayRemand(true);
-                                self.displayButtonControl().displayApprovalLabel(!self.displayButtonControl().displayApproval()&&true);
-                                break;  
-                            }     
-                            case 2: {
-                                // ログイン者の承認区分 = 否認
-                                self.displayButtonControl().displayApproval(true);
-                                self.displayButtonControl().displayRemand(true);
-                                self.displayButtonControl().displayDenyLabel(!self.displayButtonControl().displayDeny()&&true);  
-                                break;      
-                            }
-                            case 3: {
-                                // ログイン者の承認区分 = 差し戻し
-                                self.displayButtonControl().displayApproval(true);
-                                self.displayButtonControl().displayDeny(true);
-                                self.displayButtonControl().displayRemand(true);
-                                break; 
-                            }
-                            default: {
-                                // ログイン者の承認区分 = 未承認
-                                self.displayButtonControl().displayApproval(true);
-                                self.displayButtonControl().displayDeny(true);
-                                self.displayButtonControl().displayRemand(true);
-                            }  
-                        }
+                    case 0: {//申請本人&承認者
+                        //登録  ○
+                        self.displayButtonControl().displayUpdate(false);
+                        //承認, 否認, 差し戻し, 【承認】, 【否認】  補足②
+                        self.isFlagApproval();
+                        //解除 ○
+                        self.displayButtonControl().displayRelease(false);
+                        //削除 ○
+                        self.displayButtonControl().displayDelete(false);
+                        //取消 ※6
+                        self.displayButtonControl().displayCancel(self.isLoginAndApprover());
+                        //承認コメント  ○
+                        self.displayButtonControl().displayReturnReason(false);
+                        break;
+                    }
+                    default: {//その他 99, 申請本人 2
+                        //登録  ○
+                        self.displayButtonControl().displayUpdate(false);
+                        //承認  ×
+                        self.displayButtonControl().displayApproval(true);
+                        //否認  × 
+                        self.displayButtonControl().displayDeny(true);
+                        //差し戻し ×   
+                        self.displayButtonControl().displayRemand(true);
+                        //解除  ×
                         self.displayButtonControl().displayRelease(true);
-                        self.displayButtonControl().displayReturnReasonLabel(true);
-                        self.displayButtonControl().displayReturnReason(true);
+                        //削除 ○
+                        self.displayButtonControl().displayDelete(false);
+                        //取消  ※6        
+                        self.displayButtonControl().displayCancel(this.isLoginAndApprover());
+                        //【承認】  ×
+                        self.displayButtonControl().displayApprovalLabel(true);
+                        //【否認】  ×
+                        self.displayButtonControl().displayDenyLabel(true);
+                        //承認コメント ×
+                        self.displayButtonControl().displayReturnReason(true);  
+                    }
+                            
+                }    
+            }
+
+        } // end checkDisplayStart
+        //補足1
+        //条件：「申請利用設定」．備考に内容なし &&  「申請締切設定」．利用区分が利用しない  &&  「事前の受付制限」．利用区分が利用しない  &&  「事後の受付制限」．未来日許可しないがfalse
+        isShowMessage(){
+            let self = this;
+            if(nts.uk.text.isNullOrEmpty(self.messageDeadlineTop)
+             || nts.uk.text.isNullOrEmpty(self.messageDeadlineBottom)){
+                
+            }else{
+                this.displayButtonControl().displayMessageArea(false);
+            }
+        }
+        
+        //補足2
+        ////承認できるフラグがtrueの場合、ログイン者の承認区分：（未承認、承認済、否認）
+        isFlagApproval(){
+            let self = this;
+            let isAuthorizableFlags = self.outputDetailCheck().authorizableFlags;
+            if(isAuthorizableFlags){
+                let approvalATR = self.outputDetailCheck().approvalATR;
+                switch(approvalATR){
+                    case 0: {//ログイン者の承認区分が未承認
+                        //承認 〇
+                        self.displayButtonControl().displayApproval(false);
+                        //否認〇
+                        self.displayButtonControl().displayDeny(false);
+                        //差し戻し〇
+                        self.displayButtonControl().displayRemand(false);
+                        //【承認】  ×
+                        self.displayButtonControl().displayApprovalLabel(true);
+                        //【否認】 ×
+                        self.displayButtonControl().displayDenyLabel(true);
                         break;
                     }
-                    case 0: {
-                        // 利用者 = 申請本人&承認者
-                        // check ログイン者の承認区分
-                        let approvalATR = self.outputDetailCheck().approvalATR;
-                        switch(approvalATR){
-                            case 1: {
-                                // ログイン者の承認区分 = 承認済
-                                self.displayButtonControl().displayDeny(true);
-                                self.displayButtonControl().displayRemand(true);
-                                self.displayButtonControl().displayApprovalLabel(!self.displayButtonControl().displayApproval()&&true); 
-                                break;  
-                            }     
-                            case 2: {
-                                // ログイン者の承認区分 = 否認
-                                self.displayButtonControl().displayApproval(true);
-                                self.displayButtonControl().displayRemand(true);
-                                self.displayButtonControl().displayDenyLabel(!self.displayButtonControl().displayDeny()&&true);  
-                                break;      
-                            }
-                            case 3: {
-                                // ログイン者の承認区分 = 差し戻し
-                                self.displayButtonControl().displayApproval(true);
-                                self.displayButtonControl().displayDeny(true);
-                                self.displayButtonControl().displayRemand(true); 
-                                break; 
-                            }
-                            default: {
-                                // ログイン者の承認区分 = 未承認
-                                self.displayButtonControl().displayApproval(true);
-                                self.displayButtonControl().displayDeny(true);
-                                self.displayButtonControl().displayRemand(true); 
-                            }  
-                        }
-                        self.displayButtonControl().displayRelease(true);
-                        self.displayButtonControl().displayReturnReasonLabel(true);
-                        self.displayButtonControl().displayReturnReason(true);
-                        self.displayButtonControl().displayUpdate(true);
-                        self.displayButtonControl().displayDelete(true);
-                        self.displayButtonControl().displayCancel(true); 
+                    case 1:{//ログイン者の承認区分が承認済
+                        //承認 ×  
+                        self.displayButtonControl().displayApproval(true);
+                        //否認〇
+                        self.displayButtonControl().displayDeny(false);
+                        //差し戻し〇
+                        self.displayButtonControl().displayRemand(false);
+                        //【承認】  〇
+                        self.displayButtonControl().displayApprovalLabel(false);
+                        //【否認】 ×
+                        self.displayButtonControl().displayDenyLabel(true);
                         break;
                     }
-                    default: {
-                        // 利用者 = その他
-                        self.displayButtonControl().displayUpdate(true);
-                        self.displayButtonControl().displayDelete(true);
-                    }   
+                    case 2: {//ログイン者の承認区分が否認
+                        //承認 〇    
+                        self.displayButtonControl().displayApproval(false);
+                        //否認×   
+                        self.displayButtonControl().displayDeny(true);
+                        //差し戻し〇
+                        self.displayButtonControl().displayRemand(false);
+                        //【承認】  ×   
+                        self.displayButtonControl().displayApprovalLabel(true);
+                        //【否認】 〇   
+                        self.displayButtonControl().displayDenyLabel(false);
+                        break;    
+                    }
+                        
                 }
             }
             //※8
             if(nts.uk.text.isNullOrEmpty(self.reasonApp())){
-                self.displayButtonControl().displayReturnReasonPanel(false);
+                self.displayButtonControl().displayReturnReasonPanel(true);
             }else{
                 self.reasonApp(self.reasonAppMess + '　' + self.reasonApp());
-                self.displayButtonControl().displayReturnReasonPanel(true);
+                self.displayButtonControl().displayReturnReasonPanel(false);
             }
+                
+        }
+        //※6 
+        isLoginAndApprover(){
+            let self = this;
+            //ドメインモデル「申請」．入力者 == ログイン者社員ID                                                                      
+            //ドメインモデル「申請」．申請者 == ログイン者社員ID                                                                      \
+            if(self.outputDetailCheck().loginInputOrApproval){
+                return false;    
+            }else{//その以外
+                return true;
+            }   
+        }
 
-        } // end checkDisplayStart
-
-        //check checkDisplayAction
+        //check checkDisplayAction　活性するか非活性するか
         checkDisplayAction() {
             let self = this;
+            let Status = {NOTREFLECTED: 0, // 未反映
+                            REMAND: 1,//差し戻し
+                            CANCELED: 2, //取消済
+                            WAITCANCEL: 3, //取消待ち
+                            REFLECTED: 4, //反映済
+                            WAITREFLECTION: 5, //反映待ち
+                            DENIAL: 6, //否認
+                            PASTAPP: 99 //過去申請 
+                            };
             if (self.outputDetailCheck() != null) {
-                //※6    
-                //ドメインモデル「申請」．入力者 == ログイン者社員ID                                                                      
-                //ドメインモデル「申請」．申請者 == ログイン者社員ID                                                                      \
-                if(self.outputDetailCheck().loginInputOrApproval){
-                    self.displayButtonControl().displayRelease(true);    
-                }else{//その以外
-                    self.displayButtonControl().displayRelease(false);
-                }
-                //check 利用者
+                //利用者
                 let user = self.outputDetailCheck().user;
-                switch(user){
-                    case 1: {
-                        // 利用者 = 承認者
-                        
-                        // check ステータス
-                        let reflectPlanState = self.outputDetailCheck().reflectPlanState;
-                        if(reflectPlanState==6||reflectPlanState==5||reflectPlanState==0||reflectPlanState==1){
-                            // 否認/反映待ち/未反映/差し戻し                                         
-                            let authorizableFlags = self.outputDetailCheck().authorizableFlags;
-                            if(authorizableFlags){
-                                // 承認できるフラグ(true)           
-                                let alternateExpiration = self.outputDetailCheck().alternateExpiration; 
-                                if(alternateExpiration){
-                                    // 代行期限切れフラグ(true)   
-                                    let approvalATR = self.outputDetailCheck().approvalATR;       
-                                    if(approvalATR == 1 || approvalATR == 2){
-                                        // ログイン者の承認区分：承認済、否認                                                                        
-                                        self.displayButtonControl().enableRelease(true);    
-                                    }    
-                                } else {
-                                    // 代行期限切れフラグ(false)    
-                                    let approvalATR = self.outputDetailCheck().approvalATR;       
-                                    if(approvalATR == 1 || approvalATR == 2){
-                                        // ログイン者の承認区分：承認済、否認                                                                        
-                                        self.displayButtonControl().enableRelease(true);
-                                    }
-                                    self.displayButtonControl().enableApproval(true);
-                                    self.displayButtonControl().enableDeny(true);
-                                    self.displayButtonControl().enableRemand(true);
-                                    self.displayButtonControl().displayReturnReasonPanel(true);
-                                    self.displayButtonControl().displayReturnReasonLabel(true);
-                                    self.displayButtonControl().displayReturnReason(true);
-                                    self.displayButtonControl().enableReturnReason(true); 
-                                }    
-                            }        
+                //ステータス
+                let reflectPlanState = self.outputDetailCheck().reflectPlanState;
+                //承認できるフラグ
+                let authorizableFlags = self.outputDetailCheck().authorizableFlags;
+                //代行期限切れフラグ
+                let alternateExpiration = self.outputDetailCheck().alternateExpiration;
+                // 
+                let approvalATR = self.outputDetailCheck().approvalATR;
+                //利用者が『承認者』, 利用者が『本人&承認者』
+                if(user == 1 || user == 0){
+                    //過去申請, 反映済, 取消待ち, 取消済
+                    if(reflectPlanState == Status.PASTAPP
+                        || reflectPlanState == Status.REFLECTED
+                        || reflectPlanState == Status.WAITCANCEL
+                        || reflectPlanState == Status.CANCELED){
+                        self.setAllEnableFalse();
+                        //利用者が『本人&承認者』
+                        if(user == 0){
+                            //登録  ×
+                            self.displayButtonControl().enableUpdate(false);
+                            //削除 ×
+                            self.displayButtonControl().enableDelete(false);
+                            
+                            if(reflectPlanState == Status.REFLECTED){
+                                //取消   ×
+                                self.displayButtonControl().enableCancel(false);    
+                            }else{
+                                //取消  ○
+                                self.displayButtonControl().enableCancel(true);    
+                            }
                         }
-                        break;
-                    }
-                    case 0: {
-                        // 利用者 = 申請本人&承認者
-                        // check ステータス
-                        let reflectPlanState = self.outputDetailCheck().reflectPlanState;
-                        if(reflectPlanState==6||reflectPlanState==5||reflectPlanState==0||reflectPlanState==1){
-                            // 否認/反映待ち/未反映/差し戻し                                         
-                            let authorizableFlags = self.outputDetailCheck().authorizableFlags;
-                            if(authorizableFlags){
-                                // 承認できるフラグ(true)           
-                                let alternateExpiration = self.outputDetailCheck().alternateExpiration; 
-                                if(alternateExpiration){
-                                    // 代行期限切れフラグ(true)   
-                                    let approvalATR = self.outputDetailCheck().approvalATR;       
-                                    if(approvalATR == 1 || approvalATR == 2){
-                                        // ログイン者の承認区分：承認済、否認                                                                        
-                                        self.displayButtonControl().enableRelease(true);    
-                                    }    
-                                } else {
-                                    // 代行期限切れフラグ(false)    
-                                    let approvalATR = self.outputDetailCheck().approvalATR;       
-                                    if(approvalATR == 1 || approvalATR == 2){
-                                        // ログイン者の承認区分：承認済、否認                                                                        
-                                        self.displayButtonControl().enableRelease(true); 
-                                    }
-                                    self.displayButtonControl().enableApproval(true);
-                                    self.displayButtonControl().enableDeny(true);
-                                    self.displayButtonControl().enableRemand(true);
-                                    self.displayButtonControl().displayReturnReasonPanel(true);
-                                    self.displayButtonControl().displayReturnReasonLabel(true);
-                                    self.displayButtonControl().displayReturnReason(true);
-                                    self.displayButtonControl().enableReturnReason(true);
-                                }    
-                            }    
-                            if(reflectPlanState == 0 || reflectPlanState == 1){
-                                self.displayButtonControl().enableUpdate(true);
-                                self.displayButtonControl().enableDelete(true);      
-                            }   
-                        } else if(reflectPlanState == 4 ){
-                            self.displayButtonControl().enableCancel(true); 
-                        }
-                        break;
-                    }
-                    default: {
-                        // 利用者 = 申請本人 || その他
-                        let reflectPlanState = self.outputDetailCheck().reflectPlanState;
-                        if(reflectPlanState == 0 || reflectPlanState == 1){
+                    }else if (reflectPlanState == Status.DENIAL
+                        || reflectPlanState == Status.WAITREFLECTION
+                        || reflectPlanState == Status.NOTREFLECTED
+                        || reflectPlanState == Status.REMAND){//否認/反映待ち/未反映/差し戻し
+                        //取消   ×
+                        self.displayButtonControl().enableCancel(false);
+                        if(reflectPlanState == Status.NOTREFLECTED
+                            ||reflectPlanState == Status.REMAND){
+                            //登録 ○
                             self.displayButtonControl().enableUpdate(true);
-                            self.displayButtonControl().enableDelete(true); 
-                            self.displayButtonControl().displayReturnReasonPanel(true);        
-                        } else if(reflectPlanState == 4){
-                            self.displayButtonControl().enableCancel(true);
+                            //削除  ○
+                            self.displayButtonControl().enableDelete(true);    
+                        }else{
+                            //登録 ○
+                            self.displayButtonControl().enableUpdate(false);
+                            //削除  ○
+                            self.displayButtonControl().enableDelete(false);  
                         }
-                    }   
-                } 
-                
+                        //承認できるフラグ(false)
+                        if(!authorizableFlags){
+                            self.setAllEnableFalse();
+                        }else{
+                            //代行期限切れフラグ(true)
+                            if(alternateExpiration){
+                                self.setAllEnableFalse();
+                                //※9
+                                //ログイン者の承認区分：承認済、否認    
+                                if(approvalATR == 1||approvalATR == 2){
+                                    self.displayButtonControl().enableRelease(true);    
+                                }else if (approvalATR == 0){//ログイン者の承認区分：未承認
+                                    self.displayButtonControl().enableRelease(false);
+                                }
+                            }else{//代行期限切れフラグ(false)
+                                 //承認
+                                self.displayButtonControl().enableApproval(true);
+                                //否認
+                                self.displayButtonControl().enableDeny(true);
+                                //差し戻し
+                                self.displayButtonControl().enableRemand(true);
+                                //承認コメント
+                                self.displayButtonControl().enableMessageComment(true);
+                                //解除//※9
+                                //ログイン者の承認区分：承認済、否認    
+                                if(approvalATR == 1||approvalATR == 2){
+                                    self.displayButtonControl().enableRelease(true);    
+                                }else if (approvalATR == 0){//ログイン者の承認区分：未承認
+                                    self.displayButtonControl().enableRelease(false);
+                                }
+                            }
+                        }
+                    }
+                }
             }
+        }
+
+        //
+        setAllEnableFalse(){
+            let self = this;
+            //承認
+            self.displayButtonControl().enableApproval(false);
+            //否認
+            self.displayButtonControl().enableDeny(false);
+            //差し戻し
+            self.displayButtonControl().enableRemand(false);
+            //解除
+            self.displayButtonControl().enableRelease(false);
+            //承認コメント
+            self.displayButtonControl().enableMessageComment(false);    
         }
 
         // getMessageDeadline
@@ -392,6 +435,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.messageDeadlineBottom(self.reasonAppMessDealine + '　' + data.deadline);
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
+                //補足1 表示か非表示
+                if(data.chkShow){
+                    self.displayButtonControl().displayMessageArea(false);    
+                }else{
+                    self.displayButtonControl().displayMessageArea(true);
+                }
             }).fail(function(res: any) {
                 dfd.reject();
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -404,6 +453,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAllDataByAppID(appID).done(function(data) {
+                self.inputCommandEvent().version = data.version;
                 self.dataApplication(data);
                 self.appType(data.applicationType);
                 let listPhase = self.dataApplication().listPhase; 
@@ -481,7 +531,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             return dfd.promise();
         }
         /**
-         * btn before
+         * btn before　←
          */
         btnBefore() {
             let self = this;
@@ -499,7 +549,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
         
         /**
-         * btn after
+         * btn after　→
          */
         btnAfter() {
             let self = this;
@@ -517,80 +567,90 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
         
         /**
-         *  btn Approve
+         *  btn Approve　承認
          */
         btnApprove() {
+            nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
-            let dfd = $.Deferred<any>();
             service.approveApp(self.inputCommonData()).done(function(data) {
-                self.getAllDataByAppID(self.appID()).done(function(value){
-                    nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
-                        if (!data) {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
-                        }
-                    });
+                nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
+                    if (!data) {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392' }).then(()=>{
+                            location.reload();    
+                        });
+                    } else {
+                        location.reload();        
+                    }
                 });
-                dfd.resolve();
             }).fail(function(res: any) {
-                dfd.reject();
-                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                if(res.optimisticLock == true){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                        location.reload();
+                    });    
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                }
             });
-            return dfd.promise();
         }
         /**
-        *  btn Deny
+        *  btn Deny　否認
         */
         btnDeny() {
+            nts.uk.ui.block.invisible();
             let self = this;
-            let dfd = $.Deferred<any>();
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             service.denyApp(self.inputCommonData()).done(function(data) {
-                self.getAllDataByAppID(self.appID()).done(function(value){
-                    nts.uk.ui.dialog.alert({ messageId: 'Msg_222' }).then(function() {
-                        if (!data) {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
-                        }
-                    });
+                nts.uk.ui.dialog.alert({ messageId: 'Msg_222' }).then(function() {
+                    if (!data) {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392' }).then(()=>{
+                            location.reload();    
+                        });
+                    } else {
+                        location.reload();    
+                    }
                 });
-                dfd.resolve();
            }).fail(function(res: any) {
-                dfd.reject();
-                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                if(res.optimisticLock == true){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                        location.reload();
+                    });    
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                }
             }); 
-                
-            return dfd.promise();
         }
 
         /**
-        *  btn Release
+        *  btn Release //解除
         */
         btnRelease() {
+            nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
-            let dfd = $.Deferred<any>();
-            nts.uk.ui.dialog.confirm({ messageId: 'Msg_28' }).ifYes(function() {
+            nts.uk.ui.dialog.confirm({ messageId: 'Msg_248' }).ifYes(function() {
                 service.releaseApp(self.inputCommonData()).done(function() {
-                    self.getAllDataByAppID(self.appID()).done(function(value){
-                        
-                    });
-                    dfd.resolve();
+                    location.reload();
                 }).fail(function(res: any) {
-                    dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    if(res.optimisticLock == true){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                            location.reload();
+                        });    
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                    }
                 }); 
             });
-            return dfd.promise();
         }
 
         /**
-         *  btn Registration
+         *  btn Registration　登録
          */
         btnRegistration() {
 
         }
         /**
-         *  btn References 
+         *  btn References 実績参照
          */
         btnReferences() {
             let self = this;
@@ -598,7 +658,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //nts.uk.request.jump("/view/kdl/004/a/index.xhtml");
         }
         /**
-         *  btn SendEmail 
+         *  btn SendEmail メール送信
          */
         btnSendEmail() {
             let self = this;
@@ -606,15 +666,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //nts.uk.request.jump("/view/kdl/030/a/index.xhtml");
         }
         /**
-         *  btn Delete 
+         *  btn Delete 削除
          */
         btnDelete() {
+            nts.uk.ui.block.invisible();
             let self = this;
-            self.inputCommandEvent(new model.InputCommandEvent(self.appID(), self.appReasonEvent()));
-            let dfd = $.Deferred<any>();
+            self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 service.deleteApp(self.inputCommandEvent()).done(function(data) {
-
                     nts.uk.ui.dialog.alert({ messageId: 'Msg_16' }).then(function() {
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
                         if (!nts.uk.util.isNullOrUndefined(data)) {
@@ -656,33 +715,39 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
                         }
                     });
-                    
-            
-                    dfd.resolve();
                 }).fail(function(res: any) {
-                    dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    if(res.optimisticLock == true){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                            location.reload();
+                        });    
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                    }
                 }); 
             });
-            return dfd.promise();
         }
         /**
          *  btn Cancel 
          */
         btnCancel() {
+            nts.uk.ui.block.invisible();
             let self = this;
-            self.inputCommandEvent(new model.InputCommandEvent(self.appID(), self.appReasonEvent()));
-            let dfd = $.Deferred<any>();
+            self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 service.cancelApp(self.inputCommandEvent()).done(function() {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_224" })
-                    dfd.resolve();
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_224" }).then(()=>{
+                        location.reload();            
+                    });
                 }).fail(function(res: any) {
-                    dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    if(res.optimisticLock == true){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                            location.reload();
+                        });    
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                    }
                 }); 
             });
-            return dfd.promise();
         }
 
 
@@ -703,6 +768,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //class Application 
         export class ApplicationDto {
+            version: number;
             applicationID: string;
             prePostAtr: number;
             inputDate: string;
@@ -724,6 +790,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             endDate: string;
             listPhase: Array<shrvm.model.AppApprovalPhase>;
             constructor(
+                version: number,
                 applicationID: string,
                 prePostAtr: number,
                 inputDate: string,
@@ -744,6 +811,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 startDate: string,
                 endDate: string,
                 listPhase: Array<shrvm.model.AppApprovalPhase>) {
+                this.version = version;
                 this.applicationID = applicationID;
                 this.prePostAtr = prePostAtr;
                 this.inputDate = inputDate;
@@ -830,13 +898,16 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //class InputCommandEvent
         export class InputCommandEvent {
+            version: number;
             appId: string;
             applicationReason: string;
-            constructor(appId: string, applicationReason: string) {
+            constructor(version: number, appId: string, applicationReason: string) {
+                this.version = version;
                 this.appId = appId;
                 this.applicationReason = applicationReason;
             }
         }
+
         
         export class DisplayButtonControl {
             // B1-8 Update
@@ -882,28 +953,32 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             // B4-2 
             displayReturnReason: KnockoutObservable<boolean>;
             enableReturnReason: KnockoutObservable<boolean>;
-            
+            displayMessageArea: KnockoutObservable<boolean>;
+            enableMessageComment: KnockoutObservable<boolean>;
             constructor(){
-                this.displayUpdate = ko.observable(false); 
+                this.displayUpdate = ko.observable(true); 
                 this.enableUpdate = ko.observable(false);
-                this.displayApproval = ko.observable(false);
+                this.displayApproval = ko.observable(true);
                 this.enableApproval = ko.observable(false);
-                this.displayDeny = ko.observable(false);
+                this.displayDeny = ko.observable(true);
                 this.enableDeny = ko.observable(false);
-                this.displayRemand = ko.observable(false);
+                this.displayRemand = ko.observable(true);
                 this.enableRemand = ko.observable(false);
-                this.displayRelease = ko.observable(false);
+                this.displayRelease = ko.observable(true);
                 this.enableRelease = ko.observable(false);
-                this.displayDelete = ko.observable(false);
+                this.displayDelete = ko.observable(true);
                 this.enableDelete = ko.observable(false);
-                this.displayCancel = ko.observable(false);
+                this.displayCancel = ko.observable(true);
                 this.enableCancel = ko.observable(false);
-                this.displayApprovalLabel = ko.observable(false);
-                this.displayDenyLabel = ko.observable(false);
-                this.displayReturnReasonPanel = ko.observable(false);
-                this.displayReturnReasonLabel = ko.observable(false);
-                this.displayReturnReason = ko.observable(false);   
-                this.enableReturnReason = ko.observable(false);  
+                this.displayApprovalLabel = ko.observable(true);
+                this.displayDenyLabel = ko.observable(true);
+                this.displayReturnReasonPanel = ko.observable(true);
+                this.displayReturnReasonLabel = ko.observable(true);
+                this.displayReturnReason = ko.observable(true);   
+                this.enableReturnReason = ko.observable(true);  
+                this.displayMessageArea = ko.observable(true);
+                this.enableMessageComment = ko.observable(false);
+                
             }
         }
         

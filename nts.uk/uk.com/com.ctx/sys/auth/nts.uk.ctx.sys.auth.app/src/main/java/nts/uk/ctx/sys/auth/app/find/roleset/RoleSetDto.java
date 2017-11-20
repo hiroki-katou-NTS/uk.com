@@ -42,7 +42,7 @@ public class RoleSetDto {
 	private String salaryRoleId;
 	
 	/** list of web menu code */
-	private List<String> webMenuCds;
+	private List<WebMenuDto> webMenus;
 	
 	/**
 	 * Transfer data from Domain into Dto to response to client
@@ -61,7 +61,7 @@ public class RoleSetDto {
 		result.setRoleSetCd(roleSet.getRoleSetCd().v());
 		result.setRoleSetName(roleSet.getRoleSetName().v());
 		result.setSalaryRoleId(RoleSet.getRoleId(roleSet.getSalaryRole()));
-		result.setWebMenuCds(convertWebMenuToWebMunuCd(roleSet.getRoleSetAndWebMenus()));
+		result.setWebMenus(convertWebMenuToWebMunuCd(roleSet.getRoleSetAndWebMenus()));
 		return result;
 	}
 	
@@ -70,10 +70,11 @@ public class RoleSetDto {
 	 * @param lstWebMenu
 	 * @return list of web menu code.
 	 */
-	private static List<String> convertWebMenuToWebMunuCd(List<RoleSetAndWebMenu> lstWebMenu) {
+	private static List<WebMenuDto> convertWebMenuToWebMunuCd(List<RoleSetAndWebMenu> lstWebMenu) {
 		if (CollectionUtil.isEmpty(lstWebMenu)) {
 			return null;
 		}
-		return lstWebMenu.stream().map(item -> item.getWebMenuCd()).collect(Collectors.toList());
+		//TODO web menu name???
+		return lstWebMenu.stream().map(item -> new WebMenuDto(item.getWebMenuCd(), "")).collect(Collectors.toList());
 	}
 }

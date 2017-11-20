@@ -50,12 +50,7 @@ public class RoleSetServiceImp implements RoleSetService{
 
 		// pre-check : メニューが１件以上選択されていなければならない: Msg_583, メニュー
 		checkHasntWebMenuAndThrowException(roleSet);
-		
-		//throw error if there are not any role 
-		// 各システム毎のロール指定が画面項目上「なし」となっている場合
-		// そのロールは無しとしてください。
-		checkHasntAnyRoleAndThrowException(roleSet);
-		
+
 		// Register Role Set into DB
 		this.roleSetRepository.insert(roleSet);
 	}
@@ -72,11 +67,7 @@ public class RoleSetServiceImp implements RoleSetService{
 		
 		// pre-check : メニューが１件以上選択されていなければならない: Msg_583, メニュー
 		checkHasntWebMenuAndThrowException(roleSet);
-		
-		// 各システム毎のロール指定が画面項目上「なし」となっている場合
-		// そのロールは無しとしてください。
-		checkHasntAnyRoleAndThrowException(roleSet);
-		
+
 		// update the Role set to DB - ドメインモデル「ロールセット」を更新登録する
 		this.roleSetRepository.update(roleSet);
 	}
@@ -90,15 +81,7 @@ public class RoleSetServiceImp implements RoleSetService{
 			throw new BusinessException("Msg_583");
 		}		
 	}
-	/**
-	 * Check if the Role set hasn't any role and then throw business exception with #Msg_583
-	 * @param roleSet
-	 */
-	private void checkHasntAnyRoleAndThrowException(RoleSet roleSet) {
-		if (!roleSet.hasAnyRole()) {
-			throw new BusinessException("Msg_???");
-		}
-	}
+
 	/**
 	 * Delete Role Set - ロールセット削除
 	 * @param roleSetCd
