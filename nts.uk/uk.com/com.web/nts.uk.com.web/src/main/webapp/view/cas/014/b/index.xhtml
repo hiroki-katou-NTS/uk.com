@@ -11,9 +11,7 @@
 			<com:scriptfile path="cas014.b.service.js" />
 			<com:scriptfile path="cas014.b.vm.js" />
 			<com:scriptfile path="cas014.b.start.js" />
-
 		</ui:define>
-
 		<ui:define name="sidebar">
 			<ul class="navigator">
 				<li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('CAS014_2')}</a></li>
@@ -45,27 +43,39 @@
 						<div class="table-label">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
 						</div>
-						<table class="fixed-table">
-							<colgroup>
-								<col width="100px" />
-								<col width="150px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
-									<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
-								</tr>
-							</thead>
-							<tbody data-bind="foreach: roleSetList">
-								<tr>
-									<td><div data-bind="text: code"
-											style="display: inline-block;"></div></td>
-									<td><div data-bind="text: name"
-											style="display: inline-block;"></div></td>
-								</tr>
+<!-- 						<table class="fixed-table"> -->
+<!-- 							<colgroup> -->
+<!-- 								<col width="100px" /> -->
+<!-- 								<col width="150px" /> -->
+<!-- 							</colgroup> -->
+<!-- 							<thead> -->
+<!-- 								<tr> -->
+<!-- 									<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th> -->
+<!-- 									<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th> -->
+<!-- 								</tr> -->
+<!-- 							</thead> -->
+<!-- 							<tbody data-bind="foreach: roleSetList"> -->
+<!-- 								<tr> -->
+<!-- 									<td><div data-bind="text: code" -->
+<!-- 											style="display: inline-block;"></div></td> -->
+<!-- 									<td><div data-bind="text: name" -->
+<!-- 											style="display: inline-block;"></div></td> -->
+<!-- 								</tr> -->
 
-							</tbody>
-						</table>
+<!-- 							</tbody> -->
+<!-- 						</table> -->
+						<table id="single-list"
+							data-bind="ntsGridList: {								
+							height: 300,
+							options: roleSetList,
+							primaryKey: 'code',
+							columns: [
+				                { headerText: 'コード', key: 'code', width: 100 },
+				                { headerText: '名称', key: 'name', width: 150 }
+				            ],
+							multiple: false,
+							value: selectedRoleSet
+						}"></table>
 					</div>
 					<div style="float: left">
 						<div class="table-label">

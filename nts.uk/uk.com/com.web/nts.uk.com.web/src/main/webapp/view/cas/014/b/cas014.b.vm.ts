@@ -24,13 +24,15 @@ module nts.uk.com.view.cas014.b {
             selectedTarget: KnockoutObservable<number>;
 
             //
-            roleSetList: Array<RoleSet>;
+            roleSetList: KnockoutObservableArray<RoleSet>;
             employeeList: Array<Employee>;
             roleSetPerson: KnockoutObservable<RoleSetPerson>;
             dateValue: KnockoutObservable<Period>
+            selectedRoleSet: KnockoutObservable<RoleSet>;
             constructor() {
                 let self = this;
-                self.dateValue = ko.observable(new Period(new Date().toISOString(), new Date().toISOString()));
+                self.dateValue = ko.observable(new Period('', ''));
+                self.selectedRoleSet = ko.observable(new RoleSet('',''));
 
                 //copy from cdl009 parent
                 self.isMultiSelect = ko.observable(true);
@@ -71,7 +73,7 @@ module nts.uk.com.view.cas014.b {
                     dfd = $.Deferred();
                 block.invisible();
 
-                self.roleSetList = [
+                self.roleSetList = ko.observableArray([
                     new RoleSet('01', 'Role Set 1'),
                     new RoleSet('02', 'Role Set 2'),
                     new RoleSet('03', 'Role Set 3'),
@@ -82,7 +84,7 @@ module nts.uk.com.view.cas014.b {
                     new RoleSet('08', 'Role Set 8'),
                     new RoleSet('09', 'Role Set 9'),
                     new RoleSet('10', 'Role Set 10')
-                ];
+                ]);
 
                 self.employeeList = [
                     new Employee('000001', '01', 'Employee 1'),
@@ -96,7 +98,7 @@ module nts.uk.com.view.cas014.b {
                     new Employee('000009', '09', 'Employee 9'),
                 ];
 
-                self.roleSetPerson = ko.observable(new RoleSetPerson(self.roleSetList[0], self.employeeList[0], new Date().toISOString(), new Date().toISOString()));
+                self.roleSetPerson = ko.observable(new RoleSetPerson(self.roleSetList()[0], self.employeeList[0], new Date().toISOString(), new Date().toISOString()));
 
                 $(".fixed-table").ntsFixedTable({ height: 200 });
                 dfd.resolve();
