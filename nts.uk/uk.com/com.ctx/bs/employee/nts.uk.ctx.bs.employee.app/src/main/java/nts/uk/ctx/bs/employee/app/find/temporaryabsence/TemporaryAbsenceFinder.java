@@ -19,10 +19,15 @@ public class TemporaryAbsenceFinder {
 	@Inject
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
 
-	public float getNumOfTempAbsenceDays(String employeeId){
-		List<TemporaryAbsence> lstTemporaryAbsence = temporaryAbsenceRepository.getListBySid(employeeId);		
-		if(lstTemporaryAbsence.size() == 0) return 0;
-		return lstTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS.between(m.getDateHistoryItem().start().localDate(), m.getDateHistoryItem().end().localDate()))
-				.mapToInt(m -> Math.abs(m.intValue())).sum();
+	public float getNumOfTempAbsenceDays(String employeeId) {
+		List<TemporaryAbsence> lstTemporaryAbsence = temporaryAbsenceRepository.getListBySid(employeeId);
+		if (lstTemporaryAbsence.size() == 0)
+			return 0;
+		return lstTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS.between(m.getDateHistoryItem().start().localDate(),
+				m.getDateHistoryItem().end().localDate())).mapToInt(m -> Math.abs(m.intValue())).sum();
+	}
+
+	public List<TemporaryAbsence> getListBySid(String employeeId) {
+		return temporaryAbsenceRepository.getListBySid(employeeId);
 	}
 }
