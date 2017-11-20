@@ -22,8 +22,8 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSet;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSetPK;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SaumtDefaultRoleSet;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SaumtDefaultRoleSetPK;
 
 /**
  * The Class JpaRoleRepository.

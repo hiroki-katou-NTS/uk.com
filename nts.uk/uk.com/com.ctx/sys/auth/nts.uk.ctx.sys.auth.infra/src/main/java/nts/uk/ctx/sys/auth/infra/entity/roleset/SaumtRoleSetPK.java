@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class SacmtRoleSetPK implements Serializable {
+public class SaumtRoleSetPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
