@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.app.find.grant;
+package nts.uk.ctx.sys.auth.app.find.grant.rolesetperson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.auth.app.find.roleset.RoleSetDto;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPerson;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPersonRepository;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 

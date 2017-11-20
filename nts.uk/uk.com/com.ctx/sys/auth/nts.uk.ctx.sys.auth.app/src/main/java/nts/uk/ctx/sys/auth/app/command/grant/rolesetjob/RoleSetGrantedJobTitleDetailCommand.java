@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.app.command.grant;
+package nts.uk.ctx.sys.auth.app.command.grant.rolesetjob;
 
 import lombok.Value;
 

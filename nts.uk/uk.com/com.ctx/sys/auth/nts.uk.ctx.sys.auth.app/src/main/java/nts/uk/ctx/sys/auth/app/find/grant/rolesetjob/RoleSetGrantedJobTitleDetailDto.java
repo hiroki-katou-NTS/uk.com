@@ -1,7 +1,7 @@
-package nts.uk.ctx.sys.auth.app.find.grant;
+package nts.uk.ctx.sys.auth.app.find.grant.rolesetjob;
 
 import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetail;
 
 /**
  * 

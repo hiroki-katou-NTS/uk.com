@@ -1,9 +1,8 @@
-package nts.uk.ctx.sys.auth.dom.grant;
+package nts.uk.ctx.sys.auth.dom.grant.rolesetjob;
 
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -13,7 +12,6 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 
-@NoArgsConstructor
 @Getter
 @Setter
 public class RoleSetGrantedJobTitle extends AggregateRoot {
@@ -32,6 +30,15 @@ public class RoleSetGrantedJobTitle extends AggregateRoot {
 		this.companyId = companyId;
 		this.applyToConcurrentPerson = applyToConcurrentPerson;
 		this.details = details;
+	}
+	
+	public boolean isRoleSetCdExist(String roleSetCd){
+		for (RoleSetGrantedJobTitleDetail d : this.details){
+			if (d.getRoleSetCd().equals(roleSetCd)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

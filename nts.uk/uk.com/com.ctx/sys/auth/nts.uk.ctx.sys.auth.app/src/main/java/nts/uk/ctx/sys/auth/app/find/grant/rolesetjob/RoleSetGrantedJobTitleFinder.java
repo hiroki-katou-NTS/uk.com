@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.app.find.grant;
+package nts.uk.ctx.sys.auth.app.find.grant.rolesetjob;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,11 +8,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.app.find.roleset.RoleSetDto;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
-import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleRepository;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,14 +38,17 @@ public class RoleSetGrantedJobTitleFinder {
 			return null;
 
 		// get Job Title by date, companyId
-		List<JobTitleValueImport> listJobTitle = jobTitleAdapter.findAll(companyId, refDate);
+		List<JobTitleDto> listJobTitle = jobTitleAdapter.findAll(companyId, refDate).stream().map(item -> new JobTitleDto(item.getPositionId(), item.getPositionCode(), item.getPositionName())).collect(Collectors.toList());
 
 		// get Sequence Master
 
 		// get Role Set by companyId, sort ASC
 		List<RoleSetDto> listRoleSet = roleSetRepo.findByCompanyId(companyId).stream()
-				.map(item -> RoleSetDto.build(item)).collect(Collectors.toList());
-		listRoleSet.sort((rs1, rs2) -> rs1.getRoleSetCd().compareTo(rs2.getRoleSetCd()));
+				.map(item -> new RoleSetDto(item.getRoleSetCd().v(), item.getRoleSetName().v())).collect(Collectors.toList());
+		if (listRoleSet == null || listRoleSet.size() == 0){
+			throw new BusinessException("Msg_713");
+		}
+		listRoleSet.sort((rs1, rs2) -> rs1.getCode().compareTo(rs2.getCode()));
 
 		// get Role Set Granted Job Title
 		RoleSetGrantedJobTitleDto roleSetJob = roleSetJobRepo.getOneByCompanyId(companyId)

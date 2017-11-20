@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.infra.entity.grant;
+package nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob;
 
 import java.io.Serializable;
 

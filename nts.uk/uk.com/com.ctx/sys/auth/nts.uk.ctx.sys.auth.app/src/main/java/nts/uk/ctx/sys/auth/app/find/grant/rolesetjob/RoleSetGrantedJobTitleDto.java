@@ -1,10 +1,10 @@
-package nts.uk.ctx.sys.auth.app.find.grant;
+package nts.uk.ctx.sys.auth.app.find.grant.rolesetjob;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitle;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
 
 /**
  * 

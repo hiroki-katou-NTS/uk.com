@@ -1,10 +1,9 @@
-package nts.uk.ctx.sys.auth.app.find.grant;
+package nts.uk.ctx.sys.auth.app.find.grant.rolesetperson;
 
-import java.util.List;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPerson;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 
 /**
  * 
