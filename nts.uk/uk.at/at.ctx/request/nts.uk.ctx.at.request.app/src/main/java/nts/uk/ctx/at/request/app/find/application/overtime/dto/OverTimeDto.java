@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.overtime.dto;
+package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
 import java.util.List;
 
@@ -157,5 +157,10 @@ public class OverTimeDto {
 	 * manualSendMailAtr
 	 */
 	private boolean manualSendMailAtr;
+	
+	/**
+	 * preAppOvertimeDto
+	 */
+	private PreAppOvertimeDto preAppOvertimeDto;
 	
 }

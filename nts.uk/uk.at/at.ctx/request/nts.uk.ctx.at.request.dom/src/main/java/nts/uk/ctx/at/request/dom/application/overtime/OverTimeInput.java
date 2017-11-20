@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
 
 /**
  * @author loivt
@@ -45,14 +46,20 @@ public class OverTimeInput{
 	 */
 	private OvertimeAppPrimitiveTime applicationTime;
 	
-	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, int startTime, int endTime, int applicationTime){
+	/**
+	 * timeItemTypeAtr
+	 */
+	private TimeItemTypeAtr timeItemTypeAtr;
+	
+	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, int startTime, int endTime, int applicationTime, int timeItemTypeAtr){
 		return new OverTimeInput(companyID,
 				appID,
 				EnumAdaptor.valueOf(attendanceID, AttendanceID.class),
 				frameNo,
 				new OvertimeAppPrimitiveTime(startTime),
 				new OvertimeAppPrimitiveTime(endTime),
-				new OvertimeAppPrimitiveTime(applicationTime));
+				new OvertimeAppPrimitiveTime(applicationTime),
+				EnumAdaptor.valueOf(timeItemTypeAtr, TimeItemTypeAtr.class));
 	}
 
 }

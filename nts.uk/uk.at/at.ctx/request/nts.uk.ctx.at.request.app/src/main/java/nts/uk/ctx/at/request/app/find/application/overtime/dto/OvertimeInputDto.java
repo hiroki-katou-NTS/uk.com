@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.overtime.dto;
+package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
 import lombok.Data;
 
@@ -21,6 +21,11 @@ public class OvertimeInputDto {
 	 * 勤怠項目NO
 	 */
 	private int frameNo;
+	
+	/**
+	 * timeItemTypeAtr
+	 */
+	private int timeItemTypeAtr;
 	
 	/**
 	 * 勤怠項目Name

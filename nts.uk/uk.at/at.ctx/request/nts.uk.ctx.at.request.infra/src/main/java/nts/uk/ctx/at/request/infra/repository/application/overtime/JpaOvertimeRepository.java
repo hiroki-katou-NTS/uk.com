@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInpu
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 
 @Stateless
-public class OvertimeImpl extends JpaRepository implements OvertimeRepository {
+public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepository {
 	private static final String FIND_ALL = "SELECT e FROM KrqdtAppOvertime e";
 
 	private static final String FIND_BY_APPID;
@@ -43,7 +43,7 @@ public class OvertimeImpl extends JpaRepository implements OvertimeRepository {
 		List<KrqdtOvertimeInput> overtimeInputs = domain.getOverTimeInput().stream()
 				.map(item -> {
 					KrqdtOvertimeInputPK pk =  new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
-							item.getAttendanceID().value, item.getFrameNo());
+							item.getAttendanceID().value, item.getFrameNo(),item.getTimeItemTypeAtr().value);
 					return new KrqdtOvertimeInput(pk, item.getStartTime().v(), item.getEndTime().v(),
 							item.getApplicationTime().v());
 				})

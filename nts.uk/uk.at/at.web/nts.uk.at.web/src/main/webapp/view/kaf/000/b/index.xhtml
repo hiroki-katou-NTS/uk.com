@@ -11,6 +11,7 @@
 				nts.uk.shr.com.primitive.PersonId
 				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.request.dom.application.AppReason
+				nts.uk.ctx.at.request.dom.application.ApproverReason
 				nts.uk.ctx.at.request.dom.application.stamp.TimeDayClock
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -119,13 +120,13 @@
 					<div class="message-td" data-bind="text : reasonApp, visible: !displayButtonControl().displayReturnReasonPanel()"></div>
 				</div>
 				<!-- row 2 B4_1-->
-				<div style=" margin-top: 16px;margin-left: 39px;float: left;" data-bind="visible: !displayButtonControl().displayReturnReason() ">
-					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_28')}</div>
+				<div style=" margin-top: 16px;margin-left: 39px;float: left;margin-right: 47px" data-bind="visible: !displayButtonControl().displayReturnReason() ">
+					<div  data-bind="ntsFormLabel: {constraint: 'ApproverReason'}">#{i18n.getText('KAF000_28')}</div>
 				</div>
 				<!-- row 2 B4_2-->
 				<div style=" margin-top: 16px;">
-					<textarea style="width: 628px;height: 50px;margin-left: 60px" data-bind="ntsMultilineEditor: { value: reasonToApprover, 
-																								constraint: 'ResidenceCode',
+					<textarea style="width: 628px;height: 50px" data-bind="ntsMultilineEditor: { value: reasonToApprover, 
+																								constraint: 'ApproverReason',
 																								enable: displayButtonControl().enableReturnReason},
 																								visible: !displayButtonControl().displayReturnReason() " />
 					
