@@ -185,9 +185,10 @@ public class PerInfoItemDefFinder {
 		String contractId = AppContexts.user().contractCode();
 		return pernfoItemDefRep.getPerInfoItemByCtgId(perInfoCategoryId, 
 				companyId, contractId).stream().map(item ->{
-					boolean alreadyCopy = pernfoItemDefRep.countPerInfoItemDefInCopySetting(perInfoCategoryId, companyId) > 0 ? true : false;
+					String itemId  = item.getPerInfoItemDefId();
+					boolean alreadyCopy = pernfoItemDefRep.countPerInfoItemDefInCopySetting(itemId, companyId) > 0 ? true : false;
 					//boolean alreadyCopy = false;
-					return new PerInfoItemDefMapDto(item.getPerInfoItemDefId(), item.getPerInfoCategoryId(),
+					return new PerInfoItemDefMapDto(itemId, item.getPerInfoCategoryId(),
 							item.getItemName().v(), alreadyCopy);
 				}).collect(Collectors.toList());
 	}
