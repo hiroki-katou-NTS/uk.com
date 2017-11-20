@@ -1,4 +1,4 @@
-module kmk003.common.fixtable {
+module kmk003.base.fixtable {
 
     /************************************************ PARAMETERS INITIAL FIXTABLE **********************************
     ***************************************************************************************************************/
@@ -186,7 +186,7 @@ module kmk003.common.fixtable {
             
             let webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/_common/fixtable/fixtable.xhtml').serialize();
+                .mergeRelativePath('/view/kmk/003/base/fixtable/fixtable.xhtml').serialize();
             $input.load(webserviceLocator, function() {
                 self.$tableSelector = $('#fixed-table-custom');
                 ko.cleanNode(self.$tableSelector[0]);
@@ -194,13 +194,17 @@ module kmk003.common.fixtable {
                 // calculate height table
                 self.calStyleTable();
                 
+                nts.uk.ui.block.invisible();
+                
                 // render table
                 self.renderTable().done(() => {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
-
+                    
                     // override width control
                     self.overrideWidthControl();
+                    
+                    nts.uk.ui.block.clear();
                     
                     dfd.resolve();
                 });
@@ -295,7 +299,7 @@ module kmk003.common.fixtable {
             // mode multiple
             if (self.isMultiple) {
                 rowHtml += "<td style='text-align: center;'><div data-bind=\"ntsCheckBox: { checked: isChecked, "
-                    + "enable: true, text:''}, rended: $parent.itemList\"></div></td>";
+                    + "enable: true, text:''}\"></div></td>";
             }
             
             // add html column base setting
@@ -461,7 +465,7 @@ interface JQuery {
     /**
      * Nts fix table component.
      */
-    ntsFixTableCustom(option: kmk003.common.fixtable.FixTableOption): JQueryPromise<void>;
+    ntsFixTableCustom(option: kmk003.base.fixtable.FixTableOption): JQueryPromise<void>;
 
     /**
      * Focus component.
@@ -470,9 +474,9 @@ interface JQuery {
 }
 
 (function($: any) {
-    $.fn.ntsFixTableCustom = function(option: kmk003.common.fixtable.FixTableOption): JQueryPromise<void> {
+    $.fn.ntsFixTableCustom = function(option: kmk003.base.fixtable.FixTableOption): JQueryPromise<void> {
 
         // Return.
-        return new kmk003.common.fixtable.FixTableScreenModel().init(this, option);
+        return new kmk003.base.fixtable.FixTableScreenModel().init(this, option);
     }
 } (jQuery));
