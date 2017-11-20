@@ -9,8 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 
@@ -32,7 +30,11 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ "AND c.applicationDate = :appDate "
 			+ "AND c.prePostAtr = :prePostAtr "
 			+ "AND c.applicationType = :applicationType ";
-
+	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
+			+ " AND c.applicationDate = :appDate "
+			+ " AND c.inputDate = :inputDate "
+			+ " AND c.applicationType = :applicationType "
+			+ " AND c.prePostAtr = :prePostAtr ORDER BY c.inputDate";
 	/**
 	 * Get ALL application
 	 */
@@ -114,8 +116,14 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 * remove application
 	 */
 	@Override
-	public void deleteApplication(String companyID, String applicationID) {
-		this.commandProxy().remove(KafdtApplication.class, new KafdtApplicationPK(companyID, applicationID));
+	public void deleteApplication(String companyID, String applicationID, Long version) {
+		Optional<KafdtApplication> opKafdtApplication = this.queryProxy().find(new KafdtApplicationPK(companyID, applicationID), KafdtApplication.class);
+		if(!opKafdtApplication.isPresent()){
+			throw new RuntimeException("Khong ton tai Application entity phu hop de xoa");
+		}
+		KafdtApplication kafdtApplication = opKafdtApplication.get();
+		kafdtApplication.version = version;
+		this.commandProxy().remove(kafdtApplication);
 		this.getEntityManager().flush();
 	}
 
@@ -135,7 +143,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.getList(c -> c.toDomain());
 		return data;
 	}
-
+	
 	@Override
 	public Optional<Application> getApp(String applicantSID, GeneralDate appDate, int prePostAtr,
 			int appType) {
@@ -147,5 +155,14 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.getSingle(c -> c.toDomain());
 	}
 
-
+	@Override
+	public List<Application> getBeforeApplication(String companyId, GeneralDate appDate, GeneralDate inputDate, int appType, int prePostAtr){
+		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KafdtApplication.class)
+				.setParameter("companyID", companyId)
+				.setParameter("appDate", appDate)
+				.setParameter("inputDate", inputDate)
+				.setParameter("applicationType", appType)
+				.setParameter("prePostAtr", prePostAtr)				
+				.getList(c -> c.toDomain());
+	}
 }

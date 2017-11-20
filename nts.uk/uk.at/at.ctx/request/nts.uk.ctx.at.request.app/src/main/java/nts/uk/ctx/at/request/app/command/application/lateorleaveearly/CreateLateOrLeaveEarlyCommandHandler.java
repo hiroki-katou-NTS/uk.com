@@ -55,6 +55,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		String appID = IdentifierUtil.randomUniqueId();
+		String appReason = "";
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds().stream()
 				.map(appApprovalPhaseCmd -> new AppApprovalPhase(companyId, appID, IdentifierUtil.randomUniqueId(),
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class),
@@ -72,10 +73,13 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 				.collect(Collectors.toList());
 
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
+		if(!command.getReasonTemp().isEmpty() || !command.getAppReason().isEmpty()) {
+			appReason = !command.getReasonTemp().isEmpty() ? command.getReasonTemp() +  System.lineSeparator() + command.getAppReason() : command.getAppReason();
+		}
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(appID,
 				command.getApplicationDate(),
 				command.getPrePostAtr(), 
-				command.getReasonTemp() + System.lineSeparator() + command.getAppReason(), 
+				appReason, 
 				appApprovalPhases,
 				command.getEarly1(), 
 				command.getEarlyTime1(),

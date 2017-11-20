@@ -170,6 +170,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return result;
 	}
 
+	/**
+	 * 登録処理を実行
+	 */
 	@Override
 	public void CreateOvertime(AppOverTime domain, Application newApp){
 		//Register application

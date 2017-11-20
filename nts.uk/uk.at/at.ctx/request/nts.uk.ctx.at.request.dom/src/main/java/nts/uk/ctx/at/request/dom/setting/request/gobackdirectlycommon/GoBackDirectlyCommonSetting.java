@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentContent;
