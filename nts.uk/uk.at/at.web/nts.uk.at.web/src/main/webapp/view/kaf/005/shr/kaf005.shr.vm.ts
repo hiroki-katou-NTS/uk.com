@@ -207,6 +207,7 @@ module nts.uk.at.view.kaf005.share {
             startTime: KnockoutObservable<number>
             endTime: KnockoutObservable<number>
             applicationTime: KnockoutObservable<number>
+            nameID: KnockoutObservable<string>
             constructor(
                 companyID: string,
                 appID: string,
@@ -217,7 +218,8 @@ module nts.uk.at.view.kaf005.share {
                 frameName: string,
                 startTime: number,
                 endTime: number,
-                applicationTime: number) {
+                applicationTime: number,
+                nameID: string) {
                 this.companyID = ko.observable(companyID);
                 this.appID = ko.observable(appID);
                 this.attendanceID = ko.observable(attendanceID);
@@ -228,6 +230,7 @@ module nts.uk.at.view.kaf005.share {
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
                 this.applicationTime = ko.observable(applicationTime);
+                this.nameID = ko.observable(nameID);
             }
         }   
 		export class overtimeWork {

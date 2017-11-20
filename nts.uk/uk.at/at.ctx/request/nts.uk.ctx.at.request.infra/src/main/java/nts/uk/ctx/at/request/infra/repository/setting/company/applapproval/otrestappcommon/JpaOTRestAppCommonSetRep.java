@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.overtimerestappcommon.KrqstOtRestAppComSet;
 
 @Stateless
-public class OTRestAppCommonSetImpl extends JpaRepository implements OvertimeRestAppCommonSetRepository {
+public class JpaOTRestAppCommonSetRep extends JpaRepository implements OvertimeRestAppCommonSetRepository {
 private static final String FINDER_ALL ="SELECT o FROM KrqstOtRestAppComSet o";
 	
 	private static final String FIND_FOR_COMPANYID_APPTYPE;

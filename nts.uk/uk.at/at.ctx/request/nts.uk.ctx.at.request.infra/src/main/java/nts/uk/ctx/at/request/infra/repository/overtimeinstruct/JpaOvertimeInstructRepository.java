@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
 import nts.uk.ctx.at.request.infra.entity.overtimeinstruct.KrqdtOvertimeInstruct;
 
 @Stateless
-public class OvertimeInstructImpl extends JpaRepository implements OvertimeInstructRepository {
+public class JpaOvertimeInstructRepository extends JpaRepository implements OvertimeInstructRepository {
 	private static final String FIND_ALL;
 	private static final String FIND_FOR_TARGET_PERSON;
 	
