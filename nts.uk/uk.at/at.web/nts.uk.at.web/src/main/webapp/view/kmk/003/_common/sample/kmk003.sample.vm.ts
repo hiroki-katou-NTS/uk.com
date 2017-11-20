@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk003.sample {
                     { code: 0, name: 'Single Selection' },
                     { code: 1, name: 'Multiple Selection' },
                 ]);
-                self.selectedType = ko.observable(1);
+                self.selectedType = ko.observable(0);
                 
                 self.enable = ko.observable(false);
                 
@@ -33,13 +33,14 @@ module nts.uk.at.view.kmk003.sample {
                 self.fixTableOption = {
                     maxRows: 5,
                     dataSource: self.dataSource,
-                    isMultipleSelect: self.enable,
+                    isMultipleSelect: self.enable(),
                     columns: self.columnSetting(),
                     tabindex: 10
                 }
                 
                 self.selectedType.subscribe(function(newValue) {
                     self.enable(newValue == 1);
+                    self.fixTableOption.isMultipleSelect = self.enable();
                     $('#nts-fix-table').ntsFixTableCustom(self.fixTableOption);
                 });
             }
