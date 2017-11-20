@@ -16,7 +16,7 @@ function checkBox() {
         {
             headerText: nts.uk.resource.getText('CPS017_18'), key: 'initSelection',
             template: "<input style='width:30px, height:40px' class='checkRow initSelection' type='checkbox'"
-            + " data-checked='${initSelection}' data-id='${id}' tabindex='4'/>"
+            + " data-checked='${initSelection}' data-id='${selectionID}' tabindex='4'/>"
         },
         { headerText: nts.uk.resource.getText('CPS017_16'), key: 'selectionCD', readonly: true },
         { headerText: nts.uk.resource.getText('CPS017_17'), key: 'selectionName' }
@@ -24,7 +24,7 @@ function checkBox() {
     let source = ko.toJS(__viewContext["viewModel"].listSelection);
     $('#item_register_grid2').igGrid({
         dataSource: source,
-        primaryKey: "id",
+        primaryKey: "selectionID",
         dataSourceType: "json",
         enableHoverStyles: false,
         autoGenerateColumns: false,
@@ -86,17 +86,18 @@ function checkBox() {
             data: Array<any> = ko.toJS(__viewContext["viewModel"].listSelection);
         //chuyen toan bo nhung item da chon -> k chon
         _.each(data, function(item) {
-            if (item.id != _this.parents('tr').data('id')) {
-                $('#item_register_grid2').igGridUpdating("setCellValue", item.id, "initSelection", false);
+            if (item.selectionID != _this.parents('tr').data('id')) {
+                $('#item_register_grid2').igGridUpdating("setCellValue", item.selectionID, "initSelection", false);
                 item.initSelection = false;
             } else {
-                if (previousId === item.id) {
+                if (previousId === item.selectionID) {
                     previousId = "";
                     item.initSelection = false;
                 } else {
                     item.initSelection = true;
-                    previousId = item.id;
+                    previousId = item.selectionID;
                 }
+                __viewContext["viewModel"].currentSelectedId(previousId);
             }
         });
         //bind lai data

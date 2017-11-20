@@ -31,6 +31,8 @@
 			</div>
 			<div id="contents-area">
 				<div style="margin-left: 20px;">
+					<!-- B2_1: label 個人情報の選択肢の既定値と表示順を設定してください。 -->
+					<label>#{i18n.getText('CPS017_29')}</label>
 					<!-- B2_2: grid list  -->
 					<div id="table-grid-selection">
 					<table id="item_register_grid2" class="pull-left"></table>
@@ -38,7 +40,7 @@
 					<div id="grid-up-down"
 						data-bind="ntsUpDown: {
 								targetSource: listSelection,
-								primaryKey: 'id',
+								primaryKey: 'selectionID',
 								comId: '#item_register_grid2',
 								type: 'grid'
 							}"
