@@ -61,12 +61,12 @@ public class RoleSet extends AggregateRoot {
 	 * @param companyId
 	 * @param roleSetName
 	 * @param approvalAuthority
-	 * @param officeHelperRole
-	 * @param myNumberRole
-	 * @param hRRole
-	 * @param personInfRole
-	 * @param employmentRole
-	 * @param salaryRole
+	 * @param officeHelperRoleId
+	 * @param myNumberRoleId
+	 * @param hRRoleId
+	 * @param personInfRoleId
+	 * @param employmentRoleId
+	 * @param salaryRoleId
 	 */
 	public RoleSet(String roleSetCd
 			, String companyId
@@ -95,16 +95,17 @@ public class RoleSet extends AggregateRoot {
 	
 	/**
 	 * Initial a new RoleSet with list of WebMenu code.
+	 * 
 	 * @param roleSetCd
 	 * @param companyId
 	 * @param roleSetName
 	 * @param approvalAuthority
-	 * @param officeHelperRoleCd
-	 * @param myNumberRoleCd
-	 * @param hRRoleCd
-	 * @param personInfRoleCd
-	 * @param employmentRoleCd
-	 * @param salaryRoleCd
+	 * @param officeHelperRoleId
+	 * @param myNumberRoleId
+	 * @param hRRoleId
+	 * @param personInfRoleId
+	 * @param employmentRoleId
+	 * @param salaryRoleId
 	 * @param webMenuCds
 	 */
 	public RoleSet(String roleSetCd
