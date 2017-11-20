@@ -369,6 +369,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			if (optionalBasicSchedule.isPresent()) {
 
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
+				command.setIsDeleteBeforInsert(true);
 				this.createWorkScheduleByImplementAtr(command, basicSchedule,
 						personalWorkScheduleCreSet);
 			} else {

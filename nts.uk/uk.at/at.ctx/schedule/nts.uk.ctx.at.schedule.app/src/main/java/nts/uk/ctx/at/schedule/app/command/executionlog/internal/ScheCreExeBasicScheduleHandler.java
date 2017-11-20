@@ -58,7 +58,7 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setWorktypeCode(worktypeCode);
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
-		commandSave.setYmd(GeneralDate.today());
+		commandSave.setYmd(command.getToDate());
 		
 		if(optionalShortTime.isPresent()){
 			commandSave
