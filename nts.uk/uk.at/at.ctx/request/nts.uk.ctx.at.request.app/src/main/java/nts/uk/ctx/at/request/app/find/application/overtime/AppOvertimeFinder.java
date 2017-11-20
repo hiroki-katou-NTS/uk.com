@@ -137,10 +137,13 @@ public class AppOvertimeFinder {
 		String employeeName = "";
 		if(Strings.isNotBlank(applicationDto.getApplicantSID())){
 			employeeName = employeeAdapter.getEmployeeName(applicationDto.getApplicantSID());
+			result.setEmployeeID(applicationDto.getApplicantSID());
 		} else {
 			employeeName = employeeAdapter.getEmployeeName(employeeID);
+			result.setEmployeeID(employeeID);
 		}
 		result.setEmployeeName(employeeName);
+		
 		return result;
 	}
 	

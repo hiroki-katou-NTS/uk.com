@@ -44,7 +44,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         multilContent2: KnockoutObservable<string> = ko.observable('');
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
-        employeeID: string = "000426a2-181b-4c7f-abc8-6fff9f4f983a";
+        employeeID: KnockoutObservable<string> = ko.observable('');
         //休憩時間
         restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //残業時間
@@ -183,6 +183,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.displayBonusTime(data.displayBonusTime);
             self.restTimeDisFlg(data.displayRestTime);
             self.employeeName(data.employeeName);
+            self.employeeID(data.employeeID);
             if (data.siftType != null) {
                 self.siftCD(data.siftType.siftCode);
                 self.siftName(data.siftType.siftName);
@@ -196,8 +197,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.timeStart2(data.workClockTo1);
             self.timeEnd2(data.workClockTo2);
             if(data.applicationReasonDtos != null){
-                self.reasonCombo(_.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); }));
-                self.selectedReason(_.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID);
+                let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                self.selectedReason(reasonID);
+                
+                let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
+                self.reasonCombo(lstReasonCombo);
+                
                 self.multilContent(data.application.applicationReason);
             }
             
@@ -298,6 +303,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             };
             //登録前エラーチェック
             service.checkBeforeRegister(overtime).done((data) => {
+                nts.uk.ui.block.invisible();
                 if (data.errorCode == 0) {
                     if (data.confirm) {
                         //メッセージNO：829
@@ -326,10 +332,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+            }).always(function(){
+              nts.uk.ui.block.clear();   
             });
         }
         //登録処理を実行
         registerData(overtime) {
+             nts.uk.ui.block.invisible();
             service.createOvertime(overtime).done(() => {
                 //2-3.新規画面登録後の処理を実行
                 //TODO:
@@ -346,6 +355,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+            }).always(function(){
+              nts.uk.ui.block.clear();   
             });
         }
         

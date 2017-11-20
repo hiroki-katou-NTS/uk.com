@@ -32,6 +32,10 @@ public class OverTimeDto {
 	 * displayOvertimeInstructInforFlg
 	 */
 	private boolean displayOvertimeInstructInforFlg;
+	/**
+	 * 
+	 */
+	private String employeeID;
 	
 	/**
 	 * 申請者
