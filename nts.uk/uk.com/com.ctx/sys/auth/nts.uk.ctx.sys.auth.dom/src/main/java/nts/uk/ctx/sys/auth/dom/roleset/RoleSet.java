@@ -118,6 +118,7 @@ public class RoleSet extends AggregateRoot {
 		this.buildRoleSetAndWebMenu();
 	}
 	
+	
 	/**
 	 * Initial a new RoleSet with list of WebMenu code.
 	 * @param roleSetCd
@@ -259,5 +260,9 @@ public class RoleSet extends AggregateRoot {
 	public boolean isGrantedForPosition() {
 		/** check from CAS014 */
 		return roleSetGrantedJobTitleRepository.checkRoleSetCdExist(this.roleSetCd.v(), this.companyId);
+	}
+	
+	public void removePersonInfRole() {
+		this.personInfRole = null;
 	}
 }
