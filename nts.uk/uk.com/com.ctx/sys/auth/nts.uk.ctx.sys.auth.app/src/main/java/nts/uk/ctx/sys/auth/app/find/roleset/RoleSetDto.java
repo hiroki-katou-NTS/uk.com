@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
+import nts.uk.ctx.sys.auth.dom.roleset.RoleSetFactory;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 
 @Data
@@ -53,14 +54,14 @@ public class RoleSetDto {
 		RoleSetDto result = new RoleSetDto();
 		result.setApprovalAuthority(roleSet.hasApprovalAuthority());
 		result.setCompanyId(roleSet.getCompanyId());
-		result.setEmploymentRoleId(RoleSet.getRoleId(roleSet.getEmploymentRole()));
-		result.setHRRoleId(RoleSet.getRoleId(roleSet.getHRRole()));
-		result.setMyNumberRoleId(RoleSet.getRoleId(roleSet.getMyNumberRole()));
-		result.setOfficeHelperRoleId(RoleSet.getRoleId(roleSet.getOfficeHelperRole()));
-		result.setPersonInfRoleId(RoleSet.getRoleId(roleSet.getPersonInfRole()));
+		result.setEmploymentRoleId(RoleSetFactory.getRoleId(roleSet.getEmploymentRole()));
+		result.setHRRoleId(RoleSetFactory.getRoleId(roleSet.getHRRole()));
+		result.setMyNumberRoleId(RoleSetFactory.getRoleId(roleSet.getMyNumberRole()));
+		result.setOfficeHelperRoleId(RoleSetFactory.getRoleId(roleSet.getOfficeHelperRole()));
+		result.setPersonInfRoleId(RoleSetFactory.getRoleId(roleSet.getPersonInfRole()));
 		result.setRoleSetCd(roleSet.getRoleSetCd().v());
 		result.setRoleSetName(roleSet.getRoleSetName().v());
-		result.setSalaryRoleId(RoleSet.getRoleId(roleSet.getSalaryRole()));
+		result.setSalaryRoleId(RoleSetFactory.getRoleId(roleSet.getSalaryRole()));
 		result.setWebMenus(convertWebMenuToWebMunuCd(roleSet.getRoleSetAndWebMenus()));
 		return result;
 	}

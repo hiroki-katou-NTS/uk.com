@@ -15,6 +15,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
+import nts.uk.ctx.sys.auth.dom.roleset.RoleSetFactory;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSet;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetPK;
@@ -52,12 +53,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		return new SacmtRoleSet(key
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, RoleSet.getRoleId(domain.getOfficeHelperRole())
-				, RoleSet.getRoleId(domain.getMyNumberRole())
-				, RoleSet.getRoleId(domain.getHRRole())
-				, RoleSet.getRoleId(domain.getPersonInfRole())
-				, RoleSet.getRoleId(domain.getEmploymentRole())
-				, RoleSet.getRoleId(domain.getSalaryRole())
+				, RoleSetFactory.getRoleId(domain.getOfficeHelperRole())
+				, RoleSetFactory.getRoleId(domain.getMyNumberRole())
+				, RoleSetFactory.getRoleId(domain.getHRRole())
+				, RoleSetFactory.getRoleId(domain.getPersonInfRole())
+				, RoleSetFactory.getRoleId(domain.getEmploymentRole())
+				, RoleSetFactory.getRoleId(domain.getSalaryRole())
 				);
 
 	}
@@ -66,12 +67,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		upEntity.buildEntity(upEntity.roleSetPK
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, RoleSet.getRoleId(domain.getOfficeHelperRole())
-				, RoleSet.getRoleId(domain.getMyNumberRole())
-				, RoleSet.getRoleId(domain.getHRRole())
-				, RoleSet.getRoleId(domain.getPersonInfRole())
-				, RoleSet.getRoleId(domain.getEmploymentRole())
-				, RoleSet.getRoleId(domain.getSalaryRole()));
+				, RoleSetFactory.getRoleId(domain.getOfficeHelperRole())
+				, RoleSetFactory.getRoleId(domain.getMyNumberRole())
+				, RoleSetFactory.getRoleId(domain.getHRRole())
+				, RoleSetFactory.getRoleId(domain.getPersonInfRole())
+				, RoleSetFactory.getRoleId(domain.getEmploymentRole())
+				, RoleSetFactory.getRoleId(domain.getSalaryRole()));
 		return upEntity;
 	}
 
