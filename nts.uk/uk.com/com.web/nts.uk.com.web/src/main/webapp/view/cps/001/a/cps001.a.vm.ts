@@ -9,6 +9,7 @@ module cps001.a.vm {
     import clearError = nts.uk.ui.errors.clearAll;
     import liveView = nts.uk.request.liveView;
     import permision = service.getCurrentEmpPermision;
+    import format = nts.uk.text.format;
 
     let DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
@@ -42,12 +43,14 @@ module cps001.a.vm {
             },
             onSearchOfWorkplaceClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
-
+                console.log('xxx');
                 self.listEmployee.removeAll();
                 self.listEmployee(dataList);
             },
             onSearchWorkplaceChildClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
+
+                console.log('xxx xxx');
 
                 self.listEmployee.removeAll();
                 self.listEmployee(dataList);
@@ -376,28 +379,35 @@ module cps001.a.vm {
         daysOfEntire: KnockoutObservable<number> = ko.observable(0);
         daysOfTemporaryAbsence: KnockoutObservable<number> = ko.observable(0);
 
-
         // calc days of work process
         entire: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
-                days = self.daysOfEntire(),
-                dayotas = self.daysOfTemporaryAbsence();
+                days = self.daysOfEntire();
 
-            if (!days) {
-                return 0 + '年';
-            }
+            days -= self.daysOfTemporaryAbsence();
 
-            days -= dayotas;
+            let current = moment.utc(),
+                entire = moment.utc().add(-days, 'days'),
+                duration = moment.duration(current.diff(entire));
 
-            let year = Math.floor(days / 365),
-                month = Math.floor((days - (year * 365)) / 30),
-                day = Math.floor(days - (year * 365) - (month * 30));
-
-            return (year > 0 ? year + '年' : '') + (month > 0 ? month + '月' : '') + (day > 0 ? day + '日' : '');
+            return format("{0}{1}{2}{3}", duration.years(), text('CPS001_67'), duration.months(), text('CPS001_88'));
         });
 
-
         constructor(param: IEmployeeInfo) {
+            let self = this;
+
+            if (param) {
+                self.employeeId(param.employeeId);
+                self.employeeCode(param.employeeCode);
+                self.employeeName(param.employeeName);
+
+                self.workplaceId(param.workplaceId);
+                self.workplaceCode(param.workplaceCode);
+                self.workplaceName(param.workplaceName);
+
+                self.daysOfEntire(param.daysOfEntire);
+                self.daysOfTemporaryAbsence(param.daysOfTemporaryAbsence);
+            }
         }
     }
 
@@ -450,12 +460,12 @@ module cps001.a.vm {
         age: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
                 birthDay = self.birthDate(),
-                duration = moment.duration(moment().diff(moment(birthDay))),
+                duration = moment.duration(moment.utc().diff(moment.utc(birthDay))),
                 years = duration.years(),
                 months = duration.months(),
                 days = duration.days();
 
-            return (years + Number(!!(months || days))) + '歳';
+            return (years + Number(!!(months || days))) + text('CPS001_66');
         });
     }
 

@@ -10,11 +10,13 @@ module nts.uk.com.view.cps017.b.viewmodel {
     import close = nts.uk.ui.windows.close;
     export class ScreenModel {
         listSelection: KnockoutObservableArray<any> = ko.observableArray([]);
+        currentSelectedId: KnockoutObservable<string> = ko.observable('');
         constructor() {
         }
 
         //開始
         start(): JQueryPromise<any> {
+            block.invisible();
             let self = this,
             selectedHisId = getShared('selectedHisId');//get histId ben screen A
             let dfd = $.Deferred();
@@ -43,8 +45,8 @@ module nts.uk.com.view.cps017.b.viewmodel {
                     });
                 }
                 dfd.resolve();
-            }).fail(error => {
-                alertError({ messageId: "Msg_455" });
+            }).always(() => {
+                block.clear();
             });
 
             return dfd.promise();
@@ -53,29 +55,26 @@ module nts.uk.com.view.cps017.b.viewmodel {
          * register
          */
         register(){
+            block.invisible();
             let self = this;
-            let row = $("#item_register_grid2").igGridSelection("selectedRow");
-            if(row == null || row == undefined){
+            if(self.currentSelectedId() == ''){//khong item nao duoc chon
+                block.clear();
                 return;
             }
-            let itemSeleted: ISelection = self.findItemSelected(row.id);
-            let data = {
-                selectionID: itemSeleted.selectionID,
-                histId: itemSeleted.histId,
-                selectionCD: itemSeleted.selectionCD,
-                selectionName: itemSeleted.selectionName,
-                externalCD: itemSeleted.externalCD,
-                memoSelection: itemSeleted.memoSelection
-            };
-//            service.updateDataSelection(data).done(function(){
-//                //情報メッセージ（#Msg_15）を表示する (Hiển thị InfoMessage Msg_15)
-//                info({ messageId: "Msg_15" }).then(function() {
-//                    //close dialog
-////                    close();
-//                });
-//            }).always(() => {
-//                block.clear();
-//            });;
+            let lstData: Array<SelOrder> = [];
+            _.each(self.listSelection(), function(item, index){
+                lstData.push(new SelOrder(item.selectionID, item.histId, item.selectionCD, index+1, item.selectionID == self.currentSelectedId() ? true : false));
+            });
+            console.log(lstData);
+            service.updateSelOrder(lstData).done(function(){
+                //情報メッセージ（#Msg_15）を表示する (Hiển thị InfoMessage Msg_15)
+                info({ messageId: "Msg_15" }).then(function() {
+                    //close dialog
+                    close();
+                });
+            }).always(() => {
+                block.clear();
+            });
         }
         /**
          * find item is selected.
@@ -104,24 +103,19 @@ module nts.uk.com.view.cps017.b.viewmodel {
         memoSelection: string;
         initSelection: any;
     }
-    class Selection {
-        selectionID: KnockoutObservable<string> = ko.observable('');
-        histId: KnockoutObservable<string> = ko.observable('');
-        selectionCD: KnockoutObservable<string> = ko.observable('');
-        selectionName: KnockoutObservable<string> = ko.observable('');
-        externalCD: KnockoutObservable<string> = ko.observable('');
-        memoSelection: KnockoutObservable<string> = ko.observable('');
-        initSelection: KnockoutObservable<boolean> = ko.observable(false);
-
-        constructor(param: ISelection) {
-            let self = this;
-            self.selectionID(param.selectionID || '');
-            self.histId(param.histId || '');
-            self.selectionCD(param.selectionCD || '');
-            self.selectionName(param.selectionName || '');
-            self.externalCD(param.externalCD || '');
-            self.memoSelection(param.memoSelection || '');
-            self.initSelection(param.initSelection|| false);
+    export class SelOrder{
+        selectionID: string;
+        histId: string;
+        code: string;
+        dispOrder: number;
+        initSelection: boolean;
+        constructor(selectionID: string, histId: string,code: string,
+                dispOrder: number, initSelection: boolean){
+            this.selectionID = selectionID;
+            this.histId = histId;
+            this.code = code;
+            this.dispOrder = dispOrder;
+            this.initSelection = initSelection;
         }
     }
 }
