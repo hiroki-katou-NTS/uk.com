@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
@@ -156,7 +157,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	@Override
-	public List<Application> getBeforeApplication(String companyId, GeneralDate appDate, GeneralDate inputDate, int appType, int prePostAtr){
+	public List<Application> getBeforeApplication(String companyId, GeneralDate appDate, GeneralDateTime inputDate, int appType, int prePostAtr){
 		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KafdtApplication.class)
 				.setParameter("companyID", companyId)
 				.setParameter("appDate", appDate)

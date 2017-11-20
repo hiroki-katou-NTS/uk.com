@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -43,7 +44,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 				});
 			});
 		});
-		return new Application(companyId, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), GeneralDate.today(),
+		return new Application(companyId, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), GeneralDateTime.now(),
 				persionId, new AppReason(applicationReason), applicationDate, new AppReason(applicationReason),
 				ApplicationType.OVER_TIME_APPLICATION, applicantSID,
 				EnumAdaptor.valueOf(0, ReflectPlanScheReason.class), null,

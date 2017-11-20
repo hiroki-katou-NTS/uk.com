@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -155,7 +156,7 @@ public class ApplicationDto {
 		Application app = new Application(entity.getCompanyID(), 
 				entity.getApplicationID(), 
 				EnumAdaptor.valueOf(entity.getPrePostAtr(), PrePostAtr.class), 
-				entity.getInputDate() == null?null :GeneralDate.fromString(entity.getInputDate(), "yyyy/MM/dd"), 
+				entity.getInputDate() == null?null :GeneralDateTime.now(), 
 				entity.getEnteredPersonSID(), 
 				new AppReason(entity.getReversionReason()), 
 				entity.getApplicationDate() == null?null :GeneralDate.fromString(entity.getApplicationDate(), "yyyy/MM/dd"),   
