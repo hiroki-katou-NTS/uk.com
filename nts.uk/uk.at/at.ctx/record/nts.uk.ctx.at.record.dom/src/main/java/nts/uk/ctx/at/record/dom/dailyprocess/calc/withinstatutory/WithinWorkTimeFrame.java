@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
@@ -78,28 +79,75 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 		return this.timeSheet;
 	}
 	
-	
-	/**
-	 * 時間帯から遅刻早退時間を控除
-	 * @param workTime
-	 * @param goWorkTime
-	 * @param workNo
-	 * @param workTimeCommonSet
-	 * @param withinWorkTimeSheet
-	 * @param deductionTimeSheet
-	 * @param graceTimeSetting
-	 * @param workTimeCalcMethodDetailOfHoliday
-	 */
-	public void deductByLateLeaveEarly(
-			WorkTime workTime,
-			TimeWithDayAttr goWorkTime,
-			TimeWithDayAttr leaveWorkTime,
-			int workNo,
-			WorkTimeCommonSet workTimeCommonSet,
-			WithinWorkTimeSheet withinWorkTimeSheet,
-			DeductionTimeSheet deductionTimeSheet,
-			GraceTimeSetting graceTimeSetting,
-			WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday) {
+//	
+//	/**
+//	 * 時間帯から遅刻早退時間を控除
+//	 * @param workTime
+//	 * @param goWorkTime
+//	 * @param workNo
+//	 * @param workTimeCommonSet
+//	 * @param withinWorkTimeSheet
+//	 * @param deductionTimeSheet
+//	 * @param graceTimeSetting
+//	 * @param workTimeCalcMethodDetailOfHoliday
+//	 */
+//	public void deductByLateLeaveEarly(
+//			WorkTime workTime,
+//			TimeWithDayAttr goWorkTime,
+//			TimeWithDayAttr leaveWorkTime,
+//			int workNo,
+//			WorkTimeCommonSet workTimeCommonSet,
+//			WithinWorkTimeSheet withinWorkTimeSheet,
+//			DeductionTimeSheet deductionTimeSheet,
+//			GraceTimeSetting graceTimeSetting,
+//			WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday) {
+//
+//		//遅刻時間を計算する
+//		this.lateTimeSheet.set(LateTimeSheet.lateTimeCalc(
+//				this,
+//				workTime.getLateTimeCalcRange(goWorkTime, workNo),
+//				workTimeCommonSet,
+//				withinWorkTimeSheet.getlateDecisionClock(workNo),
+//				deductionTimeSheet));
+//		
+//		if (!this.lateTimeSheet.get().isLate()) {
+//			return;
+//		}
+//		
+//		int lateDeductTime = this.lateTimeSheet.get().getLateDeductionTime();
+//		
+//		//就業時間内時間帯から控除するか判断し控除する				
+//		if(workTimeCalcMethodDetailOfHoliday.deductsFromWithinWorkTimeSheet(lateDeductTime, graceTimeSetting)) {
+//			//遅刻時間帯の終了時刻を開始時刻にする
+//			this.timeSheet = this.lateTimeSheet.get().deductForm(this.timeSheet);
+//		}
+//		
+//		//this.deductByLate(graceTimeSetting, workTimeCalcMethodDetailOfHoliday);
+//
+//		
+//		//早退時間を計算する		
+//		this.leaveEarlyTimeSheet.set(LeaveEarlyTimeSheet.leaveEarlyTimeCalc(
+//				this, 
+//				workTime.getleaveEarlyTimeCalcRange(leaveWorkTime, workNo), 
+//				workTimeCommonSet, 
+//				withinWorkTimeSheet.getleaveEarlyDecisionClock(workNo), 
+//				deductionTimeSheet));
+//		
+//		if (!this.leaveEarlyTimeSheet.get().isLeaveEarly()) {
+//			return;
+//		}
+//		
+//		int leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().getLeaveEarlyDeductionTime();
+//		
+//		//就業時間内時間帯から控除するか判断し控除する				
+//		if(workTimeCalcMethodDetailOfHoliday.deductsFromWithinWorkTimeSheet(leaveEarlyDeductTime, graceTimeSetting)) {
+//			//早退時間帯の終了時刻を開始時刻にする
+//			this.timeSheet = this.lateTimeSheet.get().deductForm(this.timeSheet);
+//		}
+//		
+//		this.deductByLeaveEarly(graceTimeSetting, workTimeCalcMethodDetailOfHoliday);	
+//		
+//	}
 
 		//遅刻時間を計算する
 		this.lateTimeSheet.set(LateTimeSheet.lateTimeCalc(
@@ -109,6 +157,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 				withinWorkTimeSheet.getlateDecisionClock(workNo),
 				deductionTimeSheet));
 		
+		//遅刻していない場合and猶予時間を加算する場合はここで処理を抜ける
 		if (!this.lateTimeSheet.get().isLate()) {
 			return;
 		}
@@ -228,40 +277,40 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 		return ((CalculationTimeSheet)this).getTimeSheet().lengthAsMinutes();
 	}
 
-	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊↓高須
 	
-	/**
-	 * 計算範囲を判断（流動）　　流動時の就業時間内時間枠
-	 */
-	public void createWithinWorkTimeFrameForFluid(
-			AttendanceLeavingWork attendanceLeavingWork,
-			DailyWork dailyWork,
-			PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
-		TimeSpanForCalc timeSheet = new TimeSpanForCalc(
-				attendanceLeavingWork.getAttendance().getEngrave().getTimesOfDay(),
-				attendanceLeavingWork.getLeaveWork().getEngrave().getTimesOfDay());
-		this.correctTimeSheet(dailyWork, timeSheet, predetermineTimeSetForCalc);
-	}
-	
-	/**
-	 * 勤務の単位を基に時間帯の開始、終了を補正
-	 * @param dailyWork 1日の勤務
-	 */
-	public WithinWorkTimeFrame correctTimeSheet(
-			DailyWork dailyWork,
-			TimeSpanForCalc timeSheet,
-			PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
-		
-		//丸め設定を作成
-		Finally<TimeRoundingSetting> rounding = Finally.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN));
-		
-		if (dailyWork.getAttendanceHolidayAttr().isHalfDayWorking()) {
-			TimeSpanForCalc timeSheetForRounding = this.getHalfDayWorkingTimeSheetOf(dailyWork.getAttendanceHolidayAttr(),timeSheet,predetermineTimeSetForCalc);
-			TimeSpanWithRounding calcRange = new TimeSpanWithRounding(timeSheetForRounding.getStart(),timeSheetForRounding.getEnd(),rounding);
-			CalculationTimeSheet t = new CalculationTimeSheet(calcRange,timeSheetForRounding,Optional.empty());
-			return new WithinWorkTimeFrame(workingHoursTimeNo,timeSheet,t);
-		}
-	}
+//	/**
+//	 * 計算範囲を判断（流動）　　流動時の就業時間内時間枠
+//	 */
+//	public void createWithinWorkTimeFrameForFluid(
+//			AttendanceLeavingWork attendanceLeavingWork,
+//			DailyWork dailyWork,
+//			PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
+//		TimeSpanForCalc timeSheet = new TimeSpanForCalc(
+//				attendanceLeavingWork.getAttendance().getEngrave().getTimesOfDay(),
+//				attendanceLeavingWork.getLeaveWork().getEngrave().getTimesOfDay());
+//		this.correctTimeSheet(dailyWork, timeSheet, predetermineTimeSetForCalc);
+//	}
+//	
+//	/**
+//	 * 勤務の単位を基に時間帯の開始、終了を補正
+//	 * @param dailyWork 1日の勤務
+//	 */
+//	public WithinWorkTimeFrame correctTimeSheet(
+//			DailyWork dailyWork,
+//			TimeSpanForCalc timeSheet,
+//			PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
+//		
+//		//丸め設定を作成
+//		Finally<TimeRoundingSetting> rounding = Finally.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN));
+//		
+//		if (dailyWork.getAttendanceHolidayAttr().isHalfDayWorking()) {
+//			TimeSpanForCalc timeSheetForRounding = this.getHalfDayWorkingTimeSheetOf(dailyWork.getAttendanceHolidayAttr(),timeSheet,predetermineTimeSetForCalc);
+//			TimeSpanWithRounding calcRange = new TimeSpanWithRounding(timeSheetForRounding.getStart(),timeSheetForRounding.getEnd(),rounding);
+//			CalculationTimeSheet t = new CalculationTimeSheet(calcRange,timeSheetForRounding,Optional.empty());
+//			return new WithinWorkTimeFrame(workingHoursTimeNo,timeSheet,t);
+//		}
+//	}
 
 	/**
 	 * 午前出勤、午後出勤の判定
@@ -281,6 +330,20 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 			throw new RuntimeException("半日専用のメソッドです: " + attr);
 		}
 	}
-
+	
+	
+	/**
+	 * 控除時間中の時間休暇相殺時間の計算
+	 * @return
+	 */
+	public DeductionOffSetTime calcTotalDeductionOffSetTime() {
 		
+		//2017/10/13はここからスタート
+		
+		
+	}
+	
+	
+	
+			
 }

@@ -31,7 +31,7 @@ public enum AutoCalculationCategoryOutsideHours {
 	 * タイムレコーダーで選択するであるか判定する
 	 * @return　タイムレコーダーで選択する
 	 */
-	public boolean SelectTimeRecorder() {
+	public boolean isSelectTimeRecorder() {
 		return SelectTimeRecorder.equals(this);
 	}
 }

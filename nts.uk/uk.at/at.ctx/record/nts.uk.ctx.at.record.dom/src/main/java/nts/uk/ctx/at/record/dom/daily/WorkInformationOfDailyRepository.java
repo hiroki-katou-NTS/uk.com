@@ -6,5 +6,5 @@ import nts.arc.time.GeneralDate;
 
 public interface WorkInformationOfDailyRepository {
 
-	Optional<WorkInformationOfDaily> find(String employeeId, GeneralDate date);
+	Optional<WorkInformationOfDaily> find(String companyId,String employeeId, GeneralDate date);
 }

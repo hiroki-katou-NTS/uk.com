@@ -1,9 +1,14 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import lombok.Value;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
+import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -16,16 +21,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Value
 public class FlexWithinWorkTimeSheet {
 	private TimeSpanForCalc coreTimeSheet;
-	
-	/**
-	 * 控除する時間の計算
-	 */
-	public void calcdeductTime(){
-		AttendanceTime forHolidayTime = calcHolidayDeductionTime(workType);
-		AttendanceTime forCompensatoryLeaveTime = calcSubstituteHoliday(workType);
-	}
-	
-	
 	
 	/**
 	 * 休日控除時間の計算
@@ -62,46 +57,66 @@ public class FlexWithinWorkTimeSheet {
 	/**
 	 * フレックス時間の計算
 	 */
-	public int calcFlexTime() {
+	public int calcFlexTime(HolidayCalcMethodSet holidayCalcMethodSet,AutoCalculationCategoryOutsideHours autoCalcAtr) {
 		/*法定労働時間の算出*/
-		int houtei = calcStatutoryTime();
+		StatutoryWorkingTime houtei = calcStatutoryTime();
 		/*実働時間の算出*/
-		int zitudou = calcWorkTime(PremiumAtr);
+		int zitudou = calcWorkTime(PremiumAtr.RegularWork);
 		/*実働時間の算出(割増時間含む)*/
-		int zitudouIncludePremium = calcWorkTime(PremiumAtr);
+		int zitudouIncludePremium = calcWorkTime(PremiumAtr.Premium);
 		
 		int flexTime = 0;
-		if(/*不足時に加算する*/) {
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
+				&& !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()) {
 			/*フレックス時間算出*/
-			flexTime = houtei - zitudou;
+			flexTime = houtei.getForActualWorkTime().valueAsMinutes() - zitudou;
 			if(flexTime < 0) {
-				flexTime = zitudouIncludePremium - houtei;
+				flexTime = houtei.getForWorkTimeIncludePremium().valueAsMinutes() - zitudouIncludePremium;
+				flexTime = (flexTime > 0)? 0:flexTime;
 				/*不足しているフレックス時間*/
 				int husokuZiKasanZikan = zitudouIncludePremium - zitudou;
 			}
 		}
-		else if(加算しない) {
-			flexTime = houtei - zitudou;
+		else if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
+				&& !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()) {
+			flexTime = houtei.getForActualWorkTime().valueAsMinutes() - zitudou;
 		}
-		else if(加算する) {
+		else if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
+				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()) {
 			/*不足しているフレックス時間*/
 			int husokuZiKasanZikan = zitudouIncludePremium - zitudou;
 		}
 		else {
-			throw new RuntimeException("unknown calcAtr" + ??);
+			throw new RuntimeException("A combination that can not be selected is selected");
 		}
 		
-		if(/*計算区分が計算しない*/ && flexTime > 0) {
+		if(autoCalcAtr.isCalculateEmbossing() && flexTime > 0) {
 			flexTime = 0;
 		}
-		return flexTime = 0;
+		return flexTime;
 	}
 	
 	/**
-	 * 法定労働時間から控除
+	 * 法定労働時間から控除(フレックス用)
 	 * @return
 	 */
-	public int calcStatutoryTime() {
+	public StatutoryWorkingTime calcStatutoryTime(WorkType workType,SettingOfFlexWork flexCalcMethod,DailyCalculationPersonalInformation personalInfor) {
+		StatutoryDeductionForFlex deductionTime = calcdeductTime(workType,flexCalcMethod);
+		return new StatutoryWorkingTime( new AttendanceTime(personalInfor.getStatutoryWorkingTime().getPredetermineWorkingTime().valueAsMinutes() - deductionTime.getForActualWork().valueAsMinutes()) 
+										,new AttendanceTime(personalInfor.getStatutoryWorkingTime().getPredetermineWorkingTime().valueAsMinutes() - deductionTime.getForPremium().valueAsMinutes()));
+	}
+	/**
+	 * 控除する時間の計算
+	 */
+	public StatutoryDeductionForFlex calcdeductTime(WorkType workType,SettingOfFlexWork flexCalcMethod){
+		/*休日控除時間の計算*/
+		AttendanceTime forHolidayTime = calcHolidayDeductionTime(workType);
+		/*代休控除時間の計算*/
+		AttendanceTime forCompensatoryLeaveTime = calcSubstituteHoliday(workType);
 		
+		DeductionTime deductionTime = new DeductionTime(forHolidayTime,forCompensatoryLeaveTime);
+		
+		return new StatutoryDeductionForFlex(deductionTime.forLackCalcPredetermineDeduction(flexCalcMethod.getFlexCalcMethod())
+											,deductionTime.forPremiumCalcPredetermineDeduction(flexCalcMethod.getFlexCalcMethod()));
 	}
 }

@@ -3,11 +3,11 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
 import lombok.Value;
 
 /**
- * 休暇の就業時間計算方法
- * @author ken_takasu
+ * 休暇の割増計算方法
+ * @author keisuke_hoshina
  *
  */
 @Value
-public class WorkTimeCalcMethodOfHoliday {
+public class PremiumCalcMethodOfHoliday {
 	private CalculationByActualTimeAtr calculationByActualTime;
 }
