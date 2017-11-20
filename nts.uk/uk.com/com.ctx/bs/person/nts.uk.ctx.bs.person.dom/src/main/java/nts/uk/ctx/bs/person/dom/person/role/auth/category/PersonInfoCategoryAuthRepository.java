@@ -23,6 +23,6 @@ public interface PersonInfoCategoryAuthRepository {
 
 	List<PersonInfoCategoryDetail> getAllCategoryByRoleId(String roleId);
 
-	List<PersonInfoCategoryDetail> getAllCategoryByCtgIdList(String contractCd, List<String> perInfoCtgIdlst);
-	
+	List<PersonInfoCategoryDetail> getAllCategoryByCtgIdList(String companyId, List<String> perInfoCtgIdlst);
+
 }

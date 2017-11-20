@@ -25,7 +25,9 @@ public class EmpCopySettingFinder {
 	PersonInfoCategoryAuthRepository PerInfoCtgRepo;
 
 	public List<SettingCtgDto> getEmpCopySetting() {
-		List<EmpCopySetting> copyList = this.empCopyRepo.find(AppContexts.user().companyId());
+
+		String companyId = AppContexts.user().companyId();
+		List<EmpCopySetting> copyList = this.empCopyRepo.find(companyId);
 
 		if (copyList.isEmpty()) {
 
@@ -38,10 +40,9 @@ public class EmpCopySettingFinder {
 
 		copyList.stream().forEach(i -> categoryList.add(i.getCategoryId()));
 
-		return this.PerInfoCtgRepo.getAllCategoryByCtgIdList(AppContexts.user().contractCode(), categoryList).stream()
-				.map(p -> {
-					return new SettingCtgDto(p.getCategoryCode(), p.getCategoryName());
-				}).collect(Collectors.toList());
+		return this.PerInfoCtgRepo.getAllCategoryByCtgIdList(companyId, categoryList).stream().map(p -> {
+			return new SettingCtgDto(p.getCategoryCode(), p.getCategoryName());
+		}).collect(Collectors.toList());
 
 	}
 }
