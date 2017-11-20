@@ -60,7 +60,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class GetOvertime {
+public class AppOvertimeFinder {
 	final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject

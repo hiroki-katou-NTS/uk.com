@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
 
 @Stateless
-public class OvertimeInputImpl extends JpaRepository implements OvertimeInputRepository {
+public class JpaOvertimeInputRepository extends JpaRepository implements OvertimeInputRepository {
 	private static final String FIND_ALL ="SELECT e FROM KrqdtOvertimeInput e";
 	private static final String FIND_BY_APPID;
 	private static final String FIND_BY_APPID_AND_ATTENDANCEID;

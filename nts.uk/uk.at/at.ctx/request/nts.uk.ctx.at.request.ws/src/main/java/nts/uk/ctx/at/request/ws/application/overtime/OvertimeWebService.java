@@ -11,17 +11,17 @@ import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegiste
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
-import nts.uk.ctx.at.request.app.find.overtime.GetOvertime;
-import nts.uk.ctx.at.request.app.find.overtime.ParamChangeAppDate;
 
 @Path("at/request/application/overtime")
 @Produces("application/json")
 public class OvertimeWebService extends WebService{
 
 	@Inject
-	private GetOvertime overtimeFinder;
+	private AppOvertimeFinder overtimeFinder;
 	@Inject
 	private CreateOvertimeCommandHandler createHandler;
 	@Inject

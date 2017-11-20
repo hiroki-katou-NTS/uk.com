@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.ReasonTypeItem
 import nts.uk.ctx.at.request.infra.entity.setting.company.divergencereason.KrqstAppDivergenReason;
 
 @Stateless
-public class DivergenceReasonImpl extends JpaRepository implements DivergenceReasonRepository {
+public class JpaDivergenceReasonRepo extends JpaRepository implements DivergenceReasonRepository {
 	private static final String FINDER_ALL ="SELECT e FROM KrqstAppDivergenReason e";
 	private final String PLEASE ="選択してください";
 	

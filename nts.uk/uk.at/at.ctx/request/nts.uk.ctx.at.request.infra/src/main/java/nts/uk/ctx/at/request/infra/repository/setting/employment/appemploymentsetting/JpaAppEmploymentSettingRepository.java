@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsettin
 import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqstAppEmploymentSet;
 
 @Stateless
-public class AppEmploymentSettingImpl extends JpaRepository implements AppEmploymentSettingRepository {
+public class JpaAppEmploymentSettingRepository extends JpaRepository implements AppEmploymentSettingRepository {
 	private static final String FINDER_ALL ="SELECT e FROM KrqdtAppEmployWorktype e";
 	private static final String FIND_EMPLOYMENT_SET = "SELECT c FROM KrqstAppEmploymentSet c "
 			+ "WHERE c.krqstAppEmploymentSetPK.cid = :companyId "
