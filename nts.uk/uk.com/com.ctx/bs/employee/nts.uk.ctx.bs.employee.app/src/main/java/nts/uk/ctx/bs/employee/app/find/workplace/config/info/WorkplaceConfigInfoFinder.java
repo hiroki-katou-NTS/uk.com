@@ -7,7 +7,10 @@ package nts.uk.ctx.bs.employee.app.find.workplace.config.info;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -119,24 +122,24 @@ public class WorkplaceConfigInfoFinder {
 		
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getLstWkpHierarchy();
+		
+		// get list workplace id
+		List<String> lstWkpId = lstHierarchy.stream()
+				.map(item -> item.getWorkplaceId())
+				.collect(Collectors.toList());
+		
+		// find list workplace infor
+		Map<String, WorkplaceInfo> mapWkpInfor = this.wkpInfoRepo.findByWkpIds(companyId, lstWkpId).stream()
+				.collect(Collectors.toMap(item -> item.getHistoryId(), Function.identity()));
+		
+		// find list workplace
+		List<Workplace> lstWorkplace = this.wkpRepo.findByWkpIds(lstWkpId);
+		
+		// filter workplace infor latest
 		List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();
-		lstHierarchy.forEach(item -> {
-			Optional<Workplace> opWorkplace = this.wkpRepo.findByWorkplaceId(companyId,
-					item.getWorkplaceId());
-			if (!opWorkplace.isPresent()) {
-				throw new RuntimeException(
-						String.format("Workplace %s didn't exist.", item.getWorkplaceId()));
-			}
-			Workplace workplace = opWorkplace.get();
-			Optional<WorkplaceInfo> opWkpInfor = this.wkpInfoRepo.find(companyId,
-					item.getWorkplaceId(), workplace.getWkpHistoryLatest().identifier());
-			if (!opWkpInfor.isPresent()) {
-				throw new RuntimeException(String.format("Workplace Infor %s didn't exist.",
-						workplace.getWkpHistoryLatest().identifier()));
-			}
-			lstWkpInfo.add(opWkpInfor.get());
+		lstWorkplace.forEach(item -> {
+			lstWkpInfo.add(mapWkpInfor.get(item.getWkpHistoryLatest().identifier()));
 		});
-
 		return this.createTree(lstHierarchy.iterator(), lstWkpInfo, new ArrayList<>());
 	}
 

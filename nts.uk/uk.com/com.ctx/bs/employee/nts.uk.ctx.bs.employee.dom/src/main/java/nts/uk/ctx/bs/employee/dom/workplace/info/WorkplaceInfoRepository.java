@@ -91,4 +91,13 @@ public interface WorkplaceInfoRepository {
 	 */
 	List<WorkplaceInfo> getByWkpIds(List<String> wkpIds, GeneralDate baseDate);
 	
+	/**
+	 * Find by wkp ids.
+	 *
+	 * @param companyId the company id
+	 * @param wkpIds the wkp ids
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByWkpIds(String companyId, List<String> wkpIds);
+	
 }

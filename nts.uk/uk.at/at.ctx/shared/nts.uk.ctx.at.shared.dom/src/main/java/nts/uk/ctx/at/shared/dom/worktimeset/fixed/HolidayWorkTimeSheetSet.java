@@ -12,7 +12,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 // 休出時間の時間帯設定
 @Getter
-public class BreakTimezoneSet extends DomainObject {
+public class HolidayWorkTimeSheetSet extends DomainObject {
 	// TODO 時間帯
 	// private timezone;
 

@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -359,6 +360,9 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	 */
 	@Override
 	public List<AffWorkplaceHistory> getByWorkplaceIDs(List<String> workplaceIds, GeneralDate baseDate) {
+		if (CollectionUtil.isEmpty(workplaceIds)) {
+			return Collections.emptyList();
+		}
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
