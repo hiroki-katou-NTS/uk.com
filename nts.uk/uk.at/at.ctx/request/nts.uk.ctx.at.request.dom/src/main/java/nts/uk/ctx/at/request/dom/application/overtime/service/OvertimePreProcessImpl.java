@@ -229,15 +229,16 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 			if(sWkpHistImport != null){
 				wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
+			
+			List<BonusPayTimeItem>  bonusPayTimeItems = this.bPTimeItemRepository.getListBonusPayTimeItemInUse(companyID);
+			for(BonusPayTimeItem bonusItem : bonusPayTimeItems){
+				result.add(bonusItem);
+			}
 			if(wpSpecificDateSettingImport.getNumberList() != null){
 				List<BonusPayTimeItem> bonusPayTimeItemSpecs = this.bPTimeItemRepository.getListSpecialBonusPayTimeItemInUse(companyID);
 				for(BonusPayTimeItem bonusItem : bonusPayTimeItemSpecs){
 					result.add(bonusItem);
 				}
-			}
-			List<BonusPayTimeItem>  bonusPayTimeItems = this.bPTimeItemRepository.getListBonusPayTimeItemInUse(companyID);
-			for(BonusPayTimeItem bonusItem : bonusPayTimeItems){
-				result.add(bonusItem);
 			}
 		}
 		return result;
