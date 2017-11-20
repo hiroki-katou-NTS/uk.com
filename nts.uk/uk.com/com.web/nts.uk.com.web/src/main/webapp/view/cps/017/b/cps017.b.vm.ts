@@ -16,6 +16,7 @@ module nts.uk.com.view.cps017.b.viewmodel {
 
         //開始
         start(): JQueryPromise<any> {
+            block.invisible();
             let self = this,
             selectedHisId = getShared('selectedHisId');//get histId ben screen A
             let dfd = $.Deferred();
@@ -43,10 +44,9 @@ module nts.uk.com.view.cps017.b.viewmodel {
                         i++;
                     });
                 }
-//                $("#item_register_grid2").igGridSelection("selectRowById",self.listSelection()[0]);
                 dfd.resolve();
-            }).fail(error => {
-                alertError({ messageId: "Msg_455" });
+            }).always(() => {
+                block.clear();
             });
 
             return dfd.promise();
@@ -55,15 +55,12 @@ module nts.uk.com.view.cps017.b.viewmodel {
          * register
          */
         register(){
+            block.invisible();
             let self = this;
             if(self.currentSelectedId() == ''){//khong item nao duoc chon
+                block.clear();
                 return;
             }
-//            let row = $("#item_register_grid2").igGridSelection("selectedRow");
-//            if(row == null || row == undefined){
-//                return;
-//            }
-//            let itemSeleted: ISelection = self.findItemSelected(row.id);
             let lstData: Array<SelOrder> = [];
             _.each(self.listSelection(), function(item, index){
                 lstData.push(new SelOrder(item.selectionID, item.histId, item.selectionCD, index+1, item.selectionID == self.currentSelectedId() ? true : false));
@@ -73,7 +70,7 @@ module nts.uk.com.view.cps017.b.viewmodel {
                 //情報メッセージ（#Msg_15）を表示する (Hiển thị InfoMessage Msg_15)
                 info({ messageId: "Msg_15" }).then(function() {
                     //close dialog
-//                    close();
+                    close();
                 });
             }).always(() => {
                 block.clear();

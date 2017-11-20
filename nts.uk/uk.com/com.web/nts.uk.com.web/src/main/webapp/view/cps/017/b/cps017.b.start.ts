@@ -12,7 +12,6 @@ function checkBox() {
     var previousId = "";
     var columnSettings = [
         { headerText: '', key: 'selectionID', hidden: true },
-        { headerText: '', key: 'id', width: '20px;' },
         {
             headerText: nts.uk.resource.getText('CPS017_18'), key: 'initSelection',
             template: "<input style='width:30px, height:40px' class='checkRow initSelection' type='checkbox'"
@@ -30,21 +29,19 @@ function checkBox() {
         autoGenerateColumns: false,
         columns: columnSettings,
         width: "370px",
-        height: "270px",
+        height: "265px",
+        autoGenerateRows: true,
         features: [{
             name: 'Selection',
             mode: 'row',
             activation: false,
-        },
+            }, 
+            {
+                name: "RowSelectors"
+            },
             {
                 name: "Updating",
                 columnSettings: [
-                    {
-                        columnKey : "id",
-                        readOnly: true,
-                        required: true,
-                        validation: true
-                    },
                     {
                         columnKey : "initSelection",
                         readOnly: true,
@@ -79,6 +76,7 @@ function checkBox() {
         }
 
     });
+    $("#item_register_grid2").igGridSelection("selectRow", 0);
     $("#item_register_grid2").closest('.ui-iggrid').addClass('nts-gridlist');
     //su kien khi click vao o check box
     $('#item_register_grid2').on("click", ".checkRow.initSelection", function(evt, ui) {
