@@ -72,9 +72,7 @@ public class EmployeeInDesignatedFinder {
 		// List Output
 		List<EmployeeSearchOutput> outputData = new ArrayList<>();
 
-		// EmployeeInDesignatedDto
-		// Workplace Id List (Input), get Employees In Designated (Employee
-		// with Status)
+		// Workplace Id List (Input), get Employees In Designated (Employee with Status)
 		List<EmployeeInDesignatedDto> empListInDesignated = this.getEmpInDesignated(input.getWorkplaceIdList(),
 				input.getReferenceDate(), input.getEmpStatus());
 		
@@ -173,7 +171,8 @@ public class EmployeeInDesignatedFinder {
 		List<EmploymentStatusDto> employmentStatus =  this.getStatusOfEmployments(empIdList,
 				referenceDate);
 		
-		Map<String, EmploymentStatusDto> empStatusMap = employmentStatus.stream().collect(Collectors.toMap(EmploymentStatusDto::getEmployeeId, Function.identity()));
+		Map<String, EmploymentStatusDto> empStatusMap = employmentStatus.stream()
+				.collect(Collectors.toMap(EmploymentStatusDto::getEmployeeId, Function.identity()));
 		
 		return empIdList.stream().map(empId -> {
 			// Initialize EmployeeInDesignatedDto
