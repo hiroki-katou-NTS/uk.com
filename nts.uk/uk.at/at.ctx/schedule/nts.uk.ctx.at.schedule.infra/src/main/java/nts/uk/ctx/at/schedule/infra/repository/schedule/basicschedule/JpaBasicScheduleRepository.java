@@ -25,6 +25,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCare;
@@ -33,9 +34,12 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcaresched
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
+import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.workscheduletimezone.JpaWorkScheduleTimeZoneSetMemento;
 
 /**
  * The Class JpaBasicScheduleRepository.
@@ -54,11 +58,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	public void insert(BasicSchedule bSchedule) {
 		KscdtBasicSchedule x = toEntity(bSchedule);
 		this.commandProxy().insert(x);
-		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(),
-				bSchedule.getChildCareSchedules());
+		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
+		this.insertAllWorkScheduleTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate(),
+				bSchedule.getWorkScheduleTimeZones());
 	}
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -69,8 +73,30 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	@Override
 	public void update(BasicSchedule bSchedule) {
 		this.commandProxy().update(this.toEntityUpdate(bSchedule));
+		this.commandProxy().updateAll(this.updateWorkScheduleTimeZone(bSchedule));
 	}
-	
+	/**
+	 * update work schedule time zone
+	 * @param bSchedule
+	 * @return
+	 */
+	private List<KscdtWorkScheduleTimeZone> updateWorkScheduleTimeZone(BasicSchedule bSchedule) {
+		List<WorkScheduleTimeZone> scheduleTimeZones = bSchedule.getWorkScheduleTimeZones();
+		List<KscdtWorkScheduleTimeZone> entities = new ArrayList<KscdtWorkScheduleTimeZone>();
+		scheduleTimeZones.forEach(schedule -> {
+			KscdtWorkScheduleTimeZone entity = new KscdtWorkScheduleTimeZone();
+			String employeeId = bSchedule.getEmployeeId();
+			GeneralDate date = bSchedule.getDate();
+			Optional<KscdtWorkScheduleTimeZone> optionalEntity = this.findWorkScheduleTimeZone(employeeId, date,
+					schedule.getScheduleCnt());
+			if (optionalEntity.isPresent()) {
+				entity = optionalEntity.get();
+			}
+			schedule.saveToMemento(new JpaWorkScheduleTimeZoneSetMemento(entity, employeeId, date));
+			entities.add(entity);
+		});
+		return entities;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -289,5 +315,23 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 	}
 
-
+	/**
+	 * insert list workscheduletime zone
+	 * 
+	 * @param employeeId
+	 * @param baseDate
+	 * @param list
+	 */
+	private void insertAllWorkScheduleTimeZone(String employeeId, GeneralDate baseDate,
+			List<WorkScheduleTimeZone> list) {
+		if (CollectionUtil.isEmpty(list)) {
+			return;
+		}
+		List<KscdtWorkScheduleTimeZone> entityWorkTimeZone = list.stream().map(domain -> {
+			KscdtWorkScheduleTimeZone entity = new KscdtWorkScheduleTimeZone();
+			domain.saveToMemento(new JpaWorkScheduleTimeZoneSetMemento(entity, employeeId, baseDate));
+			return entity;
+		}).collect(Collectors.toList());
+		this.commandProxy().insertAll(entityWorkTimeZone);
+	}
 }
