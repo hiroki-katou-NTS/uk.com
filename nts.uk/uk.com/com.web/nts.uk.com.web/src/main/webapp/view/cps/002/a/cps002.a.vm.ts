@@ -297,7 +297,7 @@ module cps002.a.vm {
                 command = {
                     createType: self.createTypeId(),
 
-                    initSettingId: self.initSettingSelectedCode(),
+                    initSettingId: self.currentInitSetting().itemId,
 
                     baseDate: self.currentEmployee().hireDate(),
 
@@ -310,25 +310,28 @@ module cps002.a.vm {
 
 
             service.getLayoutByCreateType(command).done((x: ILayout) => {
-                layout.id(x.id);
-                layout.code(x.code);
-                layout.name(x.name);
+                if (x) {
+                    layout.id(x.id);
+                    layout.code(x.code);
+                    layout.name(x.name);
 
-                // remove all sibling sperators
-                let maps = _(x.itemsClassification)
-                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
-                    .filter(x => x != -1).value();
+                    // remove all sibling sperators
+                    let maps = _(x.itemsClassification)
+                        .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                        .filter(x => x != -1).value();
 
-                _.each(maps, (t, i) => {
-                    if (maps[i + 1] == t + 1) {
-                        _.remove(x.itemsClassification, (m: IItemClassification) => {
-                            let item: IItemClassification = ko.unwrap(x.itemsClassification)[maps[i + 1]];
-                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
-                        });
-                    }
-                });
+                    _.each(maps, (t, i) => {
+                        if (maps[i + 1] == t + 1) {
+                            _.remove(x.itemsClassification, (m: IItemClassification) => {
+                                let item: IItemClassification = ko.unwrap(x.itemsClassification)[maps[i + 1]];
+                                return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                            });
+                        }
+                    });
 
-                layout.itemsClassification(x.itemsClassification);
+                    layout.itemsClassification(x.itemsClassification);
+                }
+
             });
 
 
@@ -464,7 +467,7 @@ module cps002.a.vm {
                 itemDataList = _(ko.toJS(self.layout).itemsClassification).map(x => x.items).flatten().flatten().value(),
                 command = {
                     employeeCopyId: self.copyEmployee().employeeId,
-                    InitSettingId: self.currentInitSetting(),
+                    InitSettingId: self.currentInitSetting().itemId,
                     employeeName: self.currentEmployee().employeeName(),
                     employeeCode: self.currentEmployee().employeeCode(),
                     hireDate: self.currentEmployee().hireDate(),
