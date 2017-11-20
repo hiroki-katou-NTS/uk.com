@@ -5,18 +5,20 @@
 package nts.uk.ctx.sys.auth.infra.repository.grant;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrantPK;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndividualGrantRepository {
@@ -24,6 +26,9 @@ public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndivid
 	private final String SELECT_BY_ROLE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrantPK.roleType = roleType";
 
 	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrant.      ";
+	
+	private final String SELECT_BY_ROLE_ID ="SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId ";
+	
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType) {
 		// TODO Auto-generated method stub
@@ -83,6 +88,16 @@ public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndivid
 				entity.sacmtRoleIndiviGrantPK.roleType.intValue(),
 				entity.strD, 
 				entity.endD);
+	}
+
+	@Override
+	public List<RoleIndividualGrant> findByRoleId(String roleId) {		
+		List<RoleIndividualGrant>  result = new ArrayList<RoleIndividualGrant>();		
+		List<SacmtRoleIndiviGrant> entities =  this.queryProxy().query(SELECT_BY_ROLE_ID, SacmtRoleIndiviGrant.class).setParameter("roleId", roleId).getList();
+		if(entities != null && !entities.isEmpty()){
+			result =entities.stream().map( e -> toDomain(e)).collect(Collectors.toList());
+		}
+		return result;
 	}
     
 	

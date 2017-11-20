@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.grant;
 
+import java.util.List;
 import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
@@ -52,5 +54,11 @@ public interface RoleIndividualGrantRepository {
 	 */
 	void remove (String userId, String companyId , RoleType roleType);
 	
-	
+	/**
+	 * find by role id
+	 * 
+	 * @param roleId
+	 * @return
+	 */
+	List<RoleIndividualGrant> findByRoleId(String roleId);
 }
