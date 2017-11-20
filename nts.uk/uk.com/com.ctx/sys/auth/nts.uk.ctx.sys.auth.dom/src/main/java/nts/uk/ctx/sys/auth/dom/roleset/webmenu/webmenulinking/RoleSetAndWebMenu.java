@@ -5,7 +5,7 @@
 package nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking;
 
 /**
- * ロールセット別�?付�?� - Class RoleSetAndWenMenu
+ * ロールセット別紐付け- Class RoleSetAndWenMenu
  * @author HieuNV
  */
 @lombok.Value
