@@ -1338,8 +1338,8 @@ module nts.uk.at.view.kmk002.a {
             amountUnitDs: EnumConstantDto[];
             amountRoundingDs: EnumConstantDto[];
             timeUnitDs: EnumConstantDto[];
-            timeRoundingDailyDs: KnockoutObservableArray<EnumConstantDto>;
-            timeRoundingMonthlyDs: KnockoutObservableArray<EnumConstantDto>;
+            timeRoundingDailyDs: KnockoutComputed<Array<EnumConstantDto>>;
+            timeRoundingMonthlyDs: KnockoutComputed<Array<EnumConstantDto>>;
             timeRoundingFullDs: EnumConstantDto[];
             timeRoundingFilterdDs: EnumConstantDto[];
 
@@ -1402,12 +1402,48 @@ module nts.uk.at.view.kmk002.a {
                 self.timeRoundingFullDs = Enums.ENUM_OPT_ITEM.timeRounding.rounding;
                 self.timeRoundingFilterdDs = self.timeRoundingFullDs
                     .filter(item => item.fieldName != "ROUNDING_DOWN_OVER");
-                self.timeRoundingDailyDs = ko.observableArray(self.timeRoundingFullDs);
-                self.timeRoundingMonthlyDs = ko.observableArray(self.timeRoundingFullDs);
                 self.amountUnitDs = Enums.ENUM_OPT_ITEM.amountRounding.unit;
                 self.amountRoundingDs = Enums.ENUM_OPT_ITEM.amountRounding.rounding;
                 self.numberUnitDs = Enums.ENUM_OPT_ITEM.numberRounding.unit;
                 self.numberRoundingDs = Enums.ENUM_OPT_ITEM.numberRounding.rounding;
+
+                self.timeRoundingMonthlyDs = ko.computed(() => {
+                    if (self.isTimeUnit15or30(self.timeMonthlyUnit())) {
+                        // save new value to stash
+                        self.timeMonthlyUnitStash = self.timeMonthlyUnit();
+
+                        // show full data source
+                        return self.timeRoundingFullDs;
+
+                    } else {
+                        // save new value to stash
+                        self.timeMonthlyUnitStash = self.timeMonthlyUnit();
+
+                        // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
+                        // from data source list
+                        return self.timeRoundingFilterdDs;
+
+                    }
+                });
+
+                self.timeRoundingDailyDs = ko.computed(() => {
+                    if (self.isTimeUnit15or30(self.timeDailyUnit())) {
+                        // save new value to stash
+                        self.timeDailyUnitStash = self.timeDailyUnit();
+
+                        // show full data source
+                        return self.timeRoundingFullDs;
+
+                    } else {
+                        // save new value to stash
+                        self.timeDailyUnitStash = self.timeDailyUnit();
+
+                        // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
+                        // from data source list
+                        return self.timeRoundingFilterdDs;
+
+                    }
+                });
             }
 
             /**
@@ -1494,46 +1530,6 @@ module nts.uk.at.view.kmk002.a {
                             // get old value from stash
                             self.calcAtr(self.calcAtrStash);
                         });
-                    }
-                });
-
-                // event on selected time monthly unit changed
-                self.timeMonthlyUnit.subscribe(v => {
-                    if (self.isTimeUnit15or30(v)) {
-
-                        // show full data source
-                        self.timeRoundingMonthlyDs(self.timeRoundingFullDs);
-
-                        // save new value to stash
-                        self.timeMonthlyUnitStash = v;
-                    } else {
-
-                        // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
-                        // from data source list
-                        self.timeRoundingMonthlyDs(self.timeRoundingFilterdDs);
-
-                        // save new value to stash
-                        self.timeMonthlyUnitStash = v;
-                    }
-                });
-
-                // event on selected time daily unit changed
-                self.timeDailyUnit.subscribe(v => {
-                    if (self.isTimeUnit15or30(v)) {
-
-                        // show full data source
-                        self.timeRoundingDailyDs(self.timeRoundingFullDs);
-
-                        // save new value to stash
-                        self.timeDailyUnitStash = v;
-                    } else {
-
-                        // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
-                        // from data source list
-                        self.timeRoundingDailyDs(self.timeRoundingFilterdDs);
-
-                        // save new value to stash
-                        self.timeDailyUnitStash = v;
                     }
                 });
 
