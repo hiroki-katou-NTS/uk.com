@@ -701,7 +701,23 @@ module nts.uk.at.view.kml002.a.viewmodel {
          */
         upBtn() {
             var self = this;
+            var prevIdx = -1;
+            var $scope = _.clone(self.calculatorItems());
             
+            var multiRowSelected = _.filter($scope, function(item:CalculatorItem) {
+                return item.isChecked();    
+            });
+            
+            _.forEach(multiRowSelected, function(item) {
+                var idx = _.findIndex($scope, function(o:CalculatorItem) { return o.itemCd() == item.itemCd(); });
+                if (idx-1 === prevIdx) {
+                    prevIdx = idx
+                } else if (idx > 0) {
+                    var itemToMove = $scope.splice(idx, 1)
+                    $scope.splice(idx-1, 0, itemToMove[0]);
+                }
+            });
+            self.calculatorItems($scope);
         }
         
         /**
@@ -709,7 +725,24 @@ module nts.uk.at.view.kml002.a.viewmodel {
          */
         downBtn() {
             var self = this;
-            
+            var $scope = _.clone(self.calculatorItems());
+            var prevIdx = $scope.length;
+            var multiRowSelected = _.filter($scope, function(item:CalculatorItem) {
+                return item.isChecked();    
+            });
+            var revPerson = multiRowSelected.concat();
+            revPerson.reverse();
+            for(var i = 0; i < revPerson.length; i++) {
+                var item = revPerson[i];
+                var idx = _.findIndex($scope, function(o:CalculatorItem) { return o.itemCd() == item.itemCd(); });
+                if (idx + 1 === prevIdx) {
+                    prevIdx = idx
+                } else if (idx < $scope.length - 1) {
+                    var itemToMove = $scope.splice(idx, 1)
+                    $scope.splice(idx + 1, 0, itemToMove[0]);
+                }
+            }
+            self.calculatorItems($scope);
         }
         
         /**
