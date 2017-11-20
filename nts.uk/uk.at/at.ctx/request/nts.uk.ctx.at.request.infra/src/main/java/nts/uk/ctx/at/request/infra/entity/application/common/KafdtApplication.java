@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -56,7 +57,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	 * 入力日
 	 */
 	@Column(name="INPUT_DATE")
-	public GeneralDate inputDate; 
+	public GeneralDateTime inputDate; 
 	
 	/**
 	 * 入力者
