@@ -12,6 +12,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.pred.PredCommand;
+import nts.uk.ctx.at.shared.app.command.pred.PredCommandHandler;
 import nts.uk.ctx.at.shared.app.find.pred.PredFinder;
 import nts.uk.ctx.at.shared.app.find.pred.dto.PredDto;
 
@@ -24,18 +26,29 @@ import nts.uk.ctx.at.shared.app.find.pred.dto.PredDto;
 public class PredTimeSetWebService extends WebService {
 
 	/** The pred finder. */
-	@Inject 
+	@Inject
 	private PredFinder predFinder;
-	
+
+	@Inject
+	private PredCommandHandler predCommandHandler;
+
 	/**
 	 * Find by code.
 	 *
-	 * @param workTimeCode the work time code
+	 * @param workTimeCode
+	 *            the work time code
 	 * @return the pred dto
 	 */
 	@POST
 	@Path("findByCode/{workTimeCode}")
-	public PredDto findByCode(@PathParam("workTimeCode") String workTimeCode){
+	public PredDto findByCode(@PathParam("workTimeCode") String workTimeCode) {
 		return this.predFinder.findByCode(workTimeCode);
 	}
+
+	@POST
+	@Path("save")
+	public void savePred(PredCommand command) {
+		this.predCommandHandler.handle(command);
+	}
+
 }

@@ -21,7 +21,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button>#{i18n.getText('KMK003_3')}</button>
-				<button class="proceed" data-bind="click: test">#{i18n.getText('KMK003_4')}</button>
+				<button class="proceed" data-bind="click: save">#{i18n.getText('KMK003_4')}</button>
 				<button>#{i18n.getText('KMK003_5')}</button>
 				<button class="danger">#{i18n.getText('KMK003_6')}</button>
 			</div>
@@ -207,7 +207,7 @@
 											data-bind="ntsTabPanel: {width:300, dataSource: tabs, active: selectedTab,direction: 'vertical' }">
 											<div class="tab-a1">
 												<div
-													data-bind="ntsKMK003A1: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod,workTimeCode: siftCode}"></div>
+													data-bind="ntsKMK003A1: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod, workTimeCode: siftCode, saveAction: isClickSave}"></div>
 											</div>
 											<div class="tab-a2">
 												<span>Tab Content 2</span><br />
