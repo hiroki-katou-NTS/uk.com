@@ -9,19 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleRepository;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 
 /**
  * ロールセット - Class RoleSet.
@@ -30,24 +22,6 @@ import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuA
 @Getter
 public class RoleSet extends AggregateRoot {
 
-	@Inject
-	private RoleRepository roleRepository;
-	
-	@Inject
-	private DefaultRoleSetRepository defaultRoleSetRepository;
-	
-	@Inject
-	private RoleSetRepository roleSetRepository;
-	
-	@Inject
-	private RoleSetGrantedPersonRepository roleSetGrantedPersonRepository;
-	
-	@Inject
-	private RoleSetGrantedJobTitleRepository roleSetGrantedJobTitleRepository;
-	
-	@Inject
-	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
-	
 	/** ロールセットコード. */
 	private RoleSetCode roleSetCd;
 
@@ -98,24 +72,24 @@ public class RoleSet extends AggregateRoot {
 			, String companyId
 			, String roleSetName
 			, ApprovalAuthority approvalAuthority
-			, String officeHelperRoleCd
-			, String myNumberRoleCd
-			, String hRRoleCd
-			, String personInfRoleCd
-			, String employmentRoleCd
-			, String salaryRoleCd) {
+			, String officeHelperRoleId
+			, String myNumberRoleId
+			, String hRRoleId
+			, String personInfRoleId
+			, String employmentRoleId
+			, String salaryRoleId) {
 		super();
 		this.roleSetCd 			= new RoleSetCode(roleSetCd);
 		this.companyId 			= companyId;
 		this.roleSetName 		= new RoleSetName(roleSetName);
 		this.approvalAuthority 	= approvalAuthority;
-		this.officeHelperRole 	= getRoleById(officeHelperRoleCd);
-		this.myNumberRole 		= getRoleById(myNumberRoleCd);
-		this.hRRole 			= getRoleById(hRRoleCd);
-		this.personInfRole 		= getRoleById(personInfRoleCd);
-		this.employmentRole 	= getRoleById(employmentRoleCd);
-		this.salaryRole 		= getRoleById(salaryRoleCd);
-		this.buildRoleSetAndWebMenu();
+		this.officeHelperRole 	= RoleSetFactory.getRoleById(officeHelperRoleId);
+		this.myNumberRole 		= RoleSetFactory.getRoleById(myNumberRoleId);
+		this.hRRole 			= RoleSetFactory.getRoleById(hRRoleId);
+		this.personInfRole 		= RoleSetFactory.getRoleById(personInfRoleId);
+		this.employmentRole 	= RoleSetFactory.getRoleById(employmentRoleId);
+		this.salaryRole 		= RoleSetFactory.getRoleById(salaryRoleId);
+		this.roleSetAndWebMenus = RoleSetFactory.buildRoleSetAndWebMenu(roleSetCd);
 	}
 	
 	
@@ -137,23 +111,23 @@ public class RoleSet extends AggregateRoot {
 			, String companyId
 			, String roleSetName
 			, ApprovalAuthority approvalAuthority
-			, String officeHelperRoleCd
-			, String myNumberRoleCd
-			, String hRRoleCd
-			, String personInfRoleCd
-			, String employmentRoleCd
-			, String salaryRoleCd
+			, String officeHelperRoleId
+			, String myNumberRoleId
+			, String hRRoleId
+			, String personInfRoleId
+			, String employmentRoleId
+			, String salaryRoleId
 			, List<String> webMenuCds) {
 		this.roleSetCd 			= new RoleSetCode(roleSetCd);
 		this.companyId 			= companyId;
 		this.roleSetName 		= new RoleSetName(roleSetName);
 		this.approvalAuthority 	= approvalAuthority;
-		this.officeHelperRole 	= getRoleById(officeHelperRoleCd);
-		this.myNumberRole 		= getRoleById(myNumberRoleCd);
-		this.hRRole 			= getRoleById(hRRoleCd);
-		this.personInfRole 		= getRoleById(personInfRoleCd);
-		this.employmentRole 	= getRoleById(employmentRoleCd);
-		this.salaryRole 		= getRoleById(salaryRoleCd);
+		this.officeHelperRole 	= RoleSetFactory.getRoleById(officeHelperRoleId);
+		this.myNumberRole 		= RoleSetFactory.getRoleById(myNumberRoleId);
+		this.hRRole 			= RoleSetFactory.getRoleById(hRRoleId);
+		this.personInfRole 		= RoleSetFactory.getRoleById(personInfRoleId);
+		this.employmentRole 	= RoleSetFactory.getRoleById(employmentRoleId);
+		this.salaryRole 		= RoleSetFactory.getRoleById(salaryRoleId);
 		//build list of RoleSetAndWebMenu from list of WebMenu code
 		if (CollectionUtil.isEmpty(webMenuCds)) {
 			this.roleSetAndWebMenus = webMenuCds.stream()
@@ -164,12 +138,6 @@ public class RoleSet extends AggregateRoot {
 		}
 	}
 	
-	/**
-	 * Get list of Web menu
-	 */
-	private void buildRoleSetAndWebMenu() {
-		this.roleSetAndWebMenus = roleSetAndWebMenuAdapter.findAllWebMenuByRoleSetCd(this.roleSetCd.v());
-	}
 	/**
 	 * If has approval Authority right.
 	 *
@@ -203,49 +171,8 @@ public class RoleSet extends AggregateRoot {
 	}
 
 	/**
-	 * Extract Role by Id
-	 * @param roleId
-	 * @return
+	 * remove value of PersonInfRole field
 	 */
-	private Optional<Role> getRoleById(String roleId) {
-		return StringUtils.isNoneEmpty(roleId) ? null : roleRepository.findByRoleId(roleId);
-	}
-
-	/**
-	 * Get role id from Optional<Role>
-	 * @param opRole
-	 * @return role id if it is present, else null
-	 */
-	public static String getRoleId(Optional<Role> opRole) {
-		return opRole. isPresent() ? opRole.get().getRoleId() : null;
-	}
-			
-	/**
-	 * Check setting default of Role set
-	 * @return
-	 */
-	public boolean isDefault() {
-		return defaultRoleSetRepository.find(companyId, roleSetCd.v()).isPresent();
-	}
-	
-	/**
-	 * Check if this Role Set is granted for member
-	 * @return
-	 */
-	public boolean isGrantedForPerson() {
-		/**check from CAS014 */
-		return roleSetGrantedPersonRepository.checkRoleSetCdExist(this.roleSetCd.v(), this.companyId);
-	}
-	
-	/**
-	 * Check if this Role Set is granted for Position (manager)
-	 * @return
-	 */
-	public boolean isGrantedForPosition() {
-		/** check from CAS014 */
-		return roleSetGrantedJobTitleRepository.checkRoleSetCdExist(this.roleSetCd.v(), this.companyId);
-	}
-	
 	public void removePersonInfRole() {
 		this.personInfRole = null;
 	}
