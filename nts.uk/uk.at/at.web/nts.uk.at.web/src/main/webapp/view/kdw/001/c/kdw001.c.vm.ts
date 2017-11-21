@@ -89,9 +89,10 @@ module nts.uk.at.view.kdw001.c {
                 self.dateValue = ko.observable({});
                 self.dateValue().startDate = "2017/11/08";
                 self.dateValue().endDate = today;
-                
 
-                var closureID = __viewContext.transferred.value.closureID;
+
+                //var closureID = __viewContext.transferred.value.closureID;
+                var closureID = '1';
                 service.findPeriodById(Number(closureID)).done((data) => {
                     self.periodStartDate = data.startDate.toString();
                     self.dateValue().startDate = data.startDate.toString();
@@ -187,7 +188,8 @@ module nts.uk.at.view.kdw001.c {
 
             opendScreenBorJ() {
                 let self = this;
-                var closureID = __viewContext["viewmodel"].closureID;
+                //var closureID = __viewContext["viewmodel"].closureID;
+                var closureID = '1';
                 service.findPeriodById(Number(closureID)).done((data) => {
                     if (data) {
                         let listEmpSelected = self.listComponentOption.selectedCode();
@@ -223,7 +225,9 @@ module nts.uk.at.view.kdw001.c {
                                     periodStartDate: self.dateValue().startDate,
                                     periodEndDate: self.dateValue().endDate
                                 });
-                                $("#wizard").ntsWizard("next");
+                                $("#wizard").ntsWizard("next").done(function() {
+                                    $('#checkBox1').focus();
+                                });
 
                             })
 
@@ -239,7 +243,9 @@ module nts.uk.at.view.kdw001.c {
                                 periodStartDate: self.dateValue().startDate,
                                 periodEndDate: self.dateValue().endDate
                             });
-                            $("#wizard").ntsWizard("next");
+                            $("#wizard").ntsWizard("next").done(function() {
+                                $('#checkBox1').focus();
+                            });
 
                         }
                     }
