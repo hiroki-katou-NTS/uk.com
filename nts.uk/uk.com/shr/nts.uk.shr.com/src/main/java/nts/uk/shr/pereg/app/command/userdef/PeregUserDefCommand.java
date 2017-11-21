@@ -10,7 +10,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 public abstract class PeregUserDefCommand {
 
 	/** category ID */
-	private final String categoryId;
+	private final String categoryCd;
 	
 	/** Record Id, but this is null when new record */
 	private final String recordId;
@@ -26,14 +26,14 @@ public abstract class PeregUserDefCommand {
 		this(itemsByCategory.getCategoryCd(), itemsByCategory.getRecordId(), itemsByCategory.collectItemsDefinedByUser());
 	}
 	
-	public PeregUserDefCommand(String categoryId, String recordId, List<ItemValue> items) {
-		this.categoryId = categoryId;
+	public PeregUserDefCommand(String categoryCd, String recordId, List<ItemValue> items) {
+		this.categoryCd = categoryCd;
 		this.recordId = recordId;
 		this.items = items;
 	}
 	
-	public PeregUserDefCommand(String categoryId, String recordId, String employeeId, String personId,List<ItemValue> items) {
-		this.categoryId = categoryId;
+	public PeregUserDefCommand(String categoryCd, String recordId, String employeeId, String personId,List<ItemValue> items) {
+		this.categoryCd = categoryCd;
 		this.recordId = recordId;
 		this.employeeId = employeeId;
 		this.personId = personId;
