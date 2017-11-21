@@ -14,4 +14,10 @@ public interface RoleSetGrantedPersonRepository {
 	
 	public List<RoleSetGrantedPerson> getAll(String roleSetCd, String companyId);
 	
+	public void insert(RoleSetGrantedPerson domain);
+	
+	public void update(RoleSetGrantedPerson domain);
+	
+	public void delete(String employeeId);
+	
 }

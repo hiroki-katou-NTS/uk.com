@@ -5,9 +5,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.sys.auth.app.command.grant.rolesetjob.RoleSetGrantedJobTitleCommand;
+import nts.uk.ctx.sys.auth.app.command.grant.rolesetperson.DeleteRoleSetGrantedPersonCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.grant.rolesetperson.RegisterRoleSetGrantedPersonCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.grant.rolesetperson.RoleSetGrantedPersonCommand;
+import nts.uk.ctx.sys.auth.app.find.grant.rolesetjob.RoleSetDto;
 import nts.uk.ctx.sys.auth.app.find.grant.rolesetperson.RoleSetGrantedPersonDto;
 import nts.uk.ctx.sys.auth.app.find.grant.rolesetperson.RoleSetGrantedPersonFinder;
 
@@ -23,22 +27,35 @@ public class RoleSetGrantedPersonWebService {
 	@Inject
 	private RoleSetGrantedPersonFinder finder;
 
-	// @Inject
-	// private RegisterRoleSetGrantedJobTitleCommandHandler handler;
+	@Inject
+	private RegisterRoleSetGrantedPersonCommandHandler regHandler;
+	
+	@Inject
+	private DeleteRoleSetGrantedPersonCommandHandler delHandler;
 
 	@POST
-	@Path("start")
-	public List<RoleSetGrantedPersonDto> start() {
-		return this.finder.getAllData();
+	@Path("allroleset")
+	public List<RoleSetDto> start() {
+		return this.finder.getAllRoleSet();
 	}
 
 	@POST
 	@Path("register")
-	public void register(RoleSetGrantedJobTitleCommand command) {
-		// this.handler.handle(command);
-
-		System.out.println("register done! - command: " + command.isApplyToConcurrentPerson() + " - details lengt: "
-				+ command.getDetails().size());
+	public void register(RoleSetGrantedPersonCommand command) {
+		//this.regHandler.handle(command);
+		System.out.println("register done!");
+	}
+	
+	@POST
+	@Path("delete")
+	public void delete(RoleSetGrantedPersonCommand command) {
+		//this.delHandler.handle(command);
+		System.out.println("delete done!");
 	}
 
+	@POST
+	@Path("selectroleset/{code}")
+	public List<RoleSetGrantedPersonDto> selectRoleSet(@PathParam("code") String code) {
+		return this.finder.getAllRoleSetGrantedPersonByRoleSetCd(code);
+	}
 }
