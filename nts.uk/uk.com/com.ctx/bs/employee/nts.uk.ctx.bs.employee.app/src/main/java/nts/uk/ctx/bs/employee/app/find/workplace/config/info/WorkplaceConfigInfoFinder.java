@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.app.find.workplace.config.info;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -78,8 +79,13 @@ public class WorkplaceConfigInfoFinder {
 			return null;
 		}
 		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
+		Optional<WorkplaceConfigInfo> opWkpConfigInfo = wkpConfigInfoRepo.find(companyId,
+				historyId);
+		if (!opWkpConfigInfo.isPresent()) {
+			return Collections.emptyList();
+		}
 
-		return this.initTree(historyId);
+		return this.initTree(opWkpConfigInfo.get());
 	}
 
 	/**
@@ -99,7 +105,13 @@ public class WorkplaceConfigInfoFinder {
 		}
 		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
 
-		return this.initTree(historyId);
+		Optional<WorkplaceConfigInfo> opWkpConfigInfo = wkpConfigInfoRepo.find(companyId,
+				historyId);
+		if (!opWkpConfigInfo.isPresent()) {
+			throw new BusinessException("Msg_373");
+		}
+		
+		return this.initTree(opWkpConfigInfo.get());
 	}
 
 	/**
@@ -109,17 +121,9 @@ public class WorkplaceConfigInfoFinder {
 	 *            the history id
 	 * @return the list
 	 */
-	private List<WorkplaceHierarchyDto> initTree(String historyId) {
+	private List<WorkplaceHierarchyDto> initTree(WorkplaceConfigInfo wkpConfigInfo) {
 		String companyId = AppContexts.user().companyId();
 
-		Optional<WorkplaceConfigInfo> optionalWkpConfigInfo = wkpConfigInfoRepo.find(companyId,
-				historyId);
-
-		if (!optionalWkpConfigInfo.isPresent()) {
-			throw new BusinessException("Msg_373");
-		}
-		WorkplaceConfigInfo wkpConfigInfo = optionalWkpConfigInfo.get();
-		
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getLstWkpHierarchy();
 		
