@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.app.command.category.DomainValueFactory;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
@@ -70,7 +69,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			
 			for (ItemValue item : command.getItems()){
 				
-				state = createDataState(item);
+				OptionalUtil.createDataState(item,state);
 				
 				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
 				perInfoItemDataRepository.updateItemData(itemData);
@@ -84,32 +83,13 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			EmpInfoItemData itemData = null;
 			DataState state = null;
 			for (ItemValue item : command.getItems()){
-				state = createDataState(item);
+				OptionalUtil.createDataState(item, state);
 				itemData = new EmpInfoItemData(item.definitionId(), command.getRecordId(), state);
 				empInfoItemDataRepository.updateEmpInfoItemData(itemData);
 			}
 			
 		}
 	}
-	/**
-	 * Create data state from item type
-	 * @param item
-	 * @return
-	 */
-	private DataState createDataState(ItemValue item){
-		DataState state = null;
-		switch(item.itemValueType()){
-		case STRING:
-			state = DataState.createFromStringValue(DomainValueFactory.convertToString(item.value()));
-		break;
-		case NUMERIC:
-			state = DataState.createFromNumberValue(DomainValueFactory.convertToDecimal(item.value()));
-		break;
-		case DATE:
-			state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.value()));
-		break;
-		}
-		return state;
-	}
+	
 
 }

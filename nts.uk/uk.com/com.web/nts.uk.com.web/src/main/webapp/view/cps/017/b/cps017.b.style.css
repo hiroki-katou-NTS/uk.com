@@ -1,9 +1,12 @@
 #table-grid-selection{
 	display: inline-block;
-	width: 370px;
+	width: 400px;
 	margin-top: 10px;
 }
 #item_register_grid2 tbody th { 
 	background-color: #CFF1A5;
     color: #000;
+}
+#item_register_grid2 tbody tr td:NTH-CHILD(2){ 
+	text-align: center;
 }
