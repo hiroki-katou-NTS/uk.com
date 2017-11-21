@@ -63,12 +63,12 @@ public class LayoutProcessor {
 		if(lstItemDef.size() == 0) return new EmpMaintLayoutDto();
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef = new ArrayList<>();
 		for (int i = 0; i < lstItemDef.size(); i++)
-			lstPerInfoItemDef.add(perInfoItemDefForLayoutFinder.createFromDomain(query.getEmpId(), lstItemDef.get(i), query.getCtgId(), i));
+			lstPerInfoItemDef.add(perInfoItemDefForLayoutFinder.createFromDomain(query.getEmpId(), lstItemDef.get(i), query.getCtgCd(), i));
 		//get domain data
 		LayoutingResult returnValue = layoutingProcessor.handler(query);
 		Object domainData = returnValue.getDomainData();
 		
-		EmpMaintLayoutDto empMaintLayoutDto = LayoutMapping.map(domainData, returnValue.getFinderClass(), lstPerInfoItemDef);
+		EmpMaintLayoutDto empMaintLayoutDto = LayoutMapping.map(domainData, returnValue.getDtoFinderClass(), lstPerInfoItemDef);
 		
 		return empMaintLayoutDto;
 	}
