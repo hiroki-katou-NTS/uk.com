@@ -26,4 +26,12 @@ public interface UserRepository {
 	 * @return the by associated person id
 	 */
 	Optional<User> getByAssociatedPersonId(String associatedPersonId); 
+	
+	
+	/**
+	 * add new user 
+	 * @param user domain
+	 * @author sonnlb
+	 */
+	void addNewUser(User user);
 }
