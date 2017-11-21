@@ -37,4 +37,11 @@ public interface TotalConditionSetMemento {
 	 */
 	void  setThresoldLowerLimit(ConditionThresholdLimit setThresoldLowerLimit);
 
+	
+	/**
+	 * Sets the attendance item id.
+	 *
+	 * @param attendanceItemId the new attendance item id
+	 */
+	void setAttendanceItemId(Integer attendanceItemId);
 }
