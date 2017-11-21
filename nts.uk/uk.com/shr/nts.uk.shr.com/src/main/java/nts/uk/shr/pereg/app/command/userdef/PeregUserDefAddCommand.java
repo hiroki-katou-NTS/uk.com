@@ -4,8 +4,10 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 public class PeregUserDefAddCommand extends PeregUserDefCommand {
 	
-	public PeregUserDefAddCommand(String newRecordId, ItemsByCategory itemsByCategory) {
+	public PeregUserDefAddCommand(String personId, String employeeId, String newRecordId, ItemsByCategory itemsByCategory) {
 		super(
+				personId,
+				employeeId,
 				itemsByCategory.getCategoryId(),
 				newRecordId,
 				itemsByCategory.collectItemsDefinedByUser());
