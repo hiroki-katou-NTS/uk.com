@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 
@@ -23,10 +22,4 @@ public interface SelectionItemOrderRepository {
 	 * @param lstSelOrder
 	 */
 	void updateListSelOrder(List<SelectionItemOrder> lstSelOrder);
-	/**
-	 * get Selection Item Order By Selection Id
-	 * @param selectionID
-	 * @return
-	 */
-	Optional<SelectionItemOrder> getSelOrderBySelectionId(String selectionID);
 }
