@@ -18,6 +18,7 @@ import nts.uk.ctx.bs.person.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.bs.person.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.bs.person.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
 import nts.uk.ctx.bs.person.infra.entity.person.info.setting.copy.PpestEmployeeCopySetting;
+import nts.uk.ctx.bs.person.infra.entity.person.info.setting.copy.PpestEmployeeCopySettingPk;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
@@ -39,15 +40,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
-	
 
 	private final static String SELECT_CATEGORY_BY_PARENT_CD = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
-			+ " AND CO.categoryParentCd = :parentCd";
-	
+			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd" + " AND CO.categoryParentCd = :parentCd";
+
 	private final static String SELECT_CATEGORY_BY_PARENT_CD_WITH_ORDER = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
@@ -71,7 +70,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
 
 	private final static String COUNT_PERINFOCTGIN_COPYSETING = "SELECT COUNT(i) FROM PpestEmployeeCopySetting i "
-			+ "WHERE i.PpestEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
+			+ "WHERE i.ppestEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
 
 	private final static String SELECT_CATEGORY_BY_NAME = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -85,17 +84,16 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private final static String GET_DATE_RANGE_ID_BY_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
 			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
-	
+
 	private final static String GET_DATE_RANGE_ID_BY_CTG_ID_2 = "SELECT d FROM PpemtDateRangeItem d"
 			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
-	
+
 	private final static String SELECT_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
-			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " AND ca.categoryCd = :categoryCd"
+			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd"
 			+ " AND ca.cid.perInfoCtgId = :cid";
-	
+
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
@@ -262,10 +260,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	public void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId) {
 		boolean alreadyExist = checkPerInfoCtgAlreadyCopy(perInfoCtgId, companyId);
 		if (!alreadyExist) {
-			PpestEmployeeCopySetting obj = new PpestEmployeeCopySetting();
-			obj.PpestEmployeeCopySettingPk.categoryId = perInfoCtgId;
-			obj.companyId = companyId;
-			getEntityManager().persist(obj);
+
+			PpestEmployeeCopySettingPk key = new PpestEmployeeCopySettingPk(perInfoCtgId);
+			PpestEmployeeCopySetting entity = new PpestEmployeeCopySetting(key, companyId);
+			this.commandProxy().insert(entity);
 		}
 	}
 
@@ -276,13 +274,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					return createDomainFromEntity(c);
 				});
 	}
-	
+
 	@Override
 	public List<PersonInfoCategory> getPerInfoCtgByParentCode(String parentCtgCd, String contractCd) {
-		return  this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD, Object[].class).setParameter("contractCd", contractCd)
-				.setParameter("parentCd", parentCtgCd).getList(c -> {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("parentCd", parentCtgCd).getList(c -> {
 					return createDomainFromEntity(c);
-					});
+				});
 	}
 
 	@Override
@@ -301,20 +299,21 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgId, String contractCd,
 			boolean isASC) {
-		return  this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD + (isASC?" ASC":" DESC"), Object[].class).setParameter("contractCd", contractCd)
-				.setParameter("parentCd", parentCtgId).getList(c -> {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD + (isASC ? " ASC" : " DESC"), Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("parentCd", parentCtgId).getList(c -> {
 					return createDomainFromEntity(c);
-					});
+				});
 	}
 
 	@Override
 	public DateRangeItem getDateRangeItemByCategoryId(String perInfoCtgId) {
-		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID_2, PpemtDateRangeItem.class).setParameter("perInfoCtgId", perInfoCtgId).getSingleOrNull();
-		DateRangeItem s = DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId, item.endDateItemId, item.dateRangeItemId);
+		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID_2, PpemtDateRangeItem.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).getSingleOrNull();
+		DateRangeItem s = DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
+				item.endDateItemId, item.dateRangeItemId);
 		return s;
 	}
-	
-	
+
 	// vinhpx: end
 
 	@Override
@@ -324,6 +323,5 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					return createDomainFromEntity(c);
 				});
 	}
-
 
 }

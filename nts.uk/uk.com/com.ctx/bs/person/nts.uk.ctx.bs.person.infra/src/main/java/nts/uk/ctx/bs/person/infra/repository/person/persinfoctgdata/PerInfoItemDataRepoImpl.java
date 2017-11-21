@@ -114,6 +114,9 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		if (!existItem.isPresent()) {
 			return;
 		}
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid PersonInfoItemData");
+		}
 		// Update entity
 		updateEntity(domain, existItem.get());
 		// Update table

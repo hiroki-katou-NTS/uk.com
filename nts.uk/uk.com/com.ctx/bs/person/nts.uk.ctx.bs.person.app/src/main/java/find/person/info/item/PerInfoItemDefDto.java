@@ -39,4 +39,5 @@ public class PerInfoItemDefDto {
 
 	private List<EnumConstant> selectionItemRefTypes;
 
+
 }
