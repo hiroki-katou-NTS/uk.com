@@ -57,6 +57,12 @@ public class OvertimeWebService extends WebService{
 	public OvertimeCheckResultDto checkBeforeRegister(CreateOvertimeCommand command){
 		return checkBefore.CheckBeforeRegister(command);
 	}
+	
+	@POST
+	@Path("findByAppID")
+	public OverTimeDto findByChangeAppDate(String appID) {
+		return this.overtimeFinder.findDetailByAppID(appID);
+	}
 }
 
 @Value

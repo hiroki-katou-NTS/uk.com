@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
@@ -50,6 +52,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				.collect(Collectors.toList());
 
 		return new KrqdtAppOvertime(new KrqdtAppOvertimePK(domain.getCompanyID(), domain.getAppID()),
+				domain.getVersion(),
 				domain.getOverTimeAtr().value, domain.getWorkTypeCode().v(), domain.getSiftCode().v(),
 				domain.getWorkClockFrom1(), domain.getWorkClockTo1(), domain.getWorkClockFrom2(),
 				domain.getWorkClockTo2(), domain.getDivergenceReason(), domain.getFlexExessTime(),
@@ -62,6 +65,26 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				entity.getSiftCode(), entity.getWorkClockFrom1(), entity.getWorkClockTo1(), entity.getWorkClockFrom2(),
 				entity.getWorkClockTo2(), entity.getDivergenceReason(), entity.getFlexExcessTime(),
 				entity.getOvertimeShiftNight());
+	}
+
+	@Override
+	public Optional<AppOverTime> getFullAppOvertime(String companyID, String appID) {
+		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID), KrqdtAppOvertime.class);
+		Optional<KafdtApplication> opKafdtApplication = this.queryProxy().find(new KafdtApplicationPK(companyID, appID), KafdtApplication.class);
+		if(!opKrqdtAppOvertime.isPresent()||!opKafdtApplication.isPresent()){
+			return Optional.ofNullable(null);
+		}
+		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
+		KafdtApplication kafdtApplication = opKafdtApplication.get();
+		AppOverTime appOverTime = krqdtAppOvertime.toDomain();
+		appOverTime.setApplication(kafdtApplication.toDomain());
+		return Optional.of(appOverTime);
+	}
+
+	@Override
+	public void update(AppOverTime appOverTime) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

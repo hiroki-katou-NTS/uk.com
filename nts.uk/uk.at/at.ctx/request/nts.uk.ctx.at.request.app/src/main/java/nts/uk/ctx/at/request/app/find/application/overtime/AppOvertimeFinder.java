@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeInstructInfomation;
@@ -102,6 +103,9 @@ public class AppOvertimeFinder {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
+	@Inject
+	private OvertimeRepository overtimeRepository;
+	
 	/**
 	 * @param url
 	 * @param appDate
@@ -147,6 +151,21 @@ public class AppOvertimeFinder {
 		
 		return result;
 	}
+	
+	public OverTimeDto findDetailByAppID(String appID){
+		String companyID = AppContexts.user().companyId();
+		// 07_勤務種類取得: lay loai di lam 
+		// 08_就業時間帯取得(lay loai gio lam viec)
+		// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
+		// 01-04_加給時間を取得: chua xong
+		Optional<AppOverTime> opAppOverTime = overtimeRepository.getFullAppOvertime(companyID, appID);
+		if(!opAppOverTime.isPresent()){
+			throw new RuntimeException("khong tim dc doi tuong");
+		}
+		AppOverTime appOverTime = opAppOverTime.get();
+		OverTimeDto overTimeDto = OverTimeDto.fromDomain(appOverTime);
+		return overTimeDto;
+	} 
 	
 	/**
 	 * @param appDate

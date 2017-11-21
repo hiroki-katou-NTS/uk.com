@@ -1,14 +1,22 @@
 package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OverTimeDto {
 	/**
 	 * application
@@ -166,5 +174,46 @@ public class OverTimeDto {
 	 * preAppOvertimeDto
 	 */
 	private PreAppOvertimeDto preAppOvertimeDto;
+	
+	public static OverTimeDto fromDomain(AppOverTime appOverTime){
+		return new OverTimeDto(
+				null, 
+				appOverTime.getCompanyID(), 
+				appOverTime.getAppID(), 
+				"", 
+				false, 
+				"", 
+				"", 
+				appOverTime.getOverTimeAtr().value, 
+				CollectionUtil.isEmpty(appOverTime.getOverTimeInput())
+					? Collections.emptyList() 
+					: appOverTime.getOverTimeInput().stream().map(x -> OvertimeInputDto.fromDomain(x)).collect(Collectors.toList()), 
+				0, 
+				new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""), 
+				new SiftType(appOverTime.getSiftCode().v(),""), 
+				appOverTime.getWorkClockFrom1(), 
+				appOverTime.getWorkClockTo1(),  
+				appOverTime.getWorkClockFrom2(), 
+				appOverTime.getWorkClockTo2(), 
+				"", 
+				appOverTime.getDivergenceReason(), 
+				0, 
+				appOverTime.getFlexExessTime(), 
+				appOverTime.getOverTimeShiftNight(), 
+				false, 
+				false, 
+				false, 
+				Collections.emptyList(), 
+				false, 
+				false, 
+				Collections.emptyList(),
+				false, 
+				false, 
+				0, 
+				false, 
+				false, 
+				false, 
+				null);
+	}
 	
 }

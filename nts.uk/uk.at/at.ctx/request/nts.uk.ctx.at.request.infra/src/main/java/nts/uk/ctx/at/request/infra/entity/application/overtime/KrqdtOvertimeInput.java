@@ -9,11 +9,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -31,6 +34,10 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
 	
 	@EmbeddedId
     protected KrqdtOvertimeInputPK krqdtOvertimeInputPK;
+	
+	@Version
+	@Column(name="EXCLUS_VER")
+	public Long version;
 	
 	@Column(name = "START_TIME")
     private int startTime;
@@ -57,6 +64,13 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return krqdtOvertimeInputPK;
+	}
+	
+	public KrqdtOvertimeInput fromDomainValue(OverTimeInput overTimeInput){
+		this.startTime = overTimeInput.getStartTime().v();
+		this.endTime = overTimeInput.getEndTime().v();
+		this.applicationTime = overTimeInput.getApplicationTime().v();
+		return this;
 	}
 
 }
