@@ -316,12 +316,17 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                 orderSelection: IOrderSelection = ko.toJS(self.orderSelection),
                 listOrderSelection: Array<OrderSelection> = self.listOrderSelection(),
-                orderList = _.find(listOrderSelection, x => x.selectionID == orderSelection.selectionID);
+                orderList = _.find(listOrderSelection, x => x.selectionID == orderSelection.selectionID),
+
+                perInfoSelectionItem: ISelectionItem = ko.toJS(self.perInfoSelectionItem),
+                listItems: Array<SelectionItem> = self.listItems(),
+                selectionItemList = _.find(listItems, x => x.selectionItemId == perInfoSelectionItem.selectionItemId);
 
             let command = {
                 currentItem: currentItem,
                 selection: selection,
-                orderSection: orderSelection
+                orderSection: orderSelection,
+                perInfoSelectionItem: perInfoSelectionItem
             };
 
             confirm({ messageId: "Msg_532" }).ifYes(() => {
@@ -368,7 +373,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             //set histID
             //setShared('selectedHisId', self.historySelection().histId());
-            setShared('selectHistory', {selectHistory: selectHistory, name: selectionItemNameList.selectionItemName});
+            setShared('selectHistory', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });
 
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
@@ -385,11 +390,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //ダイアログD画面
         openDialogD() {
             let self = this,
-                obj = {
-                    sel_id: "0001",
-                    sel_name: " Du DT"
-                };
-            setShared('historyInfo', obj);
+                currentItem: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId()),
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems(),
+                selectionItemNameList = _.find(listItems, x => x.selectionItemName == perInfoSelectionItem.selectionItemName());
+            
+            setShared('selectHistory', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });            
+            
             block.invisible();
             modal('/view/cps/017/d/index.xhtml', { title: '' }).onClosed(function(): any {
                 block.clear();
