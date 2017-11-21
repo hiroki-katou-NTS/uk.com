@@ -51,7 +51,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
 				EnumAdaptor.valueOf(0, ReflectPerScheReason.class), null,
 				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
-				GeneralDate.today(), GeneralDate.today(), listAppApprovalPhase);
+				applicationDate, applicationDate, listAppApprovalPhase);
 	}
 
 	@Override
