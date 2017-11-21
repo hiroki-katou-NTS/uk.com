@@ -1,9 +1,12 @@
 module nts.uk.com.view.cas005.a {
     import getText = nts.uk.resource.getText;
+    import ccg = nts.uk.com.view.ccg025.a;
+    import modelComponent = nts.uk.com.view.ccg025.a.component.model;
     export module viewmodel {
         export class ScreenModel {
             //text
-            simpleValue: KnockoutObservable<string>;
+            roleType: KnockoutObservable<number>;
+            roleName: KnockoutObservable<string>;
             //switch
             roundingRules: KnockoutObservableArray<any>;
             roundingRules2: KnockoutObservableArray<any>;
@@ -17,11 +20,36 @@ module nts.uk.com.view.cas005.a {
             currentCodeList: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
             items: KnockoutObservableArray<model.ItemModel2>;
+            //table-right
+            component: ccg.component.viewmodel.ComponentModel;
+            listRole: KnockoutObservableArray<modelComponent.Role>;
+            //table-left
+            columnRoleType : KnockoutObservableArray<any>;
+            currentType : KnockoutObservable<any>;
+            listEnumRoleType  :KnockoutObservableArray<any>;
+            
             constructor() {
                 let self = this;
+                //table enum RoleType
+                self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
+                self.columnRoleType = ko.observableArray([
+                    { headerText: 'コード', key: 'value', width: 100 },
+                    { headerText: '名称', key: 'name', width: 170 }
+                ]);
+                self.currentType = ko.observable(null);
                 //text
-                self.simpleValue = ko.observable('123');
+                self.roleName = ko.observable('');
+                self.roleType = ko.observable(123);
+                self.roleType.subscribe((value) => {
+                    let item = _.find(self.listEnumRoleType(), ['value', Number(value)]).name;
+                    if(item !== undefined){
+                        self.roleName(item);   
+                    }else{
+                        self.roleName('');
+                    }
+                });
                 
+
                 //switch
                 self.roundingRules = ko.observableArray([
                     { code: '1', name: getText('CAS005_35') },
@@ -54,9 +82,25 @@ module nts.uk.com.view.cas005.a {
                     { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' }
                 ]);
                 self.currentCodeList = ko.observableArray([]);
-                
-                
+                //table-left
+                self.component = new ccg.component.viewmodel.ComponentModel({
+                    roleType: 1,
+                    multiple: true
+                });
+                self.listRole = ko.observableArray([]);
+
+
             }
+            /** Select TitleMenu by Index: Start & Delete case */
+            private selectRoleTypeByIndex(index: number) {
+                var self = this;
+                var selectRoleTypeByIndex = _.nth(self.listEnumRoleType(), index);
+                if (selectRoleTypeByIndex !== undefined)
+                    self.roleType(selectRoleTypeByIndex.value);
+                else
+                    self.roleType(null);
+            }
+            
 
             /**
              * functiton start page
@@ -64,21 +108,22 @@ module nts.uk.com.view.cas005.a {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                self.selectRoleTypeByIndex(0);
                 dfd.resolve();
                 return dfd.promise();
             }//end start page
-            
+
             openDialogB() {
                 let self = this;
                 let param = {
-                    
+
                 };
                 nts.uk.ui.windows.setShared("openB", param);
                 nts.uk.ui.windows.sub.modal("/view/cas/005/b/index.xhtml");
             }
 
-            
-            
+
+
         }//end screenModel
     }//end viewmodel
 
@@ -87,13 +132,13 @@ module nts.uk.com.view.cas005.a {
         export class ItemModel {
             code: string;
             name: string;
-    
+
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
             }
         }
-        
+
         export class ItemModel2 {
             code: string;
             name: string;
@@ -110,7 +155,7 @@ module nts.uk.com.view.cas005.a {
                 this.deletable = deletable;
             }
         }
-        
+
 
     }//end module model
 

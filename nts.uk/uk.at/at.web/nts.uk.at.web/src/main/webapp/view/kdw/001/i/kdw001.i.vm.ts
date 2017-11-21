@@ -94,7 +94,7 @@
                             if(self.listErrMessageInfo()[i].executionContent == value.executionContent){
                                 temp.push(self.listErrMessageInfo()[i]);
                             }    
-                        }
+                        } 
                          var numberPersonErr =  _.chain(temp)
                         .groupBy("employeeID")
                         .toPairs()

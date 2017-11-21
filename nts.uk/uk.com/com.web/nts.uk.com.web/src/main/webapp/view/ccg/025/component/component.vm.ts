@@ -54,9 +54,7 @@ module nts.uk.com.view.ccg025.a.component {
     //module model
     export module model {
         
-        /**
-         * class Role
-         */
+        /** class Role*/
         export class Role {
             roleId : string;
             roleCode : string;
