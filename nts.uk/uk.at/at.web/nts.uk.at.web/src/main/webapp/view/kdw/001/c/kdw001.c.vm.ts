@@ -71,7 +71,7 @@ module nts.uk.at.view.kdw001.c {
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.multiSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
@@ -143,12 +143,29 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         self.showinfoSelectedEmployee(true);
                         var dataEmployee: EmployeeSearchDto[] = [];
                         dataEmployee.push(data);
                         self.selectedEmployee(dataEmployee);
+                        
+                        //Bug self fix
+                        let unitModel = new UnitModel(data);
+                        let listUnitModel: UnitModel[] = [];
+                        listUnitModel.push(unitModel);
+                        self.employeeList(listUnitModel);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList: any = [];
+                        selectList.push(data.employeeCode);
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -159,6 +176,12 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -169,6 +192,12 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -179,6 +208,12 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataEmployee, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     }
 
                 }
