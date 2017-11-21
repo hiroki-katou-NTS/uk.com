@@ -26,7 +26,7 @@ public class PerInfoHistorySelectionFinder {
 
 		// ドメインモデル「選択肢履歴」を取得する(lấy Domain Model 「選択肢履歴」)
 		List<PerInfoHistorySelectionDto> historyList = this.historySelectionRepo
-				.getAllPerInfoHistorySelection(selectedId, cid).stream()
+				.getAllHistoryBySelectionItemIdAndCompanyId(selectedId, cid).stream()
 				.map(i -> PerInfoHistorySelectionDto.fromDomainHistorySelection(i)).collect(Collectors.toList());
 
 		return historyList;
