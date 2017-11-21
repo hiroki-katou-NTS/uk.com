@@ -4,7 +4,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 public class PeregUserDefUpdateCommand extends PeregUserDefCommand {
 	
-	public PeregUserDefUpdateCommand(ItemsByCategory itemsByCategory) {
-		super(itemsByCategory);
+	public PeregUserDefUpdateCommand(String personId, String employeeId, ItemsByCategory itemsByCategory) {
+		super(personId, employeeId, itemsByCategory);
 	}
 }
