@@ -37,11 +37,12 @@ module nts.uk.com.view.cas011.a.viewmodel {
             self.gridColumns = ko.observableArray([
                                                 {headerText: resource.getText('CAS011_09'), key: 'roleSetCd', formatter: _.escape, width: 50},
                                                 {headerText: resource.getText('CAS011_10'), key: 'roleSetName', formatter: _.escape, width: 225}
-                                           ]);
-            self.columns = ko.observableArray([
+                                           ]);           
+            self.swapColumns = ko.observableArray([
                                                { headerText: 'コード', key: 'webMenuCode', width: 100 },
                                                { headerText: '名称', key: 'webMenuName', width: 150 }
                                            ]);
+            
             self.isNewMode = ko.observable(false);
             //Subscribe: 項目変更→項目
  
@@ -399,7 +400,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
     }
 
     export enum ROLE_TYPE {
-        OFFICE_HELPER,
+        OFFICE_HELPER = 0,
         MY_NUMBER,
         HR,
         PERSON_INF,
