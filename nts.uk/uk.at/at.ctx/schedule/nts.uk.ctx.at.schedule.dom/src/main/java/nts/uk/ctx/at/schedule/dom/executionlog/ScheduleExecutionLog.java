@@ -78,5 +78,42 @@ public class ScheduleExecutionLog extends AggregateRoot {
 	public void setExecutionTimeToNow() {
 		this.executionDateTime = new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now());
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((executionId == null) ? 0 : executionId.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ScheduleExecutionLog other = (ScheduleExecutionLog) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (executionId == null) {
+			if (other.executionId != null)
+				return false;
+		} else if (!executionId.equals(other.executionId))
+			return false;
+		return true;
+	}
 	
 }

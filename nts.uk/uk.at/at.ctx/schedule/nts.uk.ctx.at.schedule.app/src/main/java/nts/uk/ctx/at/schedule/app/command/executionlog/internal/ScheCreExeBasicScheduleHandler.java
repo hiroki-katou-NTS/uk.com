@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,11 +13,17 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareScheduleSaveCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleTimeZoneSaveCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 
 /**
  * The Class ScheCreExeBasicScheduleHandler.
@@ -41,18 +48,31 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param workTimeCode the work time code
 	 */
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, String employeeId,
-			String worktypeCode, String workTimeCode) {
+			String worktypeCode, String workTimeCode, WorkTimeSet workTimeSet) {
 
 		// get short work time
-		this.getShortWorkTime(employeeId, command.getToDate());
+		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, command.getToDate());
 
 		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 		commandSave.setWorktypeCode(worktypeCode);
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
-		commandSave.setYmd(GeneralDate.today());
+		commandSave.setYmd(command.getToDate());
+		
+		if(optionalShortTime.isPresent()){
+			commandSave
+					.setChildCareSchedules(
+							optionalShortTime.get().getLstTimeSlot().stream()
+									.map(shortime -> this.convertShortTimeChildCareToChildCare(shortime,
+											optionalShortTime.get().getChildCareAtr().value))
+									.collect(Collectors.toList()));
+		}
 
+		if (workTimeSet != null) {
+			commandSave.setWorkScheduleTimeZones(workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
+					.map(timezone -> this.convertTimeZoneToScheduleTimeZone(timezone)).collect(Collectors.toList()));
+		}
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getIsConfirm(), ConfirmedAtr.CONFIRMED).value);
 
@@ -64,6 +84,7 @@ public class ScheCreExeBasicScheduleHandler {
 		// save command
 		this.saveBasicSchedule(commandSave);;
 	}
+	
 	/**
 	 * Gets the short work time.
 	 *
@@ -119,4 +140,52 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 	}
 	
+	/**
+	 * Convert short tim child care to child care.
+	 *
+	 * @param shortChildCareFrameDto the short child care frame dto
+	 * @return the child care schedule save command
+	 */
+	// 勤務予定育児介護時間帯
+	private ChildCareScheduleSaveCommand convertShortTimeChildCareToChildCare(
+			ShortChildCareFrameDto shortChildCareFrameDto, int childCareAtr) {
+		ChildCareScheduleSaveCommand command = new ChildCareScheduleSaveCommand();
+
+		// 予定育児介護回数 = 取得した短時間勤務. 時間帯. 回数
+		command.setChildCareNumber(shortChildCareFrameDto.getTimeSlot());
+
+		// 予定育児介護開始時刻 = 取得した短時間勤務. 時間帯. 開始時刻
+		command.setChildCareScheduleStart(shortChildCareFrameDto.getStartTime().valueAsMinutes());
+
+		// 予定育児介護終了時刻 = 取得した短時間勤務. 時間帯. 終了時刻
+		command.setChildCareScheduleEnd(shortChildCareFrameDto.getEndTime().valueAsMinutes());
+
+		// 育児介護区分 = 取得した短時間勤務. 育児介護区分
+		command.setChildCareAtr(childCareAtr);
+		return command;
+	}
+	
+	/**
+	 * Convert time zone to schedule time zone.
+	 *
+	 * @param timezone the timezone
+	 * @return the work schedule time zone save command
+	 */
+	// 勤務予定時間帯
+	private WorkScheduleTimeZoneSaveCommand convertTimeZoneToScheduleTimeZone(Timezone timezone){
+		WorkScheduleTimeZoneSaveCommand command = new WorkScheduleTimeZoneSaveCommand();
+		
+		// 予定勤務回数 = 取得した勤務予定時間帯. 勤務NO
+		command.setScheduleCnt(timezone.getWorkNo());
+		
+		// 予定開始時刻 = 取得した勤務予定時間帯. 開始
+		command.setScheduleStartClock(timezone.getStart().valueAsMinutes());
+		
+		// 予定終了時刻 = 取得した勤務予定時間帯. 終了
+		command.setScheduleEndClock(timezone.getEnd().valueAsMinutes());
+		
+		// TODO NOT WorktypeSet
+		command.setBounceAtr(BounceAtr.NO_DIRECT_BOUNCE.value);
+		return command;
+	}
 }

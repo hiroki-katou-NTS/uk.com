@@ -33,6 +33,7 @@ public class RegisterBasicScheduleCommand {
 	private String workTimeCode;
 	private int confirmedAtr;
 	private int workDayAtr;
+	private List<WorkScheduleTimeZoneSaveCommand> workScheduleTimeZoneSaveCommands;
 
 	/**
 	 * To domain.
@@ -54,7 +55,12 @@ public class RegisterBasicScheduleCommand {
 
 			@Override
 			public List<WorkScheduleTimeZone> getWorkScheduleTimeZones() {
-				return new ArrayList<>();
+				List<WorkScheduleTimeZone> timeZones = new ArrayList<WorkScheduleTimeZone>();
+				workScheduleTimeZoneSaveCommands.stream().forEach(command -> {
+					WorkScheduleTimeZone scheduleTimeZone = new WorkScheduleTimeZone(command);
+					timeZones.add(scheduleTimeZone);
+				});
+				return timeZones;
 			}
 
 			@Override
