@@ -3958,7 +3958,8 @@ div .ex-area-line.x-stay {
 }
 /* line 20, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-header-container {
-  overflow: auto;
+  overflow: hidden;
+  border-right: 1px #CCC solid;
 }
 /* line 24, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-container {
