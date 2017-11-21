@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.app.command.grant;
+package nts.uk.ctx.sys.auth.app.command.grant.rolesetjob;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,9 +9,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitle;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleDetail;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleRepository;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

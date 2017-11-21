@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleRepository;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPersonRepository;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;

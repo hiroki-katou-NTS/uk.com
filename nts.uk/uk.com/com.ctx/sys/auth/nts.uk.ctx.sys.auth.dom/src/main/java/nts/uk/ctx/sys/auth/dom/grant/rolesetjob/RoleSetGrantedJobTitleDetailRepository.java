@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.dom.grant;
+package nts.uk.ctx.sys.auth.dom.grant.rolesetjob;
 
 import java.util.List;
 

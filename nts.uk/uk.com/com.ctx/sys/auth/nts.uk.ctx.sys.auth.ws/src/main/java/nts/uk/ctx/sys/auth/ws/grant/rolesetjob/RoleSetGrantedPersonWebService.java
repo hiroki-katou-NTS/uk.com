@@ -7,9 +7,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.sys.auth.app.command.grant.RoleSetGrantedJobTitleCommand;
-import nts.uk.ctx.sys.auth.app.find.grant.RoleSetGrantedPersonDto;
-import nts.uk.ctx.sys.auth.app.find.grant.RoleSetGrantedPersonFinder;
+import nts.uk.ctx.sys.auth.app.command.grant.rolesetjob.RoleSetGrantedJobTitleCommand;
+import nts.uk.ctx.sys.auth.app.find.grant.rolesetperson.RoleSetGrantedPersonDto;
+import nts.uk.ctx.sys.auth.app.find.grant.rolesetperson.RoleSetGrantedPersonFinder;
 
 /**
  * 

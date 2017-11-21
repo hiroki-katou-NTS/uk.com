@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.app.find.grant;
+package nts.uk.ctx.sys.auth.app.find.grant.rolesetjob;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;

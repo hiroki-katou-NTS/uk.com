@@ -1,11 +1,11 @@
-package nts.uk.ctx.sys.auth.infra.repository.grant;
+package nts.uk.ctx.sys.auth.infra.repository.grant.rolesetjob;
 
 import java.util.List;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleDetailRepository;
-import nts.uk.ctx.sys.auth.infra.entity.grant.SaumtRoleSetGrantedJobTitleDetail;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetailRepository;
+import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SaumtRoleSetGrantedJobTitleDetail;
 
 public class JpaRoleSetGrantedJobTitleDetailRepository extends JpaRepository
 		implements RoleSetGrantedJobTitleDetailRepository {

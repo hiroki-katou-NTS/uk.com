@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.infra.entity.grant;
+package nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -20,7 +19,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 
-@NoArgsConstructor
 @Entity
 @Table(name = "SAUMT_ROLESET_JOB")
 public class SaumtRoleSetGrantedJobTitle extends UkJpaEntity implements Serializable {

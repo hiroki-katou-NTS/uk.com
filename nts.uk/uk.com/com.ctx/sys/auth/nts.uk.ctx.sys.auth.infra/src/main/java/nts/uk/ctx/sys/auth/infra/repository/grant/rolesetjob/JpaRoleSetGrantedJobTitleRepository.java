@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.infra.repository.grant;
+package nts.uk.ctx.sys.auth.infra.repository.grant.rolesetjob;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,11 +8,11 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitle;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleDetail;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleRepository;
-import nts.uk.ctx.sys.auth.infra.entity.grant.SaumtRoleSetGrantedJobTitle;
-import nts.uk.ctx.sys.auth.infra.entity.grant.SaumtRoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
+import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SaumtRoleSetGrantedJobTitle;
+import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SaumtRoleSetGrantedJobTitleDetail;
 
 /**
  * 
@@ -82,8 +82,14 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 
 	@Override
 	public boolean checkRoleSetCdExist(String roleSetCd, String companyId) {
-		// TODO Auto-generated method stub
-		return false;
+		SaumtRoleSetGrantedJobTitle entity = this.queryProxy()
+				.query(GET_All_BY_COMPANY_ID, SaumtRoleSetGrantedJobTitle.class).setParameter("companyId", companyId)
+				.getSingleOrNull();
+		if (entity == null) {
+			return false;
+		} else {
+			return toDomain(entity).isRoleSetCdExist(roleSetCd);
+		}
 	}
 
 }

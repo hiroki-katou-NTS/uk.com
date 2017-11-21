@@ -1,7 +1,6 @@
-package nts.uk.ctx.sys.auth.dom.grant;
+package nts.uk.ctx.sys.auth.dom.grant.rolesetjob;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
 
@@ -11,7 +10,6 @@ import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
  *
  */
 
-@NoArgsConstructor
 @Getter
 public class RoleSetGrantedJobTitleDetail extends DomainObject {
 

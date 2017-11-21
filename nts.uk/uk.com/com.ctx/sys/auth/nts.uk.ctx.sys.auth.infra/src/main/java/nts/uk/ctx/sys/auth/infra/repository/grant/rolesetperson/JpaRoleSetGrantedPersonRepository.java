@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.infra.repository.grant;
+package nts.uk.ctx.sys.auth.infra.repository.grant.rolesetperson;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPerson;
-import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPersonRepository;
-import nts.uk.ctx.sys.auth.infra.entity.grant.SaumtRoleSetGrantedPerson;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
+import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetperson.SaumtRoleSetGrantedPerson;
 
 /**
  * 
