@@ -1,7 +1,6 @@
 package command.person.setting.selectionitem.selection;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -10,8 +9,9 @@ import nts.arc.time.GeneralDate;
  */
 @Value
 public class EditHistoryCommand {
-	private String companyCode;
-	private GeneralDate startDate;
+	private String startDateNew;
+	private String startDate;
+	private String endDate;
 	private String histId;
 	private String selectionItemId;
 }

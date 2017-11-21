@@ -36,4 +36,18 @@ public interface PerInfoHistorySelectionRepository {
 	 * GET_LAST_HISTORY_BY_SELECTION_ID
 	 */
 	Optional<PerInfoHistorySelection> getLastHistoryBySelectioId(String selectionItemId);
+	//hoatt
+	/**
+	 * get History Selection By EndDate
+	 * @param selectionItemId
+	 * @param endDate
+	 * @return
+	 */
+	List<PerInfoHistorySelection> getHistSelByEndDate(String selectionItemId, GeneralDate endDate);
+	/**
+	 * get History Selection By HistId
+	 * @param histId
+	 * @return
+	 */
+	Optional<PerInfoHistorySelection> getHistSelByHistId(String histId);
 }
