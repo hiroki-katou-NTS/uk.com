@@ -234,7 +234,7 @@ module kmk003.base.fixtable {
             let self = this;
             let row: any = {};
             _.forEach(self.columns, (column: FixColumn) => {
-                row[column.key] = column.defaultValue;
+                row[column.key] = ko.observable(ko.utils.unwrapObservable(column.defaultValue));
             });
             self.itemList.push(row);
         }

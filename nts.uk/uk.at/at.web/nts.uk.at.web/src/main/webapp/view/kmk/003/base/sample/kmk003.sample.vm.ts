@@ -46,6 +46,10 @@ module nts.uk.at.view.kmk003.sample {
                     self.fixTableOption.isMultipleSelect = self.enable();
                     $('#nts-fix-table').ntsFixTableCustom(self.fixTableOption);
                 });
+                
+                self.dataSource.subscribe((newList) => {
+                    console.log(newList);
+                });
             }
                       
             /**
