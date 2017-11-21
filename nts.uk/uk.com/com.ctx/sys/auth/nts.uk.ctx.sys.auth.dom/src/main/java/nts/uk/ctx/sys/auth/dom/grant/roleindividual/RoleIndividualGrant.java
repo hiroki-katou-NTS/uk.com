@@ -49,10 +49,7 @@ public class RoleIndividualGrant extends AggregateRoot {
 				new  DatePeriod(validPeriodStart, validPeriodEnd) );
 	}
 
-	public RoleIndividualGrant(String userID2, String string, String randomUniqueId, RoleType systemManager,
-			GeneralDate startDate, GeneralDate endDate) {
-		// TODO Auto-generated constructor stub
-	}
+
 
 	
 }

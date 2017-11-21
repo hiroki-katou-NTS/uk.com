@@ -59,6 +59,8 @@ public interface RoleIndividualGrantRepository {
 	void remove (String userId, String companyId , RoleType roleType);
 
 	List<RoleIndividualGrant> findByRoleId(String roleId);
+
+	Optional<RoleIndividualGrant> findByDateAndType(GeneralDate startDate, GeneralDate endDate, RoleType roleType);
 	
 	/**
 	 * find by role id
