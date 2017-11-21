@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw007.a.viewmodel {
+module nts.uk.at.view.kdw003.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import windows = nts.uk.ui.windows;
     
