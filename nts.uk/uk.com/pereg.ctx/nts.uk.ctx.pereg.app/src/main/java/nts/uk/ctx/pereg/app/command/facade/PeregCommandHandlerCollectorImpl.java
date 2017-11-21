@@ -26,6 +26,7 @@ import command.person.emergencycontact.*;
 import command.person.family.*;
 import command.person.info.*;
 import command.person.widowhistory.*;
+import nts.uk.ctx.bs.employee.app.command.workplace.assigned.UpdateAssignedWorkplaceCommand;
 
 @Stateless
 @SuppressWarnings("serial")
@@ -53,13 +54,15 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilySocialInsuranceCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSubJobPositionCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
+//			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAddressCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerEmergencyContactCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilyCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAssignedWorkplaceCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAffiDeptCommand>>(){}
 			);
 	
 	@Override

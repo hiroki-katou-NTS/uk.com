@@ -19,4 +19,9 @@ public interface AssignedWrkplcRepository {
 	public AssignedWorkplace getAssignedWorkplaceById(String assignedWorkplaceId);
 	
 	public List<AssignedWorkplace> getListBySId(String sid);
+	/**
+	 * 取得した「所属職場」を更新する
+	 * @param domain
+	 */
+	void updateAssignedWorkplace(AssignedWorkplace domain);
 }
