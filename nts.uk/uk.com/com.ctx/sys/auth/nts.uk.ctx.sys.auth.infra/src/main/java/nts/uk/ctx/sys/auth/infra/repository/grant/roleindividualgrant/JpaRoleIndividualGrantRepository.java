@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.auth.infra.repository.grant;
+package nts.uk.ctx.sys.auth.infra.repository.grant.roleindividualgrant;
 
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrantPK;
 
 @Stateless
-public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndividualGrantRepository {
+public class JpaRoleIndividualGrantRepository extends JpaRepository implements RoleIndividualGrantRepository {
 	
 	private final String SELECT_BY_ROLE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrantPK.roleType = roleType";
 
@@ -98,6 +98,13 @@ public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndivid
 			result =entities.stream().map( e -> toDomain(e)).collect(Collectors.toList());
 		}
 		return result;
+	}
+
+	@Override
+	public Optional<RoleIndividualGrant> findByDateAndType(GeneralDate startDate, GeneralDate endDate,
+			RoleType roleType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
     
 	
