@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
 
@@ -14,7 +13,7 @@ public interface AfterApprovalProcess {
 	/**
 	 * 詳細画面承認後の処理
 	 */
-	public List<String> detailScreenAfterApprovalProcess(Application application, String approverMemo);
+	public String detailScreenAfterApprovalProcess(Application application, String approverMemo);
 
 	/**
 	 * 1.申請個別のエラーチェック

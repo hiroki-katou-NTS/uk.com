@@ -12,7 +12,6 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
-import nts.uk.ctx.at.request.app.command.application.common.ListMailApproval;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
@@ -88,8 +87,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("approveapp")
-	public ListMailApproval approveApp(InputCommonData command){
-		 return this.approveApp.handle(command);
+	public JavaTypeResult<String> approveApp(InputCommonData command){
+		 return new JavaTypeResult<String>(this.approveApp.handle(command));
 	}
 	
 	/**
@@ -98,8 +97,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("denyapp")
-	public void denyApp(InputCommonData command){
-		 this.denyApp.handle(command);
+	public JavaTypeResult<String> denyApp(InputCommonData command){
+		return new JavaTypeResult<String>(this.denyApp.handle(command));
 	}
 	
 	/**

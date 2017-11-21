@@ -506,8 +506,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             service.approveApp(self.inputCommonData()).done(function(data) {
                 nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
-                    if (!data) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392' }).then(()=>{
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
                             location.reload();    
                         });
                     } else {
@@ -533,8 +533,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             service.denyApp(self.inputCommonData()).done(function(data) {
                 nts.uk.ui.dialog.alert({ messageId: 'Msg_222' }).then(function() {
-                    if (!data) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392' }).then(()=>{
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(()=>{
                             location.reload();    
                         });
                     } else {
