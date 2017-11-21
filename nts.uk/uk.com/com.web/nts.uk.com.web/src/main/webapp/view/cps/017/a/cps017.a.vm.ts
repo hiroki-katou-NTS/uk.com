@@ -373,7 +373,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             //set histID
             //setShared('selectedHisId', self.historySelection().histId());
-            setShared('selectHistory', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });
+            setShared('CPS017C_PARAMS', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });
 
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
@@ -390,15 +390,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //ダイアログD画面
         openDialogD() {
             let self = this,
-                currentItem: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId()),
-                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
-                listItems: Array<SelectionItem> = self.listItems(),
-                selectionItemNameList = _.find(listItems, x => x.selectionItemName == perInfoSelectionItem.selectionItemName());
-            
-            setShared('selectHistory', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });            
-            
+                selectHistory = _.find(self.listHistorySelection(), x => x.histId == self.historySelection().histId()),
+                selectionItemNameList = _.find(self.listItems(), x => x.selectionItemName == self.perInfoSelectionItem().selectionItemName()),
+                param = {
+                    sel_history: selectHistory,
+                    sel_name: selectionItemNameList.selectionItemName
+                };
+            setShared('CPS017D_PARAMS', param);
             block.invisible();
             modal('/view/cps/017/d/index.xhtml', { title: '' }).onClosed(function(): any {
                 block.clear();
