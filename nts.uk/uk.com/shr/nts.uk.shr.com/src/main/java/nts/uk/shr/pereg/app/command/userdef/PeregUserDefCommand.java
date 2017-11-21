@@ -9,7 +9,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 @Getter
 public abstract class PeregUserDefCommand {
 
-	/** category ID */
+	/** category code */
 	private final String categoryCd;
 	
 	/** Record Id, but this is null when new record */
