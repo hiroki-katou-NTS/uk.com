@@ -17,7 +17,24 @@
 				<p>#{i18n.getText('CMM007_6')}</p>
 				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 					<div class="tab-content-1">
-						
+						<table>
+							<tr>
+								<td>
+									<div
+										data-bind="ntsFormLabel: { 
+											 
+											required: true }">#{i18n.getText('CMM050_4')}</div>
+								</td>
+								<td>
+									<input id="email_auth"
+										data-bind="ntsTextEditor: {
+											name: '#[CMM050_4]',
+											value: emailAuth,
+											required: true,
+											option: {width: '230px'}" />
+								</td>
+							</tr>
+						</table>
 					</div>
 					<div class="tab-content-2">
 						
