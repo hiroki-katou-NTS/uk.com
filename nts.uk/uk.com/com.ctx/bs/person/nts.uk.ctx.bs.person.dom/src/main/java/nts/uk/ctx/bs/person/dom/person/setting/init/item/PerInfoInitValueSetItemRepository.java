@@ -79,7 +79,7 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @param settingId
 	 * @return
 	 */
-	boolean isExistItem(String settingId, String perInfoCtgId);
+	List<String> isExistItem( List<String> perInfoCtgId);
 
 	/**
 	 * delete all item by settingId

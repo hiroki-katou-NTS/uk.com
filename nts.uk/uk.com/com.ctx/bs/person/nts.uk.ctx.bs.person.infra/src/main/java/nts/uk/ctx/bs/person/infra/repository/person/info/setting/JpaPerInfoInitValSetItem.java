@@ -12,12 +12,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
+import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.StringValue;
+import nts.uk.ctx.bs.person.infra.entity.person.info.item.PpemtPerInfoItem;
 import nts.uk.ctx.bs.person.infra.entity.person.info.setting.initvalue.PpemtPersonInitValueSettingItem;
 import nts.uk.ctx.bs.person.infra.entity.person.info.setting.initvalue.PpemtPersonInitValueSettingItemPk;
 
@@ -33,17 +35,17 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " CM.timeItemMin, CM.timeItemMax, "
 			// 11, 12
 			+ " CM.selectionItemRefCode, CM.selectionItemRefType, "
-			//13,14
+			// 13,14
 			+ " CM.dateItemType, "
-			// 15, 
+			// 15,
 			+ " CM.timepointItemMin , CM.timepointItemMax, "
 			// 16, 17
-			+ " CM.numericItemMin, CM.numericItemMax"
+			+ " CM.numericItemMin, CM.numericItemMax, "
 			// 18, 19
-			
+			+ " CM.stringItemType, CM.stringItemLength, CM.stringItemDataType"
+			// 20,21,22
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
-			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
-			+ " AND CM.itemType = 2"
+			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd" + " AND CM.itemType = 2"
 			+ " INNER JOIN  PpemtPerInfoItem ITEM" + " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
 			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =  ITEM.perInfoCtgId " + " AND ITEM.perInfoCtgId =:perInfoCtgId"
 			+ " AND ITEM.abolitionAtr = 0 "
@@ -51,11 +53,16 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " INNER JOIN PpemtPerInfoItemOrder E"
 			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "
 			+ " AND ITEM.perInfoCtgId = E.perInfoCtgId"
+
+			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId";
+
 	
-			
-			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"	
-			+ " ORDER BY E.disporder";
-	
+	private final String IS_EXITED_ITEM_LST_1 = "SELECT ITEM "
+			+ " FROM  PpemtPerInfoItem ITEM INNER JOIN PpemtPerInfoItemCm CM"
+			+ " ON  ITEM.itemCd = CM.ppemtPerInfoItemCmPK.itemCd" 
+			+ " WHERE   ITEM.abolitionAtr = 0"
+			+ " AND CM.itemType = 2"
+			+ " AND ITEM.perInfoCtgId IN :perInfoCtgId";
 	// SONNLB
 	private final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
 			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd"
@@ -79,9 +86,6 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId";
-	
-	
-
 
 	private static PerInfoInitValueSetItem toDomain(PpemtPersonInitValueSettingItem entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
@@ -105,13 +109,18 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	}
 	
+	private static PersonInfoItemDefinition toDomainString(PpemtPerInfoItem entity) {
+		PersonInfoItemDefinition domain = new PersonInfoItemDefinition();
+		domain.setPerInfoCategoryId(entity.perInfoCtgId);
+		return domain;
+	}
+
 	private static PerInfoInitValueSetItem toDomainOfDefined(Object[] entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
-		domain.setPerInfoItemDefId(entity[0].toString()); //0
-		domain.setPerInfoCtgId(entity[1].toString());//1
-		domain.setItemName(entity[2] == null ? "" : entity[2].toString());//2
-		domain.setIsRequired(EnumAdaptor.valueOf(Integer.valueOf(entity[3].toString()), IsRequired.class)); //3
-		
+		domain.setPerInfoItemDefId(entity[0].toString()); // 0
+		domain.setPerInfoCtgId(entity[1].toString());// 1
+		domain.setItemName(entity[2] == null ? "" : entity[2].toString());// 2
+		domain.setIsRequired(EnumAdaptor.valueOf(Integer.valueOf(entity[3].toString()), IsRequired.class)); // 3
 
 		if (entity[4] == null) {
 			domain.setDataType(0);
@@ -127,14 +136,20 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		if (entity[7] != null) {
 			domain.setItemCode(entity[7].toString());
+			if (entity[7].toString().contains("IS")) {
+
+				domain.setFixedItem(true);
+			} else {
+				domain.setFixedItem(false);
+			}
 		}
 
 		if (entity[8] != null) {
 			// domain.setCtgCode(entity[14].toString());
-			domain.setCtgCode("CO00001");
+			domain.setCtgCode(entity[8].toString());
 		}
 		if (entity[7] != null && entity[8] != null) {
-			domain.setConstraint(PerInfoInitValueSetItem.processs("CO00001", entity[7].toString()));
+			domain.setConstraint(PerInfoInitValueSetItem.processs(entity[8].toString(), entity[7].toString()));
 		}
 
 		if (entity[4] != null) {
@@ -177,135 +192,30 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		if (entity[17] != null) {
 			domain.setTimepointItemMax(Integer.valueOf(entity[17].toString()));
 		}
-		
-		if(entity[18] !=null) {
-			domain.setNumericItemMin(new BigDecimal(entity[18].toString()));
-		}
-		
-		if(entity[19] !=null) {
-			domain.setNumericItemMax(new BigDecimal(entity[19].toString()));
-		}
-
-		return domain;
-
-	}
-
-	private static PerInfoInitValueSetItem toDomain(Object[] entity) {
-		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
-		domain.setPerInfoItemDefId(entity[0].toString());
-		domain.setPerInfoCtgId(entity[1].toString());
-		domain.setItemName(entity[2] == null ? "" : entity[2].toString());
-		domain.setIsRequired(EnumAdaptor.valueOf(Integer.valueOf(entity[3].toString()), IsRequired.class));
-		domain.setSettingId(entity[4] == null ? "" : entity[4].toString());
-
-		String refMethod;
-
-		if (entity[5].toString().equals("0")) {
-			// return No setting type
-			refMethod = "1";
-
-		} else {
-
-			refMethod = entity[5].toString();
-
-		}
-
-		domain.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(refMethod), ReferenceMethodType.class));
-
-		String saveDataType;
-
-		if (entity[6] != null) {
-			saveDataType = entity[6].toString();
-			domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
-		}
-
-		domain.setStringValue(new StringValue(entity[7] == null ? null : entity[7].toString()));
-		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
-
-		// định dạng lại cách hiển thị của date
-		if (entity[9] != null) {
-
-			domain.setDateValue(GeneralDate.fromString(entity[9].toString(), "yyyy-MM-dd"));
-
-		}
-
-		if (entity[10] == null) {
-			domain.setDataType(0);
-		} else {
-			domain.setDataType(Integer.valueOf(entity[10].toString()));
-		}
-
-		if (entity[11] == null) {
-			domain.setItemType(0);
-		} else {
-			domain.setItemType(Integer.valueOf(entity[11].toString()));
-		}
-
-		if (entity[13] != null) {
-			domain.setItemCode(entity[13].toString());
-		}
-
-		if (entity[14] != null) {
-			// domain.setCtgCode(entity[14].toString());
-			domain.setCtgCode("CO00001");
-		}
-		if (entity[13] != null && entity[14] != null) {
-			domain.setConstraint(PerInfoInitValueSetItem.processs("CO00001", entity[13].toString()));
-		}
-
-		if (entity[10] != null) {
-			if (entity[10].toString().equals("2")) {
-				if (entity[15] != null) {
-					domain.setNumberDecimalPart(Integer.valueOf(entity[15].toString()));
-				}
-
-				if (entity[16] != null) {
-					domain.setNumberIntegerPart(Integer.valueOf(entity[16].toString()));
-				}
-			}
-
-		}
-
-		if (entity[17] != null) {
-			domain.setTimeItemMin(Integer.valueOf(entity[17].toString()));
-		}
 
 		if (entity[18] != null) {
-			domain.setTimeItemMax(Integer.valueOf(entity[18].toString()));
+			domain.setNumericItemMin(new BigDecimal(entity[18].toString()));
 		}
 
 		if (entity[19] != null) {
-			domain.setSelectionItemId(entity[19].toString());
+			domain.setNumericItemMax(new BigDecimal(entity[19].toString()));
 		}
 
 		if (entity[20] != null) {
-			domain.setSelectionItemRefType(Integer.valueOf(entity[20].toString()));
+			domain.setStringItemType(Integer.valueOf(entity[20].toString()));
 		}
 
 		if (entity[21] != null) {
-			domain.setDateType(Integer.valueOf(entity[21].toString()));
+			domain.setStringItemLength(Integer.valueOf(entity[21].toString()));
 		}
 
 		if (entity[22] != null) {
-			domain.setTimepointItemMin(Integer.valueOf(entity[22].toString()));
-		}
-
-		if (entity[23] != null) {
-			domain.setTimepointItemMax(Integer.valueOf(entity[23].toString()));
-		}
-		
-		if(entity[24] !=null) {
-			domain.setNumericItemMin(new BigDecimal(entity[24].toString()));
-		}
-		
-		if(entity[25] !=null) {
-			domain.setNumericItemMax(new BigDecimal(entity[25].toString()));
+			domain.setStringItemDataType(Integer.valueOf(entity[22].toString()));
 		}
 
 		return domain;
 
 	}
-
 	/**
 	 * convert from domain PerInfoInitValueSetItem to entity
 	 * PpemtPersonInitValueSettingItem
@@ -328,27 +238,35 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId) {
-		List<PerInfoInitValueSetItem> item =  this.queryProxy().query(SEL_ALL_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId).
-				getList(c -> toDomainOfDefined(c));
+		List<PerInfoInitValueSetItem> item = this.queryProxy().query(SEL_ALL_ITEM, Object[].class)
+				.setParameter("perInfoCtgId", perInfoCtgId).getList(c -> toDomainOfDefined(c));
 		List<PerInfoInitValueSetItem> itemInit = this.getAllInitValueItem(perInfoCtgId, settingId);
-		
+
 		List<PerInfoInitValueSetItem> itemResult = item.stream().map(c -> {
 			itemInit.stream().forEach(init -> {
-				if(c.getPerInfoItemDefId().equals(init.getPerInfoItemDefId())) {
-					
-					 c.setSettingId(init.getSettingId());
-					 c.setRefMethodType(init.getRefMethodType());
-					 c.setSaveDataType(init.getSaveDataType());
-					 c.setStringValue(init.getStringValue());
-					 c.setIntValue(init.getIntValue());
-					 c.setDateValue(init.getDateValue());
-					 
+				if (c.getPerInfoItemDefId().equals(init.getPerInfoItemDefId())) {
+
+					c.setSettingId(init.getSettingId());
+					c.setRefMethodType(init.getRefMethodType());
+					if (init.getRefMethodType().value == 2) {
+						c.setSaveDataType(init.getSaveDataType());
+						if (init.getSaveDataType().value == 1) {
+							c.setStringValue(init.getStringValue());
+						} else if (init.getSaveDataType().value == 2) {
+
+							c.setIntValue(init.getIntValue());
+						} else if (init.getSaveDataType().value == 3) {
+
+							c.setDateValue(init.getDateValue());
+						}
+					}
 				}
+
 			});
-		
+
 			return c;
 		}).collect(Collectors.toList());
-		
+
 		return itemResult;
 
 	}
@@ -420,11 +338,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	@Override
 	public boolean isExist(String settingId, String perInfoCtgId) {
 		List<PerInfoInitValueSetItem> itemFilter = this.getAllInitValueItem(perInfoCtgId, settingId).stream()
-				.filter(c -> (c.getRefMethodType().value != 1))
-				.collect(Collectors.toList());
+				.filter(c -> (c.getRefMethodType().value != 1)).collect(Collectors.toList());
 
 		if (itemFilter.size() > 0) {
-			
+
 			return true;
 		}
 		return false;
@@ -485,11 +402,14 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	}
 
 	@Override
-	public boolean isExistItem(String settingId, String perInfoCtgId) {
-		List<PerInfoInitValueSetItem> itemlist = this.getAllItem(settingId, perInfoCtgId);
-		if(itemlist.size() > 0) {
-			return true;
+	public List<String> isExistItem(List<String> perInfoCtgId) {
+		List<PersonInfoItemDefinition> item = this.queryProxy().query(IS_EXITED_ITEM_LST_1, PpemtPerInfoItem.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).getList(c -> toDomainString(c));
+		
+		if (item.size() > 0) {
+			return item.stream().map(c -> c.getPerInfoCategoryId()).
+					distinct().collect(Collectors.toList());
 		}
-		return false;
+		return new ArrayList<>();
 	}
 }
