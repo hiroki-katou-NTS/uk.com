@@ -154,11 +154,12 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	@Override
 	public Optional<PersonInfoItemAuth> getItemDetai(String roleId, String categoryId, String personItemDefId) {
 
-		return this.queryProxy()
+		Optional<PersonInfoItemAuth> obj = this.queryProxy()
 				.find(new PpemtPersonItemAuthPk(roleId, categoryId, personItemDefId), PpemtPersonItemAuth.class)
 				.map(e -> {
 					return Optional.of(toDomain(e));
 				}).orElse(Optional.empty());
+		return obj;
 	}
 
 	@Override
