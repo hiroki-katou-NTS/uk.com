@@ -235,25 +235,21 @@ public class EmployeeInDesignatedFinder {
 					.collect(Collectors.toList());
 
 			if (filteredEntryJobHist.isEmpty()) {
-				// Case: Filtered ListEntryJobHist (Condition: JoinDate <=
-				// BaseDate <= RetirementDate) is empty
-				List<GeneralDate> listJointDate = new ArrayList<>();
-
-				for (int i = 0; i < listEntryJobHist.size(); i++) {
-					listJointDate.add(listEntryJobHist.get(i).getJoinDate());
-				}
-				// The First Joining Date
-				GeneralDate firtJointDate = Collections.min(listJointDate);
-
-				// Check if baseDate is before First Joining Date
-				if (referenceDate.before(firtJointDate)) {
+				// Case: Filtered ListEntryJobHist (Condition: JoinDate <= BaseDate <= RetirementDate) is empty
+				
+				// JobEntryHistory List (Condition: JoinDate < BaseDate)
+				List<JobEntryHistory> jonEntryHistBefore = listEntryJobHist.stream().filter(item -> {
+					return item.getJoinDate().before(referenceDate);
+				}).collect(Collectors.toList());
+				
+				if (CollectionUtil.isEmpty(jonEntryHistBefore)) {
 					// StatusOfEmployment = BEFORE_JOINING
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
-
 				} else {
 					// StatusOfEmployment = RETIREMENT
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.RETIREMENT.value);
 				}
+				
 			} else {// Case: Filtered ListEntryJobHist (Condition: JoinDate <=
 					// BaseDate <= RetirementDate) is not empty
 
