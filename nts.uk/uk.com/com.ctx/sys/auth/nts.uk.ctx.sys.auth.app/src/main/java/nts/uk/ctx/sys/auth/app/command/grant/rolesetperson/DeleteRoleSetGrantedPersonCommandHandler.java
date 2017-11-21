@@ -10,13 +10,12 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepositor
 
 @Stateless
 @Transactional
-public class RegisterRoleSetGrantedPersonCommandHandler extends CommandHandler<RoleSetGrantedPersonCommand>{
+public class DeleteRoleSetGrantedPersonCommandHandler extends CommandHandler<RoleSetGrantedPersonCommand> {
 	@Inject
 	private RoleSetGrantedPersonRepository roleSetPersonRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<RoleSetGrantedPersonCommand> context) {
-		// TODO Auto-generated method stub
-		
+		roleSetPersonRepo.delete(context.getCommand().getEmployeeId());
 	}
 }

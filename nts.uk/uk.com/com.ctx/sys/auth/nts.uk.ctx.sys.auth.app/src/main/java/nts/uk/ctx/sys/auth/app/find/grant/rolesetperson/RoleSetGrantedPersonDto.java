@@ -15,24 +15,25 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 public class RoleSetGrantedPersonDto {
 
 	private String roleSetCd;
-	private String companyId;
+	private String employeeId;
+	private String employeeCd;
+	private String employeeName;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
-	private String employeeId;
 
-	public RoleSetGrantedPersonDto(String roleSetCd, String companyId, GeneralDate startDate, GeneralDate endDate,
-			String employeeId) {
+	public RoleSetGrantedPersonDto(String roleSetCd, String employeeId, String employeeCd, String employeeName, GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.roleSetCd = roleSetCd;
-		this.companyId = companyId;
+		this.employeeCd = employeeCd;
+		this.employeeName = employeeName;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.employeeId = employeeId;
 	}
 
-	public static RoleSetGrantedPersonDto fromDomain(RoleSetGrantedPerson domain) {
-		return new RoleSetGrantedPersonDto(domain.getRoleSetCd().v(), domain.getCompanyId(),
-				domain.getValidPeriod().start(), domain.getValidPeriod().end(), domain.getEmployeeID());
-	}
+//	public static RoleSetGrantedPersonDto fromDomain(RoleSetGrantedPerson domain) {
+//		return new RoleSetGrantedPersonDto(domain.getRoleSetCd().v(), domain.getCompanyId(),
+//				domain.getValidPeriod().start(), domain.getValidPeriod().end(), domain.getEmployeeID());
+//	}
 
 }
