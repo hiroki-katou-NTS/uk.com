@@ -26,14 +26,16 @@
 				<button id="A1_003" class="danger" tabindex="3" data-bind="click: deleteRoleSet,
 						enable: !isNewMode()" >#{i18n.getText('CAS011_6')}</button>
 
-				<button id="A1_004" tabindex="4" data-bind="click: closeWindow, enable: !nts.uk.ui.windows.getSelf().isRoot ">#{i18n.getText('CPS016_7')}</button>
+				<button id="A1_004" tabindex="4" data-bind="click: openDialogSettingC ">#{i18n.getText('CPS016_7')}</button>
 			</div>
 
 			<div id="contents-area" class="cf">
-				
+				<!-- 
 				<div id="content-left" class="pull-left"
 					data-bind="ntsPanel:{width: '300px', height: '475px',
 					direction: 'right', showIcon: true, visible: true}">
+					 -->
+					 <div>
 						<!--A2_001 -->
 						<div>#{i18n.getText('CAS011_8')}</div>
 						<div style="float: left">
@@ -73,7 +75,7 @@
 		                                         value: roleSetCd,
 		                                         required: true,
 		                                         constraint: 'RoleSetCode',
-		                                         enable: true}" style="width: 20px" />
+		                                         enable: true}" style="width: 40px" />
 	
 		                               <!-- A3_003: Rose Set Name -->
 		                                <input tabindex="6"
@@ -111,9 +113,8 @@
 							</tr>
 							<tr class="row">
 								<td>
-									<!--A3_007 HR Role
+									<!--A3_007 HR Role -->
 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_16')}</div>
-									-->
 								</td>
 								<td style = "padding-left: 5px">
 									<div>
@@ -132,9 +133,8 @@
 							</tr>
 							<tr class="row">
 								<td>
-									<!--A3_010 Salary Role
+									<!--A3_010 Salary Role-->
 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_17')}</div>
-									-->
 								</td>
 								<td style = "padding-left: 5px">
 									<!-- A3_011 Salary Role Name -->
@@ -143,7 +143,7 @@
 											data-bind="ntsTextEditor:{
 			                                         value: SalaryRole.roleName,
 			                                         required: false,
-			                                         enable: false}" style="width: 120px"/>
+			                                         enable: false}" style="width: 200px"/>
 	
 										<!-- A3_012: Salary Role - reference button -->
 										<button id="A3_012" tabindex="4" data-bind="click: openDialogCLD025(ROLE_TYPE.SALARY),
@@ -163,7 +163,7 @@
 											data-bind="ntsTextEditor:{
 			                                         value: personInfRole.roleName,
 			                                         required: false,
-			                                         enable: false}" style="width: 120px"/>
+			                                         enable: false}" style="width: 200px"/>
 	
 										<!-- A3_015: Person Info Role - reference button -->
 										<button id="A3_015" tabindex="4" data-bind="click: openDialogCLD025(ROLE_TYPE.PERSON_INF),
@@ -184,7 +184,7 @@
 											data-bind="ntsTextEditor:{
 			                                         value: myNumberRole.roleName,
 			                                         required: false,
-			                                         enable: false}" style="width: 120px"/>
+			                                         enable: false}" style="width: 200px"/>
 		                               
 										<!-- A3_018: My Number  Role - reference button -->
 										<button id="A3_018" tabindex="4" data-bind="click: openDialogCLD025(ROLE_TYPE.MY_NUMBER),
@@ -204,7 +204,7 @@
 											data-bind="ntsTextEditor:{
 			                                         value: officeHelperRole.roleName,
 			                                         required: false,
-			                                         enable: false}" style="width: 120px"/>	                               
+			                                         enable: false}" style="width: 200px"/>	                               
 										<!-- A3_021: Office Helper Role - reference button -->
 										<button id="A3_021" data-bind="click: openDialogCLD025(ROLE_TYPE.OFFICE_HELPER),
 											enable: true ">#{i18n.getText('CAS011_15')}</button>

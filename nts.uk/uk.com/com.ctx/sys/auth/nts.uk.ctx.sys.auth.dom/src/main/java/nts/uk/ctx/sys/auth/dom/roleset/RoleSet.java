@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -46,8 +44,6 @@ public class RoleSet extends AggregateRoot {
 	/** ロールID: 給与ロール */
 	private String salaryRoleId;
 
-	/** list of Web menu code link */
-	List<String> roleSetAndWebMenuCds;
 	/**
 	 * Instantiates a new role set.
 	 *
@@ -83,49 +79,8 @@ public class RoleSet extends AggregateRoot {
 		this.personInfRoleId 	= personInfRoleId;
 		this.employmentRoleId 	= employmentRoleId;
 		this.salaryRoleId 		= salaryRoleId;
-		this.roleSetAndWebMenuCds = RoleSetUtils.buildRoleSetAndWebMenu(roleSetCd);
 	}
-	
-	
-	/**
-	 * Initial a new RoleSet with list of WebMenu code.
-	 * 
-	 * @param roleSetCd
-	 * @param companyId
-	 * @param roleSetName
-	 * @param approvalAuthority
-	 * @param officeHelperRoleId
-	 * @param myNumberRoleId
-	 * @param hRRoleId
-	 * @param personInfRoleId
-	 * @param employmentRoleId
-	 * @param salaryRoleId
-	 * @param webMenuCds
-	 */
-	public RoleSet(String roleSetCd
-			, String companyId
-			, String roleSetName
-			, ApprovalAuthority approvalAuthority
-			, String officeHelperRoleId
-			, String myNumberRoleId
-			, String hRRoleId
-			, String personInfRoleId
-			, String employmentRoleId
-			, String salaryRoleId
-			, List<String> webMenuCds) {
-		this.roleSetCd 			= new RoleSetCode(roleSetCd);
-		this.companyId 			= companyId;
-		this.roleSetName 		= new RoleSetName(roleSetName);
-		this.approvalAuthority 	= approvalAuthority;
-		this.officeHelperRoleId = (officeHelperRoleId);
-		this.myNumberRoleId 	= myNumberRoleId;
-		this.hRRoleId 			= hRRoleId;
-		this.personInfRoleId 	= personInfRoleId;
-		this.employmentRoleId 	= employmentRoleId;
-		this.salaryRoleId 		= salaryRoleId;
-		this.roleSetAndWebMenuCds = webMenuCds;		
-	}
-	
+
 	/**
 	 * If has approval Authority right.
 	 *

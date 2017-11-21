@@ -35,7 +35,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
             // A2_003, A2_004, A2_005, A2_006 
             self.gridColumns = ko.observableArray([
-                                                {headerText: resource.getText('CAS011_09'), key: 'roleSetCd', formatter: _.escape, width: 20},
+                                                {headerText: resource.getText('CAS011_09'), key: 'roleSetCd', formatter: _.escape, width: 50},
                                                 {headerText: resource.getText('CAS011_10'), key: 'roleSetName', formatter: _.escape, width: 225}
                                            ]);
             self.columns = ko.observableArray([
@@ -75,7 +75,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
          **/
         start(): JQueryPromise<any> {
             let self = this,
-                currentRoleSet: IRoleSet = self.currentRoleSet(),
+                currentRoleSet: RoleSet = self.currentRoleSet(),
                 listRoleSets = self.listRoleSets,
                 dfd = $.Deferred();
             
@@ -109,8 +109,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 } else { //in case number of RoleSet is zero
                     //画面を新規モードで起動する
 
-                    self.isNewMode(true);
-                    self.currentRoleSet.roleSetCd('');
+                    self.createNewRoleSetMode();
                 }
 
                 dfd.resolve();
@@ -118,8 +117,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
             }).fail(error => {
               //画面を新規モードで起動する
 
-                self.isNewMode(true);
-                self.currentRoleSet.roleSetCd('');
+                self.createNewRoleSetMode();
             });
             
             return dfd.promise();
@@ -128,7 +126,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
          /**
           * Setting selected role set.
          */
-        private settingSelectedRoleSet(selectedRoleSetCd? : String) {
+        settingSelectedRoleSet(selectedRoleSetCd? : String) {
             let self = this,
                 currentRoleSet: IRoleSet = self.currentRoleSet(),
                 listRoleSets = self.listRoleSets;
@@ -151,7 +149,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
         /**
          * Save
          */
-        public saveRoleSet() {
+        saveRoleSet() {
             let self = this;
             block.invisible();
             $('.nts-input').trigger("validate");
@@ -191,7 +189,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
         /**
          * delete the role set
          */
-        public deleteRoleSet() {
+        deleteRoleSet() {
             block.invisible();
                 let self = this,
                         listRoleSets = self.listRoleSets,
@@ -282,12 +280,14 @@ module nts.uk.com.view.cas011.a.viewmodel {
          * 「設定」ボタンをクリック - Click "Setting" button
         */
 
-       openDialogC(roleSetCd?: string) {
-           let self = this;
-           if (!roleSetCd) {
+       openDialogSettingC() {
+           let self = this,
+               currentRoleSet: RoleSet = this.currentRoleSet();
+
+           if (!currentRoleSet && !currentRoleSet.roleSetCd) {
                return;
            }
-           windows.setShared('roleSetCd', roleSetCd);
+           windows.setShared('roleSetCd', currentRoleSet.roleSetCd);
            block.invisible();
            windows.sub.modal.modal('/view/cas/011/c/index.xhtml', { title: '' }).onClosed(function(): any {
                block.clear();
@@ -296,9 +296,12 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
         /**
          * create a new Role Set
+         * 画面を新規モードで起動する
          */
-        public createNewRoleSet() {
+        createNewRoleSetMode() {
             let self = this;
+            
+            self.isNewMode(true);
             self.currentRoleSet().roleSetCd('');
         }
         
@@ -306,9 +309,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
          * BindNoData to currentRoleSet
          */
 
-        public createNewCurrentRoleSet() {
+        createNewCurrentRoleSet() {
             let self = this,
-                currentRoleSet: IRoleSet = self.currentRoleSet();
+                currentRoleSet: RoleSet = self.currentRoleSet();
             
             self.currentRoleSet.roleSetCd('');
             self.currentRoleSet.roleSetName('');
@@ -327,9 +330,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
          * @param _roleSet
          */
 
-        private createCurrentRoleSet(_roleSet: IRoleSet) {
+        createCurrentRoleSet(_roleSet: IRoleSet) {
             let self = this,
-                currentRoleSet: IRoleSet = this.currentRoleSet(),
+                currentRoleSet: RoleSet = this.currentRoleSet(),
                 listWebMenus = this.listWebMenus();
 
             self.currentRoleSet.roleSetCd(_roleSet.roleSetCd);

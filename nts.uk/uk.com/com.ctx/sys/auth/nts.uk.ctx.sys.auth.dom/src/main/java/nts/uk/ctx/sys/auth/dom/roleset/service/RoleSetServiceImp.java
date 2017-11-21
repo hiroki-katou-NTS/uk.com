@@ -61,9 +61,6 @@ public class RoleSetServiceImp implements RoleSetService{
 			throw new BusinessException("Msg_3");
 		}
 
-		// pre-check : メニューが１件以上選択されていなければならない: Msg_583, メニュー
-		checkHasntWebMenuAndThrowException(roleSet);
-
 		// Register Role Set into DB
 		this.roleSetRepository.insert(roleSet);
 	}
@@ -78,23 +75,10 @@ public class RoleSetServiceImp implements RoleSetService{
 		// validate
 		roleSet.validate();
 		
-		// pre-check : メニューが１件以上選択されていなければならない: Msg_583, メニュー
-		checkHasntWebMenuAndThrowException(roleSet);
-
 		// update the Role set to DB - ドメインモデル「ロールセット」を更新登録する
 		this.roleSetRepository.update(roleSet);
 	}
 	
-	/**
-	 * Check if the Role set hasn't any web menu and then throw business exception with #Msg_583
-	 * @param roleSet
-	 */
-	private void checkHasntWebMenuAndThrowException(RoleSet roleSet) {
-		if (CollectionUtil.isEmpty(roleSet.getRoleSetAndWebMenuCds())) {
-			throw new BusinessException("Msg_583");
-		}		
-	}
-
 	/**
 	 * Delete Role Set - ロールセット削除
 	 * @param roleSetCd
