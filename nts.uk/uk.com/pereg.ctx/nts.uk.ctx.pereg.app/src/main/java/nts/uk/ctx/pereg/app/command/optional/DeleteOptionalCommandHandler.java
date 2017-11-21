@@ -4,15 +4,15 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommand;
-import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommandHandler;
+import nts.uk.shr.pereg.app.command.userdef.PeregUserDefDeleteCommand;
+import nts.uk.shr.pereg.app.command.userdef.PeregUserDefDeleteCommandHandler;
 
 @Stateless
-public class DeleteOptionalCommandHandler extends CommandHandler<PeregUserDefUpdateCommand>
-		implements PeregUserDefUpdateCommandHandler {
+public class DeleteOptionalCommandHandler extends CommandHandler<PeregUserDefDeleteCommand>
+		implements PeregUserDefDeleteCommandHandler {
 
 	@Override
-	protected void handle(CommandHandlerContext<PeregUserDefUpdateCommand> context) {
+	protected void handle(CommandHandlerContext<PeregUserDefDeleteCommand> context) {
 		// TODO Auto-generated method stub
 		
 	}
