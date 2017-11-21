@@ -127,7 +127,6 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							} else if (c.getDataType() == 4) {
 
 								// time item
-
 								itemExist.get().setRefMethodType(EnumAdaptor
 										.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
 								itemExist.get().setIntValue(new IntValue(c.getTime()));
@@ -198,6 +197,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 
 							} else if (c.getDataType() == 4) {
 								// time item
+								item.setSettingId(command.getSettingId());
 								item.setPerInfoCtgId(command.getPerInfoCtgId());
 								item.setPerInfoItemDefId(c.getPerInfoItemDefId());
 								item.setRefMethodType(EnumAdaptor.valueOf(2, ReferenceMethodType.class));
@@ -207,6 +207,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 
 							} else if (c.getDataType() == 5) {
 								// time point
+								item.setSettingId(command.getSettingId());
 								item.setPerInfoCtgId(command.getPerInfoCtgId());
 								item.setPerInfoItemDefId(c.getPerInfoItemDefId());
 								item.setRefMethodType(EnumAdaptor.valueOf(2, ReferenceMethodType.class));
