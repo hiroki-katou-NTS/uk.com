@@ -1,7 +1,7 @@
 package nts.uk.ctx.bs.person.infra.repository.person.setting.selectionitem.selection;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -22,7 +22,8 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelItemOrder si";
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId";
-	private static final String SELECT_ALL_SELECTION_ID = SELECT_ALL + " WHERE si.selectionIdPK.selectionId = :selectionId";
+	private static final String SELECT_ALL_SELECTION_ID = SELECT_ALL
+			+ " WHERE si.selectionIdPK.selectionId = :selectionId";
 
 	@Override
 	public void add(SelectionItemOrder selectionItemOrder) {
@@ -63,16 +64,23 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 				.setParameter("selectionId", selectionId).getList(c -> toDomain(c));
 	}
 
+	// hoatt
+	/**
+	 * update List Selection Item Order
+	 * 
+	 * @param lstSelOrder
+	 */
 	@Override
 	public void updateListSelOrder(List<SelectionItemOrder> lstSelOrder) {
-		// TODO Auto-generated method stub
-		
+		List<PpemtSelItemOrder> lstEntity = new ArrayList<>();
+		for (SelectionItemOrder selItemOrder : lstSelOrder) {
+			PpemtSelItemOrder selOrderUi = toEntity(selItemOrder);
+			PpemtSelItemOrder selOrder = this.queryProxy()
+					.find(new PpemtSelItemOrderPK(selItemOrder.getSelectionID()), PpemtSelItemOrder.class).get();
+			selOrder.setDispOrder(selOrderUi.dispOrder);
+			selOrder.setInitSelection(selOrderUi.initSelection);
+			lstEntity.add(toEntity(selItemOrder));
+		}
+		this.commandProxy().updateAll(lstEntity);
 	}
-
-	@Override
-	public Optional<SelectionItemOrder> getSelOrderBySelectionId(String selectionID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
