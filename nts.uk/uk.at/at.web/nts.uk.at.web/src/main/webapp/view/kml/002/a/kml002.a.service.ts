@@ -6,7 +6,9 @@ module nts.uk.at.view.kml002.a.service {
         findAllVerticalCalSet: "ctx/at/schedule/budget/verticalsetting/findAllVerticalCalSet",
         getVerticalCalSetByCode: "ctx/at/schedule/budget/verticalsetting/getVerticalCalSetByCode/{0}",
         addVerticalCalSet: "ctx/at/schedule/budget/verticalsetting/addVerticalCalSet",
-        deleteVerticalCalSet: "ctx/at/schedule/budget/verticalsetting/deleteVerticalCalSet"
+        deleteVerticalCalSet: "ctx/at/schedule/budget/verticalsetting/deleteVerticalCalSet",
+        getDailyItems: "ctx/at/schedule/budget/verticalsetting/getDailyItems",
+        findByAtr: "at/schedule/budget/external/findByAtr"
     }  
     
     /**
@@ -38,6 +40,29 @@ module nts.uk.at.view.kml002.a.service {
         var path = nts.uk.text.format(servicePath.deleteVerticalCalSet);
         return nts.uk.request.ajax("at", path, { verticalCalCd: verticalCalCd });
     } 
+    
+    /**
+     *  Get C data by code
+     */
+    export function getDailyItems(param: any): Array<BaseItemsDto> {
+        var path = nts.uk.text.format(servicePath.getDailyItems);
+        return nts.uk.request.ajax("at", path, param);
+    }  
+    
+    /**
+     *  Get D data by code
+     */
+    export function getByAtr(param: any){   
+        return nts.uk.request.ajax(servicePath.findByAtr, param);   
+    }
+    
+    export interface BaseItemsDto {
+        id: number,
+        itemId: string,
+        itemName: string,
+        itemType: number,
+        dispOrder: number 
+    }
     
     export interface VerticalSettingDto {
         verticalCalCd: string,

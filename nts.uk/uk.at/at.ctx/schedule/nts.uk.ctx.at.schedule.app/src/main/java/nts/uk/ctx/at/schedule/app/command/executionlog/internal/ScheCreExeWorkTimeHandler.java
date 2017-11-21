@@ -760,13 +760,17 @@ public class ScheCreExeWorkTimeHandler {
 			case ONE_DAY_REST :
 				break;
 			case ONE_DAY_WORK :
-				return Optional.of(this.workTimeSetRepository.findByCode(command.getCompanyId(), worktimeCode));
+				Optional<WorkTimeSet> optionalWorkTimeSet = this.workTimeSetRepository
+						.findByCode(command.getCompanyId(), worktimeCode);
+				if (optionalWorkTimeSet.isPresent()) {
+					return Optional.of(optionalWorkTimeSet.get());
+				}
+				break;
 			default :
 				// morning or afternoon
 				return this.getTimeZone(command, worktypeCode, worktimeCode);
 		}
 		return Optional.of(worktypeCode);
-
 	}
 	
 	/**

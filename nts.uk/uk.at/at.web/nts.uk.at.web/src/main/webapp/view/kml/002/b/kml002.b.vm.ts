@@ -110,15 +110,19 @@ module nts.uk.at.view.kml002.b.viewmodel {
             
             if(resultValidate) {
                 var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+                var item1 = _.find(self.verticalCalItems(), function(o) { return o.itemCode == self.selectedItem1(); });
+                var item2 = _.find(self.verticalCalItems(), function(o) { return o.itemCode == self.selectedItem2(); });
                 
                 var formulaItem : IFormulaItem = {
                     verticalCalCd: data.verticalCalCd,
                     verticalCalItemId: data.itemId,
                     settingMethod1: self.settingMethod1(),
                     verticalCalItem1: self.selectedItem1(),
+                    verticalCalItemName1: item1.itemName,
                     verticalInputItem1: self.settingMethod1() == 1 ? self.verticalInputItem1() : null,
                     settingMethod2: self.settingMethod2(),
                     verticalCalItem2: self.selectedItem2(),
+                    verticalCalItemName2: item2.itemName,
                     verticalInputItem2: self.settingMethod2() == 1 ? self.verticalInputItem2() : null,
                     operatorAtr: self.selectedOperator()
                 };
@@ -212,9 +216,11 @@ module nts.uk.at.view.kml002.b.viewmodel {
         verticalCalItemId: KnockoutObservable<string>;
         settingMethod1: KnockoutObservable<number>;
         verticalCalItem1: KnockoutObservable<number>;
+        verticalCalItemName1: KnockoutObservable<string>;
         verticalInputItem1: KnockoutObservable<number>;
         settingMethod2: KnockoutObservable<number>;
         verticalCalItem2: KnockoutObservable<number>;
+        verticalCalItemName2: KnockoutObservable<string>;
         verticalInputItem2: KnockoutObservable<number>;
         operatorAtr: KnockoutObservable<number>;
         
@@ -224,9 +230,11 @@ module nts.uk.at.view.kml002.b.viewmodel {
             self.verticalCalItemId = ko.observable(param.verticalCalItemId);
             self.settingMethod1 = ko.observable(param.settingMethod1);
             self.verticalCalItem1 = ko.observable(param.verticalCalItem1);
+            self.verticalCalItemName1 = ko.observable(param.verticalCalItemName1);
             self.verticalInputItem1 = ko.observable(param.verticalInputItem1);
             self.settingMethod2 = ko.observable(param.settingMethod2);
             self.verticalCalItem2 = ko.observable(param.verticalCalItem2);
+            self.verticalCalItemName2 = ko.observable(param.verticalCalItemName2);
             self.verticalInputItem2 = ko.observable(param.verticalInputItem2);
             self.operatorAtr = ko.observable(param.operatorAtr);
         }
@@ -237,9 +245,11 @@ module nts.uk.at.view.kml002.b.viewmodel {
         verticalCalItemId: string;
         settingMethod1: number;
         verticalCalItem1: number;
+        verticalCalItemName1: string;
         verticalInputItem1: number;
         settingMethod2: number;
         verticalCalItem2: number;
+        verticalCalItemName2: string;
         verticalInputItem2: number;
         operatorAtr: number;
     }

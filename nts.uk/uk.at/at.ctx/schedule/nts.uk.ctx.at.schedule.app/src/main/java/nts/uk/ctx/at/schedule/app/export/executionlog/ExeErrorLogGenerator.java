@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.find.executionlog.export;
+package nts.uk.ctx.at.schedule.app.export.executionlog;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 

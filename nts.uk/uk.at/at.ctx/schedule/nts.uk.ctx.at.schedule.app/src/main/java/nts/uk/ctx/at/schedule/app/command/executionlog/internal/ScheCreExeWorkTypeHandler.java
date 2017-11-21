@@ -79,24 +79,24 @@ public class ScheCreExeWorkTypeHandler {
 
 			String workTypeCode = optionalWorktypeCode.get();
 
-				Optional<Object> optionalWorkTimeObj = this.scheCreExeWorkTimeHandler.getWorktime(command,
-						workTypeCode, personalWorkScheduleCreSet);
+			Optional<Object> optionalWorkTimeObj = this.scheCreExeWorkTimeHandler.getWorktime(command, workTypeCode,
+					personalWorkScheduleCreSet);
 
-				// object return is String
-				if (optionalWorkTimeObj.isPresent() && optionalWorkTimeObj.get() instanceof String) {
-					// update all basic schedule
-					this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
-							personalWorkScheduleCreSet.getEmployeeId(), workTypeCode,
-							optionalWorkTimeObj.get().toString());
-				}
+			// object return is String
+			if (optionalWorkTimeObj.isPresent() && optionalWorkTimeObj.get() instanceof String) {
+				// update all basic schedule
+				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
+						personalWorkScheduleCreSet.getEmployeeId(), workTypeCode, optionalWorkTimeObj.get().toString(),
+						null);
+			}
 
-				// object return is WorkTimeSet
-				if (optionalWorkTimeObj.isPresent() && optionalWorkTimeObj.get() instanceof WorkTimeSet) {
-					WorkTimeSet workTimeSet = (WorkTimeSet) optionalWorkTimeObj.get();
-					// update all basic schedule
-					this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
-							personalWorkScheduleCreSet.getEmployeeId(), workTypeCode, workTimeSet.getSiftCD());
-				}
+			// object return is WorkTimeSet
+			if (optionalWorkTimeObj.isPresent() && optionalWorkTimeObj.get() instanceof WorkTimeSet) {
+				WorkTimeSet workTimeSet = (WorkTimeSet) optionalWorkTimeObj.get();
+				// update all basic schedule
+				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
+						personalWorkScheduleCreSet.getEmployeeId(), workTypeCode, workTimeSet.getSiftCD(), workTimeSet);
+			}
 		}
 
 	}
