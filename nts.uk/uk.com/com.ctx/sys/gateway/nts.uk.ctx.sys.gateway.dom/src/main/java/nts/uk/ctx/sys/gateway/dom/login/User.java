@@ -106,7 +106,7 @@ public class User {
 	 * @param associatedPersonId
 	 * @return User
 	 */
-	public User createFromJavaType(String userId , String passWord ,String loginId , String contractCode ,
+	public static User createFromJavaType(String userId , String passWord ,String loginId , String contractCode ,
 			GeneralDate expirationDate , boolean specialUser ,boolean multiCompanyConcurrent,
 			String mailAddress ,  String userName ,String associatedPersonId) {
 		return new User(userId,new HashPassword(passWord), new LoginId(loginId), new ContractCode(contractCode), 
