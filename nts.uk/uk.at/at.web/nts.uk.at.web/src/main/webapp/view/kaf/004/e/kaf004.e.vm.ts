@@ -52,9 +52,15 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             var dfd = $.Deferred();
             service.getByCode(self.appID()).done(function(data) { 
                 self.displayOrder(data.workManagementMultiple.useATR);
-                self.ListTypeReason(data.listApplicationReasonDto);
+                self.ListTypeReason.removeAll();
+                _.forEach(data.listApplicationReasonDto, data => {
+                    let reasonTmp: TypeReason = {reasonID: data.reasonID, reasonTemp: data.reasonTemp};
+                    self.ListTypeReason.push(reasonTmp); 
+                    if(data.defaultFlg == 1){
+                        self.selectedCode(data.reasonID);
+                    }          
+                });
                 self.applicantName(data.applicantName);
-                self.selectedCode(data.lateOrLeaveEarlyDto.appReasonID);
                 self.appreason(data.lateOrLeaveEarlyDto.appReason);
                 self.date(data.lateOrLeaveEarlyDto.applicationDate);
                 self.lateTime1(data.lateOrLeaveEarlyDto.lateTime1);
@@ -106,7 +112,11 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     self.earlyTime2(self.early2() ? 30 : 0);
                 }
                 nts.uk.ui.block.invisible();
-                 var reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                let txtReasonTmp = self.selectedCode();
+                if(!nts.uk.text.isNullOrEmpty(self.selectedCode())){
+                    let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                    txtReasonTmp = reasonText.reasonTemp;
+                }
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     version: self.version,
                     appID: self.appID(),
@@ -121,7 +131,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     lateTime2: self.lateTime2(),
                     early2: self.early2() ? 1 : 0,
                     earlyTime2: self.earlyTime2(),
-                    reasonTemp: reasonText.reasonTemp,
+                    reasonTemp: txtReasonTmp,
                     appReason: self.appreason(),
                     appApprovalPhaseCmds: self.approvalList
                 };

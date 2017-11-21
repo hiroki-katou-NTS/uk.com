@@ -38,6 +38,7 @@ module nts.uk.com.view.cmm013.a {
             enable_A3_3: KnockoutObservable<boolean>;
             enable_A3_4: KnockoutObservable<boolean>;
             enable_A3_5: KnockoutObservable<boolean>;
+            enable_A3_9: KnockoutObservable<boolean>;
 
             constructor() {
                 let _self = this;
@@ -91,6 +92,7 @@ module nts.uk.com.view.cmm013.a {
                 _self.enable_A3_3 = ko.observable(null);
                 _self.enable_A3_4 = ko.observable(null);
                 _self.enable_A3_5 = ko.observable(null);
+                _self.enable_A3_9 = ko.observable(null);
             }
 
             /**
@@ -223,12 +225,14 @@ module nts.uk.com.view.cmm013.a {
                     _self.enable_A3_3(false);
                     _self.enable_A3_4(false);
                     _self.enable_A3_5(false);
+                    _self.enable_A3_9(true);
 
                     // Set focus
                     $('#job-title-code').focus();
                 } else {
                     // UI
                     _self.enable_A1_1(true);
+                    _self.enable_A3_9(false);
 
                     // Set focus
                     $('#job-title-name').focus();
@@ -301,7 +305,7 @@ module nts.uk.com.view.cmm013.a {
                 }
                 
                 // show error message
-                if (Array.isArray(res.messageId)) {
+                if (Array.isArray(res.errors)) {
                     nts.uk.ui.dialog.bundledErrors(res);
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
@@ -417,6 +421,13 @@ module nts.uk.com.view.cmm013.a {
             public openSelectSequenceDialog() {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml').onClosed(() => {
+                    // Check if apply button was clicked
+                    let isSelected: boolean = nts.uk.ui.windows.getShared(Constants.IS_ACCEPT_DIALOG_SELECT_SEQUENCE);
+                    if (!isSelected) {
+                        return;
+                    }
+                    
+                    // Get data
                     let dialogData: SequenceMaster = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE);
                     if (!dialogData) {
                         _self.sequenceCode("");

@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cas014.b.service.js" />
+			<com:scriptfile path="cas014.b.vm.js" />
+			<com:scriptfile path="cas014.b.start.js" />
+
+		</ui:define>
+
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('CAS014_2')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" class="active">#{i18n.getText('CAS014_3')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="tabpanel-1" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('CAS014_2')}</span>
+					<button class="proceed">#{i18n.getText('CAS014_11')}</button>
+				</div>
+				<div class="contents-area">
+					Content 1<br />
+
+				</div>
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('CAS014_3')}</span>
+					<button>#{i18n.getText('CAS014_10')}</button>
+					<button class="proceed">#{i18n.getText('CAS014_11')}</button>
+					<button class="danger">#{i18n.getText('CAS014_12')}</button>
+				</div>
+				<div class="contents-area">
+
+					<div style="float: left">
+						<div class="table-label">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
+						</div>
+						<table class="fixed-table">
+							<colgroup>
+								<col width="100px" />
+								<col width="150px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: roleSetList">
+								<tr>
+									<td><div data-bind="text: code"
+											style="display: inline-block;"></div></td>
+									<td><div data-bind="text: name"
+											style="display: inline-block;"></div></td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+					<div style="float: left">
+						<div class="table-label">
+							<label>#{i18n.getText('CAS014_33')}</label>
+						</div>
+						<table class="fixed-table">
+							<colgroup>
+								<col width="100px" />
+								<col width="80px" />
+								<col width="250px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CAS014_26')}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>就業承認</td>
+									<td>000000000001</td>
+									<td>000000000001</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+					<div style="float: left">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_39')}</div>
+							<button data-bind="click: openDialogCDL009">#{i18n.getText('CAS014_39')}</button>
+							<label data-bind="text: '#[CAS014_22]'">#{i18n.getText('CAS014_33')}</label>
+							<label data-bind="text: '#[CAS014_22]'">#{i18n.getText('CAS014_33')}</label>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_40')}</div>
+							<div id="daterangepicker" style="display: inline-block"
+								data-bind="ntsDateRangePicker: { 
+								required: true, 
+								enable: true, 
+								name: '#[CAS014_40]',
+								showNextPrevious: false, 
+								value: dateValue, 
+								maxRange: 'none'}" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -11,6 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateApplicationCommonCmd {
+	private Long version;
+	
 	/**
 	 * application ID
 	 */

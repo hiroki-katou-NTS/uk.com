@@ -13,7 +13,19 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 /**
  * The Class TotalConditionDto.
  */
+
+/**
+ * Gets the attendance item id.
+ *
+ * @return the attendance item id
+ */
 @Getter
+
+/**
+ * Sets the attendance item id.
+ *
+ * @param attendanceItemId the new attendance item id
+ */
 @Setter
 public class TotalConditionDto implements TotalConditionSetMemento {
 
@@ -32,6 +44,10 @@ public class TotalConditionDto implements TotalConditionSetMemento {
 	/** The thresold lower limit. */
 	// 閾値下限
 	private Long thresoldLowerLimit;
+
+	/** The attendance item id. */
+	// 勤怠項目ID
+	private Integer attendanceItemId;
 
 	/*
 	 * (non-Javadoc)
@@ -85,5 +101,16 @@ public class TotalConditionDto implements TotalConditionSetMemento {
 		this.lowerLimitSettingAtr = lowerLimitSettingAtr.value;
 	}
 
+	
+	
+	/**
+	 * Sets the attendance item id.
+	 *
+	 * @param attendanceItemId the new attendance item id
+	 */
+	@Override
+	public void setAttendanceItemId(Integer attendanceItemId) {
+		this.attendanceItemId = attendanceItemId;
+	}
 
 }

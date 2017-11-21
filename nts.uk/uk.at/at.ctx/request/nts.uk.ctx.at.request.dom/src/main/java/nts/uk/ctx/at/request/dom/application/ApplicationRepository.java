@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,10 +52,23 @@ public interface ApplicationRepository {
 	 * @param companyID
 	 * @param applicationID
 	 */
-	void deleteApplication(String companyID,String applicationID);
+	void deleteApplication(String companyID,String applicationID, Long version);
 	
 	
 	List<Application> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
-	Optional<Application>  getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
+	Optional<Application> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
+	
+	/**
+	 * 事前申請を取得したい
+	 * @param companyId: 社員ID
+	 * @param appDate: 申請日
+	 * @param inputDate: 入力日
+	 * @param appType: 申請種類
+	 * @param prePostAtr: 事前事後区分
+	 * @return
+	 */
+	List<Application>  getBeforeApplication(String companyId, GeneralDate appDate, GeneralDate inputDate, int appType, int prePostAtr);
+	
+	
 }
