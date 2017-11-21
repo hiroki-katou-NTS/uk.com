@@ -30,10 +30,13 @@ public class EmpCopySettingFinder {
 		List<EmpCopySetting> copyList = this.empCopyRepo.find(companyId);
 
 		if (copyList.isEmpty()) {
-
-			throw new BusinessException(new RawErrorMessage("Msg_347"));
-
-			// throw new BusinessException(new RawErrorMessage("Msg_348"));
+			// check permision
+			boolean isPerRep = true;
+			if (isPerRep) {
+				throw new BusinessException(new RawErrorMessage("Msg_347"));
+			} else {
+				throw new BusinessException(new RawErrorMessage("Msg_348"));
+			}
 		}
 
 		List<String> categoryList = new ArrayList<String>();
