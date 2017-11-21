@@ -4,8 +4,6 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommand;
-import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommandHandler;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommand;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommandHandler;
 

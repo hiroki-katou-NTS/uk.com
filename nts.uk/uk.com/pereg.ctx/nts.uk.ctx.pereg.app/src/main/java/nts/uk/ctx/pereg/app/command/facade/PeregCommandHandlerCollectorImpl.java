@@ -11,7 +11,9 @@ import javax.enterprise.util.TypeLiteral;
 
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
+import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
+import nts.uk.shr.sample.pereg.command.SampleDeletePersonBaseCommand;
 import nts.uk.shr.sample.pereg.command.SampleUpdatePersonBaseCommand;
 
 @Stateless
@@ -27,7 +29,10 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<SampleUpdatePersonBaseCommand>>(){}
 			);
 	
-	
+	/** Delete handlers */
+	private static final List<TypeLiteral<?>> DELETE_HANDLER_CLASSES = Arrays.asList(
+			new TypeLiteral<PeregDeleteCommandHandler<SampleDeletePersonBaseCommand>>(){}
+			);
 	
 	@Override
 	public Set<PeregAddCommandHandler<?>> collectAddHandlers() {
@@ -42,6 +47,14 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 		return UPDATE_HANDLER_CLASSES.stream()
 				.map(type -> CDI.current().select(type).get())
 				.map(obj -> (PeregUpdateCommandHandler<?>)obj)
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<PeregDeleteCommandHandler<?>> collectDeleteHandlers() {
+		return DELETE_HANDLER_CLASSES.stream()
+				.map(type -> CDI.current().select(type).get())
+				.map(obj -> (PeregDeleteCommandHandler<?>)obj)
 				.collect(Collectors.toSet());
 	}
 
