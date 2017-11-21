@@ -3,12 +3,14 @@
  */
 package nts.uk.ctx.bs.employee.infra.repository.workplace.assigned;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
@@ -39,6 +41,25 @@ public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrk
 				.collect(Collectors.toList()));
 		return assignedWorkplace;
 	}
+	
+	
+	private List<AssignedWorkplace> toListAssignedWorkplace(List<BsymtAssiWorkplace> listEntity) {
+		List<AssignedWorkplace> lstAssignedWorkplace = new ArrayList<>();
+		if (!listEntity.isEmpty()) {
+			listEntity.stream().forEach(c -> {
+				AssignedWorkplace assignedWorkplace = toDomainAssignedWorkplace(c);
+				
+				lstAssignedWorkplace.add(assignedWorkplace);
+			});
+		}
+		return lstAssignedWorkplace;
+	}
+	
+	private AssignedWorkplace toDomainAssignedWorkplace(BsymtAssiWorkplace entity) {
+		val domain = AssignedWorkplace.creatFromJavaType(entity.empId,
+				entity.assiWorkplaceId, entity.workplaceId);
+		return domain;
+	}
 
 	// waiting QA
 	@Override
@@ -60,6 +81,16 @@ public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrk
 		List<Object[]> lstEntity = this.queryProxy().query(SELECT_ASS_WORKPLACE_BY_ID, Object[].class)
 				.setParameter("assiWorkplaceId", assignedWorkplaceId).getList();
 		return toDomain(lstEntity);
+	}
+
+	@Override
+	public List<AssignedWorkplace> getListBySId(String sid) {
+		List<BsymtAssiWorkplace> listEntity= this.queryProxy().query(SELECT_BY_EID, BsymtAssiWorkplace.class)
+				.setParameter("empId", sid)
+				.getList();
+
+		return toListAssignedWorkplace(listEntity);
+		
 	}
 
 }
