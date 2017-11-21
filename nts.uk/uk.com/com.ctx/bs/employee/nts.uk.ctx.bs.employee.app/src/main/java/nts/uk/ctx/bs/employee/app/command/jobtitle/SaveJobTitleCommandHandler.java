@@ -110,12 +110,12 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 		}
 
 		// Check JobTitle - Add
-		if (command.getIsCreateMode() && this.jobTitleInfoRepository.isJobTitleCodeExist(companyId,
+		if (this.jobTitleInfoRepository.isJobTitleCodeExist(companyId,
 				command.getJobTitleInfo().getJobTitleCode())) {
 			// Throw Exception - Duplicated JobTitleCode
 			isError = true;
 			exceptions.addMessage("Msg_3");
-		}
+		} 
 
 		// Has error, throws message
 		if (isError) {
