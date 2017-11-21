@@ -31,6 +31,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         dataE: any;
         dataF: any;
         dataG: any;
+        allItemsData: any;
         
         constructor() {
             var self = this;
@@ -170,6 +171,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         
                         self.calculatorItems([]);
                         var sortedItems = _.sortBy(items, [function(o) { return o.order(); }]);
+                        self.allItemsData = sortedItems;
                         
                         for(var i = 0; i < sortedItems.length; i++) {
                             var curDataItem = null;
@@ -703,6 +705,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             var prevIdx = -1;
             var $scope = _.clone(self.calculatorItems());
+            var temp = [];
             
             var multiRowSelected = _.filter($scope, function(item:CalculatorItem) {
                 return item.isChecked();    
@@ -717,7 +720,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     $scope.splice(idx-1, 0, itemToMove[0]);
                 }
             });
-            self.calculatorItems($scope);
+            
+            _.forEach($scope, function(item, index) {
+                item.order(index + 1);
+                temp.push(item);
+            });
+            
+            self.calculatorItems(temp);
         }
         
         /**
@@ -727,11 +736,15 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             var $scope = _.clone(self.calculatorItems());
             var prevIdx = $scope.length;
+            var temp = [];
+            
             var multiRowSelected = _.filter($scope, function(item:CalculatorItem) {
                 return item.isChecked();    
             });
+            
             var revPerson = multiRowSelected.concat();
             revPerson.reverse();
+            
             for(var i = 0; i < revPerson.length; i++) {
                 var item = revPerson[i];
                 var idx = _.findIndex($scope, function(o:CalculatorItem) { return o.itemCd() == item.itemCd(); });
@@ -742,7 +755,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     $scope.splice(idx + 1, 0, itemToMove[0]);
                 }
             }
-            self.calculatorItems($scope);
+            
+            _.forEach($scope, function(item, index) {
+                item.order(index + 1);
+                temp.push(item);
+            });
+            
+            self.calculatorItems(temp);
         }
         
         /**
@@ -936,15 +955,25 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     if(data.operatorAtr == 1) { operator = nts.uk.resource.getText("Enum_OperatorAtr_SUBTRACT"); }
                     if(data.operatorAtr == 2) { operator = nts.uk.resource.getText("Enum_OperatorAtr_MULTIPLY"); }
                     if(data.operatorAtr == 3) { operator = nts.uk.resource.getText("Enum_OperatorAtr_DIVIDE"); }
-                    
-                    if(data.settingMethod1 == 0) {                        
-                        text1 = data.verticalCalItemName1;
+                                        
+                    if(data.settingMethod1 == 0) {  
+                        if(data.verticalCalItemName1 != null) {
+                            text1 = data.verticalCalItemName1;
+                        } else {
+                            var item = _.find(self.allItemsData, function(o) { return o.itemCd() == data.verticalCalItem1; });
+                            text1 = item.itemName();
+                        }
                     } else {
                         text1 = data.verticalInputItem1;
                     }
                     
                     if(data.settingMethod2 == 0) {                        
-                        text2 = data.verticalCalItemName2;
+                        if(data.verticalCalItemName2 != null) {
+                            text2 = data.verticalCalItemName2;
+                        } else {
+                            var item = _.find(self.allItemsData, function(o) { return o.itemCd() == data.verticalCalItem2; });
+                            text2 = item.itemName();
+                        }
                     } else {
                         text2 = data.verticalInputItem2;
                     }
@@ -986,8 +1015,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 3) {
                             
-                        } else if (attribute == 4) {
-                            
                         }
                     } else {
                         var before = "";
@@ -1020,16 +1047,14 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 3) {
                             
-                        } else if (attribute == 4) {
-                            
                         }
                         
                         formulaResult = before + " " + formulaResult;
                     }
                 }
             }
-            
-            return formulaResult;
+
+            return formulaResult.trim();       
         }
     }
     
