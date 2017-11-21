@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -21,6 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "SAUMT_ROLESET_PERSON")
 public class SaumtRoleSetGrantedPerson extends UkJpaEntity implements Serializable{
