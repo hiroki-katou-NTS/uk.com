@@ -15,7 +15,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSetFactory;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SaumtRoleSet;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SaumtRoleSetPK;
@@ -53,12 +52,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		return new SaumtRoleSet(key
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, RoleSetFactory.getRoleId(domain.getOfficeHelperRole())
-				, RoleSetFactory.getRoleId(domain.getMyNumberRole())
-				, RoleSetFactory.getRoleId(domain.getHRRole())
-				, RoleSetFactory.getRoleId(domain.getPersonInfRole())
-				, RoleSetFactory.getRoleId(domain.getEmploymentRole())
-				, RoleSetFactory.getRoleId(domain.getSalaryRole())
+				, domain.getOfficeHelperRoleId()
+				, domain.getMyNumberRoleId()
+				, domain.getHRRoleId()
+				, domain.getPersonInfRoleId()
+				, domain.getEmploymentRoleId()
+				, domain.getSalaryRoleId()
 				);
 
 	}
@@ -67,12 +66,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		upEntity.buildEntity(upEntity.roleSetPK
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, RoleSetFactory.getRoleId(domain.getOfficeHelperRole())
-				, RoleSetFactory.getRoleId(domain.getMyNumberRole())
-				, RoleSetFactory.getRoleId(domain.getHRRole())
-				, RoleSetFactory.getRoleId(domain.getPersonInfRole())
-				, RoleSetFactory.getRoleId(domain.getEmploymentRole())
-				, RoleSetFactory.getRoleId(domain.getSalaryRole()));
+				, domain.getOfficeHelperRoleId()
+				, domain.getMyNumberRoleId()
+				, domain.getHRRoleId()
+				, domain.getPersonInfRoleId()
+				, domain.getEmploymentRoleId()
+				, domain.getSalaryRoleId());
 		return upEntity;
 	}
 

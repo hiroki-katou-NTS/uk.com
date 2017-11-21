@@ -6,13 +6,11 @@ package nts.uk.ctx.sys.auth.dom.roleset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 
 /**
@@ -35,25 +33,25 @@ public class RoleSet extends AggregateRoot {
 	private ApprovalAuthority approvalAuthority;
 
 	/** ロールID: オフィスヘルパーロール */
-	private Optional<Role> officeHelperRole;
+	private String officeHelperRoleId;
 
 	/** ロールID: マイナンバーロール */
-	private Optional<Role> myNumberRole;
+	private String myNumberRoleId;
 
 	/** ロールID: 人事ロール */
-	private Optional<Role> hRRole;
+	private String hRRoleId;
 
 	/** ロールID: 個人情報ロール */
-	private Optional<Role> personInfRole;
+	private String personInfRoleId;
 
 	/** ロールID: 就業ロール */
-	private Optional<Role> employmentRole;
+	private String employmentRoleId;
 
 	/** ロールID: 給与ロール */
-	private Optional<Role> salaryRole;
+	private String salaryRoleId;
 
-	/** list of Web menu link */
-	List<RoleSetAndWebMenu> roleSetAndWebMenus;
+	/** list of Web menu code link */
+	List<String> roleSetAndWebMenuCds;
 	/**
 	 * Instantiates a new role set.
 	 *
@@ -83,13 +81,13 @@ public class RoleSet extends AggregateRoot {
 		this.companyId 			= companyId;
 		this.roleSetName 		= new RoleSetName(roleSetName);
 		this.approvalAuthority 	= approvalAuthority;
-		this.officeHelperRole 	= RoleSetFactory.getRoleById(officeHelperRoleId);
-		this.myNumberRole 		= RoleSetFactory.getRoleById(myNumberRoleId);
-		this.hRRole 			= RoleSetFactory.getRoleById(hRRoleId);
-		this.personInfRole 		= RoleSetFactory.getRoleById(personInfRoleId);
-		this.employmentRole 	= RoleSetFactory.getRoleById(employmentRoleId);
-		this.salaryRole 		= RoleSetFactory.getRoleById(salaryRoleId);
-		this.roleSetAndWebMenus = RoleSetFactory.buildRoleSetAndWebMenu(roleSetCd);
+		this.officeHelperRoleId = officeHelperRoleId;
+		this.myNumberRoleId 	= myNumberRoleId;
+		this.hRRoleId 			= hRRoleId;
+		this.personInfRoleId 	= personInfRoleId;
+		this.employmentRoleId 	= employmentRoleId;
+		this.salaryRoleId 		= salaryRoleId;
+		this.roleSetAndWebMenuCds = RoleSetUtils.buildRoleSetAndWebMenu(roleSetCd);
 	}
 	
 	
@@ -123,20 +121,13 @@ public class RoleSet extends AggregateRoot {
 		this.companyId 			= companyId;
 		this.roleSetName 		= new RoleSetName(roleSetName);
 		this.approvalAuthority 	= approvalAuthority;
-		this.officeHelperRole 	= RoleSetFactory.getRoleById(officeHelperRoleId);
-		this.myNumberRole 		= RoleSetFactory.getRoleById(myNumberRoleId);
-		this.hRRole 			= RoleSetFactory.getRoleById(hRRoleId);
-		this.personInfRole 		= RoleSetFactory.getRoleById(personInfRoleId);
-		this.employmentRole 	= RoleSetFactory.getRoleById(employmentRoleId);
-		this.salaryRole 		= RoleSetFactory.getRoleById(salaryRoleId);
-		//build list of RoleSetAndWebMenu from list of WebMenu code
-		if (CollectionUtil.isEmpty(webMenuCds)) {
-			this.roleSetAndWebMenus = webMenuCds.stream()
-				.map(webMenuCd -> new RoleSetAndWebMenu(companyId, webMenuCd, roleSetCd)
-				).collect(Collectors.toList());
-		} else {
-			this.roleSetAndWebMenus = new ArrayList<>();
-		}
+		this.officeHelperRoleId = (officeHelperRoleId);
+		this.myNumberRoleId 	= myNumberRoleId;
+		this.hRRoleId 			= hRRoleId;
+		this.personInfRoleId 	= personInfRoleId;
+		this.employmentRoleId 	= employmentRoleId;
+		this.salaryRoleId 		= salaryRoleId;
+		this.roleSetAndWebMenuCds = webMenuCds;		
 	}
 	
 	/**
@@ -175,6 +166,6 @@ public class RoleSet extends AggregateRoot {
 	 * remove value of PersonInfRole field
 	 */
 	public void removePersonInfRole() {
-		this.personInfRole = null;
+		this.personInfRoleId = null;
 	}
 }

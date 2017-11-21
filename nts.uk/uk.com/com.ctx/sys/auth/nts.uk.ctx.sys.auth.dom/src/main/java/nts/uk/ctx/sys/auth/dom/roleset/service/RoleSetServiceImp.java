@@ -90,7 +90,7 @@ public class RoleSetServiceImp implements RoleSetService{
 	 * @param roleSet
 	 */
 	private void checkHasntWebMenuAndThrowException(RoleSet roleSet) {
-		if (CollectionUtil.isEmpty(roleSet.getRoleSetAndWebMenus())) {
+		if (CollectionUtil.isEmpty(roleSet.getRoleSetAndWebMenuCds())) {
 			throw new BusinessException("Msg_583");
 		}		
 	}

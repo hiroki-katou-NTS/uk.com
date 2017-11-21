@@ -14,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
+import nts.uk.ctx.sys.auth.dom.roleset.RoleSetUtils;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -54,7 +55,9 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
 			this.roleSetService.registerRoleSet(roleSetDom);
 	
 			// register to web menu link - ドメインモデル「ロールセット別紐付け」を新規登録する
-			roleSetAndWebMenuAdapter.addListOfRoleSetAndWebMenu(roleSetDom.getRoleSetAndWebMenus());
+			roleSetAndWebMenuAdapter.addListOfRoleSetAndWebMenu(
+					RoleSetUtils.buildRoleSetAndWebMenu(roleSetDom.getCompanyId(),
+					roleSetDom.getRoleSetCd().v(), roleSetDom.getRoleSetAndWebMenuCds()));
 			return command.getRoleSetCd();
 		}
 		return null;

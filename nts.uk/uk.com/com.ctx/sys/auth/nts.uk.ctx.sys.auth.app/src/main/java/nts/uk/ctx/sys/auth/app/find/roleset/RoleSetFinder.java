@@ -10,8 +10,11 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenu;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -20,6 +23,9 @@ public class RoleSetFinder {
 	@Inject
 	private RoleSetRepository roleSetRepository;
 
+	@Inject
+	private WebMenuAdapter webMenuAdapter;
+	
 	/**
 	 * Get a RoleSet
 	 * @param roleSetCd
@@ -32,7 +38,7 @@ public class RoleSetFinder {
 			// get domain role set
 			Optional<RoleSet> roleSetOpt = roleSetRepository.findByRoleSetCdAndCompanyId(roleSetCd, companyId);		
 			if (roleSetOpt.isPresent()) {
-				return RoleSetDto.build(roleSetOpt.get());			
+				return RoleSetDto.build(roleSetOpt.get(), convertWebMenuToWebMunuCd(roleSetOpt.get().getRoleSetAndWebMenuCds()));			
 			}
 		}
 		return new RoleSetDto();
@@ -46,10 +52,38 @@ public class RoleSetFinder {
 		//Get company Id
 		String companyId = AppContexts.user().companyId();
 		if (!StringUtils.isNoneEmpty(companyId)) {
-			return this.roleSetRepository.findByCompanyId(companyId).stream().map(item -> RoleSetDto.build(item))
+			return this.roleSetRepository.findByCompanyId(companyId).stream()
+					.map(item -> RoleSetDto.build(item, convertWebMenuToWebMunuCd(item.getRoleSetAndWebMenuCds())))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<RoleSetDto>();
+	}
+
+	/**
+	 * Convert from list of RoleSet and WebMenu.
+	 * @param lstWebMenu
+	 * @return list of web menu code.
+	 */
+	private List<WebMenuDto> convertWebMenuToWebMunuCd(List<String> lstWebMenuCds) {
+		if (CollectionUtil.isEmpty(lstWebMenuCds)) {
+			return null;
+		}
+		List<WebMenu> lstWebMenus = webMenuAdapter.findByCompanyId();
+		if (lstWebMenus.isEmpty()) {
+			return null;
+		}
+		List<WebMenuDto> retWebmenus = lstWebMenuCds.stream().map(item -> {
+			Optional<WebMenu> webMenuOpt = lstWebMenus.stream().filter(wmn-> wmn.getWebMenuCd().equals(item)).findFirst();
+			if (webMenuOpt.isPresent()) {
+				WebMenu wmn = webMenuOpt.get();
+				return new WebMenuDto(wmn.getWebMenuCd(), wmn.getWebMenuName());
+			}
+			return null;
+			}).collect(Collectors.toList());
+		if (CollectionUtil.isEmpty(retWebmenus)) {
+			return null;
+		}
+		return retWebmenus.stream().filter(item -> item != null).collect(Collectors.toList());
 	}
 
 
