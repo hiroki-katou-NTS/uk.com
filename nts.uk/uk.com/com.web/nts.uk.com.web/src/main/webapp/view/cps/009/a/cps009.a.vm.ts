@@ -73,38 +73,43 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
                         primitiveConst(obj);
-                        
-                            return new PerInfoInitValueSettingItemDto({
-                                perInfoItemDefId: obj.perInfoItemDefId,
-                                settingId: obj.settingId,
-                                perInfoCtgId: obj.perInfoCtgId,
-                                itemName: obj.itemName,
-                                isRequired: obj.isRequired,
-                                refMethodType: obj.refMethodType,
-                                saveDataType: obj.saveDataType,
-                                stringValue: obj.stringValue,
-                                intValue: obj.intValue,
-                                dateValue: obj.dateValue,
-                                itemType: obj.itemType,
-                                dataType: obj.dataType,
-                                itemCode: obj.itemCode,
-                                ctgCode: obj.ctgCode,
-                                constraint: obj.constraint,
-                                numberIntegerPart: obj.numberIntegerPart,
-                                numberDecimalPart: obj.numberDecimalPart,
-                                timeItemMin: obj.timeItemMin,
-                                timeItemMax: obj.timeItemMax,
-                                selectionItemId: obj.selectionItemId,
-                                selection: obj.selection,
-                                selectionItemRefType: obj.selectionItemRefType,
-                                dateType: obj.dateType,
-                                timepointItemMin: obj.timepointItemMin,
-                                timepointItemMax: obj.timepointItemMax,
-                                dateWithDay: obj.intValue,
-                                numericItemMin: obj.numericItemMin,
-                                numericItemMax: obj.numericItemMax
-                            });
-                        
+                        return new PerInfoInitValueSettingItemDto({
+                            fixedItem: obj.fixedItem,
+                            perInfoItemDefId: obj.perInfoItemDefId,
+                            settingId: obj.settingId,
+                            perInfoCtgId: obj.perInfoCtgId,
+                            itemName: obj.itemName,
+                            isRequired: obj.isRequired,
+                            refMethodType: obj.refMethodType,
+                            saveDataType: obj.saveDataType,
+                            stringValue: obj.stringValue,
+                            intValue: obj.intValue,
+                            dateValue: obj.dateValue,
+                            itemType: obj.itemType,
+                            dataType: obj.dataType,
+                            itemCode: obj.itemCode,
+                            ctgCode: obj.ctgCode,
+                            constraint: obj.constraint,
+                            numberIntegerPart: obj.numberIntegerPart,
+                            numberDecimalPart: obj.numberDecimalPart,
+                            timeItemMin: obj.timeItemMin,
+                            timeItemMax: obj.timeItemMax,
+                            selectionItemId: obj.selectionItemId,
+                            selection: obj.selection,
+                            selectionItemRefType: obj.selectionItemRefType,
+                            dateType: obj.dateType,
+                            timepointItemMin: obj.timepointItemMin,
+                            timepointItemMax: obj.timepointItemMax,
+                            dateWithDay: obj.intValue,
+                            numericItemMin: obj.numericItemMin,
+                            numericItemMax: obj.numericItemMax,
+                            stringItemType: obj.stringItemType,
+                            stringItemLength: obj.stringItemLength,
+                            stringItemDataType: obj.stringItemDataType
+                        });
+
+
+
                     });
 
                     self.currentCategory().itemList.removeAll();
@@ -175,7 +180,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.ctgColums = ko.observableArray([
                 { headerText: 'settingId', key: 'settingId', width: 100, hidden: true },
                 { headerText: text('CPS009_10'), key: 'settingCode', width: 80 },
-                { headerText: text('CPS006_11'), key: 'settingName', width: 160 }
+                { headerText: text('CPS009_11'), key: 'settingName', width: 160 }
             ]);
 
             self.itemValueLst = ko.observableArray([
@@ -368,6 +373,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             service.update(updateObj).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     $('#ctgName').focus();
+                    self.currentCategory().ctgList.removeAll();
                     self.initSettingId("");
                     self.initSettingId(updateObj.settingId);
                     self.currentCategory().currentItemId("");
@@ -635,9 +641,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
         numericItemMin?: number;
 
         numericItemMax?: number;
+
+        stringItemType?: number;
+
+        stringItemLength?: number;
+
+        stringItemDataType?: number;
+        fixedItem: boolean;
     }
 
     export class PerInfoInitValueSettingItemDto {
+        fixedItem: boolean;
         perInfoItemDefId: KnockoutObservable<string>;
         settingId: KnockoutObservable<string>;
         perInfoCtgId: KnockoutObservable<string>;
@@ -693,8 +707,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         numericItemMax: number;
 
+        stringItemType: number;
+
+        stringItemLength: number;
+
+        stringItemDataType: number;
+
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
+            self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
             self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
@@ -728,9 +749,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
                     self.dateValue = ko.observable(params.dateValue || undefined);
-                } else if (params.dateType == 2) {
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM") || undefined);
-                } else if (params.dateType == 3) {
+                } else if (params.dateType === 2) {
+                    if (params.dateValue === null) {
+                        self.dateValue = ko.observable(undefined);
+                    } else {
+                        self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM"));
+                    }
+                } else if (params.dateType === 3) {
                     self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
                 }
 
@@ -805,7 +830,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     readonly: ko.observable(false)
                 };
             }
+            if (params.dataType === 1) {
+                self.stringItemType = params.stringItemType || undefined;
+                self.stringItemLength = params.stringItemLength || undefined;
+                self.stringItemDataType = params.stringItemDataType || undefined;
+                self.numericItemMin = params.numericItemMin || undefined;
+                self.numericItemMax = params.numericItemMax || undefined;
 
+            }
 
 
 
