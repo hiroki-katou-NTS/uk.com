@@ -44,11 +44,14 @@ public class EmpConditionFinder {
 		List<EmploymentImported> employments = this.adapter.getAllEmployment(comId).stream()
 				.collect(Collectors.toList());
 
-		Map<String, Integer> empConditions = this.repo.find(comId, itemNo).getEmpConditions().stream()
+		// find EmploymentCondition
+		EmpCondition dom = this.repo.find(comId, itemNo);
+
+		// to map
+		Map<String, Integer> empConditions = dom.getEmpConditions().stream()
 				.collect(Collectors.toMap(k -> k.getEmpCd(), v -> v.getEmpApplicableAtr().value));
 
 		EmpConditionDto dto = new EmpConditionDto();
-		EmpCondition dom = this.repo.find(comId, itemNo);
 		dom.saveToMemento(dto);
 		dto.getEmpConditions().clear();
 
