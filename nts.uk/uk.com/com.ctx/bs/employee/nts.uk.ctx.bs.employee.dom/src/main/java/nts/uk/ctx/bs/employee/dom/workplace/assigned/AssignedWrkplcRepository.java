@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.bs.employee.dom.workplace.assigned;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -17,6 +18,7 @@ public interface AssignedWrkplcRepository {
 
 	public AssignedWorkplace getAssignedWorkplaceById(String assignedWorkplaceId);
 	
+	public List<AssignedWorkplace> getListBySId(String sid);
 	/**
 	 * 取得した「所属職場」を更新する
 	 * @param domain
