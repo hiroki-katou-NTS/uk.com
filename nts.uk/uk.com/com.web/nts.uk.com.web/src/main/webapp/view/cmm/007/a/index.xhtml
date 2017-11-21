@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+
+			<com:scriptfile set="IGNITE" />
+			
+			<com:stylefile path="../c/cmm007.c.main.css" />
+			<com:scriptfile path="../c/cmm007.c.service.js" />
+			<com:scriptfile path="../c/cmm007.c.vm.js" />
+			
+			<com:stylefile path="../b/cmm007.b.main.css" />
+			<com:scriptfile path="../b/cmm007.b.service.js" />
+			<com:scriptfile path="../b/cmm007.b.vm.js" />
+			
+			<com:stylefile path="cmm007.a.main.css" />
+			<com:scriptfile path="cmm007.a.vm.js" />
+			<com:scriptfile path="cmm007.a.start.js" />
+		</ui:define>
+		<ui:define name="sidebar">
+			<ul tabindex="-1" class="navigator">
+				<li><a tabindex="-1"
+					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('CMM007_2')}</a></li>
+				<li><a tabindex="-1" 
+				    href="#tabpanel-2" role="tab-navigator">#{i18n.getText('CMM007_3')}</a></li>
+				<li><a tabindex="-1"
+					href="#tabpanel-3" role="tab-navigator">#{i18n.getText('CMM007_4')}</a></li>
+				<li><a tabindex="-1"
+					href="#tabpanel-4" role="tab-navigator">#{i18n.getText('CMM007_49')}</a></li>
+				<li><a tabindex="-1"
+					href="#tabpanel-5" role="tab-navigator">#{i18n.getText('CMM007_73')}</a></li>
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content" data-bind="with: screenModel">
+			<!-- COMPANY WORK TIME SETTING  START -->
+			<div id="tabpanel-1" role="tabpanel" data-bind="with: systemDefine">
+				<ui:include src="../b/index.xhtml" />
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<ui:include src="../c/index.xhtml" />
+			</div>
+			<div id="tabpanel-3" role="tabpanel">
+				
+			</div>
+			<div id="tabpanel-4" role="tabpanel">
+				
+			</div>
+			<div id="tabpanel-5" role="tabpanel">
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

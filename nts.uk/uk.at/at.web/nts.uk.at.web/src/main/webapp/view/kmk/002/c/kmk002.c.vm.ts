@@ -173,20 +173,28 @@ module nts.uk.at.view.kmk002.c {
             private toRightTable(method: AddSubOperator): void {
                 let self = this;
                 if (!nts.uk.util.isNullOrEmpty(self.selectedLeftItem())) {
+                    let rightItems = [];
+                    let removedItems = [];
+
                     _.forEach(self.selectedLeftItem(), id => {
                         // get selected item by selected id
                         let item = _.find(self.leftItems(), item => item.attendanceItemId == id);
+                        removedItems.push(item);
 
                         // push item to right table
                         if (method == AddSubOperator.ADD) {
-                            self.rightItems.push(self.toSelectDto(item, AddSubOperator.ADD));
+                            rightItems.push(self.toSelectDto(item, AddSubOperator.ADD));
                         } else {
-                            self.rightItems.push(self.toSelectDto(item, AddSubOperator.SUBTRACT));
+                            rightItems.push(self.toSelectDto(item, AddSubOperator.SUBTRACT));
                         }
 
-                        // remove item from left table
-                        self.leftItems.remove(item);
                     });
+
+                    // remove from left table
+                    self.leftItems.removeAll(removedItems);
+
+                    // set right items.
+                    self.rightItems(self.rightItems().concat(rightItems));
 
                     // sort right table
                     self.sortRightTable();
@@ -202,16 +210,23 @@ module nts.uk.at.view.kmk002.c {
             private onClickBack(): void {
                 let self = this;
                 if (!nts.uk.util.isNullOrEmpty(self.selectedRightItem())) {
+                    let leftItems = [];
+                    let removedItems = [];
+
                     _.forEach(self.selectedRightItem(), id => {
                         // get selected item by selected id
                         let item = _.find(self.rightItems(), item => item.attendanceItemId == id);
+                        removedItems.push(item);
 
                         // push item to left table
-                        self.leftItems.push(self.toBackDto(item));
-
-                        // remove item from right table
-                        self.rightItems.remove(item);
+                        leftItems.push(self.toBackDto(item));
                     });
+
+                    // remove from left table
+                    self.rightItems.removeAll(removedItems);
+
+                    // set left items
+                    self.leftItems(self.leftItems().concat(leftItems));
 
                     // sort left table
                     self.sortLeftTable();
@@ -235,7 +250,7 @@ module nts.uk.at.view.kmk002.c {
              */
             private sortRightTable(): void {
                 let self = this;
-                let sortedList = _.sortBy(self.rightItems(), item => item.attendanceItemId);
+                let sortedList = _.sortBy(self.rightItems(), item => item.attendanceItemDisplayNumber);
                 self.rightItems(sortedList);
             }
 
