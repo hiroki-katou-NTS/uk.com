@@ -156,6 +156,10 @@ module cps002.a.vm {
                             return new SettingItem(item);
                         }));
                     }
+                }).fail(error => {
+
+                    dialog({ messageId: error.message });
+
                 });
             }
         }
@@ -412,7 +416,7 @@ module cps002.a.vm {
 
                 dialog({ messageId: error.message }).then(() => {
 
-                    // self.gotoStep1();
+                    self.gotoStep1();
 
                 });
 
@@ -465,17 +469,12 @@ module cps002.a.vm {
 
             let self = this,
                 itemDataList = _(ko.toJS(self.layout).itemsClassification).map(x => x.items).flatten().flatten().value(),
-                command = {
-                    employeeCopyId: self.copyEmployee().employeeId,
-                    InitSettingId: self.currentInitSetting().itemId,
-                    employeeName: self.currentEmployee().employeeName(),
-                    employeeCode: self.currentEmployee().employeeCode(),
-                    hireDate: self.currentEmployee().hireDate(),
-                    cardNo: self.currentEmployee().cardNo(),
-                    avatarId: self.currentEmployee().avatarId(),
-                    createType: self.createTypeId(),
-                    itemDataList: itemDataList
-                };
+                command = ko.toJS(self.currentEmployee());
+            //add atr
+            command.employeeCopyId = self.copyEmployee().employeeId;
+            command.initSettingId = self.currentInitSetting().itemId;
+            command.createType = self.createTypeId();
+            command.itemDataList = itemDataList;
 
             //            service.addNewEmployee(command).done(() => {
             //                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
@@ -574,6 +573,8 @@ module cps002.a.vm {
         cardNo: KnockoutObservable<string> = ko.observable("");
         initvalueCode: string;
         avatarId: KnockoutObservable<string> = ko.observable("");
+        loginId: KnockoutObservable<string> = ko.observable("");
+        password: KnockoutObservable<string> = ko.observable("");
 
         constructor(param?) {
         }

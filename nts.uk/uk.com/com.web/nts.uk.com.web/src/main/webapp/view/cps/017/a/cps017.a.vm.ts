@@ -306,16 +306,28 @@ module nts.uk.com.view.cps017.a.viewmodel {
         ReflUnrComp() {
             //alert("ReflUnrComp!!!");
             let self = this,
-                currentItem: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection();
+                currentItem: IHistorySelection = ko.toJS(self.historySelection),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId),
 
-            currentItem.histId(self.historySelection().histId());
-            command = ko.toJS(currentItem);
+                selection: ISelection = ko.toJS(self.selection),
+                listSelection: Array<Selection> = self.listSelection(),
+                selectionList = _.find(listSelection, x => x.selectionID == selection.selectionID),
+
+                orderSelection: IOrderSelection = ko.toJS(self.orderSelection),
+                listOrderSelection: Array<OrderSelection> = self.listOrderSelection(),
+                orderList = _.find(listOrderSelection, x => x.selectionID == orderSelection.selectionID);
+
+            let command = {
+                currentItem: currentItem,
+                selection: selection,
+                orderSection: orderSelection
+            };
 
             confirm({ messageId: "Msg_532" }).ifYes(() => {
                 service.reflUnrComp(command).done(function() {
                     self.listHistorySelection.removeAll();
-                    service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<IHistorySelection>) => {
+                    service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<>) => {
                         if (itemList && itemList.length) {
                             itemList.forEach(x => self.listHistorySelection.push(x));
                         }
@@ -349,11 +361,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this,
                 currentItem: HistorySelection = self.historySelection(),
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId());
+                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId()),
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems(),
+                selectionItemNameList = _.find(listItems, x => x.selectionItemName == perInfoSelectionItem.selectionItemName());
 
             //set histID
             //setShared('selectedHisId', self.historySelection().histId());
-            setShared('selectHistory', selectHistory);
+            setShared('selectHistory', {selectHistory: selectHistory, name: selectionItemNameList.selectionItemName});
 
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {

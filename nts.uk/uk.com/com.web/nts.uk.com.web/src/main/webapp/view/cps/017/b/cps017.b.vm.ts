@@ -1,10 +1,5 @@
 module nts.uk.com.view.cps017.b.viewmodel {
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import close = nts.uk.ui.windows.close;
@@ -16,6 +11,7 @@ module nts.uk.com.view.cps017.b.viewmodel {
 
         //開始
         start(): JQueryPromise<any> {
+            block.invisible();
             let self = this,
             selectedHisId = getShared('selectedHisId');//get histId ben screen A
             let dfd = $.Deferred();
@@ -41,12 +37,14 @@ module nts.uk.com.view.cps017.b.viewmodel {
                             memoSelection: x.memoSelection,
                             initSelection: x.initSelection == 1? true : false });
                         i++;
+                        if(x.initSelection == 1){
+                            self.currentSelectedId(x.selectionID);
+                        }
                     });
                 }
-//                $("#item_register_grid2").igGridSelection("selectRowById",self.listSelection()[0]);
                 dfd.resolve();
-            }).fail(error => {
-                alertError({ messageId: "Msg_455" });
+            }).always(() => {
+                block.clear();
             });
 
             return dfd.promise();
@@ -55,15 +53,8 @@ module nts.uk.com.view.cps017.b.viewmodel {
          * register
          */
         register(){
+            block.invisible();
             let self = this;
-            if(self.currentSelectedId() == ''){//khong item nao duoc chon
-                return;
-            }
-//            let row = $("#item_register_grid2").igGridSelection("selectedRow");
-//            if(row == null || row == undefined){
-//                return;
-//            }
-//            let itemSeleted: ISelection = self.findItemSelected(row.id);
             let lstData: Array<SelOrder> = [];
             _.each(self.listSelection(), function(item, index){
                 lstData.push(new SelOrder(item.selectionID, item.histId, item.selectionCD, index+1, item.selectionID == self.currentSelectedId() ? true : false));
@@ -73,27 +64,19 @@ module nts.uk.com.view.cps017.b.viewmodel {
                 //情報メッセージ（#Msg_15）を表示する (Hiển thị InfoMessage Msg_15)
                 info({ messageId: "Msg_15" }).then(function() {
                     //close dialog
-//                    close();
+                    close();
                 });
             }).always(() => {
                 block.clear();
             });
         }
         /**
-         * find item is selected.
+         * close dialog.
          */
-        findItemSelected(id: any): any{
-            let self = this;
-            return _.find(self.listSelection(), function(item){
-                return item.id = id;
-            })
-        }
-        
         close(){
             close();
         }
     }
-    
     
     //Selection
     interface ISelection {

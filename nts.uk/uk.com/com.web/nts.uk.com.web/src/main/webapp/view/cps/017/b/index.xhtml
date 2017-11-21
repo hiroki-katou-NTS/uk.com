@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 500,
-					height : 450
+					width : 505,
+					height : 410
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -19,9 +19,7 @@
 			<com:scriptfile path="cps017.b.start.js" />
 			<com:scriptfile path="cps017.b.vm.js" />
 			<com:scriptfile set="IGNITE" />
-
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- B1_1: button 登録 -->
@@ -34,9 +32,10 @@
 					<!-- B2_1: label 個人情報の選択肢の既定値と表示順を設定してください。 -->
 					<label>#{i18n.getText('CPS017_29')}</label>
 					<!-- B2_2: grid list  -->
-					<div id="table-grid-selection">
-					<table id="item_register_grid2" class="pull-left"></table>
+					<div id="table-grid-selection" tabindex="3">
+						<table id="item_register_grid2" class="pull-left"></table>
 					</div>
+					<!-- B2_12 - B2_13: Button 並び替えボタン（上） - 並び替えボタン（下） -->
 					<div id="grid-up-down"
 						data-bind="ntsUpDown: {
 								targetSource: listSelection,
@@ -47,7 +46,6 @@
 						style="margin-left: 10px;"
 					 ></div>
 				</div>
-
 			</div>
 		</ui:define>
 	</ui:composition>

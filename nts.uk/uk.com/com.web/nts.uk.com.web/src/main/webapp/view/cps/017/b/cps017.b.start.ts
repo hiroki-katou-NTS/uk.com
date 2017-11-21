@@ -5,6 +5,7 @@ module nts.uk.com.view.cps017.b {
         __viewContext["viewModel"].start().done(function() {
             checkBox();
             __viewContext.bind(__viewContext["viewModel"]);
+            $('#table-grid-selection').focus();
         });
     });
 }
@@ -12,13 +13,12 @@ function checkBox() {
     var previousId = "";
     var columnSettings = [
         { headerText: '', key: 'selectionID', hidden: true },
-        { headerText: '', key: 'id', width: '20px;' },
         {
-            headerText: nts.uk.resource.getText('CPS017_18'), key: 'initSelection',
-            template: "<input style='width:30px, height:40px' class='checkRow initSelection' type='checkbox'"
+            headerText: nts.uk.resource.getText('CPS017_18'), key: 'initSelection',width: '70px',
+            template: "<input class='checkRow initSelection' type='checkbox'"
             + " data-checked='${initSelection}' data-id='${selectionID}' tabindex='4'/>"
         },
-        { headerText: nts.uk.resource.getText('CPS017_16'), key: 'selectionCD', readonly: true },
+        { headerText: nts.uk.resource.getText('CPS017_16'), key: 'selectionCD', width: '90px', },
         { headerText: nts.uk.resource.getText('CPS017_17'), key: 'selectionName' }
     ];
     let source = ko.toJS(__viewContext["viewModel"].listSelection);
@@ -29,22 +29,20 @@ function checkBox() {
         enableHoverStyles: false,
         autoGenerateColumns: false,
         columns: columnSettings,
-        width: "370px",
-        height: "270px",
+        width: "400px",
+        height: "265px",
+        autoGenerateRows: true,
         features: [{
             name: 'Selection',
             mode: 'row',
             activation: false,
-        },
+            }, 
+            {
+                name: "RowSelectors"
+            },
             {
                 name: "Updating",
                 columnSettings: [
-                    {
-                        columnKey : "id",
-                        readOnly: true,
-                        required: true,
-                        validation: true
-                    },
                     {
                         columnKey : "initSelection",
                         readOnly: true,
@@ -79,6 +77,7 @@ function checkBox() {
         }
 
     });
+    $("#item_register_grid2").igGridSelection("selectRow", 0);
     $("#item_register_grid2").closest('.ui-iggrid').addClass('nts-gridlist');
     //su kien khi click vao o check box
     $('#item_register_grid2').on("click", ".checkRow.initSelection", function(evt, ui) {
