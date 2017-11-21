@@ -1,0 +1,15 @@
+#qViewModel #tab-panel {
+	margin-top: -5px;
+	width: 1090px;
+	height: 75px;
+}
+
+#qViewModel .ui-widget.ui-tabs.vertical .ui-tabs-nav li {
+	height: 15px;
+	width: 50px;
+}
+
+#qViewModel .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+	padding: 0px;
+	font-size: 11px;
+}

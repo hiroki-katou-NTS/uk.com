@@ -76,11 +76,30 @@ module ksu001.o1.viewmodel {
                 //Paste data into cell (set-sticker-single)
                 nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickData", value);
             });
+        }
 
-            //undo
-            $("#image030").click(function() {
-                nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickUndo");
-            });
+        /**
+         * paste data on cell
+         */
+        pasteData(): void {
+            if (nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {
+                nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("updateMode", "stick");
+                nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickMode", "single");
+            }
+        }
+
+        /**
+         * copy data on cell
+         */
+        copyData(): void {
+            nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("updateMode", "copyPaste");
+        }
+
+        /**
+         * undo data on cell
+         */
+        undoData(): void {
+            nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickUndo");
         }
 
         /**

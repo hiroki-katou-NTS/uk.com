@@ -82,8 +82,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 			if (WorkStyle.ONE_DAY_REST == workStyle) {
 
 				SetupType morningWorkStyle = this.checkRequiredOfInputType(dailyWork.getMorning());
-				SetupType afternoonWorkStyle = this
-						.checkRequiredOfInputType(dailyWork.getAfternoon());
+				SetupType afternoonWorkStyle = this.checkRequiredOfInputType(dailyWork.getAfternoon());
 
 				return this.checkRequired(morningWorkStyle, afternoonWorkStyle);
 			} else {
@@ -101,6 +100,9 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		return SetupType.OPTIONAL;
 	}
 
+	/**
+	 * 1日半日出勤・1日休日系の判定
+	 */
 	@Override
 	public WorkStyle checkWorkDay(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
@@ -109,32 +111,32 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		if (!workTypeOpt.isPresent()) {
 			return null;
 		}
-		
+
 		WorkType workType = workTypeOpt.get();
 		DailyWork dailyWork = workTypeOpt.get().getDailyWork();
-		
+
 		// All day
 		if (workType.isOneDay()) {
 			if (dailyWork.IsLeaveForADay()) {
 				return WorkStyle.ONE_DAY_REST;
-			} 
-				
+			}
+
 			return WorkStyle.ONE_DAY_WORK;
-		} 
+		}
 
 		// Half day
 		if (dailyWork.IsLeaveForMorning()) {
 			if (dailyWork.IsLeaveForAfternoon()) {
 				return WorkStyle.ONE_DAY_REST;
-			} 
-				
+			}
+
 			return WorkStyle.AFTERNOON_WORK;
 		}
-		
+
 		if (dailyWork.IsLeaveForAfternoon()) {
 			return WorkStyle.MORNING_WORK;
-		} 
-		
+		}
+
 		return WorkStyle.ONE_DAY_WORK;
 	}
 

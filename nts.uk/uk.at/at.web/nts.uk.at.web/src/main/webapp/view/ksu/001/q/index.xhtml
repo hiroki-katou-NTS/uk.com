@@ -1,3 +1,13 @@
 <div id="contents-area cf">
-	<button style="margin: 10px 0 10px 350px" data-bind="click: openDialogJA">OPEN DIALOG JA</button>
+	<!-- <button style="margin: 10px 0 10px 350px"
+		data-bind="click: openDialogJA">OPEN DIALOG JA</button> -->
+	<div id="tab-panel"
+		data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical'}">
+		<div class="tab-content-1">
+			<span>Tab Content 1</span><br />
+		</div>
+		<div class="tab-content-2">
+			<span>Tab Content 2</span><br />
+		</div>
+	</div>
 </div>

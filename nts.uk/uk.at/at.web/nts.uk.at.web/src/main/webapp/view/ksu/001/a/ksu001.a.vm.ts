@@ -92,6 +92,7 @@ module ksu001.a.viewmodel {
         dataWkpSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
+        isInsuranceStatus: boolean = false;
 
         constructor() {
             let self = this;
@@ -117,6 +118,11 @@ module ksu001.a.viewmodel {
             }
 
             self.selectedModeDisplay.subscribe(function(newValue) {
+                let currentScreen = __viewContext.viewModel.viewO.currentScreen;
+                if (currentScreen.$dialog != null) {
+                    currentScreen.close();
+                }
+
                 if (newValue == 1) {
                     $('#contain-view').show();
                     $('#group-bt').show();
@@ -166,7 +172,6 @@ module ksu001.a.viewmodel {
             //start
             self.initCCG001();
             self.initExTable();
-            //            self.selectedModeDisplay(1);
             self.initShiftCondition();
         }
 
@@ -195,7 +200,7 @@ module ksu001.a.viewmodel {
         }
 
         /**
-         * Get data Basic_Schedule
+         * Get data of Basic Schedule
          */
         getDataBasicSchedule(): JQueryPromise<any> {
             let self = this,
@@ -219,6 +224,22 @@ module ksu001.a.viewmodel {
                         isIntendedData: true
                     }));
                 });
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Get data of Schedule Display Control
+         */
+        checkIsInsuranceStatus(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            service.getDataScheduleDisplayControl().done((data) => {
+                if (!!data && data.personInforAtr == 7) {
+                    self.isInsuranceStatus = true;
+                }
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -440,7 +461,7 @@ module ksu001.a.viewmodel {
                 leftHorzContentDs = [],
                 vertSumContentDs = [];
 
-            self.setColor(detailHeaderDeco, detailContentDeco);
+            //            self.setColor(detailHeaderDeco, detailContentDeco);
 
             //create dataSource for detailHeader
             detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
@@ -452,7 +473,7 @@ module ksu001.a.viewmodel {
             //define the detailColumns
             _.each(self.arrDay, (x: Time) => {
                 detailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
+                    key: "_" + x.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
                 });
             });
 
@@ -466,7 +487,7 @@ module ksu001.a.viewmodel {
 
             let leftmostHeader = {
                 columns: leftmostColumns,
-                rowHeight: "75px",
+                rowHeight: "60px",
                 width: "160px"
             };
 
@@ -492,7 +513,7 @@ module ksu001.a.viewmodel {
                 width: "100px",
                 features: [{
                     name: "HeaderRowHeight",
-                    rows: { 0: "75px" }
+                    rows: { 0: "60px" }
                 }]
             };
 
@@ -510,11 +531,10 @@ module ksu001.a.viewmodel {
             let detailHeader = {
                 columns: detailColumns,
                 dataSource: detailHeaderDs,
-                rowHeight: "30px",
                 width: "700px",
                 features: [{
                     name: "HeaderRowHeight",
-                    rows: { 0: "50px", 1: "25px" }
+                    rows: { 0: "40px", 1: "20px" }
                 }, {
                         name: "HeaderCellStyle",
                         decorator: detailHeaderDeco
@@ -577,7 +597,7 @@ module ksu001.a.viewmodel {
                 width: "200px",
                 features: [{
                     name: "HeaderRowHeight",
-                    rows: { 0: "30px", 1: "45px" }
+                    rows: { 0: "35px", 1: "25px" }
                 }]
             };
 
@@ -589,13 +609,13 @@ module ksu001.a.viewmodel {
 
             //create LeftHorzSum Header and Content
             let leftHorzColumns = [
-                { headerText: "項目名", key: "itemName", width: "200px" },
-                { headerText: "合計", key: "sum", width: "100px" }
+                { headerText: "項目名", key: "itemName", width: "160px" },
+                { headerText: "合計", key: "sum", width: "600px" }
             ];
 
             let leftHorzSumHeader = {
                 columns: leftHorzColumns,
-                rowHeight: "75px"
+                rowHeight: "40px"
             };
 
             let leftHorzSumContent = {
@@ -608,11 +628,14 @@ module ksu001.a.viewmodel {
             let horizontalSumHeader = {
                 columns: detailColumns,
                 dataSource: horzSumHeaderDs,
-                rowHeight: "75px",
+                rowHeight: "40px",
                 features: [{
-                    name: "HeaderCellStyle",
-                    decorator: detailHeaderDeco
-                }]
+                    name: "HeaderRowHeight",
+                    rows: { 0: "40px" }
+                }, {
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }]
             };
 
             let horizontalSumContent = {
@@ -622,13 +645,13 @@ module ksu001.a.viewmodel {
             };
 
             new nts.uk.ui.exTable.ExTable($("#extable"), {
-                headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "200px",
-                horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "100px",
+                headerHeight: "60px", bodyRowHeight: "30px", bodyHeight: "0px",
+                horizontalSumHeaderHeight: "40px", horizontalSumBodyHeight: "75px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
                 bodyHeightMode: "dynamic",
-                windowXOccupation: 80,
-                windowYOccupation: 150,
+                windowXOccupation: 40,
+                windowYOccupation: 215,
                 updateMode: "none",
                 pasteOverWrite: true,
                 stickOverWrite: true,
@@ -659,6 +682,348 @@ module ksu001.a.viewmodel {
                 $('#popup-area8').css('display', 'none');
             });
 
+        }
+
+        /**
+         *  update extable 
+         */
+        updateExTable(): void {
+            let self = this;
+
+            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
+
+            _.each(self.listSid(), (x) => {
+                //newLeftMost dataSource
+                let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
+                newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
+                //newMiddle dataSource
+                newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
+                //newDetail dataSource
+                let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
+                newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                //newVertSumContent dataSource
+                newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
+            });
+
+            //create new detailHeaderDs
+            newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            for (let i = 0; i < self.arrDay.length; i++) {
+                newObjDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
+            }
+            newDetailHeaderDs.push(newObjDetailHeaderDs);
+
+            //newLeftHorzSContent dataSource
+            for (let i = 0; i < 5; i++) {
+                newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
+            }
+
+            //get new horzSumContentDs
+            let horzSumContentDs = [];
+            for (let i = 0; i < 5; i++) {
+                let obj = {};
+                obj["itemId"] = i.toString();
+                obj["empId"] = "";
+                for (let j = 0; j < self.arrDay.length; j++) {
+                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
+                }
+                horzSumContentDs.push(obj);
+            }
+
+            let newDetailColumns = [];
+            //define the new detailColumns
+            _.each(self.arrDay, (x: Time) => {
+                newDetailColumns.push({
+                    key: "_" + x.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
+                });
+            });
+
+            let updateMiddleContent = {
+                dataSource: newMiddleDs,
+            };
+
+            let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
+
+            self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
+                //TO-DO test 
+                //                leftmostContentDeco.push(new CellColor("empName", "90000000-0000-0000-0000-000000000001", "bg-schedule-no-empl-insurance"));
+                //                leftmostContentDeco.push(new CellColor("empName", "90000000-0000-0000-0000-000000000003", "bg-schedule-no-empl-insurance"));
+
+                let updateLeftmostContent = {
+                    dataSource: newLeftMostDs,
+                    features: [{
+                        name: "BodyCellStyle",
+                        decorator: leftmostContentDeco
+                    }]
+                }
+                let updateDetailHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderRowHeight",
+                        rows: { 0: "40px", 1: "20px" }
+                    }, {
+                            name: "HeaderCellStyle",
+                            decorator: detailHeaderDeco
+                        }, {
+                            name: "HeaderPopups",
+                            menu: {
+                                rows: [0],
+                                items: [
+                                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                ]
+                            },
+                            popup: {
+                                rows: [1],
+                                provider: function() { return $("#popup-area4"); }
+                            }
+                        }]
+                };
+
+                let updateDetailContent = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailContentDs,
+                    features: [{
+                        name: "BodyCellStyle",
+                        decorator: detailContentDeco
+                    }]
+                };
+
+                let updateHorzSumHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }]
+                };
+
+                let updateHorzSumContent = {
+                    columns: newDetailColumns,
+                    dataSource: horzSumContentDs
+                };
+
+                let updateVertSumContent = {
+                    dataSource: newVertSumContentDs,
+                };
+
+                let updateLeftHorzSumContent = {
+                    dataSource: newLeftHorzContentDs
+                };
+
+                $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
+                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
+                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
+                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
+                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+
+                $("#extable").on("extablecellupdated", function() { });
+                $("#extable").on("extablerowupdated", function() { });
+            });
+        }
+
+        /**
+         * update new data of header and content of detail and horizSum
+         */
+        updateDetailAndHorzSum(): void {
+            let self = this;
+            //Get dates in time period
+            let currentDay = new Date(self.dtPrev().toString());
+            self.arrDay = [];
+            let newDetailColumns = [], newObjDetailHeaderDs = [], newDetailHeaderDs = [], newDetailContentDs = [];
+            while (currentDay <= self.dtAft()) {
+                self.arrDay.push(new Time(currentDay));
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+
+            //define the new detailColumns
+            _.each(self.arrDay, (x: Time) => {
+                newDetailColumns.push({
+                    key: "_" + x.yearMonthDay, width: "50px", headerText: "", visible: true
+                });
+            });
+
+            //create new detailHeaderDs
+            newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            for (let i = 0; i < self.arrDay.length; i++) {
+                newObjDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
+            }
+            newDetailHeaderDs.push(newObjDetailHeaderDs);
+
+            //get new horzSumContentDs
+            let horzSumContentDs = [];
+            for (let i = 0; i < 5; i++) {
+                let obj = {};
+                obj["itemId"] = i.toString();
+                obj["empId"] = "";
+                for (let j = 0; j < self.arrDay.length; j++) {
+                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
+                }
+                horzSumContentDs.push(obj);
+            }
+
+            let detailHeaderDeco = [], detailContentDeco = [];
+
+            //if haven't data in extable, only update header detail and header horizontal
+            if (self.empItems().length == 0) {
+                self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco);
+
+                let updateDetailHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderRowHeight",
+                        rows: { 0: "40px", 1: "20px" }
+                    }, {
+                            name: "HeaderCellStyle",
+                            decorator: detailHeaderDeco
+                        }, {
+                            name: "HeaderPopups",
+                            menu: {
+                                rows: [0],
+                                items: [
+                                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                ]
+                            },
+                            popup: {
+                                rows: [1],
+                                provider: function() { return $("#popup-area8"); }
+                            }
+                        }]
+                };
+
+                let updateHorzSumHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }]
+                };
+
+                $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
+            } else if (self.selectedModeDisplayObject() == 1) {
+                self.getDataBasicSchedule().done(() => {
+                    self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
+
+                        let updateDetailHeader = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailHeaderDs,
+                            features: [{
+                                name: "HeaderRowHeight",
+                                rows: { 0: "40px", 1: "20px" }
+                            }, {
+                                    name: "HeaderCellStyle",
+                                    decorator: detailHeaderDeco
+                                }, {
+                                    name: "HeaderPopups",
+                                    menu: {
+                                        rows: [0],
+                                        items: [
+                                            { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                            { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                        ]
+                                    },
+                                    popup: {
+                                        rows: [1],
+                                        provider: function() { return $("#popup-area8"); }
+                                    }
+                                }]
+                        };
+
+                        //intended data display mode 
+                        //dataSour of detail
+                        _.each(self.listSid(), (x) => {
+                            let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
+                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                        });
+
+                        let updateDetailContent = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailContentDs,
+                            features: [{
+                                name: "BodyCellStyle",
+                                decorator: detailContentDeco
+                            }]
+                        };
+
+                        let updateHorzSumHeader = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailHeaderDs,
+                            features: [{
+                                name: "HeaderCellStyle",
+                                decorator: detailHeaderDeco
+                            }]
+                        };
+
+                        let updateHorzSumContent = {
+                            columns: newDetailColumns,
+                            dataSource: horzSumContentDs
+                        };
+
+                        $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                    });
+                });
+            } else if (self.selectedModeDisplayObject() == 2) {
+                self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
+                    let updateDetailHeader = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailHeaderDs,
+                        features: [{
+                            name: "HeaderRowHeight",
+                            rows: { 0: "40px", 1: "20px" }
+                        }, {
+                                name: "HeaderCellStyle",
+                                decorator: detailHeaderDeco
+                            }, {
+                                name: "HeaderPopups",
+                                menu: {
+                                    rows: [0],
+                                    items: [
+                                        { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                        { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                    ]
+                                },
+                                popup: {
+                                    rows: [1],
+                                    provider: function() { return $("#popup-area8"); }
+                                }
+                            }]
+                    };
+
+                    //actual data display mode , if hasn't actual data, display intended data
+                    newDetailContentDs.push(new ExItem(null, [], __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                    let updateDetailContent = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailContentDs,
+                        features: [{
+                            name: "BodyCellStyle",
+                            decorator: detailContentDeco
+                        }]
+                    };
+
+                    let updateHorzSumHeader = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailHeaderDs,
+                        features: [{
+                            name: "HeaderCellStyle",
+                            decorator: detailHeaderDeco
+                        }]
+                    };
+
+                    let updateHorzSumContent = {
+                        columns: newDetailColumns,
+                        dataSource: horzSumContentDs
+                    };
+
+                    $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                });
+            }
         }
 
         /**
@@ -736,338 +1101,6 @@ module ksu001.a.viewmodel {
         }
 
         /**
-         *  update extable 
-         */
-        updateExTable(): void {
-            let self = this;
-
-            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
-
-            _.each(self.listSid(), (x) => {
-                //newLeftMost dataSource
-                let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
-                newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
-                //newMiddle dataSource
-                newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
-                //newDetail dataSource
-                let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                //newVertSumContent dataSource
-                newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
-            });
-
-            //create new detailHeaderDs
-            newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
-            for (let i = 0; i < self.arrDay.length; i++) {
-                newObjDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
-            }
-            newDetailHeaderDs.push(newObjDetailHeaderDs);
-
-            //newLeftHorzSContent dataSource
-            for (let i = 0; i < 5; i++) {
-                newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
-            }
-
-            //get new horzSumContentDs
-            let horzSumContentDs = [];
-            for (let i = 0; i < 5; i++) {
-                let obj = {};
-                obj["itemId"] = i.toString();
-                obj["empId"] = "";
-                for (let j = 0; j < self.arrDay.length; j++) {
-                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
-                }
-                horzSumContentDs.push(obj);
-            }
-
-            let newDetailColumns = [];
-            //define the new detailColumns
-            _.each(self.arrDay, (x: Time) => {
-                newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
-                });
-            });
-
-            let updateMiddleContent = {
-                dataSource: newMiddleDs,
-            };
-
-            let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
-
-            self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-                //TO-DO test 
-                leftmostContentDeco.push(new CellColor("empName", "90000000-0000-0000-0000-000000000001", "bg-schedule-no-empl-insurance"));
-                leftmostContentDeco.push(new CellColor("empName", "90000000-0000-0000-0000-000000000003", "bg-schedule-no-empl-insurance"));
-                
-                let updateLeftmostContent = {
-                    dataSource: newLeftMostDs,
-                    features: [{
-                        name: "BodyCellStyle",
-                        decorator: leftmostContentDeco
-                    }]
-                }
-
-                let updateDetailHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
-                        name: "HeaderCellStyle",
-                        decorator: detailHeaderDeco
-                    }, {
-                            name: "HeaderPopups",
-                            menu: {
-                                rows: [0],
-                                items: [
-                                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
-                                ]
-                            },
-                            popup: {
-                                rows: [1],
-                                provider: function() { return $("#popup-area4"); }
-                            }
-                        }]
-                };
-
-                let updateDetailContent = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailContentDs,
-                    features: [{
-                        name: "BodyCellStyle",
-                        decorator: detailContentDeco
-                    }]
-                };
-
-                let updateHorzSumHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
-                        name: "HeaderCellStyle",
-                        decorator: detailHeaderDeco
-                    }]
-                };
-
-                let updateHorzSumContent = {
-                    columns: newDetailColumns,
-                    dataSource: horzSumContentDs
-                };
-
-                let updateVertSumContent = {
-                    dataSource: newVertSumContentDs,
-                };
-
-                let updateLeftHorzSumContent = {
-                    dataSource: newLeftHorzContentDs
-                };
-
-                $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
-                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
-                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
-                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
-                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
-
-                $("#extable").on("extablecellupdated", function() { });
-                $("#extable").on("extablerowupdated", function() { });
-            });
-        }
-
-        /**
-         * update new data of header and content of detail and horizSum
-         */
-        updateDetailAndHorzSum(): void {
-            let self = this;
-            //Get dates in time period
-            let currentDay = new Date(self.dtPrev().toString());
-            self.arrDay = [];
-            let newDetailColumns = [], newObjDetailHeaderDs = [], newDetailHeaderDs = [], newDetailContentDs = [];
-            while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay));
-                currentDay.setDate(currentDay.getDate() + 1);
-            }
-
-            //define the new detailColumns
-            _.each(self.arrDay, (x: Time) => {
-                newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", visible: true
-                });
-            });
-
-            //create new detailHeaderDs
-            newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
-            for (let i = 0; i < self.arrDay.length; i++) {
-                newObjDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
-            }
-            newDetailHeaderDs.push(newObjDetailHeaderDs);
-
-            //get new horzSumContentDs
-            let horzSumContentDs = [];
-            for (let i = 0; i < 5; i++) {
-                let obj = {};
-                obj["itemId"] = i.toString();
-                obj["empId"] = "";
-                for (let j = 0; j < self.arrDay.length; j++) {
-                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
-                }
-                horzSumContentDs.push(obj);
-            }
-
-            let detailHeaderDeco = [], detailContentDeco = [];
-
-            //if haven't data in extable, only update header detail and header horizontal
-            if (self.empItems().length == 0) {
-                self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco);
-
-                let updateDetailHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
-                        name: "HeaderCellStyle",
-                        decorator: detailHeaderDeco
-                    }, {
-                            name: "HeaderPopups",
-                            menu: {
-                                rows: [0],
-                                items: [
-                                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
-                                ]
-                            },
-                            popup: {
-                                rows: [1],
-                                provider: function() { return $("#popup-area8"); }
-                            }
-                        }]
-                };
-
-                let updateHorzSumHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
-                        name: "HeaderCellStyle",
-                        decorator: detailHeaderDeco
-                    }]
-                };
-
-                $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
-            } else if (self.selectedModeDisplayObject() == 1) {
-                self.getDataBasicSchedule().done(() => {
-                    self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-
-
-                        let updateDetailHeader = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailHeaderDs,
-                            features: [{
-                                name: "HeaderCellStyle",
-                                decorator: detailHeaderDeco
-                            }, {
-                                    name: "HeaderPopups",
-                                    menu: {
-                                        rows: [0],
-                                        items: [
-                                            { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                            { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
-                                        ]
-                                    },
-                                    popup: {
-                                        rows: [1],
-                                        provider: function() { return $("#popup-area8"); }
-                                    }
-                                }]
-                        };
-
-                        //intended data display mode 
-                        //dataSour of detail
-                        _.each(self.listSid(), (x) => {
-                            let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                        });
-
-                        let updateDetailContent = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailContentDs,
-                            features: [{
-                                name: "BodyCellStyle",
-                                decorator: detailContentDeco
-                            }]
-                        };
-
-                        let updateHorzSumHeader = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailHeaderDs,
-                            features: [{
-                                name: "HeaderCellStyle",
-                                decorator: detailHeaderDeco
-                            }]
-                        };
-
-                        let updateHorzSumContent = {
-                            columns: newDetailColumns,
-                            dataSource: horzSumContentDs
-                        };
-
-                        $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
-                    });
-                });
-            } else if (self.selectedModeDisplayObject() == 2) {
-                self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-                    let updateDetailHeader = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailHeaderDs,
-                        features: [{
-                            name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
-                        }, {
-                                name: "HeaderPopups",
-                                menu: {
-                                    rows: [0],
-                                    items: [
-                                        { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                        { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
-                                    ]
-                                },
-                                popup: {
-                                    rows: [1],
-                                    provider: function() { return $("#popup-area8"); }
-                                }
-                            }]
-                    };
-
-                    //actual data display mode , if hasn't actual data, display intended data
-                    newDetailContentDs.push(new ExItem(null, [], __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                    let updateDetailContent = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailContentDs,
-                        features: [{
-                            name: "BodyCellStyle",
-                            decorator: detailContentDeco
-                        }]
-                    };
-
-                    let updateHorzSumHeader = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailHeaderDs,
-                        features: [{
-                            name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
-                        }]
-                    };
-
-                    let updateHorzSumContent = {
-                        columns: newDetailColumns,
-                        dataSource: horzSumContentDs
-                    };
-
-                    $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
-                });
-            }
-        }
-
-        /**
          * Set color for text in cell : 明細セル文字色の判断処理
          */
         setColorForText(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
@@ -1084,7 +1117,16 @@ module ksu001.a.viewmodel {
 
             if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 3) {
                 self.checkStateWorkTypeCode().done(function() {
-                    _.each(self.dataSource(), (item) => {
+                    //lstData: list object in dataSource. It has workTypeCode, which exist in master data WORKTYPE
+                    let lstData: BasicSchedule[] = [];
+                    _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
+                        let obj = _.filter(self.dataSource(), { 'workTypeCode': item.workTypeCode });
+                        if (obj) {
+                            lstData.push.apply(lstData, obj);
+                        }
+                    });
+
+                    _.each(lstData, (item) => {
                         let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
                         if (stateWorkTypeCode) {
                             let state = stateWorkTypeCode.state;
@@ -1201,26 +1243,26 @@ module ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             if (self.empItems().length != 0) {
                 if (moment().isBetween(self.dtPrev(), self.dtAft())) {
-                    detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 0, "bg-schedule-that-day text-align-center"));
+                    detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 0, "bg-schedule-that-day "));
                     detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 1, "bg-schedule-that-day"));
                 }
                 $.when(self.getDataWkpSpecificDate(), self.getDataComSpecificDate(), self.getDataPublicHoliday()).done(() => {
                     _.each(self.arrDay, (date) => {
                         let dateFormat = +date.yearMonthDay;
                         if (self.dataWkpSpecificDate().includes(dateFormat) || self.dataComSpecificDate().includes(dateFormat)) {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-specific-date text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-specific-date "));
                             detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-specific-date"));
                         } else if (self.dataPublicHoliday().includes(dateFormat)) {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-sunday color-schedule-sunday  text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-sunday color-schedule-sunday"));
                             detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-sunday color-schedule-sunday"));
                         } else if (date.weekDay === '土') {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-saturday color-schedule-saturday  text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-saturday color-schedule-saturday"));
                             detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-saturday color-schedule-saturday"));
                         } else if (date.weekDay === '日') {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-sunday color-schedule-sunday  text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-sunday color-schedule-sunday"));
                             detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-sunday color-schedule-sunday"));
                         } else {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-weekdays color-weekdays  text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-weekdays color-weekdays"));
                             detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-weekdays color-weekdays"));
                         }
                     });
@@ -1233,11 +1275,25 @@ module ksu001.a.viewmodel {
         }
 
         /**
+         * Set color for cell of leftmost : 個人名セルの背景色の判断処理
+         */
+        setColorForLeftmostContent(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            $.when(self.checkIsInsuranceStatus()).done(() => {
+                if (self.isInsuranceStatus) {
+                    //TO-DO    
+                }
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        /**
          * Set color for cell : 明細セル背景色の判断処理
          */
         setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailHeaderDeco, detailContentDeco), self.setColorForCell(detailHeaderDeco, detailContentDeco)).done(() => {
+            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailHeaderDeco, detailContentDeco), self.setColorForCell(detailHeaderDeco, detailContentDeco), self.setColorForLeftmostContent()).done(() => {
                 dfd.resolve();
             });
             return dfd.promise();
@@ -1260,7 +1316,9 @@ module ksu001.a.viewmodel {
             nts.uk.ui.dialog.bundledErrors(errorVm);
         }
 
-        //paste data on cell
+        /**
+         * paste data on cell
+         */
         pasteData(): void {
             let self = this;
             if (self.selectedModeDisplay() == 1) {
@@ -1269,12 +1327,16 @@ module ksu001.a.viewmodel {
             }
         }
 
-        //copy data on cell
+        /**
+         * copy data on cell
+         */
         copyData(): void {
             $("#extable").exTable("updateMode", "copyPaste");
         }
 
-        //undo data on cell
+        /**
+         * undo data on cell
+         */
         undoData(): void {
             $("#extable").exTable("stickUndo");
         }
@@ -1342,6 +1404,7 @@ module ksu001.a.viewmodel {
             nts.uk.request.jump("/view/kml/002/a/index.xhtml");
         }
     }
+
     class Node {
         code: string;
         name: string;
@@ -1638,7 +1701,6 @@ module ksu001.a.viewmodel {
                 let obj: BasicSchedule = _.find(dsOfSid, (x) => {
                     return moment(new Date(x.date)).format('D') == arrDay[i].day;
                 });
-                //holida                //                if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土')                 //                    this['_' + arrDay[i].yearMonthDay] = new ExCell(                //                        endTime: null                //                        startTime: null                //                        symbol: null                //                        workTimeCode: ""                //                        workTimeName: ""                //                        workTypeCode: ""                //                        workTypeName: ""                //                    })                //                } else 
                 if (obj) {
                     //get code and name of workType and workTime
                     let workTypeCode = null, workTypeName = null, workTimeCode = null, workTimeName = null;

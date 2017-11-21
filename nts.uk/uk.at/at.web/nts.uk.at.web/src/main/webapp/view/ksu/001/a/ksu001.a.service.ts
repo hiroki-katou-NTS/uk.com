@@ -8,7 +8,8 @@ module ksu001.a.service {
         checkStateWorkTypeCode: "screen/at/schedule/basicschedule/checkStateWorkTypeCode",
         getDataWkpSpecificDate: "screen/at/schedule/basicschedule/getDataWkpSpecificDate",
         getDataComSpecificDate: "screen/at/schedule/basicschedule/getDataComSpecificDate",
-        getDataPublicHoliday: "screen/at/schedule/basicschedule/getDataPublicHoliday"
+        getDataPublicHoliday: "screen/at/schedule/basicschedule/getDataPublicHoliday",
+        getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl"
     }
 
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
@@ -43,5 +44,9 @@ module ksu001.a.service {
     
     export function getDataPublicHoliday(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataPublicHoliday, obj);
+    }
+    
+    export function getDataScheduleDisplayControl(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataScheduleDisplayControl);
     }
 }
