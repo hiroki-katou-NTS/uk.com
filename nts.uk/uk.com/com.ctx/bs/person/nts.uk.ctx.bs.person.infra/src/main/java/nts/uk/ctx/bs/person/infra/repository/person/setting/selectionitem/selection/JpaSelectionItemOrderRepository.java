@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.
 public class JpaSelectionItemOrderRepository extends JpaRepository implements SelectionItemOrderRepository {
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelItemOrder si";
-	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId";
+	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId" + " ORDER BY si.dispOrder ASC";
 	private static final String SELECT_ALL_SELECTION_ID = SELECT_ALL
 			+ " WHERE si.selectionIdPK.selectionId = :selectionId";
 
