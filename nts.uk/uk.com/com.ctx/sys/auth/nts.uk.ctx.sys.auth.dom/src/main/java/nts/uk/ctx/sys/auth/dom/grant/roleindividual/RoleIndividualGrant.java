@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.auth.dom.grant;
+package nts.uk.ctx.sys.auth.dom.grant.roleindividual;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,4 +48,11 @@ public class RoleIndividualGrant extends AggregateRoot {
 				EnumAdaptor.valueOf(roleType, RoleType.class),
 				new  DatePeriod(validPeriodStart, validPeriodEnd) );
 	}
+
+	public RoleIndividualGrant(String userID2, String string, String randomUniqueId, RoleType systemManager,
+			GeneralDate startDate, GeneralDate endDate) {
+		// TODO Auto-generated constructor stub
+	}
+
+	
 }
