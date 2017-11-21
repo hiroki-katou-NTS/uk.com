@@ -2,12 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.auth.dom.grant;
+package nts.uk.ctx.sys.auth.dom.grant.roleindividual;
+
+
 
 import java.util.List;
 import java.util.Optional;
 
+
 import nts.arc.time.GeneralDate;
+
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 
@@ -53,6 +57,8 @@ public interface RoleIndividualGrantRepository {
 	 * @param roleType
 	 */
 	void remove (String userId, String companyId , RoleType roleType);
+
+	List<RoleIndividualGrant> findByRoleId(String roleId);
 	
 	/**
 	 * find by role id
@@ -60,5 +66,6 @@ public interface RoleIndividualGrantRepository {
 	 * @param roleId
 	 * @return
 	 */
-	List<RoleIndividualGrant> findByRoleId(String roleId);
+
+
 }
