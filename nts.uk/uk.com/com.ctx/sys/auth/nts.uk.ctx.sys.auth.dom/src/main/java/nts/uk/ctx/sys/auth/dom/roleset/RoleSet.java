@@ -4,14 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 
 /**
  * ロールセット - Class RoleSet.
