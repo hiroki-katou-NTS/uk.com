@@ -190,7 +190,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                             
                             if(i > 0) {
-                                beforeFormula = sortedItems[i].formula();
+                                beforeFormula = sortedItems[i - 1].formula();
                             }
                             
                             var formulaResult = self.formulaGeneration(sortedItems[i].itemName(), sortedItems[i].settingMethod(), sortedItems[i].attribute(), 
@@ -748,11 +748,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
         /**
          * Pass data to dialog.
          */
-        passDataToDialogs(itemCd: number, attribute: number, itemName: string) {
+        passDataToDialogs(itemCd: number, settingMethod: number, attribute: number, itemName: string) {
             var self = this;
             var attrValue = "";
             
-            if(attribute == 0) {
+            if(attribute == 0 && settingMethod == 0) {
                 attrValue = nts.uk.resource.getText("Enum_Time");
             } else if(attribute == 1) {
                 attrValue = nts.uk.resource.getText("Enum_Amount_Of_Money");
@@ -818,7 +818,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
 
             if(settingMethod == 1) {
-                self.passDataToDialogs(itemCd, attribute, itemName);
+                self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);
                 nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {                    
                     self.dataB = nts.uk.ui.windows.getShared("KML002_B_DATA");
                     
@@ -836,7 +836,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 }); 
             } else {
                 if(attribute == 0) {
-                    self.passDataToDialogs(itemCd, attribute, itemName);            
+                    self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);            
                     nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {
                         self.dataC = nts.uk.ui.windows.getShared("KML002_C_DATA");
                         
@@ -853,7 +853,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
                     }); 
                 } else if(attribute == 1) {
-                    self.passDataToDialogs(itemCd, attribute, itemName);
+                    self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
                         self.dataE = nts.uk.ui.windows.getShared("KML002_E_DATA");
                         
@@ -868,7 +868,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
                     }); 
                 } else if(attribute == 2) {
-                    self.passDataToDialogs(itemCd, attribute, itemName);
+                    self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/d/index.xhtml").onClosed(() => {
                         self.dataD = nts.uk.ui.windows.getShared("KML002_D_Budget");
                         
@@ -885,7 +885,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
                     }); 
                 } else if(attribute == 3) {
-                    self.passDataToDialogs(itemCd, attribute, itemName);
+                    self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/f/index.xhtml").onClosed(() => {
                         self.dataF = nts.uk.ui.windows.getShared("KML002_F_DATA");
                         
@@ -900,7 +900,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
                     }); 
                 } else if(attribute == 4) {
-                    self.passDataToDialogs(itemCd, attribute, itemName);
+                    self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
                         self.dataG = nts.uk.ui.windows.getShared("KML002_G_DATA");
                         for(var i = 0; i < self.calculatorItems().length; i++){
@@ -927,7 +927,36 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             // 計算式設定
             if(settingMethod == 1) {
-                
+                if(data != null) {
+                    var operator = "";
+                    var text1 = "";
+                    var text2 = "";
+                    
+                    if(data.operatorAtr == 0) { operator = nts.uk.resource.getText("Enum_OperatorAtr_ADD"); }
+                    if(data.operatorAtr == 1) { operator = nts.uk.resource.getText("Enum_OperatorAtr_SUBTRACT"); }
+                    if(data.operatorAtr == 2) { operator = nts.uk.resource.getText("Enum_OperatorAtr_MULTIPLY"); }
+                    if(data.operatorAtr == 3) { operator = nts.uk.resource.getText("Enum_OperatorAtr_DIVIDE"); }
+                    
+                    if(data.settingMethod1 == 0) {                        
+                        text1 = data.verticalCalItemName1;
+                    } else {
+                        text1 = data.verticalInputItem1;
+                    }
+                    
+                    if(data.settingMethod2 == 0) {                        
+                        text2 = data.verticalCalItemName2;
+                    } else {
+                        text2 = data.verticalInputItem2;
+                    }
+                    
+                    if(beforeFormula != "") {
+                        formulaResult = beforeFormula + " " + text1 + " " + operator + " " + text2;
+                    } else {
+                        formulaResult = self.calculatorItems()[index - 1].formula() + " " + text1 + " " + operator + " " + text2;
+                    }                    
+                } else {
+                    formulaResult = nts.uk.resource.getText("KML002_153");
+                }
             } else { // 項目選択
                 // 平均単価
                 if(attribute == 4) {
