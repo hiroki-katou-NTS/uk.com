@@ -10,6 +10,8 @@ public class SampleDeletePersonBaseCommandHandler extends CommandHandler<SampleD
 	@Override
 	protected void handle(CommandHandlerContext<SampleDeletePersonBaseCommand> context) {
 		
+		SampleDeletePersonBaseCommand command = context.getCommand();
+		command.getEmployeeId();
 		/* delete process */
 	}
 
