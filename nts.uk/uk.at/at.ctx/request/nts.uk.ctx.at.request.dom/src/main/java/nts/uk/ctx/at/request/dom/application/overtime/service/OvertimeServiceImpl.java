@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
@@ -45,8 +46,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 	ApplicationRepository appRepository;
 	@Override
 	public int checkOvertime(String url) {
-		
-		return 0;
+		if(url.equals("PREOVERTIME")){
+			return OverTimeAtr.PREOVERTIME.value;
+		}else if(url.equals("REGULAROVERTIME")){
+			return OverTimeAtr.REGULAROVERTIME.value;
+		}
+		return OverTimeAtr.ALL.value;
 	}
 
 	/* (non-Javadoc)

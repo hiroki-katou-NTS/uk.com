@@ -5,14 +5,14 @@
 			<!--A3_1 申請者-->
 			<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_29')}</div>
 			<!--A3_2 申請者表示氏名-->
-			<label class="lblEmployeeName" data-bind="text : employeeName"></label>
+			<label class="lblEmployeeName fix-margin-left" data-bind="text : employeeName"></label>
 		</div>
 		<div class="valign-center control-group"
 			data-bind="if: displayPrePostFlg">
 			<!--A3_3 事前事後ラベル-->
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_30')}</div>
 			<!--A3_4 事前事後スイッチ-->
-			<div tabindex="5" class="cf"
+			<div tabindex="5" class="cf fix-margin-left"
 				data-bind="ntsSwitchButton: {name: '#{i18n.getText('KAF005_31')}',
 								options:ko.observableArray([
 						                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
@@ -28,7 +28,7 @@
 			<!--A3_5 申請日-->
 			<div class="lblTitle" data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF005_32')}</div>
 			<!--A3_6 申請日入力-->
-			<div tabindex="6" id="inputdate"
+			<div tabindex="6" id="inputdate" class ="fix-margin-left"
 				data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF005_33')}',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
 		</div>
 		<div data-bind="if: displayCaculationTime">
@@ -43,29 +43,29 @@
 					<div class="valign-center control-group"
 						data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF005_35')}</div>
 				</div>
-				<div class="cell valign-center">
-					<!--A4_7 選択ボタン-->
-					<button tabindex="7" class="workSelect"
-						data-bind="enable: true,click : openDialogKdl003">#{i18n.getText('KAF005_36')}</button>
-				</div>
-				<div class="cell valign-center">
-					<!--A4_2 勤務種類コード-->
-					<label class="lblWorkTypeCd" data-bind="text: workTypeCd"></label>
-					<!--A4_3 勤務種類名称--> 					
-					<LABEL data-bind="text: workTypeName"></LABEL> 
-					<BR /> 
-					<!--A4_5 就業時間コード--> 					
-					<label class="lblSiftCd" data-bind="text: siftCD"></label> 
-					<!--A4_6 就業時間名称--> 					
-					<LABEL data-bind="text: siftName"></LABEL>
-				</div>
+					<div class="cell valign-center" >
+						<!--A4_7 選択ボタン-->
+						<button tabindex="7" class="workSelect"
+							data-bind="enable: true,click : openDialogKdl003">#{i18n.getText('KAF005_36')}</button>
+					</div>
+					<div class="cell valign-center">
+						<!--A4_2 勤務種類コード-->
+						<label class="lblWorkTypeCd" data-bind="text: workTypeCd"></label>
+						<!--A4_3 勤務種類名称--> 					
+						<LABEL data-bind="text: workTypeName"></LABEL> 
+						<BR /> 
+						<!--A4_5 就業時間コード--> 					
+						<label class="lblSiftCd" data-bind="text: siftCD"></label> 
+						<!--A4_6 就業時間名称--> 					
+						<LABEL data-bind="text: siftName"></LABEL>
+					</div>
 			</div>
 			<!--勤務時間 1-->
-			<div class="valign-center control-group">
+			<div class="valign-center control-group" >
 				<div class="table">
-					<div class="cell valign-top">
+					<div class="cell valign-top" >
 						<!--A4_8 勤務時間ラベル--> 						
-						<div class="lblTitle" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF005_37')}</div>
+						<div class="lblTitle" data-bind="ntsFormLabel: {required: true}" style ="margin-right: 14px">#{i18n.getText('KAF005_37')}</div>
 					</div>
 					<div class="cell valign-center">
 						<div>
@@ -86,7 +86,7 @@
 				</div>
 			</div>
 			<!--勤務時間 2-->
-			<div class="valign-center control-group" data-bind="if: useMulti()">
+			<div class="valign-center control-group" data-bind="if: useMulti()" style ="margin-left: 55px">
 				<div class="table">
 					<div class="cell valign-top">
 						<div class="lblTitle"></div>
@@ -114,34 +114,36 @@
 			data-bind="if: displayCaculationTime() &amp; restTimeDisFlg()">
 			<!--A5_1 休憩時間ラベル--> 			
 			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_40')}</div>
-			<table id="fixed-table">
-				<colgroup>
-					<col width="109px" />
-					<col width="109px" />
-					<col width="109px" />
-				</colgroup>
-				<thead>
-					<tr>
-						<th class="ui-widget-header" rowspan="2"></th>
-						<!--A5_3 開始ラベル--> 						
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_41')}</th>
-						<!--A5_4 終了ラベル--> 						
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_42')}</th>
-					</tr>
-				</thead>
-				<tbody data-bind="foreach: restTime">
-					<tr>
-						<!--A5_5 休憩時間順序--> 						
-						<td class="header" data-bind="text: frameName"></td>
-						<!--A5_6 開始時刻--> 						
-						<td><input tabindex="12"
-							data-bind="ntsTimeWithDayEditor: {value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
-						<!--A5_7 終了時刻--> 						
-						<td><input tabindex="13"
-							data-bind="ntsTimeWithDayEditor: {value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class ="table-time">
+				<table id="fixed-table">
+					<colgroup>
+						<col width="109px" />
+						<col width="109px" />
+						<col width="109px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" rowspan="2"></th>
+							<!--A5_3 開始ラベル--> 						
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_41')}</th>
+							<!--A5_4 終了ラベル--> 						
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_42')}</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: restTime">
+						<tr>
+							<!--A5_5 休憩時間順序--> 						
+							<td class="header" data-bind="text: frameName"></td>
+							<!--A5_6 開始時刻--> 						
+							<td><input tabindex="12"
+								data-bind="ntsTimeWithDayEditor: {value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+							<!--A5_7 終了時刻--> 						
+							<td><input tabindex="13"
+								data-bind="ntsTimeWithDayEditor: {value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<div data-bind="if: displayCaculationTime">
 			<!--A5_8 計算ボタン--> 			
@@ -150,103 +152,109 @@
 		<div class="cf valign-center control-group cell">
 			<!--A6_1 残業時間ラベル--> 		
 			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF005_50')}</div>
-			<table id="fixed-overtime-hour-table">
-				<colgroup>
-					<col width="110px" />
-					<col width="110px" />
-					<col width="110px" />
-					<col width="110px" />
-				</colgroup>
-				<thead>
-					<tr>
-						<th class="ui-widget-header" rowspan="2"></th>
-						<!--A6_3 申請時間ラベル--> 					
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_51')}</th>
-						<!--A6_4 事前申請ラベル--> 
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_52')}</th>
-						<!--A6_6 実績時間ラベル--> 						
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_54')}</th>
-					</tr>
-				</thead>
-				<tbody data-bind="foreach: overtimeHours">
-					<tr>
-						<!--A6_7 残業時間名称--> 						
-						<td class="header" data-bind="text: frameName"></td>
-						<!--A6_8 残業申請時間入力--> 						
-						<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15"
-							data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, ntsTimeEditor: {name: nameID ,value: startTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
-						<!--A6_9 残業事前申請時間--> 						
-						<td class="right-content" data-bind="text: endTime"></td>
-						<!--A6_11 実績時間--> 						
-						<td class="right-content" data-bind="text: applicationTime"></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class ="table-time">
+				<table id="fixed-overtime-hour-table">
+					<colgroup>
+						<col width="110px" />
+						<col width="110px" />
+						<col width="110px" />
+						<col width="110px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" rowspan="2"></th>
+							<!--A6_3 申請時間ラベル--> 					
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_51')}</th>
+							<!--A6_4 事前申請ラベル--> 
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_52')}</th>
+							<!--A6_6 実績時間ラベル--> 						
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_54')}</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: overtimeHours">
+						<tr>
+							<!--A6_7 残業時間名称--> 						
+							<td class="header" data-bind="text: frameName"></td>
+							<!--A6_8 残業申請時間入力--> 						
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15"
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, ntsTimeEditor: {name: nameID ,value: startTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
+							<!--A6_9 残業事前申請時間--> 						
+							<td class="right-content" data-bind="text: endTime"></td>
+							<!--A6_11 実績時間--> 						
+							<td class="right-content" data-bind="text: applicationTime"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<div class="cf valign-center control-group" data-bind="if: displayBreakTimeFlg">
 			<!--A7_1 休出時間ラベル--> 			
 			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {required : true}">#{i18n.getText('KAF005_70')}</div>
-			<table id="fixed-break_time-table">
-				<colgroup>
-					<col width="110px" />
-					<col width="110px" />
-					<col width="110px" />
-				</colgroup>
-				<thead>
-					<tr>
-						<!--A7_2 休出時間入力テーブル--> 						
-						<th class="ui-widget-header" rowspan="2"></th>
-						<!--A7_3 休出申請時間ラベル--> 						
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_71')}</th>
-						<!--A7_4 休出事前申請ラベル--> 						
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_72')}</th>
-					</tr>
-				</thead>
-				<tbody data-bind="foreach: breakTimes">
-					<tr>
-						<!--A7_7 休出時間名称--> 						
-						<td class="header" data-bind=" text: frameName"></td>
-						<!--A7_8 休出申請時間入力--> 						
-						<td><input tabindex="16"
-							data-bind="ntsTimeEditor: {name: '#[KAF005_76]',value: startTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime' }" /></td>
-						<!--A7_9 休出事前申請時間--> 						
-						<td class="right-content" data-bind="text: endTime"></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class ="table-time">
+				<table id="fixed-break_time-table">
+					<colgroup>
+						<col width="110px" />
+						<col width="110px" />
+						<col width="110px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<!--A7_2 休出時間入力テーブル--> 						
+							<th class="ui-widget-header" rowspan="2"></th>
+							<!--A7_3 休出申請時間ラベル--> 						
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_71')}</th>
+							<!--A7_4 休出事前申請ラベル--> 						
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_72')}</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: breakTimes">
+						<tr>
+							<!--A7_7 休出時間名称--> 						
+							<td class="header" data-bind=" text: frameName"></td>
+							<!--A7_8 休出申請時間入力--> 						
+							<td><input tabindex="16"
+								data-bind="ntsTimeEditor: {name: '#[KAF005_76]',value: startTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime' }" /></td>
+							<!--A7_9 休出事前申請時間--> 						
+							<td class="right-content" data-bind="text: endTime"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<div class="cf valign-center control-group"
 			data-bind="if: displayBonusTime">
 			<!--A8_1 加給時間ラベル--> 			
 			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_81')}</div>
-			<table id="fixed-bonus_time-table">
-				<colgroup>
-					<col width="110px" />
-					<col width="110px" />
-					<col width="110px" />
-				</colgroup>
-				<thead>
-					<tr>
-						<!--A8_2 加給時間入力テーブル--> 						
-						<th class="ui-widget-header" rowspan="2"></th>
-						<!--A8_3 申請時間ラベル--> 						
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_82')}</th>
-						<!--A8_4 事前申請ラベル--> 						
-						<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_83')}</th>
-					</tr>
-				</thead>
-				<tbody data-bind="foreach: bonusTimes">
-					<tr>
-						<!--A8_6 加給時間名称ラベル--> 												
-						<td class="header" data-bind="text: frameName"></td>
-						<!--A8_7 加給時間入力--> 
-						<td><input tabindex="17"
-							data-bind="ntsTimeEditor: {name: '#[KAF005_85]',value: startTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}" /></td>
-						<!--A8_8 事前申請時間--> 
-						<td class="right-content" data-bind="text: endTime"></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class ="table-time">
+				<table id="fixed-bonus_time-table">
+					<colgroup>
+						<col width="110px" />
+						<col width="110px" />
+						<col width="110px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<!--A8_2 加給時間入力テーブル--> 						
+							<th class="ui-widget-header" rowspan="2"></th>
+							<!--A8_3 申請時間ラベル--> 						
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_82')}</th>
+							<!--A8_4 事前申請ラベル--> 						
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_83')}</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: bonusTimes">
+						<tr>
+							<!--A8_6 加給時間名称ラベル--> 												
+							<td class="header" data-bind="text: frameName"></td>
+							<!--A8_7 加給時間入力--> 
+							<td><input tabindex="17"
+								data-bind="ntsTimeEditor: {name: '#[KAF005_85]',value: startTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}" /></td>
+							<!--A8_8 事前申請時間--> 
+							<td class="right-content" data-bind="text: endTime"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<!--定型理由 -->
 		<div class="valign-center control-group"
@@ -254,10 +262,10 @@
 			<!--A9_1 定型理由ラベル--> 			
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_86')}</div>
 			<!--A9_2 定型理由選択--> 			
-			<div tabindex="18" id="combo-box"
+			<div tabindex="18" class="combo-box"
 				data-bind="ntsComboBox: {name: '#[KAF005_87]', 
 								options: reasonCombo,
-								optionsValue: 'reasonName',
+								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason,
 								enable: true,
@@ -290,10 +298,10 @@
 			<!--A9_5 乖離定型理由ラベル--> 
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_90')}</div>
 			<!--A9_6 乖離定型理由選択--> 
-			<div tabindex="20" id="combo-box"
+			<div tabindex="20" class ="combo-box"
 				data-bind="ntsComboBox: {name: '#[KAF005_91]', 
 								options: reasonCombo2,
-								optionsValue: 'reasonName',
+								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason2,
 								enable: true,
@@ -307,7 +315,7 @@
 			<div class="lblTitle"
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF005_92')}</div>
 			<!--A9_8 乖離理由入力--> 
-			<div id="multiline">
+			<div id="multiline"> 
 				<textarea tabindex="21"
 					data-bind="ntsMultilineEditor: {name: '#[KAF005_93]', 
 								value: multilContent2,
@@ -331,19 +339,19 @@
 			<!--A11_2 申請者-->
 			<label>#{i18n.getText('KAF005_100')} :</label>
 			<!--A11_3 申請者表示氏名-->
-			<label data-bind="text : employeeName"></label>
+			<label></label>
 			</div>
 			<div class="control-group">
 			<!--A11_4 申請者-->
 			<label>#{i18n.getText('KAF005_101')} :</label>
 			<!--A11_5 申請者表示氏名-->
-			<label data-bind="text : employeeName"></label>
+			<label></label>
 			</div>
 			<div class="control-group">
 			<!--A3_1 申請者-->
 			<label>#{i18n.getText('KAF005_102')} :</label>
 			<!--A3_2 申請者表示氏名-->
-			<label data-bind="text : employeeName"></label>
+			<label></label>
 			</div>
 			<div class="control-group">
 			<!--A3_1 申請者-->
@@ -364,13 +372,13 @@
 			<!--A3_1 申請者-->
 			<label>#{i18n.getText('KAF005_109')} :</label>
 			<!--A3_2 申請者表示氏名-->
-			<label data-bind="text : employeeName"></label>
+			<label></label>
 			</div>
 			<div class="control-group">
 			<!--A3_1 申請者-->
 			<label>#{i18n.getText('KAF005_110')} :</label>
 			<!--A3_2 申請者表示氏名-->
-			<label data-bind="text : employeeName"></label>
+			<label></label>
 			</div>
 		</div>
 		<div class="panel panel-gray-bg panel-frame control-group">

@@ -45,6 +45,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
+        heightOvertimeHours: KnockoutObservable<number> = ko.observable();
         //休憩時間
         restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //残業時間
@@ -102,7 +103,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         constructor() {
 
             let self = this;
-            $("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
+            
             $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
             $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
             $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
@@ -115,6 +116,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format("YYYY/MM/DD")).done(function() {
                     self.approvalSource = self.kaf000_a.approvalList;
                     $("#fixed-table").ntsFixedTable({ height: 120 });
+                    $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                 })
             })
 
@@ -126,7 +128,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getOvertimeByUI({
-                url: "",
+                url: "REGULAROVERTIME",
                 appDate: moment(new Date()).format("YYYY/MM/DD"),
                 uiType: 0
             }).done((data) => {
@@ -182,6 +184,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
             self.displayBonusTime(data.displayBonusTime);
             self.restTimeDisFlg(data.displayRestTime);
+//            self.displayBreakTimeFlg();
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             if (data.siftType != null) {
@@ -197,11 +200,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.timeStart2(data.workClockTo1);
             self.timeEnd2(data.workClockTo2);
             if(data.applicationReasonDtos != null){
-                let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
-                self.selectedReason(reasonID);
-                
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
+                let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                self.selectedReason(reasonID);
                 
                 self.multilContent(data.application.applicationReason);
             }
@@ -246,15 +248,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 for (let i = 0; i < data.overTimeInputs.length; i++) {
                     if (data.overTimeInputs[i].attendanceID == 1) {
                         self.overtimeHours.push(new common.OverTimeInput("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,0, data.overTimeInputs[i].frameName, "0", data.overTimeInputs[i].endTime, null,"#[KAF005_55]"));
-                        //self.overtimeHours.push(new common.OvertimeHour(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime,null));
-                        
                     }
                     if (data.overTimeInputs[i].attendanceID == 2) {
                         self.breakTimes.push(new common.OverTimeInput("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,0,data.overTimeInputs[i].frameName, "0", data.overTimeInputs[i].endTime, null,));
-                        //self.breakTimes.push(new common.BreakTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
                     }
                     if (data.overTimeInputs[i].attendanceID == 3) {
-                        //self.bonusTimes.push(new common.BonusTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
                         self.bonusTimes.push(new common.OverTimeInput("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,data.overTimeInputs[i].timeItemTypeAtr ,data.overTimeInputs[i].frameName, "0", data.overTimeInputs[i].endTime, null));
                     }
                 }
@@ -265,6 +263,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), "0", null, null,"KAF005_64"));
             }
              self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), "0", null, null,"KAF005_66"));
+            if(data.overtimeAtr == 0){
+                self.heightOvertimeHours(58);   
+            }else if(data.overtimeAtr == 1){
+                self.heightOvertimeHours(180);
+            }else{
+                self.heightOvertimeHours(216);
+            }
+            
         }
         //登録処理
         registerClick() {
