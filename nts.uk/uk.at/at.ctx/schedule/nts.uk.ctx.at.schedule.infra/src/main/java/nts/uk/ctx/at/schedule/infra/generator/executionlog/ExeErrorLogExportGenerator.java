@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.executionlog.export;
+package nts.uk.ctx.at.schedule.infra.generator.executionlog;
 
 import java.util.Arrays;
 import java.util.List;
