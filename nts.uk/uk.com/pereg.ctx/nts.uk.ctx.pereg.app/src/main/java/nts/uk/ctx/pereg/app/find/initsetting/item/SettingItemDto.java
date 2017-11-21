@@ -62,6 +62,26 @@ public class SettingItemDto {
 		return resultDto;
 	}
 
+	public static SaveDataDto createSaveDataDto(int saveDataValue, Object value) {
+		SaveDataDto resultDto = new SaveDataDto();
+
+		SaveDataType saveDataType = EnumAdaptor.valueOf(saveDataValue, SaveDataType.class);
+
+		switch (saveDataType) {
+		case DATE:
+			resultDto = SaveDataDto.createDataDto(GeneralDate.fromString(value.toString(), "ddMMyyyy"));
+			break;
+		case NUMBERIC:
+			resultDto = SaveDataDto.createDataDto(Integer.parseInt(value.toString()));
+			break;
+		case STRING:
+			resultDto = SaveDataDto.createDataDto(value.toString());
+			break;
+		}
+
+		return resultDto;
+	}
+
 	public static SettingItemDto createFromJavaType(String perInfoCtgId, String categoryCode, String itemDefId,
 			String itemCode, String itemName, int isRequired, int saveDataValue, GeneralDate dateValue,
 			BigDecimal intValue, String stringValue) {
@@ -121,7 +141,7 @@ public class SettingItemDto {
 		switch (this.saveData.saveDataType) {
 		case DATE:
 			DateDataDto dateData = (DateDataDto) this.saveData;
-			return dateData.getValue().toString("dd/MM/yyyy");
+			return dateData.getValue().toString("yyyy/MM/dd");
 		case NUMBERIC:
 			NumberDataDto numberData = (NumberDataDto) this.saveData;
 			return new Integer(numberData.getValue()).toString();

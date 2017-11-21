@@ -11,8 +11,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.AfterChildbirth;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.CareHoliday;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.ChildCareHoliday;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayState;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsenceHist;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsence;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsenceHist;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsencePK;
 
 @Stateless
@@ -25,7 +31,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 			+ " JOIN BsymtTempAbsenceHist h on c.histId = h.historyId";
 
 	private static final String SELECT_BY_SID_AND_REFERENCEDATE = SELECT_NO_WHERE + " WHERE c.sid = :sid"
-			+ " AND h.startDate <= :referenceDate  AND h.endDate >= :referenceDate ";
+			+ " AND h.strD <= :referenceDate  AND h.endD >= :referenceDate ";
 
 	private static final String SELECT_BY_TEMP_ABSENCE_ID = SELECT_NO_WHERE
 			+ " c WHERE c.bsymtTemporaryAbsencePK.leaveHolidayId = :tempAbsenceId";
@@ -33,14 +39,17 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	private static final String GETLIST_BY_SID = SELECT_NO_WHERE + " WHERE c.sid = :sid";
 
 	private TemporaryAbsence toTemporaryAbsence(Object[] entity) {
-		TemporaryAbsence temporaryAbsence = TemporaryAbsence.createSimpleFromJavaType(
-				String.valueOf(entity[1].toString()), String.valueOf(entity[0].toString()),
-				Integer.valueOf(entity[2].toString()), String.valueOf(entity[3].toString()),
-				GeneralDate.fromString(entity[4].toString(), "yyyy-MM-dd"),
-				GeneralDate.fromString(entity[5].toString(), "yyyy-MM-dd"), String.valueOf(entity[6].toString()),
-				String.valueOf(entity[7].toString()), GeneralDate.fromString(entity[8].toString(), "yyyy-MM-dd"),
-				Integer.valueOf(entity[9].toString()));
-		return temporaryAbsence;
+		return TemporaryAbsence.createSimpleFromJavaType(
+				entity[1] == null ? null : entity[1].toString(),
+				entity[0] == null ? null : entity[0].toString(),
+				entity[2] == null ? null : (Integer) entity[2],
+				entity[3] == null ? null : entity[3].toString(),
+				entity[4] == null ? null : (GeneralDate) entity[4],
+				entity[5] == null ? null : (GeneralDate) entity[5],
+				entity[6] == null ? null : entity[6].toString(),
+				entity[7] == null ? null : entity[7].toString(),
+				entity[8] == null ? null : (GeneralDate) entity[8],
+				entity[9] == null ? null : (Integer) entity[9]);
 	}
 
 	private List<TemporaryAbsence> toListTemporaryAbsence(List<Object[]> listEntity) {
@@ -85,39 +94,84 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 
 	/**
 	 * Convert from domain to entity
-	 * 
+	 *
 	 * @param domain
 	 * @return
 	 */
 	private BsymtTemporaryAbsence toEntity(TemporaryAbsence domain) {
 		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
-		return new BsymtTemporaryAbsence(key, domain.getEmployeeId(), domain.getDateHistoryItem().identifier(),
-				domain.getTempAbsenceType().value, domain.getTempAbsenceReason(), domain.getFamilyMemberId(),
-				domain.getBirthDate(), domain.getMulPregnancySegment());
+		LeaveHolidayState state = domain.getLeaveHolidayState();
+		switch (state.getTempAbsenceType()) {
+		case LEAVE_OF_ABSENCE:
+			Leave leave = (Leave) state;
+			return new BsymtTemporaryAbsence(key, domain.getEmployeeId(), domain.getDateHistoryItem().identifier(),
+					state.getTempAbsenceType().value, leave.getReason());
+		case MIDWEEK_CLOSURE:
+			MidweekClosure midweekClosure = (MidweekClosure) state;
+			return new BsymtTemporaryAbsence(key, domain.getEmployeeId(), domain.getDateHistoryItem().identifier(),
+					state.getTempAbsenceType().value, midweekClosure.getBirthDate(), midweekClosure.getMultiple());
+		case AFTER_CHILDBIRTH:
+			AfterChildbirth afterChildbirth = (AfterChildbirth) state;
+			return new BsymtTemporaryAbsence(key, domain.getEmployeeId(), domain.getDateHistoryItem().identifier(),
+					state.getTempAbsenceType().value, afterChildbirth.getFamilyMemberId());
+		case CHILD_CARE_NURSING:
+			ChildCareHoliday childCareHoliday = (ChildCareHoliday) state;
+			return new BsymtTemporaryAbsence(key, domain.getEmployeeId(), domain.getDateHistoryItem().identifier(),
+					state.getTempAbsenceType().value, childCareHoliday.getFamilyMemberId());
+		case NURSING_CARE_LEAVE:
+			CareHoliday careHoliday = (CareHoliday) state;
+			return new BsymtTemporaryAbsence(key, domain.getEmployeeId(), domain.getDateHistoryItem().identifier(),
+					state.getTempAbsenceType().value, careHoliday.getFamilyMemberId());
+		default:
+			return null;
+		}
 	}
 
-	private BsymtTemporaryAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain) {
-		return new BsymtTemporaryAbsenceHist(domain.getDateHistoryItem().identifier(),
-				domain.getDateHistoryItem().start(), domain.getDateHistoryItem().end());
+	private BsymtTempAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain) {
+		return new BsymtTempAbsenceHist(domain.getDateHistoryItem().identifier(), domain.getDateHistoryItem().start(),
+				domain.getDateHistoryItem().end());
 	}
 
 	/**
 	 * Update entity BsymtTemporaryAbsence
-	 * 
+	 *
 	 * @param domain
 	 * @param entity
 	 */
 	private void updateEntityBsymtTemporaryAbsence(TemporaryAbsence domain, BsymtTemporaryAbsence entity) {
+
 		entity.sid = domain.getEmployeeId();
-		entity.leaveHolidayAtr = domain.getTempAbsenceType().value;
 		entity.histId = domain.getDateHistoryItem().identifier();
-		entity.reason = domain.getTempAbsenceReason();
-		entity.familyMemberId = domain.getFamilyMemberId();
-		entity.birthday = domain.getBirthDate();
-		entity.multiple = domain.getMulPregnancySegment();
+		// check with state
+		LeaveHolidayState state = domain.getLeaveHolidayState();
+		entity.leaveHolidayAtr = state.getTempAbsenceType().value;
+		switch (state.getTempAbsenceType()) {
+		case LEAVE_OF_ABSENCE:
+			Leave leave = (Leave) state;
+			entity.reason = leave.getReason();
+			break;
+		case MIDWEEK_CLOSURE:
+			MidweekClosure midweekClosure = (MidweekClosure) state;
+			entity.birthday = midweekClosure.getBirthDate();
+			entity.multiple = midweekClosure.getMultiple();
+			break;
+		case AFTER_CHILDBIRTH:
+			AfterChildbirth afterChildbirth = (AfterChildbirth) state;
+			entity.familyMemberId = afterChildbirth.getFamilyMemberId();
+			break;
+		case CHILD_CARE_NURSING:
+			ChildCareHoliday childCareHoliday = (ChildCareHoliday) state;
+			entity.familyMemberId = childCareHoliday.getFamilyMemberId();
+			break;
+		case NURSING_CARE_LEAVE:
+			CareHoliday careHoliday = (CareHoliday) state;
+			entity.familyMemberId = careHoliday.getFamilyMemberId();
+			break;
+		}
+
 	}
 
-	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTemporaryAbsenceHist entity) {
+	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTempAbsenceHist entity) {
 		entity.historyId = domain.getDateHistoryItem().identifier();
 		entity.strD = domain.getDateHistoryItem().start();
 		entity.endD = domain.getDateHistoryItem().end();
@@ -125,7 +179,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 
 	/**
 	 * ドメインモデル「休職休業」を新規登録する
-	 * 
+	 *
 	 * @param domain
 	 */
 	@Override
@@ -136,7 +190,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 
 	/**
 	 * 取得した「休職休業」を更新する
-	 * 
+	 *
 	 * @param domain
 	 */
 	@Override
@@ -144,10 +198,10 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		// Get exist item
 		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
 		Optional<BsymtTemporaryAbsence> existItem = this.queryProxy().find(key, BsymtTemporaryAbsence.class);
-		Optional<BsymtTemporaryAbsenceHist> existItemHist = this.queryProxy()
-				.find(domain.getDateHistoryItem().identifier(), BsymtTemporaryAbsenceHist.class);
+		Optional<BsymtTempAbsenceHist> existItemHist = this.queryProxy().find(domain.getDateHistoryItem().identifier(),
+				BsymtTempAbsenceHist.class);
 		if (!existItem.isPresent()) {
-			return;
+			throw new RuntimeException("invalid TemporaryAbsence");
 		}
 		// Update entity BsymtTemporaryAbsence
 		updateEntityBsymtTemporaryAbsence(domain, existItem.get());
@@ -160,7 +214,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 
 	/**
 	 * ドメインモデル「休職休業」を削除する
-	 * 
+	 *
 	 * @param domain
 	 */
 	@Override

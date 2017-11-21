@@ -20,6 +20,7 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.TempAbsenceType;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -172,7 +173,7 @@ public class EmployeeInDesignatedFinder {
 		// Output List
 		List<EmployeeInDesignatedDto> empsInDesignated = new ArrayList<>();
 		empIdList.stream().forEach(empId -> {
-			// 在職状態を取�
+			// 在職状態を取�
 			EmploymentStatusDto employmentStatus = this.getStatusOfEmployment(empId,
 					referenceDate);
 			//check if null
@@ -248,10 +249,10 @@ public class EmployeeInDesignatedFinder {
 				// Domain TemporaryAbsence is Present
 				TemporaryAbsence temporaryAbsenceDomain = temporaryAbsOpt.get();
 				// set LeaveHolidayType 
-				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
+				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getLeaveHolidayState().getTempAbsenceType().value);
 
 				// Check if TempAbsenceType = TEMP_LEAVE
-				if (temporaryAbsenceDomain.getTempAbsenceType().value == 1) {
+				if (temporaryAbsenceDomain.getLeaveHolidayState().getTempAbsenceType() == TempAbsenceType.LEAVE_OF_ABSENCE) {
 					// StatusOfEmployment = LEAVE_OF_ABSENCE
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
 				} else {

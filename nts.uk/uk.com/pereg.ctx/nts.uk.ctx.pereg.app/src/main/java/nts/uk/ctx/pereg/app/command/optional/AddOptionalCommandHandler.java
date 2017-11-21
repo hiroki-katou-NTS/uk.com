@@ -5,16 +5,21 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.app.command.category.DomainValueFactory;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataState;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
@@ -29,6 +34,9 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 	
 	@Inject 
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
+	
+	@Inject
+	private PerInfoCtgDataRepository perInfoCtgDataRepository;
 	
 	@Inject
 	private PerInfoItemDataRepository perInfoItemDataRepository;
@@ -48,62 +56,46 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(command.getCategoryId(),companyId);
 		
 		if (!perInfoCategory.isPresent()){
-			return;
+			throw new RuntimeException("invalid PersonInfoCategory");
 		}
+		String recordId = command.getRecordId();
 		
+		// In case of optional category
+		if (StringUtils.isNotEmpty(recordId)){
+			recordId = IdentifierUtil.randomUniqueId();
+		}
 		// In case of person
 		if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			
 			// Insert category data
-//			perInfoCategoryRepositoty.addCategoryData(new PerInfoCtgData(newId,perInfoCategory.get().getPersonInfoCategoryId(),personID));
+			perInfoCtgDataRepository.addCategoryData(new PerInfoCtgData(recordId,perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
 			
 			// Insert item data
 			PersonInfoItemData itemData = null;
-			String recordId = command.getRecordId();
 			DataState state = null;
 			
 			for (ItemValue item : command.getItems()){
 				
-				state = createDataState(item);
+				OptionalUtil.createDataState(item,state);
 				
-//				itemData = new PersonInfoItemData(perInfoItemDefId, recordId, state);
+				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
 				perInfoItemDataRepository.addItemData(itemData);
 			}
 			
 		} else if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
 			// Add emp category data
-//			emInfoCtgDataRepository.addCategoryData(new EmpInfoCtgData(newId,perInfoCategory.get().getPersonInfoCategoryId(),empID));
+			emInfoCtgDataRepository.addCategoryData(new EmpInfoCtgData(recordId, perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
 			
 			// Add item data
 			EmpInfoItemData itemData = null;
 			DataState state = null;
 			for (ItemValue item : command.getItems()){
-				state = createDataState(item);
-//				itemData = new EmpInfoItemData(item.getItemDefId(), recordId, state);
+				OptionalUtil.createDataState(item,state);
+				itemData = new EmpInfoItemData(item.definitionId(), recordId, state);
 				empInfoItemDataRepository.addItemData(itemData);
 			}
 			
 		}
-	}
-	/**
-	 * Create data state from item type
-	 * @param item
-	 * @return
-	 */
-	private DataState createDataState(ItemValue item){
-		DataState state = null;
-		switch(item.itemValueType()){
-		case STRING:
-			state = DataState.createFromStringValue(DomainValueFactory.convertToString(item.value()));
-		break;
-		case NUMERIC:
-			state = DataState.createFromNumberValue(DomainValueFactory.convertToDecimal(item.value()));
-		break;
-		case DATE:
-			state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.value()));
-		break;
-		}
-		return state;
 	}
 
 }

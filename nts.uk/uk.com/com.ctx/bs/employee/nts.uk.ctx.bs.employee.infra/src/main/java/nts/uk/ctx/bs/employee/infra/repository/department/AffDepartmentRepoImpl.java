@@ -76,7 +76,7 @@ public class AffDepartmentRepoImpl extends JpaRepository implements AffDepartmen
 		// Get exist item
 		Optional<BsymtAffiDepartment> existItem = this.queryProxy().find(domain.getId(), BsymtAffiDepartment.class);
 		if (!existItem.isPresent()) {
-			return;
+			throw new RuntimeException("invalid AffiliationDepartment");
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());
