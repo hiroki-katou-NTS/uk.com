@@ -5,6 +5,7 @@ module nts.uk.com.view.cps017.b {
         __viewContext["viewModel"].start().done(function() {
             checkBox();
             __viewContext.bind(__viewContext["viewModel"]);
+            $('#table-grid-selection').focus();
         });
     });
 }
@@ -13,11 +14,11 @@ function checkBox() {
     var columnSettings = [
         { headerText: '', key: 'selectionID', hidden: true },
         {
-            headerText: nts.uk.resource.getText('CPS017_18'), key: 'initSelection',
-            template: "<input style='width:30px, height:40px' class='checkRow initSelection' type='checkbox'"
+            headerText: nts.uk.resource.getText('CPS017_18'), key: 'initSelection',width: '70px',
+            template: "<input class='checkRow initSelection' type='checkbox'"
             + " data-checked='${initSelection}' data-id='${selectionID}' tabindex='4'/>"
         },
-        { headerText: nts.uk.resource.getText('CPS017_16'), key: 'selectionCD', readonly: true },
+        { headerText: nts.uk.resource.getText('CPS017_16'), key: 'selectionCD', width: '90px', },
         { headerText: nts.uk.resource.getText('CPS017_17'), key: 'selectionName' }
     ];
     let source = ko.toJS(__viewContext["viewModel"].listSelection);
@@ -28,7 +29,7 @@ function checkBox() {
         enableHoverStyles: false,
         autoGenerateColumns: false,
         columns: columnSettings,
-        width: "370px",
+        width: "400px",
         height: "265px",
         autoGenerateRows: true,
         features: [{

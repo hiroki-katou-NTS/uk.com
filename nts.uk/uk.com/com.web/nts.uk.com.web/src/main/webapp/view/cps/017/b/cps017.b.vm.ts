@@ -1,10 +1,5 @@
 module nts.uk.com.view.cps017.b.viewmodel {
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import close = nts.uk.ui.windows.close;
@@ -42,6 +37,9 @@ module nts.uk.com.view.cps017.b.viewmodel {
                             memoSelection: x.memoSelection,
                             initSelection: x.initSelection == 1? true : false });
                         i++;
+                        if(x.initSelection == 1){
+                            self.currentSelectedId(x.selectionID);
+                        }
                     });
                 }
                 dfd.resolve();
@@ -77,20 +75,12 @@ module nts.uk.com.view.cps017.b.viewmodel {
             });
         }
         /**
-         * find item is selected.
+         * close dialog.
          */
-        findItemSelected(id: any): any{
-            let self = this;
-            return _.find(self.listSelection(), function(item){
-                return item.id = id;
-            })
-        }
-        
         close(){
             close();
         }
     }
-    
     
     //Selection
     interface ISelection {
