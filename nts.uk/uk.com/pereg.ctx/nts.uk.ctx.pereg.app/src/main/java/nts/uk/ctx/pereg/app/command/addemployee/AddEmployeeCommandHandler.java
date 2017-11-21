@@ -122,7 +122,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 					item.getSaveData().getSaveDataType().value));
 		});
 
-		return new ItemsByCategory(categoryCd, null, items);
+		return new ItemsByCategory(categoryCd, null,null, items);
 
 	}
 

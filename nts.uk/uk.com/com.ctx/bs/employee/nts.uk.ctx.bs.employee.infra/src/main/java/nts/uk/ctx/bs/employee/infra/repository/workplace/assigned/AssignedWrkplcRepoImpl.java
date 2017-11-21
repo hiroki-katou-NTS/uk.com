@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplace;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplaceHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -60,6 +61,50 @@ public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrk
 		List<Object[]> lstEntity = this.queryProxy().query(SELECT_ASS_WORKPLACE_BY_ID, Object[].class)
 				.setParameter("assiWorkplaceId", assignedWorkplaceId).getList();
 		return toDomain(lstEntity);
+	}
+	/**
+	 * Update entity from domain
+	 * @param domain
+	 * @param entity
+	 */
+	private void updateEntity(AssignedWorkplace domain,BsymtAssiWorkplace entity){
+		entity.empId = domain.getEmployeeId();
+		entity.workplaceId = domain.getWorkplaceId();
+	}
+	
+	/**
+	 * Update history table from domain
+	 * @param item
+	 * @param entity
+	 */
+	private void updateEntityBsymtAssiWorkplaceHist(DateHistoryItem item,BsymtAssiWorkplaceHist entity){
+		entity.strD = item.start();
+		entity.endD = item.end();
+	}
+	
+	@Override
+	public void updateAssignedWorkplace(AssignedWorkplace domain) {
+		Optional<BsymtAssiWorkplace> existItem = this.queryProxy().find(domain.getAssignedWorkplaceId(), BsymtAssiWorkplace.class);
+		
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid Assign workplace");
+		}
+		
+		// Update history
+		for (DateHistoryItem item : domain.getDateHistoryItem()){
+			Optional<BsymtAssiWorkplaceHist> existItemHist = this.queryProxy().find(item.identifier(), BsymtAssiWorkplaceHist.class);
+			if (!existItemHist.isPresent()){
+				throw new RuntimeException("invalid Assign workplace history");
+			}
+			updateEntityBsymtAssiWorkplaceHist(item,existItemHist.get());
+			this.commandProxy().update(existItemHist.get());
+		}
+		
+		// Update entity
+		updateEntity(domain, existItem.get());
+		
+		this.commandProxy().update(existItem.get());
+		
 	}
 
 }
