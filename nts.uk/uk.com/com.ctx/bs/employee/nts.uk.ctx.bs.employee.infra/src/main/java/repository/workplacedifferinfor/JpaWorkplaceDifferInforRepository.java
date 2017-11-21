@@ -23,8 +23,7 @@ public class JpaWorkplaceDifferInforRepository extends JpaRepository implements 
 		 * author: Hoang Yen
 		 */
 		private static DivWorkDifferInfor toDomainDiv(BcmmtDivWorkDifferInfor entity){
-			DivWorkDifferInfor domain = DivWorkDifferInfor.createFromJavaType(entity.bcmmtDivWorkDifferInforPK.companyId,
-																				entity.bcmmtDivWorkDifferInforPK.companyCode,
+			DivWorkDifferInfor domain = DivWorkDifferInfor.createFromJavaType(entity.bcmmtDivWorkDifferInforPK.companyCode,
 																				entity.bcmmtDivWorkDifferInforPK.contractCd,
 																				entity.regWorkDiv);
 			return domain;

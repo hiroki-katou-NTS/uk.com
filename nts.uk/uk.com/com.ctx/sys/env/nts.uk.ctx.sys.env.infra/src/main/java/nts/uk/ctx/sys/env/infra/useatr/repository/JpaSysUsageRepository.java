@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.env.infra.useatr.repository;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.New;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -23,8 +24,7 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 * author: Hoang Yen
 	 */
 	private static SysUsageSet toDomainSys(SacmtSysUsageSet entity){
-		SysUsageSet domain = SysUsageSet.createFromJavaType(entity.sacmtSysUsageSetPK.companyId, 
-															entity.sacmtSysUsageSetPK.companyCode,
+		SysUsageSet domain = SysUsageSet.createFromJavaType(entity.sacmtSysUsageSetPK.companyCode,
 															entity.sacmtSysUsageSetPK.contractCd,
 															entity.jinji,
 															entity.shugyo, entity.kyuyo);
@@ -55,11 +55,8 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 */
 	@Override
 	public Optional<SysUsageSet> findUsageSet(String companyId, String companyCode, String contractCd) {
-		return this.queryProxy().query(SELECT_ITEM, SacmtSysUsageSet.class)
-										.setParameter("companyId", companyId)
-										.setParameter("companyCode", companyCode)
-										.setParameter("contractCd", contractCd)
-										.getSingle(c -> toDomainSys(c));
+		val pk = new SacmtSysUsageSetPK(companyId, companyCode, contractCd);
+		return this.queryProxy().find(pk, SacmtSysUsageSet.class).map(c -> toDomainSys(c));
 	}
 
 	/**

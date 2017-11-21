@@ -28,7 +28,7 @@ public class AddSysUsageSetCommandHandler extends CommandHandler<AddSysUsageSetC
 			throw new BusinessException("Msg_3");
 		}
 		
-		SysUsageSet sysDom = SysUsageSet.createFromJavaType(data.getCompanyId(), data.getCompanyCode(), 
+		SysUsageSet sysDom = SysUsageSet.createFromJavaType(data.getCompanyCode(), 
 															contractCd, data.getJinji(), 
 															data.getShugyo(), data.getKyuyo());
 //		sysDom.createCompanyId(sysDom.getCompanyCode().v(), sysDom.getContractCd().v());

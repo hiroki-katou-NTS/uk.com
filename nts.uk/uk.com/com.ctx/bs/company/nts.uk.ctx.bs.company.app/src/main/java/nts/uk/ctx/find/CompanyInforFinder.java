@@ -30,7 +30,7 @@ public class CompanyInforFinder {
 			adddto = null;
 			return adddto;
 		}
-		adddto.setCompanyId(add.getCompanyId().v());
+		adddto.setCompanyId(add.getCompanyId());
 		adddto.setCompanyCode(add.getCompanyCode().v());
 		adddto.setContractCd(add.getContractCd().v());
 		adddto.setFaxNum(add.getFaxNum().v());

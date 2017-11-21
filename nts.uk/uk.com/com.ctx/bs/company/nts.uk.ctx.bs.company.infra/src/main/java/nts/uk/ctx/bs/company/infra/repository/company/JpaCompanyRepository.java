@@ -16,6 +16,7 @@ import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtAddInfor;
+import nts.uk.ctx.bs.company.infra.entity.company.BcmmtAddInforPK;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompanyInfor;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompanyInforPK;
@@ -108,10 +109,10 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * @param entity
 	 * @return author Hoang Yen
 	 */
-	private static CompanyInforNew toDomainCom(BcmmtCompanyInfor entity) {
+	private CompanyInforNew toDomainCom(BcmmtCompanyInfor entity) {
 		AddInfor add = entity.bcmmtAddInfor == null ? null : toDomainAdd(entity.bcmmtAddInfor);
 		CompanyInforNew domain = CompanyInforNew.createFromJavaType(entity.bcmmtCompanyInforPK.companyCode,
-				entity.companyName, entity.bcmmtCompanyInforPK.companyId, entity.startMonth, entity.isAbolition,
+				entity.companyName, entity.startMonth, entity.isAbolition,
 				entity.repname, entity.repost, entity.comNameKana, entity.shortComName,
 				entity.bcmmtCompanyInforPK.contractCd, entity.taxNo, add);
 		return domain;
@@ -124,8 +125,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * @return author Hoang Yen
 	 */
 	private static AddInfor toDomainAdd(BcmmtAddInfor entity) {
-		AddInfor domain = AddInfor.createFromJavaType(entity.bcmmtAddInforPK.companyId,
-				entity.bcmmtAddInforPK.companyCode, entity.bcmmtAddInforPK.contractCd, entity.faxNum, entity.add_1,
+		AddInfor domain = AddInfor.createFromJavaType(entity.bcmmtAddInforPK.companyCode, entity.bcmmtAddInforPK.contractCd, entity.faxNum, entity.add_1,
 				entity.add_2, entity.addKana_1, entity.addKana_2, entity.postCd, entity.phoneNum);
 		return domain;
 	}
@@ -156,8 +156,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	private static BcmmtAddInfor toEntityAdd(AddInfor domain) {
 		val entity = new BcmmtAddInfor();
-		// entity.bcmmtAddInforPK = new
-		// BcmmtAddInforPK(domain.getCompanyId().toString());
+		entity.bcmmtAddInforPK = new BcmmtAddInforPK(domain.getCompanyId(), domain.getCompanyCode().v(), domain.getContractCd().v());
 		entity.faxNum = domain.getFaxNum().v();
 		entity.add_1 = domain.getAdd_1().v();
 		entity.add_2 = domain.getAdd_2().v();
@@ -184,11 +183,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 */
 	@Override
 	public Optional<CompanyInforNew> findComByCode(String contractCd, String companyId, String companyCd) {
-		return this.queryProxy().query(SELECT_COM_CD, BcmmtCompanyInfor.class)
-								.setParameter("contractCd", contractCd)
-								.setParameter("companyId", companyId)
-								.setParameter("companyCd", companyCd)
-								.getSingle(c->toDomainCom(c));
+		val pk = new BcmmtCompanyInforPK(companyId, companyCd, contractCd);
+		return this.queryProxy().find(pk, BcmmtCompanyInfor.class).map(x -> toDomainCom(x));
 	}
 	
 	/**
@@ -206,6 +202,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		oldEntity.isAbolition = entity.isAbolition;
 		oldEntity.startMonth = entity.startMonth;
 		oldEntity.taxNo = entity.taxNo;
+		oldEntity.bcmmtAddInfor = entity.bcmmtAddInfor;
+		this.commandProxy().update(oldEntity);
 	}
 
 	/**
@@ -230,12 +228,9 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * find Address author: Hoang Yen
 	 */
 	@Override
-	public List<AddInfor> findAdd(String companyId, String companyCode, String contractCd) {
-		return this.queryProxy().query(SELECT_ADD_NO_WHERE, BcmmtAddInfor.class)
-								.setParameter("companyId", companyId)
-								.setParameter("companyCode", companyCode)
-								.setParameter("contractCd", contractCd)
-				.getList(c -> toDomainAdd(c));
+	public Optional<AddInfor> findAdd(String companyId, String companyCode, String contractCd) {
+		val pk = new BcmmtAddInforPK(companyId, companyCode, contractCd);
+		return this.queryProxy().find(pk, BcmmtAddInfor.class).map(c -> toDomainAdd(c));
 	}
 
 	/**

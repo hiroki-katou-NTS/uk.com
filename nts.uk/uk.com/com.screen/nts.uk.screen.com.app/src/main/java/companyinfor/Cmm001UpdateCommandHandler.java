@@ -25,8 +25,8 @@ public class Cmm001UpdateCommandHandler extends CommandHandler<Cmm001UpdateComma
 	@Override
 	protected void handle(CommandHandlerContext<Cmm001UpdateCommand> context) {
 		Cmm001UpdateCommand cmm001 = context.getCommand();
-		this.updateCom.handle(cmm001.getUpdateComCm());
-		this.updateDiv.handle(cmm001.getUpdateDivCm());
-		this.updateSys.handle(cmm001.getUpdateSysCm());
+		this.updateCom.handle(cmm001.getComCm());
+		this.updateDiv.handle(cmm001.getDivCm());
+		this.updateSys.handle(cmm001.getSysCm());
 	}
 }

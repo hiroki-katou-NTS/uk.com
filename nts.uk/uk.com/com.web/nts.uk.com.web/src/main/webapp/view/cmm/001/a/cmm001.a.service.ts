@@ -5,7 +5,9 @@ module cmm001.a.service {
         findSys: "sys/env/usatr/findSys",
         findPost: "contact/postalcode/findAll",
         findPostId: "contact/postalcode/find",
-        findPostCd: "contact/postalcode/findByCode", 
+        findPostCd: "contact/postalcode/findByCode",
+        update: "screen/com/cmm001/update",
+        add: "screen/com/cmm001/add",
         
         getCompanyDetail: "ctx/proto/company/findCompanyDetail",
         addCompany: "ctx/proto/company/adddata",
@@ -34,6 +36,14 @@ module cmm001.a.service {
     
     export function findPostCd(vari: String): JQueryPromise<void>{
         return nts.uk.request.ajax("com", paths.findPostCd + "/" + vari);     
+    }
+    
+    export function update(command: any): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.update, command);    
+    }
+    
+    export function add(command: any): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.add, command);    
     }
 //    /**
 //     * get list company

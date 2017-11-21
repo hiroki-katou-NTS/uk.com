@@ -1,8 +1,5 @@
 package companyinfor;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,9 +11,9 @@ import nts.uk.ctx.sys.env.app.command.sysusagesetfinder.AddSysUsageSetCommand;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cmm001AddCommand {
-	private AddCompanyInforCommand addComCm;
+	private AddCompanyInforCommand comCm;
 	
-	private AddSysUsageSetCommand addSysCm;
+	private AddSysUsageSetCommand sysCm;
 	
-	private AddDivWorkPlaceDifferInforCommand addDivCm;
+	private AddDivWorkPlaceDifferInforCommand divCm;
 }
