@@ -247,8 +247,8 @@ public class ScheduleCreatorExecutionCommandHandler
 		// loop start period date => end period date
 		while (command.getToDate().beforeOrEquals(domain.getPeriod().end())) {
 
-			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
-					.find(creator.getEmployeeId(), command.getToDate());
+			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(creator.getEmployeeId(),
+					command.getToDate());
 			if (optionalBasicSchedule.isPresent()
 					&& command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ONLY_UNCONFIRM
 					&& optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.CONFIRMED) {
@@ -285,22 +285,20 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param domain the domain
 	 */
 	// 個人情報をもとにスケジュールを作成する
-	private void createScheduleBasedPerson(ScheduleCreatorExecutionCommand command,
-			ScheduleCreator creator, ScheduleExecutionLog domain) {
+	private void createScheduleBasedPerson(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
+			ScheduleExecutionLog domain) {
 		Optional<PersonalWorkScheduleCreSet> optionalPersonalWorkScheduleCreSet = this.creSetRepository
 				.findById(creator.getEmployeeId());
 
 		// check exist data PersonalWorkScheduleCreSet
 		if (optionalPersonalWorkScheduleCreSet.isPresent()) {
-			PersonalWorkScheduleCreSet personalWorkScheduleCreSet = optionalPersonalWorkScheduleCreSet
-					.get();
+			PersonalWorkScheduleCreSet personalWorkScheduleCreSet = optionalPersonalWorkScheduleCreSet.get();
 
 			// check domain WorkScheduleBasicCreMethod is BUSINESS_DAY_CALENDAR
 			if (personalWorkScheduleCreSet.getBasicCreateMethod()
 					.equals(WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR)) {
 				// call create WorkSchedule
-				this.createWorkScheduleByBusinessDayCalenda(command, domain,
-						personalWorkScheduleCreSet);
+				this.createWorkScheduleByBusinessDayCalenda(command, domain, personalWorkScheduleCreSet);
 			}
 		}
 	}
@@ -347,12 +345,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param personalWorkScheduleCreSet the personal work schedule cre set
 	 * @return true, if successful
 	 */
-	private boolean createWorkScheduleByBusinessDayCalendaUseManager(
-			ScheduleCreatorExecutionCommand command, ScheduleExecutionLog domain,
-			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+	private boolean createWorkScheduleByBusinessDayCalendaUseManager(ScheduleCreatorExecutionCommand command,
+			ScheduleExecutionLog domain, PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		// get status employment
-		EmploymentStatusDto employmentStatus = this.scheCreExeWorkTimeHandler.getStatusEmployment(
-				personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
+		EmploymentStatusDto employmentStatus = this.scheCreExeWorkTimeHandler
+				.getStatusEmployment(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
 
 		// status employment equal RETIREMENT (退職)
 		if (employmentStatus.getStatusOfEmployment() == RETIREMENT) {
@@ -361,17 +358,15 @@ public class ScheduleCreatorExecutionCommandHandler
 
 		// status employment not equal BEFORE_JOINING (入社前)
 		if (employmentStatus.getStatusOfEmployment() != BEFORE_JOINING) {
-			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(
-					personalWorkScheduleCreSet.getEmployeeId(),
-					command.getToDate());
+			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
+					.find(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
 
 			// check exist data basic schedule
 			if (optionalBasicSchedule.isPresent()) {
 
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
 				command.setIsDeleteBeforInsert(true);
-				this.createWorkScheduleByImplementAtr(command, basicSchedule,
-						personalWorkScheduleCreSet);
+				this.createWorkScheduleByImplementAtr(command, basicSchedule, personalWorkScheduleCreSet);
 			} else {
 				// not exist data basic schedule
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
@@ -387,8 +382,8 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param basicSchedule the basic schedule
 	 * @param personalWorkScheduleCreSet the personal work schedule cre set
 	 */
-	private void createWorkScheduleByImplementAtr(ScheduleCreatorExecutionCommand command,
-			BasicSchedule basicSchedule, PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+	private void createWorkScheduleByImplementAtr(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
+			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
 		// check parameter implementAtr recreate
 		if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
@@ -403,12 +398,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param basicSchedule the basic schedule
 	 * @param personalWorkScheduleCreSet the personal work schedule cre set
 	 */
-	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command,
-			BasicSchedule basicSchedule, PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
+			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
 		// check parameter ReCreateAtr onlyUnconfirm
-		if (command.getContent().getReCreateContent()
-				.getReCreateAtr().value == ReCreateAtr.ONLY_UNCONFIRM.value) {
+		if (command.getContent().getReCreateContent().getReCreateAtr().value == ReCreateAtr.ONLY_UNCONFIRM.value) {
 
 			// check confirmedAtr of basic schedule
 			if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
@@ -418,5 +412,5 @@ public class ScheduleCreatorExecutionCommandHandler
 			this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
 		}
 	}
-	
+
 }

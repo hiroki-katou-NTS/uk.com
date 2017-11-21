@@ -127,8 +127,16 @@ public class ScheCreExeWorkTimeHandler {
 	// 就業時間帯を取得する
 	public Optional<Object> getWorktime(ScheduleCreatorExecutionCommand command,
 			String worktypeCode, PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+		
+		BasicWorkSettingGetterCommand commandGetter = new BasicWorkSettingGetterCommand();
+		commandGetter.setBaseGetter(command.toBaseCommand());
+		commandGetter.setEmployeeId(personalWorkScheduleCreSet.getEmployeeId());
+		commandGetter.setReferenceBasicWork(
+				personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBasicWork().value);
+		commandGetter.setReferenceBusinessDayCalendar(
+				personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar().value);
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
-				.getBasicWorkSetting(command, personalWorkScheduleCreSet);
+				.getBasicWorkSetting(commandGetter);
 
 		if (optionalBasicWorkSetting.isPresent()) {
 			return this.getWorkingTimeZoneCode(command, optionalBasicWorkSetting.get(),
@@ -808,7 +816,8 @@ public class ScheCreExeWorkTimeHandler {
 		if (!this.workTimeRepository.findByCode(command.getCompanyId(), worktimeCode).isPresent()) {
 
 			// add error message 591
-			this.scheCreExeErrorLogHandler.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_591");
+			this.scheCreExeErrorLogHandler.addError(command.toBaseCommand(), personalWorkScheduleCreSet.getEmployeeId(),
+					"Msg_591");
 		} else {
 			return this.getScheduleWorkHour(command, basicWorkSetting.getWorktypeCode().v(), worktimeCode);
 		}

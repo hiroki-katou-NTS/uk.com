@@ -176,7 +176,8 @@ public class ScheCreExeWorkTypeHandler {
 			if (CollectionUtil.isEmpty(worktypeSets)) {
 				
 				// add message error log 601
-				this.scheCreExeErrorLogHandler.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_601");
+				this.scheCreExeErrorLogHandler.addError(command.toBaseCommand(),
+						personalWorkScheduleCreSet.getEmployeeId(), "Msg_601");
 				return ScheCreExeWorkTimeHandler.DEFAULT_CODE;
 			}
 			return worktypeSets.get(FIRST_DATA).getWorkTypeCd().v();
@@ -257,9 +258,17 @@ public class ScheCreExeWorkTypeHandler {
 	private Optional<String> getWorktype(ScheduleCreatorExecutionCommand command,
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
+		// setup command getter
+		BasicWorkSettingGetterCommand commandGetter = new BasicWorkSettingGetterCommand();
+		commandGetter.setBaseGetter(command.toBaseCommand());
+		commandGetter.setEmployeeId(personalWorkScheduleCreSet.getEmployeeId());
+		commandGetter.setReferenceBasicWork(
+				personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBasicWork().value);
+		commandGetter.setReferenceBusinessDayCalendar(
+				personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar().value);
 		// get basic work setting.
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
-				.getBasicWorkSetting(command, personalWorkScheduleCreSet);
+				.getBasicWorkSetting(commandGetter);
 
 		if (optionalBasicWorkSetting.isPresent()) {
 			BasicWorkSetting basicWorkSetting = optionalBasicWorkSetting.get();
@@ -284,7 +293,8 @@ public class ScheCreExeWorkTypeHandler {
 				return Optional.of(worktypeCode);
 			} else {
 				// add error log message 590
-				this.scheCreExeErrorLogHandler.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_590");
+				this.scheCreExeErrorLogHandler.addError(command.toBaseCommand(),
+						personalWorkScheduleCreSet.getEmployeeId(), "Msg_590");
 			}
 		}
 
