@@ -397,7 +397,7 @@ module nts.uk.com.view.cmm011.a {
                 }
                 
                 // show error message
-                if (Array.isArray(res.messageId)) {
+                if (Array.isArray(res.errors)) {
                     nts.uk.ui.dialog.bundledErrors(res);
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
