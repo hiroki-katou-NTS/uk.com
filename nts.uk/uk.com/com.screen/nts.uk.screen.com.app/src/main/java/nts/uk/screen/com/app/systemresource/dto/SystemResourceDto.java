@@ -1,7 +1,9 @@
 package nts.uk.screen.com.app.systemresource.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class SystemResourceDto {
 	
@@ -9,9 +11,5 @@ public class SystemResourceDto {
 	
 	private String resourceContent;
 	
-	public SystemResourceDto() {
-		super();
-		
-	}
 
 }
