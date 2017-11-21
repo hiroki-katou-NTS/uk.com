@@ -18,14 +18,13 @@ module nts.uk.com.view.cps017.c.viewmodel {
         // history:
         listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
         historySelection: KnockoutObservable<HistorySelection> = ko.observable(new HistorySelection({ histId: '', selectionItemId: '' }));
-
+        selectionName: KnockoutObservable<string> = ko.observable('');
+        data: any;
         constructor() {
             let self = this;
-
-        }
-
-        start(): JQueryPromise<any> {
-
+            self.data = getShared('selectHistory');
+            //get name from screen main
+            self.selectionName(self.data.name);
         }
 
         closeDialog() {
@@ -35,14 +34,14 @@ module nts.uk.com.view.cps017.c.viewmodel {
         addHistory() {
             let self = this,
                 currentItem: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selectHistory = getShared('selectHistory');
+//                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                selectHistory = self.data.selectHistory;
 
             currentItem.companyCode(selectHistory.companyCode);
             currentItem.selectionItemId(selectHistory.selectionItemId);
             currentItem.histId(selectHistory.histId);
             //currentItem.endDate(selectHistory.endDate);
-            command = ko.toJS(currentItem);
+            let command = ko.toJS(currentItem);
 
             service.addHistoryData(command).done(function() {                
                   dialog.info({ messageId: "Msg_15" }).then(function() {

@@ -361,11 +361,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this,
                 currentItem: HistorySelection = self.historySelection(),
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId());
+                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId()),
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems(),
+                selectionItemNameList = _.find(listItems, x => x.selectionItemName == perInfoSelectionItem.selectionItemName());
 
             //set histID
             //setShared('selectedHisId', self.historySelection().histId());
-            setShared('selectHistory', selectHistory);
+            setShared('selectHistory', {selectHistory: selectHistory, name: selectionItemNameList.selectionItemName});
 
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
