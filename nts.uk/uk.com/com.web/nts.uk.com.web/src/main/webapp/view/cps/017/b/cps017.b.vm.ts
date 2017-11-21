@@ -55,10 +55,6 @@ module nts.uk.com.view.cps017.b.viewmodel {
         register(){
             block.invisible();
             let self = this;
-            if(self.currentSelectedId() == ''){//khong item nao duoc chon
-                block.clear();
-                return;
-            }
             let lstData: Array<SelOrder> = [];
             _.each(self.listSelection(), function(item, index){
                 lstData.push(new SelOrder(item.selectionID, item.histId, item.selectionCD, index+1, item.selectionID == self.currentSelectedId() ? true : false));
