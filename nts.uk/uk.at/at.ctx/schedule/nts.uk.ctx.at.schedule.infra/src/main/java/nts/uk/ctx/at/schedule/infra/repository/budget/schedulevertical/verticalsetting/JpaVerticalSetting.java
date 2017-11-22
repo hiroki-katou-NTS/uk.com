@@ -612,12 +612,17 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				amount = toEntityFormAmount(x.getFormulaAmount());
 			}
 			
+			KscstFormulaUnitPrice price = null;
+			if (x.getUnitprice() != null) {
+				price = toEntityFormPrice(x.getUnitprice());
+			}
+			
 			KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(),
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
 					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), x.getRoundingProcessing(), kscstVerticalItemOrder,
-					built, time, entity, amount);
+					built, time, entity, amount, price);
 		}).collect(Collectors.toList());
 
 		KscmtGenVertSet kscstVerticalCalSet = new KscmtGenVertSet();
@@ -719,12 +724,17 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				amount = toEntityFormAmount(x.getFormulaAmount());
 			}
 			
+			KscstFormulaUnitPrice price = null;
+			if (x.getUnitprice() != null) {
+				price = toEntityFormPrice(x.getUnitprice());
+			}
+			
 			KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(),
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
 					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), x.getRoundingProcessing(), kscstVerticalItemOrder,
-					built, time, entity, amount);
+					built, time, entity, amount, price);
 		}).collect(Collectors.toList());
 
 		kscstVerticalCalSet.genVertItems = items;

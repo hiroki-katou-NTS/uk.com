@@ -8,13 +8,14 @@ module nts.uk.at.view.kml002.g.viewmodel {
         attrLabel: KnockoutObservable<String>;
         itemNameLabel: KnockoutObservable<String>;
         verticalId: KnockoutObservable<number>;
-
+        genVertId: KnockoutObservable<number>;
 
         constructor() {
             var self = this;
 
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
 
+            self.genVertId = ko.observable(data.verticalCalCd);
             self.verticalId = ko.observable(data.itemId);
             self.attrLabel = ko.observable(data.attribute);
             self.itemNameLabel = ko.observable(data.itemName);
@@ -51,10 +52,14 @@ module nts.uk.at.view.kml002.g.viewmodel {
 
         submit() {
             var self = this;
+            var item = _.find(self.unitPriceItems(), function(o) { return o.uPCd == self.uPCd(); });
+            
             var data = {
-                verticalId: self.verticalId(),
-                unitPriceCtg: self.uPCd(),
-                attendanceDecisionCls: self.selectedMethod(),
+                verticalCalCd: self.genVertId(),
+                verticalCalItemId: self.verticalId(),
+                unitPrice: self.uPCd(),
+                unitName: item.uPName,
+                attendanceAtr: self.selectedMethod(),
             };
 
             nts.uk.ui.windows.setShared("KML002_G_DATA", data);

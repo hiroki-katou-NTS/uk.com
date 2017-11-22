@@ -55,6 +55,9 @@ public class VerticalCalItemDto {
   	
   	// F
   	private FormulaNumericalDto numerical;
+  	
+  	// G
+  	private FormulaUnitpriceDto unitPrice;
 
 	public static VerticalCalItemDto fromDomain(VerticalCalItem domain) {
 		FormBuiltDto formBuiltDto = null;
@@ -62,6 +65,7 @@ public class VerticalCalItemDto {
 		FormPeopleDto formPeopleDto = null;
 		FormulaAmountDto formulaAmountDto = null;
 		FormulaNumericalDto numericalDto = null;
+		FormulaUnitpriceDto unitPriceDto = null;
 		
 		if(domain.getFormBuilt() != null) {
 			formBuiltDto =  FormBuiltDto.fromDomain(domain.getFormBuilt());
@@ -83,6 +87,10 @@ public class VerticalCalItemDto {
 			numericalDto =  FormulaNumericalDto.fromDomain(domain.getNumerical());
 		}
 		
+		if(domain.getUnitprice() != null) {
+			unitPriceDto =  FormulaUnitpriceDto.fromDomain(domain.getUnitprice());
+		}
+		
 		return new VerticalCalItemDto(
 				domain.getCompanyId(),
 				domain.getVerticalCalCd(),
@@ -99,7 +107,8 @@ public class VerticalCalItemDto {
 				formTimeDto,
 				formPeopleDto,
 				formulaAmountDto,
-				numericalDto
+				numericalDto,
+				unitPriceDto
 			);
 	}
 }
