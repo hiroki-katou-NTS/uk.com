@@ -14,7 +14,6 @@ import find.person.info.item.PerInfoItemDefForLayoutDto;
 import find.person.info.item.PerInfoItemDefForLayoutFinder;
 import lombok.val;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
-import nts.uk.ctx.bs.employee.app.find.person.PersonLayoutDto;
 import nts.uk.ctx.bs.employee.dom.person.ParamForGetPerItem;
 import nts.uk.ctx.bs.employee.dom.person.PerInfoCtgDomainService;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
