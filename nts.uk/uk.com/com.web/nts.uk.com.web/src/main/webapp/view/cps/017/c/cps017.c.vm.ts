@@ -1,11 +1,5 @@
 module nts.uk.com.view.cps017.c.viewmodel {
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
     import getShared = nts.uk.ui.windows.getShared;
-    import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import formatDate = nts.uk.time.formatDate;
@@ -32,24 +26,24 @@ module nts.uk.com.view.cps017.c.viewmodel {
         }
 
         addHistory() {
+            block.invisible();
             let self = this,
                 currentItem: HistorySelection = self.historySelection(),
-//                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
                 selectHistory = self.data.selectHistory;
-
             currentItem.companyCode(selectHistory.companyCode);
             currentItem.selectionItemId(selectHistory.selectionItemId);
             currentItem.histId(selectHistory.histId);
-            //currentItem.endDate(selectHistory.endDate);
             let command = ko.toJS(currentItem);
-
             service.addHistoryData(command).done(function() {                
                   dialog.info({ messageId: "Msg_15" }).then(function() {
                         nts.uk.ui.windows.close();
                     });
                 
+            }).fail(function(res){
+                $('#start-date-sel').ntsError('set', {messageId: res.messageId});
+            }).always(() => {
+                block.clear();
             });
-
         }
     }
 

@@ -9,13 +9,13 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.AfterChildbirth;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.CareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.ChildCareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayState;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsenceHist;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsence;
@@ -38,8 +38,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 
 	private static final String GETLIST_BY_SID = SELECT_NO_WHERE + " WHERE c.sid = :sid";
 
-	private TemporaryAbsence toTemporaryAbsence(Object[] entity) {
-		return TemporaryAbsence.createSimpleFromJavaType(
+	private TempLeaveAbsenceHistory toTemporaryAbsence(Object[] entity) {
+		return TempLeaveAbsenceHistory.createSimpleFromJavaType(
 				entity[1] == null ? null : entity[1].toString(),
 				entity[0] == null ? null : entity[0].toString(),
 				entity[2] == null ? null : (Integer) entity[2],
@@ -52,11 +52,11 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 				entity[9] == null ? null : (Integer) entity[9]);
 	}
 
-	private List<TemporaryAbsence> toListTemporaryAbsence(List<Object[]> listEntity) {
-		List<TemporaryAbsence> lstTemporaryAbsence = new ArrayList<>();
+	private List<TempLeaveAbsenceHistory> toListTemporaryAbsence(List<Object[]> listEntity) {
+		List<TempLeaveAbsenceHistory> lstTemporaryAbsence = new ArrayList<>();
 		if (!listEntity.isEmpty()) {
 			listEntity.stream().forEach(c -> {
-				TemporaryAbsence temporaryAbsence = toTemporaryAbsence(c);
+				TempLeaveAbsenceHistory temporaryAbsence = toTemporaryAbsence(c);
 
 				lstTemporaryAbsence.add(temporaryAbsence);
 			});
@@ -65,11 +65,11 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	}
 
 	@Override
-	public Optional<TemporaryAbsence> getBySidAndReferDate(String sid, GeneralDate referenceDate) {
+	public Optional<TempLeaveAbsenceHistory> getBySidAndReferDate(String sid, GeneralDate referenceDate) {
 		Object[] entity = this.queryProxy().query(SELECT_BY_SID_AND_REFERENCEDATE, Object[].class)
 				.setParameter("sid", sid).setParameter("referenceDate", referenceDate).getSingleOrNull();
 		if (entity != null) {
-			TemporaryAbsence temporaryAbsence = toTemporaryAbsence(entity);
+			TempLeaveAbsenceHistory temporaryAbsence = toTemporaryAbsence(entity);
 			return Optional.of(temporaryAbsence);
 		} else {
 			return Optional.empty();
@@ -78,14 +78,14 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	}
 
 	@Override
-	public Optional<TemporaryAbsence> getByTempAbsenceId(String tempAbsenceId) {
+	public Optional<TempLeaveAbsenceHistory> getByTempAbsenceId(String tempAbsenceId) {
 		return this.queryProxy().query(SELECT_BY_TEMP_ABSENCE_ID, Object[].class)
 				.setParameter("tempAbsenceId", tempAbsenceId).getSingle(x -> toTemporaryAbsence(x));
 	}
 
 	// laitv
 	@Override
-	public List<TemporaryAbsence> getListBySid(String sid) {
+	public List<TempLeaveAbsenceHistory> getListBySid(String sid) {
 		List<Object[]> listEntity = this.queryProxy().query(GETLIST_BY_SID, Object[].class).setParameter("sid", sid)
 				.getList();
 
@@ -98,9 +98,10 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	 * @param domain
 	 * @return
 	 */
-	private BsymtTemporaryAbsence toEntity(TemporaryAbsence domain) {
-		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
-		LeaveHolidayState state = domain.getLeaveHolidayState();
+	private BsymtTemporaryAbsence toEntity(TempLeaveAbsenceHistory domain) {
+		// TODO
+		/*BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
+		TempLeaveAbsenceHisItem state = domain.getLeaveHolidayState();
 		switch (state.getTempAbsenceType()) {
 		case LEAVE_OF_ABSENCE:
 			Leave leave = (Leave) state;
@@ -124,12 +125,15 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 					state.getTempAbsenceType().value, careHoliday.getFamilyMemberId());
 		default:
 			return null;
-		}
+		}*/
+		return null;
 	}
 
-	private BsymtTempAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain) {
-		return new BsymtTempAbsenceHist(domain.getDateHistoryItem().identifier(), domain.getDateHistoryItem().start(),
-				domain.getDateHistoryItem().end());
+	private BsymtTempAbsenceHist toEntityTempAbsenceHist(TempLeaveAbsenceHistory domain) {
+		/*return new BsymtTempAbsenceHist(domain.getDateHistoryItem().identifier(), domain.getDateHistoryItem().start(),
+				domain.getDateHistoryItem().end());*/
+		return null;
+		// TODO
 	}
 
 	/**
@@ -138,12 +142,13 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	 * @param domain
 	 * @param entity
 	 */
-	private void updateEntityBsymtTemporaryAbsence(TemporaryAbsence domain, BsymtTemporaryAbsence entity) {
+	private void updateEntityBsymtTemporaryAbsence(TempLeaveAbsenceHistory domain, BsymtTemporaryAbsence entity) {
 
-		entity.sid = domain.getEmployeeId();
+
+		/*entity.sid = domain.getEmployeeId();
 		entity.histId = domain.getDateHistoryItem().identifier();
 		// check with state
-		LeaveHolidayState state = domain.getLeaveHolidayState();
+		TempLeaveAbsenceHisItem state = domain.getLeaveHolidayState();
 		entity.leaveHolidayAtr = state.getTempAbsenceType().value;
 		switch (state.getTempAbsenceType()) {
 		case LEAVE_OF_ABSENCE:
@@ -167,14 +172,15 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 			CareHoliday careHoliday = (CareHoliday) state;
 			entity.familyMemberId = careHoliday.getFamilyMemberId();
 			break;
-		}
+		}*/
 
 	}
 
-	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTempAbsenceHist entity) {
-		entity.historyId = domain.getDateHistoryItem().identifier();
+	private void updateEntityBsymtTempAbsenceHist(TempLeaveAbsenceHistory domain, BsymtTempAbsenceHist entity) {
+		/*entity.historyId = domain.getDateHistoryItem().identifier();
 		entity.strD = domain.getDateHistoryItem().start();
-		entity.endD = domain.getDateHistoryItem().end();
+		entity.endD = domain.getDateHistoryItem().end();*/
+		// TODO
 	}
 
 	/**
@@ -183,7 +189,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	 * @param domain
 	 */
 	@Override
-	public void addTemporaryAbsence(TemporaryAbsence domain) {
+	public void addTemporaryAbsence(TempLeaveAbsenceHistory domain) {
 		this.commandProxy().insert(toEntity(domain));
 		this.commandProxy().insert(toEntityTempAbsenceHist(domain));
 	}
@@ -194,9 +200,9 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	 * @param domain
 	 */
 	@Override
-	public void updateTemporaryAbsence(TemporaryAbsence domain) {
+	public void updateTemporaryAbsence(TempLeaveAbsenceHistory domain) {
 		// Get exist item
-		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
+		/*BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
 		Optional<BsymtTemporaryAbsence> existItem = this.queryProxy().find(key, BsymtTemporaryAbsence.class);
 		Optional<BsymtTempAbsenceHist> existItemHist = this.queryProxy().find(domain.getDateHistoryItem().identifier(),
 				BsymtTempAbsenceHist.class);
@@ -208,7 +214,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		updateEntityBsymtTempAbsenceHist(domain, existItemHist.get());
 		// Update table
 		this.commandProxy().update(existItem.get());
-		this.commandProxy().update(existItemHist.get());
+		this.commandProxy().update(existItemHist.get());*/
+		// TODO
 
 	}
 
@@ -218,8 +225,10 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	 * @param domain
 	 */
 	@Override
-	public void deleteTemporaryAbsence(TemporaryAbsence domain) {
-		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
-		this.commandProxy().remove(BsymtTemporaryAbsence.class, key);
+	public void deleteTemporaryAbsence(TempLeaveAbsenceHistory domain) {
+		/*BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
+		this.commandProxy().remove(BsymtTemporaryAbsence.class, key);*/
+		// TODO
 	}
+
 }
