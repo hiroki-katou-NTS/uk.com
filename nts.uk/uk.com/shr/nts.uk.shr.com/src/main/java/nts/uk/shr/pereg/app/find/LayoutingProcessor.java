@@ -32,8 +32,8 @@ public class LayoutingProcessor {
 	 */
 	public LayoutingResult handler(PeregQuery query){
 		val finderClass = this.peregProcess.get(query.getCtgCd());
- 		val domainData = finderClass.handleProcessor(query);
-		return new LayoutingResult(finderClass.finderClass(), domainData);
+ 		val queryResult = finderClass.handleProcessor(query);
+		return new LayoutingResult(finderClass.finderClass(), queryResult);
 	}
 	
 }
