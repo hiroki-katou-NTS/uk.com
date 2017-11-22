@@ -14,7 +14,7 @@ public class ScheduleDisplayControlDto {
 	public String companyId;
 
 	/** 個人情報区分 */
-	public int personInforAtr;
+	public List<Integer> personInforAtr;
 
 	/** 表示区分 */
 	public int personDisplayAtr;
