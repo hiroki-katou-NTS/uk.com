@@ -58,7 +58,7 @@ public interface ApplicationRepository {
 	
 	List<Application> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
-	Optional<Application> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
+	List<Application> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
 	
 	/**
 	 * 事前申請を取得したい

@@ -287,10 +287,10 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 		if(prePostAtr == InitValueAtr.POST.value){
 			Application applicationOvertime = new Application();
 			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
-				Optional<Application> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
-				if(application.isPresent()){
-					applicationOvertime.setApplicationDate(application.get().getApplicationDate());
-					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get().getCompanyID(), application.get().getApplicationID());
+				List<Application> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
+				if(application.size() > 0){
+					applicationOvertime.setApplicationDate(application.get(0).getApplicationDate());
+					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getApplicationID());
 					if(appOvertime.isPresent()){
 						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
 						result.setSiftCode(appOvertime.get().getSiftCode());
@@ -303,7 +303,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 						result.setOverTimeInput(overtimeInputs);
 						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
 						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
-						result.setApplication(application.get());
+						result.setApplication(applicationOvertime);
 						result.setAppID(appOvertime.get().getAppID());
 						return result;
 					}

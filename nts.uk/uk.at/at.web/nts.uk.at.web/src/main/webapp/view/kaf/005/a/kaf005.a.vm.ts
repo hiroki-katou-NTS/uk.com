@@ -235,7 +235,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.workClockTo2Pre(data.preAppOvertimeDto.workClockTo2Pre);
                 if(data.preAppOvertimeDto.overTimeInputsPre != null){
                     for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
-                        self.overtimeHoursPre.push(new common.OverTimeInput("", "", data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID, "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName, data.preAppOvertimeDto.overTimeInputsPre[i].startTime, data.preAppOvertimeDto.overTimeInputsPre[i].endTime,data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),null));
+                        self.overtimeHoursPre.push(new common.OverTimeInput("", "", 
+                        data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
+                         "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,
+                         0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName,
+                         data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
+                          data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
+                          data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime,null));
                     }
                 }
             }
