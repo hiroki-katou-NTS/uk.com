@@ -55,6 +55,10 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 				companyId));
 		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrcmtMonAttendanceItem_.mAtdItemAtr), itemAtr.value));
 
+		// set order
+		cq.orderBy(criteriaBuilder.asc(root.get(KrcmtMonAttendanceItem_.dispNo)));
+
+		// set conditions
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// Get results

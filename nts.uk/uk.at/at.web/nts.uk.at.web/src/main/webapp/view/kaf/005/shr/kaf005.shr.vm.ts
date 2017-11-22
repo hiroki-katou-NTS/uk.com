@@ -193,6 +193,8 @@ module nts.uk.at.view.kaf005.share {
             overTimeShiftNight: number
             flexExessTime: number
             divergenceReasonContent: string
+            sendMail:boolean
+            calculateFlag: number
         }
         export class OverTimeInput {
             companyID: KnockoutObservable<string>
@@ -200,29 +202,35 @@ module nts.uk.at.view.kaf005.share {
             attendanceID: KnockoutObservable<number>
             attendanceName: KnockoutObservable<string>
             frameNo: KnockoutObservable<number>
+            timeItemTypeAtr: KnockoutObservable<number>
             frameName: KnockoutObservable<string>
             startTime: KnockoutObservable<number>
             endTime: KnockoutObservable<number>
             applicationTime: KnockoutObservable<number>
+            nameID: KnockoutObservable<string>
             constructor(
                 companyID: string,
                 appID: string,
                 attendanceID: number,
                 attendanceName: string,
                 frameNo: number,
+                timeItemTypeAtr: number,
                 frameName: string,
                 startTime: number,
                 endTime: number,
-                applicationTime: number) {
+                applicationTime: number,
+                nameID: string) {
                 this.companyID = ko.observable(companyID);
                 this.appID = ko.observable(appID);
                 this.attendanceID = ko.observable(attendanceID);
                 this.attendanceName = ko.observable(attendanceName);
                 this.frameNo = ko.observable(frameNo);
+                this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
                 this.frameName = ko.observable(frameName);
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
                 this.applicationTime = ko.observable(applicationTime);
+                this.nameID = ko.observable(nameID);
             }
         }   
 		export class overtimeWork {

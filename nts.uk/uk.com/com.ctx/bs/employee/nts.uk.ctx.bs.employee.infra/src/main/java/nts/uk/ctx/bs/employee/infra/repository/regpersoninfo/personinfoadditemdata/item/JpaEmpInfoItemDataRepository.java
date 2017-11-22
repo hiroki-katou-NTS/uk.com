@@ -29,6 +29,9 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.ppemtEmpInfoCtgDataPk.recordId = :recordId";
+	
+	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID = SELECT_ALL_INFO_ITEM_NO_WHERE
+			+ " WHERE ic.personInfoCtgId = :ctgid AND ic.employeeId = :sid";
 
 	@Override
 	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId, String employeeId) {
@@ -104,5 +107,13 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(), domain.getRecordId());
 		this.commandProxy().remove(PpemtEmpInfoItemData.class, key);
 
+	}
+
+	@Override
+	public List<EmpInfoItemData> getAllInfoItemBySidCtgId(String ctgId, String employeeId) {
+		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID, Object[].class)
+				.setParameter("ctgid", ctgId)
+				.setParameter("sid", employeeId)
+				.getList(c -> toDomain(c));
 	}
 }

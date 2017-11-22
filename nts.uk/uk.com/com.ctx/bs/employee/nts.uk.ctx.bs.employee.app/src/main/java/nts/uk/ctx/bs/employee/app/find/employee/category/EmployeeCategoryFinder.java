@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.app.find.employee.category;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,29 +9,31 @@ import javax.inject.Inject;
 
 import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
+import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import find.person.info.item.SetItemDto;
-import lombok.val;
 import nts.uk.ctx.bs.employee.app.find.layout.ItemDefFactoryNew;
-import nts.uk.ctx.bs.employee.app.find.layout.ItemDefinitionFactory;
+import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
+import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmpCtgDomainServices;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.ParamForGetItemDef;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
-import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
+import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
 import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
-import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -40,11 +41,10 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
-import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -57,37 +57,13 @@ public class EmployeeCategoryFinder {
 	private EmployeeRepository employeeRepository;
 
 	@Inject
-	private PersonRepository personRepository;
-
-	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
-
-	@Inject
-	private PerInfoItemDefRepositoty pernfoItemDefRep;
-
-	@Inject
-	private EmpCtgDomainServices empCtgDomainServices;
-
-	@Inject
-	private CurrentAddressRepository currentAddressRepo;
-
-	@Inject
-	private FamilyRepository familyRepo;
-
-	@Inject
-	private PersonEmergencyCtRepository personEmergencyCtRepo;
 
 	@Inject
 	private TemporaryAbsenceRepository temporaryAbsenceRepo;
 
 	@Inject
-	private JobTitleMainRepository jobTitleMainRepo;
-
-	@Inject
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
-
-	@Inject
-	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
 
 	@Inject
 	private PersonInfoItemAuthRepository personInfoItemAuthRepository;
@@ -95,15 +71,32 @@ public class EmployeeCategoryFinder {
 	@Inject
 	private PerInfoItemDefFinder perInfoItemDefFinder;
 
-	// inject category-data-repo
 	@Inject
-	private PerInfoCtgDataRepository perInCtgDataRepo;
+	private EmpInfoItemDataRepository empInfoItemDataRepository;
 
 	@Inject
-	private PerInfoItemDataRepository perInItemDataRepo;
+	private PerInfoItemDataRepository perInfoItemDataRepository;
 
 	@Inject
-	private WidowHistoryRepository widowHistoryRepo;
+	private JobTitleMainRepository jobTitleMainRepository;
+
+	@Inject
+	private AssignedWrkplcRepository assignedWrkplcRepository;
+
+	@Inject
+	private AffDepartmentRepository affDepartmentRepository;
+
+	@Inject
+	private CurrentAddressRepository currentAddressRepository;
+
+	@Inject
+	private FamilyRepository familyRepository;
+
+	@Inject
+	private WidowHistoryRepository widowHistoryRepository;
+
+	@Inject
+	private PersonEmergencyCtRepository personEmergencyCtRepository;
 
 	public List<CategoryPersonInfoClsDto> getAllPerInfoCtg(String companyId, String employeeIdSelected) {
 		String empIdCurrentLogin = AppContexts.user().employeeId();
@@ -133,221 +126,341 @@ public class EmployeeCategoryFinder {
 	};
 
 	// Get List Infomation Of Category
-	public List<List<LayoutPersonInfoClsDto>> getListInfoCtgByCtgIdAndSid(String empSelected, String ctgId) {
+	public List<EmpMaintLayoutDto> getListInfoCtgByCtgIdAndSid(String empSelected, String ctgId) {
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		// String loginEmpId = AppContexts.user().employeeId();
 		// String roleIdOfLogin = AppContexts.user().roles().forPersonnel();
 		String roleIdOfLogin = "99900000-0000-0000-0000-000000000001";
 		String loginEmpId = "99900000-0000-0000-0000-000000000001";
-
-		List<LayoutPersonInfoClsDto> listLayoutPersonInfoClsDto = new ArrayList<>();
+		// get Employee
+		Employee employee = employeeRepository.findBySid(companyId, "90000000-0000-0000-0000-000000000001").get();
 
 		// Get PersonInfoCtg
 		PersonInfoCategory perCtgInfo = perInfoCtgRepositoty
 				.getPerInfoCategory(ctgId, AppContexts.user().contractCode()).get();
-		// Get list PerInfoItemDef
-		List<PerInfoItemDefDto> lstPerInfoItemDef = getListPerItemDef(new ParamForGetItemDef(perCtgInfo,
-				roleIdOfLogin == null ? "" : roleIdOfLogin, companyId, contractCode, loginEmpId.equals(empSelected)));
 
-		// Khoi tao List<LayoutPersonInfoClsDto>
-		List<LayoutPersonInfoClsDto> listClsDto = getListItemDf(lstPerInfoItemDef);
+		// Get PerInfoItemDef
+		PerInfoItemDefDto perInfoItemDef = null;
 
-		// check person || employee
-		if (perCtgInfo.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
+		if (perCtgInfo.getCategoryType() == CategoryType.SINGLEINFO) {
+			// Case SINGLE
 
-		} else if (perCtgInfo.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
+		} else if (perCtgInfo.getCategoryType() == CategoryType.MULTIINFO) {
+			// Case MULTIFO
+			// Get item đầu tiên trong list
+			perInfoItemDef = getPerInfoItemDefWithMultiple(
+					new ParamForGetItemDef(perCtgInfo, roleIdOfLogin == null ? "" : roleIdOfLogin, companyId,
+							contractCode, loginEmpId.equals(empSelected)));
 
-		}
-
-		if (perCtgInfo.getIsFixed() == IsFixed.FIXED) {
-			if (perCtgInfo.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
-				setEmployeeCtgItem(perCtgInfo, lstPerInfoItemDef, empSelected);
-			else {
-				String pid = employeeRepository.getBySid(empSelected).get().getPId();
-				// setPersonCtgItem(perCtgInfo, lstPerInfoItemDef, empSelected, pid);
-			}
 		} else {
-			// optional data
-
+			// Case HISTORY
+			perInfoItemDef = getPerInfoItemDefWithHistory(
+					new ParamForGetItemDef(perCtgInfo, roleIdOfLogin == null ? "" : roleIdOfLogin, companyId,
+							contractCode, loginEmpId.equals(empSelected)));
 		}
 
-		return null;
+		List<PerInfoItemDefDto> lstPerInfoItemDefDto = new ArrayList<>();
+		// return list
+		List<EmpMaintLayoutDto> lstEmpMaintLayoutDto = new ArrayList<>();
+
+		if (perInfoItemDef != null) {
+			lstPerInfoItemDefDto = getListItemDf(perInfoItemDef);
+			if (perCtgInfo.getIsFixed() == IsFixed.FIXED)
+				// Fixed Data
+				if (perCtgInfo.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
+					lstEmpMaintLayoutDto = getEmployeeCtgItem(perCtgInfo, lstPerInfoItemDefDto, employee);
+				else
+					lstEmpMaintLayoutDto = getPersonCtgItem(perCtgInfo, lstPerInfoItemDefDto, employee);
+			else {
+				// optional data
+				if (perCtgInfo.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
+					lstEmpMaintLayoutDto = new ArrayList<>();
+					EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
+					empMaintLayoutDto.setClassificationItems(getEmpInfoCtgDataOptionDto(perCtgInfo.getPersonInfoCategoryId(), employee.getSId()));
+					lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+
+				} else {
+					// Person
+					lstEmpMaintLayoutDto = new ArrayList<>();
+					EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
+					empMaintLayoutDto.setClassificationItems(getPerInfoCtgDataOptionDto(perCtgInfo.getPersonInfoCategoryId(), employee.getPId()));
+					lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+				}
+
+			}
+		}
+
+		return lstEmpMaintLayoutDto;
 	}
 
 	// check Type of Item is SET || SINGLE
-	// GET List<LayoutPersonInfoClsDto>
-	private List<LayoutPersonInfoClsDto> getListItemDf(List<PerInfoItemDefDto> lstPerInfoItemDef) {
+	// GET List<PerInfoItemDefDto>
+	private List<PerInfoItemDefDto> getListItemDf(PerInfoItemDefDto perInfoItemDef) {
+		List<PerInfoItemDefDto> lstResult = new ArrayList<>();
+		if (perInfoItemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM.value) {
+			// get itemId list of children
+			SetItemDto setItem = (SetItemDto) perInfoItemDef.getItemTypeState();
+			// get children by itemId list
+			lstResult = perInfoItemDefFinder.getPerInfoItemDefByListIdForLayout(setItem.getItems());
+			lstResult.add(perInfoItemDef);
 
-		List<LayoutPersonInfoClsDto> lstResult = new ArrayList<>();
-
-		for (int i = 0; i < lstPerInfoItemDef.size(); i++) {
-			LayoutPersonInfoClsDto clsDto = new LayoutPersonInfoClsDto();
-			if (lstPerInfoItemDef.get(i).getItemTypeState().getItemType() == ItemType.SET_ITEM.value) {
-				// get itemId list of children
-				SetItemDto setItem = (SetItemDto) lstPerInfoItemDef.get(i).getItemTypeState();
-				// get children by itemId list
-				List<PerInfoItemDefDto> lstItemDef = perInfoItemDefFinder
-						.getPerInfoItemDefByListIdForLayout(setItem.getItems());
-				clsDto.setListItemDf(lstItemDef);
-				lstItemDef.add(lstPerInfoItemDef.get(i));
-
-			} else {
-				List<PerInfoItemDefDto> lstItemDef = new ArrayList<>();
-				lstItemDef.add(lstPerInfoItemDef.get(i));
-				clsDto.setListItemDf(lstItemDef);
-			}
-			lstResult.add(clsDto);
+		} else {
+			lstResult.add(perInfoItemDef);
 		}
-
 		return lstResult;
+	}
+
+	private List<EmpMaintLayoutDto> getPersonCtgItem(PersonInfoCategory perInfoCtg,
+			List<PerInfoItemDefDto> lstPerInfoItemDef, Employee employee) {
+
+		List<EmpMaintLayoutDto> lstEmpMaintLayoutDto = new ArrayList<>();
+		List<LayoutPersonInfoClsDto> lstLayoutPersonInfoClsDto = new ArrayList<>();
+		LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
+		layoutPersonInfoClsDto.setListItemDf(lstPerInfoItemDef);
+		EmpMaintLayoutDto empMaintLayoutDto;
+		switch (perInfoCtg.getCategoryCode().v()) {
+
+		// current address
+		case "CS00003":
+			List<CurrentAddress> currentAddress = currentAddressRepository.getListByPid(employee.getPId());
+			// get Action Role
+			ActionRole actionRole = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
+					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
+			for (CurrentAddress item : currentAddress) {
+				// mapping item with data
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
+						lstPerInfoItemDef, actionRole, item);
+				lstLayoutPersonInfoClsDto.add(objMap);
+			}
+			empMaintLayoutDto = new EmpMaintLayoutDto();
+			empMaintLayoutDto.setClassificationItems(lstLayoutPersonInfoClsDto);
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+			// set optional data
+			lstEmpMaintLayoutDto = new ArrayList<>();
+			empMaintLayoutDto.setClassificationItems(getPerInfoCtgDataOptionDto(perInfoCtg.getPersonInfoCategoryId(), employee.getPId()));
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+
+			break;
+		case "CS00004":
+			List<Family> familys = familyRepository.getListByPid(employee.getPId());
+			// get Action Role
+			ActionRole actionRolef = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
+					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
+			for (Family item : familys) {
+				// mapping item with data
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
+						lstPerInfoItemDef, actionRolef, item);
+				lstLayoutPersonInfoClsDto.add(objMap);
+			}
+			empMaintLayoutDto = new EmpMaintLayoutDto();
+			empMaintLayoutDto.setClassificationItems(lstLayoutPersonInfoClsDto);
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+
+			// set optional data 
+			lstEmpMaintLayoutDto = new ArrayList<>();
+			empMaintLayoutDto.setClassificationItems(getPerInfoCtgDataOptionDto(perInfoCtg.getPersonInfoCategoryId(), employee.getPId()));
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+			break;
+
+		case "CS00014":
+			List<WidowHistory> widowHistory = widowHistoryRepository.getbyPid(employee.getPId());
+			// get Action Role
+			ActionRole actionRoleWh = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
+					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
+			for (WidowHistory item : widowHistory) {
+				// mapping item with data
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
+						lstPerInfoItemDef, actionRoleWh, item);
+				lstLayoutPersonInfoClsDto.add(objMap);
+			}
+			empMaintLayoutDto = new EmpMaintLayoutDto();
+			empMaintLayoutDto.setClassificationItems(lstLayoutPersonInfoClsDto);
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+
+			// set optional data 
+			lstEmpMaintLayoutDto = new ArrayList<>();
+			empMaintLayoutDto.setClassificationItems(getPerInfoCtgDataOptionDto(perInfoCtg.getPersonInfoCategoryId(), employee.getPId()));
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+			break;
+
+		case "CS00015":
+			List<PersonEmergencyContact> personEmergencyContact = personEmergencyCtRepository
+					.getListbyPid(employee.getPId());
+			// get Action Role
+			ActionRole actionRolePec = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
+					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
+			for (PersonEmergencyContact item : personEmergencyContact) {
+				// mapping item with data
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
+						lstPerInfoItemDef, actionRolePec, item);
+				lstLayoutPersonInfoClsDto.add(objMap);
+			}
+			empMaintLayoutDto = new EmpMaintLayoutDto();
+			empMaintLayoutDto.setClassificationItems(lstLayoutPersonInfoClsDto);
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+
+			// set optional data 
+			lstEmpMaintLayoutDto = new ArrayList<>();
+			empMaintLayoutDto.setClassificationItems(getPerInfoCtgDataOptionDto(perInfoCtg.getPersonInfoCategoryId(), employee.getPId()));
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+			break;
+		}
+		return lstEmpMaintLayoutDto;
 	}
 
 	// Set Data EmployeeCtgItem
-	private void setEmployeeCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef,
-			String employeeId) {
-		// TODO Auto-generated method stub
+	private List<EmpMaintLayoutDto> getEmployeeCtgItem(PersonInfoCategory perInfoCtg,
+			List<PerInfoItemDefDto> lstPerInfoItemDef, Employee employee) {
 
-		LayoutPersonInfoClsDto lstLayoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
+		List<EmpMaintLayoutDto> lstEmpMaintLayoutDto = new ArrayList<>();
+		List<LayoutPersonInfoClsDto> lstLayoutPersonInfoClsDto = new ArrayList<>();
+		LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
+		layoutPersonInfoClsDto.setListItemDf(lstPerInfoItemDef);
+		EmpMaintLayoutDto empMaintLayoutDto;
 		switch (perInfoCtg.getCategoryCode().v()) {
 		case "CS00008":
 			// Case Ctg == TemporaryAbsence
-			for (PerInfoItemDefDto item : lstPerInfoItemDef) {
-				List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
-				lstLayoutPersonInfoClsDto.setListItemDf(itemSet);
-				// get list TemporaryAbsence 休職休業
-				List<TemporaryAbsence> listTemporaryAbsence = temporaryAbsenceRepo.getListBySid(employeeId);
-				ActionRole actionRole = getActionRole(employeeId, perInfoCtg.getPersonInfoCategoryId(), item.getId());
-				// mapping
-				ItemDefinitionFactory.matchTemporaryAbsence(lstLayoutPersonInfoClsDto, actionRole,
-						listTemporaryAbsence);
+			List<TempAbsenceHistory> listTemporaryAbsence = temporaryAbsenceRepo.getListBySid(employee.getSId());
+			// get Action Role
+			ActionRole actionRole = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
+					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
+			for (TempAbsenceHistory item : listTemporaryAbsence) {
+				// mapping item with data
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
+						lstPerInfoItemDef, actionRole, item);
+				lstLayoutPersonInfoClsDto.add(objMap);
 			}
-			break;
+			empMaintLayoutDto = new EmpMaintLayoutDto();
+			empMaintLayoutDto.setClassificationItems(lstLayoutPersonInfoClsDto);
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 
+			// set optional data 
+			lstEmpMaintLayoutDto = new ArrayList<>();
+			empMaintLayoutDto.setClassificationItems(getEmpInfoCtgDataOptionDto(perInfoCtg.getPersonInfoCategoryId(), employee.getSId()));
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+
+			break;
 		case "CS00009":
-			// Case Ctg == JobTitleMain
-
-			for (PerInfoItemDefDto item : lstPerInfoItemDef) {
-				List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
-				lstLayoutPersonInfoClsDto.setListItemDf(itemSet);
-				// get List JobTitleMain
-				List<JobTitleMain> listJobTitleMain = jobTitleMainRepo.getListBiSid(employeeId);
-				ActionRole actionRole = getActionRole(employeeId, perInfoCtg.getPersonInfoCategoryId(), item.getId());
-				// mapping
-				ItemDefinitionFactory.matchJobTitleMain(lstLayoutPersonInfoClsDto, actionRole, listJobTitleMain);
+			List<JobTitleMain> jobTitleMain = jobTitleMainRepository.getListBiSid(employee.getSId());
+			ActionRole actionRoleJtm = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
+					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
+			for (JobTitleMain item : jobTitleMain) {
+				// mapping item with data
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
+						lstPerInfoItemDef, actionRoleJtm, item);
+				lstLayoutPersonInfoClsDto.add(objMap);
 			}
-			break;
-		case "CS00014":
-			// Case Ctg == AffWorkplace
-			// get list AffWorkplac
-			break;
-		case "CS00015":
-			// Case Ctg ==
+			empMaintLayoutDto = new EmpMaintLayoutDto();
+			empMaintLayoutDto.setClassificationItems(lstLayoutPersonInfoClsDto);
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+
+			// set optional data 
+			lstEmpMaintLayoutDto = new ArrayList<>();
+			empMaintLayoutDto.setClassificationItems(getEmpInfoCtgDataOptionDto(perInfoCtg.getPersonInfoCategoryId(), employee.getSId()));
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 
 			break;
 
-		}
-	}
-
-	// check Item Type is SET or SINGLE
-	// Get List ItemDefDto
-	private List<PerInfoItemDefDto> getPerItemSet(PerInfoItemDefDto itemDf) {
-
-		List<PerInfoItemDefDto> lstResult = new ArrayList<>();
-
-		if (itemDf.getItemTypeState().getItemType() == ItemType.SET_ITEM.value) {
-			// get itemId list of children
-			SetItemDto setItem = (SetItemDto) itemDf.getItemTypeState();
-			// get children by itemId list
-			lstResult = perInfoItemDefFinder.getPerInfoItemDefByListIdForLayout(setItem.getItems());
-		}
-		lstResult.add(itemDf);
-		return lstResult;
-	}
-
-	// Set Data PersonCtgItem
-	private List<List<LayoutPersonInfoClsDto>> setPersonCtgItem(PersonInfoCategory perInfoCtg,
-			List<LayoutPersonInfoClsDto> listClsDto, String employeeId, String personId) {
-
-		if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
-
-			List<Object> lstLayoutPersonInfoClsDto = new ArrayList<>();
-			switch (perInfoCtg.getCategoryCode().v()) {
-
-
-			/*
-			 * case "CS00003": // case Ctg == CurrentAddress
-			 * 
-			 * // get list CurrentAddress List<CurrentAddress> listCurrentAdd =
-			 * currentAddressRepo.getListByPid(personId); ActionRole actionRole =
-			 * getActionRole(employeeId, perInfoCtg.getPersonInfoCategoryId(),
-			 * item.getId()); // mapping
-			 * ItemDefinitionFactory.matchCurrentAddress(listClsDto, actionRole,
-			 * listCurrentAdd);
-			 * break;
-			 * 
-			 * case "CS00004": // Case Ctg = Family for (PerInfoItemDefDto item :
-			 * lstPerInfoItemDef) { List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
-			 * lstLayoutPersonInfoClsDto.setListItemDf(itemSet); // get list family
-			 * List<Family> lstFamily = familyRepo.getListByPid(personId); ActionRole
-			 * actionRole = getActionRole(employeeId, perInfoCtg.getPersonInfoCategoryId(),
-			 * item.getId()); // mapping
-			 * ItemDefinitionFactory.matchFamily(lstLayoutPersonInfoClsDto, actionRole,
-			 * lstFamily); } break; case "CS00014": // Case Ctg == WidowHistory for
-			 * (PerInfoItemDefDto item : lstPerInfoItemDef) { List<PerInfoItemDefDto>
-			 * itemSet = getPerItemSet(item);
-			 * lstLayoutPersonInfoClsDto.setListItemDf(itemSet); // get list CurrentAddress
-			 * List<WidowHistory> listWidowHistory = widowHistoryRepo.getbyPid(personId);
-			 * ActionRole actionRole = getActionRole(employeeId,
-			 * perInfoCtg.getPersonInfoCategoryId(), item.getId()); // mapping
-			 * ItemDefinitionFactory.matchWidowHistory(lstLayoutPersonInfoClsDto,
-			 * actionRole, listWidowHistory); }
-			 * 
-			 * break; case "CS00015": // Case Ctg == EmergencyContact for (PerInfoItemDefDto
-			 * item : lstPerInfoItemDef) { // get list CurrentAddress
-			 * List<PersonEmergencyContact> lstEmergencyCt =
-			 * personEmergencyCtRepo.getListbyPid(personId); ActionRole actionRole =
-			 * getActionRole(employeeId, perInfoCtg.getPersonInfoCategoryId(),
-			 * item.getId()); // mapping
-			 * ItemDefinitionFactory.matchPersonEmergencyContact(lstLayoutPersonInfoClsDto,
-			 * actionRole, lstEmergencyCt); } break;
-			 */
-
+		case "CS00010":
+			// --Having dateHistItem list
+			List<AssignedWorkplace> assignedWorkplace = assignedWrkplcRepository.getListBySId(employee.getSId());
+			ActionRole actionRoleAsp = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
+					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
+			for (AssignedWorkplace item : assignedWorkplace) {
+				// mapping item with data
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
+						lstPerInfoItemDef, actionRoleAsp, item);
+				lstLayoutPersonInfoClsDto.add(objMap);
 			}
-		} else {
+			empMaintLayoutDto = new EmpMaintLayoutDto();
+			empMaintLayoutDto.setClassificationItems(lstLayoutPersonInfoClsDto);
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 
+			// set optional data 
+			lstEmpMaintLayoutDto = new ArrayList<>();
+			empMaintLayoutDto.setClassificationItems(getEmpInfoCtgDataOptionDto(perInfoCtg.getPersonInfoCategoryId(), employee.getSId()));
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+			break;
+
+		case "CS00011":
+			// --Having dateHistItem list
+			List<AffiliationDepartment> affiliationDepartment = affDepartmentRepository.getBySId(employee.getSId());
+			ActionRole actionRoleAdf = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
+					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
+			for (AffiliationDepartment item : affiliationDepartment) {
+				// mapping item with data
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
+						lstPerInfoItemDef, actionRoleAdf, item);
+				lstLayoutPersonInfoClsDto.add(objMap);
+			}
+			empMaintLayoutDto = new EmpMaintLayoutDto();
+			empMaintLayoutDto.setClassificationItems(lstLayoutPersonInfoClsDto);
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+
+			// set optional data 
+			lstEmpMaintLayoutDto = new ArrayList<>();
+			empMaintLayoutDto.setClassificationItems(getEmpInfoCtgDataOptionDto(perInfoCtg.getPersonInfoCategoryId(), employee.getSId()));
+			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
+			break;
 		}
-		return null;
-
+		return lstEmpMaintLayoutDto;
 	}
 
 	/**
-	 * get person information item definition
+	 * get EmployeeInfoCategoryData
 	 * 
-	 * @param paramObject
-	 * @return List<PersonInfoItemDefinition>
-	 */
-	public List<PerInfoItemDefDto> getListPerItemDef(ParamForGetItemDef paramObject) {
-		if (paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.MULTIINFO
-				|| paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.SINGLEINFO) {
-			return getPerInfoItemDefWithMultiple(paramObject);
-		} else {
-			return getPerInfoItemDefWithHistory(paramObject);
-		}
-	}
-
-	/**
-	 * Get PersonInfoItemDef Case CategoryType == Single
-	 * 
-	 * @param employeeId
 	 * @param ctgId
-	 * @return
+	 * @param empId
 	 */
-	private CategoryPersonInfoClsDto getDataSingle(String employeeId, String ctgId) {
-		Employee emp = employeeRepository.getBySid(employeeId).get();
-		// todo
-		return null;
-
+	private List<LayoutPersonInfoClsDto> getEmpInfoCtgDataOptionDto(String ctgId, String empId) {
+		List<EmpInfoItemData> lstCtgItemOptionalDto = empInfoItemDataRepository.getAllInfoItemBySidCtgId(ctgId, empId);
+		List<LayoutPersonInfoClsDto> lstObj = new ArrayList<>();
+		List<Object> items = new ArrayList<>();
+		for (int i = 0; i < lstCtgItemOptionalDto.size(); i++) {
+			LayoutPersonInfoValueDto obj = getLayoutEmpInfoValFromOptData(lstCtgItemOptionalDto.get(i), empId);
+			LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
+			items.add(obj);
+			layoutPersonInfoClsDto.setItems(items);
+		}
+		return lstObj;
+	}
+	
+	
+	private LayoutPersonInfoValueDto getLayoutEmpInfoValFromOptData(EmpInfoItemData empInfoItemData, String empId) {
+		Object data = null;
+		PerInfoItemDefDto perInfoItemDefDto = perInfoItemDefFinder
+				.getPerInfoItemDefByItemDefId(empInfoItemData.getPerInfoDefId());
+		return LayoutPersonInfoValueDto.initData(empInfoItemData.getPerInfoCtgCd(), perInfoItemDefDto, data,
+				getActionRole(empId, empInfoItemData.getPerInfoCtgId(), empInfoItemData.getPerInfoDefId()));
+	}
+	
+	/**
+	 * get PersonInfoCategoryData
+	 * 
+	 * @param ctgId
+	 * @param empId
+	 */
+	
+	private List<LayoutPersonInfoClsDto> getPerInfoCtgDataOptionDto(String ctgId, String pId) {
+		List<PersonInfoItemData> lstCtgItemOptionalDto = perInfoItemDataRepository.getAllInfoItemByPidCtgId(ctgId, pId);
+		List<LayoutPersonInfoClsDto> lstObj = new ArrayList<>();
+		List<Object> items = new ArrayList<>();
+		for (int i = 0; i < lstCtgItemOptionalDto.size(); i++) {
+			LayoutPersonInfoValueDto obj = getLayoutPerInfoValFromOptData(lstCtgItemOptionalDto.get(i), pId);
+			LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
+			items.add(obj);
+			layoutPersonInfoClsDto.setItems(items);
+		}
+		return lstObj;
+	}
+	
+	private LayoutPersonInfoValueDto getLayoutPerInfoValFromOptData(PersonInfoItemData empInfoItemData, String empId) {
+		Object data = null;
+		PerInfoItemDefDto perInfoItemDefDto = perInfoItemDefFinder
+				.getPerInfoItemDefByItemDefId(empInfoItemData.getPerInfoCtgId());
+		return LayoutPersonInfoValueDto.initData(empInfoItemData.getPerInfoCtgCd(), perInfoItemDefDto, data,
+				getActionRole(empId, empInfoItemData.getPerInfoCtgId(), empInfoItemData.getPerInfoItemDefId()));
 	}
 
 	/**
@@ -356,23 +469,12 @@ public class EmployeeCategoryFinder {
 	 * @param paramObject
 	 * @return List<PersonInfoItemDefinition>
 	 */
-	public List<PerInfoItemDefDto> getPerInfoItemDefWithMultiple(ParamForGetItemDef paramObject) {
+	public PerInfoItemDefDto getPerInfoItemDefWithMultiple(ParamForGetItemDef paramObject) {
 		// get per info item def with order
 		List<PerInfoItemDefDto> lstPerInfoDef = perInfoItemDefFinder
 				.getAllPerInfoItemDefByCatgoryId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId());
 
-		// filter by auth return
-		/*
-		 * lstPerInfoDef.stream().filter(x -> { return paramObject.isSelfAuth() ?
-		 * personInfoItemAuthRepository.getItemDetai(paramObject.getRoleId(),
-		 * x.getPerInfoCtgId(), x.getId()) .get().getSelfAuth() !=
-		 * PersonInfoAuthType.HIDE :
-		 * personInfoItemAuthRepository.getItemDetai(paramObject.getRoleId(),
-		 * x.getPerInfoCtgId(), x.getId()) .get().getOtherAuth() !=
-		 * PersonInfoAuthType.HIDE; }).collect(Collectors.toList());
-		 */
-
-		return lstPerInfoDef;
+		return lstPerInfoDef.get(0);
 	}
 
 	/**
@@ -381,21 +483,21 @@ public class EmployeeCategoryFinder {
 	 * @param dateRangeItemId
 	 * @return PersonInfoItemDefinition
 	 */
-	private List<PerInfoItemDefDto> getPerInfoItemDefWithHistory(ParamForGetItemDef paramObject) {
+	private PerInfoItemDefDto getPerInfoItemDefWithHistory(ParamForGetItemDef paramObject) {
 		DateRangeItem dateRangeItem = this.perInfoCategoryRepositoty
 				.getDateRangeItemByCategoryId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId());
 		PerInfoItemDefDto perInfoItemDefDto = perInfoItemDefFinder
 				.getPerInfoItemDefByItemDefId(dateRangeItem.getDateRangeItemId());
-		List<PerInfoItemDefDto> listRult = new ArrayList<>();
-		listRult.add(perInfoItemDefDto);
-		return listRult;
+		return perInfoItemDefDto;
 	}
 
 	// get Action Role
 	private ActionRole getActionRole(String empId, String ctgId, String perInfoItemId) {
 		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forPersonalInfo();
-		boolean isSelfAuth = empId.equals(loginEmpId);
+		// String roleId = AppContexts.user().roles().forPersonalInfo();
+		// boolean isSelfAuth = empId.equals(loginEmpId);
+		String roleId = "99900000-0000-0000-0000-000000000001";
+		boolean isSelfAuth = true;
 		if (isSelfAuth)
 			return personInfoItemAuthRepository.getItemDetai(roleId, ctgId, perInfoItemId).get()
 					.getSelfAuth() != PersonInfoAuthType.UPDATE ? ActionRole.EDIT : ActionRole.VIEW_ONLY;

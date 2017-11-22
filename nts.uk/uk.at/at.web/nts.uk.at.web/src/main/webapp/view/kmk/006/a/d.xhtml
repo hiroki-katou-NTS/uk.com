@@ -15,16 +15,14 @@
 			<button tabindex="2" class="danger"
 				data-bind="enable: createModeScreenC, click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
-		<ui:define name="extended-111">
-		</ui:define>
+
 		<ui:define name="extended-222">
-			<div id="component-items-list"
-				style="margin-left: 10px; margin-top: 100px"></div>
+			<div id="component-items-list" style="margin-left: 20px; margin-top: 100px"></div>
 			<div class="personalEstablishment">
 				<table class="table-label">
 					<tr style="margin-top: 10px">
 						<td class="pull-left">
-							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('Com_Jobtitle')}</div>
+							<div data-bind="ntsFormLabel: {required: false }">#{i18n.getText('Com_Jobtitle')}</div>
 							<span data-bind="text: componentItemCode"></span> 
 							<span data-bind="text: componentItemName"></span>
 						</td>

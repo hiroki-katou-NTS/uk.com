@@ -1,0 +1,18 @@
+
+.large{
+	width: 100px;
+}
+
+.body-left {
+	width: 800px;
+    margin-left: 60px;
+    float: left;
+	
+}
+td{
+	padding-bottom: 10px;
+}
+
+button.nts-switch-button{
+	width: 85px;
+}

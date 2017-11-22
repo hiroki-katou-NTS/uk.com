@@ -48,7 +48,12 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		AppStampCmd appStampCmd = context.getCommand();
-		String applicationReason = appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason();
+		String applicationReason = "";
+		if(!appStampCmd.getTitleReason().isEmpty() 
+				|| !appStampCmd.getDetailReason().isEmpty()) {
+			applicationReason = !appStampCmd.getTitleReason().isEmpty()? appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason() : appStampCmd.getDetailReason();
+		}
+		
 		AppStamp appStamp = null;
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(

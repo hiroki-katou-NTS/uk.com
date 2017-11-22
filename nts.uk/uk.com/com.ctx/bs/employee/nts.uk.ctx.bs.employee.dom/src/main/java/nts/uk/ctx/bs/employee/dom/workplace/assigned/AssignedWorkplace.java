@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -40,5 +41,9 @@ public class AssignedWorkplace extends AggregateRoot implements PersistentReside
 		return this.dateHistoryItem;
 	}
 	
+	public static AssignedWorkplace creatFromJavaType(String employeeId, String assignedWorkplaceId , String workplaceId) {
+		return new AssignedWorkplace(employeeId, assignedWorkplaceId, workplaceId, null);
+		
+	}
 	
 }

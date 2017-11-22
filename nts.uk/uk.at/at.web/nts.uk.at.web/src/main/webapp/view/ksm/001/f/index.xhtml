@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 780,
+					width : 1100,
 					height : 520
 				};
 			</script>
@@ -107,7 +107,24 @@
 							name:'#[KSM001_55]',
 							optionsValue: 'code',
 							visibleItemsCount: 5,
-							value: alarmCheckCondition,
+							value: yearlyAlarmCkCondition,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 4 }
+							]}">
+						</div>
+					</div>
+					<div class="settingTime pull-left">
+						<span class="lableData">#{i18n.getText('KSM001_76')}</span>
+						<div tabindex="9"  id="comboYearlyCon"
+							data-bind="ntsComboBox: {
+							options: lstEstimateCondition,
+							name:'#[KSM001_77]',
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							value: monthlyAlarmCkCondition,
 							optionsText: 'name',
 							editable: false,
 							enable: true,
@@ -165,7 +182,24 @@
 							optionsValue: 'code',
 							name:'#[KSM001_58]',
 							visibleItemsCount: 5,
-							value: alarmCheckCondition,
+							value: yearlyAlarmCkCondition,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 4 }
+							]}">
+						</div>
+					</div>
+					<div class="settingTime pull-left">
+						<span class="lableData">#{i18n.getText('KSM001_78')}</span>
+						<div tabindex="12" id="comboYearlyCon"
+							data-bind="ntsComboBox: {
+							options: lstEstimateCondition,
+							optionsValue: 'code',
+							name:'#[KSM001_79]',
+							visibleItemsCount: 5,
+							value: monthlyAlarmCkCondition,
 							optionsText: 'name',
 							editable: false,
 							enable: true,
@@ -222,7 +256,24 @@
 							optionsValue: 'code',
 							visibleItemsCount: 5,
 							name:'#[KSM001_61]',
-							value: alarmCheckCondition,
+							value: yearlyAlarmCkCondition,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 4 }
+							]}">
+						</div>
+					</div>
+					<div class="settingTime pull-left">
+						<span class="lableData">#{i18n.getText('KSM001_80')}</span>
+						<div tabindex="15"  id="comboYearlyCon"
+							data-bind="ntsComboBox: {
+							options: lstEstimateCondition,
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							name:'#[KSM001_81]',
+							value: monthlyAlarmCkCondition,
 							optionsText: 'name',
 							editable: false,
 							enable: true,
@@ -232,6 +283,81 @@
 						</div>
 					</div>
 				</div>
+				
+				<!-- <div class="detailSetting" data-bind="with: estimateNumberOfDays">
+					<div class="lableDataFull pull-left" data-name="#{i18n.getText('KSM001_25')}"
+						data-bind="ntsFormLabel: {required: true}">
+						<label>#{i18n.getText('KSM001_25')}</label>
+					</div>
+					<div class="settingTime pull-left">
+						<span class="lableData">#{i18n.getText('KSM001_26')}</span>
+						<div tabindex="13" id="comboYearlyCon"
+							data-bind="ntsComboBox: {
+							options: lstEstimateCondition,
+							optionsValue: 'code',
+							name:'#[KSM001_59]',
+							visibleItemsCount: 5,
+							value: yearlyDisplayCondition,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 4 }
+							]}">
+						</div>
+					</div>
+					<div class="settingTime pull-left">
+						<span class="lableData">#{i18n.getText('KSM001_27')}</span>
+						<div tabindex="14"  id="comboYearlyCon"
+							data-bind="ntsComboBox: {
+							options: lstEstimateCondition,
+							name:'#[KSM001_60]',
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							value: monthlyDisplayCondition,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 4 }
+							]}">
+						</div>
+					</div>
+					<div class="settingTime pull-left">
+						<span class="lableData">#{i18n.getText('KSM001_28')}</span>
+						<div tabindex="15"  id="comboYearlyCon"
+							data-bind="ntsComboBox: {
+							options: lstEstimateCondition,
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							name:'#[KSM001_61]',
+							value: yearlyAlarmCkCondition,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 4 }
+							]}">
+						</div>
+					</div>
+					<div class="settingTime pull-left">
+						<span class="lableData">#{i18n.getText('KSM001_80')}</span>
+						<div tabindex="15"  id="comboYearlyCon"
+							data-bind="ntsComboBox: {
+							options: lstEstimateCondition,
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							name:'#[KSM001_81]',
+							value: monthlyAlarmCkCondition,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 4 }
+							]}">
+						</div>
+					</div>
+				</div> -->
 			</div>
 			<div id="functions-area-bottom">
 				<button tabindex="16" class="proceed x-large" data-bind="click: saveCommonGuidelineSetting">#{i18n.getText('KSM001_48')}</button>

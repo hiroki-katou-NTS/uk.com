@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 
 /**
@@ -20,14 +20,16 @@ public class TemporaryAbsenceFinder {
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
 
 	public float getNumOfTempAbsenceDays(String employeeId) {
-		List<TemporaryAbsence> lstTemporaryAbsence = temporaryAbsenceRepository.getListBySid(employeeId);
+		List<TempAbsenceHistory> lstTemporaryAbsence = temporaryAbsenceRepository.getListBySid(employeeId);
 		if (lstTemporaryAbsence.size() == 0)
 			return 0;
-		return lstTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS.between(m.getDateHistoryItem().start().localDate(),
-				m.getDateHistoryItem().end().localDate())).mapToInt(m -> Math.abs(m.intValue())).sum();
+		/*return lstTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS.between(m.getDateHistoryItem().start().localDate(),
+				m.getDateHistoryItem().end().localDate())).mapToInt(m -> Math.abs(m.intValue())).sum();*/
+		return 0;
+		// TODO
 	}
 
-	public List<TemporaryAbsence> getListBySid(String employeeId) {
+	public List<TempAbsenceHistory> getListBySid(String employeeId) {
 		return temporaryAbsenceRepository.getListBySid(employeeId);
 	}
 }

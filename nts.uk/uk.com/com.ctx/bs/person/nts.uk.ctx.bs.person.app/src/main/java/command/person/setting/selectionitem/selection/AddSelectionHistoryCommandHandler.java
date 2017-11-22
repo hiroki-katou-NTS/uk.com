@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -16,7 +15,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.ExternalCD;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
@@ -42,15 +40,16 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String newHistId = IdentifierUtil.randomUniqueId();
 
 		// ドメインモデル「選択肢履歴」のエラーチェッ
-		GeneralDate getStartDate = command.getStartDate();
-
-		/*
-		 * List<PerInfoHistorySelection> startDateHistoryList =
-		 * this.historySelectionRepository
-		 * .historyStartDateSelection(getStartDate); if
-		 * (startDateHistoryList.size() > 0) { throw new BusinessException(new
-		 * RawErrorMessage("Msg_102")); }
-		 */
+		GeneralDate getStartDate = command.getStartDate();//startDateNew
+		//check: 最新の履歴の開始日　＞　直前の履歴の開始日
+		GeneralDate endDateLast = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
+		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository.getHistSelByEndDate(command.getSelectionItemId(), endDateLast);
+		if(!lstHist.isEmpty()){
+			PerInfoHistorySelection histLast = lstHist.get(0);
+			if(getStartDate.beforeOrEquals(histLast.getPeriod().start())){
+				throw new BusinessException("Msg_102");
+			}
+		}
 
 		// ログインしているユーザーの権限をチェックする
 		String selectItemID = command.getSelectionItemId();
@@ -58,7 +57,7 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
 		DatePeriod period = new DatePeriod(startDate, endDate);
 
-		boolean userLogin = true;
+		boolean userLogin = false;
 		// get last hist
 		Optional<PerInfoHistorySelection> optlastHist = this.historySelectionRepository
 				.getLastHistoryBySelectioId(selectItemID);

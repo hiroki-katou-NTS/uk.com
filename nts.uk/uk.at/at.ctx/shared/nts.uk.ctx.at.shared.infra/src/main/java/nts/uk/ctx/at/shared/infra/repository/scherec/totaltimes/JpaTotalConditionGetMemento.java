@@ -20,8 +20,7 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	/**
 	 * Instantiates a new jpa total condition get memento.
 	 *
-	 * @param totalTimes
-	 *            the total times
+	 * @param totalTimes the total times
 	 */
 	public JpaTotalConditionGetMemento(KshstTotalCondition totalTimes) {
 		this.entity = totalTimes;
@@ -73,6 +72,15 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	@Override
 	public ConditionThresholdLimit getThresoldLowerLimit() {
 		return new ConditionThresholdLimit((int)this.entity.getThresoldLowerLimit());
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionGetMemento#getAttendanceItemId()
+	 */
+	@Override
+	public Integer getAttendanceItemId() {
+		return this.entity.getAttendanceItemId();
 	}
 
 }

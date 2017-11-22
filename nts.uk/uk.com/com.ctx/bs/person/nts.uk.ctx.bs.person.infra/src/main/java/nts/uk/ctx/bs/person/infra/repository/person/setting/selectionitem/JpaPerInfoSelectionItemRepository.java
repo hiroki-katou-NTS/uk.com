@@ -2,22 +2,24 @@ package nts.uk.ctx.bs.person.infra.repository.person.setting.selectionitem;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtSelectionItem;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtSelectionItemPK;
 
+/**
+ * 
+ * @author tuannv
+ *
+ */
 @Stateless
 public class JpaPerInfoSelectionItemRepository extends JpaRepository implements IPerInfoSelectionItemRepository {
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionItem si";
 	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE = SELECT_ALL
-			+ " WHERE si.contractCd = :contractCd "
-			+ " ORDER BY si.selectionItemName ";
+			+ " WHERE si.contractCd = :contractCd " + " ORDER BY si.selectionItemName ";
 	private static final String SELECT_All_SELECTION_ITEM_NAME = SELECT_ALL
 			+ " WHERE si.selectionItemName = :selectionItemName";
 

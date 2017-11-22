@@ -397,7 +397,7 @@ module nts.uk.com.view.cmm011.a {
                 }
                 
                 // show error message
-                if (Array.isArray(res.messageId)) {
+                if (Array.isArray(res.errors)) {
                     nts.uk.ui.dialog.bundledErrors(res);
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
@@ -431,10 +431,14 @@ module nts.uk.com.view.cmm011.a {
                 self.selectedWpkId = ko.observable(null);
                 self.treeArray = ko.observableArray([]);
                 
-                self.treeColumns = [];
+                self.treeColumns = self.treeColumns = [
+                    { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
+                    { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250,
+                        dataType: "string" }
+                ];
                 self.treeStyle = {
                     width: 385,
-                    height: 0
+                    height: 504
                 };
                 
                 // subscribe
@@ -509,7 +513,7 @@ module nts.uk.com.view.cmm011.a {
                     nts.uk.ui.block.clear();
 
                     if (res.messageId == "Msg_373") {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_373" }).then(() => {
+                        nts.uk.ui.dialog.info(res.message).then(() => {
                             self.lstWorkplace([]);
                         });
                     } else {
