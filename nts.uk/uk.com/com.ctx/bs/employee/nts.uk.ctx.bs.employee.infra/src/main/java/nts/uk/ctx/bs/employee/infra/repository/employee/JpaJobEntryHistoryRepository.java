@@ -45,7 +45,7 @@ public class JpaJobEntryHistoryRepository extends JpaRepository implements JobEn
 		Optional<BsymtJobEntryHistory> existItem = this.queryProxy().find(key, BsymtJobEntryHistory.class);
 		
 		if (!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid JobEntryHistory");
 		}
 		updateEntity(domain, existItem.get());
 		this.commandProxy().update(existItem.get());

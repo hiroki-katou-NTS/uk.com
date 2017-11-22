@@ -31,7 +31,9 @@ module nts.uk.at.view.ksm001.f {
             export interface ReferenceConditionDto {
                 yearlyDisplayCondition: number;
                 monthlyDisplayCondition: number;
-                alarmCheckCondition: number;
+//                alarmCheckCondition: number;
+                yearlyAlarmCkCondition: number;
+                monthlyAlarmCkCondition: number;
             }
             
             export interface CommonGuidelineSettingDto {

@@ -1,5 +1,6 @@
 package command.person.info;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -9,6 +10,7 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
+@Stateless
 public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonCommand>
 	implements PeregUpdateCommandHandler<UpdatePersonCommand>{
 

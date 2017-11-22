@@ -71,7 +71,8 @@ public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSetti
 		return new ReferenceCondition(
 				EstimatedCondition.valueOf(this.entity.getTimeYearlyDispCond()),
 				EstimatedCondition.valueOf(this.entity.getTimeMonthlyDispCond()),
-				EstimatedCondition.valueOf(this.entity.getTimeAlarmCheckCond()));
+				EstimatedCondition.valueOf(this.entity.getTimeYearAlarmCheckCond()),
+				EstimatedCondition.valueOf(this.entity.getTimeMonthAlarmCheckCond()));
 	}
 
 	/*
@@ -85,7 +86,8 @@ public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSetti
 		return new ReferenceCondition(
 				EstimatedCondition.valueOf(this.entity.getPriceYearlyDispCond()),
 				EstimatedCondition.valueOf(this.entity.getPriceMonthlyDispCond()),
-				EstimatedCondition.valueOf(this.entity.getPriceAlarmCheckCond()));
+				EstimatedCondition.valueOf(this.entity.getPriceYearAlarmCheckCond()),
+				EstimatedCondition.valueOf(this.entity.getPriceMonthAlarmCheckCond()));
 	}
 
 	/*
@@ -99,7 +101,8 @@ public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSetti
 		return new ReferenceCondition(
 				EstimatedCondition.valueOf(this.entity.getNumOfDayYearlyDispCond()),
 				EstimatedCondition.valueOf(this.entity.getNumOfDayMonthlyDispCond()),
-				EstimatedCondition.valueOf(this.entity.getNumOfDayAlarmCheckCond()));
+				EstimatedCondition.valueOf(this.entity.getDaysYearAlarmCheckCond()),
+				EstimatedCondition.valueOf(this.entity.getDaysMonthAlarmCheckCond()));
 	}
 
 }

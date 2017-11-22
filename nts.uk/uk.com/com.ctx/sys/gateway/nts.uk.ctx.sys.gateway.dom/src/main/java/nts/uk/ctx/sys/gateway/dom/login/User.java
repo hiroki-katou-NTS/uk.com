@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.login;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
  * The Class User.
  */
 @Getter
+@AllArgsConstructor
 public class User {
 
 	//ID
@@ -87,5 +89,29 @@ public class User {
 		memento.setMailAddress(this.mailAddress);
 		memento.setUserName(this.userName);
 		memento.setAssociatedPersonId(this.associatedPersonId);
+	}
+	
+	
+	/**
+	 * create a User from java type
+	 * @param userId
+	 * @param passWord
+	 * @param loginId
+	 * @param contractCode
+	 * @param expirationDate
+	 * @param specialUser
+	 * @param multiCompanyConcurrent
+	 * @param mailAddress
+	 * @param userName
+	 * @param associatedPersonId
+	 * @return User
+	 */
+	public static User createFromJavaType(String userId , String passWord ,String loginId , String contractCode ,
+			GeneralDate expirationDate , boolean specialUser ,boolean multiCompanyConcurrent,
+			String mailAddress ,  String userName ,String associatedPersonId) {
+		return new User(userId,new HashPassword(passWord), new LoginId(loginId), new ContractCode(contractCode), 
+				expirationDate, specialUser, multiCompanyConcurrent,
+				new MailAddress(mailAddress), new UserName(userName), associatedPersonId);
+
 	}
 }

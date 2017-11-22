@@ -103,10 +103,13 @@ public class JpaComAutoCalSettingSetMemento implements ComAutoCalSettingSetMemen
 	 * shift.autocalsetting.AutoCalFlexOvertimeSetting)
 	 */
 	@Override
-	public void setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime) {
-		this.entity.setFlexOtTimeAtr(flexOTTime.getFlexOtTime().getCalAtr().value);
-		this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitOtSet().value);
-
+	public void setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime) {		
+		if (flexOTTime.getFlexOtTime().getCalAtr() != null) {
+			this.entity.setFlexOtTimeAtr(flexOTTime.getFlexOtTime().getCalAtr().value);
+		}		
+		if (flexOTTime.getFlexOtTime().getUpLimitOtSet() != null) {
+			this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitOtSet().value);
+		}	
 	}
 
 	/*
@@ -118,10 +121,18 @@ public class JpaComAutoCalSettingSetMemento implements ComAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setRestTime(AutoCalRestTimeSetting restTime) {
-		this.entity.setRestTimeAtr(restTime.getRestTime().getCalAtr().value);
-		this.entity.setRestTimeLimit(restTime.getRestTime().getUpLimitOtSet().value);
-		this.entity.setLateNightTimeAtr(restTime.getLateNightTime().getCalAtr().value);
-		this.entity.setLateNightTimeLimit(restTime.getLateNightTime().getUpLimitOtSet().value);
+		if (restTime.getRestTime().getCalAtr() != null) {
+			this.entity.setFlexOtTimeAtr(restTime.getRestTime().getCalAtr().value);
+		}		
+		if (restTime.getRestTime().getUpLimitOtSet() != null) {
+			this.entity.setFlexOtTimeLimit(restTime.getRestTime().getUpLimitOtSet().value);
+		}	
+		if (restTime.getLateNightTime().getCalAtr() != null) {
+			this.entity.setFlexOtTimeAtr(restTime.getLateNightTime().getCalAtr().value);
+		}		
+		if (restTime.getLateNightTime().getUpLimitOtSet() != null) {
+			this.entity.setFlexOtTimeLimit(restTime.getLateNightTime().getUpLimitOtSet().value);
+		}	
 	}
 
 }

@@ -34,28 +34,25 @@ public class KshstTotalCondition extends UkJpaEntity implements Serializable {
 	protected KshstTotalConditionPK kshstTotalConditionPK;
 
 	/** The upper limit set atr. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "UPPER_LIMIT_SET_ATR")
 	private int upperLimitSetAtr;
 
 	/** The lower limit set atr. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "LOWER_LIMIT_SET_ATR")
 	private int lowerLimitSetAtr;
 
 	/** The thresold upper limit. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "THRESOLD_UPPER_LIMIT")
 	private long thresoldUpperLimit;
 
 	/** The thresold lower limit. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "THRESOLD_LOWER_LIMIT")
 	private long thresoldLowerLimit;
+	
+	
+	/** The attendance item id. */
+	@Column(name = "ATD_ITEM_ID")
+	private int attendanceItemId;
 
 	/**
 	 * Instantiates a new kshst total condition.
