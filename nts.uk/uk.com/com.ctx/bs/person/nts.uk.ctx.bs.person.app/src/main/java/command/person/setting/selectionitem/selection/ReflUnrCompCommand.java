@@ -10,10 +10,10 @@ import lombok.Value;
 @Value
 public class ReflUnrCompCommand {
 	private String selectionId;
-	private String histId;
+	//private String histId;
 	private String selectionCD;
 	private String selectionName;
-	private String companyId;
+	//private String companyId;
 	private String externalCD;
 	private String memoSelection;
 	private int disporder;

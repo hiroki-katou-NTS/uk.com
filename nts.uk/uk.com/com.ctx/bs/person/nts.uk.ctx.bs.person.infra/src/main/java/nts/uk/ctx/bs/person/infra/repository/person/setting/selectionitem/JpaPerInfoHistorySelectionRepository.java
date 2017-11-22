@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
@@ -36,6 +37,9 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 
 	private static final String GET_LAST_HISTORY_BY_SELECTION_ID = SELECT_ALL_HISTORY_SELECTION
 			+ " AND si.endDate =:endDate";
+	
+	//getAllDataByCompanyCD = CompanyCDRoot:
+	private static final String SELECT_ALL_DATA_BY_COMPANY_ID = SELECT_ALL + "WHERE si.companyId = :companyId";
 
 	@Override
 	public void add(PerInfoHistorySelection domain) {
@@ -85,7 +89,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 
 	// historyStartDateSelection
 	@Override
-	public List<PerInfoHistorySelection> historyStartDateSelection(GeneralDate startDate) {
+	public List<PerInfoHistorySelection> getHistoryByStartDate(GeneralDate startDate) {
 		GeneralDate endDate = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
 		return this.queryProxy().query(SELECT_ALL_HISTORY_STARTDATE_SELECTION, PpemtHistorySelection.class)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
@@ -119,6 +123,13 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 		return this.queryProxy().query(GET_LAST_HISTORY_BY_SELECTION_ID, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("endDate", endDate)
 				.getSingle(c -> toDomain(c));
+	}
+
+	// Tuannv:
+	@Override
+	public List<PerInfoHistorySelection> getAllHistoryByCompanyID(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_DATA_BY_COMPANY_ID, PpemtHistorySelection.class)
+				.setParameter("companyId", companyId).getList(c ->toDomain(c));
 	}
 
 }
