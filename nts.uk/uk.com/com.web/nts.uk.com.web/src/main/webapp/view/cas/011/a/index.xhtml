@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<title>TODO</title>
+			<com:ValidatorScript>
+					nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode
+					nts.uk.ctx.sys.auth.dom.roleset.RoleSetName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cas011.a.main.css" />
+			<com:scriptfile path="cas011.a.start.js" />
+			<com:scriptfile path="cas011.a.vm.js" />
+			<com:scriptfile path="cas011.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="A1_001" tabindex="1" data-bind="click: createNewRoleSet,
+						enable: !isNewMode()" >#{i18n.getText('CAS011_4')}</button>
+				<button id="A1_002" class="proceed" tabindex="2" data-bind="click: saveRoleSet, enable: $root.errors.isEmpty">#{i18n.getText('CAS011_5')}</button>
+				<button id="A1_003" class="danger" tabindex="3" data-bind="click: deleteRoleSet,
+						enable: !isNewMode()" >#{i18n.getText('CAS011_6')}</button>
+
+				<button id="A1_004" tabindex="4" data-bind="click: closeWindow, enable: !nts.uk.ui.windows.getSelf().isRoot ">#{i18n.getText('CPS016_7')}</button>
+			</div>
+
+			<div id="contents-area" class="cf">
+				
+				<div id="content-left" class="pull-left"
+					data-bind="ntsPanel:{width: '300px', height: '475px',
+					direction: 'right', showIcon: true, visible: true}">
+						<!--A2_001 -->
+						<div>#{i18n.getText('CAS011_8')}</div>
+						<div style="float: left">
+							<table id="sel_item_grid"
+								data-bind="ntsGridList: {
+											height: 425,
+											options: listItems,
+											optionsValue: currentRoleSet().roleSetCd,
+											primaryKey: 'roleSetCd',
+											columns: gridColumns,
+											multiple: false,
+											value: currentRoleSet().roleSetCd,
+											showNumbering:false,
+											enable: true}">
+							</table>
+						</div>
+					</div>
+				
+					<div id="right-content" data-bind="with: currentRoleSet">
+						<table >
+							<colgroup>
+								<col width="135px" />
+								<col width="*" />
+							</colgroup>
+							<tr class="row">
+								<td>
+									<!-- A3_001 -->
+									<div data-bind="ntsFormLabel: {required: true,constraint: ['RoleSetCode', 'RoleSetName'] }">#{i18n.getText('CAS011_11')}</div>
+								</td>
+								<td style = "padding-left: 5px">
+									<!-- A3_002: Rose Set Code -->
+									<div>
+										 <input tabindex="9"
+										class="nts-input" id="inpSelectionItemName"
+										data-bind="ntsTextEditor:{
+												name: '#[CPS016_10]',
+		                                         value: selectionItemName,
+		                                         required: true,
+		                                         constraint: 'ItemName',
+		                                         enable: true}" />
+	                               </div>
+	                               <!-- A3_003: Rose Set Name -->
+	                               <div>
+	                               <input tabindex="9"
+										class="nts-input" id="inpSelectionItemName"
+										data-bind="ntsTextEditor:{
+												name: '#[CPS016_10]',
+		                                         value: selectionItemName,
+		                                         required: true,
+		                                         constraint: 'ItemName',
+		                                         enable: true}" />
+	                               </div>
+	                                         
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!--A3_004 -->
+									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CPS016_11')}</div>
+								</td>
+								<td>
+									<!-- A3_005: Selection Item Classification -->
+									<div tabindex="10" style = "padding-left: 5px" id = "swSelectionItemClassification"
+										data-bind="ntsSwitchButton: {
+										name: '#[CPS016_12]',
+										options: $parent.swSelItemClass,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectionItemClassification,
+										enable: false }">
+									</div>
+									<!-- A3_006: Selection Item Classification -->
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!-- A3_6-->
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'ItemNumericCode' }">#{i18n.getText('CPS016_13')}</div>
+								</td>
+								<td style = "padding-left: 5px">
+									<!-- A3_7: Selection Code Length-->
+									<input tabindex="11" class="nts-input" id = "inpSelectionCode" style="width: 20px"
+									data-bind="ntsNumberEditor:{
+											name: '#[CPS016_14]',
+											value: selectionCode,
+											required: true,
+	                                        constraint: 'ItemNumericCode',
+											enable: $parent.isNewMode()}" />
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!-- A3_8:  -->
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'ItemNumericName' }">#{i18n.getText('CPS016_15')}</div>
+								</td>
+								<td style = "padding-left: 5px">
+									<!-- A3_9: Selection Name Length --> 
+									<input tabindex="12" class="nts-validate" id="inpSelectionName" style="width: 20px"
+									data-bind="ntsNumberEditor: {
+										name: '#[CPS016_16]',
+										value: selectionName,
+										required: true,
+	                                    constraint: 'ItemNumericName',
+										enable: $parent.isNewMode()}" />
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!-- A3_11:  -->
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'ItemNumericCode' }">#{i18n.getText('CPS016_17')}</div>
+								</td>
+								<td style = "padding-left: 5px">
+									<!-- A3_12: Selection External Code Length --> 
+									<input tabindex="12" class="nts-validate" id="inpSelectionExtCode" style="width: 20px"
+									data-bind="ntsNumberEditor: {
+										name: '#[CPS016_18]',
+										value: selectionExtCode,
+										required: true,
+	                                    constraint: 'ItemNumericCode',
+										enable: $parent.isNewMode()}" />
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!-- A3_13:  -->
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CPS016_24')}</div>
+								</td>
+								<td style = "padding-left: 5px">
+									<!-- A3_14: Selection Item Classification--> 
+									<div id="chkSelectionCharacterType" tabindex="12" 
+										 data-bind="ntsCheckBox: { 
+										 checked: selectionCharacterType,
+										 enable: $parent.isNewMode(),
+										 text: 'グループ会社で共有する' }">
+									</div>
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!-- A3_15:  -->
+									<div data-bind="ntsFormLabel: {constraint: 'ItemIntegrationCode' }">#{i18n.getText('CPS016_19')}</div>
+								</td>
+								<td style = "padding-left: 5px">
+									<!-- A3_16: Selection Integration Code Length --> 
+									<input tabindex="12" class="nts-validate" id="inpIntegrationCode" style="width: 30px"
+									data-bind="ntsNumberEditor: {
+										name: '#[CPS016_20]',
+										value: integrationCode,
+	                                    constraint: 'ItemIntegrationCode',
+										enable: true}" />
+								</td>
+	
+							</tr>
+							<tr class="row">
+								<td>
+									<!-- A3_17:  -->
+									<div data-bind="ntsFormLabel: {constraint: 'Memo' }">#{i18n.getText('CPS016_21')}</div>
+								</td>
+								<td style = "padding-left: 5px">
+									<!-- A3_18: Memo --> 
+									<textarea tabindex="12" class="nts-validate" id="inpMemo" style="width: 265px; height: 130px" 
+									data-bind="ntsMultilineEditor: {
+										name:'#[CPS016_22]',
+										value: memo,
+										constraint: 'Memo',
+										enable: true,
+										immediate: false}" />
+								</td>
+	
+							</tr>
+						</table>
+					</div>
+				</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -17,9 +17,11 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
@@ -43,9 +45,9 @@ import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -53,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrameRepository;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
@@ -101,7 +104,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	@Inject
 	private OvertimeFrameRepository overtimeFrameRepository;
 	@Inject
-	private SpecBPTimesheetRepository specBPTimesheetRepository;
+	private BPTimeItemRepository bPTimeItemRepository;
 	@Inject
 	private BreaktimeFrameRepository breaktimeFrameRep;
 	@Inject
@@ -182,7 +185,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	@Override
 	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting) {
 		if(requestAppDetailSetting != null){
-			if(requestAppDetailSetting.getBreakTimeDisFlg().value == DisplayFlg.DISPLAY.value){
+			if(requestAppDetailSetting.getBreakInputFieldDisFlg().value == DisplayFlg.DISPLAY.value){
 				return true;
 			}else{
 				return false;
@@ -215,44 +218,29 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 	
 	@Override
-	public Optional<BonusPaySetting> getBonusTime(String employeeID, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,
+	public List<BonusPayTimeItem> getBonusTime(String employeeID, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,
 			String appDate,String companyID,SiftType siftType) {
-		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
+		List<BonusPayTimeItem> result = new ArrayList<>();
+		WpSpecificDateSettingImport wpSpecificDateSettingImport = new WpSpecificDateSettingImport(null,null);
 		if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 			// アルゴリズム「社員所属職場履歴を取得」を実行する
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 			//アルゴリズム「職場の特定日設定を取得する」を実行する (hung lam)
 			if(sWkpHistImport != null){
-				//WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
+				wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
-			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = Optional.empty();
-			if(siftType != null){
-				workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyID, new WorkingTimesheetCode(siftType.getSiftCode()));
-			}
-			if(!workingTimesheetBonusPaySetting.isPresent()){
-				Optional<PersonalBonusPaySetting> personalBonusPaySetting =this.pSBonusPaySettingRepository.getPersonalBonusPaySetting(employeeID);
-				
-				if(!personalBonusPaySetting.isPresent()){
-					Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(new WorkplaceId(sWkpHistImport.getWorkplaceId()));
-					if(!workplaceBonusPaySetting.isPresent()){
-						Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository.getSetting(companyID);
-						if(!companyBonusPaySetting.isPresent()){
-							return bonusPaySetting;
-						}else{
-							bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, companyBonusPaySetting.get().getBonusPaySettingCode());
-						}
-					}else{
-						bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, workplaceBonusPaySetting.get().getBonusPaySettingCode());
-					}
-				}else{
-					bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, personalBonusPaySetting.get().getBonusPaySettingCode());
+			if(wpSpecificDateSettingImport.getNumberList() != null){
+				List<BonusPayTimeItem> bonusPayTimeItemSpecs = this.bPTimeItemRepository.getListSpecialBonusPayTimeItemInUse(companyID);
+				for(BonusPayTimeItem bonusItem : bonusPayTimeItemSpecs){
+					result.add(bonusItem);
 				}
-			}else{
-				bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
 			}
-			
+			List<BonusPayTimeItem>  bonusPayTimeItems = this.bPTimeItemRepository.getListBonusPayTimeItemInUse(companyID);
+			for(BonusPayTimeItem bonusItem : bonusPayTimeItems){
+				result.add(bonusItem);
+			}
 		}
-		return bonusPaySetting;
+		return result;
 	}
 
 	@Override
@@ -310,17 +298,18 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
 						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
 						
-						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInput(appOvertime.get().getCompanyID(), appOvertime.get().getAppID());
+						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceID.NORMALOVERTIME.value);
 						result.setOverTimeInput(overtimeInputs);
 						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
 						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
 						result.setApplication(application.get());
 						result.setAppID(appOvertime.get().getAppID());
+						return result;
 					}
 				}
 			}
 		}
-		return result;
+		return null;
 	}
 
 	@Override
@@ -346,6 +335,38 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 			hourminute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
 		}
 		return hourminute;
+	}
+
+	@Override
+	public Optional<BonusPaySetting> getBonusPaySetting(String employeeID, String siftCode, String companyID,
+			SWkpHistImport sWkpHistImport) {
+		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
+		Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = Optional.empty();
+		
+			workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyID, new WorkingTimesheetCode(siftCode));
+		
+		if(!workingTimesheetBonusPaySetting.isPresent()){
+			Optional<PersonalBonusPaySetting> personalBonusPaySetting =this.pSBonusPaySettingRepository.getPersonalBonusPaySetting(employeeID);
+			
+			if(!personalBonusPaySetting.isPresent()){
+				Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(new WorkplaceId(sWkpHistImport.getWorkplaceId()));
+				if(!workplaceBonusPaySetting.isPresent()){
+					Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository.getSetting(companyID);
+					if(!companyBonusPaySetting.isPresent()){
+						return bonusPaySetting;
+					}else{
+						bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, companyBonusPaySetting.get().getBonusPaySettingCode());
+					}
+				}else{
+					bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, workplaceBonusPaySetting.get().getBonusPaySettingCode());
+				}
+			}else{
+				bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, personalBonusPaySetting.get().getBonusPaySettingCode());
+			}
+		}else{
+			bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
+		}
+		return null;
 	}
 	
 }

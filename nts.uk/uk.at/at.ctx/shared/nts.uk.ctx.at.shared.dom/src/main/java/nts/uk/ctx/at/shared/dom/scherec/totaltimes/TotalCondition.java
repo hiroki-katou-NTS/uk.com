@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 
 /**
  * The Class TotalCondition.
@@ -30,6 +31,10 @@ public class TotalCondition {
 	/** The hresold upper limit. */
 	// 閾値上限
 	private ConditionThresholdLimit thresoldUpperLimit;
+	
+	/** The atd item id. */
+	// 勤怠項目ID
+	private Integer atdItemId;
 
 	/**
 	 * Instantiates a new total condition.
@@ -48,6 +53,7 @@ public class TotalCondition {
 		this.lowerLimitSettingAtr = memento.getLowerLimitSettingAtr();
 		this.thresoldUpperLimit = memento.getThresoldUpperLimit();
 		this.thresoldLowerLimit = memento.getThresoldLowerLimit();
+		this.atdItemId = memento.getAttendanceItemId();
 
 		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
 				&& thresoldUpperLimit.greaterThanOrEqualTo(thresoldLowerLimit)) {
@@ -66,6 +72,7 @@ public class TotalCondition {
 		memento.setThresoldLowerLimit(this.thresoldLowerLimit);
 		memento.setThresoldUpperLimit(this.thresoldUpperLimit);
 		memento.setUpperLimitSettingAtr(this.upperLimitSettingAtr);
+		memento.setAttendanceItemId(this.atdItemId);
 	}
 
 }

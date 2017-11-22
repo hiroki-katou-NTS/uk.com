@@ -105,7 +105,8 @@ public class CommonGuidelineSettingSaveCommand {
 			return new ReferenceCondition(
 					EstimatedCondition.valueOf(dto.getYearlyDisplayCondition()),
 					EstimatedCondition.valueOf(dto.getMonthlyDisplayCondition()),
-					EstimatedCondition.valueOf(dto.getAlarmCheckCondition()));
+					EstimatedCondition.valueOf(dto.getYearlyAlarmCkCondition()),
+					EstimatedCondition.valueOf(dto.getMonthlyAlarmCkCondition()));
 		}
 
 		/*
@@ -120,7 +121,8 @@ public class CommonGuidelineSettingSaveCommand {
 			return new ReferenceCondition(
 					EstimatedCondition.valueOf(dto.getYearlyDisplayCondition()),
 					EstimatedCondition.valueOf(dto.getMonthlyDisplayCondition()),
-					EstimatedCondition.valueOf(dto.getAlarmCheckCondition()));
+					EstimatedCondition.valueOf(dto.getYearlyAlarmCkCondition()),
+					EstimatedCondition.valueOf(dto.getMonthlyAlarmCkCondition()));
 		}
 
 		/*
@@ -135,7 +137,8 @@ public class CommonGuidelineSettingSaveCommand {
 			return new ReferenceCondition(
 					EstimatedCondition.valueOf(dto.getYearlyDisplayCondition()),
 					EstimatedCondition.valueOf(dto.getMonthlyDisplayCondition()),
-					EstimatedCondition.valueOf(dto.getAlarmCheckCondition()));
+					EstimatedCondition.valueOf(dto.getYearlyAlarmCkCondition()),
+					EstimatedCondition.valueOf(dto.getMonthlyAlarmCkCondition()));
 		}
 
 	}

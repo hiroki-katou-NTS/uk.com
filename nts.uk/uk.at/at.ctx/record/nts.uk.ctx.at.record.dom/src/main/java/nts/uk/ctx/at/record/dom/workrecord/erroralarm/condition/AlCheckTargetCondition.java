@@ -62,7 +62,6 @@ public class AlCheckTargetCondition extends DomainObject {
 		this.lstClassificationCode = lstClassificationCode.stream().map((code) -> {
 			return new ClassificationCode(code);
 		}).collect(Collectors.toList());
-		return;
 	}
 
 }
