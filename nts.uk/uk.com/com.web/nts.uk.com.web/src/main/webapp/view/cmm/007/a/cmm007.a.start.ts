@@ -5,10 +5,13 @@ module nts.uk.com.view.cmm007.a {
     __viewContext.ready(function() {
         let tabB = new viewModelTabB.ScreenModel();
         let tabC = new viewModelTabC.ScreenModel();
-        let screenModel =  {
-            systemDefine: tabB,
-            profile: tabC
-        };
-         __viewContext.bind(screenModel);
+        
+        $.when(tabB.start_page(), tabC.start_page()).done(function(){
+            let screenModel =  {
+                systemDefine: tabB,
+                temporaryAbsenceFr: tabC
+            };
+             __viewContext.bind(screenModel);
+        }) 
     });
 }

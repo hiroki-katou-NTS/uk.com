@@ -12,6 +12,16 @@ module nts.uk.com.view.cmm007.c {
                 
             }
             
+             /**
+             * init default data when start page
+             */
+            public start_page(): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                var _self = this;
+                
+                dfd.resolve();
+                return dfd.promise();
+            }
        }
            
     }
