@@ -36,7 +36,7 @@ public class PersonPubImp implements PersonPub {
 	@Override
 	public List<PubPersonDto> findByPersonIds(List<String> personIds) {
 		return personRepository.getPersonByPersonIds(personIds).stream()
-				.map(item -> new PubPersonDto(item.getPersonId(), item.getPersonNameGroup().getPersonName().v()))
+				.map(item -> new PubPersonDto(item.getPersonId(), item.getPersonNameGroup().getPersonName().getFullName().v()))
 				.collect(Collectors.toList());
 	}
 
@@ -60,10 +60,9 @@ public class PersonPubImp implements PersonPub {
 		return personRepository.getPersonByPersonIds(personIds).stream()
 				.map(item -> new PersonInfoExport(
 						item.getPersonId(),
-						item.getPersonNameGroup().getPersonName() == null ? "" : item.getPersonNameGroup().getPersonName().v(),
-						item.getBirthDate(), 
-						item.getMailAddress() == null ? "" : item.getMailAddress().v(),
-						item.getMailAddress() == null ? 0 : item.getGender().value))
+						item.getPersonNameGroup().getPersonName() == null ? "" : item.getPersonNameGroup().getPersonName().getFullName().v(),
+						item.getBirthDate(), null,
+						item.getGender() == null ? 0 : item.getGender().value))
 				.collect(Collectors.toList());
 	}
 

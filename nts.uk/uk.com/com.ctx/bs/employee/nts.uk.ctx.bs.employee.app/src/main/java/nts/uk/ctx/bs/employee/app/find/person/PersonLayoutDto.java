@@ -33,6 +33,9 @@ public class PersonLayoutDto {
 	@PeregItem("IS00005")
 	private String businessName;
 	
+	@PeregItem("")
+	private String businessNameKana;
+	
 	// 個人名グループ．ビジネスネーム．英語
 	@PeregItem("IS00006")
 	private String businessEnglishName;
@@ -53,6 +56,15 @@ public class PersonLayoutDto {
 	@PeregItem("IS00010")
 	private String todokedeFullName;
 	
+	@PeregItem("IS00010")
+	private String todokedeFullNameKana;
+	
+	@PeregItem("IS00010")
+	private String PersonalNameMultilingual;
+	
+	@PeregItem("IS00010")
+	private String PersonalNameMultilingualKana;
+	
 //	// 個人名グループ．個人届出名称．氏名カナ
 //	@PeregItem("IS00011")
 //	private String todokedeFullNameKana;
@@ -71,42 +83,12 @@ public class PersonLayoutDto {
 	@PeregItem("IS00014")
 	private int gender;
 	
-	// 個人携帯
-	@PeregItem("IS00015")
-	private String personMobile;
-	
-	// 個人メールアドレス
-	@PeregItem("IS00016")
-	private String mailAddress;
-	
-	// 趣味
-	@PeregItem("IS00017")
-	private String hobby;
-	
-	// 嗜好
-	@PeregItem("IS00018")
-	private String taste;
-
-	// 国籍
-	@PeregItem("IS00019")
-	private String countryId; 
-	
 	public static PersonLayoutDto createFromDomain(Person person){
-		return new PersonLayoutDto(person.getPersonNameGroup().getPersonName().v(), 
-				person.getPersonNameGroup().getPersonNameKana() != null ? person.getPersonNameGroup().getPersonNameKana().v() : "", 
-				person.getPersonNameGroup().getPersonRomanji() != null ?person.getPersonNameGroup().getPersonRomanji().getFullName().v() :"", 
-				person.getPersonNameGroup().getPersonRomanji() != null ? person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v() : "",
-				person.getPersonNameGroup().getBusinessName() != null ? person.getPersonNameGroup().getBusinessName().v() : "", 
-				person.getPersonNameGroup().getBusinessEnglishName() != null ? person.getPersonNameGroup().getBusinessEnglishName().v() : "", 
-				person.getPersonNameGroup().getBusinessOtherName() != null ? person.getPersonNameGroup().getBusinessOtherName().v() : "", 
-				person.getPersonNameGroup().getOldName() != null ? person.getPersonNameGroup().getOldName().getFullName().v() : "",  
-				person.getPersonNameGroup().getOldName()!= null ? person.getPersonNameGroup().getOldName().getFullNameKana().v() : "", 
-				person.getPersonNameGroup().getTodokedeFullName()!= null ? person.getPersonNameGroup().getTodokedeFullName().getFullName().v() : "", 
-				person.getGender().value, 
-				person.getPersonMobile() != null ? person.getPersonMobile().v() : "", 
-				person.getMailAddress().v(), 
-				person.getHobBy() != null ? person.getHobBy().v() : "", 
-				person.getTaste() != null ? person.getTaste().v() : "", 
-				person.getCountryId() != null ? person.getCountryId().v() : "");
+		return new PersonLayoutDto(person.getPersonNameGroup().getPersonName().getFullName().v(), person.getPersonNameGroup().getPersonName().getFullNameKana().v(),
+				person.getPersonNameGroup().getPersonRomanji().getFullName().v(), person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v(),
+				person.getPersonNameGroup().getBusinessName().v(),person.getPersonNameGroup().getBusinessNameKana().v(),person.getPersonNameGroup().getBusinessEnglishName().v(),
+				person.getPersonNameGroup().getBusinessOtherName().v(), person.getPersonNameGroup().getOldName().getFullName().v(),person.getPersonNameGroup().getOldName().getFullNameKana().v(),
+				person.getPersonNameGroup().getTodokedeFullName().getFullName().v(), person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v(),
+				person.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v(), person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v(),person.getGender().value);
 	}
 }
