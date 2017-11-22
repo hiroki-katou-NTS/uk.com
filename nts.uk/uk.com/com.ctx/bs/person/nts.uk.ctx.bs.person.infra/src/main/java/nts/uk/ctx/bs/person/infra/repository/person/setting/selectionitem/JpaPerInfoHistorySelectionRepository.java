@@ -38,7 +38,8 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 			+ " AND si.endDate =:endDate";
 	
 	//getAllDataByCompanyCD = CompanyCDRoot:
-	private static final String SELECT_ALL_DATA_BY_COMPANY_ID = SELECT_ALL + "WHERE si.companyId = :companyId";
+	private static final String SELECT_ALL_DATA_BY_COMPANY_ID = SELECT_ALL 
+			+ " WHERE si.companyId = :companyId";
 
 	@Override
 	public void add(PerInfoHistorySelection domain) {
@@ -146,7 +147,8 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	@Override
 	public List<PerInfoHistorySelection> getAllHistoryByCompanyID(String companyId) {
 		return this.queryProxy().query(SELECT_ALL_DATA_BY_COMPANY_ID, PpemtHistorySelection.class)
-				.setParameter("companyId", companyId).getList(c ->toDomain(c));
+				.setParameter("companyId", companyId)
+				.getList(c ->toDomain(c));
 	}
 
 }
