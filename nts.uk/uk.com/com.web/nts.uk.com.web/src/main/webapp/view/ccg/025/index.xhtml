@@ -12,11 +12,13 @@
 			<com:scriptfile path="ccg025.a.start.js" />
 			<com:scriptfile path="ccg025.a.vm.js" />
 			<com:scriptfile path="ccg025.a.service.js" />
+			<com:scriptfile path="component/component.service.js" />
+			<com:scriptfile path="component/component.vm.js" />
+			<com:stylefile path="component/component.main.css" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area" style="margin-top: 30px;margin-left: 30px">
-				<div id="pannel-top" data-bind="ntsPanel:{width: '915px', height: '500px', direction: '', showIcon: true, visible: true}">
-				</div>
+				<ui:include src="component/index.xhtml" />
 			</div>
 		</ui:define>
 

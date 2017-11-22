@@ -12,6 +12,10 @@
 			<com:stylefile path="../a1/kmk003.a1.style.css" />
 			<com:scriptfile path="../a4/kmk003.a4.vm.js" />
 			<com:stylefile path="../a4/kmk003.a4.style.css" />
+			<com:scriptfile path="../a7/kmk003.a7.vm.js" />
+			<com:stylefile path="../a7/kmk003.a7.style.css" />
+			<com:scriptfile path="/view/kmk/003/base/fixtable/fixtable.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
 			
 			<com:stylefile path="kmk003.a.style.css" />
 			<com:scriptfile path="kmk003.a.start.js" />
@@ -217,7 +221,7 @@
 											</div>
 											<div class="tab-a4">
 												<div
-													data-bind="ntsKMK003A4: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod,workTimeCode: siftCode}"></div>
+													data-bind="ntsKMK003A4: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod, workTimeCode: siftCode}"></div>
 											</div>
 											<div class="tab-a5">
 												<span>Tab Content 1</span><br />
@@ -226,7 +230,8 @@
 												<span>Tab Content 2</span><br />
 											</div>
 											<div class="tab-a7">
-												<span>Tab Content 1</span><br />
+												<div
+													data-bind="ntsKMK003A7: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod, workTimeCode: siftCode, saveAction: isClickSave}"></div>
 											</div>
 											<div class="tab-a8">
 												<span>Tab Content 2</span><br />

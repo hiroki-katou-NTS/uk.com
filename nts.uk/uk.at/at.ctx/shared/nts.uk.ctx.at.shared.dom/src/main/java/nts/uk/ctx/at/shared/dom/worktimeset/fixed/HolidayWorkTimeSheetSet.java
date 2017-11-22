@@ -8,7 +8,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class BreakTimezoneSet.
+ * The Class HolidayWorkTimeSheetSet.
  */
 // 休出時間の時間帯設定
 @Getter

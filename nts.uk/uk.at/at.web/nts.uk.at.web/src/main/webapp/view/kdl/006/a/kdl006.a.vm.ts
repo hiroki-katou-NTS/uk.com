@@ -26,7 +26,8 @@ module nts.uk.at.view.kdl006.a {
             columnHeader2: CheckBoxItem;
             columnHeader3: CheckBoxItem;
             columnHeader4: CheckBoxItem;
-            columnHeader5: CheckBoxItem;                      
+            columnHeader5: CheckBoxItem;          
+            tableBody: string;            
             
             constructor() {
                 let _self = this;
@@ -44,6 +45,7 @@ module nts.uk.at.view.kdl006.a {
                 _self.columnHeader3 = new CheckBoxItem();
                 _self.columnHeader4 = new CheckBoxItem();
                 _self.columnHeader5 = new CheckBoxItem();
+                _self.tableBody = "";
             }
             
             /**
@@ -58,10 +60,10 @@ module nts.uk.at.view.kdl006.a {
                 $.when(_self.findCurrentPersonName(), _self.loadClosure(), _self.loadWorkplaceInfo())
                     .done(() => {
                         _self.loadWorkFixed()
-                            .then(() => {                         
+                            .then(() => {                       
                                 _self.buildTable();  
                                 nts.uk.ui.block.clear();       
-                                dfd.resolve();    
+                                dfd.resolve();   
                             });    
                     })
                     .fail((res: any) => {  
@@ -133,12 +135,14 @@ module nts.uk.at.view.kdl006.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 
+                // Create WorkFixed list
                 for (let workplace of _self.listWorkplace) {
                     for (let closure of _self.listClosure) {
-                        _self.listWorkFixed.push(new WorkFixed(closure.closureId, workplace.workplaceId));
+                        _self.listWorkFixed.push(new WorkFixed(false, closure.closureId, workplace.workplaceId));
                     }
                 }
                 
+                // Get WorkFixed info, map into current list
                 service.findWorkFixedInfo(_self.listWorkFixed)
                     .done((data: WorkFixed[]) => {
                         _self.listWorkFixed = data;   
@@ -146,7 +150,7 @@ module nts.uk.at.view.kdl006.a {
                         let totalClosure = _self.listClosure.length;
                         for (let workplace of _self.listWorkplace) {
                             let currentIndex = workplaceIndex * totalClosure;
-                            let currentWorkFixed: WorkFixed[] = _.slice(_self.listWorkFixed, currentIndex, currentIndex + totalClosure);
+                            let currentWorkFixed: WorkFixed[] = _.slice(_self.listWorkFixed, currentIndex, currentIndex + totalClosure);                          
                             
                             if (!workplace.listWorkFixed) {
                                 workplace.listWorkFixed = [];
@@ -154,6 +158,7 @@ module nts.uk.at.view.kdl006.a {
                             for (let closure of _self.listClosure) {
                                 let workFixed: WorkFixed = _.find(currentWorkFixed, (o) => { return o.closureId === closure.closureId; });
                                 if (workFixed) {
+                                    workFixed.isEdited = true;
                                     workplace.listWorkFixed.push(workFixed);
                                 }                                
                             }                           
@@ -185,8 +190,8 @@ module nts.uk.at.view.kdl006.a {
                 } 
                 if (_self.listClosure[4]) {
                     _self.columnHeader5.updateData(false, true, _self.getHeader(_self.listClosure[4]));
-                }          
-                
+                }      
+                     
                 // Build body
                 let workplaceIndex = 0;
                 for (let item of _self.listWorkplace) {
@@ -194,6 +199,9 @@ module nts.uk.at.view.kdl006.a {
                     workplaceIndex++;
                 }
                 
+                $('#grid-data-body').html(_self.tableBody);
+                _self.tableBody = "";
+
                 // Update header binding
                 _self.setHeaderBinding();
             }
@@ -210,15 +218,14 @@ module nts.uk.at.view.kdl006.a {
                 if (!item.listWorkFixed) {
                     item.listWorkFixed = [];
                 }
-                let htmlParse: string = '<tr>'; 
-                htmlParse += '<td class="header-workplace">' + _self.getRowTitle(item) + '</td>';
-                htmlParse += '<td class="header-closure">' + _self.getCell(currentIndex, _self.listClosure[0], item.listWorkFixed[0]) + '</td>';
-                htmlParse += '<td class="header-closure">' + _self.getCell(currentIndex + 1, _self.listClosure[1], item.listWorkFixed[1]) + '</td>';
-                htmlParse += '<td class="header-closure">' + _self.getCell(currentIndex + 2, _self.listClosure[2], item.listWorkFixed[2]) + '</td>';
-                htmlParse += '<td class="header-closure">' + _self.getCell(currentIndex + 3, _self.listClosure[3], item.listWorkFixed[3]) + '</td>';
-                htmlParse += '<td class="header-closure">' + _self.getCell(currentIndex + 4, _self.listClosure[4], item.listWorkFixed[4]) + '</td>';
-                htmlParse += '</tr>';
-                $('#grid-data-body').append(htmlParse);
+                _self.tableBody += '<tr>'; 
+                _self.tableBody += '<td class="header-workplace">' + _self.getRowTitle(item) + '</td>';
+                _self.tableBody += '<td class="header-closure">' + _self.getCell(currentIndex, _self.listClosure[0], item.listWorkFixed[0]) + '</td>';
+                _self.tableBody += '<td class="header-closure">' + _self.getCell(currentIndex + 1, _self.listClosure[1], item.listWorkFixed[1]) + '</td>';
+                _self.tableBody += '<td class="header-closure">' + _self.getCell(currentIndex + 2, _self.listClosure[2], item.listWorkFixed[2]) + '</td>';
+                _self.tableBody += '<td class="header-closure">' + _self.getCell(currentIndex + 3, _self.listClosure[3], item.listWorkFixed[3]) + '</td>';
+                _self.tableBody += '<td class="header-closure">' + _self.getCell(currentIndex + 4, _self.listClosure[4], item.listWorkFixed[4]) + '</td>';
+                _self.tableBody += '</tr>';
             }        
             
             /**
@@ -248,7 +255,7 @@ module nts.uk.at.view.kdl006.a {
                 let result: SaveWorkFixedCommand[] = [];
                 
                 for (let item of _self.listSaveWorkFixed) {
-                    result.push(new SaveWorkFixedCommand(item.closureId, item.wkpId, item.confirmClsStatus, item.processDate));
+                    result.push(new SaveWorkFixedCommand(item.isEdited, item.closureId, item.wkpId, item.confirmClsStatus, item.processDate));
                 }              
                 return result;
             }
@@ -310,7 +317,7 @@ module nts.uk.at.view.kdl006.a {
                 });
                 
                 // Add unchecked item into save list
-                if (item.confirmClsStatus === ConfirmClsStatus.PENDING) {
+                if (!item.isEdited && item.confirmClsStatus === ConfirmClsStatus.PENDING) {
                     _self.listSaveWorkFixed.push(item);
                 }
                 

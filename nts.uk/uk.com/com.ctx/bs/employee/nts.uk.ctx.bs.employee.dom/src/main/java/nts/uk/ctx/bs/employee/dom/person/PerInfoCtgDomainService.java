@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.dom.person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -24,6 +25,7 @@ import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoAuthType;
+import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
 
 /**
@@ -70,16 +72,20 @@ public class PerInfoCtgDomainService {
 				paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getContractCode());
 		// filter by auth
 		return lstPerInfoDef.stream().filter(x -> {
-			return paramObject
-					.isSelfAuth()
-							? personInfoItemAuthRepository
-									.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
-											x.getPerInfoItemDefId())
-									.get().getSelfAuth() != PersonInfoAuthType.HIDE
-							: personInfoItemAuthRepository
-									.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
-											x.getPerInfoItemDefId())
-									.get().getOtherAuth() != PersonInfoAuthType.HIDE;
+			Optional<PersonInfoItemAuth> personInfoItemAuth = personInfoItemAuthRepository
+					.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
+							x.getPerInfoItemDefId());
+			if(personInfoItemAuth.isPresent())
+				return paramObject.isSelfAuth()?
+						personInfoItemAuthRepository
+							.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
+									x.getPerInfoItemDefId())
+							.get().getSelfAuth() != PersonInfoAuthType.HIDE:
+						personInfoItemAuthRepository
+							.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
+									x.getPerInfoItemDefId())
+							.get().getOtherAuth() != PersonInfoAuthType.HIDE;
+			else return false;			
 		}).collect(Collectors.toList());
 	}
 	

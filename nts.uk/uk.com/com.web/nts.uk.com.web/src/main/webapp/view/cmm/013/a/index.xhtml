@@ -34,7 +34,7 @@
 			
 			<div id="contents-area">
 				<div id="left-content">
-					<div id="job-title-items-list" tabindex="6"></div>
+					<div id="job-title-items-list"></div>
 				</div>
 				
 				<div id="right-content">
@@ -131,7 +131,7 @@
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM013_14')}</div>
 							</td>
 							<td>
-								<button tabindex="14" data-bind="click: openSelectSequenceDialog" class="btnStyle">#{i18n.getText('CMM013_15')}</button>
+								<button tabindex="14" data-bind="click: checkSequenceList" class="btnStyle">#{i18n.getText('CMM013_15')}</button>
 								<span class="label" data-bind="text: sequenceCode"></span>
 								<span class="label" data-bind="text: sequenceName"></span>
 							</td>

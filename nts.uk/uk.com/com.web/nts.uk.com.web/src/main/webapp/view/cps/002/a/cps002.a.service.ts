@@ -4,14 +4,14 @@ module cps002.a.service {
 
     let
         regpath = "ctx/pereg/",
-        basicpath = "ctx/bs/"
+        basicpath = "ctx/bs/person/"
         , otherpath: any = {
             getEmployeeCode: 'basic/organization/employee/getGenerateEmplCode',
             getCardNumber: 'basic/organization/employee/getGenerateCardNo'
         }, basicpaths: any = {
-            getLayout: 'person/newlayout/get',
-            getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
-            getSelfRoleAuth: 'person/roles/auth/getSelfAuth',
+            getLayout: 'newlayout/get',
+            getAllInitValueSetting: 'info/setting/init/findAllHasChild',
+            getSelfRoleAuth: 'roles/auth/getSelfAuth',
         },
         regpaths: any = {
             getUserSetting: 'usersetting/getUserSetting',
@@ -64,7 +64,7 @@ module cps002.a.service {
     }
 
     export function getAllInitValueSetting() {
-        return ajax(regpath + regpaths.getAllInitValueSetting);
+        return ajax(basicpath + basicpaths.getAllInitValueSetting);
     }
 
     export function getAllInitValueCtgSetting(settingId: string) {

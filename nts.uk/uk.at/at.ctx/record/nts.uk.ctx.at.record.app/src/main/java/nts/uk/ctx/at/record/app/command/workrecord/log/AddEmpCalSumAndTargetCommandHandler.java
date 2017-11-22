@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlowOfDailyCreationDomainService;
 import nts.uk.ctx.at.record.dom.workrecord.log.ComplStateOfExeContents;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
@@ -17,7 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.EmployeeExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 
 @Stateless
 @Transactional
@@ -29,10 +29,13 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
 	
+	@Inject
+	private ProcessFlowOfDailyCreationDomainService processFlowOfDailyCreationDomainService;
+	
 	@Override
 	protected ExecutionCommandResult handle(CommandHandlerContext<ExecutionProcessingCommand> context) {
 		val command = context.getCommand();
-		
+				
 		// Insert EmpCalAndSumExeLog
 		ExecutionProcessingCommandAssembler empCalAndAggregationAssembler = new ExecutionProcessingCommandAssembler();
 		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndAggregationAssembler.fromDTO(command);
@@ -58,6 +61,7 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 				command.getPeriodEndDate());
 		
 		// TODO: Chạy xử lí phía anh Nam
+		//processFlowOfDailyCreationDomainService.processFlowOfDailyCreation(executionAttr, periodTime, executionID, empCalAndSumExecLogID, reCreateAttr);
 		
 		return result;
 	}

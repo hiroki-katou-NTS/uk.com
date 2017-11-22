@@ -127,7 +127,7 @@ public class JpaFamily extends JpaRepository implements FamilyRepository {
 		BpsmtFamilyPk pk = new BpsmtFamilyPk(family.getFamilyId());
 		Optional<BpsmtFamily> existItem = this.queryProxy().find(pk, BpsmtFamily.class);
 		if(!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid Family");
 		}
 		// Update entity
 		updateEntity(family,existItem.get());

@@ -68,7 +68,8 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 		String companyId = AppContexts.user().companyId();
 
 		// Check required param
-		if (command.getJobTitleInfo() == null || StringUtils.isEmpty(command.getJobTitleInfo().getJobTitleCode())
+		if (command.getJobTitleInfo() == null 
+				|| StringUtils.isEmpty(command.getJobTitleInfo().getJobTitleCode())
 				|| StringUtils.isEmpty(command.getJobTitleInfo().getJobTitleName())) {
 			return;
 		}
@@ -81,17 +82,15 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 			this.addJobTitle(companyId, command);
 		} else {
 			// Update
-			this.jobTitleInfoRepository.update(command.toDomain(companyId));
+			this.updateJobTitle(companyId, command);
 		}
 	}
 
 	/**
 	 * Validate.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param command
-	 *            the command
+	 * @param companyId the company id
+	 * @param command the command
 	 */
 	private void validate(String companyId, SaveJobTitleCommand command) {
 		boolean isError = false;
@@ -126,10 +125,8 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 	/**
 	 * Adds the job title.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param command
-	 *            the command
+	 * @param companyId the company id
+	 * @param command the command
 	 */
 	private void addJobTitle(String companyId, SaveJobTitleCommand command) {
 
@@ -148,5 +145,25 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 		JobTitleInfo jobTitleInfo = command.getJobTitleInfo().toDomain(companyId, newJobTitle.getJobTitleId(),
 				newJobTitle.getLastestHistory().identifier());
 		this.jobTitleInfoRepository.add(jobTitleInfo);
+	}
+	
+	/**
+	 * Update job title.
+	 *
+	 * @param companyId the company id
+	 * @param command the command
+	 */
+	private void updateJobTitle(String companyId, SaveJobTitleCommand command) {		
+		
+		
+		// Get old JobTitleCode
+		Optional<JobTitleInfo> opJobTitleInfo = this.jobTitleInfoRepository.find(companyId, command.getJobTitleInfo().getJobTitleId());
+		if (!opJobTitleInfo.isPresent()) {
+			return;
+		}
+		
+		// JobTitleCode is not changable
+		command.getJobTitleInfo().setJobTitleCode(opJobTitleInfo.get().getJobTitleCode().v());
+		this.jobTitleInfoRepository.update(command.toDomain(companyId));
 	}
 }

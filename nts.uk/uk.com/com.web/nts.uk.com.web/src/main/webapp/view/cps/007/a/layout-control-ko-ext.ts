@@ -338,12 +338,12 @@ module nts.custombinding {
 
                     .layout-control.inputable tr:hover .number,
                     .layout-control.inputable .index:hover .number {
-                        display: none;
+                        display: block;
                     }
 
                     .layout-control.inputable tr:hover .remove-btn,
                     .layout-control.inputable .index:hover .remove-btn {
-                        display: block;
+                        display: none;
                     }
 
                     .layout-control.inputable .remove-btn:hover {
@@ -376,6 +376,11 @@ module nts.custombinding {
                     .layout-control.readonly:not(.inputable) .add-rows,
                     .layout-control.readonly:not(.inputable) .add-rows button {
                         display: none;
+                    }
+
+                    .layout-control.dragable .color-operation-case-character,
+                    .layout-control.readonly:not(.inputable) .color-operation-case-character {
+                        color: #000 !important;
                     }
 
                     .layout-control .add-rows button {

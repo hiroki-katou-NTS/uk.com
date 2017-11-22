@@ -33,14 +33,14 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " CM.timeItemMin, CM.timeItemMax, "
 			// 11, 12
 			+ " CM.selectionItemRefCode, CM.selectionItemRefType, "
-			//13,14
+			// 13,14
 			+ " CM.dateItemType, "
-			// 15, 
+			// 15,
 			+ " CM.timepointItemMin , CM.timepointItemMax, "
 			// 16, 17
 			+ " CM.numericItemMin, CM.numericItemMax"
 			// 18, 19
-			
+
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
 
@@ -50,13 +50,13 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " INNER JOIN PpemtPerInfoItemOrder E"
 			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "
 			+ " AND ITEM.perInfoCtgId = E.perInfoCtgId"
-			
-			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"			
+
+			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
 			+ " ORDER BY E.disporder";
-	
+
 	// SONNLB
 	private final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
-			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd,pc.categoryCd"
 			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
 			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -77,9 +77,6 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId";
-	
-	
-
 
 	private static PerInfoInitValueSetItem toDomain(PpemtPersonInitValueSettingItem entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
@@ -102,14 +99,13 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		return domain;
 
 	}
-	
+
 	private static PerInfoInitValueSetItem toDomainOfDefined(Object[] entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
-		domain.setPerInfoItemDefId(entity[0].toString()); //0
-		domain.setPerInfoCtgId(entity[1].toString());//1
-		domain.setItemName(entity[2] == null ? "" : entity[2].toString());//2
-		domain.setIsRequired(EnumAdaptor.valueOf(Integer.valueOf(entity[3].toString()), IsRequired.class)); //3
-		
+		domain.setPerInfoItemDefId(entity[0].toString()); // 0
+		domain.setPerInfoCtgId(entity[1].toString());// 1
+		domain.setItemName(entity[2] == null ? "" : entity[2].toString());// 2
+		domain.setIsRequired(EnumAdaptor.valueOf(Integer.valueOf(entity[3].toString()), IsRequired.class)); // 3
 
 		if (entity[4] == null) {
 			domain.setDataType(0);
@@ -175,12 +171,12 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		if (entity[17] != null) {
 			domain.setTimepointItemMax(Integer.valueOf(entity[17].toString()));
 		}
-		
-		if(entity[18] !=null) {
+
+		if (entity[18] != null) {
 			domain.setNumericItemMin(new BigDecimal(entity[18].toString()));
 		}
-		
-		if(entity[19] !=null) {
+
+		if (entity[19] != null) {
 			domain.setNumericItemMax(new BigDecimal(entity[19].toString()));
 		}
 
@@ -291,12 +287,12 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		if (entity[23] != null) {
 			domain.setTimepointItemMax(Integer.valueOf(entity[23].toString()));
 		}
-		
-		if(entity[24] !=null) {
+
+		if (entity[24] != null) {
 			domain.setNumericItemMin(new BigDecimal(entity[24].toString()));
 		}
-		
-		if(entity[25] !=null) {
+
+		if (entity[25] != null) {
 			domain.setNumericItemMax(new BigDecimal(entity[25].toString()));
 		}
 
@@ -326,27 +322,27 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId) {
-		List<PerInfoInitValueSetItem> item =  this.queryProxy().query(SEL_ALL_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId).
-				getList(c -> toDomainOfDefined(c));
+		List<PerInfoInitValueSetItem> item = this.queryProxy().query(SEL_ALL_ITEM, Object[].class)
+				.setParameter("perInfoCtgId", perInfoCtgId).getList(c -> toDomainOfDefined(c));
 		List<PerInfoInitValueSetItem> itemInit = this.getAllInitValueItem(perInfoCtgId, settingId);
-		
+
 		List<PerInfoInitValueSetItem> itemResult = item.stream().map(c -> {
 			itemInit.stream().forEach(init -> {
-				if(c.getPerInfoItemDefId().equals(init.getPerInfoItemDefId())) {
-					
-					 c.setSettingId(init.getSettingId());
-					 c.setRefMethodType(init.getRefMethodType());
-					 c.setSaveDataType(init.getSaveDataType());
-					 c.setStringValue(init.getStringValue());
-					 c.setIntValue(init.getIntValue());
-					 c.setDateValue(init.getDateValue());
-					 
+				if (c.getPerInfoItemDefId().equals(init.getPerInfoItemDefId())) {
+
+					c.setSettingId(init.getSettingId());
+					c.setRefMethodType(init.getRefMethodType());
+					c.setSaveDataType(init.getSaveDataType());
+					c.setStringValue(init.getStringValue());
+					c.setIntValue(init.getIntValue());
+					c.setDateValue(init.getDateValue());
+
 				}
 			});
-		
+
 			return c;
 		}).collect(Collectors.toList());
-		
+
 		return itemResult;
 
 	}
@@ -400,6 +396,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
 
 		domain.setItemCode(entity[10] == null ? "" : entity[10].toString());
+		domain.setCtgCode(entity[11] == null ? "" : entity[11].toString());
 
 		return domain;
 
@@ -418,11 +415,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	@Override
 	public boolean isExist(String settingId, String perInfoCtgId) {
 		List<PerInfoInitValueSetItem> itemFilter = this.getAllInitValueItem(perInfoCtgId, settingId).stream()
-				.filter(c -> (c.getRefMethodType().value != 1))
-				.collect(Collectors.toList());
+				.filter(c -> (c.getRefMethodType().value != 1)).collect(Collectors.toList());
 
 		if (itemFilter.size() > 0) {
-			
+
 			return true;
 		}
 		return false;

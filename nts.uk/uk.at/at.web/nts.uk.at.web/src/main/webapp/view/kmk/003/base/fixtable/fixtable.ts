@@ -9,9 +9,19 @@ module kmk003.base.fixtable {
     export interface FixTableOption {
 
         /**
-         * height table
+         * total row maximum table
          */
-        maxRows: number;
+        maxRow: number;
+        
+        /**
+         * total row minimum table
+         */
+        minRow: number;
+        
+        /**
+         * total row display
+         */
+        maxRowDisplay: number;
         
         /**
          * data source table
@@ -22,6 +32,11 @@ module kmk003.base.fixtable {
          * is Multiple select.
          */
         isMultipleSelect: boolean;
+        
+        /**
+         * Show/hide addItem and removeItem button
+         */
+        isShowButton: boolean;
         
         /**
          * set tabIndex
@@ -48,6 +63,11 @@ module kmk003.base.fixtable {
          * Primary key column
          */
         key: string;
+        
+        /**
+         * Default value column
+         */
+        defaultValue: any;
 
         /**
          * width column
@@ -95,13 +115,19 @@ module kmk003.base.fixtable {
         
         // needed when model multiple select
         isSelectAll: KnockoutObservable<boolean>;
+        isVisibleSelectAll: KnockoutObservable<boolean>;
         
+        isEnaleAddButton: KnockoutObservable<boolean>;
+        isEnaleRemoveButton: KnockoutObservable<boolean>;
         // needed when has comboBox, ...
         lstDataSource: any;
         
         isMultiple: boolean;
+        isShowButton: boolean;
         columns: Array<FixColumn>;
-        maxRows: number;
+        maxRow: number;
+        minRow: number;
+        maxRowDisplay: number;
         tableStyle: TableStyle;
         
         $tableSelector: any;
@@ -113,6 +139,9 @@ module kmk003.base.fixtable {
             
             self.itemList = ko.observableArray([]);
             self.isSelectAll = ko.observable(false);
+            
+            self.isEnaleAddButton = ko.observable(false);
+            self.isEnaleRemoveButton = ko.observable(false);
             
             self.tableStyle = {
                 height: 0,
@@ -138,16 +167,27 @@ module kmk003.base.fixtable {
             
             // set data parameter
             self.isMultiple = data.isMultipleSelect;
+            self.isShowButton = data.isShowButton;
             self.columns = data.columns;
-            self.maxRows = data.maxRows;
-            if (!self.maxRows) {
-                self.maxRows = 10;
+            self.maxRow = data.maxRow;
+            self.minRow = data.minRow;
+            self.maxRowDisplay = data.maxRowDisplay;
+            if (!self.maxRowDisplay) {
+                self.maxRowDisplay = 10;
             }
             self.tabindex = data.tabindex;
             if (!self.tabindex) {
                 self.tabindex = -1;
             }
             self.itemList = data.dataSource;
+            
+            self.isVisibleSelectAll = ko.computed(() => {
+                return self.isMultiple && self.itemList().length > 0;
+            });
+            
+            // update status button
+            self.isEnaleAddButton(self.itemList().length < self.maxRow);
+            self.isEnaleRemoveButton(self.itemList().length > self.minRow);
             
             // add properties isChecked when multiple select
             if (self.isMultiple) {
@@ -156,7 +196,17 @@ module kmk003.base.fixtable {
 
             // subscribe itemList
             self.itemList.subscribe((newList) => {
-                if (!newList || newList.length <= 0) {
+                
+                if (!newList) {
+                     self.isSelectAll(false);
+                    return;
+                }
+                
+                // update status button
+                self.isEnaleAddButton(newList.length < self.maxRow);
+                self.isEnaleRemoveButton(newList.length > self.minRow);
+                
+                if (newList.length <= 0) {
                     self.isSelectAll(false);
                     return;
                 }
@@ -175,6 +225,32 @@ module kmk003.base.fixtable {
             });
             
             return dfd.promise();
+        }
+        
+        /**
+         * Add a row table
+         */
+        public addRowItem() {
+            let self = this;
+            let row: any = {};
+            _.forEach(self.columns, (column: FixColumn) => {
+                row[column.key] = ko.observable(ko.utils.unwrapObservable(column.defaultValue));
+            });
+            self.itemList.push(row);
+        }
+        
+        /**
+         * Remove row table
+         */
+        public removeItem() {
+            let self = this;
+            
+            // find item is checked
+            let lstItemChecked: Array<any> = self.itemList().filter(item => item.isChecked() == true);
+            if (lstItemChecked.length <= 0) {
+                return;
+            }
+            self.itemList(self.itemList().filter(item => item.isChecked() == false));
         }
         
         /**
@@ -219,14 +295,18 @@ module kmk003.base.fixtable {
             let self = this;
             
             // control ntsTimeEditor
-            let timeColumn: FixColumn = self.columns.filter(column => column.template.indexOf('TimeEditor') > -1)[0]; 
-            $('.' + timeColumn.cssClassName).find("span input").width(timeColumn.width - 27);
-            
+            let timeColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ntsTimeEditor') > -1)[0];
+            if (timeColumn && !nts.uk.util.isNullOrEmpty(timeColumn.cssClassName)) {
+                $('.' + timeColumn.cssClassName).find("span input").width(timeColumn.width - 27);
+            }
+
             // control ntsComboBox
-            let comboBoxColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ComboBox') > -1)[0]; 
-            $('.' + comboBoxColumn.cssClassName).each(function() {
-                $(this).find("div").first().width(comboBoxColumn.width - 5);
-            });
+            let comboBoxColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ntsComboBox') > -1)[0];
+            if (comboBoxColumn && !nts.uk.util.isNullOrEmpty(comboBoxColumn.cssClassName)) {
+                $('.' + comboBoxColumn.cssClassName).each(function() {
+                    $(this).find("div").first().width(comboBoxColumn.width - 5);
+                });
+            }
         }
         
         /**
@@ -235,7 +315,7 @@ module kmk003.base.fixtable {
         private calStyleTable() {
             let self = this;
             let heigthCell = 36;
-            self.tableStyle.height = heigthCell * self.maxRows + 1;
+            self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
         }
@@ -343,7 +423,7 @@ module kmk003.base.fixtable {
                 {controlType: 'ntsCheckBox', keyValue: 'checked:'},
                 {controlType: 'ntsTimeEditor', keyValue: 'value:'},
                 {controlType: 'ntsComboBox', keyValue: 'value:', keyOptionValue: 'options:'},
-                {controlType: 'ntsDateRangePicker', keyValue: 'value:'}
+                {controlType: 'ntsTimeRangeEditor', keyValue: 'value:'}
             ];
             return mapControl;
         }

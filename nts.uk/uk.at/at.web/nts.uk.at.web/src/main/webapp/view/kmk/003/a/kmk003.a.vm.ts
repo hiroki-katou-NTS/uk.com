@@ -62,12 +62,12 @@ module nts.uk.at.view.kmk003.a {
                 ]);
                 self.selectedWorkForm = ko.observable('1');
                 self.settingMethodOptions = ko.observableArray([
-                    new ItemSettingMethod('1', '基本給'),
-                    new ItemSettingMethod('2', '役職手当'),
-                    new ItemSettingMethod('3', '基本給')
+                    new ItemSettingMethod('1', "固定勤務"),
+                    new ItemSettingMethod('2', "時差勤務"),
+                    new ItemSettingMethod('3', "流動勤務")
                 ]);
                 self.selectedSettingMethod = ko.observable('1');
-
+                
                 self.workTimezoneItems = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'code', width: 100 },
