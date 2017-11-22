@@ -46,9 +46,7 @@ module nts.uk.at.view.kdw003.d.viewmodel {
          * 終了する
          */
         closeDialog(): void {
-//            windows.close();
-            nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
-            });
+            windows.close();
         }
     }
 
