@@ -15,7 +15,7 @@ module nts.uk.com.view.cas011.c.viewmodel {
 
     export class ScreenModel {
 
-        listDefaultRoleSet: KnockoutObservableArray<IDefaultRoleSet> = ko.observableArray([]);
+        listDefaultRoleSets: KnockoutObservableArray<IDefaultRoleSet> = ko.observableArray([]);
         currentDefaultRoleSet: KnockoutObservable<IDefaultRoleSet> = ko.observable(new DefaultRoleSet({
                 roleSetCd: ''
                 , roleSetName: ''
@@ -62,16 +62,17 @@ module nts.uk.com.view.cas011.c.viewmodel {
 
         settingSelectedDefaultRoleSet() {
             let self = this,
-            currentDefaultRoleSet: IDefaultRoleSet = self.currentDefaultRoleSet();
-            listDefaultRoleSets = self.listDefaultRoleSets;
+            currentDefaultRoleSet: IDefaultRoleSet = self.currentDefaultRoleSet(),
+            listDefaultRoleSets = self.listDefaultRoleSets();
+
             service.getCurrentDefaultRoleSet().done((item: IDefaultRoleSet) => {
                 
                 // in case exist default role set
                 if (item) {
                     self.currentDefaultRoleSet(item);
                 } else {
-                    if (listDefaultRoleSets && listDefaultRoleSets.length > 0) {
-                        self.currentDefaultRoleSet(listDefaultRoleSets[0]);
+                    if (self.listDefaultRoleSets && self.listDefaultRoleSets.length > 0) {
+                        self.currentDefaultRoleSet(self.listDefaultRoleSets[0]);
                     }
                 }
                 dfd.resolve();
@@ -86,7 +87,7 @@ module nts.uk.com.view.cas011.c.viewmodel {
          */
         addDefaultRoleSet() {
             let self = this,
-                currentDefaultRoleSet : IDefaultRoleSet = self.historySelection();
+                currentDefaultRoleSet : DefaultRoleSet = self.historySelection();
 
             service.addDefaultRoleSet(ko.toJS(currentDefaultRoleSet)).done(function() {                
                   dialog.info({ messageId: "Msg_15" }).then(function() {
