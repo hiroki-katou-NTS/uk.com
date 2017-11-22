@@ -18,8 +18,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "SACMT_ROLE")
-public class SacmtRole extends UkJpaEntity implements Serializable {
+@Table(name = "SAUMT_ROLE")
+public class SaumtRole extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -48,14 +48,14 @@ public class SacmtRole extends UkJpaEntity implements Serializable {
 	@Column(name = "ASSIGN_ATR")
 	private int assignAtr;
 
-	public SacmtRole() {
+	public SaumtRole() {
 	}
 
-	public SacmtRole(String id) {
+	public SaumtRole(String id) {
 		this.id = id;
 	}
 
-	public SacmtRole(String id, int exclusVer, String code, Integer roleType, Integer referenceRange, String name,
+	public SaumtRole(String id, int exclusVer, String code, Integer roleType, Integer referenceRange, String name,
 			String contractCode, int assignAtr) {
 		this.id = id;
 		this.code = code;
@@ -75,10 +75,10 @@ public class SacmtRole extends UkJpaEntity implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof SacmtRole)) {
+		if (!(object instanceof SaumtRole)) {
 			return false;
 		}
-		SacmtRole other = (SacmtRole) object;
+		SaumtRole other = (SaumtRole) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
