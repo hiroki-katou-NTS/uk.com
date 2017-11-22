@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -8,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
-
+@Stateless
 public class WorkChangeRegisterService implements IWorkChangeRegisterService {
 
 	@Inject
