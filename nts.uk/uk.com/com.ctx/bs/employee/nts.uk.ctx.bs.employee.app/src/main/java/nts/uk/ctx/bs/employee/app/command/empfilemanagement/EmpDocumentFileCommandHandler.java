@@ -23,7 +23,6 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 	@Override
 	protected void handle(CommandHandlerContext<AddEmpDocumentFileCommand> context) {
 
-
 		AddEmpDocumentFileCommand commad = context.getCommand();
 
 		List<PersonFileManagement> listEmpfile = empFileManagementRepo.getDataByParams(commad.getSid(), 2);
@@ -34,10 +33,11 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 			PersonFileManagement domain = empFileMana.get();
 			domain.setFileID(commad.getFileid());
 			domain.setPersonInfoCategoryId("");
-			
-		}else {
+
+		} else {
 			// insert
-			PersonFileManagement domain = new PersonFileManagement(commad.getSid(), commad.getFileid(),2,commad.getUploadOrder(),commad.getPersonInfoCtgId());
+			PersonFileManagement domain = PersonFileManagement.createFromJavaType(commad.getSid(), commad.getFileid(),
+					2, commad.getUploadOrder(), commad.getPersonInfoCtgId());
 			empFileManagementRepo.insert(domain);
 		}
 	}
