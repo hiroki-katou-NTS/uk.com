@@ -11,7 +11,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
-import nts.uk.ctx.pereg.app.find.processor.LayoutProcessor;
+import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**
@@ -26,7 +26,7 @@ public class LayoutWebService extends WebService {
 	private RegisterLayoutFinder layoutFinder;
 	
 	@Inject
-	private LayoutProcessor layoutProcessor;
+	private PeregProcessor layoutProcessor;
 
 	@Path("getByCreateType")
 	@POST

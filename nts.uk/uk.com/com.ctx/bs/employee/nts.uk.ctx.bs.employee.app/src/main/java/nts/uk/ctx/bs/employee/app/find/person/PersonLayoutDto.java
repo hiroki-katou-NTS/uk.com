@@ -1,16 +1,17 @@
 package nts.uk.ctx.bs.employee.app.find.person;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class PersonLayoutDto {
 	
 	// 個人名グループ．個人名
@@ -91,4 +92,6 @@ public class PersonLayoutDto {
 				person.getPersonNameGroup().getTodokedeFullName().getFullName().v(), person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v(),
 				person.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v(), person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v(),person.getGender().value);
 	}
+	private PersonPeregDto dto;
+	private List<PersonInfoItemData> lstPersonInfoItemData;
 }
