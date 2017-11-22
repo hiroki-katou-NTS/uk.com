@@ -30,8 +30,8 @@ table th, table td {
 	font-size: 90%;
 }
 
-.ml-19 {
-	margin-left: 19px;
+.ml-3 {
+	margin-left: 3px;
 }
 
 table th, table td {
@@ -97,6 +97,11 @@ table th, table td {
 #oViewModel, #qViewModel {
 	float: left;
 	width: 94%
+}
+
+#qViewModel {
+	margin-top: 3px;
+	height: 120px
 }
 
 #group-bt {
@@ -256,16 +261,16 @@ table th, table td {
 
 #top-area-left {
 	float: left;
-	width: 25%;
+	width: 30%;
 }
 
 #top-area-left * {
-	font-size: 1.5rem !important;
+	font-size: 1.28rem !important;
 }
 
 #top-area-right {
 	float: left;
-	width: 75%;
+	width: 70%;
 }
 
 #date-time-prev, #date-time-after {
@@ -274,4 +279,10 @@ table th, table td {
 
 #set-work-time {
 	margin-top: 2px
+}
+
+.ex-editor input {
+	width: 100%;
+	height: 100%;
+	display: grid;
 }
