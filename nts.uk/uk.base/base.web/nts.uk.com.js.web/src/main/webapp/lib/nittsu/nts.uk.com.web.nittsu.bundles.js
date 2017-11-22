@@ -10545,7 +10545,7 @@ var nts;
                             var setting = $.extend({ height: "auto" }, options);
                             var $container = $("<div class='nts-fixed-table cf'/>");
                             $originTable.after($container);
-                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").width(viewWidth);
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").css("max-width", viewWidth);
                             var $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(width);
                             var $headerTable = $("<table class='fixed-table'></table>");
                             $headerTable.append($colgroup.clone()).append($thead);
@@ -10557,7 +10557,7 @@ var nts;
                             var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
                             var bodyHeight = "auto";
                             if (setting.height !== "auto") {
-                                $bodyContainer.width(viewWidth);
+                                $bodyContainer.css("max-width", viewWidth);
                                 bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
                                 if (/Edge/.test(navigator.userAgent)) {
                                     $bodyContainer.css("padding-right", "12px");
