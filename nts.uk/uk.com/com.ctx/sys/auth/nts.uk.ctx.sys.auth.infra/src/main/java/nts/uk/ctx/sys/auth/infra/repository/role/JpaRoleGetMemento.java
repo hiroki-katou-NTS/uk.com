@@ -35,7 +35,7 @@ public class JpaRoleGetMemento implements RoleGetMemento {
 	 */
 	@Override
 	public String getRoleId() {
-		return this.entity.getId();
+		return this.entity.getRoleId();
 	}
 
 	/* (non-Javadoc)

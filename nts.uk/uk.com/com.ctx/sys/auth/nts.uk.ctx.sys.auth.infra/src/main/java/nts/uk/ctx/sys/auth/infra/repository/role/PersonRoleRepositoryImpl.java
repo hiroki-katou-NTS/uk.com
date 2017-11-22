@@ -23,12 +23,12 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	/**
 	 * JPQL: find by role id
 	 */
-	private static String FIND_BY_ROLE_ID = FIND_NO_WHERE + " WHERE e.id = :roleId ";
+	private static String FIND_BY_ROLE_ID = FIND_NO_WHERE + " WHERE e.roleId = :roleId ";
 
 	/**
 	 * JPQL: find by list role id
 	 */
-	private static String FIND_BY_LIST_ROLE_ID = FIND_NO_WHERE + " WHERE e.id IN :roleIds ";
+	private static String FIND_BY_LIST_ROLE_ID = FIND_NO_WHERE + " WHERE e.roleId IN :roleIds ";
 
 	@Override
 	public Optional<PersonRole> find(String roleId) {
@@ -43,7 +43,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 
 	private static PersonRole toDomain(SaumtPersonRole entity) {
 		PersonRole domain = new PersonRole();
-		domain.setRoleId(entity.getId());
+		domain.setRoleId(entity.getRoleId());
 		domain.setReferFutureDate(entity.isReferFutureDate());
 		return domain;
 	}
@@ -76,7 +76,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	
 	private static SaumtPersonRole  toEntity(PersonRole personRole){
 		SaumtPersonRole entity = new SaumtPersonRole();
-		entity.setId(personRole.getRoleId());
+		entity.setRoleId(personRole.getRoleId());
 		entity.setReferFutureDate(personRole.getReferFutureDate());
 		return entity;
 	}

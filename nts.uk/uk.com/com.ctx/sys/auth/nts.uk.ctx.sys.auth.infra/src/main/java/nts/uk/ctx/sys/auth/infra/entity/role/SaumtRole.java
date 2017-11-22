@@ -24,8 +24,8 @@ public class SaumtRole extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "ID")
-	private String id;
+	@Column(name = "ROLE_ID")
+	private String roleId;
 
 	@Column(name = "CID")
 	private String cid;
@@ -52,12 +52,12 @@ public class SaumtRole extends UkJpaEntity implements Serializable {
 	}
 
 	public SaumtRole(String id) {
-		this.id = id;
+		this.roleId = id;
 	}
 
 	public SaumtRole(String id, int exclusVer, String code, Integer roleType, Integer referenceRange, String name,
 			String contractCode, int assignAtr) {
-		this.id = id;
+		this.roleId = id;
 		this.code = code;
 		this.roleType = roleType;
 		this.referenceRange = referenceRange;
@@ -69,7 +69,7 @@ public class SaumtRole extends UkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (id != null ? id.hashCode() : 0);
+		hash += (roleId != null ? roleId.hashCode() : 0);
 		return hash;
 	}
 
@@ -79,7 +79,7 @@ public class SaumtRole extends UkJpaEntity implements Serializable {
 			return false;
 		}
 		SaumtRole other = (SaumtRole) object;
-		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+		if ((this.roleId == null && other.roleId != null) || (this.roleId != null && !this.roleId.equals(other.roleId))) {
 			return false;
 		}
 		return true;
@@ -87,11 +87,11 @@ public class SaumtRole extends UkJpaEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "entity.SacmtRole[ id=" + id + " ]";
+		return "entity.SacmtRole[ id=" + roleId + " ]";
 	}
 
 	@Override
 	protected Object getKey() {
-		return this.id;
+		return this.roleId;
 	}
 }
