@@ -33,9 +33,9 @@
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('CAS014_3')}</span>
-					<button data-bind="click: createNewRoleSetPerson">#{i18n.getText('CAS014_10')}</button>
-					<button class="proceed" data-bind="click: registerRoleSetPerson">#{i18n.getText('CAS014_11')}</button>
-					<button class="danger" data-bind="click: deleteRoleSetPerson">#{i18n.getText('CAS014_12')}</button>
+					<button data-bind="click: createNewRoleSetPerson, enable: screenMode() == 1">#{i18n.getText('CAS014_10')}</button>
+					<button class="proceed" data-bind="click: registerRoleSetPerson, enable: true">#{i18n.getText('CAS014_11')}</button>
+					<button class="danger" data-bind="click: deleteRoleSetPerson, enable: screenMode() == 1">#{i18n.getText('CAS014_12')}</button>
 				</div>
 				<div class="contents-area">
 
@@ -43,14 +43,14 @@
 						<div>
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
 						</div>
-						<table id="single-list"
+						<table id="roleset-list"
 							data-bind="ntsGridList: {								
-							height: 300,
+							height: 250,
 							options: roleSetList,
 							primaryKey: 'code',
 							columns: [
-				                { headerText: 'コード', key: 'code', width: 100 },
-				                { headerText: '名称', key: 'name', width: 150 }
+				                { headerText: '#{i18n.getText('CAS014_31')}', key: 'code', width: 100 },
+				                { headerText: '#{i18n.getText('CAS014_32')}', key: 'name', width: 150 }
 				            ],
 							multiple: false,
 							value: selectedRoleSet
@@ -60,26 +60,27 @@
 						<div class="table-label">
 							<label>#{i18n.getText('CAS014_33')}</label>
 						</div>
-						<table id="single-list"
+						<table id="rolesetperson-list"
 							data-bind="ntsGridList: {								
-							height: 300,
+							height: 250,
 							options: roleSetPersonList,
 							primaryKey: 'employeeId',
 							columns: [
-				                { headerText: 'コード', key: 'employeeCd', width: 100 },
-				                { headerText: '名称', key: 'employeeName', width: 150 },
-				                { headerText: 'Period', key: 'period', width: 250 }
+								{ headerText: 'id', key: 'employeeId', width: 10, hidden: true },
+				                { headerText: '#{i18n.getText('CAS014_35')}', key: 'employeeCd', width: 100 },
+				                { headerText: '#{i18n.getText('CAS014_36')}', key: 'employeeName', width: 150 },
+				                { headerText: '#{i18n.getText('CAS014_37')}', key: 'displayDateRange', width: 250 }
 				            ],
 							multiple: false,
-							value: selectedRoleSetPerson
+							value: selectedEmployeeId
 						}"></table>
 					</div>
 					<div style="float: left">
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_39')}</div>
-							<button data-bind="click: openDialogCDL009">#{i18n.getText('CAS014_39')}</button>
-							<label data-bind="text: '#[CAS014_22]'">#{i18n.getText('CAS014_33')}</label>
-							<label data-bind="text: '#[CAS014_22]'">#{i18n.getText('CAS014_33')}</label>
+							<button data-bind="click: openDialogCDL009, enable: screenMode() == 0">#{i18n.getText('CAS014_39')}</button>
+							<label data-bind="text: roleSetPerson().employeeCd"></label>
+							<label data-bind="text: roleSetPerson().employeeName"></label>
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_40')}</div>

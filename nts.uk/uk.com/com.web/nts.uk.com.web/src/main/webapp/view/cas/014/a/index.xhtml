@@ -13,16 +13,16 @@
 			<com:stylefile path="cas014.a.style.css" />
 			<com:scriptfile path="cas014.a.service.js" />
 			<com:scriptfile path="cas014.a.vm.js" />
-
+			
+			<com:scriptfile path="../b/cas014.b.vm.js" />
+			<com:scriptfile path="../b/cas014.b.service.js" />
+			
 			<com:scriptfile path="cas014.a.start.js" />
-			<!-- 			<com:scriptfile -->
-			<!-- 				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" -->
-			<!-- 				of="/nts.uk.com.js.web" /> -->
-			<!-- 			<com:scriptfile -->
-			<!-- 				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" -->
-			<!-- 				of="/nts.uk.com.js.web" /> -->
-
 		</ui:define>
+		
+		<script type="text/html" id="person-template">
+    		<ui:include src="../b/index.xhtml" />
+		</script>
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
@@ -98,59 +98,7 @@
 					<button class="danger">#{i18n.getText('CAS014_12')}</button>
 				</div>
 				<div class="contents-area">
-					<div>
-						<div style="float: left">
-							<div class="table-label">
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
-							</div>
-							<table class="fixed-table">
-								<colgroup>
-									<col width="100px" />
-									<col width="150px" />
-								</colgroup>
-								<thead>
-									<tr>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-									</tr>
-									
-								</tbody>
-							</table>
-						</div>
-						<div style="float: left">
-							<div class="table-label">
-								<label>#{i18n.getText('CAS014_33')}</label>
-							</div>
-							<table class="fixed-table">
-								<colgroup>
-									<col width="100px" />
-									<col width="80px" />
-									<col width="250px" />
-								</colgroup>
-								<thead>
-									<tr>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_26')}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-										<td>000000000001</td>
-									</tr>
-									
-								</tbody>
-							</table>
-						</div>
-					</div>
+					
 				</div>
 			</div>
 		</ui:define>
