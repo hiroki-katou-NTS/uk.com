@@ -28,14 +28,18 @@ public class CopySetItemFinder {
 
 		String companyId = AppContexts.user().companyId();
 
-		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId);
+		// check empployeeId
+		boolean isSelf = employeeId == AppContexts.user().employeeId() ? true : false;
+
+		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
+				isSelf);
 
 		List<SettingItemDto> resultItemList = itemList
 				.stream().map(x -> SettingItemDto.createFromJavaType(x.getPerInfoCtgId(), x.getCategoryCode(),
 						x.getItemDefId(), x.getItemCode(), x.getItemName(), x.getIsRequired().value, ""))
 				.collect(Collectors.toList());
 
-		if (itemList.isEmpty()) {
+		if (resultItemList.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("Msg_347"));
 		}
 

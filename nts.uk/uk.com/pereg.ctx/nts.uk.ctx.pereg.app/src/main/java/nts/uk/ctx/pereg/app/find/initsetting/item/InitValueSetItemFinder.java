@@ -15,6 +15,8 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
@@ -138,7 +140,7 @@ public class InitValueSetItemFinder {
 			String itemCode = itemDto.getItemCode();
 			switch (itemCode) {
 			case "IS00020":
-				itemDto.setData(tempDomain.getTempAbsenceType().value);
+				itemDto.setData(tempDomain.getLeaveHolidayState().getTempAbsenceType().value);
 				break;
 			case "IS00021":
 				itemDto.setData(tempDomain.getDateHistoryItem().start());
@@ -147,10 +149,12 @@ public class InitValueSetItemFinder {
 				itemDto.setData(tempDomain.getDateHistoryItem().end());
 				break;
 			case "IS00023":
-				itemDto.setData(tempDomain.getTempAbsenceReason());
+				Leave leave = (Leave) tempDomain.getLeaveHolidayState();
+				itemDto.setData(leave.getReason());
 				break;
 			case "IS00024":
-				itemDto.setData(tempDomain.getBirthDate());
+				MidweekClosure midweekClosure = (MidweekClosure) tempDomain.getLeaveHolidayState();
+				itemDto.setData(midweekClosure.getBirthDate());
 				break;
 			}
 		}

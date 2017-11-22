@@ -113,10 +113,10 @@ module nts.uk.at.view.kdw003.b {
                 } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
                     self.date = '<span style="color: #e51010">'+ moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') +'</span>';
                 } else {
-                    self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    self.date = '<span>' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') +'</span>';
                 }
                 self.errorCode = model.errorCode;
-                self.message = model.boldAtr ? '<span style="font-weight: bold;color: ' + model.messageColor + ';">' + model.message + '</span>' : '<span style="font-weight: bold;color: ' + model.messageColor + ';">' + model.message + '</span>';
+                self.message = model.boldAtr ? '<span style="font-weight: bold;color: ' + model.messageColor + ';">' + model.message + '</span>' : '<span style="color: ' + model.messageColor + ';">' + model.message + '</span>';
                 self.itemId = model.itemId;
                 self.itemName = model.itemName;
                 self.boldAtr = model.boldAtr;

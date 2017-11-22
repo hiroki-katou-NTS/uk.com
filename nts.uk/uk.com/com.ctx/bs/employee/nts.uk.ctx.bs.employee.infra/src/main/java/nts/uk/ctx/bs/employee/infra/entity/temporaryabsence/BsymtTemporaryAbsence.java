@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 @AllArgsConstructor
 @Entity
 @Table(name = "BSYMT_TEMPORARY_ABSENCE")
@@ -23,12 +24,12 @@ public class BsymtTemporaryAbsence extends UkJpaEntity implements Serializable {
 	public BsymtTemporaryAbsencePK bsymtTemporaryAbsencePK;
 
 	@Basic(optional = false)
-	@Column(name="SID")
+	@Column(name = "SID")
 	public String sid;
 
 	@Basic(optional = false)
 	@Column(name = "HIST_ID")
-	public String  histId;
+	public String histId;
 
 	@Basic(optional = false)
 	@Column(name = "LEAVE_HOLIDAY_ATR")
@@ -58,5 +59,43 @@ public class BsymtTemporaryAbsence extends UkJpaEntity implements Serializable {
 	public BsymtTemporaryAbsence() {
 		super();
 	}
+
+	/**
+	 * @param bsymtTemporaryAbsencePK
+	 * @param sid
+	 * @param histId
+	 * @param leaveHolidayAtr
+	 * @param reason
+	 */
+	public BsymtTemporaryAbsence(BsymtTemporaryAbsencePK bsymtTemporaryAbsencePK, String sid, String histId,
+			int leaveHolidayAtr, String reason) {
+		super();
+		this.bsymtTemporaryAbsencePK = bsymtTemporaryAbsencePK;
+		this.sid = sid;
+		this.histId = histId;
+		this.leaveHolidayAtr = leaveHolidayAtr;
+		this.reason = reason;
+	}
+
+	/**
+	 * @param bsymtTemporaryAbsencePK
+	 * @param sid
+	 * @param histId
+	 * @param leaveHolidayAtr
+	 * @param birthday
+	 * @param multiple
+	 */
+	public BsymtTemporaryAbsence(BsymtTemporaryAbsencePK bsymtTemporaryAbsencePK, String sid, String histId,
+			int leaveHolidayAtr, GeneralDate birthday, int multiple) {
+		super();
+		this.bsymtTemporaryAbsencePK = bsymtTemporaryAbsencePK;
+		this.sid = sid;
+		this.histId = histId;
+		this.leaveHolidayAtr = leaveHolidayAtr;
+		this.birthday = birthday;
+		this.multiple = multiple;
+	}
+	
+	
 
 }

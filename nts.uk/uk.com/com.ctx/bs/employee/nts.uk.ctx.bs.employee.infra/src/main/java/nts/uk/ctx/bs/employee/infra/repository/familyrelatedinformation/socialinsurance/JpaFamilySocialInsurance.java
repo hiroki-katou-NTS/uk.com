@@ -51,7 +51,7 @@ public class JpaFamilySocialInsurance extends JpaRepository implements FamilySoc
 		Optional<BsymtFamilySocialInsurance> existItem = this.queryProxy().find(key, BsymtFamilySocialInsurance.class);
 		
 		if (!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid FamilySocialInsurance");
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());

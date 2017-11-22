@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.repository.login;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +78,24 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		} else {
 			return Optional.of(new User(new JpaUserGetMemento(result.get(0))));
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.UserRepository#addNewUser(nts.uk.ctx.sys.gateway.dom.login.User)
+	 */
+	@Override
+	public void addNewUser(User user) {
+		
+		this.commandProxy().insert(toEntity(user));
+		
+	}
+	
+	private SgwmtUser toEntity(User user){
+		
+		short isSpecialUser =  (short) (user.isSpecialUser()?1:0);
+		short isMultiCompanyConcurrent =  (short) (user.isMultiCompanyConcurrent()?1:0);
+		return new SgwmtUser(user.getUserId(), user.getPassword().v(), user.getLoginId().v(), user.getContractCode().v(), 
+				Date.valueOf(user.getExpirationDate().toString()), isSpecialUser, isMultiCompanyConcurrent, user.getMailAddress().v(), user.getUserName().v(), user.getAssociatedPersonId());
 	}
 
 }
