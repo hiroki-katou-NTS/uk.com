@@ -416,10 +416,35 @@ module nts.uk.com.view.cmm013.a {
             }
 
             /**
+             * Screen C - checkSequenceList
+             */
+            public checkSequenceList() {
+                let _self = this;
+                
+                // Load sequence data list
+                nts.uk.ui.block.grayout();
+                service.findAllSequenceMaster()
+                    .done((data: SequenceMaster[]) => {         
+                        // Load data
+                        _self.openSelectSequenceDialog(data);
+                    })
+                    .fail((res: any) => {
+                        nts.uk.ui.dialog.bundledErrors(res).then(() => {
+                            // Load sequence register screen
+                            _self.openSequenceManageDialog();                     
+                        });     
+                    })
+                    .always(() => {
+                        nts.uk.ui.block.clear();       
+                    });
+            }
+            
+            /**
              * Screen C - openSelectSequenceDialog
              */
-            public openSelectSequenceDialog() {
+            public openSelectSequenceDialog(data: SequenceMaster[]) {
                 let _self = this;
+                nts.uk.ui.windows.setShared(Constants.SHARE_IN_DIALOG_SELECT_SEQUENCE, data);
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml').onClosed(() => {
                     // Check if apply button was clicked
                     let isSelected: boolean = nts.uk.ui.windows.getShared(Constants.IS_ACCEPT_DIALOG_SELECT_SEQUENCE);
@@ -437,7 +462,7 @@ module nts.uk.com.view.cmm013.a {
                     _self.sequenceCode(dialogData.sequenceCode);
                     _self.sequenceName(dialogData.sequenceName);
                 });
-            }
+            }                 
 
             /**
              * Screen D - openAddHistoryDialog

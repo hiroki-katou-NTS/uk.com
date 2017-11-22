@@ -152,25 +152,21 @@ module nts.uk.com.view.cmm013.f {
                             .done((data: any) => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                     _self.loadSequenceList()
-                                        .done((dataList: SequenceMaster[]) => {                        
-                                            if (dataList && dataList.length > 0) {
-                                                // Update mode
-                                                _self.createMode(false);
-                                                _self.items(dataList);                                   
-                                                if (nextCode) { 
-                                                    _self.currentCode(nextCode);
-                                                } else {
-                                                    _self.currentCode(dataList[dataList.length - 1].sequenceCode);  
-                                                }                                
+                                        .done((dataList: SequenceMaster[]) => {                      
+                                            // Update mode
+                                            _self.createMode(false);
+                                            _self.items(dataList);                                   
+                                            if (nextCode) { 
+                                                _self.currentCode(nextCode);
                                             } else {
-                                                // Create mode
-                                                _self.createMode(true);
-                                                _self.items([]);
-                                                _self.currentCode(null);
-                                            }     
+                                                _self.currentCode(dataList[dataList.length - 1].sequenceCode);  
+                                            }                                
                                         })
                                         .fail((res: any) => {
-                                            
+                                            // Create mode
+                                            _self.createMode(true);
+                                            _self.items([]);
+                                            _self.currentCode(null);
                                         });
                                 });                                     
                             })
