@@ -14,7 +14,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
  *
  */
 @Getter
-public class TempLeaveAbsenceHisItem extends AggregateRoot{
+public class TempAbsenceHisItem extends AggregateRoot{
 	
 	private LeaveHolidayType leaveHolidayType;
 	
@@ -32,6 +32,6 @@ public class TempLeaveAbsenceHisItem extends AggregateRoot{
 	/**
 	 * 社会保険支給対象区分
 	 */
-	private int soInsPaycategory;
+	private Integer soInsPaycategory;
 
 }

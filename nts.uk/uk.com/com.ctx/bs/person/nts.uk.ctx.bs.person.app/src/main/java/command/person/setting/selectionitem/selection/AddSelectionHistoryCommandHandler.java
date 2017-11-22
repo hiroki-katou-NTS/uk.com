@@ -57,7 +57,7 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
 		DatePeriod period = new DatePeriod(startDate, endDate);
 
-		boolean userLogin = true;
+		boolean userLogin = false;
 		// get last hist
 		Optional<PerInfoHistorySelection> optlastHist = this.historySelectionRepository
 				.getLastHistoryBySelectioId(selectItemID);

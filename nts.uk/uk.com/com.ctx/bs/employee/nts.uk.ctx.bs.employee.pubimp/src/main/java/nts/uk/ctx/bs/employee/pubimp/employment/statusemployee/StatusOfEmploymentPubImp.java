@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
@@ -77,10 +77,10 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 			// <= RetirementDate 退職年月日
 
 			// lấy domain 休職休業 TemporaryAbsence theo employeeId và referenceDate
-			Optional<TempLeaveAbsenceHistory> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
+			Optional<TempAbsenceHistory> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
 				// tốn tại domain 
-				TempLeaveAbsenceHistory temporaryAbsenceDomain = temporaryAbsOpt.get();
+				TempAbsenceHistory temporaryAbsenceDomain = temporaryAbsOpt.get();
 				// set LeaveHolidayType 
 				
 				// TODO

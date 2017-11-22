@@ -36,7 +36,11 @@ module nts.uk.com.view.cps017.d.viewmodel {
             service.editHistoryData(data).done(function() {
                 nts.uk.ui.windows.close();
             }).fail(function(res){
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                if(res.messageId == 'Msg_127'){
+                    $('#start-date-sel').ntsError('set', {messageId: res.messageId});
+                }else{
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }
             }).always(() => {
                 block.clear();
             });

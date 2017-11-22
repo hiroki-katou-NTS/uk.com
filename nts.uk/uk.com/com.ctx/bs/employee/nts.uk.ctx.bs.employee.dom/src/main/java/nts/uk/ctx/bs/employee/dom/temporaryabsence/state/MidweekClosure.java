@@ -3,14 +3,14 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 
 /**
  * @author danpv
  * Domain Name : 産前休業
  *
  */
-public class MidweekClosure extends TempLeaveAbsenceHisItem {
+public class MidweekClosure extends TempAbsenceHisItem {
 
 	/**
 	 * Type: Optional

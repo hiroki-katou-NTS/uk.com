@@ -119,6 +119,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionName('');
             selection.memoSelection('');
             self.checkCreate(true);
+            $("#selectionID").focus();
         }
 
         //検証チェック 

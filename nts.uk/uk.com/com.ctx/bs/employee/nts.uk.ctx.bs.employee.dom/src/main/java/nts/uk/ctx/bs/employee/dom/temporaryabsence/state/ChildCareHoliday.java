@@ -4,13 +4,13 @@
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 
 /**
  * @author danpv
  * Domain Name : 育児休業
  */
-public class ChildCareHoliday extends TempLeaveAbsenceHisItem{
+public class ChildCareHoliday extends TempAbsenceHisItem{
 	
 	/**
 	 * Optional

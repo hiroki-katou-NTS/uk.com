@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 
 @Getter
 @Setter
@@ -42,7 +42,7 @@ public class Employee extends AggregateRoot {
 	/** The List JobEntryHistory 入社履歴 */
 	private List<JobEntryHistory> listEntryJobHist;
 
-	private List<TempLeaveAbsenceHistory> listTemporaryAbsence;
+	private List<TempAbsenceHistory> listTemporaryAbsence;
 
 	public static Employee createFromJavaType(String companyId, String pId, String sId, String sCd, String companyMail,
 			String mobileMail, String companyMobile) {
