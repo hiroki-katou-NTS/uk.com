@@ -50,7 +50,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
-		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(command.getCategoryId(),companyId);
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(command.getCategoryCd(),companyId);
 		
 		if (!perInfoCategory.isPresent()){
 			throw new RuntimeException("invalid PersonInfoCategory");
