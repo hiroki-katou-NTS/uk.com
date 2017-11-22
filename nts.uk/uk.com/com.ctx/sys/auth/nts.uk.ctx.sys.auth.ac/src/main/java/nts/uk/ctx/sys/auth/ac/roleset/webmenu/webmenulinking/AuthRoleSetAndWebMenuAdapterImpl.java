@@ -13,7 +13,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetAndWebMenuPub;
@@ -43,21 +42,19 @@ public class AuthRoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapte
 	}
 
 	@Override
-	public void addListOfRoleSetAndWebMenu(List<RoleSetAndWebMenu> roleSetAndWebMenus) {
-		if (!CollectionUtil.isEmpty(roleSetAndWebMenus)) {
-			roleSetAndWebMenus.forEach(item-> {
-				this.roleSetAndWebMenuPub.addRoleSetAndWebMenu(item.getRoleSetCd(), item.getWebMenuCd(), item.getCompanyId());
-			});
-		}
+	public void addRoleSetAndWebMenu(RoleSetAndWebMenu roleSetAndWebMenu) {
+		this.roleSetAndWebMenuPub.addRoleSetAndWebMenu(
+				roleSetAndWebMenu.getRoleSetCd()
+				, roleSetAndWebMenu.getWebMenuCd()
+				, roleSetAndWebMenu.getCompanyId());
 	}
 
 	@Override
-	public void updateListOfRoleSetAndWebMenu(List<RoleSetAndWebMenu> roleSetAndWebMenus) {
-		if (!CollectionUtil.isEmpty(roleSetAndWebMenus)) {
-			roleSetAndWebMenus.forEach(item-> {
-				this.roleSetAndWebMenuPub.updateRoleSetAndWebMenu(item.getRoleSetCd(), item.getWebMenuCd(), item.getCompanyId());
-			});
-		}
+	public void updateRoleSetAndWebMenu(RoleSetAndWebMenu roleSetAndWebMenu) {
+		this.roleSetAndWebMenuPub.updateRoleSetAndWebMenu(
+				roleSetAndWebMenu.getRoleSetCd()
+				, roleSetAndWebMenu.getWebMenuCd()
+				, roleSetAndWebMenu.getCompanyId());
 	}
 
 	@Override

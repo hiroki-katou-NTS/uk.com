@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "SGWMT_USER")
 @NoArgsConstructor
+@AllArgsConstructor
 public class SgwmtUser extends UkJpaEntity implements Serializable {
     
 	/** The Constant serialVersionUID. */

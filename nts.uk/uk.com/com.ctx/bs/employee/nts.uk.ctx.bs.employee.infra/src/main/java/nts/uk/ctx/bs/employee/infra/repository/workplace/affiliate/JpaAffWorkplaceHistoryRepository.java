@@ -341,8 +341,9 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),
 				domain.getWorkplaceId().v(), domain.getPeriod().start());
 		Optional<KmnmtAffiliWorkplaceHist> existItem = this.queryProxy().find(key, KmnmtAffiliWorkplaceHist.class);
-		if (!existItem.isPresent()) {
-			return;
+
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid AffWorkplaceHistory");
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());

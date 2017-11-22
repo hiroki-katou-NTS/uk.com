@@ -16,4 +16,10 @@ public interface SelectionItemOrderRepository {
 	List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId);
 	
 	List<SelectionItemOrder> getAllOrderBySelectionId(String selectionId);
+	//hoatt
+	/**
+	 * update List Selection Item Order
+	 * @param lstSelOrder
+	 */
+	void updateListSelOrder(List<SelectionItemOrder> lstSelOrder);
 }

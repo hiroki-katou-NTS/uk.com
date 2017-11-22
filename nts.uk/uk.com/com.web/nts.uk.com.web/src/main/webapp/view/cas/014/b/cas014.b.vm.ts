@@ -24,13 +24,19 @@ module nts.uk.com.view.cas014.b {
             selectedTarget: KnockoutObservable<number>;
 
             //
-            roleSetList: Array<RoleSet>;
-            employeeList: Array<Employee>;
-            roleSetPerson: KnockoutObservable<RoleSetPerson>;
+            roleSetList: KnockoutObservableArray<RoleSet>;
+            roleSetPersonList: KnockoutObservableArray<RoleSetPerson>;
             dateValue: KnockoutObservable<Period>
+            selectedRoleSet: KnockoutObservable<RoleSet>;
+            selectedRoleSetPerson: KnockoutObservable<RoleSetPerson>;
             constructor() {
                 let self = this;
-                self.dateValue = ko.observable(new Period(new Date().toISOString(), new Date().toISOString()));
+                self.dateValue = ko.observable(new Period('', ''));
+                self.selectedRoleSet = ko.observable(new RoleSet('', ''));
+                self.selectedRoleSetPerson = ko.observable(new RoleSetPerson('', '', '', '', '', ''));
+                self.roleSetList = ko.observableArray([]);
+                self.roleSetPersonList = ko.observableArray([]);
+                
 
                 //copy from cdl009 parent
                 self.isMultiSelect = ko.observable(true);
@@ -71,7 +77,41 @@ module nts.uk.com.view.cas014.b {
                     dfd = $.Deferred();
                 block.invisible();
 
-                self.roleSetList = [
+                //                new service.Service().getAllRoleSet().done(function(rsList: Array<any>) {
+                //                    if (rsList && rsList.length) {
+                //                        self.roleSetList.removeAll();
+                //                        let _rsList: Array<RoleSet> = _.map(rsList, rs => {
+                //                            return new RoleSet(rs.code, rs.name);
+                //                        });
+                //                        _rsList = _.sortBy(_rsList, ['code']);
+                //                        _.each(_rsList, rs => self.roleSetList.push(rs));
+                //
+                //                        //select first role set
+                //                        self.selectedRoleSet = ko.observable(ko.toJS(self.roleSetList[0]));
+                //                        self.selectedRoleSet.subscribe(function(roleSet: RoleSet) {
+                //                            new service.Service().getAllRoleSetPerson(roleSet.code).done(function(data: Array<any>) {
+                //                                if (data && data.length) {
+                //                                    self.roleSetPersonList.removeAll();
+                //                                    let _rspList: Array<RoleSetPerson> = _.map(data, rsp => {
+                //                                        return new RoleSetPerson(rsp.roleSetCd, rsp.employeeId, rsp.employeeCd, rsp.employeeName, rsp.startDate, rsp.endDate);
+                //                                    });
+                //                                    _rspList = _.sortBy(_rspList, ['employeeCd']);
+                //                                    _.each(_rspList, rsp => self.roleSetPersonList.push(rsp));
+                //                                }
+                //                                dfd.resolve();
+                //                            }).fail(function(error) {
+                //                                alertError("shit happened!");
+                //                                dfd.reject();
+                //                            });
+                //                        });
+                //
+                //                    }
+                //                    dfd.resolve();
+                //                }).fail(function(error) {
+                //                    alertError("shit happened!");
+                //                    dfd.reject();
+                //                });
+                self.roleSetList = ko.observableArray([
                     new RoleSet('01', 'Role Set 1'),
                     new RoleSet('02', 'Role Set 2'),
                     new RoleSet('03', 'Role Set 3'),
@@ -82,26 +122,81 @@ module nts.uk.com.view.cas014.b {
                     new RoleSet('08', 'Role Set 8'),
                     new RoleSet('09', 'Role Set 9'),
                     new RoleSet('10', 'Role Set 10')
-                ];
+                ]);
+                
+                self.selectedRoleSet = ko.observable(self.roleSetList()[0]);
+//                self.selectedRoleSet.subscribe(function(roleSet: RoleSet) {
+                    self.roleSetPersonList = ko.observableArray([
+                        new RoleSetPerson('05', '000002', '02', 'Employee 2', new Date().toISOString(), new Date().toISOString()),
+                        new RoleSetPerson('05', '000003', '03', 'Employee 3', new Date().toISOString(), new Date().toISOString()),
+                        new RoleSetPerson('05', '000004', '04', 'Employee 4', new Date().toISOString(), new Date().toISOString()),
+                        new RoleSetPerson('05', '000005', '05', 'Employee 5', new Date().toISOString(), new Date().toISOString()),
+                        new RoleSetPerson('05', '000006', '06', 'Employee 6', new Date().toISOString(), new Date().toISOString()),
+                        new RoleSetPerson('05', '000007', '07', 'Employee 7', new Date().toISOString(), new Date().toISOString()),
+                        new RoleSetPerson('05', '000008', '08', 'Employee 8', new Date().toISOString(), new Date().toISOString()),
+                        new RoleSetPerson('05', '000009', '09', 'Employee 9', new Date().toISOString(), new Date().toISOString()),
+                        new RoleSetPerson('05', '000010', '10', 'Employee 10', new Date().toISOString(), new Date().toISOString())
+                    ]);                   
+                    self.selectedRoleSetPerson = ko.observable(self.roleSetPersonList()[0]);
+//                });
+                
+//                self.roleSetPerson = ko.observable(new RoleSetPerson(self.roleSetList()[0], self.employeeList[0], new Date().toISOString(), new Date().toISOString()));
 
-                self.employeeList = [
-                    new Employee('000001', '01', 'Employee 1'),
-                    new Employee('000002', '02', 'Employee 2'),
-                    new Employee('000003', '03', 'Employee 3'),
-                    new Employee('000004', '04', 'Employee 4'),
-                    new Employee('000005', '05', 'Employee 5'),
-                    new Employee('000006', '06', 'Employee 6'),
-                    new Employee('000007', '07', 'Employee 7'),
-                    new Employee('000008', '08', 'Employee 8'),
-                    new Employee('000009', '09', 'Employee 9'),
-                ];
-
-                self.roleSetPerson = ko.observable(new RoleSetPerson(self.roleSetList[0], self.employeeList[0], new Date().toISOString(), new Date().toISOString()));
-
-                $(".fixed-table").ntsFixedTable({ height: 200 });
+//                $(".fixed-table").ntsFixedTable({ height: 200 });
                 dfd.resolve();
                 block.clear();
                 return dfd.promise();
+            }
+
+            createNewRoleSetPerson() {
+
+            }
+
+            registerRoleSetPerson() {
+                let self = this, data: RoleSetPerson = ko.toJS(self.roleSetPersonList[0]);
+
+                let command: any = {
+                    roleSetCd: data.roleSetCd,
+                    employeeId: data.employeeId,
+                    period: data.period,
+                    mode: 1
+                };
+
+                block.invisible();
+
+                new service.Service().registerData(command).done(function() {
+                    //display registered data in selected state
+                    //set to update mode 
+                    info({ messageId: "Msg_15" }).then(() => {
+                        block.clear();
+                    });
+                }).fail(error => {
+                    alertError({ messageId: error.message });
+                    block.clear();
+                });
+            }
+
+            deleteRoleSetPerson() {
+                let self = this, data: RoleSetPerson = ko.toJS(self.roleSetPersonList[0]);
+
+                let command: any = {
+                    roleSetCd: data.roleSetCd,
+                    employeeId: data.employeeId,
+                    period: data.period
+                };
+
+                block.invisible();
+
+                new service.Service().deleteData(command).done(function() {
+                    //display registered data in selected state
+                    //set to update mode 
+                    info({ messageId: "Msg_15" }).then(() => {
+                        block.clear();
+                    });
+                }).fail(error => {
+                    alertError({ messageId: error.message });
+                    block.clear();
+                });
             }
 
             openDialogCDL009() {
@@ -166,31 +261,19 @@ module nts.uk.com.view.cas014.b {
         }
     }
 
-    export class Employee {
-        id: string;
-        code: string;
-        name: string;
-
-        constructor(id: string, code: string, name: string) {
-            this.id = id;
-            this.code = code;
-            this.name = name;
-        }
-    }
-
     export class RoleSetPerson {
-        roleSetCd: KnockoutObservable<string>;
-        employeeId: KnockoutObservable<string>;
-        roleSet: KnockoutObservable<RoleSet>;
-        employee: KnockoutObservable<Employee>
-        period: KnockoutObservable<Period>;
+        roleSetCd: string;
+        employeeId: string;
+        employeeCd: string;
+        employeeName: string;
+        period: Period;
 
-        constructor(roleSet: RoleSet, employee: Employee, start: string, end: string) {
-            this.roleSetCd = ko.observable(roleSet.code);
-            this.employeeId = ko.observable(employee.id);
-            this.roleSet = ko.observable(roleSet);
-            this.employee = ko.observable(employee);
-            this.period = ko.observable(new Period(start, end));
+        constructor(roleSetCd: string, employeeId: string, employeeCd: string, employeeName: string, start: string, end: string) {
+            this.roleSetCd = roleSetCd;
+            this.employeeId = employeeId;
+            this.employeeCd = employeeCd;
+            this.employeeName = employeeName;
+            this.period = new Period(start, end);
         }
     }
 
@@ -207,6 +290,11 @@ module nts.uk.com.view.cas014.b {
     export class TargetClassification {
         static WORKPLACE = 1;
         static DEPARTMENT = 2;
+    }
+
+    export class ScreenMode {
+        static NEW = 0;
+        static UPDATE = 1;
     }
 }
 

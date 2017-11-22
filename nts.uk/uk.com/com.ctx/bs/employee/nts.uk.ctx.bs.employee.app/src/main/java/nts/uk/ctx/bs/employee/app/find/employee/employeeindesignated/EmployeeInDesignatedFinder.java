@@ -20,7 +20,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceType;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -260,16 +259,16 @@ public class EmployeeInDesignatedFinder {
 					// Domain TemporaryAbsence is Present
 					TemporaryAbsence temporaryAbsenceDomain = temporaryAbsOpt.get();
 					// set LeaveHolidayType
-					statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
-
-					// Check if TempAbsenceType = TEMP_LEAVE
-					if (temporaryAbsenceDomain.getTempAbsenceType().value == TempAbsenceType.TEMP_LEAVE.value) {
-						// StatusOfEmployment = LEAVE_OF_ABSENCE
-						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
-					} else {
-						// StatusOfEmployment = HOLIDAY
-						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.HOLIDAY.value);
-					}
+//					statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
+//
+//					// Check if TempAbsenceType = TEMP_LEAVE
+//					if (temporaryAbsenceDomain.getTempAbsenceType().value == TempAbsenceType.TEMP_LEAVE.value) {
+//						// StatusOfEmployment = LEAVE_OF_ABSENCE
+//						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
+//					} else {
+//						// StatusOfEmployment = HOLIDAY
+//						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.HOLIDAY.value);
+//					}
 				} else {
 					// StatusOfEmployment = INCUMBENT 在籍
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.INCUMBENT.value);

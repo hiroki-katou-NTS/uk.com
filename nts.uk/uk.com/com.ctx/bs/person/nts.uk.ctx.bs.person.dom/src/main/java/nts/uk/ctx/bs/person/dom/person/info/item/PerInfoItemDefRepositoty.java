@@ -67,7 +67,7 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
 			String contractCd);
 
-	void removePerInfoItemInCopySetting(String perInforCtgId, String companyId);
+	void removePerInfoItemInCopySetting(String itemId);
 
 	void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds);
 

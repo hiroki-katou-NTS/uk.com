@@ -5,7 +5,7 @@
 package nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking;
 
 /**
- * ロールセット別�?付�?� - Class RoleSetAndWenMenu
+ * ロールセット別紐付け- Class RoleSetAndWenMenu
  * @author HieuNV
  */
 @lombok.Value
@@ -14,23 +14,23 @@ public class RoleSetAndWebMenu {
 	/** �?社ID */
 	private String companyId;
 
-	/** メニューコードリスト */
-	private String webMenuCd;
-
 	/** ロールセットコード. */
 	private String roleSetCd;
+
+	/** メニューコードリスト */
+	private String webMenuCd;
 
 	/**
 	 * Instantiates a new default role set.
 	 * 
 	 * @param companyId
-	 * @param webMenuCd
 	 * @param roleSetCd
+	 * @param webMenuCd
 	 */
-	public RoleSetAndWebMenu(String companyId, String webMenuCd, String roleSetCd) {
+	public RoleSetAndWebMenu(String companyId, String roleSetCd, String webMenuCd) {
 		this.companyId = companyId;
-		this.webMenuCd = webMenuCd;
 		this.roleSetCd = roleSetCd;
+		this.webMenuCd = webMenuCd;
 	}
 	
 }

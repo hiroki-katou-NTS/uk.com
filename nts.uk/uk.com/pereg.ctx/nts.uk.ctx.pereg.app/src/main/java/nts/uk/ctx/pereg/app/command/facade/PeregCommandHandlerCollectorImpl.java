@@ -9,10 +9,25 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
+import nts.uk.ctx.bs.employee.app.command.department.*;
+import nts.uk.ctx.bs.employee.app.command.employee.*;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.care.*;
+import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.incometax.*;
+import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.socialinsurance.*;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.main.*;
+import nts.uk.ctx.bs.employee.app.command.position.jobposition.*;
+import nts.uk.ctx.bs.employee.app.command.temporaryabsence.*;
+import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.*;
+import command.person.currentaddress.*;
+import command.person.emergencycontact.*;
+import command.person.family.*;
+import command.person.info.*;
+import command.person.widowhistory.*;
+import nts.uk.ctx.bs.employee.app.command.workplace.assigned.UpdateAssignedWorkplaceCommand;
 import nts.uk.shr.sample.pereg.command.SampleDeletePersonBaseCommand;
 import nts.uk.shr.sample.pereg.command.SampleUpdatePersonBaseCommand;
 
@@ -22,11 +37,35 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 
 	/** Add handlers */
 	private static final List<TypeLiteral<?>> ADD_HANDLER_CLASSES = Arrays.asList(
+			new TypeLiteral<PeregAddCommandHandler<AddAffiliationDepartmentCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSubJobPositionCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddTemporaryAbsenceCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddCurrentAddressCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddPerEmergencyContactCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddFamilyCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddWidowHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddEmployeeCommand>>(){}
 			);
 	
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
-			new TypeLiteral<PeregUpdateCommandHandler<SampleUpdatePersonBaseCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffiliationDepartmentCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateJobTitleHistCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilyCareCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateIncomeTaxCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilySocialInsuranceCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSubJobPositionCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
+//			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAddressCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerEmergencyContactCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilyCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAssignedWorkplaceCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAffiDeptCommand>>(){}
 			);
 	
 	/** Delete handlers */
