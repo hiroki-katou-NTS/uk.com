@@ -18,7 +18,7 @@ public class UpdateIncomeTaxCommandHandler extends CommandHandler<UpdateIncomeTa
 	private IncomeTaxRepository incomeTaxRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00005";
 	}
 

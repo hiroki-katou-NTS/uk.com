@@ -19,7 +19,7 @@ implements PeregAddCommandHandler<AddFamilyCommand>{
 	private FamilyRepository familyRepository;
 
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00004";
 	}
 
