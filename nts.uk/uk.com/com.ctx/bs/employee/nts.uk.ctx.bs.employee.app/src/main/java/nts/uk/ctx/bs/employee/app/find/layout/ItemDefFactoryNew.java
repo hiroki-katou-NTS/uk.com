@@ -41,11 +41,11 @@ public class ItemDefFactoryNew {
 			switch (itemDef.getItemCode()) {
 			case "IS00001":
 				// 個人名グループ．個人名
-				data = person.getPersonNameGroup().getPersonName().v();
+				data = person.getPersonNameGroup().getPersonName().getFullName().v();
 				break;
 			case "IS00002":
 				// 個人名グループ．個人名カナ
-				data = person.getPersonNameGroup().getPersonNameKana().v();
+				data = person.getPersonNameGroup().getPersonName().getFullNameKana().v();
 				break;
 			case "IS00003":
 				// 個人名グループ．個人名ローマ字．氏名
@@ -94,26 +94,6 @@ public class ItemDefFactoryNew {
 			case "IS00014":
 				// 性別
 				data = person.getGender().value;
-				break;
-			case "IS00015":
-				// 個人携帯
-				data = person.getPersonMobile().v();
-				break;
-			case "IS00016":
-				// 個人メールアドレス
-				data = person.getMailAddress().v();
-				break;
-			case "IS00017":
-				// 趣味
-				data = person.getHobBy().v();
-				break;
-			case "IS00018":
-				// 嗜好
-				data = person.getTaste().v();
-				break;
-			case "IS00019":
-				// 国籍
-				data = person.getCountryId().v();
 				break;
 			}
 			if (data != null) {

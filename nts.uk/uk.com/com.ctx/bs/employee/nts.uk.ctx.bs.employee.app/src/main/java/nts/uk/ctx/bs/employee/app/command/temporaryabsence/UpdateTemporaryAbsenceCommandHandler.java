@@ -18,7 +18,7 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00008";
 	}
 
