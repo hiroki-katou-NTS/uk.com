@@ -3,14 +3,14 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 
 /**
  * @author danpv
  * Domain Name : 介護休業
  *
  */
-public class CareHoliday extends TempLeaveAbsenceHisItem{
+public class CareHoliday extends TempAbsenceHisItem{
 	
 	/**
 	 * 同一家族の休業有無

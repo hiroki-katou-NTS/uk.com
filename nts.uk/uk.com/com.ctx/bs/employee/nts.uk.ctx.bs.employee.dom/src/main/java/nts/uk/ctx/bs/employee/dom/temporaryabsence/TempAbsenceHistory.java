@@ -22,7 +22,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @NoArgsConstructor
 @Setter
-public class TempLeaveAbsenceHistory extends AggregateRoot implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate>{
+public class TempAbsenceHistory extends AggregateRoot implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	
 	private String tempLeaveAbsenceHisId;
 
@@ -36,7 +36,7 @@ public class TempLeaveAbsenceHistory extends AggregateRoot implements Unduplicat
 	 */
 	private List<DateHistoryItem> dateHistoryItems;
 	
-	public static TempLeaveAbsenceHistory createSimpleFromJavaType(String employeeId, String tempAbsenceId, int tempAbsenceType, String histId,
+	public static TempAbsenceHistory createSimpleFromJavaType(String employeeId, String tempAbsenceId, int tempAbsenceType, String histId,
 			GeneralDate startDate, GeneralDate endDate, String tempAbsenceReason, String familyMemberId, GeneralDate birthDate, int multiple){
 		LeaveHolidayType type = EnumAdaptor.valueOf(tempAbsenceType, LeaveHolidayType.class);
 		DateHistoryItem dateHistoryItem = new DateHistoryItem(histId, new DatePeriod(startDate, endDate));

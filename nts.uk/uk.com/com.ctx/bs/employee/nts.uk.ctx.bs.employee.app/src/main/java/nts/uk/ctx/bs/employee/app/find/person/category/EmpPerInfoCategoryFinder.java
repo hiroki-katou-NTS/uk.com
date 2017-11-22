@@ -40,7 +40,7 @@ import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
@@ -400,14 +400,14 @@ public class EmpPerInfoCategoryFinder {
 			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 			break;
 		case "CS00008":
-			Optional<TempLeaveAbsenceHistory> temporaryAbsence = temporaryAbsenceRepository.getByTempAbsenceId(infoId);
+			Optional<TempAbsenceHistory> temporaryAbsence = temporaryAbsenceRepository.getByTempAbsenceId(infoId);
 			for(PerInfoItemDefDto item : lstPerInfoItemDef){
 				List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
 				//getActionRole ActionRole
 				ActionRole  actionRole = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(), item.getId());
 				//mapping item with data
 				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(), itemSet, actionRole, 
-						temporaryAbsence.isPresent()? temporaryAbsence.get(): new TempLeaveAbsenceHistory());			
+						temporaryAbsence.isPresent()? temporaryAbsence.get(): new TempAbsenceHistory());			
 				lstLayoutPersonInfoClsDto.add(objMap);
 			}	
 			empMaintLayoutDto = new EmpMaintLayoutDto();

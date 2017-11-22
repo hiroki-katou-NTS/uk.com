@@ -34,7 +34,7 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.E
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
@@ -391,7 +391,7 @@ public class LayoutFinder {
 							empInItemDataRepo.getAllInfoItemByRecordId(employeeId));
 					break;
 				case "CS00008":
-					Optional<TempLeaveAbsenceHistory> tempAbsc = tempAbsenceRepo.getBySidAndReferDate(employeeId,
+					Optional<TempAbsenceHistory> tempAbsc = tempAbsenceRepo.getBySidAndReferDate(employeeId,
 							standandDate);
 					if (tempAbsc.isPresent()) {
 						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
