@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.ICheckChangeApplicanDate
 /**
  * 申請日を変更する
  */
+@Stateless
 public class CheckChangeAppDateCommandHandler extends CommandHandler<ApplicationDateCommand> {
 
 	@Inject
