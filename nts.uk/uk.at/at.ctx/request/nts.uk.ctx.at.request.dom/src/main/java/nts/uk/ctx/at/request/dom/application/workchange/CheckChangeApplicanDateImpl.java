@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
-import nts.arc.time.GeneralDate;
+import javax.ejb.Stateless;
 
+import nts.arc.time.GeneralDate;
+@Stateless
 public class CheckChangeApplicanDateImpl implements ICheckChangeApplicanDate{
 
 	@Override
