@@ -97,9 +97,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         overTimeShiftNightPre: KnockoutObservable<number> = ko.observable(null);
         flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
         //　初期起動時、計算フラグ=1とする。
-        //calculateFlag: KnockoutObservable<number> = ko.observable(1);
-        //TODO: test-setting calculateFlag = 0
-        calculateFlag: KnockoutObservable<number> = ko.observable(0);
+        calculateFlag: KnockoutObservable<number> = ko.observable(1);
         constructor() {
 
             let self = this;
@@ -280,11 +278,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         //登録処理
         registerClick() {
+            nts.uk.ui.block.invisible();
             let self = this,
                 appReason: string,
                 divergenceReason: string;
             appReason = self.selectedReason();
-            divergenceReason = self.selectedReason2();
+            divergenceReason = self.selectedReason2();            
             if (!nts.uk.util.isNullOrUndefined(self.multilContent())) {
                 appReason = appReason + ":" + self.multilContent();
             }
@@ -314,8 +313,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 calculateFlag: self.calculateFlag()
             };
             //登録前エラーチェック
-            service.checkBeforeRegister(overtime).done((data) => {
-                nts.uk.ui.block.invisible();
+            service.checkBeforeRegister(overtime).done((data) => {                
                 if (data.errorCode == 0) {
                     if (data.confirm) {
                         //メッセージNO：829
@@ -343,14 +341,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     
                 }
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
-            }).always(function(){
-              nts.uk.ui.block.clear();   
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                .then(function() { nts.uk.ui.block.clear(); });
             });
         }
         //登録処理を実行
         registerData(overtime) {
-             nts.uk.ui.block.invisible();
             service.createOvertime(overtime).done(() => {
                 //2-3.新規画面登録後の処理を実行
                 //TODO:
@@ -366,9 +362,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     location.reload();
                 });
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
-            }).always(function(){
-              nts.uk.ui.block.clear();   
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                .then(function() { nts.uk.ui.block.clear(); });
             });
         }
         
@@ -391,7 +386,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $('td#breakTimesCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
             }*/
         }
-        
+        CaculationTime(){
+            let self = this;
+            //TODO: for test
+            self.calculateFlag(0);
+        }
         /**
          * KDL003
          */
