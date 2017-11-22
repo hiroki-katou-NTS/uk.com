@@ -55,7 +55,7 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 		result.setCid(employee.getCompanyId());
 		result.setScd(employee.getSCd().v());
 		result.setSid(employee.getSId());
-		result.setPersonName(person.getPersonNameGroup().getPersonName().v());
+		result.setPersonName(person.getPersonNameGroup().getPersonName().getFullName().v());
 		return result;
 	}
 
