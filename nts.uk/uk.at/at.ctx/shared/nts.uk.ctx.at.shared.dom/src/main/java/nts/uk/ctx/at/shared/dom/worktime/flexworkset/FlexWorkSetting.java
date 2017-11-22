@@ -9,6 +9,7 @@ import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class FlexWorkSetting.
+ * フレックス勤務設定
  */
 @Getter
 // フレックス勤務設定

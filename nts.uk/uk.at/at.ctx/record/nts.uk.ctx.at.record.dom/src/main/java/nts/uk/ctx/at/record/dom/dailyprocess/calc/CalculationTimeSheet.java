@@ -1,18 +1,13 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
@@ -21,11 +16,9 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -230,7 +223,7 @@ public abstract class CalculationTimeSheet {
 	 * 開始から指定時間経過後の終了時刻を取得
 	 * @param timeSpan　時間帯
 	 * @param time　指定時間
-	 * @return
+	 * @return 指定時間経過後の終了時間
 	 */
 	public Optional<TimeWithDayAttr> getNewEndTime(TimeSpanForCalc timeSpan, TimeWithDayAttr time) {
 		Optional<TimeSpanForCalc> newEnd = createTimeSpan(timeSpan,time);
@@ -441,7 +434,7 @@ public abstract class CalculationTimeSheet {
 	public List<SpecBonusPayTimesheet> createSpecifiedBonusPayTimeSheet(List<Integer> specifiedDayList,List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheetList){
 		if(specifiedDayList.size() == 0) return Collections.emptyList();
 		for(SpecBonusPayTimesheet specifiedBonusPayTimeSheet : specifiedBonusPayTimeSheetList) {
-			if(specifiedDayList.contains(specifiedBonusPayTimeSheet.getSpecBonusPayNumber())) {
+			if(specifiedDayList.contains(specifiedBonusPayTimeSheet.getSpecBonusPayNumber().v().intValue())) {
 				Optional<TimeSpanForCalc> newSpan = this.calcrange.getDuplicatedWith(
 														new TimeSpanForCalc(new TimeWithDayAttr(specifiedBonusPayTimeSheet.getStartTime().valueAsMinutes())
 																		   ,new TimeWithDayAttr(specifiedBonusPayTimeSheet.getEndTime().valueAsMinutes())));

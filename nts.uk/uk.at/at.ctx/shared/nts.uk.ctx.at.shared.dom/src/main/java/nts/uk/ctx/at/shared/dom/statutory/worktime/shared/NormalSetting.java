@@ -20,4 +20,13 @@ public class NormalSetting extends DomainObject {
 
 	/** 週開始. */
 	private WeekStart weekStart;
+	
+	/**
+	 * 法定内残業にできる時間を求める（一日分）
+	 * @param workTime 就業時間（法定外用）
+	 * @return
+	 */
+	public int calculateDailyLimitOfLegalOverworkTime(int workTime) {
+		return this.statutorySetting.getDaily().v() - workTime;
+	}
 }

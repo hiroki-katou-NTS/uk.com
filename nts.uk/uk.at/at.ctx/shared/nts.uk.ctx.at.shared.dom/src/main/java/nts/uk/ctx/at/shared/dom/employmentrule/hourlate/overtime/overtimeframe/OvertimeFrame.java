@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+//import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
 @Data
 public class OvertimeFrame {

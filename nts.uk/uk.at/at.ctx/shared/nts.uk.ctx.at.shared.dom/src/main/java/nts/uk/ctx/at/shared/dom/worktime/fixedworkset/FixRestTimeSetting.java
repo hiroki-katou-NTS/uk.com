@@ -6,14 +6,15 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 
 /**
  * The Class BreakTimeSetting.
  */
 @Getter
+@AllArgsConstructor
 // 固定休憩時間の時間帯設定
 public class FixRestTimeSetting {
 

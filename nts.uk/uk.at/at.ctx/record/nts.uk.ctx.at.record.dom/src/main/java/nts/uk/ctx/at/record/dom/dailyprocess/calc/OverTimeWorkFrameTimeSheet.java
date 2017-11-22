@@ -13,11 +13,11 @@ import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
-import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
@@ -83,7 +83,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static List<OverTimeWorkFrameTimeSheet> createOverWorkFrame(List<OverTimeHourSet> overTimeHourSetList,WorkingSystem workingSystem,
-												AttendanceLeavingWork attendanceLeave,int workNo,
+												TimeLeavingWork attendanceLeave,int workNo,
 												BreakdownTimeDay breakdownTimeDay,DailyTime dailyTime,AutoCalculationOfOverTimeWork autoCalculationSet,
 												StatutoryOverTimeWorkSet statutorySet,StatutoryPrioritySet prioritySet ) {
 		List<OverTimeWorkFrameTimeSheet> createTimeSheet = new ArrayList<>();
@@ -173,10 +173,11 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 			}
 			if(transTime.lessThanOrEqualTo(0))
 				break;
+			//終了時間の判断
 			TimeWithDayAttr endTime = reCreateSiteiTimeFromStartTime(transTime,overTimeWorkFrameTimeSheetList.get(number));
 			
 			/*ここで分割*/
-			overTimeWorkFrameTimeSheetList = correctTimeSpan(overTimeWorkFrameTimeSheetList.get(number).gege(endTime,statutoryAtr),overTimeWorkFrameTimeSheetList,number);
+			overTimeWorkFrameTimeSheetList = correctTimeSpan(overTimeWorkFrameTimeSheetList.get(number).splitTimeSpan(endTime,statutoryAtr),overTimeWorkFrameTimeSheetList,number);
 			ableRangeTime.minusMinutes(transTime.valueAsMinutes()) ; 
 		}
 		return overTimeWorkFrameTimeSheetList;
@@ -255,7 +256,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 		DeductionTotalTime timeCalc = DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 															 TimeWithCalculation.sameTime(new AttendanceTime(0)),
 															 TimeWithCalculation.sameTime(new AttendanceTime(0)));
-		BreakManagement management = new BreakManagement(BreakTimeOfDaily.sameTotalTime(timeCalc), Collections.emptyList());
+		BreakTimeManagement management = new BreakTimeManagement(BreakTimeOfDaily.sameTotalTime(timeCalc), Collections.emptyList());
 		
 		DeductionTimeSheet deductionTimeSheet = new DeductionTimeSheet(Collections.emptyList(),Collections.emptyList(),management);//t = /*実働時間の時間帯を跨いだ控除時間帯を分割する*/
 	    //List<TimeSheetOfDeductionItem> deductionItem = deductionTimeSheet.getForDeductionTimeZoneList().//getForRecordTimeZoneList();/*法定内区分の置き換え*/
@@ -323,7 +324,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * 時間帯の分割
 	 * @return
 	 */
-	public List<OverTimeWorkFrameTimeSheet> gege(TimeWithDayAttr baseTime,StatutoryAtr statutoryAtr){
+	public List<OverTimeWorkFrameTimeSheet> splitTimeSpan(TimeWithDayAttr baseTime,StatutoryAtr statutoryAtr){
 		List<OverTimeWorkFrameTimeSheet> returnList = new ArrayList<>();
 		if(this.calcrange.getEnd().equals(baseTime)) {
 			returnList.add(this);

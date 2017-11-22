@@ -19,7 +19,6 @@ public interface HasTimeSpanList<T extends HasTimeSpanForCalc<T>> {
 				result.add(source.newSpanWith(duplicated.getStart(), duplicated.getEnd()));
 			});
 		});
-
 		return result;
 	}
 }

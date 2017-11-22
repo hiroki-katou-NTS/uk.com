@@ -8,8 +8,8 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -25,7 +25,7 @@ public class LeaveEarlyDecisionClock {
 	
 	
 	public static LeaveEarlyDecisionClock create(
-			int workNo, PredetermineTimeSet predetermineTimeSet,
+			int workNo, WorkTimeSet predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting leaveEarlyGraceTime) {
 		
@@ -34,7 +34,7 @@ public class LeaveEarlyDecisionClock {
 
 		if (leaveEarlyGraceTime.isZero()) {
 			// 猶予時間が0：00の場合、所定時間の終了時刻を判断時刻にする
-			decisionClock = predetermineTimeSheet.getEndTime();
+			decisionClock = predetermineTimeSheet.getEnd();
 		} else {
 			// 猶予時間帯の作成
 			TimeSpanForCalc graceTimeSheet = leaveEarlyGraceTime.createLeaveEarlyGraceTimeSheet(predetermineTimeSheet);
@@ -56,7 +56,7 @@ public class LeaveEarlyDecisionClock {
 	 * @return
 	 */
 	public static List<LeaveEarlyDecisionClock> createListOfAllWorks(
-			PredetermineTimeSet predetermineTimeSet,
+			WorkTimeSet predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting leaveEarlyGraceTime) {
 

@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.shared.dom.worktimeset;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTime;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -15,7 +18,7 @@ public class WorkTimeSet extends AggregateRoot {
 	
 	/** The range time day. */
 	// １日の範囲時間
-	private int rangeTimeDay;
+	private AttendanceTime rangeTimeDay;
 	
 	/** The sift CD. */
 	// コード
@@ -23,7 +26,7 @@ public class WorkTimeSet extends AggregateRoot {
 	
 	/** The addition set ID. */
 	// 所定時間
-	private String additionSetID;
+	private PredetermineTime additionSetID;
 	
 	/** The night shift atr. */
 	// 夜勤区分
@@ -35,7 +38,7 @@ public class WorkTimeSet extends AggregateRoot {
 	
 	/** The start date clock. */
 	// 日付開始時刻
-	private int startDateClock;
+	private TimeWithDayAttr startDateClock;
 	
 	/** The predetermine atr. */
 	// 残業を含めた所定時間帯を設定する
@@ -55,8 +58,8 @@ public class WorkTimeSet extends AggregateRoot {
 	 * @param startDateClock the start date clock
 	 * @param predetermine the predetermine
 	 */
-	public WorkTimeSet(String companyID, int rangeTimeDay, String siftCD, String additionSetID,
-			boolean nightShift, PrescribedTimezoneSetting prescribedTimezoneSetting, int startDateClock,
+	public WorkTimeSet(String companyID, AttendanceTime rangeTimeDay, String siftCD, PredetermineTime additionSetID,
+			boolean nightShift, PrescribedTimezoneSetting prescribedTimezoneSetting, TimeWithDayAttr startDateClock,
 			boolean predetermine) {
 		super();
 		this.companyID = companyID;
@@ -129,7 +132,7 @@ public class WorkTimeSet extends AggregateRoot {
 	 * @return 1日の範囲(時間帯)
 	 */
 	public TimeSpanForCalc getOneDaySpan() {
-		return new TimeSpanForCalc(new TimeWithDayAttr(startDateClock),new TimeWithDayAttr(startDateClock+rangeTimeDay));
+		return new TimeSpanForCalc(startDateClock,new TimeWithDayAttr(startDateClock.valueAsMinutes()+rangeTimeDay.valueAsMinutes()));
 	}
 	
 	/* Update end time shift 2.
@@ -173,4 +176,7 @@ public class WorkTimeSet extends AggregateRoot {
 		return true;
 	}
 	
+	public Timezone getTimeSheetOf(int workNo) {
+		return this.getPrescribedTimezoneSetting().getMatchWorkNoTimeSheet(workNo);
+	}
 }

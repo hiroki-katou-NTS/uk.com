@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.operationrule.businesstype;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

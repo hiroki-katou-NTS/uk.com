@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * The Class BreakTime.
  */
 @Getter
+@AllArgsConstructor
 // 固定勤務の休憩時間帯
 public class FixRestTime {
 

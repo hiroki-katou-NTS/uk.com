@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.record.dom.daily.CalcAtrOfDaily;
+import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 
 /**
  * 計算区分取得用のロジック
@@ -17,7 +17,7 @@ public class GetCalcAtr {
 	 * @param actualAtr
 	 * @return
 	 */
-	public static boolean isCalc(boolean calcAtr,CalcAtrOfDaily calcSet, BonusPayAutoCalcSet bonusPayAutoCalcSet, ActualWorkTimeSheetAtr actualAtr) {
+	public static boolean isCalc(boolean calcAtr,CalAttrOfDailyPerformance calcSet, BonusPayAutoCalcSet bonusPayAutoCalcSet, ActualWorkTimeSheetAtr actualAtr) {
 		if(calcAtr) {
 			return bonusPayAutoCalcSet.getCalcAtr(actualAtr, calcSet);
 		}

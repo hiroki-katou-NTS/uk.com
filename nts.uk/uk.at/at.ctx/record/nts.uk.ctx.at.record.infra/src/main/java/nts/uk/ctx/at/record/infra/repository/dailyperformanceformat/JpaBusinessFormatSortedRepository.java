@@ -7,14 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
-
-import com.fasterxml.jackson.databind.ser.std.IterableSerializer;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;

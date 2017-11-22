@@ -38,5 +38,14 @@ public class TimeWithCalculation {
 		
 	}
 	
+	/**
+	 * 受け取った時間を今持っている時間に加算する
+	 * @param time 時間
+	 * @param calcTime 計算時間
+	 * @return　加算後の計算付き時間
+	 */
+	public TimeWithCalculation addMinutes(AttendanceTime time,AttendanceTime calcTime) {
+		return new TimeWithCalculation(this.time.addMinutes(time.valueAsMinutes()),this.calcTime.addMinutes(calcTime.valueAsMinutes()));
+	}
 	
 }
