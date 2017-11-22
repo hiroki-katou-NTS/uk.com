@@ -2,6 +2,11 @@ package command.person.setting.selectionitem;
 
 import lombok.Value;
 
+/**
+ * 
+ * @author tuannv
+ *
+ */
 @Value
 public class FormatSelectionCommand {
 	private int selectionCode;

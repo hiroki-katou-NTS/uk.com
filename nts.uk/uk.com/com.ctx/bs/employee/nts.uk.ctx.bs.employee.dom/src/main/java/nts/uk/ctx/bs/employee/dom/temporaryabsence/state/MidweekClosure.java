@@ -3,48 +3,35 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 
 /**
  * @author danpv
+ * Domain Name : 産前休業
  *
  */
-public class MidweekClosure extends LeaveHolidayState {
+public class MidweekClosure extends TempAbsenceHisItem {
 
 	/**
-	 * 出産日 birth date
-	 */
-	private GeneralDate birthDate;
-
-	/**
+	 * Type: Optional
 	 * 多胎妊娠区分 Multiple pregnancy segment
 	 */
-	private int multiple;
+	private Integer multiple;
 	
 	
 	/**
-	 * @param birthDate
 	 * @param multiple
 	 */
-	public MidweekClosure(GeneralDate birthDate, int multiple) {
+	public MidweekClosure(Integer multiple) {
 		super();
-		this.birthDate = birthDate;
 		this.multiple = multiple;
-	}
-
-	public GeneralDate getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(GeneralDate birthDate) {
-		this.birthDate = birthDate;
 	}
 
 	public int getMultiple() {
 		return multiple;
 	}
 
-	public void setMultiple(int multiple) {
+	public void setMultiple(Integer multiple) {
 		this.multiple = multiple;
 	}
 	

@@ -41,7 +41,7 @@ public class EditHistoryCommandHandler extends CommandHandler<EditHistoryCommand
 			PerInfoHistorySelection histPr = lstHistPr.get(0);
 			//直前の履歴の開始日以前に開始日を変更することはできない。 (Không thể sửa ngày bắt đầu về trước ngày bắt đầu của lịch sử trước đấy)
 			//=>#Msg_127
-			if(data.getStartDateNew().compareTo(histPr.getPeriod().start().toString())<0){
+			if(startDateNew.beforeOrEquals(histPr.getPeriod().start())){
 				throw new BusinessException("Msg_127");
 			}
 			GeneralDate endDatePrNew = startDateNew.addDays(-1);
