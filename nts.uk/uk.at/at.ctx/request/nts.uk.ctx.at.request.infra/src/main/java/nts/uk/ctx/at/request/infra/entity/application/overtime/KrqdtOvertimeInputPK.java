@@ -30,4 +30,7 @@ public class KrqdtOvertimeInputPK implements Serializable{
 	    
 	    @Column(name = "FRAME_NO")
 	    private int frameNo;
+	    
+	    @Column(name ="TIME_ITEM_TYPE_ATR")
+	    private int timeItemTypeAtr;
 }

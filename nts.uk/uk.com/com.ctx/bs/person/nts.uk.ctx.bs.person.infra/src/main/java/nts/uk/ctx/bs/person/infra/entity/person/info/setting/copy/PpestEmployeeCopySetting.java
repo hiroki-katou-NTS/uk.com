@@ -20,7 +20,7 @@ public class PpestEmployeeCopySetting extends UkJpaEntity implements Serializabl
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpestEmployeeCopySettingPk PpestEmployeeCopySettingPk;
+	public PpestEmployeeCopySettingPk ppestEmployeeCopySettingPk;
 
 	@Basic(optional = false)
 	@Column(name = "CID")
@@ -28,6 +28,6 @@ public class PpestEmployeeCopySetting extends UkJpaEntity implements Serializabl
 
 	@Override
 	protected Object getKey() {
-		return PpestEmployeeCopySettingPk;
+		return ppestEmployeeCopySettingPk;
 	}
 }

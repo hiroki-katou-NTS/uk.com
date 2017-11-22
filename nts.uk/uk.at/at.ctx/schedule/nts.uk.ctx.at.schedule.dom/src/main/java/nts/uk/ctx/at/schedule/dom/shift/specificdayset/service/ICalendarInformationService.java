@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.shift.specificdayset.service;
 
-import java.util.List;
-
 import nts.arc.time.GeneralDate;
 
 /**
@@ -11,6 +9,6 @@ import nts.arc.time.GeneralDate;
  */
 public interface ICalendarInformationService {
 	
-	public List<CalendarInformationOutput> getCalendarInformation(String companyID, String workplaceID, String classCD, GeneralDate date);
+	public CalendarInformationOutput getCalendarInformation(String companyID, String workplaceID, String classCD, GeneralDate date);
 	
 }

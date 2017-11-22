@@ -91,9 +91,8 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
 	}
 
-	// test:
 	@Override
-	public List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String selectionItemId, String companyId) {
+	public List<PerInfoHistorySelection> getAllHistoryBySelectionItemIdAndCompanyId(String selectionItemId, String companyId) {
 
 		return this.queryProxy().query(SELECT_ALL_HISTORY_COMPANYID_SELECTION, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("companyId", companyId)

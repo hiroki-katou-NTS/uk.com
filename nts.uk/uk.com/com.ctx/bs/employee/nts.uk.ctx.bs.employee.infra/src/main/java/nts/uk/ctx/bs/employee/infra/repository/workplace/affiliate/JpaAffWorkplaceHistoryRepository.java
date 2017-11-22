@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
-import java.security.cert.PKIXRevocationChecker.Option;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -291,53 +291,114 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
+
 	/**
 	 * Convert from domain to entity
+	 * 
 	 * @param domain
 	 * @return
 	 */
-	private KmnmtAffiliWorkplaceHist toEntity(AffWorkplaceHistory domain){
-		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
+	private KmnmtAffiliWorkplaceHist toEntity(AffWorkplaceHistory domain) {
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),
+				domain.getWorkplaceId().v(), domain.getPeriod().start());
 		return new KmnmtAffiliWorkplaceHist(key, domain.getPeriod().end());
 	}
-	
-	private void updateEntity(AffWorkplaceHistory domain, KmnmtAffiliWorkplaceHist entity){	
+
+	private void updateEntity(AffWorkplaceHistory domain, KmnmtAffiliWorkplaceHist entity) {
 		entity.endD = domain.getPeriod().end();
 	}
-	
+
 	/**
 	 * ドメインモデル「所属職場」を削除する
+	 * 
 	 * @param domain
 	 */
 	@Override
-	public void deleteAffWorkplaceHistory(AffWorkplaceHistory domain){
-		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
-		
-		this.commandProxy().remove(KmnmtAffiliWorkplaceHist.class,key);
+	public void deleteAffWorkplaceHistory(AffWorkplaceHistory domain) {
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),
+				domain.getWorkplaceId().v(), domain.getPeriod().start());
+
+		this.commandProxy().remove(KmnmtAffiliWorkplaceHist.class, key);
 	}
+
 	/**
 	 * ドメインモデル「所属職場」を新規登録する
+	 * 
 	 * @param domain
 	 */
 	@Override
 	public void addAffWorkplaceHistory(AffWorkplaceHistory domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
+
 	/**
 	 * ドメインモデル「所属職場」を取得する
+	 * 
 	 * @param domain
 	 */
 	@Override
 	public void updateAffWorkplaceHistory(AffWorkplaceHistory domain) {
-		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),
+				domain.getWorkplaceId().v(), domain.getPeriod().start());
 		Optional<KmnmtAffiliWorkplaceHist> existItem = this.queryProxy().find(key, KmnmtAffiliWorkplaceHist.class);
+
 		if (!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid AffWorkplaceHistory");
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());
 		// Update table
 		this.commandProxy().update(existItem.get());
-		
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.
+	 * AffWorkplaceHistoryRepository#getByWorkplaceIDs(java.util.List,
+	 * nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<AffWorkplaceHistory> getByWorkplaceIDs(List<String> workplaceIds, GeneralDate baseDate) {
+		if (CollectionUtil.isEmpty(workplaceIds)) {
+			return Collections.emptyList();
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_WORKPLACE_HIST (KmnmtWorkplaceHist SQL)
+		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder.createQuery(KmnmtAffiliWorkplaceHist.class);
+
+		// root data
+		Root<KmnmtAffiliWorkplaceHist> root = cq.from(KmnmtAffiliWorkplaceHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// workplace id equal workplace id
+		lstpredicateWhere.add(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
+				.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaceIds));
+
+		// start date <= base date
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.strD),
+				baseDate));
+
+		// endDate >= base date
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KmnmtAffiliWorkplaceHist> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
 }

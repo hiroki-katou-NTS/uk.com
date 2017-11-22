@@ -46,7 +46,7 @@ public class JpaIncomeTax extends JpaRepository implements IncomeTaxRepository{
 		BsymtIncomeTaxPK key = new BsymtIncomeTaxPK(domain.getIncomeTaxID());
 		Optional<BsymtIncomeTax> existItem = this.queryProxy().find(key, BsymtIncomeTax.class);
 		if(!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid IncomeTax");
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());

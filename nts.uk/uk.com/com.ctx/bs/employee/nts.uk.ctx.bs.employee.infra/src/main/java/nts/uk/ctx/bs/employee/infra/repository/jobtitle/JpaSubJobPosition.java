@@ -80,7 +80,7 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 		// Get exist entity
 		Optional<BsymtSubJobPosition> existItem = this.queryProxy().find(domain.getSubJobPosId(), BsymtSubJobPosition.class);
 		if(!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid SubJobPosition");
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());

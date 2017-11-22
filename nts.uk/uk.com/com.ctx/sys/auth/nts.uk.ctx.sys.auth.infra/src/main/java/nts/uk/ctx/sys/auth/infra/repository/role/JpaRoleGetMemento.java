@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleCode;
 import nts.uk.ctx.sys.auth.dom.role.RoleGetMemento;
 import nts.uk.ctx.sys.auth.dom.role.RoleName;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
+import nts.uk.ctx.sys.auth.infra.entity.role.SaumtRole;
 
 /**
  * The Class JpaRoleGetMemento.
@@ -19,14 +19,14 @@ import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 public class JpaRoleGetMemento implements RoleGetMemento {
 
 	/** The entity. */
-	private SacmtRole entity;
+	private SaumtRole entity;
 
 	/**
 	 * Instantiates a new jpa role get memento.
 	 *
 	 * @param sacmtRole the sacmt role
 	 */
-	public JpaRoleGetMemento(SacmtRole sacmtRole) {
+	public JpaRoleGetMemento(SaumtRole sacmtRole) {
 		this.entity = sacmtRole;
 	}
 

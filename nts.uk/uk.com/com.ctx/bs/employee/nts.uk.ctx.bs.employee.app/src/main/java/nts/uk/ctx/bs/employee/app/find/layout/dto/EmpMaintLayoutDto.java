@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.bs.employee.app.find.layout.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import find.layout.classification.LayoutPersonInfoClsDto;
@@ -14,6 +15,7 @@ import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
  *
  */
 @Data
+
 public class EmpMaintLayoutDto {
 
 	private String companyId;
@@ -25,6 +27,9 @@ public class EmpMaintLayoutDto {
 	private String layoutName;
 
 	private List<LayoutPersonInfoClsDto> classificationItems;
+	public EmpMaintLayoutDto(){
+		this.classificationItems = new ArrayList<>();
+	}
 
 	public static EmpMaintLayoutDto createFromDomain(MaintenanceLayout domain) {
 		EmpMaintLayoutDto dto = new EmpMaintLayoutDto();
