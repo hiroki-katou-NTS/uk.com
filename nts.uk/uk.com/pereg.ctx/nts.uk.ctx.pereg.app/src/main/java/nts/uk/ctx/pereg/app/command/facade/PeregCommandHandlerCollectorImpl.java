@@ -13,8 +13,9 @@ import nts.uk.ctx.bs.employee.app.command.department.*;
 import nts.uk.ctx.bs.employee.app.command.employee.*;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
+import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
-import  nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.care.*;
+import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.care.*;
 import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.incometax.*;
 import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.socialinsurance.*;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.*;
@@ -27,6 +28,8 @@ import command.person.family.*;
 import command.person.info.*;
 import command.person.widowhistory.*;
 import nts.uk.ctx.bs.employee.app.command.workplace.assigned.UpdateAssignedWorkplaceCommand;
+import nts.uk.shr.sample.pereg.command.SampleDeletePersonBaseCommand;
+import nts.uk.shr.sample.pereg.command.SampleUpdatePersonBaseCommand;
 
 @Stateless
 @SuppressWarnings("serial")
@@ -65,6 +68,11 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAffiDeptCommand>>(){}
 			);
 	
+	/** Delete handlers */
+	private static final List<TypeLiteral<?>> DELETE_HANDLER_CLASSES = Arrays.asList(
+			new TypeLiteral<PeregDeleteCommandHandler<SampleDeletePersonBaseCommand>>(){}
+			);
+	
 	@Override
 	public Set<PeregAddCommandHandler<?>> collectAddHandlers() {
 		return ADD_HANDLER_CLASSES.stream()
@@ -78,6 +86,14 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 		return UPDATE_HANDLER_CLASSES.stream()
 				.map(type -> CDI.current().select(type).get())
 				.map(obj -> (PeregUpdateCommandHandler<?>)obj)
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<PeregDeleteCommandHandler<?>> collectDeleteHandlers() {
+		return DELETE_HANDLER_CLASSES.stream()
+				.map(type -> CDI.current().select(type).get())
+				.map(obj -> (PeregDeleteCommandHandler<?>)obj)
 				.collect(Collectors.toSet());
 	}
 

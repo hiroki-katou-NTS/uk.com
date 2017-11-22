@@ -26,7 +26,7 @@ public class UpdateApplicationCancelHandler extends CommandHandler<UpdateApplica
 		//1 : 排他チェック,
 		detailBeforeUpdate.exclusiveCheck();
 		//12 
-		processCancelRepo.detailScreenCancelProcess(companyID,context.getCommand().getAppId());
+		processCancelRepo.detailScreenCancelProcess(companyID,context.getCommand().getAppId(), context.getCommand().getVersion());
 		
 	}
 

@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
+import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 
 @Stateless
 @Transactional
@@ -26,18 +26,18 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 
 		AddEmpDocumentFileCommand commad = context.getCommand();
 
-		List<EmployeeFileManagement> listEmpfile = empFileManagementRepo.getDataByParams(commad.getSid(), 2);
+		List<PersonFileManagement> listEmpfile = empFileManagementRepo.getDataByParams(commad.getSid(), 2);
 
-		Optional<EmployeeFileManagement> empFileMana = empFileManagementRepo.getEmpMana(commad.getFileid());
+		Optional<PersonFileManagement> empFileMana = empFileManagementRepo.getEmpMana(commad.getFileid());
 		if (empFileMana.isPresent()) {
 			// update
-			EmployeeFileManagement domain = empFileMana.get();
+			PersonFileManagement domain = empFileMana.get();
 			domain.setFileID(commad.getFileid());
 			domain.setPersonInfoCategoryId("");
 			
 		}else {
 			// insert
-			EmployeeFileManagement domain = new EmployeeFileManagement(commad.getSid(), commad.getFileid(),2,commad.getUploadOrder(),commad.getPersonInfoCtgId());
+			PersonFileManagement domain = new PersonFileManagement(commad.getSid(), commad.getFileid(),2,commad.getUploadOrder(),commad.getPersonInfoCtgId());
 			empFileManagementRepo.insert(domain);
 		}
 	}

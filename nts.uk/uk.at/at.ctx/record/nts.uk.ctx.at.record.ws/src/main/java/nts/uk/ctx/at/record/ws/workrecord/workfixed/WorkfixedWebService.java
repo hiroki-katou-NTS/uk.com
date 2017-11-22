@@ -15,7 +15,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.workrecord.workfixed.SaveWorkFixedCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workfixed.SaveWorkFixedCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.PersonInfoWorkFixedDto;
-import nts.uk.ctx.at.record.app.find.workrecord.workfixed.PersonInfoWorkFixedFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkFixedFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkFixedFinderDto;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkPlaceInfFinder;
@@ -33,10 +32,6 @@ public class WorkfixedWebService extends WebService{
 	@Inject
 	private SaveWorkFixedCommandHandler workFixedCommandHandler;
 	
-	/** The person info work fixed finder. */
-	@Inject
-	private PersonInfoWorkFixedFinder personInfoWorkFixedFinder;
-	
 	/** The work fixed finder. */
 	@Inject
 	private WorkFixedFinder workFixedFinder;
@@ -45,29 +40,6 @@ public class WorkfixedWebService extends WebService{
 	@Inject
 	private WorkPlaceInfFinder workPlaceInfFinder;
 	
-	/**
-	 * Gets the person info by person id.
-	 *
-	 * @param personInfoWorkFixedDto the person info work fixed dto
-	 * @return the person info by person id
-	 */
-	@Path("personInfo")
-	@POST
-	public PersonInfoWorkFixedDto getPersonInfoByPersonId(PersonInfoWorkFixedDto personInfoWorkFixedDto) {		
-		return this.personInfoWorkFixedFinder.getPersonInfo(personInfoWorkFixedDto.getEmployeeId());
-	}
-	
-	/**
-	 * Find work fixed by wkp id and closure id.
-	 *
-	 * @param dto the dto
-	 * @return the work fixed finder dto
-	 */
-	@Path("findWorkFixed")
-	@POST
-	public WorkFixedFinderDto findWorkFixedByWkpIdAndClosureId(WorkFixedFinderDto dto) {
-		return this.workFixedFinder.findWorkFixedByWkpIdAndClosureId(dto.getWkpId(), dto.getClosureId(), dto.getCid());
-	}
 	
 	/**
 	 * Find work fixed info.

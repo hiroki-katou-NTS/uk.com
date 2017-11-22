@@ -21,8 +21,9 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	/**
 	 * Instantiates a new jpa total condition set memento.
 	 *
-	 * @param totalTimes
-	 *            the total times
+	 * @param cid the cid
+	 * @param totalTimesNo the total times no
+	 * @param entity the entity
 	 */
 	public JpaTotalConditionSetMemento(String cid, Integer totalTimesNo,
 			KshstTotalCondition entity) {
@@ -86,4 +87,14 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	public void setThresoldLowerLimit(ConditionThresholdLimit setThresoldLowerLimit) {
 		this.entity.setThresoldLowerLimit(setThresoldLowerLimit.v());
 	}
+
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionSetMemento#setAttendanceItemId(java.lang.Integer)
+	 */
+	@Override
+	public void setAttendanceItemId(Integer attendanceItemId) {
+		this.entity.setAttendanceItemId(attendanceItemId);
+	}
+	
 }

@@ -61,23 +61,11 @@ public class SelectionFinder {
 			return orderList;
 		}
 
-		// Optional<Selection> optHist =
-		// this.selectionRepo.getHistSelection(histId);
-		// if (optHist == null) {
-		// // 選択している「個人情報の選択項目」の「選択肢履歴」の件数をチェックする
-		//
-		// } else {
-		// // ドメインモデル「選択肢の並び順」を取得する(Lấy Domain Model 「選択肢の並び順」)
-		//
-		//
-		// }
-
-		// return SelectionDto.fromDomainSelection(optHist.get());
 	}
 
 	// Lanlt
 	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate) {
-        GeneralDate  baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
+		GeneralDate baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
 		return this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert).stream()
 				.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
 

@@ -14,7 +14,7 @@ import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
@@ -378,7 +378,7 @@ public class ItemDefinitionFactory {
 
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			TemporaryAbsence leaveHoliday, ActionRole actionRole) {
+			TempAbsenceHistory leaveHoliday, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
@@ -444,12 +444,12 @@ public class ItemDefinitionFactory {
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
-			LayoutPersonInfoClsDto personInfoClsDto, List<TemporaryAbsence> temporaryAbsence) {
+			LayoutPersonInfoClsDto personInfoClsDto, List<TempAbsenceHistory> temporaryAbsence) {
 		return null;
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
-			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole, List<TemporaryAbsence> temporaryAbsence) {
+			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole, List<TempAbsenceHistory> temporaryAbsence) {
 		return null;
 	}
 

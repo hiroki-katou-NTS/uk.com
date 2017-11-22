@@ -12,5 +12,12 @@ public interface OvertimeInputRepository {
 	 * @param appID
 	 * @return List<OverTimeInput>
 	 */
-	List<OverTimeInput> getOvertimeInput(String companyID, String appID); 
+	List<OverTimeInput> getOvertimeInput(String companyID, String appID);
+	/**
+	 * @param companyID
+	 * @param appID
+	 * @param attendanceId
+	 * @return
+	 */
+	List<OverTimeInput> getOvertimeInputByAttendanceId(String companyID, String appID,int attendanceId);
 }

@@ -29,6 +29,9 @@ public class SaveWorkFixedCommand {
 	
 	/** The process date. */
 	private Integer processDate;
+	
+	/** The is edited. */
+	private boolean isEdited;
     
 	/**
 	 * To domain.

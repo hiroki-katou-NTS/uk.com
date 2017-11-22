@@ -27,6 +27,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         appType : KnockoutObservable<number> = ko.observable(0);
         
         approvalList: Array<shrvm.model.AppApprovalPhase> = [];
+        reasonOutputMess : string = nts.uk.resource.getText('KAF000_1');
+        reasonOutputMessFull: KnockoutObservable<string> = ko.observable('');
+        reasonOutputMessDealine : string = nts.uk.resource.getText('KAF000_2');
+        reasonOutputMessDealineFull: KnockoutObservable<string> = ko.observable('');
+        messageArea : KnockoutObservable<boolean> = ko.observable(true);
         constructor(){
             let self = this;
             let baseDate = new Date();
@@ -138,8 +143,18 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let dfd = $.Deferred<any>();
             let baseDate = new Date();
             let data = new shrvm.model.ApplicationMetadata("", self.appType(), baseDate);
-            nts.uk.at.view.kaf000.a.service.getMessageDeadline(data).done(function(data){
-                self.outputMessageDeadline(data);
+            nts.uk.at.view.kaf000.a.service.getMessageDeadline(data).done(function(data){                
+                if(!nts.uk.text.isNullOrEmpty(data.message)){
+                    self.reasonOutputMessFull(self.reasonOutputMess + data.message);    
+                }
+                if(!nts.uk.text.isNullOrEmpty(data.deadline)){
+                    self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + data.deadline);
+                }
+                if(nts.uk.text.isNullOrEmpty(data.message) && nts.uk.text.isNullOrEmpty(data.deadline)){
+                    self.messageArea(false);
+                }else{
+                    self.messageArea(true);
+                }
                 dfd.resolve(data);    
             }).fail(function (res: any){
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
