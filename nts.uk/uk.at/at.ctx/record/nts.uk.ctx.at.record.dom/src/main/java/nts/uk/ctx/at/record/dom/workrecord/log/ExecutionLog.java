@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -22,19 +21,13 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
 @Getter
 public class ExecutionLog {
 	
-	/**
-	 * 就業計算と集計実行ログID
-	 */
+	/** 就業計算と集計実行ログID */
 	private String empCalAndSumExecLogID;
 	
-	/**
-	 * 実行内容
-	 */
+	/** 実行内容 */
 	private ExecutionContent executionContent;
 	
-	/**
-	 * エラーの有無
-	 */
+	/** エラーの有無 */
 	private ErrorPresent existenceError;
 	
 	/**
@@ -124,6 +117,10 @@ public class ExecutionLog {
 				EnumAdaptor.valueOf(processStatus,ExecutionStatus.class),
 				new ObjectPeriod(startObjectPeriod,endObjectPeriod)
 				);
+	}
+	
+	public boolean isComplete() {
+		return this.processStatus == ExecutionStatus.DONE;
 	}
 	
 }

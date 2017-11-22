@@ -1,92 +1,78 @@
 module nts.uk.at.view.kdw001.e.viewmodel {
-     import share001 = nts.uk.at.view.kdw001.share.share001;
+    import getText = nts.uk.resource.getText;
+    import shareModel = nts.uk.at.view.kdw001.share.model;
+    
     export class ScreenModel {
-        //combo box 
-        itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
-       
-        //gridlist
-        items: KnockoutObservableArray<Gridlist>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
+        // Combo box 
+        executionContents: KnockoutObservableArray<any>;
+        selectedExeContent: KnockoutObservable<string>;
+
+        // GridList
+        errorMessageInfo: KnockoutObservableArray<Gridlist>;
+        columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
-        //
-        empCalAndSumExecLogID: KnockoutObservable<string>;
+        
         /** 実行開始日時  Start date and time of execution*/
         executionDate: KnockoutObservable<string>;
-        
-        
-        taskId: KnockoutObservable<string>;
+        disposalDay: KnockoutObservable<string>;
+
         constructor() {
             var self = this;
+
+            self.executionContents = ko.observableArray([]);
+            self.selectedExeContent = ko.observable('1');
+            
+            self.errorMessageInfo = ko.observableArray([]);
+            self.columns = ko.observableArray([
+                { headerText: getText('KDW001_33'), key: 'empCD', width: 100 },
+                { headerText: getText('KDW001_35'), key: 'code', width: 150 },
+                { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
+                { headerText: getText('KDW001_37'), key: 'errContents', width: 150 },
+            ]);
+            self.currentCode = ko.observable();
+
             self.executionDate = ko.observable('');
-            self.itemList = ko.observableArray([
-                new ItemModel('1'),
-                new ItemModel('2'),
-                new ItemModel('3')
-            ]);
+            self.disposalDay = ko.observable('');
 
-            self.selectedCode = ko.observable('1');
-            self.items = ko.observableArray([]);
-
-            for (let i = 1; i < 100; i++) {
-                this.items.push(new Gridlist('00' + i, '基本給', "description " + i, i % 3 === 0, "2010/1/1"));
-            }
-            this.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KDW001_33'), key: 'empCD', width: 100 },
-                { headerText: nts.uk.resource.getText('KDW001_35'), key: 'code', width: 150 },
-                { headerText: nts.uk.resource.getText('KDW001_36'), key: 'disposalDay', width: 150 },
-                { headerText: nts.uk.resource.getText('KDW001_37'), key: 'errContents', width: 150 },
-            ]);
-            this.currentCode = ko.observable();
-
-            self.empCalAndSumExecLogID = ko.observable('1001');
-            self.taskId = ko.observable('');
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            let parameter = nts.uk.ui.windows.getShared("KDWL001D");
             let dfd = $.Deferred();
-           
-            service.getImplementationResult(self.empCalAndSumExecLogID()).done(function(data) {
+            var params: shareModel.executionProcessingCommand = nts.uk.ui.windows.getShared("KDWL001E");
+            
+            service.insertData(params).done((data: shareModel.executionResult) => {
                 console.log(data);
-                self.executionDate(data.empCalAndSumExeLogDto.executionDate);
-                dfd.resolve(data);
+                self.executionDate(data.periodStartDate);
+                self.executionContents(data.enumComboBox);
+                // Start checking proceess
+                self.executeTask(data);
+                dfd.resolve();
             });
-
-            return dfd.promise(); 
-        }
-        
-
-        btnAsyncTask() { 
-            var self = this;
-            service.asyncTask().done((info) => {
-                self.taskId(info.id);
-                nts.uk.deferred.repeat(function(conf) {
-                    return conf
-                        .task(function() {
-                            return nts.uk.request.asyncTask.getInfo(this.taskId).done(function(res) {
-                                console.log(res.status);
-                            });
-                        })
-                        .while(function(info) { return info.pending || info.running; })
-                        .pause(1000);
-                });
-            });
-
+            
+            return dfd.promise();
         }
 
-
-
-    }
-    class ItemModel {
-        code: string;
-       
-
-        constructor(code: string) {
-            this.code = code;
+        cancelTask() {
             
         }
+        
+        closeDialog() {
+            
+        }
+        
+        private executeTask(data: shareModel.executionResult) {
+            var self = this;            
+            nts.uk.deferred.repeat(conf => conf.task(() => {
+                    return service.executeTask(data).done((info) => {
+                        console.log(info);
+                    });
+                })
+                .while(info => !info.isComplete)
+                .pause(1000)
+            );
+        }
+
     }
 
     class Gridlist {
@@ -94,14 +80,14 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         code: string;
         disposalDay: string;
         errContents: string;
-       
+
 
         constructor(empCD: string, code: string, disposalDay: string, errContents: string) {
             this.empCD = empCD;
             this.code = code;
             this.disposalDay = disposalDay;
-            this.errContents = errContents ;
-          
+            this.errContents = errContents;
+
         }
 
     }

@@ -7,11 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 900, height: 1200 };</script>
+			<script>var dialogSize = { width: 800, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
 			<com:stylefile path="kdw001.e.style.css" />
+			<com:scriptfile path="../share/share001.vm.js" />
 			<com:scriptfile path="kdw001.e.start.js" />
 			<com:scriptfile path="kdw001.e.service.js" />
 			<com:scriptfile path="kdw001.e.vm.js" />
@@ -19,7 +20,6 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
 			<div id="contents-area">
 				<div >
 					<table>
@@ -74,21 +74,21 @@
 
 					<div tabindex="1" id="combo-box"
 						data-bind="ntsComboBox: {
-						options: itemList,
-						optionsValue: 'code',
+						options: executionContents,
+						optionsValue: 'value',
 						visibleItemsCount: 5,
-						value: selectedCode,
-						optionsText: 'name',
+						value: selectedExeContent,
+						optionsText: 'localizedName',
 						enable: true,
 						columns: [
-							{ prop: 'code', length: 4 },
+							{ prop: 'localizedName', length: 4 }
 						]}"></div>
 					<button tabindex="2">#{i18n.getText('KDW001_31')}</button>
 				</div>
 				<table id="single-list"
 					data-bind="ntsGridList: {								
 						height: 350,
-						dataSource: items,
+						dataSource: errorMessageInfo,
 						primaryKey: 'code',
 						columns: columns,
 						multiple: false,
@@ -97,7 +97,7 @@
 
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" data-bind = "click : btnAsyncTask">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="3" data-bind = "click : executeTask">#{i18n.getText('KDW001_39')}</button>
 				<button tabindex="4">#{i18n.getText('KDW001_38')}</button>
 			</div>
 		</ui:define>

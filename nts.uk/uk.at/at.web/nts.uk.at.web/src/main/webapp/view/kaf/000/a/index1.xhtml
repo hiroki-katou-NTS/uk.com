@@ -1,20 +1,18 @@
 <div class="contents-area cf">
-	<div id="message-area">
+	<div id="message-area" data-bind="visible : messageArea">
 		<table >
 			<tr>
 				<!-- A1_1 -->
-				<td class="message-td">#{i18n.getText('KAF000_1')}</td>
 				<!-- A1_2 -->
-				<td class="message-td" data-bind="if: outputMessageDeadline() != null">
-					<div data-bind="text:outputMessageDeadline().message" ></div>
+				<td class="message-td" data-bind="visible : reasonOutputMessFull() != null">
+					<div data-bind="text: reasonOutputMessFull()" ></div>
 				</td>
 			</tr>
 			<tr>
 				<!-- A1_3 -->
-				<td class="message-td">#{i18n.getText('KAF000_2')}</td>
 				<!-- A1_4 -->
-				<td class="message-td" data-bind="if: outputMessageDeadline() != null ">
-					<div data-bind="text:outputMessageDeadline().deadline" ></div>
+				<td class="message-td" data-bind="visible:  reasonOutputMessDealineFull() != null ">
+					<div data-bind="text: reasonOutputMessDealineFull()" ></div>
 				</td>
 			</tr>
 		</table>

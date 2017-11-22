@@ -20,6 +20,6 @@ public class UpdateApplicationDelete extends CommandHandlerWithResult<UpdateAppl
 	protected ListMailApproval handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		//5.2(hieult)
-		return new ListMailApproval(afterProcessDelete.screenAfterDelete(companyID, context.getCommand().getAppId()));
+		return new ListMailApproval(afterProcessDelete.screenAfterDelete(companyID, context.getCommand().getAppId(), context.getCommand().getVersion()));
 	}
 }

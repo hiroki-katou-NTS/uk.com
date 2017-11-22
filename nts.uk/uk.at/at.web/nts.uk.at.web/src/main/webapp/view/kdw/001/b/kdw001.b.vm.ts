@@ -1,8 +1,11 @@
 module nts.uk.at.view.kdw001.b {
     import getText = nts.uk.resource.getText;
+    import shareModel = nts.uk.at.view.kdw001.share.model;
 
     export module viewmodel {
         export class ScreenModel {
+            params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
+          // closureID: any = __viewContext.transferred.value.closureID;
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
@@ -25,7 +28,7 @@ module nts.uk.at.view.kdw001.b {
             dailyCalCheck: KnockoutObservable<boolean>;
             approvalResultCheck: KnockoutObservable<boolean>;
             forciblyCommitCheck: KnockoutObservable<boolean>;
-            MonthCountCheck: KnockoutObservable<boolean>;
+            monthCountCheck: KnockoutObservable<boolean>;
             //Declare for radio button group
             // enable2: KnockoutObservable<boolean>;
             // selectedValue2: KnockoutObservable<any>;
@@ -61,16 +64,14 @@ module nts.uk.at.view.kdw001.b {
             itemRecreateDevision: KnockoutObservableArray<any>;
             selectedRecreateDevision: KnockoutObservable<number>;
 
-            //data from screen C
-            dataC: any;
             constructor() {
                 var self = this;
-                self.dataC = nts.uk.ui.windows.getShared("KDW001_C_LISTEMPID_STARTDATE_ENDDATE");
-                nts.uk.ui.dialog.alert(self.dataC);
-
+               // self.params.setParamsScreenA({ closure: self.closureID });
+                self.params.setParamsScreenA({ closure: '1' });
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
                 self.dScreenmodel = new nts.uk.at.view.kdw001.d.viewmodel.ScreenModel();
+
 
                 //Init for checkBox Area
                 self.calDivisionCheck = ko.observable(false);
@@ -87,7 +88,7 @@ module nts.uk.at.view.kdw001.b {
                 self.dailyCalCheck = ko.observable(true);
                 self.approvalResultCheck = ko.observable(true);
                 self.forciblyCommitCheck = ko.observable(false);
-                self.MonthCountCheck = ko.observable(true);
+                self.monthCountCheck = ko.observable(true);
 
 
                 // init enable 
@@ -214,8 +215,8 @@ module nts.uk.at.view.kdw001.b {
             opendScreenD() {
                 var self = this;
 
-                if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.MonthCountCheck() == false) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
+                if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == false) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_205" });
                     return;
                 }
 
@@ -230,15 +231,217 @@ module nts.uk.at.view.kdw001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_572" });
                     return;
                 }
-               
-                if(self.selectedCreatDivisionCode()==2 || self.selectedCalDivisionCode()==2 || self.selectedAggregateClassCode()==2){
-                    nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                         $("#wizard").ntsWizard("next");
+
+                if (self.selectedCreatDivisionCode() == 2 || self.selectedCalDivisionCode() == 2 || self.selectedAggregateClassCode() == 2) {
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_575" }).ifYes(() => {
+                        self.params.setParamsScreenB({
+                            dailyCreation: self.dailyCreatedCheck(),
+                            creationType: self.dailyCreatedCheck() == true ? self.selectedCreatDivisionCode() : null,
+                            resetClass: self.recreateEnable() == true ? self.selectedRecreateDevision() : null,
+                            calClassReset: self.enableAll() == true ? self.calDivisionCheck() : null,
+                            masterReconfiguration: self.enableAll() == true ? self.masterInforCheck() : null,
+                            specDateClassReset: self.enableAll() == true ? self.dateDivisionCheck() : null,
+                            resetTimeForChildOrNurseCare: self.enableAll() == true ? self.childCareCheck() : null,
+                            refNumberFingerCheck: self.enableAll() == true ? self.reflectEmbossingCheck() : null,
+                            closedHolidays: self.enableAll() == true ? self.closedResetCheck() : null,
+                            resettingWorkingHours: self.enableAll() == true ? self.workingTimeCheck() : null,
+                            resetTimeForAssig: self.enableAll() == true ? self.transferTimeCheck() : null,
+                            dailyCalClass: self.dailyCalCheck(),
+                            calClass: self.dailyCalCheck() == true ? self.selectedCalDivisionCode() : null,
+                            refApprovalresult: self.approvalResultCheck(),
+                            refClass: self.approvalResultCheck() == true ? self.selectedReflectClassCode() : null,
+                            alsoForciblyReflectEvenIfItIsConfirmed: self.forciblyEnable() == true ? self.forciblyCommitCheck() : null,
+                            monthlyAggregation: self.monthCountCheck(),
+                            summaryClass: self.monthCountCheck() == true ? self.selectedAggregateClassCode() : null
+                        });
+
+                        //view Init value screen D
+                        self.dScreenmodel.periodDate(getText('KDW001_34', [self.params.periodStartDate, self.params.periodEndDate]));
+                        self.dScreenmodel.numberEmployee(getText('KDW001_21', [self.params.lstEmployeeID.length]));
+
+                        if (self.dailyCreatedCheck()) {
+                            var dailyCreatedText = getText('KDW001_9');
+                            self.dScreenmodel.dailyCreated(dailyCreatedText);
+                            self.dScreenmodel.dailyCreatedVisible(true);
+                            if (self.selectedCreatDivisionCode() == 2) {
+                                self.dScreenmodel.dailyCreated(dailyCreatedText += '(' + getText('KDW001_55') + ')');
+                                if (self.enableAll()) {
+                                    if (self.calDivisionCheck()) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_58'));
+                                    }
+                                    if (self.dateDivisionCheck()) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_60'));
+                                    }
+                                    if (self.reflectEmbossingCheck()) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_62'));
+                                    }
+                                    if (self.masterInforCheck()) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_59'));
+                                    }
+                                    if (self.childCareCheck()) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_61'));
+                                    }
+                                    if (self.closedResetCheck()) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_63'));
+                                    }
+                                    if (self.workingTimeCheck()) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_71'));
+                                    }
+                                    if (self.transferTimeCheck()) {
+                                        self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_72'));
+                                    }
+                                }
+                            }
+                        } else {
+                            self.dScreenmodel.dailyCreated('');
+                            self.dScreenmodel.dailyCreatedVisible(false);
+                        }
+
+                        if (self.dailyCalCheck()) {
+                            var dailyCalText = getText('KDW001_10');
+                            self.dScreenmodel.dailyCal(dailyCalText);
+                            self.dScreenmodel.dailyCalVisible(true);
+                            if (self.selectedCalDivisionCode() == 2) {
+                                self.dScreenmodel.dailyCal(dailyCalText += '(' + getText('KDW001_65') + ')');
+                            }
+                        } else {
+                            self.dScreenmodel.dailyCal('');
+                            self.dScreenmodel.dailyCalVisible(false);
+                        }
+
+                        if (self.approvalResultCheck()) {
+                            var approvalResultText = getText('KDW001_11');
+                            self.dScreenmodel.approvalResult(approvalResultText);
+                            self.dScreenmodel.approvalVisible(true);
+                            if (self.selectedReflectClassCode() == 2) {
+                                self.dScreenmodel.approvalResult(approvalResultText += '(' + getText('KDW001_67') + ')');
+                            }
+                        } else {
+                            self.dScreenmodel.approvalResult('');
+                            self.dScreenmodel.approvalVisible(false);
+                        }
+
+                        if (self.monthCountCheck()) {
+                            var monthCountText = getText('KDW001_12');
+                            self.dScreenmodel.monthCount(monthCountText);
+                            self.dScreenmodel.monthCountVisible(true);
+                            if (self.selectedAggregateClassCode() == 2) {
+                                self.dScreenmodel.monthCount(monthCountText += '(' + getText('KDW001_70') + ')');
+                            }
+
+                        } else {
+                            self.dScreenmodel.monthCount('');
+                            self.dScreenmodel.monthCountVisible(false);
+                        }
+
+                        $("#wizard").ntsWizard("next");
                     });
-                }else{
-                     $("#wizard").ntsWizard("next");
+                } else {
+                    self.params.setParamsScreenB({
+                        dailyCreation: self.dailyCreatedCheck(),
+                        creationType: self.dailyCreatedCheck() == true ? self.selectedCreatDivisionCode() : null,
+                        resetClass: self.recreateEnable() == true ? self.selectedRecreateDevision() : null,
+                        calClassReset: self.enableAll() == true ? self.calDivisionCheck() : null,
+                        masterReconfiguration: self.enableAll() == true ? self.masterInforCheck() : null,
+                        specDateClassReset: self.enableAll() == true ? self.dateDivisionCheck() : null,
+                        resetTimeForChildOrNurseCare: self.enableAll() == true ? self.childCareCheck() : null,
+                        refNumberFingerCheck: self.enableAll() == true ? self.reflectEmbossingCheck() : null,
+                        closedHolidays: self.enableAll() == true ? self.closedResetCheck() : null,
+                        resettingWorkingHours: self.enableAll() == true ? self.workingTimeCheck() : null,
+                        resetTimeForAssig: self.enableAll() == true ? self.transferTimeCheck() : null,
+                        dailyCalClass: self.dailyCalCheck(),
+                        calClass: self.dailyCalCheck() == true ? self.selectedCalDivisionCode() : null,
+                        refApprovalresult: self.approvalResultCheck(),
+                        refClass: self.approvalResultCheck() == true ? self.selectedReflectClassCode() : null,
+                        alsoForciblyReflectEvenIfItIsConfirmed: self.forciblyEnable() == true ? self.forciblyCommitCheck() : null,
+                        monthlyAggregation: self.monthCountCheck(),
+                        summaryClass: self.monthCountCheck() == true ? self.selectedAggregateClassCode() : null
+                    });
+
+                    //view Init value screen D
+                    self.dScreenmodel.periodDate(getText('KDW001_34', [self.params.periodStartDate, self.params.periodEndDate]));
+                    self.dScreenmodel.numberEmployee(getText('KDW001_21', [self.params.lstEmployeeID.length]));
+
+                    if (self.dailyCreatedCheck()) {
+                        var dailyCreatedText = getText('KDW001_9');
+                        self.dScreenmodel.dailyCreated(dailyCreatedText);
+                        self.dScreenmodel.dailyCreatedVisible(true);
+                        if (self.selectedCreatDivisionCode() == 2) {
+                            self.dScreenmodel.dailyCreated(dailyCreatedText += '(' + getText('KDW001_55') + ')');
+                            if (self.enableAll()) {
+                                if (self.calDivisionCheck()) {
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+ '→' + getText('KDW001_58'));
+                                }
+                                if (self.dateDivisionCheck()) {
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_60'));
+                                }
+                                if (self.reflectEmbossingCheck()) {
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_62'));
+                                }
+                                if (self.masterInforCheck()) {
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_59'));
+                                }
+                                if (self.childCareCheck()) {
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_61'));
+                                }
+                                if (self.closedResetCheck()) {
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_63'));
+                                }
+                                if (self.workingTimeCheck()) {
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_71'));
+                                }
+                                if (self.transferTimeCheck()) {
+                                    self.dScreenmodel.dailyCreated(dailyCreatedText += '<br>'+'→' + getText('KDW001_72'));
+                                }
+                            }
+                        }
+                    } else {
+                        self.dScreenmodel.dailyCreated('');
+                        self.dScreenmodel.dailyCreatedVisible(false);
+                    }
+
+                    if (self.dailyCalCheck()) {
+                        var dailyCalText = getText('KDW001_10');
+                        self.dScreenmodel.dailyCal(dailyCalText);
+                        self.dScreenmodel.dailyCalVisible(true);
+                        if (self.selectedCalDivisionCode() == 2) {
+                            self.dScreenmodel.dailyCal(dailyCalText += '(' + getText('KDW001_65') + ')');
+                        }
+                    } else {
+                        self.dScreenmodel.dailyCal('');
+                        self.dScreenmodel.dailyCalVisible(false);
+                    }
+
+                    if (self.approvalResultCheck()) {
+                        var approvalResultText = getText('KDW001_11');
+                        self.dScreenmodel.approvalResult(approvalResultText);
+                        self.dScreenmodel.approvalVisible(true);
+                        if (self.selectedReflectClassCode() == 2) {
+                            self.dScreenmodel.approvalResult(approvalResultText += '(' + getText('KDW001_67') + ')');
+                        }
+                    } else {
+                        self.dScreenmodel.approvalResult('');
+                        self.dScreenmodel.approvalVisible(false);
+                    }
+
+                    if (self.monthCountCheck()) {
+                        var monthCountText = getText('KDW001_12');
+                        self.dScreenmodel.monthCount(monthCountText);
+                        self.dScreenmodel.monthCountVisible(true);
+                        if (self.selectedAggregateClassCode() == 2) {
+                            self.dScreenmodel.monthCount(monthCountText += '(' + getText('KDW001_70') + ')');
+                        }
+
+                    } else {
+                        self.dScreenmodel.monthCount('');
+                        self.dScreenmodel.monthCountVisible(false);
+                    }
+
+
+
+                    $("#wizard").ntsWizard("next");
                 }
-                
+
             }
 
             opendScreenC() {

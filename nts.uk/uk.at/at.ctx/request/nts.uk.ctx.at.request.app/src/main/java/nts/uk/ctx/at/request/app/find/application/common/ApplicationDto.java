@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalFor
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationDto {
+	private Long version;
 	/**
 	 * 会社ID
 	 */
@@ -126,6 +127,7 @@ public class ApplicationDto {
 	
 	public static ApplicationDto fromDomain(Application domain) {
 		return new ApplicationDto(
+				domain.getVersion(),
 				domain.getCompanyID(),
 				domain.getApplicationID(),
 				domain.getPrePostAtr().value,
@@ -150,7 +152,7 @@ public class ApplicationDto {
 				);
 	}
 	public static Application toEntity(ApplicationDto entity) {
-		return new Application(entity.getCompanyID(), 
+		Application app = new Application(entity.getCompanyID(), 
 				entity.getApplicationID(), 
 				EnumAdaptor.valueOf(entity.getPrePostAtr(), PrePostAtr.class), 
 				entity.getInputDate() == null?null :GeneralDate.fromString(entity.getInputDate(), "yyyy/MM/dd"), 
@@ -172,6 +174,8 @@ public class ApplicationDto {
 				entity.getEndDate() == null?null :GeneralDate.fromString(entity.getEndDate(), "yyyy/MM/dd"), 
 				entity.getListPhase() == null ? null: entity.getListPhase().stream().map(x -> AppApprovalPhaseDto.toEntity(x)).collect(Collectors.toList())
 				);//entity.getListPhase()
+		app.setVersion(entity.version);
+		return app;
 	}
 	
 	

@@ -57,8 +57,8 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 
 			List<GeneralDate> listJointDate = new ArrayList<>();
 			// lấy toàn bộ ngày vào cty của employee
-			for (int i = 0; i < listEntryJobHist.size(); i++) {
-				listJointDate.add(listEntryJobHist.get(i).getJoinDate());
+			for (int i = 0; i < employee.getListEntryJobHist().size(); i++) {
+				listJointDate.add(employee.getListEntryJobHist().get(i).getJoinDate());
 			}
 			// lấy ngày vào cty đầu tiên
 			GeneralDate firtJointDate = Collections.min(listJointDate);
@@ -82,9 +82,9 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 				// tốn tại domain 
 				TemporaryAbsence temporaryAbsenceDomain = temporaryAbsOpt.get();
 				// set LeaveHolidayType 
-				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
+				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getLeaveHolidayState().getTempAbsenceType().value);
 
-				if (temporaryAbsenceDomain.getTempAbsenceType().value == 1) {
+				if (temporaryAbsenceDomain.getLeaveHolidayState().getTempAbsenceType().value == 1) {
 					// trường hợp 休職休業区分＝休職  LeaveHolidayState = TEMP_LEAVE(1)
 					
 					// StatusOfEmployment = LEAVE_OF_ABSENCE

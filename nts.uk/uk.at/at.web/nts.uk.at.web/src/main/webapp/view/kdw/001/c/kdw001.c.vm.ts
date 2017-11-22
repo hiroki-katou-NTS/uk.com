@@ -34,6 +34,10 @@ module nts.uk.at.view.kdw001.c {
             baseDate: KnockoutObservable<Date>;
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
+            //close period
+            periodStartDate: any;
+
+
 
             constructor() {
 
@@ -67,7 +71,7 @@ module nts.uk.at.view.kdw001.c {
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.multiSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
@@ -86,10 +90,14 @@ module nts.uk.at.view.kdw001.c {
                 self.dateValue().startDate = "2017/11/08";
                 self.dateValue().endDate = today;
 
-                var closureID = __viewContext.transferred.value.closureID;
-                service.findPeriodById(closureID).done((data) => {
+
+                //var closureID = __viewContext.transferred.value.closureID;
+                var closureID = '1';
+                service.findPeriodById(Number(closureID)).done((data) => {
+                    self.periodStartDate = data.startDate.toString();
                     self.dateValue().startDate = data.startDate.toString();
                     self.dateValue().endDate = data.endDate.toString();
+                    self.dateValue.valueHasMutated();
                 }).always(() => {
                     self.startDateString = ko.observable("");
                     self.endDateString = ko.observable("");
@@ -135,12 +143,29 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         self.showinfoSelectedEmployee(true);
                         var dataEmployee: EmployeeSearchDto[] = [];
                         dataEmployee.push(data);
                         self.selectedEmployee(dataEmployee);
+                        
+                        //Bug self fix
+                        let unitModel = new UnitModel(data);
+                        let listUnitModel: UnitModel[] = [];
+                        listUnitModel.push(unitModel);
+                        self.employeeList(listUnitModel);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList: any = [];
+                        selectList.push(data.employeeCode);
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -151,6 +176,12 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -161,6 +192,12 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -171,6 +208,12 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+                        
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataEmployee, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     }
 
                 }
@@ -180,10 +223,9 @@ module nts.uk.at.view.kdw001.c {
 
             opendScreenBorJ() {
                 let self = this;
-
-                var closureID = __viewContext.transferred.value.closureID;
-                service.findById(closureID).done((data) => {
-
+                //var closureID = __viewContext["viewmodel"].closureID;
+                var closureID = '1';
+                service.findPeriodById(Number(closureID)).done((data) => {
                     if (data) {
                         let listEmpSelected = self.listComponentOption.selectedCode();
                         if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
@@ -202,13 +244,25 @@ module nts.uk.at.view.kdw001.c {
 
                         if (timeDifferenceInDays > 31) {
                             nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                                let monthNow = data.month;
+                                let yearPeriodStartDate = self.periodStartDate.split("/")[0];
+                                let monthPeriodStartDate = self.periodStartDate.split("/")[1];
+                                let dayPeriodStartDate = self.periodStartDate.split("/")[2];
+                                let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
                                 let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                                if (monthStartDate < monthNow) {
+                                let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
+                                if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
                                     nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;
                                 }
-                                $("#wizard").ntsWizard("next");
+
+                                __viewContext["viewmodel"].params.setParamsScreenC({
+                                    lstEmployeeID: listEmpSelected,
+                                    periodStartDate: self.dateValue().startDate,
+                                    periodEndDate: self.dateValue().endDate
+                                });
+                                $("#wizard").ntsWizard("next").done(function() {
+                                    $('#checkBox1').focus();
+                                });
 
                             })
 
@@ -219,7 +273,14 @@ module nts.uk.at.view.kdw001.c {
                                 nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                 return;
                             }
-                            $("#wizard").ntsWizard("next");
+                            __viewContext["viewmodel"].params.setParamsScreenC({
+                                lstEmployeeID: listEmpSelected,
+                                periodStartDate: self.dateValue().startDate,
+                                periodEndDate: self.dateValue().endDate
+                            });
+                            $("#wizard").ntsWizard("next").done(function() {
+                                $('#checkBox1').focus();
+                            });
 
                         }
                     }

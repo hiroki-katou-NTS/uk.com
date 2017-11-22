@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw001.a {
 
             //shime list.
             closureList: Array<Closure>;
-            
+
             closureID: any;
 
             constructor() {
@@ -20,12 +20,20 @@ module nts.uk.at.view.kdw001.a {
                     });
                     self.closureList = items;
                 });
-                
-                service.getMaxClosure().done((data)=>{
-                 self.closureID =  data.closureID;
-                });
-                
-                
+
+                /*  service.getMaxClosure().done((data)=>{
+                      if(!nts.uk.util.isNullOrUndefined(data)){
+                          self.closureID =  data.closureID;
+                      }else{
+                          self.closureID = '1';
+                          nts.uk.ui.dialog.alert("closureID doesn't exist!");
+                      }
+                  });
+                  
+                  */
+                // closureID get form CCG001. 
+                self.closureID = '1';
+
             }
 
             opendScreenF() {
@@ -35,48 +43,50 @@ module nts.uk.at.view.kdw001.a {
             opendScreenJC() {
                 let self = this;
                 //nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0, "screenName": "J" });
-                nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"closureID":self.closureID});
+                //  nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"closureID":self.closureID});
+                nts.uk.request.jump("/view/kdw/001/j/index.xhtml");
             }
 
             opendScreenBC() {
                 let self = this;
                 //nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 0, "screenName": "B" });
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"closureID":self.closureID});
+                //nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"closureID":self.closureID});
+                nts.uk.request.jump("/view/kdw/001/b/index.xhtml");
             }
         }
 
         /**
          * The Class ClosureFindDto.
          */
-        export interface IClosure{
+        export interface IClosure {
             closureId: number;
             useClassification: number;
             month: number;
             closureSelected: ClosureHistoryMaster;
             closureHistories: Array<ClosureHistoryMaster>;
         }
-        
+
         export class Closure {
             closureId: number;
             useClassification: number;
             month: number;
             closureSelected: ClosureHistoryMaster;
             closureHistories: Array<ClosureHistoryMaster>;
-            
-            constructor(x: IClosure){
+
+            constructor(x: IClosure) {
                 let self = this;
-                if(x){
+                if (x) {
                     self.closureId = x.closureId;
                     self.useClassification = x.useClassification;
                     self.month = x.month;
                     self.closureSelected = x.closureSelected;
-                    self.closureHistories =  x.closureHistories;
-                }else{
+                    self.closureHistories = x.closureHistories;
+                } else {
                     self.closureId = 0;
                     self.useClassification = 0;
                     self.month = 0;
                     self.closureSelected = null;
-                    self.closureHistories =  null;
+                    self.closureHistories = null;
                 }
             }
         }

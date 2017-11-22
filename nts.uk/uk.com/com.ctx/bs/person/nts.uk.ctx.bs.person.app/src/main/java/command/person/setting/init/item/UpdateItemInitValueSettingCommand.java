@@ -16,6 +16,8 @@ public class UpdateItemInitValueSettingCommand {
 	// thằng con itemId của ctgId
 	private String perInfoItemDefId;
 	
+	private String itemName;
+	
 	// chỉ số để xem thuộc 1 trong 8 kiểu
 	// nosetting or save as login employee
 	private int refMethodType;
@@ -23,6 +25,8 @@ public class UpdateItemInitValueSettingCommand {
 	private int saveDataType;
 	
 	private int itemType;
+	
+	private int isRequired;
 	
 	// dataType của item
 	private int dataType;

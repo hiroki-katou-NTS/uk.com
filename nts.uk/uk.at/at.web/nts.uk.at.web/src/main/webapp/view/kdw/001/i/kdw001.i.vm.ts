@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw001.i {
+    module nts.uk.at.view.kdw001.i {
     import modelkdw001f = nts.uk.at.view.kdw001.f.model;
     export module viewmodel {
         export class ScreenModel {
@@ -18,7 +18,7 @@ module nts.uk.at.view.kdw001.i {
             //nameclosure
             nameClosure : string;
             
-            processingMonth:number;
+            processingMonth: KnockoutObservable<number>;
             //TargetPerson 
             listTargetPerson: KnockoutObservableArray<model.TargetPerson>;
             listPerson: Array<string>;
@@ -47,7 +47,7 @@ module nts.uk.at.view.kdw001.i {
                 self.executionTime = ko.observable(null);
                 self.exeStartTime = '';
                 self.exeEndTime = '';
-                self.processingMonth = 0;
+                self.processingMonth = ko.observable (0);
 
 
                 //TargetPerson
@@ -84,7 +84,7 @@ module nts.uk.at.view.kdw001.i {
                 service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: modelkdw001f.IEmpCalAndSumExeLog): any {
                     self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data));
                     self.processingMonthName(self.empCalAndSumExecLog().processingMonthName);
-                    self.processingMonth = self.empCalAndSumExecLog().processingMonth;
+                    self.processingMonth(self.empCalAndSumExecLog().processingMonth%100);
                     self.executedMenuJapan(self.empCalAndSumExecLog().executedMenuJapan);
                     //date
                     let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data.executionLogs, ['executionContent'], ['desc']);
@@ -94,7 +94,7 @@ module nts.uk.at.view.kdw001.i {
                             if(self.listErrMessageInfo()[i].executionContent == value.executionContent){
                                 temp.push(self.listErrMessageInfo()[i]);
                             }    
-                        }
+                        } 
                          var numberPersonErr =  _.chain(temp)
                         .groupBy("employeeID")
                         .toPairs()
@@ -159,6 +159,7 @@ module nts.uk.at.view.kdw001.i {
                 let param = {
                     //・就業計算と集計実行ログID
                     empCalAndSumExecLogID : self.empCalAndSumExecLogID,
+                    executionContent : execution.executionContent,
                     //・社員ID（list）  ・従業員の実行状況
                     listTargetPerson : self.listTargetPerson(),
                     //・実行開始日時
@@ -168,7 +169,7 @@ module nts.uk.at.view.kdw001.i {
                     //・選択した締め
                     nameClosue : self.nameClosure,
                     //・処理月
-                    processingMonth : self.processingMonth
+                    processingMonth : self.processingMonth()
                 };
                 if(self.listTargetPerson().length>0){
                     nts.uk.ui.windows.setShared("openG", param);
@@ -184,6 +185,7 @@ module nts.uk.at.view.kdw001.i {
                 let param = {
                     //・就業計算と集計実行ログID
                     empCalAndSumExecLogID : self.empCalAndSumExecLogID,
+                    executionContent : execution.executionContent,
                     //・社員ID（list）  ・従業員の実行状況
                     listTargetPerson : self.listTargetPerson(), 
                     //・実行開始日時
@@ -193,7 +195,7 @@ module nts.uk.at.view.kdw001.i {
                     //・選択した締め
                     nameClosue : self.nameClosure,
                     //・処理月
-                    processingMonth : self.processingMonth
+                    processingMonth : self.processingMonth()
                 };
                 if(execution.numberPersonErr >0){
                     nts.uk.ui.windows.setShared("openH", param);
@@ -215,8 +217,8 @@ module nts.uk.at.view.kdw001.i {
         export class TargetPerson {
             employeeId: string;
             empCalAndSumExecLogId: string;
-            state: ComplStateOfExeContents;
-            constructor(employeeId: string, empCalAndSumExecLogId: string, state: ComplStateOfExeContents) {
+            state: Array<ComplStateOfExeContents>;
+            constructor(employeeId: string, empCalAndSumExecLogId: string, state: Array<ComplStateOfExeContents>) {
                 this.employeeId = employeeId;
                 this.empCalAndSumExecLogId = empCalAndSumExecLogId;
                 this.state = state;

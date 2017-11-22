@@ -18,7 +18,7 @@ public class FlexOffdayWorkTime {
 
 	/** The work timezone. */
 	// 勤務時間帯
-	private List<BreakTimezoneSet> workTimezone;
+	private List<HolidayWorkTimeSheetSet> workTimezone;
 
 	/** The rest timezone. */
 	// 休憩時間帯

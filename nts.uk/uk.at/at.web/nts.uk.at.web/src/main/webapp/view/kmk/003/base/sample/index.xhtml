@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/sample/catalog/catalog.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/sample/catalog/catalog.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kmk/003/base/fixtable/fixtable.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="kmk003.sample.start.js" />
+			<com:scriptfile path="kmk003.sample.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+			
+				<div id="side-menu" class="cf"></div>
+				
+				<div style="margin-left: 30px" id="content" class="cf">
+					<div style="margin-bottom: 10px;">
+						<div style="margin-bottom: 15px;">
+							<button data-bind="click: addRowItem" style="margin-right: 10px;">Add
+								row item</button>
+							<button data-bind="click: removeItem, enable: enable">Remove
+								item</button>
+						</div>
+
+						<div class="cf"
+								data-bind="ntsSwitchButton: {
+														options: selectionOption,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectedType,
+														enable: true }"></div>
+					</div>	
+					<div id="nts-fix-table"></div>
+					
+					<h2>Guide</h2>
+					<article class="cf" style="margin-top: 10px;">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<!-- BEGIN TAB HTML -->
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+									<pre><![CDATA[<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="/view/kmk/003/base/fixtable/fixtable.js" of="/nts.uk.at.web"/>
+</ui:define>]]></pre>
+									<p>Create a div tag to bind table</p>
+									<pre><![CDATA[<div id="nts-fix-table"></div>]]></pre>
+								</div><!-- END TAB HTML -->
+								
+								<!-- BEGIN TABS VIEWMODEL -->
+								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+									<h3>ViewModel</h3>
+									<pre><![CDATA[<!--MULTIPLE CHOICE-->
+export class ScreenModel {
+
+	fixTableOption: any;
+	itemList: KnockoutObservableArray<any>;
+	dataSource: KnockoutObservableArray<any>;
+	
+	constructor() {
+	    let self = this;
+	    
+	    self.itemList = ko.observableArray([
+	        {code: 1, name: '基本給1'},
+	        {code: 2, name: '役職手当2'},
+	        {code: 3, name: '基本給3'}
+	    ]);
+	    
+	    self.dataSource = ko.observableArray(self.fakeDataSource());
+	    
+	    self.fixTableOption = {
+	        maxRows: 5,
+	        dataSource: self.dataSource,
+	        isMultipleSelect: true,
+	        columns: self.columnSetting()
+	    }
+	}
+	          
+	/**
+	 * Start page
+	 */
+	public startPage(): JQueryPromise<any> {
+	    let self = this;
+	    let dfd = $.Deferred<any>();
+	
+	    dfd.resolve();
+	    return dfd.promise();
+	}
+	
+	/**
+	 * fakeDataSource
+	 */
+	private fakeDataSource(): Array<any> {
+	    return [
+	        {column1: ko.observable("12:00"), column2: ko.observable(true), column3: ko.observable({}),
+	            column4: ko.observable(1)},
+	        {column1: ko.observable("23:00"), column2: ko.observable(false), column3: ko.observable({}),
+	            column4: ko.observable(2)},
+	        {column1: ko.observable("10:00"), column2: ko.observable(false), column3: ko.observable({}),
+	            column4: ko.observable(3)}
+	    ];
+	}
+	
+	/**
+	 * columnSetting
+	 */
+	private columnSetting(): Array<any> {
+	    let self = this;
+	    return [
+	        {headerText: "カラム1", key: "column1", width: 107, template: `<input data-bind="ntsTimeEditor: {
+	            inputFormat: 'date'}" />`, cssClassName: 'column-time-editor'},
+	        {headerText: "カラム2", key: "column2", width: 60, template: `<div data-bind="ntsCheckBox: {
+	            enable: true}"></div>`},
+	        {headerText: "カラム3", key: "column3", width: 243, template: `<div data-bind="ntsDateRangePicker: {
+	            required: true, enable: true,showNextPrevious: false, maxRange: 'oneMonth'}"/>`},
+	        {headerText: "カラム4", key: "column4", width: 300, dataSource: self.itemList(), template: `<div data-bind="ntsComboBox: {
+	                                optionsValue: 'code',
+	                                visibleItemsCount: 5,
+	                                optionsText: 'name',
+	                                editable: false,
+	                                enable: true,
+	                                columns: [
+	                                    { prop: 'code', length: 4 },
+	                                    { prop: 'name', length: 10 },
+	                                ]}"></div>`, cssClassName: 'column-combo-box'}
+	    ];
+	}
+	
+	public addRowItem() {
+	    let self = this;
+	    self.dataSource.push({column1: ko.observable("10:00"), column2: ko.observable(false),
+	        column3: ko.observable({}), column4: ko.observable(3)});
+	}
+	public removeItem() {
+	    let self = this;
+	    self.dataSource(self.dataSource().filter(item => item.isChecked() == false));
+	}
+								]]></pre>
+								<pre><![CDATA[<!--It is called after apply binding done. This return JQueryPromise<void>-->
+$('#nts-fix-table').ntsFixTableCustom(screenModel.fixTableOption);
+									]]></pre>
+									<h2>API</h2>
+									<table style="width: 700px">
+										<thead>
+											<td style="text-align: center;"><h4>Method</h4></td>
+											<td style="text-align: center;"><h4>Description</h4></td>
+										</thead>
+										<tr>
+											<td>dataSource</td>
+											<td>
+												<b>Type:</b> KnockoutObservableArray<br/>
+												<label><i>Description:</i>Data source of table.</label>
+											</td>
+										</tr>
+										<tr>
+											<td>isMultipleSelect</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label><i>Description:</i>multiple/single selection</label>
+											</td>
+										</tr>
+										<tr>
+											<td>columns</td>
+											<td>
+												<b>Type:</b> Array[FixColumn]<br/>
+												<div><i>Description:</i> Column setting.</div>
+												<pre><![CDATA[FixColumn {
+	// Header text of column
+	headerText: string;
+	
+	// Primary key column
+	key: string;
+	
+	// width column
+	width: number;
+	
+	// Control type (control of Kiban team)
+	controlType: number;
+	
+	// dataSource control if has. Ex: option comboBox, ...
+	dataSource: Array<any>;
+	
+	// temple html
+	template: string;
+	
+	// class JQuery
+	cssClassName?: string;
+}]]></pre>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<lable>maxRows</lable> <br/>
+												<lable><i>(optinal)</i></lable>
+											</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<b>Default:</b><i>12</i><br/>
+												<label><i>Description:</i>Display max row in tree grid.</label>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<lable>tabindex</lable> <br/>
+												<lable><i>(optional)</i></lable>
+											</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<b>Default:</b><i>Set tabindex for table.</i><br/>
+											</td>
+											
+										</tr>
+									</table>
+								</div><!-- END TABS VIEWMODEL -->
+							</div>
+						</article><!-- END DESCRIPTION -->
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

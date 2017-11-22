@@ -1,0 +1,42 @@
+@CHARSET "UTF-8";
+#left-content {
+	margin-left: 30px;
+	margin-top: 20px;
+	padding: 25px;
+	float: left;
+	max-height: 300px;
+}
+
+#right-content {
+	margin-left: 40px;
+	float: left;
+	margin-top: 20px;
+}
+
+.ntsRadioBox {
+	width: 100%;
+	margin-top: 10px;
+}
+
+.line {
+	display: inline-block;
+}
+
+.left-line {
+	width: 120px;
+}
+
+.row {
+	height: 50px;
+}
+
+#single-list-dataSource tr td {
+	white-space: nowrap;
+}
+
+#content-area{
+	width: 1260px;
+}
+#inpDialog{
+	margin-left: 30px;
+}

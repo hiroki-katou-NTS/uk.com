@@ -9,7 +9,7 @@ public interface AffiliationInforOfDailyPerforRepository {
 	
 	void delete(String employeeId, GeneralDate ymd);
 	
-	void addEmploymentCode(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
+	void add(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
 	
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 }

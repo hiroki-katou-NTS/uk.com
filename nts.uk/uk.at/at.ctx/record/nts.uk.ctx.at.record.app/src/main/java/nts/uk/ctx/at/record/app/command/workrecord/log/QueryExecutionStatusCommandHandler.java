@@ -1,71 +1,75 @@
 package nts.uk.ctx.at.record.app.command.workrecord.log;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import lombok.val;
-import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.record.app.command.workrecord.log.CheckingProcessingResult.CheckingExecutionLogResult;
+import nts.uk.ctx.at.record.app.find.log.dto.ErrMessageInfoDto;
 import nts.uk.ctx.at.record.dom.workrecord.log.ComplStateOfExeContents;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.EmployeeExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 
 @Stateless
 @Transactional
-public class QueryExecutionStatusCommandHandler extends AsyncCommandHandler<ExecutionProcessingCommand> {
-
-	@Inject EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+public class QueryExecutionStatusCommandHandler extends CommandHandlerWithResult<ExecutionCommandResult, CheckingProcessingResult> {
 	
-	@Inject TargetPersonRepository targetPersonRepository;
+	@Inject
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+
+	@Inject
+	private TargetPersonRepository targetPersonRepository;
+	
+	@Inject
+	private ErrMessageInfoRepository errMessageInfoRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<ExecutionProcessingCommand> context) {
+	protected CheckingProcessingResult handle(CommandHandlerContext<ExecutionCommandResult> context) {
 		val command = context.getCommand();
-		val asyncContext = context.asAsync();
-		val dataSetter = asyncContext.getDataSetter();
 		
-		// Insert EmpCalAndSumExeLog
-		DefaultExecutionProcessingCommandAssembler empCalAndAggregationAssembler = new DefaultExecutionProcessingCommandAssembler();
-		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndAggregationAssembler.fromDTO(command);
-		empCalAndSumExeLogRepository.add(empCalAndSumExeLog);
+		CheckingProcessingResult result = new CheckingProcessingResult();
+
+		// EmpCalAndSumExeLog
+		val empCalAndSumExeLog = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(command.getEmpCalAndSumExecLogID()).get();
 		
-		ExecutionCommandResult metadata = new ExecutionCommandResult(
-				empCalAndSumExeLog.getEmpCalAndSumExecLogID(), 
-				command.getPeriodStartDate(),
-				command.getPeriodEndDate(),
-				command.getTargetEndDate());		
-		dataSetter.setData("processingData", metadata);
+		// Get list TargetPerson
+		List<TargetPerson> lstTargetPerson = targetPersonRepository.getByempCalAndSumExecLogID(command.getEmpCalAndSumExecLogID());
 		
-		// Insert TargetPerson
-		List<TargetPerson> listTarget = new ArrayList<TargetPerson>();
-		dataSetter.setData("targetPersons", listTarget);
-		for (String employeeID : command.getLstEmployeeID()) {
-			if (asyncContext.hasBeenRequestedToCancel()) {
-				asyncContext.finishedAsCancelled();
-				metadata.setContinue(false);
-				dataSetter.updateData("processingData", metadata);
-				break;
-			}
-			
-			TargetPerson targetPerson = TargetPerson.createJavaType(
-					/** employeeId */
-					employeeID,
-					/** empCalAndSumExecLogId */
-					empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-					/** state */
-					new ComplStateOfExeContents(ExecutionContent.DAILY_CALCULATION, EmployeeExecutionStatus.INCOMPLETE));
-			targetPersonRepository.add(targetPerson);
-			listTarget.add(targetPerson);
-			dataSetter.updateData("targetPersons", listTarget);
+		// Set other data
+		for (ExecutionLog executionLog: empCalAndSumExeLog.getExecutionLogs()) {
+			CheckingExecutionLogResult checkingExecutionLogResult = result.new CheckingExecutionLogResult();
+			checkingExecutionLogResult.setTotal(lstTargetPerson.size());
+			checkingExecutionLogResult.updateStatusFromLog(executionLog);
+			result.addLogResult(checkingExecutionLogResult);
+			if (!executionLog.isComplete())
+				result.notComplete();
 		}
+		
+		// Increase count
+		for (TargetPerson targetPerson : lstTargetPerson) {
+			for (ComplStateOfExeContents state: targetPerson.getState()) {
+				if (state.isComplete()) {
+					result.increaseCount(state.getExecutionContent());
+				}
+			}
+		}
+		
+		// Check complete
+		if (result.isComplete()) {
+			val errMessageInfos = errMessageInfoRepository.getAllErrMessageInfoByEmpID(command.getEmpCalAndSumExecLogID());
+			result.setErrorMessageInfos(errMessageInfos.stream().map(c -> ErrMessageInfoDto.fromDomain(c)).collect(Collectors.toList()));
+			
+		}
+		
+		return result;
 	}
-	
 }
