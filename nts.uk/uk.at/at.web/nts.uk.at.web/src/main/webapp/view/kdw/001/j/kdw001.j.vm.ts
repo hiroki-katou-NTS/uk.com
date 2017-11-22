@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw001.j {
         export class ScreenModel {
 
             params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
-            closureID: any = __viewContext.transferred.value.closureID;
+          //  closureID: any = __viewContext.transferred.value.closureID;
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
@@ -31,7 +31,7 @@ module nts.uk.at.view.kdw001.j {
 
             constructor() {
                 var self = this;
-                self.params.setParamsScreenA({ closure: self.closureID });
+                self.params.setParamsScreenA({ closure: '1' });
 
                 self.currentItem = ko.observable();
 
