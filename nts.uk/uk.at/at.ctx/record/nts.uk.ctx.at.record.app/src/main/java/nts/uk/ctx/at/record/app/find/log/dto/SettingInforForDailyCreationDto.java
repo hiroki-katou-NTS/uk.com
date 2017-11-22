@@ -31,11 +31,15 @@ public class SettingInforForDailyCreationDto {
 	
 	
 	public static SettingInforForDailyCreationDto fromDomain(SettingInforForDailyCreation domain) {
+		PartResetClassificationDto partResetClassification = null;
+		if(domain.getPartResetClassification().isPresent()) { 
+			partResetClassification = PartResetClassificationDto.fromDomain(domain.getPartResetClassification().get());
+		}
 		return new SettingInforForDailyCreationDto(
 				domain.getExecutionType().value,
 				domain.getExecutionType().nameId,
 				domain.getCreationType().value,
-				PartResetClassificationDto.fromDomain(domain.getPartResetClassification().get())
+				partResetClassification
 				);
 		
 	}
