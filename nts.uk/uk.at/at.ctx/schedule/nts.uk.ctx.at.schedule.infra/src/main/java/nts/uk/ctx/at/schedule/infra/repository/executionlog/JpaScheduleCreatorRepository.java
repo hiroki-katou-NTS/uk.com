@@ -213,11 +213,7 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	private KscdtScheExeTarget toEntityUpdate(ScheduleCreator domain) {
 		Optional<KscdtScheExeTarget> opEntity = this.findById(domain.getExecutionId(),
 				domain.getEmployeeId());
-		KscdtScheExeTarget entity = new KscdtScheExeTarget();
-
-		if (opEntity.isPresent()) {
-			entity = opEntity.get();
-		}
+		KscdtScheExeTarget entity = opEntity.get();
 
 		domain.saveToMemento(new JpaScheduleCreatorSetMemento(entity));
 		return entity;

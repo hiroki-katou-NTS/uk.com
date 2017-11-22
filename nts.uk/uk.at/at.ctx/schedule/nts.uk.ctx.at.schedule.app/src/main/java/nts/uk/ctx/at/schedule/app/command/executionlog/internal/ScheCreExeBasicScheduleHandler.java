@@ -39,6 +39,14 @@ public class ScheCreExeBasicScheduleHandler {
 	@Inject
 	private BasicScheduleRepository basicScheduleRepository;
 	
+	/** The sche cre exe error log handler. */
+	@Inject
+	private ScheCreExeErrorLogHandler scheCreExeErrorLogHandler;
+	
+	/** The sche cre exe work time handler. */
+	@Inject
+	private ScheCreExeWorkTimeHandler scheCreExeWorkTimeHandler;
+	
 	/**
 	 * Update all data to command save.
 	 *
@@ -48,7 +56,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param workTimeCode the work time code
 	 */
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, String employeeId,
-			String worktypeCode, String workTimeCode, WorkTimeSet workTimeSet) {
+			String worktypeCode, String workTimeCode) {
 
 		// get short work time
 		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, command.getToDate());
@@ -60,7 +68,7 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setWorktimeCode(workTimeCode);
 		commandSave.setYmd(command.getToDate());
 		
-		if(optionalShortTime.isPresent()){
+		if (optionalShortTime.isPresent()) {
 			commandSave
 					.setChildCareSchedules(
 							optionalShortTime.get().getLstTimeSlot().stream()
@@ -69,9 +77,20 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
-		if (workTimeSet != null) {
-			commandSave.setWorkScheduleTimeZones(workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
-					.map(timezone -> this.convertTimeZoneToScheduleTimeZone(timezone)).collect(Collectors.toList()));
+		// check not exist error 
+		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(), employeeId)) {
+
+			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
+			commandGetter.setWorktypeCode(worktypeCode);
+			commandGetter.setCompanyId(command.getCompanyId());
+			commandGetter.setWorkingCode(workTimeCode);
+			Optional<WorkTimeSet> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler.getScheduleWorkHour(commandGetter);
+			if (optionalWorkTimeSet.isPresent()) {
+				WorkTimeSet workTimeSet = optionalWorkTimeSet.get();
+				commandSave.setWorkScheduleTimeZones(workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
+						.map(timezone -> this.convertTimeZoneToScheduleTimeZone(timezone))
+						.collect(Collectors.toList()));
+			}
 		}
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getIsConfirm(), ConfirmedAtr.CONFIRMED).value);

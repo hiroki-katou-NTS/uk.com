@@ -302,13 +302,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	private KscdtBasicSchedule toEntityUpdate(BasicSchedule domain) {
 		KscdtBasicSchedule entity = new KscdtBasicSchedule();
 		Optional<KscdtBasicSchedule> optionalEntity = this.findById(domain.getEmployeeId(), domain.getDate());
-		if (optionalEntity.isPresent()) {
-			entity = optionalEntity.get();
-		}
+		entity = optionalEntity.get();
 		domain.saveToMemento(new JpaBasicScheduleSetMemento(entity));
 		entity.workTimeCode = StringUtil.isNullOrEmpty(domain.getWorkTimeCode(), true)
 				|| ("000").equals(domain.getWorkTimeCode()) ? "   " : domain.getWorkTimeCode();
-		
+
 		return entity;
 	}
 
