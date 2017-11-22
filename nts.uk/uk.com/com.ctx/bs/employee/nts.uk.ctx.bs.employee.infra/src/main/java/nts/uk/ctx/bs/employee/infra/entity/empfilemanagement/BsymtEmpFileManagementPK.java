@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @Data
 @Embeddable
 public class BsymtEmpFileManagementPK {
-	
-private static final long serialVersionUID = 1L;
-	
-	/** The sid. */
+
+	private static final long serialVersionUID = 1L;
+
+	/** ファイルID */
 	@Basic(optional = false)
-	@Column(name="FILE_ID")
+	@Column(name = "FILE_ID")
 	public String fileid;
 
 }
