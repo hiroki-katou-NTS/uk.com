@@ -217,6 +217,12 @@
 	min-width: 860px;
 }
 
+#contents-area .category-input .layout-control .drag-panel {
+	min-width: 830px;
+	border: none;
+	height: auto;
+}
+
 .ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
 	.ui-iggrid .ui-iggrid-tablebody td {
 	border-top: none;
@@ -267,5 +273,6 @@
 .category-input>.title {
 	display: block;
 	line-height: 37px;
+	text-align: center;
 	background-color: #cee6ff;
 }

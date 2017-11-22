@@ -36,6 +36,10 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	private static final String GET_LAST_HISTORY_BY_SELECTION_ID = SELECT_ALL_HISTORY_SELECTION
 			+ " AND si.endDate =:endDate";
 	
+	//getAllDataByCompanyCD = CompanyCDRoot:
+	private static final String SELECT_ALL_DATA_BY_COMPANY_ID = SELECT_ALL 
+			+ " WHERE si.companyId = :companyId";
+
 	@Override
 	public void add(PerInfoHistorySelection domain) {
 		this.commandProxy().insert(toHistEntity(domain));
@@ -44,8 +48,13 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 
 	@Override
 	public void update(PerInfoHistorySelection domain) {
-		this.commandProxy().update(toHistEntity(domain));
-
+		PpemtHistorySelection newEntity = toHistEntity(domain);
+		PpemtHistorySelection updateEntity = this.queryProxy().find(newEntity.histidPK, PpemtHistorySelection.class).get();
+		updateEntity.companyId = newEntity.companyId;
+		updateEntity.selectionItemId = newEntity.selectionItemId;
+		updateEntity.startDate = newEntity.startDate;
+		updateEntity.endDate = newEntity.endDate;
+		this.commandProxy().update(updateEntity);
 	}
 
 	@Override
@@ -84,7 +93,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 
 	// historyStartDateSelection
 	@Override
-	public List<PerInfoHistorySelection> historyStartDateSelection(GeneralDate startDate) {
+	public List<PerInfoHistorySelection> getHistoryByStartDate(GeneralDate startDate) {
 		GeneralDate endDate = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
 		return this.queryProxy().query(SELECT_ALL_HISTORY_STARTDATE_SELECTION, PpemtHistorySelection.class)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
@@ -131,6 +140,14 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	public Optional<PerInfoHistorySelection> getHistSelByHistId(String histId) {
 		return this.queryProxy().find(new PpemtHistorySelectionPK(histId), PpemtHistorySelection.class)
 				.map(c->toDomain(c));
+	}
+
+	// Tuannv:
+	@Override
+	public List<PerInfoHistorySelection> getAllHistoryByCompanyID(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_DATA_BY_COMPANY_ID, PpemtHistorySelection.class)
+				.setParameter("companyId", companyId)
+				.getList(c ->toDomain(c));
 	}
 
 }

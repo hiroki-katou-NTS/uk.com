@@ -16,7 +16,7 @@ public interface PerInfoHistorySelectionRepository {
 
 	List<PerInfoHistorySelection> getAllHistoryBySelectionItemId(String selectionItemId);
 
-	List<PerInfoHistorySelection> historyStartDateSelection(GeneralDate startDate);
+	List<PerInfoHistorySelection> getHistoryByStartDate(GeneralDate startDate);
 
 	List<PerInfoHistorySelection> getAllHistoryBySelectionItemIdAndCompanyId(String selectionItemId, String companyId);
 	/**
@@ -36,6 +36,10 @@ public interface PerInfoHistorySelectionRepository {
 	 * GET_LAST_HISTORY_BY_SELECTION_ID
 	 */
 	Optional<PerInfoHistorySelection> getLastHistoryBySelectioId(String selectionItemId);
+	/**
+	 * Tuan nv: Get all history by companyID:
+	 */
+	List<PerInfoHistorySelection> getAllHistoryByCompanyID(String companyId);
 	//hoatt
 	/**
 	 * get History Selection By EndDate

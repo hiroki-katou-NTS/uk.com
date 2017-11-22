@@ -14,7 +14,6 @@ public class AddSelectionHistoryCommand {
 	private GeneralDate startDate;
 	private String histId;
 	private String selectionItemId;
-	
 	private String selectionCD;
 	private String selectionName;
 	private String externalCD;
