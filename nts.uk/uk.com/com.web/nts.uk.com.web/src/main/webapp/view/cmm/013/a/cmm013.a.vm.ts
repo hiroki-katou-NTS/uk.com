@@ -13,7 +13,7 @@ module nts.uk.com.view.cmm013.a {
 
         export class ScreenModel {
 
-            listJobTitleOption: ComponentOption;
+            listJobTitleOption: any;    //ComponentOption;
 
             baseDate: KnockoutObservable<Date>;
             isShowAlreadySet: KnockoutObservable<boolean>;
@@ -76,7 +76,8 @@ module nts.uk.com.view.cmm013.a {
                     selectedCode: _self.selectedJobTitleId,
                     isDialog: false,
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
-                    maxRows: 20
+                    maxRows: 20,
+                    tabindex: 6
                 };
 
                 // Init JobTitle form
