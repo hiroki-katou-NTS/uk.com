@@ -22,7 +22,7 @@ module nts.uk.com.view.cps017.c.viewmodel {
         data: any;
         constructor() {
             let self = this;
-            self.data = getShared('selectHistory');
+            self.data = getShared('CPS017C_PARAMS');
             //get name from screen main
             self.selectionName(self.data.name);
         }

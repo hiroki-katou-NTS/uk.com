@@ -82,9 +82,9 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
         private getSelectedEmp(): string {
             var self = this;
             if (self.isMultiSelect()) {
-                    return self.selectedEmps().join(', ');
+                    return self.selectedEmps() ? self.selectedEmps().join(', ') : "";
             } else {
-                return self.selectedEmployeeId();
+                return self.selectedEmployeeId() ? self.selectedEmployeeId(): "";
             }
         }
     }

@@ -136,6 +136,7 @@ module nts.uk.at.view.kmk002.a {
                 operator: number;
                 operatorText?: string;
                 attendanceItemName?: string;
+                attendanceItemDisplayNumber?: number;
             }
             export interface RoundingDto {
                 unit: EnumConstantDto[];

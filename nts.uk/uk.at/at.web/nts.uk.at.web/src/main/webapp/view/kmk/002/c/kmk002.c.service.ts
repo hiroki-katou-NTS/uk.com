@@ -30,6 +30,7 @@ module nts.uk.at.view.kmk002.c {
             export interface AttendanceItemDto {
                 attendanceItemId: number;
                 attendanceItemName: string;
+                attendanceItemDisplayNumber?: number;
             }
             export interface AttdItemLinkRequest {
                 anyItemNos: string[];

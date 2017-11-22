@@ -133,7 +133,8 @@ public class PerInfoItemDefForLayoutFinder {
 	 */
 	private ActionRole getActionRole(String empId, String ctgId, String perInfoItemId) {
 		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forPersonalInfo();
+		//String roleId = AppContexts.user().roles().forPersonalInfo();
+		String roleId = "99900000-0000-0000-0000-000000000001";
 		boolean isSelfAuth = empId.equals(loginEmpId);
 		Optional<PersonInfoItemAuth> perItemAuth =  personInfoItemAuthRepository.getItemDetai(roleId, ctgId, perInfoItemId);
 		if(!perItemAuth.isPresent()) return ActionRole.HIDDEN;

@@ -30,4 +30,8 @@ public class PerInfoHistorySelection {
 		// 選択肢履歴 パラメーター帰還
 		return new PerInfoHistorySelection(histId, selectionItemId, companyCode, period);
 	}
+	
+	public void updateDate(DatePeriod period){
+		this.period = period;
+	}
 }

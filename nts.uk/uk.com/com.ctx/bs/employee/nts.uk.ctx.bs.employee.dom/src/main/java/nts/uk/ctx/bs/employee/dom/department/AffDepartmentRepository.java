@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.bs.employee.dom.department;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -15,7 +16,10 @@ public interface AffDepartmentRepository {
 
 	public Optional<AffiliationDepartment> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate);
 	
+	
 	public Optional<AffiliationDepartment> getById(String affiDeptId);
+	
+	public List<AffiliationDepartment> getBySId(String sid);
 	/**
 	 * ドメインモデル「所属部門」を新規登録する
 	 * @param domain

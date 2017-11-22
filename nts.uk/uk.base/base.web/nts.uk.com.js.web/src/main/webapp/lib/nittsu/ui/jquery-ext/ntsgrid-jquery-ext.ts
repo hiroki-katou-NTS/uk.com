@@ -890,7 +890,7 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 let ntsSwitchs = $element.find(".nts-switch-container");
                 if (ntsSwitchs.length > 0) {
-                    ntsSwitchs.find("button:first").focus();
+                    ntsSwitchs.find("button").filter((i, b) => $(b).hasClass("selected")).focus();
                 }
             }
             
@@ -1455,13 +1455,24 @@ module nts.uk.ui.jqueryExtentions {
                         });
                         
                         if (!util.isNullOrUndefined(index)) {
+                            let arrowNav = false;
                             if (utils.isArrowLeft(evt)) {
                                 index = index === 0 ? ($buttons.length - 1) : --index;
+                                arrowNav = true;
                             }
                             if (utils.isArrowRight(evt)) {
                                 index = index === $buttons.length - 1 ? 0 : ++index;
+                                arrowNav = true;
                             }
-                            $buttons.eq(index).focus();
+                            
+                            let $targetButton = $buttons.eq(index);
+                            $targetButton.focus();
+                            if (arrowNav) {
+                                var selectedValue = $targetButton.data('swbtn');
+                                $('button', container).removeClass(selectedCssClass);
+                                $targetButton.addClass(selectedCssClass);
+                                data.update(selectedValue);
+                            }
                         }
                     });
     
@@ -2443,6 +2454,7 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     // Load columns size
                     columnSize.load($grid);
+                    utils.setChildrenTabIndex($grid, -1);
                 };
             }
             
@@ -3728,6 +3740,11 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     flatColumns(column.group, flatCols);
                 });
+            }
+            
+            export function setChildrenTabIndex($grid: JQuery, index: number) {
+                let container = $grid.igGrid("container");
+                $(container).find("tr, th, td").attr("tabindex", index);
             }
         }
     }

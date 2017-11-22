@@ -40,4 +40,18 @@ public interface PerInfoHistorySelectionRepository {
 	 * Tuan nv: Get all history by companyID:
 	 */
 	List<PerInfoHistorySelection> getAllHistoryByCompanyID(String companyId);
+	//hoatt
+	/**
+	 * get History Selection By EndDate
+	 * @param selectionItemId
+	 * @param endDate
+	 * @return
+	 */
+	List<PerInfoHistorySelection> getHistSelByEndDate(String selectionItemId, GeneralDate endDate);
+	/**
+	 * get History Selection By HistId
+	 * @param histId
+	 * @return
+	 */
+	Optional<PerInfoHistorySelection> getHistSelByHistId(String histId);
 }

@@ -74,10 +74,10 @@
 
 					<div tabindex="1" id="combo-box"
 						data-bind="ntsComboBox: {
-						options: itemList,
+						options: executionContents,
 						optionsValue: 'value',
 						visibleItemsCount: 5,
-						value: selectedCode,
+						value: selectedExeContent,
 						optionsText: 'localizedName',
 						enable: true,
 						columns: [
@@ -88,7 +88,7 @@
 				<table id="single-list"
 					data-bind="ntsGridList: {								
 						height: 350,
-						dataSource: items,
+						dataSource: errorMessageInfo,
 						primaryKey: 'code',
 						columns: columns,
 						multiple: false,

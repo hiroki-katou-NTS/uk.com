@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '370px', direction: '', showIcon: true, visible: true}">
+			<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'roleCode', comId: 'multi-list', 
+				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" />																																														
+			<table id="multi-list" data-bind="ntsGridList: {
+					height: 320,
+					options: listRole ,
+					optionsValue: 'roleCode',
+					columns: columns,
+					multiple: false,
+					value: currentCodeList
+				}">
+			</table>
+		</div>
+	</ui:composition>
+</body>
+</html>

@@ -12,7 +12,6 @@ import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelec
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtHistorySelectionPK;
-import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelection;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -49,8 +48,13 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 
 	@Override
 	public void update(PerInfoHistorySelection domain) {
-		this.commandProxy().update(toHistEntity(domain));
-
+		PpemtHistorySelection newEntity = toHistEntity(domain);
+		PpemtHistorySelection updateEntity = this.queryProxy().find(newEntity.histidPK, PpemtHistorySelection.class).get();
+		updateEntity.companyId = newEntity.companyId;
+		updateEntity.selectionItemId = newEntity.selectionItemId;
+		updateEntity.startDate = newEntity.startDate;
+		updateEntity.endDate = newEntity.endDate;
+		this.commandProxy().update(updateEntity);
 	}
 
 	@Override
@@ -123,6 +127,19 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 		return this.queryProxy().query(GET_LAST_HISTORY_BY_SELECTION_ID, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("endDate", endDate)
 				.getSingle(c -> toDomain(c));
+	}
+	//hoatt
+	@Override
+	public List<PerInfoHistorySelection> getHistSelByEndDate(String selectionItemId, GeneralDate endDate) {
+		return this.queryProxy().query(GET_LAST_HISTORY_BY_SELECTION_ID, PpemtHistorySelection.class)
+				.setParameter("selectionItemId", selectionItemId).setParameter("endDate", endDate)
+				.getList(c->toDomain(c));
+	}
+	//hoatt
+	@Override
+	public Optional<PerInfoHistorySelection> getHistSelByHistId(String histId) {
+		return this.queryProxy().find(new PpemtHistorySelectionPK(histId), PpemtHistorySelection.class)
+				.map(c->toDomain(c));
 	}
 
 	// Tuannv:

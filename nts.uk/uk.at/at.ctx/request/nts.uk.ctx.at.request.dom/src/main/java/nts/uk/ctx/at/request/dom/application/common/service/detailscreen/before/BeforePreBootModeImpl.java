@@ -69,8 +69,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			//ステータス = 過去申請(status= 過去申請)
 			outputData.setReflectPlanState(ReflectPlanPerState.PASTAPP);
 		} else {
-			
-			outputData.setReflectPlanState(applicationData.getReflectPlanState());
+			//ステータス = ドメインモデル「反映情報」．実績反映状態(Set status = 「反映情報」．実績反映状態)
+			outputData.setReflectPlanState(applicationData.getReflectPerState());
 		}	
 		
 		// get User

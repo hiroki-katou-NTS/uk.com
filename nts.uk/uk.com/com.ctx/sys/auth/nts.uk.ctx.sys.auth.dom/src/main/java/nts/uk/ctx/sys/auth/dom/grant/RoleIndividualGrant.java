@@ -4,8 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.grant;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -13,6 +17,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * The Class RoleIndividualGrant.
  */
 @Getter
+@Setter
+@AllArgsConstructor
 public class RoleIndividualGrant extends AggregateRoot {
 
 	/** The user id. */
@@ -34,32 +40,12 @@ public class RoleIndividualGrant extends AggregateRoot {
 	/** The valid period. */
 	// 有効期間
 	private DatePeriod validPeriod;
-
-	/**
-	 * Instantiates a new role individual grant.
-	 *
-	 * @param memento
-	 *            the memento
-	 */
-	public RoleIndividualGrant(RoleIndividualGrantGetMemento memento) {
-		this.userId = memento.getUserId();
-		this.roleId = memento.getRoleId();
-		this.companyId = memento.getCompanyId();
-		this.roleType = memento.getRoleType();
-		this.validPeriod = memento.getValidPeriod();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento
-	 *            the memento
-	 */
-	public void saveToMemento(RoleIndividualGrantSetMemento memento) {
-		memento.setUserId(this.userId);
-		memento.setRoleId(this.roleId);
-		memento.setCompanyId(this.companyId);
-		memento.setRoleType(this.roleType);
-		memento.setValidPeriod(this.validPeriod);
+	
+	public static RoleIndividualGrant createFromJavaType(String userId, String roleId, String companyId,int roleType, GeneralDate validPeriodStart,GeneralDate validPeriodEnd) {
+		return new RoleIndividualGrant(userId,
+				roleId,
+				companyId,
+				EnumAdaptor.valueOf(roleType, RoleType.class),
+				new  DatePeriod(validPeriodStart, validPeriodEnd) );
 	}
 }
