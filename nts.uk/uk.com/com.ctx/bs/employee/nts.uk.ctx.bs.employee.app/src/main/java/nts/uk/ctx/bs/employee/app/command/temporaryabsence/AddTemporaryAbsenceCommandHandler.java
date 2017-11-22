@@ -20,7 +20,7 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00008";
 	}
 

@@ -25,27 +25,6 @@ public class PersonCommand {
 	/** The person id - 個人ID */
 	private String personId;
 
-	/** The Person Mail Address - 個人メールアドレス */
-	@PeregItem("")
-	private String mailAddress;
-
-	/** The Person Mobile - 個人携帯*/
-	@PeregItem("")
-	private String personMobile;
-
-
-	/** The Hobby - 趣味 */
-	@PeregItem("")
-	private String hobby;
-
-	/** The countryId - 国籍    chua xac dinh duoc PrimitiveValue*/
-	@PeregItem("")
-	private String countryId;
-
-	/** The Taste - 嗜好 */
-	@PeregItem("")
-	private String taste;
-	
 	/** The PersonNameGroup - 個人名グループ*/
 	@PeregItem("")
 	private String personName;
@@ -55,6 +34,9 @@ public class PersonCommand {
 
 	@PeregItem("")
 	private String businessName;
+	
+	@PeregItem("")
+	private String businessNameKana;
 
 	@PeregItem("")
 	private String businessEnglishName;
@@ -81,9 +63,9 @@ public class PersonCommand {
 	private String todokedeFullNameKana;
 
 	@PeregItem("")
-	private String todokedeOldFullName;
+	private String PersonalNameMultilingual;
 	
 	@PeregItem("")
-	private String todokedeOldFullNameKana;
+	private String PersonalNameMultilingualKana;
 
 }

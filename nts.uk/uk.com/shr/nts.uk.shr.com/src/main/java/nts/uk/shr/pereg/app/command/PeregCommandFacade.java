@@ -50,13 +50,13 @@ public class PeregCommandFacade {
 	public void init(@Observes @Initialized(ApplicationScoped.class) Object event) {
 		
 		this.addHandlers = this.handlerCollector.collectAddHandlers().stream()
-				.collect(Collectors.toMap(h -> h.targetCategoryId(), h -> h));
+				.collect(Collectors.toMap(h -> h.targetCategoryCd(), h -> h));
 		
 		this.updateHandlers = this.handlerCollector.collectUpdateHandlers().stream()
-				.collect(Collectors.toMap(h -> h.targetCategoryId(), h -> h));
+				.collect(Collectors.toMap(h -> h.targetCategoryCd(), h -> h));
 		
 		this.deleteHandlers = this.handlerCollector.collectDeleteHandlers().stream()
-				.collect(Collectors.toMap(h -> h.targetCategoryId(), h -> h));
+				.collect(Collectors.toMap(h -> h.targetCategoryCd(), h -> h));
 		
 	}
 	
