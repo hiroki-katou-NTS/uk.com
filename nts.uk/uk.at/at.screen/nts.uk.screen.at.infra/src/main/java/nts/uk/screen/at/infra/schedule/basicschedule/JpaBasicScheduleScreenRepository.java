@@ -109,7 +109,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			return null;
 		}
 
-		return new ScheduleDisplayControlDto(companyId, personInfoAtr, scheDispControl.personDisplayAtr,
+		return new ScheduleDisplayControlDto(companyId, personInfoAtr,
 				scheDispControl.personSyQualify, scheDispControl.pubHolidayShortageAtr,
 				scheDispControl.pubHolidayExcessAtr, scheDispControl.symbolAtr, scheDispControl.symbolHalfDayAtr,
 				scheDispControl.symbolHalfDayName, qualifyCodes);

@@ -16,9 +16,6 @@ public class ScheduleDisplayControlDto {
 	/** 個人情報区分 */
 	public List<Integer> personInforAtr;
 
-	/** 表示区分 */
-	public int personDisplayAtr;
-
 	/** 資格表示記号 */
 	public String personSyQualify;
 
