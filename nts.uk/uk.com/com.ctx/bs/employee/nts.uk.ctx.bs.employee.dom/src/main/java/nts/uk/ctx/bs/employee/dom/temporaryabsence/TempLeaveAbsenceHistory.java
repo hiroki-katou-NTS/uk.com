@@ -8,13 +8,9 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.AfterChildbirth;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.CareHoliday;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.ChildCareHoliday;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -26,7 +22,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @NoArgsConstructor
 @Setter
-public class TempLeaveAbsenceHistory extends AggregateRoot {
+public class TempLeaveAbsenceHistory extends AggregateRoot implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	
 	private String tempLeaveAbsenceHisId;
 
@@ -64,6 +60,11 @@ public class TempLeaveAbsenceHistory extends AggregateRoot {
 			return null;
 		}*/
 		return null;
+	}
+
+	@Override
+	public List<DateHistoryItem> items() {
+		return this.dateHistoryItems;
 	}
 
 
