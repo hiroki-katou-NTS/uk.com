@@ -119,7 +119,7 @@ module ksu001.a.viewmodel {
 
             self.selectedModeDisplay.subscribe(function(newValue) {
                 let currentScreen = __viewContext.viewModel.viewO.currentScreen;
-                if (currentScreen.$dialog != null) {
+                if (currentScreen) {
                     currentScreen.close();
                 }
 
@@ -744,9 +744,6 @@ module ksu001.a.viewmodel {
             let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
 
             self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-                //TO-DO test 
-                //                leftmostContentDeco.push(new CellColor("empName", "90000000-0000-0000-0000-000000000001", "bg-schedule-no-empl-insurance"));
-                //                leftmostContentDeco.push(new CellColor("empName", "90000000-0000-0000-0000-000000000003", "bg-schedule-no-empl-insurance"));
 
                 let updateLeftmostContent = {
                     dataSource: newLeftMostDs,

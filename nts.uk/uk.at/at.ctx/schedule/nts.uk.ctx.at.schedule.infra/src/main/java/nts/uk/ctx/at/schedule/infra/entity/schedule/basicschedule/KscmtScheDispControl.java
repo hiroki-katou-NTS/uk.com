@@ -28,10 +28,6 @@ public class KscmtScheDispControl extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KscmtScheDispControlPK kscmtScheDispControlPK;
 
-	/** 表示区分 */
-	@Column(name = "PERSON_DISPLAY_ATR")
-	public int personDisplayAtr;
-
 	/** 資格表示記号 */
 	@Column(name = "PERSON_SYQUALIFY")
 	public String personSyQualify;

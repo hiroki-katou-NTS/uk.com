@@ -1007,16 +1007,18 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
                         self.dataG = nts.uk.ui.windows.getShared("KML002_G_DATA");
+                        
                         for(var i = 0; i < self.calculatorItems().length; i++){
                             if(self.dataG == null) {
                                 return;
                             }
                             
-                            if(self.calculatorItems()[i].itemCd() == self.dataG.verticalCalItemId) {
+                            if(self.calculatorItems()[i].itemCd() == self.dataG.verticalId) {
                                 self.calculatorItems()[i].unitPrice = self.dataG;
+                                var formulaResult = self.formulaGeneration(itemName, settingMethod, attribute, i, self.dataG, "", false);
+                                self.calculatorItems()[i].formula(formulaResult);
                             }
                         }
-                        
                     }); 
                 }
             }
@@ -1074,7 +1076,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
             } else { // 項目選択
                 // 平均単価
                 if(attribute == 4) {
-                    
+                    // If is first item
+                    if(index == 0) {
+                        formulaResult = data.unitName;
+                    } else {
+                        formulaResult = beforeFormula != "" ? beforeFormula : self.calculatorItems()[index - 1].formula() 
+                                            + " " + nts.uk.resource.getText("KML002_37") + " " + data.unitName;
+                    }
                 } else { // Other attributes
                     // If is first item
                     if(index == 0) {

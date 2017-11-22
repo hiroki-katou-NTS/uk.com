@@ -56,7 +56,7 @@ public class VerticalCalItemCommand {
  	
  	private FormulaNumericalCommand formulaNumerical;
  	
- 	private FormulaUnitPriceCommand priceCommand;
+ 	private FormulaUnitPriceCommand unitPrice;
  	
  	public VerticalCalItem toDomainCalItem(String companyId, String verticalCalCd, String itemId){
  		FormBuilt built = this.formBuilt != null
@@ -74,8 +74,8 @@ public class VerticalCalItemCommand {
  		FormulaNumerical numerical = this.formulaNumerical != null
  				? this.formulaNumerical.toDomainNumerical(companyId, verticalCalCd, itemId)
  						: null;
- 		FormulaUnitprice unitprice = this.priceCommand != null
- 				? this.priceCommand.toDomainUnitPrice(companyId, verticalCalCd, itemId)
+ 		FormulaUnitprice unitprice = this.unitPrice != null
+ 				? this.unitPrice.toDomainUnitPrice(companyId, verticalCalCd, itemId)
  						: null;		
 		return VerticalCalItem.createFromJavatype(companyId, verticalCalCd, itemId, itemId, calculateAtr, displayAtr, cumulativeAtr, attributes, rounding, 
 				roundingProcessing, dispOrder, built, time, formPeople1,amount, numerical,unitprice);
