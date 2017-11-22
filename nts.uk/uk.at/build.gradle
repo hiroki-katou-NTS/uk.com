@@ -431,10 +431,12 @@ project (':at.screen:nts.uk.screen.at.app') {
 project (':at.screen:nts.uk.screen.at.infra') {
 	dependencies {
 		compile project (':at.screen:nts.uk.screen.at.app')
-		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
-		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
+		compile project (':at.ctx:record:nts.uk.ctx.at.record.infra')
+		compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
 		compile project (':at.ctx:request:nts.uk.ctx.at.request.infra')
-		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
+		compile project (':at.ctx:function:nts.uk.ctx.at.function.infra')
+		compile project (':at.ctx:at.auth:nts.uk.ctx.at.auth.infra')
+		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: '0.5.2')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.5.5')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: '0.5')
