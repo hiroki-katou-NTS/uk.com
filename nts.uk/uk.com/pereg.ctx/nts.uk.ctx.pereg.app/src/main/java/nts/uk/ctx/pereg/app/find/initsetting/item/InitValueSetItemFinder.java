@@ -13,7 +13,7 @@ import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
 import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
@@ -124,7 +124,7 @@ public class InitValueSetItemFinder {
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
-		Optional<TempLeaveAbsenceHistory> opttemAbsence = this.tempAbsenceRepo.getBySidAndReferDate(employeeId, baseDate);
+		Optional<TempAbsenceHistory> opttemAbsence = this.tempAbsenceRepo.getBySidAndReferDate(employeeId, baseDate);
 		if (opttemAbsence.isPresent()) {
 
 			returnList = mergeTemporaryAbsenceInfoAndItemDefListToListDto(opttemAbsence.get(), initItemList);
@@ -133,7 +133,7 @@ public class InitValueSetItemFinder {
 		return returnList;
 	}
 
-	private List<SettingItemDto> mergeTemporaryAbsenceInfoAndItemDefListToListDto(TempLeaveAbsenceHistory tempDomain,
+	private List<SettingItemDto> mergeTemporaryAbsenceInfoAndItemDefListToListDto(TempAbsenceHistory tempDomain,
 			List<SettingItemDto> resultItemList) {
 		// code item not yet
 		for (SettingItemDto itemDto : resultItemList) {

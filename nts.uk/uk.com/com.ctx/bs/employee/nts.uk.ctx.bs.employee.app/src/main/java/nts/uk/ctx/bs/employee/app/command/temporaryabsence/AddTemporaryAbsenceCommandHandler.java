@@ -7,7 +7,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
@@ -37,7 +37,7 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 		
 		String newHistID = IdentifierUtil.randomUniqueId();
 		
-		TempLeaveAbsenceHistory temporaryAbsence = TempLeaveAbsenceHistory.createSimpleFromJavaType(command.getEmployeeId(), newTempID, command.getTempAbsenceType(), 
+		TempAbsenceHistory temporaryAbsence = TempAbsenceHistory.createSimpleFromJavaType(command.getEmployeeId(), newTempID, command.getTempAbsenceType(), 
 				newHistID, command.getStartDate(), command.getEndDate(), command.getTempAbsenceReason(), command.getFamilyMemberId(), command.getBirthDate(), command.getMulPregnancySegment());
 		
 		temporaryAbsenceRepository.addTemporaryAbsence(temporaryAbsence);
