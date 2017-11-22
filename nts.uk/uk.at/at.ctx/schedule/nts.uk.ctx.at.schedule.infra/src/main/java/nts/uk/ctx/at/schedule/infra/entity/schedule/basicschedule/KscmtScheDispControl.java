@@ -27,9 +27,6 @@ public class KscmtScheDispControl extends UkJpaEntity implements Serializable {
 
 	@EmbeddedId
 	public KscmtScheDispControlPK kscmtScheDispControlPK;
-	/** 個人情報区分 */
-	@Column(name = "PERSON_INFO_ATR")
-	public int personInforAtr;
 
 	/** 表示区分 */
 	@Column(name = "PERSON_DISPLAY_ATR")
