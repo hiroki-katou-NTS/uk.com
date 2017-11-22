@@ -282,8 +282,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let self = this,
                 appReason: string,
                 divergenceReason: string;
-            appReason = self.selectedReason();
-            divergenceReason = self.selectedReason2();            
+            appReason = self.getReasonName(self.reasonCombo(), self.selectedReason());
+            divergenceReason = self.getReasonName(self.reasonCombo2(), self.selectedReason2());       
             if (!nts.uk.util.isNullOrUndefined(self.multilContent())) {
                 appReason = appReason + ":" + self.multilContent();
             }
@@ -391,6 +391,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             //TODO: for test
             self.calculateFlag(0);
         }
+        
+        getReasonName(reasonCombo: common.ComboReason, reasonId: string): string{  
+            let self = this;
+           let selectedReason = _.find(reasonCombo, item => {return item.reasonId == reasonId} );
+           if(!nts.uk.util.isNullOrUndefined(selectedReason)){
+              return selectedReason.reasonName; 
+           }
+           return "";
+        }
         /**
          * KDL003
          */
@@ -423,6 +432,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let self = this;
             nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
         }
+        
         findBychangeAppDateData(data: any) {
             var self = this;
             self.manualSendMailAtr(data.manualSendMailAtr);
