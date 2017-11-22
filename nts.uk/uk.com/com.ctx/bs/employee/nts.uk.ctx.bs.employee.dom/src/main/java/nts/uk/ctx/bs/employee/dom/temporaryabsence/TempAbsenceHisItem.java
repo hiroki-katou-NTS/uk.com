@@ -32,6 +32,6 @@ public class TempAbsenceHisItem extends AggregateRoot{
 	/**
 	 * 社会保険支給対象区分
 	 */
-	private int soInsPaycategory;
+	private Integer soInsPaycategory;
 
 }
