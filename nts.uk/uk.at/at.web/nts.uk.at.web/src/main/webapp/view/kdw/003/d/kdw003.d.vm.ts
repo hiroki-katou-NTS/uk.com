@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw003.a.viewmodel {
+module nts.uk.at.view.kdw003.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import windows = nts.uk.ui.windows;
     
@@ -32,7 +32,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         /**
          * 抽出する
          */
-        decide() {
+        extract() {
             let self = this;
 
             // set return value
@@ -46,7 +46,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
          * 終了する
          */
         closeDialog(): void {
-            windows.close();
+//            windows.close();
+            nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+            });
         }
     }
 
