@@ -7,9 +7,8 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempLeaveAbsenceHisItem;
 
 /**
  * @author danpv
- * Domain Name : 休職
- *
+ * Domain Name : 傷病休業
  */
-public class Leave extends TempLeaveAbsenceHisItem {
+public class SickLeave extends TempLeaveAbsenceHisItem {
 
 }
