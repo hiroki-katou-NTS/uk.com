@@ -11,5 +11,5 @@ import lombok.Value;
 @Value
 public class LayoutingResult {
 	private Class<?> dtoFinderClass;
-	private Object domainData;
+	private Object queryResult;
 }
