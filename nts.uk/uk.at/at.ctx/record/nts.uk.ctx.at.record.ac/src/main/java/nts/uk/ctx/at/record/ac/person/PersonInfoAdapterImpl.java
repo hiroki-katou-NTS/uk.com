@@ -13,10 +13,10 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.adapter.person.EmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedDto;
-import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
-import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
+import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
+import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 
 /**
  * The Class PersonInfoAdapterImpl.
@@ -29,11 +29,9 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 	@Inject
 	private IPersonInfoPub IPersonInfoPub;
 
+	/** The employee info pub. */
 	@Inject
 	private EmployeeInfoPub employeeInfoPub;
-	//@Inject
-	//private IPersonInfoPub IPersonInfoPub;
-
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter#getPersonInfo(java.lang.String)
@@ -41,13 +39,36 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 	@Override
 	public PersonInfoImportedDto getPersonInfo(String employeeId) {
 		PersonInfoExport personInfoExport = IPersonInfoPub.getPersonInfo(employeeId);
-		PersonInfoImportedDto personInfoImported = PersonInfoImportedDto.builder().employeeId(personInfoExport.getEmployeeId())
-				.employeeName(personInfoExport.getEmployeeName()).build();
+		if (personInfoExport == null) {
+			return null;
+		}
+		PersonInfoImportedDto personInfoImported = PersonInfoImportedDto.builder()
+				.employeeId(personInfoExport.getEmployeeId())
+				.employeeName(personInfoExport.getEmployeeName())
+				.build();
 		
 		return personInfoImported;
 		
 	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter#getAllPersonInfo()
+	 */
+	@Override
+	public List<PersonInfoImportedDto> getListPerson(List<String> listPersonId) {		
+		return this.employeeInfoPub.getListEmpBasicInfo(listPersonId).stream()
+				.map(item -> {					
+					return PersonInfoImportedDto.builder()
+							.employeeId(item.getEmployeeId())
+							.employeeName(item.getPersonName())
+							.build();
+				})
+				.collect(Collectors.toList());
+	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter#getListPersonInfo(java.util.List)
+	 */
 	@Override
 	public List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid) {
 		List<EmpBasicInfoImport> data = employeeInfoPub
@@ -56,6 +77,12 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 		return data;
 	}
 	
+	/**
+	 * Cover emp basic info import.
+	 *
+	 * @param empBasicInfoExport the emp basic info export
+	 * @return the emp basic info import
+	 */
 	private EmpBasicInfoImport coverEmpBasicInfoImport(EmpBasicInfoExport empBasicInfoExport) {
 		EmpBasicInfoImport empBasicInfoImport = new EmpBasicInfoImport(
 				empBasicInfoExport.getEmployeeId(),

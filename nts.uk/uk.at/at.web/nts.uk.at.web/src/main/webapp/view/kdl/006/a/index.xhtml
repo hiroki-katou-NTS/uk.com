@@ -11,15 +11,19 @@
 			<script>
 				var dialogSize = {
 					width : 1010,
-					height : 500
+					height : 520
 				};
 				
 				$(function() {
+					
 					var currentScreen = nts.uk.ui.windows.getSelf();
-					$(currentScreen.$dialog).resizable({
-						minHeight: 460,
+					$("#grid-list").resizable({
+						minHeight: 380,
 						handles: "n,s",
-						alsoResize: "#grid-data-body"
+						alsoResize: "#grid-data-body",
+						resize: function(event, ui) {
+							currentScreen.setHeight(ui.size.height + 140);
+						}
 	                });
 				});
 				
@@ -41,7 +45,7 @@
 			</div>
 				
 			<div id="contents-area">				
-				<table id="grid-list" name="#[KDL006_4]">
+				<table id="grid-list">
 					<thead>
 						<tr>
 							<th class="header-workplace">#{i18n.getText('KDL006_4')}</th>							
