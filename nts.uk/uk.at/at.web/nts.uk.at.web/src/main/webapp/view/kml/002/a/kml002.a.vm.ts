@@ -1092,21 +1092,21 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
                                     
                                     if(attendanceName != "") {
-                                        formulaResult += attendanceName + " " + operator + " ";
+                                        formulaResult += operator + " " + attendanceName + " ";
                                     } else if(attendanceItem != null) {
-                                        formulaResult += attendanceItem.name + " " + operator + " ";
+                                        formulaResult += operator + " " + attendanceItem.name + " ";
                                     }
                                         
                                     if(presetName != "") {
-                                        formulaResult += presetName + " " + operator + " ";
+                                        formulaResult += operator + " " + presetName + " ";
                                     } else if(presetItem != null) {
-                                        formulaResult += presetItem.name + " " + operator + " ";
+                                        formulaResult += operator + " " + presetItem.name + " ";
                                     }
                                     
                                     if(externalName != "") {
-                                        formulaResult += externalName + " " + operator + " ";
+                                        formulaResult += operator + " " + externalName + " ";
                                     } else if(externalItem != null) {
-                                        formulaResult += externalItem.name + " " + operator + " ";
+                                        formulaResult += operator + " " + externalItem.name + " ";
                                     }
                                 } 
                             }
@@ -1122,14 +1122,18 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     var item = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data.lstPeopleFunc[i].externalBudgetCd; });
                                     
                                     if(name != "") {
-                                        formulaResult += name + " " + operator + " ";
+                                        formulaResult += operator + " " + name + " ";
                                     } else if(item != null) {
-                                        formulaResult += item.externalBudgetName + " " + operator + " ";
+                                        formulaResult += operator + " " + item.externalBudgetName + " ";
                                     }
                                 } 
                             }
                         } else if (attribute == 3) {
                             
+                        }
+                        
+                        if(_.startsWith(formulaResult, nts.uk.resource.getText("KML002_37"))) {
+                            formulaResult = formulaResult.substr(1);
                         }
                     } else {
                         var before = "";
@@ -1146,7 +1150,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             } else {
                                 for(var i = 0; i < data.lstFormTimeFunc.length; i++) {
                                     var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    formulaResult += data.lstFormTimeFunc[i].name + " " + operator + " ";
+                                    formulaResult += operator + " " + data.lstFormTimeFunc[i].name + " ";
                                 } 
                             }
                         } else if (attribute == 1) {
