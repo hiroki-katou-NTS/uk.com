@@ -44,8 +44,8 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c WHERE "
 			+ " c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode =:workTypeCode "
 			+ " AND c.workTimeCode =:workTimeCode";
-	private static final String GET_ALL_SCHEDULE_PERSON_INFOR_ATTRIBUTE = String
-			.join("SELECT c FROM KscmtSchePerInfoAtr c WHERE ", "c.kscmtSchePerInfoAtrPk.companyId = :companyId");
+	private static final String GET_ALL_SCHEDULE_PERSON_INFOR_ATTRIBUTE = "SELECT c FROM KscmtSchePerInfoAtr c WHERE "
+			+ "c.kscmtSchePerInfoAtrPk.companyId = :companyId";
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
 		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
@@ -109,7 +109,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			return null;
 		}
 
-		return new ScheduleDisplayControlDto(companyId, personInfoAtr, scheDispControl.personDisplayAtr,
+		return new ScheduleDisplayControlDto(companyId, personInfoAtr,
 				scheDispControl.personSyQualify, scheDispControl.pubHolidayShortageAtr,
 				scheDispControl.pubHolidayExcessAtr, scheDispControl.symbolAtr, scheDispControl.symbolHalfDayAtr,
 				scheDispControl.symbolHalfDayName, qualifyCodes);

@@ -121,4 +121,12 @@ public class CreateOvertimeCommand {
 	 * 残業申請.乖離理由 = 残業申請.乖離定型理由 + \n + 残業申請.乖離理由
 	 */
 	private String divergenceReasonContent;
+	/**
+	 * 登録時にメールを送信する
+	 */
+	private boolean sendMail;
+	/**
+	 * 計算フラグ
+	 */
+	private int calculateFlag;
 }

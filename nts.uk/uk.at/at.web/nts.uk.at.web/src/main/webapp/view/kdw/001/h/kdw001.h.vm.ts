@@ -23,7 +23,7 @@ module nts.uk.at.view.kdw001.h {
                 let self = this;
                 let param = nts.uk.ui.windows.getShared("openH");
                 if (param != null) {
-                    self.executionContent = param.listTargetPerson[0].state.executionContent;
+                    self.executionContent = param.executionContent;
                     self.empCalAndSumExecLogID = param.empCalAndSumExecLogID;
                     self.executionStartTime = param.executionStartTime;
                     self.processingMonth = param.processingMonth + "月度";

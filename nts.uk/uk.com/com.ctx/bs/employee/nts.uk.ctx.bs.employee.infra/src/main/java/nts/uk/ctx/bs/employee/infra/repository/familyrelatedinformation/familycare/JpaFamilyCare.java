@@ -45,7 +45,7 @@ public class JpaFamilyCare extends JpaRepository implements FamilyCareRepository
 		BsymtFamilyCarePK key = new BsymtFamilyCarePK(domain.getFamilyCareId());
 		Optional<BsymtFamilyCare> existItem = this.queryProxy().find(key, BsymtFamilyCare.class);
 		if (!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid FamilyCare");
 		}
 		// Update
 		updateEntity(domain, existItem.get());

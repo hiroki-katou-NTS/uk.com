@@ -8,23 +8,27 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegisterOvertime;
+import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommandHandler;
-import nts.uk.ctx.at.request.app.find.overtime.GetOvertime;
-import nts.uk.ctx.at.request.app.find.overtime.ParamChangeAppDate;
-import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
-import nts.uk.ctx.at.request.app.find.overtime.dto.OvertimeCheckResultDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamChangeAppDate;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 
 @Path("at/request/application/overtime")
 @Produces("application/json")
 public class OvertimeWebService extends WebService{
 
 	@Inject
-	private GetOvertime overtimeFinder;
+	private AppOvertimeFinder overtimeFinder;
 	@Inject
 	private CreateOvertimeCommandHandler createHandler;
 	@Inject
 	private CheckBeforeRegisterOvertime checkBefore;
+	@Inject
+	private CheckConvertPrePost checkConvertPrePost;
+	
 	@POST
 	@Path("getOvertimeByUI")
 	public OverTimeDto getOvertimeByUIType(Param param) {
@@ -36,6 +40,12 @@ public class OvertimeWebService extends WebService{
 	public OverTimeDto findByChangeAppDate(ParamChangeAppDate param) {
 		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr());
 	}
+	@POST
+	@Path("checkConvertPrePost")
+	public OverTimeDto convertPrePost(ParamChangeAppDate param) {
+		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate());
+	}
+	
 	
 	@POST
 	@Path("create")

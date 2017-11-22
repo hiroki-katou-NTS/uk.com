@@ -63,7 +63,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 	public void updateCategoryData(PerInfoCtgData data) {
 		Optional<PpemtPerInfoCtgData> existItem = this.queryProxy().find(data.getRecordId(), PpemtPerInfoCtgData.class);
 		if (!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid PerInfoCtgData");
 		}
 		// Update entity
 		updateEntity(data, existItem.get());

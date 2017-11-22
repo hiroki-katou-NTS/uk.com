@@ -13,7 +13,7 @@ module ksu001.o.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         nameWorkTimeType: KnockoutComputed<ExCell>;
-        currentScreen: any;
+        currentScreen: any = null;
 
         constructor() {
             let self = this;
@@ -90,6 +90,7 @@ module ksu001.o.viewmodel {
 
             self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml");
             self.currentScreen.onClosed(() => {
+                self.currentScreen = null;
                 if (__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {
                     $('#contain-view').show();
                     //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
