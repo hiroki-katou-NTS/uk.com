@@ -11,7 +11,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonLayoutDto {
+public class PersonPeregDto {
 	
 	// 個人名グループ．個人名
 	@PeregItem("IS00001")
@@ -91,8 +91,8 @@ public class PersonLayoutDto {
 	@PeregItem("IS00019")
 	private String countryId; 
 	
-	public static PersonLayoutDto createFromDomain(Person person){
-		return new PersonLayoutDto(person.getPersonNameGroup().getPersonName().v(), 
+	public static PersonPeregDto createFromDomain(Person person){
+		return new PersonPeregDto(person.getPersonNameGroup().getPersonName().v(), 
 				person.getPersonNameGroup().getPersonNameKana() != null ? person.getPersonNameGroup().getPersonNameKana().v() : "", 
 				person.getPersonNameGroup().getPersonRomanji() != null ?person.getPersonNameGroup().getPersonRomanji().getFullName().v() :"", 
 				person.getPersonNameGroup().getPersonRomanji() != null ? person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v() : "",
