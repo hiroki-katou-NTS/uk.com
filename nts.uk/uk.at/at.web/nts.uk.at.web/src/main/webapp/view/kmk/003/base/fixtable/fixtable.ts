@@ -295,14 +295,18 @@ module kmk003.base.fixtable {
             let self = this;
             
             // control ntsTimeEditor
-            let timeColumn: FixColumn = self.columns.filter(column => column.template.indexOf('TimeEditor') > -1)[0]; 
-            $('.' + timeColumn.cssClassName).find("span input").width(timeColumn.width - 27);
-            
+            let timeColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ntsTimeEditor') > -1)[0];
+            if (timeColumn && !nts.uk.util.isNullOrEmpty(timeColumn.cssClassName)) {
+                $('.' + timeColumn.cssClassName).find("span input").width(timeColumn.width - 27);
+            }
+
             // control ntsComboBox
-            let comboBoxColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ComboBox') > -1)[0]; 
-            $('.' + comboBoxColumn.cssClassName).each(function() {
-                $(this).find("div").first().width(comboBoxColumn.width - 5);
-            });
+            let comboBoxColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ntsComboBox') > -1)[0];
+            if (comboBoxColumn && !nts.uk.util.isNullOrEmpty(comboBoxColumn.cssClassName)) {
+                $('.' + comboBoxColumn.cssClassName).each(function() {
+                    $(this).find("div").first().width(comboBoxColumn.width - 5);
+                });
+            }
         }
         
         /**
