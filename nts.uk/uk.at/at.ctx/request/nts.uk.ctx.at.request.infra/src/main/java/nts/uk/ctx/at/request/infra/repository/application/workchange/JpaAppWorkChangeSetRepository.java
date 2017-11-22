@@ -17,8 +17,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 public class JpaAppWorkChangeSetRepository extends JpaRepository implements IAppWorkChangeSetRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqstAppWorkChangeSet f";
-	private static final String SELECT_BY_KEY_STRING = String.join("SELECT f FROM KrqstAppWorkChangeSet f",
-			" WHERE f.KrqstAppWorkChangeSetPk.cid =:companyID");
+	private static final String SELECT_BY_KEY_STRING = String.join(SELECT_ALL_QUERY_STRING,
+			" WHERE f.appWorkChangeSetPk.cid =:companyID");
 
 	@Override
 	public List<AppWorkChangeSet> getAllAppWorkChangeSet() {

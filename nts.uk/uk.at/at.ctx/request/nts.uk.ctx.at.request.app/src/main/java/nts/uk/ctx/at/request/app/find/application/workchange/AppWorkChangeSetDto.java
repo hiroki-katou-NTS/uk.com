@@ -3,10 +3,10 @@
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
 
-@Value
 /**
  * 勤務変更申請設定
  */
+@Value
 public class AppWorkChangeSetDto {
 
 	/**

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -28,7 +30,7 @@ public class WorkChangeRegisterService implements IWorkChangeRegisterService {
 	private IAppWorkChangeRepository workChangeRepository;
 	
 	@Override
-	public void registerData(AppWorkChange workChange, Application app) {
+	public List<String> registerData(AppWorkChange workChange, Application app) {
 		// アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
 		checkWorkHour(workChange);
 		
@@ -46,7 +48,9 @@ public class WorkChangeRegisterService implements IWorkChangeRegisterService {
 		workChangeRepository.add(workChange);
 		
 		//共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-		newAfterRegister.processAfterRegister(app);
+		List<String> listEmail = newAfterRegister.processAfterRegister(app);
+		
+		return listEmail;
 	}
 
 	@Override
