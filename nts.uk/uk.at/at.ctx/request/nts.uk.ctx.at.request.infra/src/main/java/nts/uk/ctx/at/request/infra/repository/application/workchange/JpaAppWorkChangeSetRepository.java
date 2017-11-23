@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
@@ -13,7 +12,6 @@ import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkCha
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
-@Transactional
 public class JpaAppWorkChangeSetRepository extends JpaRepository implements IAppWorkChangeSetRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqstAppWorkChangeSet f";
