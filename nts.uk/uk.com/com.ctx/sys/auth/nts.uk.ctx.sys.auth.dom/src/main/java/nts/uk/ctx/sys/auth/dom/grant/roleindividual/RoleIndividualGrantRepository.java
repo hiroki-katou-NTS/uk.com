@@ -27,7 +27,7 @@ public interface RoleIndividualGrantRepository {
 	 * @param roleType the role type
 	 * @return the optional
 	 */
-	Optional<RoleIndividualGrant> findByUserAndRole(String userId,RoleType roleType);
+	List<RoleIndividualGrant> findByUserAndRole(String userId,RoleType roleType);
 	
 	/**
 	 * Find by user.
@@ -36,7 +36,9 @@ public interface RoleIndividualGrantRepository {
 	 * @param date the date
 	 * @return the optional
 	 */
-	Optional<RoleIndividualGrant> findByUser(String userId,GeneralDate date);
+	List<RoleIndividualGrant> findByUser(String userId,GeneralDate startDate , GeneralDate endDate);
+	
+	List<RoleIndividualGrant> searchRoleIndividualGrant(RoleType roleType,String companyID);
 	
 	/**
 	 * Add
@@ -59,8 +61,12 @@ public interface RoleIndividualGrantRepository {
 	void remove (String userId, String companyId , RoleType roleType);
 
 	List<RoleIndividualGrant> findByRoleId(String roleId);
+	
+	Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID , String companyID , RoleType roleType );
 
 	Optional<RoleIndividualGrant> findByDateAndType(GeneralDate startDate, GeneralDate endDate, RoleType roleType);
+
+	Optional<RoleIndividualGrant> findByUser(String userId, GeneralDate date);
 	
 	/**
 	 * find by role id
