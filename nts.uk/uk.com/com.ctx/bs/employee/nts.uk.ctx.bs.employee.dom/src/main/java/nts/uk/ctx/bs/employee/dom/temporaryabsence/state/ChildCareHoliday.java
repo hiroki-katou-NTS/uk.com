@@ -3,45 +3,41 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 
 /**
- * @author danpv
- * Domain Name : 育児休業
+ * @author danpv Domain Name : 育児休業
  */
-public class ChildCareHoliday extends TempAbsenceHisItem{
-	
+@Getter
+public class ChildCareHoliday extends TempAbsenceHisItem {
+
 	/**
-	 * Optional
-	 * 同一家族の休業有無
+	 * Optional 同一家族の休業有無
 	 */
 	private Boolean sameFamily;
-	
+
 	/**
-	 * Optional
-	 * 子の区分
+	 * Optional 子の区分
 	 */
 	private Integer childType;
-	
+
 	/**
-	 * Optional
-	 * 家族メンバーId Family member id
+	 * Optional 家族メンバーId Family member id
 	 */
 	private String familyMemberId;
-	
+
 	/**
-	 * Optional
-	 * 縁組成立の年月日
+	 * Optional 縁組成立の年月日
 	 */
 	private GeneralDate createDate;
-	
+
 	/**
-	 * Optional
-	 * 配偶者が休業しているか
+	 * Optional 配偶者が休業しているか
 	 */
-	private Boolean spouseIsLeave; 
-	
+	private Boolean spouseIsLeave;
+
 	/**
 	 * @param sameFamily
 	 * @param childType
@@ -49,9 +45,10 @@ public class ChildCareHoliday extends TempAbsenceHisItem{
 	 * @param createDate
 	 * @param spouseIsLeave
 	 */
-	public ChildCareHoliday(Boolean sameFamily, Integer childType, String familyMemberId, GeneralDate createDate,
+	private ChildCareHoliday(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
+			Boolean sameFamily, Integer childType, String familyMemberId, GeneralDate createDate,
 			Boolean spouseIsLeave) {
-		super();
+		super(LeaveHolidayType.CHILD_CARE_NURSING, historyId, employeeId, remarks, soInsPayCategory);
 		this.sameFamily = sameFamily;
 		this.childType = childType;
 		this.familyMemberId = familyMemberId;
@@ -59,24 +56,12 @@ public class ChildCareHoliday extends TempAbsenceHisItem{
 		this.spouseIsLeave = spouseIsLeave;
 	}
 
-	public Boolean getSameFamily() {
-		return sameFamily;
-	}
+	public static ChildCareHoliday init(String historyId, String employeeId, String remarks,
+			Integer soInsPayCategory, Boolean sameFamily, Integer childType, String familyMemberId,
+			GeneralDate createDate, Boolean spouseIsLeave) {
+		return new ChildCareHoliday(historyId, employeeId, new GenericString(remarks), soInsPayCategory, sameFamily,
+				childType, familyMemberId, createDate, spouseIsLeave);
 
-	public Integer getChildType() {
-		return childType;
-	}
-
-	public String getFamilyMemberId() {
-		return familyMemberId;
-	}
-
-	public GeneralDate getCreateDate() {
-		return createDate;
-	}
-
-	public Boolean getSpouseIsLeave() {
-		return spouseIsLeave;
 	}
 
 }

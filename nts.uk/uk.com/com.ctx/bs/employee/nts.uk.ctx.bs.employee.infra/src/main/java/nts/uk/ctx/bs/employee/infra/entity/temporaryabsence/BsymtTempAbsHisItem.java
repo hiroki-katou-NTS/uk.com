@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -25,10 +25,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
+	
+	@Basic(optional = false)
+	@Id
+	@Column(name = "HIST_ID")
+	public String histId;
 
-	/** The BsymtTempAbsHistoryPk. */
-	@EmbeddedId
-	public BsymtTempAbsHistoryPk key;
+	@Basic(optional = false)
+	@Column(name = "SID")
+	public String sid;
 	
 	@Basic(optional = false)
 	@Column(name = "LEAVE_HOLIDAY_ATR")
@@ -46,7 +51,7 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	@Basic(optional = true)
 	@Column(name = "MULTIPLE")
-	public int multiple;
+	public Integer multiple;
 
 	@Basic(optional = true)
 	@Column(name = "FAMILY_MEMBER_ID")
@@ -54,11 +59,11 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	@Basic(optional = true)
 	@Column(name = "SAME_FAMILY")
-	public int sameFamily;
+	public Integer sameFamily;
 	
 	@Basic(optional = true)
 	@Column(name = "CHILD_TYPE")
-	public int childType;
+	public Integer childType;
 
 	@Basic(optional = true)
 	@Column(name = "CREATE_DATE")
@@ -66,14 +71,14 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 
 	@Basic(optional = true)
 	@Column(name = "SPOUSE_IS_LEAVE")
-	public int spouseIsLeave;
+	public Integer spouseIsLeave;
 	
 	@Basic(optional = true)
 	@Column(name = "SAME_FAMILY_DAYS")
-	public int sameFamilyDays;
+	public Integer sameFamilyDays;
 	
 	@Override
 	protected Object getKey() {
-		return key;
+		return histId;
 	}
 }
