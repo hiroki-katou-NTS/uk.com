@@ -18,5 +18,6 @@ public class PersonLayoutDto {
 	public PersonLayoutDto(PersonPeregDto dto, List<PersonInfoItemData> perOptionalData){
 		this.dto = dto;
 		this.perOptionalData = perOptionalData;
+	
 	}
 }
