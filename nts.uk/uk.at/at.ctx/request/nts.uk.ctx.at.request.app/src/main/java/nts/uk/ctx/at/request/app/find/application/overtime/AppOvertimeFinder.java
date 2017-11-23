@@ -227,7 +227,7 @@ public class AppOvertimeFinder {
 						result.setWorkType(workTypeOvertime);
 						
 						// 08_就業時間帯取得(lay loai gio lam viec) 
-						SiftType siftType = overtimeService.getSiftType(companyID, employeeID, personalLablorCodition, requestAppDetailSetting.get(0));
+						SiftType siftType = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
 						result.setSiftType(siftType);
 					}else{
 						result.setDisplayCaculationTime(false);
@@ -304,7 +304,7 @@ public class AppOvertimeFinder {
 					result.setWorkType(workTypeOvertime);
 					
 					// 08_就業時間帯取得(lay loai gio lam viec) 
-					SiftType siftType = overtimeService.getSiftType(companyID, employeeID, personalLablorCodition, requestAppDetailSetting.get(0));
+					SiftType siftType = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
 					result.setSiftType(siftType);
 					
 					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
@@ -342,7 +342,7 @@ public class AppOvertimeFinder {
 			overTimeInputs.add(overtimeInputDto);
 		}
 		
-		result.setOverTimeInputs(overTimeInputs);
+		
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		// xu li hien thi du lieu xin truoc
 		if(overtimeRestAppCommonSet.isPresent()){
@@ -367,7 +367,7 @@ public class AppOvertimeFinder {
 				result.setDisplayBonusTime(false);
 			}
 		}
-		
+		result.setOverTimeInputs(overTimeInputs);
 		// 01-05_申請定型理由を取得, 01-06_申請理由を取得
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
 		if(appTypeDiscreteSetting.isPresent()){
@@ -494,9 +494,10 @@ public class AppOvertimeFinder {
 					}
 				}
 			}
-			result.setOverTimeInputs(overtimeInputDtos);
-			result.setOverTimeShiftNight(appOvertime.getOverTimeShiftNight());
-			result.setFlexExessTime(appOvertime.getFlexExessTime());
+			preAppOvertimeDto.setOverTimeInputsPre(overtimeInputDtos);
+			preAppOvertimeDto.setOverTimeShiftNightPre(appOvertime.getOverTimeShiftNight());
+			preAppOvertimeDto.setFlexExessTimePre(appOvertime.getFlexExessTime());
+			result.setPreAppOvertimeDto(preAppOvertimeDto);
 		}
 
 	}

@@ -149,7 +149,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Override
 	public SiftType getSiftType(String companyID, String employeeID,
-			Optional<PersonalLaborCondition> personalLablorCodition,
 			RequestAppDetailSetting requestAppDetailSetting) {
 		SiftType result = new SiftType();
 		if (requestAppDetailSetting != null) {
@@ -161,11 +160,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				 * ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 				 * personalLaborConditionRepository
 				 */
-				if(personalLablorCodition.isPresent()){
-					Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-					result.setSiftCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-					result.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
-				}else{
+				if(listWorkTimeCodes != null){
 					Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,listWorkTimeCodes.get(0));
 					result.setSiftCode(listWorkTimeCodes.get(0));
 					result.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
