@@ -18,7 +18,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	/**
 	 * JPQL: find (without where)
 	 */
-	private static String FIND_NO_WHERE = "SELECT e FROM SaumtPersonRole e";
+	private static String FIND_NO_WHERE = "SELECT e FROM SacmtPersonRole e";
 
 	/**
 	 * JPQL: find by role id
