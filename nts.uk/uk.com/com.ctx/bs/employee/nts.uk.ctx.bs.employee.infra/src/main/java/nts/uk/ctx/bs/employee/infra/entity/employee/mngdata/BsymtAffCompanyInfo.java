@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/*
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,3 +47,4 @@ public class BsymtAffCompanyInfo extends UkJpaEntity implements Serializable {
 		return bsymtAffCompanyInfoPk;
 	}
 }
+*/
