@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class SaumtRoleSetGrantedJobTitleDetailPK implements Serializable {
+public class SacmtRoleSetGrantedJobTitleDetailPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

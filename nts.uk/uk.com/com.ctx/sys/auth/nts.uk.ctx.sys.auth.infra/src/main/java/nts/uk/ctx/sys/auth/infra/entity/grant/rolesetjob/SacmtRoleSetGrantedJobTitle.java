@@ -22,8 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "SAUMT_ROLESET_JOB")
-public class SaumtRoleSetGrantedJobTitle extends UkJpaEntity implements Serializable {
+@Table(name = "SACMT_ROLESET_JOB")
+public class SacmtRoleSetGrantedJobTitle extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,14 +36,14 @@ public class SaumtRoleSetGrantedJobTitle extends UkJpaEntity implements Serializ
 	public boolean applyToConcurrentPerson;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="roleSetGrantedJobTitle", orphanRemoval = true)
-	public List<SaumtRoleSetGrantedJobTitleDetail> details;
+	public List<SacmtRoleSetGrantedJobTitleDetail> details;
 
 	@Override
 	protected Object getKey() {
 		return this.companyId;
 	}
 
-	public SaumtRoleSetGrantedJobTitle(String companyId, boolean applyToConcurrentPerson, List<SaumtRoleSetGrantedJobTitleDetail> details) {
+	public SacmtRoleSetGrantedJobTitle(String companyId, boolean applyToConcurrentPerson, List<SacmtRoleSetGrantedJobTitleDetail> details) {
 		super();
 		this.companyId = companyId;
 		this.applyToConcurrentPerson = applyToConcurrentPerson;

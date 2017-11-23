@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SAUMT_ROLESET_PERSON")
-public class SaumtRoleSetGrantedPerson extends UkJpaEntity implements Serializable{
+@Table(name = "SACMT_ROLESET_PERSON")
+public class SacmtRoleSetGrantedPerson extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
