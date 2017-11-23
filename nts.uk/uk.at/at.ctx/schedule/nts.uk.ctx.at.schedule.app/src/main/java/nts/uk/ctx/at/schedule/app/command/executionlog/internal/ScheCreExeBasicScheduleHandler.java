@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareScheduleSaveCommand;
@@ -24,6 +25,10 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 
 /**
  * The Class ScheCreExeBasicScheduleHandler.
@@ -46,6 +51,10 @@ public class ScheCreExeBasicScheduleHandler {
 	/** The sche cre exe work time handler. */
 	@Inject
 	private ScheCreExeWorkTimeHandler scheCreExeWorkTimeHandler;
+	
+	/** The work type repository. */
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
 	/**
 	 * Update all data to command save.
@@ -84,7 +93,8 @@ public class ScheCreExeBasicScheduleHandler {
 			commandGetter.setWorktypeCode(worktypeCode);
 			commandGetter.setCompanyId(command.getCompanyId());
 			commandGetter.setWorkingCode(workTimeCode);
-			Optional<WorkTimeSet> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler.getScheduleWorkHour(commandGetter);
+			Optional<WorkTimeSet> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
+					.getScheduleWorkHour(commandGetter);
 			if (optionalWorkTimeSet.isPresent()) {
 				WorkTimeSet workTimeSet = optionalWorkTimeSet.get();
 				commandSave.setWorkScheduleTimeZones(workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
@@ -206,5 +216,128 @@ public class ScheCreExeBasicScheduleHandler {
 		// TODO NOT WorktypeSet
 		command.setBounceAtr(BounceAtr.NO_DIRECT_BOUNCE.value);
 		return command;
+	}
+	
+	
+	/**
+	 * Reset all data to command save.
+	 *
+	 * @param command the command
+	 */
+	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate) {
+		// add command save
+		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
+		commandSave.setWorktypeCode(command.getWorkTypeCode());
+		commandSave.setEmployeeId(command.getEmployeeId());
+		commandSave.setWorktimeCode(command.getWorkingCode());
+		commandSave.setYmd(toDate);
+		commandSave = this.resetCreatedData(command, commandSave);
+		// update is confirm
+		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.CONFIRMED).value);
+
+		// save command
+		this.saveBasicSchedule(commandSave);;
+	}
+	
+	/**
+	 * Reset created data.
+	 *
+	 * @param resetAtr the reset atr
+	 */
+	// 作成済みのデータを再設定する
+	private BasicScheduleSaveCommand resetCreatedData(BasicScheduleResetCommand command,
+			BasicScheduleSaveCommand commandSave) {
+		Optional<BounceAtr> optionalBounceAtr = this.resetDirectLineBounce(command);
+		commandSave = this.resetWorkTime(command, commandSave);
+		// check exist and not empty list
+		if (optionalBounceAtr.isPresent() && !CollectionUtil.isEmpty(commandSave.getWorkScheduleTimeZones())) {
+			commandSave.setWorkScheduleTimeZones(commandSave.getWorkScheduleTimeZones().stream().map(timeZone -> {
+				timeZone.setBounceAtr(optionalBounceAtr.get().value);
+				return timeZone;
+			}).collect(Collectors.toList()));
+		}
+		return commandSave;
+	}
+
+	/**
+	 * Reset direct line bounce.
+	 */
+	// 直行直帰再設定
+	private Optional<BounceAtr> resetDirectLineBounce(BasicScheduleResetCommand command) {
+		// check is 直行直帰再設定 TRUE
+		if (command.getResetAtr().getResetDirectLineBounce()) {
+
+			Optional<WorkType> optionalWorktype = this.workTypeRepository.findByPK(command.getCompanyId(),
+					command.getWorkTypeCode());
+
+			if (optionalWorktype.isPresent() && !CollectionUtil.isEmpty(optionalWorktype.get().getWorkTypeSetList())) {
+				return optionalWorktype.get().getWorkTypeSetList().stream().findFirst()
+						.map(workTypeSet -> this.resetWorkTypeSet(workTypeSet));
+			}
+
+		}
+		return Optional.empty();
+	}
+	
+	/**
+	 * Reset work type set.
+	 *
+	 * @param workTypeSet the work type set
+	 * @return the bounce atr
+	 */
+	private BounceAtr resetWorkTypeSet(WorkTypeSet workTypeSet) {
+
+		// 出勤時刻を直行とする：False AND 退勤時刻を直行とする：False⇒ 直行直帰なし
+		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+			return BounceAtr.DIRECT_BOUNCE;
+		}
+
+		// 出勤時刻を直行とする：True AND 退勤時刻を直行とする：False⇒ 直行のみ
+		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+			return BounceAtr.BOUNCE_ONLY;
+		}
+
+		// 出勤時刻を直行とする：False AND 退勤時刻を直行とする：True⇒ 直帰のみ
+		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+			return BounceAtr.NO_DIRECT_BOUNCE;
+		}
+
+		// 出勤時刻を直行とする：True AND 退勤時刻を直行とする：True⇒ 直行直帰
+		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+			return BounceAtr.DIRECTLY_ONLY;
+		}
+		return BounceAtr.DIRECTLY_ONLY;
+	}
+	
+	/**
+	 * Reset work time.
+	 *
+	 * @param command the command
+	 * @return the basic schedule save command
+	 */
+	// 就業時間帯再設定
+	private BasicScheduleSaveCommand resetWorkTime(BasicScheduleResetCommand command,
+			BasicScheduleSaveCommand commandSave) {
+
+		// check 就業時間帯再設定 is TRUE
+		if (command.getResetAtr().getResetWorkingHours()) {
+			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
+			commandGetter.setWorktypeCode(command.getWorkTypeCode());
+			commandGetter.setCompanyId(command.getCompanyId());
+			commandGetter.setWorkingCode(command.getWorkingCode());
+			Optional<WorkTimeSet> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
+					.getScheduleWorkHour(commandGetter);
+			if (optionalWorkTimeSet.isPresent()) {
+				WorkTimeSet workTimeSet = optionalWorkTimeSet.get();
+				commandSave.setWorkScheduleTimeZones(workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
+						.map(timezone -> this.convertTimeZoneToScheduleTimeZone(timezone))
+						.collect(Collectors.toList()));
+			}
+		}
+		return commandSave;
 	}
 }
