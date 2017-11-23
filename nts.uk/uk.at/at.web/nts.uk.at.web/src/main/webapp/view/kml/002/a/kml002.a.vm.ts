@@ -34,6 +34,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         allItemsData: any;
         dailyItems: any;
         peopleItems: any;
+        numericalItems: any;
         
         constructor() {
             var self = this;
@@ -112,6 +113,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             self.dailyItems = [];
             self.peopleItems = [];
+            self.numericalItems = [];
             
             $('#popup-area').ntsPopup({
                 position: {
@@ -190,7 +192,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 curDataItem = sortedItems[i].formPeople
                             } else if(sortedItems[i].amount != null) {
                                 curDataItem = sortedItems[i].amount
-                            } else if(sortedItems[i].numerical != null) {
+                            } else if(sortedItems[i].numerical.length > 0) {
                                 curDataItem = sortedItems[i].numerical
                             } else if(sortedItems[i].unitPrice != null) {
                                 curDataItem = sortedItems[i].unitPrice
@@ -302,7 +304,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
-            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems()).done(function() {
+            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems()).done(function() {
                                 
                 if (self.settingItems().length > 0) {
                     self.singleSelectedCode(self.settingItems()[0].code);
@@ -392,6 +394,51 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 });
                 
                 self.peopleItems = temp;
+                
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
+            return dfd.promise(); 
+        }
+        
+        /**
+         * Get F screen data.
+         */
+        getNumericalItems() {
+            var self = this;
+            var dfd = $.Deferred();
+            
+            let param = {
+                budgetAtr: 1,   
+                // received from mother screen 0: day or 1: time
+                unitAtr: 1
+            }
+            
+            service.getByAtr(param).done((data) => {  
+                var temp = [];
+                let a = {
+                    budgetAtr: 1,
+                    externalBudgetCode: (data.length+1).toString(),
+                    externalBudgetName: nts.uk.resource.getText("KML002_109"),
+                    unitAtr: 0
+                }
+                let b = {
+                    budgetAtr: 1,
+                    externalBudgetCode: (data.length+2).toString(),
+                    externalBudgetName: nts.uk.resource.getText("KML002_110"),
+                    unitAtr: 0
+                }
+                
+                temp.push(a);
+                temp.push(b);
+                
+                _.forEach(data, function(item){
+                    temp.push(item);
+                });
+                
+                self.numericalItems = temp;
                 
                 dfd.resolve(data);
             }).fail(function(res) {
@@ -998,8 +1045,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 return;
                             }
                             
-                            if(self.calculatorItems()[i].itemCd() == self.dataF.verticalCalItemId) {
+                            if(self.calculatorItems()[i].itemCd() == self.dataF[0].verticalCalItemId) {
                                 self.calculatorItems()[i].numerical = self.dataF;
+                                var formulaResult = self.formulaGeneration(itemName, settingMethod, attribute, i, self.dataF, "", false);
+                                self.calculatorItems()[i].formula(formulaResult);
                             }
                         }
                     }); 
@@ -1146,7 +1195,24 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 } 
                             }
                         } else if (attribute == 3) {
-                            
+                            if(data.length <= 0) {
+                                formulaResult = nts.uk.resource.getText("KML002_153");
+                            } else {
+                                for(var i = 0; i < data.length; i++) {
+                                    var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data[i].name != null ? data[i].name : ""; 
+                                    var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                    var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                    
+                                    if(name != "") {
+                                        formulaResult += operator + " " + name + " ";
+                                    } else if(item1 != null) {
+                                        formulaResult += operator + " " + item1.externalBudgetName + " ";
+                                    } else if(item2 != null) {
+                                        formulaResult += operator + " " + item2.externalBudgetName + " ";
+                                    }
+                                } 
+                            }
                         }
                         
                         if(_.startsWith(formulaResult, nts.uk.resource.getText("KML002_37"))) {
@@ -1182,14 +1248,31 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     var item = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data.lstPeopleFunc[i].externalBudgetCd; });
                                     
                                     if(name != "") {
-                                        formulaResult += name + " " + operator + " ";
+                                        formulaResult += operator + " " + name + " ";
                                     } else if(item != null) {
-                                        formulaResult += item.externalBudgetName + " " + operator + " ";
+                                        formulaResult += operator + " " + item.externalBudgetName + " ";
                                     }
                                 } 
                             }
                         } else if (attribute == 3) {
-                            
+                            if(data.length <= 0) {
+                                formulaResult = nts.uk.resource.getText("KML002_153");
+                            } else {
+                                for(var i = 0; i < data.length; i++) {
+                                    var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data[i].name != null ? data[i].name : ""; 
+                                    var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                    var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                    
+                                    if(name != "") {
+                                        formulaResult += operator + " " + name + " ";
+                                    } else if(item1 != null) {
+                                        formulaResult += operator + " " + item1.externalBudgetName + " ";
+                                    } else if(item2 != null) {
+                                        formulaResult += operator + " " + item2.externalBudgetName + " ";
+                                    }
+                                } 
+                            }
                         }
                         
                         formulaResult = before + " " + formulaResult;
