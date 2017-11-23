@@ -15,7 +15,7 @@ import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuAdapter;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -28,7 +28,7 @@ public class RoleSetFinder {
 	private WebMenuAdapter webMenuAdapter;
 	
 	@Inject
-	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
+	private RoleSetLinkWebMenuAdapter roleSetAndWebMenuAdapter;
 	
 	/**
 	 * Get a RoleSet

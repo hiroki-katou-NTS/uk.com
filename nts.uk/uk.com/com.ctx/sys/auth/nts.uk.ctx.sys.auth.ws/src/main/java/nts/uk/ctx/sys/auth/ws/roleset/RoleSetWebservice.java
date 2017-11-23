@@ -23,8 +23,8 @@ import nts.uk.ctx.sys.auth.app.find.roleset.RoleSetDto;
 import nts.uk.ctx.sys.auth.app.find.roleset.RoleSetFinder;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuAdapter;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuImport;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuImport;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -57,7 +57,7 @@ public class RoleSetWebservice extends WebService {
 	// Role Set and Web menu link
 	
 	@Inject
-	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
+	private RoleSetLinkWebMenuAdapter roleSetAndWebMenuAdapter;
 	
 	@POST
 	@Path("findAllRoleSet")
@@ -112,7 +112,7 @@ public class RoleSetWebservice extends WebService {
 	// Role Set link Web menu
 	@POST
 	@Path("findAllRoleSetWebMenu/{roleSetCd}")
-	public List<RoleSetAndWebMenuImport> getAllRoleSetWebMenu(@PathParam("roleSetCd") String roleSetCd) {
+	public List<RoleSetLinkWebMenuImport> getAllRoleSetWebMenu(@PathParam("roleSetCd") String roleSetCd) {
 		return this.roleSetAndWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd);
 	}
 	

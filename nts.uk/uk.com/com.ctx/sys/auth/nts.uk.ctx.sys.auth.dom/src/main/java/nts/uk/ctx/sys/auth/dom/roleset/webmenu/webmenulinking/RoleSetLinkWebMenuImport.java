@@ -9,7 +9,7 @@ package nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking;
  * @author HieuNV
  */
 @lombok.Value
-public class RoleSetAndWebMenuImport {
+public class RoleSetLinkWebMenuImport {
 
 	/** �?社ID */
 	private String companyId;
@@ -27,7 +27,7 @@ public class RoleSetAndWebMenuImport {
 	 * @param roleSetCd
 	 * @param webMenuCd
 	 */
-	public RoleSetAndWebMenuImport(String companyId, String roleSetCd, String webMenuCd) {
+	public RoleSetLinkWebMenuImport(String companyId, String roleSetCd, String webMenuCd) {
 		this.companyId = companyId;
 		this.roleSetCd = roleSetCd;
 		this.webMenuCd = webMenuCd;

@@ -6,7 +6,7 @@ import java.util.List;
  * The Interface WebMenuAdapter.
  * @author HieuNV
  */
-public interface RoleSetAndWebMenuAdapter {
+public interface RoleSetLinkWebMenuAdapter {
 
 	/**
 	 * Get all Web Menu that link by RoleSet. 
@@ -14,19 +14,19 @@ public interface RoleSetAndWebMenuAdapter {
 	 * @return
 	 */
 	// RequestList #???
-	List<RoleSetAndWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd);
+	List<RoleSetLinkWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd);
 	
 	/**
 	 * add Role Set and Web menu link
 	 * @param roleSetAndWebMenus
 	 */
-	void addRoleSetAndWebMenu(RoleSetAndWebMenuImport roleSetAndWebMenu);
+	void addRoleSetAndWebMenu(RoleSetLinkWebMenuImport roleSetAndWebMenu);
 
 	/**
 	 * update Role Set and Web menu link
 	 * @param roleSetAndWebMenus
 	 */	
-	void updateRoleSetAndWebMenu(RoleSetAndWebMenuImport roleSetAndWebMenu);
+	void updateRoleSetAndWebMenu(RoleSetLinkWebMenuImport roleSetAndWebMenu);
 
 	/**
 	 * delete by roleSetCd 

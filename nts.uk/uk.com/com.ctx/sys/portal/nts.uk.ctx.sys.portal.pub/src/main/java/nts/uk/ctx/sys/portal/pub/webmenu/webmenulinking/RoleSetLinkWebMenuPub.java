@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * The Interface WebMenu.
  */
-public interface RoleSetAndWebMenuPub {
+public interface RoleSetLinkWebMenuPub {
 	
 	/**
 	 * Get list of web menu by roleSetCd
@@ -17,7 +17,7 @@ public interface RoleSetAndWebMenuPub {
 	 * @param roleSetCd
 	 * @return
 	 */
-	List<RoleSetWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd);
+	List<RoleSetLinkWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd);
 	
 	/**
 	 * Register RoleSet and WebMenu

@@ -13,9 +13,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuImport;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
-import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetAndWebMenuPub;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuImport;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
+import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuPub;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,26 +23,26 @@ import nts.uk.shr.com.context.AppContexts;
  * @author HieuNV
  */
 @Stateless
-public class AuthRoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapter {
+public class AuthRoleSetLinkWebMenuAdapterImpl implements RoleSetLinkWebMenuAdapter {
 	
 	/** The web menu pub. */
 	@Inject
-	private RoleSetAndWebMenuPub roleSetAndWebMenuPub;
+	private RoleSetLinkWebMenuPub roleSetAndWebMenuPub;
 
 	@Override
-	public List<RoleSetAndWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd) {
+	public List<RoleSetLinkWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd) {
 		//Get company Id
 		String companyId = AppContexts.user().companyId();
 		if (!StringUtils.isNoneEmpty(companyId)) {
 			return this.roleSetAndWebMenuPub.findAllWebMenuByRoleSetCd(companyId, roleSetCd).stream()
-					.map(item -> new RoleSetAndWebMenuImport(item.getCompanyId(), item.getWebMenuCd(), item.getRoleSetCd())
+					.map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getWebMenuCd(), item.getRoleSetCd())
 					).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
 
 	@Override
-	public void addRoleSetAndWebMenu(RoleSetAndWebMenuImport roleSetAndWebMenu) {
+	public void addRoleSetAndWebMenu(RoleSetLinkWebMenuImport roleSetAndWebMenu) {
 		this.roleSetAndWebMenuPub.addRoleSetAndWebMenu(
 				roleSetAndWebMenu.getRoleSetCd()
 				, roleSetAndWebMenu.getWebMenuCd()
@@ -50,7 +50,7 @@ public class AuthRoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapte
 	}
 
 	@Override
-	public void updateRoleSetAndWebMenu(RoleSetAndWebMenuImport roleSetAndWebMenu) {
+	public void updateRoleSetAndWebMenu(RoleSetLinkWebMenuImport roleSetAndWebMenu) {
 		this.roleSetAndWebMenuPub.updateRoleSetAndWebMenu(
 				roleSetAndWebMenu.getRoleSetCd()
 				, roleSetAndWebMenu.getWebMenuCd()

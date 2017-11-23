@@ -13,14 +13,14 @@ import javax.inject.Inject;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.service.RoleSetAndWebMenuService;
-import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetAndWebMenuPub;
-import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetWebMenuExport;
+import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuPub;
+import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuExport;
 
 /**
  * The Class WebmenuPubImp.
  */
 @Stateless
-public class RoleSetWebMenuPubImp implements RoleSetAndWebMenuPub {
+public class RoleSetWebMenuPubImp implements RoleSetLinkWebMenuPub {
 
 	/** The role set and web menu link repository. */
 	@Inject
@@ -29,9 +29,9 @@ public class RoleSetWebMenuPubImp implements RoleSetAndWebMenuPub {
 	@Inject RoleSetAndWebMenuService roleSetAndWebMenuService;
 
 	@Override
-	public List<RoleSetWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd) {
+	public List<RoleSetLinkWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd) {
 		return roleSetAndWebMenuRepository.findByRoleSetCd(companyId, roleSetCd).stream()
-				.map(item -> new RoleSetWebMenuExport(
+				.map(item -> new RoleSetLinkWebMenuExport(
 						item.getRoleSetCd().v()
 						, item.getWebMenuCd().v()
 						, item.getCompanyId())

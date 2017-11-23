@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking;
 import lombok.Data;
 
 @Data
-public class RoleSetWebMenuExport {
+public class RoleSetLinkWebMenuExport {
 
 	/** ロールセットコード. */
 	private String roleSetCd;
@@ -14,7 +14,7 @@ public class RoleSetWebMenuExport {
 	/** 会社ID */
 	private String companyId;
 
-	public RoleSetWebMenuExport(String roleSetCd, String webMenuCd, String companyId) {
+	public RoleSetLinkWebMenuExport(String roleSetCd, String webMenuCd, String companyId) {
 		this.roleSetCd = roleSetCd;
 		this.webMenuCd = webMenuCd;
 		this.companyId = companyId;
