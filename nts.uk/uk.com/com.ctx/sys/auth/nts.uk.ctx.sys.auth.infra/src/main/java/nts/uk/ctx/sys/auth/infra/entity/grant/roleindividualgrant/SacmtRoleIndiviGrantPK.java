@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.auth.infra.entity.grant;
+package nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant;
 
 import java.io.Serializable;
 
