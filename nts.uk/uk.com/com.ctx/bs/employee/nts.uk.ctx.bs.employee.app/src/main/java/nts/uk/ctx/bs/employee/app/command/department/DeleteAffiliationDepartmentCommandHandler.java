@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.app.command.department;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -8,7 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
-@Stateless
+
 public class DeleteAffiliationDepartmentCommandHandler extends CommandHandler<DeleteAffiliationDepartmentCommand>
 	implements PeregDeleteCommandHandler<DeleteAffiliationDepartmentCommand>{
 
