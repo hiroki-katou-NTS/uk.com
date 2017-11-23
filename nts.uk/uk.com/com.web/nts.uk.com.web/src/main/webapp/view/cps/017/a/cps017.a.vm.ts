@@ -49,6 +49,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.listHistorySelection(_selectionItemList);
                         // check tạm:
                         self.historySelection().histId(self.listHistorySelection().length == 0 ? '' : self.listHistorySelection()[0].histId);
+                        //self.checkCreate(false);
                     });
                 }
                 self.checkCreate(false);
@@ -61,9 +62,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         itemList.forEach(x => self.listSelection.push(x));
                         self.selection().selectionID(self.listSelection()[0].selectionID);
                         //self.checkCreate(false);
+                    } else {
+                        self.registerData();
                     }
+
                 });
-                self.checkCreate(false);
+                //self.checkCreate(false);
             });
 
             // sub theo selectionID: 
@@ -78,7 +82,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
                 }
-                self.checkCreate(false);
+                //self.checkCreate(true);
             });
 
         }
@@ -106,6 +110,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             }).fail(error => {
                 alertError({ messageId: "Msg_455" });
             });
+            //self.checkCreate(false);
 
             return dfd.promise();
         }
