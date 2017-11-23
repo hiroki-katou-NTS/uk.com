@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -16,9 +16,14 @@ public class BsymtTempAbsHistory extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/** The BsymtTempAbsHistoryPk. */
-	@EmbeddedId
-	public BsymtTempAbsHistoryPk key;
+	@Id
+	@Basic(optional = false)
+	@Column(name = "HIST_ID")
+	public String histId;
+	
+	@Basic(optional = false)
+	@Column(name = "SID")
+	public String sid;
 
 	@Basic(optional = false)
 	@Column(name = "START_DATE")
@@ -30,7 +35,7 @@ public class BsymtTempAbsHistory extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return this.key;
+		return this.histId;
 	}
 
 	public BsymtTempAbsHistory() {

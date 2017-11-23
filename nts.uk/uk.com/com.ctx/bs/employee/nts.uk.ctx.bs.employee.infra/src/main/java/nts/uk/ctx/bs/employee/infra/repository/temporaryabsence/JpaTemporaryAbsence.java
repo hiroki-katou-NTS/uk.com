@@ -17,10 +17,10 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsenceRepository {
 
 	private final String GET_BY_SID_DATE = "select hi from BsymtTempAbsHisItem hi"
-			+ " join in BsymtTempAbsHistory h on hi.key.histId = h.key.histId"
-			+ " where hi.key.sid = :sid and h.startDate <= :referDate and h.endDate >= referDate";
+			+ " join in BsymtTempAbsHistory h on hi.histId = h.histId"
+			+ " where hi.sid = :sid and h.startDate <= :referDate and h.endDate >= referDate";
 
-	private final String GET_BY_HID = "select hi from BsymtTempAbsHisItem hi where hi.key.histId = :histId";
+	private final String GET_BY_HID = "select hi from BsymtTempAbsHisItem hi where hi.histId = :histId";
 
 	@Override
 	public Optional<TempAbsenceHisItem> getBySidAndReferDate(String sid, GeneralDate referenceDate) {
@@ -36,7 +36,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		Boolean multiple = ent.multiple == null ? null : ent.multiple == 1;
 		Boolean sameFamily = ent.sameFamily == null ? null : ent.sameFamily == 1;
 		Boolean spouseIsLeave = ent.spouseIsLeave == null ? null : ent.spouseIsLeave == 1;
-		return TempAbsenceHisItem.createTempAbsenceHisItem(ent.leaveHolidayAtr, ent.key.histId, ent.key.sid,
+		return TempAbsenceHisItem.createTempAbsenceHisItem(ent.leaveHolidayAtr, ent.histId, ent.sid,
 				ent.remarks, Integer.valueOf(ent.soInsPayCategory), multiple, ent.familyMemberId, sameFamily,
 				ent.childType, ent.createDate, spouseIsLeave, ent.sameFamilyDays);
 	}
