@@ -57,8 +57,8 @@ public class JpaIncomeTax extends JpaRepository implements IncomeTaxRepository{
 	 * @param domain
 	 */
 	@Override
-	public void deleteIncomeTax(IncomeTax domain){
-		BsymtIncomeTaxPK key = new BsymtIncomeTaxPK(domain.getIncomeTaxID());
+	public void deleteIncomeTax(String incomeTaxId){
+		BsymtIncomeTaxPK key = new BsymtIncomeTaxPK(incomeTaxId);
 		this.commandProxy().remove(BsymtIncomeTax.class,key);
 	}
 
