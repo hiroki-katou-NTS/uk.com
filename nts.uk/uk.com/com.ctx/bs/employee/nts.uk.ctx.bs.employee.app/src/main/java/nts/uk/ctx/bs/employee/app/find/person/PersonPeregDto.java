@@ -72,8 +72,8 @@ public class PersonPeregDto {
 	private int gender;
 	
 	public static PersonPeregDto createFromDomain(Person person){
-		return new PersonPeregDto(person.getPersonNameGroup().getPersonName().getFullName().v(), 
-				person.getPersonNameGroup().getPersonName().getFullNameKana() != null ? person.getPersonNameGroup().getPersonName().getFullNameKana().v() : "", 
+		return new PersonPeregDto(person.getPersonNameGroup().getPersonName() != null ? person.getPersonNameGroup().getPersonName().getFullName().v(): "", 
+				person.getPersonNameGroup().getPersonName() != null ? person.getPersonNameGroup().getPersonName().getFullNameKana().v() : "", 
 				person.getPersonNameGroup().getPersonRomanji() != null ?person.getPersonNameGroup().getPersonRomanji().getFullName().v() :"", 
 				person.getPersonNameGroup().getPersonRomanji() != null ? person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v() : "",
 				person.getPersonNameGroup().getBusinessName() != null ? person.getPersonNameGroup().getBusinessName().v() : "", 
