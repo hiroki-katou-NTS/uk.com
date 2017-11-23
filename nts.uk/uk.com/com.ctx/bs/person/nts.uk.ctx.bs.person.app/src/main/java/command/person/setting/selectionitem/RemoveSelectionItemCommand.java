@@ -10,4 +10,5 @@ import lombok.Value;
 @Value
 public class RemoveSelectionItemCommand {
 	private String selectionItemId;
+	private String histId;
 }

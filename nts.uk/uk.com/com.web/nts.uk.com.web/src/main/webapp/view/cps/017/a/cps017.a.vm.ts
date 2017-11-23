@@ -75,6 +75,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.selectionName(selectLists.selectionName);
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
+                    $("#name").focus();
                 }
                 self.checkCreate(false);
             });
@@ -119,7 +120,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionName('');
             selection.memoSelection('');
             self.checkCreate(true);
-            $("#selectionID").focus();
+            $("#code").focus();
         }
 
         //検証チェック 
