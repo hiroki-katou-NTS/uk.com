@@ -39,7 +39,9 @@ public class UpdateCompanyInforCommandHandler extends CommandHandler<UpdateCompa
 																		data.getShortComName(), contractCd, 
 																		data.getTaxNo(), add);
 		company.validate();
+		// if company be discarded: true-1: be discarded, false-0: be not discarded
 		if (company.isAbolition()) {
+			// check number company discarded, can't discard all list company 
 			company.checkAbolition(comRep.checkAbolish(company.getCompanyId()));
 		}
 		comRep.updateCom(company);

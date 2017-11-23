@@ -5,23 +5,25 @@ module cmm001.a {
         gridColumns: KnockoutObservableArray<any>;
         currentCompany: KnockoutObservable<CompanyModel>;
         currentCompanyCode: KnockoutObservable<string>;
+        // list company A2_4
         sel001Data: KnockoutObservableArray<ICompany>;
+        // list company copy
         listCom: KnockoutObservableArray<ICompany>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        isUpdate: KnockoutObservable<boolean> = ko.observable(null);
         itemList: KnockoutObservable<any>;
         roundingRules:  KnockoutObservableArray<RoundingRule>;
         roundingRules3: KnockoutObservableArray<RoundingRule>;
+        // check true false A2_2
         display: KnockoutObservable<boolean>;
         checkInsert: KnockoutObservable<boolean>;
         
-        constructor() {
+        constructor() {  
             let self = this;
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: '会社基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: '会社所在地・連絡先', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
+                { id: 'tab-1', title: nts.uk.resource.getText("CMM001_16"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: nts.uk.resource.getText("CMM001_17"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-3', title: nts.uk.resource.getText("CMM001_18"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             let itemArray = [
                 { code: 1, name: '1月' },
@@ -39,9 +41,9 @@ module cmm001.a {
             ];
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
-                { headerText: '会社コード', prop: 'companyCode', width: 80 },
-                { headerText: '名称', prop: 'companyName', width: 220 },
-                { headerText: '廃止', prop: 'isAbolition', width: 75,
+                { headerText: nts.uk.resource.getText("CMM001_7"), key: 'companyCode', width: 80 },
+                { headerText: nts.uk.resource.getText("CMM001_8"), key: 'companyName', width: 220 },
+                { headerText: nts.uk.resource.getText("CMM001_9"), key: 'isAbolition', width: 75,
                     template:  '{{if ${isAbolition} == 1}} <img src="../images/78.png" style="margin-left: 20px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'}
             ]);
             self.sel001Data = ko.observableArray([]);
@@ -61,7 +63,7 @@ module cmm001.a {
                 new RoundingRule(1, nts.uk.resource.getText("CMM001_36")),
                 new RoundingRule(0, nts.uk.resource.getText("CMM001_37"))
             ]);
-            
+            // subscribe each company
             self.currentCompanyCode.subscribe((value) => {
                 if (value) {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
@@ -76,32 +78,28 @@ module cmm001.a {
                     var divEmpty = {
                         regWorkDiv: 0,
                     }
-                    nts.uk.ui.block.invisible();
                     service.getDiv(param).done((div) => {
                         console.log(div);
                         div == null? div = divEmpty: div;
                         self.currentCompany().regWorkDiv(div.regWorkDiv); 
-                    }).always(()=>{
-                        nts.uk.ui.block.clear();    
                     });
                     var sysEmpty = {
                         jinji: 0,
                         kyuyo: 0,
                         shugyo: 0,
                     }
-                    nts.uk.ui.block.invisible();
                     service.getSys(param).done((sys) => {
                         console.log(sys); 
                         sys == null? sys=sysEmpty : sys;
                         self.currentCompany().jinji(sys.jinji);
                         self.currentCompany().kyuyo(sys.kyuyo);
                         self.currentCompany().shugyo(sys.shugyo);   
-                    }).always(()=>{
-                        nts.uk.ui.block.clear();    
                     });
                     self.currentCompany().isAbolition() == 1 ? true : false;
+                    $("#companyName").focus();
                 }
             });
+            // subscribe when check A2_2
             self.display.subscribe((item) => {
                 if(item){
                     self.sel001Data(_.filter(self.listCom(), function(obj) {
@@ -113,6 +111,7 @@ module cmm001.a {
             });
         }
 
+        /** start page */
         start() {
             nts.uk.ui.block.invisible();
             let self = this;
@@ -138,6 +137,7 @@ module cmm001.a {
             return dfd.promise();
         }
         
+        /** new mode */
         innit(){
             let self = this;
             nts.uk.ui.errors.clearAll()
@@ -174,9 +174,10 @@ module cmm001.a {
             self.currentCompany(new CompanyModel(param));   
             self.currentCompanyCode("");
             self.checkInsert(true);
+            $("#companyCode").focus();
         }
         
-        
+        /** event when click register */
        register(){
            nts.uk.ui.block.invisible();
            $("#companyCode").trigger("validate");
@@ -242,6 +243,7 @@ module cmm001.a {
             }
            let code = self.currentCompany().companyCode();
            if(self.checkInsert() == false){
+                    // update a company
                     service.update(dataTransfer).done(function(){
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                             $('#companyName').focus();    
@@ -257,6 +259,7 @@ module cmm001.a {
                         nts.uk.ui.block.clear();    
                     });
            }else{
+               // insert a company
                service.add(dataTransfer).done(function(){
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                        $('#companyName').focus(); 
@@ -278,26 +281,30 @@ module cmm001.a {
            }
        }
 
+        /** search post code */
         search(){  
             nts.uk.ui.block.invisible();
             let self = this;
+            // if don't have post code to find
             if(self.currentCompany().addinfor().postCd()==""){
                 $('#postal').ntsError('set', {messageId:"Msg_438", messageParams:nts.uk.resource.getText("CMM001_22")});
                 nts.uk.ui.block.clear();
                 return;
             }
+            // search by post code 
             service.findPostCd(self.currentCompany().addinfor().postCd()).done((item) => {
                 if(item.length == 0){
                     $('#postal').ntsError('set', {messageId:"Msg_818"});
                     return;
                 }
-                item[0].stateProvince = item[0].stateProvince == null ? "":item[0].stateProvince;
-                item[0].city = item[0].city == null ? "":item[0].city;
-                item[0].townArea = item[0].townArea == null ? "":item[0].townArea;
-                
-                item[0].townAreaKana = item[0].townAreaKana == null ? "":item[0].townAreaKana;
-                item[0].cityKanaName = item[0].cityKanaName == null ? "":item[0].cityKanaName;
-                item[0].townAreaKana = item[0].townAreaKana == null ? "":item[0].townAreaKana;
+                // address_1 after finded
+                item[0].stateProvince = item[0].stateProvince;
+                item[0].city = item[0].city;
+                item[0].townArea = item[0].townArea;
+                // address kana 1 after finded
+                item[0].townAreaKana = item[0].townAreaKana;
+                item[0].cityKanaName = item[0].cityKanaName;
+                item[0].townAreaKana = item[0].townAreaKana;
                 self.currentCompany().addinfor().add_1(item[0].stateProvince + item[0].city + item[0].townArea);
                 self.currentCompany().addinfor().addKana_1(item[0].townAreaKana + item[0].cityKanaName + item[0].townAreaKana);
             }).always(()=>{

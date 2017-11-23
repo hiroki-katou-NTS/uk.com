@@ -15,6 +15,9 @@ import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
 @Data
 @AllArgsConstructor
 public class AddCompanyInforCommand {
+	/** 契約コード */
+	private String contractCd;
+	
 	// 会社コード
 	private String ccd;  
 

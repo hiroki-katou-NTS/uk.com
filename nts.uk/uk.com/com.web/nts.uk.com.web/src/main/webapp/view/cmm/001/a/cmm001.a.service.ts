@@ -14,7 +14,7 @@ module cmm001.a.service {
      export function getAll(){
         return nts.uk.request.ajax(paths.getAll);    
     }
-    
+      
     export function getDiv(param: any): JQueryPromise<void>{
         return nts.uk.request.ajax(paths.findDiv, param);     
     }
