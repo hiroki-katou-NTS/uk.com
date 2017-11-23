@@ -43,7 +43,7 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		GeneralDate getStartDate = command.getStartDate();//startDateNew
 		//check: 最新の履歴の開始日　＞　直前の履歴の開始日
 		GeneralDate endDateLast = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
-		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository.getHistSelByEndDate(command.getSelectionItemId(), endDateLast);
+		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository.getHistSelByEndDate(command.getSelectionItemId(), command.getCompanyCode(), endDateLast);
 		if(!lstHist.isEmpty()){
 			PerInfoHistorySelection histLast = lstHist.get(0);
 			if(getStartDate.beforeOrEquals(histLast.getPeriod().start())){

@@ -36,7 +36,10 @@ public class EditHistoryCommandHandler extends CommandHandler<EditHistoryCommand
 		GeneralDate startDate = GeneralDate.fromString(data.getStartDate(), "yyyy/MM/dd");
 		GeneralDate startDateNew = GeneralDate.fromString(data.getStartDateNew(), "yyyy/MM/dd");
 		GeneralDate endDatePr = startDate.addDays(-1);
-		List<PerInfoHistorySelection> lstHistPr = repoHistSel.getHistSelByEndDate(data.getSelectionItemId(), endDatePr);
+		//get history current
+		Optional<PerInfoHistorySelection> histCurOpstional = this.repoHistSel.getHistSelByHistId(data.getHistId());
+		PerInfoHistorySelection histCur = histCurOpstional.get();
+		List<PerInfoHistorySelection> lstHistPr = repoHistSel.getHistSelByEndDate(data.getSelectionItemId(), histCur.getCompanyCode(), endDatePr);
 		if(!lstHistPr.isEmpty()){
 			PerInfoHistorySelection histPr = lstHistPr.get(0);
 			//直前の履歴の開始日以前に開始日を変更することはできない。 (Không thể sửa ngày bắt đầu về trước ngày bắt đầu của lịch sử trước đấy)
@@ -52,8 +55,6 @@ public class EditHistoryCommandHandler extends CommandHandler<EditHistoryCommand
 		}
 		// Cap nhat domain: ドメインモデル「選択肢履歴」を更新する
 		DatePeriod periodNew = new DatePeriod(startDateNew, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
-		Optional<PerInfoHistorySelection> histCurOpstional = this.repoHistSel.getHistSelByHistId(data.getHistId());
-		PerInfoHistorySelection histCur = histCurOpstional.get();
 		histCur.updateDate(periodNew);
 		//update lich su hien tai
 		this.repoHistSel.update(histCur);
