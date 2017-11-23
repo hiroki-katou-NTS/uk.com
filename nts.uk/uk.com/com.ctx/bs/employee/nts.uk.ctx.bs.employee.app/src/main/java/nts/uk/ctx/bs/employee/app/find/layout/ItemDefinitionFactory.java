@@ -14,13 +14,13 @@ import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
 /**
@@ -358,7 +358,7 @@ public class ItemDefinitionFactory {
 
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			TempAbsenceHistory leaveHoliday, ActionRole actionRole) {
+			TempAbsenceHisItem leaveHoliday, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,

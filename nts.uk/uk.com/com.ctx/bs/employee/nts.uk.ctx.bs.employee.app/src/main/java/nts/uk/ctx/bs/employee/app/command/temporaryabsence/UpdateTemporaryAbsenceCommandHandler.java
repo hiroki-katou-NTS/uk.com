@@ -29,12 +29,13 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateTemporaryAbsenceCommand> context) {
-		val command = context.getCommand();
+		/*val command = context.getCommand();
 		
 		TempAbsenceHistory temporaryAbsence = TempAbsenceHistory.createSimpleFromJavaType(command.getEmployeeId(), command.getTempAbsenceId(), command.getTempAbsenceType(), 
 				command.getHistID(), command.getStartDate(), command.getEndDate(), command.getTempAbsenceReason(), command.getFamilyMemberId(), command.getBirthDate(), command.getMulPregnancySegment());
 		
-		temporaryAbsenceRepository.updateTemporaryAbsence(temporaryAbsence);
+		temporaryAbsenceRepository.updateTemporaryAbsence(temporaryAbsence);*/
+		// TODO 
 	}
 
 }
