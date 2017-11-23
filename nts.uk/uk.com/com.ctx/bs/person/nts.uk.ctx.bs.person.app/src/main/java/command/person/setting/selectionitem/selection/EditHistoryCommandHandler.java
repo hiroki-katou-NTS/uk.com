@@ -39,7 +39,7 @@ public class EditHistoryCommandHandler extends CommandHandler<EditHistoryCommand
 		//get history current
 		Optional<PerInfoHistorySelection> histCurOpstional = this.repoHistSel.getHistSelByHistId(data.getHistId());
 		PerInfoHistorySelection histCur = histCurOpstional.get();
-		List<PerInfoHistorySelection> lstHistPr = repoHistSel.getHistSelByEndDate(data.getSelectionItemId(), histCur.getCompanyCode(), endDatePr);
+		List<PerInfoHistorySelection> lstHistPr = repoHistSel.getHistSelByEndDate(data.getSelectionItemId(), histCur.getCompanyId(), endDatePr);
 		if(!lstHistPr.isEmpty()){
 			PerInfoHistorySelection histPr = lstHistPr.get(0);
 			//直前の履歴の開始日以前に開始日を変更することはできない。 (Không thể sửa ngày bắt đầu về trước ngày bắt đầu của lịch sử trước đấy)
