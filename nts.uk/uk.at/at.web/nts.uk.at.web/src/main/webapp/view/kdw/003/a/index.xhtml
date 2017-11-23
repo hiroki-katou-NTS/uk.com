@@ -26,15 +26,15 @@
 			<ui:define name="content">
 				<div id="functions-area">
 					<div id="function-content">
-						<button class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KDW003_4')}</button>
-						<button>#{i18n.getText('KDW003_5')}</button>
-						<button>#{i18n.getText('KDW003_6')}</button>
-						<button>#{i18n.getText('KDW003_12')}</button>
-						<button>#{i18n.getText('KDW003_13')}</button>
-						<button>#{i18n.getText('KDW003_14')}</button>
-						<button>#{i18n.getText('KDW003_15')}</button>
-						<button class="danger" data-bind="click: showErrorDialog">#{i18n.getText('KDW003_16')}</button>
-						<button>#{i18n.getText('KDW003_17')}</button>
+						<button class="proceed" data-bind="enable: $root.errors.isEmpty ,showButton().available1 ">#{i18n.getText('KDW003_4')}</button>
+						<button  data-bind="enable: showButton().available4">#{i18n.getText('KDW003_5')}</button>
+						<button data-bind="enable: showButton().available2">#{i18n.getText('KDW003_6')}</button>
+						<button data-bind="enable: showButton().available3">#{i18n.getText('KDW003_12')}</button>
+						<button data-bind="click : changeExtractionCondition, enable: showButton().available5">#{i18n.getText('KDW003_13')}</button>
+						<button data-bind="click : selectDisplayItem, enable: showButton().available8">#{i18n.getText('KDW003_14')}</button>
+						<button data-bind="enable: showButton().available22">#{i18n.getText('KDW003_15')}</button>
+						<button class="danger" data-bind="click: showErrorDialog , enable: showButton().available24">#{i18n.getText('KDW003_16')}</button>
+						<button data-bind="enable: showButton().available7">#{i18n.getText('KDW003_17')}</button>
 					</div>
 				</div>
 				<div id="contents-area">
@@ -69,7 +69,7 @@
 								<button>#{i18n.getText('Com_ExsessHoliday')}</button>
 							</div>
 						</div>
-						<button id="btnComfirmAttendance">#{i18n.getText('KDW003_22')}</button>
+						<button id="btnComfirmAttendance" data-bind="enable: showButton().available23">#{i18n.getText('KDW003_22')}</button>
 						
 						<div id="emp-component"></div>
 						<div id="cbListDate">
@@ -80,7 +80,7 @@
 											endDate: dateRanger().endDate}">
 							</div>
 						</div>
-						<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KDW003_23')}</button>
+						<button id="btn-signAll" data-bind="click: signAll, enable: showButton().available25">#{i18n.getText('KDW003_23')}</button>
 						<div class="setting-container">
 							<button id="btn-setting" data-bind="click: btnSetting_Click" >&#9881;</button>
 							<div id="setting-content">
@@ -99,7 +99,7 @@
 								<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div><br/>
 							</div>
 						</div>
-						<button id="btn-saveColumnWidth" data-bind="click: btnSaveColumnWidth_Click">#{i18n.getText('KDW003_24')}</button>
+						<button id="btn-saveColumnWidth" data-bind="click: btnSaveColumnWidth_Click, enable : showButton().available8">#{i18n.getText('KDW003_24')}</button>
 						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
 						<div class="compact-grid grid-container" >
 							<table id="dpGrid"></table>

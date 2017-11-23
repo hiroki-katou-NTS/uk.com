@@ -80,6 +80,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dateRanger: KnockoutObservable<any> = ko.observable(null);
         // date picker component
         selectedDate: KnockoutObservable<any> = ko.observable(null);
+        
+        showButton: KnockoutObservable<AuthorityDetailModel> = ko.observable(null);
+        
+        comboItems: KnockoutObservableArray<any> = ko.observableArray( [new ItemModel('1', '基本給'),
+                new ItemModel('2', '役職手当'),
+                new ItemModel('3', '基本給2')]);
+        
+        comboColumns:  KnockoutObservableArray<any> = ko.observableArray( [{ prop: 'code', length: 4 },
+                { prop: 'name', length: 8 }]);
 
         constructor() {
             var self = this;
@@ -88,14 +97,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.initDisplayFormat();
             self.headersGrid = ko.observableArray(self.employeeModeHeader);
             self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
-            //cursor move direction 
-            self.selectedDirection.subscribe((value) => {
-                if (value == 0) {
-                    $("#dpGrid").ntsGrid("directEnter", "below");
-                } else {
-                    $("#dpGrid").ntsGrid("directEnter", "right");
-                }
-            });
             // show/hide header number
             self.showHeaderNumber.subscribe((val) => {
                 self.reloadGrid();
@@ -162,7 +163,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
                 console.log(data);
+                _.each(data.lstControlDisplayItem.lstHeader, function(item) {
+                    if (item.group.length > 0) {
+                        delete item.group[0].group;
+                        if(item.group[0].dataType== "String"){
+                            item.group[0].onChange = self.search;
+                            delete item.group[0].ntsControl;
+                        } else {
+                             delete item.group[0].onChange;
+                             delete item.group[0].ntsControl;
+                        }
+                        delete item.group[1].group;
+                    } else {
+                        delete item.group;
+                    }
+                }).fail(function(error) {
+                    alert(error.message);
+                    nts.uk.ui.block.clear();
+                });
+                 _.each(data.lstFixedHeader, function(item) {
+                    delete item.group;
+                 });
                 // Fixed Header
+                self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto));
                 self.fixHeaders(data.lstFixedHeader);
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                 self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
@@ -221,8 +244,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
+                   _.each(data.lstControlDisplayItem.lstHeader, function(item) {
+                    if (item.group.length > 0) {
+                        delete item.group[0].group;
+                        if(item.group[0].dataType== "String"){
+                            item.group[0].onChange = self.search;
+                            delete item.group[0].ntsControl;
+                        } else {
+                             delete item.group[0].onChange;
+                             delete item.group[0].ntsControl;
+                        }
+                        delete item.group[1].group;
+                    } else {
+                        delete item.group;
+                    }
+                });
+                 _.each(data.lstFixedHeader, function(item) {
+                    delete item.group;
+                 });
                 self.receiveData(data);
                 self.extraction();
+                nts.uk.ui.block.clear();
+            }).fail(function(error){
+                alert(error.message);
                 nts.uk.ui.block.clear();
             });
         }
@@ -248,7 +292,70 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/kdw/003/b/index.xhtml").onClosed(() => {
             });
         }
+        changeExtractionCondition() {
+            var self = this;
+            var self = this;
+            if (self.displayFormat() == 0) {
+                $("#emp-component").css("display", "block");
+                $("#cbListDate").css("display", "none");
+            } else if (self.displayFormat() == 1) {
+                $("#cbListDate").css("display", "block");
+                $("#emp-component").css("display", "none");
+            } else {
+                $("#cbListDate").css("display", "none");
+                $("#emp-component").css("display", "none");
+            }
+            let lstEmployee = [];
+            if (self.displayFormat() === 0) {
+                lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
+                    return employee.id === self.selectedEmployee();
+                }));
+            } else {
+                lstEmployee = self.lstEmployee();
+            }
+            let errorCodes =["0001","000","003"];           
+            let param = {
+                dateRange: {
+                    startDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                    endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                },
+                lstEmployee: lstEmployee,
+                errorCodes : errorCodes
+            };
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            service.selectErrorCode(param).done((data) => {
+                   _.each(data.lstControlDisplayItem.lstHeader, function(item) {
+                    if (item.group.length > 0) {
+                        delete item.group[0].group;
+                        if(item.group[0].dataType== "String"){
+                            item.group[0].onChange = self.search;
+                            delete item.group[0].ntsControl;
+                        } else {
+                             delete item.group[0].onChange;
+                             delete item.group[0].ntsControl;
+                        }
+                        delete item.group[1].group;
+                    } else {
+                        delete item.group;
+                    }
+                });
+                 _.each(data.lstFixedHeader, function(item) {
+                    delete item.group;
+                 });
+                self.receiveData(data);
+                self.extraction();
+                nts.uk.ui.block.clear();
+            }).fail(function(error){
+                alert(error.message);
+                nts.uk.ui.block.clear();
+            });
+        }
 
+        selectDisplayItem() {
+            var self = this;
+            alert("displayItem");
+        }
         btnSetting_Click() {
             var container = $("#setting-content");
             if (container.css("visibility") === 'hidden') {
@@ -313,7 +420,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         extraction() {
             var self = this;
-            $("#dpGrid").ntsGrid("destroy");
+          $("#dpGrid").ntsGrid("destroy");
             self.extractionData();
             self.loadGrid();
         }
@@ -350,13 +457,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             _.forEach(self.dailyPerfomanceData(), (data) => {
                 if (moment(data.date, "YYYY/MM/DD").day() == 6) {
                     self.textColors.push({
-                        rowId: data.id,
+                        rowId: "_"+data.id,
                         columnKey: 'date',
                         color: '#4F81BD'
                     });
                 } else if (moment(data.date, "YYYY/MM/DD").day() == 0) {
                     self.textColors.push({
-                        rowId: data.id,
+                        rowId: "_"+data.id,
                         columnKey: 'date',
                         color: '#e51010'
                     });
@@ -380,8 +487,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         formatDate(lstData) {
             var self = this;
             return lstData.map((data) => {
-                return {
-                    id: data.id,
+                var object = {
+                    id: "_"+data.id,
                     state: data.state,
                     error: data.error,
                     date: moment(data.date, "YYYY/MM/DD").format("MM/DD(dd)"),
@@ -390,6 +497,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     employeeCode: data.employeeCode,
                     employeeName: data.employeeName
                 }
+                _.each(data.cellDatas, function(item) { object[item.columnKey] = item.value });
+                return object;
             });
         }
 
@@ -558,11 +667,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { name: 'Paging', pageSize: 31, currentPageIndex: 0 },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: self.fixColGrid() },
                     { name: 'Resizing', columnSettings: [{ columnKey: 'id', allowResizing: false, minimumWidth: 0 }] },
+                    { name: 'MultiColumnHeaders'}
                 ],
                 ntsFeatures: self.createNtsFeatures(),
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'Image', source: 'img-icon icon-people', controlType: 'Image' }
+                    { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' },
+                    {
+                        name: 'Link2',
+                        click:function(ui, evt) {
+                            alert('Do something12344:'+ ui);
+                        },
+                        controlType: 'LinkLabel'
+                    },
+                 { name: 'Combobox2', options: self.comboItems(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
                 ]
             });
         }
@@ -658,5 +776,72 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
             }
         }
+        search(val) {
+            let dfd = $.Deferred();
+            let i = 0;
+            let result = "Not found";
+            while (i < 500) {
+                i++;
+            }
+            if (val === "001") {
+                result = "結果01";
+            } else if (val === "002") {
+                result = "結果02"
+            }
+            dfd.resolve(result);
+            return dfd.promise();
+        }
     }
-}
+    export class AuthorityDetailModel {
+        available1: KnockoutObservable<boolean> = ko.observable(true);
+        available4: KnockoutObservable<boolean> = ko.observable(true);
+        available2: KnockoutObservable<boolean> = ko.observable(true);
+        available3: KnockoutObservable<boolean> = ko.observable(true);
+        available5: KnockoutObservable<boolean> = ko.observable(true);
+        available8: KnockoutObservable<boolean> = ko.observable(true);
+        available22: KnockoutObservable<boolean> = ko.observable(true);
+        available24: KnockoutObservable<boolean> = ko.observable(true);
+        available7: KnockoutObservable<boolean> = ko.observable(true);
+        available23: KnockoutObservable<boolean> = ko.observable(true);
+        available25: KnockoutObservable<boolean> = ko.observable(true);
+        constructor(data: Array<DailyPerformanceAuthorityDto>) {
+            var self = this;
+            if (!data) return;
+            this.available1(self.checkAvailable(data, 1));
+            this.available4(self.checkAvailable(data, 4));
+            this.available2(self.checkAvailable(data, 2));
+            this.available3(self.checkAvailable(data, 3));
+            this.available5(self.checkAvailable(data, 5));
+            this.available8(self.checkAvailable(data,8));
+            this.available22(self.checkAvailable(data, 22));
+            this.available24(self.checkAvailable(data, 24));
+            this.available7(self.checkAvailable(data, 7));
+            this.available23(self.checkAvailable(data, 23));
+            this.available25(self.checkAvailable(data, 25));
+            
+        }
+        checkAvailable(data: Array<DailyPerformanceAuthorityDto> , value: number): boolean {
+           let self = this;
+           var check  = _.find(data, function(o) {
+                return o.functionNo === value;
+            })
+            if(check == null) return true;
+            else return check.availability;
+        };
+    }
+    class ItemModel {
+            code: string;
+            name: string;
+    
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+    export interface DailyPerformanceAuthorityDto {
+        isDefaultInitial: number;
+        roleID: string;
+        functionNo: number;
+        availability: boolean;
+    }
+    }
