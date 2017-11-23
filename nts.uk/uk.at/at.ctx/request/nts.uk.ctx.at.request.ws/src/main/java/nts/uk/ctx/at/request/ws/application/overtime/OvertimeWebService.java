@@ -11,6 +11,8 @@ import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegiste
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.overtime.UpdateOvertimeCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.UpdateOvertimeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
@@ -28,6 +30,9 @@ public class OvertimeWebService extends WebService{
 	private CheckBeforeRegisterOvertime checkBefore;
 	@Inject
 	private CheckConvertPrePost checkConvertPrePost;
+	
+	@Inject
+	private UpdateOvertimeCommandHandler updateOvertimeCommandHandler;
 	
 	@POST
 	@Path("getOvertimeByUI")
@@ -62,6 +67,12 @@ public class OvertimeWebService extends WebService{
 	@Path("findByAppID")
 	public OverTimeDto findByChangeAppDate(String appID) {
 		return this.overtimeFinder.findDetailByAppID(appID);
+	}
+	
+	@POST
+	@Path("update")
+	public void update(UpdateOvertimeCommand command) {
+		this.updateOvertimeCommandHandler.handle(command);
 	}
 }
 

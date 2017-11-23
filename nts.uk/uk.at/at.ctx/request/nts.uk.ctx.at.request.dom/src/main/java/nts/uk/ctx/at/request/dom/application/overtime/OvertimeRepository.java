@@ -21,4 +21,6 @@ public interface OvertimeRepository {
 	
 	public void update(AppOverTime appOverTime); 
 	
+	public void delete(String companyID, String appID);
+	
 }
