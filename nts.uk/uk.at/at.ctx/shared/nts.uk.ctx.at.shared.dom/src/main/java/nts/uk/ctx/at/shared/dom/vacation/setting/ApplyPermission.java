@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting;
 /**
  * The Enum ApplyPermission.
  */
+// 許可区分
 public enum ApplyPermission {
 
 	// 許可する

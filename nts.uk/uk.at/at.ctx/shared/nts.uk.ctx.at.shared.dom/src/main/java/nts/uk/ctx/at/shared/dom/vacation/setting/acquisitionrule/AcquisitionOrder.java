@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 /**
  * The Class AcquisitionOrder.
  */
+// 休暇の取得順
 @Getter
 @NoArgsConstructor
 public class AcquisitionOrder {
