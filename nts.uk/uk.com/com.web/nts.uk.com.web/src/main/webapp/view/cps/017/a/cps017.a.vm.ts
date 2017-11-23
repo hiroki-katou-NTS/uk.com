@@ -26,6 +26,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         //Check insert/upadte
         checkCreate: KnockoutObservable<boolean>;
+        checkCreateaaa: KnockoutObservable<boolean>;
         closeUp: KnockoutObservable<boolean>;
         constructor() {
             let self = this,
@@ -36,6 +37,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             //check insert/update
             self.checkCreate = ko.observable(true);
+            self.checkCreateaaa = ko.observable(true);
             self.closeUp = ko.observable(false);
 
             //Subscribe: 項目変更→項目のID変更
@@ -65,6 +67,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             historySelection.histId.subscribe(x => {
                 self.listSelection.removeAll();
                 service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                    if (itemList && itemList.length) {
+                        self.checkCreateaaa(false);
                         itemList.forEach(x => self.listSelection.push(x));
                         self.selection().selectionID(self.listSelection()[0].selectionID);
                         //self.checkCreate(false);
@@ -133,7 +136,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionCD('');
             selection.selectionName('');
             selection.memoSelection('');
-            self.checkCreate(true);
+            self.checkCreateaaa(true);
             $("#code").focus();
         }
 
@@ -150,7 +153,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         addData() {
             let self = this;
             if (self.validate()) {
-                if (self.checkCreate() == true) {
+                if (self.checkCreateaaa() == true) {
                     self.add();
                 } else {
                     self.update();
@@ -171,6 +174,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 alertError({ messageId: "Msg_3" });
             } else {
                 service.saveDataSelection(command).done(function() {
+                    self.checkCreateaaa(false);
                     self.listSelection.removeAll();
                     service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
                         if (itemList && itemList.length) {
@@ -197,6 +201,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             currentItem.histId(self.historySelection().histId());
             command = ko.toJS(currentItem);
             service.updateDataSelection(command).done(function() {
+                self.checkCreateaaa(false);
                 self.listSelection.removeAll();
                 service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
                     if (itemList && itemList.length) {
