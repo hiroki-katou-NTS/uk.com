@@ -201,11 +201,24 @@ public class AppOvertimeFinder {
 			
 		}
 		// 06-02_残業時間を取得
-		overtimeInputs = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value);
+		List<OverTimeInput> overtimeInputHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value);
+		if(overtimeInputHours != null){
+			for(OverTimeInput overtimeInput : overtimeInputHours){
+				overtimeInputs.add(overtimeInput);
+			}
+		}
+		
 		// 06-03_加給時間を取得
-		overtimeInputs = this.overtimeSixProcess.getCaculationBonustime(companyID, employeeID, appDate,  ApplicationType.OVER_TIME_APPLICATION.value);
+		List<OverTimeInput> overtimeInputBonus= this.overtimeSixProcess.getCaculationBonustime(companyID, employeeID, appDate,  ApplicationType.OVER_TIME_APPLICATION.value);
+		if(overtimeInputBonus != null){
+			for(OverTimeInput overtimeInput : overtimeInputBonus){
+				overtimeInputs.add(overtimeInput);
+			}
+		}
 		// 計算フラグ=0
-		overtimeInputDtos = convertOverTimeInputDto(overtimeInputs,companyID);
+		if(overtimeInputs.size() > 0){
+			overtimeInputDtos = convertOverTimeInputDto(overtimeInputs,companyID);
+		}
 		return overtimeInputDtos;
 	}
 	
@@ -668,7 +681,7 @@ public class AppOvertimeFinder {
 			Optional<WorkTime> workTime = workTimeRepository.findByCode(companyID,
 					appOvertime.getSiftCode().toString());
 			if (workTime.isPresent()) {
-				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().toString());
+				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
 			}
 			preAppOvertimeDto.setSiftTypePre(siftType);
 		}

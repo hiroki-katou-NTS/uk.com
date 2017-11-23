@@ -374,7 +374,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let param : any ={
                 OvertimeInputDtos: self.overtimeHours(),
                 prePostAtr : self.prePostSelected(),
-                appDate : self.appDate
+                appDate : moment(self.appDate()).format("YYYY/MM/DD")
             }
             service.getCaculationResult(param).done(function(data){
                
@@ -542,7 +542,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     self.workTypeCodePre(data.preAppOvertimeDto.workTypePre.workTypeCode);
                     self.workTypeNamePre(data.preAppOvertimeDto.workTypePre.workTypeName);
                 }
-                if(data.siftTypePre != null){
+                if(data.preAppOvertimeDto.siftTypePre != null){
                     self.siftCodePre(data.preAppOvertimeDto.siftTypePre.siftCode);
                     self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
                 }
@@ -555,7 +555,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         self.overtimeHoursPre.push(new common.OverTimeInput("", "", 
                         data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
                          "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,
-                         0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName,
+                         0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
                          data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
                           data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
                           data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime,null));
