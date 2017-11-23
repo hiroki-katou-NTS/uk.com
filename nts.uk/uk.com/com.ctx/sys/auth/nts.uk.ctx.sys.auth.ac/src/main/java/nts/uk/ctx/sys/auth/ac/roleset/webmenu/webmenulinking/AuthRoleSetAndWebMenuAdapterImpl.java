@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetAndWebMenuPub;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,19 +30,19 @@ public class AuthRoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapte
 	private RoleSetAndWebMenuPub roleSetAndWebMenuPub;
 
 	@Override
-	public List<RoleSetAndWebMenu> findAllWebMenuByRoleSetCd(String roleSetCd) {
+	public List<RoleSetAndWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd) {
 		//Get company Id
 		String companyId = AppContexts.user().companyId();
 		if (!StringUtils.isNoneEmpty(companyId)) {
 			return this.roleSetAndWebMenuPub.findAllWebMenuByRoleSetCd(companyId, roleSetCd).stream()
-					.map(item -> new RoleSetAndWebMenu(item.getCompanyId(), item.getWebMenuCd(), item.getRoleSetCd())
+					.map(item -> new RoleSetAndWebMenuImport(item.getCompanyId(), item.getWebMenuCd(), item.getRoleSetCd())
 					).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
 
 	@Override
-	public void addRoleSetAndWebMenu(RoleSetAndWebMenu roleSetAndWebMenu) {
+	public void addRoleSetAndWebMenu(RoleSetAndWebMenuImport roleSetAndWebMenu) {
 		this.roleSetAndWebMenuPub.addRoleSetAndWebMenu(
 				roleSetAndWebMenu.getRoleSetCd()
 				, roleSetAndWebMenu.getWebMenuCd()
@@ -50,7 +50,7 @@ public class AuthRoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapte
 	}
 
 	@Override
-	public void updateRoleSetAndWebMenu(RoleSetAndWebMenu roleSetAndWebMenu) {
+	public void updateRoleSetAndWebMenu(RoleSetAndWebMenuImport roleSetAndWebMenu) {
 		this.roleSetAndWebMenuPub.updateRoleSetAndWebMenu(
 				roleSetAndWebMenu.getRoleSetCd()
 				, roleSetAndWebMenu.getWebMenuCd()

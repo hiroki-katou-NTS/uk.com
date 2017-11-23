@@ -4,7 +4,7 @@ package nts.uk.ctx.sys.auth.dom.roleset.webmenu;
  */
 import lombok.Value;
 @Value
-public class WebMenu {
+public class WebMenuImport {
 
 	/** Webメニューコード */
 	private String webMenuCd;
@@ -18,7 +18,7 @@ public class WebMenu {
 	/** 既定メニュー */
 	private boolean defaultMenu;
 
-	public WebMenu(String webMenuCd, String webMenuName, String companyId, boolean defaultMenu) {
+	public WebMenuImport(String webMenuCd, String webMenuName, String companyId, boolean defaultMenu) {
 		this.webMenuCd = webMenuCd;
 		this.webMenuName = webMenuName;
 		this.companyId = companyId;

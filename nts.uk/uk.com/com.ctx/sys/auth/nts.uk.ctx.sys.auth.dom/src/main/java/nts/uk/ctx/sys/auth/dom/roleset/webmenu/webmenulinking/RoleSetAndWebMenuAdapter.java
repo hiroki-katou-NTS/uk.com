@@ -14,19 +14,19 @@ public interface RoleSetAndWebMenuAdapter {
 	 * @return
 	 */
 	// RequestList #???
-	List<RoleSetAndWebMenu> findAllWebMenuByRoleSetCd(String roleSetCd);
+	List<RoleSetAndWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd);
 	
 	/**
 	 * add Role Set and Web menu link
 	 * @param roleSetAndWebMenus
 	 */
-	void addRoleSetAndWebMenu(RoleSetAndWebMenu roleSetAndWebMenu);
+	void addRoleSetAndWebMenu(RoleSetAndWebMenuImport roleSetAndWebMenu);
 
 	/**
 	 * update Role Set and Web menu link
 	 * @param roleSetAndWebMenus
 	 */	
-	void updateRoleSetAndWebMenu(RoleSetAndWebMenu roleSetAndWebMenu);
+	void updateRoleSetAndWebMenu(RoleSetAndWebMenuImport roleSetAndWebMenu);
 
 	/**
 	 * delete by roleSetCd 
