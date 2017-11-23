@@ -12,12 +12,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * The Class FlowTimeSetting.
  */
 //流動時間設定
-
-/**
- * Gets the passage time.
- *
- * @return the passage time
- */
 @Getter
 public class FlowTimeSetting extends DomainObject {
 

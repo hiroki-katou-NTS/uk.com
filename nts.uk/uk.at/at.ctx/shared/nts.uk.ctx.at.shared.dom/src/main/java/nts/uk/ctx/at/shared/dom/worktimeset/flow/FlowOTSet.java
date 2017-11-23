@@ -11,14 +11,8 @@ import nts.arc.layer.dom.DomainObject;
  * The Class FlowOTSet.
  */
 //流動残業設定
-
-/**
- * Gets the fixed change atr.
- *
- * @return the fixed change atr
- */
 @Getter
-public class FlowOTSet extends DomainObject{
+public class FlowOTSet extends DomainObject {
 
 	/** The fixed change atr. */
 	//所定変動区分

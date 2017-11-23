@@ -11,12 +11,6 @@ import nts.arc.layer.dom.DomainObject;
  * The Class FlowWorkRestTimezone.
  */
 //流動勤務の休憩時間帯
-
-/**
- * Gets the flow rest timezone.
- *
- * @return the flow rest timezone
- */
 @Getter
 public class FlowWorkRestTimezone extends DomainObject{
 

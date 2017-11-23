@@ -12,12 +12,6 @@ import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowWorkRestTimezone;
  * The Class FlowHalfDayWorkTimezone.
  */
 //流動勤務の平日出勤用勤務時間帯
-
-/**
- * Gets the work time zone.
- *
- * @return the work time zone
- */
 @Getter
 public class FlowHalfDayWorkTimezone extends DomainObject{
 

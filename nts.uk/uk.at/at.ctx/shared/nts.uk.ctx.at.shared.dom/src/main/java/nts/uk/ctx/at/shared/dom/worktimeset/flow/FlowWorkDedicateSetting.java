@@ -11,14 +11,8 @@ import nts.arc.layer.dom.DomainObject;
  * The Class FlowWorkDedicateSetting.
  */
 //流動勤務専用設定
-
-/**
- * Gets the calculate setting.
- *
- * @return the calculate setting
- */
 @Getter
-public class FlowWorkDedicateSetting extends DomainObject{
+public class FlowWorkDedicateSetting extends DomainObject {
 
 	/** The overtime setting. */
 	//残業設定

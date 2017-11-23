@@ -13,13 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
 /**
  * The Class TimezoneOfFixedRestTimeSet.
  */
-//固定休憩時間の時間帯設定
-
-/**
- * Gets the timezone.
- *
- * @return the timezone
- */
+// 固定休憩時間の時間帯設定
 @Getter
 public class TimezoneOfFixedRestTimeSet extends DomainObject{
 

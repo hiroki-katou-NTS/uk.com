@@ -13,12 +13,6 @@ import nts.arc.layer.dom.DomainObject;
  * The Class FlowRestTimezone.
  */
 //流動休憩時間帯
-
-/**
- * Gets the here after rest set.
- *
- * @return the here after rest set
- */
 @Getter
 public class FlowRestTimezone extends DomainObject {
 

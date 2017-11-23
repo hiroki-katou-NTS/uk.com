@@ -13,18 +13,13 @@ import nts.uk.ctx.at.shared.dom.worktimeset.fixed.StampReflectTimezone;
 /**
  * The Class FlowStampReflectTimezone.
  */
-//流動打刻反映時間帯
-
-/**
- * Gets the stamp reflect timezone.
- *
- * @return the stamp reflect timezone
- */
+// 流動打刻反映時間帯
 @Getter
 public class FlowStampReflectTimezone extends DomainObject {
 
-	// TODO primitive ２回目勤務の反映基準時間
-	// private twoTimesWorkReflectBasicTime
+	 /** The two times work reflect basic time. */
+	// ２回目勤務の反映基準時間
+ 	private ReflectReferenceTwoWorkTime twoTimesWorkReflectBasicTime;
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯

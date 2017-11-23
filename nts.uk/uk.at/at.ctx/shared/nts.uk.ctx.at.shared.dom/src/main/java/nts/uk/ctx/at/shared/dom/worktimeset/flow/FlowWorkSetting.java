@@ -14,19 +14,13 @@ import nts.uk.ctx.at.shared.dom.worktimeset.fixed.LegalOTSetting;
 /**
  * The Class FlowWorkSetting.
  */
-
-/**
- * Gets the flow setting.
- *
- * @return the flow setting
- */
-@Getter
 // 流動勤務設定
+@Getter
 public class FlowWorkSetting extends AggregateRoot {
 
 	/** The company code. */
 	// 会社ID
-	private String companyCode;
+	private String companyId;
 
 	/** The working code. */
 	// 就業時間帯コード
@@ -50,6 +44,7 @@ public class FlowWorkSetting extends AggregateRoot {
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯
+	// TODO: NOT USE IN UI
 	private FlowStampReflectTimezone stampReflectTimezone;
 
 	/** The designated setting. */

@@ -13,14 +13,8 @@ import nts.arc.layer.dom.DomainObject;
  * The Class FlowWorkTimezoneSetting.
  */
 //流動勤務時間帯設定
-
-/**
- * Gets the OT timezone.
- *
- * @return the OT timezone
- */
 @Getter
-public class FlowWorkTimezoneSetting extends DomainObject{
+public class FlowWorkTimezoneSetting extends DomainObject {
 
 	/** The work time rounding. */
 	//就業時間丸め
@@ -28,5 +22,5 @@ public class FlowWorkTimezoneSetting extends DomainObject{
 	
 	/** The OT timezone. */
 	//残業時間帯
-	private List<FlowOTTimezone> OTTimezone;
+	private List<FlowOTTimezone> lstOTTimezone;
 }

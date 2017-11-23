@@ -16,7 +16,7 @@ public class TimeRoundingSetting extends AggregateRoot {
 
 	/** The rounding time. */
 	// 単位
-	private Unit roundingTime;
+	private Unit unit;
 
 	/** The rounding. */
 	// 端数処理
