@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,7 +9,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -19,9 +17,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -32,8 +29,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
-	@Inject
-	private AppEmploymentSettingRepository appEmploymentSettingRepository;
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	@Inject
@@ -58,10 +53,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService#getWorkType(java.lang.String, java.lang.String, java.util.Optional, java.util.Optional)
 	 */
 	@Override
-	public WorkTypeOvertime getWorkType(String companyID, String employeeID,
-			Optional<PersonalLaborCondition> personalLablorCodition,
-			RequestAppDetailSetting requestAppDetailSetting) {
-		WorkTypeOvertime result = new WorkTypeOvertime();
+	public List<WorkTypeOvertime> getWorkType(String companyID, String employeeID,
+			RequestAppDetailSetting requestAppDetailSetting,List<AppEmploymentSetting> appEmploymentSettings) {
+		List<WorkTypeOvertime> result = new ArrayList<>();
+		List<WorkType> workTypes = new ArrayList<>();
 		if (requestAppDetailSetting != null) {
 			// 時刻計算利用チェック
 			if (requestAppDetailSetting.getTimeCalUseAtr().value == UseAtr.USE.value) {
@@ -69,26 +64,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 				SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
 				if (sEmpHistImport != null) {
 					// ドメインモデル「申請別対象勤務種類」を取得
-					List<AppEmployWorkType> employWorkTypes = this.appEmploymentSettingRepository.getEmploymentWorkType(
-							companyID, sEmpHistImport.getEmploymentCode(), ApplicationType.OVER_TIME_APPLICATION.value);
-					if (employWorkTypes.size() > 0) {
-						// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
-						if(personalLablorCodition.isPresent()){
-							//ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
-							Optional<WorkType> workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-							result.setWorkTypeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-							if(workType.isPresent()){
-								result.setWorkTypeName(workType.get().getName().toString());
-							}
-							
-						}else{
-							//先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-							Optional<WorkType> workType = workTypeRepository.findByPK(companyID, employWorkTypes.get(0).getWorkTypeCode());
-							result.setWorkTypeCode(employWorkTypes.get(0).getWorkTypeCode());
-							if(workType.isPresent()){
-								result.setWorkTypeName(workType.get().getName().toString());
-							}
+					if (appEmploymentSettings != null && appEmploymentSettings.size() > 0) {
+						
+						List<String> workTypeCodes = new ArrayList<>();
+						List<AppEmployWorkType> employWorkTypes = appEmploymentSettings.get(0).getLstWorkType();
+						for(AppEmployWorkType appEmployWorkType : employWorkTypes){
+							workTypeCodes.add(appEmployWorkType.getWorkTypeCode());
 						}
+						workTypes = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes);
+						result = convertWorkType(workTypes);
+						result.sort((a,b) -> a.getWorkTypeCode().compareTo(b.getWorkTypeCode()));
 						return result;
 					}
 				}
@@ -125,49 +110,38 @@ public class OvertimeServiceImpl implements OvertimeService {
 				//時間消化休暇
 				halfAtrs.add(9);
 				
-				List<WorkType> workTypes = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs);
-				
-				/*
-				 * ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
-				 * personalLablorCodition
-				 */
-				if(personalLablorCodition.isPresent()){
-					//ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
-					Optional<WorkType> workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-					result.setWorkTypeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-					result.setWorkTypeName(workType.get().getName().toString());
-				}else{
-					//先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-					result.setWorkTypeCode(workTypes.get(0).getWorkTypeCode().toString());
-					result.setWorkTypeName(workTypes.get(0).getName().toString());
-				}
+				workTypes = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs);
+				result = convertWorkType(workTypes);
+				return result;
 			}
 		}
 		
-		return result;
+		return null;
 	}
 
 	@Override
-	public SiftType getSiftType(String companyID, String employeeID,
+	public List<SiftType> getSiftType(String companyID, String employeeID,
 			RequestAppDetailSetting requestAppDetailSetting) {
-		SiftType result = new SiftType();
+		List<SiftType> result = new ArrayList<>();
 		if (requestAppDetailSetting != null) {
 			// 時刻計算利用チェック
 			if (requestAppDetailSetting.getTimeCalUseAtr().value == UseAtr.USE.value) {
 				// 1.職場別就業時間帯を取得
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
-				/*
-				 * ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
-				 * personalLaborConditionRepository
-				 */
+				
 				if(listWorkTimeCodes != null){
-					Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,listWorkTimeCodes.get(0));
-					result.setSiftCode(listWorkTimeCodes.get(0));
-					result.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
+					List<WorkTime> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
+					for(WorkTime workTime : workTimes){
+						SiftType siftType = new SiftType();
+						siftType.setSiftCode(workTime.getSiftCD().toString());
+						siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
+						result.add(siftType);
+					}
+					return result;
 				}
 			}
 		}
-		return result;
+		return null;
 	}
 
 	/**
@@ -180,7 +154,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 		//Register overtime
 		overTimeRepository.Add(domain);
 	}
-
+	private List<WorkTypeOvertime> convertWorkType(List<WorkType> workTypes){
+		List<WorkTypeOvertime> workTypeOvertimes = new ArrayList<>();
+		for(WorkType workType : workTypes){
+			WorkTypeOvertime workTypeOvertime = new WorkTypeOvertime(workType.getWorkTypeCode().toString(),workType.getName().toString());
+			workTypeOvertimes.add(workTypeOvertime);
+		}
+		return workTypeOvertimes;
+	}
 	
 
 }

@@ -68,9 +68,17 @@ public class OverTimeDto {
 	private WorkTypeOvertime workType;
 	
 	/**
-	 * siftType
+	 * workTypes
 	 */
+	private List<String> workTypes;
+	
+	/** siftType */
 	private SiftType siftType;
+	
+	/**
+	 * siftTypes
+	 */
+	private List<String> siftTypes;
 
 	/**
 	 * 勤務時間From1
@@ -191,8 +199,10 @@ public class OverTimeDto {
 					? Collections.emptyList() 
 					: appOverTime.getOverTimeInput().stream().map(x -> OvertimeInputDto.fromDomain(x)).collect(Collectors.toList()), 
 				0, 
-				new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""), 
-				new SiftType(appOverTime.getSiftCode().v(),""), 
+				new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
+				Collections.emptyList(),
+				new SiftType(appOverTime.getSiftCode().v(),""),
+				Collections.emptyList(),
 				appOverTime.getWorkClockFrom1(), 
 				appOverTime.getWorkClockTo1(),  
 				appOverTime.getWorkClockFrom2(), 

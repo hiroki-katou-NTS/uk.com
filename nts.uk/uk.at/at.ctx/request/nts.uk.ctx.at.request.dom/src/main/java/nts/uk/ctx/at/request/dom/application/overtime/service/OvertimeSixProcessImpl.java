@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -10,7 +11,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-
+@Stateless
 public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	final String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
@@ -78,7 +78,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		boolean condition = checkCondition(prePostAtr,appType,companyID);
 		if(condition){
 			// 08_就業時間帯取得
-			SiftType siftType = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting);
+			List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting);
 			// TODO
 		}
 		

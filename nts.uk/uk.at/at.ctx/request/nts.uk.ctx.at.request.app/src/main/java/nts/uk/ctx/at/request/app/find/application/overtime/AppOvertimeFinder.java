@@ -46,6 +46,7 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
@@ -398,15 +399,28 @@ public class AppOvertimeFinder {
 					// 時刻計算利用チェック
 					if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
 						result.setDisplayCaculationTime(true);
-						//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
-						Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,GeneralDate.fromString(appDate, DATE_FORMAT));
+						List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 						// 07_勤務種類取得: lay loai di lam 
-						WorkTypeOvertime workTypeOvertime = overtimeService.getWorkType(companyID, employeeID,personalLablorCodition,requestAppDetailSetting.get(0));
-						result.setWorkType(workTypeOvertime);
+						List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,requestAppDetailSetting.get(0),appEmploymentWorkType);
+						if(workTypeOvertimes != null){
+							result.setWorkType(workTypeOvertimes.get(0));
+						}
+						List<String> workTypeCodes = new ArrayList<>();
+						for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
+							workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
+						}
+						result.setSiftTypes(workTypeCodes);
 						
 						// 08_就業時間帯取得(lay loai gio lam viec) 
-						SiftType siftType = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
-						result.setSiftType(siftType);
+						List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
+						List<String> siftCodes = new ArrayList<>();
+						for(SiftType siftType : siftTypes){
+							siftCodes.add(siftType.getSiftCode());
+						}
+						result.setSiftTypes(siftCodes);
+						if(siftTypes != null){
+							result.setSiftType(siftTypes.get(0));
+						}
 					}else{
 						result.setDisplayCaculationTime(false);
 					}
@@ -475,15 +489,29 @@ public class AppOvertimeFinder {
 				// 時刻計算利用チェック
 				if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
 					result.setDisplayCaculationTime(true);
-					//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
-					Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,GeneralDate.fromString(appDate, DATE_FORMAT));
+					
+					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 					// 07_勤務種類取得: lay loai di lam 
-					WorkTypeOvertime workTypeOvertime = overtimeService.getWorkType(companyID, employeeID,personalLablorCodition,requestAppDetailSetting.get(0));
-					result.setWorkType(workTypeOvertime);
+					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,requestAppDetailSetting.get(0),appEmploymentWorkType);
+					if(workTypeOvertimes != null){
+						result.setWorkType(workTypeOvertimes.get(0));
+					}
+					List<String> workTypeCodes = new ArrayList<>();
+					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
+						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
+					}
+					result.setSiftTypes(workTypeCodes);
 					
 					// 08_就業時間帯取得(lay loai gio lam viec) 
-					SiftType siftType = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
-					result.setSiftType(siftType);
+					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
+					List<String> siftCodes = new ArrayList<>();
+					for(SiftType siftType : siftTypes){
+						siftCodes.add(siftType.getSiftCode());
+					}
+					result.setSiftTypes(siftCodes);
+					if(siftTypes != null){
+						result.setSiftType(siftTypes.get(0));
+					}
 					
 					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
 					iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting.get(0));

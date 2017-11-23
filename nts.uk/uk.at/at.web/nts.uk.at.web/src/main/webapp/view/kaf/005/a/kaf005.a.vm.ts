@@ -30,6 +30,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //勤務種類
         siftCD: KnockoutObservable<string> = ko.observable('');
         siftName: KnockoutObservable<string> = ko.observable('');
+        workTypecodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        workTimecodes: KnockoutObservableArray<string> = ko.observableArray([]);
         //comboBox 定型理由
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
@@ -194,6 +196,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.workTypeCd(data.workType.workTypeCode);
                 self.workTypeName(data.workType.workTypeName);
             }
+            self.workTypecodes(data.workTypes);
+            self.workTimecodes(data.siftTypes);
             self.timeStart1(data.workClockFrom1);
             self.timeEnd1(data.workClockFrom2);
             self.timeStart2(data.workClockTo1);
@@ -438,12 +442,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
          */
         openDialogKdl003() {
             let self = this;
-            let workTypeCodes = [];
-            let workTimeCodes = [];
+            
             nts.uk.ui.windows.setShared('parentCodes', {
-                workTypeCodes: workTypeCodes,
+                workTypeCodes: self.workTypecodes(),
                 selectedWorkTypeCode: self.workTypeCd(),
-                workTimeCodes: workTimeCodes,
+                workTimeCodes: self.workTimeCodes(),
                 selectedWorkTimeCode: self.siftCD()
             }, true);
 
