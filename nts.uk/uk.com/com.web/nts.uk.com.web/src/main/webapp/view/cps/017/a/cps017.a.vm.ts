@@ -67,7 +67,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         //self.checkCreate(false);
                     });
                 }
-                //self.checkCreate(false);
+                
             });
 
             //sub theo historyID:
@@ -83,7 +83,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     }
 
                 });
-                //self.checkCreate(false);
+                
             });
 
             // sub theo selectionID: 
@@ -98,7 +98,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
                 }
-                //self.checkCreate(true);
+                
             });
 
         }
