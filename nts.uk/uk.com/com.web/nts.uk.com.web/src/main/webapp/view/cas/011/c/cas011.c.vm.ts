@@ -1,12 +1,4 @@
 module nts.uk.com.view.cas011.c.viewmodel {
-/*    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import getShared = nts.uk.ui.windows.getShared;
-    import textUK = nts.uk.text;
-*/
     import resource = nts.uk.resource;
     import dialog = nts.uk.ui.dialog;
     import windows = nts.uk.ui.windows;
@@ -16,70 +8,69 @@ module nts.uk.com.view.cas011.c.viewmodel {
     export class ScreenModel {
 
         listDefaultRoleSets: KnockoutObservableArray<IDefaultRoleSet> = ko.observableArray([]);
-        currentDefaultRoleSet: KnockoutObservable<IDefaultRoleSet> = ko.observable(new DefaultRoleSet({
+        currentDefaultRoleSet: KnockoutObservable<DefaultRoleSet> = ko.observable(new DefaultRoleSet({
                 roleSetCd: ''
                 , roleSetName: ''
                 }));
 
         constructor() {
-            //let self = this;
         }
 
         //initial screen
         start(): JQueryPromise<any> {
             
             let self = this,
-            currentDefaultRoleSet: IDefaultRoleSet = self.currentDefaultRoleSet(),
+            currentDefaultRoleSet: DefaultRoleSet = self.currentDefaultRoleSet(),
             listDefaultRoleSets = self.listDefaultRoleSets,
             dfd = $.Deferred();
 
-            self.listDefaultRoleSets.removeAll();
+            listDefaultRoleSets.removeAll();
             errors.clearAll();
-/*        
+        
             service.getAllRoleSet().done((itemList: Array<IDefaultRoleSet>) => {
                
                 // in case number of RoleSet is greater then 0
                 if (itemList && itemList.length > 0) {
     
-                    self.listDefaultRoleSets(itemList);
+                    listDefaultRoleSets(itemList);
                     self.settingSelectedDefaultRoleSet();
-    
+                    dfd.resolve();
                 } else { //in case number of RoleSet is zero
-                    self.closeDialog();
-                }
-                
-                dfd.resolve();
-    
+                    nts.uk.ui.windows.close();
+                    dfd.reject();
+                }    
             }).fail(error => {
+                nts.uk.ui.windows.close();
                 dfd.reject();
-                self.closeDialog();
             });
-*/
-            dfd.resolve();
+
             return dfd.promise();
         }
 
-        closeDialog() {
-            nts.uk.ui.windows.close();
-        }
-
+        /**
+         * Setting selected Default Role Set
+         */
         settingSelectedDefaultRoleSet() {
             let self = this,
-            currentDefaultRoleSet: IDefaultRoleSet = self.currentDefaultRoleSet(),
-            listDefaultRoleSets = self.listDefaultRoleSets();
+            currentDefaultRoleSet: DefaultRoleSet = self.currentDefaultRoleSet(),
+            listDefaultRoleSets = self.listDefaultRoleSets;
 
             service.getCurrentDefaultRoleSet().done((item: IDefaultRoleSet) => {
                 
                 // in case exist default role set
                 if (item) {
-                    self.currentDefaultRoleSet(item);
+                    currentDefaultRoleSet.roleSetCd(item.roleSetCd);
+                    currentDefaultRoleSet.roleSetName(item.roleSetName);
                 } else {
-                    if (self.listDefaultRoleSets && self.listDefaultRoleSets.length > 0) {
-                        self.currentDefaultRoleSet(self.listDefaultRoleSets()[0]);
+                    if (listDefaultRoleSets && listDefaultRoleSets().length > 0) {
+                        currentDefaultRoleSet.roleSetCd(listDefaultRoleSets()[0].roleSetCd);
+                        currentDefaultRoleSet.roleSetName(listDefaultRoleSets()[0].roleSetName);
                     }
                 }
 
             }).fail(error => {
+                currentDefaultRoleSet.roleSetCd('');
+                currentDefaultRoleSet.roleSetName('');
             });
             
         }
@@ -89,7 +80,7 @@ module nts.uk.com.view.cas011.c.viewmodel {
          */
         addDefaultRoleSet() {
             let self = this,
-                currentDefaultRoleSet : DefaultRoleSet = self.historySelection();
+                currentDefaultRoleSet : DefaultRoleSet = self.currentDefaultRoleSet();
 
             service.addDefaultRoleSet(ko.toJS(currentDefaultRoleSet)).done(function() {                
                   dialog.info({ messageId: "Msg_15" }).then(function() {
