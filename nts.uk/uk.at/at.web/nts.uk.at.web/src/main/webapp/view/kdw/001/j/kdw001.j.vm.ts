@@ -177,6 +177,32 @@ module nts.uk.at.view.kdw001.j {
                                     $("#wizard").ntsWizard("next");
                                 });
 
+                            }else{
+                                  if (!nts.uk.util.isNullOrUndefined(data.reflectApprovalSetInfo)) {
+                                        var approvalResultText = getText('KDW001_11');
+                                        self.dScreenmodel.approvalResult(approvalResultText);
+                                        self.dScreenmodel.approvalVisible(true);
+                                        if (data.reflectApprovalSetInfo.executionType == 1) {
+                                            self.dScreenmodel.approvalResult(approvalResultText += '(' + getText('KDW001_67') + ')');
+                                        }
+                                    } else {
+                                        self.dScreenmodel.approvalResult('');
+                                        self.dScreenmodel.approvalVisible(false);
+                                    }
+
+                                    if (!nts.uk.util.isNullOrUndefined(data.monlyAggregationSetInfo)) {
+                                        var monthCountText = getText('KDW001_12');
+                                        self.dScreenmodel.monthCount(monthCountText);
+                                        self.dScreenmodel.monthCountVisible(true);
+                                        if (data.monlyAggregationSetInfo.executionType == 1) {
+                                            self.dScreenmodel.monthCount(monthCountText += '(' + getText('KDW001_70') + ')');
+                                        }
+
+                                    } else {
+                                        self.dScreenmodel.monthCount('');
+                                        self.dScreenmodel.monthCountVisible(false);
+                                    }
+                                    $("#wizard").ntsWizard("next");
                             }
                         } else {
                             self.dScreenmodel.dailyCal('');
