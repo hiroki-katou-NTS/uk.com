@@ -18,6 +18,7 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Formul
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaNumerical;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaTimeUnit;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaUnitprice;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.MoneyFunc;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.TimeUnitFunc;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
@@ -39,18 +40,20 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetti
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertOrderPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSet;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaAmount;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaAmountPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaMoney;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaMoneyPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaNumerical;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaNumericalPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaTimeUnit;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaTimeUnitPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstMoneyFunc;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstMoneyFuncPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstTimeUnitFunc;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstTimeUnitFuncPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormAmount;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormAmountPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormMoney;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormMoneyFunc;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormMoneyFuncPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormMoneyPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormNumerical;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormNumericalPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormTimeUnit;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormTimeUnitPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormTimeunitFunc;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormTimeunitFuncPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaUnitPrice;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaUnitPricePK;
 
 /**
  * 
@@ -68,6 +71,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	private static final String SELECT_MONEY_FUNC;
 	private static final String SELECT_FORMULA_MONEY;
 	private static final String SELECT_FORMULA_NUMMER;
+	private static final String SELECT_FORMULA_PRICE;
 	// Form People
 	private final String SELECT_PEOPLE_NO_WHERE = "SELECT c FROM KscmtFormPeople c ";
 	private final String SELECT_PEOPLE_ITEM = SELECT_PEOPLE_NO_WHERE
@@ -87,39 +91,46 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstFormulaAmount e");
-		builderString.append(" WHERE e.kscstFormulaAmountPK.companyId = :companyId");
+		builderString.append(" FROM KscstFormAmount e");
+		builderString.append(" WHERE e.kscstFormAmountPK.companyId = :companyId");
 		SELECT_FORMULA_AMOUNT = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstFormulaTimeUnit e");
-		builderString.append(" WHERE e.kscstFormulaTimeUnitPK.companyId = :companyId");
+		builderString.append(" FROM KscstFormTimeUnit e");
+		builderString.append(" WHERE e.kscstFormTimeUnitPK.companyId = :companyId");
 		SELECT_FORMULA_TIME_UNIT = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstTimeUnitFunc e");
-		builderString.append(" WHERE e.kscstTimeUnitFuncPK.companyId = :companyId");
+		builderString.append(" FROM KscstFormTimeunitFunc e");
+		builderString.append(" WHERE e.kscstFormTimeunitFuncPK.companyId = :companyId");
 		SELECT_TIME_UNIT_FUNC = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstMoneyFunc e");
-		builderString.append(" WHERE e.kscstMoneyFuncPK.companyId = :companyId");
+		builderString.append(" FROM KscstFormMoneyFunc e");
+		builderString.append(" WHERE e.kscstFormMoneyFuncPK.companyId = :companyId");
 		SELECT_MONEY_FUNC = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstFormulaMoney e");
-		builderString.append(" WHERE e.kscstFormulaMoneyPK.companyId = :companyId");
+		builderString.append(" FROM KscstFormMoney e");
+		builderString.append(" WHERE e.kscstFormMoneyPK.companyId = :companyId");
 		SELECT_FORMULA_MONEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstFormulaNumerical e");
-		builderString.append(" WHERE e.kscstFormulaNumerical.companyId = :companyId");
+		builderString.append(" FROM KscstFormNumerical e");
+		builderString.append(" WHERE e.kscstFormNumericalPK.companyId = :companyId");
 		SELECT_FORMULA_NUMMER = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM KscstFormUnitPrice e");
+		builderString.append(" WHERE e.kscstFormUnitPricePK.companyId = :companyId");
+		SELECT_FORMULA_PRICE = builderString.toString();
+
 	}
 
 	/**
@@ -149,7 +160,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param entity
 	 * @return
 	 */
-	private static FormulaAmount toDomainFormAmount(KscstFormulaAmount entity) {
+	private static FormulaAmount toDomainFormAmount(KscstFormAmount entity) {
 		
 		if(entity == null){
 			return null;
@@ -159,7 +170,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		FormulaAmount amount = FormulaAmount.createFromJavatype(entity.kscstFormulaAmountPK.companyId,
 				entity.kscstFormulaAmountPK.verticalCalCd, entity.kscstFormulaAmountPK.verticalCalItemId,
 				entity.calMethodAtr, moneyFunc, timeUnit);
-		return amount;
+		return amount; 
 
 	}
 
@@ -169,9 +180,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param timeUnit
 	 * @return
 	 */
-	private static FormulaTimeUnit toDomainFormFormulaTime(KscstFormulaTimeUnit timeUnit) {
+	private static FormulaTimeUnit toDomainFormFormulaTime(KscstFormTimeUnit timeUnit) {
 		List<TimeUnitFunc> lst = new ArrayList<>();
-		for (KscstTimeUnitFunc obj : timeUnit.listTime) {
+		for (KscstFormTimeunitFunc obj : timeUnit.listTime) {
 			lst.add(toDomainFormTime(obj));
 		}
 		return null;
@@ -183,7 +194,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param obj
 	 * @return
 	 */
-	private static TimeUnitFunc toDomainFormTime(KscstTimeUnitFunc obj) {
+	private static TimeUnitFunc toDomainFormTime(KscstFormTimeunitFunc obj) {
 		TimeUnitFunc unitFunc = TimeUnitFunc.createFromJavatype(obj.kscstTimeUnitFuncPK.companyId,
 				obj.kscstTimeUnitFuncPK.verticalCalCd, obj.kscstTimeUnitFuncPK.verticalCalItemId,
 				obj.kscstTimeUnitFuncPK.dispOrder, obj.attendanceItemId, obj.presetItemId, obj.operatorAtr);
@@ -196,7 +207,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param entity
 	 * @return
 	 */
-	private static MoneyFunc toDomainFormMoney(KscstMoneyFunc entity) {
+	private static MoneyFunc toDomainFormMoney(KscstFormMoneyFunc entity) {
 
 		MoneyFunc domain = MoneyFunc.createFromJavatype(entity.kscstMoneyFuncPK.companyId,
 				entity.kscstMoneyFuncPK.verticalCalCd, entity.kscstMoneyFuncPK.verticalCalItemId,
@@ -211,7 +222,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param numerical
 	 * @return
 	 */
-	private FormulaNumerical toDomainFormNumer(KscstFormulaNumerical numerical) {
+	private FormulaNumerical toDomainFormNumer(KscstFormNumerical numerical) {
 		if(numerical == null){
 			return null;
 		}
@@ -227,12 +238,45 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param numerical
 	 * @return
 	 */
-	private KscstFormulaNumerical toEntityFormNumerical(FormulaNumerical numerical) {
-		KscstFormulaNumerical entity = new KscstFormulaNumerical();
-		entity.kscstFormulaNumericalPK = new KscstFormulaNumericalPK(numerical.getCompanyId(),
+	private KscstFormNumerical toEntityFormNumerical(FormulaNumerical numerical) {
+		KscstFormNumerical entity = new KscstFormNumerical();
+		entity.kscstFormulaNumericalPK = new KscstFormNumericalPK(numerical.getCompanyId(),
 				numerical.getVerticalCalCd(), numerical.getVerticalCalItemId(), numerical.getExternalBudgetCd());
 		entity.operatorAtr = numerical.getOperatorAtr().value;
 		entity.dispOrder = numerical.getDispOrder();
+		return entity;
+	}
+	
+	/**
+	 * Convert to Domain Formula Unitprice
+	 * @author phongtq
+	 * @param price
+	 * @return
+	 */
+	private FormulaUnitprice toDomainFromPrice(KscstFormulaUnitPrice price) {
+		if(price == null){
+			return null;
+		}
+		FormulaUnitprice domain = FormulaUnitprice.createFromJavatype(price.kscstFormulaUnitPricePK.companyId, 
+				price.kscstFormulaUnitPricePK.verticalCalCd, 
+				price.kscstFormulaUnitPricePK.verticalCalItemId, 
+				price.attendanceAtr, 
+				price.unitPrice);
+		return domain;
+	}
+	
+	/**
+	 * Convert to Entity Formula Unitprice
+	 * @author phongtq
+	 * @param unitprice
+	 * @return
+	 */
+	private KscstFormulaUnitPrice toEntityFormPrice(FormulaUnitprice unitprice) {
+		KscstFormulaUnitPrice entity = new KscstFormulaUnitPrice();
+		entity.kscstFormulaUnitPricePK  = new KscstFormulaUnitPricePK(unitprice.getCompanyId(),
+				unitprice.getVerticalCalCd(), unitprice.getVerticalCalItemId());
+		entity.attendanceAtr = unitprice.getAttendanceAtr().value;
+		entity.unitPrice = unitprice.getUnitPrice().value;
 		return entity;
 	}
 
@@ -243,9 +287,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param entity
 	 * @return
 	 */
-	private static FormulaMoney toDomainFormFormulaMoney(KscstFormulaMoney entity) {
+	private static FormulaMoney toDomainFormFormulaMoney(KscstFormMoney entity) {
 		List<MoneyFunc> lst = new ArrayList<>();
-		for (KscstMoneyFunc obj : entity.listMoney) {
+		for (KscstFormMoneyFunc obj : entity.listMoney) {
 			lst.add(toDomainFormMoney(obj));
 		}
 		FormulaMoney domain = FormulaMoney.createFromJavatype(entity.kscstFormulaMoneyPK.companyId,
@@ -263,8 +307,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	private static FormPeopleFunc toDomainFormPeopleFunc(KscmtFormPeopleFunc entity) {
 		FormPeopleFunc domain = FormPeopleFunc.createFromJavaType(entity.kscmtFormPeopleFuncPK.companyId,
 				entity.kscmtFormPeopleFuncPK.verticalCalCd, entity.kscmtFormPeopleFuncPK.verticalCalItemId,
-				entity.kscmtFormPeopleFuncPK.externalBudgetCd, entity.categoryAtr, entity.categoryAtr,
-				entity.dispOrder);
+				entity.kscmtFormPeopleFuncPK.dispOrder, entity.externalBudgetCd, entity.categoryAtr, entity.operatorAtr);
 		return domain;
 	}
 
@@ -297,9 +340,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param func
 	 * @return
 	 */
-	private KscstMoneyFunc toEntityFormMoney(MoneyFunc func) {
-		KscstMoneyFunc entity = new KscstMoneyFunc();
-		entity.kscstMoneyFuncPK = new KscstMoneyFuncPK(func.getCompanyId(), func.getVerticalCalCd(),
+	private KscstFormMoneyFunc toEntityFormMoney(MoneyFunc func) {
+		KscstFormMoneyFunc entity = new KscstFormMoneyFunc();
+		entity.kscstMoneyFuncPK = new KscstFormMoneyFuncPK(func.getCompanyId(), func.getVerticalCalCd(),
 				func.getVerticalCalItemId(), func.getDispOrder());
 		entity.externalBudgetCd = func.getExternalBudgetCd();
 		entity.attendanceItemId = func.getAttendanceItemId();
@@ -315,15 +358,15 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param timeUnit
 	 * @return
 	 */
-	private KscstFormulaTimeUnit toEntityFormTimeUnit(FormulaTimeUnit timeUnit) {
-		KscstFormulaTimeUnit entity = new KscstFormulaTimeUnit();
-		entity.kscstFormulaTimeUnitPK = new KscstFormulaTimeUnitPK(timeUnit.getCompanyId(), timeUnit.getVerticalCalCd(),
+	private KscstFormTimeUnit toEntityFormTimeUnit(FormulaTimeUnit timeUnit) {
+		KscstFormTimeUnit entity = new KscstFormTimeUnit();
+		entity.kscstFormulaTimeUnitPK = new KscstFormTimeUnitPK(timeUnit.getCompanyId(), timeUnit.getVerticalCalCd(),
 				timeUnit.getVerticalCalItemId());
 		entity.roundingTime = timeUnit.getRoundingTime().value;
 		entity.roundingAtr = timeUnit.getRoundingAtr().value;
 		entity.unitPrice = timeUnit.getUnitPrice().value;
 		entity.actualDisplayAtr = timeUnit.getActualDisplayAtr().value;
-		List<KscstTimeUnitFunc> lst = new ArrayList<>();
+		List<KscstFormTimeunitFunc> lst = new ArrayList<>();
 		if (timeUnit.getLstTimeUnitFuncs() != null) {
 			for (TimeUnitFunc item : timeUnit.getLstTimeUnitFuncs()) {
 				lst.add(toEntityTimeUnitFunc(item));
@@ -339,13 +382,13 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param item
 	 * @return
 	 */
-	private KscstFormulaMoney toEntityFormulaMoney(FormulaMoney item) {
-		KscstFormulaMoney entity = new KscstFormulaMoney();
-		entity.kscstFormulaMoneyPK = new KscstFormulaMoneyPK(item.getCompanyId(), item.getVerticalCalCd(),
+	private KscstFormMoney toEntityFormulaMoney(FormulaMoney item) {
+		KscstFormMoney entity = new KscstFormMoney();
+		entity.kscstFormulaMoneyPK = new KscstFormMoneyPK(item.getCompanyId(), item.getVerticalCalCd(),
 				item.getVerticalCalItemId());
 		entity.categoryIndicator = item.getCategoryIndicator().value;
 		entity.actualDisplayAtr = item.getActualDisplayAtr().value;
-		List<KscstMoneyFunc> lst = new ArrayList<>();
+		List<KscstFormMoneyFunc> lst = new ArrayList<>();
 		if (item.getLstMoney() != null) {
 			for (MoneyFunc itemMoney : item.getLstMoney()) {
 				lst.add(toEntityFormMoney(itemMoney));
@@ -361,9 +404,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param unitFunc
 	 * @return
 	 */
-	private KscstTimeUnitFunc toEntityTimeUnitFunc(TimeUnitFunc unitFunc) {
-		KscstTimeUnitFunc entity = new KscstTimeUnitFunc();
-		entity.kscstTimeUnitFuncPK = new KscstTimeUnitFuncPK(unitFunc.getCompanyId(), unitFunc.getVerticalCalCd(),
+	private KscstFormTimeunitFunc toEntityTimeUnitFunc(TimeUnitFunc unitFunc) {
+		KscstFormTimeunitFunc entity = new KscstFormTimeunitFunc();
+		entity.kscstTimeUnitFuncPK = new KscstFormTimeunitFuncPK(unitFunc.getCompanyId(), unitFunc.getVerticalCalCd(),
 				unitFunc.getVerticalCalItemId(), unitFunc.getDispOrder());
 		entity.attendanceItemId = unitFunc.getAttendanceItemId();
 		entity.presetItemId = unitFunc.getPresetItemId();
@@ -377,9 +420,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param formulaAmount
 	 * @return
 	 */
-	private KscstFormulaAmount toEntityFormAmount(FormulaAmount formulaAmount) {
-		KscstFormulaAmount entity = new KscstFormulaAmount();
-		entity.kscstFormulaAmountPK = new KscstFormulaAmountPK(formulaAmount.getCompanyId(),
+	private KscstFormAmount toEntityFormAmount(FormulaAmount formulaAmount) {
+		KscstFormAmount entity = new KscstFormAmount();
+		entity.kscstFormulaAmountPK = new KscstFormAmountPK(formulaAmount.getCompanyId(),
 				formulaAmount.getVerticalCalCd(), formulaAmount.getVerticalCalItemId());
 		entity.calMethodAtr = formulaAmount.getCalMethodAtr().value;
 		entity.moneyFunc = toEntityFormulaMoney(formulaAmount.getMoneyFunc());
@@ -397,8 +440,8 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	public static KscmtFormPeopleFunc toEntityFormPeopleFunc(FormPeopleFunc domain) {
 		val entity = new KscmtFormPeopleFunc();
 		entity.kscmtFormPeopleFuncPK = new KscmtFormPeopleFuncPK(domain.getCompanyId(), domain.getVerticalCalCd(),
-				domain.getVerticalCalItemId(), domain.getExternalBudgetCd());
-		entity.dispOrder = domain.getDispOrder();
+				domain.getVerticalCalItemId(), domain.getDispOrder());
+		entity.externalBudgetCd = domain.getExternalBudgetCd();
 		entity.categoryAtr = domain.getCategoryAtr().value;
 		entity.operatorAtr = domain.getOperatorAtr().value;
 		return entity;
@@ -427,6 +470,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			FormPeople formPeople = toDomainFormPeople(t.formPeople);
 			FormulaAmount amount = toDomainFormAmount(t.amount);
 			FormulaNumerical numerical = toDomainFormNumer(t.numerical);
+			FormulaUnitprice unitprice = toDomainFromPrice(t.price);
 
 			return VerticalCalItem.createFromJavatype(t.kscmtGenVertItemPK.companyId, 
 					t.kscmtGenVertItemPK.verticalCalCd, 
@@ -437,12 +481,14 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 					t.cumulativeAtr,
 					t.attributes,
 					t.rounding,
+					t.roundingProcessing,
 					t.genVertOrder.dispOrder,
 					formBuilt,
 					formTime,
 					formPeople,
 					amount, 
-					numerical);
+					numerical,
+					unitprice);
 			}).collect(Collectors.toList());
 		
 		VerticalCalSet verticalCalSet = VerticalCalSet.createFromJavaType(
@@ -491,11 +537,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		FormTimeFunc domain = FormTimeFunc.createFromJavaType(entity.kscmtFormTimeFuncPK.companyId, 
 				entity.kscmtFormTimeFuncPK.verticalCalCd, 
 				entity.kscmtFormTimeFuncPK.verticalCalItemId, 
-				entity.externalBudgetCd, 
-				entity.attendanceItemId, 
+				entity.kscmtFormTimeFuncPK.dispOrder,
 				entity.presetItemId,
-				entity.operatorAtr,
-				entity.dispOrder);
+				entity.attendanceItemId, 
+				entity.externalBudgetCd,
+				entity.operatorAtr);
 		return domain;
 	}
 
@@ -561,17 +607,22 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				entity = toEntityFormPeople(x.getFormPeople());
 			}
 			// Check Formula Amount
-			KscstFormulaAmount amount = null;
+			KscstFormAmount amount = null;
 			if (x.getFormulaAmount() != null) {
 				amount = toEntityFormAmount(x.getFormulaAmount());
+			}
+			
+			KscstFormulaUnitPrice price = null;
+			if (x.getUnitprice() != null) {
+				price = toEntityFormPrice(x.getUnitprice());
 			}
 			
 			KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(),
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
-					x.getCumulativeAtr().value, x.getAttributes().value, x.getRounding().value, kscstVerticalItemOrder,
-					built, time, entity, amount);
+					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), x.getRoundingProcessing(), kscstVerticalItemOrder,
+					built, time, entity, amount, price);
 		}).collect(Collectors.toList());
 
 		KscmtGenVertSet kscstVerticalCalSet = new KscmtGenVertSet();
@@ -588,6 +639,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 
 		return kscstVerticalCalSet;
 	}
+
 
 	private KscmtFormTime toEntityFormTime(FormTime formTime) {
 		val entity = new KscmtFormTime();
@@ -614,12 +666,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		val entity = new KscmtFormTimeFunc();
 		
 		entity.kscmtFormTimeFuncPK = new KscmtFormTimeFuncPK(item.getCompanyId(), item.getVerticalCalCd(),
-				item.getVerticalCalItemId());
+				item.getVerticalCalItemId(), item.getDispOrder());
 		entity.externalBudgetCd = item.getExternalBudgetCd();
 		entity.attendanceItemId = item.getAttendanceItemId();
 		entity.presetItemId = item.getPresetItemId();
 		entity.operatorAtr = item.getOperatorAtr().value;
-		entity.dispOrder = item.getDispOrder();
 		
 		return entity;
 	}
@@ -668,17 +719,22 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				entity = toEntityFormPeople(x.getFormPeople());
 			}
 			//Check Formula Amount
-			KscstFormulaAmount amount = null;
+			KscstFormAmount amount = null;
 			if (x.getFormulaAmount() != null) {
 				amount = toEntityFormAmount(x.getFormulaAmount());
+			}
+			
+			KscstFormulaUnitPrice price = null;
+			if (x.getUnitprice() != null) {
+				price = toEntityFormPrice(x.getUnitprice());
 			}
 			
 			KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(),
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
-					x.getCumulativeAtr().value, x.getAttributes().value, x.getRounding().value, kscstVerticalItemOrder,
-					built, time, entity, amount);
+					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), x.getRoundingProcessing(), kscstVerticalItemOrder,
+					built, time, entity, amount, price);
 		}).collect(Collectors.toList());
 
 		kscstVerticalCalSet.genVertItems = items;
@@ -719,11 +775,15 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				.getList(c -> toDomainFormPeople(c));
 	}
 
+	/**
+	 * find all Formula Numerical
+	 */
 	@Override
 	public List<FormulaNumerical> findAllFormNumber(String companyId) {
-		return this.queryProxy().query(SELECT_FORMULA_NUMMER, KscstFormulaNumerical.class)
+		return this.queryProxy().query(SELECT_FORMULA_NUMMER, KscstFormNumerical.class)
 				.setParameter("companyId", companyId).getList(c -> toDomainFormNumer(c));
 	}
+	
 
 	/**
 	 * find all form people func author: Hoang Yen
@@ -734,46 +794,95 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				.getList(c -> toDomainFormPeopleFunc(c));
 	}
 
+	/**
+	 * Find all from Money Func
+	 * @author phongtq
+	 */
 	@Override
 	public List<MoneyFunc> findAllMoneyFunc(String companyId) {
-		return this.queryProxy().query(SELECT_MONEY_FUNC, KscstMoneyFunc.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_MONEY_FUNC, KscstFormMoneyFunc.class).setParameter("companyId", companyId)
 				.getList(c -> toDomainFormMoney(c));
 	}
 
+	/**
+	 * Find all from Formula Money 
+	 * @author phongtq
+	 */
 	@Override
 	public List<FormulaMoney> findAllFormulaMoney(String companyId, String verticalCalCd, String verticalCalItemId) {
-		return this.queryProxy().query(SELECT_FORMULA_MONEY, KscstFormulaMoney.class)
+		return this.queryProxy().query(SELECT_FORMULA_MONEY, KscstFormMoney.class)
 				.setParameter("companyId", companyId).setParameter("verticalCalCd", verticalCalCd)
 				.setParameter("verticalCalItemId", verticalCalItemId).getList(c -> toDomainFormFormulaMoney(c));
 	}
-
+	
+	/**
+	 * Find all from Formula Unit Price
+	 * @author phongtq
+	 */
 	@Override
-	public List<FormulaAmount> findAllFormulaAmount(String companyId) {
-		return this.queryProxy().query(SELECT_FORMULA_AMOUNT, KscstFormulaAmount.class)
-				.setParameter("companyId", companyId).getList(c -> toDomainFormAmount(c));
+	public List<FormulaUnitprice> findAllFormulaPrice(String companyId, String verticalCalCd, String verticalCalItemId) {
+		return this.queryProxy().query(SELECT_FORMULA_PRICE, KscstFormulaUnitPrice.class)
+				.setParameter("companyId", companyId).setParameter("verticalCalCd", verticalCalCd)
+				.setParameter("verticalCalItemId", verticalCalItemId).getList(c -> toDomainFromPrice(c));
 	}
 
+	/**
+	 * Find all from Formula Amount
+	 * @author phongtq
+	 */
+	@Override
+	public List<FormulaAmount> findAllFormulaAmount(String companyId, String verticalCalCd, String verticalCalItemId) {
+		return this.queryProxy().query(SELECT_FORMULA_AMOUNT, KscstFormAmount.class)
+				.setParameter("companyId", companyId).setParameter("verticalCalCd", verticalCalCd)
+				.setParameter("verticalCalItemId", verticalCalItemId).getList(c -> toDomainFormAmount(c));
+	}
+
+	/**
+	 * Find all from Formula Time Unit
+	 * @author phongtq
+	 */
 	@Override
 	public List<FormulaTimeUnit> findAllFormulaTimeUnit(String companyId) {
-		return this.queryProxy().query(SELECT_FORMULA_TIME_UNIT, KscstFormulaTimeUnit.class)
+		return this.queryProxy().query(SELECT_FORMULA_TIME_UNIT, KscstFormTimeUnit.class)
 				.setParameter("companyId", companyId).getList(c -> toDomainFormFormulaTime(c));
 	}
 
+	/**
+	 * Find all from Time Unit Func
+	 * @author phongtq
+	 */
 	@Override
 	public List<TimeUnitFunc> findAllTimeUnit(String companyId, String verticalCalCd, String verticalCalItemId) {
-		return this.queryProxy().query(SELECT_TIME_UNIT_FUNC, KscstTimeUnitFunc.class)
+		return this.queryProxy().query(SELECT_TIME_UNIT_FUNC, KscstFormTimeunitFunc.class)
 				.setParameter("companyId", companyId).setParameter("verticalCalCd", verticalCalCd)
 				.setParameter("verticalCalItemId", verticalCalItemId).getList(c -> toDomainFormTime(c));
 	}
 
+	/**
+	 * Add Formula Amount
+	 * @author phongtq
+	 */
 	@Override
 	public void insertFromAmount(FormulaAmount formulaAmount) {
 		this.commandProxy().insert(toEntityFormAmount(formulaAmount));
 	}
 
+	/**
+	 * Add Formula Numerical
+	 * @author phongtq
+	 */
 	@Override
 	public void insertFromNumerical(FormulaNumerical numerical) {
 		this.commandProxy().insert(toEntityFormNumerical(numerical));
+	}
+	
+	/**
+	 * Add Formula Unit Price
+	 * @author phongtq
+	 */
+	@Override
+	public void insertFromPrice(FormulaUnitprice price) {
+		this.commandProxy().insert(toEntityFormPrice(price));
 	}
 
 	@Override

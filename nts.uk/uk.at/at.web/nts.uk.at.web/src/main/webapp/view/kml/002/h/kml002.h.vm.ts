@@ -68,14 +68,14 @@ module nts.uk.at.view.kml002 {
         }
 
         interface ITabModel {
-            id: string;
+            id: any;
             name: string;
             active?: boolean;
             display?: boolean;
         }
 
         class TabModel {
-            id: string;
+            id: any;
             name: string;
             active: KnockoutObservable<boolean> = ko.observable(false);
             display: KnockoutObservable<boolean> = ko.observable(true);

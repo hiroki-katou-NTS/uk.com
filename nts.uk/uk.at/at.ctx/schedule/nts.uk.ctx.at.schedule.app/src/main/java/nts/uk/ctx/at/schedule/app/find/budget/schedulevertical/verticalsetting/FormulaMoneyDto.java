@@ -13,16 +13,16 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Formul
 public class FormulaMoneyDto {
     private String companyId;
     
-    /*コード*/
+    /**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /*カテゴリ区分 */
+    /**カテゴリ区分 */
     private int categoryIndicator;
     
-    /* 実績表示区分 */
+    /** 実績表示区分 */
     private int actualDisplayAtr;
     
     private List<MoneyFuncDto> lstMoney;

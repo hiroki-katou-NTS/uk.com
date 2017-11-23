@@ -1,4 +1,4 @@
-module cmm001.a.service {
+module cmm001.aold.service {
     var paths = {
         getAllCompanys: "ctx/proto/company/findallcompany",
         getCompanyDetail: "ctx/proto/company/findCompanyDetail",

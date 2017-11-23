@@ -15,14 +15,14 @@ import nts.arc.time.GeneralDateTime;
 public interface ScheduleExecutionLogRepository {
 
 	/**
-	 * Find.
+	 * Find by date time.
 	 *
 	 * @param companyId the company id
 	 * @param startDate the start date
 	 * @param endDate the end date
-	 * @return the optional
+	 * @return the list
 	 */
-	public List<ScheduleExecutionLog> find(String companyId ,GeneralDateTime startDate,GeneralDateTime endDate);
+	public List<ScheduleExecutionLog> findByDateTime(String companyId ,GeneralDateTime startDate,GeneralDateTime endDate);
 	
 	/**
 	 * Find by id.

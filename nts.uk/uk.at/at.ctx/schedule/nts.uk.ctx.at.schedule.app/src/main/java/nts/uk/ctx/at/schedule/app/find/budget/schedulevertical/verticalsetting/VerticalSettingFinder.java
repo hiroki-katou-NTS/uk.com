@@ -125,7 +125,6 @@ public class VerticalSettingFinder {
 		for(int i = 0; i < externalItems.size(); i++) {
 			BaseItemsDto externalItem = new BaseItemsDto();
 			String id = externalItems.get(i).getExternalBudgetCode() + "" + ItemTypes.EXTERNAL.value;
-			
 			externalItem.setCompanyId(companyId);
 			externalItem.setId(id);
 			externalItem.setItemId(externalItems.get(i).getExternalBudgetCode());
