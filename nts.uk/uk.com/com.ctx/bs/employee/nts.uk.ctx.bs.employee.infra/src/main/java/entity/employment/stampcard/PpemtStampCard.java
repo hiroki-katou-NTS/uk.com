@@ -1,4 +1,4 @@
-package entity.stampcard;
+package entity.employment.stampcard;
 
 import java.io.Serializable;
 
