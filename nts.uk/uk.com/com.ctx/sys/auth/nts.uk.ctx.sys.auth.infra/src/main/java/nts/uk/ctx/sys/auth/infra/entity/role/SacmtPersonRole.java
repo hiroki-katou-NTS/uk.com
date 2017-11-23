@@ -13,8 +13,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "SAUMT_PERSON_ROLE")
-public class SaumtPersonRole extends UkJpaEntity implements Serializable {
+@Table(name = "SACMT_PERSON_ROLE")
+public class SacmtPersonRole extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public class SaumtPersonRole extends UkJpaEntity implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SaumtPersonRole other = (SaumtPersonRole) obj;
+		SacmtPersonRole other = (SacmtPersonRole) obj;
 		if (roleId == null) {
 			if (other.roleId != null)
 				return false;
