@@ -353,6 +353,10 @@ module nts.uk.ui.validation {
             } else if (!ntsNumber.isNumber(inputText, isDecimalNumber, undefined, message)) {
                 validateFail = true;
             }
+            if(!(/^-?\d*(\.\d+)?$/).test(inputText)){
+                result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]), message.id);  
+                return result;
+            }
             var value = isDecimalNumber ?
                 ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
 
@@ -372,7 +376,7 @@ module nts.uk.ui.validation {
             
             if (validateFail) {
                 result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]), message.id);
-            } else { 
+            } else {  
                 let formated = value.toString() === "0" ? inputText : text.removeFromStart(inputText, "0"); 
                 if (formated.indexOf(".") >= 0) {
                     formated = text.removeFromEnd(formated, "0");    

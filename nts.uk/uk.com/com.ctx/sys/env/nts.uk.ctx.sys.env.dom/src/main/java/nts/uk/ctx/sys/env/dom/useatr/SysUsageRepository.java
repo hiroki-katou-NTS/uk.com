@@ -9,14 +9,14 @@ public interface SysUsageRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<SysUsageSet> findUsageSet(String companyId);
+	Optional<SysUsageSet> findUsageSet(String companyId, String companyCode, String contractCd);
 	/**
 	 * update SysUsageSet
 	 * @param SysUsageSet
 	 * @return
 	 * author: Hoang Yen
 	 */
-	void updateUsageSet(SysUsageSet sysUsageSet);
+	void updateUsageSet(SysUsageSet sysUsageSet);  
 	/**
 	 * insert SysUsageSet
 	 * @param SysUsageSet
@@ -24,4 +24,6 @@ public interface SysUsageRepository {
 	 * author: Hoang Yen
 	 */
 	void insertUsageSet(SysUsageSet sysUsageSet);
+	
+	void deleteUsageSet(String companyId, String companyCode, String contractCd);
 }

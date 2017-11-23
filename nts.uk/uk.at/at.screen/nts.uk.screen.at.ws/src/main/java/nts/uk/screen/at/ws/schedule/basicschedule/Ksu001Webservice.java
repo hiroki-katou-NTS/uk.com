@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.schedule.basicschedule;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -11,11 +12,20 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
+import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlDto;
+import nts.uk.screen.at.app.schedule.basicschedule.ScheduleScreenSymbolParams;
+import nts.uk.screen.at.app.schedule.basicschedule.StateWorkTypeCodeDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenParams;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenProcessor;
+import nts.uk.screen.at.app.shift.businesscalendar.holiday.PublicHolidayScreenProcessor;
+import nts.uk.screen.at.app.shift.specificdayset.company.ComSpecificDateSetScreenProcessor;
+import nts.uk.screen.at.app.shift.specificdayset.company.StartDateEndDateScreenParams;
+import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenParams;
+import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenProcessor;
 
 /**
  * 
@@ -28,9 +38,18 @@ public class Ksu001Webservice extends WebService {
 
 	@Inject
 	private BasicScheduleScreenProcessor bScheduleScreenProces;
-	
+
 	@Inject
 	private WorkScheduleStateScreenProcessor workScheduleStateScreenProces;
+
+	@Inject
+	private WorkplaceSpecificDateSetScreenProcessor workplaceSpecificDateSetScreenProcessor;
+
+	@Inject
+	private ComSpecificDateSetScreenProcessor comSpecificDateSetScreenProcessor;
+
+	@Inject
+	private PublicHolidayScreenProcessor publicHolidayScreenProcessor;
 
 	@POST
 	@Path("getData")
@@ -54,10 +73,46 @@ public class Ksu001Webservice extends WebService {
 	public List<WorkTypeScreenDto> getByCIdAndDeprecateCls() {
 		return this.bScheduleScreenProces.findByCIdAndDeprecateCls();
 	}
-	
+
 	@POST
 	@Path("getDataWorkScheduleState")
 	public List<WorkScheduleStateScreenDto> getDataWorkScheduleState(WorkScheduleStateScreenParams params) {
 		return this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
+	}
+
+	@POST
+	@Path("checkStateWorkTypeCode")
+	public List<StateWorkTypeCodeDto> checkStateWorkTypeCode(List<String> lstWorkTypeCode) {
+		return this.bScheduleScreenProces.checkStateWorkTypeCode(lstWorkTypeCode);
+	}
+
+	@POST
+	@Path("getDataWkpSpecificDate")
+	public List<BigDecimal> getDataWkpSpecificDate(WorkplaceSpecificDateSetScreenParams params) {
+		return this.workplaceSpecificDateSetScreenProcessor.findDataWkpSpecificDateSet(params);
+	}
+
+	@POST
+	@Path("getDataComSpecificDate")
+	public List<BigDecimal> getDataComSpecificDate(StartDateEndDateScreenParams params) {
+		return this.comSpecificDateSetScreenProcessor.findDataComSpecificDateSet(params);
+	}
+
+	@POST
+	@Path("getDataPublicHoliday")
+	public List<BigDecimal> getDataPublicHoliday(StartDateEndDateScreenParams params) {
+		return this.publicHolidayScreenProcessor.findDataPublicHoliday(params);
+	}
+
+	@POST
+	@Path("getWorkEmpCombine")
+	public WorkEmpCombineDto getWorkEmpCombines(ScheduleScreenSymbolParams params) {
+		return this.bScheduleScreenProces.getListWorkEmpCombine(params);
+	}
+
+	@POST
+	@Path("getScheduleDisplayControl")
+	public ScheduleDisplayControlDto getScheduleDisplayControl() {
+		return this.bScheduleScreenProces.getScheduleDisplayControl();
 	}
 }

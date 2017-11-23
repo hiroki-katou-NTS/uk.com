@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -30,11 +34,16 @@ public class KrqstAppEmploymentSet extends UkJpaEntity implements Serializable {
     protected KrqstAppEmploymentSetPK krqstAppEmploymentSetPK;
 
     @Column(name = "HOLIDAY_TYPE_USE_FLG")
-    private int holidayTypeUseFlg;
+    private Integer holidayTypeUseFlg;
     
     @Column(name = "DISPLAY_FLAG")
-    private int displayFlag;
+    private Integer displayFlag;
 
+    
+    @OneToMany(targetEntity=KrqdtAppEmployWorktype.class, cascade = CascadeType.ALL, mappedBy = "KrqstAppEmploymentSet", orphanRemoval = true)
+	@JoinTable(name = "KRQDT_APP_EMPLOY_WORKTYPE")
+	public List<KrqdtAppEmployWorktype> krqdtAppEmployWorktype;
+    
 	@Override
 	protected Object getKey() {
 		return krqstAppEmploymentSetPK;

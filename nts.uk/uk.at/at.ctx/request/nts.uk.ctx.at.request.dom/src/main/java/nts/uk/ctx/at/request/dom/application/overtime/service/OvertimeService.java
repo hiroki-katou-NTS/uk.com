@@ -33,7 +33,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public SiftType getSiftType(String companyID,String employeeID,Optional<PersonalLaborCondition> personalLablorCodition,RequestAppDetailSetting requestAppDetailSetting);
+	public SiftType getSiftType(String companyID,String employeeID,RequestAppDetailSetting requestAppDetailSetting);
 	
 	
 	void CreateOvertime(AppOverTime domain, Application newApp);

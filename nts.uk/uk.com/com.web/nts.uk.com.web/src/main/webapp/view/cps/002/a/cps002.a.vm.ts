@@ -136,8 +136,7 @@ module cps002.a.vm {
                 var self = this;
                 var avartarContent = $("#employeeAvatar");
                 avartarContent.html("");
-                avartarContent.append($("<img/>").attr("src", liveView(avartarId)));
-                avartarContent.append($("<iframe/>").attr("src", liveView(avartarId)));
+                avartarContent.append($("<img/>").attr("src", liveView(avartarId)).attr("id", "employeeAvatar"));
 
 
             });
@@ -157,6 +156,10 @@ module cps002.a.vm {
                             return new SettingItem(item);
                         }));
                     }
+                }).fail(error => {
+
+                    dialog({ messageId: error.message });
+
                 });
             }
         }
@@ -298,7 +301,7 @@ module cps002.a.vm {
                 command = {
                     createType: self.createTypeId(),
 
-                    initSettingId: self.initSettingSelectedCode(),
+                    initSettingId: self.currentInitSetting().itemId,
 
                     baseDate: self.currentEmployee().hireDate(),
 
@@ -311,25 +314,28 @@ module cps002.a.vm {
 
 
             service.getLayoutByCreateType(command).done((x: ILayout) => {
-                layout.id(x.id);
-                layout.code(x.code);
-                layout.name(x.name);
+                if (x) {
+                    layout.id(x.id);
+                    layout.code(x.code);
+                    layout.name(x.name);
 
-                // remove all sibling sperators
-                let maps = _(x.itemsClassification)
-                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
-                    .filter(x => x != -1).value();
+                    // remove all sibling sperators
+                    let maps = _(x.itemsClassification)
+                        .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                        .filter(x => x != -1).value();
 
-                _.each(maps, (t, i) => {
-                    if (maps[i + 1] == t + 1) {
-                        _.remove(x.itemsClassification, (m: IItemClassification) => {
-                            let item: IItemClassification = ko.unwrap(x.itemsClassification)[maps[i + 1]];
-                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
-                        });
-                    }
-                });
+                    _.each(maps, (t, i) => {
+                        if (maps[i + 1] == t + 1) {
+                            _.remove(x.itemsClassification, (m: IItemClassification) => {
+                                let item: IItemClassification = ko.unwrap(x.itemsClassification)[maps[i + 1]];
+                                return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                            });
+                        }
+                    });
 
-                layout.itemsClassification(x.itemsClassification);
+                    layout.itemsClassification(x.itemsClassification);
+                }
+
             });
 
 
@@ -410,7 +416,7 @@ module cps002.a.vm {
 
                 dialog({ messageId: error.message }).then(() => {
 
-                    // self.gotoStep1();
+                    self.gotoStep1();
 
                 });
 
@@ -463,17 +469,12 @@ module cps002.a.vm {
 
             let self = this,
                 itemDataList = _(ko.toJS(self.layout).itemsClassification).map(x => x.items).flatten().flatten().value(),
-                command = {
-                    employeeCopyId: self.copyEmployee().employeeId,
-                    InitSettingId: self.currentInitSetting(),
-                    employeeName: self.currentEmployee().employeeName(),
-                    employeeCode: self.currentEmployee().employeeCode(),
-                    hireDate: self.currentEmployee().hireDate(),
-                    cardNo: self.currentEmployee().cardNo(),
-                    avatarId: self.currentEmployee().avatarId(),
-                    createType: self.createTypeId(),
-                    itemDataList: itemDataList
-                };
+                command = ko.toJS(self.currentEmployee());
+            //add atr
+            command.employeeCopyId = self.copyEmployee().employeeId;
+            command.initSettingId = self.currentInitSetting().itemId;
+            command.createType = self.createTypeId();
+            command.itemDataList = itemDataList;
 
             //            service.addNewEmployee(command).done(() => {
             //                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
@@ -572,6 +573,8 @@ module cps002.a.vm {
         cardNo: KnockoutObservable<string> = ko.observable("");
         initvalueCode: string;
         avatarId: KnockoutObservable<string> = ko.observable("");
+        loginId: KnockoutObservable<string> = ko.observable("");
+        password: KnockoutObservable<string> = ko.observable("");
 
         constructor(param?) {
         }

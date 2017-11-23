@@ -16,6 +16,9 @@ public class FormTimeFunc {
     /* 汎用縦計項目ID */
     private String verticalCalItemId;
     
+    /* 順番 */
+    private int dispOrder;
+    
     /* 予定項目ID */
     private String presetItemId;
     
@@ -28,20 +31,17 @@ public class FormTimeFunc {
     /* 演算子区分 */
     private OperatorAtr operatorAtr;
     
-    /* 順番 */
-    private int dispOrder;
-
-	public static FormTimeFunc createFromJavaType(String companyId, String verticalCalCd, String verticalCalItemId,
-			String externalBudgetCd, String attendanceItemId, String presetItemId, int operatorAtr,
-			int dispOrder) {
+	public static FormTimeFunc createFromJavaType(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder,
+			String presetItemId, String attendanceItemId, String externalBudgetCd, int operatorAtr) {
 		
 		return new FormTimeFunc(companyId, 
 				verticalCalCd, 
 				verticalCalItemId, 
-				externalBudgetCd, 
+				dispOrder,
+				presetItemId, 
 				attendanceItemId, 
-				presetItemId,
-				EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class), 
-				dispOrder);
+				externalBudgetCd,
+				EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class)
+			);
 	}
 }

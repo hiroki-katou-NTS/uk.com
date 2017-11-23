@@ -126,6 +126,7 @@ class ProfileHandler implements KnockoutBindingHandler {
         params.options.valueHasMutated();
 
         label.classList.add('nts-label');
+        label.classList.add('nts-fullname');
         labelName.classList.add('nts-label');
         labelName.classList.add('nts-name');
         labelPerson.classList.add('nts-label');

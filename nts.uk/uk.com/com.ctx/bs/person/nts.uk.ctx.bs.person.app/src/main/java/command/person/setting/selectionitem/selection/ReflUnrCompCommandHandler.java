@@ -17,6 +17,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -40,32 +41,32 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 	protected String handle(CommandHandlerContext<ReflUnrCompCommand> context) {
 		ReflUnrCompCommand command = context.getCommand();
 		String newHistId = IdentifierUtil.randomUniqueId();
-
-		// ドメインモデル「選択肢履歴」を取得する(Lấy Domain Model 「選択肢履歴」)
 		String selectionItemId = command.getSelectionItemId();
-		String companyId = command.getCompanyId();
-
+		// String companyId = AppContexts.user().companyId();
+		String histId = command.getHistId();
 		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
-
 		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
 		DatePeriod period = new DatePeriod(startDate, endDate);
 
-		// Xoa di tat ca lich su cua thang SelectionItemId:
-		List<PerInfoHistorySelection> historyList = this.historySelectionRepository
-				.getAllPerInfoHistorySelection(selectionItemId, companyId);
-		historyList.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionItemId()));
+		// Delete data:
+		for (String cid : companyIdList) {
+			// History:
+			List<PerInfoHistorySelection> historyList = this.historySelectionRepository
+					.getAllHistoryBySelectionItemIdAndCompanyId(selectionItemId, cid);
+			historyList.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionItemId()));
 
-		// Xoa tat ca Selection cua SelectionItem dang lua chon
-		String selectionId = command.getSelectionId();
-		List<Selection> selectionBySelectionId = this.selectionRepo.getAllSelectionBySelectionID(selectionId);
-		selectionBySelectionId.stream().forEach(x->this.selectionRepo.remove(x.getSelectionID()));
-		
-		// Xoa tat ca OrderSelection:
-		List<SelectionItemOrder> orderBySelectionId = this.selectionOrderRepo.getAllOrderBySelectionId(selectionId);
-		orderBySelectionId.stream().forEach(x->this.selectionOrderRepo.remove(x.getSelectionID()));
-		
-		// insert data of all company
+			// Selection
+			String selectionId = command.getSelectionId();
+			List<Selection> selectionBySelectionId = this.selectionRepo.getAllSelectionBySelectionID(selectionId);
+			selectionBySelectionId.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionID()));
+
+			// Order:
+			List<SelectionItemOrder> orderBySelectionId = this.selectionOrderRepo.getAllOrderBySelectionId(selectionId);
+			orderBySelectionId.stream().forEach(x -> this.selectionOrderRepo.remove(x.getSelectionID()));
+		}
+
+		// copy data:
 		for (String cid : companyIdList) {
 
 			// history:
@@ -74,7 +75,6 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 			this.historySelectionRepository.add(domainHist);
 
 			// Selection
-			String histId = command.getHistId();
 			List<Selection> getAllSelectByHistId = this.selectionRepo.getAllSelectByHistId(histId);
 			List<SelectionItemOrder> getAllOrderSelectionByHistId = this.selectionOrderRepo
 					.getAllOrderSelectionByHistId(histId);

@@ -7,18 +7,25 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.shr.pereg.app.command.PeregCommandFacade;
+import nts.uk.shr.pereg.app.command.PeregDeleteCommand;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
 @Path("/sample/pereg")
 @Produces("application/json")
 public class SamplePeregWebService extends WebService {
 
-	//@Inject
+	@Inject
 	private PeregCommandFacade commandFacade;
 	
 	@POST
 	@Path("update")
 	public void update(PeregInputContainer inputContainer) {
 		this.commandFacade.update(inputContainer);
+	}
+	
+	@POST
+	@Path("delete")
+	public void delete(PeregDeleteCommand command) {
+		this.commandFacade.delete(command);
 	}
 }

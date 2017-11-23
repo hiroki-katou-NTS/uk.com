@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.employeeinfo.BsymtEmployee;
 import entity.person.info.BpsmtPerson;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -48,6 +47,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmployment
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
+import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmploymentPK;
 import nts.uk.ctx.bs.employee.infra.entity.employment.affiliate.KmnmtAffiliEmploymentHist;

@@ -213,10 +213,17 @@ public class JpaAffClassHistoryRepository extends JpaRepository
 
 		// create query
 		TypedQuery<KmnmtAffiliClassificationHist> query = em.createQuery(cq);
+		
+		List<KmnmtAffiliClassificationHist> result = query.getResultList(); 
+		
+		// Check exist
+		if(CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
 
 		// exclude select
 		return Optional.of(new AffClassHistory(
-				new JpaAffClassHistoryGetMemento(query.getResultList().get(FIRST_ITEM_INDEX))));
+				new JpaAffClassHistoryGetMemento(result.get(FIRST_ITEM_INDEX))));
 	}
 
 }

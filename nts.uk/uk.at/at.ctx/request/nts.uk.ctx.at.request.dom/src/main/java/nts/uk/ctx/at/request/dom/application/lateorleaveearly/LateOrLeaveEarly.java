@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -56,7 +57,7 @@ public class LateOrLeaveEarly extends Application {
 	private TimeDay lateTime2;
 
 	/** All Agrs constructor */
-	public LateOrLeaveEarly(String companyID, String appID, int prePostAtr, GeneralDate inputDate,
+	public LateOrLeaveEarly(String companyID, String appID, int prePostAtr, GeneralDateTime inputDate,
 			String enteredPersonSID, String reversionReason, GeneralDate applicationDate, String applicationReason,
 			int applicationType, String applicantSID, int reflectPlanScheReason,
 			GeneralDate reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,

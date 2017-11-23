@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -52,7 +53,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 	protected void handle(CommandHandlerContext<AppStampCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		AppStampCmd appStampCmd = context.getCommand();
-		String applicationReason = appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason();
+		String applicationReason = "";
+		if(!appStampCmd.getTitleReason().isEmpty() || !appStampCmd.getDetailReason().isEmpty()) {
+			applicationReason = !appStampCmd.getTitleReason().isEmpty()? appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason() : appStampCmd.getDetailReason();
+		}
 		AppStamp appStamp = null;
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
@@ -86,7 +90,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.PREDICT,
-					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
+					GeneralDateTime.now(), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
@@ -126,7 +130,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
+					GeneralDateTime.now(), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
@@ -168,7 +172,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
+					GeneralDateTime.now(), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
@@ -204,7 +208,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
+					GeneralDateTime.now(), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
@@ -237,7 +241,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
+					GeneralDateTime.now(),  
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 

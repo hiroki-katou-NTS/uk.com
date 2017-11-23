@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -56,7 +58,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	 * 入力日
 	 */
 	@Column(name="INPUT_DATE")
-	public GeneralDate inputDate; 
+	public GeneralDateTime inputDate; 
 	
 	/**
 	 * 入力者
@@ -157,6 +159,9 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	@OneToOne(targetEntity=KrqdtAppLateOrLeave.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
 	public KrqdtAppLateOrLeave krqdtAppLateOrLeave;
 	
+	@OneToOne(targetEntity=KrqdtAppOvertime.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
+	public KrqdtAppOvertime krqdtAppOvertime;
+	
 	
 	@Override
 	protected Object getKey() {
@@ -189,11 +194,12 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 			domain.getEndDate(),
 			domain.getListPhase().stream().map(c -> KrqdtAppApprovalPhase.toEntity(c)).collect(Collectors.toList()),
 			null,
+			null,
 			null);
 	}
 	
 	public Application toDomain() {
-		return new Application(
+		Application app = new Application(
 			this.kafdtApplicationPK.companyID,
 			this.kafdtApplicationPK.applicationID,
 			EnumAdaptor.valueOf(this.prePostAtr,PrePostAtr.class), 
@@ -215,6 +221,8 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 			this.endDate,
 			this.appApprovalPhases.stream().map(c -> c.toDomain()).collect(Collectors.toList())
 		);
+		app.setVersion(this.version);
+		return app;
 	}
 	
 }

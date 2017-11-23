@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.info;
@@ -81,5 +81,23 @@ public interface WorkplaceInfoRepository {
 	 * @return true, if is existed
 	 */
 	boolean isExistedWkpCd(String companyId, String newWkpCd);
+	
+	/**
+	 * Gets the by wkp ids.
+	 *
+	 * @param wkpIds the wkp ids
+	 * @param baseDate the base date
+	 * @return the by wkp ids
+	 */
+	List<WorkplaceInfo> getByWkpIds(List<String> wkpIds, GeneralDate baseDate);
+	
+	/**
+	 * Find by wkp ids.
+	 *
+	 * @param companyId the company id
+	 * @param wkpIds the wkp ids
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByWkpIds(String companyId, List<String> wkpIds);
 	
 }

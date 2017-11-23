@@ -1021,6 +1021,18 @@ public class ProgramsManager {
 	
 	public static final Program CPS009D = new Program(WebAppId.COM, ProgramIdConsts.CPS009D, "CPS009_36",
 			"/view/cps/009/d/index.xhtml");
+	
+	public static final Program CPS017A = new Program(WebAppId.COM, ProgramIdConsts.CPS017A, "CPS017_51",
+			"/view/cps/017/a/index.xhtml");
+	
+	public static final Program CPS017B = new Program(WebAppId.COM, ProgramIdConsts.CPS017B, "CPS017_52",
+			"/view/cps/017/b/index.xhtml");
+	
+	public static final Program CPS017C = new Program(WebAppId.COM, ProgramIdConsts.CPS017C, "CPS017_53",
+			"/view/cps/017/c/index.xhtml");
+	
+	public static final Program CPS017D = new Program(WebAppId.COM, ProgramIdConsts.CPS017D, "CPS017_54",
+			"/view/cps/017/d/index.xhtml");
 
 	// TODO: Define new programs here.
 

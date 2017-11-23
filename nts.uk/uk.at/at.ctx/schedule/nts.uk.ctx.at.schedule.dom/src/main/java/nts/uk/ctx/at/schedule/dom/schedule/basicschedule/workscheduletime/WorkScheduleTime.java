@@ -1,15 +1,20 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime;
 
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class WorkScheduleTime.
  */
 //勤務予定時間
 @Getter
-public class WorkScheduleTime {
+public class WorkScheduleTime extends DomainObject{
 
 	/** The person fee time. */
 	//人件費時間

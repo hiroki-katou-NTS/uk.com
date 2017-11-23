@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
@@ -45,8 +46,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 	ApplicationRepository appRepository;
 	@Override
 	public int checkOvertime(String url) {
-		
-		return 0;
+		if(url.equals("PREOVERTIME")){
+			return OverTimeAtr.PREOVERTIME.value;
+		}else if(url.equals("REGULAROVERTIME")){
+			return OverTimeAtr.REGULAROVERTIME.value;
+		}
+		return OverTimeAtr.ALL.value;
 	}
 
 	/* (non-Javadoc)
@@ -144,7 +149,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Override
 	public SiftType getSiftType(String companyID, String employeeID,
-			Optional<PersonalLaborCondition> personalLablorCodition,
 			RequestAppDetailSetting requestAppDetailSetting) {
 		SiftType result = new SiftType();
 		if (requestAppDetailSetting != null) {
@@ -156,11 +160,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				 * ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 				 * personalLaborConditionRepository
 				 */
-				if(personalLablorCodition.isPresent()){
-					Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-					result.setSiftCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-					result.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
-				}else{
+				if(listWorkTimeCodes != null){
 					Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,listWorkTimeCodes.get(0));
 					result.setSiftCode(listWorkTimeCodes.get(0));
 					result.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
@@ -170,6 +170,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return result;
 	}
 
+	/**
+	 * 登録処理を実行
+	 */
 	@Override
 	public void CreateOvertime(AppOverTime domain, Application newApp){
 		//Register application

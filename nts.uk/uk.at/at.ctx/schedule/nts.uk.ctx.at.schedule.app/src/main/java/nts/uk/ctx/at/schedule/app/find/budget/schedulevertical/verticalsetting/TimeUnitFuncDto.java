@@ -8,25 +8,25 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.TimeUn
 @AllArgsConstructor
 @Data
 public class TimeUnitFuncDto {
-	/* 会社ID */
+	/** 会社ID */
     private String companyId;
     
-    /*コード*/
+    /**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /* 順番 */
+    /** 順番 */
     private int dispOrder;
     
-    /* 勤怠項目ID */
+    /** 勤怠項目ID */
     private String attendanceItemId;
     
-    /* 予定項目ID */
+    /** 予定項目ID */
     private String presetItemId;
     
-    /* 演算子区分 */
+    /** 演算子区分 */
     private int operatorAtr;
     
     public static TimeUnitFuncDto fromDomain (TimeUnitFunc func ){

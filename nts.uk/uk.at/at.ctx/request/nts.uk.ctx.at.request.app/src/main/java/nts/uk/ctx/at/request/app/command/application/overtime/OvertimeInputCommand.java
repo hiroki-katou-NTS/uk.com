@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 
 @Getter
 @Setter
@@ -27,6 +28,10 @@ public class OvertimeInputCommand {
 	 * 勤怠項目NO
 	 */
 	private int frameNo;
+	/**
+	 * timeItemTypeAtr
+	 */
+	private int timeItemTypeAtr;
 	
 	/**
 	 * 勤怠項目Name
@@ -45,4 +50,16 @@ public class OvertimeInputCommand {
 	 * 申請時間
 	 */
 	private int applicationTime;
+	
+	public OverTimeInput convertToDomain(){
+		return OverTimeInput.createSimpleFromJavaType(
+				this.companyID, 
+				this.appID, 
+				this.attendanceID, 
+				this.frameNo, 
+				this.startTime, 
+				this.endTime, 
+				this.applicationTime, 
+				this.timeItemTypeAtr);
+	}
 }

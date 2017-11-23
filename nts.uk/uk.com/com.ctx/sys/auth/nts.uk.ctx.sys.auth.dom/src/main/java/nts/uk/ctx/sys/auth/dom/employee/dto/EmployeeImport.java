@@ -28,6 +28,9 @@ public class EmployeeImport {
 	/** The employee code. */
 	private String employeeCode;
 
+	// 個人名
+	private String personalName;
+	
 	/**
 	 * @param companyId
 	 * @param personalId
@@ -39,5 +42,16 @@ public class EmployeeImport {
 		this.personalId = personalId;
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
+	}
+	
+	/**
+	 * @param personalName
+	 * @param employeeId
+	 * @param employeeCode
+	 */
+	public EmployeeImport(String personalName, String employeeId, String employeeCode) {
+		this.employeeId = employeeId;
+		this.employeeCode = employeeCode;
+		this.personalName = personalName;
 	}
 }

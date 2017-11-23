@@ -7,14 +7,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
-import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
-import nts.uk.ctx.at.request.app.find.overtime.dto.OvertimeInputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
@@ -30,50 +29,60 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CheckConvertPrePost {
-	
 	final String DATE_FORMAT = "yyyy/MM/dd";
-	
-	
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	@Inject
 	private IOvertimePreProcess iOvertimePreProcess;
 	@Inject
-	private WorkTypeRepository workTypeRepository;
-	@Inject
 	private WorkTimeRepository workTimeRepository;
+	
 	@Inject
-	private OvertimeInputRepository overtimeInputRepository;
+	private WorkTypeRepository workTypeRepository;
 	@Inject
 	private OvertimeFrameRepository overtimeFrameRepository;
 	
-	
-	public OverTimeDto convertFromPreToPost(String appDate){
+	public OverTimeDto convertPrePost(int prePostAtr,String appDate){
 		
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		ApplicationDto applicationDto = new ApplicationDto();
-		List<OvertimeInputDto> overtimeInputDtos = new ArrayList<>();
-		
+		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 		OverTimeDto result = new OverTimeDto();
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
-		if(overtimeRestAppCommonSet.isPresent()){
-			if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
-				//to do
+		if(prePostAtr == 1){
+			if(overtimeRestAppCommonSet.isPresent()){
+				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
+					result.setReferencePanelFlg(true);
+					//to do....
+				}
+				if(overtimeRestAppCommonSet.get().getPreDisplayAtr() == UseAtr.USE ){
+					AppOverTime appOverTime = iOvertimePreProcess.getPreApplication(employeeID, overtimeRestAppCommonSet, appDate, prePostAtr);
+					if(appOverTime != null){
+						convertOverTimeDto(companyID,preAppOvertimeDto,result,appOverTime);
+						result.setPreAppPanelFlg(true);
+					}else{
+						result.setPreAppPanelFlg(false);
+					}
+				}
 			}
-			if(overtimeRestAppCommonSet.get().getPreDisplayAtr() == UseAtr.USE ){
-				AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID, overtimeRestAppCommonSet, appDate, 1);
-				convertOverTimeDto(companyID,applicationDto,result,appOvertime,overtimeInputDtos);
+		}else if(prePostAtr ==0){
+			if(overtimeRestAppCommonSet.isPresent()){
+				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
+					result.setReferencePanelFlg(false);
+					//to do....
+				}
+				if(overtimeRestAppCommonSet.get().getPreDisplayAtr() == UseAtr.USE ){
+					result.setPreAppPanelFlg(false);
+					//to do....
+				}
 			}
 		}
 		return result;
 	}
-	
-	private void convertOverTimeDto(String companyID,ApplicationDto applicationDto, OverTimeDto result,AppOverTime appOvertime,List<OvertimeInputDto> overtimeInputDtos){
-		
+	private void convertOverTimeDto(String companyID,PreAppOvertimeDto preAppOvertimeDto, OverTimeDto result,AppOverTime appOvertime){
 		if(appOvertime.getApplication() != null){
 			if(appOvertime.getApplication().getApplicationDate() != null){
-				applicationDto.setApplicationDate(appOvertime.getApplication().getApplicationDate().toString(DATE_FORMAT));
+				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getApplicationDate().toString(DATE_FORMAT));
 			}
 		}
 		
@@ -85,7 +94,7 @@ public class CheckConvertPrePost {
 			if (workType.isPresent()) {
 				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
 			}
-			result.setWorkType(workTypeOvertime);
+			preAppOvertimeDto.setWorkTypePre(workTypeOvertime);
 		}
 		if (appOvertime.getSiftCode() != null) {
 			SiftType siftType = new SiftType();
@@ -96,14 +105,15 @@ public class CheckConvertPrePost {
 			if (workTime.isPresent()) {
 				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().toString());
 			}
-			result.setSiftType(siftType);
+			preAppOvertimeDto.setSiftTypePre(siftType);
 		}
-		result.setWorkClockFrom1(appOvertime.getWorkClockFrom1());
-		result.setWorkClockTo1(appOvertime.getWorkClockTo1());
-		result.setWorkClockFrom2(appOvertime.getWorkClockFrom2());
-		result.setWorkClockTo2(appOvertime.getWorkClockTo2());
-		List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInput(companyID,
-				appOvertime.getAppID());
+		preAppOvertimeDto.setWorkClockFrom1Pre(appOvertime.getWorkClockFrom1());
+		preAppOvertimeDto.setWorkClockTo1Pre(appOvertime.getWorkClockTo1());
+		preAppOvertimeDto.setWorkClockFrom2Pre(appOvertime.getWorkClockFrom2());
+		preAppOvertimeDto.setWorkClockTo2Pre(appOvertime.getWorkClockTo2());
+		
+		List<OvertimeInputDto> overtimeInputDtos = new ArrayList<>();
+		List<OverTimeInput> overtimeInputs = appOvertime.getOverTimeInput();
 		if (overtimeInputs != null && !overtimeInputs.isEmpty()) {
 			List<Integer> frameNo = new ArrayList<>();
 			for (OverTimeInput overTimeInput : overtimeInputs) {
@@ -125,11 +135,12 @@ public class CheckConvertPrePost {
 					}
 				}
 			}
-			result.setApplication(applicationDto);
-			result.setOverTimeInputs(overtimeInputDtos);
-			result.setOverTimeShiftNight(appOvertime.getOverTimeShiftNight());
-			result.setFlexExessTime(appOvertime.getFlexExessTime());
+			preAppOvertimeDto.setOverTimeInputsPre(overtimeInputDtos);
+			preAppOvertimeDto.setOverTimeShiftNightPre(appOvertime.getOverTimeShiftNight());
+			preAppOvertimeDto.setFlexExessTimePre(appOvertime.getFlexExessTime());
+			result.setPreAppOvertimeDto(preAppOvertimeDto);
 		}
 
 	}
+	
 }

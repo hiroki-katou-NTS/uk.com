@@ -191,7 +191,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var enable: boolean = ko.unwrap(data.enable);
             var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
-            var currentSource = $grid.igGrid('option', 'dataSource');
+            var gridSource = $grid.igGrid('option', 'dataSource');
             var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
             
             if($grid.data("enable") !== enable){
@@ -221,13 +221,13 @@ module nts.uk.ui.koExtentions {
                         });
                     });    
                 }
-                if (!_.isEqual(currentSources, $grid.igGrid('option', 'dataSource'))) {
-                    $grid.igGrid('option', 'dataSource', currentSources);
+                if (!_.isEqual(currentSources, gridSource)) {
+                    $grid.igGrid('option', 'dataSource', _.cloneDeep(currentSources));
                     $grid.igGrid("dataBind");
                 }
             } else if(String($grid.attr("filtered")) === "true"){
                 let filteredSource = [];
-                _.forEach(currentSource, function(item){
+                _.forEach(gridSource, function(item){
                     let itemX = _.find(sources, function (s){
                         return s[optionsValue] === item[optionsValue];        
                     });
@@ -235,7 +235,7 @@ module nts.uk.ui.koExtentions {
                         filteredSource.push(itemX);
                     }     
                 });     
-                if(!_.isEqual(filteredSource, currentSource)){
+                if(!_.isEqual(filteredSource, gridSource)){
                     $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
                     $grid.igGrid("dataBind");    
                 }

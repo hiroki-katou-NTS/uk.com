@@ -12,8 +12,8 @@ module nts.uk.at.view.kmk009.a {
             findByIdListWorkTypes: "at/share/worktype/getpossibleworktype",
             findByIdlistWorkTimes: "at/shared/worktime/findByCodeList",
             findAlldWorkType: "at/share/worktype/findAll",
-            findAllWorkTime: "at/shared/worktime/findAll"
-
+            findAllWorkTime: "at/shared/worktime/findAll",
+            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
         }
 
         /**
@@ -37,7 +37,6 @@ module nts.uk.at.view.kmk009.a {
        * save
        */
         export function saveAllTotalTimes(command: model.TotalTimesDetailDto): JQueryPromise<void> {
-            console.log(command);
             return nts.uk.request.ajax("at", paths.saveAllTotalTimes, command);
         }
 
@@ -86,6 +85,12 @@ module nts.uk.at.view.kmk009.a {
             return nts.uk.request.ajax("at", paths.findAlldWorkType);
         }
 
+        /**
+         * call service find all daily attendance item
+         */
+        export function findAllDailyAttendanceItem(): JQueryPromise<model.DailyAttendanceItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllDailyAttendanceItem);
+        }
 
 
         export module model {
@@ -152,6 +157,11 @@ module nts.uk.at.view.kmk009.a {
                 code: string;
                 name: string;
 
+            }
+            
+            export interface DailyAttendanceItemDto {
+                attendanceItemId: number;
+                attendanceItemName: string;
             }
         }
     }

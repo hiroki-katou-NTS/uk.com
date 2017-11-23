@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -32,7 +33,6 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The execution date time. */
 	// 実行日時
-	@Setter
 	private ExecutionDateTime executionDateTime;
 
 	/** The execution employee id. */
@@ -70,6 +70,50 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		memento.setExecutionDateTime(this.executionDateTime);
 		memento.setExecutionEmployeeId(this.executionEmployeeId);
 		memento.setPeriod(this.period);
+	}
+	
+	/**
+	 * Sets the execution time to now.
+	 */
+	public void setExecutionTimeToNow() {
+		this.executionDateTime = new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now());
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((executionId == null) ? 0 : executionId.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ScheduleExecutionLog other = (ScheduleExecutionLog) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (executionId == null) {
+			if (other.executionId != null)
+				return false;
+		} else if (!executionId.equals(other.executionId))
+			return false;
+		return true;
 	}
 	
 }

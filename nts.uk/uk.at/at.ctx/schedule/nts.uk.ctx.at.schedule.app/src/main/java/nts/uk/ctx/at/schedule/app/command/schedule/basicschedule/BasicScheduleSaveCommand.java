@@ -32,35 +32,27 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 public class BasicScheduleSaveCommand {
 
 	/** The employee id. */
-	// 社員ID
 	private String employeeId;
 	
 	/** The ymd. */
-	// 年月日
 	private GeneralDate ymd;
 	
 	/** The confirmed atr. */
-	// 予定確定区分
 	private int confirmedAtr;
 	
 	/** The worktype code. */
-	// 勤務種類 
 	private String worktypeCode;
 	
 	/** The worktime code. */
-	// 就業時間帯
 	private String worktimeCode;
 	
 	/** The work schedule time zones. */
-	// 勤務予定時間帯
 	private List<WorkScheduleTimeZoneSaveCommand> workScheduleTimeZones;
 	
 	/** The work schedule breaks. */
-	// 勤務予定休憩
 	private List<WorkScheduleBreakSaveCommand> workScheduleBreaks;
 	
 	/** The child care schedules. */
-	// 勤務予定育児介護時間帯
 	private List<ChildCareScheduleSaveCommand> childCareSchedules;
 	
 	/**
@@ -71,26 +63,51 @@ public class BasicScheduleSaveCommand {
 	public BasicSchedule toDomain(){
 		return new BasicSchedule(new BasicScheduleSaveCommandGetMementoImpl());
 	}
+	
 	/**
 	 * The Class BasicScheduleSaveCommandGetMementoImpl.
 	 */
 	class BasicScheduleSaveCommandGetMementoImpl implements BasicScheduleGetMemento{
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getEmployeeId()
+		 */
 		@Override
 		public String getEmployeeId() {
 			return employeeId;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getDate()
+		 */
 		@Override
 		public GeneralDate getDate() {
 			return ymd;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getWorkTypeCode()
+		 */
 		@Override
 		public String getWorkTypeCode() {
 			return worktypeCode;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getWorkTimeCode()
+		 */
 		@Override
 		public String getWorkTimeCode() {
 			return worktimeCode;
@@ -107,39 +124,75 @@ public class BasicScheduleSaveCommand {
 			return ConfirmedAtr.CONFIRMED;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getWorkDayAtr()
+		 */
 		@Override
 		public WorkdayDivision getWorkDayAtr() {
 			return WorkdayDivision.WORKINGDAYS;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getWorkScheduleTimeZones()
+		 */
 		@Override
 		public List<WorkScheduleTimeZone> getWorkScheduleTimeZones() {
-			if(CollectionUtil.isEmpty(workScheduleTimeZones)){
+			if (CollectionUtil.isEmpty(workScheduleTimeZones)) {
 				return new ArrayList<>();
 			}
 			return workScheduleTimeZones.stream().map(command -> new WorkScheduleTimeZone(command))
 					.collect(Collectors.toList());
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getWorkScheduleBreaks()
+		 */
 		@Override
 		public List<WorkScheduleBreak> getWorkScheduleBreaks() {
-			if(CollectionUtil.isEmpty(workScheduleBreaks)){
+			if (CollectionUtil.isEmpty(workScheduleBreaks)) {
 				return new ArrayList<>();
 			}
 			return workScheduleBreaks.stream().map(command -> new WorkScheduleBreak(command))
 					.collect(Collectors.toList());
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getWorkScheduleTime()
+		 */
 		@Override
 		public Optional<WorkScheduleTime> getWorkScheduleTime() {
 			return Optional.empty();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getWorkSchedulePersonFees()
+		 */
 		@Override
 		public List<WorkSchedulePersonFee> getWorkSchedulePersonFees() {
 			return new ArrayList<>();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.
+		 * BasicScheduleGetMemento#getChildCareSchedules()
+		 */
 		@Override
 		public List<ChildCareSchedule> getChildCareSchedules() {
 			if (CollectionUtil.isEmpty(childCareSchedules)) {
@@ -148,6 +201,6 @@ public class BasicScheduleSaveCommand {
 			return childCareSchedules.stream().map(command -> new ChildCareSchedule(command))
 					.collect(Collectors.toList());
 		}
-		
+
 	}
 }
