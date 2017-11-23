@@ -15,6 +15,9 @@ import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
 @Data
 @AllArgsConstructor
 public class AddCompanyInforCommand {
+	/** 契約コード */
+	private String contractCd;
+	
 	// 会社コード
 	private String ccd;  
 
@@ -50,7 +53,7 @@ public class AddCompanyInforCommand {
 	public CompanyInforNew toDomain(String contractCode) {
 		AddInfor add = null; 
 		if(this.getAddinfor() != null){
-			add = this.getAddinfor().toDomainAdd(contractCode, CompanyInforNew.createCompanyId(ccd, contractCode), this.ccd);
+			add = this.getAddinfor().toDomainAdd(CompanyInforNew.createCompanyId(ccd, contractCode));
 		}
 		CompanyInforNew company =  CompanyInforNew.createFromJavaType(this.ccd, this.name, 
 				this.getMonth(), 

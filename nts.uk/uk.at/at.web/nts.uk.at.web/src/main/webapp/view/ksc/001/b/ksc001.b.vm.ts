@@ -208,16 +208,6 @@ module nts.uk.at.view.ksc001.b {
                 });
             }
             /**
-             * get user login
-             */
-            public getUserLogin(): UserInfoDto {
-                var userinfo: UserInfoDto = {
-                    companyId: '000000000000-0001',
-                    employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a'
-                };
-                return userinfo;
-            }
-            /**
              * save to client service PersonalSchedule by employeeId
             */
             private savePersonalScheduleByEmployeeId(employeeId: string, data: PersonalSchedule): void {
@@ -228,7 +218,7 @@ module nts.uk.at.view.ksc001.b {
             */
             private savePersonalSchedule(data: PersonalSchedule): void {
                 var self = this;
-                var user: UserInfoDto = self.getUserLogin();
+                var user: any = __viewContext.user;
                 self.savePersonalScheduleByEmployeeId(user.employeeId, data);
             }
 
@@ -244,7 +234,7 @@ module nts.uk.at.view.ksc001.b {
             */
             private findPersonalSchedule(): JQueryPromise<PersonalSchedule> {
                 var self = this;
-                var user: UserInfoDto = self.getUserLogin();
+                var user: any = __viewContext.user;
                 return nts.uk.characteristics.restore("PersonalSchedule_" + user.employeeId);
             }
             /**

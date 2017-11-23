@@ -1,6 +1,7 @@
 package nts.uk.ctx.command;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,10 +52,10 @@ public class UpdateCompanyInforCommand {
 		
 		private AddInforCommand addinfor;
 		
-		private CompanyInforNew toDomain() {
+		private CompanyInforNew toDomain(String contractCode) {
 			AddInfor add = null; 
 			if(this.getAddinfor() != null){
-				add = this.getAddinfor().toDomainAdd(contractCd, "", this.getCcd());
+				add = this.getAddinfor().toDomainAdd(CompanyInforNew.createCompanyId(ccd, contractCode));
 			}
 			CompanyInforNew company =  CompanyInforNew.createFromJavaType(this.getCcd(), this.getName(), 
 					this.getMonth(), 

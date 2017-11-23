@@ -100,6 +100,7 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 nts.uk.ui.windows.close();
             }
             
+            
             /**
              * reload page by action stop execution
              */
@@ -182,6 +183,13 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
             }
 
+            /**
+             * function export file error by client click
+             */
+            private exportFileError(): void{
+                var self = this;
+                service.exportScheduleErrorLog(self.inputData.executionId);    
+            }
 
         }     
         

@@ -19,33 +19,21 @@ public class DivWorkDifferInfor extends AggregateRoot{
 	/**会社ID**/
 	private String companyId;
 	
-	// 会社コード
-	private Ccd companyCode;
-	
-	/** 契約コード */
-	private ContractCd contractCd;
-	
 	/** 職場登録区分 **/
 	private RegWorkDiv regWorkDiv;
 	
-	public static String createCompanyId(String companyCode, String contractCd) {
-		return contractCd + "-" + companyCode;
-	}
+//	public static String createCompanyId(String companyCode, String contractCd) {
+//		return contractCd + "-" + companyCode;
+//	}
 	
-	public static DivWorkDifferInfor createFromJavaType(String companyCode,
-														String contractCd,
-														int regWorkDiv){
-		return new DivWorkDifferInfor(new Ccd(companyCode),
-											new ContractCd(contractCd),
-										EnumAdaptor.valueOf(regWorkDiv, RegWorkDiv.class));
+	public static DivWorkDifferInfor createFromJavaType(String companyId, int regWorkDiv){
+		return new DivWorkDifferInfor(companyId, EnumAdaptor.valueOf(regWorkDiv, RegWorkDiv.class));
 	}
 
-	public DivWorkDifferInfor(Ccd companyCode, ContractCd contractCd, RegWorkDiv regWorkDiv) {
-		super();
-		this.companyCode = companyCode;
-		this.contractCd = contractCd;
-		this.regWorkDiv = regWorkDiv;
-		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
-	}
+//	public DivWorkDifferInfor(RegWorkDiv regWorkDiv) {
+//		super();
+//		this.regWorkDiv = regWorkDiv;
+//		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
+//	}
 	
 }

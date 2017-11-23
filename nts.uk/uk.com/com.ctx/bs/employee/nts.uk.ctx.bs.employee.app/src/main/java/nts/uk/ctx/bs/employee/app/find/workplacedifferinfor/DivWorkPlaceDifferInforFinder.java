@@ -22,9 +22,9 @@ public class DivWorkPlaceDifferInforFinder {
 	 */
 	public DivWorkPlaceDifferInforDto finder(ParamFinder param){
 		String contractCd = AppContexts.user().contractCode();
-		return this.divRep.findDivWork(param.getCompanyId(), param.getCompanyCode(), contractCd)
+		return this.divRep.findDivWork(param.getCompanyId())
 							.map(c -> {
-								return new DivWorkPlaceDifferInforDto(param.getCompanyId(), param.getCompanyCode(), contractCd,
+								return new DivWorkPlaceDifferInforDto(param.getCompanyId(),
 																	c.getRegWorkDiv().value);
 							}).orElse(null);
 	}
