@@ -52,15 +52,15 @@
 					<div id="search" tabindex="1"
 						data-bind="ntsSearchBox: {
 						searchMode: 'filter',
-						targetKey: 'selectionItemName',
+						targetKey: 'selectionItemId',
 						mode: 'igGrid', 
-						comId: 'single-list',
+						comId: 'sel_item_grid',
 						items: listItems ,  
 						selected: perInfoSelectionItem().selectionItemId,
 						selectedKey: 'selectionItemId',
-						fields: ['selectionItemId', 'selectionItemName']}" />
-
-
+						fields: ['selectionItemName'],
+						mode: 'igGrid' 
+						}" />
 					<table id="sel_item_grid"
 						data-bind="ntsGridList: {
 									height: 270,
