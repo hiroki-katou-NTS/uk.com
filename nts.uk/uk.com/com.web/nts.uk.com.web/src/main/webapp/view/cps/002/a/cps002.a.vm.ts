@@ -378,17 +378,19 @@ module cps002.a.vm {
 
                 //start Screen C
 
-                $('#search_panel').show();
-
+                $('#initSettingPanel').show();
                 self.loadInitSettingData();
+
 
             } else {
 
                 //start Screen B
 
-                $('#search_panel').hide();
+                $('#initSettingPanel').hide();
 
                 self.loadCopySettingCtgData();
+
+                $('#hor-scroll-button-show').trigger('click');
 
             }
 
