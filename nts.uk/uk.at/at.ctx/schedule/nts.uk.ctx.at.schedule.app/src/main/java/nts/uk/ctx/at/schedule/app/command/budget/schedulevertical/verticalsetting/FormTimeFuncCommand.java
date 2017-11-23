@@ -15,30 +15,27 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTi
 @NoArgsConstructor
 public class FormTimeFuncCommand {
     
-    /*コード*/
+    /**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /* 予定項目ID */
+    /** 順番 */
+    private int dispOrder;
     private String presetItemId;
     
-    /* 勤怠項目ID */
+    /** 勤怠項目ID */
     private String attendanceItemId;
     
-    /* 外部予算実績項目コード */
+    /** 外部予算実績項目コード */
     private String externalBudgetCd;
     
-    /* 演算子区分 */
+    /** 演算子区分 */
     private int operatorAtr;
-    
-    /* 順番 */
-    private int dispOrder;
-    
-    public FormTimeFunc toDomainFunc(String companyId, String verticalCalCd, String verticalCalItemId, String presetItemId, String attendanceItemId, 
-    		String externalBudgetCd, int operatorAtr, int dispOrder){
-    	return FormTimeFunc.createFromJavaType(companyId, verticalCalCd, verticalCalItemId, presetItemId, attendanceItemId, 
-        		externalBudgetCd, operatorAtr, dispOrder);
+    public FormTimeFunc toDomainFunc(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder, String presetItemId, String attendanceItemId, 
+    		String externalBudgetCd, int operatorAtr){
+    	return FormTimeFunc.createFromJavaType(companyId, verticalCalCd, verticalCalItemId, dispOrder, presetItemId, attendanceItemId, 
+        		externalBudgetCd, operatorAtr);
     }
 }

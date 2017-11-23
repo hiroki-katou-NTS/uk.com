@@ -8,24 +8,29 @@
 }
 
 .contents-area {
-	padding: 20px 58px;
+	padding: 8px 58px;
 }
 
 table.item-setting {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 table.item-setting thead tr td {
 	background-color: #c7f391 !important;
 }
 
-table.item-setting tr {
-	height: 40px;
+table.item-setting thead tr {
+	height: 28px;
+}
+
+table.item-setting tbody tr {
+	height: 39px;
 }
 
 table.item-setting td {
 	border: 1px solid #CCC;
 	padding: 5px;
+	height: 18px;
 }
 
 table.item-setting tr td:first-child {
@@ -35,7 +40,9 @@ table.item-setting tr td:first-child {
 .advance-setting {
 	width: 78px;
 }
-
+.nts-switch-button selected, .nts-switch-button{
+	height: 27px;
+}
 /* 
 	Screen A styles 
 */
@@ -116,6 +123,13 @@ table.calculator-items tbody td:nth-child(4), table.calculator-items tbody td:nt
 table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nth-child(7)
 {
 	text-align: center;
+}
+
+.formula-text {
+	width: 240px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .attributes {
@@ -494,7 +508,9 @@ input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
 table.tbl-rounding td {
 	padding: 12px;
 }
-
+.advance-setting {
+	height: 27px;
+}
 /* 
 	Screen F styles 
 */

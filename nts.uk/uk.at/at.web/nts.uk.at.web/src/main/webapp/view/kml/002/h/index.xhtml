@@ -13,15 +13,9 @@
 			</com:ValidatorScript>
 			
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-
+				
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:stylefile path="../main.css" />
-
 			<com:scriptfile path="kml002.h.vm.js" />
 			<com:scriptfile path="kml002.h.service.js" />
 			<com:scriptfile path="kml002.h.start.js" />		
@@ -84,7 +78,7 @@
 								</td>
 								<td>
 									<com:ko-if bind="fixedItemAtr() == 0 || fixedItemAtr() == 1 || fixedItemAtr() == 6">
-										<button data-bind="click: $parent.openDialog.bind($parent, $data.fixedItemAtr())" class="advance-setting" >#{i18n.getText('KML002_84')}</button>
+										<button data-bind="click: $parent.openDialog.bind($parent, $data.fixedItemAtr()), enable: $data.useAtr()==0" class="advance-setting" >#{i18n.getText('KML002_84')}</button>
 									</com:ko-if>
 								</td>
 							</tr>

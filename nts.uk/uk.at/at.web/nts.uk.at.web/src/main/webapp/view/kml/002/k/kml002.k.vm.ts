@@ -32,7 +32,7 @@ module kml002.k.viewmodel {
                 endTime: self.endTime()
             }
             if (self.startTime() > self.endTime()) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_28" });
+                 nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_307"));
                 return;
             }
             nts.uk.ui.windows.setShared('KML002K_TIME', dataTime);

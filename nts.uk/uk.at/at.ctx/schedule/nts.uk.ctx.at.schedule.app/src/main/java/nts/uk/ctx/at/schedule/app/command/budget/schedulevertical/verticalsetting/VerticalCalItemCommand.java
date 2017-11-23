@@ -2,43 +2,48 @@ package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetti
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormBuilt;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeople;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTime;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaAmount;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaNumerical;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaUnitprice;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class VerticalCalItemCommand {
-	/* 会社ID */
-    private String companyId;
+
     
-    /*コード*/
+    /**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String itemId;
     
-    /* 項目名 */
+    /** 項目名 */
     private String itemName;
     
-    /* 計算区分 */
+    /** 計算区分 */
     private int calculateAtr;
     
-    /* 表示区分 */
+    /** 表示区分 */
     private int displayAtr;
     
-    /* 累計区分 */
+    /** 累計区分 */
     private int cumulativeAtr;
     
-    /* 属性 */
+    /** 属性 */
     private int attributes;
     
-    // 端数処理
+    /** 端数処理*/
  	private int rounding;
  	
+ 	private int roundingProcessing;
+ 	
+ 	/** 順番 */
  	private int dispOrder;
  	
  	private FormBuiltCommand formBuilt;
@@ -51,6 +56,7 @@ public class VerticalCalItemCommand {
  	
  	private FormulaNumericalCommand formulaNumerical;
  	
+ 	private FormulaUnitPriceCommand unitPrice;
  	
  	public VerticalCalItem toDomainCalItem(String companyId, String verticalCalCd, String itemId){
  		FormBuilt built = this.formBuilt != null
@@ -68,7 +74,11 @@ public class VerticalCalItemCommand {
  		FormulaNumerical numerical = this.formulaNumerical != null
  				? this.formulaNumerical.toDomainNumerical(companyId, verticalCalCd, itemId)
  						: null;
+ 		FormulaUnitprice unitprice = this.unitPrice != null
+ 				? this.unitPrice.toDomainUnitPrice(companyId, verticalCalCd, itemId)
+ 						: null;		
 		return VerticalCalItem.createFromJavatype(companyId, verticalCalCd, itemId, itemId, calculateAtr, displayAtr, cumulativeAtr, attributes, rounding, 
-				dispOrder, built, time, formPeople1,amount, numerical);
+				roundingProcessing, dispOrder, built, time, formPeople1,amount, numerical,unitprice);
  	}
+
 }
