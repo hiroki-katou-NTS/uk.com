@@ -31,7 +31,7 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddTemporaryAbsenceCommand> context) {
-		val command = context.getCommand();
+		/*val command = context.getCommand();
 		
 		String newTempID = IdentifierUtil.randomUniqueId();
 		
@@ -41,7 +41,9 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 				newHistID, command.getStartDate(), command.getEndDate(), command.getTempAbsenceReason(), command.getFamilyMemberId(), command.getBirthDate(), command.getMulPregnancySegment());
 		
 		temporaryAbsenceRepository.addTemporaryAbsence(temporaryAbsence);
-		return new PeregAddCommandResult(newTempID);
+		return new PeregAddCommandResult(newTempID);*/
+		return null;
+		// TODO
 	}
 
 }
