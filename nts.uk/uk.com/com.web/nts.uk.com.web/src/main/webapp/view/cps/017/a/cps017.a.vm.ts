@@ -26,6 +26,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         //Check insert/upadte
         checkCreate: KnockoutObservable<boolean>;
+        closeUp: KnockoutObservable<boolean>;
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -35,6 +36,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             //check insert/update
             self.checkCreate = ko.observable(true);
+            self.closeUp = ko.observable(false);
 
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
@@ -46,13 +48,17 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
-                        self.listHistorySelection(_selectionItemList);
+                        let changeData = _.each(_selectionItemList, (item) => {
+                            item.displayDate = item.startDate + " ~ " + item.endDate;
+                            return item;
+                        });
+                        self.listHistorySelection(changeData);
                         // check tạm:
                         self.historySelection().histId(self.listHistorySelection().length == 0 ? '' : self.listHistorySelection()[0].histId);
                         //self.checkCreate(false);
                     });
                 }
-                self.checkCreate(false);
+                //self.checkCreate(false);
             });
 
             //sub theo historyID:
@@ -100,11 +106,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length > 0) {
+                    self.checkCreate(true);
                     self.listItems(itemList);
                     self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                 } else {
+                    self.checkCreate(false);
                     alertError({ messageId: "Msg_455" });
-                    self.registerData();
+//                    self.registerData();
                 }
                 dfd.resolve();
             }).fail(error => {
@@ -412,7 +420,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         companyId: KnockoutObservable<string> = ko.observable('');
         startDate: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('');
-
+        
         constructor(param: IHistorySelection) {
             let self = this;
             self.histId(param.histId || '');
