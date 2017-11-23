@@ -15,16 +15,16 @@ public class FormulaNumericalCommand {
     /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
+    /** 順番 */
+    private int dispOrder;
+    
     /** 外部予算実績項目コード */
     private String externalBudgetCd;
     
     /** 演算子区分 */
     private int operatorAtr;
     
-    /** 順番 */
-    private int dispOrder;
-    
-    public FormulaNumerical toDomainNumerical(String companyId, String verticalCalCd, String verticalCalItemIdr){
-    	return FormulaNumerical.createFromJavatype(companyId, verticalCalCd, verticalCalItemId, externalBudgetCd, operatorAtr, dispOrder);
+    public FormulaNumerical toDomainNumerical(String companyId){
+    	return FormulaNumerical.createFromJavatype(companyId, this.verticalCalCd, this.verticalCalItemId, this.dispOrder, this.externalBudgetCd, this.operatorAtr);
     }
 }

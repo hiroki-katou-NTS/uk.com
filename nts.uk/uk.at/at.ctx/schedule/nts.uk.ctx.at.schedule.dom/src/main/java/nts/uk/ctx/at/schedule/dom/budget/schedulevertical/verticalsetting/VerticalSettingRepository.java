@@ -128,13 +128,6 @@ public interface VerticalSettingRepository {
 	void insertFromAmount(FormulaAmount formulaAmount);
 
 	/**
-	 * Add Formula Amount
-	 * @param numerical
-	 * @author phongtq
-	 */
-	void insertFromNumerical(FormulaNumerical numerical);
-
-	/**
 	 * Find Formula Money
 	 * @param companyId
 	 * @param verticalCalCd
