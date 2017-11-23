@@ -15,7 +15,7 @@
 }
 
 .ntsControl.ntsProfile {
-	width: 644px;
+	width: 690px;
 	border: 1px solid #ccc;
 	background-repeat: no-repeat;
 	background-position: right 228px top 1px;
@@ -35,7 +35,7 @@
 
 .ntsControl.ntsProfile .btn-search {
 	margin-right: 3px;
-	padding-left: 20px;
+	padding-left: 40px;
 	padding-right: 20px;
 }
 
@@ -45,18 +45,17 @@
 
 .ntsControl .nts-label {
 	display: inline-block;
-	min-width: 50px;
 	min-height: 18px;
 }
 
 .ntsControl .nts-label.nts-name {
-	min-width: 120px;
+	width: 115px;
 }
 
 .ntsControl.ntsProfile .nts-label.nts-name:before {
 	content: '↵';
 	position: absolute;
-	margin-left: 439px;
+	margin-left: 469px;
 	margin-top: -11px;
 	font-size: 2em;
 	color: #ccc;
@@ -68,8 +67,12 @@
 }
 
 .ntsControl.ntsProfile .nts-label.nts-person {
-	margin-left: 83px;
+	margin-left: 50px;
 	min-width: 45px;
+}
+
+.ntsControl.ntsProfile .nts-label.nts-fullname {
+	width: 120px;
 }
 
 .left-contents {

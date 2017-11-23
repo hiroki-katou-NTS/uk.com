@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -83,7 +84,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 * 03-01_事前申請超過チェック
 	 */
 	@Override
-	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDate inputDate,
+	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate,
 			PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs) {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setFrameNo(-1);
@@ -191,7 +192,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 * 03-05_事前否認チェック
 	 */
 	@Override
-	public OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDate inputDate,
+	public OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate,
 			PrePostAtr prePostAtr) {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setErrorCode(0);

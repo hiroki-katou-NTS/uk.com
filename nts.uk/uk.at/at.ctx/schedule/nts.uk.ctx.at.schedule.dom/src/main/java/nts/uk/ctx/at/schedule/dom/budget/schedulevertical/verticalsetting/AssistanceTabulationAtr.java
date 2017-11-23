@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum AssistanceTabulationAtr {
 	/** 0- 含める **/
-	INCLUDE(0),
+	INCLUDE(0, "Enum_IncludeAtr_Include"),
 	/** 1- 含めない **/
-	NOT_INCLUDED(1);
+	NOT_INCLUDED(1, "Enum_IncludeAtr_Exclude");
 	
 	public final int value;
+	public String nameId;
 }

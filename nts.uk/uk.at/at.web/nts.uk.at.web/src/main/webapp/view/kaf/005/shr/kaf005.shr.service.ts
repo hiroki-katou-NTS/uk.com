@@ -3,10 +3,12 @@ module nts.uk.at.view.kaf005.shr.service {
         getOvertimeByUI: "at/request/application/overtime/getOvertimeByUI",
         findByChangeAppDate: "at/request/application/overtime/findByChangeAppDate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
+        getCaculationResult: "at/request/application/overtime/getCaculationResult",
         createOvertime: "at/request/application/overtime/create",
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",
         checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
+        findByAppID: "at/request/application/overtime/findByAppID"
     }
 
     /** Get TitleMenu */
@@ -20,6 +22,10 @@ module nts.uk.at.view.kaf005.shr.service {
     
     export function checkConvertPrePost(prePostAtr: string): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkConvertPrePost, prePostAtr);
+    }
+    
+    export function getCaculationResult(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getCaculationResult, param);
     }
     
     export function createOvertime(overtime: any): JQueryPromise<void> {
@@ -36,5 +42,9 @@ module nts.uk.at.view.kaf005.shr.service {
     
     export function checkBeforeRegister(overtime:any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkBeforeRegister ,overtime);
+    }
+    
+    export function findByAppID(appID: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.findByAppID ,appID);
     }
 }

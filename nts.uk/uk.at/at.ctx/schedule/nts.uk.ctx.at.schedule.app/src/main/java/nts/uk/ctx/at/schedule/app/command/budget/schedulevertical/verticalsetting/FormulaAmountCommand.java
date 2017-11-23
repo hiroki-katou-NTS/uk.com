@@ -2,21 +2,23 @@ package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetti
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaAmount;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaTimeUnit;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FormulaAmountCommand {
-	private String companyId;
 
-	/* コード */
+	/** コード */
 	private String verticalCalCd;
 
-	/* 計算式 */
+	/** 計算式 */
 	private String verticalCalItemId;
-
+	
+	/** 計算方法区分 */
 	private int calMethodAtr;
 	
 	private FormulaMoneyCommand moneyFunc;

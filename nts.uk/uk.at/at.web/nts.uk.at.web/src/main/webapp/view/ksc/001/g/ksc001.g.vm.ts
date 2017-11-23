@@ -73,8 +73,11 @@ module nts.uk.at.view.ksc001.g {
                 if (!nts.uk.ui.errors.hasError()) {
                     var self = this;
                     var date = {
-                        startDate: new Date(self.dateValue().startDate),
-                        endDate: new Date(self.dateValue().endDate)
+                        startDate: moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString(),
+                        endDate: moment.utc(self.dateValue().endDate, 'YYYY/MM/DD')
+                            .add(1, 'days')
+                            .subtract(1, 'seconds')
+                            .toISOString()
                     };
                     //block UI
                     blockUI.invisible();
