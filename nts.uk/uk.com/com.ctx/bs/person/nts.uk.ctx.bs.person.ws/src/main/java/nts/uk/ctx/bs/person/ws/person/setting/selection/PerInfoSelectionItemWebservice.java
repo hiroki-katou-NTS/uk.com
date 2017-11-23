@@ -26,6 +26,8 @@ import command.person.setting.selectionitem.selection.RemoveHistoryCommand;
 import command.person.setting.selectionitem.selection.RemoveHistoryCommandHandler;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommand;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommandHandler;
+import command.person.setting.selectionitem.selection.UpdateSelOrderCommand;
+import command.person.setting.selectionitem.selection.UpdateSelOrderCommandHandler;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommand;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommandHandler;
 import find.person.setting.init.item.SelectionInitDto;
@@ -35,10 +37,8 @@ import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import find.person.setting.selectionitem.selection.SelectionFinder;
 import find.person.setting.selectionitem.selection.SelectionItemOrderDto;
-import find.person.setting.selectionitem.selection.SelectionItemOrderFinder;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 
 @Path("ctx/bs/person/info/setting/selection")
 @Produces("application/json")
@@ -61,9 +61,6 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	@Inject
 	private SelectionFinder selecFider;
-
-	@Inject
-	private SelectionItemOrderFinder selecItemOrderFider;
 
 	// Add selection:
 	@Inject
@@ -92,6 +89,10 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// Phan anh cong ty:
 	@Inject
 	ReflUnrCompCommandHandler reflUnrComp;
+
+	// hoatt - update selection order
+	@Inject
+	private UpdateSelOrderCommandHandler updateSelOrder;
 
 	@POST
 	@Path("findAll")
@@ -186,13 +187,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 		this.removeHistory.handle(command);
 	}
 
-	
-	
 	// Lanlt
 	@POST
 	@Path("find/{selectionItemId}/{baseDate}")
-	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId, @PathParam("baseDate") String baseDate) {
-		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate );
+	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId,
+			@PathParam("baseDate") String baseDate) {
+		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
 	}
 
 	// Phan anh cong ty:
@@ -201,12 +201,18 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public void ReflUnrComp(ReflUnrCompCommand command) {
 		this.reflUnrComp.handle(command);
 	}
-	
-	
-	//Lanlt
+
+	// Lanlt
 	@POST
 	@Path("findAllSelectionItem")
 	public List<PerInfoSelectionItemDto> getAllelectionItem() {
 		return this.finder.getAllSelectionItem();
+	}
+
+	// update selection order
+	@POST
+	@Path("updateSelOrder")
+	public void updateSelOrder(List<UpdateSelOrderCommand> lstSelOrder) {
+		this.updateSelOrder.handle(lstSelOrder);
 	}
 }

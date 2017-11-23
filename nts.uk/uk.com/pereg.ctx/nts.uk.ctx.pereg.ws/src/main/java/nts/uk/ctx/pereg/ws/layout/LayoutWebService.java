@@ -9,7 +9,10 @@ import javax.ws.rs.core.MediaType;
 import find.layout.NewLayoutDto;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
+import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
+import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**
  * @author sonnlb
@@ -21,11 +24,26 @@ public class LayoutWebService extends WebService {
 
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
+	
+	@Inject
+	private PeregProcessor layoutProcessor;
 
 	@Path("getByCreateType")
 	@POST
 	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
 		return this.layoutFinder.getByCreateType(command);
+	}
+	
+	/**
+	 * @author xuan vinh
+	 * @param query
+	 * @return
+	 */
+	
+	@Path("find/getTabDetail")
+	@POST
+	public EmpMaintLayoutDto getTabDetail(PeregQuery query){
+		return this.layoutProcessor.getCategoryChild(query);
 	}
 
 }

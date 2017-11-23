@@ -8,7 +8,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
 
     export class ScreenModel {
         // PGType
-        pgType: number;
+        listPartType: number;
         // Position
         positionRow: KnockoutObservable<number>;
         positionColumn: KnockoutObservable<number>;

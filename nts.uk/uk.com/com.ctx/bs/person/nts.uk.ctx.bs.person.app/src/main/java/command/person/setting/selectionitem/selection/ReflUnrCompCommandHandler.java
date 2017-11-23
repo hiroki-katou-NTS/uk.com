@@ -11,12 +11,14 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -40,70 +42,80 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 	protected String handle(CommandHandlerContext<ReflUnrCompCommand> context) {
 		ReflUnrCompCommand command = context.getCommand();
 		String newHistId = IdentifierUtil.randomUniqueId();
-
-		// ドメインモデル「選択肢履歴」を取得する(Lấy Domain Model 「選択肢履歴」)
 		String selectionItemId = command.getSelectionItemId();
-		String companyId = command.getCompanyId();
-
 		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 
-		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
-		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
-		DatePeriod period = new DatePeriod(startDate, endDate);
-
-		// Xoa di tat ca lich su cua thang SelectionItemId:
-		List<PerInfoHistorySelection> historyList = this.historySelectionRepository
-				.getAllPerInfoHistorySelection(selectionItemId, companyId);
-		historyList.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionItemId()));
-
-		// Xoa tat ca Selection cua SelectionItem dang lua chon
-		String selectionId = command.getSelectionId();
-		List<Selection> selectionBySelectionId = this.selectionRepo.getAllSelectionBySelectionID(selectionId);
-		selectionBySelectionId.stream().forEach(x->this.selectionRepo.remove(x.getSelectionID()));
-		
-		// Xoa tat ca OrderSelection:
-		List<SelectionItemOrder> orderBySelectionId = this.selectionOrderRepo.getAllOrderBySelectionId(selectionId);
-		orderBySelectionId.stream().forEach(x->this.selectionOrderRepo.remove(x.getSelectionID()));
-		
-		// insert data of all company
+		// Delete data:
 		for (String cid : companyIdList) {
-
-			// history:
-			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId,
-					command.getSelectionItemId(), cid, period);
-			this.historySelectionRepository.add(domainHist);
+			// History:
+			List<PerInfoHistorySelection> historyList = this.historySelectionRepository
+					.getAllHistoryBySelectionItemIdAndCompanyId(selectionItemId, cid);
+			historyList.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionItemId()));
 
 			// Selection
-			String histId = command.getHistId();
-			List<Selection> getAllSelectByHistId = this.selectionRepo.getAllSelectByHistId(histId);
-			List<SelectionItemOrder> getAllOrderSelectionByHistId = this.selectionOrderRepo
-					.getAllOrderSelectionByHistId(histId);
+			String selectionId = command.getSelectionId();
+			List<Selection> selectionBySelectionId = this.selectionRepo.getAllSelectionBySelectionID(selectionId);
+			selectionBySelectionId.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionID()));
 
-			for (Selection selection : getAllSelectByHistId) {
-				String newSelectionId = IdentifierUtil.randomUniqueId();
-				// Tao do main: 選択肢
-				Selection domainSelection = Selection.createFromSelection(newSelectionId, newHistId,
-						selection.getExternalCD().v(), selection.getSelectionName().v(), selection.getExternalCD().v(),
-						selection.getMemoSelection().v());
-
-				// ドメインモデル「選択肢」をコピーする
-				this.selectionRepo.add(domainSelection);
-
-				// Lay tat ca gia tri trong domain: 選択肢の並び順と既定値 theo SelectionID
-				SelectionItemOrder orderOrg = getAllOrderSelectionByHistId.stream()
-						.filter(o -> o.getSelectionID().equals(selection.getSelectionID())).collect(Collectors.toList())
-						.get(0);
-
-				// Tao domain: 選択肢の並び順と既定値
-				SelectionItemOrder domainSelectionOrder = SelectionItemOrder.selectionItemOrder(newSelectionId,
-						newHistId, orderOrg.getDisporder().v(), orderOrg.getInitSelection().value);
-
-				// ドメインモデル「選択肢の並び順と既定値」をコピーする
-				this.selectionOrderRepo.add(domainSelectionOrder);
-			}
+			// Order:
+			List<SelectionItemOrder> orderBySelectionId = this.selectionOrderRepo.getAllOrderBySelectionId(selectionId);
+			orderBySelectionId.stream().forEach(x -> this.selectionOrderRepo.remove(x.getSelectionID()));
 		}
+
+		String rootCompanyId = PersonInfoCategory.ROOT_COMPANY_ID;
+		List<PerInfoHistorySelection> histList = this.historySelectionRepository
+				.getAllHistoryByCompanyID(rootCompanyId);
+
+		companyIdList.forEach(x -> {
+			createHistoryList(histList, x);
+
+		});
 
 		return newHistId;
 	}
 
+	private void createHistoryList(List<PerInfoHistorySelection> histList, String comId) {
+		histList.forEach(x -> {
+			String oldHistId = x.getHistId();
+			String newHistId = IdentifierUtil.randomUniqueId();
+
+			// copy tat ca history cua cty: 000000000000-0000 vao cty khac:
+			PerInfoHistorySelection domain = PerInfoHistorySelection.createHistorySelection(newHistId,
+					x.getSelectionItemId(), comId, x.getPeriod());
+			this.historySelectionRepository.add(domain);
+
+			// get all data Selection theo histId cty: 000000000000-0000
+			createSelectionList(oldHistId, newHistId);
+
+			//create order by hist id
+			createOrderList(oldHistId, newHistId);
+		});
+
+	}
+
+	// copy data Selection cua Histroy trong cty: 000000000000-0000 vao Cty
+	// khac:
+	private void createSelectionList(String oldHistId, String histId) {
+		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(oldHistId);
+		selectionList.forEach(x -> {
+			String newSelectionID = IdentifierUtil.randomUniqueId();
+			Selection domain = Selection.createFromSelection(newSelectionID, histId, x.getSelectionCD().v(),
+					x.getSelectionName().v(), x.getExternalCD().v(), x.getMemoSelection().v());
+
+			this.selectionRepo.add(domain);
+		});
+
+	}
+
+	private void createOrderList(String oldHistId, String histId) {
+		List<SelectionItemOrder> orderList = this.selectionOrderRepo.getAllOrderSelectionByHistId(oldHistId);
+		orderList.forEach(x -> {
+			String newSelectionID = IdentifierUtil.randomUniqueId();
+			SelectionItemOrder domainOrder = SelectionItemOrder.selectionItemOrder(newSelectionID, histId,
+					x.getDisporder().v(), x.getInitSelection().value);
+
+			this.selectionOrderRepo.add(domainOrder);
+		});
+
+	}
 }

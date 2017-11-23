@@ -177,11 +177,14 @@
 	float: left;
 	display: block;
 	padding-left: 5px;
-	padding-right: 5px;	
+	padding-right: 5px;
+    min-height: 30px;
+	max-height: 30px;
+	overflow: hidden;
 }
 
 .person-info td>div.info.first {
-	width: 95px;
+	min-width: 95px;
 	max-width: 95px;
 }
 
@@ -212,6 +215,12 @@
 
 #contents-area .layout-control .drag-panel {
 	min-width: 860px;
+}
+
+#contents-area .category-input .layout-control .drag-panel {
+	min-width: 830px;
+	border: none;
+	height: auto;
 }
 
 .ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
@@ -264,5 +273,6 @@
 .category-input>.title {
 	display: block;
 	line-height: 37px;
+	text-align: center;
 	background-color: #cee6ff;
 }

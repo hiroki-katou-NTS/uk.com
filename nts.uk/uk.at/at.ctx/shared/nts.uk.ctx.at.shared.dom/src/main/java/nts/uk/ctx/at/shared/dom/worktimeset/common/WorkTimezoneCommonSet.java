@@ -29,7 +29,7 @@ public class WorkTimezoneCommonSet extends DomainObject{
 	private WorkTimezoneOtherSubHolTimeSet subHolTimeSet;
 	
 	/** The raising salary set. */
-	//加給設定
+	//TODO 加給設定
 	private WorkTimezoneRaisingSalarySet raisingSalarySet;
 	
 	/** The medical set. */

@@ -19,14 +19,14 @@ public class PerInfoHistorySelectionFinder {
 	public List<PerInfoHistorySelectionDto> historySelection(String selectedId) {
 
 		// gia lap: Kiem tra quyen User
-		boolean isSystemAdmin = true;
+		boolean isSystemAdmin = false;
 
 		// ログインしているユーザーの権限をチェックする(Kiểm tra quyền User login)
 		String cid = isSystemAdmin == true ? PersonInfoCategory.ROOT_COMPANY_ID : AppContexts.user().companyId();
 
 		// ドメインモデル「選択肢履歴」を取得する(lấy Domain Model 「選択肢履歴」)
 		List<PerInfoHistorySelectionDto> historyList = this.historySelectionRepo
-				.getAllPerInfoHistorySelection(selectedId, cid).stream()
+				.getAllHistoryBySelectionItemIdAndCompanyId(selectedId, cid).stream()
 				.map(i -> PerInfoHistorySelectionDto.fromDomainHistorySelection(i)).collect(Collectors.toList());
 
 		return historyList;

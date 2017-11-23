@@ -23,7 +23,7 @@ public class DeleteApplicationCommandHandler extends CommandHandler<DeleteApplic
 		Optional<Application> app = appRepo.getAppById(companyID, 
 				context.getCommand().getApplicationID());
 		if(app.isPresent()) {
-			appRepo.deleteApplication(companyID, context.getCommand().getApplicationID());
+			appRepo.deleteApplication(companyID, context.getCommand().getApplicationID(), context.getCommand().getVersion());
 		}
 		
 	}

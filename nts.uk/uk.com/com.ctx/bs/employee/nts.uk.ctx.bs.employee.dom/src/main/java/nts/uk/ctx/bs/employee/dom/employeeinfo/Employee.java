@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 
 @Getter
 @Setter
@@ -41,10 +42,12 @@ public class Employee extends AggregateRoot {
 	/** The List JobEntryHistory 入社履歴 */
 	private List<JobEntryHistory> listEntryJobHist;
 
+	private List<TempAbsenceHisItem> listTemporaryAbsence;
+
 	public static Employee createFromJavaType(String companyId, String pId, String sId, String sCd, String companyMail,
 			String mobileMail, String companyMobile) {
 		return new Employee(companyId, pId, sId, new EmployeeCode(sCd), new EmployeeMail(companyMail),
-				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), null);
+				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), null, null);
 	}
 
 	public GeneralDate getJoinDate() {
@@ -69,12 +72,24 @@ public class Employee extends AggregateRoot {
 
 	// calculate year of entire in current company
 	public int getDaysOfEntire() {
-		if (listEntryJobHist.isEmpty()) {
+		if (listEntryJobHist == null || listEntryJobHist.isEmpty()) {
 			return 0;
 		}
 
 		return listEntryJobHist.stream()
 				.map(m -> ChronoUnit.DAYS.between(m.getJoinDate().localDate(), m.getAdoptDate().localDate()))
 				.mapToInt(m -> Math.abs(m.intValue())).sum();
+	}
+
+	public int getDaysOfTemporaryAbsence() {
+		if (listTemporaryAbsence == null || listTemporaryAbsence.isEmpty()) {
+			return 0;
+		}
+
+		/*return listTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS
+				.between(m.getDateHistoryItem().start().localDate(), m.getDateHistoryItem().end().localDate()))
+				.mapToInt(m -> Math.abs(m.intValue())).sum();*/
+		return 0;
+		// TODO
 	}
 }

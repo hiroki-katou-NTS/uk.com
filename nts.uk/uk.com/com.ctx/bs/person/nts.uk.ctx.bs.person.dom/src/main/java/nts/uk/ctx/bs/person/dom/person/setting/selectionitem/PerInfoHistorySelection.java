@@ -21,13 +21,15 @@ public class PerInfoHistorySelection {
 	private String selectionItemId;
 	private String companyCode;
 	private DatePeriod period;
-	// private GeneralDate startDate;
-	// private GeneralDate endDate;
 
 	public static PerInfoHistorySelection createHistorySelection(String histId, String selectionItemId,
 			String companyCode, DatePeriod period) {
 
 		// 選択肢履歴 パラメーター帰還
 		return new PerInfoHistorySelection(histId, selectionItemId, companyCode, period);
+	}
+
+	public void updateDate(DatePeriod period) {
+		this.period = period;
 	}
 }

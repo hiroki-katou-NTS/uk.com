@@ -3,6 +3,11 @@ package nts.uk.ctx.bs.person.dom.person.setting.selectionitem;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 
+ * @author tuannv
+ *
+ */
 public interface IPerInfoSelectionItemRepository {
 
 	void add(PerInfoSelectionItem perInfoSelectionItem);

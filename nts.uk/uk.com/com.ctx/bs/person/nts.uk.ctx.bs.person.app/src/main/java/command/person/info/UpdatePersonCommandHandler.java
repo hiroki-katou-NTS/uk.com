@@ -1,5 +1,6 @@
 package command.person.info;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -9,6 +10,7 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
+@Stateless
 public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonCommand>
 	implements PeregUpdateCommandHandler<UpdatePersonCommand>{
 
@@ -16,7 +18,7 @@ public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonComma
 	private PersonRepository personRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00001";
 	}
 
@@ -30,10 +32,10 @@ public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonComma
 		
 		val command = context.getCommand();
 		
-		Person newPerson = Person.createFromJavaType(command.getBirthDate(),command.getBloodType(),command.getGender(),command.getPersonId(),command.getMailAddress(),
-				command.getPersonMobile(),command.getBusinessName(),command.getPersonName(),command.getBusinessOtherName(),command.getBusinessEnglishName(),command.getPersonNameKana(),
+		Person newPerson = Person.createFromJavaType(command.getBirthDate(),command.getBloodType(),command.getGender(),command.getPersonId(),
+				command.getBusinessName(),command.getBusinessNameKana(),command.getPersonName(),command.getPersonNameKana(),command.getBusinessOtherName(),command.getBusinessEnglishName(),
 				command.getPersonRomanji(),command.getPersonRomanjiKana(),command.getTodokedeFullName(),command.getTodokedeFullNameKana(),command.getOldName(),command.getOldNameKana(),
-				command.getTodokedeOldFullName(),command.getTodokedeOldFullNameKana(),command.getHobby(),command.getCountryId(),command.getTaste());
+				command.getPersonalNameMultilingual(),command.getPersonalNameMultilingualKana());
 		
 		personRepository.updatePerson(newPerson);
 	}

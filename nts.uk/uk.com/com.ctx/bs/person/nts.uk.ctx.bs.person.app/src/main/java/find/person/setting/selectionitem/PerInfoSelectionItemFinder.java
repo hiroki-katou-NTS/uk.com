@@ -24,7 +24,8 @@ public class PerInfoSelectionItemFinder {
 	}
 
 	public PerInfoSelectionItemDto getPerInfoSelectionItem(String selectionItemId) {
-		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo.getSelectionItemBySelectionItemId(selectionItemId);
+		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo
+				.getSelectionItemBySelectionItemId(selectionItemId);
 
 		if (!opt.isPresent()) {
 			return null;

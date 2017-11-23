@@ -9,13 +9,15 @@ module cps001.a.service {
         },
         category: {
             'getData': 'bs/employee/category/getAll/{0}',
-            'getTabInfo': 'bs/employee/category/tabchildren/find/getTabDetail/{0}/{1}/{2}', //{employeeId}/{categoryId}/{infoId} 
+            'getTabInfo': 'ctx/pereg/layout/find/getTabDetail',
         },
         person: {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
         },
         emp: {
-            getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}'
+            getInfo: 'basic/organization/employee/get-info/{0}',
+            getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
+            permision: 'ctx/bs/person/roles/auth/getSelfAuth',
         },
         file: '/shr/infra/file/storage/infor/{0}',
         saveData: ''
@@ -31,6 +33,14 @@ module cps001.a.service {
 
     export function getAvatar(id: string) {
         return ajax(format(paths.emp.getFile, id, 0));
+    }
+
+    export function getEmpInfo(id: string) {
+        return ajax(format(paths.emp.getInfo, id));
+    }
+
+    export function getCurrentEmpPermision() {
+        return ajax(paths.emp.permision);
     }
 
     export function getAllLayout() {
@@ -51,5 +61,9 @@ module cps001.a.service {
 
     export function getFileInfo(id: string) {
         return ajax(paths.file, id);
+    }
+
+    export function getTabInfo(data: any) {
+        return ajax(paths.category.getTabInfo, data);
     }
 }

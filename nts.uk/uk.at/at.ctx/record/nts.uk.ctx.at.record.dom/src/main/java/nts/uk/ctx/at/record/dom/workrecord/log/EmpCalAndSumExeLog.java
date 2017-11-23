@@ -1,23 +1,16 @@
 
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
 
 
 /**
@@ -34,9 +27,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	/** 会社ID */
 	private String companyID;
 	
-	/**
-	 * 処理月
-	 */
+	/** 処理月 */
 	private YearMonth processingMonth;
 	
 	/**
@@ -46,31 +37,19 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	@Setter
 	private ExecutedMenu executedMenu;
 	
-	/**
-	 * 実行日
-	 */
-
+	/** 実行日 */
 	private GeneralDate executionDate;
 	
-	/**
-	 * 実行状況
-	 */
+	/** 実行状況 */
 	private ExeStateOfCalAndSum executionStatus;
 	
-	/**
-	 * 実行社員ID
-	 */
-
+	/** 実行社員ID */
 	private String employeeID;
 	
-	/**
-	 * 締めID
-	 */
+	/** 締めID */
 	private int closureID;
 
-	/**
-	 * 運用ケース
-	 */
+	/** 運用ケース */
 	private String caseSpecExeContentID;
 	
 	

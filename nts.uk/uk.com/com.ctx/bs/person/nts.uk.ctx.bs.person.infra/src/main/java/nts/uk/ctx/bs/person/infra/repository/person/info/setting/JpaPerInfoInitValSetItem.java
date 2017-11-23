@@ -253,10 +253,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 						if (init.getSaveDataType().value == 1) {
 							c.setStringValue(init.getStringValue());
 						} else if (init.getSaveDataType().value == 2) {
-
 							c.setIntValue(init.getIntValue());
 						} else if (init.getSaveDataType().value == 3) {
-
 							c.setDateValue(init.getDateValue());
 						}
 					}
@@ -407,8 +405,9 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 				.setParameter("perInfoCtgId", perInfoCtgId).getList(c -> toDomainString(c));
 		
 		if (item.size() > 0) {
-			return item.stream().map(c -> c.getPerInfoCategoryId()).
+			List<String> itemIdList = item.stream().map(c -> c.getPerInfoCategoryId()).
 					distinct().collect(Collectors.toList());
+			return itemIdList;
 		}
 		return new ArrayList<>();
 	}

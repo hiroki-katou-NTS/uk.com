@@ -36,4 +36,12 @@ public interface TotalConditionGetMemento {
 	 * @return the thresold lower limit
 	 */
 	ConditionThresholdLimit getThresoldLowerLimit();
+	
+	
+	/**
+	 * Gets the attendance item id.
+	 *
+	 * @return the attendance item id
+	 */
+	Integer getAttendanceItemId();
 }

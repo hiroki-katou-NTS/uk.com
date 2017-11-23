@@ -8,6 +8,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
     import TotalConditionDto = service.model.TotalConditionDto;
     import TotalSubjectsDto = service.model.TotalSubjectsDto;
     import TotalTimesDetailDto = service.model.TotalTimesDetailDto;
+    import DailyAttendanceItemDto = service.model.DailyAttendanceItemDto;
 
 
     export class ScreenModel {
@@ -29,6 +30,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         enableWorkType: KnockoutObservable<boolean>;
         enableWorkTime: KnockoutObservable<boolean>;
         enableSave: KnockoutObservable<boolean>;
+//        atdItem: DailyAttendanceItemDto;
+        attendanceModel: AttendanceModel;
+        enableAtdBtn: KnockoutObservable<boolean>;
+        
         constructor() {
             var self = this;
             self.itemTotalTimes = ko.observableArray([]);
@@ -62,7 +67,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.enableWorkTime = ko.computed(function() {
                 return self.enableUse() && ((self.valueEnum() == self.totalClsEnums[1].value) || (self.valueEnum() == self.totalClsEnums[2].value));
             });
-
+            
+            self.attendanceModel = new AttendanceModel();
+            self.enableAtdBtn = ko.observable(true);
+            
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
                 if (!codeChanged || codeChanged < 1) {
@@ -129,6 +137,13 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             } else {
                 self.enableUpper(false);
                 self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(0);
+            }
+            
+            if (isUse == true && (isUnder == true || isUpper == true)) {
+                // enable btn
+                self.enableAtdBtn(true);
+            } else {
+                self.enableAtdBtn(false);
             }
         }
 
@@ -447,6 +462,39 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 });
             });
         }
+        
+        // openKDL002Dialog_A3_28
+        public openKDL002Dialog_A3_28() {
+            var self = this;
+            nts.uk.ui.block.invisible();
+            // check worktype or worktime send to KDL002Dialog
+            var listWorkType = [];
+            var listWorkCode = [];
+            for (let i = 0; i < self.itemTotalTimesDetail.listTotalSubjects().length; i++) {
+                if (self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeAtr() == 0) {
+                    listWorkType[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
+                } else {
+                    listWorkCode[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
+                }
+            }
+
+            service.findAllDailyAttendanceItem().done(function(dataRes: Array<DailyAttendanceItemDto>) {
+                //list All workType
+                let list: Array<string> = dataRes.map(item => item.attendanceItemId);
+                let dataRes: Array<any> = dataRes;
+//                nts.uk.ui.windows.setShared('KDL002_Multiple', false);
+                nts.uk.ui.windows.setShared('AllAttendanceObj', list);
+                nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.attendanceModel.attendanceItemId()], true);
+                nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: nts.uk.resource.getText('KDL021') }).onClosed(function(): any {
+                    nts.uk.ui.block.clear();
+                    let atdSelected: Array<any> = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                    let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj){ return obj.attendanceItemId == atdSelected });
+                    if (typeof dailyAttendanceItem[0] != 'undefined') {
+                        self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
+                    }
+                });
+            });
+        }
 
         clearError(): void {
             if ($('.nts-validate').ntsError("hasError") == true) {
@@ -518,8 +566,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.updateData(self.stash.toDto());
                 saveData.useAtr(0);
             }
+            if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true)) {
+                saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
+            }
         }
-
     }
 
 
@@ -550,6 +600,21 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         }
     }
 
+    export class AttendanceModel {
+        attendanceItemId: KnockoutObservable<number>;
+        attendanceItemName: KnockoutObservable<string>; 
+        
+        constructor() {
+            this.attendanceItemId = ko.observable();
+            this.attendanceItemName = ko.observable();
+        }
+        
+        update(attendanceItemId: number, attendanceItemName: string) {
+            this.attendanceItemId(attendanceItemId);
+            this.attendanceItemName(attendanceItemName);
+        }
+    }
+    
     export class TotalTimesDetailModel {
         totalCountNo: number;
         countAtr: KnockoutObservable<number>;
@@ -574,7 +639,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             this.listTotalSubjects = ko.observableArray([]);
             this.workTypeInfo = ko.observable(null);
             this.workingInfo = ko.observable(null);
-
         }
 
         updateData(dto: TotalTimesDetailDto) {
@@ -632,17 +696,20 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         lowerLimitSettingAtr: KnockoutObservable<number>;
         thresoldUpperLimit: KnockoutObservable<number>;
         thresoldLowerLimit: KnockoutObservable<number>;
+        attendanceItemId: KnockoutObservable<number>;
         constructor() {
             this.upperLimitSettingAtr = ko.observable(1);
             this.lowerLimitSettingAtr = ko.observable(1);
             this.thresoldUpperLimit = ko.observable(1);
             this.thresoldLowerLimit = ko.observable(1);
+            this.attendanceItemId = ko.observable(null);
         }
         updateData(dto: TotalConditionDto) {
             this.upperLimitSettingAtr(dto.upperLimitSettingAtr);
             this.lowerLimitSettingAtr(dto.lowerLimitSettingAtr);
             this.thresoldUpperLimit(dto.thresoldUpperLimit);
             this.thresoldLowerLimit(dto.thresoldLowerLimit);
+            this.attendanceItemId = ko.observable(dto.attendanceItemId);
         }
 
         toDto(): TotalConditionDto {
@@ -650,7 +717,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 upperLimitSettingAtr: this.upperLimitSettingAtr(),
                 lowerLimitSettingAtr: this.lowerLimitSettingAtr(),
                 thresoldUpperLimit: this.thresoldUpperLimit(),
-                thresoldLowerLimit: this.thresoldLowerLimit()
+                thresoldLowerLimit: this.thresoldLowerLimit(),
+                attendanceItemId: this.attendanceItemId()
             };
             return dto;
         }
@@ -659,6 +727,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             this.lowerLimitSettingAtr(0);
             this.thresoldUpperLimit(0);
             this.thresoldLowerLimit(0);
+            this.attendanceItemId(null);
         }
     }
 
@@ -679,8 +748,13 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 workTypeCode: this.workTypeCode(),
                 workTypeAtr: this.workTypeAtr()
             };
-            return dto;
+            return dto; 
         }
+    }
+        
+    export enum SelectUseConst {
+        Use = "1",
+        NoUse = "0",
     }
 
 }

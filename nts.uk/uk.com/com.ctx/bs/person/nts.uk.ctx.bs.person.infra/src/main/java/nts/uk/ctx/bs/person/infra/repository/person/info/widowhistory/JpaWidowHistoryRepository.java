@@ -72,7 +72,7 @@ public class JpaWidowHistoryRepository extends JpaRepository implements WidowHis
 		// Get exist entity
 		Optional<BpsmtWidowHis> existItem = getWidowHisById(widowHistory);
 		if (!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid WidowHistory");
 		}
 		// Update entity
 		updateEntity(widowHistory, existItem.get());
