@@ -12,6 +12,7 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/** 社員データ管理情報 */
 public class EmployeeDataMngInfo extends AggregateRoot {
 
 	/** 会社ID */

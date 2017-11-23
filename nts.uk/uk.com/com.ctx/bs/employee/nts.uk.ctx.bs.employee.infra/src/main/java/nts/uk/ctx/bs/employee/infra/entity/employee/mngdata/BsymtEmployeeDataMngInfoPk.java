@@ -5,9 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-/*
 @Embeddable
-public class BsymtAffCompanyInfoPk implements Serializable {
+public class BsymtEmployeeDataMngInfoPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "SID")
@@ -16,4 +15,4 @@ public class BsymtAffCompanyInfoPk implements Serializable {
 	@Column(name = "PID")
 	public String pId;
 
-}*/
+}
