@@ -11,13 +11,13 @@ module nts.uk.at.view.kml002.e.service {
     /**
      *  Find data by code
      */
-    export function getDailyItems(param: any): Array<BaseItemsDto> {
+       export function getDailyItems(param: any): Array<BaseItemsDto> {
         var path = nts.uk.text.format(servicePath.getDailyItems);
         return nts.uk.request.ajax("at", path, param);
     }  
     
     export interface BaseItemsDto {
-        id: any,
+        id: number,
         itemId: string,
         itemName: string,
         itemType: number,
