@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 /**
  * The Class CompensatoryDigestiveTimeUnit.
  */
+// 時間代休の消化単位
 @Getter
 public class CompensatoryDigestiveTimeUnit {
     

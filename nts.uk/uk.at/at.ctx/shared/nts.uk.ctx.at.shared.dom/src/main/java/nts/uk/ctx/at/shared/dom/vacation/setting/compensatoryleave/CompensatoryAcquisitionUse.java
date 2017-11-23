@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 /**
  * The Class CompensatoryAcquisitionUse.
  */
+// 代休取得・使用方法
 @Getter
 public class CompensatoryAcquisitionUse extends DomainObject {
     
