@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.request.app.find.application.workchange;
+package nts.uk.ctx.at.request.app.find.application.workchange;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
