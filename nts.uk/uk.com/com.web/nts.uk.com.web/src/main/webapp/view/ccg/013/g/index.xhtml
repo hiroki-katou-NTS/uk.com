@@ -17,7 +17,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<!-- #CCG001 -->
 			<com:stylefile path="ccg013.g.main.css" />
-			<com:scriptfile path="/view/cmm/044/a/ko-profile-ext.js" />
+			<com:scriptfile path="/view/cmm/044/a/ko-profile-ext.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="ccg013.g.start.js" />
 			<com:scriptfile path="ccg013.g.vm.js" />
 			<com:scriptfile path="ccg013.g.service.js" />
@@ -36,7 +36,7 @@
 							value: empSelectedItem,
 							key: 'personId',
 							code: 'code',
-							error: '#{i18n.getText('Msg_7')}',
+							error: nts.uk.resource.getMessage('Msg_7'),
 							name: 'name',
 							showTxtEmployee: true }">
 					</div>

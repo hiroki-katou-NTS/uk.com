@@ -32,21 +32,31 @@ public class SysUsageSet extends AggregateRoot{
 	private ShuGyo shugyo;
 	/** 給与システム **/
 	private Kyuyo kyuyo;
-	public static SysUsageSet createFromJavaType(String companyId, String companyCd, String contractCd, 
+	public static SysUsageSet createFromJavaType(String companyCd, String contractCd, 
 													int jinji, int shugyo, int kyuyo){
-		return new SysUsageSet(companyId, new CCD(companyCd),
+		return new SysUsageSet(new CCD(companyCd),
 								new ContractCd(contractCd),
 							EnumAdaptor.valueOf(jinji, Jinji.class),
 							EnumAdaptor.valueOf(shugyo, ShuGyo.class),
 							EnumAdaptor.valueOf(kyuyo, Kyuyo.class));
 	}
 	
-//	public void createCompanyId(String companyCode, String contractCd){
-//		this.setCompanyId("contractCd" + "-" + "companyCode");
-//	}
+	public static String createCompanyId(String companyCode, String contractCd) {
+		return contractCd + "-" + companyCode;
+	}
 	
 	@Override
 	public void validate(){
 		super.validate();
+	}
+
+	public SysUsageSet(CCD companyCode, ContractCd contractCd, Jinji jinji, ShuGyo shugyo, Kyuyo kyuyo) {
+		super();
+		this.companyCode = companyCode;
+		this.contractCd = contractCd;
+		this.jinji = jinji;
+		this.shugyo = shugyo;
+		this.kyuyo = kyuyo;
+		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
 	}
 }

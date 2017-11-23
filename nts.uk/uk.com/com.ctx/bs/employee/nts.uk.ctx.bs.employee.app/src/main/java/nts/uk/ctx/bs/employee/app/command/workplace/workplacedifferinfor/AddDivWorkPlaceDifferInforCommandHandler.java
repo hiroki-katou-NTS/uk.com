@@ -29,10 +29,9 @@ public class AddDivWorkPlaceDifferInforCommandHandler extends CommandHandler<Add
 		if(div.isPresent()){
 			throw new BusinessException("Msg_3");
 		}
-		DivWorkDifferInfor divNew = DivWorkDifferInfor.createFromJavaType(data.getCompanyId(), 
-																			data.getCompanyCode(), 
+		DivWorkDifferInfor divNew = DivWorkDifferInfor.createFromJavaType(data.getCompanyCode(), 
 																			contractCd, data.getRegWorkDiv());
-		divNew.createCompanyId(divNew.getCompanyCode().v(), divNew.getContractCd().v());
+//		divNew.createCompanyId(divNew.getCompanyCode().v(), divNew.getContractCd().v());
 		divRep.insertDivWork(divNew);
 	}
 	

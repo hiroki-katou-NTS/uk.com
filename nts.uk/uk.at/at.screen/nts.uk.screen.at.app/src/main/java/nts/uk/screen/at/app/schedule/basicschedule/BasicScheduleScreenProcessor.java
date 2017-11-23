@@ -60,6 +60,7 @@ public class BasicScheduleScreenProcessor {
 				.collect(Collectors.toList());
 		return lstStateWorkTypeCode;
 	}
+
 	/**
 	 * 
 	 * @param params
@@ -69,6 +70,7 @@ public class BasicScheduleScreenProcessor {
 		String companyId = AppContexts.user().companyId();
 		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.workTypeCode, params.workTimeCode);
 	}
+
 	/**
 	 * 
 	 * @return ScheduleDisplayControlDto

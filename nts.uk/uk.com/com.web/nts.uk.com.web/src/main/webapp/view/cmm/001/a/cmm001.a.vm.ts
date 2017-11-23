@@ -6,7 +6,8 @@ module cmm001.a {
         currentCompany: KnockoutObservable<CompanyModel>;
         company: service.model.CompanyDto = null;
         currentCompanyCode: KnockoutObservable<string>;
-        sel001Data: KnockoutObservableArray<CompanyModel>;
+        sel001Data: KnockoutObservableArray<ICompany>;
+        listCom: KnockoutObservableArray<ICompany>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         displayAttribute: KnockoutObservable<boolean>;
@@ -16,12 +17,10 @@ module cmm001.a {
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
         itemList: KnockoutObservable<any>;
         hasFocus: KnockoutObservable<boolean> = ko.observable(true);
-        selectedRuleCode: KnockoutObservable<number>;
         roundingRules:  KnockoutObservableArray<RoundingRule>;
-        selectedRuleCode1: KnockoutObservable<number>;
-        selectedRuleCode2: KnockoutObservable<number>;
         roundingRules3: KnockoutObservableArray<RoundingRule>;
-        selectedRuleCode3: KnockoutObservable<number>;
+        display: KnockoutObservable<boolean>;
+        
         
         constructor() {
             let self = this;
@@ -31,18 +30,18 @@ module cmm001.a {
                 { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             let itemArray = [
-                { code: '1', name: '1月' },
-                { code: '2', name: '2月' },
-                { code: '3', name: '3月' },
-                { code: '4', name: '4月' },
-                { code: '5', name: '5月' },
-                { code: '6', name: '6月' },
-                { code: '7', name: '7月' },
-                { code: '8', name: '8月' },
-                { code: '9', name: '9月' },
-                { code: '10', name: '10月' },
-                { code: '11', name: '11月' },
-                { code: '12', name: '12月' }
+                { code: 1, name: '1月' },
+                { code: 2, name: '2月' },
+                { code: 3, name: '3月' },
+                { code: 4, name: '4月' },
+                { code: 5, name: '5月' },
+                { code: 6, name: '6月' },
+                { code: 7, name: '7月' },
+                { code: 8, name: '8月' },
+                { code: 9, name: '9月' },
+                { code: 10, name: '10月' },
+                { code: 11, name: '11月' },
+                { code: 12, name: '12月' }
             ];
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
@@ -52,71 +51,81 @@ module cmm001.a {
                     template:  '{{if ${isAbolition} == 1}} <img src="../images/78.png" style="margin-left: 20px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'}
             ]);
             self.sel001Data = ko.observableArray([]);
+            self.listCom = ko.observableArray([]);
             self.itemList = ko.observableArray(itemArray);
             self.displayAttribute = ko.observable(true);
             self.currentCompany = ko.observable(null);
             self.currentCompanyCode = ko.observable('');
             self.sel001Data = ko.observableArray([]);
-            self.selectedRuleCode = ko.observable(0);
-            self.selectedRuleCode1 =  ko.observable(0);
-            self.selectedRuleCode2 =  ko.observable(0);
-            self.selectedRuleCode3 = ko.observable(0);
+            self.display = ko.observable(false);
             
             self.roundingRules = ko.observableArray([
                 new RoundingRule(1, nts.uk.resource.getText("CMM001_31")),
                 new RoundingRule(0, nts.uk.resource.getText("CMM001_32"))
             ]);
             self.roundingRules3= ko.observableArray([
-                new RoundingRule(1, nts.uk.resource.getText("CMM001_35")),
-                new RoundingRule(0, nts.uk.resource.getText("CMM001_35"))
+                new RoundingRule(1, nts.uk.resource.getText("CMM001_36")),
+                new RoundingRule(0, nts.uk.resource.getText("CMM001_37"))
             ]);
             
             self.currentCompanyCode.subscribe((value) => {
                 if (value) {
-                    let foundItem = _.find(self.sel001Data(), (item) => {
+                    let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
                     });
                     self.currentCompany(new CompanyModel(foundItem));
-                    self.currentCompany().addinfor(new AddInfor(foundItem.addinfor));
                     console.log(self.currentCompany());
                     let param = {
                         companyId: self.currentCompany().companyId(),
                         companyCode: self.currentCompany().companyCode()    
                     }
+                    var divEmpty = {
+                        regWorkDiv: 1,
+                    }
                     service.getDiv(param).done((div) => {
                         console.log(div);
+                        div == null? div = divEmpty: div;
                         self.currentCompany().regWorkDiv(div.regWorkDiv); 
-                        self.selectedRuleCode3(self.currentCompany().regWorkDiv());   
                     })
+                    var sysEmpty = {
+                        jinji: 1,
+                        kyuyo: 1,
+                        shugyo: 1,
+                    }
                     service.getSys(param).done((sys) => {
                         console.log(sys); 
+                        sys == null? sys=sysEmpty : sys;
                         self.currentCompany().jinji(sys.jinji);
                         self.currentCompany().kyuyo(sys.kyuyo);
                         self.currentCompany().shugyo(sys.shugyo);   
-                        self.selectedRuleCode(self.currentCompany().jinji());
-                        self.selectedRuleCode1(self.currentCompany().shugyo());
-                        self.selectedRuleCode2(self.currentCompany().kyuyo());
                     })
+                    self.currentCompany().isAbolition() == 1 ? true : false;
                 }
-            })
+            });
+            self.display.subscribe((item) => {
+                if(item){
+                    self.sel001Data(_.filter(self.listCom(), function(obj) {
+                        return obj.isAbolition == 1;
+                    }));
+                }else{
+                    self.sel001Data(self.listCom());    
+                }
+            });
         }
 
-        
-
-       
-
-        
-
-        start(currentCode: string) {
+        start() {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAll().done((lst) => {
-                let param = {
-                    companyId: '000000000000-0001',
-                    companyCode: '0001'    
+                if(lst.length == 0){
+                    self.sel001Data([]); 
+                    self.listCom([]);
+                    self.innit();
+                }else{
+                    self.sel001Data(lst); 
+                    self.listCom(lst); 
+                    self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 }
-                self.sel001Data(lst);  
-                self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 dfd.resolve(); 
             }).fail(function(error){
                     dfd.reject();
@@ -172,14 +181,135 @@ module cmm001.a {
 //            });
             return dfd.promise();
         }
-
-       
-
         
+        innit(){
+            let self = this;
+            var addEmpty = {
+                            addKana_1: "",
+                            addKana_2: "",
+                            add_1: "",
+                            add_2: "",
+                            companyCode: "",
+                            companyId: "",
+                            contractCd: "",
+                            faxNum: "",
+                            phoneNum: "",
+                            postCd: ""    
+                        };            
+            let param = {
+                companyCode: "",
+                comNameKana: "",
+                companyId: "",
+                companyName: "",
+                contractCd: "",
+                isAbolition: 0,
+                repJob: "",
+                repname: "",
+                shortComName: "",
+                startMonth: 1,
+                taxNum: "",
+                addinfor:  addEmpty,
+                regWorkDiv: 1,
+                jinji: 1,
+                kyuyo: 1,
+                shugyo: 1,    
+            } 
+//            self.currentCompanyCode("");
+//            self.currentCompany(null);
+//            self.currentCompany().comNameKana("");
+//            self.currentCompany().companyId("");
+//            self.currentCompany().companyName("")
+//            self.currentCompany().contractCd("");
+//            self.currentCompany().isAbolition(0);
+//            self.currentCompany().repJob("");
+//            self.currentCompany().repname("");
+//            self.currentCompany().shortComName("");
+//            self.currentCompany().startMonth(1);
+//            self.currentCompany().taxNum(null);
+//            self.currentCompany().addinfor(addEmpty);
+//            self.currentCompany().regWorkDiv(1);
+//            self.currentCompany().jinji(1);
+//            self.currentCompany().kyuyo(1);
+//            self.currentCompany().shugyo(1);
+            self.currentCompany(new CompanyModel(param));   
+            self.currentCompanyCode("");
+        }
+        
+        
+       register(){
+           let self = this;
+           let dataAdd: IAddInfor ={
+               companyCode: self.currentCompany().companyCode(),
+               faxNum: self.currentCompany().addinfor().faxNum(),
+               add_1: self.currentCompany().addinfor().add_1(),
+               add_2: self.currentCompany().addinfor().add_2(),
+               addKana_1: self.currentCompany().addinfor().addKana_1(),
+               addKana_2: self.currentCompany().addinfor().addKana_2(),
+               postCd: self.currentCompany().addinfor().postCd(),
+               phoneNum: self.currentCompany().addinfor().phoneNum(),
+               
+           }
+           let dataCom = {
+               ccd: string = self.currentCompany().companyCode(),
+               name: string = self.currentCompany().companyName(),
+               month: number = self.currentCompany().startMonth(), 
+               abolition: number = self.currentCompany().isAbolition() == true ? 1:0,
+               repname: string = self.currentCompany().repname(),
+               repJob: string = self.currentCompany().repJob(),
+               comNameKana: string = self.currentCompany().comNameKana(),
+               shortComName: string = self.currentCompany().shortComName(),
+               contractCd: string = self.currentCompany().contractCd(),
+               taxNo: number = self.currentCompany().taxNum(),
+               addinfor: IAddInfor =  dataAdd,
+           }
+           let dataSys = {
+                companyCode: string = self.currentCompany().companyCode(),
+                contractCd: string = self.currentCompany().contractCd(),
+                jinji: number = self.currentCompany().jinji(),
+                shugyo: number = self.currentCompany().shugyo(),
+                kyuyo: number = self.currentCompany().kyuyo(),    
+           }
+           let dataDiv = {
+                companyCode: string = self.currentCompany().companyCode(),
+                contractCd: string = self.currentCompany().contractCd(),
+                regWorkDiv: number = self.currentCompany().regWorkDiv(),
+           }
+           let dataTransfer = {
+                comCm: any = dataCom,
+                sysCm: any = dataSys,
+                divCm: any = dataDiv,
+           } 
+           let code = self.currentCompany().companyCode();
+           service.update(dataTransfer).done(function(){
+               nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+               self.start().then(function(){
+                   self.currentCompanyCode(code);
+               });
+           });
+//           service.add(dataTransfer).done(function(){
+//               nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+//               self.start().then(function(){
+//                   self.currentCompanyCode(code);
+//               });
+//               
+//           })
+       }
 
-        
-        
-       
+       search(){
+            let self = this;
+            service.findPostCd(self.currentCompany().addinfor().postCd()).done((item) => {
+                console.log(item);
+                item[0].stateProvince = item[0].stateProvince == null ? "":item[0].stateProvince;
+                item[0].city = item[0].city == null ? "":item[0].city;
+                item[0].townArea = item[0].townArea == null ? "":item[0].townArea;
+                
+                item[0].townAreaKana = item[0].townAreaKana == null ? "":item[0].townAreaKana;
+                item[0].cityKanaName = item[0].cityKanaName == null ? "":item[0].cityKanaName;
+                item[0].townAreaKana = item[0].townAreaKana == null ? "":item[0].townAreaKana;
+                self.currentCompany().addinfor().add_1(item[0].stateProvince + item[0].city + item[0].townArea);
+                self.currentCompany().addinfor().addKana_1(item[0].townAreaKana + item[0].cityKanaName + item[0].townAreaKana);
+            })
+        }
     }
     class CompanyModel {
 //        companyCode: KnockoutObservable<string>;
@@ -241,7 +371,7 @@ module cmm001.a {
             this.shortComName = ko.observable(param.shortComName);
             this.startMonth = ko.observable(param.startMonth);
             this.taxNum = ko.observable(param.taxNum);
-            this.addinfor = ko.observable(new AddInfor({
+            this.addinfor = ko.observable(new AddInfor(param.addinfor) || new AddInfor({
                 addKana_1: "",
                 addKana_2: "",
                 add_1: "",
@@ -297,7 +427,7 @@ module cmm001.a {
         jinji?: number;
         kyuyo?: number;
         shugyo?: number;
-        roundingRules: RoundingRule;
+        roundingRules?: RoundingRule;
     }
 
     interface IAddInfor{

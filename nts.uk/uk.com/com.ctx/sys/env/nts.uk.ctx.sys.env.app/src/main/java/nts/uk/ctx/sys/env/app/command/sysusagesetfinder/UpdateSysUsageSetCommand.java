@@ -11,8 +11,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UpdateSysUsageSetCommand {
-	/**会社ID**/
-	private String companyId;
 	
 	// 会社コード
 	private String companyCode;

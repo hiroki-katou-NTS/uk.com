@@ -184,8 +184,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		return this.queryProxy().query(FIND_WORKTYPE_ALLDAY_AND_HALFDAY, KshmtWorkType.class)
 				.setParameter("companyId", companyId)
 				.setParameter("abolishAtr", abolishAtr)
-				.setParameter("oneDayAtr", allDayAtrs)
-				.setParameter("morningAtr", halfAtrs)
+				.setParameter("oneDayAtrs", allDayAtrs)
+				.setParameter("morningAtrs", halfAtrs)
 				.setParameter("afternoonAtrs", halfAtrs)
 				.getList(c -> toDomain(c));
 	}

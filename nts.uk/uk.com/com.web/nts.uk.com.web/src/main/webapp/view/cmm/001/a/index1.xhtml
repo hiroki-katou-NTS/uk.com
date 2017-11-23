@@ -8,8 +8,20 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode
-					nts.uk.ctx.sys.portal.dom.webmenu.WebMenuName
+					nts.uk.ctx.bs.company.dom.company.CCD
+					nts.uk.ctx.bs.company.dom.company.Name
+					nts.uk.ctx.bs.company.dom.company.primitive.KNName
+					nts.uk.ctx.bs.company.dom.company.primitive.ABName
+					nts.uk.ctx.bs.company.dom.company.primitive.TaxNo
+					nts.uk.ctx.bs.company.dom.company.primitive.RepName
+					nts.uk.ctx.bs.company.dom.company.primitive.RepJob
+					nts.uk.ctx.bs.company.dom.company.primitive.PostCd
+					nts.uk.ctx.bs.company.dom.company.primitive.Add_1
+					nts.uk.ctx.bs.company.dom.company.primitive.Add_2
+					nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_1
+					nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_2
+					nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum 
+					nts.uk.ctx.bs.company.dom.company.primitive.FaxNum
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm001.a.style.css" />
@@ -20,23 +32,23 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-			<!-- data-bind="click: resetData" -->
+			<!--  -->
 				<!-- A1_1 -->
-				<button id="reset" class="group-button-1">#{i18n.getText('CMM001_1')}</button>
-				<!-- data-bind="click: clickRegister, enable: $root.errors.isEmpty" -->
+				<button id="reset" tabindex="1" class="group-button-1" data-bind="click: innit">#{i18n.getText('CMM001_1')}</button>
+				<!-- , enable: $root.errors.isEmpty" -->
 				<!-- A1_2 -->
-				<button id="register" class="proceed group-button-1">#{i18n.getText('CMM001_2')}</button>
+				<button id="register" tabindex="2" class="proceed group-button-1" data-bind="click: register">#{i18n.getText('CMM001_2')}</button>
 				<!-- A1_3 -->
-				<button id="setting" class="group-button-1">#{i18n.getText('CMM001_3')}</button>
+				<button id="setting" tabindex="3" class="group-button-1">#{i18n.getText('CMM001_3')}</button>
 				<!-- A1_4 -->
-				<button id="masterLog" class="group-button-1">#{i18n.getText('CMM001_4')}</button>
+				<button id="masterLog" tabindex="4" class="group-button-1">#{i18n.getText('CMM001_4')}</button>
 			</div>
 			<div id="contents-area">
 				 <div class="nts-left-content">
 					<div id="ntsleft" class="bg-green caret-right caret-background">
-						<!-- checked: displayAttribute, text: '廃止も表示する'-->
+						<!-- , text: '廃止も表示する'-->
 						<!-- A2_2 -->
-						<div id="displayAttribute" tabindex="5" data-bind="ntsCheckBox: {}"
+						<div id="displayAttribute" tabindex="5" data-bind="ntsCheckBox: {checked: display}"
 							class="cf minimalist ntsCheckbox-left">#{i18n.getText('CMM001_5')}</div>
 							<!-- A2_1 -->
 						<i class="icon icon-searchbox"></i>
@@ -47,7 +59,7 @@
 								<label id="codeName">#{i18n.getText('CMM001_40')}</label>
 							</div>
 							<!-- A2_3 -->
-							<div
+							<div tabindex="6"
 								data-bind="ntsSearchBox:
                     	       {targetKey: 'companyCode', comId: 'gridCompany',
                     	        items: sel001Data, 
@@ -56,7 +68,7 @@
                     	        fields: ['companyName', 'companyCode'], mode: 'igGrid'}" />
 						</div>
 						<!-- A2_4 -->
-						<div class="div-table">
+						<div class="div-table" tabindex="7">
 							<table id="gridCompany"
 								data-bind="ntsGridList: {								
 								height: 380,
@@ -80,19 +92,20 @@
 						</div>
 						<div>
 						<!-- A3_2 -->
-							<!-- data-bind="ntsTextEditor: {value: companyCode, 
-								constraint: 'CompanyCode', 
-								required: true, enable: isEnableCompanyCode,
+							<!--  
+								enable: isEnableCompanyCode,
 								immediate: true}, hasFocus: $parent.hasFocus"  -->
-							<input id="companyCode" class="save-error" data-bind="ntsTextEditor: {value: companyCode}" data-name="#{i18n.getText('CMM001_7')}"/>
+							<input id="companyCode" tabindex="8" class="save-error" data-bind="ntsTextEditor: {value: companyCode, constraint: 'CCD', required: true,
+																		name: '#[CMM001_7]'}"/>
 						</div>
 						<div class="bg-yellow">
-							<!-- checked: isDelete, -->
+							<!--  -->
 							<!-- A3_3 -->
-							<div data-name="Check box"
-								class="cf minimalist ntsCheckBox-right" data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM001_10')}' }"></div>
+							<div data-name="Check box" tabindex="9"
+								class="cf minimalist ntsCheckBox-right" data-bind="ntsCheckBox: { checked: isAbolition, enable: true, text: '#{i18n.getText('CMM001_10')}' }"></div>
 							<!-- A3_4 -->
-							<button id = "checkbtn" data-bind="ntsHelpButton: {image: '../images/CMM001_02.png', position: 'left top',enable: true}" >?</button>
+							<button id = "checkbtn" tabindex="10" 
+							data-bind="ntsHelpButton: {image: '../images/CMM001_02.png', position: 'left top',enable: true}" >?</button>
 						</div>
 					</div>
 					<!-- table --> 
@@ -110,12 +123,12 @@
 
 									<th colspan="2" class="th-col2">
 										<div>
-														<!-- data-bind="ntsTextEditor: {value: companyName,
-												 constraint: 'CompanyName',
-												 required: true,
+														<!--
+												 
 												 immediate: true}" -->
 											 <!-- A3-6 -->
-											<input id="companyName" class="save-error" data-bind="ntsTextEditor: {value: companyName,}" data-name="#{i18n.getText('CMM001_11')}"/>
+											<input id="companyName" tabindex="11" class="save-error" data-bind="ntsTextEditor: {value: companyName,constraint: 'Name', required: true,
+																						name: '#[CMM001_11]'}"/>
 										</div>
 									</th>
 								</tr>
@@ -131,10 +144,10 @@
 									<th colspan="2" class="th-col2">
 										<div style="margin-top: 5px">
 												<!-- 
-												 constraint: 'CompanyNameKana',
+												 ,
 												 immediate: true}" -->
 											 <!-- A3_8 -->
-											<input id="companyNameKana" class="save-error" data-name="#{i18n.getText('CMM001_13')}" data-bind="ntsTextEditor: {value:comNameKana,}"/>
+											<input id="companyNameKana" tabindex="12" class="save-error" data-bind="ntsTextEditor: {value:comNameKana, constraint: 'KNName', name: '#[CMM001_13]'}"/>
 										</div>
 									</th>
 								</tr>
@@ -150,10 +163,10 @@
 									<th colspan="2" class="th-col2">
 										<div>
 										<!-- 
-												 constraint: 'CompanyNameAbb',
 												 immediate: true}" -->
 											 <!-- A3_10 -->
-											<input id="companyNameAbb" class="save-error" data-name="#{i18n.getText('CMM001_15')}" data-bind="ntsTextEditor: {value: shortComName,}"/>
+											<input id="companyNameAbb" class="save-error" tabindex="13" 
+											data-bind="ntsTextEditor: {value: shortComName, constraint: 'ABName', name: '#[CMM001_15]'}"/>
 										</div>
 
 									</th>
@@ -187,13 +200,11 @@
 												<th colspan="2" class="th-col2">
 													<div>
 													<!-- 
-															 constraint: 'CorporateMyNumber',
 															 immediate: true,
-															 required: true}" -->
+															 }" -->
 														 <!-- B1_2 -->
-														<input id="corporateMyNumber" class="save-error"
-															data-name="#{i18n.getText('CMM001_19')}"
-															data-bind="ntsTextEditor: {value: taxNum,}"/>
+														<input id="corporateMyNumber" tabindex="1", class="save-error"
+															data-bind="ntsTextEditor: {value: taxNum, constraint: 'TaxNo', required: true, name: '#[CMM001_19]'}"/>
 													</div>
 												</th>
 											</tr>
@@ -210,12 +221,12 @@
 												<th colspan="2" class="th-col2">
 													<div>
 													<!-- 
-															 constraint: 'PresidentName',
+															 
 															 immediate: true,
-															 required: true}" -->
+															 }" -->
 														 <!-- B1_4 -->
-														<input id="presidentName" class="save-error" data-name="#{i18n.getText('CMM001_20')}"
-																								data-bind="ntsTextEditor: {value: repname,}"/>
+														<input id="presidentName" tabindex="2", class="save-error"  
+																								data-bind="ntsTextEditor: {value: repname, constraint: 'RepName', required: true, name: '#[CMM001_20]'}"/>
 													</div>
 												</th>
 											</tr>
@@ -233,12 +244,11 @@
 												<th colspan="2" class="th-col2">
 													<div>
 													<!-- 
-															 constraint: 'PresidentJobTitle',
 															 immediate: true,
-															 required: true}" -->
+															 }" -->
 														 <!-- B1_6 -->
-														<input id="presidentJobTitle" class="save-error" data-name="#{i18n.getText('CMM001_21')}"
-																										data-bind="ntsTextEditor: {value: repJob,}"/>
+														<input id="presidentJobTitle" tabindex="3", class="save-error" data-bind="ntsTextEditor: {value: repJob, name: '#[CMM001_21]',
+																										constraint: 'RepJob', required: true}"/>
 													</div>
 												</th>
 											</tr>
@@ -263,20 +273,20 @@
 												<th colspan="1" class="th-col-sub">
 													<div id="colum1">
 													<!-- 
-															 constraint: 'Postal',
+															 
 															 immediate: true,
-															 required: true}" -->
+															 }" -->
 														 <!-- C1_2 -->
-														<input id="postal" class="save-error" data-name="#{i18n.getText('CMM001_22')}"
-																								data-bind="ntsTextEditor: {value: addinfor().postCd,}"/>
+														<input id="postal" tabindex="1", class="save-error" data-bind="ntsTextEditor: {value: addinfor().postCd, name: '#[CMM001_22]',
+																								constraint: 'PostCd', required: true}"/>
 													</div>
 												</th>
 
 												<th colspan="1">
 												<!-- data-bind="click: searchZipCode" -->
-													<button id="searchZipCode" >
+													<button id="searchZipCode" tabindex="2", data-bind="click: $parent.search.bind($parent)">
 													<!-- C1_3 -->
-														<label class="labelRed">〒</label>#{i18n.getText('CMM001_23')}
+														<label class="labelRed" >〒</label>#{i18n.getText('CMM001_23')}
 													</button>
 												</th>
 											</tr>
@@ -298,14 +308,14 @@
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
 													<!-- 
-															 constraint: 'Address1',
 															 immediate: true,
-															 required: true}" -->
+															 }" -->
 														 <!-- C1_6 -->
-														<input id="address1" tabindex="3" class="save-error" data-name="#{i18n.getText('CMM001_25')}"
+														<input id="address1" tabindex="3" class="save-error" 
 															type="text" placeholder=""
 															style="width: 200px; text-align: left; margin-bottom: 10px;"
-															data-bind="ntsTextEditor: {value: addinfor().add_1,}">
+															data-bind="ntsTextEditor: {value: addinfor().add_1, constraint: 'Add_1',
+																		required: true, name: '#[CMM001_25]'}">
 														</input>
 
 													</div>
@@ -318,11 +328,11 @@
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
 													<!-- 
-															 constraint: 'Address2',
 															 immediate: true}" -->
 														 <!-- C1_8 -->
 														<input id="address2" tabindex="4" class="save-error" data-name="#{i18n.getText('CMM001_26')}"
-																				data-bind="ntsTextEditor: {value: addinfor().add_2,}"/>
+																				data-bind="ntsTextEditor: {value: addinfor().add_2, constraint: 'Add_2',
+																				required: true, name: '#[CMM001_26]'}"/>
 													</div>
 												</th>
 											</tr>
@@ -345,12 +355,11 @@
 												<th colspan="2" class="th-col2">
 													<div id="colum1" style="width: 200px">
 															<!-- 
-															constraint: 'AddressKana1',
-															 required: true,
 															 immediate: true}" -->
 														 <!-- C1_11 -->
-														<input id="addressKana1" tabindex="5" class="save-error" data-name="#{i18n.getText('CMM001_25')}"
-														data-bind="ntsTextEditor: {value: addinfor().addKana_1,}"/>
+														<input id="addressKana1" tabindex="5" class="save-error"
+														data-bind="ntsTextEditor: {value: addinfor().addKana_1, constraint: 'Add_Kana_1',
+															 required: true, name: '#[CMM001_25]'}"/>
 													</div>
 												</th>
 											</tr>
@@ -361,11 +370,10 @@
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
 													<!--  
-															constraint: 'AddressKana2',
 															immediate: true}" -->
 														<!-- c1_13 -->
-														<input id="addressKana2" tabindex="6" class="save-error" data-name="#{i18n.getText('CMM001_26')}"
-																					data-bind="ntsTextEditor: {value: addinfor().addKana_2,}"/>
+														<input id="addressKana2" tabindex="6" class="save-error" data-bind="ntsTextEditor: {value: addinfor().addKana_2, constraint: 'Add_Kana_2',
+																													required: true, name: '#[CMM001_26]'}"/>
 													</div>
 												</th>
 											</tr>
@@ -382,12 +390,10 @@
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
 													<!-- 
-																					    constraint: 'TelephoneNo',
-																						required: true,
 																						immediate: true}" -->
 														<!-- C1_15 -->
-														<input id="telephoneNo" tabindex="7" class="save-error" data-name="#{i18n.getText('CMM001_28')}"
-																			data-bind="ntsTextEditor: {value: addinfor().phoneNum,}"/>
+														<input id="telephoneNo" tabindex="7" class="save-error" data-bind="ntsTextEditor: {value: addinfor().phoneNum, constraint: 'PhoneNum',
+																			required: true, name: '#[CMM001_28]'}"/>
 													</div>
 												</th>
 											</tr>
@@ -403,11 +409,11 @@
 
 												<th colspan="2" class="th-col2">
 													<!-- 
-																					   constraint: 'FaxNo',
-																					   required: true,																						required: true,
 																					   immediate: true}"  -->
+														<!-- C1_17 -->							   
 														<input id="faxNo" tabindex="8" class="save-error" 
-																data-bind="ntsTextEditor: {value: addinfor().faxNum,}"/>
+																data-bind="ntsTextEditor: {value: addinfor().faxNum, constraint: 'FaxNum',
+																required: true, name: '#[CMM001_29]'}"/>
 												</th>
 											</tr>
 
@@ -436,7 +442,7 @@
 																			options: $parent.roundingRules,
 																			optionsValue: 'code',
 																			optionsText: 'name',
-																			value: $parent.selectedRuleCode }">
+																			value: jinji }">
 															</div>
 														</div>
 													</th>
@@ -458,7 +464,7 @@
 																			options: $parent.roundingRules,
 																			optionsValue: 'code',
 																			optionsText: 'name',
-																			value: $parent.selectedRuleCode1 }">
+																			value: shugyo }">
 															</div>
 														</div>
 													</th>
@@ -480,7 +486,7 @@
 																			options: $parent.roundingRules,
 																			optionsValue: 'code',
 																			optionsText: 'name',
-																			value: $parent.selectedRuleCode2 }">
+																			value: kyuyo }">
 															</div>
 														</div>
 													</th>
@@ -501,7 +507,7 @@
 																			options: $parent.roundingRules3,
 																			optionsValue: 'code',
 																			optionsText: 'name',
-																			value: $parent.selectedRuleCode3 }">
+																			value: regWorkDiv }">
 															</div>
 															<!-- d1_9 -->
 															<button id = "switchhelpbtn" data-bind="ntsHelpButton: {image: '../images/CMM001_01.png', position: 'left top',enable: true}" >?</button>
@@ -518,15 +524,15 @@
 
 													<th colspan="2" class="th-col2">
 														<div class="control-group valign-center">
-														<!-- data-bind="ntsComboBox: {
+														<!--  -->
+															<div id="termBeginMon" data-bind="ntsComboBox: {
 																			 options: $parent.itemList,
 																			 optionsValue: 'code',
-																			 value: termBeginMon,
+																			 value: startMonth,
 																			 optionsText: 'name',
 																			 editable: true,
 																			 enable: true,
-																			 columns: [{ prop: 'name' }]}" -->
-															<div id="termBeginMon">
+																			 columns: [{ prop: 'name' }]}">
 															</div>
 														</div>
 

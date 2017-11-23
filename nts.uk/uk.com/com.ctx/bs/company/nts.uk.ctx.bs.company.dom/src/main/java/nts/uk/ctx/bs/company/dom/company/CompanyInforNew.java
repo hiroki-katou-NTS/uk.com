@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.company.dom.company.primitive.ABName;
 import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
@@ -13,9 +13,11 @@ import nts.uk.ctx.bs.company.dom.company.primitive.KNName;
 import nts.uk.ctx.bs.company.dom.company.primitive.RepJob;
 import nts.uk.ctx.bs.company.dom.company.primitive.RepName;
 import nts.uk.ctx.bs.company.dom.company.primitive.TaxNo;
+
+
 @Getter
 @AllArgsConstructor
-public class CompanyInforNew extends AggregateRoot{
+public class CompanyInforNew extends AggregateRoot {
 	/** The company code. */
 	// 会社コード
 	private CCD companyCode;
@@ -26,7 +28,6 @@ public class CompanyInforNew extends AggregateRoot{
 
 	/** The company id. */
 	// 会社ID
-	@Setter
 	private String companyId;
 
 	/** The start month. */
@@ -39,48 +40,64 @@ public class CompanyInforNew extends AggregateRoot{
 
 	/** 代表者名 */
 	private RepName repname;
-	
+
 	/** 代表者職位 */
 	private RepJob repjob;
-	
+
 	/** 会社名カナ */
 	private KNName comNameKana;
-	
+
 	/** 会社略名 */
 	private ABName shortComName;
-	
+
 	/** 契約コード */
 	private ContractCd contractCd;
-	
+
 	/** 法人マイナンバー */
 	private TaxNo taxNo;
+
 	private AddInfor addInfor;
-	
-	public void createCompanyId(String companyCode, String contractCd){
-		this.setCompanyId("contractCd" + "-" + "companyCode");
+
+	public CompanyInforNew(CCD companyCode, Name companyName, MonthStr startMonth, AbolitionAtr isAbolition,
+			RepName repname, RepJob repjob, KNName comNameKana, ABName shortComName, ContractCd contractCd, TaxNo taxNo,
+			AddInfor addInfor) {
+		super();
+		this.companyCode = companyCode;
+		this.companyName = companyName;
+		this.startMonth = startMonth;
+		this.isAbolition = isAbolition;
+		this.repname = repname;
+		this.repjob = repjob;
+		this.comNameKana = comNameKana;
+		this.shortComName = shortComName;
+		this.contractCd = contractCd;
+		this.taxNo = taxNo;
+		this.addInfor = addInfor;
+		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
 	}
 	
-	public static CompanyInforNew createFromJavaType(String companyCode, String companyName, 
-			String companyId, int startMonth, int isAbolition,
-			String repname, String repjob, 
-			String comNameKana, String shortComName,
-			String contractCd, BigDecimal taxNo, AddInfor addInfor) {
-				return new CompanyInforNew(new CCD(companyCode), 
-				new Name(companyName), 
-				companyId,
+	public static CompanyInforNew createFromJavaType(String companyCode, String companyName, int startMonth,
+			int isAbolition, String repname, String repjob, String comNameKana, String shortComName, String contractCd,
+			BigDecimal taxNo, AddInfor addInfor) {
+		return new CompanyInforNew(new CCD(companyCode), new Name(companyName),
 				EnumAdaptor.valueOf(startMonth, MonthStr.class),
-				EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class),
-				new RepName(repname),
-				new RepJob(repjob),
-				new KNName(comNameKana),
-				new ABName(shortComName),
-				new ContractCd(contractCd),
-				new TaxNo(taxNo), 
+				EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class), new RepName(repname), new RepJob(repjob),
+				new KNName(comNameKana), new ABName(shortComName), new ContractCd(contractCd), new TaxNo(taxNo),
 				addInfor);
-				}
-	
-	@Override
-	public void validate(){
-		super.validate();
 	}
+
+	public static String createCompanyId(String companyCode, String contractCd) {
+		return contractCd + "-" + companyCode;
+	}
+
+	@Override
+	public void validate() {
+		super.validate();
+		
+		// company code: 0000
+		if("0000".equals(this.companyCode)){
+			throw new BusinessException("Msg_809");
+		}
+	}
+
 }

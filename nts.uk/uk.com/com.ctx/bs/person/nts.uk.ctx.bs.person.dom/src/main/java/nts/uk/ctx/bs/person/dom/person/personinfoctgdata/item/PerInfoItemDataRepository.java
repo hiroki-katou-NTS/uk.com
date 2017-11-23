@@ -9,6 +9,8 @@ public interface PerInfoItemDataRepository {
 
 	List<PersonInfoItemData> getAllInfoItem(String categoryCd);
 	
+	List<PersonInfoItemData> getAllInfoItemByPidCtgId(String ctgId, String pid);
+	
 	List<PersonInfoItemData> getAllInfoItemByRecordId(String recordId);
 	
 	/**

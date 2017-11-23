@@ -53,22 +53,17 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	private ClassifiBasicWorkRepository classifiBasicWorkRepository;
 	
 	@Override
-	public List<CalendarInformationOutput> getCalendarInformation(String companyID, String workplaceID, String classCD, GeneralDate date) {
-		List<CalendarInformationOutput> calendarInformationOutputs = new ArrayList<>();
+	public CalendarInformationOutput getCalendarInformation(String companyID, String workplaceID, String classCD, GeneralDate date) {
 		// 稼働日区分を取得する
 		UseSet workingDayAtr = this.getWorkingDayAtr(companyID, workplaceID, classCD, date);
 		if(workingDayAtr != null){
 			// 基本勤務設定を取得する
-			List<BasicWorkSetting> basicWorkSettings = this.getBasicWorkSetting(companyID, workplaceID, classCD, workingDayAtr.value);
-			if(!basicWorkSettings.isEmpty()){
-				basicWorkSettings.stream().forEach(item ->{
-					calendarInformationOutputs.add(new CalendarInformationOutput(item.getWorktypeCode().v(), item.getWorkingCode().v(), date));
-				});
-				return calendarInformationOutputs;
+			BasicWorkSetting basicWorkSetting = this.getBasicWorkSetting(companyID, workplaceID, classCD, workingDayAtr.value);
+			if(basicWorkSetting != null){
+				return new CalendarInformationOutput(basicWorkSetting.getWorktypeCode().v(), basicWorkSetting.getWorkingCode().v(), date);
 			}
 		}
-		calendarInformationOutputs.add(new CalendarInformationOutput(null, null, date));
-		return calendarInformationOutputs;
+		return new CalendarInformationOutput(null, null, date);
 	}
 	
 	/**
@@ -107,23 +102,32 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	 * @param workingDayAtr
 	 * @return List<BasicWorkSetting>
 	 */
-	private List<BasicWorkSetting> getBasicWorkSetting(String companyID, String workplaceID, String classCD, Integer workingDayAtr){
+	private BasicWorkSetting getBasicWorkSetting(String companyID, String workplaceID, String classCD, Integer workingDayAtr){
 		Optional<CompanyBasicWork> opCompanyBasicWork = companyBasicWorkRepository.findById(companyID, workingDayAtr);
 		if(opCompanyBasicWork.isPresent()){
-			return opCompanyBasicWork.get().getBasicWorkSetting();
+			CompanyBasicWork companyBasicWork = opCompanyBasicWork.get();
+			if(!companyBasicWork.getBasicWorkSetting().isEmpty()){
+				return companyBasicWork.getBasicWorkSetting().get(0);
+			}
 		} 
 		
 		Optional<WorkplaceBasicWork> opWorkplaceBasicWork = workplaceBasicWorkRepository.findById(workplaceID);
 		if(opCompanyBasicWork.isPresent()){
-			return opWorkplaceBasicWork.get().getBasicWorkSetting();
+			WorkplaceBasicWork workplaceBasicWork = opWorkplaceBasicWork.get();
+			if(!workplaceBasicWork.getBasicWorkSetting().isEmpty()){
+				return workplaceBasicWork.getBasicWorkSetting().get(0);
+			}
 		}
 		
 		Optional<ClassificationBasicWork> opClassificationBasicWork = classifiBasicWorkRepository.findById(companyID, classCD, workingDayAtr);
 		if(opCompanyBasicWork.isPresent()){
-			return opClassificationBasicWork.get().getBasicWorkSetting();
+			ClassificationBasicWork classificationBasicWork = opClassificationBasicWork.get();
+			if(!classificationBasicWork.getBasicWorkSetting().isEmpty()){
+				return classificationBasicWork.getBasicWorkSetting().get(0);
+			}
 		}
 		
-		return Collections.emptyList();
+		return null;
 	}
 	
 }

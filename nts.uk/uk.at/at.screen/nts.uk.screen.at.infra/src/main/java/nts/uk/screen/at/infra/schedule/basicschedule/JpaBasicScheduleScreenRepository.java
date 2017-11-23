@@ -8,6 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtSchePerInfoAtr;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscstScheQualifySet;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenRepository;
@@ -43,6 +44,8 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c WHERE "
 			+ " c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode =:workTypeCode "
 			+ " AND c.workTimeCode =:workTimeCode";
+	private static final String GET_ALL_SCHEDULE_PERSON_INFOR_ATTRIBUTE = "SELECT c FROM KscmtSchePerInfoAtr c WHERE "
+			+ "c.kscmtSchePerInfoAtrPk.companyId = :companyId";
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
 		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
@@ -99,12 +102,16 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 		KscmtScheDispControl scheDispControl = this.queryProxy()
 				.query(GET_SCHEDULE_DIS_CONTROL, KscmtScheDispControl.class).setParameter("companyId", companyId)
 				.getSingleOrNull();
+		List<Integer> personInfoAtr = this.queryProxy()
+				.query(GET_ALL_SCHEDULE_PERSON_INFOR_ATTRIBUTE, KscmtSchePerInfoAtr.class)
+				.setParameter("companyId", companyId).getList(x -> x.kscmtSchePerInfoAtrPk.personInfoAtr);
 		if (scheDispControl == null) {
 			return null;
 		}
-		return new ScheduleDisplayControlDto(companyId, scheDispControl.personInforAtr,
-				scheDispControl.personDisplayAtr, scheDispControl.personSyQualify,
-				scheDispControl.pubHolidayShortageAtr, scheDispControl.pubHolidayExcessAtr, scheDispControl.symbolAtr,
-				scheDispControl.symbolHalfDayAtr, scheDispControl.symbolHalfDayName, qualifyCodes);
+
+		return new ScheduleDisplayControlDto(companyId, personInfoAtr,
+				scheDispControl.personSyQualify, scheDispControl.pubHolidayShortageAtr,
+				scheDispControl.pubHolidayExcessAtr, scheDispControl.symbolAtr, scheDispControl.symbolHalfDayAtr,
+				scheDispControl.symbolHalfDayName, qualifyCodes);
 	}
 }

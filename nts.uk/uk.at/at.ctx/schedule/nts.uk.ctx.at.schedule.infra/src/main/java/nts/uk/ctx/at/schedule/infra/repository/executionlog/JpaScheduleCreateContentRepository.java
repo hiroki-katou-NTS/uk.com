@@ -76,10 +76,7 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 	private KscdtScheExeContent toEntityUpdate(ScheduleCreateContent domain) {
 		Optional<KscdtScheExeContent> opEntity = this.queryProxy().find(domain.getExecutionId(),
 				KscdtScheExeContent.class);
-		KscdtScheExeContent entity = new KscdtScheExeContent();
-		if (opEntity.isPresent()) {
-			entity = opEntity.get();
-		}
+		KscdtScheExeContent entity = opEntity.get();
 		domain.saveToMemento(new JpaScheduleCreateContentSetMemento(entity));
 		return entity;
 	}

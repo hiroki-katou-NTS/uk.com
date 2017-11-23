@@ -24,6 +24,7 @@ module nts.uk.at.view.kdw001 {
         }
         
         export interface executionResult {
+            enumComboBox: Array<any>;
             empCalAndSumExecLogID: string;
             periodStartDate: string;
             periodEndDate: string;

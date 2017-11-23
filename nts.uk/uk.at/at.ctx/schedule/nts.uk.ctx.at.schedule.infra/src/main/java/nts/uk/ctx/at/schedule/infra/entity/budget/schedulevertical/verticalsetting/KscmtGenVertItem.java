@@ -78,7 +78,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
 	public KscstFormNumerical numerical;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemUnitPrice", orphanRemoval = true)
 	public KscstFormulaUnitPrice price;
 	
 	@Override
@@ -88,7 +88,8 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	}
 	
 	public KscmtGenVertItem(KscmtGenVertItemPK kscmtGenVertItemPK, String itemName, int calculateAtr, int displayAtr, int cumulativeAtr, 
-			int attributes, int rounding, int roundingProcessing, KscmtGenVertOrder genVertOrder, KscmtFormBuilt formBuilt, KscmtFormTime formTime, KscmtFormPeople formPeople, KscstFormAmount amount) {
+			int attributes, int rounding, int roundingProcessing, KscmtGenVertOrder genVertOrder, KscmtFormBuilt formBuilt, 
+			KscmtFormTime formTime, KscmtFormPeople formPeople, KscstFormAmount amount, KscstFormulaUnitPrice price) {
 		this.kscmtGenVertItemPK = kscmtGenVertItemPK;
 		this.itemName = itemName;
 		this.calculateAtr = calculateAtr;
@@ -102,5 +103,6 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 		this.formTime = formTime;
 		this.formPeople = formPeople;
 		this.amount = amount;
+		this.price = price;
 	}
 }

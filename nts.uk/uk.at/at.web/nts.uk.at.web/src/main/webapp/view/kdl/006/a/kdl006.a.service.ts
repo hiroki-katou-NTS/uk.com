@@ -9,6 +9,7 @@ module nts.uk.at.view.kdl006.a {
              findCurrentPersonName: "at/record/workfixed/currentPerson",
              findCurrentClosure: "ctx/at/shared/workrule/closure/findCurrentClosure",             
              findWorkplaceInfo:"at/record/workfixed/findWkpInfo",
+             //findWorkplaceInfo:"bs/employee/workplace/info/findWorkplaceInfo",
              findWorkFixedInfo: "at/record/workfixed/find",
              saveWorkFixedInfo: "at/record/workfixed/save",
         }
@@ -32,13 +33,14 @@ module nts.uk.at.view.kdl006.a {
          */
         export function findWorkplaceInfo(): JQueryPromise<model.WorkplaceInfo[]> {
             return nts.uk.request.ajax(servicePath.findWorkplaceInfo);
+            //return nts.uk.request.ajax('com', servicePath.findWorkplaceInfo, {baseDate : new Date()});
         }
         
         /**
          * findWorkFixed
          */
         export function findWorkFixedInfo(listWorkFixed: model.WorkFixed[]): JQueryPromise<model.WorkFixed[]> {
-            return nts.uk.request.ajax(servicePath.findWorkFixedInfo, listWorkFixed);
+            return nts.uk.request.ajax(servicePath.findWorkFixedInfo, listWorkFixed);           
         }    
         
         /**

@@ -253,6 +253,7 @@ body>div:nth-child(4) {
 #termBeginMon {
 	width: 80px !important;
 	margin-top: 5px !important;
+	margin-left: -70px;
 }
 
 #contents-area>div.nts-right-content>div.table.fixed-height {

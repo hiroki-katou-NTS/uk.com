@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.app.find.layout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,9 +14,14 @@ import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoClsFinder;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefDto;
+import find.person.info.item.SingleItemDto;
+import find.person.info.item.StringItemDto;
 import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import find.person.setting.init.category.SettingCtgDto;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
@@ -75,34 +81,44 @@ public class RegisterLayoutFinder {
 
 		if (command.getCreateType() != 3) {
 
-			List<SettingItemDto> layoutItemList = loadAllItemByCreateType(command.getCreateType(),
+			List<SettingItemDto> dataSourceList = loadAllItemByCreateType(command.getCreateType(),
 					command.getInitSettingId(), command.getBaseDate(), command.getEmployeeId());
 
-			if (layoutItemList.isEmpty()) {
+			if (dataSourceList.isEmpty()) {
 
 				return null;
 
 			}
 
 			for (LayoutPersonInfoClsDto itemCls : listItemCls) {
-				LayoutItemType layoutType = itemCls.getLayoutItemType();
-				switch (layoutType) {
-				case ITEM: // item
+				if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
+					if (command.getCreateType() == 2) {
 
-					List<Object> itemValues = createItemValueList(itemCls.getListItemDf(), layoutItemList);
+						itemCls.setListItemDf(itemCls.getListItemDf().stream()
+								.filter(x -> findItemFromList(dataSourceList, x) != null).collect(Collectors.toList()));
 
-					itemCls.setItems(itemValues);
+					}
 
-					break;
-				case LIST: // list
+					LayoutItemType layoutType = itemCls.getLayoutItemType();
 
-					break;
+					switch (layoutType) {
+					case ITEM: // item
 
-				case SeparatorLine: // spa
+						List<Object> itemValues = createItemValueList(itemCls.getListItemDf(), dataSourceList);
 
-					break;
+						itemCls.setItems(itemValues.isEmpty() ? null : itemValues);
+
+						break;
+					case LIST: // list
+						itemCls.setItems(null);
+						break;
+
+					default:
+						// spa
+						itemCls.setItems(null);
+						break;
+					}
 				}
-				itemCls.setItems(null);
 			}
 
 		}
@@ -118,38 +134,36 @@ public class RegisterLayoutFinder {
 	/**
 	 * create item list from each item layout list and value from dataSourceList
 	 * 
+	 * @param <E>
+	 * 
 	 * @param dataSourceList
 	 *            : datasource List
 	 * @param layoutItemList
 	 *            : itemList need set value
 	 * @return itemList as List<Object>
 	 */
-	private List<Object> createItemValueList(List<PerInfoItemDefDto> dataSourceList,
-			List<SettingItemDto> layoutItemList) {
+	private <E> List<Object> createItemValueList(List<PerInfoItemDefDto> layoutItemList,
+			List<SettingItemDto> dataSourceList) {
 		List<Object> itemValueList = new ArrayList<Object>();
-		for (PerInfoItemDefDto itemDf : dataSourceList) {
+		for (PerInfoItemDefDto itemDf : layoutItemList) {
 
-			SettingItemDto item = findItemFromList(layoutItemList, itemDf);
+			SettingItemDto item = findItemFromList(dataSourceList, itemDf);
 
-			if (item != null) {
-				// because is single item
-				int rowIndex = 0;
-				LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getPerInfoCtgId(),
-						item.getCategoryCode(), itemDf.getId(), itemDf.getItemName(), itemDf.getItemCode(), rowIndex,
-						item.getValueAsString());
-				itemValueList.add(value);
-			} else {
-				// remove itemDf not found
-				layoutItemList.remove(itemDf);
+			LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getPerInfoCtgId(),
+					item.getCategoryCode(), itemDf.getId(), itemDf.getItemName(), itemDf.getItemCode(), 0,
+					item.getValueAsString());
 
-			}
+			val itemDto = (SingleItemDto) itemDf.getItemTypeState();
+			value.setItem(itemDto.getDataTypeState());
+
+			itemValueList.add(value);
 
 		}
 		return itemValueList;
 	}
 
 	/**
-	 * get item from list when same itemcode and categoryId
+	 * get item from list when same itemId
 	 * 
 	 * @param itemDataList
 	 *            list source
@@ -159,9 +173,7 @@ public class RegisterLayoutFinder {
 	 */
 	private SettingItemDto findItemFromList(List<SettingItemDto> itemDataList, PerInfoItemDefDto item) {
 
-		return itemDataList.stream().filter(
-				i -> i.getItemCode().equals(item.getItemCode()) && i.getPerInfoCtgId().equals(item.getPerInfoCtgId()))
-				.findFirst().orElse(null);
+		return itemDataList.stream().filter(i -> i.getItemDefId().equals(item.getId())).findFirst().orElse(null);
 	}
 
 	/**

@@ -11,9 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.sys.gateway.dom.login.User;
+import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregCommandFacade;
@@ -31,6 +34,9 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 	@Inject
 	private PeregCommandFacade commandFacade;
 
+	@Inject
+	private UserRepository userRepository;
+
 	@Override
 	protected void handle(CommandHandlerContext<AddEmployeeCommand> context) {
 
@@ -44,6 +50,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		String personId = IdentifierUtil.randomUniqueId();
 		String employeeId = IdentifierUtil.randomUniqueId();
+		String userId = IdentifierUtil.randomUniqueId();
 
 		// 個人基本 1st
 
@@ -71,6 +78,12 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		PeregInputContainer inputContainer = new PeregInputContainer(personId, employeeId, inputs);
 
 		this.commandFacade.add(inputContainer);
+		// add new user
+		User newUser = User.createFromJavaType(userId, command.getPassword(), command.getLoginId(), null,
+				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false, null, command.getEmployeeName(),
+				employeeId);
+
+		this.userRepository.addNewUser(newUser);
 
 	}
 
@@ -109,7 +122,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 					item.getSaveData().getSaveDataType().value));
 		});
 
-		return new ItemsByCategory(categoryCd, null, items);
+		return new ItemsByCategory(categoryCd, null,null, items);
 
 	}
 

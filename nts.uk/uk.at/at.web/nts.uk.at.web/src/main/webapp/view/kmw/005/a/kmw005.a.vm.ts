@@ -60,7 +60,7 @@ module nts.uk.at.view.kmw005.a {
                 service.findAllActualLock().done(function(data) {
                     blockUI.clear();
                     var dataRes: ActualLockFind[] = [];
-                    
+
                     _.forEach(data, function(item: ActualLockFinderDto) {
                         var actualLock: ActualLockFind = new ActualLockFind();
                         actualLock.closureId = item.closureId;
@@ -72,7 +72,7 @@ module nts.uk.at.view.kmw005.a {
                         actualLock.period = item.startDate + " ~ " + item.endDate;
                         dataRes.push(actualLock);
                     })
-                    
+
                     self.actualLockList(dataRes);
                     self.actualLock.closureId(data[0].closureId);
                     dfd.resolve();
@@ -87,10 +87,10 @@ module nts.uk.at.view.kmw005.a {
                         nts.uk.ui.dialog.alertError(error);
                     }
                 });
-                
+
                 return dfd.promise();
             }
-            
+
 
             /**
              * Binding ActualLock By Selected Closure
@@ -98,15 +98,20 @@ module nts.uk.at.view.kmw005.a {
             private bindActualLock(closureId: number): void {
                 let self = this;
                 service.findLockByClosureId(closureId).done(function(data: ActualLockFindDto) {
-                    self.actualLock.updateLock(data);
-                    // ClosureName
-                    var currentClosure = self.actualLockList().filter((item) => {
-                        return item.closureId == closureId;
-                    })[0];
-                    self.closureName(currentClosure.closureName);
+                    if (data) {
+                        self.actualLock.updateLock(data);
+                        // ClosureName
+                        var currentClosure = self.actualLockList().filter((item) => {
+                            return item.closureId == closureId;
+                        })[0];
+                        self.closureName(currentClosure.closureName);
+                    } else {
+                        self.actualLock.dailyLockState(0);
+                        self.actualLock.monthlyLockState(0);
+                    }
                     self.addLockIcon();
                 });
-                
+
             }
 
 
@@ -120,7 +125,7 @@ module nts.uk.at.view.kmw005.a {
                 command.dailyLockState = self.actualLock.dailyLockState();
                 command.monthlyLockState = self.actualLock.monthlyLockState();
             }
-            
+
             /**
              * Save ActualLock when press Register
              */
@@ -133,7 +138,7 @@ module nts.uk.at.view.kmw005.a {
                 command.closureId = self.actualLock.closureId();
                 command.dailyLockState = self.actualLock.dailyLockState();
                 command.monthlyLockState = self.actualLock.monthlyLockState();
-                
+
                 blockUI.invisible();
                 service.saveActualLock(command).done(function(res) {
                     if (!res) {
@@ -142,7 +147,7 @@ module nts.uk.at.view.kmw005.a {
                     }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
-                    
+
                     service.findAllActualLock().done(function(data) {
                         var dataRes: ActualLockFind[] = [];
                         _.forEach(data, function(item: ActualLockFinderDto) {
@@ -156,15 +161,15 @@ module nts.uk.at.view.kmw005.a {
                             actualLock.period = item.startDate + " ~ " + item.endDate;
                             dataRes.push(actualLock);
                         })
-                        
+
                         self.actualLockList(dataRes);
                         self.addLockIcon();
                     })
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});
+                    nts.uk.ui.dialog.alertError(res.message).then(() => { blockUI.clear(); });
                 });
             }
-            
+
 
             /**
              * Open Dialog: Confirm ActualLock 
@@ -178,7 +183,7 @@ module nts.uk.at.view.kmw005.a {
                 actualLocks = self.actualLockList().map(item => {
                     return item.toClosureDto();
                 });
-                
+
                 setShared('ActualLock', actualLocks, true);
 
                 nts.uk.ui.windows.sub.modal("/view/kmw/005/b/index.xhtml").onClosed(function() {
@@ -229,7 +234,7 @@ module nts.uk.at.view.kmw005.a {
             }
             // convert to ClosureDto
             public toClosureDto(): ClosureDto {
-                return new ClosureDto (this.closureId, this.closureName);
+                return new ClosureDto(this.closureId, this.closureName);
             }
         }
 
@@ -239,13 +244,13 @@ module nts.uk.at.view.kmw005.a {
         export class ClosureDto {
             closureId: number;
             closureName: string;
-            
+
             constructor(closureId: number, closureName: string) {
                 this.closureId = closureId;
                 this.closureName = closureName;
             }
         }
-        
+
         /**
          * class ActualLock
          */

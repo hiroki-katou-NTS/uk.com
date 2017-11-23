@@ -36,7 +36,7 @@ public class KscstFormulaUnitPrice extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false) })
-	public KscmtGenVertItem kscmtGenVertItem;
+	public KscmtGenVertItem kscmtGenVertItemUnitPrice;
 	@Override
 	protected Object getKey() {
 		return kscstFormulaUnitPricePK;

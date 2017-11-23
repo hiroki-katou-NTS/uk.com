@@ -50,6 +50,7 @@ public class AttendanceItemLinkingFinder {
 		// find list optional item by attribute
 		Map<String, String> filteredByAtr = this.optItemRepo
 				.findByAtr(AppContexts.user().companyId(), request.getFormulaAtr()).stream()
+				.filter(ii -> ii.isUsed())
 				.collect(Collectors.toMap(i -> i.getOptionalItemNo().v(), i -> i.getOptionalItemNo().v()));
 
 		// filter list optional item by selectable list parameters.

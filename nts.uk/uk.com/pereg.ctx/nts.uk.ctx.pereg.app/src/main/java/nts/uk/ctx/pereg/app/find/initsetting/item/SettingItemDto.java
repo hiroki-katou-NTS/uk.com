@@ -141,7 +141,7 @@ public class SettingItemDto {
 		switch (this.saveData.saveDataType) {
 		case DATE:
 			DateDataDto dateData = (DateDataDto) this.saveData;
-			return dateData.getValue().toString("dd/MM/yyyy");
+			return dateData.getValue().toString("yyyy/MM/dd");
 		case NUMBERIC:
 			NumberDataDto numberData = (NumberDataDto) this.saveData;
 			return new Integer(numberData.getValue()).toString();

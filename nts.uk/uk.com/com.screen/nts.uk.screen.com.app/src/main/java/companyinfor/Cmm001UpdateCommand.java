@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.env.app.command.sysusagesetfinder.UpdateSysUsageSetCommand
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cmm001UpdateCommand {
-	private UpdateCompanyInforCommand updateComCm;
-	private UpdateSysUsageSetCommand updateSysCm;
-	private UpdateDivWorkPlaceDifferInforCommand updateDivCm;
+	private UpdateCompanyInforCommand comCm;
+	private UpdateSysUsageSetCommand sysCm;
+	private UpdateDivWorkPlaceDifferInforCommand divCm;
 }

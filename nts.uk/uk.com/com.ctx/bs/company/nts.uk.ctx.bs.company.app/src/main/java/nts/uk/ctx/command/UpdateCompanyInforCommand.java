@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.bs.company.dom.company.AddInfor;
+import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
 
 /**
  * 
@@ -13,16 +15,13 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UpdateCompanyInforCommand {
+	
 	// 会社コード
 		private String ccd;
 
 		/** The company code. */
 		// 会社名
 		private String name;
-
-		/** The company id. */
-		// 会社ID
-		private String companyId;
 
 		/** The start month. */
 		// 期首月
@@ -51,4 +50,19 @@ public class UpdateCompanyInforCommand {
 		private BigDecimal taxNo;
 		
 		private AddInforCommand addinfor;
+		
+		private CompanyInforNew toDomain() {
+			AddInfor add = null; 
+			if(this.getAddinfor() != null){
+				add = this.getAddinfor().toDomainAdd(contractCd, "", this.getCcd());
+			}
+			CompanyInforNew company =  CompanyInforNew.createFromJavaType(this.getCcd(), this.getName(), 
+					this.getMonth(), 
+					this.getAbolition(), this.getRepname(),
+					this.getRepJob(), this.getComNameKana(), 
+					this.getShortComName(), contractCd, 
+					this.getTaxNo(), add);
+			
+			return company;
+		}
 }
