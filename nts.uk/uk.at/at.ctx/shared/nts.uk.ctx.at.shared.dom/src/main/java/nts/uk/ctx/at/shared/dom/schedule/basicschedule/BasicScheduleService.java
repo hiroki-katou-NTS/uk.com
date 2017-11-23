@@ -52,11 +52,6 @@ public interface BasicScheduleService {
 	SetupType checkRequired(SetupType morningWorkStyle, SetupType afternoonWorkStyle);
 
 	/**
-	 * 時差勤務時間を計算する Calculate the time difference working hours
-	 */
-	JoggingWorkTime caculateJoggingWorkTime(String workTimeCode,TimeWithDayAttr scheduleStartClock);
-
-	/**
 	 * 開始時刻と終了時刻の逆転チェック
 	 * 
 	 * @param scheduleStartClock

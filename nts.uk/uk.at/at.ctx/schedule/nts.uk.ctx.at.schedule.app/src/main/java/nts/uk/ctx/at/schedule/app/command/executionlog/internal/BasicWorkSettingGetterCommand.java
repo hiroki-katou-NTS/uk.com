@@ -86,4 +86,5 @@ public class BasicWorkSettingGetterCommand {
 		return command;
 	}
 	
+	
 }

@@ -18,7 +18,6 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog;
@@ -87,11 +86,6 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 
 		List<KscdtScheExeLog> lstKscmtScheduleExcLog = em.createQuery(cq).getResultList();
 
-		// check empty
-		if (CollectionUtil.isEmpty(lstKscmtScheduleExcLog)) {
-			return null;
-		}
-
 		// return data full
 		return lstKscmtScheduleExcLog.stream().map(item -> {
 			return new ScheduleExecutionLog(new JpaScheduleExecutionLogGetMemento(item));
@@ -143,18 +137,13 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 		// find by key
 		Optional<KscdtScheExeLog> opentity = this.queryProxy()
 				.find(new KscdtScheExeLogPK(domain.getCompanyId().v(), domain.getExecutionId()), KscdtScheExeLog.class);
-		KscdtScheExeLog entity = new KscdtScheExeLog();
-
-		// check exist data by key
-		if (opentity.isPresent()) {
-			entity = opentity.get();
-		}
+		KscdtScheExeLog entity = opentity.get();
 
 		// update entity by domain
 		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
 		return entity;
 	}
-	
+
 	/**
 	 * To domain.
 	 *
