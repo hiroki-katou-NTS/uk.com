@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.temporaryabsence;
 
+import java.util.ArrayList;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -7,8 +9,12 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
@@ -18,6 +24,9 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 
 	@Inject
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
+	
+	@Inject
+	private TemporaryAbsenceHistRepository temporaryAbsenceHistRepository;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -31,19 +40,19 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddTemporaryAbsenceCommand> context) {
-		/*val command = context.getCommand();
-		
-		String newTempID = IdentifierUtil.randomUniqueId();
+		val command = context.getCommand();
 		
 		String newHistID = IdentifierUtil.randomUniqueId();
 		
-		TempAbsenceHistory temporaryAbsence = TempAbsenceHistory.createSimpleFromJavaType(command.getEmployeeId(), newTempID, command.getTempAbsenceType(), 
-				newHistID, command.getStartDate(), command.getEndDate(), command.getTempAbsenceReason(), command.getFamilyMemberId(), command.getBirthDate(), command.getMulPregnancySegment());
+		TempAbsenceHistory hist = new TempAbsenceHistory(command.getEmployeeId(),new ArrayList<>());
+		hist.add(new DateHistoryItem(newHistID, new DatePeriod(command.getStartDate(), command.getEndDate())));
+		temporaryAbsenceHistRepository.addTemporaryAbsenceHist(hist);
 		
+		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr(), newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory(), command.isMultiple(),
+				command.getFamilyMemberId(), command.isSameFamily(), command.getChildType(), command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays());
 		temporaryAbsenceRepository.addTemporaryAbsence(temporaryAbsence);
-		return new PeregAddCommandResult(newTempID);*/
-		return null;
-		// TODO
+		
+		return new PeregAddCommandResult(newHistID);
 	}
 
 }
