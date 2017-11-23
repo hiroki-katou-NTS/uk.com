@@ -87,36 +87,55 @@ module nts.uk.com.view.cas011.a.viewmodel {
                      
             // 実行時情報をチェックする- check runtime
 
-            if (!self.checkRuntime()) {
+/*
+            service.getLoginUserCompanyId().done((companyId : any) => {
+                dialog.info("checkRuntime 00: " + companyId);
+                if (!companyId || companyId === 'undefined') {
+                    self.backToTopPage();
+                 } else {
+                     // initial screen
+                     self.initialScreen(dfd);
+                 }
+                //dialog.info("checkRuntime 20: " + retChk);
+             }).fail(error => {
+                 dfd.reject();
+                 dialog.info("checkRuntime 21: " );
+                 //retChk = false;
+             });
+*/
+            /*
+            if (!self.checkRuntime(dfd)) {
                 self.backToTopPage();
-                return;
             }
-
+*/
            return dfd.promise();
         }  
  
         /**
          * アルゴリズム「ロールセットをすべて取得する」を実行する - Process check runtime at start
          */
+        /*
         checkRuntime(deferred : any) : boolean {
             let self = this;
             var retChk : boolean = true;
             service.getLoginUserCompanyId().done((companyId : any) => {
+                dialog.info("checkRuntime 00: " + companyId);
                 if (!companyId || companyId === 'undefined') {
                     retChk = false;
                  } else {
                      // initial screen
                      self.initialScreen(deferred);
                  }
-                dialog.info("checkRuntime 1: " + retChk);
+                dialog.info("checkRuntime 20: " + retChk);
              }).fail(error => {
+                 dialog.info("checkRuntime 21: " + retChk);
                  retChk = false;
              });
 
-            dialog.info("checkRuntime 2: " + retChk);
+            dialog.info("checkRuntime 22: " + retChk);
              return retChk;
         }
-        
+        */
         /**
          * back to top page - トップページに戻る
          */
@@ -133,7 +152,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
         initialScreen(deferred : any) {
             let self = this,
             currentRoleSet: RoleSet = self.currentRoleSet(),
-            listRoleSets = self.listRoleSets,
+            listRoleSets = self.listRoleSets;
+
             service.getAllRoleSets().done((itemList: Array<IRoleSet>) => {
                 
                 // in case number of RoleSet is greater then 0
@@ -149,11 +169,12 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     self.settingCreateMode();
                 }
 
-                dfd.resolve();
+                deferred.resolve();
 
             }).fail(error => {
               //画面を新規モードで起動する
 
+                deferred.reject();
                 self.settingCreateMode();
             });
         }
@@ -202,7 +223,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
         deleteRoleSet() {
             let self = this,
                     listRoleSets = self.listRoleSets,
-                    currentRoleSet: IRoleSet = self.currentRoleSet();
+                    currentRoleSet: RoleSet = self.currentRoleSet();
              block.invisible();
             //確認メッセージ（Msg_18）を表示する
             

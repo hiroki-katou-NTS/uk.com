@@ -27,14 +27,15 @@ module nts.uk.com.view.cas011.c.viewmodel {
 
         //initial screen
         start(): JQueryPromise<any> {
+            
             let self = this,
             currentDefaultRoleSet: IDefaultRoleSet = self.currentDefaultRoleSet(),
             listDefaultRoleSets = self.listDefaultRoleSets,
             dfd = $.Deferred();
-/*        
+
             self.listDefaultRoleSets.removeAll();
             errors.clearAll();
-        
+/*        
             service.getAllRoleSet().done((itemList: Array<IDefaultRoleSet>) => {
                
                 // in case number of RoleSet is greater then 0
@@ -50,9 +51,11 @@ module nts.uk.com.view.cas011.c.viewmodel {
                 dfd.resolve();
     
             }).fail(error => {
-                //self.closeDialog();
+                dfd.reject();
+                self.closeDialog();
             });
 */
+            dfd.resolve();
             return dfd.promise();
         }
 
@@ -72,10 +75,9 @@ module nts.uk.com.view.cas011.c.viewmodel {
                     self.currentDefaultRoleSet(item);
                 } else {
                     if (self.listDefaultRoleSets && self.listDefaultRoleSets.length > 0) {
-                        self.currentDefaultRoleSet(self.listDefaultRoleSets[0]);
+                        self.currentDefaultRoleSet(self.listDefaultRoleSets()[0]);
                     }
                 }
-                dfd.resolve();
 
             }).fail(error => {
             });
