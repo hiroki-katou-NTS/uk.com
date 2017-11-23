@@ -239,6 +239,7 @@ module cmm001.a {
                 divCm: any = dataDiv,
            } 
             if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
                 return;
             }
            let code = self.currentCompany().companyCode();
