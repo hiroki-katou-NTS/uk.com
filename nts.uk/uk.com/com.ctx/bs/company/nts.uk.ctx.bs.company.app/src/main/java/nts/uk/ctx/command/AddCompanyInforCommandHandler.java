@@ -22,7 +22,7 @@ public class AddCompanyInforCommandHandler extends CommandHandler<AddCompanyInfo
 		AddCompanyInforCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
 		
-		Optional<CompanyInforNew> com = comRep.findComByCode(contractCd, "", data.getCcd());
+		Optional<CompanyInforNew> com = comRep.findComByCode("");
 		// company existed
 		if(com.isPresent()){
 			throw new BusinessException("Msg_3");

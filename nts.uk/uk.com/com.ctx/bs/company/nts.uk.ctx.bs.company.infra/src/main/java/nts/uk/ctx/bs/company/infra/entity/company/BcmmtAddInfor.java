@@ -52,11 +52,7 @@ public class BcmmtAddInfor extends UkJpaEntity implements Serializable{
 	public String phoneNum;
 	
 	@OneToOne
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
-		@JoinColumn(name = "CONTRACT_CD", referencedColumnName = "CONTRACT_CD", insertable = false, updatable = false)
-	})
+	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
 	public BcmmtCompanyInfor bcmmtCompanyInfor;
 	
 	@Override

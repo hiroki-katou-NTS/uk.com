@@ -50,7 +50,7 @@ public class AddCompanyInforCommand {
 	public CompanyInforNew toDomain(String contractCode) {
 		AddInfor add = null; 
 		if(this.getAddinfor() != null){
-			add = this.getAddinfor().toDomainAdd(contractCode, CompanyInforNew.createCompanyId(ccd, contractCode), this.ccd);
+			add = this.getAddinfor().toDomainAdd(CompanyInforNew.createCompanyId(ccd, contractCode));
 		}
 		CompanyInforNew company =  CompanyInforNew.createFromJavaType(this.ccd, this.name, 
 				this.getMonth(), 
