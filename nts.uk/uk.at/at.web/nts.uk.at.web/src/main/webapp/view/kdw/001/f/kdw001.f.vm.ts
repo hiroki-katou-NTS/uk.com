@@ -25,6 +25,7 @@ module nts.uk.at.view.kdw001.f {
 
             constructor() {
                 let self = this;
+                
                 //
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
@@ -70,6 +71,7 @@ module nts.uk.at.view.kdw001.f {
                         columnCssClass: "colStyleButton",
                     }
                 ];
+                $('#button-search').focus();
             }
 
             /**

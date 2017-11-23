@@ -26,6 +26,8 @@ import command.person.setting.selectionitem.selection.RemoveHistoryCommand;
 import command.person.setting.selectionitem.selection.RemoveHistoryCommandHandler;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommand;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommandHandler;
+import command.person.setting.selectionitem.selection.UpdateSelOrderCommand;
+import command.person.setting.selectionitem.selection.UpdateSelOrderCommandHandler;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommand;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommandHandler;
 import find.person.setting.init.item.SelectionInitDto;
@@ -93,6 +95,10 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Inject
 	ReflUnrCompCommandHandler reflUnrComp;
 
+	//hoatt - update selection order
+	@Inject
+	private UpdateSelOrderCommandHandler updateSelOrder;
+	
 	@POST
 	@Path("findAll")
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
@@ -200,5 +206,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("reflunrcomp")
 	public void ReflUnrComp(ReflUnrCompCommand command) {
 		this.reflUnrComp.handle(command);
+	}
+	
+	//update selection order
+	@POST
+	@Path("updateSelOrder")
+	public void updateSelOrder(List<UpdateSelOrderCommand> lstSelOrder){
+		this.updateSelOrder.handle(lstSelOrder);
 	}
 }

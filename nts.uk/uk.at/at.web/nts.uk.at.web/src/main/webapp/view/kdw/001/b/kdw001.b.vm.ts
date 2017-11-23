@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw001.b {
     export module viewmodel {
         export class ScreenModel {
             params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
-            closureID: any = __viewContext.transferred.value.closureID;
+          // closureID: any = __viewContext.transferred.value.closureID;
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
@@ -66,8 +66,8 @@ module nts.uk.at.view.kdw001.b {
 
             constructor() {
                 var self = this;
-                self.params.setParamsScreenA({ closure: self.closureID });
-
+               // self.params.setParamsScreenA({ closure: self.closureID });
+                self.params.setParamsScreenA({ closure: '1' });
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
                 self.dScreenmodel = new nts.uk.at.view.kdw001.d.viewmodel.ScreenModel();
@@ -216,7 +216,7 @@ module nts.uk.at.view.kdw001.b {
                 var self = this;
 
                 if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == false) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_205" });
                     return;
                 }
 
@@ -233,7 +233,7 @@ module nts.uk.at.view.kdw001.b {
                 }
 
                 if (self.selectedCreatDivisionCode() == 2 || self.selectedCalDivisionCode() == 2 || self.selectedAggregateClassCode() == 2) {
-                    nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_575" }).ifYes(() => {
                         self.params.setParamsScreenB({
                             dailyCreation: self.dailyCreatedCheck(),
                             creationType: self.dailyCreatedCheck() == true ? self.selectedCreatDivisionCode() : null,

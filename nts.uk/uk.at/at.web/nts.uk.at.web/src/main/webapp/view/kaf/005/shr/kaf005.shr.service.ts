@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf005.shr.service {
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",
         checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
+        findByAppID: "at/request/application/overtime/findByAppID"
     }
 
     /** Get TitleMenu */
@@ -41,5 +42,9 @@ module nts.uk.at.view.kaf005.shr.service {
     
     export function checkBeforeRegister(overtime:any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkBeforeRegister ,overtime);
+    }
+    
+    export function findByAppID(appID: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.findByAppID ,appID);
     }
 }

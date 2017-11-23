@@ -82,6 +82,15 @@ public class OptionalItem extends AggregateRoot {
 	}
 
 	/**
+	 * Checks if is used.
+	 *
+	 * @return true, if is used
+	 */
+	public boolean isUsed() {
+		return this.usageAtr.equals(OptionalItemUsageAtr.USE);
+	}
+
+	/**
 	 * Instantiates a new optional item.
 	 *
 	 * @param memento the memento

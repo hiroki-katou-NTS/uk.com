@@ -31,7 +31,8 @@ module nts.uk.at.view.ksc001.b {
         /**
          * call service add ScheduleExecutionLog
          */
-        export function addScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto): JQueryPromise<model.ScheduleExecutionLogSaveRespone> {
+        export function addScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto)
+            : JQueryPromise<model.ScheduleExecutionLogSaveRespone> {
             return nts.uk.request.ajax('at', paths.addScheduleExecutionLog, command);
         }
         

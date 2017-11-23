@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.ot.autocalsetting.job;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,6 +38,11 @@ public class RemoveJobAutoCalSetCommandHandler extends CommandHandler<RemoveJobA
 	protected void handle(CommandHandlerContext<RemoveJobAutoCalSetCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RemoveJobAutoCalSetCommand command = context.getCommand();
-		jobAutoCalSettingRepository.delete(companyId, command.getJobId());
+		
+		// Check exist
+		Optional<JobAutoCalSetting> result = this.jobAutoCalSettingRepository.getJobAutoCalSetting(companyId, command.getJobId());
+		if (result.isPresent()) {
+			this.jobAutoCalSettingRepository.delete(companyId, command.getJobId());
+		}		
 	}
 }

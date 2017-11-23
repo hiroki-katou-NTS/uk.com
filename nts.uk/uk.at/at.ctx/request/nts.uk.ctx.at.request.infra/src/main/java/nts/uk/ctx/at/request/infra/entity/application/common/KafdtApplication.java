@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -158,6 +159,9 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	@OneToOne(targetEntity=KrqdtAppLateOrLeave.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
 	public KrqdtAppLateOrLeave krqdtAppLateOrLeave;
 	
+	@OneToOne(targetEntity=KrqdtAppOvertime.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
+	public KrqdtAppOvertime krqdtAppOvertime;
+	
 	
 	@Override
 	protected Object getKey() {
@@ -189,6 +193,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 			domain.getStartDate(), 
 			domain.getEndDate(),
 			domain.getListPhase().stream().map(c -> KrqdtAppApprovalPhase.toEntity(c)).collect(Collectors.toList()),
+			null,
 			null,
 			null);
 	}

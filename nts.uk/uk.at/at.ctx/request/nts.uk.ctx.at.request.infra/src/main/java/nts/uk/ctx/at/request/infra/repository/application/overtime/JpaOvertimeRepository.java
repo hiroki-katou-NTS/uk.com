@@ -56,7 +56,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				domain.getOverTimeAtr().value, domain.getWorkTypeCode().v(), domain.getSiftCode().v(),
 				domain.getWorkClockFrom1(), domain.getWorkClockTo1(), domain.getWorkClockFrom2(),
 				domain.getWorkClockTo2(), domain.getDivergenceReason(), domain.getFlexExessTime(),
-				domain.getOverTimeShiftNight(), overtimeInputs);
+				domain.getOverTimeShiftNight(), overtimeInputs, null);
 	}
 
 	private AppOverTime convertToDomain(KrqdtAppOvertime entity) {
@@ -83,7 +83,23 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 
 	@Override
 	public void update(AppOverTime appOverTime) {
-		// TODO Auto-generated method stub
+		String companyID = appOverTime.getCompanyID();
+		String appID = appOverTime.getAppID();
+		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID), KrqdtAppOvertime.class);
+		if(!opKrqdtAppOvertime.isPresent()){
+			throw new RuntimeException("khong ton tai doi tuong de update");
+		}
+		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
+		krqdtAppOvertime.fromDomainValue(appOverTime);
+		this.commandProxy().update(krqdtAppOvertime);
+	}
+
+	@Override
+	public void delete(String companyID, String appID) {
+		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID), KrqdtAppOvertime.class);
+		if(!opKrqdtAppOvertime.isPresent()){
+			throw new RuntimeException("khong ton tai doi tuong de xoa");
+		}
 		
 	}
 

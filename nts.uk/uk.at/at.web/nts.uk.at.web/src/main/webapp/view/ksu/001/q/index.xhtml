@@ -1,3 +1,21 @@
 <div id="contents-area cf">
-	<button style="margin: 10px 0 10px 350px" data-bind="click: openDialogJA">OPEN DIALOG JA</button>
+	<div id="tab-panel"
+		data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical'}">
+		<div class="tab-content-1">
+			<div id="part-1">
+				<div class="bg-green caret-background caret-bottom cf">
+					<a class="hyperlink" href="#">病棟用</a> <a class="hyperlink" href="#">グループ2</a>
+					<a class="hyperlink" href="#">グループ3</a> <a class="hyperlink"
+						href="#">グループ4</a> <a class="hyperlink" href="#">グループ5</a> <a
+						class="hyperlink" href="#">グループ6</a> <a class="hyperlink" href="#">グループ7</a>
+					<a class="hyperlink" href="#">グループ8</a> <a class="hyperlink"
+						href="#">グループ9</a> <a class="hyperlink" href="#">グループ10</a>
+				</div>
+				<div data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KSU001_1601')}' }"></div>
+				<button data-bind="click: openDialogJA">#{i18n.getText('KSU001_1602')}</button>
+			</div>
+			<div id="test2"></div>
+		</div>
+		<div class="tab-content-2"></div>
+	</div>
 </div>

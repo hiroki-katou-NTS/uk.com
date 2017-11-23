@@ -1,7 +1,6 @@
 ﻿package nts.uk.ctx.at.request.app.command.application.workchange;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,10 +24,6 @@ import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 
 @Stateless
@@ -59,9 +54,9 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		String applicantSID = AppContexts.user().employeeId();
 
 		// Phase list
-		List<AppApprovalPhase> pharseList = getAppApprovalPhaseList(approvalPhaseCommand, companyId, appID);
+		List<AppApprovalPhase> pharseList = ApprovalPhaseUtils.convertToDomain(approvalPhaseCommand, companyId, appID);
 
-		// Create Application domain
+		// 申請
 		Application app = new Application(companyId, appID,
 				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), GeneralDateTime.now(), persionId,
 				new AppReason(appCommand.getReversionReason()), appCommand.getApplicationDate(),
@@ -72,7 +67,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
 				appCommand.getApplicationDate(), appCommand.getApplicationDate(), pharseList);
 
-		// Work Change Domain
+		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(workChangeCommand.getCid(),
 				workChangeCommand.getAppId(), workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),
 				workChangeCommand.getExcludeHolidayAtr(), workChangeCommand.getWorkChangeAtr(),
@@ -83,48 +78,5 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				workChangeCommand.getGoWorkAtr2(), workChangeCommand.getBackHomeAtr2());
 
 		return workChangeRegisterService.registerData(workChangeDomain, app);
-	}
-
-	/**
-	 * Convert Phase command list to Approve Phase list
-	 * 
-	 * @param List<AppApprovalPhaseCmd> : Phase list
-	 * @param companyId: 会社ID
-	 * @param appID: 申請ID
-	 * @return
-	 */
-	private List<AppApprovalPhase> getAppApprovalPhaseList(List<AppApprovalPhaseCmd> approvalPhaseCommand,
-			String companyId, String appID) {
-		List<AppApprovalPhase> listAppApprovalPhase = approvalPhaseCommand.stream()
-				.map(appApprovalPhaseCmd -> new AppApprovalPhase(companyId, appID, IdentifierUtil.randomUniqueId(),
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class),
-						appApprovalPhaseCmd.dispOrder,
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class),
-						appApprovalPhaseCmd.getListFrame().stream()
-								.map(approvalFrame -> new ApprovalFrame(companyId, IdentifierUtil.randomUniqueId(),
-										approvalFrame.dispOrder, approvalFrame.listApproveAccepted.stream()
-												.map(approveAccepted -> ApproveAccepted.createFromJavaType(companyId,
-														IdentifierUtil.randomUniqueId(), approveAccepted.approverSID,
-														ApprovalAtr.UNAPPROVED.value, approveAccepted.confirmATR, null,
-														approveAccepted.reason, approveAccepted.representerSID))
-												.collect(Collectors.toList())))
-								.collect(Collectors.toList())))
-				.collect(Collectors.toList());
-		//
-		listAppApprovalPhase.forEach(appApprovalPhase -> {
-			appApprovalPhase.setAppID(appID);
-			String phaseID = appApprovalPhase.getPhaseID();
-			appApprovalPhase.setPhaseID(phaseID);
-			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
-				String frameID = approvalFrame.getFrameID();
-				approvalFrame.setFrameID(frameID);
-				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
-					String appAcceptedID = appAccepted.getAppAcceptedID();
-					appAccepted.setAppAcceptedID(appAcceptedID);
-				});
-			});
-		});
-
-		return listAppApprovalPhase;
 	}
 }

@@ -129,7 +129,7 @@
 					<td class="help-btn-item">
 						<button class="formula-setting-btn" data-bind="click: $parent.openDialog.bind($parent, itemCd(), settingMethod(), attribute(), itemName())"></button>
 					</td>
-					<td class="formula-item"><div data-bind="ntsText: { value: formula }"></div></td>
+					<td class="formula-item"><p class="formula-text" data-bind="text: formula"></p></td>
 					<td class="display-atr-item">
 						<div class="display-atr" data-bind="ntsComboBox: {
 							options: $parent.cbxDisplayAtr,

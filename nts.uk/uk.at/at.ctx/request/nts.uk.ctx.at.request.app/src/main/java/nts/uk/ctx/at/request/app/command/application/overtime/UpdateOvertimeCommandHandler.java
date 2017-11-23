@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeCommand>{
 
 	@Inject
@@ -46,10 +48,10 @@ public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeC
 		}
 		AppOverTime appOverTime = opAppOverTime.get();
 		List<OverTimeInput> overTimeInputs = new ArrayList<>();
-		overTimeInputs.addAll(command.getRestTime().stream().map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getOvertimeHours().stream().map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getBreakTimes().stream().map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getBonusTimes().stream().map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		
 		appOverTime.setDivergenceReason(command.getDivergenceReasonContent());
 		appOverTime.setFlexExessTime(command.getFlexExessTime());

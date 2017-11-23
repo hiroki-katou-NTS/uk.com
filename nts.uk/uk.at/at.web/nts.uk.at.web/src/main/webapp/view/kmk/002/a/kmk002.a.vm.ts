@@ -95,6 +95,9 @@ module nts.uk.at.view.kmk002.a {
             hasChanged: boolean;
             isUsed: KnockoutObservable<boolean>;
             checkedAllFormula: KnockoutObservable<boolean>;
+            isTimeSelected: KnockoutObservable<boolean>;
+            isNumberSelected: KnockoutObservable<boolean>;
+            isAmountSelected: KnockoutObservable<boolean>;
             isCheckedFromChild = false;
 
             // stash
@@ -112,11 +115,16 @@ module nts.uk.at.view.kmk002.a {
                 this.calcResultRange = new CalculationResultRange();
                 this.calcFormulas = ko.observableArray<Formula>([]);
                 this.applyFormula = ko.observable('');
+                this.selectedFormulaAbove = 0;
+                this.selectedFormulaBelow = 0;
+
+                // flags
                 this.hasChanged = false;
                 this.isUsed = ko.observable(false);
                 this.checkedAllFormula = ko.observable(false);
-                this.selectedFormulaAbove = 0;
-                this.selectedFormulaBelow = 0;
+                this.isTimeSelected = ko.observable(false);
+                this.isAmountSelected = ko.observable(false);
+                this.isNumberSelected = ko.observable(false);
 
                 // init datasource
                 this.initDatasource();
@@ -233,7 +241,7 @@ module nts.uk.at.view.kmk002.a {
                     // if value change because of select new optional item
                     // or new value == value in stash
                     // then do nothing
-                    if (self.hasChanged || self.performanceAtr() == self.performanceAtrStash) {
+                    if (self.hasChanged || value == self.performanceAtrStash) {
                         Formula.performanceAtr = value; // param for screen C
                         return;
                     }
@@ -247,12 +255,15 @@ module nts.uk.at.view.kmk002.a {
                             self.removeAllFormulas();
 
                             // save new value to stash
-                            self.performanceAtrStash = self.performanceAtr();
+                            self.performanceAtrStash = value;
 
                         }).ifNo(() => {
                             // get old value from stash
                             self.performanceAtr(self.performanceAtrStash);
                         });
+                    } else {
+                        // save new value to stash
+                        self.performanceAtrStash = value;
                     }
                 });
 
@@ -262,7 +273,7 @@ module nts.uk.at.view.kmk002.a {
                     // if value change because of select new optional item
                     // or new value == value in stash
                     // then do nothing
-                    if (self.hasChanged || self.optionalItemAtr() == self.optionalItemAtrStash) {
+                    if (self.hasChanged || value == self.optionalItemAtrStash) {
                         return;
                     }
 
@@ -276,13 +287,18 @@ module nts.uk.at.view.kmk002.a {
                             // reset calc result range.
                             self.calcResultRange.resetValue();
 
+                            self.checkSelectedAtr();
+
                             // save new value to stash
-                            self.optionalItemAtrStash = self.optionalItemAtr();
+                            self.optionalItemAtrStash = value;
 
                         }).ifNo(() => {
                             // get old value from stash
                             self.optionalItemAtr(self.optionalItemAtrStash);
                         });
+                    } else {
+                        // save new value to stash
+                        self.optionalItemAtrStash = value;
                     }
                 });
             }
@@ -864,27 +880,25 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Check whether time atr is selected
+             * Check selected optional attribute
              */
-            public isTimeSelected(): boolean {
+            public checkSelectedAtr(): void {
                 let self = this;
-                return self.optionalItemAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.itemAtr);
-            }
-
-            /**
-             * Check whether number atr is selected
-             */
-            public isNumberSelected(): boolean {
-                let self = this;
-                return self.optionalItemAtr() == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_OPT_ITEM.itemAtr);
-            }
-
-            /**
-             * Check whether amount atr is selected
-             */
-            public isAmountSelected(): boolean {
-                let self = this;
-                return self.optionalItemAtr() == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.itemAtr);
+                if (self.optionalItemAtr() == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.itemAtr)) {
+                    self.isTimeSelected(false);
+                    self.isNumberSelected(false);
+                    self.isAmountSelected(true);
+                }
+                if (self.optionalItemAtr() == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_OPT_ITEM.itemAtr)) {
+                    self.isTimeSelected(false);
+                    self.isNumberSelected(true);
+                    self.isAmountSelected(false);
+                }
+                if (self.optionalItemAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.itemAtr)) {
+                    self.isTimeSelected(true);
+                    self.isNumberSelected(false);
+                    self.isAmountSelected(false);
+                }
             }
 
             /**
@@ -1005,14 +1019,29 @@ module nts.uk.at.view.kmk002.a {
              */
             public resetValue(): void {
                 let self = this;
-                this.upperCheck(false);
-                this.lowerCheck(false);
-                this.numberUpper(null);
-                this.numberLower(null);
-                this.amountUpper(null);
-                this.amountLower(null);
-                this.timeUpper(null);
-                this.timeLower(null);
+                self.upperCheck(false);
+                self.lowerCheck(false);
+                self.numberUpper(null);
+                self.numberLower(null);
+                self.amountUpper(null);
+                self.amountLower(null);
+                self.timeUpper(null);
+                self.timeLower(null);
+
+                // clear error
+                self.clearError();
+            }
+
+            /**
+             * Clear input error
+             */
+            private clearError(): void {
+                $('#inp-upper-amount').ntsError('clear');
+                $('#inp-upper-number').ntsError('clear');
+                $('#inp-upper-time').ntsError('clear');
+                $('#inp-lower-amount').ntsError('clear');
+                $('#inp-lower-number').ntsError('clear');
+                $('#inp-lower-time').ntsError('clear');
             }
 
             /**
@@ -1266,6 +1295,8 @@ module nts.uk.at.view.kmk002.a {
                         // focus optional item name input
                         $('#inpName').focus();
 
+                        self.optionalItem.checkSelectedAtr();
+
                         dfd.resolve();
 
                     }).always(() => nts.uk.ui.block.clear()); // clear block ui.
@@ -1338,8 +1369,8 @@ module nts.uk.at.view.kmk002.a {
             amountUnitDs: EnumConstantDto[];
             amountRoundingDs: EnumConstantDto[];
             timeUnitDs: EnumConstantDto[];
-            timeRoundingDailyDs: KnockoutObservableArray<EnumConstantDto>;
-            timeRoundingMonthlyDs: KnockoutObservableArray<EnumConstantDto>;
+            timeRoundingDailyDs: KnockoutComputed<Array<EnumConstantDto>>;
+            timeRoundingMonthlyDs: KnockoutComputed<Array<EnumConstantDto>>;
             timeRoundingFullDs: EnumConstantDto[];
             timeRoundingFilterdDs: EnumConstantDto[];
 
@@ -1402,12 +1433,48 @@ module nts.uk.at.view.kmk002.a {
                 self.timeRoundingFullDs = Enums.ENUM_OPT_ITEM.timeRounding.rounding;
                 self.timeRoundingFilterdDs = self.timeRoundingFullDs
                     .filter(item => item.fieldName != "ROUNDING_DOWN_OVER");
-                self.timeRoundingDailyDs = ko.observableArray(self.timeRoundingFullDs);
-                self.timeRoundingMonthlyDs = ko.observableArray(self.timeRoundingFullDs);
                 self.amountUnitDs = Enums.ENUM_OPT_ITEM.amountRounding.unit;
                 self.amountRoundingDs = Enums.ENUM_OPT_ITEM.amountRounding.rounding;
                 self.numberUnitDs = Enums.ENUM_OPT_ITEM.numberRounding.unit;
                 self.numberRoundingDs = Enums.ENUM_OPT_ITEM.numberRounding.rounding;
+
+                self.timeRoundingMonthlyDs = ko.computed(() => {
+                    if (self.isTimeUnit15or30(self.timeMonthlyUnit())) {
+                        // save new value to stash
+                        self.timeMonthlyUnitStash = self.timeMonthlyUnit();
+
+                        // show full data source
+                        return self.timeRoundingFullDs;
+
+                    } else {
+                        // save new value to stash
+                        self.timeMonthlyUnitStash = self.timeMonthlyUnit();
+
+                        // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
+                        // from data source list
+                        return self.timeRoundingFilterdDs;
+
+                    }
+                });
+
+                self.timeRoundingDailyDs = ko.computed(() => {
+                    if (self.isTimeUnit15or30(self.timeDailyUnit())) {
+                        // save new value to stash
+                        self.timeDailyUnitStash = self.timeDailyUnit();
+
+                        // show full data source
+                        return self.timeRoundingFullDs;
+
+                    } else {
+                        // save new value to stash
+                        self.timeDailyUnitStash = self.timeDailyUnit();
+
+                        // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
+                        // from data source list
+                        return self.timeRoundingFilterdDs;
+
+                    }
+                });
             }
 
             /**
@@ -1455,7 +1522,7 @@ module nts.uk.at.view.kmk002.a {
                 self.formulaAtr.subscribe(value => {
 
                     // if new value == value in stash then do nothing
-                    if (self.formulaAtr() == self.formulaAtrStash) {
+                    if (value == self.formulaAtrStash) {
                         return;
                     }
 
@@ -1466,11 +1533,14 @@ module nts.uk.at.view.kmk002.a {
                             self.clearFormulaSetting();
 
                             // save new value to stash
-                            self.formulaAtrStash = self.formulaAtr();
+                            self.formulaAtrStash = value;
                         }).ifNo(() => {
                             // get old value from stash
                             self.formulaAtr(self.formulaAtrStash);
                         });
+                    } else {
+                        // save new value to stash
+                        self.formulaAtrStash = value;
                     }
                 });
 
@@ -1478,7 +1548,7 @@ module nts.uk.at.view.kmk002.a {
                 self.calcAtr.subscribe(value => {
 
                     // if new value == value in stash then do nothing
-                    if (self.calcAtr() == self.calcAtrStash) {
+                    if (value == self.calcAtrStash) {
                         return;
                     }
 
@@ -1489,51 +1559,14 @@ module nts.uk.at.view.kmk002.a {
                             self.clearFormulaSetting();
 
                             // save new value to stash
-                            self.calcAtrStash = self.calcAtr();
+                            self.calcAtrStash = value;
                         }).ifNo(() => {
                             // get old value from stash
                             self.calcAtr(self.calcAtrStash);
                         });
-                    }
-                });
-
-                // event on selected time monthly unit changed
-                self.timeMonthlyUnit.subscribe(v => {
-                    if (self.isTimeUnit15or30(v)) {
-
-                        // show full data source
-                        self.timeRoundingMonthlyDs(self.timeRoundingFullDs);
-
-                        // save new value to stash
-                        self.timeMonthlyUnitStash = v;
                     } else {
-
-                        // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
-                        // from data source list
-                        self.timeRoundingMonthlyDs(self.timeRoundingFilterdDs);
-
                         // save new value to stash
-                        self.timeMonthlyUnitStash = v;
-                    }
-                });
-
-                // event on selected time daily unit changed
-                self.timeDailyUnit.subscribe(v => {
-                    if (self.isTimeUnit15or30(v)) {
-
-                        // show full data source
-                        self.timeRoundingDailyDs(self.timeRoundingFullDs);
-
-                        // save new value to stash
-                        self.timeDailyUnitStash = v;
-                    } else {
-
-                        // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
-                        // from data source list
-                        self.timeRoundingDailyDs(self.timeRoundingFilterdDs);
-
-                        // save new value to stash
-                        self.timeDailyUnitStash = v;
+                        self.calcAtrStash = value;
                     }
                 });
 

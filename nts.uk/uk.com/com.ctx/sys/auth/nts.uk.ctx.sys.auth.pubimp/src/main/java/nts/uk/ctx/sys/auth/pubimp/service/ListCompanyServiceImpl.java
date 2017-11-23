@@ -13,8 +13,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.employee.dto.EmployeeImport;
-import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
-import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.pub.service.ListCompanyService;

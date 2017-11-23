@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OverTimeDto {
+	private Long version;
 	/**
 	 * application
 	 */
@@ -177,7 +178,8 @@ public class OverTimeDto {
 	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
-				null, 
+				appOverTime.getVersion(),
+				ApplicationDto.fromDomain(appOverTime.getApplication()), 
 				appOverTime.getCompanyID(), 
 				appOverTime.getAppID(), 
 				"", 

@@ -25,7 +25,7 @@ public class PpemtPersonItemAuth extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "OTHER_PERSON_AUTH_TYPE")
-	public int otherPersonAuth;
+	public int otherPersonAuthType;
 
 	@Basic(optional = false)
 	@Column(name = "SELF_AUTH_TYPE")
@@ -37,7 +37,7 @@ public class PpemtPersonItemAuth extends UkJpaEntity implements Serializable {
 	}
 
 	public PpemtPersonItemAuth updateFromDomain(PersonInfoItemAuth domain) {
-		this.otherPersonAuth = domain.getOtherAuth().value;
+		this.otherPersonAuthType = domain.getOtherAuth().value;
 		this.selfAuthType = domain.getSelfAuth().value;
 		return this;
 	}

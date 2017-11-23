@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
@@ -39,6 +40,7 @@ import nts.uk.ctx.bs.person.infra.entity.person.info.item.PpemtPerInfoItemCmPK;
 import nts.uk.ctx.bs.person.infra.entity.person.info.item.PpemtPerInfoItemOrder;
 import nts.uk.ctx.bs.person.infra.entity.person.info.item.PpemtPerInfoItemPK;
 import nts.uk.ctx.bs.person.infra.entity.person.info.setting.copy.PpestEmployeeCopySettingItem;
+import nts.uk.ctx.bs.person.infra.entity.person.info.setting.copy.PpestEmployeeCopySettingItemPk;
 
 @Stateless
 @Transactional
@@ -183,10 +185,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " JOIN PpemtPerInfoCtg c ON c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId "
 			+ " WHERE s.PpestEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
 
-	private final static String REMOVE_PERINFOITEM_IN_COPYITEM = "DELETE i FROM PpestEmployeeCopySettingItem i"
-			+ " JOIN PpemtPerInfoCtg c ON c.ppemtPerInfoCtgPK.perInfoCtgId = i.categoryId "
-			+ " WHERE i.categoryId = :categoryId AND c.cid = :companyId";
-
 	private final static String SELECT_PER_ITEM_BY_CTG_ID_AND_ORDER = "SELECT i "
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemOrder io"
@@ -207,6 +205,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL AND ic.fixedAtr = 0"
 			+ " ORDER BY io.disporder";
+
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -218,7 +217,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd) {
-		return  this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
+		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoItemDefId).getSingle(i -> {
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
@@ -654,19 +653,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public void removePerInfoItemInCopySetting(String perInforCtgId, String companyId) {
-		getEntityManager().createQuery(REMOVE_PERINFOITEM_IN_COPYITEM).setParameter("", perInforCtgId)
-				.setParameter("", companyId).executeUpdate();
+	public void removePerInfoItemInCopySetting(String itemId) {
+		this.commandProxy().remove(PpestEmployeeCopySettingItem.class, new PpestEmployeeCopySettingItemPk(itemId));
 	}
 
 	@Override
 	public void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds) {
-		PpestEmployeeCopySettingItem obj;
 		for (String perInfoItemDefId : perInfoItemDefIds) {
-			obj = new PpestEmployeeCopySettingItem();
-			obj.PpestEmployeeCopySettingItemPk.perInfoItemDefId = perInfoItemDefId;
-			obj.categoryId = perInforCtgId;
-			getEntityManager().persist(obj);
+			val entity = new PpestEmployeeCopySettingItem(new PpestEmployeeCopySettingItemPk(perInfoItemDefId),
+					perInforCtgId);
+			this.commandProxy().insert(entity);
 		}
 	}
 
@@ -679,15 +675,18 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 							String.valueOf(i[1]));
 				});
 	}
+
 	// vinhpx end
 	/**
-	 * getNotFixedPerInfoItemDefByCategoryId 
+	 * getNotFixedPerInfoItemDefByCategoryId
+	 * 
 	 * @param perInfoCategoryId
 	 * @param contractCd
 	 * @return
 	 */
 	@Override
-	public List<PersonInfoItemDefinition> getNotFixedPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd){
+	public List<PersonInfoItemDefinition> getNotFixedPerInfoItemDefByCategoryId(String perInfoCtgId,
+			String contractCd) {
 		return this.queryProxy().query(SELECT_NOT_FIXED_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
 					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));

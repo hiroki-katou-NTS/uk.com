@@ -22,16 +22,25 @@ public class ScEmploymentStatusAdapterImpl implements ScEmploymentStatusAdapter 
 	/** The employment status pub. */
 	@Inject
 	private StatusOfEmploymentPub employmentStatusPub;
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.adapter.ScEmploymentStatusAdapter#getStatusEmployment(java.lang.String, nts.arc.time.GeneralDate)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.adapter.ScEmploymentStatusAdapter#
+	 * getStatusEmployment(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
 	public EmploymentStatusDto getStatusEmployment(String employeeId, GeneralDate baseDate) {
 		return this.toDto(this.employmentStatusPub.getStatusOfEmployment(employeeId, baseDate));
 	}
-	
-	private EmploymentStatusDto toDto(StatusOfEmploymentExport export){
+
+	/**
+	 * To dto.
+	 *
+	 * @param export the export
+	 * @return the employment status dto
+	 */
+	private EmploymentStatusDto toDto(StatusOfEmploymentExport export) {
 		EmploymentStatusDto dto = new EmploymentStatusDto();
 		dto.setEmployeeId(export.getEmployeeId());
 		dto.setLeaveHolidayType(export.getLeaveHolidayType());

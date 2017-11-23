@@ -114,9 +114,11 @@ public class JpaCurrentAddressRepository extends JpaRepository implements Curren
 	public void updateCurrentAddress(CurrentAddress currentAddress) {
 		// Get from entity
 		Optional<BpsmtCurrentaddress> existItem = getCurrentAddressById(currentAddress.getCurrentAddressId());
+		
 		if (!existItem.isPresent()) {
-			return;
+			throw new RuntimeException("invalid currentAddress");
 		}
+		
 		// Update entity
 		updateEntity(currentAddress, existItem.get());
 

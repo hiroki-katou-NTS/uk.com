@@ -37,5 +37,5 @@ public class RoleSetCommand {
 	private String salaryRoleCd;
 	
 	/** List of web menu code **/
-	private List<String> webMenuCds;
+	private List<WebMenuCommand> webMenus;
 }
