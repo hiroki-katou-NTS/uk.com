@@ -73,7 +73,7 @@ public class BpsmtPerson extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = true)
 	@Column(name = "TODOKEDE_FNAME_KANA")
-	public String todokedeFullNameKana;
+	public String todokedeOldFullNameKana;
 	
 	@Basic(optional = true)
 	@Column(name = "OLDNAME_FNAME")
