@@ -1013,7 +1013,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 return;
                             }
                             
-                            if(self.calculatorItems()[i].itemCd() == self.dataG.verticalId) {
+                            if(self.calculatorItems()[i].itemCd() == self.dataG.verticalCalItemId) {
                                 self.calculatorItems()[i].unitPrice = self.dataG;
                                 var formulaResult = self.formulaGeneration(itemName, settingMethod, attribute, i, self.dataG, "", false);
                                 self.calculatorItems()[i].formula(formulaResult);
@@ -1068,7 +1068,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     if(beforeFormula != "") {
                         formulaResult = beforeFormula + " " + text1 + " " + operator + " " + text2;
                     } else {
-                        formulaResult = self.calculatorItems()[index - 1].formula() + " " + text1 + " " + operator + " " + text2;
+                        formulaResult = self.allItemsData[index - 1].formula() + " " + text1 + " " + operator + " " + text2;
                     }                    
                 } else {
                     formulaResult = nts.uk.resource.getText("KML002_153");
@@ -1077,11 +1077,20 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 // 平均単価
                 if(attribute == 4) {
                     // If is first item
+                    var unitPrices = [
+                        { uPCd: 0, uPName: nts.uk.resource.getText("KML002_53") },
+                        { uPCd: 1, uPName: nts.uk.resource.getText("KML002_54") },
+                        { uPCd: 2, uPName: nts.uk.resource.getText("KML002_55") },
+                        { uPCd: 3, uPName: nts.uk.resource.getText("KML002_56") },  
+                        { uPCd: 4, uPName: nts.uk.resource.getText("KML002_57") }
+                    ];
+                    var unit = _.find(unitPrices, function(o) { return o.uPCd == data.unitPrice; });
+                    
                     if(index == 0) {
-                        formulaResult = data.unitName;
+                        formulaResult = data.unitName != null ? data.unitName : unit.uPName;
                     } else {
-                        formulaResult = beforeFormula != "" ? beforeFormula : self.calculatorItems()[index - 1].formula() 
-                                            + " " + nts.uk.resource.getText("KML002_37") + " " + data.unitName;
+                        formulaResult = (beforeFormula != "" ? beforeFormula : self.allItemsData[index - 1].formula()) + " " + nts.uk.resource.getText("KML002_37") 
+                                            + " " + (data.unitName != null ? data.unitName : unit.uPName);
                     }
                 } else { // Other attributes
                     // If is first item
