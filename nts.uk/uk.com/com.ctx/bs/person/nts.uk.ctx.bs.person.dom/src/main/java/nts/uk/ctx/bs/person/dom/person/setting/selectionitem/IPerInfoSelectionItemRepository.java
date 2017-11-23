@@ -16,4 +16,13 @@ public interface IPerInfoSelectionItemRepository {
 	Optional<PerInfoSelectionItem> getSelectionItemBySelectionItemId(String selectionItemId);
 
 	Optional<PerInfoSelectionItem> getSelectionItemByName(String selectionItemName);
+	
+	/**
+	 * getAllSelection
+	 * @return List<PerInfoSelectionItem>
+	 */
+	List<PerInfoSelectionItem> getAllSelection();
+	
+	//Lanlt
+	
 }

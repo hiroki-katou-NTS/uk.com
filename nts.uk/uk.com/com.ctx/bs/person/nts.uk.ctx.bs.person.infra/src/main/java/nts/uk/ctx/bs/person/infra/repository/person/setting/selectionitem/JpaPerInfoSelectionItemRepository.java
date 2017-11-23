@@ -72,5 +72,13 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 				domain.getFormatSelection().getSelectionCodeCharacter().value, domain.getMemo().v());
 
 	}
+	
+	//Lanlt
+	@Override
+	public List<PerInfoSelectionItem> getAllSelection() {
+		return this.queryProxy().query(SELECT_ALL, PpemtSelectionItem.class)
+				.getList(c -> toDomain(c));
+	}
+	//Lanlt
 
 }
