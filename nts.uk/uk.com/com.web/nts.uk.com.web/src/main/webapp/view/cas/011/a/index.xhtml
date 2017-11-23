@@ -20,7 +20,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_001" tabindex="1" data-bind="click: createNewRoleSetMode,
+				<button id="A1_001" tabindex="1" data-bind="click: settingUpdateMode,
 						enable: !isNewMode()" >#{i18n.getText('CAS011_4')}</button>
 				<button id="A1_002" class="proceed" tabindex="2" data-bind="click: saveRoleSet, enable: $root.errors.isEmpty">#{i18n.getText('CAS011_5')}</button>
 				<button id="A1_003" class="danger" tabindex="3" data-bind="click: deleteRoleSet,

@@ -16,7 +16,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -68,7 +68,7 @@ public class UpdateRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
 
 		// step 2: register
 		listWebMenuCds.forEach(webMenuCd-> {
-			this.roleSetAndWebMenuAdapter.addRoleSetAndWebMenu(new RoleSetAndWebMenu(
+			this.roleSetAndWebMenuAdapter.addRoleSetAndWebMenu(new RoleSetAndWebMenuImport(
 					roleSetDom.getCompanyId()
 					, roleSetDom.getRoleSetCd().v()
 					, webMenuCd));

@@ -17,7 +17,7 @@ public interface RoleSetAndWebMenuPub {
 	 * @param roleSetCd
 	 * @return
 	 */
-	List<RoleSetWebMenuPubDto> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd);
+	List<RoleSetWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd);
 	
 	/**
 	 * Register RoleSet and WebMenu

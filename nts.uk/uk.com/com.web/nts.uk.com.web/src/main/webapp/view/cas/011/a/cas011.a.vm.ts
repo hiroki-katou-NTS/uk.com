@@ -8,8 +8,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
     export class ScreenModel {
         //list of Role Set
-        listRoleSets: KnockoutObservableArray<RoleSet> = ko.observableArray([]);
-        listWebMenus: KnockoutObservableArray<WebMenu> = ko.observableArray([]);
+        listRoleSets: KnockoutObservableArray<IRoleSet> = ko.observableArray([]);
+        listWebMenus: KnockoutObservableArray<IWebMenu> = ko.observableArray([]);
 
         currentRoleSet: KnockoutObservable<RoleSet> = ko.observable(new RoleSet({
             roleSetCd: ''
@@ -31,9 +31,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
         constructor() {
             let self = this,
-            currentRoleSet: IRoleSet = self.currentRoleSet();
+            currentRoleSet: RoleSet = self.currentRoleSet();
 
-            
             // A2_003, A2_004, A2_005, A2_006 
             self.gridColumns = ko.observableArray([
                                                 {headerText: resource.getText('CAS011_09'), key: 'roleSetCd', formatter: _.escape, width: 40},
@@ -58,17 +57,17 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 errors.clearAll();
                 if (roleSetCd) {
                     service.getRoleSetByRoleSetCd(roleSetCd).done ((_roleSet : IRoleSet) => {
-                        if (_roleSet) {
+                        if (_roleSet && _roleSet.roleSetCd) {
                             self.createCurrentRoleSet(_roleSet);
-                            self.isNewMode(false);
+                            self.settingUpdateMode(_roleSet.roleSetCd);
                         } else {
                             //TODO???
-                            self.currentRoleSet.roleSetCd('');
+                            self.settingCreateMode();
                         }
                     });
                 } else {
-                    self.isNewMode(true);
                     self.createNewCurrentRoleSet();
+                    self.settingCreateMode();
                 }
                 self.setFocus();
             });
@@ -85,35 +84,69 @@ module nts.uk.com.view.cas011.a.viewmodel {
             
             listRoleSets.removeAll();
             errors.clearAll();
-            
-            //実行時情報をチェックする
-            
-            /*
-            service.getLoginUserCompanyId().done((companyId : any) => {
-               if (companyId === null) {
-                    // TODO back to previous page - トップページに戻る
+                     
+            // 実行時情報をチェックする- check runtime
 
-                    return; 
-                } 
-            });
-            */
-            // アルゴリズム「ロールセットをすべて取得する」を実行する
-            
-            
-           service.getAllRoleSets().done((itemList: Array<IRoleSet>) => {
-              
+            if (!self.checkRuntime()) {
+                self.backToTopPage();
+                return;
+            }
+
+           return dfd.promise();
+        }  
+ 
+        /**
+         * アルゴリズム「ロールセットをすべて取得する」を実行する - Process check runtime at start
+         */
+        checkRuntime(deferred : any) : boolean {
+            let self = this;
+            var retChk : boolean = true;
+            service.getLoginUserCompanyId().done((companyId : any) => {
+                if (!companyId || companyId === 'undefined') {
+                    retChk = false;
+                 } else {
+                     // initial screen
+                     self.initialScreen(deferred);
+                 }
+                dialog.info("checkRuntime 1: " + retChk);
+             }).fail(error => {
+                 retChk = false;
+             });
+
+            dialog.info("checkRuntime 2: " + retChk);
+             return retChk;
+        }
+        
+        /**
+         * back to top page - トップページに戻る
+         */
+        backToTopPage() {
+            windows.sub.modeless("/view/ccg/008/a/index.xhtml");
+        }
+
+        /**
+         * Initial screen
+         * - アルゴリズム「ロールセットをすべて取得する」を実行する - Execute the algorithm Get All Roll Sets
+         * - 先頭のロールセットを選択する - Select the first roll set
+         * - 画面を新規モードで起動する - Start screen in new mode
+         */
+        initialScreen(deferred : any) {
+            let self = this,
+            currentRoleSet: RoleSet = self.currentRoleSet(),
+            listRoleSets = self.listRoleSets,
+            service.getAllRoleSets().done((itemList: Array<IRoleSet>) => {
+                
                 // in case number of RoleSet is greater then 0
                 if (itemList && itemList.length > 0) {
-
                     self.listRoleSets(itemList);
                     // 先頭のロールセットを選択する
                     
-                    self.settingSelectedRoleSet();
+                    self.settingUpdateMode(self.listRoleSets()[0].roleSetCd);
 
                 } else { //in case number of RoleSet is zero
                     //画面を新規モードで起動する
 
-                    self.createNewRoleSetMode();
+                    self.settingCreateMode();
                 }
 
                 dfd.resolve();
@@ -121,35 +154,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
             }).fail(error => {
               //画面を新規モードで起動する
 
-                self.createNewRoleSetMode();
+                self.settingCreateMode();
             });
-           self.setFocus();
-            return dfd.promise();
-        }  
- 
-         /**
-          * Setting selected role set.
-         */
-        settingSelectedRoleSet(selectedRoleSetCd? : String) {
-            let self = this,
-                currentRoleSet: IRoleSet = self.currentRoleSet(),
-                listRoleSets = self.listRoleSets;
-            if (self.listRoleSets &&  self.listRoleSets.length > 0) {
-                if (!selectedRoleSetCd) {
-                    self.currentRoleSet.roleSetCd(self.listRoleSets()[0].roleSetCd);
-                } else {
-                    let _item: IRoleSet = _.find(ko.toJS(self.listRoleSets), (x: IRoleSet) => x.roleSetCd == selectedRoleSetCd);
-                    if (_item) {
-                        self.currentRoleSet.roleSetCd(_item.roleSetCd);
-                    } else {
-                        self.currentRoleSet.roleSetCd(self.listRoleSets()[0].roleSetCd);
-                    }
-                }
-            } else {
-                self.currentRoleSet.roleSetCd('');
-            }
         }
-        
         /**
          * Save
          */
@@ -161,10 +168,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 if (self.isNewMode()) {
                     // create new role set
                     service.addRoleSet(ko.toJS(self.currentRoleSet())).done((roleSetCd) => {
-                        self.currentRoleSet().roleSetCd(roleSetCd);
                         dialog.info({ messageId: "Msg_15" });
-                        self.isNewMode(false);
-                        $('#inpRoleSetName').focus();
+                        self.settingUpdateMode(roleSetCd);
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_583') {
                             //$('#ctrSelectionMenu').ntsError('set', error);
@@ -177,8 +182,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     // update
                     service.updateRoleSet(ko.toJS(self.currentRoleSet())).done((roleSetCd) => {
                         dialog.info({ messageId: "Msg_15" });
-                        //self.currentRoleSet().roleSetCd(roleSetCd);
-                        $('#inpRoleSetCd').focus();
+                        self.settingUpdateMode(roleSetCd);
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_583') {
                           //$('#ctrSelectionMenu').ntsError('set', error);
@@ -216,10 +220,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
                                 index = self.listRoleSets().length - 1;
                             }
                             if (self.listRoleSets().length > 0) {
-                                self.currentRoleSet.roleSetCd(self.listRoleSets()[index].roleSetCd);
+                                self.settingUpdateMode(self.listRoleSets()[index].roleSetCd);
                             } else {
-                                self.isNewMode(true);
-                                self.currentRoleSet.roleSetCd('');
+                                self.settingCreateMode();
                             }
                         }
                         
@@ -230,9 +233,11 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     });
                 };
             });
-            self.setFocus();
         }
-        
+
+        /**
+         * setting focus base on screen mode
+         */
         setFocus() {
             let self = this;
             if (self.isNewMode()) {
@@ -248,7 +253,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
         openDialogCLD025(rlType: number) {
             dialog.info("RoleType: " + rlType);
             let self = this,
-            currentRoleSet: IRoleSet = self.currentRoleSet;
+            currentRoleSet: RoleSet = self.currentRoleSet();
             
             if (!rlType && rlType < 0) {
                 return;
@@ -256,7 +261,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
             block.invisible();
 
             windows.setShared('roleType', rlType); //TODO - using IModel???
-            //windows.setShared('selectedRoleId', selectedRoleId);
 
             windows.sub.modal('/view/ccg/025/index.xhtml', { title: '' }).onClosed(function(): any {
                 var rlId = windows.setShared('roleId');
@@ -304,7 +308,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     dialog.info("NO ROLE TYPE" + rlId + " - " + rlName);
                     break;
                 }
-                //block.clear();
+                block.clear();
             });
 
         }
@@ -315,15 +319,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
         */
 
        openDialogSettingC() {
-           /*
-           let self = this,
-               currentRoleSet: RoleSet = this.currentRoleSet();
-
-           if (!currentRoleSet && !currentRoleSet.roleSetCd) {
-               return;
-           }
-           windows.setShared('roleSetCd', currentRoleSet.roleSetCd);
-           */
            block.invisible();
            windows.sub.modal('/view/cas/011/c/index.xhtml', { title: '' }).onClosed(function(): any {
                block.clear();
@@ -334,17 +329,38 @@ module nts.uk.com.view.cas011.a.viewmodel {
          * create a new Role Set
          * 画面を新規モードで起動する
          */
-        createNewRoleSetMode() {
+       settingCreateMode() {
             let self = this;
             
-            self.isNewMode(true);
+            // clear selected role set
             self.currentRoleSet().roleSetCd('');
+            
+            // Set new mode
+            self.isNewMode(true);
+            
+            // focus
+            self.setFocus();
         }
         
         /**
+         * Setting selected role set.
+        */
+       settingUpdateMode(selectedRoleSetCd) {
+           let self = this,
+               currentRoleSet: RoleSet = self.currentRoleSet();
+           //Setting selected Role set
+           self.currentRoleSet.roleSetCd(selectedRoleSetCd);
+
+           //Setting update mode
+           self.isNewMode(false);
+           
+           // set focus
+           self.setFocus();
+       }
+       
+        /**
          * BindNoData to currentRoleSet
          */
-
         createNewCurrentRoleSet() {
             let self = this,
                 currentRoleSet: RoleSet = self.currentRoleSet();
@@ -365,7 +381,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
          * BindData to currentRoleSet
          * @param _roleSet
          */
-
         createCurrentRoleSet(_roleSet: IRoleSet) {
             let self = this,
                 currentRoleSet: RoleSet = this.currentRoleSet(),
@@ -396,6 +411,10 @@ module nts.uk.com.view.cas011.a.viewmodel {
             $('#inpRoleSetCd').focus();
         }
  
+        /**
+         * Check and return true if the Web menu code existed in current selected web menu list.
+         * 
+         */
         isSelectedWebMenu = function(_webMenuCode : string) : boolean {
             let self = this,
             currentRoleSet: IRoleSet = this.currentRoleSet();
@@ -412,28 +431,12 @@ module nts.uk.com.view.cas011.a.viewmodel {
             }
             return false;
         }
-         /**
-          * Get role from server by roleId
-         */
-
-        getRoleById = function(_roleId? :string ) : IRole {
-            if (_roleId) {
-                return service.getRoleById(_roleId).done ((_role : IRole) => {
-                    return _role;
-                });           
-            } else {
-                var role: Role = {
-                        roleId: '',
-                        roleName: '',
-                        roleType: null
-                    };
-                return role;
-            }
-        }
-        
-        
     }
 
+    
+    /**
+     * The enum of ROLE TYPE 
+     */
     export enum ROLE_TYPE {
         EMPLOYMENT = 0,
         HR,
@@ -443,7 +446,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
         OFFICE_HELPER
     }
 
-    // Role
+    // The Role
     export interface IRole {
         roleId: string;
         roleName: string;
@@ -463,7 +466,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
         }
     }
 
-    // Web menu
+    // The Web menu
     export interface IWebMenu {
         webMenuCode: string;
         webMenuName: string;
@@ -480,31 +483,31 @@ module nts.uk.com.view.cas011.a.viewmodel {
         }
     }
 
-    //Role Set
+    // The Role Set
     export interface IRoleSet {
         roleSetCd: string;
         roleSetName: string;
         approvalAuthority: boolean;
-        employmentRole: IRole;
-        hRRole: IRole;
-        salaryRole: IRole;
-        personInfRole: IRole;
-        myNumberRole: IRole;
-        officeHelperRole: IRole;
-        webMenus: Array<IWebMenu>;
+        employmentRole: Role;
+        hRRole: Role;
+        salaryRole: Role;
+        personInfRole: Role;
+        myNumberRole: Role;
+        officeHelperRole: Role;
+        webMenus: Array<WebMenu>;
     }
 
     export class RoleSet {
         roleSetCd: KnockoutObservable<string> = ko.observable('');
         roleSetName: KnockoutObservable<string> = ko.observable('');
         approvalAuthority: KnockoutObservable<boolean> = ko.observable(false);
-        employmentRole: KnockoutObservable<IRole> = ko.observable(null);
-        hRRole: KnockoutObservable<IRole> = ko.observable(null);
-        salaryRole: KnockoutObservable<IRole> = ko.observable(null);
-        personInfRole:KnockoutObservable<IRole> = ko.observable(null);
-        myNumberRole:KnockoutObservable<IRole> = ko.observable(null);    
-        officeHelperRole : KnockoutObservable<IRole> = ko.observable(null);   
-        webMenus: KnockoutObservableArray<IWebMenu> = ko.observable(null);
+        employmentRole: KnockoutObservable<Role> = ko.observable(null);
+        hRRole: KnockoutObservable<Role> = ko.observable(null);
+        salaryRole: KnockoutObservable<Role> = ko.observable(null);
+        personInfRole:KnockoutObservable<Role> = ko.observable(null);
+        myNumberRole:KnockoutObservable<Role> = ko.observable(null);    
+        officeHelperRole : KnockoutObservable<Role> = ko.observable(null);   
+        webMenus: KnockoutObservableArray<WebMenu> = ko.observableArray([]);
 
         constructor(param: IRoleSet) {
             let self = this;
@@ -512,15 +515,15 @@ module nts.uk.com.view.cas011.a.viewmodel {
             self.roleSetName(param.roleSetName || '');
             self.approvalAuthority(param.approvalAuthority || true);
             self.employmentRole(param.employmentRole || new Role({
-                                                                    roleId: ''
-                                                                    , roleName: ''
-                                                                    , roleType: ROLE_TYPE.EMPLOYMENT
-                                                                        }));
+                                                            roleId: ''
+                                                            , roleName: ''
+                                                            , roleType: ROLE_TYPE.EMPLOYMENT
+                                                                }));
             self.hRRole(param.hRRole || new Role({
-                                                    roleId: ''
-                                                    , roleName: ''
-                                                    , roleType: ROLE_TYPE.HR
-                                                        }));
+                                                            roleId: ''
+                                                            , roleName: ''
+                                                            , roleType: ROLE_TYPE.HR
+                                                                }));
             self.salaryRole(param.salaryRole || new Role({
                                                             roleId: ''
                                                             , roleName: ''
@@ -537,10 +540,10 @@ module nts.uk.com.view.cas011.a.viewmodel {
                                                                 , roleType: ROLE_TYPE.MY_NUMBER
                                                                     }));
             self.officeHelperRole(param.officeHelperRole || new Role({
-                                                                        roleId: ''
-                                                                        , roleName: ''
-                                                                        , roleType: ROLE_TYPE.OFFICE_HELPER
-                                                                            }));
+                                                                roleId: ''
+                                                                , roleName: ''
+                                                                , roleType: ROLE_TYPE.OFFICE_HELPER
+                                                                    }));
             self.webMenus(param.webMenus || new Array());            
         }
     }

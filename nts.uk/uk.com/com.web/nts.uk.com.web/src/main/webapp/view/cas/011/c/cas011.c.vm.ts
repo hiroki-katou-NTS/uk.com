@@ -22,17 +22,17 @@ module nts.uk.com.view.cas011.c.viewmodel {
                 }));
 
         constructor() {
-            let self = this;
-
+            //let self = this;
         }
 
+        //initial screen
         start(): JQueryPromise<any> {
             let self = this,
             currentDefaultRoleSet: IDefaultRoleSet = self.currentDefaultRoleSet(),
             listDefaultRoleSets = self.listDefaultRoleSets,
             dfd = $.Deferred();
-        
-            listDefaultRoleSets.removeAll();
+/*        
+            self.listDefaultRoleSets.removeAll();
             errors.clearAll();
         
             service.getAllRoleSet().done((itemList: Array<IDefaultRoleSet>) => {
@@ -52,7 +52,7 @@ module nts.uk.com.view.cas011.c.viewmodel {
             }).fail(error => {
                 //self.closeDialog();
             });
-            
+*/
             return dfd.promise();
         }
 

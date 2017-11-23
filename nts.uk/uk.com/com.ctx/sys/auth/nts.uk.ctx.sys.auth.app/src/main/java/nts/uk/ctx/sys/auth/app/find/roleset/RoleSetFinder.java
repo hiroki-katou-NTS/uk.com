@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenu;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuAdapter;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -78,15 +78,15 @@ public class RoleSetFinder {
 			return null;
 		}
 
-		List<WebMenu> lstWebMenus = webMenuAdapter.findByCompanyId();
+		List<WebMenuImport> lstWebMenus = webMenuAdapter.findByCompanyId();
 		if (CollectionUtil.isEmpty(lstWebMenus)) {
 			return null;
 		}
 
 		List<WebMenuDto> retWebmenus = lstWebMenuCds.stream().map(item -> {
-			Optional<WebMenu> webMenuOpt = lstWebMenus.stream().filter(wmn-> wmn.getWebMenuCd().equals(item)).findFirst();
+			Optional<WebMenuImport> webMenuOpt = lstWebMenus.stream().filter(wmn-> wmn.getWebMenuCd().equals(item)).findFirst();
 			if (webMenuOpt.isPresent()) {
-				WebMenu wmn = webMenuOpt.get();
+				WebMenuImport wmn = webMenuOpt.get();
 				return new WebMenuDto(wmn.getWebMenuCd(), wmn.getWebMenuName());
 			}
 			return null;
