@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
@@ -33,13 +33,13 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 
 @Stateless
 @Transactional
-public class AddAppWorkChangeCommandHandler extends CommandHandler<AddAppWorkChangeCommand> {
+public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, List<String>> {
 
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
+	protected List<String> handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
 		AddAppWorkChangeCommand addCommand = context.getCommand();
 
 		// Application command
@@ -82,7 +82,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandler<AddAppWorkCha
 				workChangeCommand.getWorkTimeStart2(), workChangeCommand.getWorkTimeEnd2(),
 				workChangeCommand.getGoWorkAtr2(), workChangeCommand.getBackHomeAtr2());
 
-		workChangeRegisterService.registerData(workChangeDomain, app);
+		return workChangeRegisterService.registerData(workChangeDomain, app);
 	}
 
 	/**

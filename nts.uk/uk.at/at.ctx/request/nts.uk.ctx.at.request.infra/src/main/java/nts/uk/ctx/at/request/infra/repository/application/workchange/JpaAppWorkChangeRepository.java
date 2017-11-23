@@ -1,6 +1,7 @@
 ﻿package nts.uk.ctx.at.request.infra.repository.application.workchange;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
@@ -16,14 +17,24 @@ import nts.arc.layer.infra.data.JpaRepository;
 public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWorkChangeRepository
 {
 
-    private static final String SELECT_AL_QUERY_STRING = "SELECT f FROM KrqdtAppWorkChange f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqdtAppWorkChange f";
+    
+    private static final String SELECT_BY_KEY_STRING = String.join(SELECT_ALL_QUERY_STRING, " WHERE f.appWorkChangePk.cid =:companyID AND f.appWorkChangePk.appId =:appId ");
 
     @Override
     public List<AppWorkChange> getAllAppWorkChange(){
-        return this.queryProxy().query(SELECT_AL_QUERY_STRING, KrqdtAppWorkChange.class)
+        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrqdtAppWorkChange.class)
                 .getList(item -> toDomain(item));
     }
-
+    
+    @Override
+    public Optional<AppWorkChange> getAppworkChangeById(String cid, String appId){
+    	return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqdtAppWorkChange.class)
+				.setParameter("companyID", cid)
+				.setParameter("appId", appId)
+				.getSingle(c -> toDomain(c));
+    }
+    
     @Override
     public void add(AppWorkChange domain){
         this.commandProxy().insert(toEntity(domain));

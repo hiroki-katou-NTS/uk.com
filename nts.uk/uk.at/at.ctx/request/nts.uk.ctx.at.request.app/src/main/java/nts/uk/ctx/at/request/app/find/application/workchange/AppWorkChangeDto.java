@@ -1,12 +1,14 @@
 ﻿package nts.uk.ctx.at.request.app.find.application.workchange;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 
-@Value
 /**
 * 勤務変更申請
 */
+@AllArgsConstructor
+@Value
 public class AppWorkChangeDto
 {
     
