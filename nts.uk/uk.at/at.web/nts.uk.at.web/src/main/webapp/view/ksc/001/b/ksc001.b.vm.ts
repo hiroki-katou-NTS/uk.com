@@ -333,7 +333,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 // check selection employee 
                 if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                    var user: UserInfoDto = self.getUserLogin();
+                    var user: any = __viewContext.user;
                     self.findPersonalScheduleByEmployeeId(user.employeeId).done(function(data) {
                         self.updatePersonalScheduleData(data);
 
@@ -365,7 +365,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private toPersonalScheduleData(): PersonalSchedule {
                 var self = this;
-                var user: UserInfoDto = self.getUserLogin();
+                var user: any = __viewContext.user;
                 var data: PersonalSchedule = new PersonalSchedule();
                 data.resetMasterInfo = self.resetMasterInfo();
                 data.resetAbsentHolidayBusines = self.resetAbsentHolidayBusines();
