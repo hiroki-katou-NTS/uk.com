@@ -23,10 +23,10 @@ public class PerInfoHistorySelection {
 	private DatePeriod period;
 
 	public static PerInfoHistorySelection createHistorySelection(String histId, String selectionItemId,
-			String companyCode, DatePeriod period) {
+			String companyId, DatePeriod period) {
 
 		// 選択肢履歴 パラメーター帰還
-		return new PerInfoHistorySelection(histId, selectionItemId, companyCode, period);
+		return new PerInfoHistorySelection(histId, selectionItemId, companyId, period);
 	}
 
 	public void updateDate(DatePeriod period) {

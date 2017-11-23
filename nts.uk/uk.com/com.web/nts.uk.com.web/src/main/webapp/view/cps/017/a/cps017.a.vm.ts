@@ -48,7 +48,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         self.listHistorySelection(_selectionItemList);
                         // check tạm:
-                        self.historySelection().histId(self.listHistorySelection.length == 0 ? '' : self.listHistorySelection()[0].histId);
+                        self.historySelection().histId(self.listHistorySelection().length == 0 ? '' : self.listHistorySelection()[0].histId);
                     });
                 }
             });
@@ -301,7 +301,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 perInfoSelectionItem: perInfoSelectionItem
             };
 
-            confirm({ messageId: "Msg_532" }).ifYes(() => {
+            confirm({ messageId: "Msg_532" ,messageParams: ["1"]}).ifYes(() => {
                 service.reflUnrComp(command).done(function() {
                     self.listHistorySelection.removeAll();
                     service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<>) => {

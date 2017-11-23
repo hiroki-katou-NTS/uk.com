@@ -73,7 +73,7 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 			this.historySelectionRepository.add(domainHist1);
 		}
 		// if last hist isPresent (not first time create)
-		if (lstHist.isEmpty()) {
+		if (!lstHist.isEmpty()) {
 			PerInfoHistorySelection lastHist = lstHist.get(0);
 			//set end date lastHist = startDate of newHist -1
 			DatePeriod lastHistPeriod = new DatePeriod(lastHist.getPeriod().start(), startDate.addDays(-1));
