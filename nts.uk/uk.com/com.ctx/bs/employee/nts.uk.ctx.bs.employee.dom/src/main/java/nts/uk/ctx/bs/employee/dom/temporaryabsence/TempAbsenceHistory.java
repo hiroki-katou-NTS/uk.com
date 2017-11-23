@@ -5,10 +5,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -22,9 +20,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @NoArgsConstructor
 @Setter
-public class TempAbsenceHistory extends AggregateRoot implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate>{
-	
-	private String tempLeaveAbsenceHisId;
+public class TempAbsenceHistory extends AggregateRoot
+		implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 
 	/**
 	 * 社員ID
@@ -35,37 +32,10 @@ public class TempAbsenceHistory extends AggregateRoot implements UnduplicatableH
 	 * 期間
 	 */
 	private List<DateHistoryItem> dateHistoryItems;
-	
-	public static TempAbsenceHistory createSimpleFromJavaType(String employeeId, String tempAbsenceId, int tempAbsenceType, String histId,
-			GeneralDate startDate, GeneralDate endDate, String tempAbsenceReason, String familyMemberId, GeneralDate birthDate, int multiple){
-		LeaveHolidayType type = EnumAdaptor.valueOf(tempAbsenceType, LeaveHolidayType.class);
-		DateHistoryItem dateHistoryItem = new DateHistoryItem(histId, new DatePeriod(startDate, endDate));
-		/*switch (type) {
-		case LEAVE_OF_ABSENCE:
-			Leave leave = new Leave(tempAbsenceReason);
-			return new TempLeaveAbsenceHistory(leave, tempAbsenceId, employeeId, dateHistoryItem);
-		case MIDWEEK_CLOSURE:
-			MidweekClosure midweekClosure = new MidweekClosure(birthDate, multiple);
-			return new TempLeaveAbsenceHistory(midweekClosure, tempAbsenceId, employeeId, dateHistoryItem);
-		case AFTER_CHILDBIRTH:
-			AfterChildbirth afterChildbirth = new AfterChildbirth(familyMemberId);
-			return new TempLeaveAbsenceHistory(afterChildbirth, tempAbsenceId, employeeId, dateHistoryItem);
-		case CHILD_CARE_NURSING:
-			ChildCareHoliday childCareHoliday = new ChildCareHoliday(familyMemberId);
-			return new TempLeaveAbsenceHistory(childCareHoliday, tempAbsenceId, employeeId, dateHistoryItem);
-		case NURSING_CARE_LEAVE:
-			CareHoliday careHoliday = new CareHoliday(familyMemberId);
-			return new TempLeaveAbsenceHistory(careHoliday, tempAbsenceId, employeeId, dateHistoryItem);
-		default:
-			return null;
-		}*/
-		return null;
-	}
 
 	@Override
 	public List<DateHistoryItem> items() {
 		return this.dateHistoryItems;
 	}
-
-
+	
 }

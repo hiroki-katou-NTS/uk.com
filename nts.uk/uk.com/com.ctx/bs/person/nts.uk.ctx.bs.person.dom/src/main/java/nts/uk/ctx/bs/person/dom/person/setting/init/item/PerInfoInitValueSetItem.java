@@ -97,6 +97,16 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	// trong khoảng nào khi mà item là kiểu numberic
 	private BigDecimal numericItemMin;
 	private BigDecimal numericItemMax;
+	
+	// hai trường này dùng để  validate item thuộc kiểu string
+	
+	private Integer stringItemType;
+	
+	private Integer stringItemLength;
+	
+	private Integer stringItemDataType;
+	
+	private boolean isFixedItem;
 
 
 	/**
@@ -395,10 +405,10 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	public static String processs(String categoryCode, String itemCode) {
 		PersonCategoryItemData item = new PersonCategoryItemData();
-		for (Map.Entry ctg : item.CategoryMap.entrySet()) {
+		for (Map.Entry<String, Map<String, ReferenceStateData>> ctg : item.CategoryMap.entrySet()) {
 			if (ctg.getKey() == categoryCode) {
 				Map<String, ReferenceStateData> itemChild = (Map<String, ReferenceStateData>) ctg.getValue();
-				for (Map.Entry itemSub : itemChild.entrySet()) {
+				for (Map.Entry<String, ReferenceStateData> itemSub : itemChild.entrySet()) {
 					if (itemSub.getKey().equals(itemCode)) {
 						ReferenceStateData data = (ReferenceStateData) itemSub.getValue();
 						return data.getConstraint();

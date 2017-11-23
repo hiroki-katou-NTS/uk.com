@@ -4,6 +4,7 @@
 package nts.uk.ctx.bs.person.infra.repository.person.persinfoctgdata;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,7 +67,9 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 	@Override
 	public List<PersonInfoItemData> getAllInfoItemByRecordId(String recordId) {
-		List<PpemtPerInfoItemData> datas = this.queryProxy().query(GET_BY_RID, PpemtPerInfoItemData.class).getList();
+		List<PpemtPerInfoItemData> datas = this.queryProxy().query(GET_BY_RID, PpemtPerInfoItemData.class)
+				.setParameter("recordId", recordId).getList();
+		if(datas == null) return new ArrayList<>();
 		return datas.stream()
 				.map(ent -> PersonInfoItemData.createFromJavaType(ent.primaryKey.perInfoDefId, ent.primaryKey.recordId,
 						ent.saveDataAtr, ent.stringVal, BigDecimal.valueOf(ent.intVal), ent.dateVal))

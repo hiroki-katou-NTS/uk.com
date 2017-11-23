@@ -30,7 +30,6 @@ import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 
 /**
@@ -138,7 +137,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 		// Get Person
 		Person person = personOpt.get();
-		FullName pname = person.getPersonNameGroup().getPersonName().getFullName();
+		PersonName pname = person.getPersonNameGroup().getPersonName();
 		EmployeeMail comMailAddr = emp.getCompanyMail();
 		
 		EmployeeBasicInfoExport empBasicInfo = EmployeeBasicInfoExport.builder()
@@ -146,7 +145,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.pName((pname == null ? null : pname.v()))
 				.companyMailAddr(comMailAddr == null? null : new MailAddress(emp.getCompanyMail().v()))
 				.birthDay(person.getBirthDate() == null ? null : person.getBirthDate())
-				.pMailAddr(null)
+				.pMailAddr(person.getMailAddress() == null ? null : new MailAddress(person.getMailAddress().v()))
 				.empId(emp.getSId() == null ? null : emp.getSId())
 				.empCode(emp.getSCd() == null ? null : emp.getSCd().v())
 				.entryDate(emp.getListEntryJobHist().get(0).getJoinDate())
