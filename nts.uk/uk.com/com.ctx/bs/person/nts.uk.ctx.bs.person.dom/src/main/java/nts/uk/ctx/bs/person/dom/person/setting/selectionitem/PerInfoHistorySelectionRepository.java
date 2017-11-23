@@ -52,7 +52,7 @@ public interface PerInfoHistorySelectionRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<PerInfoHistorySelection> getHistSelByEndDate(String selectionItemId, GeneralDate endDate);
+	List<PerInfoHistorySelection> getHistSelByEndDate(String selectionItemId, String companyId, GeneralDate endDate);
 
 	/**
 	 * get History Selection By HistId
