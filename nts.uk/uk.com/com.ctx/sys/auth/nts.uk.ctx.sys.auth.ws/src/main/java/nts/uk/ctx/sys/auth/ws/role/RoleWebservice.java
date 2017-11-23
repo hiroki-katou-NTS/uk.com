@@ -19,6 +19,7 @@ import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRole;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
+import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Path("ctx/sys/auth/role")
@@ -62,4 +63,9 @@ public class RoleWebservice extends WebService {
 		return EnumAdaptor.convertToValueNameList(EmployeeReferenceRange.class, i18n);
 	}
 	
+	@POST
+	@Path("find/person/role")
+	public List<PersonRole> find(List<String> roleIds){
+		return personInforRoleFinder.findByListRoleIds(roleIds);
+	}
 }
