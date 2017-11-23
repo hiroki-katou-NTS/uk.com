@@ -201,4 +201,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public void ReflUnrComp(ReflUnrCompCommand command) {
 		this.reflUnrComp.handle(command);
 	}
+	
+	
+	//Lanlt
+	@POST
+	@Path("findAllSelectionItem")
+	public List<PerInfoSelectionItemDto> getAllelectionItem() {
+		return this.finder.getAllSelectionItem();
+	}
 }
