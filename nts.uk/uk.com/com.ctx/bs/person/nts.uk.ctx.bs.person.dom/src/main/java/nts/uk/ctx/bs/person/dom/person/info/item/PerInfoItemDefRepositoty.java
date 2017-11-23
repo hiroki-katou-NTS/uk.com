@@ -81,4 +81,12 @@ public interface PerInfoItemDefRepositoty {
 	 */
 	List<PersonInfoItemDefinition> getNotFixedPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
 	
+	/**
+	 * checkExistedSelectionItemId
+	 * @param ctgId
+	 * @param itemId
+	 * @return
+	 */
+	boolean checkExistedSelectionItemId(String ctgId, String itemId);
+	
 }
