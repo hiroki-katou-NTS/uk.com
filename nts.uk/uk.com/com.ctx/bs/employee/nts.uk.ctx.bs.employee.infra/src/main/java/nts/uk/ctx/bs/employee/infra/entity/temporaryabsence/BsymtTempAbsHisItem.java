@@ -46,7 +46,7 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	@Basic(optional = true)
 	@Column(name = "MULTIPLE")
-	public int multiple;
+	public Integer multiple;
 
 	@Basic(optional = true)
 	@Column(name = "FAMILY_MEMBER_ID")
@@ -54,11 +54,11 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	@Basic(optional = true)
 	@Column(name = "SAME_FAMILY")
-	public int sameFamily;
+	public Integer sameFamily;
 	
 	@Basic(optional = true)
 	@Column(name = "CHILD_TYPE")
-	public int childType;
+	public Integer childType;
 
 	@Basic(optional = true)
 	@Column(name = "CREATE_DATE")
@@ -66,11 +66,11 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 
 	@Basic(optional = true)
 	@Column(name = "SPOUSE_IS_LEAVE")
-	public int spouseIsLeave;
+	public Integer spouseIsLeave;
 	
 	@Basic(optional = true)
 	@Column(name = "SAME_FAMILY_DAYS")
-	public int sameFamilyDays;
+	public Integer sameFamilyDays;
 	
 	@Override
 	protected Object getKey() {
