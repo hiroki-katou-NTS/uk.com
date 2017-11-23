@@ -18,6 +18,17 @@ module nts.uk.com.view.cps005.b {
                 self.currentItemData = ko.observable(dataItemModel);
                 self.categoryId = getShared("categoryId");
                 self.isEnableButtonProceed = ko.observable(true);
+                self.currentItemData().perInfoItemSelectCode.subscribe(function(value) {
+                    console.log(value);
+                });
+
+                let a: Array<any> = [{ selectionId: "7c50ec39-415b-441a-a36d-a86f897b9fbd", selectionCode: "0000000001", selectionName: "A" },
+                    { selectionId: "7c50ec39-415b-441a-a36d-a86f897b9fbe", selectionCode: "0000000002", selectionName: "B" }];
+
+
+
+
+
             }
 
             startPage(): JQueryPromise<any> {
@@ -176,12 +187,12 @@ module nts.uk.com.view.cps005.b {
                         $("#integerPart").focus();
                         block.clear();
                         return;
-                    } 
-//                    else if (newItemDef.singleItem.decimalPart === null) {
-//                        $("#decimalPart").focus();
-//                        block.clear();
-//                        return;
-//                    }
+                    }
+                    //                    else if (newItemDef.singleItem.decimalPart === null) {
+                    //                        $("#decimalPart").focus();
+                    //                        block.clear();
+                    //                        return;
+                    //                    }
                 }
 
                 if (newItemDef.singleItem.dataType === 4) {
@@ -243,25 +254,31 @@ module nts.uk.com.view.cps005.b {
         //Enum : dataTypeEnum is selected value 3 -日付(Date)
         dateItemTypeEnum: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 6 -選択(Selection)
-        referenceTypeEnum: Array<any> = [
-            { value: 1, localizedName: "等級区分 1" },
-            { value: 2, localizedName: "等級区分 2" },
-            { value: 3, localizedName: "等級区分 3" },
-        ];
-        constructor(data: IItemData) {
+
+        selectionItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectionItemId: KnockoutObservable<string> = ko.observable("");
+
+        selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectionId: KnockoutObservable<string> = ko.observable("");
+
+        constructor(params: IItemData) {
             let self = this;
-            if (data) {
-                self.personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
-                self.dataTypeEnum = data.dataTypeEnum || new Array();
-                self.stringItemTypeEnum = data.stringItemTypeEnum || new Array();
-                self.stringItemDataTypeEnum = data.stringItemDataTypeEnum || new Array();
+            if (params) {
+                self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
+                self.dataTypeEnum = params.dataTypeEnum || new Array();
+                self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
+                self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
                 self.stringItemDataTypeEnum.reverse();
-                self.dateItemTypeEnum = data.dateItemTypeEnum || new Array();
+                self.dateItemTypeEnum = params.dateItemTypeEnum || new Array();
+                self.currentItemSelected().selectionItem().selectionItemLst(params.selectionItemLst || []);
+                self.selectionId("");
+                self.selectionLst([]);
                 //subscribe select category code
                 self.perInfoItemSelectCode.subscribe(newItemId => {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     nts.uk.ui.errors.clearAll();
                     new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
+
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
@@ -269,13 +286,15 @@ module nts.uk.com.view.cps005.b {
                             self.isEnableButtonProceed(false);
                             self.isEnableButtonDelete(false);
                         }
+
                         self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
                         self.currentItemSelected().numericItem().numericItemAmountText(_.find(self.numericItemAmountAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemAmount(); }).name);
                         self.currentItemSelected().numericItem().numericItemMinusText(_.find(self.numericItemMinusAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemMinus(); }).name);
                         self.currentItemSelected().dateItem().dateItemTypeText(_.find(self.dateItemTypeEnum, function(o) { return o.value == self.currentItemSelected().dateItem().dateItemType(); }).localizedName);
-                        self.currentItemSelected().selectionItem().selectionItemRefTypeText(_.find(self.referenceTypeEnum, function(o) { return o.value == self.currentItemSelected().selectionItem().selectionItemRefType(); }).localizedName);
+          
+
 
                     });
                 });
@@ -403,14 +422,77 @@ module nts.uk.com.view.cps005.b {
         }
     }
     export class SelectionItemModel {
-        selectionItemRefType: KnockoutObservable<number> = ko.observable(1);
+        selectionItemRefType: KnockoutObservable<string> = ko.observable("");
         selectionItemRefTypeText: KnockoutObservable<string> = ko.observable("");
         selectionItemRefCode: KnockoutObservable<string> = ko.observable(null);
+        //danh sach selection item
+        selectionItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectionItemId: KnockoutObservable<string> = ko.observable("");
+        // danh sach cac selection cua item
+        selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectionId: KnockoutObservable<string> = ko.observable("");
+
+
+        selectionColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: 'selectionId', key: 'selectionId', width: 100, hidden: true },
+            { headerText: getText('CPS005_59'), key: 'selectionCode', width: 80 },
+            { headerText: getText('CPS005_60'), key: 'selectionName', width: 160 }]);
         constructor(data: ISelectionItem) {
             let self = this;
             if (!data) return;
-            self.selectionItemRefType(data.selectionItemRefType || 1);
+            self.selectionItemRefType(data.selectionItemRefType || undefined);
             self.selectionItemRefCode(data.selectionItemRefCode || null);
+            self.selectionItemId(data.selectionItemId || undefined);
+            self.selectionItemLst(data.selectionItemLst || []);
+            self.selectionLst([]);
+            self.selectionId(data.selectionId || "");
+            let baseDate = moment(new Date()).format('YYYY-MM-DD');
+            $("#grid").igGrid({
+                columns: [
+                    { headerText: 'selectionId', key: 'selectionId', dataType: "string", width: 100, hidden: true },
+                    { headerText: nts.uk.resource.getText('CPS005_59'), dataType: "string", key: 'selectionCode', width: 80 },
+                    { headerText: nts.uk.resource.getText('CPS005_60'), dataType: "string", key: 'selectionName', width: 160 }
+
+                ],
+                primaryKey: 'selectionId',
+                dataSource: self.selectionLst(),
+                width: "440px",
+                height: "270px"
+            });
+            new service.Service().getAllSelByHistory("", baseDate).done(function(data: Array<any>) {
+                console.log(data);
+                if (data.length > 0) {
+                    self.selectionLst.removeAll();
+                    self.selectionLst(data);
+                    self.selectionLst.valueHasMutated();
+         
+                } else {
+                    self.selectionLst.removeAll();
+                    self.selectionLst([]);
+
+                    self.selectionLst.valueHasMutated();
+
+                }
+
+            });
+            self.selectionItemId.subscribe(function(value) {
+                new service.Service().getAllSelByHistory(value, baseDate).done(function(data: Array<any>) {
+                    console.log(data);
+                    if (data.length > 0) {
+                        self.selectionLst.removeAll();
+                        self.selectionLst(data);
+                        self.selectionLst.valueHasMutated();
+     
+
+                    } else {
+                        self.selectionLst.removeAll();
+                        self.selectionLst([]);
+                        self.selectionLst.valueHasMutated();
+
+                    }
+                });
+            });
+
         }
     }
     export class PersonInfoItemShowListModel {
@@ -479,6 +561,10 @@ module nts.uk.com.view.cps005.b {
         // SelectionItem property
         referenceType: number = 0;
         referenceCode: string = "";
+        selectionItemId: string = undefined;
+        selectionItemLst: Array<any>;
+        selectionId: string = undefined;
+        selectionLst: Array<any>;
         constructor(data: PersonInfoItem) {
             let self = this;
             if (!data) return;
@@ -510,6 +596,11 @@ module nts.uk.com.view.cps005.b {
             if (data.selectionItem()) {
                 self.referenceType = data.selectionItem().selectionItemRefType();
                 self.referenceCode = data.selectionItem().selectionItemRefCode();
+                self.selectionItemId = data.selectionItem().selectionItemId();
+                self.selectionItemLst = data.selectionItem().selectionItemLst();
+                self.selectionId = data.selectionItem().selectionId();
+                self.selectionLst = data.selectionItem().selectionLst();
+
             }
         }
     }
@@ -519,6 +610,7 @@ module nts.uk.com.view.cps005.b {
         stringItemTypeEnum: any;
         stringItemDataTypeEnum: any;
         dateItemTypeEnum: any;
+        selectionItemLst: Array<any>;
         personInfoItemList: Array<IPersonInfoItemShowList>;
     }
     interface IPersonInfoItemShowList {
@@ -568,8 +660,13 @@ module nts.uk.com.view.cps005.b {
     }
     interface ISelectionItem {
         dataTypeValue: number;
-        selectionItemRefType: number;
+        selectionItemRefType: string;
         selectionItemRefCode: string;
+        selectionItemLst: Array<any>;
+        selectionItemId: string;
+        selectionLst: Array<any>;
+        selectionId: string;
+
     }
 
 }
