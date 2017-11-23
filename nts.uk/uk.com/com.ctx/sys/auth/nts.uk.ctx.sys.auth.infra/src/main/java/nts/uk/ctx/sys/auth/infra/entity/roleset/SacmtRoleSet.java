@@ -25,12 +25,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SACMT_ROLE_SET")
-public class SaumtRoleSet extends UkJpaEntity implements Serializable {
+public class SacmtRoleSet extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SaumtRoleSetPK roleSetPK;
+	public SacmtRoleSetPK roleSetPK;
 
 	@Basic(optional = false)
 	@Column(name = "ROLE_SET_NAME")
@@ -81,7 +81,7 @@ public class SaumtRoleSet extends UkJpaEntity implements Serializable {
 	 * @param employmentRole
 	 * @param salaryRole
 	 */
-	public void buildEntity(SaumtRoleSetPK roleSetPK
+	public void buildEntity(SacmtRoleSetPK roleSetPK
 			, String roleSetName
 			, int approvalAuthority
 			, String officeHelperRoleCd
