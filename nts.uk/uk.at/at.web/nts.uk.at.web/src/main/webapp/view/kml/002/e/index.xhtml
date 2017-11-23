@@ -24,7 +24,7 @@
 			<com:stylefile path="../main.css" />
 			<com:scriptfile path="kml002.e.vm.js" />
 			<com:scriptfile path="kml002.e.start.js" />
-			<com:scriptfile path="kml002.e.service.js" />
+			<com:scriptfile path="kml002.e.service.js" />                                                                                                                  
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
@@ -162,6 +162,58 @@
 				</div>
 
 				<div class="method-b">
+					<div class="grid-area-e"
+						data-bind="ntsPanel:{width: '310px', height: '440px', direction: 'right', showIcon: false, visible: true}">
+						<div class="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_28')}</div>
+						<div class="categories" data-bind="ntsComboBox: {
+								options: categoryItemsTime,
+								optionsValue: 'catCodeTime',
+								value: catCodeTime,
+								optionsText: 'catNameTime',
+								enable: true,
+								columns: [
+									{ prop: 'catNameTime', length: 10 }
+								]}"></div>
+						<div class="cbx-checked-e" data-bind="ntsCheckBox: { checked: checkedTime , enable: catCodeTime()==0, text: '#{i18n.getText('KML002_27')}' }"></div>
+						
+						<div class="search-box"
+							data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+							items: itemsTime, selected: currentCodeListTime, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+							
+						<table id="treegridItemsTime"
+							data-bind="ntsGridList: {
+								width: 300,
+								height: 300,
+								options: itemsTime,
+								optionsValue: 'code',
+								columns: columnsTime,
+								multiple: true,
+								value: currentCodeListTime
+							}">
+						</table>
+					</div>
+					
+					<div class="function-btns-e">
+						<button class="addition" data-bind="click: additionTime">#{i18n.getText('KML002_37')}</button>
+					<button class="subtraction" data-bind="click: subtractionTime">#{i18n.getText('KML002_38')}</button>
+					<button class="left-btn" data-bind="click: returnItemsTime, enable: enableReturnTime"><i class="icon icon-button-arrow-left"></i></button>
+					</div>
+					
+					<div class="right-tbl-e">
+						<table id="treegridItemsTime"
+							data-bind="ntsGridList: {
+								width: 300,
+								height: 300,
+								options: rightItemsTime,
+								optionsValue: 'code',
+								columns: rightItemcolumnsTime,
+								multiple: true,
+								value: currentRightCodeListTime
+							}">
+						</table>
+					</div>
+				</div>
+				<div class="method-c">
 					<div class="grid-area-e"
 						data-bind="ntsPanel:{width: '310px', height: '440px', direction: 'right', showIcon: false, visible: true}">
 						<div class="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_28')}</div>

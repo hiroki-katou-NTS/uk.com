@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +35,6 @@ public class KshstOutsideOtBrdLang extends JpaEntity implements Serializable {
     
     /** The name. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "NAME")
     private String name;
 

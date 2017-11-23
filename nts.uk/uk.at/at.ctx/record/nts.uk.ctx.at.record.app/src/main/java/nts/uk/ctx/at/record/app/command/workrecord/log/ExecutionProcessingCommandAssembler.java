@@ -10,6 +10,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.workrecord.log.CalExeSettingInfor;
@@ -181,7 +182,7 @@ public class ExecutionProcessingCommandAssembler {
 				empCalAndSumExecLogID,
 				executionContent.value,
 				ErrorPresent.NO_ERROR.value,
-				null, null,
+				GeneralDateTime.now(), GeneralDateTime.now(),
 				ExeStateOfCalAndSum.PROCESSING.value,
 				// objectPeriod param Screen C
 				GeneralDate.fromString(command.getPeriodStartDate(), "yyyy/MM/dd"),

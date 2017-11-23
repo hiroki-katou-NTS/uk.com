@@ -20,7 +20,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 	private final String SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY = " SELECT DISTINCT p.ppemtPersonItemAuthPk.roleId, p.ppemtPersonItemAuthPk.personInfoCategoryAuthId,"
 			+ " i.ppemtPerInfoItemPK.perInfoItemDefId,"
-			+ " p.selfAuthType, p.otherPersonAuth, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
+			+ " p.selfAuthType, p.otherPersonAuthType, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " CASE WHEN p.ppemtPersonItemAuthPk.personItemDefId IS NULL THEN 'False' ELSE 'True' END AS IsConfig,"
 			+ " im.itemParentCd" + " FROM PpemtPerInfoItem i"
 			+ " INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -44,7 +44,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		PpemtPersonItemAuth entity = new PpemtPersonItemAuth();
 		entity.ppemtPersonItemAuthPk = new PpemtPersonItemAuthPk(domain.getRoleId(), domain.getPersonCategoryAuthId(),
 				domain.getPersonItemDefId());
-		entity.otherPersonAuth = domain.getOtherAuth().value;
+		entity.otherPersonAuthType = domain.getOtherAuth().value;
 		entity.selfAuthType = domain.getSelfAuth().value;
 		return entity;
 
@@ -83,7 +83,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 		return PersonInfoItemAuth.createFromJavaType(entity.ppemtPersonItemAuthPk.roleId,
 				entity.ppemtPersonItemAuthPk.personInfoCategoryAuthId, entity.ppemtPersonItemAuthPk.personItemDefId,
-				entity.selfAuthType, entity.otherPersonAuth);
+				entity.selfAuthType, entity.otherPersonAuthType);
 
 	}
 
@@ -154,11 +154,12 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	@Override
 	public Optional<PersonInfoItemAuth> getItemDetai(String roleId, String categoryId, String personItemDefId) {
 
-		return this.queryProxy()
+		Optional<PersonInfoItemAuth> obj = this.queryProxy()
 				.find(new PpemtPersonItemAuthPk(roleId, categoryId, personItemDefId), PpemtPersonItemAuth.class)
 				.map(e -> {
 					return Optional.of(toDomain(e));
 				}).orElse(Optional.empty());
+		return obj;
 	}
 
 	@Override

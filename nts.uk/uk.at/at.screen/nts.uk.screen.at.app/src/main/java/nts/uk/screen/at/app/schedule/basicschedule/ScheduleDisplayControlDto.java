@@ -14,10 +14,7 @@ public class ScheduleDisplayControlDto {
 	public String companyId;
 
 	/** 個人情報区分 */
-	public int personInforAtr;
-
-	/** 表示区分 */
-	public int personDisplayAtr;
+	public List<Integer> personInforAtr;
 
 	/** 資格表示記号 */
 	public String personSyQualify;

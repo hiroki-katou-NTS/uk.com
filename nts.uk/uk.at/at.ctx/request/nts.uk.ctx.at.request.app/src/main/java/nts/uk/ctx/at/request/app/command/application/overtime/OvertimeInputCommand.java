@@ -27,6 +27,10 @@ public class OvertimeInputCommand {
 	 * 勤怠項目NO
 	 */
 	private int frameNo;
+	/**
+	 * timeItemTypeAtr
+	 */
+	private int timeItemTypeAtr;
 	
 	/**
 	 * 勤怠項目Name
@@ -45,4 +49,5 @@ public class OvertimeInputCommand {
 	 * 申請時間
 	 */
 	private int applicationTime;
+	
 }

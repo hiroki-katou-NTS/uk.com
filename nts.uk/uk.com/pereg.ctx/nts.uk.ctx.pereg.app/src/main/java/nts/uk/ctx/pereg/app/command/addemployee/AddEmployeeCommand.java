@@ -8,14 +8,21 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
 public class AddEmployeeCommand {
 
 	private String employeeCopyId;
-	private String InitSettingId;
+	private String initSettingId;
 	private String employeeName;
 	private String employeeCode;
 	private GeneralDate hireDate;
 	private String cardNo;
 	private String avatarId;
 	private int createType;
-	
+	// パスワード
+	/** The password. */
+	private String password;
+
+	// ログインID
+	/** The login id. */
+	private String loginId;
+
 	private PeregInputContainer inputContainer;
 
 }

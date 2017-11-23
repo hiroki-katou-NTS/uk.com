@@ -99,7 +99,7 @@ public class JpaPerEmergencyCtRepository extends JpaRepository implements Person
 		BpsmtEmergencyContactPK pk = new BpsmtEmergencyContactPK(domain.getEmgencyContactId());
 		Optional<BpsmtEmergencyContact> existItem = this.queryProxy().find(pk, BpsmtEmergencyContact.class);
 		if (!existItem.isPresent()){
-			return;
+			throw new RuntimeException("invalid PersonEmergencyContact");
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());

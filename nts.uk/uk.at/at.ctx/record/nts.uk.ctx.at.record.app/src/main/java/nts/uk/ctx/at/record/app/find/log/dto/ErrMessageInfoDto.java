@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionTime;
-import nts.uk.ctx.at.record.dom.workrecord.log.ObjectPeriod;
 
 @Getter
 @Setter

@@ -1007,6 +1007,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
                         self.dataG = nts.uk.ui.windows.getShared("KML002_G_DATA");
+                        
                         for(var i = 0; i < self.calculatorItems().length; i++){
                             if(self.dataG == null) {
                                 return;
@@ -1014,9 +1015,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             
                             if(self.calculatorItems()[i].itemCd() == self.dataG.verticalCalItemId) {
                                 self.calculatorItems()[i].unitPrice = self.dataG;
+                                var formulaResult = self.formulaGeneration(itemName, settingMethod, attribute, i, self.dataG, "", false);
+                                self.calculatorItems()[i].formula(formulaResult);
                             }
                         }
-                        
                     }); 
                 }
             }
@@ -1066,7 +1068,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     if(beforeFormula != "") {
                         formulaResult = beforeFormula + " " + text1 + " " + operator + " " + text2;
                     } else {
-                        formulaResult = self.calculatorItems()[index - 1].formula() + " " + text1 + " " + operator + " " + text2;
+                        formulaResult = self.allItemsData[index - 1].formula() + " " + text1 + " " + operator + " " + text2;
                     }                    
                 } else {
                     formulaResult = nts.uk.resource.getText("KML002_153");
@@ -1074,7 +1076,22 @@ module nts.uk.at.view.kml002.a.viewmodel {
             } else { // 項目選択
                 // 平均単価
                 if(attribute == 4) {
+                    // If is first item
+                    var unitPrices = [
+                        { uPCd: 0, uPName: nts.uk.resource.getText("KML002_53") },
+                        { uPCd: 1, uPName: nts.uk.resource.getText("KML002_54") },
+                        { uPCd: 2, uPName: nts.uk.resource.getText("KML002_55") },
+                        { uPCd: 3, uPName: nts.uk.resource.getText("KML002_56") },  
+                        { uPCd: 4, uPName: nts.uk.resource.getText("KML002_57") }
+                    ];
+                    var unit = _.find(unitPrices, function(o) { return o.uPCd == data.unitPrice; });
                     
+                    if(index == 0) {
+                        formulaResult = data.unitName != null ? data.unitName : unit.uPName;
+                    } else {
+                        formulaResult = (beforeFormula != "" ? beforeFormula : self.allItemsData[index - 1].formula()) + " " + nts.uk.resource.getText("KML002_37") 
+                                            + " " + (data.unitName != null ? data.unitName : unit.uPName);
+                    }
                 } else { // Other attributes
                     // If is first item
                     if(index == 0) {
@@ -1092,21 +1109,21 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
                                     
                                     if(attendanceName != "") {
-                                        formulaResult += attendanceName + " " + operator + " ";
+                                        formulaResult += operator + " " + attendanceName + " ";
                                     } else if(attendanceItem != null) {
-                                        formulaResult += attendanceItem.name + " " + operator + " ";
+                                        formulaResult += operator + " " + attendanceItem.name + " ";
                                     }
                                         
                                     if(presetName != "") {
-                                        formulaResult += presetName + " " + operator + " ";
+                                        formulaResult += operator + " " + presetName + " ";
                                     } else if(presetItem != null) {
-                                        formulaResult += presetItem.name + " " + operator + " ";
+                                        formulaResult += operator + " " + presetItem.name + " ";
                                     }
                                     
                                     if(externalName != "") {
-                                        formulaResult += externalName + " " + operator + " ";
+                                        formulaResult += operator + " " + externalName + " ";
                                     } else if(externalItem != null) {
-                                        formulaResult += externalItem.name + " " + operator + " ";
+                                        formulaResult += operator + " " + externalItem.name + " ";
                                     }
                                 } 
                             }
@@ -1122,14 +1139,18 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     var item = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data.lstPeopleFunc[i].externalBudgetCd; });
                                     
                                     if(name != "") {
-                                        formulaResult += name + " " + operator + " ";
+                                        formulaResult += operator + " " + name + " ";
                                     } else if(item != null) {
-                                        formulaResult += item.externalBudgetName + " " + operator + " ";
+                                        formulaResult += operator + " " + item.externalBudgetName + " ";
                                     }
                                 } 
                             }
                         } else if (attribute == 3) {
                             
+                        }
+                        
+                        if(_.startsWith(formulaResult, nts.uk.resource.getText("KML002_37"))) {
+                            formulaResult = formulaResult.substr(1);
                         }
                     } else {
                         var before = "";
@@ -1146,7 +1167,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             } else {
                                 for(var i = 0; i < data.lstFormTimeFunc.length; i++) {
                                     var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    formulaResult += data.lstFormTimeFunc[i].name + " " + operator + " ";
+                                    formulaResult += operator + " " + data.lstFormTimeFunc[i].name + " ";
                                 } 
                             }
                         } else if (attribute == 1) {

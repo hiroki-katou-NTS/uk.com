@@ -6,127 +6,54 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         // Metadata
         appID: KnockoutObservable<string>;
         appType: KnockoutObservable<number>;
-
-        /**
-         * List
-         */
         //listPhase
-        listPhase: KnockoutObservableArray<shrvm.model.AppApprovalPhase>;
+        listPhase: KnockoutObservableArray<shrvm.model.AppApprovalPhase> = ko.observableArray([]);
         //listPhaseID
         listPhaseID: Array<string>;
         //list appID 
-        listReasonByAppID: KnockoutObservableArray<string>;
+        listReasonByAppID: KnockoutObservableArray<string> = ko.observableArray([]);
 
         /**InputCommonData
          * value obj 
          */
-        reasonToApprover: KnockoutObservable<string>;
+        reasonToApprover: KnockoutObservable<string> = ko.observable('');
         reasonAppMess : string = nts.uk.resource.getText('KAF000_1');
         reasonAppMessDealine : string = nts.uk.resource.getText('KAF000_2');
         messageDeadlineTop: KnockoutObservable<string> = ko.observable('');
         messageDeadlineBottom: KnockoutObservable<string> = ko.observable('');
-        reasonApp: KnockoutObservable<string>;
-        inputCommonData : KnockoutObservable<model.InputCommonData>;
-
-        dataApplication: KnockoutObservable<model.ApplicationDto>;
-
+        reasonApp: KnockoutObservable<string> = ko.observable('');
+        inputCommonData : KnockoutObservable<model.InputCommonData> = ko.observable(null);
+        dataApplication: KnockoutObservable<model.ApplicationDto> = ko.observable(null);
         //application
         inputDetail: KnockoutObservable<model.InputGetDetailCheck>;
-
         //obj input
         //obj output message deadline
-        outputMessageDeadline: KnockoutObservable<shrvm.model.OutputMessageDeadline>;
+        outputMessageDeadline: KnockoutObservable<shrvm.model.OutputMessageDeadline> = ko.observable(null);
         //obj DetailedScreenPreBootModeOutput
-        outputDetailCheck: KnockoutObservable<model.DetailedScreenPreBootModeOutput>;
+        outputDetailCheck: KnockoutObservable<model.DetailedScreenPreBootModeOutput> = ko.observable(null);
         //obj InputCommandEvent
         inputCommandEvent: KnockoutObservable<model.InputCommandEvent>;
-
-
-        /**
-         * enable button
-         */
-        //enable Approve
-        enableApprove: KnockoutObservable<boolean>;
-        //enable Deny
-        enableDeny: KnockoutObservable<boolean>;
-        //enable Release
-        enableRelease: KnockoutObservable<boolean>;
-        //enable Registration
-        enableRegistration: KnockoutObservable<boolean>;
-        //enable enableDelete
-        enableDelete: KnockoutObservable<boolean>;
-        //enable enableCancel
-        enableCancel: KnockoutObservable<boolean>;
         //enable enableBefore
-        enableBefore: KnockoutObservable<boolean>;
+        enableBefore: KnockoutObservable<boolean> = ko.observable(true);
         //enable enableAfter
-        enableAfter: KnockoutObservable<boolean>;
-
-        /**
-         * visible
-         */
-        //visible Approval
-        visibleApproval: KnockoutObservable<boolean>;
-        //visible Denial
-        visibleDenial: KnockoutObservable<boolean>;
-
+        enableAfter: KnockoutObservable<boolean> = ko.observable(true);
         //listAppID
         listAppMeta: Array<any>;
-
-
         //item InputCommandEvent
-        appReasonEvent: KnockoutObservable<string>;
-        
+        appReasonEvent: KnockoutObservable<string>= ko.observable('');
         approvalList: Array<vmbase.AppApprovalPhase> = [];
-        
         displayButtonControl: KnockoutObservable<model.DisplayButtonControl> = ko.observable(new model.DisplayButtonControl());
-
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
-            self.appReasonEvent = ko.observable('');
             // Metadata
             self.listAppMeta = listAppMetadata;
             self.appType = ko.observable(currentApp.appType);
             self.appID = ko.observable(currentApp.appID);
-
             self.inputCommandEvent = ko.observable(new model.InputCommandEvent(0, self.appID(), self.appReasonEvent()));
-
-            /**
-             * List
-             */
-            self.listPhase = ko.observableArray([]);
-            self.listReasonByAppID = ko.observableArray([]);
-            /**
-             * value obj
-             */
-            self.reasonToApprover = ko.observable('');
-            self.reasonApp = ko.observable('');
-            self.dataApplication = ko.observable(null);
-            self.inputCommonData = ko.observable(null);
+            self.inputCommonData
             //application
             self.inputDetail = ko.observable(new model.InputGetDetailCheck(self.appID(), "2022/01/01"));
-            self.outputDetailCheck = ko.observable(null);
-
-            //obj output get message deadline 
-            self.outputMessageDeadline = ko.observable(null);
-
-            /**
-             * enable
-             */
-            self.enableApprove = ko.observable(true);
-            self.enableDeny = ko.observable(true);
-            self.enableRelease = ko.observable(true);
-            self.enableRegistration = ko.observable(true);
-            self.enableDelete = ko.observable(true);
-            self.enableCancel = ko.observable(true);
-            self.enableBefore = ko.observable(true);
-            self.enableAfter = ko.observable(true);
-            /**
-             * visible
-             */
-            self.visibleApproval = ko.observable(false)
-            self.visibleDenial = ko.observable(false)
 
             if (self.appID() == self.listAppMeta[0].appID) {
                 self.enableBefore(false);
@@ -349,11 +276,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             self.displayButtonControl().enableDelete(false);
                             
                             if(reflectPlanState == Status.REFLECTED){
-                                //取消   ×
-                                self.displayButtonControl().enableCancel(false);    
-                            }else{
-                                //取消  ○
+                                //取消  ○   ×
                                 self.displayButtonControl().enableCancel(true);    
+                            }else{
+                                //取消    ×
+                                self.displayButtonControl().enableCancel(false);    
                             }
                         }
                     }else if (reflectPlanState == Status.DENIAL
@@ -431,8 +358,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
-                self.messageDeadlineTop(self.reasonAppMess + '　' + data.message);
-                self.messageDeadlineBottom(self.reasonAppMessDealine + '　' + data.deadline);
+                if(!nts.uk.util.isNullOrEmpty(data.message)){
+                    self.messageDeadlineTop(self.reasonAppMess + '　' + data.message);    
+                }
+                if(!nts.uk.util.isNullOrEmpty(data.deadline)){
+                    self.messageDeadlineBottom(self.reasonAppMessDealine + '　' + data.deadline);
+                }
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
                 //補足1 表示か非表示
