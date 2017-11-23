@@ -342,7 +342,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             setShared('CPS017C_PARAMS', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
-                self.start();
+                //reload lai History:
+                perInfoSelectionItem.selectionItemId.valueHasMutated();
                 block.clear();
             });
         }
@@ -352,6 +353,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this,
                 selectHistory = _.find(self.listHistorySelection(), x => x.histId == self.historySelection().histId()),
                 selectionItemNameList = _.find(self.listItems(), x => x.selectionItemName == self.perInfoSelectionItem().selectionItemName()),
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems();
+            
                 param = {
                     sel_history: selectHistory,
                     sel_name: selectionItemNameList.selectionItemName
@@ -359,15 +363,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
             setShared('CPS017D_PARAMS', param);
             block.invisible();
             modal('/view/cps/017/d/index.xhtml', { title: '' }).onClosed(function(): any {
+                //reload lai History:
+                perInfoSelectionItem.selectionItemId.valueHasMutated();
                 block.clear();
             });
         }
-
-        // load lai history
-        reloadHistory() {
-
-        }
-
     }
 
     //SelectionItem
