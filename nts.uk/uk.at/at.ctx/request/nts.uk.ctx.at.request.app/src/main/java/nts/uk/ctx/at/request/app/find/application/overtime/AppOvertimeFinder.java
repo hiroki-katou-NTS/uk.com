@@ -26,10 +26,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartAppro
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.ChangeInputAppDate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeInstructInfomation;
@@ -102,6 +104,10 @@ public class AppOvertimeFinder {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
+	@Inject
+	private OvertimeRepository overtimeRepository;
+	
+	
 	/**
 	 * @param url
 	 * @param appDate
@@ -130,6 +136,7 @@ public class AppOvertimeFinder {
 		startCheckErrorService.checkError(ApplicationType.OVER_TIME_APPLICATION.value);
 		// 02_残業区分チェック : check loai lam them
 		int overtimeAtr = overtimeService.checkOvertime(url);
+		result.setOvertimeAtr(overtimeAtr);
 		// 01_初期データ取得
 		getData(result,uiType,appDate,companyID,employeeID,appCommonSettingOutput,applicationDto,overtimeAtr,overTimeInputs,preAppOvertimeDto);
 		
@@ -137,12 +144,150 @@ public class AppOvertimeFinder {
 		String employeeName = "";
 		if(Strings.isNotBlank(applicationDto.getApplicantSID())){
 			employeeName = employeeAdapter.getEmployeeName(applicationDto.getApplicantSID());
+			result.setEmployeeID(applicationDto.getApplicantSID());
 		} else {
 			employeeName = employeeAdapter.getEmployeeName(employeeID);
+			result.setEmployeeID(employeeID);
 		}
 		result.setEmployeeName(employeeName);
+		
 		return result;
 	}
+	
+	public OverTimeDto findDetailByAppID(String appID){
+		String companyID = AppContexts.user().companyId();
+		// 07_勤務種類取得: lay loai di lam 
+		// 08_就業時間帯取得(lay loai gio lam viec)
+		// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
+		// 01-04_加給時間を取得: chua xong
+		Optional<AppOverTime> opAppOverTime = overtimeRepository.getFullAppOvertime(companyID, appID);
+		if(!opAppOverTime.isPresent()){
+			throw new RuntimeException("khong tim dc doi tuong");
+		}
+		AppOverTime appOverTime = opAppOverTime.get();
+		OverTimeDto overTimeDto = OverTimeDto.fromDomain(appOverTime);
+		String employeeName = employeeAdapter.getEmployeeName(appOverTime.getApplication().getApplicantSID());
+		overTimeDto.setEmployeeName(employeeName);
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
+				appOverTime.getApplication().getApplicantSID(),
+				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appOverTime.getApplication().getApplicationDate());
+		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
+		if(requestAppDetailSettings != null){
+			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
+			if(requestAppDetailSetting != null){
+				// 時刻計算利用チェック
+				if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
+					overTimeDto.setDisplayCaculationTime(true);
+					// 07_勤務種類取得: lay loai di lam 
+					overTimeDto.setWorkType(new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""));
+					
+					// 08_就業時間帯取得(lay loai gio lam viec)
+					overTimeDto.setSiftType(new SiftType(appOverTime.getSiftCode().v(), ""));
+					
+					// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
+					boolean displayRestTime = iOvertimePreProcess.getRestTime(requestAppDetailSetting.get(0));
+					overTimeDto.setDisplayRestTime(displayRestTime);
+					
+				}else{
+					overTimeDto.setDisplayCaculationTime(false);
+				}
+			}
+		}
+		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
+		if(appTypeDiscreteSetting.isPresent()){
+			// 01-05_申請定型理由を取得
+			if(appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
+				overTimeDto.setTypicalReasonDisplayFlg(true);
+				List<ApplicationReason> applicationReasons = iOvertimePreProcess.getApplicationReasonType(companyID,ApplicationType.OVER_TIME_APPLICATION.value,appTypeDiscreteSetting);
+				List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
+				for (ApplicationReason applicationReason : applicationReasons) {
+					ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
+							applicationReason.getReasonTemp(), applicationReason.getDefaultFlg().value);
+					applicationReasonDtos.add(applicationReasonDto);
+				}
+				overTimeDto.setApplicationReasonDtos(applicationReasonDtos);
+			}else{
+				overTimeDto.setTypicalReasonDisplayFlg(false);
+			}
+			//01-06_申請理由を取得
+			overTimeDto.setDisplayAppReasonContentFlg(iOvertimePreProcess.displayAppReasonContentFlg(appTypeDiscreteSetting));
+		}
+		if(overtimeRestAppCommonSet.isPresent()){
+			//01-08_乖離定型理由を取得
+			if(overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+				overTimeDto.setDisplayDivergenceReasonForm(true);
+				List<DivergenceReason> divergenceReasons = iOvertimePreProcess.getDivergenceReasonForm(companyID,ApplicationType.OVER_TIME_APPLICATION.value,overtimeRestAppCommonSet);
+				convertToDivergenceReasonDto(divergenceReasons,overTimeDto);
+			}else{
+				overTimeDto.setDisplayDivergenceReasonForm(false);
+			}
+			//01-07_乖離理由を取得
+			overTimeDto.setDisplayDivergenceReasonInput(iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
+			
+		}
+		List<OvertimeInputDto> overTimeInputs = new ArrayList<>();
+		// 01-03_残業枠を取得: chua xong
+		overTimeDto.setAppOvertimeNightFlg(appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value);
+		List<OvertimeFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(appOverTime.getOverTimeAtr().value,companyID);
+		
+		for(OvertimeFrame overtimeFrame :overtimeFrames){
+			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
+			overtimeInputDto.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+			overtimeInputDto.setFrameNo(overtimeFrame.getOtFrameNo());
+			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeFrameName().toString());
+			overTimeInputs.add(overtimeInputDto);
+		}
+		
+		// lay breakTime
+		List<BreaktimeFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
+		for(BreaktimeFrame breaktimeFrame :breaktimeFrames){
+			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
+			overtimeInputDto.setAttendanceID(AttendanceID.BREAKTIME.value);
+			overtimeInputDto.setFrameNo(breaktimeFrame.getBreakTimeFrameNo());
+			overtimeInputDto.setFrameName(breaktimeFrame.getBreakTimeFrameName().toString());
+			overTimeInputs.add(overtimeInputDto);
+		}
+		
+		
+		// 01-04_加給時間を取得: chua xong
+		if(overtimeRestAppCommonSet.isPresent()){
+			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
+				overTimeDto.setDisplayBonusTime(true);
+				List<BonusPayTimeItem> bonusPayTimeItems= this.iOvertimePreProcess.getBonusTime(
+						appOverTime.getApplication().getApplicantSID(),
+						overtimeRestAppCommonSet,
+						appOverTime.getApplication().getApplicationDate().toString(DATE_FORMAT),
+						companyID, 
+						overTimeDto.getSiftType());
+				for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
+					OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
+					overtimeInputDto.setAttendanceID(AttendanceID.BONUSPAYTIME.value);
+					overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
+					overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
+					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
+					overTimeInputs.add(overtimeInputDto);
+				}
+			}else{
+				overTimeDto.setDisplayBonusTime(false);
+			}
+		}
+		overTimeDto.getOverTimeInputs().forEach(item -> {
+			overTimeInputs.stream().filter(x -> 
+				(x.getAttendanceID()==item.getAttendanceID())
+				&& (x.getFrameNo()==item.getFrameNo())
+				&& (x.getTimeItemTypeAtr()==item.getTimeItemTypeAtr())
+					).findAny().ifPresent(value -> {
+						value.setStartTime(item.getStartTime());
+						value.setEndTime(item.getEndTime());
+						value.setApplicationTime(item.getApplicationTime());
+					});;
+		});
+		
+		overTimeDto.setOverTimeInputs(overTimeInputs);
+		
+		return overTimeDto;
+	} 
 	
 	/**
 	 * @param appDate
@@ -155,7 +300,7 @@ public class AppOvertimeFinder {
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto applicationDto = new ApplicationDto();
 		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
-		// 申請日を変更する : chưa xử lí
+		// 申請日を変更する : chưa xử lí(Hung)
 		
 		// 01-01_残業通知情報を取得
 		int rootAtr = 1;
@@ -182,10 +327,10 @@ public class AppOvertimeFinder {
 		// 01-18_実績の内容を表示し直す : chưa xử lí
 		
 		// ドメインモデル「申請表示設定」．事前事後区分表示をチェックする
-		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
-			// 3.事前事後の判断処理(事前事後非表示する場合)
-			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
-		}
+//		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
+//			// 3.事前事後の判断処理(事前事後非表示する場合)
+//			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
+//		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
 		if(requestAppDetailSettings != null){
@@ -202,7 +347,7 @@ public class AppOvertimeFinder {
 						result.setWorkType(workTypeOvertime);
 						
 						// 08_就業時間帯取得(lay loai gio lam viec) 
-						SiftType siftType = overtimeService.getSiftType(companyID, employeeID, personalLablorCodition, requestAppDetailSetting.get(0));
+						SiftType siftType = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
 						result.setSiftType(siftType);
 					}else{
 						result.setDisplayCaculationTime(false);
@@ -279,7 +424,7 @@ public class AppOvertimeFinder {
 					result.setWorkType(workTypeOvertime);
 					
 					// 08_就業時間帯取得(lay loai gio lam viec) 
-					SiftType siftType = overtimeService.getSiftType(companyID, employeeID, personalLablorCodition, requestAppDetailSetting.get(0));
+					SiftType siftType = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
 					result.setSiftType(siftType);
 					
 					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
@@ -317,7 +462,7 @@ public class AppOvertimeFinder {
 			overTimeInputs.add(overtimeInputDto);
 		}
 		
-		result.setOverTimeInputs(overTimeInputs);
+		
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		// xu li hien thi du lieu xin truoc
 		if(overtimeRestAppCommonSet.isPresent()){
@@ -342,50 +487,50 @@ public class AppOvertimeFinder {
 				result.setDisplayBonusTime(false);
 			}
 		}
-		
+		result.setOverTimeInputs(overTimeInputs);
 		// 01-05_申請定型理由を取得, 01-06_申請理由を取得
-				Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
-				if(appTypeDiscreteSetting.isPresent()){
-					// 01-05_申請定型理由を取得
-					if(appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
-						result.setTypicalReasonDisplayFlg(true);
-						List<ApplicationReason> applicationReasons = iOvertimePreProcess.getApplicationReasonType(companyID,ApplicationType.OVER_TIME_APPLICATION.value,appTypeDiscreteSetting);
-						List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
-						for (ApplicationReason applicationReason : applicationReasons) {
-							ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
-									applicationReason.getReasonTemp(), applicationReason.getDefaultFlg().value);
-							applicationReasonDtos.add(applicationReasonDto);
-						}
-						result.setApplicationReasonDtos(applicationReasonDtos);
-					}else{
-						result.setTypicalReasonDisplayFlg(false);
-					}
-					//01-06_申請理由を取得
-					result.setDisplayAppReasonContentFlg(iOvertimePreProcess.displayAppReasonContentFlg(appTypeDiscreteSetting));
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
+		if(appTypeDiscreteSetting.isPresent()){
+			// 01-05_申請定型理由を取得
+			if(appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
+				result.setTypicalReasonDisplayFlg(true);
+				List<ApplicationReason> applicationReasons = iOvertimePreProcess.getApplicationReasonType(companyID,ApplicationType.OVER_TIME_APPLICATION.value,appTypeDiscreteSetting);
+				List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
+				for (ApplicationReason applicationReason : applicationReasons) {
+					ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
+							applicationReason.getReasonTemp(), applicationReason.getDefaultFlg().value);
+					applicationReasonDtos.add(applicationReasonDto);
 				}
-				if(overtimeRestAppCommonSet.isPresent()){
-					//01-08_乖離定型理由を取得
-					if(overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
-						result.setDisplayDivergenceReasonForm(true);
-						List<DivergenceReason> divergenceReasons = iOvertimePreProcess.getDivergenceReasonForm(companyID,ApplicationType.OVER_TIME_APPLICATION.value,overtimeRestAppCommonSet);
-						convertToDivergenceReasonDto(divergenceReasons,result);
-					}else{
-						result.setDisplayDivergenceReasonForm(false);
-					}
-					//01-07_乖離理由を取得
-					result.setDisplayDivergenceReasonInput(iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
-					
-				}
-				//01-09_事前申請を取得
-				if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
-					AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
-					if(appOvertime != null){
-						convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
-					}else{
-						result.setPreAppPanelFlg(false);
-					}
-					
-				}
+				result.setApplicationReasonDtos(applicationReasonDtos);
+			}else{
+				result.setTypicalReasonDisplayFlg(false);
+			}
+			//01-06_申請理由を取得
+			result.setDisplayAppReasonContentFlg(iOvertimePreProcess.displayAppReasonContentFlg(appTypeDiscreteSetting));
+		}
+		if(overtimeRestAppCommonSet.isPresent()){
+			//01-08_乖離定型理由を取得
+			if(overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+				result.setDisplayDivergenceReasonForm(true);
+				List<DivergenceReason> divergenceReasons = iOvertimePreProcess.getDivergenceReasonForm(companyID,ApplicationType.OVER_TIME_APPLICATION.value,overtimeRestAppCommonSet);
+				convertToDivergenceReasonDto(divergenceReasons,result);
+			}else{
+				result.setDisplayDivergenceReasonForm(false);
+			}
+			//01-07_乖離理由を取得
+			result.setDisplayDivergenceReasonInput(iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
+			
+		}
+		//01-09_事前申請を取得
+		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
+			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
+			if(appOvertime != null){
+				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
+			}else{
+				result.setPreAppPanelFlg(false);
+			}
+			
+		}
 		
 	}
 
@@ -394,18 +539,17 @@ public class AppOvertimeFinder {
 	 * @param result
 	 */
 	private void convertToDivergenceReasonDto(List<DivergenceReason> divergenceReasons, OverTimeDto result){
-				
-				List<DivergenceReasonDto> divergenceReasonDtos = new ArrayList<>();
-				for(DivergenceReason divergenceReason : divergenceReasons){
-					DivergenceReasonDto divergenceReasonDto = new DivergenceReasonDto();
-					divergenceReasonDto.setDivergenceReasonID(divergenceReason.getReasonTypeItem().getReasonID());
-					divergenceReasonDto.setReasonTemp(divergenceReason.getReasonTypeItem().getReasonTemp().toString());
-					if(divergenceReason.getReasonTypeItem().getDefaultFlg().value == DefaultFlg.DEFAULT.value){
-						divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getReasonID());
-					}
-					divergenceReasonDtos.add(divergenceReasonDto);
-				}
-				result.setDivergenceReasonDtos(divergenceReasonDtos);
+		List<DivergenceReasonDto> divergenceReasonDtos = new ArrayList<>();
+		for(DivergenceReason divergenceReason : divergenceReasons){
+			DivergenceReasonDto divergenceReasonDto = new DivergenceReasonDto();
+			divergenceReasonDto.setDivergenceReasonID(divergenceReason.getReasonTypeItem().getReasonID());
+			divergenceReasonDto.setReasonTemp(divergenceReason.getReasonTypeItem().getReasonTemp().toString());
+			if(divergenceReason.getReasonTypeItem().getDefaultFlg().value == DefaultFlg.DEFAULT.value){
+				divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getReasonID());
+			}
+			divergenceReasonDtos.add(divergenceReasonDto);
+		}
+		result.setDivergenceReasonDtos(divergenceReasonDtos);
 	}
 	
 	/**
@@ -470,9 +614,10 @@ public class AppOvertimeFinder {
 					}
 				}
 			}
-			result.setOverTimeInputs(overtimeInputDtos);
-			result.setOverTimeShiftNight(appOvertime.getOverTimeShiftNight());
-			result.setFlexExessTime(appOvertime.getFlexExessTime());
+			preAppOvertimeDto.setOverTimeInputsPre(overtimeInputDtos);
+			preAppOvertimeDto.setOverTimeShiftNightPre(appOvertime.getOverTimeShiftNight());
+			preAppOvertimeDto.setFlexExessTimePre(appOvertime.getFlexExessTime());
+			result.setPreAppOvertimeDto(preAppOvertimeDto);
 		}
 
 	}

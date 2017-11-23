@@ -37,12 +37,6 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	private AppApprovalPhaseRepository appApprovalPhaseRepository;
 
 	@Inject
-	private AfterApprovalProcess detailedScreenAfterApprovalProcessService;
-	
-	@Inject
-	private AfterProcessDelete DetailedScreenProcessAfterDeleteSevice;
-
-	@Inject
 	private AgentAdapter approvalAgencyInformationService;
 	
 	@Inject
@@ -61,7 +55,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	private MailSender mailSender;
 	
 	@Override
-	public List<String> screenAfterDelete(String companyID,String appID, Long version) {
+	public String screenAfterDelete(String companyID,String appID, Long version) {
 		ApplicationType appType = applicationRepo.getAppById(companyID, appID).get().getApplicationType();
 		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
 				.get().getSendMailWhenRegisterFlg();
@@ -107,7 +101,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		}
 		//filter duplicate
 		converList = listDestination.stream().distinct().collect(Collectors.toList());
-		List<String> lstMail = new ArrayList<>();
+		String strMail = "";
 		if (converList != null) {
 			// TODOgui mail cho ng xac nhan
 			
@@ -120,12 +114,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 				}
 				try {
 					mailSender.send("nts", mail, new MailContents("nts mail", "delete mail from NTS"));
-					lstMail.add(mail);
+					strMail += mail + System.lineSeparator();
 				} catch (SendMailFailedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 			}
 		}
 
@@ -135,7 +128,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		/*if (converList != null) {
 			//TODO Hien thi thong tin 392
 		}*/
-		return lstMail;
+		return strMail;
 	}
 
 }

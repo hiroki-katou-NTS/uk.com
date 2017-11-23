@@ -8,10 +8,10 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum CalMethodAtr {
-	/** 0- 金額項目 **/
-	AMOUNT_ITEM(0),
-	/** 1- 時間項目×単価 **/
-	TIME_ITEM_X_UNIT_PRICE(1);
+	/** 0- 時間項目×単価 **/
+	TIME_ITEM_X_UNIT_PRICE (0),
+	/** 1-  金額項目**/
+	AMOUNT_ITEM(1);
 	
 	public final int value;
 }

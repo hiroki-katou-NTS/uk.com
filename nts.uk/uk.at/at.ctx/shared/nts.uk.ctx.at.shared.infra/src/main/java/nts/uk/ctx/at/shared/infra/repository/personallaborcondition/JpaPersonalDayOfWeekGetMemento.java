@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalDayOfWeekGetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.PersonalWorkAtr;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.DayOfWeekAtr;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek;
 
 /**
  * The Class JpaPersonalDayOfWeekGetMemento.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.PersonalWorkAtr;
 public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemento {
 
 	/** The entitys. */
-	private List<KshmtSingleDaySche> entitys;
+	private List<KshmtPerDayOfWeek> entitys;
 
 	/** The Constant FIRST_DATA. */
 	public static final int FIRST_DATA = 0;
@@ -30,7 +30,7 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 *
 	 * @param entitys the entitys
 	 */
-	public JpaPersonalDayOfWeekGetMemento(List<KshmtSingleDaySche> entitys) {
+	public JpaPersonalDayOfWeekGetMemento(List<KshmtPerDayOfWeek> entitys) {
 		this.entitys = entitys;
 	}
 
@@ -42,7 +42,7 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getSaturday() {
-		return this.findById(this.entitys, PersonalWorkAtr.SATURDAY.value)
+		return this.findById(this.entitys, DayOfWeekAtr.SATURDAY.value)
 				.map(entity -> this.toDomain(entity));
 	}
 
@@ -54,7 +54,7 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getSunday() {
-		return this.findById(this.entitys, PersonalWorkAtr.SUNDAY.value)
+		return this.findById(this.entitys, DayOfWeekAtr.SUNDAY.value)
 				.map(entity -> this.toDomain(entity));
 	}
 
@@ -66,7 +66,7 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getMonday() {
-		return this.findById(this.entitys, PersonalWorkAtr.MONDAY.value)
+		return this.findById(this.entitys, DayOfWeekAtr.MONDAY.value)
 				.map(entity -> this.toDomain(entity));
 	}
 
@@ -78,7 +78,7 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getThursday() {
-		return this.findById(this.entitys, PersonalWorkAtr.THURSDAY.value)
+		return this.findById(this.entitys, DayOfWeekAtr.THURSDAY.value)
 				.map(entity -> this.toDomain(entity));
 	}
 
@@ -90,7 +90,7 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getWednesday() {
-		return this.findById(this.entitys, PersonalWorkAtr.WEDNESDAY.value)
+		return this.findById(this.entitys, DayOfWeekAtr.WEDNESDAY.value)
 				.map(entity -> this.toDomain(entity));
 	}
 
@@ -102,7 +102,7 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getTuesday() {
-		return this.findById(this.entitys, PersonalWorkAtr.TUESDAY.value)
+		return this.findById(this.entitys, DayOfWeekAtr.TUESDAY.value)
 				.map(entity -> this.toDomain(entity));
 	}
 
@@ -114,24 +114,20 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getFriday() {
-		return this.findById(this.entitys, PersonalWorkAtr.FRIDAY.value)
+		return this.findById(this.entitys, DayOfWeekAtr.FRIDAY.value)
 				.map(entity -> this.toDomain(entity));
 	}
 
 	/**
 	 * Find by id.
 	 *
-	 * @param entitys
-	 *            the entitys
-	 * @param perWorkAtr
-	 *            the per work atr
+	 * @param entitys the entitys
+	 * @param perWorkAtr the per work atr
 	 * @return the optional
 	 */
-	private Optional<KshmtSingleDaySche> findById(List<KshmtSingleDaySche> entitys,
-			int perWorkAtr) {
-		List<KshmtSingleDaySche> enityfinders = entitys.stream()
-				.filter(singleDaySchedule -> singleDaySchedule.getKshmtSingleDaySchePK()
-						.getPersWorkAtr() == perWorkAtr)
+	private Optional<KshmtPerDayOfWeek> findById(List<KshmtPerDayOfWeek> entitys, int perWorkAtr) {
+		List<KshmtPerDayOfWeek> enityfinders = entitys.stream().filter(
+				dayOfWeek -> dayOfWeek.getKshmtPerDayOfWeekPK().getDayOfWeekAtr() == perWorkAtr)
 				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(enityfinders)) {
 			return Optional.empty();
@@ -145,8 +141,8 @@ public class JpaPersonalDayOfWeekGetMemento implements PersonalDayOfWeekGetMemen
 	 * @param entity the entity
 	 * @return the single day schedule
 	 */
-	private SingleDaySchedule toDomain(KshmtSingleDaySche entity) {
-		return new SingleDaySchedule(new JpaSingleDayScheduleGetMemento(entity));
+	private SingleDaySchedule toDomain(KshmtPerDayOfWeek entity) {
+		return new SingleDaySchedule(new JpaSingleDayScheduleDayOfGetMemento(entity));
 	}
 
 }

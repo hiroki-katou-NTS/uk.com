@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -36,7 +37,7 @@ public interface IErrorCheckBeforeRegister {
 	 * @param overtimeInputs: 申請時間(input time in a ATTENDANCE)
 	 * @return 0: Normal. 1: 背景色を設定する
 	 */
-	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDate inputDate, PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs) ;
+	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs) ;
 	
 	/**
 	 * 実績超過チェック
@@ -60,5 +61,5 @@ public interface IErrorCheckBeforeRegister {
 	 * @param prePostAtr: 事前事後区分
 	 * @return true: show confirm dialog,
 	 */
-	OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDate inputDate, PrePostAtr prePostAtr);
+	OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr);
 }

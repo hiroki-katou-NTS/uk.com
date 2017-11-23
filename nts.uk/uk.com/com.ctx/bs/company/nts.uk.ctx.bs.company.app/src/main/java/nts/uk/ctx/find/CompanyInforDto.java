@@ -1,5 +1,7 @@
 package nts.uk.ctx.find;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +38,7 @@ public class CompanyInforDto {
 	private String repname;
 	
 	/** 代表者職位 */
-	private String repost;
+	private String repJob;
 	
 	/** 会社名カナ */
 	private String comNameKana;
@@ -48,7 +50,7 @@ public class CompanyInforDto {
 	private String contractCd;
 	
 	/** 法人マイナンバー */
-	private String taxNum;
+	private BigDecimal taxNum;
 	
 	private AddInforDto addinfor;
 }
