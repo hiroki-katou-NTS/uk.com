@@ -17,11 +17,12 @@
 	margin-left: 170px;
 	margin-bottom: 10px;
 }
-.contentPassComplex1{
+
+.contentPassComplex1 {
 	margin-left: 143px;
 }
 
-.contentsymbol{
+.contentsymbol {
 	margin-left: 201px;
 	margin-bottom: 10px;
 }
@@ -38,6 +39,20 @@
 .form1 {
 	float: left;
 }
-#pabelAccLock{
+
+#pabelAccLock {
 	height: 200px;
+}
+
+.labelInfo {
+	margin-left: 30px;
+}
+
+.labelInfo1 {
+	margin-left: 15px;
+}
+
+.textAreaSize {
+	height: 60px;
+	margin-left: 10px;
 }
