@@ -24,7 +24,6 @@ module nts.uk.com.view.cas014.a {
                 $(".fixed-table").ntsFixedTable({ height: 300 });
             }
 
-            //startPage(): void {
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
@@ -54,7 +53,7 @@ module nts.uk.com.view.cas014.a {
                                 }
                             });
                         });
-                        self.roleSetJobTitle.valueHasMutated();
+                        //self.roleSetJobTitle.valueHasMutated();
                     } 
                     dfd.resolve();
                 }).fail(function(error) {
@@ -67,9 +66,7 @@ module nts.uk.com.view.cas014.a {
 
             register() {
                 let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails = [];
-                _.each(data.details, d => {
-                    if (d.roleSetCd != '00') regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId })
-                });
+                _.each(data.details(), d => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
 
                 let command: any = {
                     applyToConcurrentPerson: data.applyToConcurrentPerson,

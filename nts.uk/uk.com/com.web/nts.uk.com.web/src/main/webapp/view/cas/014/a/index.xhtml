@@ -9,7 +9,6 @@
 		<ui:define name="sidebar-head">
 			<title>ロールセットの付与</title>
 			<com:scriptfile set="IGNITE" />
-			<!-- 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" /> -->
 			<com:stylefile path="cas014.a.style.css" />
 			<com:scriptfile path="cas014.a.service.js" />
 			<com:scriptfile path="cas014.a.vm.js" />
@@ -34,12 +33,12 @@
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('CAS014_2')}</span>
-					<button class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
+					<span tabindex="1" class="title">#{i18n.getText('CAS014_2')}</span>
+					<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="valign-center control-group" data-bind="with: roleSetJobTitle">
-						<div data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
+						<div tabindex="3" data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
 					</div>
 					<div class="valign-center control-group" style="padding-left: 32px">
 						<label>#{i18n.getText('CAS014_21')}</label>
@@ -47,12 +46,12 @@
 					<br />
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
-						<div
+						<div tabindex="4"
 							data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
-						<button class="caret-bottom" data-bind="click : startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
+						<button tabindex="5" class="caret-bottom" data-bind="click : startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
 					</div>
 					<br />
-					<table class="fixed-table" data-bind="with: roleSetJobTitle">
+					<table class="fixed-table" tabindex="6" data-bind="with: roleSetJobTitle">
 						<colgroup>
 							<col width="100px" />
 							<col width="150px" />
@@ -70,7 +69,7 @@
 								<td><div data-bind = "text: jobTitle.code" style="display: inline-block;"></div></td>
 								<td><div data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
 								<td>
-									<div class="combo-box"
+									<div class="combo-box" tabindex="7"
 										data-bind="ntsComboBox: {
 										options: roleSetList,
 										optionsValue: 'code',
