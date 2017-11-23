@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.adapter.person.EmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
+import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedDto;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
@@ -31,6 +32,9 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 
 	@Inject
 	private EmployeeInfoPub employeeInfoPub;
+	
+//	@Inject
+//	private PersonPub personPub;
 	//@Inject
 	//private IPersonInfoPub IPersonInfoPub;
 
@@ -70,6 +74,12 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 				empBasicInfoExport.getGender()
 				);
 		return empBasicInfoImport;
+	}
+
+	@Override
+	public List<PersonInfoImport> getByListId(List<String> personId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

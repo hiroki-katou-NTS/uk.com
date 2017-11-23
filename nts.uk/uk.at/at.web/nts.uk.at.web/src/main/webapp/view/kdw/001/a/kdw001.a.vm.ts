@@ -32,7 +32,7 @@ module nts.uk.at.view.kdw001.a {
                   
                   */
                 // closureID get form CCG001. 
-                self.closureID = '1';
+                self.closureID = 1;
 
             }
 

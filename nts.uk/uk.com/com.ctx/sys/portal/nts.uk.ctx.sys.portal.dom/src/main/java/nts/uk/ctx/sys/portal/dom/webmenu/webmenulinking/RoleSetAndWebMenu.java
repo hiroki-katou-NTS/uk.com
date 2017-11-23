@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 
 /**
  * ロールセット別�?付�?� - Class RoleSetAndWenMenu
+ * ロールセット別紐付け
  * @author HieuNV
  */
 @Getter
