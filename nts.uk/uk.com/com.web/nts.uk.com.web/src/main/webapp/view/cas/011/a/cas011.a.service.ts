@@ -2,7 +2,7 @@ module nts.uk.com.view.cas011.a.service {
     import ajax = nts.uk.request.ajax;
 
     var paths = {
-            getLoginUserCompanyId:      "ctx/sys/auth/roleset/loginUserCompnayId",
+            getLoginUserCompanyId:      "ctx/sys/auth/roleset/companyIdOfLoginUser",
             getAllRoleSets:             "ctx/sys/auth/roleset/findAllRoleSet",
             getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findRoleSet",
             addRoleSet:                 "ctx/sys/auth/roleset/addRoleSet",

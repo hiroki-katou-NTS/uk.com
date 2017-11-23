@@ -9,15 +9,12 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 600,
-					height : 400
+					width : 500,
+					height : 250
 				};
 			</script>
-			<com:ValidatorScript>
 
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 			<com:stylefile path="cas011.c.style.css" />
 			<com:scriptfile path="cas011.c.service.js" />
 			<com:scriptfile path="cas011.c.vm.js" />
@@ -25,28 +22,47 @@
 		</ui:define>
 		<!-- title: 既定のロールセット選択ダイアログ -->
 
-		<ui:define name="content">
-			<div id="contents-area">
-				<div class="form-group">
+		<ui:define name="content1">
+			<div id="contents-area_1">
+				<div class="form-group" style="height: 110px; padding-top: 30px; text-align: center;">
 					<!-- C1-001 : Default role set-->
-					<div class="row">
-						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS011_30')}</div>
-						<!-- C1-002 : Role Set-->
-						<!-- 
-						<div data-bind="ntsComboBox: {}"/>
-						 -->
-					</div>
+					<table >
+						<colgroup>
+							<col width="120px" />
+							<col width="*" />
+						</colgroup>
+						<tr class="row">
+							<td class = "pad_left_5px" style = "width:160px">
+								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS011_30')}</div>
+							</td>
+							<td class = "pad_left_5px">
+								<!-- C1-002 : Role Set list-->
+								<div id="combo-box"
+											data-bind="ntsComboBox: {
+												options: listDefaultRoleSets,
+												optionsValue: 'roleSetCd',
+												visibleItemsCount: 5,
+												value: currentDefaultRoleSet().roleSetCd,
+												optionsText: 'roleSetName',
+												editable: false,
+												enable: true,
+												columns: [
+													{ prop: 'roleSetCd', length: 4 },
+													{ prop: 'roleSetName', length: 30 },
+												]}">
+								</div>
+							</td>
+						</tr>
+					</table>
 				</div>
 
-				<div id="functions-area-bottom"
-					style="width: 580px; height: 100px; padding-top: 15px; text-align: center;">
+				<div id="functions-area-bottom"	style="height: 110px; padding-top: 18px; text-align: center;">
 					<!-- C1-003 : Decision-->
-					<button id="btnDecision" class="proceed"
-						style="width: 145px; height: 60px; font-size: 25px;"
-						data-bind="click : addDefaultRoleSet, enable: $root.errors.isEmpty">#{i18n.getText('CAS011_32')}</button>
+					<button id="btnDecision" class="proceed" style="width: 100px; padding-right: 18px;"
+						data-bind="click : addDefaultRoleSet, enable: currentDefaultRoleSet().roleSetCd">#{i18n.getText('CAS011_32')}</button>
 					<!-- C1-004 : Cancel-->
-					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CAS011_33')}</button>
-
+					<button id="btnCancel" style="width: 110px; padding-left: 18px;"
+						data-bind="click: closeDialog">#{i18n.getText('CAS011_33')}</button>
 				</div>
 			</div>
 		</ui:define>
