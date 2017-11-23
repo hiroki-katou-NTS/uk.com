@@ -114,25 +114,6 @@ public class EmployeeFinder {
 	 * @param startLetter
 	 * @return
 	 */
-	// sonnlb
-
-	public String getGenerateEmplCodeAndComId(String startLetters) {
-		String ComId = AppContexts.user().companyId();
-		String EmpCode = employeeBusiness.generateEmplCode(startLetters);
-		return EmpCode == "" ? "" : ComId + EmpCode;
-	}
-
-	public validateEmpInfoResultDto validateEmpInfo(EmpInfoDto empInfo) {
-
-		Boolean isDuplicateEmpCode = this.employeeRepository.isDuplicateEmpCode(AppContexts.user().companyId(),
-				empInfo.getEmployeeCode());
-		Boolean isDuplicateCardNo = this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
-				empInfo.getCardNo());
-
-		return new validateEmpInfoResultDto(isDuplicateEmpCode || isDuplicateCardNo,
-				isDuplicateEmpCode ? "Msg_345" : "Msg_346");
-
-	}
 
 	// laitv
 	/**
