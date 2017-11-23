@@ -242,7 +242,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this,
                 items = ko.unwrap(self.listHistorySelection),
                 currentItem: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection();
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems();
 
             currentItem.histId(self.historySelection().histId());
             command = ko.toJS(currentItem);
@@ -260,9 +262,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 }
                                 let newItem = itemList[oldIndex];
                                 currentItem.histId(newItem.histId);
+                                self.listItems.valueHasMutated();
                             }
                         });
-                        self.listItems.valueHasMutated();
+                        perInfoSelectionItem.selectionItemId.valueHasMutated();
                         nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                     });
                 }).ifNo(() => {
