@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.request.infra.entity.application.workchange;
+package nts.uk.ctx.at.request.infra.entity.application.workchange;
 
 import java.io.Serializable;
 
