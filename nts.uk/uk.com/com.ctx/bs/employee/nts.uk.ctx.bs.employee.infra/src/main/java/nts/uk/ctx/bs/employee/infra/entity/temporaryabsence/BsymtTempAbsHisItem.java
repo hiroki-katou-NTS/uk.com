@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -25,10 +25,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
+	
+	@Basic(optional = false)
+	@Id
+	@Column(name = "HIST_ID")
+	public String histId;
 
-	/** The BsymtTempAbsHistoryPk. */
-	@EmbeddedId
-	public BsymtTempAbsHistoryPk key;
+	@Basic(optional = false)
+	@Column(name = "SID")
+	public String sid;
 	
 	@Basic(optional = false)
 	@Column(name = "LEAVE_HOLIDAY_ATR")
@@ -74,6 +79,6 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		return key;
+		return histId;
 	}
 }
