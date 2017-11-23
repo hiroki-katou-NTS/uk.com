@@ -364,8 +364,65 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         CaculationTime(){
             let self = this;
+            let dfd = $.Deferred();
             //TODO: for test
             self.calculateFlag(0);
+            let param : any ={
+                OvertimeInputDtos: self.overtimeHours(),
+                prePostAtr : self.prePostSelected(),
+                appDate : self.appDate
+            }
+            service.getCaculationResult(param).done(function(data){
+               
+                if(data != null){
+                 for(let i =0; i < data.lenght; i++){
+                   if(data[i].attendanceID == 1){
+                       if(data[i].frameNo != 11 && data[i].frameNo != 12){
+                           self.overtimeHours.push(new common.OverTimeInput("", "",
+                            data[i].attendanceID,
+                             "", 
+                             data[i].frameNo,
+                             0, 
+                             data[i].frameName,
+                              data[i].startTime,
+                               data[i].endTime,
+                               data[i].applicationTime,"#[KAF005_55]"));
+                       }else if(data[i].frameNo == 11){
+                            self.overtimeHours.push(new common.OverTimeInput("", "",
+                            data[i].attendanceID,
+                             "", 
+                             data[i].frameNo,
+                             0, 
+                             nts.uk.resource.getText("KAF005_63"),
+                              data[i].startTime,
+                               data[i].endTime,
+                               data[i].applicationTime,"#[KAF005_64]"));
+                       }else if(data[i].frameNo == 12){
+                            self.overtimeHours.push(new common.OverTimeInput("", "",
+                            data[i].attendanceID,
+                             "", 
+                             data[i].frameNo,
+                             0, 
+                             nts.uk.resource.getText("KAF005_65"),
+                              data[i].startTime,
+                               data[i].endTime,
+                               data[i].applicationTime,"#[KAF005_66]"));
+                       }
+                       
+                   }else if(data[i].attendanceID == 3){
+                       self.bonusTimes.push(new common.OverTimeInput("", "", data[i].attendanceID,
+                        "", data[i].frameNo,
+                        data[i].timeItemTypeAtr ,
+                        data[i].frameName, data[i].startTime,
+                        data[i].endTime, null,""));
+                   }   
+                 }   
+                }
+                 dfd.resolve(data);
+            }).fail(function(res){
+                dfd.reject(res);
+            });
+            return dfd.promise();
         }
         
         getReasonName(reasonCombo: common.ComboReason, reasonId: string): string{  

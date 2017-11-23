@@ -40,6 +40,10 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
 	
+	/* 
+	 * 06-01_色表示チェック
+	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#checkDisplayColor(java.util.List, java.util.List, int, nts.arc.time.GeneralDateTime, nts.arc.time.GeneralDate, int, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting)
+	 */
 	@Override
 	public void checkDisplayColor(List<OverTimeInput> overTimeInputs,
 			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate, int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting) {
@@ -65,16 +69,24 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		
 	}
 	
+	/* 
+	 *  06-04_計算実績超過チェック
+	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#checkCaculationActualExcess(int, int, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting)
+	 */
 	@Override
 	public void checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting) {
-		boolean codition = checkCondition(prePostAtr,appType,companyID);
-		if(codition){
+		boolean condition = checkCondition(prePostAtr,appType,companyID);
+		if(condition){
 			// 08_就業時間帯取得
 			SiftType siftType = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting);
-			// TO DO...
+			// TODO
 		}
 		
 	}
+	/* 
+	 * 06-04-1_チェック条件
+	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#checkCondition(int, int, java.lang.String)
+	 */
 	@Override
 	public boolean checkCondition(int prePostAtr,int appType,String companyID) {
 		if(prePostAtr == PrePostAtr.POSTERIOR.value){
@@ -89,32 +101,74 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		return false;
 	}
 
+	/* 
+	 * 06-02_残業時間を取得
+	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#getCaculationOvertimeHours(java.lang.String, java.lang.String, java.lang.String, int)
+	 */
 	@Override
-	public AppOverTime getAppOvertimePre(String companyID,String employeeId, String appDate,int appType) {
-		AppOverTime result = new AppOverTime();
-		Application applicationOvertime = new Application();
+	public List<OverTimeInput> getCaculationOvertimeHours(String companyID, String employeeId, String appDate,
+			int appType) {
+		/* 01-10_0時跨ぎチェック
+		* TODO
+		*/
+		// 06-02-1_事前申請を取得
+		List<OverTimeInput> overtimeInputs = getAppOvertimeHoursPre(companyID,employeeId,appDate,appType);
+		return overtimeInputs;
+		/* 06-02-2_申請時間を取得
+		* TODO
+		*/
+	}
+	/* 
+	 * 06-02-1_事前申請を取得
+	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#getAppOvertimeHoursPre(java.lang.String, java.lang.String, java.lang.String, int)
+	 */
+	@Override
+	public List<OverTimeInput> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType) {
+	
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
 		if(overtimeRestAppCommonSetting.isPresent()){
 			if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
 				List<Application> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
 				if(application.size() > 0){
-					applicationOvertime.setApplicationDate(application.get(0).getApplicationDate());
 					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getApplicationID());
 					if(appOvertime.isPresent()){
-						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
-						result.setSiftCode(appOvertime.get().getSiftCode());
-						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
-						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
-						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
-						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
-						
 						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceID.NORMALOVERTIME.value);
-						result.setOverTimeInput(overtimeInputs);
-						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
-						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
-						result.setApplication(applicationOvertime);
-						result.setAppID(appOvertime.get().getAppID());
-						return result;
+						return overtimeInputs;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	/* 
+	 * 06-03_加給時間を取得
+	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#getCaculationBonustime(java.lang.String, java.lang.String, java.lang.String, int)
+	 */
+	@Override
+	public List<OverTimeInput> getCaculationBonustime(String companyID, String employeeId, String appDate, int appType) {
+		
+		// 06-03-1_加給事前申請を取得
+		List<OverTimeInput> overtimeInputs = getAppBonustimePre(companyID,employeeId,appDate, appType);
+		return overtimeInputs;
+		// 06-03-2_加給計算時間を取得
+		// TODO
+	}
+	/* 
+	 * 06-03-1_加給事前申請を取得
+	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#getAppBonustimePre(java.lang.String, java.lang.String, java.lang.String, int)
+	 */
+	@Override
+	public List<OverTimeInput> getAppBonustimePre(String companyID, String employeeId, String appDate, int appType) {
+		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
+		if(overtimeRestAppCommonSetting.isPresent()){
+			if(overtimeRestAppCommonSetting.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
+				List<Application> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
+				if(application.size() > 0){
+					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getApplicationID());
+					if(appOvertime.isPresent()){
+						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceID.BONUSPAYTIME.value);
+						return overtimeInputs;
 					}
 				}
 			}
