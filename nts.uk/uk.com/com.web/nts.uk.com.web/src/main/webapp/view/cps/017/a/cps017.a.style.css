@@ -3,8 +3,8 @@
 }
 
 #history_lst {
-	width: 266px;
-	height: 140px;
+	width: 245px;
+	height: 116px;
 }
 
 #content-left {
@@ -53,10 +53,7 @@
 	margin-bottom: 10px;
 }
 
-#history_lst_grid_container {
-	width: 266px !important;
-	height: 140px !important;
-}
+
 
 .col1 {
 	width: 150px;
@@ -241,4 +238,14 @@ i.icon.icon-searchbox {
 
 #coll {
 	width: 150px;
+}
+#history_lst_grid_displayContainer{
+	    height: 116px !important;
+}
+#history_lst_grid_scrollContainer{
+	height: 116px !important;
+}
+#history_lst_grid_container {
+	width: 245px !important;
+	height: 116px !important;
 }
