@@ -179,6 +179,7 @@ module cps002.a.vm {
 
                             });
                         }
+
                         self.getLastRegHistory(result);
 
                     });
@@ -192,7 +193,7 @@ module cps002.a.vm {
 
         getLastRegHistory(userSetting: IUserSetting) {
             let self = this,
-                showHistory = !userSetting ? true : userSetting.employeeCodeType === 1 ? true : false;
+                showHistory = !userSetting ? true : userSetting.recentRegistrationType === 1 ? true : false;
 
             if (showHistory)
                 service.getLastRegHistory().done((result: IEmpRegHistory) => {
@@ -246,17 +247,7 @@ module cps002.a.vm {
 
         }
 
-        validEmployeeInfo(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                employee = self.currentEmployee();
-            service.validateEmpInfo(employee.employeeCode(), employee.cardNo()).done((result) => {
-                dfd.resolve(result);
-            })
-            return dfd.promise();
-        }
-
-        validateStep1() {
+        checkErrorStep1() {
             $(".form_step1").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return false;
@@ -265,22 +256,28 @@ module cps002.a.vm {
         }
 
         completeStep1() {
-            let self = this;
-            if (self.validateStep1()) {
-                self.validEmployeeInfo().done((result) => {
-                    if (result.isError) {
-                        dialog({ messageId: result.messageId });
+            let self = this,
+                employee = self.currentEmployee(),
+                command = {
+                    employeeCode: employee.employeeCode(),
+                    cardNo: employee.cardNo(),
+                    LoginId: employee.loginId()
+                };
+            if (self.checkErrorStep1()) {
+                service.validateEmpInfo(command).done(() => {
 
-                    } else {
+                    if (self.createTypeId() === 3) {
 
-                        if (self.createTypeId() === 3) {
-
-                            self.gotoStep3();
-                            return;
-                        }
-
-                        self.gotoStep2();
+                        self.gotoStep3();
+                        return;
                     }
+
+                    self.gotoStep2();
+
+                }).fail((error) => {
+
+                    dialog({ messageId: error.message });
+
                 });
             }
 
@@ -548,9 +545,12 @@ module cps002.a.vm {
         }
 
 
-        JumpToInitValueSettingPage() {
+        openInitModal() {
 
-            jump('/view/cps/009/a/index.xhtml');
+            setShared("isDialog", true);
+            subModal('/view/cps/009/a/index.xhtml', { title: '' }).onClosed(() => {
+
+            });
         }
 
 

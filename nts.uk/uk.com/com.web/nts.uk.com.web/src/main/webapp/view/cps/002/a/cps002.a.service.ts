@@ -51,8 +51,8 @@ module cps002.a.service {
         return ajax(otherpath.getCardNumber, employeeLetter);
     }
 
-    export function validateEmpInfo(employeeCode, cardNo) {
-        return ajax(regpath + regpaths.validateEmpInfo, { employeeCode: employeeCode, cardNo: cardNo });
+    export function validateEmpInfo(command) {
+        return ajax(regpath + regpaths.validateEmpInfo, command);
     }
 
     export function getCopySetting() {
