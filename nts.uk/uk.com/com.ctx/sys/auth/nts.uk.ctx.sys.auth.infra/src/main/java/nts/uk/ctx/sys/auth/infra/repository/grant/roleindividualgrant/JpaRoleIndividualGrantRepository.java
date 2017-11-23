@@ -30,12 +30,14 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	private final String SELECT_BY_ROLE_ID ="SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId ";
 	
 	@Override
-	public List<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType) {
+	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType) {
 		// TODO Auto-generated method stub
-		return this.queryProxy()
+		/*return this.queryProxy()
 				.query(SELECT_BY_ROLE, RoleIndividualGrant.class)
 				.setParameter("userId" ,userId )
 				.setParameter("roleType", roleType).getList();
+				*/
+		return null;
 	}
 
 	@Override
@@ -105,7 +107,7 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+/*
 	@Override
 	public Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, RoleType roleType) {
 		// TODO Auto-generated method stub
@@ -123,7 +125,7 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 		// TODO Auto-generated method stub
 		return null;
 	}
-    
+  */  
 	
     
 

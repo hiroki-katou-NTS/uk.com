@@ -69,7 +69,7 @@ public class RoleSetFinder {
 	 * @param roleSetCd
 	 * @return list of web menu dto.
 	 */
-	private List<WebMenuDto> buildWebMenuDto(String roleSetCd) {
+	private List<WebMenuImportDto> buildWebMenuDto(String roleSetCd) {
 
 		List<String> lstWebMenuCds = roleSetAndWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd)
 				.stream().map(item->item.getRoleSetCd()).collect(Collectors.toList());
@@ -83,11 +83,11 @@ public class RoleSetFinder {
 			return null;
 		}
 
-		List<WebMenuDto> retWebmenus = lstWebMenuCds.stream().map(item -> {
+		List<WebMenuImportDto> retWebmenus = lstWebMenuCds.stream().map(item -> {
 			Optional<WebMenuImport> webMenuOpt = lstWebMenus.stream().filter(wmn-> wmn.getWebMenuCd().equals(item)).findFirst();
 			if (webMenuOpt.isPresent()) {
 				WebMenuImport wmn = webMenuOpt.get();
-				return new WebMenuDto(wmn.getWebMenuCd(), wmn.getWebMenuName());
+				return new WebMenuImportDto(wmn.getWebMenuCd(), wmn.getWebMenuName());
 			}
 			return null;
 			}).collect(Collectors.toList());

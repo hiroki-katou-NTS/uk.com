@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.auth.app.find.roleset;
 import lombok.Value;
 
 @Value
-public class WebMenuDto {
+public class WebMenuImportDto {
 
 	private String webMenuCd;
 

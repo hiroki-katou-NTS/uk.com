@@ -39,14 +39,14 @@ public class RoleSetDto {
 	private String salaryRoleId;
 	
 	/** list of web menu code */
-	private List<WebMenuDto> webMenus;
+	private List<WebMenuImportDto> webMenus;
 	
 	/**
 	 * Transfer data from Domain into Dto to response to client
 	 * @param roleSet
 	 * @return
 	 */
-	public static RoleSetDto build(RoleSet roleSet, List<WebMenuDto> listWebMenuDto) {
+	public static RoleSetDto build(RoleSet roleSet, List<WebMenuImportDto> listWebMenuDto) {
 		RoleSetDto result = new RoleSetDto();
 		result.setApprovalAuthority(roleSet.hasApprovalAuthority());
 		result.setCompanyId(roleSet.getCompanyId());
