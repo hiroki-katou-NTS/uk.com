@@ -94,7 +94,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	private static PpemtHistorySelection toHistEntity(PerInfoHistorySelection domain) {
 		PpemtHistorySelectionPK key = new PpemtHistorySelectionPK(domain.getHistId());
 
-		return new PpemtHistorySelection(key, domain.getSelectionItemId(), domain.getCompanyCode(),
+		return new PpemtHistorySelection(key, domain.getSelectionItemId(), domain.getCompanyId(),
 				domain.getPeriod().start(), domain.getPeriod().end());
 	}
 

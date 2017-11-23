@@ -47,7 +47,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         self.listHistorySelection(_selectionItemList);
-                        self.historySelection().histId(self.listHistorySelection()[0].histId);
+                        // check tạm:
+                        self.historySelection().histId(self.listHistorySelection.length == 0 ? '' : self.listHistorySelection()[0].histId);
                     });
                 }
             });
@@ -392,7 +393,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
     interface IHistorySelection {
         histId?: string;
         selectionItemId?: string;
-        companyCode: string;
+        companyId: string;
         startDate: string;
         endDate: string;
     }
@@ -400,7 +401,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
     class HistorySelection {
         histId: KnockoutObservable<string> = ko.observable('');
         selectionItemId: KnockoutObservable<string> = ko.observable('');
-        companyCode: KnockoutObservable<string> = ko.observable('');
+        companyId: KnockoutObservable<string> = ko.observable('');
         startDate: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('');
 
@@ -408,7 +409,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this;
             self.histId(param.histId || '');
             self.selectionItemId(param.selectionItemId || '');
-            self.companyCode(param.companyCode || '');
+            self.companyId(param.companyId || '');
             self.startDate(param.startDate || '');
             self.endDate(param.endDate || '');
         }
