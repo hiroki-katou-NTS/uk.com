@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
@@ -77,18 +77,15 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 			// <= RetirementDate 退職年月日
 
 			// lấy domain 休職休業 TemporaryAbsence theo employeeId và referenceDate
-			Optional<TempAbsenceHistory> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
+			Optional<TempAbsenceHisItem> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
 				// tốn tại domain 
-				TempAbsenceHistory temporaryAbsenceDomain = temporaryAbsOpt.get();
+				TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsOpt.get();
 				// set LeaveHolidayType 
 				
-				// TODO
-				//statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getLeaveHolidayState().getTempAbsenceType().value);
+				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getLeaveHolidayType().value);
 
-				//if (temporaryAbsenceDomain.getLeaveHolidayState().getTempAbsenceType().value == 1) {
-				// TODO
-				if (true) {
+				if (temporaryAbsenceDomain.getLeaveHolidayType().value == 1) {
 					// trường hợp 休職休業区分＝休職  LeaveHolidayState = TEMP_LEAVE(1)
 					
 					// StatusOfEmployment = LEAVE_OF_ABSENCE

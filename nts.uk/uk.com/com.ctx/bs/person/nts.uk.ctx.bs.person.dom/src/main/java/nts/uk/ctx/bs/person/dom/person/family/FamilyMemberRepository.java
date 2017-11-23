@@ -2,19 +2,19 @@ package nts.uk.ctx.bs.person.dom.person.family;
 
 import java.util.List;
 
-public interface FamilyRepository {
+public interface FamilyMemberRepository {
 	
-	Family getFamilyById(String familyId);
+	FamilyMember getFamilyById(String familyId);
 	
-	List<Family> getListByPid(String pid);
+	List<FamilyMember> getListByPid(String pid);
 	/**
 	 * Add family ドメインモデル「家族」を新規登録する
 	 * @param family
 	 */
-	void addFamily(Family family);
+	void addFamily(FamilyMember family);
 	/**
 	 * Update family 取得した「家族」を更新する
 	 * @param family
 	 */
-	void updateFamily(Family family);
+	void updateFamily(FamilyMember family);
 }

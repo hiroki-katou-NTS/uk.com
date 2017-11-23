@@ -9,6 +9,9 @@ import javax.inject.Inject;
 
 import find.person.info.category.PerInfoCategoryFinder;
 import find.person.info.category.PerInfoCtgFullDto;
+import find.person.setting.selectionitem.PerInfoSelectionItemDto;
+import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
+import find.person.setting.selectionitem.selection.SelectionDto;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
@@ -44,6 +47,9 @@ public class PerInfoItemDefFinder {
 
 	@Inject
 	private PerInfoCategoryFinder categoryFinder;
+	
+	@Inject
+	private PerInfoSelectionItemFinder selectionItemFinder;
 
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
 		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
@@ -57,8 +63,9 @@ public class PerInfoItemDefFinder {
 		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
 				ukResouce);
 		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, ukResouce);
+		List<PerInfoSelectionItemDto> selectionItemLst= this.selectionItemFinder.getAllSelectionItem();
 		return new PerInfoItemDefFullEnumDto(dataTypeEnum, stringItemTypeEnum, stringItemDataTypeEnum, dateItemTypeEnum,
-				perInfoItemDefs);
+				selectionItemLst, perInfoItemDefs);
 	};
 
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId, String isAbolition) {

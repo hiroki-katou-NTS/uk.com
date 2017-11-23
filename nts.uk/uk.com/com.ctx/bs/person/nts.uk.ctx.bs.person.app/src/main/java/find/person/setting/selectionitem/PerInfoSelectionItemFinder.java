@@ -32,4 +32,11 @@ public class PerInfoSelectionItemFinder {
 		}
 		return PerInfoSelectionItemDto.fromDomain(opt.get());
 	}
+	//getAllSelection
+	
+	public List<PerInfoSelectionItemDto> getAllSelectionItem() {
+		return this.perInfoSelectionItemRepo.getAllSelection().stream()
+				.map(c -> PerInfoSelectionItemDto.fromDomain(c))
+				.collect(Collectors.toList());
+	}
 }

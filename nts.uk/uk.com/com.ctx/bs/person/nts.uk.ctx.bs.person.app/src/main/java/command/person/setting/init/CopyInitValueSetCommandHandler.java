@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSetting;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSettingRepository;
@@ -19,7 +20,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class CopyInitValueSetCommandHandler extends CommandHandler<CopyInitValueSetCommand> {
+public class CopyInitValueSetCommandHandler extends CommandHandlerWithResult<CopyInitValueSetCommand, String> {
 	
 	@Inject
 	private PerInfoInitValueSettingRepository repoPerSet;
@@ -28,7 +29,7 @@ public class CopyInitValueSetCommandHandler extends CommandHandler<CopyInitValue
 	@Inject
 	private PerInfoInitValueSetItemRepository repoPerSetItem;
 	@Override
-	protected void handle(CommandHandlerContext<CopyInitValueSetCommand> context) {
+	protected String handle(CommandHandlerContext<CopyInitValueSetCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		CopyInitValueSetCommand data = context.getCommand();
 		boolean checkOverWrite = data.isOverWrite();
@@ -92,5 +93,6 @@ public class CopyInitValueSetCommandHandler extends CommandHandler<CopyInitValue
 		}
 		//insert per set new
 		repoPerSet.insert(perSetInsert);
+		return initValueSettingId;
 	}
 }

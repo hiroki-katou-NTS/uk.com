@@ -8,24 +8,24 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
-import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamily;
 import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamilyPk;
 import nts.uk.ctx.bs.person.infra.entity.person.info.widowhistory.BpsmtWidowHis;
 
 @Stateless
-public class JpaFamily extends JpaRepository implements FamilyRepository {
+public class JpaFamilyMember extends JpaRepository implements FamilyMemberRepository {
 
 	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtFamily c WHERE c.pid = :pid";
 	
 	private static final String SELECT_FAMILY_BY_ID = "SELECT c FROM BpsmtFamily c WHERE c.ppsmtFamilyPk.familyId = :familyId";
 
-	private List<Family> toListFamily(List<BpsmtFamily> listEntity) {
-		List<Family> lstFamily = new ArrayList<>();
+	private List<FamilyMember> toListFamily(List<BpsmtFamily> listEntity) {
+		List<FamilyMember> lstFamily = new ArrayList<>();
 		if (!listEntity.isEmpty()) {
 			listEntity.stream().forEach(c -> {
-				Family family = toDomainFamily(c);
+				FamilyMember family = toDomainFamily(c);
 
 				lstFamily.add(family);
 			});
@@ -33,8 +33,8 @@ public class JpaFamily extends JpaRepository implements FamilyRepository {
 		return lstFamily;
 	}
 
-	private Family toDomainFamily(BpsmtFamily entity) {
-		val domain = Family.createFromJavaType(
+	private FamilyMember toDomainFamily(BpsmtFamily entity) {
+		val domain = FamilyMember.createFromJavaType(
 				entity.birthday,
 				entity.deathDate, 
 				entity.entryDate, 
@@ -58,14 +58,14 @@ public class JpaFamily extends JpaRepository implements FamilyRepository {
 	}
 	
 	@Override
-	public Family getFamilyById(String familyId) {
-		Optional<Family> family = this.queryProxy().query(SELECT_FAMILY_BY_ID, BpsmtFamily.class)
+	public FamilyMember getFamilyById(String familyId) {
+		Optional<FamilyMember> family = this.queryProxy().query(SELECT_FAMILY_BY_ID, BpsmtFamily.class)
 				.setParameter("familyId", familyId).getSingle(x -> toDomainFamily(x));
 		return family.isPresent()?family.get():null;
 	}
 
 	@Override
-	public List<Family> getListByPid(String pid) {
+	public List<FamilyMember> getListByPid(String pid) {
 		List<BpsmtFamily> listEntity = this.queryProxy().query(GET_ALL_BY_PID, BpsmtFamily.class)
 				.setParameter("pid", pid).getList();
 		return toListFamily(listEntity);
@@ -75,8 +75,8 @@ public class JpaFamily extends JpaRepository implements FamilyRepository {
 	 * @param domain
 	 * @return
 	 */
-	private BpsmtFamily toEntity(Family domain){
-		BpsmtFamilyPk key = new BpsmtFamilyPk(domain.getFamilyId());
+	private BpsmtFamily toEntity(FamilyMember domain){
+		BpsmtFamilyPk key = new BpsmtFamilyPk(domain.getFamilyMemberId());
 		return new BpsmtFamily(key, domain.getWorkStudentType().value, domain.getTogSepDivisionType().value,
 				domain.getTokodekeName().v(), domain.getSupportCareType().value, domain.getRelationship().v(), 
 				domain.getPersonId(), domain.getOccupationName().v(), domain.getNationalityId().v(), domain.getNameRomajiFull().v(), 
@@ -89,7 +89,7 @@ public class JpaFamily extends JpaRepository implements FamilyRepository {
 	 * @param domain
 	 * @param entity
 	 */
-	private void updateEntity(Family domain, BpsmtFamily entity){
+	private void updateEntity(FamilyMember domain, BpsmtFamily entity){
 		entity.workStudentType = domain.getWorkStudentType().value;
 		entity.TogSepDivType = domain.getTogSepDivisionType().value;
 		entity.todukedeName = domain.getTokodekeName().v();
@@ -114,7 +114,7 @@ public class JpaFamily extends JpaRepository implements FamilyRepository {
 	 * @param family
 	 */
 	@Override
-	public void addFamily(Family family) {
+	public void addFamily(FamilyMember family) {
 		this.commandProxy().insert(toEntity(family));
 	}
 	/**
@@ -122,9 +122,9 @@ public class JpaFamily extends JpaRepository implements FamilyRepository {
 	 * @param family
 	 */
 	@Override
-	public void updateFamily(Family family) {
+	public void updateFamily(FamilyMember family) {
 		// Get exist entity
-		BpsmtFamilyPk pk = new BpsmtFamilyPk(family.getFamilyId());
+		BpsmtFamilyPk pk = new BpsmtFamilyPk(family.getFamilyMemberId());
 		Optional<BpsmtFamily> existItem = this.queryProxy().find(pk, BpsmtFamily.class);
 		if(!existItem.isPresent()){
 			throw new RuntimeException("invalid Family");
