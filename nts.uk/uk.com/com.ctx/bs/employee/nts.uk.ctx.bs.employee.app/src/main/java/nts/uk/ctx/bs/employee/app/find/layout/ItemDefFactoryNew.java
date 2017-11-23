@@ -24,7 +24,7 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
 /**
- * Item definition factory: (thay ??i so v?i cai hi?n t?i ?? tuy ch?nh theo ch?c n?ng)
+ * Item definition factory: (thay đổi so với cái hiện tại để tùy chỉnh theo chức năng)
  * @author xuan vinh
  *
  */
