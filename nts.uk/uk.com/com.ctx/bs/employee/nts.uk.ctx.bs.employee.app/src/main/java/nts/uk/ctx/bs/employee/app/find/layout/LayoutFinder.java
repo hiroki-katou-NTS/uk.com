@@ -42,8 +42,8 @@ import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
-import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
@@ -121,7 +121,7 @@ public class LayoutFinder {
 	private PersonEmergencyCtRepository perEmerContRepo;
 
 	@Inject
-	private FamilyRepository familyRepo;
+	private FamilyMemberRepository familyRepo;
 
 	// inject category-data-repo
 	@Inject
@@ -490,7 +490,7 @@ public class LayoutFinder {
 					break;
 				case "CS00004":
 					// Family
-					List<Family> families = familyRepo.getListByPid(personId);
+					List<FamilyMember> families = familyRepo.getListByPid(personId);
 					Map<String, List<LayoutPersonInfoValueDto>> fMapFixedData = ItemDefinitionFactory
 							.matchFamilies(authClassItem, families);
 					Map<String, List<LayoutPersonInfoValueDto>> fMapOptionData = getPersDataOptionalForListClsItem(

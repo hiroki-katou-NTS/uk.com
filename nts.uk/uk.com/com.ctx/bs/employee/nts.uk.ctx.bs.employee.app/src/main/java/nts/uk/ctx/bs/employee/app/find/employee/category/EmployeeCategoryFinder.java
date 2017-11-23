@@ -33,8 +33,8 @@ import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
-import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -91,7 +91,7 @@ public class EmployeeCategoryFinder {
 	private CurrentAddressRepository currentAddressRepository;
 
 	@Inject
-	private FamilyRepository familyRepository;
+	private FamilyMemberRepository familyRepository;
 
 	@Inject
 	private WidowHistoryRepository widowHistoryRepository;
@@ -244,11 +244,11 @@ public class EmployeeCategoryFinder {
 
 			break;
 		case "CS00004":
-			List<Family> familys = familyRepository.getListByPid(employee.getPId());
+			List<FamilyMember> familys = familyRepository.getListByPid(employee.getPId());
 			// get Action Role
 			ActionRole actionRolef = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
 					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());
-			for (Family item : familys) {
+			for (FamilyMember item : familys) {
 				// mapping item with data
 				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(),
 						lstPerInfoItemDef, actionRolef, item);

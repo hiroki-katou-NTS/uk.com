@@ -19,7 +19,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
@@ -226,7 +226,7 @@ public class ItemDefinitionFactory {
 		}
 	}
 
-	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Family family,
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, FamilyMember family,
 			ActionRole actionRole) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
 			Object data = null;
@@ -398,12 +398,12 @@ public class ItemDefinitionFactory {
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,
-			List<Family> families) {
+			List<FamilyMember> families) {
 		return null;
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamily(LayoutPersonInfoClsDto personInfoClsDto,
-			ActionRole actionRole, List<Family> families) {
+			ActionRole actionRole, List<FamilyMember> families) {
 		return null;
 	}
 
