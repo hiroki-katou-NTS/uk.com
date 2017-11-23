@@ -166,7 +166,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     });
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                     self.listSelection.valueHasMutated();
-
+                    $("#name").focus();
                 });
             }
 
