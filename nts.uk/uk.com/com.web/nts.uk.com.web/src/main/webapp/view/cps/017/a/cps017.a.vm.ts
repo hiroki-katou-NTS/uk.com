@@ -5,6 +5,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
     import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     export class ScreenModel {
@@ -28,6 +29,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         checkCreate: KnockoutObservable<boolean>;
         checkCreateaaa: KnockoutObservable<boolean>;
         closeUp: KnockoutObservable<boolean>;
+        isDialog:  KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -35,6 +37,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
                 selection: Selection = self.selection();
 
+            //xu ly dialog: 
+            let param = getShared('CPS016A_PARAMS');
+            if(param){
+                self.isDialog(param.isDialog);
+            }
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
@@ -115,7 +122,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 } else {
                     self.checkCreate(false);
                     alertError({ messageId: "Msg_455" });
-//                    self.registerData();
+                    //                    self.registerData();
                 }
                 dfd.resolve();
             }).fail(error => {
@@ -322,7 +329,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 perInfoSelectionItem: perInfoSelectionItem
             };
 
-            confirm({ messageId: "Msg_532" ,messageParams: ["1"]}).ifYes(() => {
+            confirm({ messageId: "Msg_532", messageParams: ["1"] }).ifYes(() => {
                 service.reflUnrComp(command).done(function() {
                     self.listHistorySelection.removeAll();
                     service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<>) => {
@@ -377,11 +384,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 selectionItemNameList = _.find(self.listItems(), x => x.selectionItemName == self.perInfoSelectionItem().selectionItemName()),
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
                 listItems: Array<SelectionItem> = self.listItems();
-            
-                param = {
-                    sel_history: selectHistory,
-                    sel_name: selectionItemNameList.selectionItemName
-                };
+
+            param = {
+                sel_history: selectHistory,
+                sel_name: selectionItemNameList.selectionItemName
+            };
             setShared('CPS017D_PARAMS', param);
             block.invisible();
             modal('/view/cps/017/d/index.xhtml', { title: '' }).onClosed(function(): any {
@@ -425,7 +432,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         companyId: KnockoutObservable<string> = ko.observable('');
         startDate: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('');
-        
+
         constructor(param: IHistorySelection) {
             let self = this;
             self.histId(param.histId || '');

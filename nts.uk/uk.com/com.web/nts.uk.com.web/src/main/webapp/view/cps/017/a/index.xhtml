@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+		   <script>var dialogSize = { width: 1300, height: 750 };</script>
 			<title>#{i18n.getText('CPS008_1')}</title>
 			<com:ValidatorScript>
 					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionItemName
@@ -36,9 +37,9 @@
 					data-bind="click : addData, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('CPS017_2')}</button>
 				<button id="A1_005" class="danger" tabindex="3"
 					data-bind="click : remove, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS017_4')}</button>
-
+                <com:ko-if bind="(isDialog() === true)">
 				<button id="A1_008" tabindex="4" data-bind="visible: closeUp">#{i18n.getText('CPS017_50')}</button>
-
+				</com:ko-if>
 				<button id="A1_003" data-bind="click: openDialogB" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
 				<button id="A1_007" tabindex="6" data-bind="click: ReflUnrComp">#{i18n.getText('CPS017_49')}</button>
