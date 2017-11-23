@@ -35,7 +35,7 @@
 				<button id="A1_002" class="proceed" tabindex="2"
 					data-bind="click : addData, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('CPS017_2')}</button>
 				<button id="A1_005" class="danger" tabindex="3"
-					data-bind="click : remove, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS017_4')}</button>
+					data-bind="click : remove, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS017_4')}</button>
 
 				<button id="A1_008" tabindex="4" data-bind="visible: closeUp">#{i18n.getText('CPS017_50')}</button>
 
@@ -79,8 +79,8 @@
 
 					<!-- khu vực thêm lịch sử, sửa lịch sử  -->
 					<div id="history">
-						<button id="A2_8" data-bind="click: openDialogC" tabindex="9">#{i18n.getText('CPS017_8')}</button>
-						<button id="A2_9" data-bind="click: openDialogD" tabindex="10">#{i18n.getText('CPS017_9')}</button>
+						<button id="A2_8" data-bind="click: openDialogC, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty" tabindex="9">#{i18n.getText('CPS017_8')}</button>
+						<button id="A2_9" data-bind="click: openDialogD, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty" tabindex="10">#{i18n.getText('CPS017_9')}</button>
 						<button id="A2_10" tabindex="11" class="danger"
 							data-bind="click : removeHistory ">#{i18n.getText('CPS017_10')}</button>
 

@@ -49,7 +49,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         let changeData = _.each(_selectionItemList, (item) => {
-                            item.displayDate = item.startDate + " ~ " + item.endDate;
+                            item.displayDate = item.startDate + "   ~   " + item.endDate;
                             return item;
                         });
                         self.listHistorySelection(changeData);
