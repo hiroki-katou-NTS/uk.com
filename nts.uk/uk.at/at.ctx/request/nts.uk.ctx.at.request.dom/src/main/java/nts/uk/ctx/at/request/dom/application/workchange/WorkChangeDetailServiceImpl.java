@@ -80,13 +80,11 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 			//「休日に関して」チェック有無は判定
 			if(appWorkChange.getExcludeHolidayAtr() == 0 || checkHoliday(basicDate)){
 				//TODO: アルゴリズム「実績の取得」を実行する
-				
+				//13.実績を取得する
 			}
 			//基準日　＝　基準日＋１
 			basicDate.addDays(1);
 		}
-		
-		//共通アルゴリズム「詳細画面の初期モード」を実行する
 		
 		return workChangeDetail;
 	}

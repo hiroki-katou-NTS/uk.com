@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 @Stateless
-public class WorkChangeRegisterService implements IWorkChangeRegisterService {
+public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService {
 
 	@Inject
 	private NewBeforeRegister newBeforeRegister;
