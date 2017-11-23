@@ -31,7 +31,7 @@ module nts.uk.at.view.kdw001.j {
 
             constructor() {
                 var self = this;
-                self.params.setParamsScreenA({ closure: '1' });
+                self.params.setParamsScreenA({ closure: 1 });
 
                 self.currentItem = ko.observable();
 
@@ -215,7 +215,7 @@ module nts.uk.at.view.kdw001.j {
 
                     }
 
-                }));
+                });
 
             }
 
