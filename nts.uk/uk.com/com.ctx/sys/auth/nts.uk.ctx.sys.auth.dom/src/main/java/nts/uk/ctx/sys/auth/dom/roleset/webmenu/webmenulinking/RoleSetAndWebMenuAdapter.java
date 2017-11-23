@@ -17,16 +17,16 @@ public interface RoleSetAndWebMenuAdapter {
 	List<RoleSetAndWebMenu> findAllWebMenuByRoleSetCd(String roleSetCd);
 	
 	/**
-	 * add list of Role Set and Web menu link
+	 * add Role Set and Web menu link
 	 * @param roleSetAndWebMenus
 	 */
-	void addListOfRoleSetAndWebMenu(List<RoleSetAndWebMenu> roleSetAndWebMenus);
+	void addRoleSetAndWebMenu(RoleSetAndWebMenu roleSetAndWebMenu);
 
 	/**
-	 * update list of Role Set and Web menu link
+	 * update Role Set and Web menu link
 	 * @param roleSetAndWebMenus
 	 */	
-	void updateListOfRoleSetAndWebMenu(List<RoleSetAndWebMenu> roleSetAndWebMenus);
+	void updateRoleSetAndWebMenu(RoleSetAndWebMenu roleSetAndWebMenu);
 
 	/**
 	 * delete by roleSetCd 

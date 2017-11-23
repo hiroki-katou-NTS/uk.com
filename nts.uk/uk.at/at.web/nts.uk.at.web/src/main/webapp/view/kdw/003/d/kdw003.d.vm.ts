@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw007.a.viewmodel {
+module nts.uk.at.view.kdw003.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import windows = nts.uk.ui.windows;
     
@@ -32,7 +32,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         /**
          * 抽出する
          */
-        decide() {
+        extract() {
             let self = this;
 
             // set return value

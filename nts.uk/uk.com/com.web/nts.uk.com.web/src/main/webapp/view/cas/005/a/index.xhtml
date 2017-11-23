@@ -8,10 +8,17 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../../ccg/025/component/component.css" />
+			<com:scriptfile
+				path="../../../ccg/025/component/component.service.js" />
+			<com:scriptfile path="../../../ccg/025/component/component.vm.js" />
 			<com:stylefile path="cas005.a.main.css" />
 			<com:scriptfile path="cas005.a.start.js" />
 			<com:scriptfile path="cas005.a.vm.js" />
 			<com:scriptfile path="cas005.a.service.js" />
+			<com:EnumScript>
+				nts.uk.ctx.sys.auth.dom.role.RoleType
+			</com:EnumScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -24,52 +31,71 @@
 				<!-- A1_004 -->
 				<button class="large ">#{i18n.getText('CAS005_13')}</button>
 				<!-- A1_005 -->
-				<button class="large " data-bind = "click : openDialogB">#{i18n.getText('CAS005_14')}</button>
+				<button class="large " data-bind="click : openDialogB">#{i18n.getText('CAS005_14')}</button>
 				<!-- A1_006 -->
-				<span style="float:right;margin-top: 7px;">#{i18n.getText('CAS005_15')}</span>
+				<span style="float: right; margin-top: 7px;">#{i18n.getText('CAS005_15')}</span>
 			</div>
-		
-			<div id="contents-area" style="margin-top: 30px;margin-left: 30px">
+
+			<div id="contents-area" style="margin-top: 30px; margin-left: 30px">
+				<div style="margin-bottom: 20px;">#{i18n.getText('CAS005_20')}</div>
 				<!-- body right -->
-				<div style="width: 340px;float:left;" >
+				<div style="width: 340px; float: left;">
 					<div id="pannel-top" data-bind="ntsPanel:{width: '340px', height: '530px', direction: '', showIcon: true, visible: true}">
-							
+						<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'value', comId: 'multi-list', 
+						items: listEnumRoleType,  selectedKey: 'value', fields: ['name', 'value'], mode: 'igGrid'}" />
+						<table id="multi-list"
+							data-bind="ntsGridList: {
+								height: 320,
+								options: listEnumRoleType,
+								optionsValue: 'value',
+								columns: columnRoleType,
+								multiple: false,
+								value: roleType,
+								rows : 15
+							}">
+						</table>
 					</div>
 				</div>
 				<!-- body left -->
-				<div class="body-left" >
+				<div class="body-left">
 					<table>
 						<!-- row 1 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;padding-bottom: 5px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_30')}</div>
+								<div style="padding-right: 20px; padding-bottom: 5px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_30')}</div>
 							</td>
-							<td>
-								<input style="width: 70px;" data-bind="ntsTextEditor: {value: simpleValue}" /><input style="margin-left: 11px;" data-bind="ntsTextEditor:  {value: simpleValue}" />
-							</td>	
+							<td><input style="width: 70px;"
+								data-bind="ntsTextEditor: {value: roleType}" /><input
+								style="margin-left: 11px;"
+								data-bind="ntsTextEditor:  {value: roleName}" /></td>
 						</tr>
 						<!-- row 2 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_33')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_33')}</div>
 							</td>
 							<td>
-								<div class="cf" data-bind="ntsSwitchButton: {
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
 												options: roundingRules,
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: selectedRuleCode,
 												enable: true }">
 								</div>
-							</td>	
+							</td>
 						</tr>
 						<!-- row 3 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_37')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_37')}</div>
 							</td>
 							<td>
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
 												options: itemList1,
 												optionsValue: 'code',
 												value: selectedCode,
@@ -81,30 +107,34 @@
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
-							</td>	
+							</td>
 						</tr>
 						<!-- row 4 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_38')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_38')}</div>
 							</td>
 							<td>
-								<div class="cf" data-bind="ntsSwitchButton: {
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
 												options: roundingRules2,
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: selectedRuleCode,
 												enable: true }">
 								</div>
-							</td>	
+							</td>
 						</tr>
 						<!-- row 5 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_50')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_50')}</div>
 							</td>
 							<td>
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
 												options: itemList1,
 												optionsValue: 'code',
 												value: selectedCode,
@@ -116,15 +146,17 @@
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
-							</td>	
+							</td>
 						</tr>
 						<!-- row 6 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_52')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_52')}</div>
 							</td>
 							<td>
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
 												options: itemList1,
 												optionsValue: 'code',
 												value: selectedCode,
@@ -136,15 +168,17 @@
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
-							</td>	
+							</td>
 						</tr>
 						<!-- row 7 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_54')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_54')}</div>
 							</td>
 							<td>
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
 												options: itemList1,
 												optionsValue: 'code',
 												value: selectedCode,
@@ -156,15 +190,17 @@
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
-							</td>	
+							</td>
 						</tr>
 						<!-- row 8 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_56')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_56')}</div>
 							</td>
 							<td>
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
 												options: itemList1,
 												optionsValue: 'code',
 												value: selectedCode,
@@ -176,15 +212,17 @@
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
-							</td>	
+							</td>
 						</tr>
 						<!-- row 9 -->
 						<tr>
 							<td>
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_58')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_58')}</div>
 							</td>
 							<td>
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
 												options: itemList1,
 												optionsValue: 'code',
 												value: selectedCode,
@@ -196,18 +234,20 @@
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
-							</td>	
+							</td>
 						</tr>
 						<!-- row 10 -->
 						<tr>
 							<td colspan="2">
-								<div style="padding-right: 20px;" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_70')}</div>
+								<div style="padding-right: 20px;"
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_70')}</div>
 							</td>
 						</tr>
 						<!-- row 11 -->
 						<tr>
 							<td colspan="2">
-								<table id="multi-list" data-bind="ntsGridList: {
+								<table id="multi-list"
+									data-bind="ntsGridList: {
 										height: 320,
 										options: items ,
 										optionsValue: 'code',
@@ -219,7 +259,7 @@
 								</table>
 							</td>
 						</tr>
-						
+
 					</table>
 				</div>
 			</div>

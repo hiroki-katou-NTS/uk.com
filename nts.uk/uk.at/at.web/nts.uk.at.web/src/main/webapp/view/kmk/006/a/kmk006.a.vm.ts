@@ -212,40 +212,58 @@ module nts.uk.at.view.kmk006.a {
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 
 
-                //subscribe 
+                //subscribe
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
-                    self.loadWkpAutoCal(codeChanged);
+                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){                        
+                        self.loadWkpAutoCal(codeChanged);
 
-                    nts.uk.ui.block.invisible();
-                    self.treeItemCode($('#tree-grid-srcc').getRowSelected()[0].workplaceCode);
-                    let wkplId: string = $('#component-items-list').getRowSelected()[0].workplaceId;
-                    var params: any = {
-                        "workplaceId": wkplId,
-                        "baseDate"   : self.baseDateTreeList()
-                    };
-                    service.getDetailWkpl(params).done(function(data: any){
-                        nts.uk.ui.block.clear();
-                        self.treeItemName(data.workplaceName);                    
-                    });
-                    
+                        nts.uk.ui.block.invisible();
+                        self.treeItemCode($('#tree-grid-srcc').getRowSelected()[0].workplaceCode);
+                        let wkplId: string = $('#component-items-list').getRowSelected()[0].workplaceId;
+                        var params: any = {
+                            "workplaceId": wkplId,
+                            "baseDate"   : self.baseDateTreeList()
+                        };
+                        service.getDetailWkpl(params).done(function(data: any){
+                            nts.uk.ui.block.clear();
+                            self.treeItemName(data.workplaceName);                    
+                        });
+                    } else {
+                        self.treeItemCode("");
+                        self.treeItemName("");
+                        if (self.itemWkpAutoCalModel) {
+                            self.itemWkpAutoCalModel.resetData();
+                            self.reLoadListEnum(self.itemWkpAutoCalModel);
+                        }                        
+                    }  
                 });
 
                 //subscribe 
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
-                    self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
-                    nts.uk.ui.block.invisible();
-                    self.treeItemCode($('#tree-grid').getRowSelected()[0].workplaceCode);
-                    let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
-                    var params: any = {
-                        "workplaceId": wkplId,
-                        "baseDate"   : self.baseDateTreeList()
-                    };
-                    service.getDetailWkpl(params).done(function(data: any){
-                        nts.uk.ui.block.clear();
-                        self.treeItemName(data.workplaceName);                    
-                    });
+                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){
+                        
+                        self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
+                        nts.uk.ui.block.invisible();
+                        self.treeItemCode($('#tree-grid').getRowSelected()[0].workplaceCode);
+                        let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
+                        var params: any = {
+                            "workplaceId": wkplId,
+                            "baseDate"   : self.baseDateTreeList()
+                        };
+                        service.getDetailWkpl(params).done(function(data: any){
+                            nts.uk.ui.block.clear();
+                            self.treeItemName(data.workplaceName);                    
+                        });
+                    } else {
+                        self.treeItemCode("");
+                        self.treeItemName("");
+                        if (self.itemWkpJobAutoCalModel) {
+                            self.itemWkpJobAutoCalModel.resetData();
+                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);                       
+                        }
+                    }  
                 });
 
                 //subscribe 
@@ -259,10 +277,18 @@ module nts.uk.at.view.kmk006.a {
                             self.componentItemCode(ent.code);
                         }
                     }
+                    if (nts.uk.text.isNullOrEmpty(codeChanged)) {
+                        self.componentItemCode("");
+                        self.componentItemName("");  
+                        if (self.itemWkpJobAutoCalModel) {
+                            self.itemWkpJobAutoCalModel.resetData();
+                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);
+                        }   
+                    }
                 });
 
                 //subscribe 
-                self.selectedCode.subscribe(function(codeChanged) {
+                self.selectedCode.subscribe(function(codeChanged) {                 
                     self.selectedCurrentJob(codeChanged);
                     self.loadJobAutoCal(codeChanged);
                     let data = $('#component-items-list').getDataList();
@@ -270,6 +296,14 @@ module nts.uk.at.view.kmk006.a {
                         if (ent.id == codeChanged) {
                             self.componentItemName(ent.name);
                             self.componentItemCode(ent.code);
+                        }
+                    }
+                    if (nts.uk.text.isNullOrEmpty(codeChanged)) {
+                        self.componentItemCode("");
+                        self.componentItemName("");    
+                        if (self.itemJobAutoCalModel) {
+                            self.itemJobAutoCalModel.resetData();
+                            self.reLoadListEnum(self.itemJobAutoCalModel);
                         }
                     }
                 });
@@ -506,6 +540,8 @@ module nts.uk.at.view.kmk006.a {
                     service.getWkpAutoCal(wkpId).done((data) => {
                         if (data) {
                             self.itemWkpAutoCalModel.updateData(data);
+                        } else {
+                            self.itemWkpAutoCalModel.resetData();
                         }
                         if (self.itemWkpAutoCalModel) {
                             // load get all value enum
@@ -518,6 +554,8 @@ module nts.uk.at.view.kmk006.a {
                     }).always(() => {
                         //nts.uk.ui.block.clear();
                     });
+                } else {
+                    dfd.resolve();    
                 }               
 
                 return dfd.promise();
@@ -534,11 +572,13 @@ module nts.uk.at.view.kmk006.a {
                     //nts.uk.ui.block.grayout();
                     service.getJobAutoCal(jobId).done((data) => {
                         if (data) {
-                            self.itemJobAutoCalModel.updateData(data);
+                            self.itemJobAutoCalModel.updateData(data);                           
+                        } else {
+                            self.itemJobAutoCalModel.resetData();
                         }
                         if (self.itemJobAutoCalModel) {
                             // load get all value enum
-                            self.reLoadListEnum(self.itemJobAutoCalModel); 
+                            self.reLoadListEnum(self.itemJobAutoCalModel);
                         }
                         dfd.resolve();
                     }).fail((res) => {
@@ -547,6 +587,8 @@ module nts.uk.at.view.kmk006.a {
                     }).always(() => {
                         //nts.uk.ui.block.clear();
                     });
+                } else {
+                    dfd.resolve();    
                 }               
 
                 return dfd.promise();
@@ -562,7 +604,9 @@ module nts.uk.at.view.kmk006.a {
                     service.getWkpJobAutoCal(wkpId, jobId).done((data) => {             
                         if (data) {
                             self.itemWkpJobAutoCalModel.updateData(data);
-                        }
+                        } else {
+                            self.itemWkpJobAutoCalModel.resetData();
+                        }                       
                         if (self.itemWkpJobAutoCalModel) {
                             // load get all value enum
                             self.reLoadListEnum(self.itemWkpJobAutoCalModel);    
@@ -574,7 +618,9 @@ module nts.uk.at.view.kmk006.a {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-                }
+                } else {
+                    dfd.resolve();    
+                } 
                 
                 return dfd.promise();
             }
@@ -687,11 +733,11 @@ module nts.uk.at.view.kmk006.a {
                      self.loadJobAlreadySettingList().done(function() {
                         // show message 15
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+//                            $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                                 // reload pa    
                                 self.selectedCode(jobId);
                                 self.loadJobAutoCal(jobId);
-                           });
+//                            });
                         });
                     });
                 }).fail(function(error) {
@@ -732,11 +778,9 @@ module nts.uk.at.view.kmk006.a {
                 service.saveWkpAutoCal(dto).done(function() {
                     self.loadWkpAlreadySettingList().done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
-                                // reload pa    
-                                self.loadWkpAutoCal(wkpId);
-                                self.loadWkpAlreadySettingList();
-                            });
+                            // reload pa    
+                            self.multiSelectedWorkplaceId(wkpId);
+                            self.loadWkpAutoCal(wkpId);
                         });
                     });
                 }).fail(function(error) {
@@ -855,10 +899,10 @@ module nts.uk.at.view.kmk006.a {
                         self.loadJobAlreadySettingList().done(function() {
                             // show message 16
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+//                                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                                     self.loadJobAutoCal(self.selectedCurrentJob());
-                                    self.loadJobAlreadySettingList();
-                                });
+                                    self.selectedCode(self.selectedCurrentJob());
+//                                });
                             });
                         });
                        
@@ -888,9 +932,10 @@ module nts.uk.at.view.kmk006.a {
                     service.deleteWkpAutoCal(self.selectedCurrentWkp()).done(function() {
                         self.loadWkpAlreadySettingList().done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                                $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
-                                    self.loadJobAutoCal(self.selectedCurrentWkp());
-                                });
+//                                $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
+                                    self.loadWkpAutoCal(self.selectedCurrentWkp());
+                                    self.multiSelectedWorkplaceId(self.selectedCurrentWkp());
+//                                });
                             });
                            
                         });
@@ -946,7 +991,9 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<void>();
 
                 self.clearAllError();
-                self.loadComAutoCal();
+                
+                nts.uk.ui.block.grayout();
+                self.loadComAutoCal().then(() => { nts.uk.ui.block.clear(); });
 
                 self.isLoading(true);
 
@@ -962,15 +1009,15 @@ module nts.uk.at.view.kmk006.a {
                 self.baseDateJobList(moment(new Date()).toDate());
                 self.isLoading(true);
                                    
+                nts.uk.ui.block.grayout();
                 self.loadJobAlreadySettingList().done(function() {
                     $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                         let code = $('#component-items-list').getDataList()[0].id;
                         self.selectedCode(code);
                         self.loadJobAutoCal(code);
+                        nts.uk.ui.block.clear();
                     });
                 });
-                
-                console.log(self.jobAlreadySettingList());
                 
             }
 
@@ -984,11 +1031,12 @@ module nts.uk.at.view.kmk006.a {
                 self.clearAllError();
                 self.baseDateTreeList(moment(new Date()).toDate());
                 self.isLoading(true);
+                
+                nts.uk.ui.block.grayout();
                 self.loadWkpAlreadySettingList().done(function() {
                     $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
-                        self.loadWkpAutoCal(self.multiSelectedWorkplaceId());
-
-                    });
+                        self.loadWkpAutoCal(self.multiSelectedWorkplaceId()).then(() => {nts.uk.ui.block.clear();});                       
+                    });                  
                 });
             }
 
@@ -1008,19 +1056,20 @@ module nts.uk.at.view.kmk006.a {
                 }
                 
                 //load grid          
-                $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
+                nts.uk.ui.block.grayout();
+                $.when($('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal), $('#jobtitles').ntsListComponent(self.jobTotalListOptions))
+                    .done(function() {
+                        let code = $('#jobtitles').getDataList()[0].id;
+                        self.totalSelectedCode(code);
+                        
+                        
+                        // load ready setting
+                        self.loadWkpJobAlreadySettingList().done(function() {
+                            self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code).done(() => {nts.uk.ui.block.clear();});                          
+                        });
+                    });   
 
-                });
-
-                $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
-                    let code = $('#jobtitles').getDataList()[0].id;
-                    self.totalSelectedCode(code);
-                    self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code);
-                    // load ready setting
-                    self.loadWkpJobAlreadySettingList().done(function() {
-
-                    });
-                });              
+                           
             }
 
             /**
@@ -1045,7 +1094,7 @@ module nts.uk.at.view.kmk006.a {
 
             private clearAllError() {
                 nts.uk.ui.errors.clearAll();
-            }
+            }          
         }
         // exportclass
         export class TreeType {

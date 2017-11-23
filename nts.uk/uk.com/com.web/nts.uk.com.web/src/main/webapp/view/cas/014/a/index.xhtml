@@ -37,8 +37,8 @@
 					<span class="title">#{i18n.getText('CAS014_2')}</span>
 					<button class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
 				</div>
-				<div class="contents-area" data-bind="with: roleSetJobTitle">
-					<div class="valign-center control-group">
+				<div class="contents-area">
+					<div class="valign-center control-group" data-bind="with: roleSetJobTitle">
 						<div data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
 					</div>
 					<div class="valign-center control-group" style="padding-left: 32px">
@@ -48,11 +48,11 @@
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
 						<div
-							data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: $parent.date, dateFormat: 'YYYY/MM/DD' }"></div>
-						<button class="caret-bottom" data-bind="click : $parent.startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
+							data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
+						<button class="caret-bottom" data-bind="click : startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
 					</div>
 					<br />
-					<table class="fixed-table">
+					<table class="fixed-table" data-bind="with: roleSetJobTitle">
 						<colgroup>
 							<col width="100px" />
 							<col width="150px" />

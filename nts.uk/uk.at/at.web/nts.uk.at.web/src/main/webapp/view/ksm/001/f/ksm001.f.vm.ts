@@ -24,8 +24,8 @@ module nts.uk.at.view.ksm001.f {
                 var self = this;
                 var dfd = $.Deferred();
                 service.findCommonGuidelineSetting().done(function(data){
-                    if(data){
-                        self.commonGuidelineSettingModel.updateData(data);    
+                    if(data.alarmColors){
+                        self.commonGuidelineSettingModel.updateData(data);
                     }
                     dfd.resolve();
                 });
@@ -66,13 +66,17 @@ module nts.uk.at.view.ksm001.f {
         export class ReferenceConditionModel {
             yearlyDisplayCondition: KnockoutObservable<number>;
             monthlyDisplayCondition: KnockoutObservable<number>;
-            alarmCheckCondition: KnockoutObservable<number>;
+//            alarmCheckCondition: KnockoutObservable<number>;
+            monthlyAlarmCkCondition: KnockoutObservable<number>;
+            yearlyAlarmCkCondition: KnockoutObservable<number>;
             lstEstimateCondition: KnockoutObservableArray<EstimatedConditionDto>;
 
             constructor() {
                 this.yearlyDisplayCondition = ko.observable(1);
                 this.monthlyDisplayCondition = ko.observable(1);
-                this.alarmCheckCondition = ko.observable(1);
+//                this.alarmCheckCondition = ko.observable(1);
+                this.monthlyAlarmCkCondition = ko.observable(1);
+                this.yearlyAlarmCkCondition = ko.observable(1);
                 this.lstEstimateCondition = ko.observableArray([
                     { code: 1, name: "条件1" },
                     { code: 2, name: "条件2" },
@@ -85,7 +89,9 @@ module nts.uk.at.view.ksm001.f {
             updateData(dto: ReferenceConditionDto) {
                 this.yearlyDisplayCondition(dto.yearlyDisplayCondition);
                 this.monthlyDisplayCondition(dto.monthlyDisplayCondition);
-                this.alarmCheckCondition(dto.alarmCheckCondition);
+//                this.alarmCheckCondition(dto.alarmCheckCondition);
+                this.monthlyAlarmCkCondition(dto.monthlyAlarmCkCondition);
+                this.yearlyAlarmCkCondition(dto.yearlyAlarmCkCondition);
             }
             
             toDto(): ReferenceConditionDto {
@@ -93,7 +99,9 @@ module nts.uk.at.view.ksm001.f {
                     {
                         yearlyDisplayCondition: this.yearlyDisplayCondition(),
                         monthlyDisplayCondition: this.monthlyDisplayCondition(),
-                        alarmCheckCondition: this.alarmCheckCondition()
+//                        alarmCheckCondition: this.alarmCheckCondition()
+                        monthlyAlarmCkCondition: this.monthlyAlarmCkCondition(),
+                        yearlyAlarmCkCondition: this.yearlyAlarmCkCondition()
                     };
                 return dto;
             }

@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
-import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;

@@ -1,0 +1,13 @@
+.system_define{
+	width: 960px;
+	margin-top: 40px;
+}
+
+.system_define > p {
+	margin-left: 35px;
+	margin-bottom: 40px;
+}
+
+.system_define > #tab-panel {
+	margin-left: 40px;
+}

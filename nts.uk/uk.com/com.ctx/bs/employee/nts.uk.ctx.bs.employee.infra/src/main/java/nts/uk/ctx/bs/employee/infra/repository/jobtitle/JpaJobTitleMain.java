@@ -136,7 +136,7 @@ public class JpaJobTitleMain extends JpaRepository implements JobTitleMainReposi
 		Optional<BsymtJobPosMainHist> existItemHst = this.queryProxy().find(domain,BsymtJobPosMainHist.class);
 		
 		if (!existItem.isPresent() || !existItemHst.isPresent()){
-			return;
+			throw new RuntimeException("invalid JobTitleMain");
 		}
 		updateBsymtJobPosMainHist(domain, existItemHst.get());
 		

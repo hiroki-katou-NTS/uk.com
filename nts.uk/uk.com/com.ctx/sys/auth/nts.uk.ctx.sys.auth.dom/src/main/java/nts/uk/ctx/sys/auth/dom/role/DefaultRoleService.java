@@ -7,9 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
-import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
-import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
@@ -20,12 +19,16 @@ public class DefaultRoleService implements RoleService{
 
 	@Inject 
 	private RoleRepository roleRepo;
+	
 	@Inject
 	private RoleIndividualGrantRepository roleGrantRepo;
+	
 	@Inject
 	private DefaultRoleSetRepository defaultRoleSetRepo;
+	
 	@Inject
 	private RoleSetRepository roleSetRepo;
+	
 	@Override
 	public List<Role> getAllByType(RoleType roleType) {
 		String companyId = AppContexts.programId();		
@@ -68,7 +71,7 @@ public class DefaultRoleService implements RoleService{
 				DefaultRoleSet defaultRoleSet = defaultOpt.get();
 				Optional<RoleSet> roleSetOpt = roleSetRepo
 						.findByRoleSetCdAndCompanyId(defaultRoleSet.getRoleSetCd().toString(), companyId);
-				if (roleSetOpt.isPresent() && roleSetOpt.get().getPersonInfRole().get().equals(roleId))
+				if (roleSetOpt.isPresent() && roleSetOpt.get().getPersonInfRoleId().equals(roleId))
 					throw new BusinessException("Msg_586");
 			} else
 				roleRepo.remove(roleId);				
