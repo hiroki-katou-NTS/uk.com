@@ -39,7 +39,7 @@ public class LayoutingProcessor {
 	 * @return
 	 */
 	public PeregResult findSingle(PeregQuery query){
-		val finderClass = this.singleFinders.get(query.getCtgCd());
+		val finderClass = this.singleFinders.get(query.getCategoryCode());
  		val dto = finderClass.find(query);
 		return new PeregResult(finderClass.dtoClass(), dto);
 	}
@@ -51,7 +51,7 @@ public class LayoutingProcessor {
 	 * @return
 	 */
 	public PeregResult findList(PeregQuery query){
-		val finderClass = this.listFinders.get(query.getCtgCd());
+		val finderClass = this.listFinders.get(query.getCategoryCode());
  		val dto = finderClass.find(query);
 		return new PeregResult(finderClass.dtoClass(), dto);
 	}
