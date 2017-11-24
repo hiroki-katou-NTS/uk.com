@@ -101,9 +101,12 @@ public class PerInfoInitValueSettingFinder {
 
 		if (settingList.isEmpty()) {
 
-			throw new BusinessException(new RawErrorMessage("Msg_350"));
-
-			// throw new BusinessException(new RawErrorMessage("Msg_351"));
+			boolean isPersonnelStaff = true;
+			if (isPersonnelStaff) {
+				throw new BusinessException(new RawErrorMessage("Msg_350"));
+			} else {
+				throw new BusinessException(new RawErrorMessage("Msg_351"));
+			}
 		}
 
 		return settingList;
