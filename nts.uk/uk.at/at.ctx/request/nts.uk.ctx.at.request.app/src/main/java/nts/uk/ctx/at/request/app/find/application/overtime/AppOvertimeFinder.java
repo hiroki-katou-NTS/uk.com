@@ -485,25 +485,25 @@ public class AppOvertimeFinder {
 			AppCommonSettingOutput appCommonSettingOutput,ApplicationDto applicationDto,int overtimeAtr,
 			List<OvertimeInputDto> overTimeInputs,PreAppOvertimeDto preAppOvertimeDto){
 		//申請日付を取得 : lay thong tin lam them
-				applicationDto.setApplicationDate(appDate);
+		applicationDto.setApplicationDate(appDate);
 		// 01-01_残業通知情報を取得
-				OvertimeInstructInfomation overtimeInstructInfomation = iOvertimePreProcess.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
-				result.setDisplayOvertimeInstructInforFlg(overtimeInstructInfomation.isDisplayOvertimeInstructInforFlg());
-				result.setOvertimeInstructInformation(overtimeInstructInfomation.getOvertimeInstructInfomation());
+		OvertimeInstructInfomation overtimeInstructInfomation = iOvertimePreProcess.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
+		result.setDisplayOvertimeInstructInforFlg(overtimeInstructInfomation.isDisplayOvertimeInstructInforFlg());
+		result.setOvertimeInstructInformation(overtimeInstructInfomation.getOvertimeInstructInfomation());
 		//01-02_時間外労働を取得: lay lao dong ngoai thoi gian
 		/*
 		 * chưa phải làm
 		 */
 		// 01-13_事前事後区分を取得
-				DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate);
-				result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
-				applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
-				if(displayPrePost.getPrePostAtr() == InitValueAtr.POST.value){
-					result.setReferencePanelFlg(true);
-				}
-				result.setApplication(applicationDto);
+		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate);
+		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
+		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
+		if(displayPrePost.getPrePostAtr() == InitValueAtr.POST.value){
+			result.setReferencePanelFlg(true);
+		}
+		result.setApplication(applicationDto);
 				
-//		String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
+		//String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
 		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
 		if(requestAppDetailSettings != null){
 			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
