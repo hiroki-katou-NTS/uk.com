@@ -26,7 +26,7 @@ module nts.uk.com.view.cps017.c.viewmodel {
             let self = this,
                 currentItem: HistorySelection = self.historySelection(),
                 selectHistory = self.data.selectHistory;
-            currentItem.companyCode(selectHistory.companyCode);
+            currentItem.companyId(selectHistory.companyId);
             currentItem.selectionItemId(selectHistory.selectionItemId);
             currentItem.histId(selectHistory.histId);
             let command = ko.toJS(currentItem);
@@ -47,7 +47,7 @@ module nts.uk.com.view.cps017.c.viewmodel {
     interface IHistorySelection {
         histId?: string;
         selectionItemId?: string;
-        companyCode: string;
+        companyId: string;
         startDate: string;
         endDate: string;
     }
@@ -55,7 +55,7 @@ module nts.uk.com.view.cps017.c.viewmodel {
     class HistorySelection {
         histId: KnockoutObservable<string> = ko.observable('');
         selectionItemId: KnockoutObservable<string> = ko.observable('');
-        companyCode: KnockoutObservable<string> = ko.observable('');
+        companyId: KnockoutObservable<string> = ko.observable('');
         startDate: KnockoutObservable<string> = ko.observable(formatDate(new Date()) || undefined);
         endDate: KnockoutObservable<string> = ko.observable('');
 
@@ -63,7 +63,7 @@ module nts.uk.com.view.cps017.c.viewmodel {
             let self = this;
             self.histId(param.histId || '');
             self.selectionItemId(param.selectionItemId || '');
-            self.companyCode(param.companyCode || '');
+            self.companyId(param.companyId || '');
             self.startDate(formatDate(new Date()) || undefined);
             self.endDate(param.endDate || '');
         }

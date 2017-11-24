@@ -1,7 +1,6 @@
 package command.person.setting.selectionitem.selection;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -41,9 +40,10 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 
 		// ドメインモデル「選択肢履歴」のエラーチェッ
 		GeneralDate getStartDate = command.getStartDate();//startDateNew
+		String companyId = command.getCompanyId();
 		//check: 最新の履歴の開始日　＞　直前の履歴の開始日
 		GeneralDate endDateLast = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
-		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository.getHistSelByEndDate(command.getSelectionItemId(), endDateLast);
+		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository.getHistSelByEndDate(command.getSelectionItemId(), companyId, endDateLast);
 		if(!lstHist.isEmpty()){
 			PerInfoHistorySelection histLast = lstHist.get(0);
 			if(getStartDate.beforeOrEquals(histLast.getPeriod().start())){
@@ -54,14 +54,9 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		// ログインしているユーザーの権限をチェックする
 		String selectItemID = command.getSelectionItemId();
 		GeneralDate startDate = command.getStartDate();
-		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
-		DatePeriod period = new DatePeriod(startDate, endDate);
+		DatePeriod period = new DatePeriod(startDate, endDateLast);
 
 		boolean userLogin = false;
-		// get last hist
-		Optional<PerInfoHistorySelection> optlastHist = this.historySelectionRepository
-				.getLastHistoryBySelectioId(selectItemID);
-
 		if (userLogin == true) {
 			String cid = PersonInfoCategory.ROOT_COMPANY_ID;
 
@@ -78,8 +73,8 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 			this.historySelectionRepository.add(domainHist1);
 		}
 		// if last hist isPresent (not first time create)
-		if (optlastHist.isPresent()) {
-			PerInfoHistorySelection lastHist = optlastHist.get();
+		if (!lstHist.isEmpty()) {
+			PerInfoHistorySelection lastHist = lstHist.get(0);
 			//set end date lastHist = startDate of newHist -1
 			DatePeriod lastHistPeriod = new DatePeriod(lastHist.getPeriod().start(), startDate.addDays(-1));
 			

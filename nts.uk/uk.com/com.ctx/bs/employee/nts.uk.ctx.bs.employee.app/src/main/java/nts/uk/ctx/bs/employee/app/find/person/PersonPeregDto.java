@@ -71,9 +71,29 @@ public class PersonPeregDto {
 	@PeregItem("IS00014")
 	private int gender;
 	
+	// 個人携帯
+	@PeregItem("IS00015")
+	private String personMobile;
+	
+	// 個人メールアドレス
+	@PeregItem("IS00016")
+	private String mailAddress;
+	
+	// 趣味
+	@PeregItem("IS00017")
+	private String hobby;
+	
+	// 嗜好
+	@PeregItem("IS00018")
+	private String taste;
+
+	// 国籍
+	@PeregItem("IS00019")
+	private String countryId; 
+	
 	public static PersonPeregDto createFromDomain(Person person){
-		return new PersonPeregDto(person.getPersonNameGroup().getPersonName().getFullName().v(), 
-				person.getPersonNameGroup().getPersonName().getFullNameKana() != null ? person.getPersonNameGroup().getPersonName().getFullNameKana().v() : "", 
+		return new PersonPeregDto(person.getPersonNameGroup().getPersonName().v(), 
+				person.getPersonNameGroup().getPersonNameKana() != null ? person.getPersonNameGroup().getPersonNameKana().v() : "", 
 				person.getPersonNameGroup().getPersonRomanji() != null ?person.getPersonNameGroup().getPersonRomanji().getFullName().v() :"", 
 				person.getPersonNameGroup().getPersonRomanji() != null ? person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v() : "",
 				person.getPersonNameGroup().getBusinessName() != null ? person.getPersonNameGroup().getBusinessName().v() : "", 
@@ -82,6 +102,11 @@ public class PersonPeregDto {
 				person.getPersonNameGroup().getOldName() != null ? person.getPersonNameGroup().getOldName().getFullName().v() : "",  
 				person.getPersonNameGroup().getOldName()!= null ? person.getPersonNameGroup().getOldName().getFullNameKana().v() : "", 
 				person.getPersonNameGroup().getTodokedeFullName()!= null ? person.getPersonNameGroup().getTodokedeFullName().getFullName().v() : "", 
-				person.getGender().value);
+				person.getGender().value, 
+				person.getPersonMobile() != null ? person.getPersonMobile().v() : "", 
+				person.getMailAddress().v(), 
+				person.getHobBy() != null ? person.getHobBy().v() : "", 
+				person.getTaste() != null ? person.getTaste().v() : "", 
+				person.getCountryId() != null ? person.getCountryId().v() : "");
 	}
 }

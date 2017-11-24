@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelection;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 
@@ -47,8 +48,14 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	@Override
 	public void update(Selection selection) {
-		this.commandProxy().update(toEntity(selection));
-
+		PpemtSelection newEntity = toEntity(selection);
+		PpemtSelection updateEntity = this.queryProxy().find(newEntity.selectionId, PpemtSelection.class).get();
+		updateEntity.selectionName = newEntity.selectionName;
+		updateEntity.externalCd = newEntity.externalCd;
+		updateEntity.histId = newEntity.histId;
+		updateEntity.selectionCd = newEntity.selectionCd;
+		updateEntity.memo = newEntity.memo;
+		this.commandProxy().update(updateEntity);
 	}
 
 	@Override

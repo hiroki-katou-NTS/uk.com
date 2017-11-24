@@ -24,7 +24,7 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
 /**
- * Item definition factory: (thay ??i so v?i cai hi?n t?i ?? tuy ch?nh theo ch?c n?ng)
+ * Item definition factory: (thay đổi so với cái hiện tại để tùy chỉnh theo chức năng)
  * @author xuan vinh
  *
  */
@@ -41,11 +41,11 @@ public class ItemDefFactoryNew {
 			switch (itemDef.getItemCode()) {
 			case "IS00001":
 				// 個人名グループ．個人名
-				data = person.getPersonNameGroup().getPersonName().getFullName().v();
+				data = person.getPersonNameGroup().getPersonName().v();
 				break;
 			case "IS00002":
 				// 個人名グループ．個人名カナ
-				data = person.getPersonNameGroup().getPersonName().getFullNameKana().v();
+				data = person.getPersonNameGroup().getPersonNameKana().v();
 				break;
 			case "IS00003":
 				// 個人名グループ．個人名ローマ字．氏名

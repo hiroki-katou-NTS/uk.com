@@ -88,8 +88,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 					EmpBasicInfoExport resultItem = listResult.get(j);
 					Person per = listPersonDomain.stream()
 							.filter(m -> m.getPersonId() == resultItem.getPId()).collect(Collectors.toList()).get(0);
-					listResult.get(j).setPersonMailAddress(null);
-					listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().getFullName().v());
+					listResult.get(j).setPersonMailAddress(per.getMailAddress().v());
+					listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().v());
 					listResult.get(j).setGender(per.getGender().value);
 					listResult.get(j).setBirthDay(per.getBirthDate());
 				}
