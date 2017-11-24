@@ -230,9 +230,11 @@ module nts.uk.com.view.cps016.a.viewmodel {
         // 選択肢の登録ボタン
         OpenCPS017() {
             let self = this,
-                isDialog: boolean = true;
-
-            setShared('CPS016A_PARAMS', isDialog);
+            params ={
+                  isDialog: true,
+                  selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
+            }
+            setShared('CPS016A_PARAMS', params);
 
             modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
             });
