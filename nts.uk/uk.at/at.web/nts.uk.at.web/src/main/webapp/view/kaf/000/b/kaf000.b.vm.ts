@@ -506,8 +506,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             service.approveApp(self.inputCommonData()).done(function(data) {
                 nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
-                    if (!data) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392' }).then(()=>{
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
                             location.reload();    
                         });
                     } else {
@@ -533,8 +533,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             service.denyApp(self.inputCommonData()).done(function(data) {
                 nts.uk.ui.dialog.alert({ messageId: 'Msg_222' }).then(function() {
-                    if (!data) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392' }).then(()=>{
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(()=>{
                             location.reload();    
                         });
                     } else {
@@ -608,43 +608,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     nts.uk.ui.dialog.alert({ messageId: 'Msg_16' }).then(function() {
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
                         if (!nts.uk.util.isNullOrUndefined(data)) {
-                            if(!nts.uk.util.isNullOrEmpty(data.result)){
-                                let strMail = "";
-                                _.forEach(data.result, function(value) {
-                                      strMail += value + '<br/>';
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(function(){
+                                    self.setScreenAfterDelete();    
                                 });
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.result });
-                            }
-                        }
-                        //lấy vị trí appID vừa xóa trong listAppID
-                        let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
-                        if (index > -1 && index != self.listAppMeta.length-1) {
-                            //xóa appID vừa xóa trong list
-                            self.appID(self.listAppMeta[index+1].appID);
+                        }else{
+                            self.setScreenAfterDelete();
                         }
                         
-                        self.listAppMeta.splice(index, 1);
-                        if(self.listAppMeta.length == 1){
-                            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                                'listAppMeta': self.listAppMeta, 
-                                'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[0].appID, self.listAppMeta[0].appType, self.listAppMeta[0].appDate)
-                            }); 
-                            return;
-                        }
-                        //nếu vị trí vừa xóa khác vị trí cuối
-                        if (index != self.listAppMeta.length - 1) {
-                            //gán lại appId mới tại vị trí chính nó
-                            self.btnAfter();
-                        } else {
-                            //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
-                            self.btnBefore();
-                        }
-                        
-                        //if list # null    
-                        if (self.listAppMeta.length == 0) {
-                            //nếu list null thì trả về màn hình mẹ
-                            nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
-                        }
                     });
                 }).fail(function(res: any) {
                     if(res.optimisticLock == true){
@@ -655,8 +625,43 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
                     }
                 }); 
+            }).ifNo(function(){
+                nts.uk.ui.block.clear();    
             });
         }
+        setScreenAfterDelete(){
+            let self = this;    
+            //lấy vị trí appID vừa xóa trong listAppID
+            let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
+            if (index > -1 && index != self.listAppMeta.length-1) {
+                //xóa appID vừa xóa trong list
+                self.appID(self.listAppMeta[index+1].appID);
+            }
+            
+            self.listAppMeta.splice(index, 1);
+            if(self.listAppMeta.length == 1){
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
+                    'listAppMeta': self.listAppMeta, 
+                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[0].appID, self.listAppMeta[0].appType, self.listAppMeta[0].appDate)
+                }); 
+                return;
+            }
+            //nếu vị trí vừa xóa khác vị trí cuối
+            if (index != self.listAppMeta.length - 1) {
+                //gán lại appId mới tại vị trí chính nó
+                self.btnAfter();
+            } else {
+                //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
+                self.btnBefore();
+            }
+            
+            //if list # null    
+            if (self.listAppMeta.length == 0) {
+                //nếu list null thì trả về màn hình mẹ
+                nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+            }
+        }
+        
         /**
          *  btn Cancel 
          */

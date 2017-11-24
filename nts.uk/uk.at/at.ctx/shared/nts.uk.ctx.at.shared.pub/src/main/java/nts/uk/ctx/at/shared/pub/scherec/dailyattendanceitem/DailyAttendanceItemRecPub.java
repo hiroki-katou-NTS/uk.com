@@ -1,27 +1,47 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.pub.scherec.dailyattendanceitem;
 
 import java.util.List;
 
+/**
+ * The Interface DailyAttendanceItemRecPub.
+ */
 public interface DailyAttendanceItemRecPub {
-	
-	List<DailyAttendanceItemRecPubDto> getDailyAttendanceItem(String companyId, List<Integer> dailyAttendanceItemIds);
-	
-	List<DailyAttendanceItemRecPubDto> getDailyAttendanceItemList(String companyId);
-	
+
 	/**
-	 * Find daily attendance item by attribute(勤�?�?目属�?�)
-	 * +DailyAttendanceAtr-勤�?�?目属�?�:
-	 * 	0: コー�?
+	 * Gets the daily attendance item.
+	 *
+	 * @param companyId the company id
+	 * @param dailyAttendanceItemIds the daily attendance item ids
+	 * @return the daily attendance item
+	 */
+	List<DailyAttendanceItemRecPubExport> getDailyAttendanceItem(String companyId, List<Integer> dailyAttendanceItemIds);
+
+	/**
+	 * Gets the daily attendance item list.
+	 *
+	 * @param companyId the company id
+	 * @return the daily attendance item list
+	 */
+	List<DailyAttendanceItemRecPubExport> getDailyAttendanceItemList(String companyId);
+
+	/**
+	 * Find daily attendance item by attribute(勤怠項目属性)
+	 * +DailyAttendanceAtr-勤怠項目属性:
+	 * 	0: コード
 	 * 	1: マスタを参照する
 	 * 	2: 回数
-	 * 	3: 金�?
-	 * 	4: 区�?
+	 * 	3: 金額
+	 * 	4: 区分
 	 * 	5: 時間
 	 * 	6: 時刻
-	 * 	7: �?�?
+	 * 	7: 文字
 	 * @param companyId company id
-	 * @param dailyAttendanceAtr daily attendance attribute (勤�?�?目属�?�)
+	 * @param dailyAttendanceAtr daily attendance attribute (勤怠項目属性)
 	 * @return list of daily attendance item
 	 */
-	List<DailyAttendanceItemRecPubDto> getDailyAttendanceItemList(String companyId, List<Integer> dailyAttendanceAtrs);
+	List<DailyAttendanceItemRecPubExport> getDailyAttendanceItemList(String companyId, List<Integer> dailyAttendanceAtrs);
 }
