@@ -116,11 +116,11 @@ public class RoleSetWebservice extends WebService {
 		return this.roleSetAndWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd);
 	}
 	
-	// Role Set link Web menu
+	// Get companyId of the login user
 	@POST
 	@Path("companyIdOfLoginUser")
-	public String getCompanyIdOfLoginUser() {
-		return AppContexts.user().companyId();
+	public JavaTypeResult<String> getCompanyIdOfLoginUser() {
+		return new JavaTypeResult<String> (AppContexts.user().companyId());
 	}
 	
 	

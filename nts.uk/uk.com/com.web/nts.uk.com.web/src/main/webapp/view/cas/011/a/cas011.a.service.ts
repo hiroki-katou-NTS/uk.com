@@ -9,7 +9,7 @@ module nts.uk.com.view.cas011.a.service {
             updateRoleSet:              "ctx/sys/auth/roleset/updateRoleSet",
             removeRoleSet:              "ctx/sys/auth/roleset/deleteRoleSet",            
             getAllWebMenus:             "sys/portal/webmenu/find",
-            getRoleById:                "ctx/sys/auth/roleset/",
+            getRoleById:                "ctx/sys/auth/roleset/"
     }
 
     //get all role set
@@ -40,6 +40,7 @@ module nts.uk.com.view.cas011.a.service {
     export function getAllWebMenus() : JQueryPromise<any>{
         return ajax(paths.getAllWebMenus);
     }
+
     //get company id of login user
     export function getCompanyIdOfLoginUser() : JQueryPromise<any>{
         return ajax(paths.getCompanyIdOfLoginUser);

@@ -87,19 +87,19 @@ module nts.uk.com.view.cas011.a.viewmodel {
                      
             // 実行時情報をチェックする- check runtime
 
-            service.getLoginUserCompanyId().done((companyId : any) => {
-                dialog.info("checkRuntime 00: " + companyId);
+            service.getCompanyIdOfLoginUser().done((companyId: any) => {
                 if (!companyId || companyId === 'undefined') {
                     self.backToTopPage();
+                    dfd.resolve();
                  } else {
                      // initial screen
                      self.initialScreen(dfd);
                  }
-                dialog.info("checkRuntime 20: ");
              }).fail(error => {
-                 dfd.reject();
-                 dialog.info("checkRuntime 21: " );
+                 self.backToTopPage();
+                 dfd.resolve();
              });
+             
            return dfd.promise();
         }  
  
@@ -135,14 +135,12 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
                     self.settingCreateMode();
                 }
-
-                deferred.resolve();
-
             }).fail(error => {
               //画面を新規モードで起動する
 
-                deferred.reject();
                 self.settingCreateMode();
+            }).always(()=> {
+                deferred.resolve();
             });
         }
         /**
