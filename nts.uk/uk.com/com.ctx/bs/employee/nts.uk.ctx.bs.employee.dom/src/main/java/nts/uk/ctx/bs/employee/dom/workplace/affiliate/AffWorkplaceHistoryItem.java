@@ -36,4 +36,8 @@ public class AffWorkplaceHistoryItem {
 	// 場所コード
 	private LocationCode  locationCode;
 	
+	public static AffWorkplaceHistoryItem createFromJavaType(String histId, String employeeId, String workplaceCd, String normalWorkplaceCode, String locationCode){
+		return new AffWorkplaceHistoryItem(histId,employeeId, new WorkplaceCode(workplaceCd), new WorkplaceCode(normalWorkplaceCode), null);
+	}
+	
 }
