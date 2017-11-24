@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksc001.b {
+module nts.uk.at.view.ksu007.a {
 
     import NtsWizardStep = service.model.NtsWizardStep;
     import PeriodDto = service.model.PeriodDto;
@@ -67,9 +67,6 @@ module nts.uk.at.view.ksc001.b {
             //for control field
             isReCreate: KnockoutObservable<boolean>;
             isReSetting: KnockoutObservable<boolean>;
-//            isReCreate: KnockoutObservable<boolean>;
-//            isReCreate: KnockoutObservable<boolean>;
-//            isReCreate: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
 
@@ -267,8 +264,6 @@ module nts.uk.at.view.ksc001.b {
                         startDate: data.startDate,
                         endDate: data.endDate
                     });
-//                    self.periodStartDate(data.startDate);
-//                    self.periodEndDate(data.endDate);
                     dfd.resolve(self);
                 });
                 return dfd.promise();
@@ -296,11 +291,11 @@ module nts.uk.at.view.ksc001.b {
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedEmployeeCode,
-                    isDialog: true,
+                    isDialog: false,
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
-                    isShowSelectAllButton: false,
+                    isShowSelectAllButton: true,
                     maxWidth: 550,
                     maxRows: 15
                 };
