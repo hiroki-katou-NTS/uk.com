@@ -20,13 +20,13 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_001" tabindex="1" data-bind="click: settingCreateMode,
+				<button id="A1_001" data-bind="click: settingCreateMode,
 						enable: !isNewMode()" >#{i18n.getText('CAS011_4')}</button>
-				<button id="A1_002" class="proceed" tabindex="2" data-bind="click: saveRoleSet, enable: $root.errors.isEmpty">#{i18n.getText('CAS011_5')}</button>
-				<button id="A1_003" class="danger" tabindex="3" data-bind="click: deleteRoleSet,
+				<button id="A1_002" class="proceed" data-bind="click: saveRoleSet, enable: $root.errors.isEmpty">#{i18n.getText('CAS011_5')}</button>
+				<button id="A1_003" class="danger" data-bind="click: deleteRoleSet,
 						enable: !isNewMode()" >#{i18n.getText('CAS011_6')}</button>
 
-				<button id="A1_004" tabindex="4" data-bind="click: openDialogSettingC ">#{i18n.getText('CPS016_7')}</button>
+				<button id="A1_004" data-bind="click: openDialogSettingC, enable: true">#{i18n.getText('CPS016_7')}</button>
 			</div>
  
 			<div id="contents-area" class="cf">
@@ -36,6 +36,7 @@
 						<div style="float: left">
 							<table id="role_set_grid"
 								data-bind="ntsGridList: {
+											name:'#[CAS011_8]',
 											height: 425,
 											width: 230,
 											options: listRoleSets,
@@ -65,8 +66,7 @@
 							<td class = "pad_left_5px">
 								<div>
 									<!-- A3_002: Rose Set Code -->
-									 <input tabindex="5"
-										class="nts-input" id="inpRoleSetCd" 
+									 <input class="nts-input" id="inpRoleSetCd" 
 										data-bind="ntsTextEditor:{
 											name: '#[CAS011_12]',
 	                                         value: roleSetCd,
@@ -74,8 +74,7 @@
 	                                         constraint: 'RoleSetCode',
 	                                         enable: $parent.isNewMode()}" />
 		                               <!-- A3_003: Rose Set Name -->
-		                                <input tabindex="6"
-											class="nts-input pad_left_5px" id="inpRoleSetName"
+		                                <input class="nts-input pad_left_5px" id="inpRoleSetName"
 											data-bind="ntsTextEditor:{
 												name: '#[CAS011_13]',
 		                                         value: roleSetName,
@@ -101,8 +100,8 @@
 		                                         enable: false
 		                                         }"/>
 									<!-- A3_006: Employment Role - reference button -->
-									<button id="A1_004" tabindex="4" data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),
-										enable: true">#{i18n.getText('CAS011_15')}</button>
+									<button id="A1_004" class="large" 
+										data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()), enable: true">#{i18n.getText('CAS011_15')}</button>
                                </div>
 								 
 							</td>
@@ -122,8 +121,8 @@
 		                                         enable: false}"/>
 
 									<!-- A3_009: HR Role - reference button -->
-									<button id="A3_009" tabindex="4" data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),
-										enable: true">#{i18n.getText('CAS011_15')}</button>								
+									<button id="A3_009" class="large" 
+										data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),	enable: true">#{i18n.getText('CAS011_15')}</button>								
                                </div>
 							</td>
 						</tr>
@@ -142,8 +141,8 @@
 		                                         enable: false}"/>
 
 									<!-- A3_012: Salary Role - reference button -->
-									<button id="A3_012" tabindex="4" data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),
-										enable: true">#{i18n.getText('CAS011_15')}</button>
+									<button id="A3_012" class="large" 
+										data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()), enable: true">#{i18n.getText('CAS011_15')}</button>
 								</div>									
 							</td>
 						</tr>
@@ -162,8 +161,8 @@
 		                                         enable: false}"/>
 
 									<!-- A3_015: Person Info Role - reference button -->
-									<button id="A3_015" tabindex="4" data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),
-										enable: true">#{i18n.getText('CAS011_15')}</button>
+									<button id="A3_015" class="large" 
+										data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()), enable: true">#{i18n.getText('CAS011_15')}</button>
 								</div>
 								
 							</td>
@@ -183,8 +182,8 @@
 		                                         enable: false}"/>
 	                               
 									<!-- A3_018: My Number  Role - reference button -->
-									<button id="A3_018" tabindex="4" data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),
-										enable: true">#{i18n.getText('CAS011_15')}</button>
+									<button id="A3_018" class="large" 
+										data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),	enable: true">#{i18n.getText('CAS011_15')}</button>
                                </div>									
 							</td>
 						</tr>
@@ -202,8 +201,8 @@
 		                                         required: false,
 		                                         enable: false}"/>	                               
 									<!-- A3_021: Office Helper Role - reference button -->
-									<button id="A3_021" data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),
-										enable: true">#{i18n.getText('CAS011_15')}</button>
+									<button id="A3_021" class="large" 
+										data-bind="click: $parents[1].openDialogCLD025.bind($parent, $data.roleType()),	enable: true">#{i18n.getText('CAS011_15')}</button>
                                </div>
 
 							</td>
@@ -248,6 +247,7 @@
 
 					<div id="swap-list" class = "pad_left_5px" 
 						data-bind="ntsSwapList: {
+							name: '#[CAS011_24]',
 							height: 300,
 							width: 480,
 							dataSource: $parent.listWebMenus,

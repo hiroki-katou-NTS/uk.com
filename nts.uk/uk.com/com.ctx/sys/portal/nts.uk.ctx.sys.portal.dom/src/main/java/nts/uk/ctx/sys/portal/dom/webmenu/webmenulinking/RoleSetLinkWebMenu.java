@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
  * @author HieuNV
  */
 @Getter
-public class RoleSetAndWebMenu extends AggregateRoot {
+public class RoleSetLinkWebMenu extends AggregateRoot {
 
 	/** ロールセットコード. */
 	private RoleSetCode roleSetCd;
@@ -32,7 +32,7 @@ public class RoleSetAndWebMenu extends AggregateRoot {
 	 * @param webMenuCd
 	 * @param roleSetCd
 	 */
-	public RoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId) {
+	public RoleSetLinkWebMenu(String roleSetCd, String webMenuCd, String companyId) {
 		super();
 		this.roleSetCd = new RoleSetCode(roleSetCd);
 		this.webMenuCd = new WebMenuCode(webMenuCd);

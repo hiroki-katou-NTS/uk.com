@@ -27,7 +27,6 @@ module nts.uk.com.view.cas011.c.viewmodel {
             listDefaultRoleSets.removeAll();
             errors.clearAll();
 
-            /*
             service.getAllRoleSet().done((itemList: Array<IDefaultRoleSet>) => {
                 // in case number of RoleSet is greater then 0
                 if (itemList && itemList.length > 0) {
@@ -42,9 +41,6 @@ module nts.uk.com.view.cas011.c.viewmodel {
             }).always(() => {
                 dfd.resolve();
             });
-*/
-            
-            dfd.resolve();
             return dfd.promise();
         }
 

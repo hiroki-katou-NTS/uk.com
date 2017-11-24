@@ -40,8 +40,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
                                            ]);
             
             self.swapColumns = ko.observableArray([
-                                               { headerText: 'コード', key: 'webMenuCode', width: 100 },
-                                               { headerText: '名称', key: 'webMenuName', width: 150 }
+                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 100 },
+                                               { headerText: resource.getText('CAS011_34'), key: 'webMenuName', width: 150 }
                                            ]);
             
             // ---A3_024, A3_025 

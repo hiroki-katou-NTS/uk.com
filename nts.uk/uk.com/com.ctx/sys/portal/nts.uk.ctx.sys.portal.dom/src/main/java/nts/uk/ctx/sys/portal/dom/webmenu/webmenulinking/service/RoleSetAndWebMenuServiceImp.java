@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,15 +23,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class RoleSetAndWebMenuServiceImp extends JpaRepository implements RoleSetAndWebMenuService {
 
 	@Inject
-	private RoleSetAndWebMenuRepository roleSetAndWebMenuRepository;
+	private RoleSetLinkWebMenuRepository roleSetAndWebMenuRepository;
 	
 	@Override
-	public void createRoleSetWebMenuLink(RoleSetAndWebMenu domain) {
+	public void createRoleSetWebMenuLink(RoleSetLinkWebMenu domain) {
 		roleSetAndWebMenuRepository.insert(domain);
 	}
 
 	@Override
-	public void updateRoleSetWebMenuLink(RoleSetAndWebMenu domain) {
+	public void updateRoleSetWebMenuLink(RoleSetLinkWebMenu domain) {
 		roleSetAndWebMenuRepository.update(domain);
 	}
 

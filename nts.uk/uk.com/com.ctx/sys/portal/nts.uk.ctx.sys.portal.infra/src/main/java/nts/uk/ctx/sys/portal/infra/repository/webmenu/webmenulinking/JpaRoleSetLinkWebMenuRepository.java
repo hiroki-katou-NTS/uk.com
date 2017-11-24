@@ -10,8 +10,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleSetWebMenu;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleSetWebMenuPK;
 
@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleSetWeb
  *
  */
 @Stateless
-public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements RoleSetAndWebMenuRepository {
+public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements RoleSetLinkWebMenuRepository {
 
 	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID = "SELECT rw FROM SacmtRoleSetWebMenu rw"
 			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId ";
@@ -34,14 +34,14 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId "
 			+ " WHERE rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
 	
-	private nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu toDomain(SptmtRoleSetWebMenu entity) {
-		return new RoleSetAndWebMenu(entity.roleSetWebMenuPK.roleSetCd
+	private nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu toDomain(SptmtRoleSetWebMenu entity) {
+		return new RoleSetLinkWebMenu(entity.roleSetWebMenuPK.roleSetCd
 				, entity.roleSetWebMenuPK.webMenuCd
 				, entity.roleSetWebMenuPK.companyId
 				);
 	}
 
-	private SptmtRoleSetWebMenu toEntity(RoleSetAndWebMenu domain) {
+	private SptmtRoleSetWebMenu toEntity(RoleSetLinkWebMenu domain) {
 		SptmtRoleSetWebMenuPK key = new SptmtRoleSetWebMenuPK(domain.getCompanyId()
 				, domain.getWebMenuCd().v()
 				, domain.getRoleSetCd().v());
@@ -49,7 +49,7 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 
 	}
 	
-	private SptmtRoleSetWebMenu toEntityForUpdate(RoleSetAndWebMenu domain, SptmtRoleSetWebMenu upEntity) {
+	private SptmtRoleSetWebMenu toEntityForUpdate(RoleSetLinkWebMenu domain, SptmtRoleSetWebMenu upEntity) {
 		upEntity.buildEntity(new SptmtRoleSetWebMenuPK(domain.getCompanyId()
 				, domain.getWebMenuCd().v()
 				, domain.getRoleSetCd().v()));
@@ -57,14 +57,14 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 	}
 
 	@Override
-	public List<RoleSetAndWebMenu> findByCompanyId(String companyId) {
+	public List<RoleSetLinkWebMenu> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID, SptmtRoleSetWebMenu.class)
 				.setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
 	}
 
 	@Override
-	public List<RoleSetAndWebMenu> findByRoleSetCd(String companyId, String roleSetCd) {
+	public List<RoleSetLinkWebMenu> findByRoleSetCd(String companyId, String roleSetCd) {
 		return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD, SptmtRoleSetWebMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("roleSetCd", roleSetCd)
@@ -72,18 +72,18 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 	}
 
 	@Override
-	public Optional<RoleSetAndWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd) {
+	public Optional<RoleSetLinkWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd) {
 		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, webMenuCd, roleSetCd);
 		return this.queryProxy().find(pk, SptmtRoleSetWebMenu.class).map(c -> toDomain(c));
 	}
 	
 	@Override
-	public void insert(RoleSetAndWebMenu domain) {
+	public void insert(RoleSetLinkWebMenu domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	public void update(RoleSetAndWebMenu domain) {
+	public void update(RoleSetLinkWebMenu domain) {
 		 Optional<SptmtRoleSetWebMenu> upEntity = this.queryProxy().find(
 				 new SptmtRoleSetWebMenuPK(domain.getCompanyId()
 					, domain.getWebMenuCd().v()

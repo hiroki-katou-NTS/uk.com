@@ -21,8 +21,8 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -30,7 +30,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 public class RoleSetAndWebMenuFinder {
 
 	@Inject
-	private RoleSetAndWebMenuRepository roleSetAndWebMenuRepository;
+	private RoleSetLinkWebMenuRepository roleSetAndWebMenuRepository;
 
 	/**
 	 * Find a RoleSetAndWebMenu by webMenuCd and roleSetCd
@@ -39,7 +39,7 @@ public class RoleSetAndWebMenuFinder {
 	 */
 	public RoleSetAndWebMenuDto find(String webMenuCd, String roleSetCd) {
 		String companyId = AppContexts.user().companyId();
-		Optional<RoleSetAndWebMenu> webMenuOpt = roleSetAndWebMenuRepository.findByKey(companyId, webMenuCd, roleSetCd);
+		Optional<RoleSetLinkWebMenu> webMenuOpt = roleSetAndWebMenuRepository.findByKey(companyId, webMenuCd, roleSetCd);
 		if (!webMenuOpt.isPresent()) {
 			return null;
 		}

@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu.webmenulinking;
 
 import lombok.Data;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 
 @Data
 public class RoleSetAndWebMenuDto {
@@ -20,7 +20,7 @@ public class RoleSetAndWebMenuDto {
 	 * @param roleSet
 	 * @return
 	 */
-	public static RoleSetAndWebMenuDto build(RoleSetAndWebMenu roleSetAndWebMenu) {
+	public static RoleSetAndWebMenuDto build(RoleSetLinkWebMenu roleSetAndWebMenu) {
 		RoleSetAndWebMenuDto result = new RoleSetAndWebMenuDto();
 		result.setCompanyId(roleSetAndWebMenu.getCompanyId());
 		result.setRoleSetCd(roleSetAndWebMenu.getRoleSetCd().v());
