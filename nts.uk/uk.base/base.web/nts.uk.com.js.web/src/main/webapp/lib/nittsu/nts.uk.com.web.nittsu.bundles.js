@@ -2909,13 +2909,13 @@ var nts;
                     $(".reset-not-apply").find(".reset-element").off("reset");
                     var content_height = 20;
                     if ($("#header").length != 0) {
-                        content_height += 50;
+                        content_height += $("#header").outerHeight();
                     }
                     if ($("#functions-area").length != 0) {
-                        content_height += 49;
+                        content_height += $("#functions-area").outerHeight();
                     }
                     if ($("#functions-area-bottom").length != 0) {
-                        content_height += 74;
+                        content_height += $("#functions-area-bottom").outerHeight();
                     }
                     $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
                 };
@@ -22719,3 +22719,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
