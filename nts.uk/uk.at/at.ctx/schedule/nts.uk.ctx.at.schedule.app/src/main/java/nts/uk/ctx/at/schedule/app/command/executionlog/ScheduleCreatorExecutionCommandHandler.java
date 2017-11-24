@@ -15,6 +15,8 @@ import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleResetCommand;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
@@ -84,6 +86,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The sche cre exe work type handler. */
 	@Inject
 	private ScheCreExeWorkTypeHandler scheCreExeWorkTypeHandler;
+	
+	/** The sche cre exe basic schedule handler. */
+	@Inject
+	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
 	
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -204,24 +210,35 @@ public class ScheduleCreatorExecutionCommandHandler
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
 			ScheduleExecutionLog scheduleExecutionLog, List<ScheduleCreator> scheduleCreators,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
+		
+		// get info by context
 		val asyncTask = context.asAsync();
+		
 		for (ScheduleCreator domain : scheduleCreators) {
 			
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
-				
 				asyncTask.finishedAsCancelled();
 				break;
 			}
 			
 			// check processExecutionAtr reconfig
 			if (command.getContent().getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
-				this.resetSchedule(command, domain, scheduleExecutionLog);
+				BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
+				commandReset.setCompanyId(command.getCompanyId());
+				commandReset.setConfirm(command.getContent().getConfirm());
+				commandReset.setEmployeeId(domain.getEmployeeId());
+				commandReset.setExecutionId(command.getExecutionId());
+				commandReset.setReCreateAtr(command.getContent().getReCreateContent().getReCreateAtr().value);
+				commandReset.setResetAtr(command.getContent().getReCreateContent().getResetAtr());
+				commandReset.setTargetStartDate(scheduleExecutionLog.getPeriod().start());
+				commandReset.setTargetEndDate(scheduleExecutionLog.getPeriod().end());
+				this.resetSchedule(commandReset, context);
 			} else {
 
 				// check parameter CreateMethodAtr
 				if (command.getContent().getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-					this.createScheduleBasedPerson(command, domain, scheduleExecutionLog);
+					this.createScheduleBasedPerson(command, domain, scheduleExecutionLog, context);
 				}
 			}
 			
@@ -239,26 +256,39 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param domain the domain
 	 */
 	// スケジュールを再設定する
-	private void resetSchedule(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
-			ScheduleExecutionLog domain) {
-		// get to day by start period date
-		command.setToDate(domain.getPeriod().start());
+	private void resetSchedule(BasicScheduleResetCommand command,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
+		
+		// get info by context
+		val asyncTask = context.asAsync();
+		GeneralDate toDate = command.getTargetStartDate();
 
 		// loop start period date => end period date
-		while (command.getToDate().beforeOrEquals(domain.getPeriod().end())) {
+		while (toDate.beforeOrEquals(command.getTargetEndDate())) {
 
-			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(creator.getEmployeeId(),
-					command.getToDate());
-			if (optionalBasicSchedule.isPresent()
-					&& command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ONLY_UNCONFIRM
-					&& optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.CONFIRMED) {
+			// check is client submit cancel
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				break;
+			}
+			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
+					toDate);
+			if (optionalBasicSchedule.isPresent()){
+				
+				command.setWorkingCode(optionalBasicSchedule.get().getWorkTypeCode());
+				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTimeCode());
+				
+				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value) {
+					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate);
+				}else if(optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.CONFIRMED){
+					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate);
+				}
+				
 			}
 			// (button Interrupt)
-			command.setToDate(this.nextDay(command.getToDate()));
+			toDate = this.nextDay(toDate);
 		}
 	}
-	
-
 	/**
 	 * Update status schedule execution log.
 	 *
@@ -286,7 +316,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	 */
 	// 個人情報をもとにスケジュールを作成する
 	private void createScheduleBasedPerson(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
-			ScheduleExecutionLog domain) {
+			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		Optional<PersonalWorkScheduleCreSet> optionalPersonalWorkScheduleCreSet = this.creSetRepository
 				.findById(creator.getEmployeeId());
 
@@ -298,7 +328,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			if (personalWorkScheduleCreSet.getBasicCreateMethod()
 					.equals(WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR)) {
 				// call create WorkSchedule
-				this.createWorkScheduleByBusinessDayCalenda(command, domain, personalWorkScheduleCreSet);
+				this.createWorkScheduleByBusinessDayCalenda(command, domain, personalWorkScheduleCreSet, context);
 			}
 		}
 	}
@@ -312,14 +342,23 @@ public class ScheduleCreatorExecutionCommandHandler
 	 */
 	// 営業日カレンダーで勤務予定を作成する
 	private void createWorkScheduleByBusinessDayCalenda(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog domain, PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+			ScheduleExecutionLog domain, PersonalWorkScheduleCreSet personalWorkScheduleCreSet,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 
+		// get info by context
+		val asyncTask = context.asAsync();
+		
 		// get to day by start period date
 		command.setToDate(domain.getPeriod().start());
 
 		// loop start period date => end period date
 		while (command.getToDate().beforeOrEquals(domain.getPeriod().end())) {
 
+			// check is client submit cancel
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				break;
+			}
 			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
 					.findById(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
 
