@@ -76,7 +76,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             
             self.inputDetail().baseDate = baseDate;
             let dfd = $.Deferred();
-            //let dfdMessageDeadline = self.getMessageDeadline(self.appType());
+            // let dfdMessageDeadline = self.getMessageDeadline(self.appID(), self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
 
@@ -84,7 +84,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
                 let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
                 self.getDetailCheck(self.inputDetail());
-                self.getMessageDeadline(data);
+                self.getMessageDeadline({
+                    appID: data.appID,
+                    appType: data.appType,
+                    appDate: moment(data.appDate)   
+                });
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             });

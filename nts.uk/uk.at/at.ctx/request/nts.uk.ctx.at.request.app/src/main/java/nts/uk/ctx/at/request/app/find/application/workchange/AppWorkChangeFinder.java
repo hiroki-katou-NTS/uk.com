@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.request.app.find.application.workchange;
+package nts.uk.ctx.at.request.app.find.application.workchange;
 
 import java.util.List;
 import java.util.stream.Collectors;
