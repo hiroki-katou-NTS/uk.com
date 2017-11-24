@@ -26,7 +26,8 @@
 				<button id="A1_003" class="danger" data-bind="click: deleteRoleSet,
 						enable: !isNewMode()" >#{i18n.getText('CAS011_6')}</button>
 
-				<button id="A1_004" data-bind="click: openDialogSettingC, enable: true">#{i18n.getText('CPS016_7')}</button>
+				<button id="A1_004" data-bind="click: openDialogSettingC,
+				 enable: listRoleSets &amp;&amp; (listRoleSets.length > 0)">#{i18n.getText('CPS016_7')}</button>
 			</div>
  
 			<div id="contents-area" class="cf">
