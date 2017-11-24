@@ -10,7 +10,8 @@ import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
 import nts.uk.ctx.bs.employee.app.find.person.PersonLayoutDto;
-import nts.uk.shr.pereg.app.find.PeregFinder;
+import nts.uk.shr.pereg.app.find.PeregCtgListFinder;
+import nts.uk.shr.pereg.app.find.PeregCtgSingleFinder;
 import nts.uk.shr.pereg.app.find.PeregFinderProcessorCollector;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -19,16 +20,28 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 @SuppressWarnings("serial")
 public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcessorCollector{
 
-	/** finder */
-	private static final List<TypeLiteral<?>> FINDER_HANDLER_CLASSES = Arrays.asList(
-			new TypeLiteral<PeregFinder<PersonLayoutDto, PeregQuery>>(){}
+	/** ctg single finder */
+	private static final List<TypeLiteral<?>> FINDER_CTG_SINGLE_HANDLER_CLASSES = Arrays.asList(
+			new TypeLiteral<PeregCtgSingleFinder<PersonLayoutDto, PeregQuery>>(){}
 			);
 	
+	/** ctg list finder */
+	private static final List<TypeLiteral<?>> FINDER_CTG_LIST_HANDLER_CLASSES = Arrays.asList(
+			);
+
 	@Override
-	public Set<PeregFinder<?, ?>> peregFinderCollect() {
-		return FINDER_HANDLER_CLASSES.stream()
+	public Set<PeregCtgSingleFinder<?, ?>> peregCtgSingleFinderCollect() {
+		return FINDER_CTG_SINGLE_HANDLER_CLASSES.stream()
 				.map(type -> CDI.current().select(type).get())
-				.map(obj -> (PeregFinder<?, ?>)obj)
+				.map(obj -> (PeregCtgSingleFinder<?, ?>)obj)
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<PeregCtgListFinder<?, ?>> peregCtgListFinderCollect() {
+		return FINDER_CTG_LIST_HANDLER_CLASSES.stream()
+				.map(type -> CDI.current().select(type).get())
+				.map(obj -> (PeregCtgListFinder<?, ?>)obj)
 				.collect(Collectors.toSet());
 	}
 

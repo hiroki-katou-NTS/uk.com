@@ -53,6 +53,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
 			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND ca.cid = :companyId"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND CO.categoryParentCd = :parentCd ORDER BY po.disporder";
 
@@ -297,10 +298,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 
 	@Override
-	public List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgId, String contractCd,
+	public List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgCd, String contractCd, String companyId,
 			boolean isASC) {
-		return this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD + (isASC ? " ASC" : " DESC"), Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("parentCd", parentCtgId).getList(c -> {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD_WITH_ORDER + (isASC ? " ASC" : " DESC"), Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("parentCd", parentCtgCd)
+				.setParameter("companyId",  companyId).getList(c -> {
 					return createDomainFromEntity(c);
 				});
 	}
