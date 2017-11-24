@@ -238,9 +238,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
           * Open dialog CLD025 
          */
         openDialogCLD025(rlType: number) {
-            dialog.info("RoleType: " + rlType);
             let self = this,
-                currentRoleSet: RoleSet = self.currentRoleSet();
+                currentRoleSet: RoleSet = self.currentRoleSet;
             
             if (!rlType && rlType < 0) {
                 return;
