@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -17,13 +19,15 @@ import lombok.NoArgsConstructor;
 public class SacmtRoleIndiviGrantPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
+	@NotNull
 	@Column(name = "CID")
     public String cid;
 
+	@NotNull
 	@Column(name = "USER_ID")
     public String userId;
-
+	
+	@NotNull
 	@Column(name = "ROLE_TYPE")
     public Integer roleType;
 

@@ -90,7 +90,7 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return null;
+		return sacmtUserPK;
 	}
 
 }
