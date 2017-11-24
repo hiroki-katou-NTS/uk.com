@@ -2,26 +2,21 @@ package nts.uk.ctx.bs.employee.app.find.person;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregCtgSingleFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
+import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
-public class PersonCtgSingleFinder implements PeregCtgSingleFinder<PersonLayoutDto, PeregQuery>{
-
-	/** The employee repository. */
-	@Inject
-	private EmployeeRepository empRepo;
+public class PersonCtgSingleFinder implements PeregCtgSingleFinder<PeregDto, PeregQuery> {
 
 	@Inject
 	private PersonRepository personRepo;
@@ -36,22 +31,19 @@ public class PersonCtgSingleFinder implements PeregCtgSingleFinder<PersonLayoutD
 
 	@Override
 	public Class<?> dtoClass() {
-		return PersonPeregDto.class;
+		return PeregPersonDto.class;
 	}
 
 	/**
 	 * the function handles finder return: PeregQueryResult
 	 */
 	@Override
-	public PersonLayoutDto getCtgSingleData(PeregQuery query) {
-
-		// get Dto: Employee -> Person
-		Employee employee = empRepo.findBySid(AppContexts.user().companyId(), query.getEmpId()).get();
-		if (employee == null)
-			return new PersonLayoutDto();
-		Optional<Person> person = personRepo.getByPersonId(employee.getPId());
-		List<PersonInfoItemData> lstCtgItemOptionalDto = perInfoItemDataRepository
-				.getAllInfoItemByRecordId(person.get().getPersonId());
-		return new PersonLayoutDto(PersonPeregDto.createFromDomain(person.get()), lstCtgItemOptionalDto);
+	public PeregDto getCtgSingleData(PeregQuery query) {
+		Optional<Person> person = personRepo.getByPersonId(query.getPersonId());
+		List<PersonOptionalDto> lstCtgItemOptionalDto = perInfoItemDataRepository
+				.getAllInfoItemByRecordId(person.get().getPersonId()).stream().map(itemData -> itemData.genToPeregDto())
+				.collect(Collectors.toList());
+		return PeregDto.createWithPersonOptionData(PeregPersonDto.createFromDomain(person.get()),
+				lstCtgItemOptionalDto);
 	}
 }
