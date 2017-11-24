@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 
 @Getter
 @Setter
@@ -42,7 +42,7 @@ public class Employee extends AggregateRoot {
 	/** The List JobEntryHistory 入社履歴 */
 	private List<JobEntryHistory> listEntryJobHist;
 
-	private List<TempAbsenceHisItem> listTemporaryAbsence;
+	private TempAbsenceHistory temporaryAbsenceHistory;
 
 	public static Employee createFromJavaType(String companyId, String pId, String sId, String sCd, String companyMail,
 			String mobileMail, String companyMobile) {
@@ -82,12 +82,12 @@ public class Employee extends AggregateRoot {
 	}
 
 	public int getDaysOfTemporaryAbsence() {
-		if (listTemporaryAbsence == null || listTemporaryAbsence.isEmpty()) {
+		/*if (listTemporaryAbsence == null || listTemporaryAbsence.isEmpty()) {
 			return 0;
 		}
 
-		/*return listTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS
-				.between(m.getDateHistoryItem().start().localDate(), m.getDateHistoryItem().end().localDate()))
+		return listTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS
+				.between(m.get)
 				.mapToInt(m -> Math.abs(m.intValue())).sum();*/
 		return 0;
 		// TODO
