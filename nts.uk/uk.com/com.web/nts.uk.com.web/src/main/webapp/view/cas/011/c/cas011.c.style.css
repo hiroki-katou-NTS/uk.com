@@ -5,7 +5,7 @@
 	text-align: center;
 }
 
-#contents-area .form-group .row {
+#contents-area1 .form-group .row {
 	padding-bottom: 15px;
 }
 
@@ -18,6 +18,6 @@
 }
 
 #combo-box{
-	width: 200px !important;
+	width: 300px !important;
 	 min-width: 200px !important;
 }

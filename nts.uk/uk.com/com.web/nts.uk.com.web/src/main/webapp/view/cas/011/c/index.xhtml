@@ -22,9 +22,9 @@
 		</ui:define>
 		<!-- title: 既定のロールセット選択ダイアログ -->
 
-		<ui:define name="content1">
-			<div id="contents-area_1">
-				<div class="form-group" style="height: 110px; padding-top: 30px; text-align: center;">
+		<ui:define name="content">
+			<div id="contents-area1">
+				<div class="form-group" style="height: 150px; padding-top: 30px; text-align: center;">
 					<!-- C1-001 : Default role set-->
 					<table >
 						<colgroup>
@@ -56,7 +56,7 @@
 					</table>
 				</div>
 
-				<div id="functions-area-bottom"	style="height: 110px; padding-top: 18px; text-align: center;">
+				<div id="functions-area-bottom"	style="height: 70px; padding-top: 18px; text-align: center;">
 					<!-- C1-003 : Decision-->
 					<button id="btnDecision" class="proceed" style="width: 100px; padding-right: 18px;"
 						data-bind="click : addDefaultRoleSet, enable: currentDefaultRoleSet().roleSetCd">#{i18n.getText('CAS011_32')}</button>

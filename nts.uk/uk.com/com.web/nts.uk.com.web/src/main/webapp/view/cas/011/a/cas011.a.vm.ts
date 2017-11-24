@@ -61,7 +61,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
                             self.createCurrentRoleSet(_roleSet);
                             self.settingUpdateMode(_roleSet.roleSetCd);
                         } else {
-                            //TODO???
                             self.settingCreateMode();
                         }
                     });
@@ -112,7 +111,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
         /**
          * Initial screen
-         * - アルゴリズム「ロールセットをすべて取得する」を実行する - Execute the algorithm Get All Roll Sets
+         * - アルゴリズム「ロールセットをすべて取得する」を実行する - Execute the algorithm Get all Roll Set
          * - 先頭のロールセットを選択する - Select the first roll set
          * - 画面を新規モードで起動する - Start screen in new mode
          */
@@ -121,7 +120,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
             currentRoleSet: RoleSet = self.currentRoleSet(),
             listRoleSets = self.listRoleSets;
 
-            service.getAllRoleSets().done((itemList: Array<IRoleSet>) => {
+            service.getAllRoleSet().done((itemList: Array<IRoleSet>) => {
                 
                 // in case number of RoleSet is greater then 0
                 if (itemList && itemList.length > 0) {
@@ -389,7 +388,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
             
             self.listWebMenus.removeAll();
 
-            service.getAllWebMenus().done((itemList: Array<IWebMenu>) => {
+            service.getAllWebMenu().done((itemList: Array<IWebMenu>) => {
                 if (itemList && itemList.length > 0) {
                     var listData = itemList.filter(item1 => !self.isSelectedWebMenu(item1.webMenuCode));
                         /*.map(item => { new WebMenu({

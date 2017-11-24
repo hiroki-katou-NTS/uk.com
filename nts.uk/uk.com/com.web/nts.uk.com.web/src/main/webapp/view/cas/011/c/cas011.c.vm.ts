@@ -26,24 +26,25 @@ module nts.uk.com.view.cas011.c.viewmodel {
 
             listDefaultRoleSets.removeAll();
             errors.clearAll();
-        
+
+            /*
             service.getAllRoleSet().done((itemList: Array<IDefaultRoleSet>) => {
-               
                 // in case number of RoleSet is greater then 0
                 if (itemList && itemList.length > 0) {
     
                     listDefaultRoleSets(itemList);
                     self.settingSelectedDefaultRoleSet();
-                    dfd.resolve();
                 } else { //in case number of RoleSet is zero
-                    nts.uk.ui.windows.close();
-                    dfd.reject();
+                    self.closeDialog();
                 }    
             }).fail(error => {
-                nts.uk.ui.windows.close();
-                dfd.reject();
+                self.closeDialog();
+            }).always(() => {
+                dfd.resolve();
             });
-
+*/
+            
+            dfd.resolve();
             return dfd.promise();
         }
 
@@ -75,6 +76,9 @@ module nts.uk.com.view.cas011.c.viewmodel {
             
         }
         
+        closeDialog() {
+            nts.uk.ui.windows.close()
+        }
         /**
          * Request to register Default Role Set
          */
