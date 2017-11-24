@@ -31,16 +31,12 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	}
 
 	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<User> getByListUser(List<String> userID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 
 
