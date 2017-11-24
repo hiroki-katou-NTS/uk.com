@@ -67,9 +67,6 @@ module nts.uk.at.view.ksc001.b {
             //for control field
             isReCreate: KnockoutObservable<boolean>;
             isReSetting: KnockoutObservable<boolean>;
-            //            isReCreate: KnockoutObservable<boolean>;
-            //            isReCreate: KnockoutObservable<boolean>;
-            //            isReCreate: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
 
