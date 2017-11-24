@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.dom.user;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
@@ -20,6 +21,8 @@ public interface UserRepository {
 	Optional<User> getByAssociatedPersonId(String associatedPersonId); 
 	
 	Optional<User> getByUserID(String userID);
+	
+	List<User> getByListUser(List<String> userID);
 	
 	
 	

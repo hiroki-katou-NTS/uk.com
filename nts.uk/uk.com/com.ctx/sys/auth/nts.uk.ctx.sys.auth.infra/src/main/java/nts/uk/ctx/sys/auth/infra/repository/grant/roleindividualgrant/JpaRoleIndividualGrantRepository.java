@@ -123,6 +123,12 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<RoleIndividualGrant> findByRoleIDandCompanyID(String roleID, String companyID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
 	
     
