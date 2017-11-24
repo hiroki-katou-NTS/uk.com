@@ -6,12 +6,10 @@ package nts.uk.ctx.at.shared.infra.entity.statutory.worktime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,26 +30,18 @@ public class KuwstUsageUnitWtSet extends UkJpaEntity implements Serializable {
     
     /** The cid. */
     @Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "CID")
     private String cid;
     
     /** The is emp. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "IS_EMP")
     private Integer isEmp;
     
     /** The is wkp. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "IS_WKP")
     private Integer isWkp;
     
     /** The is empt. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "IS_EMPT")
     private Integer isEmpt;
 
@@ -59,6 +49,7 @@ public class KuwstUsageUnitWtSet extends UkJpaEntity implements Serializable {
      * Instantiates a new juuwtst usage unit wt set.
      */
     public KuwstUsageUnitWtSet() {
+    	super();
     }
 
     /**
@@ -96,14 +87,6 @@ public class KuwstUsageUnitWtSet extends UkJpaEntity implements Serializable {
 		}
 		return true;
 	}
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.JuuwtstUsageUnitWtSet[ cid=" + cid + " ]";
-    }
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
