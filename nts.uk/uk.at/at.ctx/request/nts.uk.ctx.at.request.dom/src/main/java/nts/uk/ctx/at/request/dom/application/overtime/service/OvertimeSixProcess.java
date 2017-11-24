@@ -25,12 +25,12 @@ public interface OvertimeSixProcess {
 	 * @param appType
 	 * @return
 	 */
-	public List<OverTimeInput> getCaculationOvertimeHours(String companyID,String employeeId, String appDate,int appType);
+	public List<CaculationTime> getCaculationOvertimeHours(String companyID,String employeeId, String appDate,int appType);
 	/**
 	 * 06-02-1_事前申請を取得
 	 * @return
 	 */
-	public List<OverTimeInput> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType);
+	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType);
 	
 	/**
 	 * 06-03_加給時間を取得
@@ -39,13 +39,13 @@ public interface OvertimeSixProcess {
 	 * @param appDate
 	 * @param appType
 	 */
-	public List<OverTimeInput> getCaculationBonustime(String companyID,String employeeId, String appDate,int appType);
+	public List<CaculationTime> getCaculationBonustime(String companyID,String employeeId, String appDate,int appType);
 	
 	/**
 	 * 06-03-1_加給事前申請を取得
 	 * @return
 	 */
-	public List<OverTimeInput> getAppBonustimePre(String companyID,String employeeId, String appDate,int appType);
+	public List<CaculationTime> getAppBonustimePre(String companyID,String employeeId, String appDate,int appType);
 	/**
 	 * 06-04_計算実績超過チェック
 	 */

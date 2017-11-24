@@ -34,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeInstructInfomation;
@@ -58,7 +59,6 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
@@ -167,9 +167,9 @@ public class AppOvertimeFinder {
 	/**
 	 * @return
 	 */
-	public List<OvertimeInputDto> getCaculationValue(List<OvertimeInputDto> overTimeInputs,int prePostAtr,String appDate){
-		List<OvertimeInputDto> overtimeInputDtos = new ArrayList<>(); 
-		List<OverTimeInput> overtimeInputs = new ArrayList<>();
+	public List<CaculationTime> getCaculationValue(List<CaculationTime> overtimeHours,List<CaculationTime> bonusTimes,int prePostAtr,String appDate){
+		 
+		List<CaculationTime> caculationTimes = new ArrayList<>();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDateTime inputDate = GeneralDateTime.now();
@@ -187,39 +187,51 @@ public class AppOvertimeFinder {
 		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
 		if(appCommonSettingOutput.requestOfEachCommon != null){
 			List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-			if(requestAppDetailSettings != null){
-				this.overtimeSixProcess.checkDisplayColor(convert(overTimeInputs),
-						overtimeInputCaculations,
-						prePostAtr,
-						inputDate,
-						GeneralDate.fromString(appDate, DATE_FORMAT),
-						ApplicationType.OVER_TIME_APPLICATION.value,
-						employeeID, 
-						companyID, 
-						requestAppDetailSettings.get(0));
-			}
+//			if(requestAppDetailSettings != null){
+//				this.overtimeSixProcess.checkDisplayColor(convert(overtimeHours),
+//						overtimeInputCaculations,
+//						prePostAtr,
+//						inputDate,
+//						GeneralDate.fromString(appDate, DATE_FORMAT),
+//						ApplicationType.OVER_TIME_APPLICATION.value,
+//						employeeID, 
+//						companyID, 
+//						requestAppDetailSettings.get(0));
+//			}
 			
 		}
 		// 06-02_残業時間を取得
-		List<OverTimeInput> overtimeInputHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value);
-		if(overtimeInputHours != null){
-			for(OverTimeInput overtimeInput : overtimeInputHours){
-				overtimeInputs.add(overtimeInput);
+		List<CaculationTime> caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value);
+		if(caculationTimeHours != null){
+			for(CaculationTime caculationTime : caculationTimeHours){
+				for(CaculationTime caculationTimeOld : overtimeHours){
+					if(caculationTime.getFrameNo() == caculationTimeOld.getFrameNo()){
+						caculationTimeOld.setPreAppTime(caculationTime.getPreAppTime());
+					}
+				}
 			}
 		}
 		
 		// 06-03_加給時間を取得
-		List<OverTimeInput> overtimeInputBonus= this.overtimeSixProcess.getCaculationBonustime(companyID, employeeID, appDate,  ApplicationType.OVER_TIME_APPLICATION.value);
-		if(overtimeInputBonus != null){
-			for(OverTimeInput overtimeInput : overtimeInputBonus){
-				overtimeInputs.add(overtimeInput);
+		List<CaculationTime> caculationTimeBonus= this.overtimeSixProcess.getCaculationBonustime(companyID, employeeID, appDate,  ApplicationType.OVER_TIME_APPLICATION.value);
+		if(caculationTimeBonus != null){
+			for(CaculationTime caculationTime : caculationTimeBonus){
+				for(CaculationTime caculationTimeOld : bonusTimes){
+					if(caculationTime.getFrameNo() == caculationTimeOld.getFrameNo()){
+						caculationTimeOld.setPreAppTime(caculationTime.getPreAppTime());
+					}
+				}
 			}
 		}
-		// 計算フラグ=0
-		if(overtimeInputs.size() > 0){
-			overtimeInputDtos = convertOverTimeInputDto(overtimeInputs,companyID);
+		for(CaculationTime overtimeHour : overtimeHours){
+			caculationTimes.add(overtimeHour);
 		}
-		return overtimeInputDtos;
+		for(CaculationTime bonusTime : bonusTimes){
+			caculationTimes.add(bonusTime);
+		}
+		// 計算フラグ=0
+		
+		return caculationTimes;
 	}
 	
 	/**
@@ -720,21 +732,23 @@ public class AppOvertimeFinder {
 		}
 
 	}
-	private List<OverTimeInput> convert(List<OvertimeInputDto> overTimeInputDtos){
-		List<OverTimeInput> overTimeInputs = new ArrayList<>();
-		for(OvertimeInputDto overtimeInputDto : overTimeInputDtos){
-			OverTimeInput overTimeInput = OverTimeInput.createSimpleFromJavaType(overtimeInputDto.getCompanyID(),
-					overtimeInputDto.getAppID(),
-					overtimeInputDto.getAttendanceID(), 
-					overtimeInputDto.getFrameNo(),
-					overtimeInputDto.getStartTime(),
-					overtimeInputDto.getEndTime(),
-					overtimeInputDto.getApplicationTime(),
-					overtimeInputDto.getTimeItemTypeAtr());
-			overTimeInputs.add(overTimeInput);
-		}
-		return overTimeInputs;
-	}
+//	private List<OverTimeInput> convert(List<CaculationTime> overTimeInputDtos){
+//		List<OverTimeInput> overTimeInputs = new ArrayList<>();
+//		for(CaculationTime overtimeInputDto : overTimeInputDtos){
+//			if(overtimeInputDto .getStartTime() != null){
+//				OverTimeInput overTimeInput = OverTimeInput.createSimpleFromJavaType(overtimeInputDto.getCompanyID(),
+//						overtimeInputDto.getAppID(),
+//						overtimeInputDto.getAttendanceID(), 
+//						overtimeInputDto.getFrameNo(),
+//						overtimeInputDto.getStartTime(),
+//						overtimeInputDto.getEndTime(),
+//						overtimeInputDto.getApplicationTime(),
+//						overtimeInputDto.getTimeItemTypeAtr());
+//				overTimeInputs.add(overTimeInput);
+//			}
+//		}
+//		return overTimeInputs;
+//	}
 	private List<OvertimeInputDto> convertOverTimeInputDto(List<OverTimeInput> overtimeInputs,String companyID){
 		List<OvertimeInputDto> overTimeInputDtos = new ArrayList<>();
 		List<Integer> frameOverTimeNo = new ArrayList<>();
@@ -765,9 +779,18 @@ public class AppOvertimeFinder {
 			}
 			
 		}
-		List<OvertimeFrame> overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameOverTimeNo);
-		List<BonusPayTimeItem> bonusPayTimeItems = bPTimeItemRepository.getListBonusPayTimeItemName(companyID, frameBonusTimeNo);
-		List<BonusPayTimeItem> specBonusPayTimeItems  = bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyID, frameBonusSpecTimeNo);
+		List<OvertimeFrame> overtimeFrames = new ArrayList<>();
+		if(frameOverTimeNo != null && frameOverTimeNo.size() > 0){
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameOverTimeNo);
+		}
+		List<BonusPayTimeItem> bonusPayTimeItems = new ArrayList<>();
+		if(frameBonusTimeNo != null && frameBonusTimeNo.size() > 0){
+			bonusPayTimeItems = bPTimeItemRepository.getListBonusPayTimeItemName(companyID, frameBonusTimeNo);
+		}
+		List<BonusPayTimeItem> specBonusPayTimeItems = new ArrayList<>();
+		if(frameBonusSpecTimeNo != null &&  frameBonusSpecTimeNo.size() > 0){
+			specBonusPayTimeItems  = bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyID, frameBonusSpecTimeNo);
+		}
 		for(OvertimeInputDto dto : overTimeInputDtos){
 			// get frameName of Overtime
 			if(dto.getAttendanceID() == AttendanceID.NORMALOVERTIME.value){

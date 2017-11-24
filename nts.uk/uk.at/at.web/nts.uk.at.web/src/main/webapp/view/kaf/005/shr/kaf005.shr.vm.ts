@@ -232,7 +232,44 @@ module nts.uk.at.view.kaf005.share {
                 this.applicationTime = ko.observable(applicationTime);
                 this.nameID = ko.observable(nameID);
             }
-        }   
+        } 
+        export class OvertimeCaculation{
+             companyID: KnockoutObservable<string>
+            appID: KnockoutObservable<string>
+            attendanceID: KnockoutObservable<number>
+            attendanceName: KnockoutObservable<string>
+            frameNo: KnockoutObservable<number>
+            timeItemTypeAtr: KnockoutObservable<number>
+            frameName: KnockoutObservable<string>
+            applicationTime: KnockoutObservable<number>
+            preAppTime: KnockoutObservable<number>
+            caculationTime: KnockoutObservable<number>
+            nameID: KnockoutObservable<string>
+            constructor(
+                companyID: string,
+                appID: string,
+                attendanceID: number,
+                attendanceName: string,
+                frameNo: number,
+                timeItemTypeAtr: number,
+                frameName: string,
+                applicationTime: number,
+                preAppTime: number,
+                caculationTime: number,
+                nameID: string) {
+                this.companyID = ko.observable(companyID);
+                this.appID = ko.observable(appID);
+                this.attendanceID = ko.observable(attendanceID);
+                this.attendanceName = ko.observable(attendanceName);
+                this.frameNo = ko.observable(frameNo);
+                this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
+                this.frameName = ko.observable(frameName);
+                this.applicationTime = ko.observable(applicationTime);
+                this.preAppTime = ko.observable(preAppTime);
+                this.caculationTime = ko.observable(caculationTime);
+                this.nameID = ko.observable(nameID);
+            }
+        }  
 		export class overtimeWork {
             yearMonth: KnockoutObservable<string>;
             limitTime: KnockoutObservable<string>;

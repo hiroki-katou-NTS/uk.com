@@ -31,7 +31,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ "AND c.applicationDate = :appDate "
 			+ "AND c.prePostAtr = :prePostAtr "
 			+ "AND c.applicationType = :applicationType "
-			+ "ORDER BY c.inputDate";
+			+ "ORDER BY c.inputDate DESC";
 	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
 			+ " AND c.applicationDate = :appDate "
 			+ " AND c.inputDate = :inputDate "
