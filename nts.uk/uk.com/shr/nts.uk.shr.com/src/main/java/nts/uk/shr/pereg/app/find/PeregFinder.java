@@ -13,10 +13,5 @@ public interface PeregFinder <R, Q> {
 	 */
 	Class<?> finderClass();
 	
-	R getData(Q query);
 	
-	@SuppressWarnings("unchecked")
-	default R handleProcessor(Object query) {
-		return this.getData((Q) query);
-	}
 }
