@@ -60,9 +60,15 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 				command.getPrePostAtr(), command.getApplicationReason(),
 				command.getApplicationReason().replaceFirst(":", System.lineSeparator()), pharseList);
 
+		
+		int workClockFrom1 = command.getWorkClockFrom1() == null ? -1 : command.getWorkClockFrom1().intValue();
+		int workClockTo1 = command.getWorkClockTo1() == null ? -1 : command.getWorkClockTo1().intValue();
+		int workClockFrom2 = command.getWorkClockFrom2() == null ? -1 : command.getWorkClockFrom2().intValue();
+		int workClockTo2 = command.getWorkClockTo2() == null ? -1 : command.getWorkClockTo2().intValue();
+		
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), command.getWorkClockFrom1(),
-				command.getWorkClockTo1(), command.getWorkClockFrom2(), command.getWorkClockTo2(),
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1,
+				workClockTo1, workClockFrom2, workClockTo2,
 				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				getOverTimeInput(command, companyId, appID));
