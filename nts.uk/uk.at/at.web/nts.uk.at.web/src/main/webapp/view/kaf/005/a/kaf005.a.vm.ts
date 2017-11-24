@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import service = nts.uk.at.view.kaf005.shr.service;
     import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
+        static DATEFORMART: string = "YYYY/MM/DD";
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data

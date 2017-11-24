@@ -13,6 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
@@ -423,7 +424,7 @@ public class AppOvertimeFinder {
 						List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 						// 07_勤務種類取得: lay loai di lam 
 						List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,requestAppDetailSetting.get(0),appEmploymentWorkType);
-						if(workTypeOvertimes != null){
+						if(!CollectionUtil.isEmpty(workTypeOvertimes)){
 							result.setWorkType(workTypeOvertimes.get(0));
 						}
 						List<String> workTypeCodes = new ArrayList<>();
@@ -439,7 +440,7 @@ public class AppOvertimeFinder {
 							siftCodes.add(siftType.getSiftCode());
 						}
 						result.setSiftTypes(siftCodes);
-						if(siftTypes != null){
+						if(!CollectionUtil.isEmpty(siftTypes)){
 							result.setSiftType(siftTypes.get(0));
 						}
 					}else{
@@ -514,14 +515,14 @@ public class AppOvertimeFinder {
 					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 					// 07_勤務種類取得: lay loai di lam 
 					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,requestAppDetailSetting.get(0),appEmploymentWorkType);
-					if(workTypeOvertimes != null){
+					if(!CollectionUtil.isEmpty(workTypeOvertimes)){
 						result.setWorkType(workTypeOvertimes.get(0));
 					}
 					List<String> workTypeCodes = new ArrayList<>();
 					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
 						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
 					}
-					result.setSiftTypes(workTypeCodes);
+					result.setWorkTypes(workTypeCodes);
 					
 					// 08_就業時間帯取得(lay loai gio lam viec) 
 					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
@@ -530,7 +531,7 @@ public class AppOvertimeFinder {
 						siftCodes.add(siftType.getSiftCode());
 					}
 					result.setSiftTypes(siftCodes);
-					if(siftTypes != null){
+					if(!CollectionUtil.isEmpty(siftTypes)){
 						result.setSiftType(siftTypes.get(0));
 					}
 					
