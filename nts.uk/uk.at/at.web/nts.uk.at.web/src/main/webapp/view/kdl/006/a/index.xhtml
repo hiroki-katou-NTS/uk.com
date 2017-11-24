@@ -14,19 +14,6 @@
 					height : 520
 				};
 				
-				$(function() {
-					
-					var currentScreen = nts.uk.ui.windows.getSelf();
-					$("#grid-list").resizable({
-						minHeight: 380,
-						handles: "n,s",
-						alsoResize: "#grid-data-body",
-						resize: function(event, ui) {
-							currentScreen.setHeight(ui.size.height + 140);
-						}
-	                });
-				});
-				
 			</script>
 			
 			<com:scriptfile set="IGNITE" />
