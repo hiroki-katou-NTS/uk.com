@@ -33,7 +33,6 @@ public class PeregQueryResult {
 		} catch (Exception e) {
 			return null;
 		}
-		
 		return self;
 	}
 }

@@ -13,11 +13,11 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.find.PeregFinder;
+import nts.uk.shr.pereg.app.find.PeregCtgSingleFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 @Stateless
-public class PersonLayoutFinder implements PeregFinder<PersonLayoutDto, PeregQuery> {
+public class PersonCtgSingleFinder implements PeregCtgSingleFinder<PersonLayoutDto, PeregQuery>{
 
 	/** The employee repository. */
 	@Inject
@@ -43,7 +43,7 @@ public class PersonLayoutFinder implements PeregFinder<PersonLayoutDto, PeregQue
 	 * the function handles finder return: PeregQueryResult
 	 */
 	@Override
-	public PersonLayoutDto getData(PeregQuery query) {
+	public PersonLayoutDto getCtgSingleData(PeregQuery query) {
 
 		// get Dto: Employee -> Person
 		Employee employee = empRepo.findBySid(AppContexts.user().companyId(), query.getEmpId()).get();
