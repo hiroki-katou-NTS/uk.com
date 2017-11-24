@@ -1,8 +1,11 @@
 package find.person.family;
 
+import javax.ejb.Stateless;
+
 import nts.uk.shr.pereg.app.find.PeregCtgSingleFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
+@Stateless
 public class FamilyCtgSingleFinder implements PeregCtgSingleFinder<FamilyCtgSingleFinder, PeregQuery>{
 
 	@Override
