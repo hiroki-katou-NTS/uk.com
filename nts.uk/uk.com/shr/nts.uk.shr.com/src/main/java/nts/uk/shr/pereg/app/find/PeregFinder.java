@@ -11,7 +11,7 @@ public interface PeregFinder <R, Q> {
 	 * Returns class of command that is handled by this handler
 	 * @return class of command
 	 */
-	Class<?> finderClass();
+	Class<?> dtoClass();
 	
 	
 }

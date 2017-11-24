@@ -12,7 +12,7 @@ public class FamilyCtgSingleFinder implements PeregCtgSingleFinder<FamilyCtgSing
 	}
 
 	@Override
-	public Class<?> finderClass() {
+	public Class<?> dtoClass() {
 		// TODO Auto-generated method stub
 		return null;
 	}
