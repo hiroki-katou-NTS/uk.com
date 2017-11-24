@@ -142,8 +142,6 @@ public class ScheduleCreatorExecutionCommandHandler
 	 */
 	@Override
 	public void handle(CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
-		
-		
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
@@ -151,41 +149,28 @@ public class ScheduleCreatorExecutionCommandHandler
 
 		// get command
 		ScheduleCreatorExecutionCommand command = context.getCommand();
-		
+
 		// update command
 		command.setCompanyId(companyId);
 		command.setIsConfirm(false);
 		command.setIsDeleteBeforInsert(false);
 
 		// find execution log by id
-		Optional<ScheduleExecutionLog> optionalScheduleExecutionLog = this.scheduleExecutionLogRepository
-				.findById(companyId, command.getExecutionId());
+		ScheduleExecutionLog domain = this.scheduleExecutionLogRepository.findById(companyId, command.getExecutionId())
+				.get();
 
-		// check exist data
-		if (optionalScheduleExecutionLog.isPresent()) {
-			
-			// update execution time to now
-			ScheduleExecutionLog domain = optionalScheduleExecutionLog.get();
-			domain.setExecutionTimeToNow();
-			
-			// update domain execution log
-			this.scheduleExecutionLogRepository.update(domain);
-			
-			// find execution content by id
-			Optional<ScheduleCreateContent> optionalContent = this.contentRepository
-					.findByExecutionId(command.getExecutionId());
+		// update execution time to now
+		domain.setExecutionTimeToNow();
 
-			// check exist data content 
-			if (optionalContent.isPresent()) {
-				command.setContent(optionalContent.get());
-			}
+		// update domain execution log
+		this.scheduleExecutionLogRepository.update(domain);
 
-			// get all data creator
-			List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(command.getExecutionId());
+		// find execution content by id
+		ScheduleCreateContent scheCreContent = this.contentRepository.findByExecutionId(command.getExecutionId()).get();
+		command.setContent(scheCreContent);
 
-			// register personal schedule
-			this.registerPersonalSchedule(command, domain, scheduleCreators, context);
-		}
+		// register personal schedule
+		this.registerPersonalSchedule(command, domain, context);
 
 	}
 
@@ -208,9 +193,12 @@ public class ScheduleCreatorExecutionCommandHandler
 	 */
 	// 個人スケジュールを登録する
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog scheduleExecutionLog, List<ScheduleCreator> scheduleCreators,
+			ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
-		
+
+		// get all data creator
+		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(command.getExecutionId());
+
 		// get info by context
 		val asyncTask = context.asAsync();
 		
@@ -317,19 +305,15 @@ public class ScheduleCreatorExecutionCommandHandler
 	// 個人情報をもとにスケジュールを作成する
 	private void createScheduleBasedPerson(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
 			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
-		Optional<PersonalWorkScheduleCreSet> optionalPersonalWorkScheduleCreSet = this.creSetRepository
-				.findById(creator.getEmployeeId());
 
-		// check exist data PersonalWorkScheduleCreSet
-		if (optionalPersonalWorkScheduleCreSet.isPresent()) {
-			PersonalWorkScheduleCreSet personalWorkScheduleCreSet = optionalPersonalWorkScheduleCreSet.get();
+		PersonalWorkScheduleCreSet personalWorkScheduleCreSet = this.creSetRepository.findById(creator.getEmployeeId())
+				.get();
 
-			// check domain WorkScheduleBasicCreMethod is BUSINESS_DAY_CALENDAR
-			if (personalWorkScheduleCreSet.getBasicCreateMethod()
-					.equals(WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR)) {
-				// call create WorkSchedule
-				this.createWorkScheduleByBusinessDayCalenda(command, domain, personalWorkScheduleCreSet, context);
-			}
+		// check domain WorkScheduleBasicCreMethod is BUSINESS_DAY_CALENDAR
+		if (personalWorkScheduleCreSet.getBasicCreateMethod()
+				.equals(WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR)) {
+			// call create WorkSchedule
+			this.createWorkScheduleByBusinessDayCalenda(command, domain, personalWorkScheduleCreSet, context);
 		}
 	}
 	
@@ -359,12 +343,11 @@ public class ScheduleCreatorExecutionCommandHandler
 				asyncTask.finishedAsCancelled();
 				break;
 			}
-			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
-					.findById(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
+			PersonalLaborCondition personalLaborCondition = this.personalLaborConditionRepository
+					.findById(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate()).get();
 
 			// check is use manager
-			if (optionalPersonalLaborCondition.isPresent()
-					&& optionalPersonalLaborCondition.get().isUseScheduleManagement()) {
+			if (personalLaborCondition.isUseScheduleManagement()) {
 				if (this.createWorkScheduleByBusinessDayCalendaUseManager(command, domain,
 						personalWorkScheduleCreSet)) {
 					return;
@@ -402,10 +385,12 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			// check exist data basic schedule
 			if (optionalBasicSchedule.isPresent()) {
-
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
-				command.setIsDeleteBeforInsert(true);
-				this.createWorkScheduleByImplementAtr(command, basicSchedule, personalWorkScheduleCreSet);
+
+				// check parameter implementAtr recreate
+				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
+					this.createWorkScheduleByRecreate(command, basicSchedule, personalWorkScheduleCreSet);
+				}
 			} else {
 				// not exist data basic schedule
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
@@ -413,23 +398,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		}
 		return false;
 	}
-	
-	/**
-	 * Creates the work schedule by implement atr.
-	 *
-	 * @param command the command
-	 * @param basicSchedule the basic schedule
-	 * @param personalWorkScheduleCreSet the personal work schedule cre set
-	 */
-	private void createWorkScheduleByImplementAtr(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
-			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
-		// check parameter implementAtr recreate
-		if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
-			this.createWorkScheduleByRecreate(command, basicSchedule, personalWorkScheduleCreSet);
-		}
-	}
-	
 	/**
 	 * Creates the work schedule by recreate.
 	 *
