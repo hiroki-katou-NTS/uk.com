@@ -34,7 +34,7 @@ public class UpdatePerEmergencyContactCommandHandler extends CommandHandler<Upda
 		PersonEmergencyContact emergencyContact = PersonEmergencyContact.createFromJavaType(command.getEmgencyContactId(), command.getPid(), command.getPersonName(),
 				command.getPersonMailAddress(), command.getStreetAddressPerson(), command.getPhone(), command.getPriorityEmegencyContact(), command.getRelationShip());
 		
-		// Add person emergency contact
+		// Update person emergency contact
 		
 		perEmergencyContact.updatePersonEmergencyContact(emergencyContact);
 	}
