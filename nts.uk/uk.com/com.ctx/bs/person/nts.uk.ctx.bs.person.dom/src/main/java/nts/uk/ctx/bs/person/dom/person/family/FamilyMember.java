@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.person.dom.person.info.CountryId;
 @AllArgsConstructor
 @NoArgsConstructor
 // 家族
-public class Family extends AggregateRoot {
+public class FamilyMember extends AggregateRoot {
 	// 生年月日
 	private GeneralDate birthday;
 	// 死亡年月日
@@ -31,7 +31,7 @@ public class Family extends AggregateRoot {
 	// 除籍年月日
 	private GeneralDate expelledDate;
 	// 家族ID
-	private String familyId;
+	private String familyMemberId;
 	// 氏名
 	private FullName fullName;
 	// 氏名カナ
@@ -62,12 +62,12 @@ public class Family extends AggregateRoot {
 	// 勤労学生
 	private WorkStudentType workStudentType;
 
-	public static Family createFromJavaType(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate,
+	public static FamilyMember createFromJavaType(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate,
 			GeneralDate expelledDate, String familyId, String fullName, String fullNameKana, String nameMultiLangFull,
 			String nameMultiLangFullKana, String nameRomajiFull, String nameRomajiFullKana, String nationalityId,
 			String occupationName, String personId, String relationship, int supportCareType, String tokodekeName,
 			int togSepDivisionType, int workStudentType) {
-		return new Family(birthday, deadDay, entryDate, expelledDate, familyId, new FullName(fullName),
+		return new FamilyMember(birthday, deadDay, entryDate, expelledDate, familyId, new FullName(fullName),
 				new FullNameKana(fullNameKana), new NameMultiLangFull(nameMultiLangFull),
 				new NameMultiLangFullKana(nameMultiLangFullKana), new NameRomajiFull(nameRomajiFull),
 				new NameRomajiFullKana(nameRomajiFullKana), new CountryId(nationalityId),

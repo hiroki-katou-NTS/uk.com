@@ -37,7 +37,6 @@ import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import find.person.setting.selectionitem.selection.SelectionFinder;
 import find.person.setting.selectionitem.selection.SelectionItemOrderDto;
-import find.person.setting.selectionitem.selection.SelectionItemOrderFinder;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 
@@ -201,6 +200,13 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("reflunrcomp")
 	public void ReflUnrComp(ReflUnrCompCommand command) {
 		this.reflUnrComp.handle(command);
+	}
+
+	// Lanlt
+	@POST
+	@Path("findAllSelectionItem")
+	public List<PerInfoSelectionItemDto> getAllelectionItem() {
+		return this.finder.getAllSelectionItem();
 	}
 
 	// update selection order

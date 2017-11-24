@@ -14,13 +14,13 @@ import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
 /**
@@ -164,11 +164,11 @@ public class ItemDefinitionFactory {
 			switch (itemDef.getItemCode()) {
 			case "IS00001":
 				// 個人名グループ．個人名
-				data = person.getPersonNameGroup().getPersonName().getFullName().v();
+				data = person.getPersonNameGroup().getPersonName().v();
 				break;
 			case "IS00002":
 				// 個人名グループ．個人名カナ
-				data = person.getPersonNameGroup().getPersonName().getFullNameKana().v();
+				data = person.getPersonNameGroup().getPersonNameKana().v();
 				break;
 			case "IS00003":
 				// 個人名グループ．個人名ローマ字．氏名
@@ -226,7 +226,7 @@ public class ItemDefinitionFactory {
 		}
 	}
 
-	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Family family,
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, FamilyMember family,
 			ActionRole actionRole) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
 			Object data = null;
@@ -358,7 +358,7 @@ public class ItemDefinitionFactory {
 
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			TempAbsenceHistory leaveHoliday, ActionRole actionRole) {
+			TempAbsenceHisItem leaveHoliday, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
@@ -398,12 +398,12 @@ public class ItemDefinitionFactory {
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,
-			List<Family> families) {
+			List<FamilyMember> families) {
 		return null;
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamily(LayoutPersonInfoClsDto personInfoClsDto,
-			ActionRole actionRole, List<Family> families) {
+			ActionRole actionRole, List<FamilyMember> families) {
 		return null;
 	}
 

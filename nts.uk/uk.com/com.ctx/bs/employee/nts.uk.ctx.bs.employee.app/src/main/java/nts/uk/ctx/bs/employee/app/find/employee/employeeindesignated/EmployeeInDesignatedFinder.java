@@ -20,6 +20,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -131,7 +132,7 @@ public class EmployeeInDesignatedFinder {
 					.employeeCode((employee.getSCd() == null) ? null : employee.getSCd().v())
 					.employeeName((person == null || person.getPersonNameGroup() == null
 							|| (person.getPersonNameGroup().getPersonName() == null)) ? null
-									: person.getPersonNameGroup().getPersonName().getFullName().v())
+									: person.getPersonNameGroup().getPersonName().v())
 					.workplaceId(affWkpHist == null || (affWkpHist.getWorkplaceId() == null) ? null
 							: affWkpHist.getWorkplaceId().v())
 					.workplaceCode((wkpInfo == null) || (wkpInfo.getWorkplaceCode() == null) ? null
@@ -253,11 +254,11 @@ public class EmployeeInDesignatedFinder {
 					// BaseDate <= RetirementDate) is not empty
 
 				// Get TemporaryAbsence By employee ID and BaseDate
-				Optional<TempAbsenceHistory> temporaryAbsOpt = temporaryAbsenceRepo
+				Optional<TempAbsenceHisItem> temporaryAbsOpt = temporaryAbsenceRepo
 						.getBySidAndReferDate(employee.getSId(), referenceDate);
 				if (temporaryAbsOpt.isPresent()) {
 					// Domain TemporaryAbsence is Present
-					TempAbsenceHistory temporaryAbsenceDomain = temporaryAbsOpt.get();
+					TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsOpt.get();
 					// set LeaveHolidayType
 //					statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
 //

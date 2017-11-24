@@ -22,4 +22,18 @@ public class PeregQueryResult {
 	 * Object data by each domain
 	 */
 	private Object dto;
+	
+	@SuppressWarnings("unchecked")
+	public static PeregQueryResult toObject(Object obj){
+		PeregQueryResult self = new PeregQueryResult();
+		try {
+			self.empOptionalData = (List<EmpInfoItemData>)obj.getClass().getDeclaredField("empOptionalData").get(obj);
+			self.perOptionalData = (List<PersonInfoItemData>)obj.getClass().getDeclaredField("perOptionalData").get(obj);
+			self.dto = obj.getClass().getField("dto").get(obj);
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return self;
+	}
 }

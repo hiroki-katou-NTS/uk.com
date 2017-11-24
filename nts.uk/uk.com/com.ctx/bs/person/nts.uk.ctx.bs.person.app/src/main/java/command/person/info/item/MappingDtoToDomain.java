@@ -29,7 +29,7 @@ public class MappingDtoToDomain {
 	public static PersonInfoItemDefinition mappingFromDomaintoDtoForEndtDate(AddItemCommand addItemCommand) {
 		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createFromJavaType(addItemCommand.getPerInfoCtgId(),
 				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), ITEM_NAME_END_DATE,
-				IsAbolition.NOT_ABOLITION.value, IsFixed.FIXED.value, IsRequired.NONE_REQUIRED.value);
+				IsAbolition.NOT_ABOLITION.value, IsFixed.FIXED.value, IsRequired.REQUIRED.value);
 		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SINGLE_ITEM, DataTypeValue.DATE));
 		return itemDef;
 	}

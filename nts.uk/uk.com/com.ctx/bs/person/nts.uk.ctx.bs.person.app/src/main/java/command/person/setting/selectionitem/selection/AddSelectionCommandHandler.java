@@ -48,10 +48,11 @@ public class AddSelectionCommandHandler extends CommandHandler<AddSelectionComma
 
 		// Lay selectionID:
 		String histId = context.getCommand().getHistId();
-		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(histId);
+		List<SelectionItemOrder> selectionList = this.selectionOrderRpo.getAllOrderSelectionByHistId(histId);
 		if (!selectionList.isEmpty()) {
 			// Dem tat ca SelectionID trong List:
-			int count = selectionList.size();
+			int length = selectionList.size();
+			int count = selectionList.get(length - 1).getDisporder().v();
 
 			// AddOrderSelectionCommand commandO
 			SelectionItemOrder domainOrder = SelectionItemOrder.selectionItemOrder(newId, histId, count + 1, 0);

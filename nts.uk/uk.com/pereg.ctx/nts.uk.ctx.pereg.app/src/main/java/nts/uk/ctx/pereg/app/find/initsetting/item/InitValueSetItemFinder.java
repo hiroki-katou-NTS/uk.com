@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
 import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
@@ -124,7 +125,7 @@ public class InitValueSetItemFinder {
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
-		Optional<TempAbsenceHistory> opttemAbsence = this.tempAbsenceRepo.getBySidAndReferDate(employeeId, baseDate);
+		Optional<TempAbsenceHisItem> opttemAbsence = this.tempAbsenceRepo.getBySidAndReferDate(employeeId, baseDate);
 		if (opttemAbsence.isPresent()) {
 
 			returnList = mergeTemporaryAbsenceInfoAndItemDefListToListDto(opttemAbsence.get(), initItemList);
@@ -133,30 +134,30 @@ public class InitValueSetItemFinder {
 		return returnList;
 	}
 
-	private List<SettingItemDto> mergeTemporaryAbsenceInfoAndItemDefListToListDto(TempAbsenceHistory tempDomain,
+	private List<SettingItemDto> mergeTemporaryAbsenceInfoAndItemDefListToListDto(TempAbsenceHisItem tempDomain,
 			List<SettingItemDto> resultItemList) {
 		// code item not yet
 		for (SettingItemDto itemDto : resultItemList) {
 			String itemCode = itemDto.getItemCode();
-			/*switch (itemCode) {
+			switch (itemCode) {
 			case "IS00020":
-				itemDto.setData(tempDomain.getLeaveHolidayState().getTempAbsenceType().value);
+				itemDto.setData(tempDomain.getLeaveHolidayType().value);
 				break;
 			case "IS00021":
-				itemDto.setData(tempDomain.getDateHistoryItem().start());
+				//itemDto.setData(tempDomain.getDateHistoryItem().start());
 				break;
 			case "IS00022":
-				itemDto.setData(tempDomain.getDateHistoryItem().end());
+				//itemDto.setData(tempDomain.getDateHistoryItem().end());
 				break;
 			case "IS00023":
-				Leave leave = (Leave) tempDomain.getLeaveHolidayState();
-				itemDto.setData(leave.getReason());
+				//Leave leave = (Leave) tempDomain.getLeaveHolidayState();
+				//itemDto.setData(leave.getReason());
 				break;
 			case "IS00024":
-				MidweekClosure midweekClosure = (MidweekClosure) tempDomain.getLeaveHolidayState();
-				itemDto.setData(midweekClosure.getBirthDate());
+				//MidweekClosure midweekClosure = (MidweekClosure) tempDomain.getLeaveHolidayState();
+				//itemDto.setData(midweekClosure.getBirthDate());
 				break;
-			}*/
+			}
 			// TODO
 		}
 		return resultItemList;

@@ -447,10 +447,11 @@
 								<!-- End dataType is selected value 5 - 時刻(TimePoint) -->
 
 
-								<!-- Start dataType is selected value 6 - 選択(Selection) -->
-								<div id="data-type-value-selection"
-									data-bind="with: selectionItem, visible: dataType() == 6">
-									<div
+								<!-- Start dataType is selected value 6 - 選択(Selection) --> 
+								<com:ko-if bind="(dataType() === 6)">
+								<div id="data-type-value-selection">
+									<div data-bind="with: selectionItem">
+									<div  
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {required: true}"
 											class="margin-right-FormLabel">
@@ -459,20 +460,24 @@
 										<div tabindex="21" id="combo-box"
 											data-bind="ntsComboBox: {
 											name: '#[CPS005_26]',
-											options: $parents[1].referenceTypeEnum,
-											optionsValue: 'value',
+											options: selectionItemLst,
+											optionsValue: 'selectionItemId',
 											visibleItemsCount: 10,
-											value: selectionItemRefType,
-											optionsText: 'localizedName',
+											value: selectionItemId,
+											optionsText: 'selectionItemName',
 											editable: false,
 											enable: true,
 											columns: [
-												{ prop: 'localizedName', length: 10 },
+												{ prop: 'selectionItemName', length: 10 },
 											]}">
 										</div>
 										<button tabindex="22" data-bind="" style="padding: 0px 20px;">#{i18n.getText('CPS005_49')}</button>
 									</div>
+									<div id="grid">
+									</div>
+									</div>
 								</div>
+								</com:ko-if>
 								<!-- End dataType is selected value 6 - 選択(Selection) -->
 							</div>
 
@@ -631,6 +636,7 @@
 
 
 								<!-- Start dataType is selected value 6 - 選択(Selection) -->
+								
 								<div id="data-type-value-selection"
 									data-bind="with: selectionItem, visible: dataType() == 6">
 									<div

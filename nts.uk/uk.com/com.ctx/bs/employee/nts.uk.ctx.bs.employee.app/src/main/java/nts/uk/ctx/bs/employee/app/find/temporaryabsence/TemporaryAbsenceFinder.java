@@ -1,12 +1,11 @@
 package nts.uk.ctx.bs.employee.app.find.temporaryabsence;
 
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 
 /**
@@ -20,7 +19,7 @@ public class TemporaryAbsenceFinder {
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
 
 	public float getNumOfTempAbsenceDays(String employeeId) {
-		List<TempAbsenceHistory> lstTemporaryAbsence = temporaryAbsenceRepository.getListBySid(employeeId);
+		List<TempAbsenceHisItem> lstTemporaryAbsence = temporaryAbsenceRepository.getListBySid(employeeId);
 		if (lstTemporaryAbsence.size() == 0)
 			return 0;
 		/*return lstTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS.between(m.getDateHistoryItem().start().localDate(),
@@ -29,7 +28,7 @@ public class TemporaryAbsenceFinder {
 		// TODO
 	}
 
-	public List<TempAbsenceHistory> getListBySid(String employeeId) {
+	public List<TempAbsenceHisItem> getListBySid(String employeeId) {
 		return temporaryAbsenceRepository.getListBySid(employeeId);
 	}
 }
