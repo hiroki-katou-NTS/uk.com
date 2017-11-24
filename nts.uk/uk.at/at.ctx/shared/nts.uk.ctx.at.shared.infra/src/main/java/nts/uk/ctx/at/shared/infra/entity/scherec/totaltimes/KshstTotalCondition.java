@@ -6,12 +6,10 @@ package nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -53,7 +51,7 @@ public class KshstTotalCondition extends UkJpaEntity implements Serializable {
 	/** The attendance item id. */
 	@Column(name = "ATD_ITEM_ID")
 	private int attendanceItemId;
-
+	
 	/**
 	 * Instantiates a new kshst total condition.
 	 */
