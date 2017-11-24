@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import service = nts.uk.at.view.kaf005.shr.service;
     import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
+        
         static DATEFORMART: string = "YYYY/MM/DD";
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
@@ -18,7 +19,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         workState: KnockoutObservable<boolean> = ko.observable(true);;
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
+        appDate: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM/DD"));
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(null);
         timeEnd1: KnockoutObservable<number> = ko.observable(null);
@@ -48,7 +49,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
-        heightOvertimeHours: KnockoutObservable<number> = ko.observable();
+        heightOvertimeHours: KnockoutObservable<number> = ko.observable(null);
         //休憩時間
         restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //残業時間
@@ -85,7 +86,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
 
         // preAppOvertime
-        appDatePre: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
+        appDatePre: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM/DD"));
         workTypeCodePre:  KnockoutObservable<string> = ko.observable("");
         workTypeNamePre:  KnockoutObservable<string> = ko.observable("");
         siftCodePre:  KnockoutObservable<string> = ko.observable("");
@@ -225,8 +226,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
             // 休憩時間
-            for (let i = 0; i < 11; i++) {
-                self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i,null, 0, 0, null,""));
+            for (let i = 1; i < 11; i++) {
+                self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i, null, null, null,""));
             }
             // 残業時間
             if (data.overTimeInputs != null) {
@@ -556,7 +557,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.workClockFrom1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre));
                 self.workClockTo1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
                 self.workClockFrom2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre));
-                self.workClockTo2Pre(self.convertIntToTime((data.preAppOvertimeDto.workClockTo2Pre));
+                self.workClockTo2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
                 self.overtimeHoursPre.removeAll();
                 if(data.preAppOvertimeDto.overTimeInputsPre != null){
                     for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
