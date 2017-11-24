@@ -14,7 +14,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AffJobHistoryItem {
+public class AffJobTitleHistoryItem {
 
 	
 	/** The history Id. */
@@ -31,5 +31,5 @@ public class AffJobHistoryItem {
 	
 	/** The AffJobHistoryItemNote. */
 	// 備考
-	private AffJobHistoryItemNote note;
+	private AffJobTitleHistoryItemNote note;
 }

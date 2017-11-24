@@ -20,7 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AffJobHistory extends AggregateRoot
+public class AffJobTitleHistory extends AggregateRoot
 implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	
 	
