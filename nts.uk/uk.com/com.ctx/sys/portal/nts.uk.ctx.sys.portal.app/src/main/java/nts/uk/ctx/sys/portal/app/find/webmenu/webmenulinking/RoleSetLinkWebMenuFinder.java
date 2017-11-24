@@ -27,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
-public class RoleSetAndWebMenuFinder {
+public class RoleSetLinkWebMenuFinder {
 
 	@Inject
 	private RoleSetLinkWebMenuRepository roleSetAndWebMenuRepository;
@@ -37,14 +37,14 @@ public class RoleSetAndWebMenuFinder {
 	 * @param webMenuCode
 	 * @return
 	 */
-	public RoleSetAndWebMenuDto find(String webMenuCd, String roleSetCd) {
+	public RoleSetLinkWebMenuDto find(String webMenuCd, String roleSetCd) {
 		String companyId = AppContexts.user().companyId();
 		Optional<RoleSetLinkWebMenu> webMenuOpt = roleSetAndWebMenuRepository.findByKey(companyId, webMenuCd, roleSetCd);
 		if (!webMenuOpt.isPresent()) {
 			return null;
 		}
 		
-		return RoleSetAndWebMenuDto.build(webMenuOpt.get());
+		return RoleSetLinkWebMenuDto.build(webMenuOpt.get());
 	}
 	
 	/**
@@ -52,11 +52,11 @@ public class RoleSetAndWebMenuFinder {
 	 * @param roleSetCd
 	 * @return
 	 */
-	public List<RoleSetAndWebMenuDto> findAllByRoleSet(String roleSetCd) {
+	public List<RoleSetLinkWebMenuDto> findAllByRoleSet(String roleSetCd) {
 
 		String companyId = AppContexts.user().companyId();
 		return roleSetAndWebMenuRepository.findByRoleSetCd(companyId, roleSetCd).stream().map(item -> {
-			return RoleSetAndWebMenuDto.build(item);
+			return RoleSetLinkWebMenuDto.build(item);
 		}).collect(Collectors.toList());
 	}
 
@@ -64,11 +64,11 @@ public class RoleSetAndWebMenuFinder {
 	 * Find all RoleSetAndWebMenu by company id
 	 * @return
 	 */
-	public List<RoleSetAndWebMenuDto> findAll() {
+	public List<RoleSetLinkWebMenuDto> findAll() {
 
 		String companyId = AppContexts.user().companyId();
 		return roleSetAndWebMenuRepository.findByCompanyId(companyId).stream().map(item -> {
-			return RoleSetAndWebMenuDto.build(item);
+			return RoleSetLinkWebMenuDto.build(item);
 		}).collect(Collectors.toList());
 	}
 
