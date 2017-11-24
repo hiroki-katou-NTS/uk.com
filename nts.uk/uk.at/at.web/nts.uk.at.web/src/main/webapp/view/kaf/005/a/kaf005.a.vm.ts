@@ -164,7 +164,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });
                      return dfd.promise();
                 });
-                
+                                
                 dfd.resolve(data);
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError(res.messageId);
@@ -260,6 +260,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         //登録処理
         registerClick() {
+            $("#inpStartTime1").trigger("validate");
+            $("#inpEndTime1").trigger("validate");
+            
+            if (nts.uk.ui.errors.hasError()){return;}    
+            
             nts.uk.ui.block.invisible();
             let self = this,
                 appReason: string,
