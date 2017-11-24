@@ -113,10 +113,11 @@ public class PerInfoItemDefFinder {
 	}
 
 	public PerInfoItemDefDto getPerInfoItemDefById(String perInfoItemDefId) {
-		return this.pernfoItemDefRep
+		PerInfoItemDefDto itemDto = this.pernfoItemDefRep
 				.getPerInfoItemDefById(perInfoItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(item -> {
 					return mappingFromDomaintoDto(item, 0);
 				}).orElse(null);
+		return itemDto;
 	};
 
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListId(List<String> listItemDefId) {
