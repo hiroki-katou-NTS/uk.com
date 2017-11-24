@@ -54,7 +54,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "
 			+ " AND ITEM.perInfoCtgId = E.perInfoCtgId"
 
-			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId";
+			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
+			+ " ORDER BY E.disporder";
 
 	
 	private final String IS_EXITED_ITEM_LST_1 = "SELECT ITEM "
