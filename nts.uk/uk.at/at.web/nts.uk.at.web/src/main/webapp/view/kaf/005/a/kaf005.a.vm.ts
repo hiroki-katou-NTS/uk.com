@@ -452,7 +452,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: self.workTypecodes(),
                 selectedWorkTypeCode: self.workTypeCd(),
-                workTimeCodes: self.workTimeCodes(),
+                workTimeCodes: self.workTimecodes(),
                 selectedWorkTimeCode: self.siftCD()
             }, true);
 
@@ -579,8 +579,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }else if (data == 0) {
             hourMinute = "00:00";
         }else if(data != null){
-            let hour = data/60;
-            let minutes = data%60;
+            let hour = Math.floor(data/60);
+            let minutes = Math.floor(data%60);
             hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
         }
            return hourMinute;
