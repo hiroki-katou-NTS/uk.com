@@ -157,14 +157,14 @@ public class EmployeeFinder {
 	public Optional<EmployeeDto> getInfoById(String employeeId) {
 		Optional<Employee> emp = employeeRepository.getBySid(employeeId);
 
-		if (emp.isPresent()) {
+		/*if (emp.isPresent()) {
 			return emp.map(m -> {
 				// set list temporary absence to employee domain
 				m.setListTemporaryAbsence(tAbsFinder.getListBySid(employeeId));
 
 				return EmployeeDto.fromDomain(m);
 			});
-		}
+		}*/
 
 		return Optional.empty();
 	}

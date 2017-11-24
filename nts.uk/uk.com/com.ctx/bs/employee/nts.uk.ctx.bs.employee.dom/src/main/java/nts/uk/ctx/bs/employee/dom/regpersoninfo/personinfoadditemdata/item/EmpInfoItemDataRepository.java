@@ -18,5 +18,5 @@ public interface EmpInfoItemDataRepository {
 	
 	void updateEmpInfoItemData(EmpInfoItemData domain);
 	
-	void deleteEmployInfoItemData(EmpInfoItemData domain);
+	void deleteEmployInfoItemData(String recordID);
 }

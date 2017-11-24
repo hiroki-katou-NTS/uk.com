@@ -10,6 +10,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
+import nts.uk.shr.pereg.app.find.dto.DataStateType;
+import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @NoArgsConstructor
 @Getter
@@ -29,9 +31,8 @@ public class PersonInfoItemData extends AggregateRoot {
 	private String recordId;
 
 	private DataState dataState;
-	
+
 	private IsRequired isRequired;
-	
 
 	public PersonInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
 			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState) {
@@ -52,13 +53,13 @@ public class PersonInfoItemData extends AggregateRoot {
 		this.recordId = recordId;
 		this.dataState = dataState;
 	}
-	
+
 	public static PersonInfoItemData createFromJavaType(String itemCode, String perInfoDefId, String recordId,
 			String perInfoCtgId, String perInfoCtgCd, String itemName, int isRequired, int dataStateType,
 			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
 
-		return new PersonInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd, itemName,
-				EnumAdaptor.valueOf(isRequired, IsRequired.class), createDataState(
+		return new PersonInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd,
+				itemName, EnumAdaptor.valueOf(isRequired, IsRequired.class), createDataState(
 						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
 
 	}
@@ -91,5 +92,29 @@ public class PersonInfoItemData extends AggregateRoot {
 
 		}
 		return resultState;
+	}
+
+	public PersonOptionalDto genToPeregDto() {
+		PersonOptionalDto dto = new PersonOptionalDto();
+		dto.setItemCode(this.itemCode.v());
+		dto.setPerInfoCtgId(this.perInfoCtgCd);
+		dto.setPerInfoCtgCd(perInfoCtgCd);
+		dto.setItemName(itemName);
+		dto.setPerInfoItemDefId(perInfoItemDefId);
+		dto.setRecordId(recordId);
+		dto.setDataType(this.dataState.getDataStateType().value);
+		switch (dataState.getDataStateType()) {
+		case String:
+			dto.setValue(dataState.getStringValue());
+			break;
+		case Numeric:
+			dto.setValue(dataState.getNumberValue());
+			break;
+		case Date:
+			dto.setValue(dataState.getDateValue());
+			break;
+		}
+		dto.setRequired(isRequired == IsRequired.REQUIRED);
+		return dto;
 	}
 }

@@ -1,17 +1,17 @@
-package nts.uk.ctx.bs.employee.dom.jobtitle.jobtitlehistory;
+package nts.uk.ctx.bs.employee.dom.jobtile.affiliate;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(100)
-public class AffJobHistoryItemNote extends StringPrimitiveValue<AffJobHistoryItemNote>{
+public class AffJobTitleHistoryItemNote extends StringPrimitiveValue<AffJobTitleHistoryItemNote>{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public AffJobHistoryItemNote(String rawValue) {
+	public AffJobTitleHistoryItemNote(String rawValue) {
 		super(rawValue);
 	}
 

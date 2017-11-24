@@ -12,6 +12,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/** 所属会社履歴 */
 public class AffCompanyHist extends AggregateRoot {
 	/** 個人ID */
 	private String pId;

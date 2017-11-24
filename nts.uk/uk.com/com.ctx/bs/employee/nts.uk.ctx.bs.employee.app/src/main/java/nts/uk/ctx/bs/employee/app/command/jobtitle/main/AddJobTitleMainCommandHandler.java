@@ -12,8 +12,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 @Stateless
-public class AddJobTitleCommandHandler extends CommandHandlerWithResult<AddJobTitleHistCommand, PeregAddCommandResult>
-	implements PeregAddCommandHandler<AddJobTitleHistCommand>{
+public class AddJobTitleMainCommandHandler extends CommandHandlerWithResult<AddJobTitleMainCommand, PeregAddCommandResult>
+	implements PeregAddCommandHandler<AddJobTitleMainCommand>{
 
 	@Inject
 	private JobTitleMainRepository jobTitleMainRepository;
@@ -25,11 +25,11 @@ public class AddJobTitleCommandHandler extends CommandHandlerWithResult<AddJobTi
 
 	@Override
 	public Class<?> commandClass() {
-		return AddJobTitleHistCommand.class;
+		return AddJobTitleMainCommand.class;
 	}
 
 	@Override
-	protected PeregAddCommandResult handle(CommandHandlerContext<AddJobTitleHistCommand> context) {
+	protected PeregAddCommandResult handle(CommandHandlerContext<AddJobTitleMainCommand> context) {
 		val command = context.getCommand();
 		
 		String jobTitleId = IdentifierUtil.randomUniqueId();

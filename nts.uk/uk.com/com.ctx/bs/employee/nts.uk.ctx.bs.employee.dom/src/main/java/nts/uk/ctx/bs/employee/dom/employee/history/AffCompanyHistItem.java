@@ -11,6 +11,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/** 所属会社履歴項目 */
 public class AffCompanyHistItem extends DomainObject{
 	/** 履歴ID */
 	private String historyId;

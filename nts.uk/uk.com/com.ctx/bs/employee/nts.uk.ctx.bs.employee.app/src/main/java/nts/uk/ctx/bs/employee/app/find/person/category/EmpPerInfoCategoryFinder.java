@@ -167,11 +167,12 @@ public class EmpPerInfoCategoryFinder {
 	 * @return list PerCtgInfo: cha va danh sach con
 	 */
 	public List<PersonInfoCategory> getCtgTab(String ctgId) {
+		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(ctgId, contractCode).get();
 		List<PersonInfoCategory> lstPerInfoCtg = new ArrayList<>();
 		lstPerInfoCtg = perInfoCtgRepositoty.getPerInfoCtgByParentCdWithOrder(perInfoCtg.getCategoryParentCode().v(),
-				contractCode, true);
+				contractCode, companyId, true);
 		lstPerInfoCtg.add(perInfoCtg);
 		return lstPerInfoCtg;
 	}

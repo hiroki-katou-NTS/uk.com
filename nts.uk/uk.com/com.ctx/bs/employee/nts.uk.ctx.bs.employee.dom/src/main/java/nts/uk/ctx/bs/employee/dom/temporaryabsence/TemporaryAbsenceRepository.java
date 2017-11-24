@@ -27,6 +27,6 @@ public interface TemporaryAbsenceRepository {
 	 * ドメインモデル「休職休業」を削除する
 	 * @param domain
 	 */
-	void deleteTemporaryAbsence(TempAbsenceHisItem domain);
+	void deleteTemporaryAbsence(String histId);
 	
 }

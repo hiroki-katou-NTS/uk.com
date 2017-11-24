@@ -12,6 +12,7 @@ import nts.arc.layer.dom.DomainObject;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/** 所属会社履歴（社員別） */
 public class AffCompanyHistByEmployee extends DomainObject{
 	/** 社員ID */
 	private String sId;

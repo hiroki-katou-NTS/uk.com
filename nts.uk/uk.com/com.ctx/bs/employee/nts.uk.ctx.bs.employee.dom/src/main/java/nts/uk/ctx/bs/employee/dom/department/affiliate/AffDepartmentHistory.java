@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.jobtitle.jobtitlehistory;
+package nts.uk.ctx.bs.employee.dom.department.affiliate;
 
 import java.util.List;
 
@@ -12,18 +12,19 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+
 /**
- * The Class AffJobHistory.
+ * The Class AffDepartmentHistory.
+ * Sau xe xoa class AffiliationDepartment
  */
-// 所属職位履歴
+// 所属部門履歴
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class AffJobHistory extends AggregateRoot
+public class AffDepartmentHistory extends AggregateRoot
 implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
-	
-	
+
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
@@ -36,5 +37,4 @@ implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	public List<DateHistoryItem> items() {
 		return historyItems;
 	}
-
 }

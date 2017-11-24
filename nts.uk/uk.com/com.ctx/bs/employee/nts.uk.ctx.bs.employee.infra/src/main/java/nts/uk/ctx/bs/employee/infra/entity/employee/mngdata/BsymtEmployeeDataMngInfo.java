@@ -12,25 +12,24 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-/*
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYMT_AFF_COM_INFO")
-public class BsymtAffCompanyInfo extends UkJpaEntity implements Serializable {
+@Table(name = "BSYMT_EMP_DTA_MNG_INFO")
+public class BsymtEmployeeDataMngInfo extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private BsymtAffCompanyInfoPk bsymtAffCompanyInfoPk;
+	private BsymtEmployeeDataMngInfoPk bsymtEmployeeDataMngInfoPk;
 
 	@Column(name = "CID")
 	public String companyId;
 
-	@Column(name = "EMP_CODE")
+	@Column(name = "SCD")
 	public String employeeCode;
 
-	@Column(name = "DEL_STATUS")
+	@Column(name = "DEL_STATUS_ATR")
 	public int delStatus;
 
 	@Column(name = "DEL_DATE")
@@ -39,12 +38,11 @@ public class BsymtAffCompanyInfo extends UkJpaEntity implements Serializable {
 	@Column(name = "REMV_REASON")
 	public String removeReason;
 
-	@Column(name = "EXT_CODE")
+	@Column(name = "EXT_CD")
 	public String extCode;
 
 	@Override
 	protected Object getKey() {
-		return bsymtAffCompanyInfoPk;
+		return bsymtEmployeeDataMngInfoPk;
 	}
 }
-*/

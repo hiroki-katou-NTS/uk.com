@@ -12,6 +12,7 @@ import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataState;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataStateType;
+import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
 
 @NoArgsConstructor
 @Getter
@@ -45,14 +46,14 @@ public class EmpInfoItemData extends AggregateRoot {
 		this.itemName = itemName;
 		this.dataState = dataState;
 	}
-	
+
 	public EmpInfoItemData(String perInfoDefId, String recordId, DataState dataState) {
 		super();
 		this.perInfoDefId = perInfoDefId;
 		this.recordId = recordId;
 		this.dataState = dataState;
 	}
-	
+
 	public static EmpInfoItemData createFromJavaType(String itemCode, String perInfoDefId, String recordId,
 			String perInfoCtgId, String perInfoCtgCd, String itemName, int isRequired, int dataStateType,
 			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
@@ -91,6 +92,30 @@ public class EmpInfoItemData extends AggregateRoot {
 
 		}
 		return resultState;
+	}
+
+	public EmpOptionalDto genToPeregDto() {
+		EmpOptionalDto dto = new EmpOptionalDto();
+		dto.setItemCode(this.itemCode.v());
+		dto.setPerInfoDefId(perInfoDefId);
+		dto.setRecordId(recordId);
+		dto.setPerInfoCtgId(perInfoCtgId);
+		dto.setPerInfoCtgCd(perInfoCtgCd);
+		dto.setItemName(itemName);
+		dto.setDataType(this.dataState.getDataStateType().value);
+		switch (dataState.getDataStateType()) {
+		case String:
+			dto.setValue(dataState.getStringValue());
+			break;
+		case Numeric:
+			dto.setValue(dataState.getNumberValue());
+			break;
+		case Date:
+			dto.setValue(dataState.getDateValue());
+			break;
+		}
+		dto.setRequired(isRequired == IsRequired.REQUIRED);
+		return dto;
 	}
 
 }

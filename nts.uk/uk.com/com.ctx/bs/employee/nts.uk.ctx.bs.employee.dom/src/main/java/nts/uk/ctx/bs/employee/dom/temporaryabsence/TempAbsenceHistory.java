@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.dom.temporaryabsence;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 public class TempAbsenceHistory extends AggregateRoot
 		implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate> {

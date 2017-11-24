@@ -7,7 +7,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
-public class JobTitleHistCommand {
+public class JobTitleMainCommand {
 
 	@PeregEmployeeId
 	private String sid;

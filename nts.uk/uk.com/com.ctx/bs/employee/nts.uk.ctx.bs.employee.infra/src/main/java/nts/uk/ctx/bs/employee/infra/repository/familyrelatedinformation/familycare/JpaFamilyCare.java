@@ -57,8 +57,8 @@ public class JpaFamilyCare extends JpaRepository implements FamilyCareRepository
 	 * @param domain
 	 */
 	@Override
-	public void deleteFamilyCare(FamilyCare domain){
-		BsymtFamilyCarePK key = new BsymtFamilyCarePK(domain.getFamilyCareId());
+	public void deleteFamilyCare(String familyCareId){
+		BsymtFamilyCarePK key = new BsymtFamilyCarePK(familyCareId);
 		this.commandProxy().remove(BsymtFamilyCare.class,key);
 	}
 }

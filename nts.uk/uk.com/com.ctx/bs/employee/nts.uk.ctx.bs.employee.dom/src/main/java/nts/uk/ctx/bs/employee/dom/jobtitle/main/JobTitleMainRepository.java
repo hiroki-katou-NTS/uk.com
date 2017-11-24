@@ -27,4 +27,10 @@ public interface JobTitleMainRepository {
 	 */
 	void updateJobTitleMain(JobTitleMain domain);
 	
+	/**
+	 * ドメインモデル「職務職位」を削除する
+	 * @param jobTitleMainId
+	 */
+	void deleteJobTitleMain(String jobTitleMainId);
+	
 }
