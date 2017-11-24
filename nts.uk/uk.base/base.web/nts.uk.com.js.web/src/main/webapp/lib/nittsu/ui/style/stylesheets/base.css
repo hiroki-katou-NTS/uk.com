@@ -3616,6 +3616,16 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
 }
 
+.nts-editor-container {
+	height: 100%;
+	margin-left: -1px;
+}
+
+.nts-editor-wrapper {
+	width: 100%;
+	margin: 1px;
+}
+
 /* line 231, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
