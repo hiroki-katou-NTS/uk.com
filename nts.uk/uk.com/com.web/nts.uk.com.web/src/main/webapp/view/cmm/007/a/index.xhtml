@@ -15,6 +15,24 @@
 
 			<com:scriptfile set="IGNITE" />
 			
+			<script>
+				__viewContext.primitiveValueConstraints.PlanYearHolidayFrameName = {
+						valueType: 'String',
+						maxLength: 12,
+				};
+
+				__viewContext.primitiveValueConstraints.PlanYearHolidayFrameNo = {
+					valueType: 'Decimal',
+					max: 5,
+					min: 1,
+					mantissaMaxLength: 1,
+				};
+			</script>
+			
+			<com:stylefile path="../d/cmm007.d.main.css" />
+			<com:scriptfile path="../d/cmm007.d.service.js" />
+			<com:scriptfile path="../d/cmm007.d.vm.js" />
+			
 			<com:stylefile path="../c/cmm007.c.main.css" />
 			<com:scriptfile path="../c/cmm007.c.service.js" />
 			<com:scriptfile path="../c/cmm007.c.vm.js" />
@@ -49,8 +67,8 @@
 			<div id="tabpanel-2" role="tabpanel" data-bind="with: temporaryAbsenceFr">
 				<ui:include src="../c/index.xhtml" />
 			</div>
-			<div id="tabpanel-3" role="tabpanel">
-				
+			<div id="tabpanel-3" role="tabpanel" data-bind="with: planYearHolidayFr">
+				<ui:include src="../d/index.xhtml" />
 			</div>
 			<div id="tabpanel-4" role="tabpanel">
 				
