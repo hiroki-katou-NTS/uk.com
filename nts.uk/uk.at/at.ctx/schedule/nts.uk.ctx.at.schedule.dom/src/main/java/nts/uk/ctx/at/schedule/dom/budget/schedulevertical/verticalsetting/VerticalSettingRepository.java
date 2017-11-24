@@ -3,6 +3,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * TanLV
+ *
+ */
 public interface VerticalSettingRepository {
 	/**
 	 * Find all Vertical Calculator Setting

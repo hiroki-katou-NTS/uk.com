@@ -6,6 +6,10 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * TanLV
+ *
+ */
 @Getter
 public class VerticalCalSet extends AggregateRoot {
 	/* 会社ID */

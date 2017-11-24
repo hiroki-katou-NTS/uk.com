@@ -7,6 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
+
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

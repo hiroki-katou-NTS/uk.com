@@ -14,6 +14,10 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Formul
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaUnitprice;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 
+/**
+ * TanLV
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

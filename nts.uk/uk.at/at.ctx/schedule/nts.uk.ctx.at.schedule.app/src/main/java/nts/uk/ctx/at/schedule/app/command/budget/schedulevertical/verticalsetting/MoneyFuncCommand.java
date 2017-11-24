@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.MoneyFunc;
+
+/**
+ * TanLV
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MoneyFuncCommand {
-
-
 	/** コード */
 	private String verticalCalCd;
 

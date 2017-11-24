@@ -8,6 +8,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
+/**
+ * TanLV
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class VerticalCalItem extends DomainObject {
