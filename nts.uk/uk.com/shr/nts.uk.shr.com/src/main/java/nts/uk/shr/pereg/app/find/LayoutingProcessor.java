@@ -17,18 +17,18 @@ public class LayoutingProcessor {
 	@Inject
 	private PeregFinderProcessorCollector peregFinderCollector;
 	
-	private Map<String, PeregCtgSingleFinder<?, ?>> peregCtgSingleProcess;
+	private Map<String, PeregCtgSingleFinder<?, ?>> singleFinders;
 	
-	private Map<String, PeregCtgListFinder<?, ?>> peregCtgListProcess;
+	private Map<String, PeregCtgListFinder<?, ?>> listFinders;
 	
 	/**
 	 * Initializes.
 	 */
 	public void init(@Observes @Initialized(ApplicationScoped.class) Object event) {
-		this.peregCtgSingleProcess = this.peregFinderCollector.peregCtgSingleFinderCollect().stream()
+		this.singleFinders = this.peregFinderCollector.peregCtgSingleFinderCollect().stream()
 				.collect(Collectors.toMap(h -> h.targetCategoryCode(), h -> h));
 		
-		this.peregCtgListProcess = this.peregFinderCollector.peregCtgListFinderCollect().stream()
+		this.listFinders = this.peregFinderCollector.peregCtgListFinderCollect().stream()
 				.collect(Collectors.toMap(h -> h.targetCategoryCode(), h -> h));
 	}
 	
@@ -38,10 +38,10 @@ public class LayoutingProcessor {
 	 * @param query
 	 * @return
 	 */
-	public LayoutingResult ctgSingleHandler(PeregQuery query){
-		val finderClass = this.peregCtgSingleProcess.get(query.getCtgCd());
- 		val queryResult = finderClass.handleCtgSingProcessor(query);
-		return new LayoutingResult(finderClass.finderClass(), queryResult);
+	public PeregResult findSingle(PeregQuery query){
+		val finderClass = this.singleFinders.get(query.getCtgCd());
+ 		val dto = finderClass.find(query);
+		return new PeregResult(finderClass.dtoClass(), dto);
 	}
 	
 	/**
@@ -50,10 +50,10 @@ public class LayoutingProcessor {
 	 * @param query
 	 * @return
 	 */
-	public LayoutingResult ctgListHandler(PeregQuery query){
-		val finderClass = this.peregCtgListProcess.get(query.getCtgCd());
- 		val queryResult = finderClass.handleCtgListProcessor(query);
-		return new LayoutingResult(finderClass.finderClass(), queryResult);
+	public PeregResult findList(PeregQuery query){
+		val finderClass = this.listFinders.get(query.getCtgCd());
+ 		val dto = finderClass.find(query);
+		return new PeregResult(finderClass.dtoClass(), dto);
 	}
 	
 }

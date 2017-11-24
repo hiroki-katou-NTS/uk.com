@@ -35,7 +35,7 @@ public class PersonCtgSingleFinder implements PeregCtgSingleFinder<PersonLayoutD
 	}
 
 	@Override
-	public Class<?> finderClass() {
+	public Class<?> dtoClass() {
 		return PersonPeregDto.class;
 	}
 

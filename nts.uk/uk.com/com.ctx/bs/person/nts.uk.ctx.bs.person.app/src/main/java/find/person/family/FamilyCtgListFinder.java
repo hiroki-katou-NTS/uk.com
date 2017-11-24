@@ -14,7 +14,7 @@ public class FamilyCtgListFinder implements PeregCtgListFinder<List<FamilyMember
 	}
 
 	@Override
-	public Class<?> finderClass() {
+	public Class<?> dtoClass() {
 		// TODO Auto-generated method stub
 		return null;
 	}

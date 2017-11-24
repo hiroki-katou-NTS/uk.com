@@ -11,15 +11,15 @@ public class EmployeeProcessor implements PeregFinder<Object, PeregQuery>{
 	}
 
 	@Override
-	public Class<?> finderClass() {
+	public Class<?> dtoClass() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public Object getData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 }

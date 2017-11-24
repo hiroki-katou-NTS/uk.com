@@ -9,7 +9,18 @@ import lombok.Value;
  */
 
 @Value
-public class LayoutingResult {
-	private Class<?> dtoFinderClass;
-	private Object queryResult;
+public class PeregResult {
+	
+	/**
+	 * class of DTO
+	 */
+	private Class<?> dtoClass;
+	
+	
+	/**
+	 * DTO
+	 * fix and optional data
+	 */
+	private Object dto;
+	
 }
