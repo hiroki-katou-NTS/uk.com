@@ -22,7 +22,6 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 
 	/** ctg single finder */
 	private static final List<TypeLiteral<?>> FINDER_CTG_SINGLE_HANDLER_CLASSES = Arrays.asList(
-			new TypeLiteral<PeregCtgSingleFinder<PersonLayoutDto, PeregQuery>>(){}
 			);
 	
 	/** ctg list finder */
