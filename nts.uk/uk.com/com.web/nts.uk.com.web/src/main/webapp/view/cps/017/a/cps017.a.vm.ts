@@ -28,7 +28,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //Check insert/upadte
         checkCreate: KnockoutObservable<boolean>;
         checkCreateaaa: KnockoutObservable<boolean>;
-        closeUp: KnockoutObservable<boolean>;
+        closeUp: KnockoutObservable<boolean> = ko.observable(false);
         isDialog:  KnockoutObservable<boolean> = ko.observable(false);
         //hoatt
         selHistId: KnockoutObservable<string> = ko.observable('');
@@ -42,13 +42,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             //xu ly dialog: 
             let param = getShared('CPS016A_PARAMS');
-            if(param){
+            
+            if(param != null && param != undefined){
                 self.isDialog(param.isDialog);
+                self.closeUp(true);
+                self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
             }
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
-            self.closeUp = ko.observable(false);
+//            self.closeUp = ko.observable(false);
 
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
@@ -408,6 +411,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 perInfoSelectionItem.selectionItemId.valueHasMutated();
                 block.clear();
             });
+        }
+        close(){
+            nts.uk.ui.windows.close();
         }
     }
 
