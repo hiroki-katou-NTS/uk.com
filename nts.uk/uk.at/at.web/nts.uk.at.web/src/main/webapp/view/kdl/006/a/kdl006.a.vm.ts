@@ -62,6 +62,18 @@ module nts.uk.at.view.kdl006.a {
                         _self.loadWorkFixed()
                             .then(() => {                       
                                 _self.buildTable();  
+                                
+                                // Enable resize
+                                var currentScreen = nts.uk.ui.windows.getSelf();
+                                $("#grid-list").resizable({
+                                    minHeight: 380,
+                                    handles: "s",
+                                    alsoResize: "#grid-data-body",
+                                    resize: function(event, ui) {
+                                        currentScreen.setHeight(ui.size.height + 140);
+                                    }
+                                });
+                                
                                 nts.uk.ui.block.clear();       
                                 dfd.resolve();   
                             });    
@@ -199,6 +211,12 @@ module nts.uk.at.view.kdl006.a {
                     workplaceIndex++;
                 }
                 
+                // Add empty row if row < 10
+                while (workplaceIndex < 10) {
+                    _self.addEmptyRow();
+                    workplaceIndex++;
+                }
+                
                 $('#grid-data-body').html(_self.tableBody);
                 _self.tableBody = "";
 
@@ -212,7 +230,7 @@ module nts.uk.at.view.kdl006.a {
             private addRow(index: number, item: WorkplaceInfo): void {
                 let _self = this;
                 let currentIndex = index * _self.listClosure.length;
-                if (!item) {
+                if (!item.workplaceCode || !item.workplaceName) {
                     return;    
                 }
                 if (!item.listWorkFixed) {
@@ -226,7 +244,22 @@ module nts.uk.at.view.kdl006.a {
                 _self.tableBody += '<td class="header-closure">' + _self.getCell(currentIndex + 3, _self.listClosure[3], item.listWorkFixed[3]) + '</td>';
                 _self.tableBody += '<td class="header-closure">' + _self.getCell(currentIndex + 4, _self.listClosure[4], item.listWorkFixed[4]) + '</td>';
                 _self.tableBody += '</tr>';
-            }        
+            }    
+            
+            /**
+             * Table: Add empty row
+             */
+            private addEmptyRow(): void {
+                let _self = this;
+                _self.tableBody += '<tr>'; 
+                _self.tableBody += '<td class="header-workplace"></td>';
+                _self.tableBody += '<td class="header-closure"></td>';
+                _self.tableBody += '<td class="header-closure"></td>';
+                _self.tableBody += '<td class="header-closure"></td>';
+                _self.tableBody += '<td class="header-closure"></td>';
+                _self.tableBody += '<td class="header-closure"></td>';
+                _self.tableBody += '</tr>';
+            }
             
             /**
              * Data: Save WorkFixed info
@@ -281,7 +314,7 @@ module nts.uk.at.view.kdl006.a {
              * UI: Get row title
              */
             private getRowTitle(item: WorkplaceInfo): string {
-                if (!item) {
+                if (!item.workplaceCode || !item.workplaceName) {
                     return '';    
                 }
                 return item.workplaceCode + ' ' + item.workplaceName;

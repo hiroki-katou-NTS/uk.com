@@ -4,8 +4,8 @@
 }
 
 #grid-list tbody {
-	display: block;
-	height: 330px;   
+	display: block; 
+	height: 322px;
 	overflow-y: auto;
 }
 	
@@ -42,7 +42,12 @@
 }
 
 .header-closure {
-	width: 130px;
+	width: 160px;
+}
+
+.inside-table {
+	width: 100%;
+	display: table;
 }
 
 .inside-table tbody {
