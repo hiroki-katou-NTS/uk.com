@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 
 /**
@@ -14,7 +15,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AffJobTitleHistoryItem {
+public class AffJobTitleHistoryItem extends AggregateRoot{
 
 	
 	/** The history Id. */
