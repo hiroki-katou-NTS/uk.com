@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -29,76 +30,59 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The user id. */
-    /** ユーザID */ 
-    @Column(name = "USER_ID")
-    private String userID;
+	 @EmbeddedId
+	    public SacmtUserPK sacmtUserPK;
     
     /** The default User */
     /** デフォルトユーザ*/
     @Column(name = "DEFAULT_USER")
-    private boolean defaultUser;
+    public boolean defaultUser;
     
     /** The password. */
     /**パスワード*/
     @Column(name = "PASSWORD")
-    private String password;
+    public String password;
     
     /** The login ID. */
     /** ログインID */
     @Column(name = "LOGIN_ID")
-    private String loginID;
+    public String loginID;
     
     /** The contract CD. */
     /**契約コード */
     @Column(name = "CONTRACT_CD")
-    private String contractCd;
+    public String contractCd;
     
     /** The expiration date. */
     /** 有効期限 */
     @Column(name = "EXPIRATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date expirationDate;
+    public Date expirationDate;
     
     /** The special user. */
     /** 特別利用者 */
     @Column(name = "SPECIAL_USER")
-    private boolean specialUser;
+    public boolean specialUser;
     
     /** The multi com. */
     /**複数会社を兼務する */
     @Column(name = "MULTI_COM")
-    private boolean multiCompanyConcurrent;
+    public boolean multiCompanyConcurrent;
     
     /** The mail add. */
     /** メールアドレス*/
     @Column(name = "MAIL_ADD")
-    private String mailAdd;
+    public String mailAdd;
     
     /**ユーザ名 */
     /** The user name. */
     @Column(name = "USER_NAME")
-    private String userName;
+    public String userName;
     
     /** 紐付け先個人ID*/
     /** The asso sid. */
     @Column(name = "ASSO_PID")
-    private String associatedPersonID;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    public String associatedPersonID;
 	
 	
 	

@@ -1,5 +1,19 @@
 package nts.uk.ctx.sys.auth.infra.entity.user;
 
-public class SacmtUserPK {
+import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
+public class SacmtUserPK implements Serializable{
+	 
+	private static final long serialVersionUID = 1L;
+	@Column(name = "USER_ID")
+    public String userID;
 }

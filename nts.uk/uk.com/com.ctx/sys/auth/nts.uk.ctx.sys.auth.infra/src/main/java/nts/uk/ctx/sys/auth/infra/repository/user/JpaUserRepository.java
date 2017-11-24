@@ -2,10 +2,12 @@ package nts.uk.ctx.sys.auth.infra.repository.user;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-
+@Stateless
 public class JpaUserRepository extends JpaEntity implements UserRepository {
 
 	@Override
@@ -31,5 +33,8 @@ public class JpaUserRepository extends JpaEntity implements UserRepository {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
 
 }
