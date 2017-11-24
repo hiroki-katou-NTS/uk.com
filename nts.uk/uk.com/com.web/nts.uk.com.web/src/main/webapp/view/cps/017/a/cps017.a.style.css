@@ -72,7 +72,7 @@
 }
 
 #name {
-	width: 170px;
+	width: 170px !important;
 }
 
 #externalCode {
