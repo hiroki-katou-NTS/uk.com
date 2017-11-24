@@ -87,11 +87,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.calculatorItems = ko.observableArray([]);
             
             self.cbxAttribute = ko.observableArray([
-                { attrCode: 0, attrName: nts.uk.resource.getText("Enum_Time") },
-                { attrCode: 1, attrName: nts.uk.resource.getText("Enum_Amount_Of_Money") },                
-                { attrCode: 2, attrName: nts.uk.resource.getText("Enum_Number_Of_People") },
-                { attrCode: 3, attrName: nts.uk.resource.getText("Enum_Number") },
-                { attrCode: 4, attrName: nts.uk.resource.getText("Enum_Avarege_Price") }
+                { attrCode: 0, attrName: nts.uk.resource.getText("Enum_Attributes_TIME") },
+                { attrCode: 1, attrName: nts.uk.resource.getText("Enum_Attributes_AMOUNT") },                
+                { attrCode: 2, attrName: nts.uk.resource.getText("Enum_Attributes_NUMBER_OF_PEOPLE") },
+                { attrCode: 3, attrName: nts.uk.resource.getText("Enum_Attributes_NUMBER") },
+                { attrCode: 4, attrName: nts.uk.resource.getText("Enum_Attributes_AVERAGE_PRICE") }
             ]);
             
             self.itemName = ko.observable("");
@@ -863,7 +863,39 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 temp.push(item);
             });
             
-            self.calculatorItems(temp);
+            var curDataItem = null;
+            var beforeFormula = "";
+            var formularTxt = "";
+                    
+            for(var i = 0; i < temp.length; i++) {
+                if(temp[i].formBuilt != null) {
+                    curDataItem = temp[i].formBuilt
+                } else if(temp[i].formTime != null) {
+                    curDataItem = temp[i].formTime
+                } else if(temp[i].formPeople != null) {
+                    curDataItem = temp[i].formPeople
+                } else if(temp[i].amount != null) {
+                    curDataItem = temp[i].amount
+                } else if(temp[i].numerical.length > 0) {
+                    curDataItem = temp[i].numerical
+                } else if(temp[i].unitPrice != null) {
+                    curDataItem = temp[i].unitPrice
+                }
+                
+                if(i > 0) {
+                    beforeFormula = temp[i - 1].formula();
+                }
+                    
+                if(i == 0) {
+                    formularTxt = self.formulaGeneration(temp[i].itemName(), temp[i].settingMethod(), temp[i].attribute(), i, curDataItem, beforeFormula, true);
+                } else {
+                    formularTxt = self.formulaGeneration(temp[i].itemName(), temp[i].settingMethod(), temp[i].attribute(), i, curDataItem, beforeFormula, false);
+                }
+                
+                temp[i].formula(formularTxt);
+            }
+            
+            self.calculatorItems(temp);           
         }
         
         /**
@@ -898,6 +930,38 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 temp.push(item);
             });
             
+            var curDataItem = null;
+            var beforeFormula = "";
+            var formularTxt = "";
+                    
+            for(var i = 0; i < temp.length; i++) {
+                if(temp[i].formBuilt != null) {
+                    curDataItem = temp[i].formBuilt
+                } else if(temp[i].formTime != null) {
+                    curDataItem = temp[i].formTime
+                } else if(temp[i].formPeople != null) {
+                    curDataItem = temp[i].formPeople
+                } else if(temp[i].amount != null) {
+                    curDataItem = temp[i].amount
+                } else if(temp[i].numerical.length > 0) {
+                    curDataItem = temp[i].numerical
+                } else if(temp[i].unitPrice != null) {
+                    curDataItem = temp[i].unitPrice
+                }
+                
+                if(i > 0) {
+                    beforeFormula = temp[i - 1].formula();
+                }
+                    
+                if(i == 0) {
+                    formularTxt = self.formulaGeneration(temp[i].itemName(), temp[i].settingMethod(), temp[i].attribute(), i, curDataItem, beforeFormula, true);
+                } else {
+                    formularTxt = self.formulaGeneration(temp[i].itemName(), temp[i].settingMethod(), temp[i].attribute(), i, curDataItem, beforeFormula, false);
+                }
+                
+                temp[i].formula(formularTxt);
+            }
+            
             self.calculatorItems(temp);
         }
         
@@ -909,15 +973,15 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var attrValue = "";
             
             if(attribute == 0 && settingMethod == 0) {
-                attrValue = nts.uk.resource.getText("Enum_Time");
+                attrValue = nts.uk.resource.getText("Enum_Attributes_TIME");
             } else if(attribute == 1) {
-                attrValue = nts.uk.resource.getText("Enum_Amount_Of_Money");
+                attrValue = nts.uk.resource.getText("Enum_Attributes_AMOUNT");
             } else if(attribute == 2) {
-                attrValue = nts.uk.resource.getText("Enum_Number_Of_People");
+                attrValue = nts.uk.resource.getText("Enum_Attributes_NUMBER_OF_PEOPLE");
             } else if(attribute == 3) {
-                attrValue = nts.uk.resource.getText("Enum_Number");
+                attrValue = nts.uk.resource.getText("Enum_Attributes_NUMBER");
             } else if(attribute == 4) {
-                attrValue = nts.uk.resource.getText("Enum_Avarege_Price");
+                attrValue = nts.uk.resource.getText("Enum_Attributes_AVERAGE_PRICE");
             }
             
             // Get all items before current selected item if setting method = 1 to binding for dropdownlist
@@ -1120,9 +1184,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     }
                     
                     if(beforeFormula != "") {
-                        formulaResult = beforeFormula + " " + text1 + " " + operator + " " + text2;
+                        formulaResult = beforeFormula + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
                     } else {
-                        formulaResult = self.allItemsData[index - 1].formula() + " " + text1 + " " + operator + " " + text2;
+                        formulaResult = self.allItemsData[index - 1].formula() + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
                     }                    
                 } else {
                     formulaResult = nts.uk.resource.getText("KML002_153");
