@@ -323,7 +323,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                 .then(function() { nts.uk.ui.block.clear(); });
-            }).always((function(){
+            }).always(function(){
                 nts.uk.ui.block.clear();
             });
         }
