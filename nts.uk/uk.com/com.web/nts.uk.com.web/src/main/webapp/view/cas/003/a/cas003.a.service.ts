@@ -1,24 +1,22 @@
-module nts.uk.com.view.cas003.a.service {
+module nts.uk.com.view.cas003.a {
     export module service {
         var paths: any = {
-            getAttendanceItems: "at/record/businesstype/attendanceItem/getAttendanceItems",
-            getBusinessTypes: "at/record/businesstype/findAll",
-            getListDailyServiceTypeControl: "at/record/DailyServiceTypeControl/getListDailyServiceTypeControl/",
-            updateDailyService: "at/record/DailyServiceTypeControl/updateListDailyServiceTypeControlItem"
+            
+            getAccountLockPolicy:"ctx/sys/gateway/login/getAccountLockPolicy",
+            getPasswordPolicy:"ctx/sys/gateway/login/getPasswordPolicy",
+            updateAccountPolicy:"ctx/sys/gateway/login/updateAccountPolicy"
             }
-        export function getAttendanceItems(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getAttendanceItems);
-        }
-        export function getBusinessTypes(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getBusinessTypes);
-        }
+
+     
         
-         export function getListDailyServiceTypeControl(businessCode): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getListDailyServiceTypeControl + businessCode);
+         export function getAccountLockPolicy(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getAccountLockPolicy);
         }
-        
-         export function updateDailyService(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updateDailyService , command);
+           export function getPasswordPolicy(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getPasswordPolicy);
+        }
+         export function updateAccountPolicy(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateAccountPolicy, command);
         }
         
     }

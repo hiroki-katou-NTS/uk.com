@@ -42,7 +42,7 @@
 								data-bind="ntsFormLabel: { required: true, constraint: 'PasswordLowestDigits' }">
 								#{i18n.getText('CAS003_4')}</div>
 
-							<input tabindex="3"
+							<input tabindex="3" id="txtlowestDigit"
 								data-bind="ntsNumberEditor: {
 														name: '#[CAS003_4]',
 														value: lowestDigits, 
@@ -59,7 +59,7 @@
 								#{i18n.getText('CAS003_6')}</div>
 
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_7')}</label> <input tabindex="4"
+								<label>#{i18n.getText('CAS003_7')}</label> <input tabindex="4" id="txtAlphabetDigit"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_7]',
 														value: alphabetDigit, 
@@ -70,7 +70,7 @@
 								<label>#{i18n.getText('CAS003_8')}</label> <label class="labelInfo">#{i18n.getText('CAS003_9')}</label>
 							</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_10')}</label> <input tabindex="5"
+								<label>#{i18n.getText('CAS003_10')}</label> <input tabindex="5" id="txtNumberOfDigit"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_10]',
 														value: numberOfDigits, 
@@ -82,7 +82,7 @@
 
 							</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_13')}</label> <input tabindex="6"
+								<label>#{i18n.getText('CAS003_13')}</label> <input tabindex="6" id="txtSymbolCharacters"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_13]',
 														value: symbolCharacters, 
@@ -99,7 +99,7 @@
 								data-bind="ntsFormLabel: { required: true ,constraint:'PasswordHistoryCount'}">
 								#{i18n.getText('CAS003_16')}</div>
 							<div class="contentsymbol">
-								<input tabindex="7"
+								<input tabindex="7" id="txtHistoryCount"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_16]',
 														value: historyCount, 
@@ -117,7 +117,7 @@
 								data-bind="ntsFormLabel: { required: true ,constraint: 'PasswordValidityPeriod'}">
 								#{i18n.getText('CAS003_19')}</div>
 							<div class="contentsymbol">
-								<input tabindex="8"
+								<input tabindex="8" id="txtValidityPeriod"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_19]',
 														value: validityPeriod, 
@@ -135,7 +135,7 @@
 								data-bind="ntsFormLabel: { required: true, constraint: 'NotificationPasswordChange' }">
 								#{i18n.getText('CAS003_22')}</div>
 							<div class="contentsymbol">
-								<input tabindex="9"
+								<input tabindex="9" id="txtPasswordChange"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_22]',
 														value: notificationPasswordChange, 
@@ -168,7 +168,7 @@
 								data-bind="ntsFormLabel: { required: true , constraint: ['LockInterval','ErrorCount']}">
 								#{i18n.getText('CAS003_28')}</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_29')}</label> <input tabindex="13"
+								<label>#{i18n.getText('CAS003_29')}</label> <input tabindex="13" id="txtLockInterval"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_28]',
 														value: lockInterval, 
@@ -178,7 +178,7 @@
 														enable: accLockCheck}" />
 							</div>
 							<div class="contentPassComplex1">
-								<label>#{i18n.getText('CAS003_30')}</label> <input tabindex="14"
+								<label>#{i18n.getText('CAS003_30')}</label> <input tabindex="14" id="txtErrorCount"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_28]',
 														value: errorCount, 
@@ -194,7 +194,7 @@
 						<div class="component-area">
 							<div class="form1" data-bind="ntsFormLabel: { required: true, constraint: 'LockOutMessage' }">
 								#{i18n.getText('CAS003_32')}</div>
-							<textarea class="textAreaSize" tabindex="15"
+							<textarea class="textAreaSize" tabindex="15" id="txtLockOutMessage"
 								data-bind="ntsMultilineEditor: { value: lockOutMessage, name: '#[CAS003_32]', constraint: 'LockOutMessage', option: { width: '700px'}, enable: accLockCheck}"></textarea>
 						</div>
 
