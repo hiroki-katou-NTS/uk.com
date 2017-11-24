@@ -48,7 +48,8 @@
 	padding: 20px;
 	float: left;
 	min-height: 540px;
-	width: 15%;
+	min-width: 200px !important;
+/* 	width: 15%; */
 }
 
 button.search-btn {

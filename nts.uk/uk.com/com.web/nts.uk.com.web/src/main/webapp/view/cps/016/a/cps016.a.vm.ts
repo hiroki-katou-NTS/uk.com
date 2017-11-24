@@ -5,6 +5,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
     import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     export class ScreenModel {
@@ -13,6 +14,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         rulesFirst: KnockoutObservableArray<IRule>;
         checkCreate: KnockoutObservable<boolean>;
         closeUp: KnockoutObservable<boolean>;
+        isDialog: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this,
@@ -20,10 +22,19 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 formatSelection = perInfoSelectionItem.formatSelection();
             self.checkCreate = ko.observable(true);
             self.closeUp = ko.observable(false);
+            let param = getShared('CPS005B_PARAMS');
+            if (param) {
+                self.isDialog(param.isDialog);
+                if (!nts.uk.util.isNullOrUndefined(param.selectionItemId)) {
+                    self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
+                }
+            };
             self.rulesFirst = ko.observableArray([
                 { id: 0, name: getText('Enum_SelectionCodeCharacter_NUMBER_TYPE') },
                 { id: 1, name: getText('Enum_SelectionCodeCharacter_CHARATERS_TYPE') }
             ]);
+
+
 
             //selectionItemIdのsubscribe
             perInfoSelectionItem.selectionItemId.subscribe(x => {
@@ -218,10 +229,17 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
         // 選択肢の登録ボタン
         OpenCPS017() {
-            let self = this;
+            let self = this,
+                isDialog: boolean = true;
+
+            setShared('CPS016A_PARAMS', isDialog);
 
             modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
             });
+        }
+
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
 
     }
