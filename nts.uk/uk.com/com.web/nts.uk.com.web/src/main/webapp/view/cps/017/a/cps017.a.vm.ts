@@ -30,6 +30,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
         checkCreateaaa: KnockoutObservable<boolean>;
         closeUp: KnockoutObservable<boolean>;
         isDialog:  KnockoutObservable<boolean> = ko.observable(false);
+        //hoatt
+        selHistId: KnockoutObservable<string> = ko.observable('');
+        enableDelHist: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -71,7 +74,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
             });
 
             //sub theo historyID:
-            historySelection.histId.subscribe(x => {
+           historySelection.histId.subscribe(x => {
+                let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
+                if(histCur != undefined){
+                    if(histCur.endDate !== '9999/12/31'){
+                        self.enableDelHist(false);
+                    }else{
+                        self.enableDelHist(true);
+                    }
+                }
+
                 self.listSelection.removeAll();
                 service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                    if (itemList && itemList.length) {
                         self.checkCreateaaa(false);
@@ -475,7 +487,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         }
     }
-
+    
     //Order Selection
     interface IOrderSelection {
         selectionID?: string;

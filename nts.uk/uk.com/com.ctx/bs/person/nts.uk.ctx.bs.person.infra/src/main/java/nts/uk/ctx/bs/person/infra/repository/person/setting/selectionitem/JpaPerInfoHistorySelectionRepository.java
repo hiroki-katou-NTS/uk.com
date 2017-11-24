@@ -29,7 +29,8 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 			+ " WHERE si.startDate > :startDate AND si.endDate = :endDate";
 
 	private static final String SELECT_ALL_HISTORY_COMPANYID_SELECTION = SELECT_ALL
-			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId";
+			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId"
+			+ " ORDER BY si.startDate DESC";
 
 	private static final String SELECT_HISTORY_BY_DATE = "SELECT a" + " FROM PpemtHistorySelection a"
 			+ " INNER JOIN PpemtSelItemOrder b" + " ON a.selectionItemId = b.selectionIdPK.selectionId"
