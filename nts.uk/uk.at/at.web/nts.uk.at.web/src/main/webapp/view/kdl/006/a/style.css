@@ -42,7 +42,12 @@
 }
 
 .header-closure {
-	width: 130px;
+	width: 160px;
+}
+
+.inside-table {
+	width: 100%;
+	display: table;
 }
 
 .inside-table tbody {
