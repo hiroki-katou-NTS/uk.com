@@ -74,10 +74,13 @@ module nts.uk.com.view.cas014.b {
 
                         //select first role set
                         self.selectedRoleSet(self.roleSetList()[0].code);
-                    }
+                    } else {
+                        alertError({ messageId: "Msg_713" });
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    }    
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError("shit happened!");
+                    alertError({ messageId: error.message });
                     dfd.reject();
                 });
                 dfd.resolve();
@@ -243,7 +246,7 @@ module nts.uk.com.view.cas014.b {
             this.employeeName = employeeName;
             this.startDate = start;
             this.endDate = end;
-            this.displayDateRange = (start && end) ? this.startDate.slice(0, 10).replace(/-/g, "/") + getText('#CAS014_38') + this.endDate.slice(0, 10).replace(/-/g, "/") : '';
+            this.displayDateRange = (start && end) ? this.startDate.slice(0, 10).replace(/-/g, "/") + ' ' + getText('CAS014_38') + ' ' + this.endDate.slice(0, 10).replace(/-/g, "/") : '';
         }
 
     }

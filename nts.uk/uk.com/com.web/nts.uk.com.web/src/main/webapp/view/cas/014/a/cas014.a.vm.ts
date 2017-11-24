@@ -14,6 +14,8 @@ module nts.uk.com.view.cas014.a {
             roleSetList: KnockoutObservableArray<RoleSet>;
             jobTitleList: KnockoutObservableArray<JobTitle>;
             roleSetJobTitle: KnockoutObservable<RoleSetJobTitle>;
+            
+            viewmodelB = new cas014.b.viewmodel.ScreenModel();
 
             constructor() {
                 let self = this;
@@ -54,13 +56,18 @@ module nts.uk.com.view.cas014.a {
                             });
                         });
                         //self.roleSetJobTitle.valueHasMutated();
-                    } 
+                    } else {
+                        
+                    }
+                    self.viewmodelB.startPage(); 
                     dfd.resolve();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError("shit happened!");
+                    alertError({ messageId: error.message });
                     dfd.reject();
+                }).always(() => {
+                    block.clear();
                 });
-                block.clear();
+                
                 return dfd.promise();
             }
 
