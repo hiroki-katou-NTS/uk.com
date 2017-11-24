@@ -141,6 +141,7 @@ project (':at.ctx:at.auth:nts.uk.ctx.at.auth.ws') {
 project (':at.ctx:at.auth:nts.uk.ctx.at.auth.ac') {
 	dependencies {
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.dom')
+		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2')
 	}
 }
@@ -232,6 +233,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.infra') {
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.ac') {
 	dependencies {
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.pub')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.pub')
@@ -284,6 +286,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.infra') {
 project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 	dependencies {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
+		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.pub')
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.pub')
@@ -333,6 +336,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.infra') {
 project (':at.ctx:record:nts.uk.ctx.at.record.ac') {
 	dependencies {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
+		compile project(':at.ctx:record:nts.uk.ctx.at.record.app')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.pub')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.pub')
@@ -389,7 +393,9 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.pub')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
+		compile project(':at.ctx:request:nts.uk.ctx.at.request.app')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
+		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.10.7')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.8.9')
 	}
@@ -433,9 +439,11 @@ project (':at.screen:nts.uk.screen.at.app') {
 project (':at.screen:nts.uk.screen.at.infra') {
 	dependencies {
 		compile project (':at.screen:nts.uk.screen.at.app')
-		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
-		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
+		compile project (':at.ctx:record:nts.uk.ctx.at.record.infra')
+		compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
 		compile project (':at.ctx:request:nts.uk.ctx.at.request.infra')
+		compile project (':at.ctx:function:nts.uk.ctx.at.function.infra')
+		compile project (':at.ctx:at.auth:nts.uk.ctx.at.auth.infra')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: '0.7.2')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.8.6')
