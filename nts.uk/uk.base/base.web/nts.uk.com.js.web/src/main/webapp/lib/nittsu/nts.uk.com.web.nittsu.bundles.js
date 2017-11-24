@@ -4573,7 +4573,7 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
-                        container.addClass(style);
+                        container.addClass(style + " checkbox-wrapper");
                         container.data("tabindex", container.attr("tabindex"));
                         var wrapper = container.parent();
                         wrapper.addClass(style);
