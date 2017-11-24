@@ -11,9 +11,17 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PeregQuery {
-	private String ctgId;
-	private String ctgCd;
-	private String empId;
+	
+	private String categoryId;
+	
+	private String categoryCode;
+	
+	private String employeeId;
+	
+	private String personId;
+	
 	private GeneralDate standardDate;
+	
 	private String infoId;
+	
 }
