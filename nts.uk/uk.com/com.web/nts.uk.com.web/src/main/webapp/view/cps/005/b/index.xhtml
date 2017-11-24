@@ -460,7 +460,7 @@
 										<div tabindex="21" id="combo-box"
 											data-bind="ntsComboBox: {
 											name: '#[CPS005_26]',
-											options: selectionItemLst,
+											options: $parents[1].selectionItemLst,
 											optionsValue: 'selectionItemId',
 											visibleItemsCount: 10,
 											value: selectionItemId,
@@ -471,10 +471,10 @@
 												{ prop: 'selectionItemName', length: 10 },
 											]}">
 										</div>
-										<button tabindex="22" data-bind="" style="padding: 0px 20px;">#{i18n.getText('CPS005_49')}</button>
+										<button tabindex="22" data-bind="click: settingSelection" style="padding: 0px 20px;" >#{i18n.getText('CPS005_49')}</button>
 									</div>
-									<div id="grid">
-									</div>
+									<table id="grid">
+									</table>
 									</div>
 								</div>
 								</com:ko-if>

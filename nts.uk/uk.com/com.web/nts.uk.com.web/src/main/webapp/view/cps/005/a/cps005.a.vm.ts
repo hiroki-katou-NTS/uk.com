@@ -114,9 +114,15 @@ module nts.uk.com.view.cps005.a {
             }
 
             openDialogB() {
-                let self = this;
+                let self = this,
+                    params = {
+                        categoryId : self.currentData().perInfoCtgSelectCode(),
+                        currentCtg : ko.toJS(self.currentData().currentCtgSelected())
+                        
+                    };
                 block.invisible();
-                setShared('categoryId', self.currentData().perInfoCtgSelectCode());
+               
+                setShared('CPS005_A', params);
                 modal("/view/cps/005/b/index.xhtml").onClosed(() => {
                     let ctgCode = self.currentData().perInfoCtgSelectCode();
                     self.currentData().perInfoCtgSelectCode("");
