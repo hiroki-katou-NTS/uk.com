@@ -73,6 +73,9 @@ public class ScheCreExeWorkTypeHandler {
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command,
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
+		// 登録前削除区分をTrue（削除する）とする
+		command.setIsDeleteBeforInsert(true);
+
 		// setup command getter
 		WorkTypeGetterCommand commandWorktypeGetter = new WorkTypeGetterCommand();
 		commandWorktypeGetter.setBaseGetter(command.toBaseCommand());
