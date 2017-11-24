@@ -14,9 +14,6 @@ public class SampleJobPositionMain implements PersistentResidentHistory<DateHist
 	
 	@Getter
 	private final String employeeId;
-	
-	@Getter
-	private final String jobPisitionId;
 
 	@Getter
 	private final List<DateHistoryItem> historyItems;
