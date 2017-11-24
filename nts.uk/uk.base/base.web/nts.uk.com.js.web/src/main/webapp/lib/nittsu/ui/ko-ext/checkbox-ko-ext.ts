@@ -32,7 +32,7 @@ module nts.uk.ui.koExtentions {
                 if (container.data("readonly") === true) e.preventDefault();
             });
             
-            container.addClass(style);
+            container.addClass(style + " checkbox-wrapper");
             container.data("tabindex", container.attr("tabindex"));
 
             let wrapper = container.parent();
