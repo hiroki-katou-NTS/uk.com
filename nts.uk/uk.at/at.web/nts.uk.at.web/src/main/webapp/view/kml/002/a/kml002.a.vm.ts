@@ -650,44 +650,49 @@ module nts.uk.at.view.kml002.a.viewmodel {
         deleteBtn() {
             var self = this;
             
-            let count = 0;
-            for (let i = 0; i <= self.settingItems().length; i++){
-                if(self.settingItems()[i].code == self.singleSelectedCode()){
-                    count = i;
-                    break;
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => { 
+                let count = 0;
+                for (let i = 0; i <= self.settingItems().length; i++){
+                    if(self.settingItems()[i].code == self.singleSelectedCode()){
+                        count = i;
+                        break;
+                    }
                 }
-            }
-            
-            service.deleteVerticalCalSet(self.singleSelectedCode()).done(function() {
-                self.getData().done(function(){
-                    // if number of item from list after delete == 0 
-                    if(self.settingItems().length==0){
-                        self.newBtn();
-                        return;
-                    }
-                    // delete the last item
-                    if(count == ((self.settingItems().length))){
-                        self.singleSelectedCode(self.settingItems()[count-1].code);
-                        return;
-                    }
-                    // delete the first item
-                    if(count == 0 ){
-                        self.singleSelectedCode(self.settingItems()[0].code);
-                        return;
-                    }
-                    // delete item at mediate list 
-                    else if(count > 0 && count < self.settingItems().length){
-                        self.singleSelectedCode(self.settingItems()[count].code);    
-                        return;
-                    }
-                });
                 
-                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
-            }).always(function() {
-                nts.uk.ui.block.clear();      
+                service.deleteVerticalCalSet(self.singleSelectedCode()).done(function() {
+                    self.getData().done(function(){
+                        // if number of item from list after delete == 0 
+                        if(self.settingItems().length==0){
+                            self.newBtn();
+                            return;
+                        }
+                        // delete the last item
+                        if(count == ((self.settingItems().length))){
+                            self.singleSelectedCode(self.settingItems()[count-1].code);
+                            return;
+                        }
+                        // delete the first item
+                        if(count == 0 ){
+                            self.singleSelectedCode(self.settingItems()[0].code);
+                            return;
+                        }
+                        // delete item at mediate list 
+                        else if(count > 0 && count < self.settingItems().length){
+                            self.singleSelectedCode(self.settingItems()[count].code);    
+                            return;
+                        }
+                    });
+                    
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();      
+                });
+            }).ifNo(() => { 
+                return;
             });
+            
         }
         
         /**

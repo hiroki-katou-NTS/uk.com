@@ -615,7 +615,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			}
 			
 			List<KscstFormNumerical> numerical = null;
-			if(x.getNumerical().size() > 0) {
+			if(x.getNumerical() != null && x.getNumerical().size() > 0) {
 				numerical = toEntityFormNumerical(x.getNumerical());
 			}
 			
