@@ -526,6 +526,21 @@
                 }
             }
         }
+        
+        export module exception {
+            export function isBundledBusinessErrors(exception: any): boolean {
+                return !isNullOrUndefined(exception) && ($.isArray(exception["errors"]) 
+                                            && exception["businessException"]);
+            }    
+            
+            export function isErrorToReject(res: any) : boolean{
+                return !isNullOrUndefined(res) && (res.businessException || res.optimisticLock);
+            }
+            
+            export function isBusinessError(res: any) : boolean{
+                return !isNullOrUndefined(res) && (res.businessException);
+            }
+        }
     }
 
     export class WebStorageWrapper {
@@ -679,7 +694,7 @@
             if (text) {
                 text = formatCompCustomizeResource(text);
                 text = formatParams(text, params);
-                return text;
+                return text.replace(/\\r\\n/g, '\r\n');
             }
             return code;
         }
@@ -700,7 +715,7 @@
             }
             message = formatParams(message, params);
             message = formatCompCustomizeResource(message);
-            return message;
+            return message.replace(/\\r\\n/g, '\r\n');
         }
         function formatCompCustomizeResource(message: string) {
             let compDependceParamRegex = /{#(\w*)}/;

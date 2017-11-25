@@ -18,7 +18,8 @@
 	}
 	
 	.nts-fixed-header-container {
-		overflow: auto;
+		overflow: hidden;
+ 	 	border-right: 1px #CCC solid;
 	}
 	
 	.nts-fixed-body-container {
