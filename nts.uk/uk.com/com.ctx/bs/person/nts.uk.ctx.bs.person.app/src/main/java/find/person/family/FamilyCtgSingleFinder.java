@@ -4,9 +4,10 @@ import javax.ejb.Stateless;
 
 import nts.uk.shr.pereg.app.find.PeregCtgSingleFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
-public class FamilyCtgSingleFinder implements PeregCtgSingleFinder<FamilyCtgSingleFinder, PeregQuery>{
+public class FamilyCtgSingleFinder implements PeregCtgSingleFinder{
 
 	@Override
 	public String targetCategoryCode() {
@@ -21,9 +22,10 @@ public class FamilyCtgSingleFinder implements PeregCtgSingleFinder<FamilyCtgSing
 	}
 
 	@Override
-	public FamilyCtgSingleFinder getCtgSingleData(PeregQuery query) {
+	public PeregDto getCtgSingleData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

@@ -6,9 +6,10 @@ import javax.ejb.Stateless;
 
 import nts.uk.shr.pereg.app.find.PeregCtgListFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
-public class FamilyCtgListFinder implements PeregCtgListFinder<List<FamilyMemberDto>, PeregQuery>{
+public class FamilyCtgListFinder implements PeregCtgListFinder{
 
 	@Override
 	public String targetCategoryCode() {
@@ -23,7 +24,7 @@ public class FamilyCtgListFinder implements PeregCtgListFinder<List<FamilyMember
 	}
 
 	@Override
-	public List<FamilyMemberDto> getCtgListleData(PeregQuery query) {
+	public List<PeregDto> getCtgListleData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

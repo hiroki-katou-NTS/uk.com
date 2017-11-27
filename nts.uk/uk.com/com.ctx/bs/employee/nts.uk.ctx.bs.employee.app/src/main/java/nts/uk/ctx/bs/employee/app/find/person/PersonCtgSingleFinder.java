@@ -16,7 +16,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
-public class PersonCtgSingleFinder implements PeregCtgSingleFinder<PeregDto, PeregQuery> {
+public class PersonCtgSingleFinder implements PeregCtgSingleFinder {
 
 	@Inject
 	private PersonRepository personRepo;

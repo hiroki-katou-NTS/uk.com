@@ -11,7 +11,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  * @author danpv
  *
  */
-public class CurrentAddressFinder implements PeregCtgSingleFinder<PeregDto, PeregQuery>{
+public class CurrentAddressFinder implements PeregCtgSingleFinder{
 
 	@Override
 	public String targetCategoryCode() {
