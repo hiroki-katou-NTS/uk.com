@@ -10,6 +10,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSche
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtSchePerInfoAtr;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscstScheQualifySet;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenRepository;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlDto;
@@ -25,10 +26,8 @@ import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 @Stateless
 public class JpaBasicScheduleScreenRepository extends JpaRepository implements BasicScheduleScreenRepository {
 
-	private static final String SEL = "SELECT c FROM KscdtBasicSchedule c ";
-	private static final String SEL_BY_LIST_SID_AND_DATE = SEL
-			+ "WHERE c.kscdpBSchedulePK.sId IN :sId AND c.kscdpBSchedulePK.date >= :startDate AND c.kscdpBSchedulePK.date <= :endDate";
-
+	private static final String SEL_BY_LIST_SID_AND_DATE = "SELECT c FROM KscdtBasicSchedule c"
+			+ " WHERE c.kscdpBSchedulePK.sId IN :sId AND c.kscdpBSchedulePK.date >= :startDate AND c.kscdpBSchedulePK.date <= :endDate";
 	private static final String GET_WORK_TIME_AND_WT_DAY = "SELECT NEW " + WorkTimeScreenDto.class.getName()
 			+ " (a.kwtmpWorkTimePK.siftCD, a.workTimeName, a.workTimeAbName, a.workTimeSymbol, a.workTimeDailyAtr, a.workTimeMethodSet, a.displayAtr, a.note,"
 			+ " b.start, b.end, b.kwtdpWorkTimeDayPK.timeNumberCnt)"
@@ -36,26 +35,35 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " JOIN KshmtWorkTimeOrder c ON a.kwtmpWorkTimePK.siftCD = c.kshmpWorkTimeOrderPK.workTimeCode"
 			+ " WHERE a.kwtmpWorkTimePK.companyID = :companyId" + " AND a.displayAtr = :displayAtr"
 			+ " ORDER BY c.dispOrder ASC";
-
-	private final String SELECT_BY_CID_DEPRECATE_CLS = "SELECT NEW " + WorkTypeScreenDto.class.getName()
+	private static final String SELECT_BY_CID_DEPRECATE_CLS = "SELECT NEW " + WorkTypeScreenDto.class.getName()
 			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo)"
 			+ " FROM KshmtWorkType c" + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.deprecateAtr = :deprecateClassification";
-	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c WHERE "
-			+ " c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode =:workTypeCode "
+	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
+			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode =:workTypeCode "
 			+ " AND c.workTimeCode =:workTimeCode";
-	private static final String GET_ALL_SCHEDULE_PERSON_INFOR_ATTRIBUTE = "SELECT c FROM KscmtSchePerInfoAtr c WHERE "
-			+ "c.kscmtSchePerInfoAtrPk.companyId = :companyId";
+	private static final String GET_ALL_SCHEDULE_PERSON_INFOR_ATTRIBUTE = "SELECT c FROM KscmtSchePerInfoAtr c"
+			+ " WHERE c.kscmtSchePerInfoAtrPk.companyId = :companyId";
+	private static final String GET_SCHEDULE_DIS_CONTROL = "SELECT c FROM KscmtScheDispControl c"
+			+ " WHERE c.kscmtScheDispControlPK.companyId = :companyId ";
+	private static final String GET_SCHEDULE_QUALIFY_SET = "SELECT c FROM KscstScheQualifySet c"
+			+ " WHERE c.kscstScheQualifySetPK.companyId = :companyId";
+	private static final String GET_WORK_SCH_TIMEZONE = "SELECT a FROM KscdtWorkScheduleTimeZone a"
+			+ " WHERE a.kscdtWorkScheduleTimeZonePk.sId IN :sId"
+			+ " AND a.kscdtWorkScheduleTimeZonePk.date >= :startDate"
+			+ " AND a.kscdtWorkScheduleTimeZonePk.date <= :endDate"
+			+ " AND a.kscdtWorkScheduleTimeZonePk.scheduleCnt = 1";
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
 		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
 				entity.workTypeCode, entity.workTimeCode);
 	}
 
-	private static final String GET_SCHEDULE_DIS_CONTROL = "SELECT c FROM KscmtScheDispControl c WHERE "
-			+ " c.kscmtScheDispControlPK.companyId = :companyId ";
-	private static final String GET_SCHEDULE_QUALIFY_SET = "SELECT c FROM KscstScheQualifySet c WHERE "
-			+ "c.kscstScheQualifySetPK.companyId = :companyId";
+	private static BasicScheduleScreenDto toWorkSchTimeZoneDto(KscdtWorkScheduleTimeZone entity) {
+		return new BasicScheduleScreenDto(entity.kscdtWorkScheduleTimeZonePk.sId,
+				entity.kscdtWorkScheduleTimeZonePk.date, entity.kscdtWorkScheduleTimeZonePk.scheduleCnt,
+				entity.scheduleStartClock, entity.scheduleEndClock, entity.bounceAtr);
+	}
 
 	/**
 	 * get list BasicSchedule by list String and startDate and endDate
@@ -109,9 +117,19 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			return null;
 		}
 
-		return new ScheduleDisplayControlDto(companyId, personInfoAtr,
-				scheDispControl.personSyQualify, scheDispControl.pubHolidayShortageAtr,
-				scheDispControl.pubHolidayExcessAtr, scheDispControl.symbolAtr, scheDispControl.symbolHalfDayAtr,
-				scheDispControl.symbolHalfDayName, qualifyCodes);
+		return new ScheduleDisplayControlDto(companyId, personInfoAtr, scheDispControl.personSyQualify,
+				scheDispControl.pubHolidayShortageAtr, scheDispControl.pubHolidayExcessAtr, scheDispControl.symbolAtr,
+				scheDispControl.symbolHalfDayAtr, scheDispControl.symbolHalfDayName, qualifyCodes);
+	}
+
+	/**
+	 * Get data of table WorkScheTimezone with scheduleCnt = 1
+	 */
+	@Override
+	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(List<String> sId, GeneralDate startDate,
+			GeneralDate endDate) {
+		return this.queryProxy().query(GET_WORK_SCH_TIMEZONE, KscdtWorkScheduleTimeZone.class).setParameter("sId", sId)
+				.setParameter("startDate", startDate).setParameter("endDate", endDate)
+				.getList(x -> toWorkSchTimeZoneDto(x));
 	}
 }
