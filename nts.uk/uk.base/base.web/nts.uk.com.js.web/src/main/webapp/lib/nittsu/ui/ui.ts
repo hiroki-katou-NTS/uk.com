@@ -274,7 +274,7 @@ module nts.uk.ui {
 
         export function setShared(key: string, data: any, persist?: boolean) {
             container.setShared(key, data, windows.getSelf().isRoot, persist);
-        }
+        } 
 
         export function getSelf() {
             return container.windows[selfId];
