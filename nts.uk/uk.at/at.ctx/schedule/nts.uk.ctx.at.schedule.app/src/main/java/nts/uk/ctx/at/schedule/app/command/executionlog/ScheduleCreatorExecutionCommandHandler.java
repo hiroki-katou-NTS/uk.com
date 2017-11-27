@@ -268,12 +268,11 @@ public class ScheduleCreatorExecutionCommandHandler
 				
 				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value) {
 					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate);
-				}else if(optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.CONFIRMED){
+				}else if(optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED){
 					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate);
 				}
 				
 			}
-			// (button Interrupt)
 			toDate = this.nextDay(toDate);
 		}
 	}
@@ -353,8 +352,6 @@ public class ScheduleCreatorExecutionCommandHandler
 					return;
 				}
 			}
-
-			// (button Interrupt)
 			command.setToDate(this.nextDay(command.getToDate()));
 		}
 	}
