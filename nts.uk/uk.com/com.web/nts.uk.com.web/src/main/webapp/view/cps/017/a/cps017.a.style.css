@@ -48,8 +48,6 @@
 	margin-bottom: 10px;
 }
 
-
-
 .col1 {
 	width: 150px;
 }
@@ -87,7 +85,7 @@
 
 .distance {
 	margin-top: 25px;
-/* 	margin-left: 10px; */
+	/* 	margin-left: 10px; */
 }
 
 .formlabel {
@@ -182,7 +180,8 @@ button.search-btn {
 }
 
 .clear-btn {
-/* 	visibility: hidden; */
+	/* 	visibility: hidden; */
+	
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {
@@ -198,7 +197,8 @@ i.icon.icon-searchbox {
 }
 
 #contents-area {
-	
+	width: 1360px;
+	height: 800px;
 }
 
 #contents-area-left {
@@ -235,22 +235,27 @@ i.icon.icon-searchbox {
 #coll {
 	width: 150px;
 }
-#history_lst_grid_displayContainer{
-	    height: 116px !important;
-	    width: 250px !important;
-	    max-width: 250px !important;
+
+#history_lst_grid_displayContainer {
+	height: 116px !important;
+	width: 250px !important;
+	max-width: 250px !important;
 }
-#history_lst_grid_scrollContainer{
+
+#history_lst_grid_scrollContainer {
 	height: 116px !important;
 }
+
 #history_lst_grid_container {
 	width: 267px !important;
 	height: 116px !important;
 }
+
 #history_lst {
 	width: 267px;
 	height: 116px;
 }
-.ui-iggrid table tr .ui-state-active{
+
+.ui-iggrid table tr .ui-state-active {
 	width: 267px !important;
 }

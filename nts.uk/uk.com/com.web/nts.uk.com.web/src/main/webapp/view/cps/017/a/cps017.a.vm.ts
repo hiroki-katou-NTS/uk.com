@@ -364,11 +364,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //ダイアログC画面
         openDialogB() {
             let self = this,
-                currentItem: Selection = self.selection();
+                currentItem: OrderSelection = self.orderSelection();
 
             setShared('selectedHisId', self.historySelection().histId());
             block.invisible();
             modal('/view/cps/017/b/index.xhtml', { title: '' }).onClosed(function(): any {
+                currentItem.initSelection.valueHasMutated();
                 block.clear();
             });
         }
