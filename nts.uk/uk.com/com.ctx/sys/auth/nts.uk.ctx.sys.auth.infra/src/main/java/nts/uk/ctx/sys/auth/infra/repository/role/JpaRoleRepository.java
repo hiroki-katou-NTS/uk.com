@@ -116,7 +116,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	public List<Role> findByType(String companyId, int roleType) {
 		List<Role> result = new ArrayList<>();
 		
-		String query ="SELECT e FROM SaumtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ORDER BY e.assignAtr ASC, e.code ASC ";
+		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ORDER BY e.assignAtr ASC, e.code ASC ";
 		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class)
 				.setParameter("companyId", companyId).setParameter("roleType", roleType).getList();
 		if (entities != null && entities.size() !=0) {
@@ -128,7 +128,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	@Override
 	public List<Role> findByType(int roleType) {
 		List<Role> result = new ArrayList<>();
-		String query ="SELECT e FROM SaumtRole e WHERE e.roleType = :roleType ORDER BY e.assignAtr ASC, e.code ASC ";
+		String query ="SELECT e FROM SacmtRole e WHERE e.roleType = :roleType ORDER BY e.assignAtr ASC, e.code ASC ";
 		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class).setParameter("roleType", roleType).getList();
 		if (entities != null  && !entities.isEmpty()) {
 			return entities.stream().map(x ->new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
@@ -138,7 +138,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	@Override
 	public Optional<Role> findByRoleId(String roleId) {
-		String query ="SELECT e FROM SaumtRole e WHERE e.roleId = :roleId ";
+		String query ="SELECT e FROM SacmtRole e WHERE e.roleId = :roleId ";
 		return this.queryProxy().query(query, SacmtRole.class)
 				.setParameter("roleId", roleId).getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
 	}
