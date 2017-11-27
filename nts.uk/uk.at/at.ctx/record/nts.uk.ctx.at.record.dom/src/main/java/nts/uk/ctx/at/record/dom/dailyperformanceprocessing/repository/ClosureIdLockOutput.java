@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 import lombok.Value;
 
 @Value
-public class ClosureIdLockDto {
+public class ClosureIdLockOutput {
 
 	private int ClosureId;
 	

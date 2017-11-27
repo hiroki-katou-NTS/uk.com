@@ -13,6 +13,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CreateDailyResultEmployeeDomainService {
 	
-	List<ClosureIdLockDto> createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTimes,int reCreateAttr, String empCalAndSumExecLogID);
+	List<ClosureIdLockOutput> createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, int reCreateAttr);
 
 }

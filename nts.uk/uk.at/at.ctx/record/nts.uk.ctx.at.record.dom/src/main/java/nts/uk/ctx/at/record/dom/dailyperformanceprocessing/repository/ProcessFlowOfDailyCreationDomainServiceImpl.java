@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
@@ -30,11 +29,11 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 	@Override
 	public boolean processFlowOfDailyCreation(int executionAttr, DatePeriod periodTime,
-			String executionID, String empCalAndSumExecLogID, int reCreateAttr) {
+			String empCalAndSumExecLogID, int reCreateAttr) {
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
-		String employeeID = AppContexts.user().employeeId();
+//		String employeeID = AppContexts.user().employeeId();
 
 		//①実行方法を取得する
 		List<EmpCalAndSumExeLog> empCalAndSumExeLogs = this.empCalAndSumExeLogRepository.getAllEmpCalAndSumExeLog(companyId);
@@ -57,7 +56,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		}).collect(Collectors.toList());
 		
 		//各処理の実行
-		this.createDailyResultDomainService.createDailyResult(employeeIdList, reCreateAttr, periodTime, executionAttr, empCalAndSumExecLogID);
+		this.createDailyResultDomainService.createDailyResult(employeeIdList, reCreateAttr, periodTime, executionAttr, companyId, empCalAndSumExecLogID);
 		
 		return false;
 	}

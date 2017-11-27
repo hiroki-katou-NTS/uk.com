@@ -4,16 +4,16 @@ module nts.uk.com.view.cas011.c.service {
 
     var paths = {
             getAllRoleSet:             "ctx/sys/auth/roleset/findAllRoleSet",
-            getCurrentDefaultRoleSet:   "ctx/sys/auth/roleset/findDefaultRoleSet",
-            addDefaultRoleSet:          "ctx/sys/auth/roleset/addRoleSet"
+            getCurrentDefaultRoleSet:  "ctx/sys/auth/roleset/findDefaultRoleSet",
+            addDefaultRoleSet:         "ctx/sys/auth/roleset/addRoleSet"
     }
 
     export function getAllRoleSet() : JQueryPromise<any> {
-        return ajax(path.getAllRoleSet);
+        return ajax(paths.getAllRoleSet);
     }
 
     export function getCurrentDefaultRoleSet() : JQueryPromise<any> {
-        return ajax(path.getCurrentDefaultRoleSet);
+        return ajax(paths.getCurrentDefaultRoleSet);
     }
 
     // add Default Role Set:

@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author HieuNV
  *
  */
-public interface RoleSetAndWebMenuRepository {
+public interface RoleSetLinkWebMenuRepository {
 	
 	/**
 	 * Get a RoleSetAndWebMenu by key
@@ -21,7 +21,7 @@ public interface RoleSetAndWebMenuRepository {
 	 * @param roleSetCd
 	 * @return
 	 */
-	 Optional<RoleSetAndWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd);
+	 Optional<RoleSetLinkWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd);
 	 
 	 /**
 	  * Find all by company id and roleSetCode.
@@ -29,7 +29,7 @@ public interface RoleSetAndWebMenuRepository {
 	  * @param roleSetCd
 	  * @return
 	  */
-	 List<RoleSetAndWebMenu> findByRoleSetCd(String companyId, String roleSetCd);
+	 List<RoleSetLinkWebMenu> findByRoleSetCd(String companyId, String roleSetCd);
 	 
 	/**
 	 * Find all by company id.
@@ -37,19 +37,19 @@ public interface RoleSetAndWebMenuRepository {
 	 * @param companyId
 	 * @return
 	 */
-	List<RoleSetAndWebMenu> findByCompanyId(String companyId);
+	List<RoleSetLinkWebMenu> findByCompanyId(String companyId);
 
 	/**
 	 * Insert a RoleSetAndWebMenu
 	 * @param domain
 	 */
-	void insert(RoleSetAndWebMenu domain);
+	void insert(RoleSetLinkWebMenu domain);
 	
 	/**
 	 * Update the RoleSetAndWebMenu
 	 * @param domain
 	 */
-	void update(RoleSetAndWebMenu domain);
+	void update(RoleSetLinkWebMenu domain);
 	
 	/**
 	 * Delete the RoleSetAndWebMenu
