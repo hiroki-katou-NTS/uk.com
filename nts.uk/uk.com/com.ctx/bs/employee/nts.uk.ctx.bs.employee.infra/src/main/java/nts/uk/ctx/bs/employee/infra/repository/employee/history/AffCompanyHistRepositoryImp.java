@@ -1,8 +1,11 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
@@ -10,6 +13,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
+import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -35,16 +39,32 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId");
 
+	private static final String SELECT_BY_PRIMARY_KEY = String.join(" ", SELECT_NO_PARAM,
+			"WHERE c.bsymtAffCompanyHistPk.pId = :pId", "AND c.bsymtAffCompanyHistPk.sId = :sId",
+			"AND c.bsymtAffCompanyHistPk.historyId = :histId");
+
 	@Override
 	public void add(AffCompanyHist domain) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().insertAll(toEntities(domain));
 	}
 
 	@Override
 	public void update(AffCompanyHist domain) {
-		// TODO Auto-generated method stub
+		List<BsymtAffCompanyHist> entities = toEntities(domain);
+		for (BsymtAffCompanyHist entity : entities) {
+			BsymtAffCompanyHist update = queryProxy().query(SELECT_BY_PRIMARY_KEY, BsymtAffCompanyHist.class)
+					.setParameter("pId", entity.bsymtAffCompanyHistPk.pId)
+					.setParameter("sId", entity.bsymtAffCompanyHistPk.sId)
+					.setParameter("histId", entity.bsymtAffCompanyHistPk.historyId).getSingleOrNull();
 
+			if (update != null) {
+				update.destinationData = entity.destinationData;
+				update.endDate = entity.endDate;
+				update.startDate = entity.startDate;
+
+				commandProxy().update(update);
+			}
+		}
 	}
 
 	@Override
@@ -86,23 +106,23 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		return toDomain(lstBsymtAffCompanyHist);
 	}
 
-	private AffCompanyHist toDomain(List<BsymtAffCompanyHist> filter) {
+	private AffCompanyHist toDomain(List<BsymtAffCompanyHist> entities) {
 
-		AffCompanyHist affCompanyHist = new AffCompanyHist();
+		AffCompanyHist domain = new AffCompanyHist();
 
-		for (BsymtAffCompanyHist item : filter) {
-			if (affCompanyHist.getPId() == null) {
-				affCompanyHist.setPId(item.bsymtAffCompanyHistPk.pId);
+		for (BsymtAffCompanyHist item : entities) {
+			if (domain.getPId() == null) {
+				domain.setPId(item.bsymtAffCompanyHistPk.pId);
 			}
 
-			AffCompanyHistByEmployee affCompanyHistByEmployee = affCompanyHist
+			AffCompanyHistByEmployee affCompanyHistByEmployee = domain
 					.getAffCompanyHistByEmployee(item.bsymtAffCompanyHistPk.sId);
 
 			if (affCompanyHistByEmployee == null) {
 				affCompanyHistByEmployee = new AffCompanyHistByEmployee();
 				affCompanyHistByEmployee.setSId(item.bsymtAffCompanyHistPk.sId);
 
-				affCompanyHist.addAffCompanyHistByEmployee(affCompanyHistByEmployee);
+				domain.addAffCompanyHistByEmployee(affCompanyHistByEmployee);
 			}
 
 			AffCompanyHistItem affCompanyHistItem = affCompanyHistByEmployee
@@ -117,10 +137,23 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			}
 		}
 
-		return affCompanyHist;
+		return domain;
 	}
 
-	private List<BsymtAffCompanyHist> toEntities() {
-		return null;
+	private List<BsymtAffCompanyHist> toEntities(AffCompanyHist domain) {
+		List<BsymtAffCompanyHist> entities = new ArrayList<BsymtAffCompanyHist>();
+		for (AffCompanyHistByEmployee hist : domain.getLstAffCompanyHistByEmployee()) {
+			for (AffCompanyHistItem item : hist.getLstAffCompanyHistoryItem()) {
+				BsymtAffCompanyHistPk entityPk = new BsymtAffCompanyHistPk(domain.getPId(), hist.getSId(),
+						item.getHistoryId());
+				BsymtAffCompanyHist entity = new BsymtAffCompanyHist(entityPk,
+						BooleanUtils.toInteger(item.isDestinationData()), item.getDatePeriod().start(),
+						item.getDatePeriod().end(), null);
+
+				entities.add(entity);
+			}
+		}
+
+		return entities;
 	}
 }
