@@ -42,7 +42,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 selection: Selection = self.selection();
 
             //xu ly dialog: 
-            let param = getShared('CPS016A_PARAMS');
+            let param = getShared('CPS017_PARAMS');
 
             if (param != null && param != undefined) {
                 self.isDialog(param.isDialog);
@@ -115,6 +115,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
+                    
                 }
 
             });
