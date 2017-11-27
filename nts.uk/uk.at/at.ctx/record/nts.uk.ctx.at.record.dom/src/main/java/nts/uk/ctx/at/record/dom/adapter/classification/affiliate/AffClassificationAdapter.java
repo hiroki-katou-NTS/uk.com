@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface AffClassificationAdapter {
 	
-	List<AffClassificationSidDto> findByListEmployeeId();
+	List<AffClassificationSidImport> findByListEmployeeId();
 
 }

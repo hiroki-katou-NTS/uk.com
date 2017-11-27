@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.adapter.person.EmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImport;
-import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedDto;
+import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedImport;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
@@ -43,9 +43,9 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 	 * @see nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter#getPersonInfo(java.lang.String)
 	 */
 	@Override
-	public PersonInfoImportedDto getPersonInfo(String employeeId) {
+	public PersonInfoImportedImport getPersonInfo(String employeeId) {
 		PersonInfoExport personInfoExport = IPersonInfoPub.getPersonInfo(employeeId);
-		PersonInfoImportedDto personInfoImported = PersonInfoImportedDto.builder().employeeId(personInfoExport.getEmployeeId())
+		PersonInfoImportedImport personInfoImported = PersonInfoImportedImport.builder().employeeId(personInfoExport.getEmployeeId())
 				.employeeName(personInfoExport.getEmployeeName()).build();
 		
 		return personInfoImported;

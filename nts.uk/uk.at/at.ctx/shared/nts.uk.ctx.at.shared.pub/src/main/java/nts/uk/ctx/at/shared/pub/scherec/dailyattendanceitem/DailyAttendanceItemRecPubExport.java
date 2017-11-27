@@ -1,38 +1,40 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.pub.scherec.dailyattendanceitem;
 
 import lombok.Builder;
 import lombok.Data;
 
 /**
- * 
- * @author nampt
- *
+ * The Class DailyAttendanceItemRecPubDto.
  */
 @Data
 @Builder
-public class DailyAttendanceItemRecPubDto {
+public class DailyAttendanceItemRecPubExport {
 	
 	private String companyId;
 
-	/* 勤�?�?目ID */
+	/* 勤怠項目ID */
 	private int attendanceItemId;
 
-	/* 勤�?�?目名称 */
+	/* 勤怠項目名称 */
 	private String attendanceName;
 
 	/* 表示番号 */
 	private int displayNumber;
 
-	/* 使用区�? */
+	/* 使用区分 */
 	private int userCanUpdateAtr;
 
-	/* 勤�?�?目属�?� */
+	/* 勤怠項目属性 */
 	private int dailyAttendanceAtr;
 
-	/* ユーザーが�?�を変更できる */
+	/* ユーザーが値を変更できる */
 	private int nameLineFeedPosition;
 
-	public DailyAttendanceItemRecPubDto(String companyId, int attendanceItemId, String attendanceName, int displayNumber,
+	public DailyAttendanceItemRecPubExport(String companyId, int attendanceItemId, String attendanceName, int displayNumber,
 			int userCanUpdateAtr, int dailyAttendanceAtr, int nameLineFeedPosition) {
 		super();
 		this.companyId = companyId;
