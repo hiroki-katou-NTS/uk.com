@@ -28,6 +28,6 @@ public class PpestEmployeeCopySettingItem extends UkJpaEntity implements Seriali
 
 	@Override
 	protected Object getKey() {
-		return PpestEmployeeCopySettingItemPk;
+		return ppestEmployeeCopySettingItemPk;
 	}
 }
