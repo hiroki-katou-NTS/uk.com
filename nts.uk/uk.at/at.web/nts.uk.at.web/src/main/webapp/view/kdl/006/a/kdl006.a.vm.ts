@@ -169,13 +169,17 @@ module nts.uk.at.view.kdl006.a {
                             let currentWorkFixed: WorkFixed[] = _.slice(_self.listWorkFixed, currentIndex, currentIndex + totalClosure);                          
                             
                             if (!workplace.listWorkFixed) {
-                                workplace.listWorkFixed = [];
+                                workplace.listWorkFixed = [];                         
                             }
+                            
                             for (let closure of _self.listClosure) {
                                 let workFixed: WorkFixed = _.find(currentWorkFixed, (o) => { return o.closureId === closure.closureId; });
                                 if (workFixed) {
                                     workFixed.isEdited = true;
                                     workplace.listWorkFixed.push(workFixed);
+                                } else {
+                                    // Add default WorkFixed
+                                    workplace.listWorkFixed.push(new WorkFixed(false, closure.closureId, workplace.workplaceId));
                                 }                                
                             }                           
                             workplaceIndex++;
@@ -270,6 +274,7 @@ module nts.uk.at.view.kdl006.a {
              */
             private addRowImedially(): void {
                 let row: string = '';
+                // Add 5 empty rows at a time
                 for (let i = 0; i < 5; i++) {
                     row += '<tr><td class="header-workplace"></td><td class="header-closure"></td>';
                     row += '<td class="header-closure"></td><td class="header-closure"></td>';
