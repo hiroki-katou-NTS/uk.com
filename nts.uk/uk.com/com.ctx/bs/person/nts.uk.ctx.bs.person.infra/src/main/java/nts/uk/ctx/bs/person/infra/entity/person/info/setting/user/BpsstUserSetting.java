@@ -27,12 +27,12 @@ public class BpsstUserSetting extends UkJpaEntity implements Serializable {
 	public int employeeCodeType;
 
 	@Basic(optional = false)
-	@Column(name = "RECENT_REGISTRATION_TYPE")
-	public int recentRegistrationType;
-
-	@Basic(optional = false)
 	@Column(name = "CARD_NUMBER_ATR")
 	public int cardNumberType;
+
+	@Basic(optional = false)
+	@Column(name = "RECENT_REGISTRATION_TYPE")
+	public int recentRegistrationType;
 
 	@Basic(optional = true)
 	@Column(name = "SCD_LETTER")

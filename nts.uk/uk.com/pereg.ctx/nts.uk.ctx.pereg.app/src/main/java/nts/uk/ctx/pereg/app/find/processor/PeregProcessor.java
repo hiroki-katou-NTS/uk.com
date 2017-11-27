@@ -92,8 +92,8 @@ public class PeregProcessor {
 			// get ctgCd
 			PersonInfoCategory perInfoCtg = perInfoCtgRepositoty
 					.getPerInfoCategory(item.getPersonInfoCategoryID(), AppContexts.user().contractCode()).get();
-			PeregQuery query = new PeregQuery(item.getPersonInfoCategoryID(), perInfoCtg.getCategoryCode().v(),
-					layoutQuery.getEmpId(), layoutQuery.getStandardDate(), null);
+			PeregQuery query = null;/*new PeregQuery(item.getPersonInfoCategoryID(), perInfoCtg.getCategoryCode().v(),
+					layoutQuery.getEmpId(), layoutQuery.getStandardDate(), null);*/
 			if (item.getLayoutItemType() == LayoutItemType.LIST) {
 				// //get data
 				PeregResult returnValue = layoutingProcessor.findList(query);
@@ -137,37 +137,39 @@ public class PeregProcessor {
 	 * @param query
 	 * @return 
 	 */
-	public EmpMaintLayoutDto getCategoryChild(PeregQuery query)
-	{
+	public EmpMaintLayoutDto getCategoryChild(PeregQuery query) {
 		// app context
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
-		//String roleId = AppContexts.user().roles().forPersonalInfo();
+		// String roleId = AppContexts.user().roles().forPersonalInfo();
 		String roleId = "99900000-0000-0000-0000-000000000001";
-		
+
 		// get ctgCd
-		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCtgId(), contractCode).get();
-		query.setCtgCd(perInfoCtg.getCategoryCode().v());
-		
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
+				.get();
+		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
+
 		// get PerInfoItemDefForLayoutDto
-		//check per info auth
-		if(!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmpId(), perInfoCtg.getPersonInfoCategoryId()))
+		// check per info auth
+		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), perInfoCtg.getPersonInfoCategoryId()))
 			return new EmpMaintLayoutDto();
-		
-		//get item def
+
+		// get item def
 		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
-				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId, companyId,
-						contractCode, loginEmpId.equals(query.getEmpId())));
-		if(lstItemDef.size() == 0) return new EmpMaintLayoutDto();
+				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
+						companyId, contractCode, loginEmpId.equals(query.getEmployeeId())));
+		if (lstItemDef.size() == 0)
+			return new EmpMaintLayoutDto();
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef = new ArrayList<>();
 		for (int i = 0; i < lstItemDef.size(); i++)
-			lstPerInfoItemDef.add(perInfoItemDefForLayoutFinder.createFromDomain(query.getEmpId(), lstItemDef.get(i), query.getCtgCd(), i));
-		
+			lstPerInfoItemDef.add(perInfoItemDefForLayoutFinder.createFromDomain(query.getEmployeeId(),
+					lstItemDef.get(i), query.getCategoryCode(), i));
+
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
 		setEmpMaintLayoutDto(empMaintLayoutDto, query, perInfoCtg, lstPerInfoItemDef);
-		
-		//set optional data
+
+		// set optional data
 		return empMaintLayoutDto;
 	}
 	

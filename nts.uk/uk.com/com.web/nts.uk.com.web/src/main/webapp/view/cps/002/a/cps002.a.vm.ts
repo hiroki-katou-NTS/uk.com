@@ -27,8 +27,6 @@ module cps002.a.vm {
 
         createTypeId: KnockoutObservable<number> = ko.observable(1);
 
-        enable: KnockoutObservable<boolean> = ko.observable(true);
-
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
         categorySelectedCode: KnockoutObservable<string> = ko.observable('');
@@ -44,6 +42,8 @@ module cps002.a.vm {
         copyEmployee: KnockoutObservable<EmployeeCopy> = ko.observable(new EmployeeCopy(null));
 
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
+
+        isAllowAvatarUpload: KnockoutObservable<boolean> = ko.observable(false);
 
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
@@ -340,7 +340,8 @@ module cps002.a.vm {
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
                 if (result.allowAvatarUpload) {
-                    //if allowAvatarUpload
+
+                    self.isAllowAvatarUpload(result ? result.allowAvatarUpload == 0 ? false : true : false);
                 }
 
             });
@@ -434,14 +435,9 @@ module cps002.a.vm {
                         return new InitSetting(item);
                     }));
 
-                    let lastValueItem = _.find(result, (item) => {
-
-                        return item.settingCode == self.currentEmployee().initvalueCode;
-                    });
-
-
-                    self.initSettingSelectedCode(lastValueItem ? lastValueItem.settingCode : result[0].settingCode);
-
+                    if (self.initSettingSelectedCode() == '') {
+                        self.initSettingSelectedCode(result[0].settingCode);
+                    }
 
                 }
             }).fail((error) => {
@@ -532,17 +528,19 @@ module cps002.a.vm {
 
         openIModal() {
             let self = this;
-            setShared("imageId", self.currentEmployee().avatarId());
+            if (self.isAllowAvatarUpload()) {
+                setShared("imageId", self.currentEmployee().avatarId());
 
-            subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
+                subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
-                let imageResult = getShared("imageId");
+                    let imageResult = getShared("imageId");
 
-                if (imageResult) {
-                    self.currentEmployee().avatarId(imageResult);
-                }
+                    if (imageResult) {
+                        self.currentEmployee().avatarId(imageResult);
+                    }
 
-            });
+                });
+            }
 
         }
 
@@ -573,7 +571,6 @@ module cps002.a.vm {
         employeeCode: KnockoutObservable<string> = ko.observable("");
         hireDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
         cardNo: KnockoutObservable<string> = ko.observable("");
-        initvalueCode: string;
         avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");

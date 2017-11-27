@@ -2,9 +2,12 @@ package find.person.family;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.uk.shr.pereg.app.find.PeregCtgListFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
+@Stateless
 public class FamilyCtgListFinder implements PeregCtgListFinder<List<FamilyMemberDto>, PeregQuery>{
 
 	@Override
