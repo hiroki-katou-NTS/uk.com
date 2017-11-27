@@ -14,7 +14,6 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceHistRepositor
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
@@ -45,19 +44,16 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid TempAbsenceHistory"); 
 		}
-		if (existHist.get().getDateHistoryItems().size() > 0){
 			
-			Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getDateHistoryItems().stream()
-                    .filter(h -> h.identifier().equals(command.getHistoyId()))
-                    .findFirst();
-			
-			if (!itemToBeUpdate.isPresent()){
-				throw new RuntimeException("invalid TempAbsenceHistory");
-			}
-			existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
-			temporaryAbsenceHistRepository.updateTemporaryAbsenceHist(existHist.get(), itemToBeUpdate.get());
-		}
+		Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getDateHistoryItems().stream()
+                .filter(h -> h.identifier().equals(command.getHistoyId()))
+                .findFirst();
 		
+		if (!itemToBeUpdate.isPresent()){
+			throw new RuntimeException("invalid TempAbsenceHistory");
+		}
+		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
+		temporaryAbsenceHistRepository.updateTemporaryAbsenceHist(existHist.get(), itemToBeUpdate.get());
 		
 		// Update detail table
 		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr(), command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory(), command.isMultiple(),
