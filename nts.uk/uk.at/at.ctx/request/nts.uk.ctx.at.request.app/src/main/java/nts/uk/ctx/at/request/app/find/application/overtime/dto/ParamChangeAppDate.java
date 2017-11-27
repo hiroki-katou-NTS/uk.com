@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.application.overtime;
+package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
 import lombok.Value;
 

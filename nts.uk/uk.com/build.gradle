@@ -212,6 +212,7 @@ project (':com.ctx:basic:nts.uk.ctx.basic.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.app')
 	}
 }
 project (':com.ctx:basic:nts.uk.ctx.basic.pub') {
@@ -288,12 +289,15 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app')
 		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.pub')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 	}
 }
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub') {
@@ -341,11 +345,13 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.pub')
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project (':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
 	}
 }
 project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pub') {
@@ -374,6 +380,7 @@ project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws') {
 project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app') {
@@ -381,6 +388,8 @@ project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
 	}
 }
 project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra') {
@@ -393,7 +402,10 @@ project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app')
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pub')
+		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
 	}
 }
 project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub') {
@@ -440,6 +452,7 @@ project (':com.ctx:bs:person:nts.uk.ctx.bs.person.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.app')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
@@ -488,6 +501,7 @@ project (':com.ctx:bs:company:nts.uk.ctx.bs.company.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.dom')
+		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.app')
 		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.pub')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
@@ -540,6 +554,7 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.pub')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 	}
@@ -644,6 +659,7 @@ project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.app')
 	}
 }
 project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pub') {
@@ -910,6 +926,7 @@ project (':wk.ctx:nts.uk.ctx.workflow.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 	}
@@ -931,6 +948,7 @@ project (':wk.ctx:nts.uk.ctx.workflow.pubimp') {
 project (':pereg.ctx:nts.uk.ctx.pereg.ac') {
 	dependencies {
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
+		compile project (':pereg.ctx:nts.uk.ctx.pereg.app')
 	}
 }
 

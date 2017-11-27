@@ -1,10 +1,17 @@
 package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -54,7 +61,7 @@ public class VerticalCalItemDto {
   	private FormulaAmountDto formulaAmount;
   	
   	// F
-  	private FormulaNumericalDto numerical;
+  	private List<FormulaNumericalDto> numerical;
   	
   	// G
   	private FormulaUnitpriceDto unitPrice;
@@ -64,7 +71,7 @@ public class VerticalCalItemDto {
 		FormTimeDto formTimeDto = null;
 		FormPeopleDto formPeopleDto = null;
 		FormulaAmountDto formulaAmountDto = null;
-		FormulaNumericalDto numericalDto = null;
+		List<FormulaNumericalDto> numericalDto = null;
 		FormulaUnitpriceDto unitPriceDto = null;
 		
 		if(domain.getFormBuilt() != null) {
@@ -84,7 +91,9 @@ public class VerticalCalItemDto {
 		}
 		
 		if(domain.getNumerical() != null) {
-			numericalDto =  FormulaNumericalDto.fromDomain(domain.getNumerical());
+			numericalDto = domain.getNumerical().stream()
+					.map(x-> FormulaNumericalDto.fromDomain(x))
+					.collect(Collectors.toList());
 		}
 		
 		if(domain.getUnitprice() != null) {

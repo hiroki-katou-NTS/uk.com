@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * TanLV
+ *
+ */
 @AllArgsConstructor
 public enum ActualDisplayAtr {
 	/** 0- 表示しない **/

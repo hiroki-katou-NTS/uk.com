@@ -7,6 +7,10 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 
+/**
+ * TanLV
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class FormulaTimeUnit {

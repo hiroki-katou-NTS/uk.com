@@ -25,13 +25,10 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
@@ -60,9 +57,10 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private MailSender mailsender;
 	
 	@Override
-	public List<String> detailScreenAfterApprovalProcess(Application application, String approverMemo) {
+	public String detailScreenAfterApprovalProcess(Application application, String approverMemo) {
 		String companyID = AppContexts.user().companyId();
 		List<String> listMailReceived = new ArrayList<>();
+		String strMail = "";
 		//アルゴリズム「承認情報の整理」を実行する(thực hiện xứ lý 「承認情報の整理」)		
 		application = reflectionInfoService.organizationOfApprovalInfo(application, approverMemo);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
@@ -86,27 +84,25 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					// 申請者本人にメール送信する 
 					listMailReceived = this.MailDestination(application).getDestinationMail();
 					if(!listMailReceived.isEmpty()) {
-						listMailReceived.forEach( x -> {
+						for(String mail: listMailReceived) {
 							try {
-								if(!Strings.isBlank(x)) {
-									mailsender.send("nts", x, new MailContents("nts mail", "approval mail from NTS"));
+								if(!Strings.isBlank(mail)) {
+									mailsender.send("nts", mail, new MailContents("nts mail", "approval mail from NTS"));
+									strMail += mail + System.lineSeparator();
 								}
 							} catch (SendMailFailedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-						});
-						//TODO:
-						
+						}						
 					}
 				}
 			}
 		}
 		
 		//情報メッセージ（)
-		//throw new BusinessException("Msg_220");
 		//TODO: TRA VE MOT LIST GUI MAIL
-		return listMailReceived;
+		return strMail;
 	}
 	/**
 	 * 1.申請個別のエラーチェック
