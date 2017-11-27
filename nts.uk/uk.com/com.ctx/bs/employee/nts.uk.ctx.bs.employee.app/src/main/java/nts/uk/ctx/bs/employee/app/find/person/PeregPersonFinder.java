@@ -10,13 +10,13 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.shr.pereg.app.find.PeregSingleFinder;
+import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
-public class PersonCtgSingleFinder implements PeregSingleFinder<PeregPersonDto> {
+public class PeregPersonFinder implements PeregFinder<PeregPersonDto> {
 
 	@Inject
 	private PersonRepository personRepo;
@@ -45,5 +45,14 @@ public class PersonCtgSingleFinder implements PeregSingleFinder<PeregPersonDto> 
 				.collect(Collectors.toList());
 		return PeregDto.createWithPersonOptionData(PeregPersonDto.createFromDomain(person.get()),
 				lstCtgItemOptionalDto);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.pereg.app.find.PeregFinder#getListData(nts.uk.shr.pereg.app.find.PeregQuery)
+	 */
+	@Override
+	public List<PeregDto> getListData(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
