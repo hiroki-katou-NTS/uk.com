@@ -120,7 +120,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 			this.empHisRepo.update(newEmpRegHistory);
 
 		} else {
-			
+
 			this.empHisRepo.add(newEmpRegHistory);
 
 		}
