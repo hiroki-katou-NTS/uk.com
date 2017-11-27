@@ -129,6 +129,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
             service.getOvertimeByUI({
                 url: "REGULAROVERTIME",
                 appDate: moment(new Date()).format("YYYY/MM/DD"),
@@ -166,9 +167,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 });
                                 
                 dfd.resolve(data);
+                nts.uk.ui.block.clear();
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError(res.messageId);
-                dfd.reject(res);
+               nts.uk.ui.dialog.alertError(res.message).then(function(){
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                            nts.uk.ui.block.clear();
+                        });
                 
             });
             return dfd.promise();
