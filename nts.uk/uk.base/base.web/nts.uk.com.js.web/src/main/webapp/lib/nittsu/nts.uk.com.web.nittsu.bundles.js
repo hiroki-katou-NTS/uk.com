@@ -10533,7 +10533,8 @@ var nts;
                             $originTable.addClass("fixed-table");
                             var $colgroup = $originTable.find("colgroup");
                             var $thead = $originTable.find("thead");
-                            var viewWidth = options.width;
+                            var setting = $.extend({ height: "auto" }, options);
+                            var viewWidth = setting.width;
                             var width = 0;
                             $colgroup.find("col").each(function () {
                                 width += Number($(this).attr("width").replace(/px/gi, ''));
@@ -10542,10 +10543,9 @@ var nts;
                             if (nts.uk.util.isNullOrUndefined(viewWidth)) {
                                 viewWidth = width;
                             }
-                            var setting = $.extend({ height: "auto" }, options);
                             var $container = $("<div class='nts-fixed-table cf'/>");
                             $originTable.after($container);
-                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").css({ "max-width": viewWidth, "padding-right": "1px" });
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").css({ "max-width": viewWidth });
                             var $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(width);
                             var $headerTable = $("<table class='fixed-table'></table>");
                             $headerTable.append($colgroup.clone()).append($thead);
@@ -10577,11 +10577,11 @@ var nts;
                             $bodyContainer.scroll(function (evt, ui) {
                                 var bodyScroll = $bodyContainer.scrollLeft();
                                 if (bodyScroll > 0) {
-                                    bodyScroll = bodyScroll + 1;
-                                    $headerContainer.css({ "border-left": "1px solid #CCC", "padding-right": "0px" });
+                                    bodyScroll = bodyScroll + 1.5;
+                                    $headerContainer.css({ "border-left": "1px solid #CCC" });
                                 }
                                 else {
-                                    $headerContainer.css({ "border-left": "0px solid #CCC", "padding-right": "1px" });
+                                    $headerContainer.css({ "border-left": "0px solid #CCC" });
                                 }
                                 $headerContainer.scrollLeft(bodyScroll);
                             });
