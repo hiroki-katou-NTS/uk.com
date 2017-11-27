@@ -7,7 +7,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
-
+/**
+ * 
+ * domain : Webメニュー
+ *
+ */
 @Getter
 public class WebMenu extends AggregateRoot {
 

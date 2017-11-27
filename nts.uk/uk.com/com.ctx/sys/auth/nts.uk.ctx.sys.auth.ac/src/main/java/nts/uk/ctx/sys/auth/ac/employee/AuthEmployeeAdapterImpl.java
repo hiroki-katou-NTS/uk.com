@@ -15,12 +15,12 @@ public class AuthEmployeeAdapterImpl implements EmployeeAdapter{
 	private SyEmployeePub employeePub;
 	
 	private EmployeeImport toImport(EmployeeBasicInfoExport export){
-		return new EmployeeImport(export.getPName(), export.getEmpId(), export.getEmpCode());
+		return new EmployeeImport(export.getPName(), export.getEmployeeId(), export.getEmployeeCode());
 	}
 	
 	@Override
 	public EmployeeImport findByEmpId(String empId) {
-		return toImport(employeePub.findByEmpId(empId));
+		return toImport(employeePub.findBySId(empId));
 	}
 
 }

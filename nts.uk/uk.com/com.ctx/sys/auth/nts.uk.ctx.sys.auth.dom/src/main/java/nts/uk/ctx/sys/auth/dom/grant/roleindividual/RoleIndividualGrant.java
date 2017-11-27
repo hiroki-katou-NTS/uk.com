@@ -49,7 +49,4 @@ public class RoleIndividualGrant extends AggregateRoot {
 				new  DatePeriod(validPeriodStart, validPeriodEnd) );
 	}
 
-
-
-	
 }

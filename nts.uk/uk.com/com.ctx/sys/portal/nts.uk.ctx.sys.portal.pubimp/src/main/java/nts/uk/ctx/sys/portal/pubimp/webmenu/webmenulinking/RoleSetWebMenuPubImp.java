@@ -10,28 +10,28 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.service.RoleSetAndWebMenuService;
-import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetAndWebMenuPub;
-import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetWebMenuPubDto;
+import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuPub;
+import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuExport;
 
 /**
  * The Class WebmenuPubImp.
  */
 @Stateless
-public class RoleSetWebMenuPubImp implements RoleSetAndWebMenuPub {
+public class RoleSetWebMenuPubImp implements RoleSetLinkWebMenuPub {
 
 	/** The role set and web menu link repository. */
 	@Inject
-	private RoleSetAndWebMenuRepository roleSetAndWebMenuRepository;
+	private RoleSetLinkWebMenuRepository roleSetAndWebMenuRepository;
 	
 	@Inject RoleSetAndWebMenuService roleSetAndWebMenuService;
 
 	@Override
-	public List<RoleSetWebMenuPubDto> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd) {
+	public List<RoleSetLinkWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd) {
 		return roleSetAndWebMenuRepository.findByRoleSetCd(companyId, roleSetCd).stream()
-				.map(item -> new RoleSetWebMenuPubDto(
+				.map(item -> new RoleSetLinkWebMenuExport(
 						item.getRoleSetCd().v()
 						, item.getWebMenuCd().v()
 						, item.getCompanyId())
@@ -42,13 +42,13 @@ public class RoleSetWebMenuPubImp implements RoleSetAndWebMenuPub {
 
 	@Override
 	public void addRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId) {
-		RoleSetAndWebMenu domain = new RoleSetAndWebMenu(roleSetCd, webMenuCd, companyId);
+		RoleSetLinkWebMenu domain = new RoleSetLinkWebMenu(roleSetCd, webMenuCd, companyId);
 		roleSetAndWebMenuService.createRoleSetWebMenuLink(domain);
 	}
 
 	@Override
 	public void updateRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId) {
-		RoleSetAndWebMenu domain = new RoleSetAndWebMenu(roleSetCd, webMenuCd, companyId);
+		RoleSetLinkWebMenu domain = new RoleSetLinkWebMenu(roleSetCd, webMenuCd, companyId);
 		roleSetAndWebMenuService.updateRoleSetWebMenuLink(domain);
 		
 	}

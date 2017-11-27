@@ -64,4 +64,8 @@ public class PersonInformationRoleFinder {
 		}
 		return data;
 	}
+	
+	public List<PersonRole> findByListRoleIds(List<String> roleIds){
+		return personRoleRepo.find(roleIds);
+	}
 }

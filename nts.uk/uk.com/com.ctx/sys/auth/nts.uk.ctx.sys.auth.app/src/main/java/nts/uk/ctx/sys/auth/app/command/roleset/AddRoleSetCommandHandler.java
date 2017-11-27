@@ -16,8 +16,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuImport;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -28,7 +28,7 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
 	private RoleSetService roleSetService;
 	
 	@Inject
-	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
+	private RoleSetLinkWebMenuAdapter roleSetAndWebMenuAdapter;
 	
 	@Override
 	protected String handle(CommandHandlerContext<RoleSetCommand> context) {
@@ -61,7 +61,7 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
 
 			// register to web menu link - ドメインモデル「ロールセット別紐付け」を新規登録する
 			listWebMenuCds.forEach(webMenuCd-> {
-				this.roleSetAndWebMenuAdapter.addRoleSetAndWebMenu(new RoleSetAndWebMenu(
+				this.roleSetAndWebMenuAdapter.addRoleSetAndWebMenu(new RoleSetLinkWebMenuImport(
 						roleSetDom.getCompanyId()
 						, roleSetDom.getRoleSetCd().v()
 						, webMenuCd));

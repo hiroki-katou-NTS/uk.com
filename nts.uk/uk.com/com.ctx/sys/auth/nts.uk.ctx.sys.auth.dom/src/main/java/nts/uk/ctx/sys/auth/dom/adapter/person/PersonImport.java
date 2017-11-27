@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.dom.adapter.person;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class PersonImport.
@@ -16,13 +17,38 @@ import lombok.Data;
 @Builder
 public class PersonImport {
 
-	/** The person id. */
+	/** The p id. */
+	// 個人ID
 	private String personId;
-
-	/** The person name. */
+	
+	/** The p name. */
+	// 個人名
 	private String personName;
 	
-	/** The mail address. */
-	private MailAddress mailAddress;
+	/** The birth day. */
+	// 生年月日
+	private GeneralDate birthDay;
+	
+	/** The p mail addr. */
+	// 個人メールアドレス
+	private String pMailAddr;
+	
+	/** The p mail addr. */
+	// 個人メールアドレス
+	private int gender;
+
+	public PersonImport(String personId, String personName, GeneralDate birthDay, String pMailAddr, int gender) {
+		super();
+		this.personId = personId;
+		this.personName = personName;
+		this.birthDay = birthDay;
+		this.pMailAddr = pMailAddr;
+		this.gender = gender;
+	}
+	
+
+
+	
+	
 	
 }

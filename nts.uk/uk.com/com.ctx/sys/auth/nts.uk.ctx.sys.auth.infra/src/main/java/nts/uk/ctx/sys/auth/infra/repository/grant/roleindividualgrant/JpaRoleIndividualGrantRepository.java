@@ -17,8 +17,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrant;
-import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrantPK;
+import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrant;
+import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrantPK;
 
 @Stateless
 public class JpaRoleIndividualGrantRepository extends JpaRepository implements RoleIndividualGrantRepository {
@@ -29,14 +29,6 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	
 	private final String SELECT_BY_ROLE_ID ="SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId ";
 	
-	@Override
-	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType) {
-		// TODO Auto-generated method stub
-		return this.queryProxy()
-				.query(SELECT_BY_ROLE, RoleIndividualGrant.class)
-				.setParameter("userId" ,userId )
-				.setParameter("roleType", roleType).getSingle();
-	}
 
 	@Override
 	public Optional<RoleIndividualGrant> findByUser(String userId, GeneralDate date) {
@@ -48,7 +40,6 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 				.getSingle();
 	}
 
-	@Override
 	public void add(RoleIndividualGrant roleIndividualGrant) {
 			this.commandProxy().insert(toEntity(roleIndividualGrant));		
 	}
@@ -101,13 +92,28 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	}
 
 	@Override
-	public Optional<RoleIndividualGrant> findByDateAndType(GeneralDate startDate, GeneralDate endDate,
-			RoleType roleType) {
+	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-    
-	
-    
+
+	@Override
+	public List<RoleIndividualGrant> findUser(String userId, GeneralDate startDate, GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<RoleIndividualGrant> findByRoleType(int roleType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, RoleType roleType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
