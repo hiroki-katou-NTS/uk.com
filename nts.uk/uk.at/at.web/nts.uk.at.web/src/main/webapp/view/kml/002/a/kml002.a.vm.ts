@@ -1315,7 +1315,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
                         
                         if(_.startsWith(formulaResult, nts.uk.resource.getText("KML002_37"))) {
-                            formulaResult = formulaResult.substr(1);
+                            formulaResult = formulaResult.substr(2);
                         }
                     } else {
                         var before = "";
