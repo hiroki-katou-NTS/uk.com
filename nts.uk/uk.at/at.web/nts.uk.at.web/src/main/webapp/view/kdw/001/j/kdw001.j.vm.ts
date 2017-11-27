@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw001.j {
         export class ScreenModel {
 
             params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
-            closureID: any = __viewContext.transferred.value.closureID;
+          //  closureID: any = __viewContext.transferred.value.closureID;
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
@@ -31,7 +31,7 @@ module nts.uk.at.view.kdw001.j {
 
             constructor() {
                 var self = this;
-                self.params.setParamsScreenA({ closure: self.closureID });
+                self.params.setParamsScreenA({ closure: 1 });
 
                 self.currentItem = ko.observable();
 
@@ -177,6 +177,32 @@ module nts.uk.at.view.kdw001.j {
                                     $("#wizard").ntsWizard("next");
                                 });
 
+                            }else{
+                                  if (!nts.uk.util.isNullOrUndefined(data.reflectApprovalSetInfo)) {
+                                        var approvalResultText = getText('KDW001_11');
+                                        self.dScreenmodel.approvalResult(approvalResultText);
+                                        self.dScreenmodel.approvalVisible(true);
+                                        if (data.reflectApprovalSetInfo.executionType == 1) {
+                                            self.dScreenmodel.approvalResult(approvalResultText += '(' + getText('KDW001_67') + ')');
+                                        }
+                                    } else {
+                                        self.dScreenmodel.approvalResult('');
+                                        self.dScreenmodel.approvalVisible(false);
+                                    }
+
+                                    if (!nts.uk.util.isNullOrUndefined(data.monlyAggregationSetInfo)) {
+                                        var monthCountText = getText('KDW001_12');
+                                        self.dScreenmodel.monthCount(monthCountText);
+                                        self.dScreenmodel.monthCountVisible(true);
+                                        if (data.monlyAggregationSetInfo.executionType == 1) {
+                                            self.dScreenmodel.monthCount(monthCountText += '(' + getText('KDW001_70') + ')');
+                                        }
+
+                                    } else {
+                                        self.dScreenmodel.monthCount('');
+                                        self.dScreenmodel.monthCountVisible(false);
+                                    }
+                                    $("#wizard").ntsWizard("next");
                             }
                         } else {
                             self.dScreenmodel.dailyCal('');
@@ -215,7 +241,7 @@ module nts.uk.at.view.kdw001.j {
 
                     }
 
-                }));
+                });
 
             }
 

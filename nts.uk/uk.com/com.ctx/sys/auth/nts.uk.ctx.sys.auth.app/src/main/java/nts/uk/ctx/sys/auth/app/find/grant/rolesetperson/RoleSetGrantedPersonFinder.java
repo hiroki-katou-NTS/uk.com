@@ -75,4 +75,8 @@ public class RoleSetGrantedPersonFinder {
 		} else
 			return null;
 	}
+	
+	public EmployeeImport getEmployeeInfo(String employeeId){
+		return employeeAdapter.findByEmpId(employeeId);
+	}
 }

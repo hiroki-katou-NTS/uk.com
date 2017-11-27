@@ -11,7 +11,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.pub.scherec.dailyattendanceitem.DailyAttendanceItemRecPub;
-import nts.uk.ctx.at.shared.pub.scherec.dailyattendanceitem.DailyAttendanceItemRecPubDto;
+import nts.uk.ctx.at.shared.pub.scherec.dailyattendanceitem.DailyAttendanceItemRecPubExport;
 
 @Stateless
 public class DailyAttendanceItemRecPubImpl implements DailyAttendanceItemRecPub {
@@ -20,13 +20,13 @@ public class DailyAttendanceItemRecPubImpl implements DailyAttendanceItemRecPub 
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
 	@Override
-	public List<DailyAttendanceItemRecPubDto> getDailyAttendanceItem(String companyId,
+	public List<DailyAttendanceItemRecPubExport> getDailyAttendanceItem(String companyId,
 			List<Integer> dailyAttendanceItemIds) {
 		List<DailyAttendanceItem> dailyAttendanceItemList = this.dailyAttendanceItemRepository.getListById(companyId,
 				dailyAttendanceItemIds);
 
-		List<DailyAttendanceItemRecPubDto> attendanceItemPubDtos = dailyAttendanceItemList.stream().map(f -> {
-			return new DailyAttendanceItemRecPubDto(f.getCompanyId(), f.getAttendanceItemId(),
+		List<DailyAttendanceItemRecPubExport> attendanceItemPubDtos = dailyAttendanceItemList.stream().map(f -> {
+			return new DailyAttendanceItemRecPubExport(f.getCompanyId(), f.getAttendanceItemId(),
 					f.getAttendanceName().v(), f.getDisplayNumber(), f.getUserCanUpdateAtr().value,
 					f.getDailyAttendanceAtr().value, f.getNameLineFeedPosition());
 		}).collect(Collectors.toList());
@@ -35,23 +35,23 @@ public class DailyAttendanceItemRecPubImpl implements DailyAttendanceItemRecPub 
 	}
 
 	@Override
-	public List<DailyAttendanceItemRecPubDto> getDailyAttendanceItemList(String companyId) {
+	public List<DailyAttendanceItemRecPubExport> getDailyAttendanceItemList(String companyId) {
 		List<DailyAttendanceItem> attendanceItems = this.dailyAttendanceItemRepository.getList(companyId);
 		
-		List<DailyAttendanceItemRecPubDto> dailyAttendanceItemRecPubDtos = attendanceItems.stream().map(f -> {
-			return new DailyAttendanceItemRecPubDto(f.getCompanyId(), f.getAttendanceItemId(), f.getAttendanceName().v(), f.getDisplayNumber(), f.getUserCanUpdateAtr().value, f.getDailyAttendanceAtr().value, f.getNameLineFeedPosition());
+		List<DailyAttendanceItemRecPubExport> dailyAttendanceItemRecPubDtos = attendanceItems.stream().map(f -> {
+			return new DailyAttendanceItemRecPubExport(f.getCompanyId(), f.getAttendanceItemId(), f.getAttendanceName().v(), f.getDisplayNumber(), f.getUserCanUpdateAtr().value, f.getDailyAttendanceAtr().value, f.getNameLineFeedPosition());
 		}).collect(Collectors.toList());
 		return dailyAttendanceItemRecPubDtos;
 	}
 
 	@Override
-	public List<DailyAttendanceItemRecPubDto> getDailyAttendanceItemList(String companyId, List<Integer> dailyAttendanceAtrs) {
+	public List<DailyAttendanceItemRecPubExport> getDailyAttendanceItemList(String companyId, List<Integer> dailyAttendanceAtrs) {
 		if (CollectionUtil.isEmpty(dailyAttendanceAtrs)) {
 			return Collections.emptyList();
 		}
 		
 		return this.dailyAttendanceItemRepository.findByAtr(companyId, dailyAttendanceAtrs)
-				.stream().map(x -> DailyAttendanceItemRecPubDto.builder()
+				.stream().map(x -> DailyAttendanceItemRecPubExport.builder()
 							.attendanceItemId(x.getAttendanceItemId())
 							.attendanceName(x.getAttendanceName().v())
 							.dailyAttendanceAtr(x.getDailyAttendanceAtr().value)

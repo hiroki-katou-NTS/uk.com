@@ -7,6 +7,12 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 860,
+					height : 630
+				};
+			</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="kdw003.d.style.css" />
 				<com:scriptfile path="kdw003.d.start.js" />

@@ -7,6 +7,7 @@ module nts.uk.com.view.cas014.b {
                 getAllRoleSet: "ctx/sys/auth/grant/rolesetperson/allroleset",
                 getAllRoleSetPerson: "ctx/sys/auth/grant/rolesetperson/selectroleset/{0}",
                 registerData: "ctx/sys/auth/grant/rolesetperson/register", 
+                getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/{0}",
                 deleteData: "ctx/sys/auth/grant/rolesetperson/delete"
             }
             constructor() {
@@ -18,7 +19,12 @@ module nts.uk.com.view.cas014.b {
             };
             
             getAllRoleSetPerson(roleSetCd: string): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getAllRoleSetPerson, roleSetCd);
+                let _path = format(this.paths.getAllRoleSetPerson, roleSetCd);
+                return nts.uk.request.ajax("com", _path);
+            };
+            
+            getEmployeeInfo(empId: string): JQueryPromise<any> {
+                let _path = format(this.paths.getEmpInfo, empId);
                 return nts.uk.request.ajax("com", _path);
             };
 

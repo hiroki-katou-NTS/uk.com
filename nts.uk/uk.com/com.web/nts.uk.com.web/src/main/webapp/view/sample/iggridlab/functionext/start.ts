@@ -37,7 +37,7 @@ module nts.uk.ui.gridlist {
             constructor(index: number) {
                 this.id = index;
                 this.flag = index % 2 == 0;
-                this.ruleCode = index % 3 + 1;
+                this.ruleCode = index;
                 this.time = "13:36";
                 this.addressCode1 = "001";
                 this.addressCode2 = "002";
@@ -185,7 +185,11 @@ module nts.uk.ui.gridlist {
                                             { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' }
                                            ]
                                 },
-                                { headerText: 'Header0', key: 'header0', dataType: 'string', width: '150px', ntsControl: 'Label' },
+                                { headerText: 'Header0', key: 'header0', dataType: 'string', width: '150px', ntsControl: 'Label', 
+                                        click: function(id, key) { 
+                                            console.log(id + " - " + key);
+                                        }
+                                },
                                 { headerText: 'Combo2',
                                     group: [
                                             { headerText: 'Code', key: 'comboCode2', dataType: 'number', width: '60px', ntsType: 'comboCode' },
@@ -203,7 +207,7 @@ module nts.uk.ui.gridlist {
                                             { headerText: 'Code<br/>Item', key: 'header1', dataType: 'string', width: '150px', ntsType: 'code', onChange: search },
                                             { headerText: 'Header2', key: 'header2', dataType: 'string', width: '150px', ntsControl: 'Link1' }
                                            ]},
-                                { headerText: 'Header3', key: 'header3', dataType: 'number', width: '150px'},
+                                { headerText: 'Header3', key: 'header3', dataType: 'number', width: '150px', ntsControl: 'TextEditor' },
                                 { headerText: 'Header4', key: 'header4', dataType: 'string', width: '150px'},
                                 { headerText: 'Header56',
                                     group: [
@@ -356,7 +360,9 @@ module nts.uk.ui.gridlist {
                                             { name: 'Combobox3', options: comboItems3, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'name', controlType: 'ComboBox', enable: true },
                                             { name: 'Link1', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
                                             { name: 'Link2', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
-                                            { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' }]
+                                            { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' },
+                                            { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } }]
+//                                            { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } }]
                             });
         $("#run").on("click", function() {
             var source = $("#grid2").igGrid("option", "dataSource");

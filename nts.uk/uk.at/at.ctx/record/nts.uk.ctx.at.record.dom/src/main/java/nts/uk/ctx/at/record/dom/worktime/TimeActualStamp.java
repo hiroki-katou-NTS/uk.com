@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 
@@ -9,6 +11,8 @@ import lombok.Getter;
  *
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class TimeActualStamp {
 	
 	private WorkStamp actualStamp;
