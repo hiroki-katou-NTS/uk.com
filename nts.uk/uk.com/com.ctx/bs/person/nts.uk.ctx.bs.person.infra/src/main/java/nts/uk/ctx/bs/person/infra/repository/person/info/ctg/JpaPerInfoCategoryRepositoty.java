@@ -17,8 +17,6 @@ import nts.uk.ctx.bs.person.infra.entity.person.info.ctg.PpemtPerInfoCtgCm;
 import nts.uk.ctx.bs.person.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.bs.person.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.bs.person.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
-import nts.uk.ctx.bs.person.infra.entity.person.info.setting.copy.PpestEmployeeCopySetting;
-import nts.uk.ctx.bs.person.infra.entity.person.info.setting.copy.PpestEmployeeCopySettingPk;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
@@ -70,8 +68,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
 
-	private final static String COUNT_PERINFOCTGIN_COPYSETING = "SELECT COUNT(i) FROM PpestEmployeeCopySetting i "
-			+ "WHERE i.ppestEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
+	
 
 	private final static String SELECT_CATEGORY_BY_NAME = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -250,23 +247,6 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 
 	// vinhpx: start
-	@Override
-	public boolean checkPerInfoCtgAlreadyCopy(String perInfoCtgId, String companyId) {
-		Optional<Long> a = this.queryProxy().query(COUNT_PERINFOCTGIN_COPYSETING, Long.class)
-				.setParameter("categoryId", perInfoCtgId).setParameter("companyId", companyId).getSingle();
-		return a.isPresent() ? (a.get().intValue() > 0 ? true : false) : false;
-	}
-
-	@Override
-	public void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId) {
-		boolean alreadyExist = checkPerInfoCtgAlreadyCopy(perInfoCtgId, companyId);
-		if (!alreadyExist) {
-
-			PpestEmployeeCopySettingPk key = new PpestEmployeeCopySettingPk(perInfoCtgId);
-			PpestEmployeeCopySetting entity = new PpestEmployeeCopySetting(key, companyId);
-			this.commandProxy().insert(entity);
-		}
-	}
 
 	@Override
 	public List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name) {
