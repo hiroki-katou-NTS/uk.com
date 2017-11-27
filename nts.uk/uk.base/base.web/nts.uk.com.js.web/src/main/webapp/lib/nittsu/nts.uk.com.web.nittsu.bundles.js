@@ -16164,7 +16164,7 @@ var nts;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
                 var DISTANCE = 3;
-                var SPACE = 30;
+                var SPACE = 10;
                 var HEADER = "xheader";
                 var HEADER_PRF = "ex-header-";
                 var BODY_PRF = "ex-body-";
@@ -16548,6 +16548,18 @@ var nts;
                         events.onModify(self.$container);
                         selection.checkUp(self.$container);
                         copy.on(self.$container.find("." + BODY_PRF + DETAIL), self.updateMode);
+                        self.$container.on(events.OCCUPY_UPDATE, function (evt, reserve) {
+                            if (self.bodyHeightSetMode === FIXED)
+                                return;
+                            if (reserve && reserve.x) {
+                                self.$container.data(internal.X_OCCUPY, reserve.x);
+                                resize.fitWindowWidth(self.$container);
+                            }
+                            if (reserve && reserve.y) {
+                                self.$container.data(internal.Y_OCCUPY, reserve.y);
+                                resize.fitWindowHeight(self.$container, bodyWrappers, horzSumExists);
+                            }
+                        });
                         if (self.$commander) {
                             events.trigger(self.$container, events.COMPLETED);
                         }
@@ -19819,6 +19831,18 @@ var nts;
                                 return;
                             $(this).height(height);
                         });
+                        var cHeight = 0, showCount = 0;
+                        var stream = $container.find("div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
+                        stream.each(function () {
+                            if ($(this).css("display") !== "none") {
+                                showCount++;
+                                cHeight += $(this).height();
+                            }
+                        });
+                        if (showCount === 4) {
+                            cHeight += (SPACE + DISTANCE);
+                        }
+                        $container.height(cHeight + SPACE);
                         events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
                     }
                     resize.setHeight = setHeight;
@@ -20190,6 +20214,7 @@ var nts;
                     events.AREA_RESIZE = "extablearearesize";
                     events.AREA_RESIZE_END = "extablearearesizeend";
                     events.BODY_HEIGHT_CHANGED = "extablebodyheightchanged";
+                    events.OCCUPY_UPDATE = "extableoccupyupdate";
                     events.START_EDIT = "extablestartedit";
                     events.STOP_EDIT = "extablestopedit";
                     events.CELL_UPDATED = "extablecellupdated";
@@ -20555,9 +20580,9 @@ var nts;
                                 updateTable(self, params[0], params[1], params[2], params[3]);
                                 break;
                             case "updateMode":
-                                return setUpdateMode(self, params[0]);
+                                return setUpdateMode(self, params[0], params[1]);
                             case "viewMode":
-                                return setViewMode(self, params[0]);
+                                return setViewMode(self, params[0], params[1]);
                             case "pasteOverWrite":
                                 setPasteOverWrite(self, params[0]);
                                 break;
@@ -20785,13 +20810,16 @@ var nts;
                             render.process($body, exTable.horizontalSumContent, true);
                         }
                     }
-                    function setUpdateMode($container, mode) {
+                    function setUpdateMode($container, mode, occupation) {
                         var exTable = $container.data(NAMESPACE);
                         if (!mode)
                             return exTable.updateMode;
                         if (exTable.updateMode === mode)
                             return;
                         exTable.setUpdateMode(mode);
+                        if (occupation) {
+                            events.trigger($container, events.OCCUPY_UPDATE, occupation);
+                        }
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
                         selection.tickRows($container.find("." + BODY_PRF + LEFTMOST), true);
@@ -20803,13 +20831,16 @@ var nts;
                         selection.off($container);
                         copy.off($grid, mode);
                     }
-                    function setViewMode($container, mode) {
+                    function setViewMode($container, mode, occupation) {
                         var exTable = $container.data(NAMESPACE);
                         if (!mode)
                             return exTable.viewMode;
                         if (exTable.viewMode === mode)
                             return;
                         exTable.setViewMode(mode);
+                        if (occupation) {
+                            events.trigger($container, events.OCCUPY_UPDATE, occupation);
+                        }
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
                     }
