@@ -3,6 +3,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * TanLV
+ *
+ */
 public interface VerticalSettingRepository {
 	/**
 	 * Find all Vertical Calculator Setting
@@ -126,13 +130,6 @@ public interface VerticalSettingRepository {
 	 * @author phongtq
 	 */
 	void insertFromAmount(FormulaAmount formulaAmount);
-
-	/**
-	 * Add Formula Amount
-	 * @param numerical
-	 * @author phongtq
-	 */
-	void insertFromNumerical(FormulaNumerical numerical);
 
 	/**
 	 * Find Formula Money

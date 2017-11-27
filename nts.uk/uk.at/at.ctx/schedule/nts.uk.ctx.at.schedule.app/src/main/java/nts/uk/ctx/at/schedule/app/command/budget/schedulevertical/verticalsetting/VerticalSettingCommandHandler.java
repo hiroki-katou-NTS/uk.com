@@ -12,6 +12,10 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Vertic
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * TanLV
+ *
+ */
 @Transactional
 @Stateless
 public class VerticalSettingCommandHandler extends CommandHandler<VerticalSettingCommand> {

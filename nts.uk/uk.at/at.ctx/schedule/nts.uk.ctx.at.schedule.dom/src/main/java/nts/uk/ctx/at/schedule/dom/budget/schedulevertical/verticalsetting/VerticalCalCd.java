@@ -4,6 +4,10 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
+/**
+ * TanLV
+ *
+ */
 @StringMaxLength(2)
 @ZeroPaddedCode
 public class VerticalCalCd extends StringPrimitiveValue<VerticalCalCd> {

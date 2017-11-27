@@ -222,13 +222,14 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param numerical
 	 * @return
 	 */
-	private FormulaNumerical toDomainFormNumer(KscstFormNumerical numerical) {
+	private List<FormulaNumerical> toDomainFormNumer(List<KscstFormNumerical> numerical) {
 		if(numerical == null){
 			return null;
 		}
-		FormulaNumerical domain = FormulaNumerical.createFromJavatype(numerical.kscstFormulaNumericalPK.companyId,
-				numerical.kscstFormulaNumericalPK.verticalCalCd, numerical.kscstFormulaNumericalPK.verticalCalItemId,
-				numerical.kscstFormulaNumericalPK.externalBudgetCd, numerical.operatorAtr, numerical.dispOrder);
+		List<FormulaNumerical> domain = numerical.stream().map(x -> FormulaNumerical.createFromJavatype(x.kscstFormulaNumericalPK.companyId,
+				x.kscstFormulaNumericalPK.verticalCalCd, x.kscstFormulaNumericalPK.verticalCalItemId,
+				x.kscstFormulaNumericalPK.dispOrder, x.externalBudgetCd, x.operatorAtr))
+				.collect(Collectors.toList());
 		return domain;
 	}
 	
@@ -238,12 +239,13 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param numerical
 	 * @return
 	 */
-	private KscstFormNumerical toEntityFormNumerical(FormulaNumerical numerical) {
-		KscstFormNumerical entity = new KscstFormNumerical();
-		entity.kscstFormulaNumericalPK = new KscstFormNumericalPK(numerical.getCompanyId(),
-				numerical.getVerticalCalCd(), numerical.getVerticalCalItemId(), numerical.getExternalBudgetCd());
-		entity.operatorAtr = numerical.getOperatorAtr().value;
-		entity.dispOrder = numerical.getDispOrder();
+	private List<KscstFormNumerical> toEntityFormNumerical(List<FormulaNumerical> numerical) {
+		List<KscstFormNumerical> entity = numerical.stream().map(x -> new KscstFormNumerical(
+				new KscstFormNumericalPK(x.getCompanyId(), x.getVerticalCalCd(), x.getVerticalCalItemId(), x.getDispOrder()),
+				x.getExternalBudgetCd(), 
+				x.getOperatorAtr().value)
+				).collect(Collectors.toList());
+		
 		return entity;
 	}
 	
@@ -469,7 +471,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			FormTime formTime = toDomainFormTime(t.formTime);
 			FormPeople formPeople = toDomainFormPeople(t.formPeople);
 			FormulaAmount amount = toDomainFormAmount(t.amount);
-			FormulaNumerical numerical = toDomainFormNumer(t.numerical);
+			List<FormulaNumerical> numerical = toDomainFormNumer(t.numerical);
 			FormulaUnitprice unitprice = toDomainFromPrice(t.price);
 
 			return VerticalCalItem.createFromJavatype(t.kscmtGenVertItemPK.companyId, 
@@ -612,6 +614,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				amount = toEntityFormAmount(x.getFormulaAmount());
 			}
 			
+			List<KscstFormNumerical> numerical = null;
+			if(x.getNumerical() != null && x.getNumerical().size() > 0) {
+				numerical = toEntityFormNumerical(x.getNumerical());
+			}
+			
 			KscstFormulaUnitPrice price = null;
 			if (x.getUnitprice() != null) {
 				price = toEntityFormPrice(x.getUnitprice());
@@ -622,7 +629,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
 					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), x.getRoundingProcessing(), kscstVerticalItemOrder,
-					built, time, entity, amount, price);
+					built, time, entity, amount, numerical, price);
 		}).collect(Collectors.toList());
 
 		KscmtGenVertSet kscstVerticalCalSet = new KscmtGenVertSet();
@@ -724,6 +731,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				amount = toEntityFormAmount(x.getFormulaAmount());
 			}
 			
+			List<KscstFormNumerical> numerical = null;
+			if(x.getNumerical() != null) {
+				numerical = toEntityFormNumerical(x.getNumerical());
+			}
+			
 			KscstFormulaUnitPrice price = null;
 			if (x.getUnitprice() != null) {
 				price = toEntityFormPrice(x.getUnitprice());
@@ -734,7 +746,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
 					x.getCumulativeAtr(), x.getAttributes().value, x.getRounding(), x.getRoundingProcessing(), kscstVerticalItemOrder,
-					built, time, entity, amount, price);
+					built, time, entity, amount, numerical, price);
 		}).collect(Collectors.toList());
 
 		kscstVerticalCalSet.genVertItems = items;
@@ -781,7 +793,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	@Override
 	public List<FormulaNumerical> findAllFormNumber(String companyId) {
 		return this.queryProxy().query(SELECT_FORMULA_NUMMER, KscstFormNumerical.class)
-				.setParameter("companyId", companyId).getList(c -> toDomainFormNumer(c));
+				.setParameter("companyId", companyId).getList(x -> FormulaNumerical.createFromJavatype(x.kscstFormulaNumericalPK.companyId,
+						x.kscstFormulaNumericalPK.verticalCalCd, x.kscstFormulaNumericalPK.verticalCalItemId,
+						x.kscstFormulaNumericalPK.dispOrder, x.externalBudgetCd, x.operatorAtr));
 	}
 	
 
@@ -865,15 +879,6 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	@Override
 	public void insertFromAmount(FormulaAmount formulaAmount) {
 		this.commandProxy().insert(toEntityFormAmount(formulaAmount));
-	}
-
-	/**
-	 * Add Formula Numerical
-	 * @author phongtq
-	 */
-	@Override
-	public void insertFromNumerical(FormulaNumerical numerical) {
-		this.commandProxy().insert(toEntityFormNumerical(numerical));
 	}
 	
 	/**

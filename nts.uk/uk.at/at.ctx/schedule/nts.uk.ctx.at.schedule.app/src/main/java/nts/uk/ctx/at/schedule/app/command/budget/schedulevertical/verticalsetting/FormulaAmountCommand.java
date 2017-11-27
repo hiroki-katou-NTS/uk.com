@@ -7,6 +7,10 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Formul
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaTimeUnit;
 
+/**
+ * TanLV
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -70,7 +70,7 @@
 					</div>
 					<com:ko tag="if" bind="isError()">
 						<div class="buttonErrorOutput cf">
-							<button>#{i18n.getText('KSC001_54')}</button>
+							<button data-bind ="click: exportFileError">#{i18n.getText('KSC001_54')}</button>
 						</div>
 						<div class="tableErrorLog cf">
 							<table id="tableShowError" data-bind="ntsGridList: {								

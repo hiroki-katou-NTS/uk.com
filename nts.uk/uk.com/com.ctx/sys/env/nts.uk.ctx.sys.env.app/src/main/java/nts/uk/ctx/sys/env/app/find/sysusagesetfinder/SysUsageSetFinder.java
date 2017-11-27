@@ -19,7 +19,7 @@ public class SysUsageSetFinder {
 	
 	public SysUsageSetDto finder(ParamFinder param){
 		String contractCd = AppContexts.user().contractCode();
-		return  this.sysRep.findUsageSet(param.getCompanyId(), param.getCompanyCode(), contractCd)
+		return  this.sysRep.findUsageSet(param.getCompanyId())
 											.map(c -> {
 												return new SysUsageSetDto(param.getCompanyId(), param.getCompanyCode(), contractCd,
 														c.getJinji().value,
