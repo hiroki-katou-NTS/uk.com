@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistoryRepository;
-import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.LastEmRegHistory;
+import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
+import nts.uk.ctx.pereg.dom.reghistory.LastEmRegHistory;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
