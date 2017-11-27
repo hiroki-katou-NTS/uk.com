@@ -11481,11 +11481,12 @@ var nts;
                                 }
                             });
                         }
-                        validation.scanValidators($(self), options.columns);
+                        var flatCols = validation.scanValidators($(self), options.columns);
                         var cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
                         $(this).addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
                         var columnControlTypes = {};
                         var columnSpecialTypes = {};
+                        var bounceCombos = {};
                         var cbHeaderColumns = [];
                         var cbSelectionColumns = {};
                         var formatColumn = function (column) {
@@ -11523,7 +11524,7 @@ var nts;
                                 column.group = cols;
                                 return column;
                             }
-                            specialColumn.ifTrue(columnSpecialTypes, column);
+                            specialColumn.ifTrue(columnSpecialTypes, column, bounceCombos, flatCols);
                             if (column.ntsControl === undefined) {
                                 columnControlTypes[column.key] = ntsControls.TEXTBOX;
                                 return cellFormatter.format(column);
@@ -11575,6 +11576,10 @@ var nts;
                                     showHeaderCheckbox: column.showHeaderCheckbox,
                                     enable: isEnable
                                 };
+                                var back;
+                                if (back = bounceCombos[column.key]) {
+                                    data.bounce = back;
+                                }
                                 var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
                                 var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", ntsControls.HEIGHT_CONTROL));
                                 var $_self = $self;
@@ -11706,6 +11711,8 @@ var nts;
                         updating.containsNtsControl = containsNtsControl;
                         function startEditCell(evt, ui) {
                             if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
+                                if ($(evt.currentTarget).find("div[class*='nts-editor-container']").length > 0)
+                                    return false;
                                 var selectedCell = selection.getSelectedCell($(evt.target));
                                 if (uk.util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target)))
                                     return;
@@ -12528,6 +12535,7 @@ var nts;
                         ntsControls.BUTTON = 'Button';
                         ntsControls.DELETE_BUTTON = 'DeleteButton';
                         ntsControls.TEXTBOX = 'TextBox';
+                        ntsControls.TEXT_EDITOR = 'TextEditor';
                         ntsControls.IMAGE = 'Image';
                         ntsControls.HEIGHT_CONTROL = "27px";
                         ntsControls.COMBO_CLASS = "nts-combo-container";
@@ -12543,6 +12551,8 @@ var nts;
                                     return new Button();
                                 case ntsControls.DELETE_BUTTON:
                                     return new DeleteButton();
+                                case ntsControls.TEXT_EDITOR:
+                                    return new TextEditor();
                                 case ntsControls.LINK_LABEL:
                                     return new LinkLabel();
                                 case ntsControls.IMAGE:
@@ -12562,7 +12572,11 @@ var nts;
                                     var rId = rowObj[$grid.igGrid("option", "primaryKey")];
                                     var $gridCell = $grid.igGrid("cellById", rId, column.key);
                                     if ($gridCell && $($gridCell.children()[0]).children().length === 0) {
-                                        $("." + controlCls).append(new Label().draw({ text: value }));
+                                        var action = void 0;
+                                        if (column.click && _.isFunction(column.click)) {
+                                            action = function () { return column.click(rowId, column.key); };
+                                        }
+                                        $("." + controlCls).append(new Label(action).draw({ text: value }));
                                         var cellElement = {
                                             id: rId,
                                             columnKey: column.key,
@@ -12731,6 +12745,7 @@ var nts;
                                     var btn = $('<button>').text(text).css("height", "26px")
                                         .addClass('nts-switch-button')
                                         .attr('data-swbtn', value)
+                                        .attr('tabindex', -1)
                                         .on('click', function () {
                                         var selectedValue = $(this).data('swbtn');
                                         $('button', container).removeClass(selectedCssClass);
@@ -12849,8 +12864,14 @@ var nts;
                                                 var targetCell = __self.$containedGrid.igGrid("cellById", rowId, columnKey);
                                                 var $comboContainer = $(targetCell).find("." + __self.containerClass());
                                                 $comboContainer.data(internal.COMBO_SELECTED, selectedValue_1);
+                                                if (data.bounce) {
+                                                    updating.updateCell(__self.$containedGrid, rowId, data.bounce, selectedValue_1);
+                                                }
                                             }, 0);
                                         }
+                                    },
+                                    rendered: function () {
+                                        container.igCombo("option", "tabIndex", -1);
                                     }
                                 });
                                 container.data(internal.COMBO_SELECTED, data.initValue);
@@ -12895,7 +12916,8 @@ var nts;
                             };
                             Button.prototype.draw = function (data) {
                                 var $container = $("<div/>").addClass(this.containerClass());
-                                var $button = $("<button/>").addClass("ntsButton").css("height", "25px").appendTo($container).text(data.controlDef.text || data.initValue)
+                                var $button = $("<button/>").addClass("ntsButton").css("height", "25px").appendTo($container)
+                                    .text(data.controlDef.text || data.initValue).attr("tabindex", -1)
                                     .data("enable", data.enable).on("click", $.proxy(data.controlDef.click, null, data.rowObj));
                                 $button.prop("disabled", !data.enable);
                                 return $container;
@@ -12924,17 +12946,152 @@ var nts;
                             };
                             return DeleteButton;
                         }(Button));
+                        var TextEditor = (function (_super) {
+                            __extends(TextEditor, _super);
+                            function TextEditor() {
+                                _super.apply(this, arguments);
+                            }
+                            TextEditor.prototype.containerClass = function () {
+                                return "nts-editor-container";
+                            };
+                            TextEditor.prototype.draw = function (data) {
+                                var self = this;
+                                var constraint = data.controlDef.constraint;
+                                var $container = $("<div/>").addClass(this.containerClass());
+                                var $input = $("<input/>").addClass("nts-editor nts-input").css({ padding: "2px", width: "96%" })
+                                    .attr("tabindex", -1).val(data.initValue);
+                                if (constraint.valueType === "Time")
+                                    $input.css("text-align", "right");
+                                var $editor = $("<span/>").addClass("nts-editor-wrapper ntsControl").css("width", "100%").append($input).appendTo($container);
+                                var cell;
+                                self.validate(data.controlDef, data.initValue).success(function (t) {
+                                    $input.val(t);
+                                    $input.data(internal.TXT_RAW, data.initValue);
+                                }).terminate();
+                                var valueToDs = function (valueType, before, after) {
+                                    switch (valueType) {
+                                        case "Integer":
+                                        case "HalfInt":
+                                        case "String":
+                                            return before;
+                                        case "Time":
+                                            return after;
+                                    }
+                                };
+                                $input.on(events.Handler.KEY_DOWN, function (evt) {
+                                    if (utils.isEnterKey(evt)) {
+                                        var value_1 = $input.val();
+                                        self.validate(data.controlDef, value_1).success(function (t) {
+                                            cell = self.cellBelongTo($input);
+                                            errors.clear(self.$containedGrid, cell);
+                                            var val = valueToDs(constraint.valueType, value_1, t);
+                                            $input.data(internal.TXT_RAW, val);
+                                            data.update(val);
+                                        }).fail(function (errId) {
+                                            cell = self.cellBelongTo($input);
+                                            errors.set(self.$containedGrid, cell, uk.resource.getMessage(errId));
+                                        }).terminate;
+                                    }
+                                });
+                                $input.on(events.Handler.KEY_UP, function (evt) {
+                                    self.validate(data.controlDef, $input.val()).success(function (t) {
+                                        cell = self.cellBelongTo($input);
+                                        errors.clear(self.$containedGrid, cell);
+                                    }).fail(function (errId) {
+                                        cell = self.cellBelongTo($input);
+                                        errors.set(self.$containedGrid, cell, nts.uk.resource.getMessage(errId));
+                                    }).terminate();
+                                });
+                                $input.on(events.Handler.BLUR, function (evt) {
+                                    self.validate(data.controlDef, $input.val()).success(function (t) {
+                                        var value = $input.val();
+                                        cell = self.cellBelongTo($input);
+                                        errors.clear(self.$containedGrid, cell);
+                                        var val = valueToDs(constraint.valueType, value, t);
+                                        data.update(val);
+                                        $input.data(internal.TXT_RAW, val);
+                                        $input.val(t);
+                                    }).fail(function (errId) {
+                                        cell = self.cellBelongTo($input);
+                                        errors.set(self.$containedGrid, cell, nts.uk.resource.getMessage(errId));
+                                    }).terminate();
+                                });
+                                $input.on(events.Handler.CLICK, function (evt) {
+                                    var rawValue = $input.data(internal.TXT_RAW);
+                                    if (!errors.any({ element: $input.closest("td")[0] })
+                                        && !uk.util.isNullOrUndefined(rawValue))
+                                        $input.val(rawValue);
+                                });
+                                return $container;
+                            };
+                            TextEditor.prototype.cellBelongTo = function ($input) {
+                                var self = this;
+                                var cell = {};
+                                cell.element = $input.closest("td")[0];
+                                var $gridControl = $input.closest("div[class*='nts-grid-control']");
+                                if ($gridControl.length === 0)
+                                    return;
+                                var clazz = $gridControl.attr("class").split(" ")[0];
+                                var pos = clazz.split("-");
+                                cell.id = utils.parseIntIfNumber(pos.pop(), self.$containedGrid, utils.getColumnsMap(self.$containedGrid));
+                                cell.columnKey = pos.pop();
+                                return cell;
+                            };
+                            TextEditor.prototype.validate = function (controlDef, value) {
+                                var constraint = controlDef.constraint;
+                                if (constraint.required && (_.isEmpty(value) || _.isNull(value)))
+                                    return validation.Result.invalid("FND_E_REQ_INPUT");
+                                switch (constraint.valueType) {
+                                    case "Integer":
+                                        var valid = uk.ntsNumber.isNumber(value, false);
+                                        if (!valid)
+                                            return validation.Result.invalid("FND_E_INTEGER");
+                                        var formatted = value;
+                                        if (constraint.format === "Number_Separated") {
+                                            formatted = uk.ntsNumber.formatNumber(value, { formatId: constraint.format });
+                                        }
+                                        return validation.Result.OK(formatted);
+                                    case "Time":
+                                        return validation.parseTime(value, constraint.format);
+                                    case "HalfInt":
+                                        if (uk.ntsNumber.isHalfInt(value)) {
+                                            return new validation.Result.OK(value);
+                                        }
+                                        return new validation.Result.invalid("FND_E_HALFINT");
+                                    case "String":
+                                        return validation.Result.OK(value);
+                                }
+                            };
+                            TextEditor.prototype.enable = function ($container) {
+                                var self = this;
+                                var $wrapper = $container.find("." + self.containerClass());
+                                $wrapper.find("input").prop("disabled", false);
+                            };
+                            TextEditor.prototype.disable = function ($container) {
+                                var self = this;
+                                var $wrapper = $container.find("." + self.containerClass());
+                                $wrapper.find("input").prop("disabled", true);
+                            };
+                            return TextEditor;
+                        }(NtsControlBase));
                         var Label = (function (_super) {
                             __extends(Label, _super);
-                            function Label() {
-                                _super.apply(this, arguments);
+                            function Label(action) {
+                                this.action = action;
                             }
                             Label.prototype.containerClass = function () {
                                 return "nts-label-container";
                             };
                             Label.prototype.draw = function (data) {
+                                var self = this;
                                 var $container = $("<div/>").addClass(this.containerClass());
-                                $("<label/>").addClass("ntsLabel").css("padding-left", "0px").text(data.text).appendTo($container);
+                                var $label = $("<label/>").addClass("ntsLabel").css({ padding: "3px 0px", display: "inline-block", width: "100%" }).text(data.text).appendTo($container);
+                                if (self.action && _.isFunction(self.action)) {
+                                    $container.on(events.Handler.CLICK, function (evt) {
+                                        self.action();
+                                    });
+                                    $label.css({ cursor: "pointer" });
+                                }
                                 return $container;
                             };
                             Label.prototype.enable = function ($container) {
@@ -13010,7 +13167,7 @@ var nts;
                     (function (specialColumn_1) {
                         specialColumn_1.CODE = "code";
                         specialColumn_1.COMBO_CODE = "comboCode";
-                        function ifTrue(columnSpecialTypes, column) {
+                        function ifTrue(columnSpecialTypes, column, bounceCombos, flatCols) {
                             if (uk.util.isNullOrUndefined(column.ntsType))
                                 return;
                             if (column.ntsType === specialColumn_1.CODE) {
@@ -13020,6 +13177,13 @@ var nts;
                             else if (column.ntsType === specialColumn_1.COMBO_CODE) {
                                 columnSpecialTypes[column.key] = { type: column.ntsType,
                                     onChange: identity };
+                                var index = _.findIndex(flatCols, function (o) {
+                                    return o.key === column.key;
+                                });
+                                var b = void 0;
+                                if (index + 1 < flatCols.length && (b = flatCols[index + 1]) !== undefined) {
+                                    bounceCombos[b.key] = column.key;
+                                }
                             }
                         }
                         specialColumn_1.ifTrue = ifTrue;
@@ -13566,6 +13730,7 @@ var nts;
                             Handler.KEY_DOWN = "keydown";
                             Handler.KEY_UP = "keyup";
                             Handler.FOCUS_IN = "focusin";
+                            Handler.BLUR = "blur";
                             Handler.CLICK = "click";
                             Handler.MOUSE_DOWN = "mousedown";
                             Handler.SCROLL = "scroll";
@@ -13632,6 +13797,7 @@ var nts;
                     var validation;
                     (function (validation) {
                         validation.VALIDATORS = "ntsValidators";
+                        var H_M_MAX = 60;
                         var ColumnFieldValidator = (function () {
                             function ColumnFieldValidator(name, primitiveValue, options) {
                                 this.name = name;
@@ -13662,6 +13828,40 @@ var nts;
                             return ColumnFieldValidator;
                         }());
                         validation.ColumnFieldValidator = ColumnFieldValidator;
+                        var Result = (function () {
+                            function Result(isValid, formatted, messageId) {
+                                this.onSuccess = $.noop;
+                                this.onFail = $.noop;
+                                this.isValid = isValid;
+                                this.formatted = formatted;
+                                this.errorMessageId = messageId;
+                            }
+                            Result.OK = function (formatted) {
+                                return new Result(true, formatted);
+                            };
+                            Result.invalid = function (msgId) {
+                                return new Result(false, null, msgId);
+                            };
+                            Result.prototype.success = function (cnt) {
+                                this.onSuccess = cnt;
+                                return this;
+                            };
+                            Result.prototype.fail = function (cnt) {
+                                this.onFail = cnt;
+                                return this;
+                            };
+                            Result.prototype.terminate = function () {
+                                var self = this;
+                                if (self.isValid && self.onSuccess && _.isFunction(self.onSuccess)) {
+                                    self.onSuccess(self.formatted);
+                                }
+                                else if (!self.isValid && self.onFail && _.isFunction(self.onFail)) {
+                                    self.onFail(self.errorMessageId);
+                                }
+                            };
+                            return Result;
+                        }());
+                        validation.Result = Result;
                         function getValidators(columnsDef) {
                             var validators = {};
                             _.forEach(columnsDef, function (def) {
@@ -13672,9 +13872,27 @@ var nts;
                             return validators;
                         }
                         function scanValidators($grid, columnsDef) {
-                            $grid.data(validation.VALIDATORS, getValidators(utils.analyzeColumns(columnsDef)));
+                            var columns = utils.analyzeColumns(columnsDef);
+                            $grid.data(validation.VALIDATORS, getValidators(columns));
+                            return columns;
                         }
                         validation.scanValidators = scanValidators;
+                        function parseTime(value, format) {
+                            if (uk.ntsNumber.isNumber(value, false)) {
+                                if (value <= H_M_MAX)
+                                    return Result.OK(value);
+                                var hh = Math.floor(value / 100);
+                                var mm = value % 100;
+                                if (mm >= H_M_MAX)
+                                    return Result.invalid("NEED_MSG_INVALID_TIME_FORMAT");
+                                return Result.OK(hh + ":" + mm.toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }));
+                            }
+                            var formatRes = uk.time.applyFormat(format, value, undefined);
+                            if (!formatRes)
+                                return Result.invalid("NEED_MSG_INVALID_TIME_FORMAT");
+                            return Result.OK(formatRes);
+                        }
+                        validation.parseTime = parseTime;
                     })(validation || (validation = {}));
                     var errors;
                     (function (errors) {
@@ -13704,7 +13922,7 @@ var nts;
                                 $editor.css(errors.ERROR_STL);
                         }
                         function set($grid, cell, message) {
-                            if (any(cell))
+                            if (!cell || !cell.element || any(cell))
                                 return;
                             var $cell = $(cell.element);
                             decorate($cell);
@@ -13731,7 +13949,7 @@ var nts;
                             return error;
                         }
                         function clear($grid, cell) {
-                            if (!any(cell))
+                            if (!cell || !cell.element || !any(cell))
                                 return;
                             var $cell = $(cell.element);
                             $cell.removeClass(errors.HAS_ERROR);
@@ -13744,7 +13962,7 @@ var nts;
                         }
                         errors.clear = clear;
                         function any(cell) {
-                            return $(cell.element).hasClass(errors.HAS_ERROR);
+                            return cell.element && $(cell.element).hasClass(errors.HAS_ERROR);
                         }
                         errors.any = any;
                         function addErrorInSheet($grid, cell) {
@@ -14434,6 +14652,7 @@ var nts;
                         internal.SETTINGS = "ntsSettings";
                         internal.ERRORS_LOG = "ntsErrorsLog";
                         internal.LOADER = "ntsLoader";
+                        internal.TXT_RAW = "rawText";
                     })(internal || (internal = {}));
                     var utils;
                     (function (utils) {
@@ -14605,6 +14824,7 @@ var nts;
                                 case ntsControls.BUTTON:
                                 case ntsControls.DELETE_BUTTON:
                                 case ntsControls.IMAGE:
+                                case ntsControls.TEXT_EDITOR:
                                     return true;
                             }
                             return false;
@@ -15944,7 +16164,7 @@ var nts;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
                 var DISTANCE = 3;
-                var SPACE = 30;
+                var SPACE = 10;
                 var HEADER = "xheader";
                 var HEADER_PRF = "ex-header-";
                 var BODY_PRF = "ex-body-";
@@ -16328,6 +16548,18 @@ var nts;
                         events.onModify(self.$container);
                         selection.checkUp(self.$container);
                         copy.on(self.$container.find("." + BODY_PRF + DETAIL), self.updateMode);
+                        self.$container.on(events.OCCUPY_UPDATE, function (evt, reserve) {
+                            if (self.bodyHeightSetMode === FIXED)
+                                return;
+                            if (reserve && reserve.x) {
+                                self.$container.data(internal.X_OCCUPY, reserve.x);
+                                resize.fitWindowWidth(self.$container);
+                            }
+                            if (reserve && reserve.y) {
+                                self.$container.data(internal.Y_OCCUPY, reserve.y);
+                                resize.fitWindowHeight(self.$container, bodyWrappers, horzSumExists);
+                            }
+                        });
                         if (self.$commander) {
                             events.trigger(self.$container, events.COMPLETED);
                         }
@@ -19599,6 +19831,18 @@ var nts;
                                 return;
                             $(this).height(height);
                         });
+                        var cHeight = 0, showCount = 0;
+                        var stream = $container.find("div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
+                        stream.each(function () {
+                            if ($(this).css("display") !== "none") {
+                                showCount++;
+                                cHeight += $(this).height();
+                            }
+                        });
+                        if (showCount === 4) {
+                            cHeight += (SPACE + DISTANCE);
+                        }
+                        $container.height(cHeight + SPACE);
                         events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
                     }
                     resize.setHeight = setHeight;
@@ -19970,6 +20214,7 @@ var nts;
                     events.AREA_RESIZE = "extablearearesize";
                     events.AREA_RESIZE_END = "extablearearesizeend";
                     events.BODY_HEIGHT_CHANGED = "extablebodyheightchanged";
+                    events.OCCUPY_UPDATE = "extableoccupyupdate";
                     events.START_EDIT = "extablestartedit";
                     events.STOP_EDIT = "extablestopedit";
                     events.CELL_UPDATED = "extablecellupdated";
@@ -20335,9 +20580,9 @@ var nts;
                                 updateTable(self, params[0], params[1], params[2], params[3]);
                                 break;
                             case "updateMode":
-                                return setUpdateMode(self, params[0]);
+                                return setUpdateMode(self, params[0], params[1]);
                             case "viewMode":
-                                return setViewMode(self, params[0]);
+                                return setViewMode(self, params[0], params[1]);
                             case "pasteOverWrite":
                                 setPasteOverWrite(self, params[0]);
                                 break;
@@ -20565,13 +20810,16 @@ var nts;
                             render.process($body, exTable.horizontalSumContent, true);
                         }
                     }
-                    function setUpdateMode($container, mode) {
+                    function setUpdateMode($container, mode, occupation) {
                         var exTable = $container.data(NAMESPACE);
                         if (!mode)
                             return exTable.updateMode;
                         if (exTable.updateMode === mode)
                             return;
                         exTable.setUpdateMode(mode);
+                        if (occupation) {
+                            events.trigger($container, events.OCCUPY_UPDATE, occupation);
+                        }
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
                         selection.tickRows($container.find("." + BODY_PRF + LEFTMOST), true);
@@ -20583,13 +20831,16 @@ var nts;
                         selection.off($container);
                         copy.off($grid, mode);
                     }
-                    function setViewMode($container, mode) {
+                    function setViewMode($container, mode, occupation) {
                         var exTable = $container.data(NAMESPACE);
                         if (!mode)
                             return exTable.viewMode;
                         if (exTable.viewMode === mode)
                             return;
                         exTable.setViewMode(mode);
+                        if (occupation) {
+                            events.trigger($container, events.OCCUPY_UPDATE, occupation);
+                        }
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
                     }
