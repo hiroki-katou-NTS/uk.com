@@ -18,7 +18,7 @@ public interface PersonInfoAdapter {
 	 * @param employeeId the employee id
 	 * @return the person info
 	 */
-	PersonInfoImportedDto getPersonInfo(String employeeId);
+	PersonInfoImportedImport getPersonInfo(String employeeId);
 	/**
 	 * get list person info by list employeeId (sid)
 	 * @param sid

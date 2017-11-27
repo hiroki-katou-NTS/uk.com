@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.workinformation;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
@@ -12,6 +14,8 @@ import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
  *
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class WorkInformation extends DomainObject{
 	
 	private WorkTimeCode workTimeCode;

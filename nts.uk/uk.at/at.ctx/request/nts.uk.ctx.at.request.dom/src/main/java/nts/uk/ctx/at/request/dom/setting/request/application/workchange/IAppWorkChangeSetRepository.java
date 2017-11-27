@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.request.dom.setting.request.application.workchange;
+package nts.uk.ctx.at.request.dom.setting.request.application.workchange;
 
 import java.util.List;
 import java.util.Optional;

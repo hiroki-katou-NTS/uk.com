@@ -5,13 +5,13 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
-import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidDto;
+import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 
 @Stateless
 public class AffClassificationAdapterImpl implements AffClassificationAdapter {
 
 	@Override
-	public List<AffClassificationSidDto> findByListEmployeeId() {
+	public List<AffClassificationSidImport> findByListEmployeeId() {
 		// TODO Auto-generated method stub
 		return null;
 	}

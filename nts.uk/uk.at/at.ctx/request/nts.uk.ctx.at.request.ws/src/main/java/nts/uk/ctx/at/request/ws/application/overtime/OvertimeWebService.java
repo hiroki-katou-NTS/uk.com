@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ws.application.overtime;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,7 +18,10 @@ import nts.uk.ctx.at.request.app.command.application.overtime.UpdateOvertimeComm
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCaculationOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 
 @Path("at/request/application/overtime")
 @Produces("application/json")
@@ -49,6 +54,11 @@ public class OvertimeWebService extends WebService{
 	@Path("checkConvertPrePost")
 	public OverTimeDto convertPrePost(ParamChangeAppDate param) {
 		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate());
+	}
+	@POST
+	@Path("getCaculationResult")
+	public List<OvertimeInputDto> getCaculationResult(ParamCaculationOvertime param) {
+		return this.overtimeFinder.getCaculationValue(param.getOvertimeInputDtos(), param.getPrePostAtr(), param.getAppDate());
 	}
 	
 	

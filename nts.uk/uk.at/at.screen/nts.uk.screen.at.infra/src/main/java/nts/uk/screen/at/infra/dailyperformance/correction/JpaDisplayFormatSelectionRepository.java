@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyPerformanceFormat;
+//import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyPerformanceFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayFormatSelectionRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceFormatDto;
 
@@ -18,16 +18,17 @@ public class JpaDisplayFormatSelectionRepository extends JpaRepository implement
 
 	@Override
 	public List<DailyPerformanceFormatDto> getDailyPerformanceFormatList(String companyId, List<String> codeList) {
-		List<KfnmtAuthorityDailyPerformanceFormat> lstData =
+		/*List<KfnmtAuthorityDailyPerformanceFormat> lstData =
 				this.queryProxy().query(FIND_DAILY_PERFORMANCE_FORMAT_BY_COMPANY, KfnmtAuthorityDailyPerformanceFormat.class)
 				.setParameter("companyId", companyId)
 				.setParameter("codeList", codeList).getList();
-		return lstData.stream().map(entity -> toDto(entity)).collect(Collectors.toList());
+		return lstData.stream().map(entity -> toDto(entity)).collect(Collectors.toList());*/
+		return null;
 	}
 
-	private static DailyPerformanceFormatDto toDto(KfnmtAuthorityDailyPerformanceFormat entity) {
+	/*private static DailyPerformanceFormatDto toDto(KfnmtAuthorityDailyPerformanceFormat entity) {
 		return new DailyPerformanceFormatDto(entity.kfnmtAuthorityDailyPerformanceFormatPK.companyId,
 										entity.kfnmtAuthorityDailyPerformanceFormatPK.dailyPerformanceFormatCode,
 										entity.dailyPerformanceFormatName);
-	}
+	}*/
 }

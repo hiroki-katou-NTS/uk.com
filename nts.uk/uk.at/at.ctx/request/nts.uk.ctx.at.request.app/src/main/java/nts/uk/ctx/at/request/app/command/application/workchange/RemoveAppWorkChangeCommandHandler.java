@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.request.app.command.application.workchange;
+package nts.uk.ctx.at.request.app.command.application.workchange;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
