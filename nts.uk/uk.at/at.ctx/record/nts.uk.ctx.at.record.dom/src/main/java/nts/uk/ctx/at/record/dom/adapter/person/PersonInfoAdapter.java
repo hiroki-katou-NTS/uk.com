@@ -25,7 +25,7 @@ public interface PersonInfoAdapter {
 	 * @param listPersonId the list person id
 	 * @return the list person
 	 */
-	List<PersonInfoImportedDto> getListPerson(List<String> listPersonId);
+	List<PersonInfoImportedImport> getListPerson(List<String> listPersonId);
 	
 	/**
 	 * Gets the list person info.

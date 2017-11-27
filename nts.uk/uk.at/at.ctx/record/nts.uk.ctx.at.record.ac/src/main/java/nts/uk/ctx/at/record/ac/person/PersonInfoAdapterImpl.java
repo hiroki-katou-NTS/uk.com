@@ -42,7 +42,7 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 		if (personInfoExport == null) {
 			return null;
 		}
-		PersonInfoImportedDto personInfoImported = PersonInfoImportedDto.builder()
+		PersonInfoImportedImport personInfoImported = PersonInfoImportedImport.builder()
 				.employeeId(personInfoExport.getEmployeeId())
 				.employeeName(personInfoExport.getEmployeeName())
 				.build();
@@ -55,10 +55,10 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 	 * @see nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter#getAllPersonInfo()
 	 */
 	@Override
-	public List<PersonInfoImportedDto> getListPerson(List<String> listPersonId) {		
+	public List<PersonInfoImportedImport> getListPerson(List<String> listPersonId) {		
 		return this.employeeInfoPub.getListEmpBasicInfo(listPersonId).stream()
 				.map(item -> {					
-					return PersonInfoImportedDto.builder()
+					return PersonInfoImportedImport.builder()
 							.employeeId(item.getEmployeeId())
 							.employeeName(item.getPersonName())
 							.build();

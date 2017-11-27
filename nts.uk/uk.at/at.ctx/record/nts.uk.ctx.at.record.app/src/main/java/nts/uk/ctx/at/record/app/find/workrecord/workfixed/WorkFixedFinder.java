@@ -80,7 +80,7 @@ public class WorkFixedFinder {
 				.map(WorkFixedFinderDto::getConfirmPid)
 				.distinct()
 				.collect(Collectors.toList());
-		Map<String, PersonInfoImportedDto> listPerson = this.personInfoAdapter.getListPerson(listPersonId)
+		Map<String, PersonInfoImportedImport> listPerson = this.personInfoAdapter.getListPerson(listPersonId)
 				.stream()
 				.collect(Collectors.toMap(item -> item.getEmployeeId(), Function.identity()));
 
@@ -95,7 +95,7 @@ public class WorkFixedFinder {
 					// Get WorkFixed info
 					if (!Strings.isEmpty(workFixed.getConfirmPid())) {
 						// Get Person info
-						PersonInfoImportedDto person = listPerson.get(workFixed.getConfirmPid());
+						PersonInfoImportedImport person = listPerson.get(workFixed.getConfirmPid());
 						if (person == null) {
 							workFixed.saveToMemento(dto);
 							return dto;
@@ -118,7 +118,7 @@ public class WorkFixedFinder {
 	public PersonInfoWorkFixedDto findCurrentPersonName() {
 		// Get Person Id
 		String personId = AppContexts.user().personId();
-		PersonInfoImportedDto personImportDto = this.personInfoAdapter.getPersonInfo(personId);
+		PersonInfoImportedImport personImportDto = this.personInfoAdapter.getPersonInfo(personId);
 		if (personImportDto == null) {
 			return null;
 		}
