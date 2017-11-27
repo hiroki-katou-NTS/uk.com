@@ -49,9 +49,17 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	@Column(name = "ATTRIBUTES")
 	public int attributes;
 	
+	/**
+	 * 単位
+	 * IF (属性=0) 時間縦計項目.数値丸め.単位
+	 * ELSE 時間縦計項目.時間丸め設定.単位
+	 */
 	@Column(name = "ROUNDING_ATR")
 	public int rounding;
 	
+	/**
+	 * 端数処理
+	 */
 	@Column(name = "ROUNDING_PROCESSING")
 	public int roundingProcessing;
 	
