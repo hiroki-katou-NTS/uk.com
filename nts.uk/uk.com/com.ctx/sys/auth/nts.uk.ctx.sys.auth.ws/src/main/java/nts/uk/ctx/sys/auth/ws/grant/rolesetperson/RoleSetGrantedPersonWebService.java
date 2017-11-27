@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.ws.grant.rolesetjob;
+package nts.uk.ctx.sys.auth.ws.grant.rolesetperson;
 
 import java.util.List;
 
@@ -43,15 +43,13 @@ public class RoleSetGrantedPersonWebService {
 	@POST
 	@Path("register")
 	public void register(RoleSetGrantedPersonCommand command) {
-		//this.regHandler.handle(command);
-		System.out.println("register done!");
+		this.regHandler.handle(command);
 	}
 	
 	@POST
 	@Path("delete")
-	public void delete(String employeeId) {
-		//this.delHandler.handle(command);
-		System.out.println("delete done!");
+	public void delete(RoleSetGrantedPersonCommand command) {
+		this.delHandler.handle(command);
 	}
 
 	@POST
