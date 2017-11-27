@@ -83,6 +83,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         selectedDate: KnockoutObservable<any> = ko.observable(null);
 
         showButton: KnockoutObservable<AuthorityDetailModel> = ko.observable(null);
+        
+        referenceVacation :  KnockoutObservable<ReferenceVacation> = ko.observable(null);
 
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
@@ -183,8 +185,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 _.each(data.lstFixedHeader, function(item) {
                     delete item.group;
                 });
-                // Fixed Header
+                self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr));
                 self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto));
+                // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                 self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
@@ -963,5 +966,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         roleID: string;
         functionNo: number;
         availability: boolean;
+    }
+    
+     export class ReferenceVacation {
+        yearHoliday: KnockoutObservable<boolean> = ko.observable(true);
+        substVacation: KnockoutObservable<boolean> = ko.observable(true);
+        compensLeave: KnockoutObservable<boolean> = ko.observable(true);
+        com60HVacation: KnockoutObservable<boolean> = ko.observable(true);
+      
+        constructor(yearHoliday: any, substVacation: any, compensLeave: any, com60HVacation: any) {
+            var self = this;
+            this.yearHoliday(yearHoliday);
+            this.substVacation(substVacation);
+            this.compensLeave(compensLeave);
+            this.com60HVacation(com60HVacation);
+        }       
     }
 }
