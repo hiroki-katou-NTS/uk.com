@@ -16,7 +16,7 @@ public class WorkTimeNo extends IntegerPrimitiveValue<WorkTimeNo>{
 	 * @param raw Value 
 	 * @param rawValue the raw Value
 	 */
-	public WorkTimeNo(int rawValue) {
+	public WorkTimeNo(Integer rawValue) {
 		super(rawValue);
 	}
 

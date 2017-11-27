@@ -110,7 +110,7 @@ public class OverDayEnd {
 																item.isGoEarly(),
 																item.getWithinStatutoryAtr());
 				
-				HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(BigDecimal.valueOf(item.getFrameNo().v())),
+				HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(item.getFrameNo().v()),
 																		  Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 																		  Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 																		  Finally.of(new AttendanceTime(0)));
@@ -155,7 +155,7 @@ public class OverDayEnd {
 																	  ,WorkType notTargetDay) {
 			HolidayWorkFrameNo no = weekDaySet.getHolidayWorkNo(notTargetDay.getWorkTypeSetList().get(0).getHolidayAtr())/*0時跨ぎ計算設定に対して休日区分を投げ、休出NOをここで取得する*/;
 			TimeWithCalculation time = TimeWithCalculation.sameTime(new AttendanceTime(0));
-			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(BigDecimal.valueOf(0)),
+			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(1),
 					  							Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 					  							Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 					  							Finally.of(new AttendanceTime(0)));

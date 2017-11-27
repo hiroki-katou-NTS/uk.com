@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork;
 import java.math.BigDecimal;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.DecimalMinValue;
 
@@ -13,7 +14,7 @@ import nts.arc.primitive.constraint.DecimalMinValue;
  */
 @DecimalMaxValue("10")
 @DecimalMinValue("1")
-public class HolidayWorkFrameNo extends DecimalPrimitiveValue<HolidayWorkFrameNo>{
+public class HolidayWorkFrameNo extends IntegerPrimitiveValue<HolidayWorkFrameNo>{
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
@@ -21,7 +22,7 @@ public class HolidayWorkFrameNo extends DecimalPrimitiveValue<HolidayWorkFrameNo
 	 * constructor
 	 * @param rawValue
 	 */
-	public HolidayWorkFrameNo(BigDecimal rawValue) {
+	public HolidayWorkFrameNo(Integer rawValue) {
 		super(rawValue);
 	}
 }
