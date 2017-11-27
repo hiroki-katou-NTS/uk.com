@@ -18,10 +18,20 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 
 	@Override
 	public void add(AffCompanyInfo domain) {
+		commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
 	public void update(AffCompanyInfo domain) {
+		BsymtAffCompanyInfo entity = this.queryProxy().query(SELECT_BY_HISTID, BsymtAffCompanyInfo.class)
+				.setParameter("histId", domain.getHistoryId()).getSingleOrNull();
+		if (entity != null) {
+			entity.adoptionDate = domain.getAdoptionDate();
+			entity.retirementAllowanceCalcStartDate = domain.getRetirementAllowanceCalcStartDate();
+			entity.recruitmentCategoryCode = domain.getRecruitmentCategoryCode().v();
+			
+			this.commandProxy().update(entity);
+		}
 	}
 
 	@Override
@@ -36,10 +46,19 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 
 	@Override
 	public AffCompanyInfo getAffCompanyInfoByHistId(String histId) {
-
 		return this.queryProxy().query(SELECT_BY_HISTID, BsymtAffCompanyInfo.class).setParameter("histId", histId)
-				.getSingle(m -> AffCompanyInfo.createFromJavaType(m.bsymtAffCompanyInfoPk.historyId,
-						m.recruitmentCategoryCode, m.adoptionDate, m.retirementAllowanceCalcStartDate))
-				.orElse(null);
+				.getSingle(m -> toDomain(m)).orElse(null);
+	}
+
+	private AffCompanyInfo toDomain(BsymtAffCompanyInfo entity) {
+		return AffCompanyInfo.createFromJavaType(entity.bsymtAffCompanyInfoPk.historyId, entity.recruitmentCategoryCode,
+				entity.adoptionDate, entity.retirementAllowanceCalcStartDate);
+	}
+
+	private BsymtAffCompanyInfo toEntity(AffCompanyInfo domain) {
+		BsymtAffCompanyInfoPk entityPk = new BsymtAffCompanyInfoPk(domain.getHistoryId());
+
+		return new BsymtAffCompanyInfo(entityPk, domain.getRecruitmentCategoryCode().v(), domain.getAdoptionDate(),
+				domain.getRetirementAllowanceCalcStartDate(), null);
 	}
 }

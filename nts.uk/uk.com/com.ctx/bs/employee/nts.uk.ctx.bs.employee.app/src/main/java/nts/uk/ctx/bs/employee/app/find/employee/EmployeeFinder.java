@@ -32,9 +32,6 @@ public class EmployeeFinder {
 	@Inject
 	private EmployeeBusiness employeeBusiness;
 
-	@Inject
-	private TempAbsHisFinder tAbsFinder;
-
 	/**
 	 * Gets the person id by employee code.
 	 *
