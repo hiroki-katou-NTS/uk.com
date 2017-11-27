@@ -76,9 +76,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 if (!codeChanged || codeChanged < 1) {
                     self.enableSave(false);
                     self.resetData();
+                    self.enableAtdBtn(false);
+                    self.attendanceModel.attendanceItemName('');
                     return;
                 }
                 self.enableSave(true);
+                self.enableAtdBtn(true);
                 self.clearError();
                 if (codeChanged == 0) { return; }
                 self.selectUse(null);
