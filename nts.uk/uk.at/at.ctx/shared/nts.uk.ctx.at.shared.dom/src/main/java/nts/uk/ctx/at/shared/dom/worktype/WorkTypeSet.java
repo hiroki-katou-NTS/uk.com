@@ -113,6 +113,13 @@ public class WorkTypeSet {
 		this.dayNightTimeAsk = dayNightTimeAsk;
 	}
 
+	// 打刻の扱い方
+	public WorkTypeSet(WorkTypeSetCheck timeLeaveWork, WorkTypeSetCheck attendanceTime) {
+		super();
+		this.timeLeaveWork = timeLeaveWork;
+		this.attendanceTime = attendanceTime;
+	}
+
 	/**
 	 * 
 	 * @param companyId
