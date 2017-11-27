@@ -70,6 +70,10 @@ module nts.uk.at.view.kdl006.a {
                                     handles: "s",
                                     alsoResize: "#grid-data-body",
                                     resize: function(event, ui) {
+                                        // If table was not overflowed, add more rows 
+                                        if ($('#grid-data-body').prop('scrollHeight') <= $('#grid-data-body').prop('clientHeight')) {
+                                            _self.addRowImedially();
+                                        }
                                         currentScreen.setHeight(ui.size.height + 140);
                                     }
                                 });
@@ -212,7 +216,7 @@ module nts.uk.at.view.kdl006.a {
                 }
                 
                 // Add empty row if row < 10
-                while (workplaceIndex < 10) {
+                while (workplaceIndex <= 10) {
                     _self.addEmptyRow();
                     workplaceIndex++;
                 }
@@ -259,6 +263,26 @@ module nts.uk.at.view.kdl006.a {
                 _self.tableBody += '<td class="header-closure"></td>';
                 _self.tableBody += '<td class="header-closure"></td>';
                 _self.tableBody += '</tr>';
+            }
+            
+            /**
+             * Table: Add row imedially
+             */
+            private addRowImedially(): void {
+                let row: string = '';
+                for (let i = 0; i < 5; i++) {
+                    row += '<tr><td class="header-workplace"></td><td class="header-closure"></td>';
+                    row += '<td class="header-closure"></td><td class="header-closure"></td>';
+                    row += '<td class="header-closure"></td><td class="header-closure"></td></tr>';
+                }              
+                $('#grid-data-body').append(row);
+            }
+            
+            /**
+             * Table: Remove row imedially
+             */
+            private removeRowImedially(): void {
+                $('#grid-data-body tr:last-child').remove();
             }
             
             /**
