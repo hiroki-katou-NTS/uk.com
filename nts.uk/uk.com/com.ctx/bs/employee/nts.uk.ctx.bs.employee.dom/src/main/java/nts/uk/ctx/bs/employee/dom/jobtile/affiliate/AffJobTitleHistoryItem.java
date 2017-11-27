@@ -33,4 +33,8 @@ public class AffJobTitleHistoryItem extends AggregateRoot{
 	/** The AffJobHistoryItemNote. */
 	// 備考
 	private AffJobTitleHistoryItemNote note;
+	
+	public static AffJobTitleHistoryItem createFromJavaType(String histId, String employeeId, String jobtitleCode, String note){
+		return new AffJobTitleHistoryItem(histId,employeeId, new JobTitleCode(jobtitleCode), new AffJobTitleHistoryItemNote(note));
+	}
 }
