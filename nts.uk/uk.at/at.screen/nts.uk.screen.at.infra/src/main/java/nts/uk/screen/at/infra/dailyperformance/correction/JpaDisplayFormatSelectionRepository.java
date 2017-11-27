@@ -13,22 +13,30 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceForm
 @Stateless
 public class JpaDisplayFormatSelectionRepository extends JpaRepository implements DisplayFormatSelectionRepository {
 
-	private final String FIND_DAILY_PERFORMANCE_FORMAT_BY_COMPANY =
-			"SELECT a FROM KfnmtAuthorityDailyPerformanceFormat a WHERE a.kfnmtAuthorityDailyPerformanceFormatPK.companyId = :companyId AND a.kfnmtAuthorityDailyPerformanceFormatPK.dailyPerformanceFormatCode IN :codeList";
+	private final static String FIND_DAILY_PERFORMANCE_FORMAT_BY_COMPANY;
 
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KfnmtAuthorityDailyPerformanceFormat a ");
+		builderString.append("WHERE a.kfnmtAuthorityDailyPerformanceFormatPK.companyId = :companyId ");
+		builderString.append("AND a.kfnmtAuthorityDailyPerformanceFormatPK.dailyPerformanceFormatCode IN :codeList");
+		FIND_DAILY_PERFORMANCE_FORMAT_BY_COMPANY = builderString.toString();
+	}
+	
 	@Override
 	public List<DailyPerformanceFormatDto> getDailyPerformanceFormatList(String companyId, List<String> codeList) {
-		/*List<KfnmtAuthorityDailyPerformanceFormat> lstData =
-				this.queryProxy().query(FIND_DAILY_PERFORMANCE_FORMAT_BY_COMPANY, KfnmtAuthorityDailyPerformanceFormat.class)
-				.setParameter("companyId", companyId)
-				.setParameter("codeList", codeList).getList();
-		return lstData.stream().map(entity -> toDto(entity)).collect(Collectors.toList());*/
+//		List<KfnmtAuthorityDailyPerformanceFormat> lstData =
+//				this.queryProxy().query(FIND_DAILY_PERFORMANCE_FORMAT_BY_COMPANY, KfnmtAuthorityDailyPerformanceFormat.class)
+//				.setParameter("companyId", companyId)
+//				.setParameter("codeList", codeList).getList();
+//		return lstData.stream().map(entity -> toDto(entity)).collect(Collectors.toList());
 		return null;
 	}
 
-	/*private static DailyPerformanceFormatDto toDto(KfnmtAuthorityDailyPerformanceFormat entity) {
-		return new DailyPerformanceFormatDto(entity.kfnmtAuthorityDailyPerformanceFormatPK.companyId,
-										entity.kfnmtAuthorityDailyPerformanceFormatPK.dailyPerformanceFormatCode,
-										entity.dailyPerformanceFormatName);
-	}*/
+//	private static DailyPerformanceFormatDto toDto(KfnmtAuthorityDailyPerformanceFormat entity) {
+//		return new DailyPerformanceFormatDto(entity.kfnmtAuthorityDailyPerformanceFormatPK.companyId,
+//										entity.kfnmtAuthorityDailyPerformanceFormatPK.dailyPerformanceFormatCode,
+//										entity.dailyPerformanceFormatName);
+//	}
 }
