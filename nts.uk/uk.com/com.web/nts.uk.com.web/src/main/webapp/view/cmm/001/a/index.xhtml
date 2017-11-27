@@ -203,7 +203,7 @@
 															 immediate: true,
 															 }" -->
 														 <!-- B1_2 -->
-														<input id="corporateMyNumber" tabindex="1" class="save-error" data-bind="ntsTextEditor: {value: taxNum, constraint: 'TaxNo', required: true, name: '#[CMM001_19]'}"/>
+														<input id="corporateMyNumber" tabindex="1" class="save-error" data-bind="ntsNumberEditor: {value: taxNum, constraint: 'TaxNo', required: true, name: '#[CMM001_19]'}"/>
 													</div>
 												</th>
 											</tr>
@@ -509,7 +509,7 @@
 																			value: regWorkDiv }">
 															</div>
 															<!-- d1_9 -->
-															<button id = "switchhelpbtn" data-bind="ntsHelpButton: {image: '../images/CMM001_01.png', position: 'left top',enable: true}" >?</button>
+															<button id = "switchhelpbtn" tabindex="-1" data-bind="ntsHelpButton: {image: '../images/CMM001_01.png', position: 'left top',enable: true}" >?</button>
 														</div>
 													</th>
 												</tr>
@@ -523,7 +523,7 @@
 
 													<th colspan="2" class="th-col2">
 														<div class="control-group valign-center">
-														<!--  -->
+														<!-- D1_11 -->
 															<div id="termBeginMon" data-bind="ntsComboBox: {
 																			 options: $parent.itemList,
 																			 optionsValue: 'code',

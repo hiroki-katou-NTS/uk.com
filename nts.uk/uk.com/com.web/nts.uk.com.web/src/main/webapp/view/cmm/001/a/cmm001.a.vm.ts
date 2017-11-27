@@ -65,6 +65,7 @@ module cmm001.a {
             ]);
             // subscribe each company
             self.currentCompanyCode.subscribe((value) => {
+                nts.uk.ui.errors.clearAll();
                 if (value) {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
@@ -140,7 +141,7 @@ module cmm001.a {
         /** new mode */
         innit(){
             let self = this;
-            nts.uk.ui.errors.clearAll()
+            nts.uk.ui.errors.clearAll();
             var addEmpty = {
                             addKana_1: "",
                             addKana_2: "",
@@ -254,7 +255,9 @@ module cmm001.a {
                        });
                    }).fail(function(error){
                        if(error.messageId == 'Msg_810'){
+                           $('#checked2').addClass("error");
                            $('#checked2').ntsError('set', {messageId:"Msg_810"});
+//                           $('#checked2').focus();
                         }
                     }).always(()=>{
                         nts.uk.ui.block.clear();    

@@ -95,7 +95,7 @@ public class CompanyInforNew extends AggregateRoot {
 	public void validate() {
 		super.validate();
 		// company code: 0000
-		if("0000".equals(this.companyCode)){
+		if("0000".equals(this.companyCode.v())){
 			throw new BusinessException("Msg_809");
 		}
 	}
