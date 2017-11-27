@@ -6,7 +6,7 @@
 #grid-list tbody {
 	display: block; 
 	height: 322px;
-	overflow-y: auto;
+	overflow-y: scroll;
 	border-bottom: solid 1px #AAB7B8;
 }
 	
