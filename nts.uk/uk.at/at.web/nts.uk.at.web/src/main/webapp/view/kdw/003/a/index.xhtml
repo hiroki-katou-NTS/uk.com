@@ -30,6 +30,7 @@
 						<button  data-bind="enable: showButton().available4">#{i18n.getText('KDW003_5')}</button>
 						<button data-bind="enable: showButton().available2">#{i18n.getText('KDW003_6')}</button>
 						<button data-bind="enable: showButton().available3">#{i18n.getText('KDW003_12')}</button>
+						<button data-bind="click: employmentOk">#{i18n.getText('KDW003_65')}</button>
 						<button data-bind="click : changeExtractionCondition, enable: showButton().available5">#{i18n.getText('KDW003_13')}</button>
 						<button data-bind="click : selectDisplayItem, enable: showButton().available8">#{i18n.getText('KDW003_14')}</button>
 						<button data-bind="enable: showButton().available22">#{i18n.getText('KDW003_15')}</button>
@@ -69,7 +70,7 @@
 								<button>#{i18n.getText('Com_ExsessHoliday')}</button>
 							</div>
 						</div>
-						<button id="btnComfirmAttendance" data-bind="enable: showButton().available23">#{i18n.getText('KDW003_22')}</button>
+						<button id="btnComfirmAttendance" data-bind="click : referencesActualResult, enable: showButton().available23">#{i18n.getText('KDW003_22')}</button>
 						
 						<div id="emp-component"></div>
 						<div id="cbListDate">

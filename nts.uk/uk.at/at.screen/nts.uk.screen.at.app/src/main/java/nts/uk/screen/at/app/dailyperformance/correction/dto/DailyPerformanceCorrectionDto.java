@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -65,7 +64,7 @@ public class DailyPerformanceCorrectionDto {
 	/** Find cell by dataID and columnKey */
 	private Optional<DPCellStateDto> findExistCellState(int dataId, String columnKey) {
 		for (int i = 0; i < this.lstCellState.size(); i++) {
-			if (this.lstCellState.get(i).getRowId().equals(String.valueOf(dataId))
+			if (this.lstCellState.get(i).getRowId().equals("_"+String.valueOf(dataId))
 					&& this.lstCellState.get(i).getColumnKey().equals(String.valueOf(columnKey))) {
 				return Optional.of(this.lstCellState.get(i));
 			}
@@ -170,6 +169,11 @@ public class DailyPerformanceCorrectionDto {
 			Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, columnKey);
 			if (existedCellState.isPresent()) {
 				existedCellState.get().addState("ntsgrid-alarm");
+			}else{
+				List<String> state = new ArrayList<>();
+				state.add("ntsgrid-alarm");
+				DPCellStateDto dto = new DPCellStateDto("_"+dataId, columnKey, state);
+				this.lstCellState.add(dto);
 			}
 		}
 

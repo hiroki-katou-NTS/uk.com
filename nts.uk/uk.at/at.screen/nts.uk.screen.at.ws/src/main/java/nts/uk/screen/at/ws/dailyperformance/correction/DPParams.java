@@ -18,5 +18,9 @@ public class DPParams {
 	public List<DailyPerformanceEmployeeDto> lstEmployee;
 	public int displayFormat;
 	public CorrectionOfDailyPerformance correctionOfDaily;
+	// only use when click button A2_3
 	public List<String> errorCodes;
+	// only use when click button  A2_4
+	public List<String> formatCodes;
+	
 }

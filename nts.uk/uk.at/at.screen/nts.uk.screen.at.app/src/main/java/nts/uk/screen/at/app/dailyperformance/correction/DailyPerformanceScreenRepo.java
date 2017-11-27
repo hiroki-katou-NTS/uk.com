@@ -137,11 +137,11 @@ public interface DailyPerformanceScreenRepo {
 	
 	OperationOfDailyPerformanceDto findOperationOfDailyPerformance();
 	
-	Optional<AuthorityFormatInitialDisplayDto> findAuthorityFormatInitialDisplay(String companyId);
+	List<AuthorityFormatInitialDisplayDto> findAuthorityFormatInitialDisplay(String companyId);
 	
-	List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, String formatCode);
+	List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, List<String> formatCode);
 	
-	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, String formatCode,  List<BigDecimal>sheetNo);
+	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
 	
 	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
 	

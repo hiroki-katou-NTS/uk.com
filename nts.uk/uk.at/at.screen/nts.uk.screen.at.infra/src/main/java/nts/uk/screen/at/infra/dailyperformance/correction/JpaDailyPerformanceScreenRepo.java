@@ -293,7 +293,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("SELECT a ");
 		builderString.append("FROM KfnmtAuthorityDailyItem a ");
 		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
-		builderString.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode IN :dailyPerformanceFormatCodes ");
 		SEL_AUTHOR_DAILY_ITEM = builderString.toString();
 		
 		builderString = new StringBuilder();
@@ -306,8 +306,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("SELECT a ");
 		builderString.append("FROM KfnmtAuthorityFormSheet a ");
 		builderString.append("WHERE a.kfnmtAuthorityFormSheetPK.companyId = :companyId ");
-		builderString.append("AND a.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("AND a.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode IN :dailyPerformanceFormatCode ");
 		builderString.append("AND a.kfnmtAuthorityFormSheetPK.sheetNo IN :sheetNo ");
+		builderString.append("ORDER BY a.kfnmtAuthorityFormSheetPK.sheetNo ASC");
 		SEL_AUTHOR_FORM_SHEET = builderString.toString();
 		
 		builderString = new StringBuilder();
@@ -631,16 +632,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Optional<AuthorityFormatInitialDisplayDto> findAuthorityFormatInitialDisplay(String companyId) {
+	public List<AuthorityFormatInitialDisplayDto> findAuthorityFormatInitialDisplay(String companyId) {
 		return this.queryProxy().query(SEL_DAILY_PERFORMACE_DISPLAY, KfnmtDailyPerformanceDisplay.class)
-				.setParameter("companyId", companyId).getSingle(k -> new AuthorityFormatInitialDisplayDto(companyId,
+				.setParameter("companyId", companyId).getList(k -> new AuthorityFormatInitialDisplayDto(companyId,
 						k.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode));
 	}
 
 	@Override
-	public List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, String formatCode) {
+	public List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, List<String> formatCodes) {
 		return this.queryProxy().query(SEL_AUTHOR_DAILY_ITEM, KfnmtAuthorityDailyItem.class)
-				.setParameter("companyId", companyId).setParameter("dailyPerformanceFormatCode", formatCode)
+				.setParameter("companyId", companyId).setParameter("dailyPerformanceFormatCodes", formatCodes)
 				.getList(f -> new AuthorityFomatDailyDto(f.kfnmtAuthorityDailyItemPK.companyId,
 														f.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode,
 														f.kfnmtAuthorityDailyItemPK.attendanceItemId, f.kfnmtAuthorityDailyItemPK.sheetNo,
@@ -648,7 +649,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, String formatCode, List<BigDecimal>sheetNo) {
+	public List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode, List<BigDecimal>sheetNo) {
 		return this.queryProxy().query(SEL_AUTHOR_FORM_SHEET, KfnmtAuthorityFormSheet.class).setParameter("companyId", companyId)
 				.setParameter("dailyPerformanceFormatCode",formatCode).setParameter("sheetNo", sheetNo)
 				.getList(f -> new AuthorityFormatSheetDto(f.kfnmtAuthorityFormSheetPK.companyId,

@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 
 /**
  * @author hungnm
@@ -23,6 +24,8 @@ public class DPControlDisplayItem {
 	private List<DPHeaderDto> lstHeader;
 	
 	private List<DPAttendanceItem> lstAttendanceItem;
+	
+	private Set<String> formatCode;
 
 	public DPControlDisplayItem() {
 		super();
