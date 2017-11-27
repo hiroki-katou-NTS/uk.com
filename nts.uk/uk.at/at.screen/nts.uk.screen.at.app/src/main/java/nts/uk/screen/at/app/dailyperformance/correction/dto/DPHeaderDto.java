@@ -99,10 +99,10 @@ public class DPHeaderDto {
 			dto.setGroup(groups);
 		}
 		if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
-			dto.setNtsControl("TextEditor");
+			dto.setNtsControl("TextEditorNumberSeparated");
 		}
 		if(attendanceAtr == DailyAttendanceAtr.Time.value){
-			dto.setNtsControl("TextEditor");
+			dto.setNtsControl("TextEditorTimeShortHM");
 		}
 		return dto;
 	}

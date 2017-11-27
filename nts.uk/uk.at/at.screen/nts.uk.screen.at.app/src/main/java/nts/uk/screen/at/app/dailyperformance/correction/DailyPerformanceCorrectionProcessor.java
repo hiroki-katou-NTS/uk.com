@@ -194,13 +194,15 @@ public class DailyPerformanceCorrectionProcessor {
         				result.setColumnsAccessModifier(lstDPBusinessTypeControl);
         			}
         		}
-						// set text to header
-						result.setHeaderText(lstAttendanceItem);
-						// set color to header
-						List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
-								.getListAttendanceItemControl(lstAtdItemUnique);
-						result.setLstAttendanceItem(lstAttendanceItem);
-						result.setHeaderColor(lstAttendanceItemControl);
+			if (!lstAttendanceItem.isEmpty()) {
+				// set text to header
+				result.setHeaderText(lstAttendanceItem);
+				// set color to header
+				List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
+						.getListAttendanceItemControl(lstAtdItemUnique);
+				result.setLstAttendanceItem(lstAttendanceItem);
+				result.setHeaderColor(lstAttendanceItemControl);
+			}
 		}
 		return result;
 	}
