@@ -14,7 +14,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 @Stateless
-public class JobTitleMainFinder implements PeregSingleFinder{
+public class JobTitleMainFinder implements PeregSingleFinder<JobTitleMainDto>{
 
 	@Override
 	public String targetCategoryCode() {
@@ -22,7 +22,7 @@ public class JobTitleMainFinder implements PeregSingleFinder{
 	}
 
 	@Override
-	public Class<?> dtoClass() {
+	public Class<JobTitleMainDto> dtoClass() {
 		return JobTitleMainDto.class;
 	}
 

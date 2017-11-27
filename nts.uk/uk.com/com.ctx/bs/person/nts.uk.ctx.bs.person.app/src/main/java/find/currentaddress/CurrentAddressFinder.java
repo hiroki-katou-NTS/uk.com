@@ -15,7 +15,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 @Stateless
-public class CurrentAddressFinder implements PeregSingleFinder{
+public class CurrentAddressFinder implements PeregSingleFinder<CurrentAddressDto>{
 
 	@Override
 	public String targetCategoryCode() {
