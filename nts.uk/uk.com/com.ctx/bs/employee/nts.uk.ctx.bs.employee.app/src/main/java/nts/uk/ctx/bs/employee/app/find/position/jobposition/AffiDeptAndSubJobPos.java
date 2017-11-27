@@ -10,13 +10,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.PeregComboList;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AffiDeptAndSubJobPos {
+public class AffiDeptAndSubJobPos{
 	/** The id. */
 	@PeregItem("")
 	private String id;
