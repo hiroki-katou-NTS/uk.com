@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.bs.employee.app.find.affiliationdepartment;
 
+import javax.ejb.Stateless;
+
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregSingleFinder;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -11,6 +13,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  * @author danpv
  *
  */
+@Stateless
 public class AffiliationDepartmentFinder implements PeregSingleFinder{
 
 	@Override

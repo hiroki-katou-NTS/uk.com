@@ -5,6 +5,8 @@ package nts.uk.ctx.bs.employee.app.find.subjobposition;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.uk.shr.pereg.app.find.PeregListFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -13,6 +15,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  * @author danpv
  *
  */
+@Stateless
 public class SubJobPositionListFinder implements PeregListFinder{
 
 	@Override
