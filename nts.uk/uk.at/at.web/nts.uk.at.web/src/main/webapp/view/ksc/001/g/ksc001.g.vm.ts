@@ -17,8 +17,8 @@ module nts.uk.at.view.ksc001.g {
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({
                     //get previous 1 year
-                    startDate: moment().subtract(1, 'years').add(1,'days').format('YYYY/MM/DD'),
-                    endDate: moment().format('YYYY/MM/DD'),
+                    startDate: moment.utc(moment().subtract(1, 'years').add(1, 'days').format('YYYYMMDD')).toISOString(),
+                    endDate: moment.utc(moment().format('YYYYMMDD')).add(1, 'days').subtract(1, 'seconds').toISOString()
                 });
 
                 self.startDateString.subscribe(function(value) {
