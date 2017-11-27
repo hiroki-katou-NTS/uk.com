@@ -8,7 +8,8 @@ import nts.arc.enums.EnumAdaptor;
 
 /**
  * TanLV
- *
+ * 時間計算式
+ * 
  */
 @AllArgsConstructor
 @Getter
@@ -30,6 +31,16 @@ public class FormTime {
     
     private List<FormTimeFunc> lstFormTimeFunc;
 
+    /**
+     * Create From Javatype
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @param categoryIndicator
+     * @param actualDisplayAtr
+     * @param lstFormTimeFunc
+     * @return
+     */
 	public static FormTime createFromJavaType(String companyId, String verticalCalCd, String verticalCalItemId,
 			int categoryIndicator, int actualDisplayAtr, List<FormTimeFunc> lstFormTimeFunc) {
 		

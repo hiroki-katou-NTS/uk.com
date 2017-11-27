@@ -29,6 +29,13 @@ public class FormulaAmountCommand {
 	
 	private FormulaTimeUnitCommand timeUnit;
 	
+	/**
+	 * toDomainFormAmount
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @return
+	 */
 	public FormulaAmount toDomainFormAmount(String companyId, String verticalCalCd, String verticalCalItemId){
 		FormulaMoney moneyFunc = this.moneyFunc != null
  				? this.moneyFunc.toDomainFormMoney(companyId, verticalCalCd, verticalCalItemId)

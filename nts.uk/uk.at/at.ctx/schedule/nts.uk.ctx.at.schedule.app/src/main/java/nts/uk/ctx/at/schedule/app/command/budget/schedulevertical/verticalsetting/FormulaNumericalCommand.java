@@ -29,6 +29,11 @@ public class FormulaNumericalCommand {
     /** 演算子区分 */
     private int operatorAtr;
     
+    /**
+     * toDomainNumerical
+     * @param companyId
+     * @return
+     */
     public FormulaNumerical toDomainNumerical(String companyId){
     	return FormulaNumerical.createFromJavatype(companyId, this.verticalCalCd, this.verticalCalItemId, this.dispOrder, this.externalBudgetCd, this.operatorAtr);
     }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * TanLV
- *
+ * 出勤区分
  */
 @AllArgsConstructor
 public enum AttendanceAtr {

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * TanLV
- *
+ * 実績表示区分
  */
 @AllArgsConstructor
 public enum ActualDisplayAtr {

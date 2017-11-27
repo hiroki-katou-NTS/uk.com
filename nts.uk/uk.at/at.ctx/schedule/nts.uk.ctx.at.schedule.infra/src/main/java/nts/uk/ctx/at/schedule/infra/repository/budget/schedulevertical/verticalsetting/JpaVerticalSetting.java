@@ -647,7 +647,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		return kscstVerticalCalSet;
 	}
 
-
+	/**
+	 * toEntityFormTime
+	 * @param formTime
+	 * @return
+	 */
 	private KscmtFormTime toEntityFormTime(FormTime formTime) {
 		val entity = new KscmtFormTime();
 		
@@ -669,6 +673,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		return entity;
 	}
 
+	/**
+	 * toEntityFormTimeFunc
+	 * @param item
+	 * @return
+	 */
 	private KscmtFormTimeFunc toEntityFormTimeFunc(FormTimeFunc item) {
 		val entity = new KscmtFormTimeFunc();
 		
@@ -754,6 +763,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		this.commandProxy().update(kscstVerticalCalSet);
 	}
 
+	/**
+	 * toEntityFormBuilt
+	 * @param formBuilt
+	 * @return
+	 */
 	private KscmtFormBuilt toEntityFormBuilt(FormBuilt formBuilt) {
 		KscmtFormBuilt entity = new KscmtFormBuilt();
 		entity.kscmtFormBuiltPK = new KscmtFormBuiltPK(formBuilt.getCompanyId(), formBuilt.getVerticalCalCd(),
@@ -888,41 +902,5 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	@Override
 	public void insertFromPrice(FormulaUnitprice price) {
 		this.commandProxy().insert(toEntityFormPrice(price));
-	}
-
-	@Override
-	public void insertFormPeople(FormPeople formPeople) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void insertFormPeopleFunc(List<FormPeopleFunc> formPeopleFunc) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void updateFormPeople(FormPeople formPeople) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void updateFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteFormPeople(FormPeople formPeople) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc) {
-		// TODO Auto-generated method stub
-
 	}
 }

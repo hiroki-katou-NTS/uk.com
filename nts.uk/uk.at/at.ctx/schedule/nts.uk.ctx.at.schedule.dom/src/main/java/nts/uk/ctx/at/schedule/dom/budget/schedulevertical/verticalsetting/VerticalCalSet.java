@@ -8,6 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * TanLV
+ * 汎用縦計設定
  *
  */
 @Getter
@@ -31,11 +32,17 @@ public class VerticalCalSet extends AggregateRoot {
     private AssistanceTabulationAtr assistanceTabulationAtr;
     
     private List<VerticalCalItem> verticalCalItems;
-    
-    public void validate(){
-    	
-    }
 
+    /**
+     * Contructor
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalName
+     * @param unit
+     * @param useAtr
+     * @param assistanceTabulationAtr
+     * @param verticalCalItems
+     */
 	public VerticalCalSet(String companyId, VerticalCalCd verticalCalCd, VerticalCalName verticalCalName, Unit unit, UseAtr useAtr,
 			AssistanceTabulationAtr assistanceTabulationAtr, List<VerticalCalItem> verticalCalItems) {
 		
@@ -48,6 +55,17 @@ public class VerticalCalSet extends AggregateRoot {
 		this.verticalCalItems = verticalCalItems;
 	}
     
+	/**
+	 * Create From Java Type
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalName
+	 * @param unit
+	 * @param useAtr
+	 * @param assistanceTabulationAtr
+	 * @param verticalCalItems
+	 * @return
+	 */
 	public static VerticalCalSet createFromJavaType(String companyId, String verticalCalCd, String verticalCalName, int unit, int useAtr,
 			int assistanceTabulationAtr, List<VerticalCalItem> verticalCalItems) {
 		return new VerticalCalSet(companyId, new VerticalCalCd(verticalCalCd), new VerticalCalName(verticalCalName),

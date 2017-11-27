@@ -29,6 +29,11 @@ public class FormulaAmountDto {
 	
 	private FormulaTimeUnitDto timeUnit;
 
+	/**
+	 * fromDomain
+	 * @param domain
+	 * @return
+	 */
 	public static FormulaAmountDto fromDomain(FormulaAmount domain) {
 		FormulaMoneyDto money = FormulaMoneyDto.fromDomain(domain.getMoneyFunc());
 		FormulaTimeUnitDto time = FormulaTimeUnitDto.fromDomain(domain.getTimeUnit());

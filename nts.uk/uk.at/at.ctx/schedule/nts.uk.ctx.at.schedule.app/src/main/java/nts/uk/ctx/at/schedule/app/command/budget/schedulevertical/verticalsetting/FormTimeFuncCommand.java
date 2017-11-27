@@ -33,6 +33,19 @@ public class FormTimeFuncCommand {
     
     /** 演算子区分 */
     private int operatorAtr;
+    
+    /**
+     * toDomainFunc
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @param dispOrder
+     * @param presetItemId
+     * @param attendanceItemId
+     * @param externalBudgetCd
+     * @param operatorAtr
+     * @return
+     */
     public FormTimeFunc toDomainFunc(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder, String presetItemId, String attendanceItemId, 
     		String externalBudgetCd, int operatorAtr){
     	return FormTimeFunc.createFromJavaType(companyId, verticalCalCd, verticalCalItemId, dispOrder, presetItemId, attendanceItemId, 

@@ -37,6 +37,11 @@ public class MoneyFuncDto {
 	/** 演算子区分 */
 	private int operatorAtr;
 	
+	/**
+	 * fromDomain
+	 * @param func
+	 * @return
+	 */
 	public static MoneyFuncDto fromDomain(MoneyFunc func){
 		return new MoneyFuncDto(
 				func.getCompanyId(),

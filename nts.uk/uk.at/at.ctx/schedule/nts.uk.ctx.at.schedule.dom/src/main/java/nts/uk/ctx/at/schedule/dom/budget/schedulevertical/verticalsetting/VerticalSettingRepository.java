@@ -46,38 +46,10 @@ public interface VerticalSettingRepository {
 	void addVerticalCalSet(VerticalCalSet verticalCalSet);
 	
 	/**
-	 * insert a Form People item
-	 * @param formPeople
-	 * author: Hoang Yen
-	 */
-	void insertFormPeople(FormPeople formPeople);
-	
-	/**
-	 * insert list form people func 
-	 * @param formPeopleFunc
-	 * author: Hoang Yen
-	 */
-	void insertFormPeopleFunc(List<FormPeopleFunc> formPeopleFunc);
-	
-	/**
 	 * Update Vertical Calculator Setting  
 	 * @param verticalCalSet
 	 */
 	void updateVerticalCalSet(VerticalCalSet verticalCalSet);
-	
-	/**
-	 * update a Form People item
-	 * @param formPeople
-	 * author: Hoang Yen
-	 */
-	void updateFormPeople(FormPeople formPeople);
-	
-	/**
-	 * update list Form People Func
-	 * @param lstFormPeopleFunc
-	 * author: Hoang Yen
-	 */
-	void updateFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc);
 	
 	/**
 	 * Delete Vertical Calculator Setting  
@@ -85,20 +57,6 @@ public interface VerticalSettingRepository {
 	 * @param verticalCalCd
 	 */
 	void deleteVerticalCalSet(String companyId, String verticalCalCd);
-	
-	/**
-	 * delete a Form People item
-	 * @param formPeople
-	 * author: Hoang Yen
-	 */
-	void deleteFormPeople(FormPeople formPeople);
-	
-	/**
-	 * delete list Form People Func
-	 * @param lstFormPeopleFunc
-	 * author: Hoang Yen
-	 */
-	void deleteFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc);
 
 	/**
 	 * Find Money Func
@@ -159,7 +117,18 @@ public interface VerticalSettingRepository {
 	 */
 	List<FormulaAmount> findAllFormulaAmount(String companyId, String verticalCalCd, String verticalCalItemId);
 
+	/**
+	 * findAllFormulaPrice
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @return
+	 */
 	List<FormulaUnitprice> findAllFormulaPrice(String companyId, String verticalCalCd, String verticalCalItemId);
 
+	/**
+	 * insertFromPrice
+	 * @param price
+	 */
 	void insertFromPrice(FormulaUnitprice price);
 }

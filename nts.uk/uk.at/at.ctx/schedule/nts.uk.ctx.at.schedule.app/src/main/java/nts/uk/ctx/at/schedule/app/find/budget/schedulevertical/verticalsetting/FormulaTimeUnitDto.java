@@ -39,6 +39,11 @@ public class FormulaTimeUnitDto {
 	
 	private List<TimeUnitFuncDto> lstTimeUnitFuncs;
 	
+	/**
+	 * fromDomain
+	 * @param unit
+	 * @return
+	 */
 	public static FormulaTimeUnitDto fromDomain(FormulaTimeUnit unit ){
 		List<TimeUnitFuncDto> items = unit.getLstTimeUnitFuncs().stream()
 				.map(x -> TimeUnitFuncDto.fromDomain(x))

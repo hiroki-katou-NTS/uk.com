@@ -31,6 +31,11 @@ public class FormulaNumericalDto {
     /* 順番 */
     private int dispOrder;
 
+    /**
+     * FormulaNumericalDto
+     * @param domain
+     * @return
+     */
 	public static FormulaNumericalDto fromDomain(FormulaNumerical domain) {
 		return new FormulaNumericalDto(
 				domain.getCompanyId(),
