@@ -1,4 +1,4 @@
-package find.person.family;
+package find.familymember;
 
 import javax.ejb.Stateless;
 
@@ -7,18 +7,16 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
-public class FamilyCtgSingleFinder implements PeregSingleFinder{
+public class FamilyMemberSingleFinder implements PeregSingleFinder{
 
 	@Override
 	public String targetCategoryCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return "CS00004";
 	}
 
 	@Override
 	public Class<?> dtoClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return FamilyMemberDto.class;
 	}
 
 	@Override
