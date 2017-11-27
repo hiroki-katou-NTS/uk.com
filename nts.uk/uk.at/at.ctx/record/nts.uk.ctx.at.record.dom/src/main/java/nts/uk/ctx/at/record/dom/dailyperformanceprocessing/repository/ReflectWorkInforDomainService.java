@@ -16,5 +16,5 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface ReflectWorkInforDomainService {
 
-	boolean reflectWorkInformation(List<String> employeeID, DatePeriod periodTimes, String empCalAndSumExecLogID, int reCreateAttr);
+	void reflectWorkInformation(String companyID, List<String> employeeID, DatePeriod periodTimes, String empCalAndSumExecLogID, int reCreateAttr);
 }

@@ -13,6 +13,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface ProcessFlowOfDailyCreationDomainService {
 	
 	//日別作成の処理の流れ
-	boolean processFlowOfDailyCreation(int executionAttr, DatePeriod periodTime, String executionID, String empCalAndSumExecLogID, int reCreateAttr);
+	boolean processFlowOfDailyCreation(int executionAttr, DatePeriod periodTime, String empCalAndSumExecLogID, int reCreateAttr);
 
 }
