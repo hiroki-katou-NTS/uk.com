@@ -9,13 +9,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 /** 所属会社履歴（社員別） */
-public class AffCompanyHistByEmployee extends DomainObject {
+public class AffCompanyHistByEmployee extends DomainObject
+		implements UnduplicatableHistory<AffCompanyHistItem, DatePeriod, GeneralDate> {
 	/** 社員ID */
 	private String sId;
 
@@ -26,7 +30,7 @@ public class AffCompanyHistByEmployee extends DomainObject {
 		if (lstAffCompanyHistoryItem == null) {
 			lstAffCompanyHistoryItem = new ArrayList<AffCompanyHistItem>();
 		}
-		
+
 		List<AffCompanyHistItem> filter = lstAffCompanyHistoryItem.stream()
 				.filter(m -> m.getHistoryId().equals(historyId)).collect(Collectors.toList());
 
@@ -41,7 +45,12 @@ public class AffCompanyHistByEmployee extends DomainObject {
 		if (lstAffCompanyHistoryItem == null) {
 			lstAffCompanyHistoryItem = new ArrayList<AffCompanyHistItem>();
 		}
-		
+
 		lstAffCompanyHistoryItem.add(domain);
+	}
+
+	@Override
+	public List<AffCompanyHistItem> items() {
+		return lstAffCompanyHistoryItem;
 	}
 }

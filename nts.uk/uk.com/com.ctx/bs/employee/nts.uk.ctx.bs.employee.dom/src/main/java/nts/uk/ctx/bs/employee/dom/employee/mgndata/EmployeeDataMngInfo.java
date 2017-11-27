@@ -38,12 +38,12 @@ public class EmployeeDataMngInfo extends AggregateRoot {
 	private RemoveReason removeReason;
 
 	/** 外部コード */
-	private String externalCode;
+	private ExternalCode externalCode;
 
 	public static EmployeeDataMngInfo createFromJavaType(String cId, String pId, String sId, String sCd, int delStatus,
 			GeneralDate delTemp, String removeReason, String extCode) {
 		return new EmployeeDataMngInfo(cId, pId, sId, new EmployeeCode(sCd),
 				EnumAdaptor.valueOf(delStatus, EmployeeDeletionAttr.class), delTemp, new RemoveReason(removeReason),
-				extCode);
+				new ExternalCode(extCode));
 	}
 }
