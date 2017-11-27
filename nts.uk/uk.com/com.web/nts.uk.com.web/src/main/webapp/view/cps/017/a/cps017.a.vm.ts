@@ -33,6 +33,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //hoatt
         selHistId: KnockoutObservable<string> = ko.observable('');
         enableDelHist: KnockoutObservable<boolean> = ko.observable(false);
+        enableSelName: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -89,11 +90,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                 self.listSelection.removeAll();
                 service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                    if (itemList && itemList.length) {
+                        self.enableSelName(self.enableDelHist());
                         self.checkCreateaaa(false);
                         itemList.forEach(x => self.listSelection.push(x));
                         self.selection().selectionID(self.listSelection()[0].selectionID);
                         //self.checkCreate(false);
                     } else {
+                        self.enableSelName(true);
                         self.registerData();
                     }
 
