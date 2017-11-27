@@ -968,6 +968,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             
                             if(self.calculatorItems()[i].itemCd() == self.dataE.verticalCalItemId) {
                                 self.calculatorItems()[i].amount = self.dataE;
+                                var formulaResult = self.formulaGeneration(itemName, settingMethod, attribute, i, self.dataE, "", false);
+                                self.calculatorItems()[i].formula(formulaResult);
                             }
                         }
                     }); 
