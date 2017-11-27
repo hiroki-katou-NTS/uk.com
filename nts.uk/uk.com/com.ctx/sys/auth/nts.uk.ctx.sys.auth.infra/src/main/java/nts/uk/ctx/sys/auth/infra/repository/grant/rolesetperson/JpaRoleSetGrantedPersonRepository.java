@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetperson.SacmtRoleSetGrantedP
 public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements RoleSetGrantedPersonRepository {
 
 	// private final String CHECK_ROLESET_CODE_EXIST = "select r FROM
-	// SaumtRoleSetGrantedPerson r Where r.companyId = :companyId and
+	// SacmtRoleSetGrantedPerson r Where r.companyId = :companyId and
 	// r.roleSetCd = :roleSetCd";
 
 	private final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRoleSetGrantedPerson r Where r.selectionItemId = :selectionItemId";

@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobT
 public class JpaRoleSetGrantedJobTitleDetailRepository extends JpaRepository
 		implements RoleSetGrantedJobTitleDetailRepository {
 
-	private final String GET_All_BY_COMPANY_ID = "SELECT d FROM SaumtRoleSetGrantedJobTitleDetail rs WHERE rs.roleSetGrantedJobTitleDetailPK.companyId = :companyId ";
+	private final String GET_All_BY_COMPANY_ID = "SELECT d FROM SacmtRoleSetGrantedJobTitleDetail rs WHERE rs.roleSetGrantedJobTitleDetailPK.companyId = :companyId ";
 
 	private RoleSetGrantedJobTitleDetail toDomain(SacmtRoleSetGrantedJobTitleDetail entity) {
 		return new RoleSetGrantedJobTitleDetail(entity.roleSetGrantedJobTitleDetailPK.roleSetCd,
