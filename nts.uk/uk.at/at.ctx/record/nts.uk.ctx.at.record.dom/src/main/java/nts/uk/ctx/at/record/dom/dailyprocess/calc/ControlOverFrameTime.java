@@ -14,15 +14,15 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Value
 public class ControlOverFrameTime {
-	private List<OverTimeWorkFrameTime> overTimeWorkFrameTime;
+	private List<OverTimeFrameTime> overTimeWorkFrameTime;
 	
 	/**
 	 * 残業枠時間の残業・振替時間の集計を行う
 	 */
 	public void correct() {
-		List<OverTimeWorkFrameTime> returnList = new ArrayList<>(10);
+		List<OverTimeFrameTime> returnList = new ArrayList<>(10);
 		for(int overTimeWorkNo = 0 ; overTimeWorkNo < overTimeWorkFrameTime.size() ; overTimeWorkNo++) {
-			OverTimeWorkFrameTime a  = returnList.get(overTimeWorkFrameTime.get(overTimeWorkNo).getOverWorkFrameNo().v().intValue());
+			OverTimeFrameTime a  = returnList.get(overTimeWorkFrameTime.get(overTimeWorkNo).getOverWorkFrameNo().v().intValue());
 			
 			TimeWithCalculation ove_a = TimeWithCalculation.createTimeWithCalculation( new AttendanceTime(a.getOverTimeWork().getTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getTime().valueAsMinutes())
 															  ,new AttendanceTime(a.getOverTimeWork().getCalcTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getCalcTime().valueAsMinutes()));
@@ -31,7 +31,7 @@ public class ControlOverFrameTime {
 			
 			
 			
-			OverTimeWorkFrameTime b  = new OverTimeWorkFrameTime(a.getOverWorkFrameNo()
+			OverTimeFrameTime b  = new OverTimeFrameTime(a.getOverWorkFrameNo()
 																,ove_a
 					   											,tran_a
 					   											,a.getBeforeApplicationTime());

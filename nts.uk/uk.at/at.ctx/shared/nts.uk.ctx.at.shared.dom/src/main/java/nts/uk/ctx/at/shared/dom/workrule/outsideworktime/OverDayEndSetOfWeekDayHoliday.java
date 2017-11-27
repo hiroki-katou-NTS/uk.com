@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.workrule.outsideworktime;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtimework.overtimeworkframe.OverTimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 @Getter
 public class OverDayEndSetOfWeekDayHoliday {
 	/*変更前の残業枠No*/
-	private OverTimeWorkFrameNo overWorkFrameNo;
+	private OverTimeFrameNo overWorkFrameNo;
 	private HolidayWorkFrameNo  transferFrameNoOfStatutoryHoliday;
 	private HolidayWorkFrameNo  transferFrameNoOfExcessHoliday;
 	private HolidayWorkFrameNo  transferFrameNoOfExcessSpecialHoliday;

@@ -13,7 +13,7 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
-import nts.uk.ctx.at.shared.dom.workrule.overtimework.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.OverWorkSet.StatutoryOverTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidOverTimeWorkSheet;
@@ -39,12 +39,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 
-public class OverTimeWorkSheet {
+public class OverTimeSheet {
 	
 	@Getter
-	private static OverTimeWorkOfDaily overWorkTimeOfDaily; 
+	private static OverTimeOfDaily overWorkTimeOfDaily; 
 	
-	public  OverTimeWorkSheet(OverTimeWorkOfDaily dailyOverWorkTime) {
+	public  OverTimeSheet(OverTimeOfDaily dailyOverWorkTime) {
 		this.overWorkTimeOfDaily = dailyOverWorkTime;
 	}
 	
@@ -54,7 +54,7 @@ public class OverTimeWorkSheet {
 	 * @param originList　補正する前の時間帯
 	 * @return　
 	 */
-	public static List<OverTimeWorkFrameTimeSheet> correctTimeSpan(List<OverTimeWorkFrameTimeSheet> insertList,List<OverTimeWorkFrameTimeSheet> originList,int nowNumber){
+	public static List<OverTimeFrameTimeSheet> correctTimeSpan(List<OverTimeFrameTimeSheet> insertList,List<OverTimeFrameTimeSheet> originList,int nowNumber){
 		originList.remove(nowNumber);
 		originList.addAll(insertList);
 		return originList;
@@ -65,7 +65,7 @@ public class OverTimeWorkSheet {
 	 * 残業時間の計算(残業時間帯の合計の時間を取得し1日の範囲に返す)
 	 * @return
 	 */
-	public static OverTimeWorkOfDaily calcOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
+	public static OverTimeOfDaily calcOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
 		ControlOverFrameTime returnClass = new ControlOverFrameTime(overWorkTimeOfDaily.collectOverTimeWorkTime(autoCalcSet));
 		
 		overWorkTimeOfDaily.addToList(returnClass);
@@ -77,12 +77,12 @@ public class OverTimeWorkSheet {
 	 * 深夜時間計算後の時間帯再作成
 	 * @return
 	 */
-	public OverTimeWorkSheet reCreateToCalcExcessWork(OverTimeWorkSheet overTimeWorkSheet,AutoCalculationOfOverTimeWork autoCalcSet) {
+	public OverTimeSheet reCreateToCalcExcessWork(OverTimeSheet overTimeWorkSheet,AutoCalculationOfOverTimeWork autoCalcSet) {
 		ExcessOverTimeWorkMidNightTime midNightTime = overTimeWorkSheet.overWorkTimeOfDaily.calcMidNightTimeIncludeOverTimeWork(autoCalcSet);
-		OverTimeWorkOfDaily overTimeWorkOfDaily = new OverTimeWorkOfDaily(overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTimeSheet(),
+		OverTimeOfDaily overTimeWorkOfDaily = new OverTimeOfDaily(overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTimeSheet(),
 																		  overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTime(),
 																		  Finally.of(midNightTime));
-		return new OverTimeWorkSheet(overTimeWorkOfDaily);
+		return new OverTimeSheet(overTimeWorkOfDaily);
 	}
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
@@ -150,7 +150,71 @@ public class OverTimeWorkSheet {
 		return nextlapsedTime;
 	}
 	
-	
-	
+//	/**
+//	 * 代休の振替処理(残業用)
+//	 * @param workType　当日の勤務種類
+//	 */
+//	public void modifyHandTransfer(WorkType workType) {
+//		//平日の場合のみ振替処理実行
+//		if(workType.isWeekDayAttendance()) {
+//			//if(/*代休発生設定を取得(設計中のようす)*/) {
+//			if(false) {
+//				if(/*代休振替設定区分使用：一定時間を超えたら代休とする*/) {
+//					periodOfTimeTransfer();
+//				}
+//				else if(/*指定した時間を代休とする*/) {
+//					specifiedTimeTransfer();
+//				}
+//				else {
+//					throw new Exception("unknown daikyuSet:");
+//				}
+//			}
+//		}
+//	}
+//	
+//	/**
+//	 * 一定時間の振替処理
+//	 * @param 一定時間
+//	 */
+//	public void periodOfTimeTransfer(AttendanceTime periodTime) {
+//		/*振替可能時間の計算*/
+//		AttendanceTime transAbleTime = calcTransferTime(periodTime);
+//		/*振り替える*/
+//	}
+//	
+//	/**
+//	 * 代休の振替可能時間の計算
+//	 * @param periodTime 一定時間
+//	 * @return 振替可能時間
+//	 */
+//	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime) {
+//		int totalFrameTime = this.getOverWorkTimeOfDaily().calcTotalFrameTime();
+//		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
+//			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
+//		}
+//		else {
+//			return new AttendanceTime(0);
+//		}
+//	}
+//	
+//	
+//	/**
+//	 * 指定時間の振替処理
+//	 * @param 指定時間クラス 
+//	 */
+//	private AttendanceTime specifiedTimeTransfer(/*指定時間クラス*/) {
+//		int totalFrameTime = this.getOverWorkTimeOfDaily().calcTotalFrameTime();
+//		if(totalFrameTime >= 指定時間クラス.１日の指定時間) {
+//			return  指定時間クラス.１日の指定時間
+//		}
+//		else {
+//			if(totalFrameTime >= 指定時間クラス.半日の指定時間) {
+//				return 指定時間クラス.半日の指定時間
+//			}
+//			else {
+//				return new AttendanceTime(0);
+//			}
+//		}
+//	}
 	
 }

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -75,7 +75,7 @@ public class WorkTimeOfMonthly {
 		// ドメインモデル「日別実績の残業時間」を取得する
 		ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		if (excessOfStatutoryTimeOfDaily.getOverTimeWork().isPresent()){
-			OverTimeWorkOfDaily overTimeWorkOfDaily = excessOfStatutoryTimeOfDaily.getOverTimeWork().get();
+			OverTimeOfDaily overTimeWorkOfDaily = excessOfStatutoryTimeOfDaily.getOverTimeWork().get();
 			
 			// 変形法定内残業を就業時間に加算
 			workTime.addMinutes(overTimeWorkOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes());

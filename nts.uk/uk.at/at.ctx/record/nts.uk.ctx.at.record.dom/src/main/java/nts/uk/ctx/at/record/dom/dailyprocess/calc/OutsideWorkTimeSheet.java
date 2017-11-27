@@ -11,7 +11,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.Working
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
-import nts.uk.ctx.at.shared.dom.workrule.overtimework.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.OverWorkSet.StatutoryOverTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixOffdayWorkTime;
@@ -45,7 +45,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class OutsideWorkTimeSheet {
 	private ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily;
 	
-	private Optional<OverTimeWorkSheet> overTimeWorkSheet;
+	private Optional<OverTimeSheet> overTimeWorkSheet;
 	
 	private Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 
@@ -75,11 +75,11 @@ public class OutsideWorkTimeSheet {
 											OverDayEndCalcSet dayEndSet,WorkTimeCommonSet overDayEndSet ,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,
 											WorkType beforeDay,WorkType toDay,WorkType afterDay,WorkTime workTime,WorkingSystem workingSystem,BreakdownTimeDay breakdownTimeDay,DailyTime dailyTime,
 											AutoCalculationOfOverTimeWork autoCalculationSet,StatutoryOverTimeWorkSet statutorySet,StatutoryPrioritySet prioritySet ) {
-		Optional<OverTimeWorkSheet> overTimeWorkSheet;
+		Optional<OverTimeSheet> overTimeWorkSheet;
 		Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 		if(toDay.isWeekDayAttendance()) {
 			/*就業時間外時間帯の平日出勤の処理*/
-			List<OverTimeWorkFrameTimeSheet> overTimeWorkFrameTimeSheet = OverTimeWorkFrameTimeSheet.createOverWorkFrame(overTimeHourSetList,workingSystem,
+			List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheet.createOverWorkFrame(overTimeHourSetList,workingSystem,
 																									attendanceLeave,workNo,
 																									breakdownTimeDay,dailyTime,autoCalculationSet,
 																									statutorySet,
@@ -91,9 +91,9 @@ public class OutsideWorkTimeSheet {
 			
 			/*日別実績の残業時間  作成*/
 			if(process.getDedList().size()>0) {
-				OverTimeWorkOfDaily overTimeWorkOfDaily = new OverTimeWorkOfDaily(process.getDedList(),Collections.emptyList(),Finally.empty());
+				OverTimeOfDaily overTimeWorkOfDaily = new OverTimeOfDaily(process.getDedList(),Collections.emptyList(),Finally.empty());
 				/*残業時間帯　作成*/
-				overTimeWorkSheet = Optional.of(new OverTimeWorkSheet(overTimeWorkOfDaily));
+				overTimeWorkSheet = Optional.of(new OverTimeSheet(overTimeWorkOfDaily));
 			}
 			else {
 				overTimeWorkSheet = Optional.empty();
@@ -127,9 +127,9 @@ public class OutsideWorkTimeSheet {
 			OverDayEnd.SplitHolidayWorkTime process = overEnd.new SplitHolidayWorkTime(dayEndSet,overDayEndSet ,holidayTimeWorkItem,beforeDay,toDay,afterDay);
 			/*日別実績の残業時間  作成*/
 			if(process.getDedList().size()>0) {
-				OverTimeWorkOfDaily overTimeWorkOfDaily = new OverTimeWorkOfDaily(process.getDedList(),Collections.emptyList(),Finally.empty());
+				OverTimeOfDaily overTimeWorkOfDaily = new OverTimeOfDaily(process.getDedList(),Collections.emptyList(),Finally.empty());
 				/*残業時間帯　作成*/
-				overTimeWorkSheet = Optional.of(new OverTimeWorkSheet(overTimeWorkOfDaily));
+				overTimeWorkSheet = Optional.of(new OverTimeSheet(overTimeWorkOfDaily));
 			}
 			else {
 				overTimeWorkSheet = Optional.empty();
@@ -156,9 +156,9 @@ public class OutsideWorkTimeSheet {
 	 */
 	//public ExcessOfStatutoryTimeOfDaily calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeWorkSheet> overTimeWorkSheet,Optional<HolidayWorkTimeSheet> holidayWorkSheet
 		//															 ,AutoCalculationOfOverTimeWork autoCalculationOfOverTimeWork,AutoCalcSetOfHolidayWorkTime autoCalcSetOfHolidayWorkTime) {
-	public void calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeWorkSheet> overTimeWorkSheet,Optional<HolidayWorkTimeSheet> holidayWorkSheet
+	public void calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeSheet> overTimeWorkSheet,Optional<HolidayWorkTimeSheet> holidayWorkSheet
 																		 ,AutoCalculationOfOverTimeWork autoCalculationOfOverTimeWork,AutoCalcSetOfHolidayWorkTime autoCalcSetOfHolidayWorkTime) {
-		Optional<OverTimeWorkSheet> overTimeWork = Optional.empty();
+		Optional<OverTimeSheet> overTimeWork = Optional.empty();
 		Optional<HolidayWorkTimeSheet> holidayTimeSheet = Optional.empty();
 		if(overTimeWorkSheet.isPresent()) {
 			overTimeWork = Optional.of(overTimeWorkSheet.get().reCreateToCalcExcessWork(overTimeWorkSheet.get(),autoCalculationOfOverTimeWork));

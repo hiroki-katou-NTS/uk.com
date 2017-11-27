@@ -8,7 +8,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 
 /**
- * 日別実績の法定外時間
+ * 日別実績の所定外時間
  * @author keisuke_hoshina
  *
  */
@@ -17,7 +17,9 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 public class ExcessOfStatutoryTimeOfDaily {
 	@Setter
 	private ExcessOfStatutoryMidNightTime ExcessOfStatutoryMidNightTime;
-	private Optional<OverTimeWorkOfDaily> OverTimeWork;
+	private Optional<OverTimeOfDaily> OverTimeWork;
 	private Optional<HolidayWorkTimeOfDaily> WorkHolidayTime;
+	
+
 
 }

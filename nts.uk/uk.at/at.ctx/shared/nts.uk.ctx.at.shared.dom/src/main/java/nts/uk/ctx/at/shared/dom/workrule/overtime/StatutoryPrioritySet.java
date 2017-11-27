@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.overtimework;
+package nts.uk.ctx.at.shared.dom.workrule.overtime;
 
 /**
  * 法定内優先設定

@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 
 /**
  * 時系列の休出時間

@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
@@ -34,14 +34,14 @@ public class TotalWorkingTime {
 	//日別実績の休憩時間
 	private BreakTimeOfDaily breakTimeOfDaily;
 	
-	//日別実績の法定外時間
+	//日別実績の所定外時間
 	private ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily;
 	
 	//日別実績の休出時間
 	private HolidayWorkTimeOfDaily holidayWorkTimeOfDaily;
 	
 	//日別実績の残業時間
-	private OverTimeWorkOfDaily overTimeWorkOfDaily;
+	private OverTimeOfDaily overTimeWorkOfDaily;
 	
 	/**
 	 * 

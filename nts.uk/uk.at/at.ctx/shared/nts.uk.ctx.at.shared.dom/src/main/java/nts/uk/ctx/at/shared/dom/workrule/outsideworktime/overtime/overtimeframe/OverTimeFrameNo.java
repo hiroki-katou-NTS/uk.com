@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtimework.overtimeworkframe;
+package nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe;
 
 import java.math.BigDecimal;
 
@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.DecimalMinValue;
 
 @DecimalMaxValue("5")
 @DecimalMinValue("1")
-public class OverTimeWorkFrameNo extends DecimalPrimitiveValue<OverTimeWorkFrameNo>{
+public class OverTimeFrameNo extends DecimalPrimitiveValue<OverTimeFrameNo>{
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -23,7 +23,7 @@ public class OverTimeWorkFrameNo extends DecimalPrimitiveValue<OverTimeWorkFrame
 	 * @param rawValue
 	 *            the raw value
 	 */
-	public OverTimeWorkFrameNo(BigDecimal rawValue) {
+	public OverTimeFrameNo(BigDecimal rawValue) {
 		super(rawValue);
 	}
 }

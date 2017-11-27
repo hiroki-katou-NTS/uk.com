@@ -24,7 +24,7 @@ import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
@@ -50,7 +50,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCa
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
-import nts.uk.ctx.at.shared.dom.workrule.overtimework.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworkTime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
@@ -279,7 +279,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 	/**
 	 * 加給時間の合計計算
 	 */
-	public RaiseSalaryTimeOfDailyPerfor calcTotalBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeWorkOfDaily overTimeWorkOfDaily,
+	public RaiseSalaryTimeOfDailyPerfor calcTotalBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeOfDaily overTimeWorkOfDaily,
 											   BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
 		return new RaiseSalaryTimeOfDailyPerfor(withinWorkSheet.calcBonusPayTimeInWithinWorkTime(bonusPayAutoCalcSet,bonusPayAtr,calcAtrOfDaily)
 										 ,calcTotalSpecifiedBonusPay(withinWorkSheet,overTimeWorkOfDaily,bonusPayAutoCalcSet,bonusPayAtr,calcAtrOfDaily));
@@ -288,7 +288,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 	/**
 	 * 特定日加給時間の合計時間
 	 */
-	public List<BonusPayTime> calcTotalSpecifiedBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeWorkOfDaily overTimeWorkOfDaily,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcTotalSpecifiedBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeOfDaily overTimeWorkOfDaily,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayList = withinWorkSheet.calcSpecifiedBonusPayTimeInWithinWorkTime(bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
 		bonusPayList.addAll(overTimeWorkOfDaily.calcSpecifiedBonusPay(bonusPayAutoCalcSet,bonusPayAtr,calcAtrOfDaily));
 		return bonusPayList;

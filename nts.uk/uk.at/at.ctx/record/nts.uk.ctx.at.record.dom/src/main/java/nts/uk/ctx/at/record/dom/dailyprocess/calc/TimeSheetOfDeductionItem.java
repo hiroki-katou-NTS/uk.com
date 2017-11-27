@@ -11,9 +11,11 @@ import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -320,5 +322,66 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 */
 	public TimeSheetOfDeductionItem createWithExcessAtr(){
 		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.calcrange,this.deductionTimeSheet,this.bonusPayTimeSheet,this.specBonusPayTimesheet,this.midNightTimeSheet,this.goOutReason,this.breakAtr,this.deductionAtr);
+	}
+	
+	/**
+	 * 休憩時間帯の計算範囲の取得 
+	 * @param timeList 出勤退勤の時間リスト
+	 * @param calcMethod　休憩時間中に退勤した場合の計算方法
+	 * @param deplicateoneTimeRange 1日の範囲と控除時間帯の重複部分
+	 * @return
+	 */
+	public List<TimeSpanForCalc> getBreakCalcRange(List<TimeLeavingWork> timeList,CalcMethodIfLeaveWorkDuringBreakTime calcMethod,Optional<TimeSpanForCalc> deplicateOneTimeRange) {
+		if(deplicateOneTimeRange.isPresent()) {
+			return null;
+		}
+		List<TimeSpanForCalc> timesheets = new ArrayList<TimeSpanForCalc>();
+		for(TimeLeavingWork time : timeList) {
+			Optional<TimeSpanForCalc> timeSpan = getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, deplicateOneTimeRange.get());
+			if(timeSpan.isPresent()) {
+				timesheets.add(timeSpan.get());
+			}
+		}
+		return timesheets;
+	}
+	
+	/**
+	 * 休憩時間帯に出勤、退勤が含まれているかの判定ののち重複時間帯の取得
+	 * @param time 出退勤クラス
+	 * @param calcMethod　休憩時間中に退勤した場合の計算方法
+	 * @param oneDayRange 1日の範囲
+	 * @return
+	 */
+	public Optional<TimeSpanForCalc> getIncludeAttendanceOrLeaveDuplicateTimeSheet(TimeLeavingWork time,CalcMethodIfLeaveWorkDuringBreakTime calcMethod,TimeSpanForCalc oneDayRange) {
+		
+		TimeWithDayAttr newStart = oneDayRange.getStart();
+		TimeWithDayAttr newEnd = oneDayRange.getEnd();
+		
+		//退勤時間を含んでいるかチェック
+		if(oneDayRange.contains(time.getLeaveStamp().getStamp().getTimeWithDay())) {
+			//出勤時間を含んでいるチェック
+			if(oneDayRange.contains(time.getAttendanceStamp().getStamp().getTimeWithDay())){
+				newStart = time.getAttendanceStamp().getStamp().getTimeWithDay();
+			}
+		
+			switch(calcMethod) {
+				//計上しない
+				case NotRecordAll:
+					return Optional.empty();
+				//全て計上
+				case RecordAll:
+					return Optional.of(new TimeSpanForCalc(newStart,newEnd));
+				//退勤時間まで計上
+				case RecordUntilLeaveWork:
+					return Optional.of(new TimeSpanForCalc(newStart,time.getLeaveStamp().getStamp().getTimeWithDay()));
+				default:
+					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
+			}
+		}
+		else
+		{
+			//1日の計算範囲と出退勤の重複範囲取得
+			return Optional.of(oneDayRange.getDuplicatedWith(new TimeSpanForCalc(time.getAttendanceStamp().getStamp().getTimeWithDay(),time.getLeaveStamp().getStamp().getTimeWithDay())).get());
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.overtimework;
+package nts.uk.ctx.at.shared.dom.workrule.overtime;
 
 import lombok.Value;
 
@@ -8,6 +8,6 @@ import lombok.Value;
  *
  */
 @Value
-public class OverTimeWorkSet {
+public class OverTimeSet {
 	private StatutoryPrioritySet statutoryPrioritySet;
 }

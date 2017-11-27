@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -193,7 +194,7 @@ public class DeductionTimeSheet {
 				}
 			case BREAK:
 			
-				List<TimeSpanForCalc> duplicateBreakSheet = getBreakCalcRange(attendanceLeaveWork.getTimeLeavingWorks(),calcMethod,oneDayRange.getDuplicatedWith(timeSheet.calcrange));
+				List<TimeSpanForCalc> duplicateBreakSheet = timeSheet.getBreakCalcRange(attendanceLeaveWork.getTimeLeavingWorks(),calcMethod,oneDayRange.getDuplicatedWith(timeSheet.calcrange));
 				if(!duplicateBreakSheet.isEmpty())
 				{
 					duplicateBreakSheet.forEach(tc -> {
@@ -217,68 +218,6 @@ public class DeductionTimeSheet {
 		return sheetList;
 	}
 
-	/**
-	 * 休憩時間帯の計算範囲の取得 
-	 * @param timeList 出勤退勤の時間リスト
-	 * @param calcMethod　休憩時間中に退勤した場合の計算方法
-	 * @param deplicateoneTimeRange 1日の範囲と控除時間帯の重複部分
-	 * @return
-	 */
-	public static List<TimeSpanForCalc> getBreakCalcRange(List<TimeLeavingWork> timeList,CalcMethodIfLeaveWorkDuringBreakTime calcMethod,Optional<TimeSpanForCalc> deplicateOneTimeRange) {
-		if(deplicateOneTimeRange.isPresent()) {
-			return null;
-		}
-		List<TimeSpanForCalc> timesheets = new ArrayList<TimeSpanForCalc>();
-		for(TimeLeavingWork time : timeList) {
-			Optional<TimeSpanForCalc> timeSpan = getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, deplicateOneTimeRange.get());
-			if(timeSpan.isPresent()) {
-				timesheets.add(timeSpan.get());
-			}
-		}
-		return timesheets;
-	}
-	
-	
-
-	/**
-	 * 休憩時間帯に出勤、退勤が含まれているかの判定ののち重複時間帯の取得
-	 * @param time 出退勤クラス
-	 * @param calcMethod　休憩時間中に退勤した場合の計算方法
-	 * @param oneDayRange 
-	 * @return
-	 */
-	public static Optional<TimeSpanForCalc> getIncludeAttendanceOrLeaveDuplicateTimeSheet(TimeLeavingWork time,CalcMethodIfLeaveWorkDuringBreakTime calcMethod,TimeSpanForCalc oneDayRange) {
-		
-		TimeWithDayAttr newStart = oneDayRange.getStart();
-		TimeWithDayAttr newEnd = oneDayRange.getEnd();
-		
-		//退勤時間を含んでいるかチェック
-		if(oneDayRange.contains(time.getLeaveStamp().getStamp().getTimeWithDay())) {
-			//出勤時間を含んでいるチェック
-			if(oneDayRange.contains(time.getAttendanceStamp().getStamp().getTimeWithDay())){
-				newStart = time.getAttendanceStamp().getStamp().getTimeWithDay();
-			}
-		
-			switch(calcMethod) {
-				//計上しない
-				case NotRecordAll:
-					return Optional.empty();
-				//全て計上
-				case RecordAll:
-					return Optional.of(new TimeSpanForCalc(newStart,newEnd));
-				//退勤時間まで計上
-				case RecordUntilLeaveWork:
-					return Optional.of(new TimeSpanForCalc(newStart,time.getLeaveStamp().getStamp().getTimeWithDay()));
-				default:
-					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
-			}
-		}
-		else
-		{
-			//1日の計算範囲と出退勤の重複範囲取得
-			return Optional.of(oneDayRange.getDuplicatedWith(new TimeSpanForCalc(time.getAttendanceStamp().getStamp().getTimeWithDay(),time.getLeaveStamp().getStamp().getTimeWithDay())).get());
-		}
-	}
 	
 	/**
 	 * 全控除項目の時間帯の合計を算出する
@@ -473,7 +412,7 @@ public class DeductionTimeSheet {
 //			CalculationRangeOfOneDay oneDayRange) {
 //		
 //		//計算範囲の取得
-//		oneDayRange.
+//		AttendanceTime calcRange= oneDayRange.getPredetermineTimeSetForCalc().getOneDayRange();
 //		//控除時間帯の取得　・・・保科君が作成済みの処理を呼ぶ
 //		List<TimeSheetOfDeductionItem> deductionTimeSheet = this.collectDeductionTimes(
 //				dailyGoOutSheet, 
@@ -486,42 +425,38 @@ public class DeductionTimeSheet {
 //				fluidSet, 
 //				acqAtr);
 //		//控除時間帯同士の重複部分を補正
-//		deductionTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet).reCreate(setMethod, clockManage);
+//		deductionTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet)
+//									.reCreate(WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr);
 //		//控除合計時間クラスを作成　　不要な可能性あり
-//		DeductionTotalTimeForFluidCalc deductionTotalTime = new DeductionTotalTimeForFluidCalc();
+//		//→合計時間を保持しておくためにこのインスタンスは必要(2017.11.27 by hoshina)
+//		DeductionTotalTimeForFluidCalc deductionTotalTime = new DeductionTotalTimeForFluidCalc(new AttendanceTime(0),new AttendanceTime(0));
 //		//流動休憩時間帯を取得する
 //		List<FluRestTimeSetting> fluRestTimeSheetList = 
 //				fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getFluidRestTimes();
 //		//外出取得開始時刻を作成する
 //		AttendanceTime getGoOutStartClock = new AttendanceTime(withinWorkTimeFrame.getCalcrange().getStart().valueAsMinutes());
-//		//一時的に作成
-//		int roopNo = 0;
-//		//一時的に作成
-//		List<TimeSheetOfDeductionItem> restTimeSheetList = new ArrayList<>();
+//		//一時的に作成(最後に控除時間帯へ追加する休憩時間帯リスト)
+//		List<TimeSheetOfDeductionItem> restTimeSheetListForAddToDeductionList = new ArrayList<>();
+//		
 //		//流動休憩時間帯分ループ
-//		for(FluRestTimeSetting fluRestTimeSetting : fluRestTimeSheetList) {
-//			roopNo++;
-//			//外出のみの控除時間帯リストを作成する
-//			List<TimeSheetOfDeductionItem> goOutDeductionTimelist = 
-//					this.forDeductionTimeZoneList.stream().filter(ts -> ts.getGoOutReason().isPresent()).collect(Collectors.toList());		
+//		for(int nowLoop = 0 ; nowLoop <fluRestTimeSheetList.size(); nowLoop++) {		
+//
 //			//流動休憩時間帯の作成（引数にgetGoOutStartClockを渡す
 //			TimeSheetOfDeductionItem restTimeSheet = deductionTotalTime.createDeductionFluidRestTime(
-//					fluRestTimeSetting, 
+//					fluRestTimeSheetList.get(nowLoop), 
 //					getGoOutStartClock, 
-//					roopNo, 
+//					nowLoop, 
 //					fluidWorkSetting, 
-//					deductionTimeSheet, 
-//					goOutDeductionTimelist
+//					deductionTimeSheet
 //					/*外出と流動休憩の関係設定*/);
 //			//作成した時間帯を休憩時間帯リストに格納
-//			restTimeSheetList.add(restTimeSheet);
+//			restTimeSheetListForAddToDeductionList.add(restTimeSheet);
+//			getGoOutStartClock = new AttendanceTime(restTimeSheet.calcrange.getStart().valueAsMinutes());
 //		}
 //		//退勤時刻までの外出の処理
 //		deductionTotalTime.collectDeductionTotalTime(list, getGoOutStartClock, fluidWorkSetting, roopNo);
 //		//控除時間帯をソート
 //		
 //	}
-//	
-	
 	
 }

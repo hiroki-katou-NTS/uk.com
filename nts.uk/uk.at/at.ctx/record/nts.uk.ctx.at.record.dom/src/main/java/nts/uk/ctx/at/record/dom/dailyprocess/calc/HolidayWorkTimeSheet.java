@@ -49,6 +49,54 @@ public class HolidayWorkTimeSheet{
 		return workHolidayTime;
 	}
 	
+//	/**
+//	 * 代休の振替処理(残業用)
+//	 * @param workType　当日の勤務種類
+//	 */
+//	public void modifyHandTransfer(WorkType workType) {
+//		//平日の場合のみ振替処理実行
+//		if(workType.isWeekDayAttendance()) {
+//			//if(/*代休発生設定を取得(設計中のようす)*/) {
+//			if(false) {
+//				if(/*代休振替設定区分使用：一定時間を超えたら代休とする*/) {
+//					
+//				}
+//				else if(/*指定した時間を代休とする*/) {
+//					
+//				}
+//				else {
+//					throw new Exception("unknown daikyuSet:");
+//				}
+//			}
+//		}
+//	}
+	
+	/**
+	 * 
+	 * @param 一定時間
+	 */
+	public void periodOfTime(AttendanceTime periodTime) {
+		/*振替可能時間の計算*/
+		AttendanceTime transAbleTime = calcTransferTime(periodTime);
+		/*振り替える*/
+	}
+	
+	/**
+	 * 代休の振替可能時間の計算
+	 * @param periodTime 一定時間
+	 * @return 振替可能時間
+	 */
+	private AttendanceTime calcTransferTime(AttendanceTime periodTime) {
+		int totalFrameTime = this.getWorkHolidayTime().calcTotalFrameTime();
+		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
+			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
+		}
+		else {
+			return new AttendanceTime(0);
+		}
+	}
+	
+	
 	/**
 	 * 深夜時間計算後の時間帯再作成
 	 * @param HolidayWorkTimeSheet 休日出勤時間帯

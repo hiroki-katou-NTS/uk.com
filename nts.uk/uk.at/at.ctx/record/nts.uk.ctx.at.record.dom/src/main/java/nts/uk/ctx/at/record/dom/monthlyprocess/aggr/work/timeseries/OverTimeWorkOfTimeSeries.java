@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 
 /**
  * 時系列の残業時間
@@ -17,9 +17,9 @@ public class OverTimeWorkOfTimeSeries {
 	/** 年月日 */
 	private GeneralDate ymd;
 	/** 休出時間 */
-	private List<OverTimeWorkFrameTime> overTimeWorks;
+	private List<OverTimeFrameTime> overTimeWorks;
 	/** 法定内休出時間 */
-	private List<OverTimeWorkFrameTime> withinStatutoryOverTimeWorks;
+	private List<OverTimeFrameTime> withinStatutoryOverTimeWorks;
 	
 	/**
 	 * コンストラクタ
