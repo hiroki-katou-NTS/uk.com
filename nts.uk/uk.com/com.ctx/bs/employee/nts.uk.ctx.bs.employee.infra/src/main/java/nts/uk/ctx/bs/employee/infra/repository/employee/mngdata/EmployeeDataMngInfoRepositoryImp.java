@@ -95,6 +95,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 		return new BsymtEmployeeDataMngInfo(primaryKey, domain.getCompanyId(), domain.getEmployeeCode().v(),
 				domain.getDeletedStatus().value, domain.getDeleteDateTemporary(), domain.getRemoveReason().v(),
-				domain.getExternalCode());
+				domain.getExternalCode().v());
 	}
 }

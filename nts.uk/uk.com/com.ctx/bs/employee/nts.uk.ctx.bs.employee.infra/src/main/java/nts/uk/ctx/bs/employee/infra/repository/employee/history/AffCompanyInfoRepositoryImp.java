@@ -28,7 +28,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 		if (entity != null) {
 			entity.adoptionDate = domain.getAdoptionDate();
 			entity.retirementAllowanceCalcStartDate = domain.getRetirementAllowanceCalcStartDate();
-			entity.recruitmentCategoryCode = domain.getRecruitmentCategoryCode().v();
+			entity.recruitmentCategoryCode = domain.getRecruitmentClassification().v();
 			
 			this.commandProxy().update(entity);
 		}
@@ -58,7 +58,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 	private BsymtAffCompanyInfo toEntity(AffCompanyInfo domain) {
 		BsymtAffCompanyInfoPk entityPk = new BsymtAffCompanyInfoPk(domain.getHistoryId());
 
-		return new BsymtAffCompanyInfo(entityPk, domain.getRecruitmentCategoryCode().v(), domain.getAdoptionDate(),
+		return new BsymtAffCompanyInfo(entityPk, domain.getRecruitmentClassification().v(), domain.getAdoptionDate(),
 				domain.getRetirementAllowanceCalcStartDate(), null);
 	}
 }
