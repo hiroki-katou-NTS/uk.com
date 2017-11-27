@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-public class PersonInfoImportedDto {
+public class PersonInfoImportedImport {
 
 	/** The employee id. */
 	private String employeeId;

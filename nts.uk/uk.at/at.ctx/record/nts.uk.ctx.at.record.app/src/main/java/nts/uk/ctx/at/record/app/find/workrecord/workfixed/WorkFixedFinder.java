@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
-import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedDto;
+import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedImport;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixed;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkfixedRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -70,7 +70,7 @@ public class WorkFixedFinder {
 				workFixed.get().saveToMemento(dto);
 			}
 			if (Strings.isNotEmpty(dto.getConfirmPid())) {
-				PersonInfoImportedDto personImportDto = this.personInfoAdapter.getPersonInfo(dto.getConfirmPid());			
+				PersonInfoImportedImport personImportDto = this.personInfoAdapter.getPersonInfo(dto.getConfirmPid());			
 				dto.setEmployeeName(personImportDto.getEmployeeName());
 			}			
 			
@@ -86,7 +86,7 @@ public class WorkFixedFinder {
 	public PersonInfoWorkFixedDto findCurrentPersonName() {
 		// Get Person Id
 		String personId = AppContexts.user().personId();
-		PersonInfoImportedDto personImportDto = this.personInfoAdapter.getPersonInfo(personId);			
+		PersonInfoImportedImport personImportDto = this.personInfoAdapter.getPersonInfo(personId);			
 		return PersonInfoWorkFixedDto.builder()
 				.employeeId(personImportDto.getEmployeeId())
 				.employeeName(personImportDto.getEmployeeName())
