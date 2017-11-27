@@ -16,8 +16,8 @@ public class AffCompanyInfo extends AggregateRoot {
 	/** 履歴ID */
 	private String historyId;
 
-	/** 採用区分コード */
-	private RecruitmentCategoryCode recruitmentCategoryCode;
+	/** 採用区分 */
+	private RecruitmentClassification recruitmentClassification;
 
 	/** 本採用年月日 */
 	private GeneralDate adoptionDate;
@@ -27,7 +27,7 @@ public class AffCompanyInfo extends AggregateRoot {
 
 	public static AffCompanyInfo createFromJavaType(String histId, String recruitmentCategoryCode,
 			GeneralDate adoptionDate, GeneralDate retirementAllowanceCalcStartDate) {
-		return new AffCompanyInfo(histId, new RecruitmentCategoryCode(recruitmentCategoryCode), adoptionDate,
+		return new AffCompanyInfo(histId, new RecruitmentClassification(recruitmentCategoryCode), adoptionDate,
 				retirementAllowanceCalcStartDate);
 	}
 }
