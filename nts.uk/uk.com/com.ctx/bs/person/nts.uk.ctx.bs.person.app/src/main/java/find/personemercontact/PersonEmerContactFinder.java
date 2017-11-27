@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.shr.pereg.app.find.PeregListFinder;
+import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
@@ -16,7 +16,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 @Stateless
-public class PersonEmerContactFinder implements PeregListFinder<PersonEmerContactDto>{
+public class PersonEmerContactFinder implements PeregFinder<PersonEmerContactDto>{
 
 	@Override
 	public String targetCategoryCode() {
@@ -29,10 +29,19 @@ public class PersonEmerContactFinder implements PeregListFinder<PersonEmerContac
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.shr.pereg.app.find.PeregListFinder#getCtgListleData(nts.uk.shr.pereg.app.find.PeregQuery)
+	 * @see nts.uk.shr.pereg.app.find.PeregFinder#getSingleData(nts.uk.shr.pereg.app.find.PeregQuery)
 	 */
 	@Override
-	public List<PeregDto> getCtgListleData(PeregQuery query) {
+	public PeregDto getSingleData(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.pereg.app.find.PeregFinder#getListData(nts.uk.shr.pereg.app.find.PeregQuery)
+	 */
+	@Override
+	public List<PeregDto> getListData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
