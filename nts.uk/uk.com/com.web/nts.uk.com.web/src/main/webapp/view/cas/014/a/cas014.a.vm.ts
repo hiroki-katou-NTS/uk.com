@@ -14,6 +14,8 @@ module nts.uk.com.view.cas014.a {
             roleSetList: KnockoutObservableArray<RoleSet>;
             jobTitleList: KnockoutObservableArray<JobTitle>;
             roleSetJobTitle: KnockoutObservable<RoleSetJobTitle>;
+            
+            viewmodelB = new cas014.b.viewmodel.ScreenModel();
 
             constructor() {
                 let self = this;
@@ -24,7 +26,6 @@ module nts.uk.com.view.cas014.a {
                 $(".fixed-table").ntsFixedTable({ height: 300 });
             }
 
-            //startPage(): void {
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
@@ -54,22 +55,25 @@ module nts.uk.com.view.cas014.a {
                                 }
                             });
                         });
-                        self.roleSetJobTitle.valueHasMutated();
-                    } 
+                        //self.roleSetJobTitle.valueHasMutated();
+                    } else {
+                        
+                    }
+                    self.viewmodelB.startPage(); 
                     dfd.resolve();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError("shit happened!");
+                    alertError({ messageId: error.message });
                     dfd.reject();
+                }).always(() => {
+                    block.clear();
                 });
-                block.clear();
+                
                 return dfd.promise();
             }
 
             register() {
                 let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails = [];
-                _.each(data.details, d => {
-                    if (d.roleSetCd != '00') regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId })
-                });
+                _.each(data.details(), d => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
 
                 let command: any = {
                     applyToConcurrentPerson: data.applyToConcurrentPerson,

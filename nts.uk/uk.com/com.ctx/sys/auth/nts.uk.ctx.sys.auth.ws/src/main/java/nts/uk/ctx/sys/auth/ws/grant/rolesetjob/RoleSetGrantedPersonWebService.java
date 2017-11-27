@@ -14,6 +14,7 @@ import nts.uk.ctx.sys.auth.app.command.grant.rolesetperson.RoleSetGrantedPersonC
 import nts.uk.ctx.sys.auth.app.find.grant.rolesetjob.RoleSetDto;
 import nts.uk.ctx.sys.auth.app.find.grant.rolesetperson.RoleSetGrantedPersonDto;
 import nts.uk.ctx.sys.auth.app.find.grant.rolesetperson.RoleSetGrantedPersonFinder;
+import nts.uk.ctx.sys.auth.dom.employee.dto.EmployeeImport;
 
 /**
  * 
@@ -48,7 +49,7 @@ public class RoleSetGrantedPersonWebService {
 	
 	@POST
 	@Path("delete")
-	public void delete(RoleSetGrantedPersonCommand command) {
+	public void delete(String employeeId) {
 		//this.delHandler.handle(command);
 		System.out.println("delete done!");
 	}
@@ -57,5 +58,11 @@ public class RoleSetGrantedPersonWebService {
 	@Path("selectroleset/{code}")
 	public List<RoleSetGrantedPersonDto> selectRoleSet(@PathParam("code") String code) {
 		return this.finder.getAllRoleSetGrantedPersonByRoleSetCd(code);
+	}
+	
+	@POST
+	@Path("getempinfo/{id}")
+	public EmployeeImport getEmployeeInfo(@PathParam("id") String id) {
+		return this.finder.getEmployeeInfo(id);
 	}
 }

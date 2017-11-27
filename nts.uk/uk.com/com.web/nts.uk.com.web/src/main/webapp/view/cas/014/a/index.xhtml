@@ -9,21 +9,16 @@
 		<ui:define name="sidebar-head">
 			<title>ロールセットの付与</title>
 			<com:scriptfile set="IGNITE" />
-			<!-- 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" /> -->
 			<com:stylefile path="cas014.a.style.css" />
 			<com:scriptfile path="cas014.a.service.js" />
 			<com:scriptfile path="cas014.a.vm.js" />
-
+			
+			<com:scriptfile path="../b/cas014.b.vm.js" />
+			<com:scriptfile path="../b/cas014.b.service.js" />
+			
 			<com:scriptfile path="cas014.a.start.js" />
-			<!-- 			<com:scriptfile -->
-			<!-- 				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" -->
-			<!-- 				of="/nts.uk.com.js.web" /> -->
-			<!-- 			<com:scriptfile -->
-			<!-- 				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" -->
-			<!-- 				of="/nts.uk.com.js.web" /> -->
-
 		</ui:define>
-
+		
 		<ui:define name="sidebar">
 			<ul class="navigator">
 				<li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('CAS014_2')}</a></li>
@@ -34,12 +29,12 @@
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('CAS014_2')}</span>
-					<button class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
+					<span tabindex="1" class="title">#{i18n.getText('CAS014_2')}</span>
+					<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
 				</div>
-				<div class="contents-area">
+				<div class="contents-area-a">
 					<div class="valign-center control-group" data-bind="with: roleSetJobTitle">
-						<div data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
+						<div tabindex="3" data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
 					</div>
 					<div class="valign-center control-group" style="padding-left: 32px">
 						<label>#{i18n.getText('CAS014_21')}</label>
@@ -47,12 +42,12 @@
 					<br />
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
-						<div
+						<div tabindex="4"
 							data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
-						<button class="caret-bottom" data-bind="click : startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
+						<button tabindex="5" class="caret-bottom" data-bind="click : startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
 					</div>
 					<br />
-					<table class="fixed-table" data-bind="with: roleSetJobTitle">
+					<table class="fixed-table" tabindex="6" data-bind="with: roleSetJobTitle">
 						<colgroup>
 							<col width="100px" />
 							<col width="150px" />
@@ -70,7 +65,7 @@
 								<td><div data-bind = "text: jobTitle.code" style="display: inline-block;"></div></td>
 								<td><div data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
 								<td>
-									<div class="combo-box"
+									<div class="combo-box" tabindex="7"
 										data-bind="ntsComboBox: {
 										options: roleSetList,
 										optionsValue: 'code',
@@ -90,68 +85,8 @@
 					</table>
 				</div>
 			</div>
-			<div id="tabpanel-2" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('CAS014_3')}</span>
-					<button>#{i18n.getText('CAS014_10')}</button>
-					<button class="proceed">#{i18n.getText('CAS014_11')}</button>
-					<button class="danger">#{i18n.getText('CAS014_12')}</button>
-				</div>
-				<div class="contents-area">
-					<div>
-						<div style="float: left">
-							<div class="table-label">
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
-							</div>
-							<table class="fixed-table">
-								<colgroup>
-									<col width="100px" />
-									<col width="150px" />
-								</colgroup>
-								<thead>
-									<tr>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-									</tr>
-									
-								</tbody>
-							</table>
-						</div>
-						<div style="float: left">
-							<div class="table-label">
-								<label>#{i18n.getText('CAS014_33')}</label>
-							</div>
-							<table class="fixed-table">
-								<colgroup>
-									<col width="100px" />
-									<col width="80px" />
-									<col width="250px" />
-								</colgroup>
-								<thead>
-									<tr>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CAS014_26')}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>就業承認</td>
-										<td>000000000001</td>
-										<td>000000000001</td>
-									</tr>
-									
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB">
+				<ui:include src="../b/index.xhtml" />
 			</div>
 		</ui:define>
 	</ui:composition>

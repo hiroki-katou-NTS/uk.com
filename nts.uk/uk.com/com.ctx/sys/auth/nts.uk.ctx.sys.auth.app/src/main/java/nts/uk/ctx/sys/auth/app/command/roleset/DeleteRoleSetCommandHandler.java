@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
 
 @Stateless
 @javax.transaction.Transactional
@@ -16,7 +16,7 @@ public class DeleteRoleSetCommandHandler extends CommandHandlerWithResult<Delete
 	private RoleSetService roleSetService;
 
 	@Inject
-	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
+	private RoleSetLinkWebMenuAdapter roleSetAndWebMenuAdapter;
 	
 	@Override
 	protected String handle(CommandHandlerContext<DeleteRoleSetCommand> context) {

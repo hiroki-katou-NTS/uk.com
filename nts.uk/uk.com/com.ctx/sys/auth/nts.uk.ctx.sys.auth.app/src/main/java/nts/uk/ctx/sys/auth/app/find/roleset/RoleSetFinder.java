@@ -13,9 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenu;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuAdapter;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -28,7 +28,7 @@ public class RoleSetFinder {
 	private WebMenuAdapter webMenuAdapter;
 	
 	@Inject
-	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
+	private RoleSetLinkWebMenuAdapter roleSetAndWebMenuAdapter;
 	
 	/**
 	 * Get a RoleSet
@@ -69,7 +69,7 @@ public class RoleSetFinder {
 	 * @param roleSetCd
 	 * @return list of web menu dto.
 	 */
-	private List<WebMenuDto> buildWebMenuDto(String roleSetCd) {
+	private List<WebMenuImportDto> buildWebMenuDto(String roleSetCd) {
 
 		List<String> lstWebMenuCds = roleSetAndWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd)
 				.stream().map(item->item.getRoleSetCd()).collect(Collectors.toList());
@@ -78,16 +78,16 @@ public class RoleSetFinder {
 			return null;
 		}
 
-		List<WebMenu> lstWebMenus = webMenuAdapter.findByCompanyId();
+		List<WebMenuImport> lstWebMenus = webMenuAdapter.findByCompanyId();
 		if (CollectionUtil.isEmpty(lstWebMenus)) {
 			return null;
 		}
 
-		List<WebMenuDto> retWebmenus = lstWebMenuCds.stream().map(item -> {
-			Optional<WebMenu> webMenuOpt = lstWebMenus.stream().filter(wmn-> wmn.getWebMenuCd().equals(item)).findFirst();
+		List<WebMenuImportDto> retWebmenus = lstWebMenuCds.stream().map(item -> {
+			Optional<WebMenuImport> webMenuOpt = lstWebMenus.stream().filter(wmn-> wmn.getWebMenuCd().equals(item)).findFirst();
 			if (webMenuOpt.isPresent()) {
-				WebMenu wmn = webMenuOpt.get();
-				return new WebMenuDto(wmn.getWebMenuCd(), wmn.getWebMenuName());
+				WebMenuImport wmn = webMenuOpt.get();
+				return new WebMenuImportDto(wmn.getWebMenuCd(), wmn.getWebMenuName());
 			}
 			return null;
 			}).collect(Collectors.toList());

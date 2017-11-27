@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenu;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuAdapter;
 import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuPub;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,7 +30,7 @@ public class AuthWebMenuAdapterImpl implements WebMenuAdapter {
 	private WebMenuPub webMenuPub;
 
 	@Override
-	public List<WebMenu> findByCompanyId() {
+	public List<WebMenuImport> findByCompanyId() {
 		//Get company Id
 		String companyId = AppContexts.user().companyId();
 		if (!StringUtils.isNoneEmpty(companyId)) {
@@ -38,7 +38,7 @@ public class AuthWebMenuAdapterImpl implements WebMenuAdapter {
 		}
 			
 		return this.webMenuPub.findByCompanyId(companyId).stream().map(item ->
-			new WebMenu(item.getWebMenuCd(), item.getWebMenuName(), item.getCompanyId(), item.isDefaultMenu())
+			new WebMenuImport(item.getWebMenuCd(), item.getWebMenuName(), item.getCompanyId(), item.isDefaultMenu())
 			).collect(Collectors.toList());
 	}
 }
