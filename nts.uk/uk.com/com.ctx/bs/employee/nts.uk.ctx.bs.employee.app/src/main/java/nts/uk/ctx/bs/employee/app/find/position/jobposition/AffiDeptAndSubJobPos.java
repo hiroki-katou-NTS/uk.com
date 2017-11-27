@@ -1,10 +1,14 @@
-package nts.uk.ctx.bs.employee.app.find.department;
+package nts.uk.ctx.bs.employee.app.find.position.jobposition;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.PeregComboList;
 import nts.uk.shr.pereg.app.PeregItem;
 
 
@@ -12,8 +16,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AffiliationDepartmentDto {
-	
+public class AffiDeptAndSubJobPos {
 	/** The id. */
 	@PeregItem("")
 	private String id;
@@ -29,4 +32,7 @@ public class AffiliationDepartmentDto {
 	/** The department id. */
 	@PeregItem("")
 	private String departmentId;
+	
+	@PeregComboList
+	private List<ComboBoxObject> lstComboBoxJobPos;
 }

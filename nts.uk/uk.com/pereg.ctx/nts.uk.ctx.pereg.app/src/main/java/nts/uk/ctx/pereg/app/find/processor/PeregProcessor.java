@@ -87,6 +87,7 @@ public class PeregProcessor {
 	public EmpMaintLayoutDto getLayout(PeregMaintLayoutQuery layoutQuery) {
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
+		
 		itemClassList.forEach(item -> {
 			// get ctgCd
 			PersonInfoCategory perInfoCtg = perInfoCtgRepositoty

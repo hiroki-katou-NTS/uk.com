@@ -9,12 +9,13 @@ import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefForLayoutDto;
 import find.person.info.item.SingleItemDto;
-import lombok.val;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.PeregComboList;
 import nts.uk.shr.pereg.app.PeregItem;
 
 /**
@@ -35,6 +36,12 @@ public class LayoutMapping {
 			dtoFieldValue.put(itemCode, obj);
 		});
 		setEmpMaintLayoutDto(empMaintLayoutDto, dtoFieldValue, lstPerInfoItemDef);
+		
+		AnnotationUtil.getFieldAnnotated(dtoClass, PeregComboList.class).ifPresent(field ->{
+			@SuppressWarnings("unchecked")
+			List<ComboBoxObject> lstComboBox = (List<ComboBoxObject>)ReflectionUtil.getFieldValue(field, dto);
+			setComboBoxList(empMaintLayoutDto, lstComboBox);
+		});
 	}
 	
 	public static void mapPerOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<PersonInfoItemData> lstCtgItemOptionalDto, 
@@ -86,6 +93,12 @@ public class LayoutMapping {
 			}
 		});
 		
+	}
+	
+	private static void setComboBoxList(EmpMaintLayoutDto empMaintLayoutDto, List<ComboBoxObject> lstComboBox){
+		LayoutPersonInfoClsDto cls = new LayoutPersonInfoClsDto();
+		cls.getItems().add(lstComboBox);
+		empMaintLayoutDto.getClassificationItems().add(cls);
 	}
 	
 	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue){
