@@ -300,8 +300,8 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 
 		// 出勤時刻を直行とする：False AND 退勤時刻を直行とする：True⇒ 直帰のみ
-		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
-				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 			return BounceAtr.NO_DIRECT_BOUNCE;
 		}
 
