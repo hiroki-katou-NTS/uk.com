@@ -10545,7 +10545,7 @@ var nts;
                             var setting = $.extend({ height: "auto" }, options);
                             var $container = $("<div class='nts-fixed-table cf'/>");
                             $originTable.after($container);
-                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").css("max-width", viewWidth);
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").css({ "max-width": viewWidth, "padding-right": "1px" });
                             var $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(width);
                             var $headerTable = $("<table class='fixed-table'></table>");
                             $headerTable.append($colgroup.clone()).append($thead);
@@ -10559,15 +10559,31 @@ var nts;
                             if (setting.height !== "auto") {
                                 $bodyContainer.css("max-width", viewWidth);
                                 bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
-                                if (/Edge/.test(navigator.userAgent)) {
-                                    $bodyContainer.css("padding-right", "12px");
+                            }
+                            var resizeEvent = function () {
+                                if (bodyHeight < $originTable.height()) {
+                                    if (/Edge/.test(navigator.userAgent)) {
+                                        $bodyContainer.css("padding-right", "12px");
+                                    }
+                                    else {
+                                        $bodyContainer.css("padding-right", "17px");
+                                    }
                                 }
                                 else {
-                                    $bodyContainer.css("padding-right", "17px");
+                                    $bodyContainer.css("padding-right", "0px");
                                 }
-                            }
+                                setTimeout(resizeEvent, 20);
+                            };
                             $bodyContainer.scroll(function (evt, ui) {
-                                $headerContainer.scrollLeft($bodyContainer.scrollLeft());
+                                var bodyScroll = $bodyContainer.scrollLeft();
+                                if (bodyScroll > 0) {
+                                    bodyScroll = bodyScroll + 1.5;
+                                    $headerContainer.css({ "border-left": "1px solid #CCC", "padding-right": "0px" });
+                                }
+                                else {
+                                    $headerContainer.css({ "border-left": "0px solid #CCC", "padding-right": "1px" });
+                                }
+                                $headerContainer.scrollLeft(bodyScroll);
                                 if ($headerContainer.scrollLeft() === viewWidth) {
                                     $headerContainer.css("border-right-width", "2px");
                                 }
@@ -10579,6 +10595,15 @@ var nts;
                             $bodyWrapper.append($originTable);
                             $bodyContainer.append($bodyWrapper);
                             $container.append($bodyContainer);
+                            if (setting.height !== "auto" && bodyHeight < $originTable.height()) {
+                                if (/Edge/.test(navigator.userAgent)) {
+                                    $bodyContainer.css("padding-right", "12px");
+                                }
+                                else {
+                                    $bodyContainer.css("padding-right", "17px");
+                                }
+                            }
+                            resizeEvent();
                         });
                         return controls;
                     }
@@ -22970,4 +22995,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
