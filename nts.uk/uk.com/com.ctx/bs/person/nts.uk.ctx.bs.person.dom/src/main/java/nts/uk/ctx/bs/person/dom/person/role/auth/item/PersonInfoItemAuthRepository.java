@@ -3,9 +3,6 @@ package nts.uk.ctx.bs.person.dom.person.role.auth.item;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySettingItem;
-
 public interface PersonInfoItemAuthRepository {
 
 	List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personInfoCategoryAuthId,String contractCd);

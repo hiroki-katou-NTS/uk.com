@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
-import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySettingItem;
 
 public interface PerInfoItemDefRepositoty {
 
@@ -50,8 +49,6 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
 			String contractCd);
 
-	List<PersonInfoItemDefinition> getAllItemFromIdList(String contractCd, List<EmpCopySettingItem> itemList);
-
 	List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
 			List<String> itemCodeList);
 
@@ -67,9 +64,6 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
 			String contractCd);
 
-	void removePerInfoItemInCopySetting(String itemId);
-
-	void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds);
 
 	// vinhpx end
 	

@@ -534,7 +534,7 @@ module cps002.a.vm {
 
         openIModal() {
             let self = this;
-            if (self.isAllowAvatarUpload()) {
+            if (true) {
                 setShared("imageId", self.currentEmployee().avatarId());
 
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
