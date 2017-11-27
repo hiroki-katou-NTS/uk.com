@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
+import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuExport;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuPub;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -27,14 +28,14 @@ public class AuthRoleSetLinkWebMenuAdapterImpl implements RoleSetLinkWebMenuAdap
 	
 	/** The web menu pub. */
 	@Inject
-	private RoleSetLinkWebMenuPub roleSetAndWebMenuPub;
+	private RoleSetLinkWebMenuPub roleSetLinkWebMenuPub;
 
 	@Override
 	public List<RoleSetLinkWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd) {
 		//Get company Id
 		String companyId = AppContexts.user().companyId();
 		if (!StringUtils.isNoneEmpty(companyId)) {
-			return this.roleSetAndWebMenuPub.findAllWebMenuByRoleSetCd(companyId, roleSetCd).stream()
+			return this.roleSetLinkWebMenuPub.findAllWebMenuByRoleSetCd(companyId, roleSetCd).stream()
 					.map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getWebMenuCd(), item.getRoleSetCd())
 					).collect(Collectors.toList());
 		}
@@ -42,25 +43,35 @@ public class AuthRoleSetLinkWebMenuAdapterImpl implements RoleSetLinkWebMenuAdap
 	}
 
 	@Override
-	public void addRoleSetAndWebMenu(RoleSetLinkWebMenuImport roleSetAndWebMenu) {
-		this.roleSetAndWebMenuPub.addRoleSetAndWebMenu(
-				roleSetAndWebMenu.getRoleSetCd()
-				, roleSetAndWebMenu.getWebMenuCd()
-				, roleSetAndWebMenu.getCompanyId());
+	public void addRoleSetLinkWebMenu(RoleSetLinkWebMenuImport roleSetLinkWebMenu) {
+		this.roleSetLinkWebMenuPub.addRoleSetLinkWebMenu(
+				roleSetLinkWebMenu.getRoleSetCd()
+				, roleSetLinkWebMenu.getWebMenuCd()
+				, roleSetLinkWebMenu.getCompanyId());
 	}
 
 	@Override
-	public void updateRoleSetAndWebMenu(RoleSetLinkWebMenuImport roleSetAndWebMenu) {
-		this.roleSetAndWebMenuPub.updateRoleSetAndWebMenu(
-				roleSetAndWebMenu.getRoleSetCd()
-				, roleSetAndWebMenu.getWebMenuCd()
-				, roleSetAndWebMenu.getCompanyId());
+	public void updateRoleSetLinkWebMenu(RoleSetLinkWebMenuImport roleSetLinkWebMenu) {
+		this.roleSetLinkWebMenuPub.updateRoleSetLinkWebMenu(
+				roleSetLinkWebMenu.getRoleSetCd()
+				, roleSetLinkWebMenu.getWebMenuCd()
+				, roleSetLinkWebMenu.getCompanyId());
 	}
 
 	@Override
-	public void deleteAllRoleSetAndWebMenu(String roleSetCd) {
+	public void deleteAllRoleSetLinkWebMenu(String roleSetCd) {
 		//Get company Id
-		this.roleSetAndWebMenuPub.deleteRoleSetAndWebMenuByRoleSetCd(roleSetCd);
+		this.roleSetLinkWebMenuPub.deleteRoleSetLinkWebMenuByRoleSetCd(roleSetCd);
+	}
+
+	@Override
+	public void addAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenuImport> listRoleSetLinkWebMenuImport) {
+		List<RoleSetLinkWebMenuExport> listRoleSetLinkWebMenuExport = listRoleSetLinkWebMenuImport.stream()
+		.map(item -> new RoleSetLinkWebMenuExport(item.getCompanyId()
+				, item.getRoleSetCd()
+				, item.getWebMenuCd())).collect(Collectors.toList());
+		
+		this.roleSetLinkWebMenuPub.addAllRoleSetLinkWebMenu(listRoleSetLinkWebMenuExport);
 	}
 	
 }

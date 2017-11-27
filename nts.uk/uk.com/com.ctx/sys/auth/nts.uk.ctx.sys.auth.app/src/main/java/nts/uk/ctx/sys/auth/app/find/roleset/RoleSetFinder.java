@@ -28,7 +28,7 @@ public class RoleSetFinder {
 	private WebMenuAdapter webMenuAdapter;
 	
 	@Inject
-	private RoleSetLinkWebMenuAdapter roleSetAndWebMenuAdapter;
+	private RoleSetLinkWebMenuAdapter roleSetLinkWebMenuAdapter;
 	
 	/**
 	 * Get a RoleSet
@@ -71,13 +71,17 @@ public class RoleSetFinder {
 	 */
 	private List<WebMenuImportDto> buildWebMenuDto(String roleSetCd) {
 
-		List<String> lstWebMenuCds = roleSetAndWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd)
+		List<String> lstWebMenuCds = roleSetLinkWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd)
 				.stream().map(item->item.getRoleSetCd()).collect(Collectors.toList());
 		
 		if (CollectionUtil.isEmpty(lstWebMenuCds)) {
 			return null;
 		}
-
+		
+		return lstWebMenuCds.stream()
+				.map(webMenuCd -> new WebMenuImportDto(webMenuCd, ""))
+				.collect(Collectors.toList());
+/*
 		List<WebMenuImport> lstWebMenus = webMenuAdapter.findByCompanyId();
 		if (CollectionUtil.isEmpty(lstWebMenus)) {
 			return null;
@@ -95,6 +99,7 @@ public class RoleSetFinder {
 			return null;
 		}
 		return retWebmenus.stream().filter(item -> item != null).collect(Collectors.toList());
+		*/
 	}
 
 
