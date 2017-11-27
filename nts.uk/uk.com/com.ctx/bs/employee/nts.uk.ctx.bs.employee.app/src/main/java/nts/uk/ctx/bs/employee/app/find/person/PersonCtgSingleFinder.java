@@ -10,13 +10,13 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.shr.pereg.app.find.PeregCtgSingleFinder;
+import nts.uk.shr.pereg.app.find.PeregSingleFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
-public class PersonCtgSingleFinder implements PeregCtgSingleFinder {
+public class PersonCtgSingleFinder implements PeregSingleFinder {
 
 	@Inject
 	private PersonRepository personRepo;
@@ -38,7 +38,7 @@ public class PersonCtgSingleFinder implements PeregCtgSingleFinder {
 	 * the function handles finder return: PeregQueryResult
 	 */
 	@Override
-	public PeregDto getCtgSingleData(PeregQuery query) {
+	public PeregDto getSingleData(PeregQuery query) {
 		Optional<Person> person = personRepo.getByPersonId(query.getPersonId());
 		List<PersonOptionalDto> lstCtgItemOptionalDto = perInfoItemDataRepository
 				.getAllInfoItemByRecordId(person.get().getPersonId()).stream().map(itemData -> itemData.genToPeregDto())

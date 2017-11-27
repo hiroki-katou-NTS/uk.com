@@ -16,9 +16,9 @@ public class LayoutingProcessor {
 	@Inject
 	private PeregFinderProcessorCollector peregFinderCollector;
 
-	private Map<String, PeregCtgSingleFinder> singleFinders;
+	private Map<String, PeregSingleFinder> singleFinders;
 
-	private Map<String, PeregCtgListFinder> listFinders;
+	private Map<String, PeregListFinder> listFinders;
 
 	/**
 	 * Initializes.

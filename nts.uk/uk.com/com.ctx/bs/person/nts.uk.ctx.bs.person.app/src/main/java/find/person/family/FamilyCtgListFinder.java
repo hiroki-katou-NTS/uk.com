@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.shr.pereg.app.find.PeregCtgListFinder;
+import nts.uk.shr.pereg.app.find.PeregListFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
-public class FamilyCtgListFinder implements PeregCtgListFinder{
+public class FamilyCtgListFinder implements PeregListFinder{
 
 	@Override
 	public String targetCategoryCode() {

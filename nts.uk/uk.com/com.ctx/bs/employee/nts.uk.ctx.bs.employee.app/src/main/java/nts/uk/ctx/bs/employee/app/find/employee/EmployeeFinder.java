@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TemporaryAbsenceFinder;
+import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisFinder;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmployeeBusiness;
@@ -33,7 +33,7 @@ public class EmployeeFinder {
 	private EmployeeBusiness employeeBusiness;
 
 	@Inject
-	private TemporaryAbsenceFinder tAbsFinder;
+	private TempAbsHisFinder tAbsFinder;
 
 	/**
 	 * Gets the person id by employee code.
