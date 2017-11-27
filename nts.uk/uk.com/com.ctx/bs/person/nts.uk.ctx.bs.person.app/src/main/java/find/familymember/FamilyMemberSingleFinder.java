@@ -7,7 +7,7 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
-public class FamilyMemberSingleFinder implements PeregSingleFinder{
+public class FamilyMemberSingleFinder implements PeregSingleFinder<FamilyMemberDto>{
 
 	@Override
 	public String targetCategoryCode() {
@@ -15,7 +15,7 @@ public class FamilyMemberSingleFinder implements PeregSingleFinder{
 	}
 
 	@Override
-	public Class<?> dtoClass() {
+	public Class<FamilyMemberDto> dtoClass() {
 		return FamilyMemberDto.class;
 	}
 

@@ -16,7 +16,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 @Stateless
-public class SubJobPositionListFinder implements PeregListFinder{
+public class SubJobPositionListFinder implements PeregListFinder<SubJobPositionDto>{
 
 	@Override
 	public String targetCategoryCode() {
@@ -24,7 +24,7 @@ public class SubJobPositionListFinder implements PeregListFinder{
 	}
 
 	@Override
-	public Class<?> dtoClass() {
+	public Class<SubJobPositionDto> dtoClass() {
 		return SubJobPositionDto.class;
 	}
 

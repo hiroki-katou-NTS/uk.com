@@ -15,7 +15,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 @Stateless
-public class WidowHistoryFinder implements PeregSingleFinder{
+public class WidowHistoryFinder implements PeregSingleFinder<WidowHistoryDto>{
 
 	@Override
 	public String targetCategoryCode() {
@@ -23,7 +23,7 @@ public class WidowHistoryFinder implements PeregSingleFinder{
 	}
 
 	@Override
-	public Class<?> dtoClass() {
+	public Class<WidowHistoryDto> dtoClass() {
 		return WidowHistoryDto.class;
 	}
 

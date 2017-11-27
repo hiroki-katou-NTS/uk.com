@@ -16,7 +16,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  */
 
 @Stateless
-public class TempAbsHisFinder implements PeregSingleFinder{
+public class TempAbsHisFinder implements PeregSingleFinder<TempAbsHisItemDto>{
 
 	@Inject
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
@@ -27,7 +27,7 @@ public class TempAbsHisFinder implements PeregSingleFinder{
 	}
 
 	@Override
-	public Class<?> dtoClass() {
+	public Class<TempAbsHisItemDto> dtoClass() {
 		return TempAbsHisItemDto.class;
 	}
 

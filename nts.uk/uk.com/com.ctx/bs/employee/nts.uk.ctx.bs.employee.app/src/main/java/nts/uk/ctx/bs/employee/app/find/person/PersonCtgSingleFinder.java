@@ -16,7 +16,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
-public class PersonCtgSingleFinder implements PeregSingleFinder {
+public class PersonCtgSingleFinder implements PeregSingleFinder<PeregPersonDto> {
 
 	@Inject
 	private PersonRepository personRepo;
@@ -30,7 +30,7 @@ public class PersonCtgSingleFinder implements PeregSingleFinder {
 	}
 
 	@Override
-	public Class<?> dtoClass() {
+	public Class<PeregPersonDto> dtoClass() {
 		return PeregPersonDto.class;
 	}
 

@@ -9,7 +9,7 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
-public class FamilyMemberListFinder implements PeregListFinder{
+public class FamilyMemberListFinder implements PeregListFinder<FamilyMemberDto>{
 
 	@Override
 	public String targetCategoryCode() {
@@ -18,9 +18,8 @@ public class FamilyMemberListFinder implements PeregListFinder{
 	}
 
 	@Override
-	public Class<?> dtoClass() {
-		// TODO Auto-generated method stub
-		return null;
+	public Class<FamilyMemberDto> dtoClass() {
+		return FamilyMemberDto.class;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package nts.uk.shr.pereg.app.find;
 
-public interface PeregFinder {
+public interface PeregFinder<T> {
 	/**
 	 * Returns ID of category that this handler can handle
 	 * @return category ID
@@ -11,7 +11,7 @@ public interface PeregFinder {
 	 * Returns class of command that is handled by this handler
 	 * @return class of command
 	 */
-	Class<?> dtoClass();
+	Class<T> dtoClass();
 	
 	
 }

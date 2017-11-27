@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
-public interface PeregListFinder extends PeregFinder {
+public interface PeregListFinder<T> extends PeregFinder<T> {
 
 	List<PeregDto> getCtgListleData(PeregQuery query);
 

@@ -16,7 +16,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 @Stateless
-public class PersonEmerContactFinder implements PeregListFinder{
+public class PersonEmerContactFinder implements PeregListFinder<PersonEmerContactDto>{
 
 	@Override
 	public String targetCategoryCode() {
@@ -24,7 +24,7 @@ public class PersonEmerContactFinder implements PeregListFinder{
 	}
 
 	@Override
-	public Class<?> dtoClass() {
+	public Class<PersonEmerContactDto> dtoClass() {
 		return PersonEmerContactDto.class;
 	}
 

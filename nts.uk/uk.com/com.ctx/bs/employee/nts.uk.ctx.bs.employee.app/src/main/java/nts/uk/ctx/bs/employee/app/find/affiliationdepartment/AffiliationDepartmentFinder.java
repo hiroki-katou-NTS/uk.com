@@ -14,7 +14,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 @Stateless
-public class AffiliationDepartmentFinder implements PeregSingleFinder{
+public class AffiliationDepartmentFinder implements PeregSingleFinder<AffiliationDepartmentDto>{
 
 	@Override
 	public String targetCategoryCode() {
@@ -22,7 +22,7 @@ public class AffiliationDepartmentFinder implements PeregSingleFinder{
 	}
 
 	@Override
-	public Class<?> dtoClass() {
+	public Class<AffiliationDepartmentDto> dtoClass() {
 		return AffiliationDepartmentDto.class;
 	}
 
