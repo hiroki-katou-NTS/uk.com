@@ -3,12 +3,15 @@ package nts.uk.ctx.at.auth.infra.repository.wplmanagementauthority;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthority;
 import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthorityPK;
 
+@Stateless
 public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements WorkPlaceAuthorityRepository {
 
 	private static final String  GET_ALL_WRK_AUTHORITY = "SELECT c FROM KacmtWorkPlaceAuthority "

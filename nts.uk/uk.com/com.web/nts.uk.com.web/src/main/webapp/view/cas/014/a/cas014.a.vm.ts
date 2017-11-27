@@ -34,28 +34,27 @@ module nts.uk.com.view.cas014.a {
                 new service.Service().getAllData(self.date()).done(function(data: any) {
                     if (data) {
                         self.roleSetList.removeAll();
-                        let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, rs => {
+                        let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, (rs: any) => {
                             return new RoleSet(rs.code, rs.name);
                         });
                         _.each(_rsList, rs => self.roleSetList.push(rs));
                         
                         self.jobTitleList.removeAll();
-                        let _jtList: Array<JobTitle> = _.map(data.listJobTitleDto, jt => {
+                        let _jtList: Array<JobTitle> = _.map(data.listJobTitleDto, (jt: any) => {
                             return new JobTitle(jt.id, jt.code, jt.name);
                         });
                         _.each(_jtList, jt => self.jobTitleList.push(jt));
                         
                         self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(data.roleSetGrantedJobTitleDto.applyToConcurrentPerson, self.jobTitleList(), self.roleSetList()));
-                        _.each(self.roleSetJobTitle().details, d => {
-                            _.each(data.roleSetGrantedJobTitleDto.details, dd => {
+                        let details = self.roleSetJobTitle().details();
+                        _.each(details, (d: any) => {
+                            _.each(data.roleSetGrantedJobTitleDto.details, (dd: any) => {
                                 if (d.jobTitleId == dd.jobTitleId) {
-                                    d.roleSetCd = dd.roleSetCd;
-                                    //let _roleSet: RoleSet = _.find(ko.toJS(self.roleSetList), (rs: RoleSet) => rs.code == dd.roleSetCd);
-                                    //d.roleSet = _roleSet;
+                                    d.roleSetCd(dd.roleSetCd);
                                 }
                             });
                         });
-                        //self.roleSetJobTitle.valueHasMutated();
+                        self.roleSetJobTitle().details(details);
                     } else {
                         
                     }
@@ -73,7 +72,7 @@ module nts.uk.com.view.cas014.a {
 
             register() {
                 let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails = [];
-                _.each(data.details(), d => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
+                _.each(data.details, (d: any) => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
 
                 let command: any = {
                     applyToConcurrentPerson: data.applyToConcurrentPerson,

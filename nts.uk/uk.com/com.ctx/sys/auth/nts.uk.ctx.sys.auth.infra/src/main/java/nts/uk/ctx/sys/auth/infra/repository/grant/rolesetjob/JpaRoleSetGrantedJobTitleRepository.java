@@ -24,7 +24,7 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobT
 @Transactional
 public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implements RoleSetGrantedJobTitleRepository {
 
-	private final String GET_All_BY_COMPANY_ID = "SELECT d FROM SaumtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
+	private final String GET_All_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
 
 	private RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitle entity) {
 		return new RoleSetGrantedJobTitle(entity.companyId, entity.applyToConcurrentPerson, entity.details.stream()
@@ -67,10 +67,22 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		SacmtRoleSetGrantedJobTitle entity = this.queryProxy()
 				.find(domain.getCompanyId(), SacmtRoleSetGrantedJobTitle.class).get();
 		entity.applyToConcurrentPerson = domain.isApplyToConcurrentPerson();
-		entity.details = domain.getDetails().stream()
+		List<SacmtRoleSetGrantedJobTitleDetail> oldDetails = entity.details;
+		List<SacmtRoleSetGrantedJobTitleDetail> newDetails = domain.getDetails().stream()
 				.map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(), item.getJobTitleId(),
 						item.getCompanyId()))
 				.collect(Collectors.toList());
+		
+		for (SacmtRoleSetGrantedJobTitleDetail newDetail : newDetails){
+			for (SacmtRoleSetGrantedJobTitleDetail oldDetail : oldDetails){
+				if (oldDetail.roleSetGrantedJobTitleDetailPK.equals(newDetail.roleSetGrantedJobTitleDetailPK)){
+					newDetails.set(newDetails.indexOf(newDetail), oldDetail);
+					break;
+				}
+			}
+		} 
+		
+		entity.details = newDetails;
 		this.commandProxy().update(entity);
 	}
 
