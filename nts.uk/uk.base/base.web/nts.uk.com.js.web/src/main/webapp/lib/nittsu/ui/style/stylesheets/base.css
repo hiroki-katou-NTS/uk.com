@@ -3966,6 +3966,12 @@ div .ex-area-line.x-stay {
 .nts-fixed-table table.fixed-table > tbody > tr:hover > th {
   background-color: #C5F1F7;
 }
+.nts-fixed-table table.fixed-table tbody td:last-child {
+  border-right: 0px;
+}
+.nts-fixed-table table.fixed-table thead th:last-child {
+  border-right: 0px;
+}
 /* line 20, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-header-container {
   overflow: hidden; 
@@ -3976,6 +3982,7 @@ div .ex-area-line.x-stay {
   overflow: auto;
   float: left;
   border: 1px solid #CCC;
+  border-top: 0px;
 }
 /* line 30, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-wrapper {

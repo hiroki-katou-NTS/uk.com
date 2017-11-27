@@ -79,17 +79,12 @@ module nts.uk.ui.jqueryExtentions {
                 $bodyContainer.scroll(function(evt, ui) {
                     let bodyScroll = $bodyContainer.scrollLeft();
                     if(bodyScroll > 0){
-                        bodyScroll = bodyScroll + 1.5;
+                        bodyScroll = bodyScroll + 1;
                         $headerContainer.css({"border-left": "1px solid #CCC", "padding-right": "0px"});
                     }else {
                         $headerContainer.css({"border-left": "0px solid #CCC", "padding-right": "1px"});    
                     }
                     $headerContainer.scrollLeft(bodyScroll);
-                    if($headerContainer.scrollLeft() === viewWidth){
-                        $headerContainer.css("border-right-width", "2px");
-                    } else {
-                        $headerContainer.css("border-right-width", "1px");    
-                    }
                     
                 });
                 $bodyWrapper.width(width).height(bodyHeight);
