@@ -21,6 +21,14 @@
 			<com:scriptfile path="cps002.a.vm.js" />
 			<com:scriptfile path="cps002.a.start.js" />
 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+				nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
+				nts.uk.ctx.at.record.dom.stamp.CardNumber
+				nts.uk.ctx.sys.gateway.dom.login.LoginId
+				nts.uk.ctx.sys.gateway.dom.login.RawPassword
+			</com:ValidatorScript>
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -76,7 +84,11 @@
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
-												data-bind="ntsTextEditor: {value: employeeCode,required:true}" />
+												data-bind="ntsTextEditor: {
+												constraint:'EmployeeCode' ,
+												name: '#{i18n.getText('CPS002_104')}',
+												value: employeeCode,
+												required:true}" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
 										</div>
@@ -90,7 +102,9 @@
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
+											constraint:'FullName',
 											required:true,
+											name: '#{i18n.getText('CPS002_105')}',
 											option: {
 												 width: '300' 
 												 }}" />
@@ -103,7 +117,10 @@
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
-												data-bind="ntsTextEditor: {value: cardNo}" />
+												data-bind="ntsTextEditor: {value: cardNo,
+												constraint:'CardNumber',
+												name: '#{i18n.getText('CPS002_18')}'
+												 }" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
 										</div>
@@ -116,6 +133,8 @@
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: loginId ,
+											constraint:'LoginId',
+											name: '#{i18n.getText('CPS002_108')}',
 											required:true,
 											option: {
 												 width: '163' 
@@ -129,6 +148,8 @@
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
+											constraint:'RawPassword',
+											name: '#{i18n.getText('CPS002_109')}',
 											value: password ,
 											required:true,
 											option: {
