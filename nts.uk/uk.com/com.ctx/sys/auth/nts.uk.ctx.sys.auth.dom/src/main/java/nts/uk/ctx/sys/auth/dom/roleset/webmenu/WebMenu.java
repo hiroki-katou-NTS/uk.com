@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.auth.dom.roleset.webmenu;
-
+/**
+ *  担当ロール別紐付け
+ */
 import lombok.Value;
 @Value
 public class WebMenu {

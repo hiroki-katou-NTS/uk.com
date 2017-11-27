@@ -11,8 +11,8 @@ import java.util.Optional;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategorySetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.PersonalWorkAtr;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.WorkCategoryAtr;
 
 /**
  * The Class JpaPersonalWorkCategorySetMemento.
@@ -21,7 +21,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	
 
 	/** The entitys. */
-	private List<KshmtSingleDaySche> entitys;
+	private List<KshmtPerWorkCategory> entitys;
 	
 
 	/**
@@ -29,7 +29,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	 *
 	 * @param entitys the entitys
 	 */
-	public JpaPersonalWorkCategorySetMemento(List<KshmtSingleDaySche> entitys) {
+	public JpaPersonalWorkCategorySetMemento(List<KshmtPerWorkCategory> entitys) {
 		if (CollectionUtil.isEmpty(entitys)) {
 			this.entitys = new ArrayList<>();
 		} else
@@ -45,7 +45,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	 */
 	@Override
 	public void setHolidayWork(SingleDaySchedule holidayWork) {
-		this.entitys.add(this.toEntity(holidayWork, PersonalWorkAtr.HOLIDAY_WORK.value));
+		this.entitys.add(this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value));
 	}
 
 	/*
@@ -57,7 +57,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	 */
 	@Override
 	public void setHolidayTime(SingleDaySchedule holidayTime) {
-		this.entitys.add(this.toEntity(holidayTime, PersonalWorkAtr.HOLIDAY_TIME.value));
+		this.entitys.add(this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value));
 	}
 
 	/*
@@ -69,7 +69,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	 */
 	@Override
 	public void setWeekdayTime(SingleDaySchedule weekdayTime) {
-		this.entitys.add(this.toEntity(weekdayTime, PersonalWorkAtr.WEEKDAY_TIME.value));
+		this.entitys.add(this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value));
 	}
 
 	/*
@@ -81,7 +81,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	@Override
 	public void setPublicHolidayWork(Optional<SingleDaySchedule> publicHolidayWork) {
 		if (publicHolidayWork.isPresent()) {
-			this.entitys.add(this.toEntity(publicHolidayWork.get(), PersonalWorkAtr.PUBLIC_HOLIDAY_WORK.value));
+			this.entitys.add(this.toEntity(publicHolidayWork.get(), WorkCategoryAtr.PUBLIC_HOLIDAY_WORK.value));
 		}
 	}
 
@@ -94,7 +94,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	@Override
 	public void setInLawBreakTime(Optional<SingleDaySchedule> inLawBreakTime) {
 		if (inLawBreakTime.isPresent()) {
-			this.entitys.add(this.toEntity(inLawBreakTime.get(), PersonalWorkAtr.INLAW_BREAK_TIME.value));
+			this.entitys.add(this.toEntity(inLawBreakTime.get(), WorkCategoryAtr.INLAW_BREAK_TIME.value));
 		}
 	}
 
@@ -107,7 +107,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	@Override
 	public void setOutsideLawBreakTime(Optional<SingleDaySchedule> outsideLawBreakTime) {
 		if (outsideLawBreakTime.isPresent()) {
-			this.entitys.add(this.toEntity(outsideLawBreakTime.get(), PersonalWorkAtr.OUTSIDE_LAW_BREAK_TIME.value));
+			this.entitys.add(this.toEntity(outsideLawBreakTime.get(), WorkCategoryAtr.OUTSIDE_LAW_BREAK_TIME.value));
 		}
 	}
 
@@ -121,7 +121,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	@Override
 	public void setHolidayAttendanceTime(Optional<SingleDaySchedule> holidayAttendanceTime) {
 		if (holidayAttendanceTime.isPresent()) {
-			this.entitys.add(this.toEntity(holidayAttendanceTime.get(), PersonalWorkAtr.HOLIDAY_ATTENDANCE_TIME.value));
+			this.entitys.add(this.toEntity(holidayAttendanceTime.get(), WorkCategoryAtr.HOLIDAY_ATTENDANCE_TIME.value));
 		}
 	}
 	
@@ -129,12 +129,13 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	 * To entity.
 	 *
 	 * @param domain the domain
-	 * @return the kshmt single day sche
+	 * @param workCategoryAtr the work category atr
+	 * @return the kshmt per work category
 	 */
-	private KshmtSingleDaySche toEntity(SingleDaySchedule domain, int personalWorkAtr) {
-		KshmtSingleDaySche entity = new KshmtSingleDaySche();
-		domain.saveToMemento(new JpaSingleDayScheduleSetMemento(entity));
-		entity.getKshmtSingleDaySchePK().setPersWorkAtr(personalWorkAtr);
+	private KshmtPerWorkCategory toEntity(SingleDaySchedule domain, int workCategoryAtr) {
+		KshmtPerWorkCategory entity = new KshmtPerWorkCategory();
+		domain.saveToMemento(new JpaSingleDayScheduleWorkCategorySetMemento(entity));
+		entity.getKshmtPerWorkCategoryPK().setWorkCategoryAtr(workCategoryAtr);
 		return entity;
 	}
 

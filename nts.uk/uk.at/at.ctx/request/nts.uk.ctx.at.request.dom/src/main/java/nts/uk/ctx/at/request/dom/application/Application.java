@@ -10,6 +10,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 
 /**
@@ -36,7 +37,7 @@ public class Application extends AggregateRoot{
 	/**
 	 * 入力日
 	 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 	/**
 	 * 入力者
 	 */
@@ -122,7 +123,7 @@ public class Application extends AggregateRoot{
 	public static Application createFromJavaType(
 			String companyID,
 			int prePostAtr,
-			GeneralDate inputDate, 
+			GeneralDateTime inputDate, 
 			String enteredPersonSID, 
 			String reversionReason, 
 			GeneralDate applicationDate,

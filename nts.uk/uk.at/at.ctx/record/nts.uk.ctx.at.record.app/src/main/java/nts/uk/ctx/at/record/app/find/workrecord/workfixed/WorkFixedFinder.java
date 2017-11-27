@@ -18,7 +18,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
-import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedDto;
+import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedImport;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixed;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkfixedRepository;
 import nts.uk.shr.com.context.AppContexts;

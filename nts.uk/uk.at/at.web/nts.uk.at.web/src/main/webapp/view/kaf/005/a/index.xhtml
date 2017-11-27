@@ -37,15 +37,15 @@
 			</div>
 			<div id="contents-area" class="">
 					<!-- Message area -->
-				<div style ="background-color: #f8efd4; width :839px; margin-left: 38px">	
-					<div class="cf valign-center control-group" style ="background-color: #f8efd4; margin-left: 48px" data-bind = "visible: instructInforFlag">
+				<div style ="background-color: #f8efd4; width :839px; margin-left: 40px; padding-bottom: 14px;padding-top: 5px">	
+					<div class="cf valign-center control-group" style ="background-color: #f8efd4; margin:7px 0px 0px 12px" data-bind = "visible: instructInforFlag">
 						<div class="pull-left">#{i18n.getText('KAF005_20')}</div>
 						<label data-bind="text : instructInfor"></label>
 					</div>
-					<div data-bind="with: kaf000_a" class="">
+					<div data-bind="with: kaf000_a" class="" style ="margin-left: -37px">
 						<ui:include src="../../000/a/index1.xhtml" />
 					</div>
-					<div class="cf valign-center control-group" data-bind="if: indicationOvertimeFlg" style = "margin-left: 48px">
+					<div class="cf valign-center control-group" data-bind="if: indicationOvertimeFlg" style = "margin-left: 12px">
 						<!--A2_7 時間外労働ラベル--> 			
 						<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
 						<div class="pull-left">

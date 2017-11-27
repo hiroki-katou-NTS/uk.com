@@ -30,8 +30,7 @@ public class JpaBasicScheduleSetMemento implements BasicScheduleSetMemento{
 	/**
 	 * Instantiates a new jpa basic schedule set memento.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 */
 	public JpaBasicScheduleSetMemento(KscdtBasicSchedule entity) {
 		if (entity.getKscdpBSchedulePK() == null) {
@@ -162,8 +161,12 @@ public class JpaBasicScheduleSetMemento implements BasicScheduleSetMemento{
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleSetMemento#setChildCareSchedules(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleSetMemento
+	 * #setChildCareSchedules(java.util.List)
 	 */
 	@Override
 	public void setChildCareSchedules(List<ChildCareSchedule> childCareSchedules) {

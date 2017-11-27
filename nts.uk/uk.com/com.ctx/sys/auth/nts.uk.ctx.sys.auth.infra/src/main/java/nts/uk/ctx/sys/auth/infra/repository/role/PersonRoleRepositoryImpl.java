@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
-import nts.uk.ctx.sys.auth.infra.entity.role.SacmtPersonRole;
+import nts.uk.ctx.sys.auth.infra.entity.role.SaumtPersonRole;
 
 @Stateless
 public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRoleRepository {
@@ -18,7 +18,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	/**
 	 * JPQL: find (without where)
 	 */
-	private static String FIND_NO_WHERE = "SELECT e FROM SacmtPersonRole e";
+	private static String FIND_NO_WHERE = "SELECT e FROM SaumtPersonRole e";
 
 	/**
 	 * JPQL: find by role id
@@ -32,7 +32,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 
 	@Override
 	public Optional<PersonRole> find(String roleId) {
-		SacmtPersonRole entity = this.queryProxy().query(FIND_BY_ROLE_ID, SacmtPersonRole.class)
+		SaumtPersonRole entity = this.queryProxy().query(FIND_BY_ROLE_ID, SaumtPersonRole.class)
 				.setParameter("roleId", roleId).getSingleOrNull();
 		PersonRole domain = new PersonRole();
 		if (entity != null) {
@@ -41,7 +41,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 		return Optional.of(domain);
 	}
 
-	private static PersonRole toDomain(SacmtPersonRole entity) {
+	private static PersonRole toDomain(SaumtPersonRole entity) {
 		PersonRole domain = new PersonRole();
 		domain.setRoleId(entity.getId());
 		domain.setReferFutureDate(entity.isReferFutureDate());
@@ -51,7 +51,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	@Override
 	public List<PersonRole> find(List<String> roleIds) {
 		List<PersonRole> result = new ArrayList<>();
-		List<SacmtPersonRole> entitys = this.queryProxy().query(FIND_BY_LIST_ROLE_ID, SacmtPersonRole.class)
+		List<SaumtPersonRole> entitys = this.queryProxy().query(FIND_BY_LIST_ROLE_ID, SaumtPersonRole.class)
 				.setParameter("roleIds", roleIds).getList();
 		if (entitys != null && entitys.size() == 0)
 			result = entitys.stream().map(x -> toDomain(x)).collect(Collectors.toList());
@@ -70,12 +70,12 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 
 	@Override
 	public void remove(String roleId) {	
-			this.commandProxy().remove(SacmtPersonRole.class, roleId);
+			this.commandProxy().remove(SaumtPersonRole.class, roleId);
 	}
 
 	
-	private static SacmtPersonRole  toEntity(PersonRole personRole){
-		SacmtPersonRole entity = new SacmtPersonRole();
+	private static SaumtPersonRole  toEntity(PersonRole personRole){
+		SaumtPersonRole entity = new SaumtPersonRole();
 		entity.setId(personRole.getRoleId());
 		entity.setReferFutureDate(personRole.getReferFutureDate());
 		return entity;

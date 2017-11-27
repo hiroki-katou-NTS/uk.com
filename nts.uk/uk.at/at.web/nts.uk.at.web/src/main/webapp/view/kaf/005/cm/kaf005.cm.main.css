@@ -65,6 +65,7 @@ textarea.nts-editor.nts-input.reset-element {
 
 #multiline {
 	display: inline-block;
+	margin-left: 15px;
 }
 
 div.form-label.broken {
@@ -73,7 +74,7 @@ div.form-label.broken {
 
 .workSelect{
     height: 70px;
-    margin-left: 31px;
+    margin-left: 45px;
 }
 .panel.panel-gray-bg {
 	float: right;
@@ -132,4 +133,13 @@ div.form-label.broken {
 .right-content {
 	text-align: right !important;
     padding-right: 10px !important;
+}
+.combo-box{
+	margin-left: 15px;
+}
+.table-time{
+	margin-left: 131px;
+}
+.fix-margin-left{
+	margin-left:13px;
 }

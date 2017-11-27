@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.logging.log4j.util.Strings;
@@ -10,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -43,7 +43,7 @@ public class AppStamp extends Application {
 	
 	private AppStampOnlineRecord appStampOnlineRecords;
 
-	public AppStamp(String CompanyID, String applicationID, PrePostAtr prePostAtr, GeneralDate inputDate,
+	public AppStamp(String CompanyID, String applicationID, PrePostAtr prePostAtr, GeneralDateTime inputDate,
 			String enteredPersonSID, AppReason reversionReason, GeneralDate applicationDate, 
 			AppReason applicationReason, ApplicationType applicationType, String applicantSID,
 			ReflectPlanScheReason reflectPlanScheReason, GeneralDate reflectPlanTime,
@@ -65,7 +65,7 @@ public class AppStamp extends Application {
 	}
 	
 	public static AppStamp createFromJavaType(String companyID, PrePostAtr prePostAtr, 
-			GeneralDate inputDate, String enteredPersonSID, GeneralDate appDate, String applicantSID, 
+			GeneralDateTime inputDate, String enteredPersonSID, GeneralDate appDate, String applicantSID, 
 			StampRequestMode stampRequestMode, List<AppStampGoOutPermit> appStampGoOutPermits,
 			List<AppStampWork> appStampWorks, List<AppStampCancel> appStampCancels,
 			AppStampOnlineRecord appStampOnlineRecords){
@@ -88,8 +88,8 @@ public class AppStamp extends Application {
 				null, 
 				ReflectPlanPerState.NOTREFLECTED, 
 				ReflectPlanPerEnforce.NOTTODO, 
-				GeneralDate.today(),
-				GeneralDate.today(),
+				appDate,
+				appDate,
 				null,
 				stampRequestMode, 
 				appStampGoOutPermits, 

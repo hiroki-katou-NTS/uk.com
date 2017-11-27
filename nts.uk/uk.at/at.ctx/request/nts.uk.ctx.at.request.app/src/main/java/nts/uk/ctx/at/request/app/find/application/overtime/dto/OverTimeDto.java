@@ -1,15 +1,24 @@
 package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OverTimeDto {
+	private Long version;
 	/**
 	 * application
 	 */
@@ -32,6 +41,10 @@ public class OverTimeDto {
 	 * displayOvertimeInstructInforFlg
 	 */
 	private boolean displayOvertimeInstructInforFlg;
+	/**
+	 * 
+	 */
+	private String employeeID;
 	
 	/**
 	 * 申請者
@@ -55,26 +68,34 @@ public class OverTimeDto {
 	private WorkTypeOvertime workType;
 	
 	/**
-	 * siftType
+	 * workTypes
 	 */
+	private List<String> workTypes;
+	
+	/** siftType */
 	private SiftType siftType;
+	
+	/**
+	 * siftTypes
+	 */
+	private List<String> siftTypes;
 
 	/**
 	 * 勤務時間From1
 	 */
-	private int workClockFrom1;
+	private Integer workClockFrom1;
 	/**
 	 * 勤務時間To1
 	 */
-	private int workClockTo1;
+	private Integer workClockTo1;
 	/**
 	 * 勤務時間From2
 	 */
-	private int workClockFrom2;
+	private Integer workClockFrom2;
 	/**
 	 * 勤務時間To2
 	 */
-	private int workClockTo2;
+	private Integer workClockTo2;
 	/**
 	 * 乖離定型理由
 	 */
@@ -162,5 +183,49 @@ public class OverTimeDto {
 	 * preAppOvertimeDto
 	 */
 	private PreAppOvertimeDto preAppOvertimeDto;
+	
+	public static OverTimeDto fromDomain(AppOverTime appOverTime){
+		return new OverTimeDto(
+				appOverTime.getVersion(),
+				ApplicationDto.fromDomain(appOverTime.getApplication()), 
+				appOverTime.getCompanyID(), 
+				appOverTime.getAppID(), 
+				"", 
+				false, 
+				"", 
+				"", 
+				appOverTime.getOverTimeAtr().value, 
+				CollectionUtil.isEmpty(appOverTime.getOverTimeInput())
+					? Collections.emptyList() 
+					: appOverTime.getOverTimeInput().stream().map(x -> OvertimeInputDto.fromDomain(x)).collect(Collectors.toList()), 
+				0, 
+				new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
+				Collections.emptyList(),
+				new SiftType(appOverTime.getSiftCode().v(),""),
+				Collections.emptyList(),
+				appOverTime.getWorkClockFrom1(), 
+				appOverTime.getWorkClockTo1(),  
+				appOverTime.getWorkClockFrom2(), 
+				appOverTime.getWorkClockTo2(), 
+				"", 
+				appOverTime.getDivergenceReason(), 
+				0, 
+				appOverTime.getFlexExessTime(), 
+				appOverTime.getOverTimeShiftNight(), 
+				false, 
+				false, 
+				false, 
+				Collections.emptyList(), 
+				false, 
+				false, 
+				Collections.emptyList(),
+				false, 
+				false, 
+				0, 
+				false, 
+				false, 
+				false, 
+				null);
+	}
 	
 }
