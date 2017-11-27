@@ -25,7 +25,7 @@
 			<div id="contents-area" class="cf coverBlock">
 
 				<div>
-					<table class="tblContent">
+					<table class="tblContent" data-bind="with:currentUserSetting">
 						<tr>
 							<td colspan="2" class="txtTopLable">
 								<div>#{i18n.getText('CPS002_76')}</div>
@@ -33,130 +33,68 @@
 						</tr>
 						<tr>
 
-
 							<td width="200px"><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_77')}</div></td>
 							<td>
 
 								<div id="empInitGroup"
 									data-bind="ntsRadioBoxGroup: {
-										options: employeeInitItemList ,
+										options: $parent.employeeInitItemList ,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: empCodeValue ,
+										value: employeeCodeType ,
 										enable: true }"></div>
 								<div id="empCodeLetter">
 									<input
 										data-bind="ntsTextEditor: {
-													value: txtEmpCodeLetter ,
+													value: employeeCodeLetter ,
 													option: {
 														textmode: 'text',
 										            	width: '80px',
 										            	textalign: 'left'
-													},}" />
+													},
+													enable: employeeCodeType() === 1
+													}" />
 									<span>#{i18n.getText('CPS002_82')}</span>
-								</div> <!-- <div>
-									<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" value="1" name="employCode"
-											data-bind="checked: empCodeValue" /> <span class="box"></span><span
-											class="label"> #{i18n.getText('CPS002_78')}</span>
-									</label>
-									</span> <input type="text" class="txtEmpCodeFirstChar" maxLength="11"
-										data-bind="value: txtEmpCodeLetter" /> <span>#{i18n.getText('CPS002_82')}</span>
 								</div>
-								<div>
-									<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" value="3" name="employCode"
-											data-bind="checked: empCodeValue" /> <span class="box"></span><span
-											class="label"> #{i18n.getText('CPS002_79')}</span>
-									</label>
-									</span>
-								</div>
-								<div>
-									<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" value="2" name="employCode"
-											data-bind="checked: empCodeValue" /> <span class="box"></span><span
-											class="label"> #{i18n.getText('CPS002_80')}</span>
-									</label>
-									</span>
-								</div> -->
 							</td>
 						</tr>
-						<!--  -->
 						<tr>
 							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_83')}</div></td>
 							<td>
 								<div id="initCardNoGroup"
 									data-bind="ntsRadioBoxGroup: {
-										options: cardNoInitItemList ,
+										options: $parent.cardNoInitItemList ,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: cardNoValue ,
+										value: cardNumberType ,
 										enable: true }"></div>
 
 								<div id="cardNoLetter">
 
 									<input
 										data-bind="ntsTextEditor: {
-													value: txtCardNo ,
+													value: cardNumberLetter ,
 													option: {
 														textmode: 'text',
 										            	width: '80px',
 										            	textalign: 'left'
-													},}" />
+													},
+													enable: cardNumberType() === 1
+													}" />
 
 									<span>#{i18n.getText('CPS002_87')}</span>
-								</div> <!-- 	<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" value="1" name="cardNo"
-											data-bind="checked: cardNoValue" /> <span class="box"></span><span
-											class="label"> #{i18n.getText('CPS002_78')}</span>
-									</label>
-									</span> <input type="text" class="txtEmpCodeFirstChar" maxLength='20'
-										data-bind="value: txtCardNo" /> <span>#{i18n.getText('CPS002_87')}</span>
 								</div>
-								<div>
-									<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" value="4" name="cardNo"
-											data-bind="checked: cardNoValue" /> <span class="box"></span><span
-											class="label"> #{i18n.getText('CPS002_84')}</span>
-									</label>
-									</span>
-								</div>
-								<div>
-									<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" value="3" name="cardNo"
-											data-bind="checked: cardNoValue" /> <span class="box"></span><span
-											class="label"> #{i18n.getText('CPS002_85')}</span>
-									</label>
-									</span>
-								</div>
-								<div>
-									<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" value="5" name="cardNo"
-											data-bind="checked: cardNoValue" /> <span class="box"></span><span
-											class="label"> #{i18n.getText('CPS002_86')}</span>
-									</label>
-									</span>
-								</div>
-								<div>
-									<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" value="2" name="textRadio"
-											data-bind="checked: cardNoValue" /> <span class="box"></span><span
-											class="label"> #{i18n.getText('CPS002_80')}</span>
-									</label>
-									</span>
-								</div> -->
 							</td>
 						</tr>
-						<!--  -->
 						<tr>
 							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_88')}</div></td>
 							<td>
 								<div class="cf"
 									data-bind="ntsSwitchButton: {
-									options: roundingRules,
+									options: $parent.recentRegistrationItems,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedRuleCode,
+									value: recentRegistrationType,
 									enable: true }">
 								</div>
 							</td>

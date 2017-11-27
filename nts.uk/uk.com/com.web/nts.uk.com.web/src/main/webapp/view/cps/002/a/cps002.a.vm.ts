@@ -31,7 +31,7 @@ module cps002.a.vm {
 
         categorySelectedCode: KnockoutObservable<string> = ko.observable('');
 
-        empRegHistory: KnockoutObservable<EmpRegHistory> = ko.observable(new EmpRegHistory(null));
+        empRegHistory: KnockoutObservable<EmpRegHistory> = ko.observable(null);
 
         currentStep: KnockoutObservable<number> = ko.observable(0);
 
@@ -195,10 +195,16 @@ module cps002.a.vm {
             let self = this,
                 showHistory = !userSetting ? true : userSetting.recentRegistrationType === 1 ? true : false;
 
-            if (showHistory)
+            if (showHistory) {
                 service.getLastRegHistory().done((result: IEmpRegHistory) => {
-                    self.empRegHistory(new EmpRegHistory(result));
+                    if (result) {
+                        self.empRegHistory(new EmpRegHistory(result));
+                    }
                 });
+            } else {
+                self.empRegHistory(null);
+
+            }
 
         }
 
@@ -286,7 +292,7 @@ module cps002.a.vm {
         }
 
 
-        gotoStep1() {
+        backtoStep1() {
 
             let self = this;
 
@@ -416,7 +422,7 @@ module cps002.a.vm {
 
                 dialog({ messageId: error.message }).then(() => {
 
-                    self.gotoStep1();
+                    self.currentStep(0);
 
                 });
 
@@ -442,7 +448,7 @@ module cps002.a.vm {
                 }
             }).fail((error) => {
                 dialog({ messageId: error.message }).then(() => {
-                    //   self.gotoStep1();
+                    self.currentStep(0);
                 });
 
             });
@@ -471,18 +477,18 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
             command.itemDataList = itemDataList;
 
-            //            service.addNewEmployee(command).done(() => {
-            //                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
-            //                    if (getShared('isContinue')) {
-            //
-            //                        self.gotoStep1();
-            //
-            //                    } else {
-            //                        jump('/view/cps/001/a/index.xhtml');
-            //                    }
-            //                });
-            //
-            //            })
+            service.addNewEmployee(command).done(() => {
+                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                    if (getShared('isContinue')) {
+
+                        self.backtoStep1();
+
+                    } else {
+                        jump('/view/cps/001/a/index.xhtml');
+                    }
+                });
+
+            })
 
         }
 
@@ -575,8 +581,6 @@ module cps002.a.vm {
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
 
-        constructor(param?) {
-        }
     }
 
 
@@ -608,7 +612,7 @@ module cps002.a.vm {
 
     interface IEmpRegHistory {
 
-        registeredEmployeeID: string;
+        lastRegEmployeeOfCompanyID: string;
 
         lastRegEmployeeID: string;
 
@@ -727,13 +731,13 @@ module cps002.a.vm {
 
     class EmpRegHistory {
 
-        registeredEmployeeID: string;
+        lastRegEmployeeOfCompanyID: string;
 
         lastRegEmployeeID: string;
 
 
         constructor(param: IEmpRegHistory) {
-            this.registeredEmployeeID = param ? param.registeredEmployeeID : '';
+            this.lastRegEmployeeOfCompanyID = param ? param.lastRegEmployeeOfCompanyID : '';
 
             this.lastRegEmployeeID = param ? param.lastRegEmployeeID : '';
 
