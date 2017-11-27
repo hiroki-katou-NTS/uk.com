@@ -652,7 +652,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 isEmployeeOfWorkplace: true,
                 isEmployeeWorkplaceFollow: true,
                 isMutipleCheck: true,
-                isSelectAllEmployee: true,
+                isSelectAllEmployee: false,
                 /**
                 * @param dataList: list employee returned from component.
                 * Define how to use this list employee by yourself in the function's body.
