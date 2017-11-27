@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -24,7 +25,6 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
@@ -44,12 +44,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 	ApplicationRepository appRepository;
 	@Override
 	public int checkOvertime(String url) {
-		if(url.equals("PREOVERTIME")){
+		if(url.equals("0")){
 			return OverTimeAtr.PREOVERTIME.value;
-		}else if(url.equals("REGULAROVERTIME")){
+		}else if(url.equals("1")){
 			return OverTimeAtr.REGULAROVERTIME.value;
+		}else if(url.equals("2")){
+			return OverTimeAtr.ALL.value;
 		}
-		return OverTimeAtr.ALL.value;
+		return 3;
 	}
 
 	/* (non-Javadoc)
@@ -69,12 +71,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if (sEmpHistImport != null 
 				&& !CollectionUtil.isEmpty(appEmploymentSettings)) {
 			//ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
-			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType()
-					.stream()
-					.filter(x -> x.getEmploymentCode()== sEmpHistImport.getEmploymentCode()).collect(Collectors.toList());
+			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
 			if(CollectionUtil.isEmpty(lstEmploymentWorkType)) {
 				return result;
 			}
+			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
 			List<String> workTypeCodes = new ArrayList<>();
 			lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
 			result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()

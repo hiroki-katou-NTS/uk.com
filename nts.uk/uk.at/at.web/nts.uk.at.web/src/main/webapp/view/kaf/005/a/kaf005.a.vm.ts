@@ -129,11 +129,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            let url = $(location).attr('search');
+            let urlParam :string = url.split("=")[1];
             nts.uk.ui.block.invisible();
             service.getOvertimeByUI({
-                url: "REGULAROVERTIME",
+                url: urlParam,
                 appDate: moment(new Date()).format("YYYY/MM/DD"),
-                uiType: 0
+                uiType: 1
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();
