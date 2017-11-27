@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.infra.entity.employee.history;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -36,7 +37,7 @@ public class BsymtAffCompanyInfo extends UkJpaEntity implements Serializable {
 	@Column(name = "RETIREMENT_CALC_STR_D")
 	public GeneralDate retirementAllowanceCalcStartDate;
 
-	@OneToOne(fetch = FetchType.LAZY, targetEntity = BsymtAffCompanyHist.class, optional = false)
+	@OneToOne(fetch = FetchType.LAZY, targetEntity = BsymtAffCompanyHist.class, optional = false, cascade = CascadeType.REMOVE)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	public BsymtAffCompanyHist bpsdtAffCompanyHist;
 

@@ -18,7 +18,7 @@ public class PeregResult {
 	
 	
 	/**
-	 * DTO
+	 * PeregDto or List<PeregDto>
 	 * fix and optional data
 	 */
 	private Object dto;

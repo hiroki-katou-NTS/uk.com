@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
@@ -19,13 +20,13 @@ public class EmployeeDataMngInfo extends AggregateRoot {
 	private String companyId;
 
 	/** 個人ID */
-	private String pId;
+	private String personId;
 
 	/** 社員ID */
-	private String sId;
+	private String employeeId;
 
 	/** 社員コード */
-	private EmployeeCode sCd;
+	private EmployeeCode employeeCode;
 
 	/** 削除状況 */
 	private EmployeeDeletionAttr deletedStatus;
@@ -35,11 +36,14 @@ public class EmployeeDataMngInfo extends AggregateRoot {
 
 	/** 削除理由 */
 	private RemoveReason removeReason;
-	
+
 	/** 外部コード */
-	private String  externalCode;
-	
-	public static EmployeeDataMngInfo createFromJavaType() {
-		return new EmployeeDataMngInfo();
+	private ExternalCode externalCode;
+
+	public static EmployeeDataMngInfo createFromJavaType(String cId, String pId, String sId, String sCd, int delStatus,
+			GeneralDate delTemp, String removeReason, String extCode) {
+		return new EmployeeDataMngInfo(cId, pId, sId, new EmployeeCode(sCd),
+				EnumAdaptor.valueOf(delStatus, EmployeeDeletionAttr.class), delTemp, new RemoveReason(removeReason),
+				new ExternalCode(extCode));
 	}
 }

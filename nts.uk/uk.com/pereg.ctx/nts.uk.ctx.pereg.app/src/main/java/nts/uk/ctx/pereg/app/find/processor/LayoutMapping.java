@@ -8,14 +8,14 @@ import java.util.Optional;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefForLayoutDto;
-import find.person.info.item.SingleItemDto;
-import lombok.val;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.PeregComboList;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 /**
  * the class mapping dto object with item def
@@ -35,19 +35,25 @@ public class LayoutMapping {
 			dtoFieldValue.put(itemCode, obj);
 		});
 		setEmpMaintLayoutDto(empMaintLayoutDto, dtoFieldValue, lstPerInfoItemDef);
+		
+		AnnotationUtil.getFieldAnnotated(dtoClass, PeregComboList.class).ifPresent(field ->{
+			@SuppressWarnings("unchecked")
+			List<ComboBoxObject> lstComboBox = (List<ComboBoxObject>)ReflectionUtil.getFieldValue(field, dto);
+			setComboBoxList(empMaintLayoutDto, lstComboBox);
+		});
 	}
 	
-	public static void mapPerOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<PersonInfoItemData> lstCtgItemOptionalDto, 
+	public static void mapPerOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<PersonOptionalDto> lstCtgItemOptionalDto, 
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef,  int startOptionDtoPos){
 		if(lstCtgItemOptionalDto.size() > 0){
-			for(PersonInfoItemData data : lstCtgItemOptionalDto) {
+			for(PersonOptionalDto data : lstCtgItemOptionalDto) {
 				Optional<PerInfoItemDefForLayoutDto> item = lstPerInfoItemDef.stream().filter(x -> {
 					return x.getItemCode().equals(data.getItemCode());
 					}).findFirst();
 				if(item.isPresent()){
 					LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 					layoutPerInfoClsDto.setDispOrder(startOptionDtoPos);
-					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item.get(), getOptionalDataValue(item.get(), data)));
+					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item.get(), data.getValue()));
 					empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 					startOptionDtoPos ++;
 				}
@@ -55,17 +61,17 @@ public class LayoutMapping {
 		}
 	}
 	
-	public static void mapEmpOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<EmpInfoItemData> lstCtgItemOptionalDto, 
+	public static void mapEmpOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<EmpOptionalDto> lstCtgItemOptionalDto, 
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, int startOptionDtoPos){
 		if(lstCtgItemOptionalDto.size() > 0){
-			for(EmpInfoItemData data : lstCtgItemOptionalDto) {
+			for(EmpOptionalDto data : lstCtgItemOptionalDto) {
 				Optional<PerInfoItemDefForLayoutDto> item = lstPerInfoItemDef.stream().filter(x -> {
 					return x.getItemCode().equals(data.getItemCode());
 					}).findFirst();
 				if(item.isPresent()){
 					LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 					layoutPerInfoClsDto.setDispOrder(startOptionDtoPos);
-					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item.get(), getOptionalDataValue(item.get(), data)));
+					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item.get(), data.getValue()));
 					empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 					startOptionDtoPos ++;
 				}
@@ -88,6 +94,12 @@ public class LayoutMapping {
 		
 	}
 	
+	private static void setComboBoxList(EmpMaintLayoutDto empMaintLayoutDto, List<ComboBoxObject> lstComboBox){
+		LayoutPersonInfoClsDto cls = new LayoutPersonInfoClsDto();
+		cls.getItems().add(lstComboBox);
+		empMaintLayoutDto.getClassificationItems().add(cls);
+	}
+	
 	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue){
 		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 		Object value = dtoFieldValue.get(item.getItemCode());
@@ -97,29 +109,29 @@ public class LayoutMapping {
 			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		}
 	}
-	private static Object getOptionalDataValue(PerInfoItemDefForLayoutDto item, PersonInfoItemData data){
-		SingleItemDto singleItemDto = (SingleItemDto)item.getItemTypeState();
-		switch(singleItemDto.getDataTypeState().getDataTypeValue()){
-		case 1:
-			return data.getDataState().getStringValue();
-		case 2: 
-			return data.getDataState().getNumberValue();
-		case 3:  
-			return data.getDataState().getDateValue();
-		}	
-		return null;
-	}
-	
-	private static Object getOptionalDataValue(PerInfoItemDefForLayoutDto item, EmpInfoItemData data){
-		SingleItemDto singleItemDto = (SingleItemDto)item.getItemTypeState();
-		switch(singleItemDto.getDataTypeState().getDataTypeValue()){
-		case 1:
-			return data.getDataState().getStringValue();
-		case 2: 
-			return data.getDataState().getNumberValue();
-		case 3:  
-			return data.getDataState().getDateValue();
-		}	
-		return null;
-	}
+//	private static Object getOptionalDataValue(PerInfoItemDefForLayoutDto item, PersonInfoItemData data){
+//		SingleItemDto singleItemDto = (SingleItemDto)item.getItemTypeState();
+//		switch(singleItemDto.getDataTypeState().getDataTypeValue()){
+//		case 1:
+//			return data.getDataState().getStringValue();
+//		case 2: 
+//			return data.getDataState().getNumberValue();
+//		case 3:  
+//			return data.getDataState().getDateValue();
+//		}	
+//		return null;
+//	}
+//	
+//	private static Object getOptionalDataValue(PerInfoItemDefForLayoutDto item, EmpInfoItemData data){
+//		SingleItemDto singleItemDto = (SingleItemDto)item.getItemTypeState();
+//		switch(singleItemDto.getDataTypeState().getDataTypeValue()){
+//		case 1:
+//			return data.getDataState().getStringValue();
+//		case 2: 
+//			return data.getDataState().getNumberValue();
+//		case 3:  
+//			return data.getDataState().getDateValue();
+//		}	
+//		return null;
+//	}
 }
