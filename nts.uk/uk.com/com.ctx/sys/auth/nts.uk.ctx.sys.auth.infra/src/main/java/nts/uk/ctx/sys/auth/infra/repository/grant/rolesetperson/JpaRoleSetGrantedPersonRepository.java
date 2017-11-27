@@ -24,7 +24,7 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 	// SaumtRoleSetGrantedPerson r Where r.companyId = :companyId and
 	// r.roleSetCd = :roleSetCd";
 
-	private final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SaumtRoleSetGrantedPerson r Where r.selectionItemId = :selectionItemId";
+	private final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRoleSetGrantedPerson r Where r.selectionItemId = :selectionItemId";
 
 	private RoleSetGrantedPerson toDomain(SacmtRoleSetGrantedPerson entity) {
 		return new RoleSetGrantedPerson(entity.roleSetCd, entity.companyId, entity.startDate, entity.endDate,
