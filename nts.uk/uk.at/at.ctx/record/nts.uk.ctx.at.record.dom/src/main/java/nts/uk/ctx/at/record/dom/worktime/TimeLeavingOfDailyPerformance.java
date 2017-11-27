@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.worktime;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
@@ -14,6 +16,8 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
  *
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	
 	private String employeeId;
