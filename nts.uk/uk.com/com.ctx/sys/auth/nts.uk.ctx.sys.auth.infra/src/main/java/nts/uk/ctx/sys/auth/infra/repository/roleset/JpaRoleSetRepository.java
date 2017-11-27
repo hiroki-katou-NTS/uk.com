@@ -52,12 +52,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		return new SacmtRoleSet(key
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, RoleSet.getRoleId(domain.getOfficeHelperRole())
-				, RoleSet.getRoleId(domain.getMyNumberRole())
-				, RoleSet.getRoleId(domain.getHRRole())
-				, RoleSet.getRoleId(domain.getPersonInfRole())
-				, RoleSet.getRoleId(domain.getEmploymentRole())
-				, RoleSet.getRoleId(domain.getSalaryRole())
+				, domain.getOfficeHelperRoleId()
+				, domain.getMyNumberRoleId()
+				, domain.getHRRoleId()
+				, domain.getPersonInfRoleId()
+				, domain.getEmploymentRoleId()
+				, domain.getSalaryRoleId()
 				);
 
 	}
@@ -66,12 +66,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		upEntity.buildEntity(upEntity.roleSetPK
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, RoleSet.getRoleId(domain.getOfficeHelperRole())
-				, RoleSet.getRoleId(domain.getMyNumberRole())
-				, RoleSet.getRoleId(domain.getHRRole())
-				, RoleSet.getRoleId(domain.getPersonInfRole())
-				, RoleSet.getRoleId(domain.getEmploymentRole())
-				, RoleSet.getRoleId(domain.getSalaryRole()));
+				, domain.getOfficeHelperRoleId()
+				, domain.getMyNumberRoleId()
+				, domain.getHRRoleId()
+				, domain.getPersonInfRoleId()
+				, domain.getEmploymentRoleId()
+				, domain.getSalaryRoleId());
 		return upEntity;
 	}
 

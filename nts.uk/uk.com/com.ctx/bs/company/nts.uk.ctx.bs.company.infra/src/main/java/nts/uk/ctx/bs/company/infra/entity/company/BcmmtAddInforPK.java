@@ -17,7 +17,7 @@ public class BcmmtAddInforPK implements Serializable{
 	public String companyId;
 	
 	/** 会社コード */
-	@Column(name = "COM_CD")
+	@Column(name = "CCD")
 	public String companyCode;
 	
 	/** 契約コード */

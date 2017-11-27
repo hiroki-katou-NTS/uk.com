@@ -1,12 +1,9 @@
 package nts.uk.ctx.sys.auth.app.find.roleset;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Data;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 
 @Data
 public class RoleSetDto {
@@ -42,38 +39,26 @@ public class RoleSetDto {
 	private String salaryRoleId;
 	
 	/** list of web menu code */
-	private List<String> webMenuCds;
+	private List<WebMenuImportDto> webMenus;
 	
 	/**
 	 * Transfer data from Domain into Dto to response to client
 	 * @param roleSet
 	 * @return
 	 */
-	public static RoleSetDto build(RoleSet roleSet) {
+	public static RoleSetDto build(RoleSet roleSet, List<WebMenuImportDto> listWebMenuDto) {
 		RoleSetDto result = new RoleSetDto();
 		result.setApprovalAuthority(roleSet.hasApprovalAuthority());
 		result.setCompanyId(roleSet.getCompanyId());
-		result.setEmploymentRoleId(RoleSet.getRoleId(roleSet.getEmploymentRole()));
-		result.setHRRoleId(RoleSet.getRoleId(roleSet.getHRRole()));
-		result.setMyNumberRoleId(RoleSet.getRoleId(roleSet.getMyNumberRole()));
-		result.setOfficeHelperRoleId(RoleSet.getRoleId(roleSet.getOfficeHelperRole()));
-		result.setPersonInfRoleId(RoleSet.getRoleId(roleSet.getPersonInfRole()));
+		result.setEmploymentRoleId(roleSet.getEmploymentRoleId());
+		result.setHRRoleId(roleSet.getHRRoleId());
+		result.setMyNumberRoleId(roleSet.getMyNumberRoleId());
+		result.setOfficeHelperRoleId(roleSet.getOfficeHelperRoleId());
+		result.setPersonInfRoleId(roleSet.getPersonInfRoleId());
 		result.setRoleSetCd(roleSet.getRoleSetCd().v());
 		result.setRoleSetName(roleSet.getRoleSetName().v());
-		result.setSalaryRoleId(RoleSet.getRoleId(roleSet.getSalaryRole()));
-		result.setWebMenuCds(convertWebMenuToWebMunuCd(roleSet.getRoleSetAndWebMenus()));
+		result.setSalaryRoleId(roleSet.getSalaryRoleId());
+		result.setWebMenus(listWebMenuDto);
 		return result;
-	}
-	
-	/**
-	 * Convert from list of RoleSet and WebMenu.
-	 * @param lstWebMenu
-	 * @return list of web menu code.
-	 */
-	private static List<String> convertWebMenuToWebMunuCd(List<RoleSetAndWebMenu> lstWebMenu) {
-		if (CollectionUtil.isEmpty(lstWebMenu)) {
-			return null;
-		}
-		return lstWebMenu.stream().map(item -> item.getWebMenuCd()).collect(Collectors.toList());
 	}
 }

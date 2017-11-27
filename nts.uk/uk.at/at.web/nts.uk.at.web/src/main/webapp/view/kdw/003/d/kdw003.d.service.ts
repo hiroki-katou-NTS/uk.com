@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw003.a.service {
+module nts.uk.at.view.kdw003.d.service {
     
     var paths: any = {
         getAll: "screen/at/dailyperformance/correction/extraction/getErrorList",

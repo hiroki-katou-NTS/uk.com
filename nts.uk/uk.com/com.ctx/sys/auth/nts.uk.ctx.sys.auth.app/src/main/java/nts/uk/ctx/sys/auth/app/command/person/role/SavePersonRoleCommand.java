@@ -22,10 +22,6 @@ public class SavePersonRoleCommand  {
 	// コード
 	private String roleCode;
 
-	/** The role type. */
-	// ロール種類
-	private Integer roleType;
-
 	/** The employee reference range. */
 	// 参照範囲
 	private Integer employeeReferenceRange;

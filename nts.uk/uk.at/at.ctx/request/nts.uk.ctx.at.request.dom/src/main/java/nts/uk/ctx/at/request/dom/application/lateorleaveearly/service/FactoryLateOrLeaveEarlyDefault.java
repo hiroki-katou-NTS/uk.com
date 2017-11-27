@@ -3,11 +3,9 @@ package nts.uk.ctx.at.request.dom.application.lateorleaveearly.service;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.shr.com.context.AppContexts;
@@ -20,7 +18,7 @@ public class FactoryLateOrLeaveEarlyDefault implements FactoryLateOrLeaveEarly {
 			List<AppApprovalPhase> listAppApprovalPhase,
 			int early1, int earlyTime1, int late1, int lateTime1, int early2, int earlyTime2, int late2,
 			int lateTime2) {
-		return new LateOrLeaveEarly(AppContexts.user().companyId(), appID, prePostAtr, GeneralDate.today(),
+		return new LateOrLeaveEarly(AppContexts.user().companyId(), appID, prePostAtr, GeneralDateTime.now(),
 				AppContexts.user().personId(), "", applicationDate, applicationReason, 9,
 				AppContexts.user().employeeId(), 0, null, 0, 0, 0, null, 0, 0, null, null,
 				listAppApprovalPhase,

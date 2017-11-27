@@ -3,8 +3,10 @@ package nts.uk.ctx.sys.auth.app.command.person.role;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleService;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
@@ -30,11 +32,11 @@ public class SavePersonRoleCommandHandler extends CommandHandler<SavePersonRoleC
 	}
 
 	private void insertPersonInfoRole(SavePersonRoleCommand command) {
-		
-		roleService.insertRole(command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode()));
+		Role role = command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode());
+		roleService.insertRole(role);
 		
 		PersonRole personRole = new PersonRole();
-		personRole.setRoleId(command.getRoleId());
+		personRole.setRoleId(role.getRoleId());
 		personRole.setReferFutureDate(command.getReferFutureDate());
 		personRoleRepo.insert(personRole);
 	}

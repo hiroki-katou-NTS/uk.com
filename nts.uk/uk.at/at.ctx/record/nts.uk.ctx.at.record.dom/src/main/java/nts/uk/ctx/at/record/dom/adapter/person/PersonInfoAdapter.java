@@ -17,7 +17,7 @@ public interface PersonInfoAdapter {
 	 * @param employeeId the employee id
 	 * @return the person info
 	 */
-	PersonInfoImportedDto getPersonInfo(String employeeId);
+	PersonInfoImportedImport getPersonInfo(String employeeId);
 	
 	/**
 	 * Gets the list person.
@@ -25,7 +25,7 @@ public interface PersonInfoAdapter {
 	 * @param listPersonId the list person id
 	 * @return the list person
 	 */
-	List<PersonInfoImportedDto> getListPerson(List<String> listPersonId);
+	List<PersonInfoImportedImport> getListPerson(List<String> listPersonId);
 	
 	/**
 	 * Gets the list person info.
@@ -34,4 +34,10 @@ public interface PersonInfoAdapter {
 	 * @return the list person info
 	 */
 	List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid);
+	/**
+	 * get list person by list person ID
+	 * @param personId
+	 * @return
+	 */
+	List<PersonInfoImport> getByListId(List<String> personId);
 }

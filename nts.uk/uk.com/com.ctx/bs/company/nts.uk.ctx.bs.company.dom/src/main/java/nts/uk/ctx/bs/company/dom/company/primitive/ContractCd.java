@@ -1,8 +1,6 @@
 package nts.uk.ctx.bs.company.dom.company.primitive;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.IntegerRange;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;

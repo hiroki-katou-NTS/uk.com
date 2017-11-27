@@ -1,9 +1,11 @@
 package nts.uk.ctx.command;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.bs.company.dom.company.AddInfor;
+import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
 
 /**
  * 
@@ -14,41 +16,49 @@ import lombok.Data;
 @AllArgsConstructor
 public class AddCompanyInforCommand {
 	// 会社コード
-	private String companyCode;
+	private String ccd;  
 
 	/** The company code. */
 	// 会社名
-	private String companyName;
-
-	/** The company id. */
-	// 会社ID
-	private String companyId;
+	private String name;
 
 	/** The start month. */
 	// 期首月
-	private int startMonth;
+	private int month;
 
 	/** The Abolition */
 	// 廃止区分
-	private int isAbolition;
+	private int abolition;
 
 	/** 代表者名 */
 	private String repname;
 	
 	/** 代表者職位 */
-	private String repost;
+	private String repJob;
 	
 	/** 会社名カナ */
 	private String comNameKana;
 	
 	/** 会社略名 */
 	private String shortComName;
-	
-	/** 契約コード */
-	private String contractCd;
-	
+		
 	/** 法人マイナンバー */
-	private String taxNum;
+	private BigDecimal taxNo;
 	
 	private AddInforCommand addinfor;
+	
+	public CompanyInforNew toDomain(String contractCode) {
+		AddInfor add = null; 
+		if(this.getAddinfor() != null){
+			add = this.getAddinfor().toDomainAdd(contractCode, CompanyInforNew.createCompanyId(ccd, contractCode), this.ccd);
+		}
+		CompanyInforNew company =  CompanyInforNew.createFromJavaType(this.ccd, this.name, 
+				this.getMonth(), 
+				this.getAbolition(), this.getRepname(),
+				this.getRepJob(), this.getComNameKana(), 
+				this.getShortComName(), contractCode, 
+				this.getTaxNo(), add);
+		
+		return company;
+	}
 }

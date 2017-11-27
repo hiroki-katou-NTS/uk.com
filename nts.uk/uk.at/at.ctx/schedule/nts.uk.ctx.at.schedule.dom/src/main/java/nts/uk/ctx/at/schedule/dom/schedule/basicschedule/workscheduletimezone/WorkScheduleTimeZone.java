@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -12,7 +13,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 // 勤務予定時間帯
-public class WorkScheduleTimeZone {
+public class WorkScheduleTimeZone extends DomainObject{
 	
 	/** The schedule cnt. */
 	// 予定勤務回数

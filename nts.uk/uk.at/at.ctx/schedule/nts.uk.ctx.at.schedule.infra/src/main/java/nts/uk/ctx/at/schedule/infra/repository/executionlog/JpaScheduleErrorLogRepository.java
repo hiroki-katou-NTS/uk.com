@@ -128,16 +128,15 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		Root<KscdtScheErrLog> root = cq.from(KscdtScheErrLog.class);
 
 		// select root
-		cq.select(criteriaBuilder.countDistinct(root.get(KscdtScheErrLog_.kscdtScheErrLogPK)
-				.get(KscdtScheErrLogPK_.sid)));
+		cq.select(criteriaBuilder
+				.countDistinct(root.get(KscdtScheErrLog_.kscdtScheErrLogPK).get(KscdtScheErrLogPK_.sid)));
 
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscdtScheErrLog_.kscdtScheErrLogPK)
-						.get(KscdtScheErrLogPK_.exeId), executionId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtScheErrLog_.kscdtScheErrLogPK).get(KscdtScheErrLogPK_.exeId), executionId));
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
 		int cntError = em.createQuery(cq).getSingleResult().intValue();
 		return cntError;
 	}

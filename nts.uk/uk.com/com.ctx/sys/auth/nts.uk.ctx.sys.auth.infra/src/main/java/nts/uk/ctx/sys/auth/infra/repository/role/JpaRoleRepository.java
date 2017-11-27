@@ -22,8 +22,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSet;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSetPK;
+
 
 /**
  * The Class JpaRoleRepository.
@@ -48,7 +47,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		// add where
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.id), roleId));
+		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.roleId), roleId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SacmtRole> sacmtRoles = em.createQuery(cq).getResultList();
@@ -74,7 +73,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		// add where
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(root.get(SacmtRole_.id).in(lstRoleId));
+		predicateList.add(root.get(SacmtRole_.roleId).in(lstRoleId));
 		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.cid), companyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
@@ -102,7 +101,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	
 	private SacmtRole  toEntity(Role role){
 		SacmtRole entity = new SacmtRole();
-		entity.setId(role.getRoleId());
+		entity.setRoleId(role.getRoleId());
 		entity.setCid(role.getCompanyId());
 		entity.setCode(role.getRoleCode().toString());
 		entity.setRoleType(role.getRoleType().value);
@@ -139,7 +138,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	@Override
 	public Optional<Role> findByRoleId(String roleId) {
-		String query ="SELECT e FROM SacmtRole e WHERE e.Id = :roleId ";
+		String query ="SELECT e FROM SacmtRole e WHERE e.roleId = :roleId ";
 		return this.queryProxy().query(query, SacmtRole.class)
 				.setParameter("roleId", roleId).getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
 	}

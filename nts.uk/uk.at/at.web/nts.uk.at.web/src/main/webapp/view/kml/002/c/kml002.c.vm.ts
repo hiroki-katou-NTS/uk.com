@@ -14,11 +14,14 @@ module nts.uk.at.view.kml002.c.viewmodel {
         attrLabel: KnockoutObservable<String>;
         itemNameLabel: KnockoutObservable<String>;
         enableReturn: KnockoutObservable<boolean>;
+        currentData: any;
         
         constructor() {
             var self = this;
             
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
+            self.currentData = data.formTime;
             
             self.attrLabel = ko.observable(data.attribute);
             self.itemNameLabel = ko.observable(data.itemName);
@@ -53,6 +56,15 @@ module nts.uk.at.view.kml002.c.viewmodel {
             self.enable = ko.observable(true);
             
             var devChange = false;
+            
+            // Bind data to display on Dialog
+            if(self.currentData != null) {
+                self.catCode(self.currentData.categoryIndicator);
+                self.catCode.valueHasMutated();
+                self.checked(self.currentData.actualDisplayAtr == 0 ? false : true);
+                
+                self.bindData(self.currentData.lstFormTimeFunc);
+            }
             
             self.checked.subscribe(function(value) {
                 if(!devChange){
@@ -139,6 +151,8 @@ module nts.uk.at.view.kml002.c.viewmodel {
                     self.displayItemsRule(_.clone(self.allItem()), self.catCode(), self.checked());
                 }
                 
+                self.bindData(self.currentData.lstFormTimeFunc);
+                
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);    
@@ -186,6 +200,52 @@ module nts.uk.at.view.kml002.c.viewmodel {
         }
         
         /**
+         * Bind data from DB to dialog.
+         */
+        bindData(lstFormTimeFunc: any) {
+            var self = this;
+            self.rightItems.removeAll();
+            
+            _.forEach(lstFormTimeFunc, function(item) {
+                var itemCd = "";
+                var realCd = "";
+                
+                if(item.attendanceItemId != null) {
+                    itemCd = item.attendanceItemId + item.dispOrder;
+                    realCd = item.attendanceItemId
+                } else if(item.externalBudgetCd != null) {
+                    itemCd = item.externalBudgetCd + item.dispOrder;
+                    realCd = item.externalBudgetCd
+                } else if(item.presetItemId != null) {
+                    itemCd = item.presetItemId + item.dispOrder;
+                    realCd = item.presetItemId
+                }  
+                
+                var getItemByCd = _.find(self.allItem(), function(o) { return o.code.slice(0, -1) == realCd; });
+                var dataType = 0;
+                
+                if(item.presetItemId != null) {
+                    dataType = GrantPeriodicMethod.SCHEDULE;
+                } else if (item.attendanceItemId != null) {
+                    dataType = GrantPeriodicMethod.DAILY;
+                } else if (item.externalBudgetCd != null) {
+                    dataType = GrantPeriodicMethod.EXTERNAL;
+                }
+                
+                var itemData = {
+                    code: itemCd,
+                    trueCode: realCd,
+                    itemType: dataType,
+                    operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
+                    name: getItemByCd != null ? getItemByCd.name : "",
+                    order: item.dispOrder
+                };
+                
+                self.rightItems.push(itemData);
+            });
+        }
+        
+        /**
          * Display items rule.
          */
         displayItemsRule(allItems: any, category: number, display: boolean) {
@@ -198,7 +258,9 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 self.items(_.filter(allItems, function(item: ItemModel) {
                     return item.itemType == GrantPeriodicMethod.DAILY || item.itemType == GrantPeriodicMethod.SCHEDULE;
                 }));
-            }   
+            } else {
+                self.items(_.filter(allItems, ['itemType', GrantPeriodicMethod.EXTERNAL]));
+            }
         }
         
         /**
@@ -310,8 +372,9 @@ module nts.uk.at.view.kml002.c.viewmodel {
                     externalBudgetCd: self.rightItems()[i].itemType == GrantPeriodicMethod.EXTERNAL ? self.rightItems()[i].trueCode : null,
                     attendanceItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.DAILY ? self.rightItems()[i].trueCode : null,
                     presetItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.SCHEDULE ? self.rightItems()[i].trueCode : null,
-                    operatorAtr: self.rightItems()[i].operatorAtr == "＋" ? 0 : 1,
-                    dispOrder: self.rightItems()[i].order
+                    operatorAtr: self.rightItems()[i].operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
+                    dispOrder: self.rightItems()[i].order,
+                    name: self.rightItems()[i].name
                 };
                 
                 formTimeFunc.push(item);

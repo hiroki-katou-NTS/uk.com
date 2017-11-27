@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "BCMMT_ADD_INFOR")
+@Table(name = "BCMMT_ADDRESS")
 public class BcmmtAddInfor extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -28,33 +28,33 @@ public class BcmmtAddInfor extends UkJpaEntity implements Serializable{
 	public String faxNum;
 	
 	/** 住所１ */
-	@Column(name = "ADD_1")
+	@Column(name = "ADDRESS_1")
 	public String add_1;
 
 	/** 住所２ */
-	@Column(name = "ADD_2")
+	@Column(name = "ADDRESS_2")
 	public String add_2;
 	
 	/**  住所カナ１ */
-	@Column(name = "ADD_KANA_1")
+	@Column(name = "KNNAME_1")
 	public String addKana_1;
 	
 	/** 住所カナ２ */
-	@Column(name = "ADD_KANA_2")
+	@Column(name = "KNNAME_2")
 	public String addKana_2;
 	
 	/** 郵便番号 */
-	@Column(name = "POST_CD")
+	@Column(name = "POSTAL_CODE")
 	public String postCd;
 	
 	/** 電話番号 */
-	@Column(name = "PHONE_NUM")
+	@Column(name = "PHONE_NUMBER")
 	public String phoneNum;
 	
 	@OneToOne
 	@JoinColumns({
 		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "COM_CD", referencedColumnName = "COM_CD", insertable = false, updatable = false),
+		@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 		@JoinColumn(name = "CONTRACT_CD", referencedColumnName = "CONTRACT_CD", insertable = false, updatable = false)
 	})
 	public BcmmtCompanyInfor bcmmtCompanyInfor;

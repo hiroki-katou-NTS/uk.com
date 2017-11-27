@@ -16,7 +16,7 @@ public enum WorkStyle {
 	AFTERNOON_WORK(2),
 
 	// 1日出勤系
-	ONE_DAY_WORK(4);
+	ONE_DAY_WORK(3);
 
 	public int value;
 

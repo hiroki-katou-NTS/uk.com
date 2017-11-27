@@ -11,14 +11,14 @@ public interface CompanySetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(CCD companyCode);
 
 	/**
 	 * Sets the company name.
 	 *
 	 * @param companyName the new company name
 	 */
-	void setCompanyName(CompanyName companyName);
+	void setCompanyName(Name companyName);
 	
 	/**
 	 * Sets the company id.
