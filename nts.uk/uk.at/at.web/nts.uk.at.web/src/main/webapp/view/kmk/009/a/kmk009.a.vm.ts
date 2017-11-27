@@ -585,7 +585,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.updateData(self.stash.toDto());
                 saveData.useAtr(0);
             }
-            if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true) && Number.isInteger(self.attendanceModel.attendanceItemId())) {
+            if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true) && _.isNumber(self.attendanceModel.attendanceItemId())) {
                 saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
             } else {
                 saveData.totalCondition.attendanceItemId(1);
