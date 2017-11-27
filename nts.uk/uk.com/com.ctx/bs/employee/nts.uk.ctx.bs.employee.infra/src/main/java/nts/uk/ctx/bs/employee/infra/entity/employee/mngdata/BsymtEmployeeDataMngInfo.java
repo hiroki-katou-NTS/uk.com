@@ -21,7 +21,7 @@ public class BsymtEmployeeDataMngInfo extends UkJpaEntity implements Serializabl
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private BsymtEmployeeDataMngInfoPk bsymtEmployeeDataMngInfoPk;
+	public BsymtEmployeeDataMngInfoPk bsymtEmployeeDataMngInfoPk;
 
 	@Column(name = "CID")
 	public String companyId;

@@ -21,7 +21,13 @@ public class AffCompanyInfo extends AggregateRoot {
 
 	/** 本採用年月日 */
 	private GeneralDate adoptionDate;
-	
-	/**	退職金計算開始日 */
+
+	/** 退職金計算開始日 */
 	private GeneralDate retirementAllowanceCalcStartDate;
+
+	public static AffCompanyInfo createFromJavaType(String histId, String recruitmentCategoryCode,
+			GeneralDate adoptionDate, GeneralDate retirementAllowanceCalcStartDate) {
+		return new AffCompanyInfo(histId, new RecruitmentCategoryCode(recruitmentCategoryCode), adoptionDate,
+				retirementAllowanceCalcStartDate);
+	}
 }
