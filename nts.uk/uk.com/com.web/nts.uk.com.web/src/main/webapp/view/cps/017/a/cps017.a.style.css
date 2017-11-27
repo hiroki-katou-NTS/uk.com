@@ -237,23 +237,23 @@ i.icon.icon-searchbox {
 }
 
 #history_lst_grid_displayContainer {
-	height: 116px !important;
+	height: 142px !important;
 	width: 250px !important;
 	max-width: 250px !important;
 }
 
 #history_lst_grid_scrollContainer {
-	height: 116px !important;
+	height: 142px !important;
 }
 
 #history_lst_grid_container {
 	width: 267px !important;
-	height: 116px !important;
+	height: 142px !important;
 }
 
 #history_lst {
 	width: 267px;
-	height: 116px;
+	height: 142px;
 }
 
 .ui-iggrid table tr .ui-state-active {
