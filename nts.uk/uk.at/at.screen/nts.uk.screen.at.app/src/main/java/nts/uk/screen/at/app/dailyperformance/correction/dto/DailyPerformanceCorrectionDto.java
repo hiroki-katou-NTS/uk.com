@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -82,7 +82,7 @@ public class DailyPerformanceCorrectionDto {
 			List<String> state = new ArrayList<>();
 			state.add("ntsgrid-disable");
 				int attendanceAtr = mapDP.get(Integer.parseInt(header.getKey().trim())).getAttendanceAtr() ;
-				if(attendanceAtr == AttendanceAtr.Code.value || attendanceAtr == AttendanceAtr.Attribute.value ){
+				if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
 				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Code"+header.getKey(), state));
 				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Name"+header.getKey(), state));
 			} else {

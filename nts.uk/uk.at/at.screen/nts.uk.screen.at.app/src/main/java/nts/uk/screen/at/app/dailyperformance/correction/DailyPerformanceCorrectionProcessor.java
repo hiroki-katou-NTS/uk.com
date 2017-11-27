@@ -21,8 +21,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
@@ -297,7 +297,7 @@ public class DailyPerformanceCorrectionProcessor {
 					Random rn = new Random();
 					int a = rn.nextInt(100);
 					int attendanceAtr = mapDP.get(item.getId()).getAttendanceAtr();
-					if (attendanceAtr == AttendanceAtr.Code.value || attendanceAtr == AttendanceAtr.Attribute.value) {
+					if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 						cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), String.valueOf(a),
 								String.valueOf(item.getAttendanceAtr()), "label"));
 						cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()), "Link Name"+ item.getId(),

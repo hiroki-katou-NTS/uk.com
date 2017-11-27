@@ -297,7 +297,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         changeExtractionCondition() {
             var self = this;
-            var self = this;
             if (self.displayFormat() == 0) {
                 $("#emp-component").css("display", "block");
                 $("#cbListDate").css("display", "none");
@@ -318,6 +317,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             //  let errorCodes =["0001","0002","003"];      
             nts.uk.ui.windows.sub.modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
+                 nts.uk.ui.block.clear();
                 let errorCodes = nts.uk.ui.windows.getShared('errorAlarmList');
                 if (errorCodes != undefined) {
                     let param = {
@@ -798,6 +798,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         },
                         controlType: 'LinkLabel'
                     },
+                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
                     { name: 'Combobox2', options: self.comboItems(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
                 ]
             });

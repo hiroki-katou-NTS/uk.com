@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 
 /**
  * @author hungnm
@@ -72,7 +72,7 @@ public class DPControlDisplayItem {
 			this.lstSheet.forEach(s -> {
 				if (f.getSheetNo().equals(s.getName()) && !s.isExistColumn(String.valueOf(f.getAttendanceItemId()))) {
 					int attendanceAtr = mapDP.get(f.getAttendanceItemId()).getAttendanceAtr() ;
-					if(attendanceAtr == AttendanceAtr.Code.value || attendanceAtr == AttendanceAtr.Attribute.value ){
+					if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
 						s.addColumn("Code"+f.getAttendanceItemId());
 						s.addColumn("Name"+f.getAttendanceItemId());
 					}else{

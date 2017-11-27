@@ -19,6 +19,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
@@ -135,7 +136,7 @@ public class DailyPerformanceErrorCodeProcessor {
 					Random rn = new Random();
 					int a = rn.nextInt(100);
 					int attendanceAtr = mapDP.get(item.getId()).getAttendanceAtr();
-					if (attendanceAtr == AttendanceAtr.Code.value || attendanceAtr == AttendanceAtr.Attribute.value) {
+					if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 						cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), String.valueOf(a),
 								String.valueOf(item.getAttendanceAtr()), "label"));
 						cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()), "Link Name"+ item.getId(),
@@ -238,7 +239,7 @@ public class DailyPerformanceErrorCodeProcessor {
             		Map<Integer,DPAttendanceItem>  mapDP = new HashMap<>();
             		// set FormatCode for button A2_4
             		result.setFormatCode(authorityFomatDailys.stream().map( x-> x.getDailyPerformanceFormatCode()).collect(Collectors.toSet()));
-                	lstSheet = authorityFormatSheets.stream().map(x -> new DPSheetDto(x.getSheetNo().toString(),"")).collect(Collectors.toList());
+                	lstSheet = authorityFormatSheets.stream().map(x -> new DPSheetDto(x.getSheetNo().toString(),x.getSheetName().toString())).collect(Collectors.toList());
                 	lstFormat = authorityFomatDailys.stream().map(x -> new FormatDPCorrectionDto(companyId, x.getDailyPerformanceFormatCode(), x.getAttendanceItemId(), x.getSheetNo().toString(), x.getDisplayOrder(), x.getColumnWidth().intValue())).collect(Collectors.toList());
                 	lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId())
     						.collect(Collectors.toList());
