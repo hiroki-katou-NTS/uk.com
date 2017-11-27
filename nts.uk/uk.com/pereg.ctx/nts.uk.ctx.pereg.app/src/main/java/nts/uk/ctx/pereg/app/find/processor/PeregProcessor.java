@@ -105,8 +105,8 @@ public class PeregProcessor {
 				lstPeregDto.forEach(queryResult -> {
 
 					PeregDomainDto finderDto = queryResult.getDomainDto();
-					List<PersonOptionalDto> perOptionalData = queryResult.getPerOptionalDatas();
-					List<EmpOptionalDto> empOptionalData = queryResult.getEmpOptionalDatas();
+					List<PersonOptionalDto> perOptionalData = queryResult.getPerOptionalData();
+					List<EmpOptionalDto> empOptionalData = queryResult.getEmpOptionalData();
 					EmpMaintLayoutDto empLayoutDto = new EmpMaintLayoutDto();
 					matching(empLayoutDto, perInfoCtg, finderDto, returnValue.getDtoClass(),
 							item.getListItemDf().stream()
@@ -215,7 +215,7 @@ public class PeregProcessor {
 
 			//set fixed data			
 			matching(empMaintLayoutDto, perInfoCtg,  queryResult.getDomainDto(), returnValue.getDtoClass(), 
-					lstPerInfoItemDef, queryResult.getEmpOptionalDatas(), queryResult.getPerOptionalDatas());
+					lstPerInfoItemDef, queryResult.getEmpOptionalData(), queryResult.getPerOptionalData());
 		}else{
 			setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
 		}
