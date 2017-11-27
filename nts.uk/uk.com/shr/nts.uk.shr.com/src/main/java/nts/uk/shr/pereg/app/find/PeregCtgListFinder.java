@@ -1,12 +1,15 @@
 package nts.uk.shr.pereg.app.find;
 
-public interface PeregCtgListFinder <R, Q> extends PeregFinder <R, Q>{
+import java.util.List;
 
-	R getCtgListleData(Q query);
-	
-	@SuppressWarnings("unchecked")
-	default R find(Object query) {
-		return this.getCtgListleData((Q) query);
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
+
+public interface PeregCtgListFinder extends PeregFinder {
+
+	List<PeregDto> getCtgListleData(PeregQuery query);
+
+	default List<PeregDto> find(PeregQuery query) {
+		return this.getCtgListleData(query);
 	}
+	
 }
-

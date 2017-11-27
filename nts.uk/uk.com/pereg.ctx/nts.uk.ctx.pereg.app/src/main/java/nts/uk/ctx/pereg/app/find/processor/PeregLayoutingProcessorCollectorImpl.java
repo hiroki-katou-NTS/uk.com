@@ -15,7 +15,6 @@ import nts.uk.shr.pereg.app.find.PeregFinderProcessorCollector;
 
 
 @Stateless
-@SuppressWarnings("serial")
 public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcessorCollector{
 
 	/** ctg single finder */
@@ -27,18 +26,18 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			);
 
 	@Override
-	public Set<PeregCtgSingleFinder<?, ?>> peregCtgSingleFinderCollect() {
+	public Set<PeregCtgSingleFinder> peregCtgSingleFinderCollect() {
 		return FINDER_CTG_SINGLE_HANDLER_CLASSES.stream()
 				.map(type -> CDI.current().select(type).get())
-				.map(obj -> (PeregCtgSingleFinder<?, ?>)obj)
+				.map(obj -> (PeregCtgSingleFinder)obj)
 				.collect(Collectors.toSet());
 	}
 
 	@Override
-	public Set<PeregCtgListFinder<?, ?>> peregCtgListFinderCollect() {
+	public Set<PeregCtgListFinder> peregCtgListFinderCollect() {
 		return FINDER_CTG_LIST_HANDLER_CLASSES.stream()
 				.map(type -> CDI.current().select(type).get())
-				.map(obj -> (PeregCtgListFinder<?, ?>)obj)
+				.map(obj -> (PeregCtgListFinder)obj)
 				.collect(Collectors.toSet());
 	}
 
