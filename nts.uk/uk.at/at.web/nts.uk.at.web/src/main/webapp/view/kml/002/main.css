@@ -252,6 +252,10 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 	width: 95px;
 }
 
+.ntsControl .nts-input {
+	padding: 7px 10px !important;
+}
+
 table.link-notes {
 	width: 95.5%;
 }
