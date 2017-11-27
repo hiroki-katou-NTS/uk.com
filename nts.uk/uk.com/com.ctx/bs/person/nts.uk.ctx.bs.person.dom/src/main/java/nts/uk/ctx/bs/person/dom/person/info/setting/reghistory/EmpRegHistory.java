@@ -1,24 +1,22 @@
 package nts.uk.ctx.bs.person.dom.person.info.setting.reghistory;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmpRegHistory extends AggregateRoot {
 
-	String registeredEmployeeID;
-	String companyId;
-	GeneralDate registeredDate;
-	String lastRegEmployeeID;
-
-	private EmpRegHistory(String registeredEmployeeID, String companyId, GeneralDate registeredDate,
-			String lastRegEmployeeID) {
-		this.registeredEmployeeID = registeredEmployeeID;
-		this.companyId = companyId;
-		this.registeredDate = registeredDate;
-		this.lastRegEmployeeID = lastRegEmployeeID;
-	}
+	protected String registeredEmployeeID;
+	protected String companyId;
+	protected GeneralDate registeredDate;
+	protected String lastRegEmployeeID;
 
 	public static EmpRegHistory createFromJavaType(String registeredEmployeeID, String companyId,
 			GeneralDate registeredDate, String lastRegEmployeeID) {
