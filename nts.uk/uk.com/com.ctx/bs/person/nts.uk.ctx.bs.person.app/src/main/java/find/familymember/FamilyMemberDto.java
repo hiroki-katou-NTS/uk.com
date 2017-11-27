@@ -1,4 +1,4 @@
-package find.person.family;
+package find.familymember;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 /**
  * @author xuan vinh
@@ -17,7 +18,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 @AllArgsConstructor
 @NoArgsConstructor
 // 家族
-public class FamilyMemberDto {
+public class FamilyMemberDto extends PeregDomainDto{
 	// 生年月日
 	@PeregItem("")
 	private GeneralDate birthday;

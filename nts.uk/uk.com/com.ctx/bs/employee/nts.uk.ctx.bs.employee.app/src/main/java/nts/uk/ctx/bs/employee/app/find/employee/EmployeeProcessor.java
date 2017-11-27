@@ -1,9 +1,8 @@
 package nts.uk.ctx.bs.employee.app.find.employee;
 
-import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 
-public class EmployeeProcessor implements PeregFinder<Object, PeregQuery>{
+public class EmployeeProcessor implements PeregFinder{
 
 	@Override
 	public String targetCategoryCode() {

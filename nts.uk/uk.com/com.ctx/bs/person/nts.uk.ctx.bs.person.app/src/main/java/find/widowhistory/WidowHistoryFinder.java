@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.currentaddress;
+package find.widowhistory;
 
 import nts.uk.shr.pereg.app.find.PeregSingleFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -11,20 +11,20 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  * @author danpv
  *
  */
-public class CurrentAddressFinder implements PeregSingleFinder{
+public class WidowHistoryFinder implements PeregSingleFinder{
 
 	@Override
 	public String targetCategoryCode() {
-		return "CS00003";
+		return "CS00014";
 	}
 
 	@Override
-	public Class<CurrentAddressDto> dtoClass() {
-		return CurrentAddressDto.class;
+	public Class<?> dtoClass() {
+		return WidowHistoryDto.class;
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.shr.pereg.app.find.PeregCtgSingleFinder#getCtgSingleData(java.lang.Object)
+	 * @see nts.uk.shr.pereg.app.find.PeregCtgSingleFinder#getCtgSingleData(nts.uk.shr.pereg.app.find.PeregQuery)
 	 */
 	@Override
 	public PeregDto getSingleData(PeregQuery query) {

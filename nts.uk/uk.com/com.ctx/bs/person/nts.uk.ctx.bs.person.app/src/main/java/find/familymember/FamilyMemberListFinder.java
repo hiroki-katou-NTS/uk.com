@@ -1,12 +1,15 @@
-package find.person.family;
+package find.familymember;
+
+import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.shr.pereg.app.find.PeregCtgSingleFinder;
+import nts.uk.shr.pereg.app.find.PeregListFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
-public class FamilyCtgSingleFinder implements PeregCtgSingleFinder<FamilyCtgSingleFinder, PeregQuery>{
+public class FamilyMemberListFinder implements PeregListFinder{
 
 	@Override
 	public String targetCategoryCode() {
@@ -21,7 +24,7 @@ public class FamilyCtgSingleFinder implements PeregCtgSingleFinder<FamilyCtgSing
 	}
 
 	@Override
-	public FamilyCtgSingleFinder getCtgSingleData(PeregQuery query) {
+	public List<PeregDto> getCtgListleData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
