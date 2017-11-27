@@ -51,7 +51,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
-            //            self.closeUp = ko.observable(false);
+            
 
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
