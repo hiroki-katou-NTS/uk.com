@@ -12,8 +12,8 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceHistRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -24,10 +24,10 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 	implements PeregAddCommandHandler<AddTemporaryAbsenceCommand>{
 
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepository;
+	private TempAbsItemRepository temporaryAbsenceRepository;
 	
 	@Inject
-	private TemporaryAbsenceHistRepository temporaryAbsenceHistRepository;
+	private TempAbsHistRepository temporaryAbsenceHistRepository;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -48,7 +48,7 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 		
 		TempAbsenceHistory itemtoBeAdded = null;
 		
-		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getTemporaryAbsenceHistByEmployeeId(command.getEmployeeId());
+		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(command.getEmployeeId());
 		
 		// In case of exist history of this employee
 		if (existHist.isPresent()){

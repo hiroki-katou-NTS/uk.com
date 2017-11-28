@@ -41,7 +41,8 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.E
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
@@ -120,7 +121,7 @@ public class EmpPerInfoCategoryFinder {
 	private PersonRepository personRepository;
 
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepository;
+	private TempAbsItemRepository temporaryAbsenceRepository;
 
 	@Inject
 	private JobTitleMainRepository jobTitleMainRepository;
@@ -401,7 +402,7 @@ public class EmpPerInfoCategoryFinder {
 			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 			break;
 		case "CS00008":
-			Optional<TempAbsenceHisItem> temporaryAbsence = temporaryAbsenceRepository.getByTempAbsenceId(infoId);
+			Optional<TempAbsenceHisItem> temporaryAbsence = temporaryAbsenceRepository.getItemByHitoryID(infoId);
 			for(PerInfoItemDefDto item : lstPerInfoItemDef){
 				List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
 				//getActionRole ActionRole

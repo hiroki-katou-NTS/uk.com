@@ -10,8 +10,8 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceHistRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
@@ -20,10 +20,10 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 	implements PeregDeleteCommandHandler<DeleteTemporaryAbsenceCommand>{
 
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepository;
+	private TempAbsItemRepository temporaryAbsenceRepository;
 	
 	@Inject
-	private TemporaryAbsenceHistRepository temporaryAbsenceHistRepository;
+	private TempAbsHistRepository temporaryAbsenceHistRepository;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -39,7 +39,7 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 	protected void handle(CommandHandlerContext<DeleteTemporaryAbsenceCommand> context) {
 		val command = context.getCommand();
 		
-		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getTemporaryAbsenceHistByEmployeeId(command.getEmployeeId());
+		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(command.getEmployeeId());
 		
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid TempAbsenceHistory"); 

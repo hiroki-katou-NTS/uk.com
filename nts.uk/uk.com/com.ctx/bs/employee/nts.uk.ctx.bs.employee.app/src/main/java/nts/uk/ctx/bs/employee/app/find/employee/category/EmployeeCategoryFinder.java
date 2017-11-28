@@ -24,9 +24,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
@@ -61,7 +60,7 @@ public class EmployeeCategoryFinder {
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepo;
+	private TempAbsItemRepository temporaryAbsenceRepo;
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
@@ -322,7 +321,7 @@ public class EmployeeCategoryFinder {
 		switch (perInfoCtg.getCategoryCode().v()) {
 		case "CS00008":
 			// Case Ctg == TemporaryAbsence
-			List<TempAbsenceHisItem> listTemporaryAbsence = temporaryAbsenceRepo.getListBySid(employee.getSId());
+			List<TempAbsenceHisItem> listTemporaryAbsence = temporaryAbsenceRepo.getListItemByEmpId(employee.getSId());
 			// get Action Role
 			ActionRole actionRole = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
 					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());

@@ -10,8 +10,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceHistRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ItemValue;
@@ -22,10 +22,10 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 	implements PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>{
 
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepository;
+	private TempAbsItemRepository temporaryAbsenceRepository;
 	
 	@Inject
-	private TemporaryAbsenceHistRepository temporaryAbsenceHistRepository;
+	private TempAbsHistRepository temporaryAbsenceHistRepository;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -41,7 +41,7 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 	protected void handle(CommandHandlerContext<UpdateTemporaryAbsenceCommand> context) {
 		val command = context.getCommand();
 		// Update history table
-		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getTemporaryAbsenceHistByEmployeeId(command.getEmployeeId());
+		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(command.getEmployeeId());
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid TempAbsenceHistory"); 
 		}
