@@ -25,7 +25,7 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00009";
+		return "CS00016";
 	}
 
 	@Override

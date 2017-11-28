@@ -30,7 +30,7 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00009";
+		return "CS00016";
 	}
 
 	@Override

@@ -15,22 +15,22 @@ public class AffJobTitleMainCommand {
 	
 	/** The job title code. */
 	// 職位コード
-	@PeregItem("")
+	@PeregItem("IS00079")
 	private String jobTitleCode;
 	
 	/** The AffJobHistoryItemNote. */
 	// 備考
-	@PeregItem("")
+	@PeregItem("IS00080")
 	private String note;
 	
 	@PeregRecordId
 	private String historyId;
 	
 	/** The job title history. */
-	@PeregItem("")
+	@PeregItem("IS00077")
 	private GeneralDate startDate;
 	
-	@PeregItem("")
+	@PeregItem("IS00078")
 	private GeneralDate endDate;
 
 }
