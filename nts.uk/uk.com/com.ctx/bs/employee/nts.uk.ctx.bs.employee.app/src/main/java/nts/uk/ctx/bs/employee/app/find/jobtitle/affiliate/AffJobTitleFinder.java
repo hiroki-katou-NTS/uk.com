@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
@@ -21,6 +22,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
  * @author danpv
  *
  */
+@Stateless
 public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 
 	@Inject
