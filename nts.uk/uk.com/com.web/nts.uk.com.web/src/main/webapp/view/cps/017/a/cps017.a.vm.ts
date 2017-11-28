@@ -56,7 +56,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
 
-
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
@@ -65,63 +64,72 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     });
                     perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
 
+                    //
+                    //self.listItems().selectionItemId.valueHasMutated();
+
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         let changeData = _.each(_selectionItemList, (item) => {
                             item.displayDate = item.startDate + "  " + getText('CPS017_12') + "  " + item.endDate;
                             return item;
                         });
+
                         self.listHistorySelection(changeData);
-                        // check tạm:
                         //self.historySelection().histId(self.listHistorySelection().length == 0 ? '' : self.listHistorySelection()[0].histId);
-                        //self.checkCreate(false);
                         if (self.listHistorySelection().length == 0 || self.listHistorySelection() == undefined) {
                             self.disbleAdUpHist(false);
                             self.enableDelHist(false);
-                            return;
+                            historySelection.histId(undefined);
+                            //return;
                         } else {
                             self.historySelection().histId(self.listHistorySelection()[0].histId);
                         }
-
                     });
                 }
-
+                else {
+                    historySelection.histId(undefined);
+                }
             });
 
             //sub theo historyID:
             historySelection.histId.subscribe(x => {
-                let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
-                if (histCur != undefined) {
-                    if (histCur.endDate !== '9999/12/31' || self.listHistorySelection().length <= 1) {
-                        self.enableDelHist(false);
-                    } else {
-                        self.enableDelHist(true);
+                if (x) {
+                    let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
+                    if (histCur != undefined) {
+                        if (histCur.endDate !== '9999/12/31' || self.listHistorySelection().length <= 1) {
+                            self.enableDelHist(false);
+                        } else {
+                            self.enableDelHist(true);
+                        }
                     }
+
+                    let adUpHist = _.find(self.listHistorySelection(), a => a.histId == x);
+                    if (adUpHist != undefined) {
+                        if (adUpHist.endDate !== '9999/12/31' || self.listHistorySelection().length == 0) {
+                            self.disbleAdUpHist(false);
+                        } else {
+                            self.disbleAdUpHist(true);
+                        }
+                    }
+
+                    //self.historySelection().histId.valueHasMutated();
+
+                    self.listSelection.removeAll();
+                    service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length) {
+                            self.enableSelName(self.enableDelHist());
+                            self.checkCreateaaa(false);
+                            itemList.forEach(x => self.listSelection.push(x));
+                            self.selection().selectionID(self.listSelection()[0].selectionID);
+                            //self.checkCreate(false);
+                        } else {
+                            self.enableSelName(true);
+                            self.registerData();
+                        }
+
+                    });
+                } else {
+                    self.listSelection.removeAll();
                 }
-
-                let adUpHist = _.find(self.listHistorySelection(), a => a.histId == x);
-                if (adUpHist != undefined) {
-                    if (adUpHist.endDate !== '9999/12/31' || self.listHistorySelection().length == 0) {
-                        self.disbleAdUpHist(false);
-                    } else {
-                        self.disbleAdUpHist(true);
-                    }
-                }
-
-                self.listSelection.removeAll();
-                service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                    if (itemList && itemList.length) {
-                        self.enableSelName(self.enableDelHist());
-                        self.checkCreateaaa(false);
-                        itemList.forEach(x => self.listSelection.push(x));
-                        self.selection().selectionID(self.listSelection()[0].selectionID);
-                        //self.checkCreate(false);
-                    } else {
-                        self.enableSelName(true);
-                        self.registerData();
-                    }
-
-                });
-
             });
 
             // sub theo selectionID: 
