@@ -8,13 +8,14 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class AffJobTitleMainCommand {
-
-	@PeregEmployeeId
+	
 	// 社員ID
+	@PeregEmployeeId
 	private String sid;
 	
 	/** The job title code. */
 	// 職位コード
+	@PeregItem("")
 	private String jobTitleCode;
 	
 	/** The AffJobHistoryItemNote. */

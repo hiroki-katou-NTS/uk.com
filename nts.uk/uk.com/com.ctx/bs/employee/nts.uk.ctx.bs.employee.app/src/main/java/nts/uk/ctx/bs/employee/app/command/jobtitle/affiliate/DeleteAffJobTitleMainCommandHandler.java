@@ -42,19 +42,16 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory"); 
 		}
-		if (existHist.get().getHistoryItems().size() > 0){
-			
-			Optional<DateHistoryItem> itemToBeDelete = existHist.get().getHistoryItems().stream()
-                    .filter(h -> h.identifier().equals(command.getHistId()))
-                    .findFirst();
-			
-			if (!itemToBeDelete.isPresent()){
-				throw new RuntimeException("invalid AffWorkplaceHistory");
-			}
-			existHist.get().remove(itemToBeDelete.get());
-			
-			affJobTitleHistoryRepository_ver1.deleteJobTitleMain(existHist.get(), itemToBeDelete.get());
+		Optional<DateHistoryItem> itemToBeDelete = existHist.get().getHistoryItems().stream()
+                .filter(h -> h.identifier().equals(command.getHistId()))
+                .findFirst();
+		
+		if (!itemToBeDelete.isPresent()){
+			throw new RuntimeException("invalid AffWorkplaceHistory");
 		}
+		existHist.get().remove(itemToBeDelete.get());
+		
+		affJobTitleHistoryRepository_ver1.deleteJobTitleMain(existHist.get(), itemToBeDelete.get());
 		
 		affJobTitleHistoryItemRepository_v1.deleteJobTitleMain(command.getHistId());
 	}
