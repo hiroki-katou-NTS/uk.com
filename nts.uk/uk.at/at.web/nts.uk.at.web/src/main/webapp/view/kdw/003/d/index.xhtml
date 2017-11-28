@@ -7,6 +7,12 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 860,
+					height : 630
+				};
+			</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="kdw003.d.style.css" />
 				<com:scriptfile path="kdw003.d.start.js" />
@@ -27,7 +33,7 @@
 					</table>
 				</div>
 				<div id="functions-area-bottom">
-					<button data-bind="click: extract">#{i18n.getText('KDW003_60')}</button>
+					<button class="proceed" data-bind="click: extract">#{i18n.getText('KDW003_60')}</button>
 					<button data-bind="click: closeDialog">#{i18n.getText('KDW003_63')}</button>
 				</div>
 			</ui:define>

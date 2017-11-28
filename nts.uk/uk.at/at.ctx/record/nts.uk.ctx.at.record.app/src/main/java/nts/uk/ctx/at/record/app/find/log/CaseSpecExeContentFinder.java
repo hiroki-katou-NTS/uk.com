@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.log.dto.CaseSpecExeContentDto;
+import nts.uk.ctx.at.record.dom.workrecord.log.CaseSpecExeContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.CaseSpecExeContentRepository;
 
 @Stateless
@@ -36,9 +37,9 @@ public class CaseSpecExeContentFinder {
 	 * @return
 	 */
 	public List<CaseSpecExeContentDto> getAllCaseSpecExeContent() {
-		
-		List<CaseSpecExeContentDto> data = caseSpecExeContentRepo
-				.getAllCaseSpecExeContent().stream().map(c->CaseSpecExeContentDto.fromDomain(c)).collect(Collectors.toList());
+		List<CaseSpecExeContent> temp = caseSpecExeContentRepo
+				.getAllCaseSpecExeContent();
+		List<CaseSpecExeContentDto> data = temp.stream().map(c->CaseSpecExeContentDto.fromDomain(c)).collect(Collectors.toList());
 		if(data.isEmpty()) {
 			return Collections.emptyList();
 		}
