@@ -46,4 +46,13 @@ public interface BasicScheduleScreenRepository {
 	 * 
 	 */
 	ScheduleDisplayControlDto getListScheduleDisControl(String companyId);
+
+	/**
+	 * 
+	 * @param sId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<BasicScheduleScreenDto> getDataWorkScheTimezone(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 }

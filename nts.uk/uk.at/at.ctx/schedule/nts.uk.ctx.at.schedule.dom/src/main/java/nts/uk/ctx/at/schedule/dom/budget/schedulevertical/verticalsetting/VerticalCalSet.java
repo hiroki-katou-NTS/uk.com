@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -73,5 +74,11 @@ public class VerticalCalSet extends AggregateRoot {
 				EnumAdaptor.valueOf(useAtr, UseAtr.class),
 				EnumAdaptor.valueOf(assistanceTabulationAtr, AssistanceTabulationAtr.class),
 				verticalCalItems);
+	}
+	
+	public void validate() {
+		if(this.getVerticalCalItems().isEmpty()) {
+			throw new BusinessException("Msg_110");
+		}
 	}
 }
