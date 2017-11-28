@@ -194,12 +194,14 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                         self.loadDataForGrid().done(function() {
                             self.currentItem().selectionLst([]);
-                            service.getAllSelByHistory(command.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
-                                self.currentItem().selectionLst.removeAll();
-                                self.currentItem().selectionLst(data);
-                                self.currentItem().selectionLst.valueHasMutated();
+                            if (command.dataType === 6) {
+                                service.getAllSelByHistory(command.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
+                                    self.currentItem().selectionLst.removeAll();
+                                    self.currentItem().selectionLst(data);
+                                    self.currentItem().selectionLst.valueHasMutated();
 
-                            });
+                                });
+                            }
 
                             block.clear();
 
@@ -431,7 +433,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 debugger;
                 self.currentItem().selectionLst([]);
                 service.getAllSelByHistory(params.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
-//                    self.currentItem().
+                    //                    self.currentItem().
                     console.log(self.currentItem());
                     self.currentItem().selectionLst(data);
                     self.currentItem().selectionLst.valueHasMutated();
@@ -509,7 +511,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
     export class PerInfoCategory {
 
         id: string;
-        personEmployeeType : number;
+        personEmployeeType: number;
         constructor(param) {
             this.id = param.id();
             this.personEmployeeType = param.personEmployeeType;

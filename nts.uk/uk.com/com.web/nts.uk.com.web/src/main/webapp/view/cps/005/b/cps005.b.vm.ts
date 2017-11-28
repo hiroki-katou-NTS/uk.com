@@ -48,12 +48,12 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     dfd = $.Deferred();
                 self.currentItemData().personInfoItemList([]);
-                 self.currentItemData().selectionItemLst([]);
+                self.currentItemData().selectionItemLst([]);
                 new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                         self.currentItemData().selectionItemLst(data.selectionItemLst);
-                  // resset lai selectiuon Item List
+                        // resset lai selectiuon Item List
                         self.isUpdate = true;
                         self.currentItemData().isEnableButtonProceed(true);
                     } else {
@@ -100,8 +100,9 @@ module nts.uk.com.view.cps005.b {
                             info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                         }
                         self.reloadData();
-                        self.currentItemData().perInfoItemSelectCode("");
+
                         self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
+                        self.currentItemData().perInfoItemSelectCode.valueHasMutated();
                     }).fail(error => {
 
                         alertError({ messageId: error.message });
@@ -193,11 +194,11 @@ module nts.uk.com.view.cps005.b {
                         block.clear();
                         return;
                     }
-                    //                    else if (newItemDef.singleItem.decimalPart === null) {
-                    //                        $("#decimalPart").focus();
-                    //                        block.clear();
-                    //                        return;
-                    //                    }
+                    else if (newItemDef.singleItem.decimalPart === null) {
+                        $("#decimalPart").focus();
+                        block.clear();
+                        return;
+                    }
                 }
 
                 if (newItemDef.singleItem.dataType === 4) {
@@ -284,11 +285,12 @@ module nts.uk.com.view.cps005.b {
                     nts.uk.ui.errors.clearAll();
                     __viewContext['screenModelB'].isClickRegister(false);
                     new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
-
+                        debugger;
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
                         if (self.currentItemSelected().fixedAtr() == 1) {
+                            self.currentItemSelected().selectionItem().selectionItemName(data.selectionItemName);
                             self.isEnableButtonProceed(false);
                             self.isEnableButtonDelete(false);
                         }
@@ -323,35 +325,39 @@ module nts.uk.com.view.cps005.b {
         timePointItem: KnockoutObservable<TimePointItemModel> = ko.observable(new TimePointItemModel(null));
         selectionItem: KnockoutObservable<SelectionItemModel> = ko.observable(new SelectionItemModel(null));
         dataTypeText: KnockoutObservable<string> = ko.observable("");
+        selectionItemName: string;
+        selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);;
         constructor(data: IPersonInfoItem) {
             let self = this;
             self.dataType.subscribe(function(value) {
                 if (value === 6) {
                     if (__viewContext['screenModelB'].isClickRegister()) {
-                        self.selectionItem().selectionItemId("");
                         let baseDate = moment(new Date()).format('YYYY-MM-DD');
                         if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
-                                new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
-                                    baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
-                                        console.log(data);
-                                        if (data.length > 0) {
-                                            self.selectionItem().selectionLst([]);
-                                            self.selectionItem().selectionLst(data);
-                                            self.selectionItem().selectionLst.valueHasMutated();
+                            new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
+                                baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                                    console.log(data);
+                                    if (data.length > 0) {
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst(data);
+                                        self.selectionItem().selectionLst.valueHasMutated();
 
-                                        } else {
-                                            self.selectionItem().selectionLst.removeAll();
-                                            self.selectionItem().selectionLst([]);
-                                            self.selectionItem().selectionLst.valueHasMutated();
+                                    } else {
+                                        self.selectionItem().selectionLst.removeAll();
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst.valueHasMutated();
 
-                                        }
+                                    }
 
 
-                                    });
-        
+                                });
+
                         }
 
                         self.selectionItem().selectionItemId.subscribe(function(value) {
+                            if (!value) {
+                                return;
+                            }
                             new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                                 console.log(data);
                                 if (data.length > 0) {
@@ -485,6 +491,7 @@ module nts.uk.com.view.cps005.b {
         // danh sach cac selection cua item
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
         selectionId: KnockoutObservable<string> = ko.observable("");
+        selectionItemName: KnockoutObservable<string> = ko.observable("");
 
 
         selectionColums: KnockoutObservableArray<any> = ko.observableArray([
@@ -497,6 +504,7 @@ module nts.uk.com.view.cps005.b {
             self.selectionItemRefType(data.selectionItemRefType || undefined);
             self.selectionItemRefCode(data.typeCode || undefined);
             self.selectionItemId(data.selectionItemId || undefined);
+            self.selectionItemName(data.selectionItemName || undefined);
             if (!nts.uk.util.isNullOrUndefined(self.selectionItemId())) {
                 self.selectionItemId(self.selectionItemId());
             }
@@ -524,7 +532,9 @@ module nts.uk.com.view.cps005.b {
                     });
             }
             self.selectionItemId.subscribe(function(value) {
-
+                if (!value) {
+                    return;
+                }
                 new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                     if (data.length > 0) {
                         self.selectionLst.removeAll();
@@ -750,6 +760,7 @@ module nts.uk.com.view.cps005.b {
         selectionItemId: string;
         selectionLst: Array<any>;
         selectionId: string;
+        selectionItemName?: string;
 
     }
 
