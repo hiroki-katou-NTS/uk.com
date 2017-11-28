@@ -26,29 +26,29 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	private static final String DEL_BY_LIST_KEY;
 
-	private static final String FIND_BY_ID = "SELECT a FROM KrcmtDaiPerWorkInfo"
-			+ " WHERE a.krcmtDaiPerWorkInfoPK.employeeId = :employeeId " + " AND a.krcmtDaiPerWorkInfoPK.ymd = :ymd ";
+	private static final String FIND_BY_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
+			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId " + " AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ";
 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
-		builderString.append("FROM KrcmtDaiPerWorkInfo a ");
-		builderString.append("WHERE WHERE a.krcmtDaiPerWorkInfoPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcmtDaiPerWorkInfoPK.ymd = :ymd ");
+		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
+		builderString.append("WHERE WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ");
 		DEL_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcmtDaiPerWorkInfo a ");
-		builderString.append("WHERE a.krcmtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcmtDaiPerWorkInfoPK.ymd IN :ymds ");
+		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd IN :ymds ");
 		FIND_BY_LIST_SID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
-		builderString.append("FROM KrcmtDaiPerWorkInfo a ");
-		builderString.append("WHERE WHERE a.krcmtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcmtDaiPerWorkInfoPK.ymd IN :ymds ");
+		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
+		builderString.append("WHERE WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 	}
 
