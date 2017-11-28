@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 800, height: 500 };</script>
+			<script>var dialogSize = { width: 845, height: 445 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.ja.main.css" />
 			<com:scriptfile path="ksu001.ja.vm.js" />
@@ -19,7 +19,6 @@
 				<button class="proceed">#{i18n.getText('KSU001_901')}</button>
 				<button class="danger">#{i18n.getText('KSU001_902')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_903')}</button>
-				<button data-bind="click: openDialogJB">OPEN DIALOG JB</button>
 			</div>
 			<div id="contents-area">
 				<div>
@@ -27,6 +26,37 @@
 					<span>職場名</span> <br />
 					<hr />
 				</div>
+				<div id="group-link-button"
+					class="bg-green caret-background caret-bottom cf">
+					<a class="hyperlink" href="#">病棟用</a> <a class="hyperlink" href="#">グループ2</a>
+					<a class="hyperlink" href="#">グループ3</a> <a class="hyperlink"
+						href="#">グループ4</a> <a class="hyperlink" href="#">グループ5</a> <a
+						class="hyperlink" href="#">グループ6</a> <a class="hyperlink" href="#">グループ7</a>
+					<a class="hyperlink" href="#">グループ8</a> <a class="hyperlink"
+						href="#">グループ9</a> <a class="hyperlink" href="#">グループ10</a>
+				</div>
+				<div class="mt-10">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_904')}</div>
+					<input data-bind="ntsTextEditor: {value: txtName, required: true}" />
+					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_905')}</div>
+					<div class="cf"
+						data-bind="ntsSwitchButton: {
+							options: roundingRules,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedRuleCode,
+							enable: true }"></div>
+				</div>
+				<div class="mt-10">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_906')}</div>
+					<input id="note" data-bind="ntsTextEditor: {value: txtName1}" />
+				</div>
+
+				<div class="mt-10">
+					<button id="bt-clear">#{i18n.getText('KSU001_906')}</button>
+					<div id="test2"></div>
+				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>
