@@ -1,6 +1,7 @@
 package find.person.info.item;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,11 +10,13 @@ import javax.inject.Inject;
 
 import find.person.info.category.PerInfoCategoryFinder;
 import find.person.info.category.PerInfoCtgFullDto;
+import find.person.setting.init.item.SelectionInitDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
-import find.person.setting.selectionitem.selection.SelectionDto;
+import find.person.setting.selectionitem.selection.SelectionFinder;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
@@ -33,6 +36,7 @@ import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItemDataType;
 import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItemType;
 import nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -47,23 +51,26 @@ public class PerInfoItemDefFinder {
 
 	@Inject
 	private PerInfoCategoryFinder categoryFinder;
-	
+
 	@Inject
 	private PerInfoSelectionItemFinder selectionItemFinder;
 
-	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
+	@Inject
+	private SelectionRepository selectionRepo;
+
+	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId, int personEmployeeType) {
 		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
 				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
 				.map(item -> {
 					return new PerInfoItemDefShowListDto(item.getPerInfoItemDefId(), item.getItemName().v());
 				}).collect(Collectors.toList());
 		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, ukResouce);
-		List<EnumConstant> stringItemTypeEnum = EnumAdaptor.convertToValueNameList(StringItemType.class,
-				ukResouce);
+		List<EnumConstant> stringItemTypeEnum = EnumAdaptor.convertToValueNameList(StringItemType.class, ukResouce);
 		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
 				ukResouce);
 		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, ukResouce);
-		List<PerInfoSelectionItemDto> selectionItemLst= this.selectionItemFinder.getAllSelectionItem();
+		List<PerInfoSelectionItemDto> selectionItemLst = this.selectionItemFinder
+				.getAllSelectionItem(personEmployeeType);
 		return new PerInfoItemDefFullEnumDto(dataTypeEnum, stringItemTypeEnum, stringItemDataTypeEnum, dateItemTypeEnum,
 				selectionItemLst, perInfoItemDefs);
 	};
@@ -71,8 +78,8 @@ public class PerInfoItemDefFinder {
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId, String isAbolition) {
 		if (isAbolition.equals("true")) {
 			return this.pernfoItemDefRep
-					.getAllPerInfoItemDefByCategoryIdWithoutSetItem(perInfoCtgId, AppContexts.user().contractCode()).stream()
-					.map(item -> {
+					.getAllPerInfoItemDefByCategoryIdWithoutSetItem(perInfoCtgId, AppContexts.user().contractCode())
+					.stream().map(item -> {
 						return mappingFromDomaintoDto(item, 0);
 					}).collect(Collectors.toList());
 
@@ -98,18 +105,43 @@ public class PerInfoItemDefFinder {
 
 		String itemDefaultName = this.pernfoItemDefRep.getItemDefaultName(ctgDto.getCategoryCode(),
 				itemDefDto.getItemCode());
-		return mappingFromDomaintoChangeDto(itemDefDto, itemDefaultName, 0);
+		PerInfoItemChangeDefDto item = mappingFromDomaintoChangeDto(itemDefDto, itemDefaultName, 0);
+		return item;
 	};
 
 	private PerInfoItemChangeDefDto mappingFromDomaintoChangeDto(PerInfoItemDefDto itemDefDto, String defaultName,
 			int dispOrder) {
-		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
-				ukResouce);
-		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(), itemDefDto.getItemCode(),
-				itemDefDto.getItemName(), defaultName, itemDefDto.getIsAbolition(), itemDefDto.getIsFixed(),
-				itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(), itemDefDto.getRequireChangable(), dispOrder,
-				itemDefDto.getSelectionItemRefType(),
-				itemDefDto.getItemTypeState(), selectionItemRefTypes);
+		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
+
+		GeneralDate baseDateConvert = GeneralDate.today();
+		List<SelectionInitDto> selectionLst = new ArrayList<>();
+		if (itemDefDto.getItemTypeState().getItemType() == 2) {
+			System.out.println(itemDefDto.getItemTypeState());
+			ItemTypeStateDto x = itemDefDto.getItemTypeState();
+			if (x.getItemType() == 2) {
+				SingleItemDto y = (SingleItemDto) x;
+				if (y.getDataTypeState().getDataTypeValue() == 6) {
+					SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
+					if (selelection.getReferenceType().value == 2) {
+						CodeNameRefTypeDto typeCode = (CodeNameRefTypeDto) selelection;
+						selectionLst = this.selectionRepo
+								.getAllSelectionByHistoryId(typeCode.getTypeCode(), baseDateConvert, 0).stream()
+								.map(c -> SelectionInitDto.fromDomainSelection1(c)).collect(Collectors.toList());
+					}
+				}
+			}
+
+		}
+		
+		PerInfoItemChangeDefDto item = new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(),
+				itemDefDto.getItemCode(), itemDefDto.getItemName(), defaultName, itemDefDto.getIsAbolition(),
+				itemDefDto.getIsFixed(), itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(),
+				itemDefDto.getRequireChangable(), dispOrder, itemDefDto.getSelectionItemRefType(),
+				itemDefDto.getItemTypeState(), selectionItemRefTypes,
+				selectionLst.size() > 0 ? selectionLst.get(0).getSelectionItemName(): " ",
+				// sua loi them sel item lst
+				selectionLst);
+		return item;
 	}
 
 	public PerInfoItemDefDto getPerInfoItemDefById(String perInfoItemDefId) {
@@ -141,16 +173,15 @@ public class PerInfoItemDefFinder {
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
 	};
-	
+
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCatgoryId(String perInfoCtgId) {
 		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
 				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
-				.filter(e -> e.getItemParentCode().equals(""))
-				.collect(Collectors.toList());
+				.filter(e -> e.getItemParentCode().equals("")).collect(Collectors.toList());
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
 	};
-	
+
 	public PerInfoItemDefDto getPerInfoItemDefByItemDefId(String perInfoItemDefId) {
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
 				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).orElse(null);
@@ -158,7 +189,6 @@ public class PerInfoItemDefFinder {
 				itemDef.getPerInfoItemDefId());
 		return mappingFromDomaintoDto(itemDef, dispOrder);
 	}
-	
 
 	public PerInfoItemDefDto getPerInfoItemDefByIdForLayout(String perInfoItemDefId) {
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
@@ -186,21 +216,20 @@ public class PerInfoItemDefFinder {
 
 	// mapping data from domain to DTO
 
-	//vinhpx: start
-	public List<PerInfoItemDefMapDto> getPerInfoDefById(String perInfoCategoryId){
+	// vinhpx: start
+	public List<PerInfoItemDefMapDto> getPerInfoDefById(String perInfoCategoryId) {
 		String companyId = AppContexts.user().companyId();
 		String contractId = AppContexts.user().contractCode();
-		return pernfoItemDefRep.getPerInfoItemByCtgId(perInfoCategoryId, 
-				companyId, contractId).stream().map(item ->{
-					String itemId  = item.getPerInfoItemDefId();
-					boolean alreadyCopy = pernfoItemDefRep.countPerInfoItemDefInCopySetting(itemId, companyId) > 0 ? true : false;
-					//boolean alreadyCopy = false;
-					return new PerInfoItemDefMapDto(itemId, item.getPerInfoCategoryId(),
-							item.getItemName().v(), alreadyCopy);
-				}).collect(Collectors.toList());
+		return pernfoItemDefRep.getPerInfoItemByCtgId(perInfoCategoryId, companyId, contractId).stream().map(item -> {
+			String itemId = item.getPerInfoItemDefId();
+			boolean alreadyCopy = pernfoItemDefRep.countPerInfoItemDefInCopySetting(itemId, companyId) > 0 ? true
+					: false;
+			// boolean alreadyCopy = false;
+			return new PerInfoItemDefMapDto(itemId, item.getPerInfoCategoryId(), item.getItemName().v(), alreadyCopy);
+		}).collect(Collectors.toList());
 	}
-	//vinhpx: end
-	
+	// vinhpx: end
+
 	private List<PerInfoItemDefDto> mappingItemAndOrder(List<PersonInfoItemDefinition> itemDefs,
 			List<PerInfoItemDefOrder> itemOrders) {
 		return itemDefs.stream().map(i -> {
@@ -214,15 +243,12 @@ public class PerInfoItemDefFinder {
 	}
 
 	private PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
-		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
-				ukResouce);
+		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
 				itemDef.getIsFixed().value, itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
-				itemDef.getRequireChangable().value, dispOrder, 
-				itemDef.getSelectionItemRefType(),
-				createItemTypeStateDto(itemDef.getItemTypeState()),
-				selectionItemRefTypes);
+				itemDef.getRequireChangable().value, dispOrder, itemDef.getSelectionItemRefType(),
+				createItemTypeStateDto(itemDef.getItemTypeState()), selectionItemRefTypes);
 	}
 
 	private ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
@@ -267,7 +293,5 @@ public class PerInfoItemDefFinder {
 			return null;
 		}
 	}
-	
-	
 
 }

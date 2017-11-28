@@ -182,6 +182,7 @@ module nts.uk.com.view.cps005.a {
         historyFixedName: string = "";
         categoryType: number = 1;
         categoryTypeName: string = "";
+        personEmployeeType: number;
         historyClassSelected: KnockoutObservable<number> = ko.observable(1);
         historyClassSelectedText: KnockoutObservable<string> = ko.observable("");
         // historyTypesSelected and singleMulTypeSelected == categoryType
@@ -200,6 +201,7 @@ module nts.uk.com.view.cps005.a {
                 self.itemNameList(_.map(data.itemNameList, item => { return new PerInfoItemModel(item) }));
                 self.historyFixedName = (data.categoryType == 1 || data.categoryType == 2) ? getText("CPS005_54") : getText("CPS005_53");
                 self.categoryType = data.categoryType;
+                self.personEmployeeType = data.personEmployeeType;
                 switch (self.categoryType) {
                     case 1:
                         self.categoryTypeName = getText("CPS005_55");
@@ -289,6 +291,7 @@ module nts.uk.com.view.cps005.a {
         categoryName: string;
         isFixed?: number;
         categoryType?: number;
+        personEmployeeType: number;
         itemNameList?: Array<string>;
     }
 }

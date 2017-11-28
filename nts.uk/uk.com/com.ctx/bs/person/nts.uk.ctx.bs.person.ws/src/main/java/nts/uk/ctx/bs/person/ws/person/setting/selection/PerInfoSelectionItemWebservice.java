@@ -194,6 +194,15 @@ public class PerInfoSelectionItemWebservice extends WebService {
 			@PathParam("baseDate") String baseDate) {
 		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
 	}
+	
+	// Lanlt
+	@POST
+	@Path("find/{selectionItemId}/{baseDate}/{selectionItemClsAtr}")
+	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId,
+			@PathParam("baseDate") String baseDate, @PathParam("selectionItemClsAtr")int selectionItemClsAtr) {
+		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate, selectionItemClsAtr);
+	}
+
 
 	// Phan anh cong ty:
 	@POST
@@ -204,9 +213,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	// Lanlt
 	@POST
-	@Path("findAllSelectionItem")
-	public List<PerInfoSelectionItemDto> getAllelectionItem() {
-		return this.finder.getAllSelectionItem();
+	@Path("findAllSelectionItem/{selectionItemClsAtr}")
+	public List<PerInfoSelectionItemDto> getAllelectionItem(@PathParam("selectionItemClsAtr")int selectionItemClsAtr) {
+		return this.finder.getAllSelectionItem(selectionItemClsAtr);
 	}
 
 	// update selection order

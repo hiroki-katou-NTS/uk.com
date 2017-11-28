@@ -70,6 +70,14 @@ public class SelectionFinder {
 				.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
 
 	}
+	
+	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate, int selectionItemClsAtr) {
+		GeneralDate baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
+		return this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert, selectionItemClsAtr).stream()
+				.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+
+	}
+
 
 	// Lanlt
 }
