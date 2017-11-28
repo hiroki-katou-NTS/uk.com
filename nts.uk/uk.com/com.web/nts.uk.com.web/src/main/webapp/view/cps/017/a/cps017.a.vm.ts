@@ -28,11 +28,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //Check insert/upadte
         checkCreate: KnockoutObservable<boolean>;
         checkCreateaaa: KnockoutObservable<boolean>;
-        closeUp: KnockoutObservable<boolean>;
-        isDialog:  KnockoutObservable<boolean> = ko.observable(false);
+        closeUp: KnockoutObservable<boolean> = ko.observable(false);
+        isDialog: KnockoutObservable<boolean> = ko.observable(false);
         //hoatt
         selHistId: KnockoutObservable<string> = ko.observable('');
         enableDelHist: KnockoutObservable<boolean> = ko.observable(false);
+        enableSelName: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -41,14 +42,17 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 selection: Selection = self.selection();
 
             //xu ly dialog: 
-            let param = getShared('CPS016A_PARAMS');
-            if(param){
+            let param = getShared('CPS017_PARAMS');
+
+            if (param != null && param != undefined) {
                 self.isDialog(param.isDialog);
+                self.closeUp(true);
+                self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
             }
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
-            self.closeUp = ko.observable(false);
+            
 
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
@@ -61,7 +65,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         let changeData = _.each(_selectionItemList, (item) => {
-                            item.displayDate = item.startDate + "   ~   " + item.endDate;
+                            item.displayDate = item.startDate + "  "+ getText('CPS017_12')+ "  " + item.endDate;
                             return item;
                         });
                         self.listHistorySelection(changeData);
@@ -70,32 +74,34 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         //self.checkCreate(false);
                     });
                 }
-                
+
             });
 
             //sub theo historyID:
-           historySelection.histId.subscribe(x => {
+            historySelection.histId.subscribe(x => {
                 let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
-                if(histCur != undefined){
-                    if(histCur.endDate !== '9999/12/31'){
+                if (histCur != undefined) {
+                    if (histCur.endDate !== '9999/12/31') {
                         self.enableDelHist(false);
-                    }else{
+                    } else {
                         self.enableDelHist(true);
                     }
                 }
 
                 self.listSelection.removeAll();
                 service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                    if (itemList && itemList.length) {
+                        self.enableSelName(self.enableDelHist());
                         self.checkCreateaaa(false);
                         itemList.forEach(x => self.listSelection.push(x));
                         self.selection().selectionID(self.listSelection()[0].selectionID);
                         //self.checkCreate(false);
                     } else {
+                        self.enableSelName(true);
                         self.registerData();
                     }
 
                 });
-                
+
             });
 
             // sub theo selectionID: 
@@ -109,8 +115,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
+                    
                 }
-                
+
             });
 
         }
@@ -361,11 +368,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //ダイアログC画面
         openDialogB() {
             let self = this,
-                currentItem: Selection = self.selection();
+                hist: HistorySelection = self.historySelection(),
+                currentItem: OrderSelection = self.orderSelection();
 
             setShared('selectedHisId', self.historySelection().histId());
             block.invisible();
             modal('/view/cps/017/b/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                hist.histId.valueHasMutated();
+                
                 block.clear();
             });
         }
@@ -408,6 +419,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 perInfoSelectionItem.selectionItemId.valueHasMutated();
                 block.clear();
             });
+        }
+        close() {
+            nts.uk.ui.windows.close();
         }
     }
 
@@ -487,7 +501,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         }
     }
-    
+
     //Order Selection
     interface IOrderSelection {
         selectionID?: string;

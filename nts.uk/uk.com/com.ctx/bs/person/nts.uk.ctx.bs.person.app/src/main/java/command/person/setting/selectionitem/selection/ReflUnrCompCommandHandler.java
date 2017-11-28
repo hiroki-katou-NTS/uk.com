@@ -88,34 +88,42 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 			createSelectionList(oldHistId, newHistId);
 
 			//create order by hist id
-			createOrderList(oldHistId, newHistId);
+			//createOrderList(newSelectionID, oldHistId, newHistId);
 		});
 
 	}
 
 	// copy data Selection cua Histroy trong cty: 000000000000-0000 vao Cty
 	// khac:
-	private void createSelectionList(String oldHistId, String histId) {
+	private void  createSelectionList(String oldHistId, String histId) {
 		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(oldHistId);
+		List<SelectionItemOrder> orderList = this.selectionOrderRepo.getAllOrderSelectionByHistId(oldHistId);
 		selectionList.forEach(x -> {
 			String newSelectionID = IdentifierUtil.randomUniqueId();
 			Selection domain = Selection.createFromSelection(newSelectionID, histId, x.getSelectionCD().v(),
 					x.getSelectionName().v(), x.getExternalCD().v(), x.getMemoSelection().v());
 
 			this.selectionRepo.add(domain);
-		});
-
-	}
-
-	private void createOrderList(String oldHistId, String histId) {
-		List<SelectionItemOrder> orderList = this.selectionOrderRepo.getAllOrderSelectionByHistId(oldHistId);
-		orderList.forEach(x -> {
-			String newSelectionID = IdentifierUtil.randomUniqueId();
+			
+			SelectionItemOrder orderOrg = orderList.stream()
+					.filter(o -> o.getSelectionID().equals(x.getSelectionID())).collect(Collectors.toList())
+					.get(0);
 			SelectionItemOrder domainOrder = SelectionItemOrder.selectionItemOrder(newSelectionID, histId,
-					x.getDisporder().v(), x.getInitSelection().value);
+					orderOrg.getDisporder().v(), orderOrg.getInitSelection().value);
 
 			this.selectionOrderRepo.add(domainOrder);
 		});
-
 	}
+
+//	private void createOrderList(String newSelectionID,String oldHistId, String histId) {
+//		List<SelectionItemOrder> orderList = this.selectionOrderRepo.getAllOrderSelectionByHistId(oldHistId);
+//		orderList.forEach(x -> {
+////			String newSelectionID = IdentifierUtil.randomUniqueId();
+//			SelectionItemOrder domainOrder = SelectionItemOrder.selectionItemOrder(newSelectionID, histId,
+//					x.getDisporder().v(), x.getInitSelection().value);
+//
+//			this.selectionOrderRepo.add(domainOrder);
+//		});
+//
+//	}
 }
