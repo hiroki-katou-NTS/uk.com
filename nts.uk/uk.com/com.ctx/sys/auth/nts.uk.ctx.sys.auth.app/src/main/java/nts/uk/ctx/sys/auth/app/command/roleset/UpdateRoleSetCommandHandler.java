@@ -7,15 +7,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @javax.transaction.Transactional
@@ -27,10 +24,6 @@ public class UpdateRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
 	@Override
 	protected String handle(CommandHandlerContext<RoleSetCommand> context) {
 		RoleSetCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			return null;
-		}
 		
 		// build webMenuCode
 		List<WebMenuCommand> listWebMenus = command.getWebMenus();
