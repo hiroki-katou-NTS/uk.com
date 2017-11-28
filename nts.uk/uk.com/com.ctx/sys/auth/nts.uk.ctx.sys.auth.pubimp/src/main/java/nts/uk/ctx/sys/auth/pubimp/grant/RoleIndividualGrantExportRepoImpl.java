@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.grant;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -13,6 +15,7 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class RoleIndividualGrantExportRepoImpl.
@@ -29,18 +32,20 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 	 */
 	@Override
 	public RoleIndividualGrantExport getByUserAndRoleType(String userId, Integer roleType) {
-		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository
-				.findByUserAndRole(userId, RoleType.valueOf(roleType)).get();
-		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
+		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository
+				.findByUserAndRole(userId, RoleType.valueOf(roleType));
+		return new RoleIndividualGrantExport(roleIndividualGrant.get().getRoleId());
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUser(java.lang.String)
 	 */
 	@Override
-	public RoleIndividualGrantExport getByUser(String userId,GeneralDate date) {
-		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository.findByUser(userId,date).get();
-		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
+	public RoleIndividualGrantExport getByUser(String userId,DatePeriod validPeriod) {
+		/*/////////////////
+		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository.findByUser(userId, validPeriod.start(), validPeriod.end()).get(0);
+		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());*/
+		return null;
 	}
 
 }

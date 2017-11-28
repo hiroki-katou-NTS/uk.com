@@ -36,8 +36,7 @@ public class RoleSetServiceImp implements RoleSetService{
 	 * @return
 	 */
 	@Override
-	public
-	List<RoleSet> getAllRoleSet() {
+	public List<RoleSet> getAllRoleSet() {
 		String companyId = AppContexts.user().companyId();
 		if (StringUtils.isNoneEmpty(companyId)) {
 			return null;	
@@ -51,8 +50,7 @@ public class RoleSetServiceImp implements RoleSetService{
 	 * @param roleSet
 	 */
 	@Override
-	public
-	void registerRoleSet(RoleSet roleSet) {
+	public void registerRoleSet(RoleSet roleSet) {
 		// validate
 		roleSet.validate();
 		
@@ -70,8 +68,7 @@ public class RoleSetServiceImp implements RoleSetService{
 	 * @param roleSet
 	 */
 	@Override
-	public
-	void updateRoleSet(RoleSet roleSet) {
+	public	void updateRoleSet(RoleSet roleSet) {
 		// validate
 		roleSet.validate();
 		

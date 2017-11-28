@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 
@@ -11,6 +13,8 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
  *
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
 	//勤務NO

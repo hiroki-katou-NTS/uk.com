@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.service;
 
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 
 /**
  * 既�?�?�ロールセット - Interface DefaultRoleSetRepository
@@ -17,13 +17,13 @@ public interface RoleSetAndWebMenuService {
 	 * Insert a RoleSetAndWebMenu - ロールセット別紐付け新規登録
 	 * @param domain
 	 */
-	void createRoleSetWebMenuLink(RoleSetAndWebMenu domain);
+	void createRoleSetWebMenuLink(RoleSetLinkWebMenu domain);
 	
 	/**
 	 * Update the RoleSetAndWebMenu - ロールセット別紐付け更新登録
 	 * @param domain
 	 */
-	void updateRoleSetWebMenuLink(RoleSetAndWebMenu domain);
+	void updateRoleSetWebMenuLink(RoleSetLinkWebMenu domain);
 	
 	/**
 	 * Delete the RoleSetAndWebMenu - ロールセット別紐付け削除

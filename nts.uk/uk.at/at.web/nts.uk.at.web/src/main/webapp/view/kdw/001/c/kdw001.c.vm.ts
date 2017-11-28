@@ -51,7 +51,7 @@ module nts.uk.at.view.kdw001.c {
                 //Init kcp005 properties
                 self.baseDate = ko.observable(new Date());
                 self.selectedCode = ko.observable(null);
-                self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+                self.multiSelectedCode = ko.observableArray([]);
                 self.isShowAlreadySet = ko.observable(false);
                 self.alreadySettingList = ko.observableArray([
                     { code: '1', isAlreadySetting: true },

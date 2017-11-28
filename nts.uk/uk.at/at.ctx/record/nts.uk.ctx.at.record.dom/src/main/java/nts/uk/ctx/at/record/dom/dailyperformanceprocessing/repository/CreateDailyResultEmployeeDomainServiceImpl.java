@@ -47,12 +47,12 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@Inject
 	private ClosureService closureService;
 
-	@Override
-	public List<ClosureIdLockDto> createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTime, int reCreateAttr,
-			String empCalAndSumExecLogID) {
+	@Inject
+	private ReflectWorkInforDomainService reflectWorkInforDomainService;
 
-		LoginUserContext login = AppContexts.user();
-		String companyId = login.companyId();
+	@Override
+	public List<ClosureIdLockOutput> createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTime,
+			String companyId, String empCalAndSumExecLogID, int reCreateAttr) {
 
 		// int days = endDate.day() - startDate.day();
 		// GeneralDate processingDate = startDate;
@@ -92,7 +92,21 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		});
 
 		// アルゴリズム「実績ロックされているか判定する」を実行する
-		List<ClosureIdLockDto> closureIdLockDtos = this.determineActualLocked(companyId, employeeAndClosures, periodTime);
+		List<ClosureIdLockOutput> closureIdLockDtos = this.determineActualLocked(companyId, employeeAndClosures,
+				periodTime);
+
+		List<Integer> closureIdLock = closureIdLockDtos.stream().map(lock -> {
+			return lock.getClosureId();
+		}).collect(Collectors.toList());
+
+		List<EmployeeAndClosure> listEmployeeIDhasClosureIDlock = employeeAndClosures.stream()
+				.filter(item -> closureIdLock.contains(item.getClosureId())).collect(Collectors.toList());
+
+		List<String> employeeIdLocks = listEmployeeIDhasClosureIDlock.stream().map(ite -> ite.getEmployeeId())
+				.collect(Collectors.toList());
+
+		this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeIdLocks, periodTime,
+				empCalAndSumExecLogID, reCreateAttr);
 
 		return closureIdLockDtos;
 	}
@@ -106,12 +120,13 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	 * @param closureIds
 	 * @return
 	 */
-	private List<ClosureIdLockDto> determineActualLocked(String companyId, List<EmployeeAndClosure> employeeAndClosures, DatePeriod periodTime) {
+	private List<ClosureIdLockOutput> determineActualLocked(String companyId, List<EmployeeAndClosure> employeeAndClosures,
+			DatePeriod periodTime) {
 
 		/**
 		 * ロック : 0 , アンロック : 1
 		 */
-		List<ClosureIdLockDto> locks = new ArrayList<>();
+		List<ClosureIdLockOutput> locks = new ArrayList<>();
 
 		// lits day between startDate and endDate
 		List<GeneralDate> listDay = this.getDaysBetween(periodTime.start(), periodTime.end());
@@ -131,7 +146,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 				.filter(item -> item.getDailyLockState().value == 0).collect(Collectors.toList());
 
 		closureIdUnLockMaps.forEach(f -> {
-			ClosureIdLockDto lockDto = new ClosureIdLockDto(f.getClosureId().value, 0);
+			ClosureIdLockOutput lockDto = new ClosureIdLockOutput(f.getClosureId().value, 0);
 			locks.add(lockDto);
 		});
 
@@ -161,10 +176,10 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		DatePeriodMap.forEach((key, value) -> {
 			listDay.forEach(f -> {
 				if (f.afterOrEquals(value.start()) && f.beforeOrEquals(value.end())) {
-					ClosureIdLockDto lockDto = new ClosureIdLockDto(key, 1);
+					ClosureIdLockOutput lockDto = new ClosureIdLockOutput(key, 1);
 					locks.add(lockDto);
 				} else {
-					ClosureIdLockDto lockDto = new ClosureIdLockDto(key, 0);
+					ClosureIdLockOutput lockDto = new ClosureIdLockOutput(key, 0);
 					locks.add(lockDto);
 				}
 				;
