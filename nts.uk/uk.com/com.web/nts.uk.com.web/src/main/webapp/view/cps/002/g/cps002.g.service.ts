@@ -4,7 +4,7 @@ module cps002.g.service {
 
     let paths = {
         getUserSetting: 'ctx/pereg/usersetting/getUserSetting',
-        setUserSetting: 'ctx/bs/person/info/setting/user/update/updateUserSetting'
+        setUserSetting: 'ctx/pereg/usersetting/update/updateUserSetting'
     };
 
     export function setUserSetting(command) {
