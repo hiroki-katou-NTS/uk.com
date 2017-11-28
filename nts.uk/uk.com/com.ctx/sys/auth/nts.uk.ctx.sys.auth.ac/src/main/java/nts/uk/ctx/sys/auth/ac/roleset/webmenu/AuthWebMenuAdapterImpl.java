@@ -38,7 +38,7 @@ public class AuthWebMenuAdapterImpl implements WebMenuAdapter {
 		}
 			
 		return this.webMenuPub.findByCompanyId(companyId).stream().map(item ->
-			new WebMenuImport(item.getWebMenuCd(), item.getWebMenuName(), item.getCompanyId(), item.isDefaultMenu())
+			new WebMenuImport(item.getCompanyId(), item.getWebMenuCd(), item.getWebMenuName(), item.isDefaultMenu())
 			).collect(Collectors.toList());
 	}
 }

@@ -28,5 +28,9 @@ public interface RoleIndividualGrantExportRepo {
 	 * @param date the date
 	 * @return the by user
 	 */
-	RoleIndividualGrantExport getByUser(String userId,DatePeriod validPeriod);
+	RoleIndividualGrantExport getByUser(String userId,GeneralDate date);
+	
+	RoleIndividualGrantExport getByUser(String userId);
+	
+	
 }

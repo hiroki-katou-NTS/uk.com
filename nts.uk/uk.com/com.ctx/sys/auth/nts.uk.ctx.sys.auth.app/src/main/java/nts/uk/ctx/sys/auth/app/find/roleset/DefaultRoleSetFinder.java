@@ -5,8 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
@@ -29,15 +27,10 @@ public class DefaultRoleSetFinder {
 	 * @return
 	 */
 	public DefaultRoleSetDto find(String roleSetCd) {
-		//Get company Id
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			return null;
-		}
-			// get domain role set
-			Optional<DefaultRoleSet> defaultRoleSetOpt = defaultRoleSetRepository.find(companyId, roleSetCd);
-			
-			return buildDefaultRoleSetDto(defaultRoleSetOpt);			
+		// get domain role set
+		Optional<DefaultRoleSet> defaultRoleSetOpt = defaultRoleSetRepository.find(AppContexts.user().companyId(), roleSetCd);
+		
+		return buildDefaultRoleSetDto(defaultRoleSetOpt);			
 	}
 
 
@@ -46,13 +39,8 @@ public class DefaultRoleSetFinder {
 	 * @return
 	 */
 	public DefaultRoleSetDto findByCompanyId() {
-		//Get company Id
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			return null;
-		}
 	    // get domain role set
-		Optional<DefaultRoleSet> defaultRoleSetOpt =  this.defaultRoleSetRepository.findByCompanyId(companyId);
+		Optional<DefaultRoleSet> defaultRoleSetOpt =  this.defaultRoleSetRepository.findByCompanyId(AppContexts.user().companyId());
 		return buildDefaultRoleSetDto(defaultRoleSetOpt);
 	}
 
