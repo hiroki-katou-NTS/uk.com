@@ -76,6 +76,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         //self.historySelection().histId(self.listHistorySelection().length == 0 ? '' : self.listHistorySelection()[0].histId);
                         //self.checkCreate(false);
                         if (self.listHistorySelection().length == 0 || self.listHistorySelection() == undefined) {
+                            self.disbleAdUpHist(false);
+                            self.enableDelHist(false);
                             return;
                         } else {
                             self.historySelection().histId(self.listHistorySelection()[0].histId);
