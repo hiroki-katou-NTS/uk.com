@@ -29,7 +29,10 @@ public class TemporaryAbsenceCommand {
 	private int soInsPayCategory;
 	
 	// -------------- extend object ----------------------
-	@PeregItem("")
+	/**
+	 * 出産種別 （産前休業の場合）
+	 */
+	@PeregItem("IS00093")
 	private boolean multiple;
 
 	@PeregItem("")

@@ -27,7 +27,7 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00008";
+		return "CS00018";
 	}
 
 	@Override
