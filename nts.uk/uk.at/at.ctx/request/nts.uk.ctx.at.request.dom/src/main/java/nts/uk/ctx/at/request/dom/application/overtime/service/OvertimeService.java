@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
@@ -35,6 +36,17 @@ public interface OvertimeService {
 	 * @return
 	 */
 	public List<SiftType> getSiftType(String companyID,String employeeID,RequestAppDetailSetting requestAppDetailSetting);
+	
+	/**
+	 * 09_勤務種類就業時間帯の初期選択をセットする
+	 * @param companyID
+	 * @param employeeID
+	 * @param baseDate
+	 * @param workTypes
+	 * @param siftTypes
+	 * @return
+	 */
+	public WorkTypeAndSiftType getWorkTypeAndSiftTypeByPersonCon(String companyID,String employeeID,GeneralDate baseDate,List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes);
 	
 	
 	void CreateOvertime(AppOverTime domain, Application newApp);

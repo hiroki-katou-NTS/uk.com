@@ -42,6 +42,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeInstructIn
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeAndSiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
@@ -515,9 +516,7 @@ public class AppOvertimeFinder {
 					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 					// 07_勤務種類取得: lay loai di lam 
 					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,requestAppDetailSetting.get(0),appEmploymentWorkType);
-					if(!CollectionUtil.isEmpty(workTypeOvertimes)){
-						result.setWorkType(workTypeOvertimes.get(0));
-					}
+					
 					List<String> workTypeCodes = new ArrayList<>();
 					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
 						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
@@ -531,10 +530,11 @@ public class AppOvertimeFinder {
 						siftCodes.add(siftType.getSiftCode());
 					}
 					result.setSiftTypes(siftCodes);
-					if(!CollectionUtil.isEmpty(siftTypes)){
-						result.setSiftType(siftTypes.get(0));
-					}
 					
+					// 09_勤務種類就業時間帯の初期選択をセットする
+					WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeOvertimes, siftTypes);
+					result.setWorkType(workTypeAndSiftType.getWorkType());
+					result.setSiftType(workTypeAndSiftType.getSiftType());
 					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
 					iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting.get(0));
 					

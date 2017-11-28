@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,8 +24,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
@@ -42,6 +46,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private OvertimeRepository overTimeRepository;
 	@Inject
 	ApplicationRepository appRepository;
+	
+	@Inject
+	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Override
 	public int checkOvertime(String url) {
 		if(url.equals("0")){
@@ -165,5 +172,37 @@ public class OvertimeServiceImpl implements OvertimeService {
 		appRepository.addApplication(newApp);
 		//Register overtime
 		overTimeRepository.Add(domain);
+	}
+
+	@Override
+	/** 09_勤務種類就業時間帯の初期選択をセットする */
+	public WorkTypeAndSiftType getWorkTypeAndSiftTypeByPersonCon(String companyID,String employeeID, GeneralDate baseDate,
+			List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes) {
+		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
+		WorkTypeOvertime workTypeOvertime = new  WorkTypeOvertime();
+		SiftType siftType = new SiftType();
+		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
+		Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,baseDate);
+		
+		if(!personalLablorCodition.isPresent()){
+			if(!CollectionUtil.isEmpty(workTypes)){
+				workTypeAndSiftType.setWorkType(workTypes.get(0));
+			}
+			if(!CollectionUtil.isEmpty(siftTypes)){
+				workTypeAndSiftType.setSiftType(siftTypes.get(0));
+			}
+		}else{
+			Optional<WorkType> workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
+			workTypeOvertime.setWorkTypeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
+			if(workType.isPresent()){
+				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
+			}
+			workTypeAndSiftType.setWorkType(workTypeOvertime);
+			Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
+			siftType.setSiftCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
+			siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
+			workTypeAndSiftType.setSiftType(siftType);
+		}
+		return workTypeAndSiftType;
 	}
 }
