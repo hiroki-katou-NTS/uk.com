@@ -319,7 +319,8 @@ module nts.uk.at.view.ksc001.b {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 550,
-                    maxRows: 15
+                    maxRows: 15,
+                    tabindex: 5
                 };
 
             }
