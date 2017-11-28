@@ -44,7 +44,7 @@ public class BsystTempAbsenceFramePK implements Serializable {
     public BsystTempAbsenceFramePK() {
     	super();
     }
-
+    
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -73,5 +73,17 @@ public class BsystTempAbsenceFramePK implements Serializable {
         }
         return true;
     }
+
+	/**
+	 * Instantiates a new bsyst temp absence frame PK.
+	 *
+	 * @param cid the cid
+	 * @param tempAbsenceFrNo the temp absence fr no
+	 */
+	public BsystTempAbsenceFramePK(String cid, short tempAbsenceFrNo) {
+		super();
+		this.cid = cid;
+		this.tempAbsenceFrNo = tempAbsenceFrNo;
+	}
     
 }
