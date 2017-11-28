@@ -1,0 +1,26 @@
+package find.perinfoitemdata;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.shr.pereg.app.find.PeregPerUserDefFinderRepository;
+import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
+
+
+@Stateless
+public class PerInfoItemDataFinder implements PeregPerUserDefFinderRepository{
+
+	@Inject
+	private PerInfoItemDataRepository perInfoItemDataRepository;
+	
+	@Override
+	public List<PersonOptionalDto> getPersonOptionalData(String recordId) {
+		return perInfoItemDataRepository.getAllInfoItemByRecordId(recordId).stream()
+				.map(x -> x.genToPeregDto()).collect(Collectors.toList());
+	}
+
+}

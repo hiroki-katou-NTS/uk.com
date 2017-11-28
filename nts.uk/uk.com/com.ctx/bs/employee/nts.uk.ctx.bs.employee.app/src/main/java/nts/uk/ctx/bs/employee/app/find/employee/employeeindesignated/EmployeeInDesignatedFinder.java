@@ -20,9 +20,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -47,7 +46,7 @@ public class EmployeeInDesignatedFinder {
 
 	/** The temporary absence repo. */
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepo;
+	private TempAbsItemRepository temporaryAbsenceRepo;
 
 	/** The workplace info repo. */
 	@Inject
@@ -255,7 +254,7 @@ public class EmployeeInDesignatedFinder {
 
 				// Get TemporaryAbsence By employee ID and BaseDate
 				Optional<TempAbsenceHisItem> temporaryAbsOpt = temporaryAbsenceRepo
-						.getBySidAndReferDate(employee.getSId(), referenceDate);
+						.getItemByEmpIdAndReferDate(employee.getSId(), referenceDate);
 				if (temporaryAbsOpt.isPresent()) {
 					// Domain TemporaryAbsence is Present
 					TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsOpt.get();

@@ -4,22 +4,25 @@ import java.util.Optional;
 
 import nts.uk.shr.com.history.DateHistoryItem;
 
-public interface TemporaryAbsenceHistRepository {
+public interface TempAbsHistRepository {
 
+	// -----------------------------GET HISTORY ----------------------------------
 	/**
 	 * Get TemporaryAbsenceHist by employeeId
 	 * @param employeeId
 	 * @param histId
 	 * @return
 	 */
-	Optional<TempAbsenceHistory> getTemporaryAbsenceHistByEmployeeId(String employeeId);
+	Optional<TempAbsenceHistory> getByEmployeeId(String employeeId);
 	/**
 	 * Get TemporaryAbsenceHist by histId
 	 * @param employeeId
 	 * @param histId
 	 * @return
 	 */
-	Optional<TempAbsenceHistory> getTemporaryAbsenceHistByHistId(String employeeId, String histId);
+	Optional<TempAbsenceHistory> getByHistId( String histId);
+	
+	// ------------------------------ COMMAND HISTORY---------------------------------
 	/**
 	 * ドメインモデル「休職休業」を新規登録する
 	 * @param domain
