@@ -109,7 +109,6 @@ public class PeregProcessor {
 				List<PeregDto> lstPeregDto = (List<PeregDto>) returnValue.getDto();
 				List<Object> dataTable = new ArrayList<>();
 				lstPeregDto.forEach(queryResult -> {
-
 					PeregDomainDto finderDto = queryResult.getDomainDto();
 					List<PersonOptionalDto> perOptionalData = queryResult.getPerOptionalData();
 					List<EmpOptionalDto> empOptionalData = queryResult.getEmpOptionalData();
@@ -120,10 +119,6 @@ public class PeregProcessor {
 											x, perInfoCtg.getCategoryCode().v(), item.getDispOrder()))
 									.collect(Collectors.toList()),
 							empOptionalData, perOptionalData);
-					// dto -> list LayoutPersonInfoValueDto
-					// row.addAll(list LayoutPersonInfoValueDto);
-					// perOptionalData -> list LayoutPersonInfoValueDto
-					// row.addAll(list LayoutPersonInfoValueDto)
 					dataTable.add(empLayoutDto.getClassificationItems());
 				});
 				item.setItems(dataTable);
