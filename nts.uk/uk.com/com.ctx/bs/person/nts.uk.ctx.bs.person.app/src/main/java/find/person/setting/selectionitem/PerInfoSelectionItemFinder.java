@@ -34,8 +34,8 @@ public class PerInfoSelectionItemFinder {
 	}
 	//getAllSelection
 	
-	public List<PerInfoSelectionItemDto> getAllSelectionItem() {
-		return this.perInfoSelectionItemRepo.getAllSelection().stream()
+	public List<PerInfoSelectionItemDto> getAllSelectionItem(int selectionItemClsAtr) {
+		return this.perInfoSelectionItemRepo.getAllSelection(selectionItemClsAtr).stream()
 				.map(c -> PerInfoSelectionItemDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
