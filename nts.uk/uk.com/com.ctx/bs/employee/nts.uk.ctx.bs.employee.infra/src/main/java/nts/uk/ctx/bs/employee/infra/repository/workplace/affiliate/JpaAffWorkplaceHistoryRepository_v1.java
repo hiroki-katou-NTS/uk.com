@@ -5,33 +5,15 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHist;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHist;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHistPK;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHistPK_;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHist_;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -40,7 +22,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implements AffWorkplaceHistoryRepository_v1 {
-	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID = "select aw from BsymtAffiWorkplaceHist aw where aw.sid = :sid order by aw.strDate";
+	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID = "select aw "
+			+ "from BsymtAffiWorkplaceHist aw "
+			+ "where aw.sid = :sid order by aw.strDate";
 	
 	/**
 	 * Convert from domain to entity
@@ -88,14 +72,15 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 
 	@Override
 	public void addAffWorkplaceHistory(AffWorkplaceHistory_ver1 domain) {
-		if (domain.getHistoryItems().size() >0){
-			// Insert last element
-			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-			this.commandProxy().insert(toEntity(domain.getEmployeeId(),lastItem));
-			
-			// Update item before and after
-			updateItemBefore(domain,lastItem);
+		if (domain.getHistoryItems().isEmpty()){
+			return;
 		}
+		// Insert last element
+		DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
+		this.commandProxy().insert(toEntity(domain.getEmployeeId(),lastItem));
+		
+		// Update item before and after
+		updateItemBefore(domain,lastItem);
 		
 	}
 

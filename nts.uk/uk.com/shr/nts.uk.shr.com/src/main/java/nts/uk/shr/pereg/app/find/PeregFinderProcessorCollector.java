@@ -4,7 +4,6 @@ import java.util.Set;
 
 public interface PeregFinderProcessorCollector {
 	
-	Set<PeregSingleFinder<?>> peregCtgSingleFinderCollect();
+	Set<PeregFinder<?>> peregFinderCollect();
 	
-	Set<PeregListFinder<?>> peregCtgListFinderCollect();
 }

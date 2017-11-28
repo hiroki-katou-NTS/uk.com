@@ -14,6 +14,8 @@ import find.person.info.category.PerInfoCtgFullDto;
 import find.person.info.item.PerInfoItemDefForLayoutDto;
 import find.person.info.item.PerInfoItemDefForLayoutFinder;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.person.ParamForGetPerItem;
 import nts.uk.ctx.bs.employee.dom.person.PerInfoCtgDomainService;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
@@ -60,6 +62,9 @@ public class PeregProcessor {
 	@Inject
 	 private LayoutPersonInfoClsFinder clsFinder;
 	
+	@Inject
+	private EmployeeRepository employeeRepository;
+	
 	/**
 	 * get person information category and it's children (Hiển thị category và
 	 * danh sách tab category con của nó)
@@ -89,13 +94,14 @@ public class PeregProcessor {
 	public EmpMaintLayoutDto getLayout(PeregMaintLayoutQuery layoutQuery) {
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
-		
+		// get Employee
+		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), layoutQuery.getEmpId()).get();
 		itemClassList.forEach(item -> {
 			// get ctgCd
 			PersonInfoCategory perInfoCtg = perInfoCtgRepositoty
 					.getPerInfoCategory(item.getPersonInfoCategoryID(), AppContexts.user().contractCode()).get();
-			PeregQuery query = null;/*new PeregQuery(item.getPersonInfoCategoryID(), perInfoCtg.getCategoryCode().v(),
-					layoutQuery.getEmpId(), layoutQuery.getStandardDate(), null);*/
+			PeregQuery query = new PeregQuery(item.getPersonInfoCategoryID(), perInfoCtg.getCategoryCode().v(),
+					layoutQuery.getEmpId(), employee.getPId(), layoutQuery.getStandardDate(), null);
 			if (item.getLayoutItemType() == LayoutItemType.LIST) {
 				// //get data
 				PeregResult returnValue = layoutingProcessor.findList(query);

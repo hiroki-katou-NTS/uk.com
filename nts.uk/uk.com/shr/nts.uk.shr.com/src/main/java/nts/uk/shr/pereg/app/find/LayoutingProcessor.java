@@ -16,18 +16,13 @@ public class LayoutingProcessor {
 	@Inject
 	private PeregFinderProcessorCollector peregFinderCollector;
 
-	private Map<String, PeregSingleFinder<?>> singleFinders;
-
-	private Map<String, PeregListFinder<?>> listFinders;
+	private Map<String, PeregFinder<?>> finders;
 
 	/**
 	 * Initializes.
 	 */
 	public void init(@Observes @Initialized(ApplicationScoped.class) Object event) {
-		this.singleFinders = this.peregFinderCollector.peregCtgSingleFinderCollect().stream()
-				.collect(Collectors.toMap(h -> h.targetCategoryCode(), h -> h));
-
-		this.listFinders = this.peregFinderCollector.peregCtgListFinderCollect().stream()
+		this.finders = this.peregFinderCollector.peregFinderCollect().stream()
 				.collect(Collectors.toMap(h -> h.targetCategoryCode(), h -> h));
 	}
 
@@ -38,8 +33,8 @@ public class LayoutingProcessor {
 	 * @return
 	 */
 	public PeregResult findSingle(PeregQuery query) {
-		val finderClass = this.singleFinders.get(query.getCategoryCode());
-		val dto = finderClass.find(query);
+		val finderClass = this.finders.get(query.getCategoryCode());
+		val dto = finderClass.findSingle(query);
 		return new PeregResult(finderClass.dtoClass(), dto);
 	}
 
@@ -50,8 +45,8 @@ public class LayoutingProcessor {
 	 * @return
 	 */
 	public PeregResult findList(PeregQuery query) {
-		val finderClass = this.listFinders.get(query.getCategoryCode());
-		val dto = finderClass.find(query);
+		val finderClass = this.finders.get(query.getCategoryCode());
+		val dto = finderClass.findList(query);
 		return new PeregResult(finderClass.dtoClass(), dto);
 	}
 

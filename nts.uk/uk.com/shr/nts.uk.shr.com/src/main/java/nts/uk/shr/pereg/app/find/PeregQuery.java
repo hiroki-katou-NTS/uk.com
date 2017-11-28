@@ -1,7 +1,5 @@
 package nts.uk.shr.pereg.app.find;
 
-import javax.ejb.Stateless;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
