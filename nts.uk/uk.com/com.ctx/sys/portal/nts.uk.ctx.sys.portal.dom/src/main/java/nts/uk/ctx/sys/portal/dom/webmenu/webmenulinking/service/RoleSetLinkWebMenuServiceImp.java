@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class RoleSetAndWebMenuServiceImp extends JpaRepository implements RoleSetAndWebMenuService {
+public class RoleSetLinkWebMenuServiceImp extends JpaRepository implements RoleSetLinkWebMenuService {
 
 	@Inject
 	private RoleSetLinkWebMenuRepository roleSetAndWebMenuRepository;

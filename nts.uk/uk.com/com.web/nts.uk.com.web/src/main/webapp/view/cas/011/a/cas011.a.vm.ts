@@ -15,14 +15,14 @@ module nts.uk.com.view.cas011.a.viewmodel {
             companyId: ''
             ,roleSetCd: ''
             , roleSetName:'' 
-            , approvalAuthority: false
+            , approvalAuthority: true
             , employmentRoleId: ''
             , hRRoleId: ''
             , salaryRoleId: '' 
             , personInfRoleId: ''
             , myNumberRoleId: '' 
             , officeHelperRoleId: ''
-            , webMenus: null
+            , webMenus: new Array()
                 }));
 
         employmentRoleName: KnockoutObservable<string>;
@@ -49,7 +49,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                                            ]);
             
             self.swapColumns = ko.observableArray([
-                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 100 },
+                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCd', width: 100 },
                                                { headerText: resource.getText('CAS011_34'), key: 'webMenuName', width: 150 }
                                            ]);
             
@@ -67,15 +67,12 @@ module nts.uk.com.view.cas011.a.viewmodel {
             self.officeHelperRoleName = ko.observable('');
             
             self.isNewMode = ko.observable(true);
-            self.hasInitialized = true;
+            self.hasInitialized = false;
             //Subscribe: 項目変更→項目
  
             currentRoleSet.roleSetCd.subscribe(roleSetCd => {
                 errors.clearAll();
 
-                if (!self.isNewMode()) {
-                    self.hasInitialized = false;
-                }
                 if (self.hasInitialized) {
                     return;
                 }
@@ -139,7 +136,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     dfd.reject();
                  } else {
                      // initial screen
-                     self.initialScreen(dfd);
+                     self.initialScreen(dfd, '');
                  }
              }).fail(error => {
                  self.backToTopPage();
@@ -162,7 +159,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
          * - 先頭のロールセットを選択する - Select the first roll set
          * - 画面を新規モードで起動する - Start screen in new mode
          */
-        initialScreen(deferred : any) {
+        initialScreen(deferred : any, roleSetCd : string) {
             let self = this,
             currentRoleSet: RoleSet = self.currentRoleSet(),
             listRoleSets = self.listRoleSets;
@@ -174,7 +171,13 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     listRoleSets(itemList);
                     // 先頭のロールセットを選択する
                     
-                    self.settingUpdateMode(listRoleSets()[0].roleSetCd);
+                    let index : number = 0;
+                    if (roleSetCd) {
+                        index = _.findIndex(listRoleSets, function (x: IRoleSet) 
+                                { return x.roleSetCd == roleSetCd});
+                        if (index === -1) index = 0;
+                    }
+                    self.settingUpdateMode(listRoleSets()[index].roleSetCd);
 
                 } else { //in case number of RoleSet is zero
                     //画面を新規モードで起動する
@@ -188,7 +191,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 self.createNewCurrentRoleSet();
                 self.settingCreateMode();
             }).always(()=> {
-                deferred.resolve();
+                if (deferred) {
+                    deferred.resolve();
+                }
             });
         }
         /**
@@ -197,19 +202,23 @@ module nts.uk.com.view.cas011.a.viewmodel {
         saveRoleSet() {
             let self = this,
             currentRoleSet: RoleSet = self.currentRoleSet();
-            block.invisible();
             $('.nts-input').trigger("validate");
             if (errors.hasError() === false) {
+                block.invisible();
                 if (self.isNewMode()) {
                     // create new role set
                     service.addRoleSet(ko.toJS(currentRoleSet)).done((roleSetCd) => {
                         dialog.info({ messageId: "Msg_15" });
-                        self.settingUpdateMode(roleSetCd);
+                        // refresh - initial screen
+                        self.initialScreen(null, roleSetCd);
                     }).fail(function(error) {
+                        dialog.alertError({ messageId: error.messageId });
+                        if (error.messageId == 'Msg_3') {
+                            $('#inpRoleSetCd').ntsError('set', error);
+                        }
                         if (error.messageId == 'Msg_583') {
                             //$('#ctrSelectionMenu').ntsError('set', error);
                         }
-                        dialog.alertError({ messageId: error.messageId });
                     }).always(function() {
                         block.clear();
                     });
@@ -219,10 +228,10 @@ module nts.uk.com.view.cas011.a.viewmodel {
                         dialog.info({ messageId: "Msg_15" });
                         self.settingUpdateMode(roleSetCd);
                     }).fail(function(error) {
+                        dialog.alertError({ messageId: error.messageId });
                         if (error.messageId == 'Msg_583') {
                           //$('#ctrSelectionMenu').ntsError('set', error);
                         }
-                        dialog.alertError({ messageId: error.messageId });
                     }).always(function() {
                         block.clear();
                     });
@@ -358,12 +367,14 @@ module nts.uk.com.view.cas011.a.viewmodel {
             let self = this,
                 currentRoleSet: RoleSet = self.currentRoleSet();
             
+            self.hasInitialized = false;
+            
             // clear selected role set
             currentRoleSet.roleSetCd('');
-            
+
             // Set new mode
             self.isNewMode(true);
-            
+
             // focus
             self.setFocus();
         }
@@ -374,13 +385,15 @@ module nts.uk.com.view.cas011.a.viewmodel {
        settingUpdateMode(selectedRoleSetCd) {
            let self = this,
                currentRoleSet: RoleSet = self.currentRoleSet();
+
+           self.hasInitialized = false;
            
            //Setting selected Role set
            currentRoleSet.roleSetCd(selectedRoleSetCd);
 
            //Setting update mode
            self.isNewMode(false);
-           
+
            // set focus
            self.setFocus();
        }
@@ -394,14 +407,14 @@ module nts.uk.com.view.cas011.a.viewmodel {
             
             currentRoleSet.roleSetCd('');
             currentRoleSet.roleSetName('');
-            currentRoleSet.approvalAuthority(false);
+            currentRoleSet.approvalAuthority(true);
             currentRoleSet.officeHelperRoleId('');
             currentRoleSet.myNumberRoleId('');
             currentRoleSet.hRRoleId('');
             currentRoleSet.personInfRoleId('');
             currentRoleSet.employmentRoleId('');
             currentRoleSet.salaryRoleId('');
-            currentRoleSet.webMenus(null);
+            currentRoleSet.webMenus(new Array());
             
             // build swap web menu
             self.buildSwapWebMenu();
@@ -444,7 +457,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
             service.getAllWebMenu().done((itemList: Array<IWebMenu>) => {
                 if (itemList && itemList.length > 0) {
-                    self.listWebMenus(itemList.filter(item1 => !self.isSelectedWebMenu(item1.webMenuCode)));
+                    self.listWebMenus(itemList.filter(item1 => !self.isSelectedWebMenu(item1.webMenuCd)));
                         /*.map(item => { new WebMenu({
                                                     webMenuCode : item.webMenuCode,
                                                     webMenuName : item.webMenuName,
@@ -452,28 +465,28 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     });
                     */
                     // get Web Menu Name for Web menu
-                    let listWebMenuRight = itemList.filter(item1 => self.isSelectedWebMenu(item1.webMenuCode));
+                    let listWebMenuRight = itemList.filter(item1 => self.isSelectedWebMenu(item1.webMenuCd));
                     currentRoleSet.webMenus.removeAll();
                     currentRoleSet.webMenus(listWebMenuRight);
                     
                 }
              }).fail(function(error) {
                  dialog.alertError({ messageId: error.messageId });
-             });           
+             });  
         }
         /**
          * Check and return true if the Web menu code existed in current selected web menu list.
          * 
          */
-        isSelectedWebMenu = function(_webMenuCode : string) : boolean {
+        isSelectedWebMenu = function(_webMenuCd : string) : boolean {
             let self = this,
             currentRoleSet: RoleSet = this.currentRoleSet();
             
-            if (!_webMenuCode || !currentRoleSet
-                    || currentRoleSet.webMenus() || currentRoleSet.webMenus().length === 0){
+            if (!_webMenuCd || !currentRoleSet
+                    || !currentRoleSet.webMenus() || currentRoleSet.webMenus().length === 0){
                 return false;
             }
-            let index: number = _.findIndex(currentRoleSet.webMenus(), function (x: IWebMenu) { return x.webMenuCode === _webMenuCode});
+            let index: number = _.findIndex(currentRoleSet.webMenus(), function (x: IWebMenu) { return x.webMenuCd === _webMenuCd});
             return (index > -1);            
         }
         
@@ -533,17 +546,17 @@ module nts.uk.com.view.cas011.a.viewmodel {
 */
     // The Web menu
     export interface IWebMenu {
-        webMenuCode: string;
+        webMenuCd: string;
         webMenuName: string;
     }
 
     export class WebMenu {
-        webMenuCode: KnockoutObservable<string> = ko.observable('');
+        webMenuCd: KnockoutObservable<string> = ko.observable('');
         webMenuName: KnockoutObservable<string> = ko.observable('');
 
         constructor(param: IWebMenu) {
             let self = this;
-            self.webMenuCode(param.webMenuCode || '');
+            self.webMenuCd(param.webMenuCd || '');
             self.webMenuName(param.webMenuName || '');
         }
     }
@@ -568,7 +581,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
         companyId = '';
         roleSetCd: KnockoutObservable<string> = ko.observable('');
         roleSetName: KnockoutObservable<string> = ko.observable('');
-        approvalAuthority: KnockoutObservable<boolean> = ko.observable(false);
+        approvalAuthority: KnockoutObservable<boolean> = ko.observable(true);
         employmentRoleId: KnockoutObservable<string> = ko.observable(null);
         hRRoleId: KnockoutObservable<string> = ko.observable(null);
         salaryRoleId: KnockoutObservable<string> = ko.observable(null);

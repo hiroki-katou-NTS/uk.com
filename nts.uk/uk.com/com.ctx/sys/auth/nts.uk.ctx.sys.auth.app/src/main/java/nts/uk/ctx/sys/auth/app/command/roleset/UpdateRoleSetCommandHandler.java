@@ -27,7 +27,7 @@ public class UpdateRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
 		
 		// build webMenuCode
 		List<WebMenuCommand> listWebMenus = command.getWebMenus();
-		List<String> listWebMenuCds = CollectionUtil.isEmpty(listWebMenus) ?
+		List<String> listWebMenuCds = !CollectionUtil.isEmpty(listWebMenus) ?
 				listWebMenus.stream().map(item -> item.getWebMenuCd()).collect(Collectors.toList()) : new ArrayList<>();
 
 		RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()

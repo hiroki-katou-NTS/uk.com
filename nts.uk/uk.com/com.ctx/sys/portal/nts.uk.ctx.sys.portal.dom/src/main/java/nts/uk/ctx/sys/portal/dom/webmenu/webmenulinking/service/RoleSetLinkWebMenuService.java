@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
  * @author HieuNV
  *
  */
-public interface RoleSetAndWebMenuService {
+public interface RoleSetLinkWebMenuService {
 	
 	/**
 	 * Insert a RoleSetAndWebMenu - ロールセット別紐付け新規登録

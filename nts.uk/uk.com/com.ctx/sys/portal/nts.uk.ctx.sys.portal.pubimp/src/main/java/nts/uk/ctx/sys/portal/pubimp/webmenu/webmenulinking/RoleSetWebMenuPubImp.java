@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.service.RoleSetAndWebMenuService;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.service.RoleSetLinkWebMenuService;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuPub;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuExport;
 
@@ -26,7 +26,7 @@ public class RoleSetWebMenuPubImp implements RoleSetLinkWebMenuPub {
 	@Inject
 	private RoleSetLinkWebMenuRepository roleSetAndWebMenuRepository;
 	
-	@Inject RoleSetAndWebMenuService roleSetAndWebMenuService;
+	@Inject RoleSetLinkWebMenuService roleSetAndWebMenuService;
 
 	@Override
 	public List<RoleSetLinkWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd) {
