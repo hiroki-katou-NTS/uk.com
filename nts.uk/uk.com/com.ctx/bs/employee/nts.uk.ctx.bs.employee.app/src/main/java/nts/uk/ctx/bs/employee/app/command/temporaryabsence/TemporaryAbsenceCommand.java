@@ -18,13 +18,14 @@ public class TemporaryAbsenceCommand {
 	@PeregRecordId
 	private String histoyId;
 	
-	@PeregItem("")
+	@PeregItem("IS00090")
 	private int leaveHolidayAtr;
 	
-	@PeregItem("")
+	/** 備考 */
+	@PeregItem("IS00099")
 	private String remarks;
 	
-	@PeregItem("")
+	@PeregItem("IS00098")
 	private int soInsPayCategory;
 	
 	// -------------- extend object ----------------------
@@ -34,24 +35,24 @@ public class TemporaryAbsenceCommand {
 	@PeregItem("")
 	private String familyMemberId;
 	
-	@PeregItem("")
+	@PeregItem("IS00091")
 	private boolean sameFamily;
 	
-	@PeregItem("")
+	@PeregItem("IS00094")
 	private int childType;
 
-	@PeregItem("")
+	@PeregItem("IS00095")
 	private GeneralDate createDate;
 
-	@PeregItem("")
+	@PeregItem("IS00097")
 	private boolean spouseIsLeave;
 	
-	@PeregItem("")
+	@PeregItem("IS00092")
 	private int sameFamilyDays;
 	
-	@PeregItem("")
+	@PeregItem("IS00088")
 	private GeneralDate startDate;
 	
-	@PeregItem("")
+	@PeregItem("IS00089")
 	private GeneralDate endDate;
 }

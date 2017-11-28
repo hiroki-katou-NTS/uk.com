@@ -1,18 +1,13 @@
-package nts.uk.ctx.bs.employee.dom.employment.stampcard;
+package nts.uk.ctx.pereg.dom.usesetting;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(20)
-public class CardNumber extends StringPrimitiveValue<CardNumber>{
-
-	/**
-	 * 
-	 */
+public class EmpCodeLetter extends StringPrimitiveValue<EmpCodeLetter> {
 	private static final long serialVersionUID = 1L;
 
-	public CardNumber(String rawValue) {
+	public EmpCodeLetter(String rawValue) {
 		super(rawValue);
 	}
-
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.employee.app.find.jobtitlemain;
+package nts.uk.ctx.bs.employee.app.find.jobtitle.main;
 
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
