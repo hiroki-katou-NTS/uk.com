@@ -193,8 +193,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     dialog({ messageId: "Msg_15" }).then(function() {
 
                         self.loadDataForGrid().done(function() {
-                            self.currentItem().selectionLst = [];
-                            service.getAllSelByHistory(command.selectionItemId, baseDate, 0).done(function(data) {
+                            self.currentItem().selectionLst([]);
+                            service.getAllSelByHistory(command.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
                                 self.currentItem().selectionLst.removeAll();
                                 self.currentItem().selectionLst(data);
                                 self.currentItem().selectionLst.valueHasMutated();
@@ -425,18 +425,17 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     isDialog: true
                 },
                 baseDate = moment(new Date()).format('YYYY-MM-DD');
-            setShared('CPS016A_PARAMS', params);
+            setShared('CPS017_PARAMS', params);
 
-            modal('/view/cps/017/a/index.xhtml', { title: '', height: 800, width: 1500 }).onClosed(() => {
-                self.loadDataForGrid().done(function() {
+            modal('/view/cps/017/a/index.xhtml', { title: '', height: 800, width: 1500 }).onClosed(function(): any {
+                debugger;
+                self.currentItem().selectionLst([]);
+                service.getAllSelByHistory(params.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
+//                    self.currentItem().
+                    console.log(self.currentItem());
+                    self.currentItem().selectionLst(data);
+                    self.currentItem().selectionLst.valueHasMutated();
 
-                    self.currentItem().selectionLst = [];
-                    service.getAllSelByHistory(params.selectionItemId, baseDate, 0).done(function(data) {
-                        self.currentItem().selectionLst.removeAll();
-                        self.currentItem().selectionLst(data);
-                        self.currentItem().selectionLst.valueHasMutated();
-
-                    });
                 });
             });
         }
@@ -510,9 +509,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
     export class PerInfoCategory {
 
         id: string;
-
+        personEmployeeType : number;
         constructor(param) {
             this.id = param.id();
+            this.personEmployeeType = param.personEmployeeType;
         }
 
     }

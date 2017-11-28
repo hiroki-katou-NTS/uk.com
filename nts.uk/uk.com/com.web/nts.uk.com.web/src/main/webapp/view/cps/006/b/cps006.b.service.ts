@@ -26,7 +26,7 @@ module nts.uk.com.view.cps006.b.service {
     }
     
     export function getAllSelByHistory(selectionItemId: string, baseDate: any, selectionItemClsAtr: number) {
-        return ajax(format(this.paths.filterHisSel, selectionItemId, baseDate, selectionItemClsAtr));
+        return ajax(format(paths.filterHisSel , selectionItemId, baseDate, selectionItemClsAtr));
     };
 
 }

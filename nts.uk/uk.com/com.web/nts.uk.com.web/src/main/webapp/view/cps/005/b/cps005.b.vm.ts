@@ -28,64 +28,32 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     dfd = $.Deferred();
                 block.invisible();
-                if (self.currentCtg.currentCtg.personEmployeeType === 1) {
-                    new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, 0).done(function(data: IItemData) {
-                        self.currentItemData(new ItemDataModel(data));
-                        if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
-                            self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
-                            self.isUpdate = true;
-                            self.currentItemData().isEnableButtonProceed(true);
-                        } else {
-                            self.register();
-                        }
-                        block.clear();
-                        dfd.resolve();
-                    });
-                } else if (self.currentCtg.currentCtg.personEmployeeType === 2) {
-                    new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, 1).done(function(data: IItemData) {
-                        self.currentItemData(new ItemDataModel(data));
-                        if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
-                            self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
-                            self.isUpdate = true;
-                            self.currentItemData().isEnableButtonProceed(true);
-                        } else {
-                            self.register();
-                        }
-                        block.clear();
-                        dfd.resolve();
-                    });
+                new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
+                    self.currentItemData(new ItemDataModel(data));
+                    if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
+                        self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
+                        self.isUpdate = true;
+                        self.currentItemData().isEnableButtonProceed(true);
+                    } else {
+                        self.register();
+                    }
+                    block.clear();
+                    dfd.resolve();
+                });
 
-                }
                 return dfd.promise();
             }
-
-            //            reloadData(): JQueryPromise<any> {
-            //                let self = this,
-            //                    dfd = $.Deferred();
-            //                self.currentItemData().personInfoItemList([]);
-            //                new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, 0).done(function(data: IItemData) {
-            //                    self.currentItemData(new ItemDataModel(data));
-            //                    if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
-            //                        self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
-            //                        self.isUpdate = true;
-            //                        self.currentItemData().isEnableButtonProceed(true);
-            //                    } else {
-            //                        self.register();
-            //                    }
-            //                    block.clear();
-            //                    dfd.resolve();
-            //                });
-            //
-            //                return dfd.promise();
-            //            }
 
             reloadData(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
                 self.currentItemData().personInfoItemList([]);
-                new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, 0).done(function(data: IItemData) {
+                 self.currentItemData().selectionItemLst([]);
+                new service.Service().getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
+                        self.currentItemData().selectionItemLst(data.selectionItemLst);
+                  // resset lai selectiuon Item List
                         self.isUpdate = true;
                         self.currentItemData().isEnableButtonProceed(true);
                     } else {
@@ -150,6 +118,7 @@ module nts.uk.com.view.cps005.b {
                     new service.Service().addItemDef(newItemDef).done(function(data: string) {
                         self.reloadData().done(() => {
                             self.currentItemData().perInfoItemSelectCode(data);
+                            //  self.selectionItemId(params.selectionItemId);
                         });
                         info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
@@ -362,9 +331,8 @@ module nts.uk.com.view.cps005.b {
                         self.selectionItem().selectionItemId("");
                         let baseDate = moment(new Date()).format('YYYY-MM-DD');
                         if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
-                            if (__viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType === 1) {
                                 new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
-                                    baseDate, 0).done(function(data: Array<any>) {
+                                    baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                                         console.log(data);
                                         if (data.length > 0) {
                                             self.selectionItem().selectionLst([]);
@@ -380,61 +348,25 @@ module nts.uk.com.view.cps005.b {
 
 
                                     });
-                            } else if (__viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType === 2) {
-                                new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
-                                    baseDate, 1).done(function(data: Array<any>) {
-                                        console.log(data);
-                                        if (data.length > 0) {
-                                            self.selectionItem().selectionLst([]);
-                                            self.selectionItem().selectionLst(data);
-                                            self.selectionItem().selectionLst.valueHasMutated();
-
-                                        } else {
-                                            self.selectionItem().selectionLst.removeAll();
-                                            self.selectionItem().selectionLst([]);
-                                            self.selectionItem().selectionLst.valueHasMutated();
-
-                                        }
-
-
-                                    });
-                            }
+        
                         }
 
                         self.selectionItem().selectionItemId.subscribe(function(value) {
-                            if (__viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType === 1) {
-                                new service.Service().getAllSelByHistory(value, baseDate, 0).done(function(data: Array<any>) {
-                                    console.log(data);
-                                    if (data.length > 0) {
-                                        self.selectionItem().selectionLst([]);
-                                        self.selectionItem().selectionLst(data);
-                                        self.selectionItem().selectionLst.valueHasMutated();
+                            new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                                console.log(data);
+                                if (data.length > 0) {
+                                    self.selectionItem().selectionLst([]);
+                                    self.selectionItem().selectionLst(data);
+                                    self.selectionItem().selectionLst.valueHasMutated();
 
-                                    } else {
-                                        self.selectionItem().selectionLst.removeAll();
-                                        self.selectionItem().selectionLst([]);
-                                        self.selectionItem().selectionLst.valueHasMutated();
+                                } else {
+                                    self.selectionItem().selectionLst.removeAll();
+                                    self.selectionItem().selectionLst([]);
+                                    self.selectionItem().selectionLst.valueHasMutated();
 
-                                    }
+                                }
 
-                                });
-                            } else if (__viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType === 2) {
-                                new service.Service().getAllSelByHistory(value, baseDate, 1).done(function(data: Array<any>) {
-                                    console.log(data);
-                                    if (data.length > 0) {
-                                        self.selectionItem().selectionLst([]);
-                                        self.selectionItem().selectionLst(data);
-                                        self.selectionItem().selectionLst.valueHasMutated();
-
-                                    } else {
-                                        self.selectionItem().selectionLst.removeAll();
-                                        self.selectionItem().selectionLst([]);
-                                        self.selectionItem().selectionLst.valueHasMutated();
-
-                                    }
-
-                                });
-                            }
+                            });
                         });
 
 
@@ -572,8 +504,9 @@ module nts.uk.com.view.cps005.b {
             self.selectionLst([]);
             let baseDate = moment(new Date()).format('YYYY-MM-DD');
             if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
-                if (__viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType === 1) {
-                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate, 0).done(function(data: Array<any>) {
+
+                new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate,
+                    __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                         console.log(data);
                         if (data.length > 0) {
                             self.selectionLst.removeAll();
@@ -589,58 +522,22 @@ module nts.uk.com.view.cps005.b {
 
 
                     });
-                } else if (__viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType === 2) {
-                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate, 1).done(function(data: Array<any>) {
-                        console.log(data);
-                        if (data.length > 0) {
-                            self.selectionLst.removeAll();
-                            self.selectionLst(data);
-                            self.selectionLst.valueHasMutated();
-
-                        } else {
-                            self.selectionLst.removeAll();
-                            self.selectionLst([]);
-                            self.selectionLst.valueHasMutated();
-
-                        }
-
-
-                    });
-                }
             }
             self.selectionItemId.subscribe(function(value) {
-                if (__viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType === 1) {
-                    new service.Service().getAllSelByHistory(value, baseDate, 0).done(function(data: Array<any>) {
-                        console.log(data);
-                        if (data.length > 0) {
-                            self.selectionLst.removeAll();
-                            self.selectionLst(data);
-                            self.selectionLst.valueHasMutated();
 
-                        } else {
-                            self.selectionLst.removeAll();
-                            self.selectionLst([]);
-                            self.selectionLst.valueHasMutated();
+                new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                    if (data.length > 0) {
+                        self.selectionLst.removeAll();
+                        self.selectionLst(data);
+                        self.selectionLst.valueHasMutated();
 
-                        }
-                    });
-                } else if (__viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType === 2) {
-                    new service.Service().getAllSelByHistory(value, baseDate, 1).done(function(data: Array<any>) {
-                        console.log(data);
-                        if (data.length > 0) {
-                            self.selectionLst.removeAll();
-                            self.selectionLst(data);
-                            self.selectionLst.valueHasMutated();
+                    } else {
+                        self.selectionLst.removeAll();
+                        self.selectionLst([]);
+                        self.selectionLst.valueHasMutated();
 
-                        } else {
-                            self.selectionLst.removeAll();
-                            self.selectionLst([]);
-                            self.selectionLst.valueHasMutated();
-
-                        }
-                    });
-                }
-
+                    }
+                });
             });
 
         }
@@ -654,9 +551,10 @@ module nts.uk.com.view.cps005.b {
 
             setShared('CPS005B_PARAMS', params);
             let itemCurrent: string = ko.toJS(__viewContext.screenModelB.currentItemData().currentItemSelected().id);
-            modal('/view/cps/016/a/index.xhtml', { title: '' }).setWidth(500).onClosed(() => {
-                __viewContext['screenModelB'].startPage().done(() => {
+            modal('/view/cps/016/a/index.xhtml', { title: '', height: 800, width: 1500 }).onClosed(function(): any {
+                __viewContext['screenModelB'].reloadData().done(() => {
                     __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode(itemCurrent);
+                    self.selectionItemId(params.selectionItemId);
                 });
             });
         }

@@ -69,8 +69,12 @@ public class PerInfoItemDefFinder {
 		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
 				ukResouce);
 		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, ukResouce);
-		List<PerInfoSelectionItemDto> selectionItemLst = this.selectionItemFinder
-				.getAllSelectionItem(personEmployeeType);
+		List<PerInfoSelectionItemDto> selectionItemLst = new ArrayList<>();
+		if (personEmployeeType == 1) {
+			selectionItemLst = this.selectionItemFinder.getAllSelectionItem(0);
+		} else if (personEmployeeType == 2) {
+			selectionItemLst = this.selectionItemFinder.getAllSelectionItem(1);
+		}
 		return new PerInfoItemDefFullEnumDto(dataTypeEnum, stringItemTypeEnum, stringItemDataTypeEnum, dateItemTypeEnum,
 				selectionItemLst, perInfoItemDefs);
 	};
@@ -132,13 +136,13 @@ public class PerInfoItemDefFinder {
 			}
 
 		}
-		
+
 		PerInfoItemChangeDefDto item = new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(),
 				itemDefDto.getItemCode(), itemDefDto.getItemName(), defaultName, itemDefDto.getIsAbolition(),
 				itemDefDto.getIsFixed(), itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(),
 				itemDefDto.getRequireChangable(), dispOrder, itemDefDto.getSelectionItemRefType(),
 				itemDefDto.getItemTypeState(), selectionItemRefTypes,
-				selectionLst.size() > 0 ? selectionLst.get(0).getSelectionItemName(): " ",
+				selectionLst.size() > 0 ? selectionLst.get(0).getSelectionItemName() : " ",
 				// sua loi them sel item lst
 				selectionLst);
 		return item;
