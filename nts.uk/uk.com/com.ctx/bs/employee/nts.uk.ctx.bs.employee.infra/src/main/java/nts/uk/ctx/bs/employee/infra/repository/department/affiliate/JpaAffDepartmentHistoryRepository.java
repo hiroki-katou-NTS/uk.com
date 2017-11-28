@@ -9,9 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtAffiDepartmentHist;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -44,10 +42,10 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 
 	@Override
 	public void addAffDepartment(AffDepartmentHistory domain) {
-		DateHistoryItem itemToBeAddedd = domain.getHistoryItems().get(domain.getHistoryItems().size() -1);
-		this.commandProxy().insert(toEntity(domain.getEmployeeId(), itemToBeAddedd));
+		DateHistoryItem itemToBeAdded = domain.getHistoryItems().get(domain.getHistoryItems().size() -1);
+		this.commandProxy().insert(toEntity(domain.getEmployeeId(), itemToBeAdded));
 		// Update item before
-		updateItemBefore(domain, itemToBeAddedd);
+		updateItemBefore(domain, itemToBeAdded);
 	}
 
 	@Override
@@ -100,10 +98,11 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 			return;
 		}
 		Optional<BsymtAffiDepartmentHist> histItem = this.queryProxy().find(beforeItem.get().identifier(), BsymtAffiDepartmentHist.class);
-		if (histItem.isPresent()){
-			updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
-			this.commandProxy().update(histItem.get());
+		if (!histItem.isPresent()){
+			return;
 		}
+		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
 	}
 	/**
 	 * Update entity from domain
@@ -128,9 +127,10 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 			return;
 		}
 		Optional<BsymtAffiDepartmentHist> histItem  = this.queryProxy().find(aferItem.get().identifier(), BsymtAffiDepartmentHist.class);
-		if (histItem.isPresent()){
-			updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
-			this.commandProxy().update(histItem.get());
+		if (!histItem.isPresent()){
+			return;
 		}
+		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
 	}
 }

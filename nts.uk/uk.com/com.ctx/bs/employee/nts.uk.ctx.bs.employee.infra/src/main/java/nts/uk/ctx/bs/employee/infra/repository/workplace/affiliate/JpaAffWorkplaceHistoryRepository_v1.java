@@ -131,10 +131,11 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 			return;
 		}
 		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(beforeItem.get().identifier(), BsymtAffiWorkplaceHist.class);
-		if (histItem.isPresent()){
-			updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
-			this.commandProxy().update(histItem.get());
+		if (!histItem.isPresent()){
+			return;
 		}
+		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
 	}
 	
 	/**
@@ -149,10 +150,11 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 			return;
 		}
 		Optional<BsymtAffiWorkplaceHist> histItem  = this.queryProxy().find(aferItem.get().identifier(), BsymtAffiWorkplaceHist.class);
-		if (histItem.isPresent()){
-			updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
-			this.commandProxy().update(histItem.get());
+		if (!histItem.isPresent()){
+			return;
 		}
+		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
 	}
 	
 }
