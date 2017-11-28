@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.jobtile.affiliate;
+package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.jobtile.affiliate;
+package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
