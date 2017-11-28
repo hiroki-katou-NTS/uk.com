@@ -18,7 +18,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
-import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedImport;
+import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImport;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixed;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkfixedRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -69,24 +69,26 @@ public class WorkFixedFinder {
 		String companyId = AppContexts.user().companyId();
 
 		// Get WorkFixed info
-		Map<Entry<Integer, String>, WorkFixed> listWorkFixed = this.workfixedRepository.findWorkFixed(companyId)
+		List<WorkFixed> listWorkFixed = this.workfixedRepository.findWorkFixed(companyId);
+		Map<Entry<Integer, String>, WorkFixed> mapWorkFixed = listWorkFixed
 				.stream()
 				.collect(Collectors.toMap(
 						item -> new ImmutablePair<Integer, String>(item.getClosureId(), item.getWkpId()),
 						Function.identity()));
 
 		// Get all Person info
-		List<String> listPersonId = listDto.stream()
-				.map(WorkFixedFinderDto::getConfirmPid)
+		List<String> listPersonId = listWorkFixed.stream()
+				.map(WorkFixed::getConfirmPid)
 				.distinct()
+				.filter(dto -> dto != null)
 				.collect(Collectors.toList());
-		Map<String, PersonInfoImportedImport> listPerson = this.personInfoAdapter.getListPerson(listPersonId)
+		Map<String, PersonInfoImport> listPerson = this.personInfoAdapter.getByListId(listPersonId)
 				.stream()
-				.collect(Collectors.toMap(item -> item.getEmployeeId(), Function.identity()));
+				.collect(Collectors.toMap(item -> item.getPersonId(), Function.identity()));
 
 		return listDto.stream()
 				.map(dto -> {
-					WorkFixed workFixed = listWorkFixed
+					WorkFixed workFixed = mapWorkFixed
 							.get(new ImmutablePair<Integer, String>(dto.getClosureId(), dto.getWkpId()));
 					if (workFixed == null) {
 						return null;
@@ -95,12 +97,12 @@ public class WorkFixedFinder {
 					// Get WorkFixed info
 					if (!Strings.isEmpty(workFixed.getConfirmPid())) {
 						// Get Person info
-						PersonInfoImportedImport person = listPerson.get(workFixed.getConfirmPid());
+						PersonInfoImport person = listPerson.get(workFixed.getConfirmPid());
 						if (person == null) {
 							workFixed.saveToMemento(dto);
 							return dto;
 						}
-						dto.setEmployeeName(person.getEmployeeName());
+						dto.setEmployeeName(person.getPersonName());
 					}
 		
 					workFixed.saveToMemento(dto);
@@ -118,13 +120,13 @@ public class WorkFixedFinder {
 	public PersonInfoWorkFixedDto findCurrentPersonName() {
 		// Get Person Id
 		String personId = AppContexts.user().personId();
-		PersonInfoImportedImport personImportDto = this.personInfoAdapter.getPersonInfo(personId);
+		PersonInfoImport personImportDto = this.personInfoAdapter.getPersonInfo(personId);
 		if (personImportDto == null) {
 			return null;
 		}
 		return PersonInfoWorkFixedDto.builder()
-				.employeeId(personImportDto.getEmployeeId())
-				.employeeName(personImportDto.getEmployeeName())
+				.employeeId(personImportDto.getPersonId())
+				.employeeName(personImportDto.getPersonName())
 				.build();
 	}
 }
