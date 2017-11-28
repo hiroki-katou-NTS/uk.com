@@ -846,7 +846,8 @@ public class AppOvertimeFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public RecordWorkDto getRecordWork(String companyID, String employeeID, String appDate, String siftCD){
+	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD){
+		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = -1; 
 		Integer endTime1 = -1;
 		Integer startTime2 = -1;

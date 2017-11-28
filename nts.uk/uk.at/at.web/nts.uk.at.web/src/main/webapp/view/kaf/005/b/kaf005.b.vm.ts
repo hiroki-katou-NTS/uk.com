@@ -374,6 +374,18 @@ module nts.uk.at.view.kaf005.b {
                         self.workTypeName(childData.selectedWorkTypeName);
                         self.siftCD(childData.selectedWorkTimeCode);
                         self.siftName(childData.selectedWorkTimeName);
+                        service.getRecordWork(
+                            {
+                                employeeID: self.employeeID(), 
+                                appDate: moment(self.appDate()).format("YYYY/MM/DD"),
+                                siftCD: self.siftCD()
+                            }
+                        ).done(data => {
+                            self.timeStart1(data.startTime1);
+                            self.timeEnd1(data.endTime1);
+                            self.timeStart2(data.startTime2);
+                            self.timeEnd2(data.endTime2);    
+                        });
                     }
                 })
             }
