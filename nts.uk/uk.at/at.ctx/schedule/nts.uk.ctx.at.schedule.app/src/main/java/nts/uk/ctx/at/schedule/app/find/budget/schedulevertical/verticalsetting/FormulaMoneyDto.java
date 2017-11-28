@@ -38,6 +38,7 @@ public class FormulaMoneyDto {
      * @return
      */
     	public static FormulaMoneyDto fromDomain(FormulaMoney money){
+    		if(money == null) {return null;}
     		List<MoneyFuncDto> items = money.getLstMoney().stream()
     				.map(x-> MoneyFuncDto.fromDomain(x))
     				.collect(Collectors.toList());

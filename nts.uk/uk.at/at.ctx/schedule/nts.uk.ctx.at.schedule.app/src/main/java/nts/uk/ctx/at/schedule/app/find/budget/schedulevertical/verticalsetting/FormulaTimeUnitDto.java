@@ -21,7 +21,7 @@ public class FormulaTimeUnitDto {
 
 	/** コード */
 	private String verticalCalCd;
-	
+
 	/** 汎用縦計項目ID */
 	private String verticalCalItemId;
 
@@ -36,27 +36,23 @@ public class FormulaTimeUnitDto {
 
 	/** 単価 */
 	private int actualDisplayAtr;
-	
+
 	private List<TimeUnitFuncDto> lstTimeUnitFuncs;
-	
+
 	/**
 	 * fromDomain
+	 * 
 	 * @param unit
 	 * @return
 	 */
-	public static FormulaTimeUnitDto fromDomain(FormulaTimeUnit unit ){
-		List<TimeUnitFuncDto> items = unit.getLstTimeUnitFuncs().stream()
-				.map(x -> TimeUnitFuncDto.fromDomain(x))
+	public static FormulaTimeUnitDto fromDomain(FormulaTimeUnit unit) {
+		if (unit == null) {
+			return null;
+		}
+		List<TimeUnitFuncDto> items = unit.getLstTimeUnitFuncs().stream().map(x -> TimeUnitFuncDto.fromDomain(x))
 				.collect(Collectors.toList());
-		return new FormulaTimeUnitDto(
-				unit.getCompanyId(),
-				unit.getVerticalCalCd(),
-				unit.getVerticalCalItemId(),
-				unit.getRoundingTime().value,
-				unit.getRoundingAtr().value,
-				unit.getUnitPrice().value,
-				unit.getActualDisplayAtr().value,
-				items
-				);
+		return new FormulaTimeUnitDto(unit.getCompanyId(), unit.getVerticalCalCd(), unit.getVerticalCalItemId(),
+				unit.getRoundingTime().value, unit.getRoundingAtr().value, unit.getUnitPrice().value,
+				unit.getActualDisplayAtr().value, items);
 	}
 }

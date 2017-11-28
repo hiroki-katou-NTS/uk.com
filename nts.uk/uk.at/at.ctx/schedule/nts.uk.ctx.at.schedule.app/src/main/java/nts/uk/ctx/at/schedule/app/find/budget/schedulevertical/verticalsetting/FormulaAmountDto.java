@@ -24,28 +24,23 @@ public class FormulaAmountDto {
 
 	/** 計算方法区分 */
 	private int calMethodAtr;
-	
+
 	private FormulaMoneyDto moneyFunc;
-	
+
 	private FormulaTimeUnitDto timeUnit;
 
 	/**
 	 * fromDomain
+	 * 
 	 * @param domain
 	 * @return
 	 */
 	public static FormulaAmountDto fromDomain(FormulaAmount domain) {
-		FormulaMoneyDto money = FormulaMoneyDto.fromDomain(domain.getMoneyFunc());
-		FormulaTimeUnitDto time = FormulaTimeUnitDto.fromDomain(domain.getTimeUnit());
-		
-		return new FormulaAmountDto(
-				domain.getCompanyId(),
-				domain.getVerticalCalCd(),
-				domain.getVerticalCalItemId(),
-				domain.getCalMethodAtr().value,
-				money,
-				time
-			);
+			FormulaMoneyDto money = FormulaMoneyDto.fromDomain(domain.getMoneyFunc());
+			FormulaTimeUnitDto time = FormulaTimeUnitDto.fromDomain(domain.getTimeUnit());
+
+		return new FormulaAmountDto(domain.getCompanyId(), domain.getVerticalCalCd(), domain.getVerticalCalItemId(),
+				domain.getCalMethodAtr().value, money, time);
 	}
-	
+
 }
