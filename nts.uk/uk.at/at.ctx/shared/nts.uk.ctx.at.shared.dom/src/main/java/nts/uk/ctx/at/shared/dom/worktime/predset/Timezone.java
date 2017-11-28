@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.predset;
+package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;

@@ -15,8 +15,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSet;
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.predset.KwtspWorkTimeSetPKNew_;
 import nts.uk.ctx.at.shared.infra.entity.predset.KwtstWorkTimeSetNew;
 import nts.uk.ctx.at.shared.infra.entity.predset.KwtstWorkTimeSetNew_;

@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.pred.dto.PredDto;
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSet;
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

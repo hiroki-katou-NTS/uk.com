@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.pred.dto;
 
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetMemento;
-import nts.uk.ctx.at.shared.dom.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 
 /**
  * The Class PredDto.

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.predset;
+package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
 

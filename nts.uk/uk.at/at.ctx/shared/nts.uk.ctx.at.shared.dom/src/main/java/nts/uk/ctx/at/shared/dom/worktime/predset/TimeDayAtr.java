@@ -2,20 +2,28 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.predset;
+package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 /**
- * The Enum UseSetting.
+ * The Enum TimeDayAtr.
  */
-public enum UseSetting {
+public enum TimeDayAtr {
 
-	/** The not use. */
-	// 使用しない
-	NOT_USE(0, "Enum_UseSetting_NotUse", "使用しない"),
+	/** The previous day. */
+	// 前日
+	PREVIOUS_DAY(0, "Enum_DayAtr_PreviousDay", "前日"),
 
-	/** The use. */
-	// 使用する
-	USE(1, "Enum_UseSetting_Use", "使用する");
+	/** The today. */
+	// 当日
+	TODAY(1, "Enum_DayAtr_Day", "当日"),
+
+	/** The next day. */
+	// 前日
+	NEXT_DAY(2, "Enum_DayAtr_NextDay", "翌日"),
+
+	/** The skip day. */
+	// 翌々日
+	SKIP_DAY(3, "Enum_DayAtr_SkipDay", "翌々日");
 
 	/** The value. */
 	public final int value;
@@ -27,16 +35,16 @@ public enum UseSetting {
 	public final String description;
 
 	/** The Constant values. */
-	private final static UseSetting[] values = UseSetting.values();
+	private final static TimeDayAtr[] values = TimeDayAtr.values();
 
 	/**
-	 * Instantiates a new use setting.
+	 * Instantiates a new time day atr.
 	 *
 	 * @param value the value
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private UseSetting(int value, String nameId, String description) {
+	private TimeDayAtr(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -46,16 +54,16 @@ public enum UseSetting {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the use setting
+	 * @return the time day atr
 	 */
-	public static UseSetting valueOf(Integer value) {
+	public static TimeDayAtr valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (UseSetting val : UseSetting.values) {
+		for (TimeDayAtr val : TimeDayAtr.values) {
 			if (val.value == value) {
 				return val;
 			}
