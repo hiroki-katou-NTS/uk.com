@@ -11,8 +11,8 @@ module cps002.f.vm {
         lstCategory: KnockoutObservableArray<PerInfoCtg>;
         currentPerInfoCtg: KnockoutObservable<string> = ko.observable("");
         lstPerInfoItemDef: KnockoutObservableArray<PerInforItemDef>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        columnPerInfoItemDef: KnockoutObservableArray<NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
+        columnPerInfoItemDef: KnockoutObservableArray<any>;
         currentPerInfoItem: KnockoutObservableArray<string> = ko.observableArray([]);
         txtSearch: KnockoutObservable<string> = ko.observable("");
 
@@ -36,7 +36,7 @@ module cps002.f.vm {
             self.currentPerInfoCtg.subscribe(id => {
                 service.getPerInfoItemDef(id).done(function(data) {
                     self.lstPerInfoItemDef(data);
-                    let perItemCopy = _.filter(data, function(item) { return item.alreadyItemDefCopy == true; }).map(function(item) { return item.id; });
+                    let perItemCopy = _.filter(data, function(item: IPerInfoItemDef) { return item.alreadyItemDefCopy == true; }).map(function(item) { return item.id; });
                     self.currentPerInfoItem(perItemCopy);
                 });
                 //                let dataArr = _.filter(self.data.lstPerItem, function(item){ return item.perCtgId == id;});
@@ -88,60 +88,6 @@ module cps002.f.vm {
                 alertError({ messageId: "Msg_352" });
             });
         }
-
-        //        data = {
-        //            listPerCtg : [{id: "123a", alreadyCopy: false, categoryName: "A"},
-        //                    {id: "124a", alreadyCopy: false, categoryName: "B"},
-        //                    {id: "125a", alreadyCopy: true, categoryName: "C"},
-        //                    {id: "126a", alreadyCopy: true, categoryName: "D"},
-        //                    {id: "127a", alreadyCopy: false, categoryName: "E"},
-        //                    {id: "211a", alreadyCopy: false, categoryName: "F"},
-        //                    {id: "212a", alreadyCopy: true, categoryName: "G"},
-        //                    {id: "213a", alreadyCopy: false, categoryName: "H"},         
-        //                    {id: "214a", alreadyCopy: true, categoryName: "I"},
-        //                    {id: "216a", alreadyCopy: true, categoryName: "J"},
-        //                    {id: "217a", alreadyCopy: false, categoryName: "K"},
-        //                    {id: "218a", alreadyCopy: false, categoryName: "L"},
-        //                    {id: "219a", alreadyCopy: true, categoryName: "M"},
-        //                    {id: "200a", alreadyCopy: false, categoryName: "N"},
-        //                    {id: "112a", alreadyCopy: true, categoryName: "O"}
-        //            ],
-        //           lstPerItem : [  {id: "1", itemName: "AA", perCtgId: "123a", alreadyItemDefCopy: true},
-        //                    {id: "2", itemName: "BB", perCtgId: "124a", alreadyItemDefCopy: true},
-        //                    {id: "3", itemName: "CC", perCtgId: "127a", alreadyItemDefCopy: false},
-        //                    {id: "4", itemName: "DD", perCtgId: "123a", alreadyItemDefCopy: false},
-        //                    {id: "5", itemName: "FF", perCtgId: "212a", alreadyItemDefCopy: false},
-        //                    {id: "6", itemName: "EE", perCtgId: "213a", alreadyItemDefCopy: false},
-        //                    {id: "7", itemName: "GG", perCtgId: "123a", alreadyItemDefCopy: true},
-        //                    {id: "8", itemName: "HH", perCtgId: "124a", alreadyItemDefCopy: true},
-        //                    {id: "9", itemName: "II", perCtgId: "126a", alreadyItemDefCopy: false},
-        //                    {id: "11", itemName: "JJ", perCtgId: "125a", alreadyItemDefCopy: true},
-        //                    {id: "12", itemName: "KK", perCtgId: "213a", alreadyItemDefCopy: false},
-        //                    {id: "13", itemName: "QW", perCtgId: "211a", alreadyItemDefCopy: false},
-        //                    {id: "14", itemName: "RT", perCtgId: "211a", alreadyItemDefCopy: true},
-        //                    {id: "15", itemName: "DF", perCtgId: "213a", alreadyItemDefCopy: false},
-        //                    {id: "16", itemName: "EERRR", perCtgId: "212a", alreadyItemDefCopy: false},
-        //                    {id: "17", itemName: "YU", perCtgId: "125a", alreadyItemDefCopy: true},
-        //                    {id: "18", itemName: "ER", perCtgId: "214a", alreadyItemDefCopy: false},
-        //                    {id: "19", itemName: "BS", perCtgId: "127a", alreadyItemDefCopy: true},
-        //                    {id: "21", itemName: "ER", perCtgId: "211a", alreadyItemDefCopy: false},
-        //                    {id: "22", itemName: "AAAE", perCtgId: "212a", alreadyItemDefCopy: false},
-        //                    {id: "23", itemName: "RT", perCtgId: "214a", alreadyItemDefCopy: true},
-        //                    {id: "24", itemName: "RAA", perCtgId: "214a", alreadyItemDefCopy: true},
-        //                    {id: "25", itemName: "YBB", perCtgId: "216a", alreadyItemDefCopy: true},
-        //                    {id: "26", itemName: "ICC", perCtgId: "214a", alreadyItemDefCopy: false},
-        //                    {id: "27", itemName: "PDD", perCtgId: "216a", alreadyItemDefCopy: true},
-        //                    {id: "28", itemName: "NFF", perCtgId: "200a", alreadyItemDefCopy: false},
-        //                    {id: "29", itemName: "MEE", perCtgId: "112a", alreadyItemDefCopy: false},
-        //                    {id: "30", itemName: "AGG", perCtgId: "218a", alreadyItemDefCopy: true},
-        //                    {id: "32", itemName: "LHH", perCtgId: "219a", alreadyItemDefCopy: true},
-        //                    {id: "221", itemName: "OII", perCtgId: "200a", alreadyItemDefCopy: false},
-        //                    5", itemName: "PJJ", perCtgId: "217a", alreadyItemDefCopy: true},
-        //                    {id: "125", itemName: "WKK", perCtgId: "219a", alreadyItemDefCopy: false},
-        //                    {id: "88", itemName: "TQW", perCtgId: "218a", alreadyItemDefCopy: false},
-        //                    {id: "74", itemName: "ART", perCtgId: "217a", alreadyItemDefCopy: true}
-        //]
-        //        };
 
     }
 

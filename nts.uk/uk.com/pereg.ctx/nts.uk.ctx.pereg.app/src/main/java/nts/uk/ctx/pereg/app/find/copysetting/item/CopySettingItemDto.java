@@ -1,9 +1,9 @@
-package find.person.info.item;
+package nts.uk.ctx.pereg.app.find.copysetting.item;
 
-import lombok.Value;
+import lombok.experimental.Value;
 
 @Value
-public class PerInfoItemDefMapDto {
+public class CopySettingItemDto {
 	private String id;
 	private String perInfoCtgId;
 	private String itemName;

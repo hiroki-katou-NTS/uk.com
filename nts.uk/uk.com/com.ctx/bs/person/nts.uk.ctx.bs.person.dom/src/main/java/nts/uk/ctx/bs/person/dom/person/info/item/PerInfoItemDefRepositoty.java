@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.person.dom.person.info.item;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,10 +58,6 @@ public interface PerInfoItemDefRepositoty {
 	// vinhpx start
 	int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId);
 
-	int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId);
-
-	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd);
-
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
 			String contractCd);
 
@@ -82,5 +79,8 @@ public interface PerInfoItemDefRepositoty {
 	 * @return
 	 */
 	boolean checkExistedSelectionItemId(String ctgId, String itemId);
+
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String personInfoCategoryId, String companyId,
+			String contractCode);
 	
 }

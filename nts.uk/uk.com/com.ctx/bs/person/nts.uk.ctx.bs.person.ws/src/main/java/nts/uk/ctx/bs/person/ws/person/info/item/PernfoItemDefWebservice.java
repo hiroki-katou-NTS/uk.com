@@ -22,7 +22,6 @@ import find.person.info.item.PerInfoItemChangeDefDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import find.person.info.item.PerInfoItemDefFullEnumDto;
-import find.person.info.item.PerInfoItemDefMapDto;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 
@@ -79,14 +78,6 @@ public class PernfoItemDefWebservice extends WebService {
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListId(List<String> listItemDefId) {
 		return itemDefFinder.getPerInfoItemDefByListId(listItemDefId);
 	}
-	//vinhpx: start
-	@POST
-	@Path("findby/getPerInfoItemByCtgId")
-	public List<PerInfoItemDefMapDto> getPerInfoItemByCtgId(String ctgId){
-		return itemDefFinder.getPerInfoDefById(ctgId);
-	}
-	
-	//vinhpx; end
 
 	// service for screen Layout
 	@POST
