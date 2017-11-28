@@ -8,7 +8,6 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 /**
  * プライマリキー：月別実績の勤怠時間 
@@ -25,13 +24,21 @@ public class KrcdtMonAttendanceTimePK implements Serializable {
 
 	/** 社員ID */
 	@Column(name = "SID")
-	public String employeeID;
+	public String employeeId;
 
-	/** 開始年月日 */
-	@Column(name = "START_YMD")
-	public GeneralDate startYmd;
-
-	/** 終了年月日 */
-	@Column(name = "END_YMD")
-	public GeneralDate endYmd;
+	/** 年月 */
+	@Column(name = "YM")
+	public int yearMonth;
+	
+	/** 締めID */
+	@Column(name = "CLOSURE_ID")
+	public int closureId;
+	
+	/** 締め日 */
+	@Column(name = "CLOSURE_DAY")
+	public int closureDay;
+	
+	/** 末日とする */
+	@Column(name = "IS_LAST_DAY")
+	public int isLastDay;
 }

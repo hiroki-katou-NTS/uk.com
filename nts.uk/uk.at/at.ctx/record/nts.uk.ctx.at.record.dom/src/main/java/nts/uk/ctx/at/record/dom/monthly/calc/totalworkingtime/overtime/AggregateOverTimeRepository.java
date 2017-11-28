@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtimework;
+package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime;
 
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 
@@ -6,23 +6,23 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
  * 集計残業時間
  * @author shuichu_ishida
  */
-public interface AggregateOverTimeWorkRepository {
+public interface AggregateOverTimeRepository {
 
 	/**
 	 * 追加
 	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param aggregateOverTimeWork 集計残業時間
+	 * @param aggregateOverTime 集計残業時間
 	 */
 	void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			AggregateOverTimeWork aggregateOverTimeWork);
+			AggregateOverTime aggregateOverTime);
 
 	/**
 	 * 更新
 	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param aggregateOverTimeWork 集計残業時間
+	 * @param aggregateOverTime 集計残業時間
 	 */
 	void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			AggregateOverTimeWork aggregateOverTimeWork);
+			AggregateOverTime aggregateOverTime);
 	
 	/**
 	 * 削除　（親キー）

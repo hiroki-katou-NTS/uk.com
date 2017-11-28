@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の月の計算
@@ -70,10 +71,12 @@ public class MonthlyCalculation {
 	
 	/**
 	 * 履歴ごとに月別実績を集計する
-	 * @param companyCode 会社コード
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 */
-	public void aggregate(String companyCode, WorkingSystem workingSystem){
+	public void aggregate(String companyId, String employeeId, DatePeriod datePeriod, WorkingSystem workingSystem){
 		
 		// 日別実績の勤怠時間　取得
 		//*****（未）　日別実績の勤怠時間を、期間指定で複数取ってくる。
@@ -81,27 +84,32 @@ public class MonthlyCalculation {
 		//attendanceTimeOfDailys = （リポジトリ：find）;
 		
 		// 共有項目を集計する
-		for (AttendanceTimeOfDailyPerformance attendanceTime : attendanceTimeOfDailys){
-			this.totalWorkingTime.aggregateSharedItem(attendanceTime);
-		}
+		this.totalWorkingTime.aggregateSharedItem(attendanceTimeOfDailys);
 		
 		// 通常勤務　or　変形労働　の時
 		if (workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork()){
 			
 			// 通常・変形労働勤務の月別実績を集計する
-			this.actualWorkingTime.aggregateMonthly();
+			this.actualWorkingTime.aggregateMonthly(companyId, employeeId, datePeriod,
+					workingSystem, MonthlyAggregateAtr.Monthly, attendanceTimeOfDailys);
 			
 			// 通常・変形労働勤務の月単位の時間を集計する
-			this.actualWorkingTime.aggregateMonthlyHours(workingSystem);
+			this.actualWorkingTime.aggregateMonthlyHours(companyId, employeeId, datePeriod,
+					workingSystem, MonthlyAggregateAtr.Monthly);
 		}
 		// フレックス時間勤務　の時
 		else if (workingSystem == WorkingSystem.FlexTimeWork){
 			
 			// フレックス勤務の月別実績を集計する
-			this.flexTime.aggregateMonthly();
+			//*****（仮）　便宜上集計　指定
+			this.flexTime.aggregateMonthly(companyId, employeeId, datePeriod,
+					workingSystem, MonthlyAggregateAtr.Monthly,
+					MonthlyAggregateFlexAtr.ForConvenience, attendanceTimeOfDailys);
 			
 			// フレックス勤務の月単位の時間を集計する
-			this.flexTime.aggregateMonthlyHours();
+			//*****（仮）　便宜上集計　指定
+			this.flexTime.aggregateMonthlyHours(companyId, employeeId, datePeriod,
+					MonthlyAggregateFlexAtr.ForConvenience);
 		}
 
 		// 実働時間の集計

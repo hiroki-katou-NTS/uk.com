@@ -6,9 +6,9 @@ package nts.uk.ctx.at.record.dom.monthly.calc.flex;
  */
 public enum ExcessFlexAtr {
 	/** 原則 */
-	Principle(1),
+	Principle(0),
 	/** 便宜上 */
-	ForConvenience(2);
+	ForConvenience(1);
 
 	/**
 	 * 原則か判定する

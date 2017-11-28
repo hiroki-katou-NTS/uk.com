@@ -19,7 +19,7 @@ public class HolidayWorkTimeOfMonthly {
 	/** 事前休出時間 */
 	private AttendanceTimeMonth beforeHolidayWorkTime;
 	/** 振替合計時間 */
-	private TimeMonthWithCalculation transferTotalTime;
+	private TimeMonthWithCalculation totalTransferTime;
 	/** 集計休出時間 */
 	private List<AggregateHolidayWorkTime> aggregateHolidayWorkTimes;
 
@@ -35,20 +35,20 @@ public class HolidayWorkTimeOfMonthly {
 	 * ファクトリー
 	 * @param totalHolidayWorkTime 休出合計時間
 	 * @param beforeHolidayWorkTime 事前休出時間
-	 * @param transferTotalTime 振替合計時間
+	 * @param totalTransferTime 振替合計時間
 	 * @param aggregateHolidayWorkTimes 集計休出時間
 	 * @return 月別実績の休出時間
 	 */
 	public static HolidayWorkTimeOfMonthly of(
 			TimeMonthWithCalculation totalHolidayWorkTime,
 			AttendanceTimeMonth beforeHolidayWorkTime,
-			TimeMonthWithCalculation transferTotalTime,
+			TimeMonthWithCalculation totalTransferTime,
 			List<AggregateHolidayWorkTime> aggregateHolidayWorkTimes){
 
 		HolidayWorkTimeOfMonthly domain = new HolidayWorkTimeOfMonthly();
 		domain.totalHolidayWorkTime = totalHolidayWorkTime;
 		domain.beforeHolidayWorkTime = beforeHolidayWorkTime;
-		domain.transferTotalTime = transferTotalTime;
+		domain.totalTransferTime = totalTransferTime;
 		domain.aggregateHolidayWorkTimes = aggregateHolidayWorkTimes;
 		return domain;
 	}

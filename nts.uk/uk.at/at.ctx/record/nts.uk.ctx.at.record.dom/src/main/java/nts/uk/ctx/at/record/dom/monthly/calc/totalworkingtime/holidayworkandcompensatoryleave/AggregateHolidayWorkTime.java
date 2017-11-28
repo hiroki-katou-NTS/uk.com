@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.HolidayWorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
 /**
  * 集計休出時間
@@ -16,17 +17,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class AggregateHolidayWorkTime {
 
 	/** 休出枠NO */
-	private int holidayWorkTimeFrameNo;
+	private HolidayWorkFrameNo holidayWorkFrameNo;
 	/** 休出時間 */
 	private TimeMonthWithCalculation holidayWorkTime;
 	/** 事前休出時間 */
 	private AttendanceTimeMonth beforeHolidayWorkTime;
-	/** 振替休出時間 */
-	private TimeMonthWithCalculation transferHolidayWorkTime;
+	/** 振替時間 */
+	private TimeMonthWithCalculation transferTime;
 	/** 法定内休出時間 */
-	private AttendanceTimeMonth withinStatutoryHolidayWorkTime;
+	private AttendanceTimeMonth legalHolidayWorkTime;
 	/** 法定内振替休出時間 */
-	private AttendanceTimeMonth withinStatutoryTransferHolidayWorkTime;
+	private AttendanceTimeMonth legalTransferHolidayWorkTime;
 	/** 時系列ワーク */
 	private List<HolidayWorkTimeOfTimeSeries> timeSeriesWorks;
 	
@@ -40,29 +41,29 @@ public class AggregateHolidayWorkTime {
 	
 	/**
 	 * ファクトリー
-	 * @param holidayWorkTimeFrameNo 休出枠NO
+	 * @param holidayWorkFrameNo 休出枠NO
 	 * @param holidayWorkTime 休出時間
 	 * @param beforeHolidayWorkTime 事前休出時間
-	 * @param transferHolidayWorkTime 振替休出時間
-	 * @param withinStatutoryHolidayWorkTime 法定内休出時間
-	 * @param withinStatutoryTransferHolidayWorkTime 法定内振替休出時間
+	 * @param transferTime 振替時間
+	 * @param legalHolidayWorkTime 法定内休出時間
+	 * @param legalTransferHolidayWorkTime 法定内振替休出時間
 	 * @return 集計休出時間
 	 */
 	public static AggregateHolidayWorkTime of(
-			int holidayWorkTimeFrameNo,
+			HolidayWorkFrameNo holidayWorkFrameNo,
 			TimeMonthWithCalculation holidayWorkTime,
 			AttendanceTimeMonth beforeHolidayWorkTime,
-			TimeMonthWithCalculation transferHolidayWorkTime,
-			AttendanceTimeMonth withinStatutoryHolidayWorkTime,
-			AttendanceTimeMonth withinStatutoryTransferHolidayWorkTime){
+			TimeMonthWithCalculation transferTime,
+			AttendanceTimeMonth legalHolidayWorkTime,
+			AttendanceTimeMonth legalTransferHolidayWorkTime){
 		
 		AggregateHolidayWorkTime domain = new AggregateHolidayWorkTime();
-		domain.holidayWorkTimeFrameNo = holidayWorkTimeFrameNo;
+		domain.holidayWorkFrameNo = holidayWorkFrameNo;
 		domain.holidayWorkTime = holidayWorkTime;
 		domain.beforeHolidayWorkTime = beforeHolidayWorkTime;
-		domain.transferHolidayWorkTime = transferHolidayWorkTime;
-		domain.withinStatutoryHolidayWorkTime = withinStatutoryHolidayWorkTime;
-		domain.withinStatutoryTransferHolidayWorkTime = withinStatutoryTransferHolidayWorkTime;
+		domain.transferTime = transferTime;
+		domain.legalHolidayWorkTime = legalHolidayWorkTime;
+		domain.legalTransferHolidayWorkTime = legalTransferHolidayWorkTime;
 		return domain;
 	}
 }

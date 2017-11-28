@@ -6,8 +6,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTimeRepository;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtAggrTotalWrkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtMonAggrTotalWrk;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 /**
  * リポジトリ実装：集計総労働時間
@@ -28,13 +31,29 @@ public class JpaAggregateTotalWorkingTime extends JpaRepository implements Aggre
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime) {
+
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
+		// キー
 		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end());
-		KrcdtAggrTotalWrkTime entity = this.queryProxy().find(key, KrcdtAggrTotalWrkTime.class).get();
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 月別実績の就業時間
+		WorkTimeOfMonthly workTime = aggregateTotalWorkingTime.getWorkTime();
+		// 月別実績の所定労働時間
+		PrescribedWorkingTimeOfMonthly prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
+		
+		KrcdtMonAggrTotalWrk entity = this.queryProxy().find(key, KrcdtMonAggrTotalWrk.class).get();
 		entity.totalWorkingTime = aggregateTotalWorkingTime.getTotalWorkingTime().v();
+		entity.workTime = workTime.getWorkTime().v();
+		entity.withinPrescribedPremiumTime = workTime.getWithinPrescribedPremiumTime().v();
+		entity.schedulePrescribedWorkingTime = prescribedWorkingTime.getSchedulePrescribedWorkingTime().v();
+		entity.recordPrescribedWorkingTime = prescribedWorkingTime.getRecordPrescribedWorkingTime().v();
 		this.commandProxy().update(entity);
 	}
 	
@@ -44,16 +63,32 @@ public class JpaAggregateTotalWorkingTime extends JpaRepository implements Aggre
 	 * @param aggregateTotalWorkingTime ドメイン：集計総労働時間
 	 * @return エンティティ：集計総労働時間
 	 */
-	private static KrcdtAggrTotalWrkTime toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
+	private static KrcdtMonAggrTotalWrk toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime){
+
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
+		// キー
 		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end());
-		KrcdtAggrTotalWrkTime entity = new KrcdtAggrTotalWrkTime();
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 月別実績の就業時間
+		WorkTimeOfMonthly workTime = aggregateTotalWorkingTime.getWorkTime();
+		// 月別実績の所定労働時間
+		PrescribedWorkingTimeOfMonthly prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
+		
+		KrcdtMonAggrTotalWrk entity = new KrcdtMonAggrTotalWrk();
 		entity.PK = key;
 		entity.totalWorkingTime = aggregateTotalWorkingTime.getTotalWorkingTime().v();
+		entity.workTime = workTime.getWorkTime().v();
+		entity.withinPrescribedPremiumTime = workTime.getWithinPrescribedPremiumTime().v();
+		entity.schedulePrescribedWorkingTime = prescribedWorkingTime.getSchedulePrescribedWorkingTime().v();
+		entity.recordPrescribedWorkingTime = prescribedWorkingTime.getRecordPrescribedWorkingTime().v();
 		return entity;
 	}
 }

@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -14,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistoryAdopter;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
  * ドメインサービス：月別実績を集計する
@@ -32,24 +35,26 @@ public class AggregateMonthlyRecord implements AggregateMonthlyRecordService {
 	
 	/**
 	 * 集計処理
-	 * @param companyCode 会社コード
-	 * @param employeeID 社員ID
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
 	 * @param datePeriod 期間
 	 * @return 集計結果
 	 */
-	public AggregateMonthlyRecordValue aggregate(String companyCode, String employeeID, DatePeriod datePeriod){
+	public AggregateMonthlyRecordValue aggregate(String companyId, String employeeId, YearMonth yearMonth, DatePeriod datePeriod){
 		
-		return this.aggregateProcess(companyCode, employeeID, datePeriod);
+		return this.aggregateProcess(companyId, employeeId, yearMonth, datePeriod);
 	}
 	
 	/**
 	 * 集計処理　（アルゴリズム）
-	 * @param companyCode 会社コード
-	 * @param employeeID 社員ID
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
 	 * @param datePeriod 期間
 	 * @return 集計結果
 	 */
-	private AggregateMonthlyRecordValue aggregateProcess(String companyCode, String employeeID, DatePeriod datePeriod){
+	private AggregateMonthlyRecordValue aggregateProcess(String companyId, String employeeId, YearMonth yearMonth, DatePeriod datePeriod){
 		
 		// 戻り値初期化
 		AggregateMonthlyRecordValue value = new AggregateMonthlyRecordValue();
@@ -57,11 +62,14 @@ public class AggregateMonthlyRecord implements AggregateMonthlyRecordService {
 		// ドメインモデル「労働契約履歴．労働制」を取得する
 		//*****（未）　期間で取れるメソッドが必要
 		//List<EmploymentContractHistory> employmentContracts =
-		//		this.employmentContractHistoryAdopter.findByEmployeeIdAndBaseDate(employeeID, baseDate);
+		//		this.employmentContractHistoryAdopter.findByEmployeeIdAndDatePeriod(employeeID, datePeriod);
 		//*****（未）　固定勤務で取れた事に
 		List<EmploymentContractHistory> employmentContracts = new ArrayList<>();
-		employmentContracts.add(new EmploymentContractHistory(employeeID, WorkingSystem.RegularWork));
+		employmentContracts.add(new EmploymentContractHistory(employeeId, WorkingSystem.RegularWork));
 		DatePeriod term = new DatePeriod(GeneralDate.ymd(2002, 6, 10), GeneralDate.ymd(2017, 11, 12));
+		//*****（未）　締日もここで取れるはず？
+		ClosureId closureId = ClosureId.RegularEmployee;
+		ClosureDate closureDate = new ClosureDate(0, true);
 		
 		// 履歴の数だけループ
 		for (EmploymentContractHistory employmentContract : employmentContracts){
@@ -74,17 +82,17 @@ public class AggregateMonthlyRecord implements AggregateMonthlyRecordService {
 			}
 			
 			// 入社前、退職後を期間から除く
-			procPeriod = this.confirmProcPeriodInOffice(procPeriod, employeeID);
+			procPeriod = this.confirmProcPeriodInOffice(procPeriod, employeeId);
 			if (procPeriod == null) {
 				// 処理期間全体が、入社前または退職後の時
 				continue;
 			}
 			
 			// 月別実績の勤怠時間　初期データ作成
-			AttendanceTimeOfMonthly attendanceTime = new AttendanceTimeOfMonthly(employeeID, procPeriod);
+			AttendanceTimeOfMonthly attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate);
 			
 			// 月の計算
-			attendanceTime.aggregate(companyCode, employmentContract.getWorkingSystem());
+			attendanceTime.aggregate(companyId, employmentContract.getWorkingSystem());
 			
 			// 縦計
 			

@@ -21,10 +21,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_FLEX_TIME_MON")
+@Table(name = "KRCDT_MON_FLEX_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtFlexTimeMon extends UkJpaEntity implements Serializable {
+public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,21 +36,21 @@ public class KrcdtFlexTimeMon extends UkJpaEntity implements Serializable {
 	@Column(name = "FLEX_TIME")
 	public int flexTime; 
 	
-	/** フレックス計算時間 */
-	@Column(name = "FLEX_TIME_CALC")
-	public int flexTimeCalc; 
+	/** 計算フレックス時間 */
+	@Column(name = "CALC_FLEX_TIME")
+	public int calcFlexTime; 
 	
-	/** 計算事前フレックス時間 */
-	@Column(name = "CALC_BFR_FLEX_TIME")
-	public int calcBeforeFlexTime; 
+	/** 事前フレックス時間 */
+	@Column(name = "BEFORE_FLEX_TIME")
+	public int beforeFlexTime; 
 	
-	/** 計算法定内フレックス時間 */
-	@Column(name = "CALC_WITHIN_FLEX_TM")
-	public int calcWithinStatutoryFlexTime; 
+	/** 法定内フレックス時間 */
+	@Column(name = "LEGAL_FLEX_TM")
+	public int legalFlexTime; 
 	
-	/** 計算法定外フレックス時間 */
-	@Column(name = "CALC_EXCESS_FLEX_TM")
-	public int calcExcessOfStatutoryFlexTime; 
+	/** 法定外フレックス時間 */
+	@Column(name = "ILLEGAL_FLEX_TM")
+	public int illegalFlexTime; 
 	
 	/** フレックス超過時間 */
 	@Column(name = "FLEX_EXCESS_TIME")
@@ -60,20 +60,16 @@ public class KrcdtFlexTimeMon extends UkJpaEntity implements Serializable {
 	@Column(name = "FLEX_SHORTAGE_TIME")
 	public int flexShortageTime; 
 	
-	/** 事前フレックス時間 */
-	@Column(name = "BEFORE_FLEX_TIME")
-	public int beforeFlexTime; 
-	
-	/** フレックス繰越勤務時間 */
-	@Column(name = "FLEX_CARRYFWD_WRK_TM")
-	public int flexCarryforwardWorkTime; 
-	
 	/** フレックス繰越時間 */
-	@Column(name = "FLEX_CARRYFWD_TIME")
+	@Column(name = "FLEX_CRYFWD_TIME")
 	public int flexCarryforwardTime; 
 	
+	/** フレックス繰越勤務時間 */
+	@Column(name = "FLEX_CRYFWD_WORK_TIME")
+	public int flexCarryforwardWorkTime; 
+	
 	/** フレックス繰越不足時間 */
-	@Column(name = "FLEX_CARRYFWD_SHT_TM")
+	@Column(name = "FLEX_CRYFWD_SHT_TM")
 	public int flexCarryforwardShortageTime; 
 	
 	/** 超過フレ区分 */
@@ -91,9 +87,11 @@ public class KrcdtFlexTimeMon extends UkJpaEntity implements Serializable {
 	/** マッチング：月別実績の勤怠時間 */
 	@OneToOne
 	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName="KRCDT_MON_ATTENDANCE_TIME.SID", insertable = false, updatable = false),
-		@JoinColumn(name = "START_YMD", referencedColumnName="KRCDT_MON_ATTENDANCE_TIME.START_YMD", insertable = false, updatable = false),
-		@JoinColumn(name = "END_YMD", referencedColumnName="KRCDT_MON_ATTENDANCE_TIME.END_YMD", insertable = false, updatable = false)
+    	@JoinColumn(name = "SID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YM", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.YM", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
 	

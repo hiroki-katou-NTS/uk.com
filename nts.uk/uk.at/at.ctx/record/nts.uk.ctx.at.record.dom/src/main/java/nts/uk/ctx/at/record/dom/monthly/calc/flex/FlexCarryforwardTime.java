@@ -10,28 +10,28 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @Getter
 public class FlexCarryforwardTime {
 
-	/** フレックス繰越勤務時間 */
-	private AttendanceTimeMonth flexCarryforwardWorkTime;
 	/** フレックス繰越時間 */
 	private AttendanceTimeMonth flexCarryforwardTime;
+	/** フレックス繰越勤務時間 */
+	private AttendanceTimeMonth flexCarryforwardWorkTime;
 	/** フレックス繰越不足時間 */
 	private AttendanceTimeMonth flexCarryforwardShortageTime;
 	
 	/**
 	 * ファクトリー
-	 * @param flexCarryforwardWorkTime フレックス繰越勤務時間
 	 * @param flexCarryforwardTime フレックス繰越時間
+	 * @param flexCarryforwardWorkTime フレックス繰越勤務時間
 	 * @param flexCarryforwardShortageTime フレックス繰越不足時間
 	 * @return
 	 */
 	public static FlexCarryforwardTime of(
-			AttendanceTimeMonth flexCarryforwardWorkTime,
 			AttendanceTimeMonth flexCarryforwardTime,
+			AttendanceTimeMonth flexCarryforwardWorkTime,
 			AttendanceTimeMonth flexCarryforwardShortageTime){
 
 		FlexCarryforwardTime domain = new FlexCarryforwardTime();
-		domain.flexCarryforwardWorkTime = flexCarryforwardWorkTime;
 		domain.flexCarryforwardTime = flexCarryforwardTime;
+		domain.flexCarryforwardWorkTime = flexCarryforwardWorkTime;
 		domain.flexCarryforwardShortageTime = flexCarryforwardShortageTime;
 		return domain;
 	}

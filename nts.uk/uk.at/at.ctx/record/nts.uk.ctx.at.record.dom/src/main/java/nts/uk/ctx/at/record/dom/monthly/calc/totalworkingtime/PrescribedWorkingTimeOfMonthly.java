@@ -49,17 +49,20 @@ public class PrescribedWorkingTimeOfMonthly {
 	
 	/**
 	 * 所定労働時間を確認する
-	 * @param attendanceTime 日別実績の勤怠時間
+	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
 	 */
-	public void confirm(AttendanceTimeOfDailyPerformance attendanceTime){
+	public void confirm(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 		
-		// 「日別実績の勤務予定時間」を取得する
-		WorkScheduleTimeOfDaily workScheduleTimeOfDaily = attendanceTime.getWorkScheduleTimeOfDaily();
+		for (AttendanceTimeOfDailyPerformance attendanceTimeOfDaily : attendanceTimeOfDailys){
 		
-		// 取得した就業時間を「月別実績の所定労働時間」に入れる
-		//*****（未）上の取得値を、同じクラスをあらたにインスタンス化したものに入れなおしてaddに渡す。下のような渡し方はダメ（なはず）
-		this.timeSeriesWorks.add(PrescribedWorkingTimeOfTimeSeries.of(
-				attendanceTime.getYmd(), workScheduleTimeOfDaily));
+			// 「日別実績の勤務予定時間」を取得する
+			WorkScheduleTimeOfDaily workScheduleTimeOfDaily = attendanceTimeOfDaily.getWorkScheduleTimeOfDaily();
+			
+			// 取得した就業時間を「月別実績の所定労働時間」に入れる
+			//*****（未）上の取得値を、同じクラスをあらたにインスタンス化したものに入れなおしてaddに渡す。下のような渡し方はダメ（なはず）
+			this.timeSeriesWorks.add(PrescribedWorkingTimeOfTimeSeries.of(
+					attendanceTimeOfDaily.getYmd(), workScheduleTimeOfDaily));
+		}
 	}
 	
 	/**
