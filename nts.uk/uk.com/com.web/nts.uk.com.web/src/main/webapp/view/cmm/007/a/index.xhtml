@@ -22,13 +22,15 @@
 						maxLength: 12,
 				};
 
-				__viewContext.primitiveValueConstraints.PlanYearHolidayFrameNo = {
-					valueType: 'Decimal',
-					max: 5,
-					min: 1,
-					mantissaMaxLength: 1,
+				__viewContext.primitiveValueConstraints.OvertimeWorkFrameName = {
+						valueType: 'String',
+						maxLength: 12,
 				};
 			</script>
+			
+			<com:stylefile path="../e/cmm007.e.main.css" />
+			<com:scriptfile path="../e/cmm007.e.service.js" />
+			<com:scriptfile path="../e/cmm007.e.vm.js" />
 			
 			<com:stylefile path="../d/cmm007.d.main.css" />
 			<com:scriptfile path="../d/cmm007.d.service.js" />
@@ -71,7 +73,7 @@
 			<div id="tabpanel-3" role="tabpanel" data-bind="with: planYearHolidayFr">
 				<ui:include src="../d/index.xhtml" />
 			</div>
-			<div id="tabpanel-4" role="tabpanel">
+			<div id="tabpanel-4" role="tabpanel" data-bind="with: overtimeWorkFr">
 				
 			</div>
 			<div id="tabpanel-5" role="tabpanel">
