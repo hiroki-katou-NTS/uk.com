@@ -1,93 +1,17 @@
-module nts.uk.at.view.ksc001.f {
-    
+module nts.uk.at.view.ksu007.b {
+
+    import ScheduleBatchCorrectSettingSave = nts.uk.at.view.ksu007.a.service.model.ScheduleBatchCorrectSettingSave;
     export module service {
         var paths = {
-            findScheduleExecutionLogById: "at/schedule/exelog/findById",
-            findScheduleExecutionLogInfoById: "at/schedule/exelog/findInfoById",
-            executionScheduleExecutionLog: "at/schedule/exelog/execution",
-            findAllScheduleErrorLog: "at/schedule/exelog/findAllError"
-        }
-        
-
-        /**
-         * call service find ScheduleExecutionLog by id
-         */
-        export function findScheduleExecutionLogById(executionId: string): JQueryPromise<model.ScheduleExecutionLogDto> {
-            return nts.uk.request.ajax('at', paths.findScheduleExecutionLogById + '/' + executionId);
-        }
-        
-        /**
-         * executionScheduleExecutionLog
-         */
-        export function executionScheduleExecutionLog(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.executionScheduleExecutionLog, command);
-        }
-        
-        /**
-         * call service find ScheduleExecutionLogInfo by id
-         */
-        export function findScheduleExecutionLogInfoById(executionId: string): JQueryPromise<model.ScheduleExecutionLogInfoDto> {
-            return nts.uk.request.ajax('at', paths.findScheduleExecutionLogInfoById + '/' + executionId);
-        }
-        /**
-         * call service find all ScheduleErrorLog
-         */
-        export function findAllScheduleErrorLog(executionId: string): JQueryPromise<model.ScheduleErrorLogDto[]> {
-            return nts.uk.request.ajax('at', paths.findAllScheduleErrorLog + '/' + executionId);
+            executionScheduleBatchCorrectSetting: "ctx/at/schedule/processbatch/execution"
         }
 
-        export module model {
-            
-            export interface ExecutionContentDto {
-                copyStartDate: Date;
-                createMethodAtr: number;
-                confirm: boolean;
-                implementAtr: number;
-                processExecutionAtr: number;
-                reCreateAtr: number;
-                resetMasterInfo: boolean;
-                resetAbsentHolidayBusines: boolean;
-                resetWorkingHours: boolean;
-                resetTimeAssignment: boolean;
-                resetDirectLineBounce: boolean;
-                resetTimeChildCare: boolean;
-            }
-            
-            export interface ExecutionDateTimeDto{
-                executionStartDate: Date;
-                executionEndDate: Date;    
-            }
-            
-            export interface PeriodDto{
-                startDate: Date;
-                endDate: Date;    
-            }
-            
-           export interface ScheduleExecutionLogDto{
-               completionStatus: string;
-               executionId: string;
-               executionContent: ExecutionContentDto;
-               executionDateTime: ExecutionDateTimeDto;
-               executionEmployeeId: string;
-               period: PeriodDto;
-               employeeCode: string;
-               employeeName: string;
-           }
-            
-           export interface ScheduleExecutionLogInfoDto {
-               totalNumber: number;
-               totalNumberCreated: number;
-               totalNumberError: number;
-           }
-            
-           export interface ScheduleErrorLogDto {
-               errorContent: string;
-               executionId: string;
-               date: Date;
-               employeeId: string;
-               employeeCode: string;
-               employeeName: string;
-           }
+
+        /**
+         * call service execution ScheduleBatchCorrectSetting
+         */
+        export function executionScheduleBatchCorrectSetting(command: ScheduleBatchCorrectSettingSave): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.executionScheduleBatchCorrectSetting, command);
         }
     }
 }

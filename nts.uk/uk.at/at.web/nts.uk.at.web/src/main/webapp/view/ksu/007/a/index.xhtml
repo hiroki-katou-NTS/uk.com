@@ -22,7 +22,7 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" tabindex="-1">
-					<button tabindex="1" class="proceed">#{i18n.getText('KSU007_1')}</button>
+					<button tabindex="1" class="proceed" data-bind="click: saveScheduleBatchCorrectSettingProcess">#{i18n.getText('KSU007_1')}</button>
 				</div>
 				
 				<div tabindex="-1" id="contents-area">
@@ -37,7 +37,7 @@
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU007_2')}
 								</div>
 								<div tabindex="2" id="dateRangePickerPeriod" 
-									data-bind="ntsDateRangePicker: { required: true,showNextPrevious: false, 
+									data-bind="ntsDateRangePicker: { required: true, showNextPrevious: false, 
 									name:'#[KSU007_3]', value: periodDate, maxRange: 'oneMonth'}">
 								</div>
 							</div>
@@ -46,10 +46,10 @@
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU007_6')}
 								</div>
 								<div class="infoButtonSetting" tabindex="-1" >
-									<button class="buttonWorkSetting" tabindex="4" >#{i18n.getText('KSU007_7')}</button>
+									<button class="buttonWorkSetting" tabindex="4" data-bind="click: openDialogKDL003">#{i18n.getText('KSU007_7')}</button>
 									<div class="infoKDL003" tabindex="-1" >
-										<div  class="lableInfo" tabindex="-1" ><label>#{i18n.getText('KSU007_7')}</label></div>
-										<div  class="lableInfo" tabindex="-1" ><label>#{i18n.getText('KSU007_7')}</label></div>
+										<div class="lableInfo" tabindex="-1" data-bind="text: workTypeInfo"><label></label></div>
+										<div class="lableInfo" tabindex="-1" data-bind="text: workTimeInfo"><label></label></div>
 									</div>
 								</div>
 							</div>
