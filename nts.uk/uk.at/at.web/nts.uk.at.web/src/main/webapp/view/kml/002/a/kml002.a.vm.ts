@@ -302,6 +302,15 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     }
                 }
             });
+            
+            self.unitSelected.subscribe(function(value) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_125" }).ifYes(() => { 
+                    self.calculatorItems([]);
+                    self.bindCalculatorItems();
+                }).ifNo(() => { 
+                    return;
+                })
+            });
         }
 
         /**
