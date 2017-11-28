@@ -37,15 +37,20 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 		return new RoleIndividualGrantExport(roleIndividualGrant.get().getRoleId());
 	}
 
+	@Override
+	public RoleIndividualGrantExport getByUser(String userId, GeneralDate date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RoleIndividualGrantExport getByUser(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUser(java.lang.String)
 	 */
-	@Override
-	public RoleIndividualGrantExport getByUser(String userId,DatePeriod validPeriod) {
-		/*/////////////////
-		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository.findByUser(userId, validPeriod.start(), validPeriod.end()).get(0);
-		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());*/
-		return null;
-	}
 
 }
