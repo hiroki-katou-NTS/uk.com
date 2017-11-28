@@ -10,21 +10,16 @@ module cps002.g.vm {
 
     export class ViewModel {
 
-        roundingRules: KnockoutObservableArray<any> = ko.observableArray([
+        recentRegistrationItems: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: getText('CPS002_89') },
             { code: 0, name: getText('CPS002_90') }
         ]);
-        selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
 
         employeeInitItemList: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: getText('CPS002_78') },
             { code: 3, name: getText('CPS002_79') },
             { code: 2, name: getText('CPS002_80') }
         ]);
-
-        empCodeValue: KnockoutObservable<number> = ko.observable(2);
-
-        txtEmpCodeLetter: KnockoutObservable<string> = ko.observable("");
 
         cardNoInitItemList: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: getText('CPS002_78') },
@@ -35,24 +30,40 @@ module cps002.g.vm {
 
         ]);
 
-        cardNoValue: KnockoutObservable<number> = ko.observable(3);
-
-        txtCardNo: KnockoutObservable<string> = ko.observable("");
+        currentUserSetting: KnockoutObservable<UserSetting> = ko.observable(new UserSetting());
 
         constructor() {
 
 
         }
+        start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            service.getUserSetting().done((result: IUserSetting) => {
+
+                if (result) {
+                    self.currentUserSetting(new UserSetting(result));
+                    dfd.resolve();
+                }
+
+
+            });
+
+            return dfd.promise();
+
+        }
 
         register() {
-            let self = this;
+            let self = this,
+                uSet = self.currentUserSetting();
+
             let command = {
                 employeeId: "-1",
-                empCodeValType: self.empCodeValue(),
-                cardNoValType: self.cardNoValue(),
-                empCodeLetter: self.empCodeValue() != 1 ? "" : self.txtEmpCodeLetter(),
-                cardNoLetter: self.cardNoValue() != 1 ? "" : self.txtCardNo(),
-                recentRegType: self.selectedRuleCode()
+                empCodeValType: uSet.employeeCodeType(),
+                cardNoValType: uSet.cardNumberType(),
+                empCodeLetter: uSet.employeeCodeType() != 1 ? "" : uSet.employeeCodeLetter(),
+                cardNoLetter: uSet.cardNumberType() != 1 ? "" : uSet.cardNumberLetter(),
+                recentRegType: uSet.recentRegistrationType()
             };
             service.setUserSetting(command).done(function() {
                 setShared("userSettingStatus", true);
@@ -62,5 +73,30 @@ module cps002.g.vm {
         }
         close() { close(); }
 
+    }
+
+    class UserSetting {
+        recentRegistrationType: KnockoutObservable<number> = ko.observable(1);
+        employeeCodeType: KnockoutObservable<number> = ko.observable(2);
+        employeeCodeLetter: KnockoutObservable<string> = ko.observable("");
+        cardNumberType: KnockoutObservable<number> = ko.observable(3);
+        cardNumberLetter: KnockoutObservable<string> = ko.observable("");
+        constructor(param?: IUserSetting) {
+            if (param) {
+                this.recentRegistrationType(param.recentRegistrationType);
+                this.employeeCodeType(param.employeeCodeType);
+                this.employeeCodeLetter(param.employeeCodeLetter);
+                this.cardNumberType(param.cardNumberType);
+                this.cardNumberLetter(param.cardNumberLetter);
+            }
+        }
+
+    }
+    interface IUserSetting {
+        employeeCodeType: number;
+        recentRegistrationType: number;
+        cardNumberType: number;
+        employeeCodeLetter: string;
+        cardNumberLetter: string;
     }
 }

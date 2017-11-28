@@ -26,7 +26,7 @@ import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutItemType;
-import nts.uk.ctx.pereg.app.find.copysetting.item.CopySetItemFinder;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
@@ -54,7 +54,7 @@ public class RegisterLayoutFinder {
 	@Inject
 	private EmpCopySettingFinder copySettingFinder;
 
-	private CopySetItemFinder copySetItemFinder;
+	private CopySettingItemFinder copySetItemFinder;
 	// sonnlb end
 
 	// sonnlb code start

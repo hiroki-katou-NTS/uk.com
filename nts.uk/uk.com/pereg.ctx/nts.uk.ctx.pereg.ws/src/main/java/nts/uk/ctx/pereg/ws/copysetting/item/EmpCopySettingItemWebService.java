@@ -9,7 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.app.find.copysetting.item.CopySetItemFinder;
+import nts.uk.ctx.pereg.app.command.copysetting.item.UpdatePerInfoItemDefCopy;
+import nts.uk.ctx.pereg.app.command.copysetting.item.UpdatePerInfoItemDefCopyCommandHandler;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemDto;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 
 /**
@@ -21,7 +24,10 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 public class EmpCopySettingItemWebService {
 
 	@Inject
-	private CopySetItemFinder finder;
+	private CopySettingItemFinder finder;
+
+	@Inject
+	private UpdatePerInfoItemDefCopyCommandHandler updatePerInfoItemDefCopyCommandHandler;
 
 	@POST
 	@Path("getAll/{employeeId}/{categoryCd}/{baseDate}")
@@ -29,6 +35,18 @@ public class EmpCopySettingItemWebService {
 			@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate) {
 		return this.finder.getAllCopyItemByCtgCode(categoryCd, employeeId,
 				GeneralDate.fromString(baseDate, "yyyyMMdd"));
+	}
+
+	@POST
+	@Path("update/updatePerInfoItemDefCopy")
+	public void updatePerInfoItemDefCopy(UpdatePerInfoItemDefCopy command) {
+		this.updatePerInfoItemDefCopyCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("findby/getPerInfoItemByCtgId")
+	public List<CopySettingItemDto> getPerInfoItemByCtgId(String ctgId) {
+		return this.finder.getPerInfoDefById(ctgId);
 	}
 
 }

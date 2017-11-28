@@ -2,27 +2,22 @@ package nts.uk.ctx.bs.employee.app.find.person;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.PeregDto;
-import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
 public class PeregPersonFinder implements PeregFinder<PeregPersonDto> {
 
 	@Inject
 	private PersonRepository personRepo;
-
-	@Inject
-	private PerInfoItemDataRepository perInfoItemDataRepository;
 
 	@Override
 	public String targetCategoryCode() {
@@ -38,13 +33,9 @@ public class PeregPersonFinder implements PeregFinder<PeregPersonDto> {
 	 * the function handles finder return: PeregQueryResult
 	 */
 	@Override
-	public PeregDto getSingleData(PeregQuery query) {
+	public PeregDomainDto getSingleData(PeregQuery query) {
 		Optional<Person> person = personRepo.getByPersonId(query.getPersonId());
-		List<PersonOptionalDto> lstCtgItemOptionalDto = perInfoItemDataRepository
-				.getAllInfoItemByRecordId(person.get().getPersonId()).stream().map(itemData -> itemData.genToPeregDto())
-				.collect(Collectors.toList());
-		return PeregDto.createWithPersonOptionData(PeregPersonDto.createFromDomain(person.get()), PeregPersonDto.class,
-				lstCtgItemOptionalDto);
+		return PeregPersonDto.createFromDomain(person.get());
 	}
 
 	/*
@@ -55,7 +46,16 @@ public class PeregPersonFinder implements PeregFinder<PeregPersonDto> {
 	 * find.PeregQuery)
 	 */
 	@Override
-	public List<PeregDto> getListData(PeregQuery query) {
+	public List<PeregDomainDto> getListData(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.pereg.app.find.PeregFinder#dataType()
+	 */
+	@Override
+	public DataClassification dataType() {
 		// TODO Auto-generated method stub
 		return null;
 	}

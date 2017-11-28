@@ -46,19 +46,17 @@ public class UpdateAffWorkplaceHistoryCommandHandler extends CommandHandler<Upda
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory"); 
 		}
-		if (existHist.get().getHistoryItems().size() > 0){
 			
-			Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
-                    .filter(h -> h.identifier().equals(command.getHistoryId()))
-                    .findFirst();
-			
-			if (!itemToBeUpdate.isPresent()){
-				throw new RuntimeException("invalid AffWorkplaceHistory");
-			}
-			existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
-			
-			affWorkplaceHistoryRepository.updateAffWorkplaceHistory(existHist.get(), itemToBeUpdate.get());
+		Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
+                .filter(h -> h.identifier().equals(command.getHistoryId()))
+                .findFirst();
+		
+		if (!itemToBeUpdate.isPresent()){
+			throw new RuntimeException("invalid AffWorkplaceHistory");
 		}
+		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
+		
+		affWorkplaceHistoryRepository.updateAffWorkplaceHistory(existHist.get(), itemToBeUpdate.get());
 		
 		AffWorkplaceHistoryItem domain = AffWorkplaceHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getWorkplaceCode(), command.getNormalWorkplaceCode(), command.getLocationCode());
 		affWorkplaceHistoryItemRepository.updateAffWorkplaceHistory(domain);

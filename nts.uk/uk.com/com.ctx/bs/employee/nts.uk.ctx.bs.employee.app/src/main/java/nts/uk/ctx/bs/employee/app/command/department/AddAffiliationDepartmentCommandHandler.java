@@ -48,6 +48,7 @@ public class AddAffiliationDepartmentCommandHandler extends CommandHandlerWithRe
 		DateHistoryItem dateItem = new DateHistoryItem(newHistId, new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
 		AffDepartmentHistory itemToBeAdded = null;
+		
 		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getAffDepartmentHistorytByEmployeeId(command.getEmployeeId());
 		if (itemHist.isPresent()){
 			itemHist.get().add(dateItem);

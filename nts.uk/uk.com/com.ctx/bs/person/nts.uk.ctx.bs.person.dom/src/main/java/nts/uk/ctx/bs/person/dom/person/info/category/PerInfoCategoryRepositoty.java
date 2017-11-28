@@ -37,10 +37,7 @@ public interface PerInfoCategoryRepositoty {
 	List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgCd, String contractCd, String companyId, boolean isASC);
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
-
-	boolean checkPerInfoCtgAlreadyCopy(String perInfoCtgId, String companyId);
-
-	void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId);
+	
 	// vinhpx: end
 	
 	//laitv

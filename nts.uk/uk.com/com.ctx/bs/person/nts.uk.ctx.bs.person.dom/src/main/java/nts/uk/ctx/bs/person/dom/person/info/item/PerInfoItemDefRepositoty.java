@@ -1,10 +1,10 @@
 package nts.uk.ctx.bs.person.dom.person.info.item;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
-import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySettingItem;
 
 public interface PerInfoItemDefRepositoty {
 
@@ -50,8 +50,6 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
 			String contractCd);
 
-	List<PersonInfoItemDefinition> getAllItemFromIdList(String contractCd, List<EmpCopySettingItem> itemList);
-
 	List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
 			List<String> itemCodeList);
 
@@ -60,16 +58,9 @@ public interface PerInfoItemDefRepositoty {
 	// vinhpx start
 	int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId);
 
-	int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId);
-
-	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd);
-
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
 			String contractCd);
 
-	void removePerInfoItemInCopySetting(String itemId);
-
-	void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds);
 
 	// vinhpx end
 	
@@ -88,5 +79,8 @@ public interface PerInfoItemDefRepositoty {
 	 * @return
 	 */
 	boolean checkExistedSelectionItemId(String ctgId, String itemId);
+
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String personInfoCategoryId, String companyId,
+			String contractCode);
 	
 }

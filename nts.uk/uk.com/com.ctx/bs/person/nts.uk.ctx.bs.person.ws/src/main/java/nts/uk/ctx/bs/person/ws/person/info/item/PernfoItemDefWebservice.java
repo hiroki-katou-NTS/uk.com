@@ -18,13 +18,10 @@ import command.person.info.item.UpdateItemCommand;
 import command.person.info.item.UpdateItemCommandHandler;
 import command.person.info.item.UpdateOrderItemChangeCommand;
 import command.person.info.item.UpdateOrderItemChangeCommandHandler;
-import command.person.info.item.UpdatePerInfoItemDefCopy;
-import command.person.info.item.UpdatePerInfoItemDefCopyCommandHandler;
 import find.person.info.item.PerInfoItemChangeDefDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import find.person.info.item.PerInfoItemDefFullEnumDto;
-import find.person.info.item.PerInfoItemDefMapDto;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 
@@ -50,8 +47,6 @@ public class PernfoItemDefWebservice extends WebService {
 	@Inject
 	private UpdateOrderItemChangeCommandHandler updateOrderItemChange;
 	
-	@Inject 
-	private UpdatePerInfoItemDefCopyCommandHandler updatePerInfoItemDefCopyCommandHandler;
 
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}")
@@ -83,19 +78,6 @@ public class PernfoItemDefWebservice extends WebService {
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListId(List<String> listItemDefId) {
 		return itemDefFinder.getPerInfoItemDefByListId(listItemDefId);
 	}
-	//vinhpx: start
-	@POST
-	@Path("findby/getPerInfoItemByCtgId")
-	public List<PerInfoItemDefMapDto> getPerInfoItemByCtgId(String ctgId){
-		return itemDefFinder.getPerInfoDefById(ctgId);
-	}
-	
-	@POST
-	@Path("update/updatePerInfoItemDefCopy")
-	public void updatePerInfoItemDefCopy(UpdatePerInfoItemDefCopy command){
-		this.updatePerInfoItemDefCopyCommandHandler.handle(command);
-	}
-	//vinhpx; end
 
 	// service for screen Layout
 	@POST

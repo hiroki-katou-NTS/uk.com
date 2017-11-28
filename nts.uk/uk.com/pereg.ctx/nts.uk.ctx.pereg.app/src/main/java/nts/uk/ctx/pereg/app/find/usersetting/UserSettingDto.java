@@ -1,7 +1,7 @@
 package nts.uk.ctx.pereg.app.find.usersetting;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSetting;
+import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
 
 @Value
 public class UserSettingDto {

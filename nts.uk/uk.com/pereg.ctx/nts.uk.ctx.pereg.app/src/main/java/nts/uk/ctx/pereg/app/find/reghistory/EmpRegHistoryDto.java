@@ -1,17 +1,17 @@
 package nts.uk.ctx.pereg.app.find.reghistory;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;
+import nts.uk.ctx.pereg.dom.reghistory.LastEmRegHistory;
 
 @Value
 public class EmpRegHistoryDto {
 
-	String registeredEmployeeID;
-
 	String lastRegEmployeeID;
 
-	public static EmpRegHistoryDto fromDomain(EmpRegHistory domain) {
-		return new EmpRegHistoryDto(domain.getRegisteredEmployeeID(), domain.getLastRegEmployeeID());
+	String lastRegEmployeeOfCompanyID;
+
+	public static EmpRegHistoryDto fromDomain(LastEmRegHistory domain) {
+		return new EmpRegHistoryDto(domain.getLastRegEmployeeID(), domain.getLastRegEmployeeOfCompanyID());
 	}
 
 }

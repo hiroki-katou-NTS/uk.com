@@ -12,14 +12,15 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
-import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;
-import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
+import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -93,7 +94,8 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		this.commandFacade.add(inputContainer);
 		// add new user
-		User newUser = User.createFromJavaType(userId, command.getPassword(), command.getLoginId(), null,
+		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
+		User newUser = User.createFromJavaType(userId, passwordHash, command.getLoginId(), null,
 				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false, null, command.getEmployeeName(),
 				employeeId);
 
@@ -120,7 +122,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 			this.empHisRepo.update(newEmpRegHistory);
 
 		} else {
-			
+
 			this.empHisRepo.add(newEmpRegHistory);
 
 		}
