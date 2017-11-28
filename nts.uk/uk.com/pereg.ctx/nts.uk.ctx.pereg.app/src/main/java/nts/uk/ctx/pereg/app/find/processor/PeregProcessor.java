@@ -30,7 +30,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.LayoutingProcessor;
 import nts.uk.shr.pereg.app.find.PeregMaintLayoutQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.PeregResult;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;

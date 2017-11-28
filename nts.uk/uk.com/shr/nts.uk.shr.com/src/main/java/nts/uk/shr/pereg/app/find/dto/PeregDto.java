@@ -20,21 +20,17 @@ public class PeregDto {
 	 */
 	private Class<?> dtoClass;
 	
-	/**
-	 * category type: 1 - person; 2 - employee
-	 */
-	private int empPerCtgType;
+	private DataClassification dataType;
 
 	private List<PersonOptionalDto> perOptionalData;
 
 	private List<EmpOptionalDto> empOptionalData;
 	
-	public PeregDto(PeregDomainDto dto, Class<?> dtoClass, int ctgType){
+	public PeregDto(PeregDomainDto dto, Class<?> dtoClass, DataClassification dataType){
 		this.domainDto = dto;
 		this.dtoClass = dtoClass;
-		this.empPerCtgType = ctgType;
+		this.dataType = dataType;
 	}
-
 
 	public PeregDto(PeregDomainDto dto, Class<?> dtoClass, List<PersonOptionalDto> perOptionalData,
 			List<EmpOptionalDto> empOptionalDatas) {
@@ -43,13 +39,5 @@ public class PeregDto {
 		this.perOptionalData = perOptionalData;
 		this.empOptionalData = empOptionalDatas;
 	}
-
-	public static PeregDto createWithPersonOptionData(PeregDomainDto dto, Class<?> dtoClass, List<PersonOptionalDto> perOptionalData) {
-		return new PeregDto(dto, dtoClass, perOptionalData, null);
-	}
-
-	public static PeregDto createWithEmpOptionData(PeregDomainDto dto, Class<?> dtoClass, List<EmpOptionalDto> empOptionalDatas) {
-		return new PeregDto(dto, dtoClass, null, empOptionalDatas);
-	}
-
+	
 }

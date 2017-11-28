@@ -7,18 +7,18 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.shr.pereg.app.find.PeregPerUserDefFinderRepository;
+import nts.uk.shr.pereg.app.find.PeregPerOptRepository;
 import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 
 @Stateless
-public class PerInfoItemDataFinder implements PeregPerUserDefFinderRepository{
+public class PerInfoItemDataFinder implements PeregPerOptRepository{
 
 	@Inject
 	private PerInfoItemDataRepository perInfoItemDataRepository;
 	
 	@Override
-	public List<PersonOptionalDto> getPersonOptionalData(String recordId) {
+	public List<PersonOptionalDto> getData(String recordId) {
 		return perInfoItemDataRepository.getAllInfoItemByRecordId(recordId).stream()
 				.map(x -> x.genToPeregDto()).collect(Collectors.toList());
 	}

@@ -12,6 +12,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 /**
@@ -44,7 +45,8 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 		if (optionalData.isPresent()) {
 			TempAbsenceHisItem histItem = optionalData.get();
 			TempAbsenceHistory history = tempAbsHistRepo.getByHistId(histItem.getHistoryId()).get();
-			return new PeregDto(TempAbsHisItemDto.createFromDomain(history, histItem), TempAbsHisItemDto.class, 2);
+			return new PeregDto(TempAbsHisItemDto.createFromDomain(history, histItem), TempAbsHisItemDto.class,
+					DataClassification.EMPLOYEE);
 		}
 		return null;
 	}

@@ -4,12 +4,12 @@ import java.util.List;
 
 import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
-public interface PeregPerUserDefFinderRepository {
+public interface PeregPerOptRepository {
 	/**
 	 * get optional data of person category type by record id 
 	 * 
 	 * @param recordId
 	 * @return
 	 */
-	List<PersonOptionalDto> getPersonOptionalData(String recordId);
+	List<PersonOptionalDto> getData(String recordId);
 }
