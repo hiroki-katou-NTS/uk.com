@@ -43,12 +43,16 @@ public class PeregPersonFinder implements PeregFinder<PeregPersonDto> {
 		List<PersonOptionalDto> lstCtgItemOptionalDto = perInfoItemDataRepository
 				.getAllInfoItemByRecordId(person.get().getPersonId()).stream().map(itemData -> itemData.genToPeregDto())
 				.collect(Collectors.toList());
-		return PeregDto.createWithPersonOptionData(PeregPersonDto.createFromDomain(person.get()),
+		return PeregDto.createWithPersonOptionData(PeregPersonDto.createFromDomain(person.get()), PeregPersonDto.class,
 				lstCtgItemOptionalDto);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.shr.pereg.app.find.PeregFinder#getListData(nts.uk.shr.pereg.app.find.PeregQuery)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.shr.pereg.app.find.PeregFinder#getListData(nts.uk.shr.pereg.app.
+	 * find.PeregQuery)
 	 */
 	@Override
 	public List<PeregDto> getListData(PeregQuery query) {

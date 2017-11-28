@@ -211,11 +211,10 @@ public class PeregProcessor {
 	private void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, PeregQuery query, PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		if(perInfoCtg.getIsFixed() == IsFixed.FIXED){
 			//get domain data
-			PeregResult returnValue = layoutingProcessor.findSingle(query);
-			PeregDto queryResult = (PeregDto)returnValue.getDto();
+			PeregDto queryResult = layoutingProcessor.findSingle(query);
 
 			//set fixed data			
-			matching(empMaintLayoutDto, perInfoCtg,  queryResult.getDomainDto(), returnValue.getDtoClass(), 
+			matching(empMaintLayoutDto, perInfoCtg,  queryResult.getDomainDto(), queryResult.getDtoClass(), 
 					lstPerInfoItemDef, queryResult.getEmpOptionalData(), queryResult.getPerOptionalData());
 		}else{
 			setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
