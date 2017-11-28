@@ -16,7 +16,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaTempAbsHist extends JpaRepository implements TempAbsHistRepository {
 
-	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "select ta from BsymtTempAbsHistory ta where ta.sid = :sid order by ta.startDate";
+	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "select ta "
+			+ "from BsymtTempAbsHistory ta "
+			+ "where ta.sid = :sid order by ta.startDate";
 
 	/**
 	 * Convert from domain to entity
@@ -88,8 +90,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public void deleteTemporaryAbsenceHist(TempAbsenceHistory domain, DateHistoryItem item) {
-		Optional<BsymtTempAbsHistory> histItem = null;
-		histItem = this.queryProxy().find(item.identifier(), BsymtTempAbsHistory.class);
+		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(item.identifier(), BsymtTempAbsHistory.class);
 		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtTempAbsHistory");
 		}
@@ -121,10 +122,11 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		}
 		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(beforeItem.get().identifier(),
 				BsymtTempAbsHistory.class);
-		if (histItem.isPresent()) {
-			updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
-			this.commandProxy().update(histItem.get());
+		if (!histItem.isPresent()) {
+			return;
 		}
+		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
 	}
 
 	/**
@@ -141,10 +143,11 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		}
 		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(aferItem.get().identifier(),
 				BsymtTempAbsHistory.class);
-		if (histItem.isPresent()) {
-			updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
-			this.commandProxy().update(histItem.get());
+		if (!histItem.isPresent()) {
+			return;
 		}
+		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
 	}
 
 	@Override
