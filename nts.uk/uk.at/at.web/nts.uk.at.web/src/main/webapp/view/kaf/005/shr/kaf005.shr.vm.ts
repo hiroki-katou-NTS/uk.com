@@ -172,42 +172,42 @@ module nts.uk.at.view.kaf005.share {
             }
         }
         export class AppOverTime {
-            companyID: string
-            appID: string
-            applicationDate: string
-            prePostAtr: number
-            applicantSID: string
-            applicationReason: string
-            appApprovalPhaseCmds: Array<any>
-            workType: string
-            siftType: string
-            workClockFrom1: number
-            workClockTo1: number
-            workClockFrom2: number
-            workClockTo2: number
-            bonusTimes: Array<any>
-            breakTimes: Array<any>
-            overtimeHours: Array<any>
-            restTime: Array<any>
-            overtimeAtr: number
-            overTimeShiftNight: number
-            flexExessTime: number
-            divergenceReasonContent: string
-            sendMail:boolean
-            calculateFlag: number
+            companyID: string;
+            appID: string;
+            applicationDate: string;
+            prePostAtr: number;
+            applicantSID: string;
+            applicationReason: string;
+            appApprovalPhaseCmds: Array<any>;
+            workType: string;
+            siftType: string;
+            workClockFrom1: number;
+            workClockTo1: number;
+            workClockFrom2: number;
+            workClockTo2: number;
+            bonusTimes: Array<any>;
+            breakTimes: Array<any>;
+            overtimeHours: Array<any>;
+            restTime: Array<any>;
+            overtimeAtr: number;
+            overTimeShiftNight: number;
+            flexExessTime: number;
+            divergenceReasonContent: string;
+            sendMail:boolean;
+            calculateFlag: number;
         }
         export class OverTimeInput {
-            companyID: KnockoutObservable<string>
-            appID: KnockoutObservable<string>
-            attendanceID: KnockoutObservable<number>
-            attendanceName: KnockoutObservable<string>
-            frameNo: KnockoutObservable<number>
-            timeItemTypeAtr: KnockoutObservable<number>
-            frameName: KnockoutObservable<string>
-            startTime: KnockoutObservable<number>
-            endTime: KnockoutObservable<number>
-            applicationTime: KnockoutObservable<number>
-            nameID: KnockoutObservable<string>
+            companyID: KnockoutObservable<string>;
+            appID: KnockoutObservable<string>;
+            attendanceID: KnockoutObservable<number>;
+            attendanceName: KnockoutObservable<string>;
+            frameNo: KnockoutObservable<number>;
+            timeItemTypeAtr: KnockoutObservable<number>;
+            frameName: KnockoutObservable<string>;
+            startTime: KnockoutObservable<number>;
+            endTime: KnockoutObservable<number>;
+            applicationTime: KnockoutObservable<number>;
+            nameID: KnockoutObservable<string>;
             constructor(
                 companyID: string,
                 appID: string,
@@ -232,7 +232,44 @@ module nts.uk.at.view.kaf005.share {
                 this.applicationTime = ko.observable(applicationTime);
                 this.nameID = ko.observable(nameID);
             }
-        }   
+        } 
+        export class OvertimeCaculation{
+             companyID: KnockoutObservable<string>;
+            appID: KnockoutObservable<string>;
+            attendanceID: KnockoutObservable<number>;
+            attendanceName: KnockoutObservable<string>;
+            frameNo: KnockoutObservable<number>;
+            timeItemTypeAtr: KnockoutObservable<number>;
+            frameName: KnockoutObservable<string>;
+            applicationTime: KnockoutObservable<number>;
+            preAppTime: KnockoutObservable<string>;
+            caculationTime: KnockoutObservable<string>;
+            nameID: KnockoutObservable<string>;
+            constructor(
+                companyID: string,
+                appID: string,
+                attendanceID: number,
+                attendanceName: string,
+                frameNo: number,
+                timeItemTypeAtr: number,
+                frameName: string,
+                applicationTime: number,
+                preAppTime: string,
+                caculationTime: string,
+                nameID: string) {
+                this.companyID = ko.observable(companyID);
+                this.appID = ko.observable(appID);
+                this.attendanceID = ko.observable(attendanceID);
+                this.attendanceName = ko.observable(attendanceName);
+                this.frameNo = ko.observable(frameNo);
+                this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
+                this.frameName = ko.observable(frameName);
+                this.applicationTime = ko.observable(applicationTime);
+                this.preAppTime = ko.observable(preAppTime);
+                this.caculationTime = ko.observable(caculationTime);
+                this.nameID = ko.observable(nameID);
+            }
+        }  
 		export class overtimeWork {
             yearMonth: KnockoutObservable<string>;
             limitTime: KnockoutObservable<string>;
@@ -246,7 +283,45 @@ module nts.uk.at.view.kaf005.share {
                 this.appTime = ko.observable(appTime);
                 this.totalTime = ko.observable(totalTime);
             }
-        }		
+        }
+        
+        export class AppOvertimePre{
+           companyID: KnockoutObservable<string>;
+            appID: KnockoutObservable<string>;
+            attendanceID: KnockoutObservable<number>;
+            attendanceName: KnockoutObservable<string>;
+            frameNo: KnockoutObservable<number>;
+            timeItemTypeAtr: KnockoutObservable<number>;
+            frameName: KnockoutObservable<string>;
+            startTime: KnockoutObservable<number>;
+            endTime: KnockoutObservable<number>;
+            applicationTime: KnockoutObservable<string>;
+            nameID: KnockoutObservable<string>;
+            constructor(
+                companyID: string,
+                appID: string,
+                attendanceID: number,
+                attendanceName: string,
+                frameNo: number,
+                timeItemTypeAtr: number,
+                frameName: string,
+                startTime: number,
+                endTime: number,
+                applicationTime: string,
+                nameID: string) {
+                this.companyID = ko.observable(companyID);
+                this.appID = ko.observable(appID);
+                this.attendanceID = ko.observable(attendanceID);
+                this.attendanceName = ko.observable(attendanceName);
+                this.frameNo = ko.observable(frameNo);
+                this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
+                this.frameName = ko.observable(frameName);
+                this.startTime = ko.observable(startTime);
+                this.endTime = ko.observable(endTime);
+                this.applicationTime = ko.observable(applicationTime);
+                this.nameID = ko.observable(nameID);
+            }
+        }
 
     }
 }
