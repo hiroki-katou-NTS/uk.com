@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.app.find.workrecord.workfixed;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -80,11 +81,11 @@ public class WorkFixedFinder {
 		List<String> listPersonId = listWorkFixed.stream()
 				.map(WorkFixed::getConfirmPid)
 				.distinct()
-				.filter(dto -> dto != null)
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 		Map<String, PersonInfoImport> listPerson = this.personInfoAdapter.getByListId(listPersonId)
 				.stream()
-				.collect(Collectors.toMap(item -> item.getPersonId(), Function.identity()));
+				.collect(Collectors.toMap(PersonInfoImport::getPersonId, Function.identity()));
 
 		return listDto.stream()
 				.map(dto -> {
@@ -108,7 +109,7 @@ public class WorkFixedFinder {
 					workFixed.saveToMemento(dto);
 					return dto;
 				})
-				.filter(dto -> dto != null)
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
 
