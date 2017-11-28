@@ -28,7 +28,8 @@ import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetPK;
 public class JpaRoleSetRepository extends JpaRepository implements RoleSetRepository {
 
 	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSet rs"
-			+ " WHERE rs.roleSetPK.companyId = :companyId ";
+			+ " WHERE rs.roleSetPK.companyId = :companyId "
+			+ " ORDER BY rs.roleSetPK.roleSetCd ASC ";
 	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE = "SELECT rs FROM SacmtRoleSet rs"
 			+ " WHERE rs.roleSetPK.companyId = :companyId AND rs.personInfRole = :personRoleId ";
 	

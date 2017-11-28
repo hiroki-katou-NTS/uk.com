@@ -17,11 +17,11 @@ public interface RoleSetLinkWebMenuRepository {
 	/**
 	 * Get a RoleSetAndWebMenu by key
 	 * @param companyId
-	 * @param webMenuCd
 	 * @param roleSetCd
+	 * @param webMenuCd
 	 * @return
 	 */
-	 Optional<RoleSetLinkWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd);
+	 Optional<RoleSetLinkWebMenu> findByKey(String companyId, String roleSetCd, String webMenuCd);
 	 
 	 /**
 	  * Find all by company id and roleSetCode.
@@ -45,6 +45,12 @@ public interface RoleSetLinkWebMenuRepository {
 	 */
 	void insert(RoleSetLinkWebMenu domain);
 	
+	/**
+	 * Insert List of Role Set Link Web Menu
+	 * @param domain
+	 */
+	void insert(List<RoleSetLinkWebMenu> listDomain);
+
 	/**
 	 * Update the RoleSetAndWebMenu
 	 * @param domain

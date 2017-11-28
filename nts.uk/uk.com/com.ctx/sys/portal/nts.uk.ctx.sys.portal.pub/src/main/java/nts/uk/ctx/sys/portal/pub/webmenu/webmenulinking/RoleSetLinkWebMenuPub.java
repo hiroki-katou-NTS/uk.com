@@ -23,19 +23,25 @@ public interface RoleSetLinkWebMenuPub {
 	 * Register RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void addRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId);
+	void addRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd);
+	
+	/**
+	 * Register list of Role Set link Web menu
+	 * @param listRoleSetLinkWebMenuExport
+	 */
+	void addAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenuExport> listRoleSetLinkWebMenuExport);
 	
 	/**
 	 * Update the RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void updateRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId);
+	void updateRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd);
 	
 	/**
 	 * Delete the RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void deleteRoleSetAndWebMenuByRoleSetCd(String roleSetCd);
+	void deleteRoleSetLinkWebMenuByRoleSetCd(String roleSetCd);
 	
 	
 	

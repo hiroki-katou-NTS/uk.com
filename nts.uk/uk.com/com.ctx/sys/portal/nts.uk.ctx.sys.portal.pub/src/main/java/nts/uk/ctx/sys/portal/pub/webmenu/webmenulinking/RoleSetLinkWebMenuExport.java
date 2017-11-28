@@ -14,7 +14,7 @@ public class RoleSetLinkWebMenuExport {
 	/** 会社ID */
 	private String companyId;
 
-	public RoleSetLinkWebMenuExport(String roleSetCd, String webMenuCd, String companyId) {
+	public RoleSetLinkWebMenuExport(String companyId, String roleSetCd, String webMenuCd) {
 		this.roleSetCd = roleSetCd;
 		this.webMenuCd = webMenuCd;
 		this.companyId = companyId;
