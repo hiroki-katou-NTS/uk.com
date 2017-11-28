@@ -26,7 +26,7 @@ public interface IPerInfoSelectionItemRepository {
 	 * getAllSelection
 	 * @return List<PerInfoSelectionItem>
 	 */
-	List<PerInfoSelectionItem> getAllSelection();
+	List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr);
 	
 	//Lanlt
 	

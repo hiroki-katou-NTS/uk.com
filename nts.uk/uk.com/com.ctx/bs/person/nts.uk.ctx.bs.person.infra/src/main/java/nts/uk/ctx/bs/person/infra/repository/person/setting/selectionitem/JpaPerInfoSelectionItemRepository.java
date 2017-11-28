@@ -22,6 +22,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 			+ " WHERE si.contractCd = :contractCd " + " ORDER BY si.selectionItemName ";
 	private static final String SELECT_All_SELECTION_ITEM_NAME = SELECT_ALL
 			+ " WHERE si.selectionItemName = :selectionItemName";
+	private static final String SELECT_ALL_BY_PERSON_TYPE = SELECT_ALL + " WHERE si.selectionItemClsAtr =:selectionItemClsAtr";
 
 	@Override
 	public void add(PerInfoSelectionItem domain) {
@@ -77,8 +78,9 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	
 	//Lanlt
 	@Override
-	public List<PerInfoSelectionItem> getAllSelection() {
-		return this.queryProxy().query(SELECT_ALL, PpemtSelectionItem.class)
+	public List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr) {
+		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionItem.class)
+				.setParameter("selectionItemClsAtr", selectionItemClsAtr)
 				.getList(c -> toDomain(c));
 	}
 	//Lanlt
