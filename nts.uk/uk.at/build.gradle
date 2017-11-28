@@ -616,6 +616,13 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: '0.1.1')
 		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: '0.1.1')
 		
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: '0.1.1')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.app', version: '0.1.1')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.infra', version: '0.1.1')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: '0.1.1')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: '0.1.1')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: '0.1.1')
+		
 		// implement eraAdapter
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.app', version: '0.4'
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.dom', version: '0.4'

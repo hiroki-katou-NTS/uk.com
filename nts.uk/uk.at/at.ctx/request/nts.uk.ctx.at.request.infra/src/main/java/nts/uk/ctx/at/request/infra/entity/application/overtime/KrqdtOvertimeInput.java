@@ -47,13 +47,13 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
 	public Long version;
 	
 	@Column(name = "START_TIME")
-    private int startTime;
+    private Integer startTime;
 	
     @Column(name = "END_TIME")
-    private int endTime;
+    private Integer endTime;
     
     @Column(name = "APPLICATION_TIME")
-    private int applicationTime;
+    private Integer applicationTime;
 
     @ManyToOne
     @PrimaryKeyJoinColumns({

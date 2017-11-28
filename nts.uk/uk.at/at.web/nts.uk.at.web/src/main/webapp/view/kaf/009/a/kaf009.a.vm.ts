@@ -90,7 +90,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.approvalSource = self.kaf000_a.approvalList;
                     nts.uk.ui.block.clear();
                 })    
-            })
+            });
+            self.appDate.subscribe(value => {
+                self.kaf000_a.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
+                self.kaf000_a.getAllApprovalRoot();
+            });
             
         }
         /**
