@@ -45,26 +45,29 @@ public class RetentionYearlyUseTimeOfMonthly {
 	
 	/**
 	 * 積立年休使用時間を確認する
-	 * @param attendanceTime 日別実績の勤怠時間
+	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
 	 */
-	public void confirm(AttendanceTimeOfDailyPerformance attendanceTime){
+	public void confirm(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 
-		// 日別実績の勤務実績時間　取得
-		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTime.getActualWorkingTimeOfDaily();
-
-		// 日別実績の総労働時間　取得
-		TotalWorkingTime totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-
-		// 日別実績の休暇　取得
-		//*****（未）　ここから先のドメインがまだない
-		//VacationOfDaily vacationOfDaily = totalWorkingTime.getVacation();
-		
-		// 「日別実績の積立年休」を取得する
-		//RetentionYearlyOfDaily retentionYearlyOfDaily = vacationOfDaily.getRetentionYearly();
-		
-		// 取得した使用時間を「月別実績の積立年休使用時間」に入れる
-		//*****（未）　「日別実績の積立年休」クラスをnewして、値を入れて、それをset？
-		this.timeSeriesWorks.add(RetentionYearlyUseTimeOfTimeSeries.of(attendanceTime.getYmd()));
+		for (AttendanceTimeOfDailyPerformance attendanceTimeOfDaily : attendanceTimeOfDailys) {
+			
+			// 日別実績の勤務実績時間　取得
+			ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+	
+			// 日別実績の総労働時間　取得
+			TotalWorkingTime totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+	
+			// 日別実績の休暇　取得
+			//*****（未）　ここから先のドメインがまだない
+			//VacationOfDaily vacationOfDaily = totalWorkingTime.getVacation();
+			
+			// 「日別実績の積立年休」を取得する
+			//RetentionYearlyOfDaily retentionYearlyOfDaily = vacationOfDaily.getRetentionYearly();
+			
+			// 取得した使用時間を「月別実績の積立年休使用時間」に入れる
+			//*****（未）　「日別実績の積立年休」クラスをnewして、値を入れて、それをset？
+			this.timeSeriesWorks.add(RetentionYearlyUseTimeOfTimeSeries.of(attendanceTimeOfDaily.getYmd()));
+		}
 	}
 	
 	/**

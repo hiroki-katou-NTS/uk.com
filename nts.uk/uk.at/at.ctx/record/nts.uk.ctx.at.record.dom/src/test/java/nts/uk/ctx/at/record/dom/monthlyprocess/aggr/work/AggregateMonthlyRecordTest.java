@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import org.junit.Test;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecord;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -29,11 +30,12 @@ public class AggregateMonthlyRecordTest {
 		this.aggregateMonthlyRecord = new AggregateMonthlyRecord();
 		String targetCmp = "TESTCMP";
 		String targetEmp = "TESTEMP";
+		val targetYm = new YearMonth(201710);
 		val targetPeriod = new DatePeriod(GeneralDate.ymd(2017, 10, 1), GeneralDate.ymd(2017, 10, 31));
 		
 		/* 期間受け取りテスト　2017/10/31 */
 		// exercise
-		AggregateMonthlyRecordValue value = this.aggregateMonthlyRecord.aggregate(targetCmp, targetEmp, targetPeriod);
+		AggregateMonthlyRecordValue value = this.aggregateMonthlyRecord.aggregate(targetCmp, targetEmp, targetYm, targetPeriod);
 		String actual = "EMPTY";
 		val actualList = value.getAttendanceTimes();
 		if (!actualList.isEmpty()) {
@@ -49,7 +51,7 @@ public class AggregateMonthlyRecordTest {
 		val actualList = target.getAttendanceTimes();
 		int actual = 0;
 		if (!actualList.isEmpty()) {
-			actual = actualList.get(0).getMonthlyCalculation().getHolidayUseTime().getAnnualLeave().getAnnualLeaveUseTime().valueAsMinutes();
+			actual = actualList.get(0).getMonthlyCalculation().getHolidayUseTime().getAnnualLeave().getAnnualLeaveUseTime().v();
 		}
 		// verify
 		assertThat(actual, is(100));

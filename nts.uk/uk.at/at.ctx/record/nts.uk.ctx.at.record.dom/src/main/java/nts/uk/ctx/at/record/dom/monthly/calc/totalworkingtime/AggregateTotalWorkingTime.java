@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.HolidayUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.HolidayWorkTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtimework.OverTimeWorkOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -17,9 +19,9 @@ public class AggregateTotalWorkingTime {
 	/** 就業時間 */
 	private WorkTimeOfMonthly workTime;
 	/** 残業時間 */
-	private OverTimeWorkOfMonthly overTimeWork;
+	private OverTimeOfMonthly overTime;
 	/** 臨時時間 */
-	//TemporaryTime
+	//temporaryTime
 	/** 休暇使用時間 */
 	private HolidayUseTimeOfMonthly holidayUseTime;
 	/** 休出時間 */
@@ -35,7 +37,7 @@ public class AggregateTotalWorkingTime {
 	public AggregateTotalWorkingTime(){
 		
 		this.workTime = new WorkTimeOfMonthly();
-		this.overTimeWork = new OverTimeWorkOfMonthly();
+		this.overTime = new OverTimeOfMonthly();
 		this.holidayUseTime = new HolidayUseTimeOfMonthly();
 		this.prescribedWorkingTime = new PrescribedWorkingTimeOfMonthly();
 	}
@@ -43,7 +45,7 @@ public class AggregateTotalWorkingTime {
 	/**
 	 * ファクトリー
 	 * @param workTime 就業時間
-	 * @param overTimeWork 残業時間
+	 * @param overTime 残業時間
 	 * @param holidayUseTime 休暇使用時間
 	 * @param holidayWorkTime 休出時間
 	 * @param totalWorkingTime 総労働時間
@@ -52,7 +54,7 @@ public class AggregateTotalWorkingTime {
 	 */
 	public static AggregateTotalWorkingTime of(
 			WorkTimeOfMonthly workTime,
-			OverTimeWorkOfMonthly overTimeWork,
+			OverTimeOfMonthly overTime,
 			HolidayUseTimeOfMonthly holidayUseTime,
 			HolidayWorkTimeOfMonthly holidayWorkTime,
 			AttendanceTimeMonth totalWorkingTime,
@@ -60,7 +62,7 @@ public class AggregateTotalWorkingTime {
 		
 		AggregateTotalWorkingTime domain = new AggregateTotalWorkingTime();
 		domain.workTime = workTime;
-		domain.overTimeWork = overTimeWork;
+		domain.overTime = overTime;
 		domain.holidayUseTime = holidayUseTime;
 		domain.holidayWorkTime = holidayWorkTime;
 		domain.totalWorkingTime = totalWorkingTime;
@@ -70,18 +72,29 @@ public class AggregateTotalWorkingTime {
 	
 	/**
 	 * 共有項目を集計する
-	 * @param attendanceTime 日別実績の勤怠時間
+	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
 	 */
-	public void aggregateSharedItem(AttendanceTimeOfDailyPerformance attendanceTime){
+	public void aggregateSharedItem(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 		
 		// 就業時間を集計する
-		this.workTime.confirm(attendanceTime);
+		this.workTime.confirm(attendanceTimeOfDailys);
 	
 		// 休暇使用時間を集計する
-		this.holidayUseTime.confirm(attendanceTime);
+		this.holidayUseTime.confirm(attendanceTimeOfDailys);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.confirm(attendanceTime);
+		this.prescribedWorkingTime.confirm(attendanceTimeOfDailys);
+	}
+	
+	/**
+	 * 日別実績を集計する
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 */
+	public void aggregateDaily(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		// 残業時間を集計する
+		
+		// 休出時間を集計する
 	}
 	
 	/**

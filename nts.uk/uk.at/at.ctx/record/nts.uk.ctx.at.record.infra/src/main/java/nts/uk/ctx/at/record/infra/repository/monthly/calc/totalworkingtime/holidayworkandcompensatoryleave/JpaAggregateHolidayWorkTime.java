@@ -6,8 +6,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.AggregateHolidayWorkTimeRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtAggrHolidayWrkTm;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtAggrHolidayWrkTmPK;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonAggrHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonAggrHdwkTimePK;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 /**
  * リポジトリ実装：集計休出時間
@@ -16,10 +17,12 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidaywo
 @Stateless
 public class JpaAggregateHolidayWorkTime extends JpaRepository implements AggregateHolidayWorkTimeRepository {
 
-	private static final String DELETE_BY_PARENT_PK = "DELETE FROM KrcdtAggrHolidayWrkTm a "
+	private static final String DELETE_BY_PARENT_PK = "DELETE FROM KrcdtMonAggrHdwkTime a "
 			+ "WHERE a.PK.employeeID = :employeeID "
-			+ "AND a.PK.startYmd <= :startYmd "
-			+ "AND a.PK.endYmd >= :endYmd ";
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay ";
 	
 	/** 追加 */
 	@Override
@@ -33,30 +36,43 @@ public class JpaAggregateHolidayWorkTime extends JpaRepository implements Aggreg
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateHolidayWorkTime aggregateHolidayWorkTime) {
+
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
-		KrcdtAggrHolidayWrkTmPK key = new KrcdtAggrHolidayWrkTmPK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end(),
-				aggregateHolidayWorkTime.getHolidayWorkTimeFrameNo());
-		KrcdtAggrHolidayWrkTm entity = this.queryProxy().find(key, KrcdtAggrHolidayWrkTm.class).get();
+		// キー
+		KrcdtMonAggrHdwkTimePK key = new KrcdtMonAggrHdwkTimePK(
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0),
+				aggregateHolidayWorkTime.getHolidayWorkFrameNo().v());
+		
+		KrcdtMonAggrHdwkTime entity = this.queryProxy().find(key, KrcdtMonAggrHdwkTime.class).get();
 		entity.holidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getTime().v();
-		entity.holidayWorkTimeCalc = aggregateHolidayWorkTime.getHolidayWorkTime().getCalculationTime().v();
+		entity.calcHolidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getCalculationTime().v();
 		entity.beforeHolidayWorkTime = aggregateHolidayWorkTime.getBeforeHolidayWorkTime().v();
-		entity.transferHolidayWorkTime = aggregateHolidayWorkTime.getTransferHolidayWorkTime().getTime().v();
-		entity.transferHolidayWorkTimeCalc = aggregateHolidayWorkTime.getTransferHolidayWorkTime().getCalculationTime().v();
-		entity.withinStatutoryHolidayWorkTime = aggregateHolidayWorkTime.getWithinStatutoryHolidayWorkTime().v();
-		entity.withinStatutoryTransferHolidayWorkTime = aggregateHolidayWorkTime.getWithinStatutoryTransferHolidayWorkTime().v();
+		entity.transferTime = aggregateHolidayWorkTime.getTransferTime().getTime().v();
+		entity.calcTransferTime = aggregateHolidayWorkTime.getTransferTime().getCalculationTime().v();
+		entity.legalHolidayWorkTime = aggregateHolidayWorkTime.getLegalHolidayWorkTime().v();
+		entity.legalTransferHolidayWorkTime = aggregateHolidayWorkTime.getLegalTransferHolidayWorkTime().v();
 		this.commandProxy().update(entity);
 	}
 
 	/** 削除　（親キー） */
 	@Override
 	public void removeByParentPK(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey) {
+		
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
+		
 		this.getEntityManager().createQuery(DELETE_BY_PARENT_PK)
-		.setParameter("employeeID", attendanceTimeOfMonthlyKey.getEmployeeID())
-		.setParameter("startYmd", attendanceTimeOfMonthlyKey.getDatePeriod().start())
-		.setParameter("endYmd", attendanceTimeOfMonthlyKey.getDatePeriod().end())
+		.setParameter("employeeID", attendanceTimeOfMonthlyKey.getEmployeeId())
+		.setParameter("yearMonth", attendanceTimeOfMonthlyKey.getYearMonth().v())
+		.setParameter("closureId", attendanceTimeOfMonthlyKey.getClosureId().value)
+		.setParameter("closureDay", closureDate.getClosureDay().v())
+		.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 		.executeUpdate();
 	}
 	
@@ -66,23 +82,30 @@ public class JpaAggregateHolidayWorkTime extends JpaRepository implements Aggreg
 	 * @param aggregateHolidayWorkTime ドメイン：集計休出時間
 	 * @return エンティティ：集計休出時間
 	 */
-	private static KrcdtAggrHolidayWrkTm toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
+	private static KrcdtMonAggrHdwkTime toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateHolidayWorkTime aggregateHolidayWorkTime){
+
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
-		KrcdtAggrHolidayWrkTmPK key = new KrcdtAggrHolidayWrkTmPK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end(),
-				aggregateHolidayWorkTime.getHolidayWorkTimeFrameNo());
-		KrcdtAggrHolidayWrkTm entity = new KrcdtAggrHolidayWrkTm();
+		// キー
+		KrcdtMonAggrHdwkTimePK key = new KrcdtMonAggrHdwkTimePK(
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0),
+				aggregateHolidayWorkTime.getHolidayWorkFrameNo().v());
+		
+		KrcdtMonAggrHdwkTime entity = new KrcdtMonAggrHdwkTime();
 		entity.PK = key;
 		entity.holidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getTime().v();
-		entity.holidayWorkTimeCalc = aggregateHolidayWorkTime.getHolidayWorkTime().getCalculationTime().v();
+		entity.calcHolidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getCalculationTime().v();
 		entity.beforeHolidayWorkTime = aggregateHolidayWorkTime.getBeforeHolidayWorkTime().v();
-		entity.transferHolidayWorkTime = aggregateHolidayWorkTime.getTransferHolidayWorkTime().getTime().v();
-		entity.transferHolidayWorkTimeCalc = aggregateHolidayWorkTime.getTransferHolidayWorkTime().getCalculationTime().v();
-		entity.withinStatutoryHolidayWorkTime = aggregateHolidayWorkTime.getWithinStatutoryHolidayWorkTime().v();
-		entity.withinStatutoryTransferHolidayWorkTime = aggregateHolidayWorkTime.getWithinStatutoryTransferHolidayWorkTime().v();
+		entity.transferTime = aggregateHolidayWorkTime.getTransferTime().getTime().v();
+		entity.calcTransferTime = aggregateHolidayWorkTime.getTransferTime().getCalculationTime().v();
+		entity.legalHolidayWorkTime = aggregateHolidayWorkTime.getLegalHolidayWorkTime().v();
+		entity.legalTransferHolidayWorkTime = aggregateHolidayWorkTime.getLegalTransferHolidayWorkTime().v();
 		return entity;
 	}
 }

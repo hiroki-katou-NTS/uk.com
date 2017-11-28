@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class AggregateTotalTimeSpentAtWork {
 
 	/** 拘束残業時間 */
-	private AttendanceTimeMonth overTimeWorkSpentAtWork;
+	private AttendanceTimeMonth overTimeSpentAtWork;
 	/** 拘束深夜時間 */
 	private AttendanceTimeMonth midnightTimeSpentAtWork;
 	/** 拘束休出時間 */
@@ -23,7 +23,7 @@ public class AggregateTotalTimeSpentAtWork {
 
 	/**
 	 * ファクトリー
-	 * @param overTimeWorkSpentAtWork 拘束残業時間
+	 * @param overTimeSpentAtWork 拘束残業時間
 	 * @param midnightTimeSpentAtWork 拘束深夜時間
 	 * @param holidayTimeSpentAtWork 拘束休出時間
 	 * @param varienceTimeSpentAtWork 拘束差異時間
@@ -31,14 +31,14 @@ public class AggregateTotalTimeSpentAtWork {
 	 * @return 集計総拘束時間
 	 */
 	public static AggregateTotalTimeSpentAtWork of(
-			AttendanceTimeMonth overTimeWorkSpentAtWork,
+			AttendanceTimeMonth overTimeSpentAtWork,
 			AttendanceTimeMonth midnightTimeSpentAtWork,
 			AttendanceTimeMonth holidayTimeSpentAtWork,
 			AttendanceTimeMonth varienceTimeSpentAtWork,
 			AttendanceTimeMonth totalTimeSpentAtWork){
 
 		AggregateTotalTimeSpentAtWork domain = new AggregateTotalTimeSpentAtWork();
-		domain.overTimeWorkSpentAtWork = overTimeWorkSpentAtWork;
+		domain.overTimeSpentAtWork = overTimeSpentAtWork;
 		domain.midnightTimeSpentAtWork = midnightTimeSpentAtWork;
 		domain.holidayTimeSpentAtWork = holidayTimeSpentAtWork;
 		domain.varienceTimeSpentAtWork = varienceTimeSpentAtWork;

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 
@@ -54,21 +56,21 @@ public class HolidayUseTimeOfMonthly {
 	
 	/**
 	 * 休暇使用時間を確認する
-	 * @param attendanceTime 日別実績の勤怠時間
+	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
 	 */
-	public void confirm(AttendanceTimeOfDailyPerformance attendanceTime){
+	public void confirm(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 		
 		// 年休使用時間を確認する
-		this.annualLeave.confirm(attendanceTime);
+		this.annualLeave.confirm(attendanceTimeOfDailys);
 
 		// 積立年休使用時間を確認する
-		this.retentionYearly.confirm(attendanceTime);
+		this.retentionYearly.confirm(attendanceTimeOfDailys);
 
 		// 特別休暇使用時間を確認する
-		this.specialHoliday.confirm(attendanceTime);
+		this.specialHoliday.confirm(attendanceTimeOfDailys);
 
 		// 代休使用時間を確認する
-		this.compensatoryLeave.confirm(attendanceTime);
+		this.compensatoryLeave.confirm(attendanceTimeOfDailys);
 	}
 	
 	/**

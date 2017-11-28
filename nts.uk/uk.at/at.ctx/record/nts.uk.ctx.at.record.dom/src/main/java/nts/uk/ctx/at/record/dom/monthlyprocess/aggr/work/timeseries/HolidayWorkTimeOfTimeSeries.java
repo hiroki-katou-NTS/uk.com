@@ -19,7 +19,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	/** 休出時間 */
 	private List<HolidayWorkFrameTime> holidayWorkTimes;
 	/** 法定内休出時間 */
-	private List<HolidayWorkFrameTime> withinStatutoryHolidayWorkTimes;
+	private List<HolidayWorkFrameTime> legalHolidayWorkTimes;
 	
 	/**
 	 * コンストラクタ
@@ -27,7 +27,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	public HolidayWorkTimeOfTimeSeries(){
 		
 		this.holidayWorkTimes = new ArrayList<>();
-		this.withinStatutoryHolidayWorkTimes = new ArrayList<>();
+		this.legalHolidayWorkTimes = new ArrayList<>();
 	}
 	
 	/**

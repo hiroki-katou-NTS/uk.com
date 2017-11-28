@@ -20,39 +20,39 @@ public class FlexTime {
 	/** 事前フレックス時間 */
 	private AttendanceTimeMonthWithMinus beforeFlexTime;
 	/** 法定内フレックス時間 */
-	private AttendanceTimeMonthWithMinus withinStatutoryFlexTime;
+	private AttendanceTimeMonthWithMinus legalFlexTime;
 	/** 法定外フレックス時間 */
-	private AttendanceTimeMonthWithMinus excessOfStatutoryFlexTime;
+	private AttendanceTimeMonthWithMinus illegalFlexTime;
 	/** 時系列ワーク */
-	private List<FlexTimeOfTimeSeries> timeSeriesWork;
+	private List<FlexTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public FlexTime(){
 		
-		this.timeSeriesWork = new ArrayList<>();
+		this.timeSeriesWorks = new ArrayList<>();
 	}
 
 	/**
 	 * ファクトリー
 	 * @param flexTime フレックス時間
 	 * @param beforeFlexTime 事前フレックス時間
-	 * @param withinStatutoryFlexTime 法定内フレックス時間
-	 * @param excessOfStatutoryFlexTime 法定外フレックス時間
+	 * @param legalFlexTime 法定内フレックス時間
+	 * @param illegalFlexTime 法定外フレックス時間
 	 * @return フレックス時間
 	 */
 	public static FlexTime of(
 			TimeMonthWithCalculationAndMinus flexTime,
 			AttendanceTimeMonthWithMinus beforeFlexTime,
-			AttendanceTimeMonthWithMinus withinStatutoryFlexTime,
-			AttendanceTimeMonthWithMinus excessOfStatutoryFlexTime){
+			AttendanceTimeMonthWithMinus legalFlexTime,
+			AttendanceTimeMonthWithMinus illegalFlexTime){
 
 		FlexTime domain = new FlexTime();
 		domain.flexTime = flexTime;
 		domain.beforeFlexTime = beforeFlexTime;
-		domain.withinStatutoryFlexTime = withinStatutoryFlexTime;
-		domain.excessOfStatutoryFlexTime = excessOfStatutoryFlexTime;
+		domain.legalFlexTime = legalFlexTime;
+		domain.illegalFlexTime = illegalFlexTime;
 		return domain;
 	}
 }

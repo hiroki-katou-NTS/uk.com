@@ -18,14 +18,14 @@ public class IrregularWorkingTimeOfMonthly {
 	/** 変形労働不足時間 */
 	private AttendanceTimeMonth irregularWorkingShortageTime;
 	/** 変形法定内残業時間 */
-	private TimeMonthWithCalculation irregularWithinStatutoryOverTimeWork;
+	private TimeMonthWithCalculation irregularLegalOverTime;
 
 	/**
 	 * コンストラクタ
 	 */
 	public IrregularWorkingTimeOfMonthly(){
 		
-		this.irregularWithinStatutoryOverTimeWork = new TimeMonthWithCalculation();
+		this.irregularLegalOverTime = new TimeMonthWithCalculation();
 	}
 
 	/**
@@ -33,20 +33,20 @@ public class IrregularWorkingTimeOfMonthly {
 	 * @param multiMonthIrregularMiddleTime 複数月変形途中時間
 	 * @param irregularPeriodCarryforwardTime 変形期間繰越時間
 	 * @param irregularWorkingShortageTime 変形労働不足時間
-	 * @param irregularWithinStatutoryOverTimeWork 変形法定内残業時間
+	 * @param irregularLegalOverTime 変形法定内残業時間
 	 * @return 月別実績の変形労働時間
 	 */
 	public static IrregularWorkingTimeOfMonthly of(
 			AttendanceTimeMonth multiMonthIrregularMiddleTime,
 			AttendanceTimeMonth irregularPeriodCarryforwardTime,
 			AttendanceTimeMonth irregularWorkingShortageTime,
-			TimeMonthWithCalculation irregularWithinStatutoryOverTimeWork){
+			TimeMonthWithCalculation irregularLegalOverTime){
 
 		IrregularWorkingTimeOfMonthly domain = new IrregularWorkingTimeOfMonthly();
 		domain.multiMonthIrregularMiddleTime = multiMonthIrregularMiddleTime;
 		domain.irregularPeriodCarryforwardTime = irregularPeriodCarryforwardTime;
 		domain.irregularWorkingShortageTime = irregularWorkingShortageTime;
-		domain.irregularWithinStatutoryOverTimeWork = irregularWithinStatutoryOverTimeWork;
+		domain.irregularLegalOverTime = irregularLegalOverTime;
 		return domain;
 	}
 }

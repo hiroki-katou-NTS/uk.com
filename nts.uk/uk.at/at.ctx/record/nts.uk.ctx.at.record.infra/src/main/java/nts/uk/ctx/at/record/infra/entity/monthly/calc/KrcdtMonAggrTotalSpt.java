@@ -21,10 +21,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_AGGR_TOTAL_TM_SPENT")
+@Table(name = "KRCDT_MON_AGGR_TOTAL_SPT")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtAggrTotalTmSpent extends UkJpaEntity implements Serializable {
+public class KrcdtMonAggrTotalSpt extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,31 +33,33 @@ public class KrcdtAggrTotalTmSpent extends UkJpaEntity implements Serializable {
 	public KrcdtMonAttendanceTimePK PK;
 	
 	/** 拘束残業時間 */
-	@Column(name = "OVER_TIME_WORK_SPENT")
-	public int overTimeWorkSpentAtWork;
+	@Column(name = "SPENT_OVER_TIME")
+	public int overTimeSpentAtWork;
 	
 	/** 拘束深夜時間 */
-	@Column(name = "MIDNIGHT_TIME_SPENT")
+	@Column(name = "SPENT_MIDNIGHT_TIME")
 	public int midnightTimeSpentAtWork;
 	
 	/** 拘束休出時間 */
-	@Column(name = "HOLIDAY_TIME_SPENT")
+	@Column(name = "SPENT_HOLIDAY_TIME")
 	public int holidayTimeSpentAtWork;
 	
 	/** 拘束差異時間 */
-	@Column(name = "VARIENCE_TIME_SPENT")
+	@Column(name = "SPENT_VARIENCE_TIME")
 	public int varienceTimeSpentAtWork;
 	
 	/** 総拘束時間 */
-	@Column(name = "TOTAL_TIME_SPENT")
+	@Column(name = "TOTAL_SPENT_TIME")
 	public int totalTimeSpentAtWork;
 
 	/** マッチング：月別実績の勤怠時間 */
 	@OneToOne
 	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName="KRCDT_MON_ATTENDANCE_TIME.SID", insertable = false, updatable = false),
-		@JoinColumn(name = "START_YMD", referencedColumnName="KRCDT_MON_ATTENDANCE_TIME.START_YMD", insertable = false, updatable = false),
-		@JoinColumn(name = "END_YMD", referencedColumnName="KRCDT_MON_ATTENDANCE_TIME.END_YMD", insertable = false, updatable = false)
+    	@JoinColumn(name = "SID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YM", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.YM", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
 	

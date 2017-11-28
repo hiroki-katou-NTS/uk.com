@@ -7,7 +7,8 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWorkRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtAggrTotalTmSpent;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 /**
  * リポジトリ実装：集計総拘束時間
@@ -28,13 +29,20 @@ public class JpaAggregateTotalTimeSpentAtWork extends JpaRepository implements A
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateTotalTimeSpentAtWork aggregateTotalTimeSpentAtWork) {
+
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
+		// キー
 		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end());
-		KrcdtAggrTotalTmSpent entity = this.queryProxy().find(key, KrcdtAggrTotalTmSpent.class).get();
-		entity.overTimeWorkSpentAtWork = aggregateTotalTimeSpentAtWork.getOverTimeWorkSpentAtWork().v();
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		KrcdtMonAggrTotalSpt entity = this.queryProxy().find(key, KrcdtMonAggrTotalSpt.class).get();
+		entity.overTimeSpentAtWork = aggregateTotalTimeSpentAtWork.getOverTimeSpentAtWork().v();
 		entity.midnightTimeSpentAtWork = aggregateTotalTimeSpentAtWork.getMidnightTimeSpentAtWork().v();
 		entity.holidayTimeSpentAtWork = aggregateTotalTimeSpentAtWork.getHolidayTimeSpentAtWork().v();
 		entity.varienceTimeSpentAtWork = aggregateTotalTimeSpentAtWork.getVarienceTimeSpentAtWork().v();
@@ -48,16 +56,23 @@ public class JpaAggregateTotalTimeSpentAtWork extends JpaRepository implements A
 	 * @param aggregateTotalTimeSpentAtWork ドメイン：集計総拘束時間
 	 * @return エンティティ：集計総拘束時間
 	 */
-	private static KrcdtAggrTotalTmSpent toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
+	private static KrcdtMonAggrTotalSpt toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateTotalTimeSpentAtWork aggregateTotalTimeSpentAtWork){
 
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
+		
+		// キー
 		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end());
-		KrcdtAggrTotalTmSpent entity = new KrcdtAggrTotalTmSpent();
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		KrcdtMonAggrTotalSpt entity = new KrcdtMonAggrTotalSpt();
 		entity.PK = key;
-		entity.overTimeWorkSpentAtWork = aggregateTotalTimeSpentAtWork.getOverTimeWorkSpentAtWork().v();
+		entity.overTimeSpentAtWork = aggregateTotalTimeSpentAtWork.getOverTimeSpentAtWork().v();
 		entity.midnightTimeSpentAtWork = aggregateTotalTimeSpentAtWork.getMidnightTimeSpentAtWork().v();
 		entity.holidayTimeSpentAtWork = aggregateTotalTimeSpentAtWork.getHolidayTimeSpentAtWork().v();
 		entity.varienceTimeSpentAtWork = aggregateTotalTimeSpentAtWork.getVarienceTimeSpentAtWork().v();

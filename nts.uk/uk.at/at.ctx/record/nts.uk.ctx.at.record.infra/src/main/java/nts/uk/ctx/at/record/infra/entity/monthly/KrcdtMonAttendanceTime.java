@@ -12,22 +12,16 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtAggrTotalTmSpent;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonthlyCalculation;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtIrregWrkTimeMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtRegIrregTimeMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.flex.KrcdtFlexTimeMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtAggrTotalWrkTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtPrescrWrkTimeMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtWorkTimeOfMonth;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayusetime.KrcdtAnnualLeaveUtMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayusetime.KrcdtCompenLeaveUtMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayusetime.KrcdtRetentYearUtMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayusetime.KrcdtSpHolidayUtMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtAggrHolidayWrkTm;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtHolidayWorkTmMon;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtimework.KrcdtAggrOverTimeWork;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtimework.KrcdtOverTimeWorkMon;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.flex.KrcdtMonFlexTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtMonAggrTotalWrk;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayusetime.KrcdtMonHldyUseTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonAggrHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -45,74 +39,58 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 	/** プライマリキー */
 	@EmbeddedId
 	public KrcdtMonAttendanceTimePK PK;
+	
+	/** 開始年月日 */
+	@Column(name = "START_YMD")
+	public GeneralDate startYmd;
+
+	/** 終了年月日 */
+	@Column(name = "END_YMD")
+	public GeneralDate endYmd;
 
 	/** 集計日数 */
 	@Column(name = "AGGREGATE_DAYS")
 	public double aggregateDays;
-
-	/** 月別実績の月の計算 */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtMonthlyCalculation krcdtMonthlyCalculation;
+	
+	/** 法定労働時間 */
+	@Column(name = "LEGAL_WORKING_TIME")
+	public int statutoryWorkingTime;
 
     /** 実働時間：月別実績の通常変形時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtRegIrregTimeMon krcdtRegIrregTimeMon;
-
-    /** 実働時間：月別実績の変形労働時間 */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtIrregWrkTimeMon krcdtIrregWrkTimeMon;
+    public KrcdtMonRegIrregTime krcdtMonRegIrregTime;
 
 	/** 月別実績のフレックス時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtFlexTimeMon krcdtFlexTimeMon;
+    public KrcdtMonFlexTime krcdtMonFlexTime;
 
-	/** 総労働時間：休暇使用時間：月別実績の年休使用時間 */
+	/** 総労働時間：月別実績の休暇使用時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtAnnualLeaveUtMon krcdtAnnualLeaveUtMon;
-
-	/** 総労働時間：休暇使用時間：月別実績の積立年休使用時間 */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtRetentYearUtMon krcdtRetentYearUtMon;
-
-	/** 総労働時間：休暇使用時間：月別実績の特別休暇使用時間 */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtSpHolidayUtMon krcdtSpHolidayUtMon;
-
-	/** 総労働時間：休暇使用時間：月別実績の代休使用時間 */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtCompenLeaveUtMon krcdtCompenLeaveUtMon;
+    public KrcdtMonHldyUseTime krcdtMonHldyUseTime;
 
 	/** 総労働時間：集計総労働時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtAggrTotalWrkTime krcdtAggrTotalWrkTime;
-
-	/** 総労働時間：月別実績の就業時間 */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtWorkTimeOfMonth krcdtWorkTimeOfMonth;
-
-	/** 総労働時間：月別実績の所定労働時間 */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtPrescrWrkTimeMon krcdtPrescrWrkTimeMon;
+    public KrcdtMonAggrTotalWrk krcdtMonAggrTotalWrk;
 
 	/** 総労働時間：残業時間：月別実績の残業時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtOverTimeWorkMon krcdtOverTimeWorkMon;
+    public KrcdtMonOverTime krcdtMonOverTime;
 
     /** 総労働時間：残業時間：集計残業時間 */
     @OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public List<KrcdtAggrOverTimeWork> krcdtAggrOverTimeWorks;
+    public List<KrcdtMonAggrOverTime> krcdtMonAggrOverTimes;
 
 	/** 総労働時間：休出・代休：月別実績の休出時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtHolidayWorkTmMon krcdtHolidayWorkTmMon;
+    public KrcdtMonHdwkTime krcdtMonHdwkTime;
 
     /** 総労働時間：休出・代休：集計休出時間 */
     @OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public List<KrcdtAggrHolidayWrkTm> krcdtAggrHolidayWrkTms;
+    public List<KrcdtMonAggrHdwkTime> krcdtMonAggrHdwkTimes;
 
 	/** 集計総拘束時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtAggrTotalTmSpent krcdtAggrTotalTmSpent;
+    public KrcdtMonAggrTotalSpt krcdtMonAggrTotalSpt;
 	
 	/**
 	 * キー取得

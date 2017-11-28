@@ -4,10 +4,12 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtRegIrregTimeMon;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 /**
  * リポジトリ実装：月別実績の通常変形時間
@@ -29,13 +31,28 @@ public class JpaRegularAndIrregularTimeOfMonthly extends JpaRepository implement
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			RegularAndIrregularTimeOfMonthly regularAndIrregularTimeOfMonthly) {
 		
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
+		
+		// キー
 		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end());
-		KrcdtRegIrregTimeMon entity = this.queryProxy().find(key, KrcdtRegIrregTimeMon.class).get();
-		entity.monthlyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getMonthlyTotalPremiumTime().v();
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 月別実績の変形労働時間
+		IrregularWorkingTimeOfMonthly irregularWorkingTime = regularAndIrregularTimeOfMonthly.getIrregularWorkingTime();
+		
+		KrcdtMonRegIrregTime entity = this.queryProxy().find(key, KrcdtMonRegIrregTime.class).get();
 		entity.weeklyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getWeeklyTotalPremiumTime().v();
+		entity.monthlyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getMonthlyTotalPremiumTime().v();
+		entity.multiMonthIrregularMiddleTime = irregularWorkingTime.getMultiMonthIrregularMiddleTime().v();
+		entity.irregularPeriodCarryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime().v();
+		entity.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
+		entity.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
+		entity.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalculationTime().v();
 		this.commandProxy().update(entity);
 	}
 	
@@ -45,17 +62,32 @@ public class JpaRegularAndIrregularTimeOfMonthly extends JpaRepository implement
 	 * @param regularAndIrregularTimeOfMonthly ドメイン：月別実績の通常変形時間
 	 * @return エンティティ：月別実績の通常変形時間
 	 */
-	private static KrcdtRegIrregTimeMon toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
+	private static KrcdtMonRegIrregTime toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			RegularAndIrregularTimeOfMonthly regularAndIrregularTimeOfMonthly){
+
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
+		// キー
 		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end());
-		KrcdtRegIrregTimeMon entity = new KrcdtRegIrregTimeMon();
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 月別実績の変形労働時間
+		IrregularWorkingTimeOfMonthly irregularWorkingTime = regularAndIrregularTimeOfMonthly.getIrregularWorkingTime();
+		
+		KrcdtMonRegIrregTime entity = new KrcdtMonRegIrregTime();
 		entity.PK = key;
-		entity.monthlyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getMonthlyTotalPremiumTime().v();
 		entity.weeklyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getWeeklyTotalPremiumTime().v();
+		entity.monthlyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getMonthlyTotalPremiumTime().v();
+		entity.multiMonthIrregularMiddleTime = irregularWorkingTime.getMultiMonthIrregularMiddleTime().v();
+		entity.irregularPeriodCarryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime().v();
+		entity.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
+		entity.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
+		entity.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalculationTime().v();
 		return entity;
 	}
 }

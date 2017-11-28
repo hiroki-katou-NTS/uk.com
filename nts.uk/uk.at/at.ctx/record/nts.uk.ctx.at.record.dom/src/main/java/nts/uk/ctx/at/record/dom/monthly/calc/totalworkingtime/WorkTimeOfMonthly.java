@@ -54,38 +54,41 @@ public class WorkTimeOfMonthly {
 	
 	/**
 	 * 就業時間を確認する
-	 * @param attendanceTime 日別実績の勤怠時間
+	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
 	 */
-	public void confirm(AttendanceTimeOfDailyPerformance attendanceTime){
+	public void confirm(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 		
-		// 日別実績の勤務実績時間　取得
-		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTime.getActualWorkingTimeOfDaily();
-
-		// 日別実績の総労働時間　取得
-		TotalWorkingTime totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-		
-		// ドメインモデル「日別実績の法定内時間」を取得する
-		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
-
-		// 取得した就業時間・所定内割増時間を確認する
-		AttendanceTime workTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().v());
-		AttendanceTime withinPrescribedPremiumTime =
-				new AttendanceTime(withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().v());
-		
-		// ドメインモデル「日別実績の残業時間」を取得する
-		ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
-		if (excessOfStatutoryTimeOfDaily.getOverTimeWork().isPresent()){
-			OverTimeOfDaily overTimeWorkOfDaily = excessOfStatutoryTimeOfDaily.getOverTimeWork().get();
+		for (AttendanceTimeOfDailyPerformance attendanceTimeOfDaily : attendanceTimeOfDailys) {
 			
-			// 変形法定内残業を就業時間に加算
-			workTime.addMinutes(overTimeWorkOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes());
+			// 日別実績の勤務実績時間　取得
+			ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+	
+			// 日別実績の総労働時間　取得
+			TotalWorkingTime totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			
+			// ドメインモデル「日別実績の法定内時間」を取得する
+			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
+	
+			// 取得した就業時間・所定内割増時間を確認する
+			AttendanceTime workTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().v());
+			AttendanceTime withinPrescribedPremiumTime =
+					new AttendanceTime(withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().v());
+			
+			// ドメインモデル「日別実績の残業時間」を取得する
+			ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+			if (excessOfStatutoryTimeOfDaily.getOverTimeWork().isPresent()){
+				OverTimeOfDaily overTimeWorkOfDaily = excessOfStatutoryTimeOfDaily.getOverTimeWork().get();
+				
+				// 変形法定内残業を就業時間に加算
+				workTime.addMinutes(overTimeWorkOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes());
+			}
+	
+			// 時系列ワークに追加
+			//*****（未）WithinStatutoryTimeOfDailyがインスタンス化できない（or 値を入れる）
+			//this.timeSeriesWorks.add(WorkTimeOfTimeSeries.of(
+			//		attendanceTime.getYmd(),
+			//		new WithinStatutoryTimeOfDaily()));
 		}
-
-		// 時系列ワークに追加
-		//*****（未）WithinStatutoryTimeOfDailyがインスタンス化できない（or 値を入れる）
-		//this.timeSeriesWorks.add(WorkTimeOfTimeSeries.of(
-		//		attendanceTime.getYmd(),
-		//		new WithinStatutoryTimeOfDaily()));
 	}
 	
 	/**

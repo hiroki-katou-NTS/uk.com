@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  * @author shuichi_ishida
  */
 @Getter
-public class FlexTimeOfExcessOutsideWork {
+public class FlexTimeOfExcessOutsideTime {
 
 	/** 超過フレ区分 */
 	private ExcessFlexAtr excessFlexAtr;
@@ -20,7 +20,7 @@ public class FlexTimeOfExcessOutsideWork {
 	/**
 	 * コンストラクタ
 	 */
-	public FlexTimeOfExcessOutsideWork(){
+	public FlexTimeOfExcessOutsideTime(){
 		
 		this.excessFlexAtr = ExcessFlexAtr.Principle;
 	}
@@ -32,12 +32,12 @@ public class FlexTimeOfExcessOutsideWork {
 	 * @param forConvenienceTime 便宜上時間
 	 * @return 時間外超過のフレックス時間
 	 */
-	public static FlexTimeOfExcessOutsideWork of(
+	public static FlexTimeOfExcessOutsideTime of(
 			ExcessFlexAtr excessFlexAtr,
 			AttendanceTimeMonth principleTime,
 			AttendanceTimeMonth forConvenienceTime){
 
-		FlexTimeOfExcessOutsideWork domain = new FlexTimeOfExcessOutsideWork();
+		FlexTimeOfExcessOutsideTime domain = new FlexTimeOfExcessOutsideTime();
 		domain.excessFlexAtr = excessFlexAtr;
 		domain.principleTime = principleTime;
 		domain.forConvenienceTime = forConvenienceTime;

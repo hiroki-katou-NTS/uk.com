@@ -4,22 +4,23 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtimework.OverTimeWorkOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtimework.OverTimeWorkOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtimework.KrcdtOverTimeWorkMon;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 /**
  * リポジトリ実装：月別実績の残業時間
  * @author shuichu_ishida
  */
 @Stateless
-public class JpaOverTimeWorkOfMonthly extends JpaRepository implements OverTimeWorkOfMonthlyRepository {
+public class JpaOverTimeWorkOfMonthly extends JpaRepository implements OverTimeOfMonthlyRepository {
 
 	/** 追加 */
 	@Override
 	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			OverTimeWorkOfMonthly overTimeWorkOfMonthly) {
+			OverTimeOfMonthly overTimeWorkOfMonthly) {
 		
 		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, overTimeWorkOfMonthly));
 	}
@@ -27,18 +28,25 @@ public class JpaOverTimeWorkOfMonthly extends JpaRepository implements OverTimeW
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			OverTimeWorkOfMonthly overTimeWorkOfMonthly) {
+			OverTimeOfMonthly overTimeWorkOfMonthly) {
+
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
+		// キー
 		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end());
-		KrcdtOverTimeWorkMon entity = this.queryProxy().find(key, KrcdtOverTimeWorkMon.class).get();
-		entity.totalOverTimeWork = overTimeWorkOfMonthly.getTotalOverTimeWork().getTime().v();
-		entity.totalOverTimeWorkCalc = overTimeWorkOfMonthly.getTotalOverTimeWork().getCalculationTime().v();
-		entity.beforeOverTimeWork = overTimeWorkOfMonthly.getBeforeOverTimeWork().v();
-		entity.transferTotalOverTimeWork = overTimeWorkOfMonthly.getTransferTotalOverTimeWork().getTime().v();
-		entity.transferTotalOverTimeWorkCalc = overTimeWorkOfMonthly.getTransferTotalOverTimeWork().getCalculationTime().v();
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		KrcdtMonOverTime entity = this.queryProxy().find(key, KrcdtMonOverTime.class).get();
+		entity.totalOverTime = overTimeWorkOfMonthly.getTotalOverTime().getTime().v();
+		entity.calcTotalOverTime = overTimeWorkOfMonthly.getTotalOverTime().getCalculationTime().v();
+		entity.beforeOverTime = overTimeWorkOfMonthly.getBeforeOverTime().v();
+		entity.totalTransferOverTime = overTimeWorkOfMonthly.getTotalTransferOverTime().getTime().v();
+		entity.calcTotalTransferOverTime = overTimeWorkOfMonthly.getTotalTransferOverTime().getCalculationTime().v();
 		this.commandProxy().update(entity);
 	}
 	
@@ -48,20 +56,27 @@ public class JpaOverTimeWorkOfMonthly extends JpaRepository implements OverTimeW
 	 * @param overTimeWorkOfMonthly ドメイン：月別実績の残業時間
 	 * @return エンティティ：月別実績の残業時間
 	 */
-	private static KrcdtOverTimeWorkMon toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			OverTimeWorkOfMonthly overTimeWorkOfMonthly){
+	private static KrcdtMonOverTime toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
+			OverTimeOfMonthly overTimeWorkOfMonthly){
+
+		// 締め日付
+		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
+		// キー
 		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeID(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().start(),
-				attendanceTimeOfMonthlyKey.getDatePeriod().end());
-		KrcdtOverTimeWorkMon entity = new KrcdtOverTimeWorkMon();
+				attendanceTimeOfMonthlyKey.getEmployeeId(),
+				attendanceTimeOfMonthlyKey.getYearMonth().v(),
+				attendanceTimeOfMonthlyKey.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		KrcdtMonOverTime entity = new KrcdtMonOverTime();
 		entity.PK = key;
-		entity.totalOverTimeWork = overTimeWorkOfMonthly.getTotalOverTimeWork().getTime().v();
-		entity.totalOverTimeWorkCalc = overTimeWorkOfMonthly.getTotalOverTimeWork().getCalculationTime().v();
-		entity.beforeOverTimeWork = overTimeWorkOfMonthly.getBeforeOverTimeWork().v();
-		entity.transferTotalOverTimeWork = overTimeWorkOfMonthly.getTransferTotalOverTimeWork().getTime().v();
-		entity.transferTotalOverTimeWorkCalc = overTimeWorkOfMonthly.getTransferTotalOverTimeWork().getCalculationTime().v();
+		entity.totalOverTime = overTimeWorkOfMonthly.getTotalOverTime().getTime().v();
+		entity.calcTotalOverTime = overTimeWorkOfMonthly.getTotalOverTime().getCalculationTime().v();
+		entity.beforeOverTime = overTimeWorkOfMonthly.getBeforeOverTime().v();
+		entity.totalTransferOverTime = overTimeWorkOfMonthly.getTotalTransferOverTime().getTime().v();
+		entity.calcTotalTransferOverTime = overTimeWorkOfMonthly.getTotalTransferOverTime().getCalculationTime().v();
 		return entity;
 	}
 }
