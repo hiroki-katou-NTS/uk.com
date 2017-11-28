@@ -20,9 +20,9 @@ module nts.uk.com.view.cmm013.f {
             order: KnockoutObservable<number>;
             
             // UI binding
-            enable_F1_1: KnockoutObservable<boolean>;
-            enable_F1_4: KnockoutObservable<boolean>;
-            enable_F3_2: KnockoutObservable<boolean>;
+            enable_button_create_mode: KnockoutObservable<boolean>;
+            enable_button_delete: KnockoutObservable<boolean>;
+            enable_input_sequence_code: KnockoutObservable<boolean>;
             
             constructor() {
                 let _self = this;
@@ -48,9 +48,9 @@ module nts.uk.com.view.cmm013.f {
                 _self.order = ko.observable(0);
                 
                 // UI
-                _self.enable_F1_1 = ko.observable(null);
-                _self.enable_F1_4 = ko.observable(null);
-                _self.enable_F3_2 = ko.observable(null);
+                _self.enable_button_create_mode = ko.observable(null);
+                _self.enable_button_delete = ko.observable(null);
+                _self.enable_input_sequence_code = ko.observable(null);
             }
             
             
@@ -207,9 +207,9 @@ module nts.uk.com.view.cmm013.f {
              */
             public changeMode(newValue: boolean): void {
                 let _self = this;       
-                _self.enable_F1_1(!newValue);
-                _self.enable_F1_4(!newValue);
-                _self.enable_F3_2(newValue);
+                _self.enable_button_create_mode(!newValue);
+                _self.enable_button_delete(!newValue);
+                _self.enable_input_sequence_code(newValue);
                 if (newValue) {
                     _self.sequenceCode("");
                     _self.sequenceName("");   
