@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         
+        screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
+        
         static DATEFORMART: string = "YYYY/MM/DD";
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
