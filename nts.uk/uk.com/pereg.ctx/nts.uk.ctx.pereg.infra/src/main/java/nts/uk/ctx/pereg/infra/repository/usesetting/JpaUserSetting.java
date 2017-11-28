@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.repository.person.info.setting.user;
+package nts.uk.ctx.pereg.infra.repository.usesetting;
 
 import java.util.Optional;
 
@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSetting;
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSettingRepository;
-import nts.uk.ctx.bs.person.infra.entity.person.info.setting.user.BpsstUserSetting;
-import nts.uk.ctx.bs.person.infra.entity.person.info.setting.user.BpsstUserSettingPk;
+import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
+import nts.uk.ctx.pereg.dom.usesetting.UserSettingRepository;
+import nts.uk.ctx.pereg.infra.entity.usesetting.BpsstUserSetting;
+import nts.uk.ctx.pereg.infra.entity.usesetting.BpsstUserSettingPk;
 
 @Stateless
 @Transactional

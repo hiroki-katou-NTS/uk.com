@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.info.setting.user;
+package nts.uk.ctx.pereg.dom.usesetting;
 
 import java.util.Optional;
 

@@ -1,8 +1,8 @@
-package nts.uk.ctx.bs.person.dom.person.info.setting.user;
+package nts.uk.ctx.pereg.dom.usesetting;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
 public class UserSetting extends AggregateRoot {

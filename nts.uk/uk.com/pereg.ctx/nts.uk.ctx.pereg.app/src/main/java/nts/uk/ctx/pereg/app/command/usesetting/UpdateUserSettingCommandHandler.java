@@ -5,8 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSetting;
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.service.UserSettingBuz;
+import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 

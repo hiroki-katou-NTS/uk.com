@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.entity.person.info.setting.user;
+package nts.uk.ctx.pereg.infra.entity.usesetting;
 
 import java.io.Serializable;
 

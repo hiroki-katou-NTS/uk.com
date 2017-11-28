@@ -1,10 +1,10 @@
-package nts.uk.ctx.bs.person.dom.person.info.setting.user.service;
+package nts.uk.ctx.pereg.app.command.usesetting;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSetting;
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSettingRepository;
+import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
+import nts.uk.ctx.pereg.dom.usesetting.UserSettingRepository;
 
 @Stateless
 public class UserSettingBuzImpl implements UserSettingBuz{
