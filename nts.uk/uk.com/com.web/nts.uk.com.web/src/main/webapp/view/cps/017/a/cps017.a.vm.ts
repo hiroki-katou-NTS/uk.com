@@ -44,14 +44,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
                 selection: Selection = self.selection();
 
-            //xu ly dialog: 
-            let param = getShared('CPS017_PARAMS');
-
-            if (param != null && param != undefined) {
-                self.isDialog(param.isDialog);
-                self.closeUp(true);
-                self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
-            }
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
@@ -80,7 +72,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.disbleAdUpHist(false);
                             self.enableDelHist(false);
                             historySelection.histId(undefined);
-                            //return;
+                            nts.uk.ui.errors.clearAll();
+                            self.selection().selectionID('');
+                            self.selection().externalCD('');
+                            self.selection().selectionCD('');
+                            self.selection().selectionName('');
+                            self.selection().memoSelection('');
                         } else {
                             self.historySelection().histId(self.listHistorySelection()[0].histId);
                         }
@@ -88,6 +85,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 }
                 else {
                     historySelection.histId(undefined);
+                    self.registerData();
                 }
             });
 
@@ -135,6 +133,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             // sub theo selectionID: 
             selection.selectionID.subscribe(x => {
                 if (x) {
+                    nts.uk.ui.errors.clearAll();
                     let selectLists = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
                     });
@@ -143,9 +142,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
-
                 }
-
             });
 
         }
@@ -160,12 +157,20 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 dfd = $.Deferred();
 
             nts.uk.ui.errors.clearAll();
+            //xu ly dialog: 
+            let param = getShared('CPS017_PARAMS');
+
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length > 0) {
                     self.checkCreate(true);
                     self.listItems(itemList);
-                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    if (param != null && param != undefined) {
+                        self.isDialog(param.isDialog);
+                        self.closeUp(true);
+                        self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
+                    }else{
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);}
                 } else {
                     self.checkCreate(false);
                     alertError({ messageId: "Msg_455" });
