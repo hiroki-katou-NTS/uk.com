@@ -21,9 +21,9 @@ public abstract class AvaiablityPermissionRepositoryBase<D extends AvailabilityP
 		val root = query.from(this.getEntityClass());
 		
 		query.where(
-				cb.equal(root.get("companyId"), companyId),
-				cb.equal(root.get("roleId"), roleId),
-				cb.equal(root.get("functionNo"), functionNo));
+				cb.equal(root.get("pk").get("companyId"), companyId),
+				cb.equal(root.get("pk").get("roleId"), roleId),
+				cb.equal(root.get("pk").get("functionNo"), functionNo));
 		
 		return this.getEntityManager().createQuery(query).getResultList().stream()
 				.findFirst()
@@ -37,9 +37,9 @@ public abstract class AvaiablityPermissionRepositoryBase<D extends AvailabilityP
 		val root = query.from(this.getEntityClass());
 		
 		query.where(
-				cb.equal(root.get("companyId"), companyId),
-				cb.equal(root.get("roleId"), roleId),
-				root.get("functionNo").in(functionNoList));
+				cb.equal(root.get("pk").get("companyId"), companyId),
+				cb.equal(root.get("pk").get("roleId"), roleId),
+				root.get("pk").get("functionNo").in(functionNoList));
 		
 		return this.getEntityManager().createQuery(query).getResultList().stream()
 				.map(e -> (D)e.toDomain())

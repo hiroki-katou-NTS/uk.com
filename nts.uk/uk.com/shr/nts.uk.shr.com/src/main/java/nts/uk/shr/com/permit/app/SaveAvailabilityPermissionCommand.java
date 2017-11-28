@@ -17,7 +17,7 @@ public class SaveAvailabilityPermissionCommand {
 		return this.settings.stream()
 				.map(s -> new RestoreAvailabilityPermission() {
 					@Override public String companyId() { return companyId; }
-					@Override public String roleId() { return this.roleId(); }
+					@Override public String roleId() { return roleId; }
 					@Override public boolean isAvailable() { return s.isAvailable; }
 					@Override public int functionNo() { return s.functionNo; }
 				})

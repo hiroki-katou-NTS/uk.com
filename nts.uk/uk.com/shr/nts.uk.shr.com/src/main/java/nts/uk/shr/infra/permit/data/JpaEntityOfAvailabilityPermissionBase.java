@@ -18,7 +18,7 @@ public abstract class JpaEntityOfAvailabilityPermissionBase<D extends Availabili
 	@EmbeddedId
 	public JpaEntityOfAvailabilityPermissionId pk;
 	
-	@Column(name = "IS_AVAILALE")
+	@Column(name = "IS_AVAILABLE")
 	public boolean isAvailable;
 	
 	public abstract D toDomain();

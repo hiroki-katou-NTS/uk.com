@@ -7,7 +7,7 @@ import nts.uk.shr.infra.permit.data.JpaEntityOfAvailabilityPermissionBase;
 import nts.uk.shr.sample.permit.availability.dom.SampleAvailabilityPermission;
 
 @Entity
-@Table(name = "TEST_AVAIL_PERM")
+@Table(name = "TEST_AVAILPERM")
 public class TestAvailPerm extends JpaEntityOfAvailabilityPermissionBase<SampleAvailabilityPermission> {
 
 	@Override
