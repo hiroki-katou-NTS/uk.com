@@ -14,5 +14,5 @@ public interface WebMenuAdapter {
 	 * @return
 	 */
 	// RequestList #??
-	List<WebMenu> findByCompanyId();
+	List<WebMenuImport> findByCompanyId();
 }

@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf005.b {
     import service = nts.uk.at.view.kaf005.shr.service;
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
+            
+            screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
             //current Data
             //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
             //manualSendMailAtr
@@ -47,11 +49,11 @@ module nts.uk.at.view.kaf005.b {
             //休憩時間
             restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
             //残業時間
-            overtimeHours: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
+            overtimeHours: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
             //休出時間
-            breakTimes: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
+            breakTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
             //加給時間
-            bonusTimes: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
+            bonusTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
             //menu-bar 
             enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
             prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
@@ -99,6 +101,7 @@ module nts.uk.at.view.kaf005.b {
             //TODO: test-setting calculateFlag = 0
             calculateFlag: KnockoutObservable<number> = ko.observable(0);
             version: number = 0;
+            heightOvertimeHours: KnockoutObservable<number> = ko.observable();
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -106,6 +109,7 @@ module nts.uk.at.view.kaf005.b {
                 $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
                 $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
                 $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
+                $("#fixed-table").ntsFixedTable({ height: 120 });
                 self.startPage(self.appID());
             }
             
@@ -198,9 +202,13 @@ module nts.uk.at.view.kaf005.b {
                 let dataOverTime = _.filter(data.overTimeInputs, {'attendanceID': 1});
                 let dataBreakTime = _.filter(data.overTimeInputs, {'attendanceID': 2});
                 let dataBonusTime = _.filter(data.overTimeInputs, {'attendanceID': 3});
+                self.restTime.removeAll();
+                self.overtimeHours.removeAll();
+                self.breakTimes.removeAll();
+                self.bonusTimes.removeAll();
                 if(nts.uk.util.isNullOrEmpty(dataRestTime)){
                     for (let i = 0; i < 11; i++) {
-                        self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i, 0, 0, null));
+                        self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i.toString(), null, null, null,""));
                     }    
                 } else {
                     _.forEach(dataRestTime, (item) => { 
@@ -215,10 +223,10 @@ module nts.uk.at.view.kaf005.b {
                             item.startTime, 
                             item.endTime, 
                             item.applicationTime, ""));
-                    });    
-                }
+                    });
+                };
                 _.forEach(dataOverTime, (item) => { 
-                    self.overtimeHours.push(new common.OverTimeInput(
+                    self.overtimeHours.push(new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
                         item.attendanceID, 
@@ -226,12 +234,12 @@ module nts.uk.at.view.kaf005.b {
                         item.frameNo, 
                         item.timeItemTypeAtr, 
                         item.frameName, 
-                        item.startTime, 
-                        item.endTime, 
-                        item.applicationTime, ""));
+                        item.applicationTime, 
+                        null, 
+                        null, ""));
                 }); 
                 _.forEach(dataBreakTime, (item) => { 
-                    self.breakTimes.push(new common.OverTimeInput(
+                    self.breakTimes.push(new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
                         item.attendanceID, 
@@ -239,12 +247,12 @@ module nts.uk.at.view.kaf005.b {
                         item.frameNo, 
                         item.timeItemTypeAtr, 
                         item.frameName, 
-                        item.startTime, 
-                        item.endTime, 
-                        item.applicationTime, ""));
+                        item.applicationTime, 
+                        null, 
+                        null, ""));
                 }); 
                 _.forEach(dataBonusTime, (item) => { 
-                    self.bonusTimes.push(new common.OverTimeInput(
+                    self.bonusTimes.push(new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
                         item.attendanceID, 
@@ -252,9 +260,9 @@ module nts.uk.at.view.kaf005.b {
                         item.frameNo, 
                         item.timeItemTypeAtr, 
                         item.frameName, 
-                        item.startTime, 
-                        item.endTime, 
-                        item.applicationTime, ""));
+                        item.applicationTime, 
+                        null, 
+                        null, ""));
                 }); 
                 
                 /*
@@ -280,11 +288,18 @@ module nts.uk.at.view.kaf005.b {
                 }
                 */
                 //
-                if (data.appOvertimeNightFlg == 1) {
-                    //self.overtimeHours.push(new common.OvertimeHour("overTimeShiftNight",nts.uk.resource.getText("KAF005_64"),"0",null,null));
-                    self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), "0", null, null,"KAF005_64"));
+//                if (data.appOvertimeNightFlg == 1) {
+//                    //self.overtimeHours.push(new common.OvertimeHour("overTimeShiftNight",nts.uk.resource.getText("KAF005_64"),"0",null,null));
+//                    self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), "0", null, null,"KAF005_64"));
+//                }
+                 //self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), "0", null, null,"KAF005_66"));
+                if(data.overtimeAtr == 0){
+                    self.heightOvertimeHours(58);   
+                }else if(data.overtimeAtr == 1){
+                    self.heightOvertimeHours(180);
+                }else{
+                    self.heightOvertimeHours(216);
                 }
-                 self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), "0", null, null,"KAF005_66"));
             }
             
             update(): JQueryPromise<any> {
@@ -309,10 +324,10 @@ module nts.uk.at.view.kaf005.b {
                     workClockTo1: self.timeEnd1(),
                     workClockFrom2: self.timeStart2(),
                     workClockTo2: self.timeEnd2(),
-                    breakTimes: ko.mapping.toJS(self.breakTimes()),
-                    overtimeHours: ko.mapping.toJS(self.overtimeHours()),
+                    breakTimes: ko.mapping.toJS(_.map(self.breakTimes(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
+                    overtimeHours: ko.mapping.toJS(_.map(self.overtimeHours(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
                     restTime: ko.mapping.toJS(self.restTime()),
-                    bonusTimes: ko.mapping.toJS(self.bonusTimes()),
+                    bonusTimes: ko.mapping.toJS(_.map(self.bonusTimes(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
                     overtimeAtr: 0,
                     overTimeShiftNight: self.overTimeShiftNightPre(),
                     flexExessTime: self.flexExessTimePre(),
@@ -320,6 +335,22 @@ module nts.uk.at.view.kaf005.b {
                 }
                 service.updateOvertime(command);
             }
+            
+            convertOvertimeCaculationToOverTimeInput(param: common.OverTimeInput): common.OverTimeInput{
+                return new common.OverTimeInput(
+                    param.companyID(),
+                    param.appID(),
+                    param.attendanceID(),
+                    param.attendanceName(),
+                    param.frameNo(),
+                    param.timeItemTypeAtr(),
+                    param.frameName(),
+                    null,
+                    null,
+                    param.applicationTime(),
+                    param.nameID()    
+                );        
+            } 
             
             /**
              * KDL003
@@ -352,6 +383,73 @@ module nts.uk.at.view.kaf005.b {
             openCMM018() {
                 let self = this;
                 nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
+            }
+            
+            CaculationTime(){
+                let self = this;
+                let dfd = $.Deferred();
+                //TODO: for test
+                self.calculateFlag(0);
+                let param : any ={
+                    overtimeHours: ko.toJS(self.overtimeHours()),
+                    bonusTimes: ko.toJS(self.bonusTimes()),
+                    prePostAtr : self.prePostSelected(),
+                    appDate : moment(self.appDate()).format("YYYY/MM/DD")
+                }
+                
+                service.getCaculationResult(param).done(function(data){
+                   self.overtimeHours.removeAll();
+                   self.bonusTimes.removeAll();
+                    if(data != null){
+                     for(let i =0; i < data.length; i++){
+                       if(data[i].attendanceID == 1){
+                            
+                           if(data[i].frameNo != 11 && data[i].frameNo != 12){
+                               self.overtimeHours.push(new common.OvertimeCaculation("", "",
+                                data[i].attendanceID,
+                                 "", 
+                                 data[i].frameNo,
+                                 0, 
+                                 data[i].frameName,
+                                  data[i].applicationTime,
+                                   data[i].preAppTime,
+                                   data[i].caculationTime,"#[KAF005_55]"));
+                           }else if(data[i].frameNo == 11){
+                                self.overtimeHours.push(new common.OvertimeCaculation("", "",
+                                data[i].attendanceID,
+                                 "", 
+                                 data[i].frameNo,
+                                 0, 
+                                 nts.uk.resource.getText("KAF005_63"),
+                                  data[i].applicationTime,
+                                   data[i].preAppTime,
+                                   data[i].caculationTime,"#[KAF005_64]"));
+                           }else if(data[i].frameNo == 12){
+                                self.overtimeHours.push(new common.OvertimeCaculation("", "",
+                                data[i].attendanceID,
+                                 "", 
+                                 data[i].frameNo,
+                                 0, 
+                                 nts.uk.resource.getText("KAF005_65"),
+                                  data[i].applicationTime,
+                                   data[i].preAppTime,
+                                   data[i].caculationTime,"#[KAF005_66]"));
+                           }
+                           
+                       }else if(data[i].attendanceID == 3){
+                           self.bonusTimes.push(new common.OvertimeCaculation("", "", data[i].attendanceID,
+                            "", data[i].frameNo,
+                            data[i].timeItemTypeAtr ,
+                            data[i].frameName, data[i].applicationTime,
+                            data[i].preAppTime, null,""));
+                       }   
+                     }   
+                    }
+                     dfd.resolve(data);
+                }).fail(function(res){
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
         }
     }

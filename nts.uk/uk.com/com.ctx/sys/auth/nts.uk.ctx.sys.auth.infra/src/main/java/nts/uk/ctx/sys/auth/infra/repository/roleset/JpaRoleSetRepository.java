@@ -16,8 +16,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SaumtRoleSet;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SaumtRoleSetPK;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSet;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetPK;
 
 /**
  * Class JpaRoleSetRepository implement of RoleSetRepository
@@ -28,11 +28,12 @@ import nts.uk.ctx.sys.auth.infra.entity.roleset.SaumtRoleSetPK;
 public class JpaRoleSetRepository extends JpaRepository implements RoleSetRepository {
 
 	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSet rs"
-			+ " WHERE rs.roleSetPK.companyId = :companyId ";
+			+ " WHERE rs.roleSetPK.companyId = :companyId "
+			+ " ORDER BY rs.roleSetPK.roleSetCd ASC ";
 	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE = "SELECT rs FROM SacmtRoleSet rs"
 			+ " WHERE rs.roleSetPK.companyId = :companyId AND rs.personInfRole = :personRoleId ";
 	
-	private RoleSet toDomain(SaumtRoleSet entity) {
+	private RoleSet toDomain(SacmtRoleSet entity) {
 	
 		return new RoleSet(entity.roleSetPK.roleSetCd
 				, entity.roleSetPK.companyId
@@ -47,9 +48,9 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 				);
 	}
 
-	private SaumtRoleSet toEntity(RoleSet domain) {
-		SaumtRoleSetPK key = new SaumtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId());
-		return new SaumtRoleSet(key
+	private SacmtRoleSet toEntity(RoleSet domain) {
+		SacmtRoleSetPK key = new SacmtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId());
+		return new SacmtRoleSet(key
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
 				, domain.getOfficeHelperRoleId()
@@ -62,7 +63,7 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 
 	}
 	
-	private SaumtRoleSet toEntiryForUpdate(RoleSet domain, SaumtRoleSet upEntity) {
+	private SacmtRoleSet toEntiryForUpdate(RoleSet domain, SacmtRoleSet upEntity) {
 		upEntity.buildEntity(upEntity.roleSetPK
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
@@ -79,13 +80,13 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 	
 	@Override
 	public Optional<RoleSet> findByRoleSetCdAndCompanyId(String roleSetCd, String companyId) {
-		SaumtRoleSetPK pk = new SaumtRoleSetPK(roleSetCd, companyId);
-		return this.queryProxy().find(pk, SaumtRoleSet.class).map(c -> toDomain(c));
+		SacmtRoleSetPK pk = new SacmtRoleSetPK(roleSetCd, companyId);
+		return this.queryProxy().find(pk, SacmtRoleSet.class).map(c -> toDomain(c));
 	}
 
 	@Override
 	public List<RoleSet> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_All_ROLE_SET_BY_COMPANY_ID, SaumtRoleSet.class)
+		return this.queryProxy().query(SELECT_All_ROLE_SET_BY_COMPANY_ID, SacmtRoleSet.class)
 				.setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
 	}
@@ -97,9 +98,9 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 
 	@Override
 	public void update(RoleSet domain) {
-		Optional<SaumtRoleSet> upEntity = this.queryProxy().find(
-				 new SaumtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId()),
-				 SaumtRoleSet.class);
+		Optional<SacmtRoleSet> upEntity = this.queryProxy().find(
+				 new SacmtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId()),
+				 SacmtRoleSet.class);
 		if (upEntity.isPresent()) {
 			this.commandProxy().update(toEntiryForUpdate(domain, upEntity.get()));
 		}
@@ -107,21 +108,21 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 
 	@Override
 	public void delete(String roleSetCd, String companyId) {
-		SaumtRoleSetPK pk = new SaumtRoleSetPK(roleSetCd, companyId);
-		this.commandProxy().remove(SaumtRoleSet.class, pk);
+		SacmtRoleSetPK pk = new SacmtRoleSetPK(roleSetCd, companyId);
+		this.commandProxy().remove(SacmtRoleSet.class, pk);
 	}
 
 	@Override
 	public boolean isDuplicateRoleSetCd(String roleSetCd, String companyId) {
-		SaumtRoleSetPK pk = new SaumtRoleSetPK(roleSetCd, companyId);
-		return this.queryProxy().find(pk, SaumtRoleSet.class).isPresent();
+		SacmtRoleSetPK pk = new SacmtRoleSetPK(roleSetCd, companyId);
+		return this.queryProxy().find(pk, SacmtRoleSet.class).isPresent();
 		
 	}
 	
 	public List<RoleSet> findByCompanyIdAndPersonRole(String companyId, String personRoleId) {
 		List<RoleSet> result = new ArrayList<RoleSet>();
-		List<SaumtRoleSet> entities = this.queryProxy()
-				.query(SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE, SaumtRoleSet.class)
+		List<SacmtRoleSet> entities = this.queryProxy()
+				.query(SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE, SacmtRoleSet.class)
 				.setParameter("companyId", companyId).setParameter("personRoleId", personRoleId).getList();
 		if(entities !=null && !entities.isEmpty()){
 			result = entities.stream().map(e ->toDomain(e)).collect(Collectors.toList());

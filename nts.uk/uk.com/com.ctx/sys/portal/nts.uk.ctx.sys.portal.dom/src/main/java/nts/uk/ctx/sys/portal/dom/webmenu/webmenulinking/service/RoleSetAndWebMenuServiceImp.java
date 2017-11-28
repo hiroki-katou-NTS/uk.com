@@ -4,14 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.service;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,24 +25,30 @@ import nts.uk.shr.com.context.AppContexts;
 public class RoleSetAndWebMenuServiceImp extends JpaRepository implements RoleSetAndWebMenuService {
 
 	@Inject
-	private RoleSetAndWebMenuRepository roleSetAndWebMenuRepository;
+	private RoleSetLinkWebMenuRepository roleSetAndWebMenuRepository;
 	
 	@Override
-	public void createRoleSetWebMenuLink(RoleSetAndWebMenu domain) {
+	public void createRoleSetLinkWebMenu(RoleSetLinkWebMenu domain) {
 		roleSetAndWebMenuRepository.insert(domain);
 	}
 
 	@Override
-	public void updateRoleSetWebMenuLink(RoleSetAndWebMenu domain) {
+	public void updateRoleSetLinkWebMenu(RoleSetLinkWebMenu domain) {
 		roleSetAndWebMenuRepository.update(domain);
 	}
 
 	@Override
-	public void deleteRoleSetWebMenuLinkByRoleCd(String roleSetCd) {
+	public void deleteRoleSetLinkWebMenuByRoleCd(String roleSetCd) {
 		String companyId = AppContexts.user().companyId();
 		if (StringUtils.isNoneEmpty(companyId)) {
 			return;
 		}
 		roleSetAndWebMenuRepository.deleteAllByRoleCd(companyId, roleSetCd);
+	}
+
+	@Override
+	public void createAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenu> listRoleSetLinkWebMenu) {
+		roleSetAndWebMenuRepository.insert(listRoleSetLinkWebMenu);
+		
 	}
 }

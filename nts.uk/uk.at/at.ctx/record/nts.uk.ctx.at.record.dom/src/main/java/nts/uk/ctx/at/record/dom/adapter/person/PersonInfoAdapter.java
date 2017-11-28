@@ -25,4 +25,10 @@ public interface PersonInfoAdapter {
 	 * @return
 	 */
 	List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid);
+	/**
+	 * get list person by list person ID
+	 * @param personId
+	 * @return
+	 */
+	List<PersonInfoImport> getByListId(List<String> personId);
 }
