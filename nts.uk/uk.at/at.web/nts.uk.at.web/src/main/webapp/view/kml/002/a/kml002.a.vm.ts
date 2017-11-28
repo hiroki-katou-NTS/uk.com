@@ -188,6 +188,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
 
                         self.calculatorItems([]);
+                        self.allItemsData = [];
                         var sortedItems = _.sortBy(items, [function(o) { return o.order(); }]);
                         self.allItemsData = sortedItems;
 
@@ -691,6 +692,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.workScheduleEnable(true);
             self.unitEnable(true);
+            self.addLineEnable(true);
+            self.allItemsData = [];
         }
 
         /**
@@ -1335,7 +1338,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                     if (beforeFormula != "") {
                         formulaResult = beforeFormula + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
-                    } else {
+                    } else if(self.calculatorItems().length > 0) {
+                        formulaResult = self.calculatorItems()[index - 1].formula() + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
+                    } else if(self.allItemsData.length > 0) {
                         formulaResult = self.allItemsData[index - 1].formula() + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
                     }
                 } else {
