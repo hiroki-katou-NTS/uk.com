@@ -6,7 +6,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter
-public class AffClassificationSidDto {
+public class AffClassificationSidImport {
 	
 	private String employeeId;
 	
@@ -14,7 +14,7 @@ public class AffClassificationSidDto {
 	
 	private DatePeriod dateRange;
 
-	public AffClassificationSidDto(String employeeId, String classificationCode, DatePeriod dateRange) {
+	public AffClassificationSidImport(String employeeId, String classificationCode, DatePeriod dateRange) {
 		super();
 		this.employeeId = employeeId;
 		this.classificationCode = classificationCode;

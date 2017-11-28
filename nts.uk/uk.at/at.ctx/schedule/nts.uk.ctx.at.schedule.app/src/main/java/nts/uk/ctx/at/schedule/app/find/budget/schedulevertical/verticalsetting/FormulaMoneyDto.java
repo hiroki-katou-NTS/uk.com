@@ -32,6 +32,11 @@ public class FormulaMoneyDto {
     
     private List<MoneyFuncDto> lstMoney;
     
+    /**
+     * fromDomain
+     * @param money
+     * @return
+     */
     	public static FormulaMoneyDto fromDomain(FormulaMoney money){
     		List<MoneyFuncDto> items = money.getLstMoney().stream()
     				.map(x-> MoneyFuncDto.fromDomain(x))

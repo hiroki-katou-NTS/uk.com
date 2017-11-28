@@ -35,6 +35,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         dailyItems: any;
         peopleItems: any;
         numericalItems: any;
+        amountItems: any;
         
         constructor() {
             var self = this;
@@ -1248,7 +1249,34 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 } 
                             }
                         } else if (attribute == 1) {
-                            
+                            if(data.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
+                                formulaResult = nts.uk.resource.getText("KML002_153");
+                            } else if(data.lstMoney.length > 0) {
+                                for(var i = 0; i < data.lstMoney.length; i++) {
+                                    var operator = data.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data.lstMoney[i].name != null ? data.lstMoney[i].name : ""; 
+                                    var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.lstMoney[i].externalBudgetCd; });
+                                    
+                                    if(name != "") {
+                                        formulaResult += operator + " " + name + " ";
+                                    } else if(item != null) {
+                                        formulaResult += operator + " " + item.externalBudgetName + " ";
+                                    }
+                                } 
+                            } else if(data.lstTimeUnitFuncs.length > 0) {
+                                for(var i = 0; i < data.lstTimeUnitFuncs.length; i++) {
+                                    var operator = data.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data.lstTimeUnitFuncs[i].name != null ? data.lstTimeUnitFuncs[i].name : ""; 
+                                    var itemAttendance = _.find(self.amountItems, function(o) { return o.attendanceItemId == data.lstTimeUnitFuncs[i].attendanceItemId; });
+                                    var itemPreset = _.find(self.amountItems, function(o) { return o.presetItemId == data.lstTimeUnitFuncs[i].presetItemId; });
+                                    
+                                    if(name != "") {
+                                        formulaResult += operator + " " + name + " ";
+                                    } else if(item != null) {
+                                        formulaResult += operator + " " + item.name + " ";
+                                    }
+                                } 
+                            } 
                         } else if (attribute == 2) {
                             if(data.lstPeopleFunc.length <= 0) {
                                 formulaResult = nts.uk.resource.getText("KML002_153");
@@ -1287,7 +1315,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
                         
                         if(_.startsWith(formulaResult, nts.uk.resource.getText("KML002_37"))) {
-                            formulaResult = formulaResult.substr(1);
+                            formulaResult = formulaResult.substr(2);
                         }
                     } else {
                         var before = "";
@@ -1308,7 +1336,34 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 } 
                             }
                         } else if (attribute == 1) {
-                            
+                            if(data.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
+                                formulaResult = nts.uk.resource.getText("KML002_153");
+                            } else if(data.lstMoney.length > 0) {
+                                for(var i = 0; i < data.lstMoney.length; i++) {
+                                    var operator = data.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data.lstMoney[i].name != null ? data.lstMoney[i].name : ""; 
+                                    var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.lstMoney[i].externalBudgetCd; });
+                                    
+                                    if(name != "") {
+                                        formulaResult += operator + " " + name + " ";
+                                    } else if(item != null) {
+                                        formulaResult += operator + " " + item.externalBudgetName + " ";
+                                    }
+                                } 
+                            } else if(data.lstTimeUnitFuncs.length > 0) {
+                                for(var i = 0; i < data.lstTimeUnitFuncs.length; i++) {
+                                    var operator = data.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data.lstTimeUnitFuncs[i].name != null ? data.lstTimeUnitFuncs[i].name : ""; 
+                                    var itemAttendance = _.find(self.amountItems, function(o) { return o.attendanceItemId == data.lstTimeUnitFuncs[i].attendanceItemId; });
+                                    var itemPreset = _.find(self.amountItems, function(o) { return o.presetItemId == data.lstTimeUnitFuncs[i].presetItemId; });
+                                    
+                                    if(name != "") {
+                                        formulaResult += operator + " " + name + " ";
+                                    } else if(item != null) {
+                                        formulaResult += operator + " " + item.name + " ";
+                                    }
+                                } 
+                            } 
                         } else if (attribute == 2) {
                             if(data.lstPeopleFunc.length <= 0) {
                                 formulaResult = nts.uk.resource.getText("KML002_153");

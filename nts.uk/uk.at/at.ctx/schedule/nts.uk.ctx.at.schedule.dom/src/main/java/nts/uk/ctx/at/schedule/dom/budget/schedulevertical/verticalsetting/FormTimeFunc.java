@@ -6,7 +6,8 @@ import nts.arc.enums.EnumAdaptor;
 
 /**
  * TanLV
- *
+ * 時間計算式
+ * 
  */
 @AllArgsConstructor
 @Getter
@@ -35,6 +36,18 @@ public class FormTimeFunc {
     /* 演算子区分 */
     private OperatorAtr operatorAtr;
     
+    /**
+     * Create From JavaType
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @param dispOrder
+     * @param presetItemId
+     * @param attendanceItemId
+     * @param externalBudgetCd
+     * @param operatorAtr
+     * @return
+     */
 	public static FormTimeFunc createFromJavaType(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder,
 			String presetItemId, String attendanceItemId, String externalBudgetCd, int operatorAtr) {
 		

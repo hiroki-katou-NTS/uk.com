@@ -6,18 +6,21 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter
-public class AffWorkPlaceSidDto {
+public class AffWorkPlaceSidImport {
 	
 	String employeeId;
 	
 	String workPlaceId;
 	
+	String workLocationCode;
+	
 	private DatePeriod dateRange;
 
-	public AffWorkPlaceSidDto(String employeeId, String workPlaceId, DatePeriod dateRange) {
+	public AffWorkPlaceSidImport(String employeeId, String workPlaceId, String workLocationCode, DatePeriod dateRange) {
 		super();
 		this.employeeId = employeeId;
 		this.workPlaceId = workPlaceId;
+		this.workLocationCode = workLocationCode;
 		this.dateRange = dateRange;
 	}
 }

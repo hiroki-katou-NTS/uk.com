@@ -37,6 +37,11 @@ public class FormTimeFuncDto {
     /* 順番 */
     private int dispOrder;
 
+    /**
+     * FormTimeFuncDto
+     * @param domain
+     * @return
+     */
 	public static FormTimeFuncDto fromDomain(FormTimeFunc domain) {
 		return new FormTimeFuncDto(
 				domain.getCompanyId(),

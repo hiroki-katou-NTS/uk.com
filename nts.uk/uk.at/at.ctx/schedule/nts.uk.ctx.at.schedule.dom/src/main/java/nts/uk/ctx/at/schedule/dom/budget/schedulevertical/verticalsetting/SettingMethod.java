@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * TanLV
- *
+ * 計算式設定
  */
 @AllArgsConstructor
 public enum SettingMethod {

@@ -5,7 +5,8 @@ import lombok.Getter;
 
 /**
  * TanLV
- *
+ * 予定項目
+ * 
  */
 @AllArgsConstructor
 @Getter

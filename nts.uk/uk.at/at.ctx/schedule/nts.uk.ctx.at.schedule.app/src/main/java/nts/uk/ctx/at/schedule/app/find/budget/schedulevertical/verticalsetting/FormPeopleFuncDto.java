@@ -34,6 +34,11 @@ public class FormPeopleFuncDto {
     /* 順番 */
     private int dispOrder;
 
+    /**
+     * FormPeopleFuncDto
+     * @param domain
+     * @return
+     */
 	public static FormPeopleFuncDto fromDomain(FormPeopleFunc domain) {
 		return new FormPeopleFuncDto(
 				domain.getCompanyId(),

@@ -10,7 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 
 /**
  * TanLV
- *
+ * 汎用縦計項目
  */
 @AllArgsConstructor
 @Getter
@@ -95,6 +95,10 @@ public class VerticalCalItem extends DomainObject {
  				unitprice);
  	}
  	
+ 	/**
+ 	 * Validate
+ 	 * @param index
+ 	 */
  	public void validate(int index) {
  		if(this.calculateAtr == CalculateAtr.FORMULA_SETTING) {
  			if (this.formBuilt == null) {

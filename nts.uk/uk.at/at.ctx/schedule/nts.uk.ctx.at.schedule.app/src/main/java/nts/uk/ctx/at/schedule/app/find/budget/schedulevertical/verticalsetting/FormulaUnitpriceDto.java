@@ -28,6 +28,11 @@ public class FormulaUnitpriceDto {
 	/**単価**/
 	private int unitPrice;
 	
+	/**
+	 * fromDomain
+	 * @param unitprice
+	 * @return
+	 */
 	public static FormulaUnitpriceDto fromDomain (FormulaUnitprice unitprice){
 		return new FormulaUnitpriceDto(
 				unitprice.getCompanyId(),

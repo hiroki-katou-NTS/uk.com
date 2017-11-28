@@ -66,6 +66,11 @@ public class VerticalCalItemDto {
   	// G
   	private FormulaUnitpriceDto unitPrice;
 
+  	/**
+  	 * fromDomain
+  	 * @param domain
+  	 * @return
+  	 */
 	public static VerticalCalItemDto fromDomain(VerticalCalItem domain) {
 		FormBuiltDto formBuiltDto = null;
 		FormTimeDto formTimeDto = null;

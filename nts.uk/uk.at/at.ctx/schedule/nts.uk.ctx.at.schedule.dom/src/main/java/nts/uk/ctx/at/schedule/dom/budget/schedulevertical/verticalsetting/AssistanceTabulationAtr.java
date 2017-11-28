@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * TanLV
- *
+ * 応援勤務集計区分
  */
 @AllArgsConstructor
 public enum AssistanceTabulationAtr {

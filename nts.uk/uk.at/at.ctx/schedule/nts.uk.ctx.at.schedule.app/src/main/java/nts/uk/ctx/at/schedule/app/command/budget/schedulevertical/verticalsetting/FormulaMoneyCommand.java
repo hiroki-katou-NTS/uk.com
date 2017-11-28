@@ -33,7 +33,13 @@ public class FormulaMoneyCommand {
     
     private List<MoneyFuncCommand> lstMoney;
     
-
+    /**
+     * toDomainFormMoney
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @return
+     */
 	public FormulaMoney toDomainFormMoney(String companyId, String verticalCalCd, String verticalCalItemId){
 		 List<MoneyFunc> formPeopleLst = this.lstMoney != null
 	    			? this.lstMoney.stream().map(c -> c.toDomainMoney(companyId, 

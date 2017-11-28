@@ -39,6 +39,10 @@ public class VerticalSettingCommand {
     
     private List<VerticalCalItemCommand> verticalCalItems;
 
+    /**
+     * toDomain
+     * @return
+     */
 	public VerticalCalSet toDomain() {
 		String companyId = AppContexts.user().companyId();
 		

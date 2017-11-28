@@ -30,6 +30,11 @@ public class FormPeopleDto {
     
     private List<FormPeopleFuncDto> lstPeopleFunc;
 
+    /**
+     * FormPeopleDto
+     * @param domain
+     * @return
+     */
 	public static FormPeopleDto fromDomain(FormPeople domain) {
 		List<FormPeopleFuncDto> items = domain.getLstPeopleFunc().stream()
 				.map(x-> FormPeopleFuncDto.fromDomain(x))

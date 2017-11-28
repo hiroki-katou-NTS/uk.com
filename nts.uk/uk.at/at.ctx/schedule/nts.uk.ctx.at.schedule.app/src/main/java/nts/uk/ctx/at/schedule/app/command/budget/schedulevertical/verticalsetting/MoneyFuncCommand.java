@@ -34,6 +34,18 @@ public class MoneyFuncCommand {
 	/** 演算子区分 */
 	private int operatorAtr;
 	
+	/**
+	 * toDomainMoney
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @param dispOrder
+	 * @param externalBudgetCd
+	 * @param attendanceItemId
+	 * @param presetItemId
+	 * @param operatorAtr
+	 * @return
+	 */
     public MoneyFunc toDomainMoney(String companyId, String verticalCalCd, String verticalCalItemId,  int dispOrder, String externalBudgetCd
     		,String attendanceItemId, String presetItemId, int operatorAtr){
     	return MoneyFunc.createFromJavatype(companyId, verticalCalCd, verticalCalItemId, dispOrder, externalBudgetCd,attendanceItemId,presetItemId,operatorAtr);

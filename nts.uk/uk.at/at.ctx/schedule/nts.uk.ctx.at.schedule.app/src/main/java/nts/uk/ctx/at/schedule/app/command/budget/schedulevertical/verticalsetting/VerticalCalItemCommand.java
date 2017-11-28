@@ -65,6 +65,13 @@ public class VerticalCalItemCommand {
  	
  	private FormulaUnitPriceCommand unitPrice;
  	
+ 	/**
+ 	 * toDomainCalItem
+ 	 * @param companyId
+ 	 * @param verticalCalCd
+ 	 * @param itemId
+ 	 * @return
+ 	 */
  	public VerticalCalItem toDomainCalItem(String companyId, String verticalCalCd, String itemId){
  		FormBuilt built = this.formBuilt != null
  				? this.formBuilt.toDomainFormBuilt(companyId, verticalCalCd, itemId)

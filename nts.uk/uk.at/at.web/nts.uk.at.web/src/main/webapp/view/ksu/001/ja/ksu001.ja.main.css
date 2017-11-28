@@ -7,3 +7,56 @@ hr {
 	width: 250px;
 	position: absolute;
 }
+
+#group-link-button {
+	margin-top: 15px;
+	height: 30px;
+	width: 720px;
+}
+
+#group-link-button a {
+	margin-top: 5px;
+	margin-left: 10px;
+	display: inline-block;
+}
+
+#test2 {
+	background-color: #FBE5D6;
+	margin-top: 5px;
+	width: 810px;
+	padding: 3px;
+}
+
+#test2 button {
+	width: 75px !important;
+	height: 25px !important
+}
+
+#test2 table td {
+	padding: 3px 3px !important;
+}
+
+#test * {
+	font-size: 0.8rem
+}
+
+.caret-background.caret-bottom:after {
+	left: 5% !important;
+	border-width: 10px 30px !important;
+}
+
+.mt-10 {
+	margin-top: 10px
+}
+
+#bt-clear {
+	margin-left: 765px
+}
+
+#note {
+	width: 680px;
+}
+
+#classification {
+	margin-left: 150px
+}

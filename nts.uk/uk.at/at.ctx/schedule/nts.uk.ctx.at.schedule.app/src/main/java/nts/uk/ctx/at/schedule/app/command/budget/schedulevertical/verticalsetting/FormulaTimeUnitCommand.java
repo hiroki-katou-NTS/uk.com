@@ -38,6 +38,13 @@ public class FormulaTimeUnitCommand {
 
 	private List<TimeUnitFuncCommand> lstTimeUnitFuncs;
 	
+	/**
+	 * toDomainFormTimeUnit
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @return
+	 */
 	 public FormulaTimeUnit toDomainFormTimeUnit(String companyId, String verticalCalCd, String verticalCalItemId){
 		 List<TimeUnitFunc> formPeopleLst = this.lstTimeUnitFuncs != null
 	    			? this.lstTimeUnitFuncs.stream().map(c -> c.toDomainUnitFunc(companyId,
