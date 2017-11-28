@@ -21,22 +21,22 @@ public class AffiliationDepartmentCommand {
 
 	/** The department code. */
 	/* 部門コード */
+	@PeregItem("IS00073")
 	private String departmentCode;
 
 	/** The Affiliation History Transfer type. */
 	// 所属履歴異動種類
-	@PeregItem("")
+	@PeregItem("IS00074")
 	private String affHistoryTranfsType;
 
-	/** The Employee Id. */
-	// 社員ID
-	@PeregItem("")
+	// 分配率
+	@PeregItem("IS00075")
 	private String distributionRatio;
 	
 	/** The period. */
-	@PeregItem("")
+	@PeregItem("IS00071")
 	private GeneralDate startDate;
 	
-	@PeregItem("")
+	@PeregItem("IS00072")
 	private GeneralDate endDate;
 }

@@ -29,7 +29,7 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00011";
+		return "CS00015";
 	}
 
 	@Override
