@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.person.info.item.PerInfoItemDefFinder;
-import find.person.info.item.PerInfoItemDefMapDto;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemDto;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItemRepository;
 
 @Stateless
@@ -19,7 +19,7 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 	private EmpCopySettingItemRepository empCopyRepo;
 
 	@Inject
-	private PerInfoItemDefFinder itemDefFinder;
+	private CopySettingItemFinder itemFinder;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePerInfoItemDefCopy> context) {
@@ -27,7 +27,7 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 
 		String ctgId = command.getPerInfoCtgId();
 
-		List<PerInfoItemDefMapDto> itemList = this.itemDefFinder.getPerInfoDefById(ctgId).stream()
+		List<CopySettingItemDto> itemList = this.itemFinder.getPerInfoDefById(ctgId).stream()
 				.filter(x -> x.isAlreadyItemDefCopy()).collect(Collectors.toList());
 
 		itemList.forEach(x -> {

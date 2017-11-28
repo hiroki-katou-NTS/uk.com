@@ -1,10 +1,12 @@
 package nts.uk.ctx.pereg.dom.copysetting.item;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
+@Setter
 public class EmpCopySettingItem extends AggregateRoot {
 
 	private String perInfoCtgId;
@@ -18,6 +20,8 @@ public class EmpCopySettingItem extends AggregateRoot {
 	private String itemName;
 
 	private IsRequired isRequired;
+
+	private boolean isAlreadyCopy;
 
 	public EmpCopySettingItem(String perInfoCtgId, String categoryCode, String itemDefId, String itemCode,
 			String itemName, IsRequired isRequired) {

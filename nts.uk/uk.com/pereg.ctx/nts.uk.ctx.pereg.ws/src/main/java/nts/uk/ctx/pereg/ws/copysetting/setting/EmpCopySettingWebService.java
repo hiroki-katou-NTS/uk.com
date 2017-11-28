@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import find.person.info.category.PerInfoCtgMapDto;
 import find.person.setting.init.category.SettingCtgDto;
 import nts.uk.ctx.pereg.app.command.copysetting.setting.UpdatePerInfoCtgCopyCommand;
 import nts.uk.ctx.pereg.app.command.copysetting.setting.UpdatePerInfoCtgCopyCommandHandler;
@@ -36,5 +37,11 @@ public class EmpCopySettingWebService {
 	@Path("update/updatePerInfoCtgCopy")
 	public void UpdatePerInfoCtgCopyHandler(UpdatePerInfoCtgCopyCommand command) {
 		this.updatePerInfoCtgCopyHandler.handle(command);
+	}
+	
+	@POST
+	@Path("find/perInfoCtgHasItems")
+	public List<PerInfoCtgMapDto> getPerInfoCtgHasItems(String ctgName){
+		return finder.getAllPerInfoCategoryWithCondition(ctgName);
 	}
 }

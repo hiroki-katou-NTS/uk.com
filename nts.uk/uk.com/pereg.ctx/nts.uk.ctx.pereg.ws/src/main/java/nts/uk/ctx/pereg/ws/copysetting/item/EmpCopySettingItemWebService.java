@@ -8,11 +8,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import find.person.info.category.PerInfoCtgMapDto;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.copysetting.item.UpdatePerInfoItemDefCopy;
 import nts.uk.ctx.pereg.app.command.copysetting.item.UpdatePerInfoItemDefCopyCommandHandler;
-import nts.uk.ctx.pereg.app.find.copysetting.item.CopySetItemFinder;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemDto;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 
 /**
@@ -24,9 +24,9 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 public class EmpCopySettingItemWebService {
 
 	@Inject
-	private CopySetItemFinder finder;
-	
-	@Inject 
+	private CopySettingItemFinder finder;
+
+	@Inject
 	private UpdatePerInfoItemDefCopyCommandHandler updatePerInfoItemDefCopyCommandHandler;
 
 	@POST
@@ -36,17 +36,17 @@ public class EmpCopySettingItemWebService {
 		return this.finder.getAllCopyItemByCtgCode(categoryCd, employeeId,
 				GeneralDate.fromString(baseDate, "yyyyMMdd"));
 	}
-	
-	@POST
-	@Path("find/perInfoCtgHasItems")
-	public List<PerInfoCtgMapDto> getPerInfoCtgHasItems(String ctgName){
-		return finder.getAllPerInfoCategoryWithCondition(ctgName);
-	}
-	
+
 	@POST
 	@Path("update/updatePerInfoItemDefCopy")
-	public void updatePerInfoItemDefCopy(UpdatePerInfoItemDefCopy command){
+	public void updatePerInfoItemDefCopy(UpdatePerInfoItemDefCopy command) {
 		this.updatePerInfoItemDefCopyCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("findby/getPerInfoItemByCtgId")
+	public List<CopySettingItemDto> getPerInfoItemByCtgId(String ctgId) {
+		return this.finder.getPerInfoDefById(ctgId);
 	}
 
 }

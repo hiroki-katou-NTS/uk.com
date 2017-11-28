@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.infra.repository.copysetting.item;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -26,6 +27,17 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 	private static final String CHECK_OTHER_AUTH = " AND pa.otherPersonAuthType!=1";
 
 	private static final String CHECK_SELF_AUTH = " AND pa.selfAuthType!=1";
+
+	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,"
+			+ " CASE WHEN (ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId) IS NOT NULL  THEN 'True' ELSE 'False' END AS alreadyCopy "
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpestEmployeeCopySettingItem ci ON i.ppemtPerInfoItemPK.perInfoItemDefId = ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId"
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
+
+	private final static String COUNT_ITEMS_IN_COPYITEM = "SELECT COUNT(s) FROM PpestEmployeeCopySettingItem s "
+			+ " JOIN PpemtPerInfoItem i ON i.ppemtPerInfoItemPK.perInfoItemDefId = s.ppestEmployeeCopySettingItemPk.perInfoItemDefId "
+			+ " JOIN PpemtPerInfoCtg c ON c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId "
+			+ " WHERE s.ppestEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
 
 	@Override
 	public List<EmpCopySettingItem> getAllItemFromCategoryCd(String categoryCd, String companyId, boolean isSelf) {
@@ -63,6 +75,26 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 					perInforCtgId);
 			this.commandProxy().insert(entity);
 		}
+	}
+
+	@Override
+	public List<EmpCopySettingItem> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId,
+			String contractCd) {
+		return this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class).setParameter("companyId", companyId)
+				.setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
+					EmpCopySettingItem newCopyItem = EmpCopySettingItem.createFromJavaType(perInfoCategoryId, "",
+							String.valueOf(i[0]), "", String.valueOf(i[1]), 0);
+					newCopyItem.setAlreadyCopy(Boolean.valueOf(i[2].toString()));
+
+					return newCopyItem;
+				});
+	}
+
+	@Override
+	public int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId) {
+		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_COPYITEM, Long.class)
+				.setParameter("companyId", companyId).setParameter("perInfoItemDefId", perInfoItemDefId).getSingle();
+		return a.isPresent() ? a.get().intValue() : 0;
 	}
 
 }

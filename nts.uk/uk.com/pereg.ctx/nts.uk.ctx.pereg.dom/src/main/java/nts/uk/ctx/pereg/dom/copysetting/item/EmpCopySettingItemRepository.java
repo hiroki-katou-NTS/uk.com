@@ -9,6 +9,9 @@ public interface EmpCopySettingItemRepository {
 	void removePerInfoItemInCopySetting(String itemId);
 
 	void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds);
-	
-	
+
+	List<EmpCopySettingItem> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd);
+
+	int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId);
+
 }
