@@ -80,8 +80,8 @@
 
 					<!-- khu vực thêm lịch sử, sửa lịch sử  -->
 					<div id="history">
-						<button id="A2_8" data-bind="click: openDialogC, enable: checkCreate()==true" tabindex="9">#{i18n.getText('CPS017_8')}</button>
-						<button id="A2_9" data-bind="click: openDialogD, enable: checkCreate()==true" tabindex="10">#{i18n.getText('CPS017_9')}</button>
+						<button id="A2_8" data-bind="click: openDialogC, enable: disbleAdUpHist" tabindex="9">#{i18n.getText('CPS017_8')}</button>
+						<button id="A2_9" data-bind="click: openDialogD, enable: disbleAdUpHist" tabindex="10">#{i18n.getText('CPS017_9')}</button>
 						<button id="A2_10" tabindex="11" class="danger"
 							data-bind="click : removeHistory, enable: enableDelHist ">#{i18n.getText('CPS017_10')}</button>
 

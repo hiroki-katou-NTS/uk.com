@@ -34,6 +34,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
         selHistId: KnockoutObservable<string> = ko.observable('');
         enableDelHist: KnockoutObservable<boolean> = ko.observable(false);
         enableSelName: KnockoutObservable<boolean> = ko.observable(true);
+
+        //
+        disbleAdUpHist: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -52,7 +55,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
-            
 
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
@@ -62,46 +64,72 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     });
                     perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
 
+                    //
+                    //self.listItems().selectionItemId.valueHasMutated();
+
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         let changeData = _.each(_selectionItemList, (item) => {
-                            item.displayDate = item.startDate + "  "+ getText('CPS017_12')+ "  " + item.endDate;
+                            item.displayDate = item.startDate + "  " + getText('CPS017_12') + "  " + item.endDate;
                             return item;
                         });
+
                         self.listHistorySelection(changeData);
-                        // check tạm:
-                        self.historySelection().histId(self.listHistorySelection().length == 0 ? '' : self.listHistorySelection()[0].histId);
-                        //self.checkCreate(false);
+                        //self.historySelection().histId(self.listHistorySelection().length == 0 ? '' : self.listHistorySelection()[0].histId);
+                        if (self.listHistorySelection().length == 0 || self.listHistorySelection() == undefined) {
+                            self.disbleAdUpHist(false);
+                            self.enableDelHist(false);
+                            historySelection.histId(undefined);
+                            //return;
+                        } else {
+                            self.historySelection().histId(self.listHistorySelection()[0].histId);
+                        }
                     });
                 }
-
+                else {
+                    historySelection.histId(undefined);
+                }
             });
 
             //sub theo historyID:
             historySelection.histId.subscribe(x => {
-                let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
-                if (histCur != undefined) {
-                    if (histCur.endDate !== '9999/12/31') {
-                        self.enableDelHist(false);
-                    } else {
-                        self.enableDelHist(true);
+                if (x) {
+                    let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
+                    if (histCur != undefined) {
+                        if (histCur.endDate !== '9999/12/31' || self.listHistorySelection().length <= 1) {
+                            self.enableDelHist(false);
+                        } else {
+                            self.enableDelHist(true);
+                        }
                     }
+
+                    let adUpHist = _.find(self.listHistorySelection(), a => a.histId == x);
+                    if (adUpHist != undefined) {
+                        if (adUpHist.endDate !== '9999/12/31' || self.listHistorySelection().length == 0) {
+                            self.disbleAdUpHist(false);
+                        } else {
+                            self.disbleAdUpHist(true);
+                        }
+                    }
+
+                    //self.historySelection().histId.valueHasMutated();
+
+                    self.listSelection.removeAll();
+                    service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length) {
+                            self.enableSelName(self.enableDelHist());
+                            self.checkCreateaaa(false);
+                            itemList.forEach(x => self.listSelection.push(x));
+                            self.selection().selectionID(self.listSelection()[0].selectionID);
+                            //self.checkCreate(false);
+                        } else {
+                            self.enableSelName(true);
+                            self.registerData();
+                        }
+
+                    });
+                } else {
+                    self.listSelection.removeAll();
                 }
-
-                self.listSelection.removeAll();
-                service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                    if (itemList && itemList.length) {
-                        self.enableSelName(self.enableDelHist());
-                        self.checkCreateaaa(false);
-                        itemList.forEach(x => self.listSelection.push(x));
-                        self.selection().selectionID(self.listSelection()[0].selectionID);
-                        //self.checkCreate(false);
-                    } else {
-                        self.enableSelName(true);
-                        self.registerData();
-                    }
-
-                });
-
             });
 
             // sub theo selectionID: 
@@ -115,7 +143,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
-                    
+
                 }
 
             });
@@ -376,7 +404,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             modal('/view/cps/017/b/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 hist.histId.valueHasMutated();
-                
+
                 block.clear();
             });
         }
