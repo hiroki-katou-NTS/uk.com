@@ -91,10 +91,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     }
                 }
 
-                // 
                 let adUpHist = _.find(self.listHistorySelection(), a => a.histId == x);
                 if (adUpHist != undefined) {
-                    if (adUpHist.s !== '9999/12/31' || self.listHistorySelection().length == 0) {
+                    if (adUpHist.endDate !== '9999/12/31' || self.listHistorySelection().length == 0) {
                         self.disbleAdUpHist(false);
                     } else {
                         self.disbleAdUpHist(true);
