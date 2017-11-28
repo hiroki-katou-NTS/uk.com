@@ -313,29 +313,57 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     }
                 }
             });
-
+            
+            var devChange = false;
+            
             self.unitSelected.subscribe(function(value) {
-                if (!self.isparentCall()) {
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_125" }).ifYes(() => {
-                        self.calculatorItems([]);
-                        self.bindCalculatorItems();
-                    }).ifNo(() => {
-                        return;
-                    })
+                if(!devChange){
+                    if (!self.isparentCall()) {
+                        nts.uk.ui.dialog.confirm({ messageId: "Msg_125" }).ifYes(() => {
+                            devChange = false;
+                            self.calculatorItems([]);
+                            self.bindCalculatorItems();
+                        }).ifNo(() => {
+                            devChange = true;
+                            
+                            if(value == 1) {
+                                self.unitSelected(0);
+                                return;
+                            } else {
+                                self.unitSelected(1);
+                                return;
+                            }
+                        })
+                    }
+                    self.isparentCall(false);
                 }
-                self.isparentCall(false);
+                
+                devChange = false;
             });
 
             self.workScheduleSelected.subscribe(function(value) {
-                if (!self.isparentCall()) {
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_191" }).ifYes(() => {
-                        self.calculatorItems([]);
-                        self.bindCalculatorItems();
-                    }).ifNo(() => {
-                        return;
-                    })
+                if(!devChange){
+                    if (!self.isparentCall()) {
+                        nts.uk.ui.dialog.confirm({ messageId: "Msg_191" }).ifYes(() => {
+                            devChange = false;
+                            self.calculatorItems([]);
+                            self.bindCalculatorItems();
+                        }).ifNo(() => {
+                            devChange = true;
+                            
+                            if(value == 1) {
+                                self.workScheduleSelected(0);
+                                return;
+                            } else {
+                                self.workScheduleSelected(1);
+                                return;
+                            }
+                        })
+                    }
+                    self.isparentCall(false);
                 }
-                self.isparentCall(false);
+                
+                devChange = false;
             });
         }
 
@@ -1683,6 +1711,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 //            self.attribute.subscribe(function(value) {
 //                if (!nts.uk.ui._viewModel.content.viewmodelA.isparentCall()) {
 //                    nts.uk.ui.dialog.confirm({ messageId: "Msg_192" }).ifYes(() => {
+                
 //                        nts.uk.ui._viewModel.content.viewmodelA.calculatorItems([]);
 //                        nts.uk.ui._viewModel.content.viewmodelA.bindCalculatorItems();
 //                    }).ifNo(() => {
@@ -1694,48 +1723,58 @@ module nts.uk.at.view.kml002.a.viewmodel {
 //            });
 
             self.attribute.subscribe(function(value) {
-                if (value == 0) {
-                    self.roundingItems([
-                        { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
-                        { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
-                        { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
-                        { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
-                        { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
-                        { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
-                        { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
-                        { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
-                    ]);
-
-                    self.fractionItems([
-                        { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
-                        { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
-                        { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
-                    ]);
-                } else {
-                    self.roundingItems([
-                        { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_Unit_NONE") },
-                        { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_Unit_Int_1_Digits") },
-                        { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_Unit_Int_2_Digits") },
-                        { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_Unit_Int_3_Digits") },
-                        { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_Unit_Int_4_Digits") },
-                        { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_Unit_Int_5_Digits") },
-                        { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_Unit_Int_6_Digits") },
-                        { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_Unit_Int_7_Digits") },
-                        { roundingCode: 8, roundingName: nts.uk.resource.getText("Enum_Unit_Int_8_Digits") },
-                        { roundingCode: 9, roundingName: nts.uk.resource.getText("Enum_Unit_Int_9_Digits") },
-                        { roundingCode: 10, roundingName: nts.uk.resource.getText("Enum_Unit_Int_10_Digits") },
-                        { roundingCode: 11, roundingName: nts.uk.resource.getText("Enum_Unit_Int_11_Digits") },
-                        { roundingCode: 12, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_1st") },
-                        { roundingCode: 13, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_2nd") },
-                        { roundingCode: 14, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_3rd") }
-                    ]);
-
-                    self.fractionItems([
-                        { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Truncation") },
-                        { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Round_Up") },
-                        { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_4_Up_5") }
-                    ]);
-                }
+//                if (!nts.uk.ui._viewModel.content.viewmodelA.isparentCall()) {
+//                    nts.uk.ui.dialog.confirm({ messageId: "Msg_192" }).ifYes(() => {
+//                        nts.uk.ui._viewModel.content.viewmodelA.calculatorItems([]);
+//                        nts.uk.ui._viewModel.content.viewmodelA.bindCalculatorItems();
+                        if (value == 0) {
+                            self.roundingItems([
+                                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
+                                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
+                                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
+                                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
+                                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
+                                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
+                                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
+                                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
+                            ]);
+        
+                            self.fractionItems([
+                                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
+                                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
+                                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
+                            ]);
+                        } else {
+                            self.roundingItems([
+                                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_Unit_NONE") },
+                                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_Unit_Int_1_Digits") },
+                                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_Unit_Int_2_Digits") },
+                                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_Unit_Int_3_Digits") },
+                                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_Unit_Int_4_Digits") },
+                                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_Unit_Int_5_Digits") },
+                                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_Unit_Int_6_Digits") },
+                                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_Unit_Int_7_Digits") },
+                                { roundingCode: 8, roundingName: nts.uk.resource.getText("Enum_Unit_Int_8_Digits") },
+                                { roundingCode: 9, roundingName: nts.uk.resource.getText("Enum_Unit_Int_9_Digits") },
+                                { roundingCode: 10, roundingName: nts.uk.resource.getText("Enum_Unit_Int_10_Digits") },
+                                { roundingCode: 11, roundingName: nts.uk.resource.getText("Enum_Unit_Int_11_Digits") },
+                                { roundingCode: 12, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_1st") },
+                                { roundingCode: 13, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_2nd") },
+                                { roundingCode: 14, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_3rd") }
+                            ]);
+        
+                            self.fractionItems([
+                                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Truncation") },
+                                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Round_Up") },
+                                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_4_Up_5") }
+                            ]);
+                        }
+//                    }).ifNo(() => {
+//                        
+//                    }) 
+//                }
+//                
+//                nts.uk.ui._viewModel.content.viewmodelA.isparentCall(false);
             });
 
             self.attribute(param.attribute);
@@ -1746,16 +1785,31 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.numerical = param.numerical;
             self.unitPrice = param.unitPrice;
             
+            var devChange = false;
+            
             self.settingMethod.subscribe(function(value) {
-                if (!nts.uk.ui._viewModel.content.viewmodelA.isparentCall()) {
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_126" }).ifYes(() => {
-                        self.formula("");
-                    }).ifNo(() => {
-                        return;
-                    })
+                if(!devChange){
+                    if (!nts.uk.ui._viewModel.content.viewmodelA.isparentCall()) {
+                        nts.uk.ui.dialog.confirm({ messageId: "Msg_126" }).ifYes(() => {
+                            devChange = false;
+                            self.formula("");
+                        }).ifNo(() => {
+                            devChange = true;
+                            
+                            if(value == 1) {
+                                self.settingMethod(0);
+                                return;
+                            } else {
+                                self.settingMethod(1);
+                                return;
+                            }
+                        })
+                    }
+                    
+                    nts.uk.ui._viewModel.content.viewmodelA.isparentCall(false);
                 }
                 
-                nts.uk.ui._viewModel.content.viewmodelA.isparentCall(false);
+                devChange = false;
             });
         }
     }

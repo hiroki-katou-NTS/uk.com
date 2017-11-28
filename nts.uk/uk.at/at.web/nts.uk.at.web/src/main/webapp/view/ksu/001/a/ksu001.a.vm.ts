@@ -1136,10 +1136,10 @@ module ksu001.a.viewmodel {
                     //set static confirmedAtr= 0, workDayAtr = 0
                     confirmedAtr: 0,
                     workDayAtr: 0,
-                    [{
+                    workScheduleTimeZoneSaveCommands:[{
                         scheduleCnt: 1,
-                        scheduleStartClock: arrCell[i].startTime,
-                        scheduleEndClock: arrCell[i].endTime,
+                        scheduleStartClock: moment.duration(arrCell[i].value.startTime).asMinutes(),
+                        scheduleEndClock: moment.duration(arrCell[i].value.endTime).asMinutes(),
                         //set static bounceAtr =  1
                         bounceAtr: 1
                     }]
@@ -1551,8 +1551,7 @@ module ksu001.a.viewmodel {
         confirmedAtr?: number,
         workDayAtr?: number,
         isIntendedData?: boolean,
-        scheduleStartClock?: any;
-        scheduleEndClock?: any;
+        workScheduleTimeZoneSaveCommands?:any
     }
 
     class BasicSchedule {
@@ -1563,8 +1562,7 @@ module ksu001.a.viewmodel {
         confirmedAtr: number;
         workDayAtr: number;
         isIntendedData: boolean;
-        scheduleStartClock: any;
-        scheduleEndClock: any;
+        workScheduleTimeZoneSaveCommands:any
 
         constructor(params: IBasicSchedule) {
             this.date = params.date;
@@ -1574,8 +1572,7 @@ module ksu001.a.viewmodel {
             this.confirmedAtr = params.confirmedAtr;
             this.workDayAtr = params.workDayAtr;
             this.isIntendedData = params.isIntendedData;
-            this.scheduleStartClock = params.scheduleStartClock;
-            this.scheduleEndClock = params.scheduleEndClock;
+            this.workScheduleTimeZoneSaveCommands=params.workScheduleTimeZoneSaveCommands;
         }
     }
 
