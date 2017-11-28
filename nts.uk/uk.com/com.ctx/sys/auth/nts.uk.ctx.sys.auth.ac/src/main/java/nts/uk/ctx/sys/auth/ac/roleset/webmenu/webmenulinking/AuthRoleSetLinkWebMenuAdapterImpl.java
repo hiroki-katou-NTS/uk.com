@@ -4,17 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.ac.roleset.webmenu.webmenulinking;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuImport;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuImport;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuExport;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetLinkWebMenuPub;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,14 +29,9 @@ public class AuthRoleSetLinkWebMenuAdapterImpl implements RoleSetLinkWebMenuAdap
 
 	@Override
 	public List<RoleSetLinkWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd) {
-		//Get company Id
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			return this.roleSetLinkWebMenuPub.findAllWebMenuByRoleSetCd(companyId, roleSetCd).stream()
-					.map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getWebMenuCd(), item.getRoleSetCd())
-					).collect(Collectors.toList());
-		}
-		return new ArrayList<>();
+		return this.roleSetLinkWebMenuPub.findAllWebMenuByRoleSetCd(AppContexts.user().companyId(), roleSetCd).stream()
+				.map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getWebMenuCd(), item.getRoleSetCd())
+				).collect(Collectors.toList());
 	}
 
 	@Override
@@ -60,7 +52,6 @@ public class AuthRoleSetLinkWebMenuAdapterImpl implements RoleSetLinkWebMenuAdap
 
 	@Override
 	public void deleteAllRoleSetLinkWebMenu(String roleSetCd) {
-		//Get company Id
 		this.roleSetLinkWebMenuPub.deleteRoleSetLinkWebMenuByRoleSetCd(roleSetCd);
 	}
 
