@@ -14,7 +14,7 @@ module nts.uk.com.view.cas014.a {
             roleSetList: KnockoutObservableArray<RoleSet>;
             jobTitleList: KnockoutObservableArray<JobTitle>;
             roleSetJobTitle: KnockoutObservable<RoleSetJobTitle>;
-            
+
             viewmodelB = new cas014.b.viewmodel.ScreenModel();
 
             constructor() {
@@ -38,13 +38,13 @@ module nts.uk.com.view.cas014.a {
                             return new RoleSet(rs.code, rs.name);
                         });
                         _.each(_rsList, rs => self.roleSetList.push(rs));
-                        
+
                         self.jobTitleList.removeAll();
                         let _jtList: Array<JobTitle> = _.map(data.listJobTitleDto, (jt: any) => {
                             return new JobTitle(jt.id, jt.code, jt.name);
                         });
                         _.each(_jtList, jt => self.jobTitleList.push(jt));
-                        
+
                         self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(data.roleSetGrantedJobTitleDto.applyToConcurrentPerson, self.jobTitleList(), self.roleSetList()));
                         let details = self.roleSetJobTitle().details();
                         _.each(details, (d: any) => {
@@ -56,17 +56,20 @@ module nts.uk.com.view.cas014.a {
                         });
                         self.roleSetJobTitle().details(details);
                     } else {
-                        
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
-                    self.viewmodelB.startPage(); 
+                    self.viewmodelB.startPage();
+                    $("#A4").focus();
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError({ messageId: error.message });
+                    alertError({ messageId: error.message }).then(() => {
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    });
                     dfd.reject();
                 }).always(() => {
                     block.clear();
                 });
-                
+
                 return dfd.promise();
             }
 
@@ -83,10 +86,11 @@ module nts.uk.com.view.cas014.a {
 
                 new service.Service().registerData(command).done(function() {
                     info({ messageId: "Msg_15" }).then(() => {
-                        block.clear();
+                        $("#A4").focus();
                     });
                 }).fail(error => {
                     alertError({ messageId: error.message });
+                }).always(() => {
                     block.clear();
                 });
             }
@@ -140,6 +144,6 @@ module nts.uk.com.view.cas014.a {
             _.each(jobTitleList, j => this.details.push(new RoleSetJobTitleDetail(j, roleSetList)));
         }
     }
-    
+
 }
 

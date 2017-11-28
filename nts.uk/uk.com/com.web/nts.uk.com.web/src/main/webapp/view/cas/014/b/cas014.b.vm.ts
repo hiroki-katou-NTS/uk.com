@@ -33,6 +33,7 @@ module nts.uk.com.view.cas014.b {
                         if (item) {
                             self.roleSetPerson(item);
                             self.screenMode(ScreenMode.UPDATE);
+                            $(".ntsStartDatePicker").focus();
                         } else {
                             self.getEmployeeInfo(data);
                             self.screenMode(ScreenMode.NEW);
@@ -83,9 +84,10 @@ module nts.uk.com.view.cas014.b {
                 }).fail(function(error) {
                     alertError({ messageId: error.message });
                     dfd.reject();
+                }).always(() => {
+                    block.clear();
                 });
-                dfd.resolve();
-                block.clear();
+                
                 return dfd.promise();
             }
 
@@ -111,8 +113,10 @@ module nts.uk.com.view.cas014.b {
                         }
 
                         self.screenMode(ScreenMode.UPDATE);
+                        $("#B4_2").focus();
                     } else {
                         self.createNewRoleSetPerson();
+                        $("#B3_2").focus();
                     }
                 }).fail(function(error) {
                     alertError({ messageId: error.message });
@@ -136,6 +140,7 @@ module nts.uk.com.view.cas014.b {
                 self.roleSetPerson(new RoleSetPerson('', '', '', '', '', ''));
                 self.dateValue({});
                 self.screenMode(ScreenMode.NEW);
+                $("#B5_1_1").focus();
             }
 
             registerRoleSetPerson() {
@@ -156,10 +161,11 @@ module nts.uk.com.view.cas014.b {
                     self.loadRoleSetHolder(self.selectedRoleSet(), data.employeeId);
 
                     info({ messageId: "Msg_15" }).then(() => {
-                        block.clear();
+                        $("#B4_2").focus();
                     });
                 }).fail(error => {
                     alertError({ messageId: error.message });
+                }).always(() => {
                     block.clear();
                 });
             }
@@ -171,7 +177,7 @@ module nts.uk.com.view.cas014.b {
                     employeeId: data.employeeId
                 };
 
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_551" }).ifYes(() => {
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
                     // call service remove
                     block.invisible();
                     let indexItemDelete = _.findIndex(ko.toJS(self.roleSetPersonList), function(item: any) { return item.employeeId == data.employeeId; });
@@ -217,6 +223,7 @@ module nts.uk.com.view.cas014.b {
                     }
                     var output = getShared('CDL009Output');
                     self.selectedEmployeeId(output);
+                    $(".ntsStartDatePicker").focus();
                 });
             }
 
