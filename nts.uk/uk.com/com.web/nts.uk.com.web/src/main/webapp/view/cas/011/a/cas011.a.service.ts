@@ -2,14 +2,14 @@ module nts.uk.com.view.cas011.a.service {
     import ajax = nts.uk.request.ajax;
 
     var paths = {
-            getCompanyIdOfLoginUser:    "ctx/sys/auth/roleset/companyIdOfLoginUser",
-            getAllRoleSet:             "ctx/sys/auth/roleset/findAllRoleSet",
-            getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findRoleSet/{roleSetCd}",
-            addRoleSet:                 "ctx/sys/auth/roleset/addRoleSet",
-            updateRoleSet:              "ctx/sys/auth/roleset/updateRoleSet",
-            removeRoleSet:              "ctx/sys/auth/roleset/deleteRoleSet",            
-            getAllWebMenu:             "sys/portal/webmenu/find",
-            getRoleById:                "ctx/sys/auth/roleset/"
+            getCompanyIdOfLoginUser:    "ctx/sys/auth/roleset/companyidofloginuser",
+            getAllRoleSet:              "ctx/sys/auth/roleset/findallroleset",
+            getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findroleset/{rolesetcd}",
+            addRoleSet:                 "ctx/sys/auth/roleset/addroleset",
+            updateRoleSet:              "ctx/sys/auth/roleset/updateroleset",
+            removeRoleSet:              "ctx/sys/auth/roleset/deleteroleset",            
+            getAllWebMenu:              "ctx/sys/auth/roleset//findallwebmenu",
+            getRoleById:                "ctx/sys/auth/role/getrolebyroleid/{roleid}"
     }
 
     //get all role set

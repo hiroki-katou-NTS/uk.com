@@ -12,7 +12,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
         listWebMenus: KnockoutObservableArray<IWebMenu> = ko.observableArray([]);
 
         currentRoleSet: KnockoutObservable<RoleSet> = ko.observable(new RoleSet({
-            roleSetCd: ''
+            companyId: ''
+            ,roleSetCd: ''
             , roleSetName:'' 
             , approvalAuthority: false
             , employmentRoleId: ''
@@ -35,7 +36,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
         swapColumns: KnockoutObservableArray<NtsGridListColumn>;
         swApprovalAuthority: KnockoutObservableArray<any>;    
         isNewMode: KnockoutObservable<boolean>;
-
+        hasInitialized : boolean;
+    
         constructor() {
             let self = this,
             currentRoleSet: RoleSet = self.currentRoleSet();
@@ -64,11 +66,20 @@ module nts.uk.com.view.cas011.a.viewmodel {
             self.myNumberRoleName = ko.observable('');
             self.officeHelperRoleName = ko.observable('');
             
-            self.isNewMode = ko.observable(false);
+            self.isNewMode = ko.observable(true);
+            self.hasInitialized = true;
             //Subscribe: 項目変更→項目
  
             currentRoleSet.roleSetCd.subscribe(roleSetCd => {
                 errors.clearAll();
+
+                if (!self.isNewMode()) {
+                    self.hasInitialized = false;
+                }
+                if (self.hasInitialized) {
+                    return;
+                }
+                // do not process anything if it is new mode.
                 if (roleSetCd) {
                     service.getRoleSetByRoleSetCd(roleSetCd).done ((_roleSet : IRoleSet) => {
                         if (_roleSet && _roleSet.roleSetCd) {
@@ -83,6 +94,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     self.settingCreateMode();
                 }
                 self.setFocus();
+                self.hasInitialized = true;
             });
             
             //Setting role name
@@ -167,11 +179,13 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 } else { //in case number of RoleSet is zero
                     //画面を新規モードで起動する
 
+                    self.createNewCurrentRoleSet();
                     self.settingCreateMode();
                 }
             }).fail(error => {
               //画面を新規モードで起動する
 
+                self.createNewCurrentRoleSet();
                 self.settingCreateMode();
             }).always(()=> {
                 deferred.resolve();
@@ -360,7 +374,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
        settingUpdateMode(selectedRoleSetCd) {
            let self = this,
                currentRoleSet: RoleSet = self.currentRoleSet();
-
+           
            //Setting selected Role set
            currentRoleSet.roleSetCd(selectedRoleSetCd);
 
@@ -389,6 +403,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
             currentRoleSet.salaryRoleId('');
             currentRoleSet.webMenus(null);
             
+            // build swap web menu
+            self.buildSwapWebMenu();
+            
         }
         /**
          * BindData to currentRoleSet
@@ -399,6 +416,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 currentRoleSet: RoleSet = self.currentRoleSet();
             
             // listWebMenus = self.listWebMenus;
+            currentRoleSet.companyId = _roleSet.companyId;
             currentRoleSet.roleSetCd(_roleSet.roleSetCd);
             currentRoleSet.roleSetName(_roleSet.roleSetName);
             currentRoleSet.approvalAuthority(_roleSet.approvalAuthority);
@@ -409,6 +427,18 @@ module nts.uk.com.view.cas011.a.viewmodel {
             currentRoleSet.employmentRoleId(_roleSet.employmentRoleId);
             currentRoleSet.salaryRoleId(_roleSet.salaryRoleId);
             currentRoleSet.webMenus(_roleSet.webMenus);
+
+            // build swap web menu
+            self.buildSwapWebMenu();
+
+        }
+ 
+        /**
+         * build swap web menu
+         */
+        buildSwapWebMenu() {
+            let self = this,
+                currentRoleSet: RoleSet = self.currentRoleSet();
             
             self.listWebMenus.removeAll();
 
@@ -427,10 +457,10 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     currentRoleSet.webMenus(listWebMenuRight);
                     
                 }
+             }).fail(function(error) {
+                 dialog.alertError({ messageId: error.messageId });
              });           
-            $('#inpRoleSetCd').focus();
         }
- 
         /**
          * Check and return true if the Web menu code existed in current selected web menu list.
          * 

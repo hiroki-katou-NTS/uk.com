@@ -60,65 +60,65 @@ public class RoleSetWebservice extends WebService {
 	private RoleSetLinkWebMenuAdapter roleSetLinkWebMenuAdapter;
 	
 	@POST
-	@Path("findAllRoleSet")
+	@Path("findallroleset")
 	public List<RoleSetDto> getAllRolSet() {
 		return this.roleSetFinder.findAll();
 	}
 
 	@POST
-	@Path("findRoleSet/{roleSetCd}")
-	public RoleSetDto getRoleSet(@PathParam("roleSetCd") String roleSetCd) {
+	@Path("findroleset/{rolesetcd}")
+	public RoleSetDto getRoleSet(@PathParam("rolesetcd") String roleSetCd) {
 		return this.roleSetFinder.find(roleSetCd);
 	}
 
 	@POST
-	@Path("addRoleSet")
+	@Path("addroleset")
 	public JavaTypeResult<String> addRoleSet(RoleSetCommand command) {
 		return new JavaTypeResult<String>(this.addRoleSetCommandHandler.handle(command));
 	}
 
 	@POST
-	@Path("updateRoleSet")
+	@Path("updateroleset")
 	public void updateRoleSet(RoleSetCommand command) {
 		this.updateRoleSetCommandHandler.handle(command);
 	}
 
 	@POST
-	@Path("deleteRoleSet")
+	@Path("deleteroleset")
 	public void removeSelectionItem(DeleteRoleSetCommand command) {
 		this.deleteRoleSetCommandHandler.handle(command);
 	}
 
 	// Default Role Set
 	@POST
-	@Path("findDefaultRoleSet")
+	@Path("finddefaultroleset")
 	public DefaultRoleSetDto getCurrentDefaultRoleSet() {
 		return this.defaultRoleSetFinder.findByCompanyId();
 	}
 	
 	@POST
-	@Path("addDefaultRoleSet")
+	@Path("adddefaultroleset")
 	public JavaTypeResult<String> addDefaultRoleSet(DefaultRoleSetCommand command) {
 		return new JavaTypeResult<String>(this.addOrUpdateDefaultRoleSetCommandHandler.handle(command));
 	}
 	
 	// Web menu
 	@POST
-	@Path("findAllWebMenu")
+	@Path("findallwebmenu")
 	public List<WebMenuImport> getAllWebMenu() {
 		return this.webMenuAdapter.findByCompanyId();
 	}
 	
 	// Role Set link Web menu
 	@POST
-	@Path("findAllRoleSetWebMenu/{roleSetCd}")
+	@Path("findallrolesetwebmenu/{rolesetcd}")
 	public List<RoleSetLinkWebMenuImport> getAllRoleSetWebMenu(@PathParam("roleSetCd") String roleSetCd) {
 		return this.roleSetLinkWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd);
 	}
 	
 	// Get companyId of the login user
 	@POST
-	@Path("companyIdOfLoginUser")
+	@Path("companyidofloginuser")
 	public JavaTypeResult<String> getCompanyIdOfLoginUser() {
 		return new JavaTypeResult<String> (AppContexts.user().companyId());
 	}

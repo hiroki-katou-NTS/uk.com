@@ -68,4 +68,18 @@ public class PersonInformationRoleFinder {
 	public List<PersonRole> findByListRoleIds(List<String> roleIds){
 		return personRoleRepo.find(roleIds);
 	}
+	
+	/**
+	 * Get Role by role Id
+	 * @param roleId
+	 * @return
+	 */
+	public RoleDto getRoleByRoleId(String roleId ){
+
+		Optional<Role> optRole = roleRepo.findByRoleId(roleId);
+		if (optRole.isPresent()) {
+		 return RoleDto.fromDomain(optRole.get());
+		}
+		return null;
+	}
 }
