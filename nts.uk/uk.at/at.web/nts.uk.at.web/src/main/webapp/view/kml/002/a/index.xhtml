@@ -19,9 +19,9 @@
 		<table class="input-form-a">
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true, constraint:['VerticalCalCd','VerticalCalName']}">#{i18n.getText('KML002_8')}</div></td>
-				<td><input tabindex="1" class="input-code" id="input-code" data-bind="ntsTextEditor: { value: $parent.viewmodelA.code, enable: $parent.viewmodelA.editMode, constraint: 'VerticalCalCd', required: true, 
+				<td><input tabindex="5" class="input-code" id="input-code" data-bind="ntsTextEditor: { value: $parent.viewmodelA.code, enable: $parent.viewmodelA.editMode, constraint: 'VerticalCalCd', required: true, 
 						name: '#[KML002_6]' }, hasfocus: true" />
-					<input tabindex="2" class="input-name" id="input-name" data-bind="ntsTextEditor: { value: $parent.viewmodelA.name, constraint: 'VerticalCalName', required: true, name: '#[KML002_7]' }" /></td>
+					<input tabindex="6" class="input-name" id="input-name" data-bind="ntsTextEditor: { value: $parent.viewmodelA.name, constraint: 'VerticalCalName', required: true, name: '#[KML002_7]' }" /></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -29,7 +29,7 @@
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_83')}</div></td>
 				<td>
-					<div tabindex="3" class="cf useCls"
+					<div tabindex="7" class="cf useCls"
 						data-bind="ntsSwitchButton: {
 						options: $parent.viewmodelA.useCls,
 						optionsValue: 'code',
@@ -38,11 +38,11 @@
 						enable: true }"></div>
 				</td>
 				<td class="work-collection"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_10')}</div></td>
-				<td class="help-box"><button tabindex="4" id="help" 
+				<td class="help-box"><button tabindex="8" id="help" 
 						data-bind="ntsHelpButton: {image: '../a/KML002_2.png', position: 'left top', enable: true }">?</button>
 				</td>
 				<td class="switch-box">
-					<div tabindex="5" class="cf workSchedule"
+					<div tabindex="9" class="cf workSchedule"
 						data-bind="ntsSwitchButton: {
 						options: $parent.viewmodelA.workSchedule,
 						optionsValue: 'code',
@@ -54,7 +54,7 @@
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_9')}</div></td>
 				<td>
-					<div tabindex="6" class="cf units"
+					<div tabindex="10" class="cf units"
 						data-bind="ntsSwitchButton: {
 						options: $parent.viewmodelA.units,
 						optionsValue: 'code',
@@ -67,8 +67,8 @@
 				<td></td>
 			</tr>
 			<tr>
-				<td><button tabindex="7" data-bind="click: $parent.viewmodelA.addLineBtn.bind($parent.viewmodelA), enable: $parent.viewmodelA.addLineEnable">#{i18n.getText('KML002_14')}</button>
-					<button tabindex="8" class="danger" data-bind="click: $parent.viewmodelA.deleteLineBtn.bind($parent.viewmodelA), enable: $parent.viewmodelA.deleteLineEnable">#{i18n.getText('KML002_15')}</button></td>
+				<td><button tabindex="11" data-bind="click: $parent.viewmodelA.addLineBtn.bind($parent.viewmodelA), enable: $parent.viewmodelA.addLineEnable">#{i18n.getText('KML002_14')}</button>
+					<button tabindex="12" class="danger" data-bind="click: $parent.viewmodelA.deleteLineBtn.bind($parent.viewmodelA), enable: $parent.viewmodelA.deleteLineEnable">#{i18n.getText('KML002_15')}</button></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -79,7 +79,7 @@
 		<table class="link-notes">
 			<tr>
 				<td>
-					<a tabindex="9" id="toggle-popup" class="toggle-popup" href="#">#{i18n.getText('KML002_97')}</a>
+					<a tabindex="13" id="toggle-popup" class="toggle-popup" href="#">#{i18n.getText('KML002_97')}</a>
 					
 					<div id="popup-area" class="popup-area popup-panel" style="display: none; z-index: 100; visibility: visible; top: 417px; left: 355.5px;">#{i18n.getText('KML002_13')}</div>
 				</td>
@@ -116,7 +116,7 @@
 								{ prop: 'attrName', length: 10 }
 							]}"></div>
 					</td>
-					<td class="name-item"><input class="item-name" data-bind="ntsTextEditor: { value: itemName }" /></td>
+					<td class="name-item"><input class="item-name" data-bind="ntsTextEditor: { value: itemName, required: true }" /></td>
 					<td class="method-item">
 						<div class="cf"
 							data-bind="ntsSwitchButton: {
