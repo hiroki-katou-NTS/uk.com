@@ -150,12 +150,12 @@ public class OverTimeSheet {
 		return nextlapsedTime;
 	}
 	
-//	/**
-//	 * 代休の振替処理(残業用)
-//	 * @param workType　当日の勤務種類
-//	 */
-//	public void modifyHandTransfer(WorkType workType) {
-//		//平日の場合のみ振替処理実行
+	/**
+	 * 代休の振替処理(残業用)
+	 * @param workType　当日の勤務種類
+	 */
+	public void modifyHandTransfer(WorkType workType) {
+		//平日の場合のみ振替処理実行
 //		if(workType.isWeekDayAttendance()) {
 //			//if(/*代休発生設定を取得(設計中のようす)*/) {
 //			if(false) {
@@ -170,39 +170,48 @@ public class OverTimeSheet {
 //				}
 //			}
 //		}
-//	}
-//	
-//	/**
-//	 * 一定時間の振替処理
-//	 * @param 一定時間
-//	 */
-//	public void periodOfTimeTransfer(AttendanceTime periodTime) {
-//		/*振替可能時間の計算*/
-//		AttendanceTime transAbleTime = calcTransferTime(periodTime);
-//		/*振り替える*/
-//	}
-//	
-//	/**
-//	 * 代休の振替可能時間の計算
-//	 * @param periodTime 一定時間
-//	 * @return 振替可能時間
-//	 */
-//	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime) {
-//		int totalFrameTime = this.getOverWorkTimeOfDaily().calcTotalFrameTime();
-//		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
-//			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
-//		}
-//		else {
-//			return new AttendanceTime(0);
-//		}
-//	}
-//	
-//	
+	}
+	
+	/**
+	 * 一定時間の振替処理
+	 * @param 一定時間
+	 */
+	public void periodOfTimeTransfer(AttendanceTime periodTime) {
+		/*振替可能時間の計算*/
+		AttendanceTime transAbleTime = calcTransferTimeOfPeriodTime(periodTime);
+		/*振り替える*/
+		
+	}
+	
+	/**
+	 * 代休の振替可能時間の計算
+	 * @param periodTime 一定時間
+	 * @return 振替可能時間
+	 */
+	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime) {
+		int totalFrameTime = this.getOverWorkTimeOfDaily().calcTotalFrameTime();
+		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
+			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
+		}
+		else {
+			return new AttendanceTime(0);
+		}
+	}
+	
 //	/**
 //	 * 指定時間の振替処理
+//	 * @param prioritySet 優先設定
+//	 */
+//	public void specifiedTransfer(/*指定時間クラス*/,StatutoryPrioritySet prioritySet) {
+//		AttendanceTime transAbleTime = calcSpecifiedTimeTransfer(/*指定時間クラス*/);
+//		overWorkTimeOfDaily.hurikakesyori(transAbleTime, prioritySet);
+//	}
+//	
+//	/**
+//	 * 指定合計時間の計算
 //	 * @param 指定時間クラス 
 //	 */
-//	private AttendanceTime specifiedTimeTransfer(/*指定時間クラス*/) {
+//	private AttendanceTime calcSpecifiedTimeTransfer(/*指定時間クラス*/) {
 //		int totalFrameTime = this.getOverWorkTimeOfDaily().calcTotalFrameTime();
 //		if(totalFrameTime >= 指定時間クラス.１日の指定時間) {
 //			return  指定時間クラス.１日の指定時間
@@ -216,5 +225,5 @@ public class OverTimeSheet {
 //			}
 //		}
 //	}
-//	
+	
 }

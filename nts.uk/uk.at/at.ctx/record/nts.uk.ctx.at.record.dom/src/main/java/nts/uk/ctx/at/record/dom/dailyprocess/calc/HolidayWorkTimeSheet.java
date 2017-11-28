@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluOffdayWorkTime;
@@ -59,10 +60,10 @@ public class HolidayWorkTimeSheet{
 //			//if(/*代休発生設定を取得(設計中のようす)*/) {
 //			if(false) {
 //				if(/*代休振替設定区分使用：一定時間を超えたら代休とする*/) {
-//					
+//					periodOfTimeTransfer();
 //				}
 //				else if(/*指定した時間を代休とする*/) {
-//					
+//					specifiedTimeTransfer();
 //				}
 //				else {
 //					throw new Exception("unknown daikyuSet:");
@@ -70,31 +71,61 @@ public class HolidayWorkTimeSheet{
 //			}
 //		}
 //	}
+//	
+//	/**
+//	 * 
+//	 * @param 一定時間
+//	 */
+//	public void periodOfTime(AttendanceTime periodTime) {
+//		/*振替可能時間の計算*/
+//		AttendanceTime transAbleTime = calcTransferTime(periodTime);
+//		/*振り替える*/
+//
+//	}
+//	
+//	/**
+//	 * 代休の振替可能時間の計算
+//	 * @param periodTime 一定時間
+//	 * @return 振替可能時間
+//	 */
+//	private AttendanceTime calcTransferTime(AttendanceTime periodTime) {
+//		int totalFrameTime = this.getWorkHolidayTime().calcTotalFrameTime();
+//		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
+//			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
+//		}
+//		else {
+//			return new AttendanceTime(0);
+//		}
+//	}
+//	
+//	/**
+//	 * 指定時間の振替処理
+//	 * @param prioritySet 優先設定
+//	 */
+//	public void specifiedTransfer(/*指定時間クラス*/,StatutoryPrioritySet prioritySet) {
+//		AttendanceTime transAbleTime = calcSpecifiedTimeTransfer(/*指定時間クラス*/);
+//		overWorkTimeOfDaily.hurikakesyori(transAbleTime, prioritySet);
+//	}
+//	
+//	/**
+//	 * 指定合計時間の計算
+//	 * @param 指定時間クラス 
+//	 */
+//	private AttendanceTime calcSpecifiedTimeTransfer(/*指定時間クラス*/) {
+//		int totalFrameTime = this.getOverWorkTimeOfDaily().calcTotalFrameTime();
+//		if(totalFrameTime >= 指定時間クラス.１日の指定時間) {
+//			return  指定時間クラス.１日の指定時間
+//		}
+//		else {
+//			if(totalFrameTime >= 指定時間クラス.半日の指定時間) {
+//				return 指定時間クラス.半日の指定時間
+//			}
+//			else {
+//				return new AttendanceTime(0);
+//			}
+//		}
+//	}
 	
-	/**
-	 * 
-	 * @param 一定時間
-	 */
-	public void periodOfTime(AttendanceTime periodTime) {
-		/*振替可能時間の計算*/
-		AttendanceTime transAbleTime = calcTransferTime(periodTime);
-		/*振り替える*/
-	}
-	
-	/**
-	 * 代休の振替可能時間の計算
-	 * @param periodTime 一定時間
-	 * @return 振替可能時間
-	 */
-	private AttendanceTime calcTransferTime(AttendanceTime periodTime) {
-		int totalFrameTime = this.getWorkHolidayTime().calcTotalFrameTime();
-		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
-			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
-		}
-		else {
-			return new AttendanceTime(0);
-		}
-	}
 	
 	
 	/**
