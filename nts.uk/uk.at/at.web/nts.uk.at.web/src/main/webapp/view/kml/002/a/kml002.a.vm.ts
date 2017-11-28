@@ -180,6 +180,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         self.calculatorItems([]);
                         var sortedItems = _.sortBy(items, [function(o) { return o.order(); }]);
                         self.allItemsData = sortedItems;
+
+                        if(self.allItemsData.length < 50) {
+                            self.addLineEnable(true);
+                        } else {
+                            self.addLineEnable(false);
+                        }
                         
                         for(var i = 0; i < sortedItems.length; i++) {
                             var curDataItem = null;
@@ -295,7 +301,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         self.calculatorItems(items);
                     }
                 }
-            });  
+            });
         }
 
         /**
@@ -314,7 +320,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 if(self.calculatorItems().length == 0) {
                     self.bindCalculatorItems();
                 }
-                
+                                
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);    
@@ -571,7 +577,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 var filter = _.filter(self.settingItems(), function(o) { return o.code == self.code(); });
                 
                 if(filter.length > 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_3" });
+                    $('#input-code').ntsError('set', { messageId: "Msg_3" });
                     return;
                 }
             }
@@ -633,7 +639,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     nts.uk.ui.block.clear();      
                 });
             } else {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_110" });
+                $('#checkall').ntsError('set', { messageId: "Msg_110" });
             }
         }
         
@@ -736,6 +742,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 self.addLineEnable(true);
             } else {
                 self.addLineEnable(false);
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_112" });
             }
             
             if(self.calculatorItems().length > 0) {                
@@ -750,74 +757,79 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             var selectedItems = [];
             
-            for(var i = 0; i < self.calculatorItems().length; i++) {
-                if(!self.calculatorItems()[i].isChecked()) {
-                    var item : ICalculatorItem = {
-                        isChecked: self.calculatorItems()[i].isChecked(),
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_113" }).ifYes(() => { 
+                for(var i = 0; i < self.calculatorItems().length; i++) {
+                    if(!self.calculatorItems()[i].isChecked()) {
+                        var item : ICalculatorItem = {
+                            isChecked: self.calculatorItems()[i].isChecked(),
+                            itemCd: nts.uk.util.randomId(),
+                            attribute: self.calculatorItems()[i].attribute(),
+                            itemName: self.calculatorItems()[i].itemName(),
+                            settingMethod: self.calculatorItems()[i].settingMethod(),
+                            formula: self.calculatorItems()[i].formula(),
+                            displayAtr: self.calculatorItems()[i].displayAtr(),
+                            total: self.calculatorItems()[i].total(),
+                            rounding: self.calculatorItems()[i].rounding(),
+                            fraction: self.calculatorItems()[i].fraction(),
+                            order: i + 1,
+                            attrEnable: self.calculatorItems()[i].attrEnable(),
+                            settingMethodEnable: self.calculatorItems()[i].settingMethodEnable(),
+                            totalEnable: self.calculatorItems()[i].totalEnable(),
+                            formBuilt: self.calculatorItems()[i].formBuilt,
+                            formTime: self.calculatorItems()[i].formTime,
+                            formPeople: self.calculatorItems()[i].formPeople,
+                            amount: self.calculatorItems()[i].amount,
+                            numerical: self.calculatorItems()[i].numerical,
+                            unitPrice: self.calculatorItems()[i].unitPrice
+                        };
+                        
+                        selectedItems.push(new CalculatorItem(item));
+                    }
+                }
+                
+                self.calculatorItems([]);
+                var flag = false;
+                
+                for(var i = 0; i < selectedItems.length; i++) {
+                    if(i > 0) {
+                        flag = true;
+                    }
+                    
+                    var newItem : ICalculatorItem = {
+                        isChecked: selectedItems[i].isChecked(),
                         itemCd: nts.uk.util.randomId(),
-                        attribute: self.calculatorItems()[i].attribute(),
-                        itemName: self.calculatorItems()[i].itemName(),
-                        settingMethod: self.calculatorItems()[i].settingMethod(),
-                        formula: self.calculatorItems()[i].formula(),
-                        displayAtr: self.calculatorItems()[i].displayAtr(),
-                        total: self.calculatorItems()[i].total(),
-                        rounding: self.calculatorItems()[i].rounding(),
-                        fraction: self.calculatorItems()[i].fraction(),
+                        attribute: selectedItems[i].attribute(),
+                        itemName: selectedItems[i].itemName(),
+                        settingMethod: selectedItems[i].settingMethod(),
+                        formula: selectedItems[i].formula(),
+                        displayAtr: selectedItems[i].displayAtr(),
+                        total: selectedItems[i].total(),
+                        rounding: selectedItems[i].rounding(),
+                        fraction: selectedItems[i].fraction(),
                         order: i + 1,
-                        attrEnable: self.calculatorItems()[i].attrEnable(),
-                        settingMethodEnable: self.calculatorItems()[i].settingMethodEnable(),
-                        totalEnable: self.calculatorItems()[i].totalEnable(),
-                        formBuilt: self.calculatorItems()[i].formBuilt,
-                        formTime: self.calculatorItems()[i].formTime,
-                        formPeople: self.calculatorItems()[i].formPeople,
-                        amount: self.calculatorItems()[i].amount,
-                        numerical: self.calculatorItems()[i].numerical,
-                        unitPrice: self.calculatorItems()[i].unitPrice
+                        attrEnable: selectedItems[i].attrEnable(),
+                        settingMethodEnable: flag == false ? false : selectedItems[i].settingMethodEnable(),
+                        totalEnable: selectedItems[i].totalEnable(),
+                        formBuilt: selectedItems[i].formBuilt,
+                        formTime: selectedItems[i].formTime,
+                        formPeople: selectedItems[i].formPeople,
+                        amount: selectedItems[i].amount,
+                        numerical: selectedItems[i].numerical,
+                        unitPrice: selectedItems[i].unitPrice
                     };
                     
-                    selectedItems.push(new CalculatorItem(item));
-                }
-            }
-            
-            self.calculatorItems([]);
-            var flag = false;
-            
-            for(var i = 0; i < selectedItems.length; i++) {
-                if(i > 0) {
-                    flag = true;
+                    self.calculatorItems.push(new CalculatorItem(newItem));
                 }
                 
-                var newItem : ICalculatorItem = {
-                    isChecked: selectedItems[i].isChecked(),
-                    itemCd: nts.uk.util.randomId(),
-                    attribute: selectedItems[i].attribute(),
-                    itemName: selectedItems[i].itemName(),
-                    settingMethod: selectedItems[i].settingMethod(),
-                    formula: selectedItems[i].formula(),
-                    displayAtr: selectedItems[i].displayAtr(),
-                    total: selectedItems[i].total(),
-                    rounding: selectedItems[i].rounding(),
-                    fraction: selectedItems[i].fraction(),
-                    order: i + 1,
-                    attrEnable: selectedItems[i].attrEnable(),
-                    settingMethodEnable: flag == false ? false : selectedItems[i].settingMethodEnable(),
-                    totalEnable: selectedItems[i].totalEnable(),
-                    formBuilt: selectedItems[i].formBuilt,
-                    formTime: selectedItems[i].formTime,
-                    formPeople: selectedItems[i].formPeople,
-                    amount: selectedItems[i].amount,
-                    numerical: selectedItems[i].numerical,
-                    unitPrice: selectedItems[i].unitPrice
-                };
+                self.allSelectedItems(false);
                 
-                self.calculatorItems.push(new CalculatorItem(newItem));
-            }
+                if(self.calculatorItems().length == 0) {                
+                    self.deleteLineEnable(false);
+                }
+            }).ifNo(() => { 
+                return;
+            })
             
-            self.allSelectedItems(false);
-            
-            if(self.calculatorItems().length == 0) {                
-                self.deleteLineEnable(false);
-            }
         }
         
         /**
@@ -1222,27 +1234,17 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             } else {
                                 for(var i = 0; i < data.lstFormTimeFunc.length; i++) {
                                     var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var attendanceName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
+                                    var itemName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
                                     var attendanceItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].attendanceItemId; });
-                                    var presetName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
                                     var presetItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].presetItemId; });
-                                    var externalName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
                                     var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
                                     
-                                    if(attendanceName != "") {
-                                        formulaResult += operator + " " + attendanceName + " ";
+                                    if(itemName != "") {
+                                        formulaResult += operator + " " + itemName + " ";
                                     } else if(attendanceItem != null) {
                                         formulaResult += operator + " " + attendanceItem.name + " ";
-                                    }
-                                        
-                                    if(presetName != "") {
-                                        formulaResult += operator + " " + presetName + " ";
                                     } else if(presetItem != null) {
                                         formulaResult += operator + " " + presetItem.name + " ";
-                                    }
-                                    
-                                    if(externalName != "") {
-                                        formulaResult += operator + " " + externalName + " ";
                                     } else if(externalItem != null) {
                                         formulaResult += operator + " " + externalItem.name + " ";
                                     }
@@ -1294,7 +1296,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 } 
                             }
                         } else if (attribute == 3) {
-                            if(data.length <= 0) {
+                            if(data == null || data.length <= 0) {
                                 formulaResult = nts.uk.resource.getText("KML002_153");
                             } else {
                                 for(var i = 0; i < data.length; i++) {
@@ -1381,7 +1383,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 } 
                             }
                         } else if (attribute == 3) {
-                            if(data.length <= 0) {
+                            if(data == null || data.length <= 0) {
                                 formulaResult = nts.uk.resource.getText("KML002_153");
                             } else {
                                 for(var i = 0; i < data.length; i++) {
