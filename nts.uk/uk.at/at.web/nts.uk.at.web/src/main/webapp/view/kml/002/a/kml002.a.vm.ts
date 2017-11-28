@@ -1442,7 +1442,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     } else if(presetItem != null) {
                                         formulaResult += operator + " " + presetItem.name + " ";
                                     } else if(externalItem != null) {
->>>>>>> 18bb8a72b1d865f7b3a39b52a6c46f3b29a0f954
                                         formulaResult += operator + " " + externalItem.name + " ";
                                     }
                                 }
