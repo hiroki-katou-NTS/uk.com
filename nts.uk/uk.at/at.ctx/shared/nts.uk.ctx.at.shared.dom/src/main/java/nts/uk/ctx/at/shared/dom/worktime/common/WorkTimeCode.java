@@ -10,6 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
+//就業時間帯コード
 @StringMaxLength(3)
 @StringCharType(CharType.ALPHA_NUMERIC)
 @ZeroPaddedCode
