@@ -19,6 +19,11 @@
 			<com:scriptfile path="cps002.g.service.js" />
 			<com:scriptfile path="cps002.g.vm.js" />
 			<com:scriptfile path="cps002.g.start.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.pereg.dom.usesetting.EmpCodeLetter
+				nts.uk.ctx.pereg.dom.usesetting.CardNoLetter
+			</com:ValidatorScript>
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -47,6 +52,8 @@
 									<input
 										data-bind="ntsTextEditor: {
 													value: employeeCodeLetter ,
+													constraint:'EmpCodeLetter',
+													name: '#{i18n.getText('CPS002_77')}',
 													option: {
 														textmode: 'text',
 										            	width: '80px',
@@ -74,6 +81,8 @@
 									<input
 										data-bind="ntsTextEditor: {
 													value: cardNumberLetter ,
+													constraint:'CardNoLetter',
+													name: '#{i18n.getText('CPS002_83')}',
 													option: {
 														textmode: 'text',
 										            	width: '80px',

@@ -21,23 +21,23 @@ public class BpsstUserSetting extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public BpsstUserSettingPk BpsstUserSettingPk;
-
+	// 社員コード初期値
 	@Basic(optional = false)
 	@Column(name = "SCD_ATR")
 	public int employeeCodeType;
-
+	// カードNO初期値
 	@Basic(optional = false)
 	@Column(name = "CARD_NUMBER_ATR")
 	public int cardNumberType;
-
+	// 最近の登録
 	@Basic(optional = false)
 	@Column(name = "RECENT_REGISTRATION_TYPE")
 	public int recentRegistrationType;
-
+	// 社員コード頭文字
 	@Basic(optional = true)
 	@Column(name = "SCD_LETTER")
 	public String employeeCodeLetter;
-
+	// カードNO頭文字
 	@Basic(optional = true)
 	@Column(name = "CARD_NUMBER_LETTER")
 	public String cardNumberLetter;
