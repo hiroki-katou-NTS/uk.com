@@ -1,5 +1,6 @@
 package nts.uk.shr.pereg.app.find;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
+import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @ApplicationScoped
 public class LayoutingProcessor {
@@ -41,10 +43,9 @@ public class LayoutingProcessor {
 	 */
 	public PeregDto findSingle(PeregQuery query) {
 		val finderClass = this.finders.get(query.getCategoryCode());
-		val dto = finderClass.findSingle(query);
-		//if(dto.get)
-		//return new PeregDto(finderClass.dtoClass(), dto);
-		return null;
+		PeregDto dto = finderClass.findSingle(query);
+		setUserDefData(dto);
+		return dto;
 	}
 
 	/**
@@ -53,10 +54,20 @@ public class LayoutingProcessor {
 	 * @param query
 	 * @return
 	 */
-	public PeregResult findList(PeregQuery query) {
+	public List<PeregDto> findList(PeregQuery query) {
 		val finderClass = this.finders.get(query.getCategoryCode());
-		val dto = finderClass.findList(query);
-		return new PeregResult(finderClass.dtoClass(), dto);
+		List<PeregDto> lstDtos = finderClass.findList(query);
+		lstDtos.stream().forEach(dto -> {
+			setUserDefData(dto);
+		});
+		return lstDtos;
+	}
+	
+	private void setUserDefData(PeregDto dto){
+		if(dto.getEmpPerCtgType() == 1)			
+			dto.setPerOptionalData(peregPerUserDefFinderRepository.getPersonOptionalData(dto.getDomainDto().getRecordId()));
+		else 
+			dto.setEmpOptionalData(peregEmpUserDefFinderRepository.getEmpOptionalDto(dto.getDomainDto().getRecordId()));
 	}
 
 }

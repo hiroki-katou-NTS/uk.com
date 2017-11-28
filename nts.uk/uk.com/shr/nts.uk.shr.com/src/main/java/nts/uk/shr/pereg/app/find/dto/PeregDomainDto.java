@@ -3,6 +3,8 @@
  */
 package nts.uk.shr.pereg.app.find.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregPersonId;
 import nts.uk.shr.pereg.app.PeregRecordId;
@@ -11,6 +13,8 @@ import nts.uk.shr.pereg.app.PeregRecordId;
  * @author danpv
  *
  */
+@Getter
+@Setter
 public class PeregDomainDto {
 
 	@PeregRecordId

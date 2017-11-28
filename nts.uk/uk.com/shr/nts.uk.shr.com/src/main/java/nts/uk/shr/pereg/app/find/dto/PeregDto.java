@@ -23,7 +23,7 @@ public class PeregDto {
 	/**
 	 * category type: 1 - person; 2 - employee
 	 */
-	private int ctgType;
+	private int empPerCtgType;
 
 	private List<PersonOptionalDto> perOptionalData;
 
@@ -32,7 +32,7 @@ public class PeregDto {
 	public PeregDto(PeregDomainDto dto, Class<?> dtoClass, int ctgType){
 		this.domainDto = dto;
 		this.dtoClass = dtoClass;
-		this.ctgType = ctgType;
+		this.empPerCtgType = ctgType;
 	}
 
 

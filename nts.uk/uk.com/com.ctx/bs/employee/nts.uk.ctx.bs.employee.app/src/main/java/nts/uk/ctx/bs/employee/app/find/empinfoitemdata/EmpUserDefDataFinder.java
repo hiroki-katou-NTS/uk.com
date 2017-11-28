@@ -11,7 +11,7 @@ import nts.uk.shr.pereg.app.find.PeregEmpUserDefFinderRepository;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
 
 @Stateless
-public class EmpInfoItemDataFinder implements PeregEmpUserDefFinderRepository{
+public class EmpUserDefDataFinder implements PeregEmpUserDefFinderRepository{
 
 	@Inject
 	private EmpInfoItemDataRepository empInfoItemDataRepository;

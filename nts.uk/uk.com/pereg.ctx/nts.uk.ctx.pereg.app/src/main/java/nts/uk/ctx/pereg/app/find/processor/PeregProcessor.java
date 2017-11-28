@@ -104,16 +104,14 @@ public class PeregProcessor {
 					layoutQuery.getEmpId(), employee.getPId(), layoutQuery.getStandardDate(), null);
 			if (item.getLayoutItemType() == LayoutItemType.LIST) {
 				// //get data
-				PeregResult returnValue = layoutingProcessor.findList(query);
-				@SuppressWarnings("unchecked")
-				List<PeregDto> lstPeregDto = (List<PeregDto>) returnValue.getDto();
+				List<PeregDto> lstPeregDtos = layoutingProcessor.findList(query);
 				List<Object> dataTable = new ArrayList<>();
-				lstPeregDto.forEach(queryResult -> {
-					PeregDomainDto finderDto = queryResult.getDomainDto();
-					List<PersonOptionalDto> perOptionalData = queryResult.getPerOptionalData();
-					List<EmpOptionalDto> empOptionalData = queryResult.getEmpOptionalData();
+				lstPeregDtos.forEach(peregDto -> {
+					PeregDomainDto finderDto = peregDto.getDomainDto();
+					List<PersonOptionalDto> perOptionalData = peregDto.getPerOptionalData();
+					List<EmpOptionalDto> empOptionalData = peregDto.getEmpOptionalData();
 					EmpMaintLayoutDto empLayoutDto = new EmpMaintLayoutDto();
-					matching(empLayoutDto, perInfoCtg, finderDto, returnValue.getDtoClass(),
+					matching(empLayoutDto, perInfoCtg, finderDto, peregDto.getDtoClass(),
 							item.getListItemDf().stream()
 									.map(x -> perInfoItemDefForLayoutFinder.createFromItemDefDto(layoutQuery.getEmpId(),
 											x, perInfoCtg.getCategoryCode().v(), item.getDispOrder()))
@@ -211,11 +209,10 @@ public class PeregProcessor {
 	private void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, PeregQuery query, PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		if(perInfoCtg.getIsFixed() == IsFixed.FIXED){
 			//get domain data
-			PeregResult returnValue = layoutingProcessor.findSingle(query);
-			PeregDto queryResult = (PeregDto)returnValue.getDto();
+			PeregDto queryResult = layoutingProcessor.findSingle(query);
 
 			//set fixed data			
-			matching(empMaintLayoutDto, perInfoCtg,  queryResult.getDomainDto(), returnValue.getDtoClass(), 
+			matching(empMaintLayoutDto, perInfoCtg,  queryResult.getDomainDto(), queryResult.getDtoClass(), 
 					lstPerInfoItemDef, queryResult.getEmpOptionalData(), queryResult.getPerOptionalData());
 		}else{
 			setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
