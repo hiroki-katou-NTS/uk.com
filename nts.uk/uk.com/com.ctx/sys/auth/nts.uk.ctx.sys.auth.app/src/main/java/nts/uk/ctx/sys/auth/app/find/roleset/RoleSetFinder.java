@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.auth.app.find.roleset;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,13 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuImport;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuAdapter;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,9 +20,6 @@ public class RoleSetFinder {
 	private RoleSetRepository roleSetRepository;
 
 	@Inject
-	private WebMenuAdapter webMenuAdapter;
-	
-	@Inject
 	private RoleSetLinkWebMenuAdapter roleSetLinkWebMenuAdapter;
 	
 	/**
@@ -36,17 +28,15 @@ public class RoleSetFinder {
 	 * @return
 	 */
 	public RoleSetDto find(String roleSetCd) {
-		//Get company Id
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			// get domain role set
-			Optional<RoleSet> roleSetOpt = roleSetRepository.findByRoleSetCdAndCompanyId(roleSetCd, companyId);		
-			if (roleSetOpt.isPresent()) {
-				RoleSet roleSet = roleSetOpt.get();
-				return RoleSetDto.build(roleSet, buildWebMenuDto(roleSet.getRoleSetCd().v()));			
-			}
+
+		// get domain role set
+		Optional<RoleSet> roleSetOpt = roleSetRepository.findByRoleSetCdAndCompanyId(roleSetCd, AppContexts.user().companyId());		
+		if (roleSetOpt.isPresent()) {
+			RoleSet roleSet = roleSetOpt.get();
+			return RoleSetDto.build(roleSet, buildWebMenuDto(roleSet.getRoleSetCd().v()));			
 		}
-		return new RoleSetDto();
+
+		return null;
 	}
 
 	/**
@@ -54,14 +44,9 @@ public class RoleSetFinder {
 	 * @return
 	 */
 	public List<RoleSetDto> findAll() {
-		//Get company Id
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			return this.roleSetRepository.findByCompanyId(companyId).stream()
-					.map(item -> RoleSetDto.build(item, buildWebMenuDto(item.getRoleSetCd().v())))
-					.collect(Collectors.toList());
-		}
-		return new ArrayList<RoleSetDto>();
+		return this.roleSetRepository.findByCompanyId(AppContexts.user().companyId()).stream()
+				.map(item -> RoleSetDto.build(item, buildWebMenuDto(item.getRoleSetCd().v())))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -77,30 +62,9 @@ public class RoleSetFinder {
 		if (CollectionUtil.isEmpty(lstWebMenuCds)) {
 			return null;
 		}
-		
+		//build to DTO and return result
 		return lstWebMenuCds.stream()
 				.map(webMenuCd -> new WebMenuImportDto(webMenuCd, ""))
 				.collect(Collectors.toList());
-/*
-		List<WebMenuImport> lstWebMenus = webMenuAdapter.findByCompanyId();
-		if (CollectionUtil.isEmpty(lstWebMenus)) {
-			return null;
-		}
-
-		List<WebMenuImportDto> retWebmenus = lstWebMenuCds.stream().map(item -> {
-			Optional<WebMenuImport> webMenuOpt = lstWebMenus.stream().filter(wmn-> wmn.getWebMenuCd().equals(item)).findFirst();
-			if (webMenuOpt.isPresent()) {
-				WebMenuImport wmn = webMenuOpt.get();
-				return new WebMenuImportDto(wmn.getWebMenuCd(), wmn.getWebMenuName());
-			}
-			return null;
-			}).collect(Collectors.toList());
-		if (CollectionUtil.isEmpty(retWebmenus)) {
-			return null;
-		}
-		return retWebmenus.stream().filter(item -> item != null).collect(Collectors.toList());
-		*/
 	}
-
-
 }

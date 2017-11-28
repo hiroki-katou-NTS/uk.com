@@ -456,7 +456,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 return resource.getText('CAS011_23');
             }
             return resource.getText('CAS011_23');
-            /*
             service.getRoleById(roleId).done((item) => {
                 if (item) {
                     return item.roleName;
@@ -466,7 +465,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
             }).fail(function(error) {
                     return resource.getText('CAS011_23')
             });
-            */
         }
     }
 
@@ -484,7 +482,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
     }
 
     // The Role
-    export interface IRole {
+/*    export interface IRole {
         roleId: string;
         roleName: string;
         roleType: number;
@@ -502,7 +500,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
             self.roleType(param.roleType); //null: undefined role type
         }
     }
-
+*/
     // The Web menu
     export interface IWebMenu {
         webMenuCode: string;
@@ -522,6 +520,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
     // The Role Set
     export interface IRoleSet {
+        companyId: string;
         roleSetCd: string;
         roleSetName: string;
         approvalAuthority: boolean;
@@ -536,6 +535,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
     }
 
     export class RoleSet {
+        companyId = '';
         roleSetCd: KnockoutObservable<string> = ko.observable('');
         roleSetName: KnockoutObservable<string> = ko.observable('');
         approvalAuthority: KnockoutObservable<boolean> = ko.observable(false);
@@ -549,6 +549,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
         constructor(param: IRoleSet) {
             let self = this;
+            self.companyId = param.companyId;
             self.roleSetCd(param.roleSetCd || '');
             self.roleSetName(param.roleSetName || '');
             self.approvalAuthority(param.approvalAuthority || true);

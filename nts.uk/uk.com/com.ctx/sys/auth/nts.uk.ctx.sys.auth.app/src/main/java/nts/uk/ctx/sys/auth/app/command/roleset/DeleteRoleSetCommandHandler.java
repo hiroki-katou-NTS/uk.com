@@ -14,7 +14,6 @@ public class DeleteRoleSetCommandHandler extends CommandHandlerWithResult<Delete
 	@Inject
 	private RoleSetService roleSetService;
 
-
 	@Override
 	protected String handle(CommandHandlerContext<DeleteRoleSetCommand> context) {
 		DeleteRoleSetCommand command = context.getCommand();
