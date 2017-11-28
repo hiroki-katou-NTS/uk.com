@@ -135,7 +135,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.getOvertimeByUI({
                 url: urlParam,
                 appDate: moment(new Date()).format("YYYY/MM/DD"),
-                uiType: 1
+                uiType: 0
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();
@@ -256,7 +256,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }
              self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), null, null, null,"KAF005_66"));
             if(data.overtimeAtr == 0){
-                self.heightOvertimeHours(58);   
+                self.heightOvertimeHours(180);   
             }else if(data.overtimeAtr == 1){
                 self.heightOvertimeHours(180);
             }else{
@@ -572,13 +572,20 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.overtimeHoursPre.removeAll();
                 if(data.preAppOvertimeDto.overTimeInputsPre != null){
                     for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
-                        self.overtimeHoursPre.push(new common.AppOvertimePre("", "", 
-                        data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
-                         "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,
-                         0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
-                         data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
-                         data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
-                         self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime) ,null));
+                        if(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime != -1){
+                            if(data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 11 && data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 12){
+                                self.overtimeHoursPre.push(new common.AppOvertimePre("", "", 
+                            data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
+                            "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,
+                            0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
+                            data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
+                            data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
+                            self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime) ,null));
+                            }
+                        }else{
+                            continue;    
+                        }
+                        
                     }
                 }
                  self.overTimeShiftNightPre(self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));

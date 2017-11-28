@@ -578,7 +578,7 @@ public class AppOvertimeFinder {
 				result.setPreAppPanelFlg(false);
 			}
 		}
-		// 01-04_加給時間を取得: chua xong
+		// 01-04_加給時間を取得
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				result.setDisplayBonusTime(true);
@@ -626,13 +626,7 @@ public class AppOvertimeFinder {
 				result.setDisplayDivergenceReasonForm(false);
 			}
 			//01-07_乖離理由を取得
-			if(result.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value){
-				result.setDisplayDivergenceReasonInput(false);
-			}else{
-				result.setDisplayDivergenceReasonInput(iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
-			}
-			
-			
+			result.setDisplayDivergenceReasonInput(result.getApplication().getPrePostAtr() == PrePostAtr.PREDICT.value && iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
 		}
 		//01-09_事前申請を取得
 		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){

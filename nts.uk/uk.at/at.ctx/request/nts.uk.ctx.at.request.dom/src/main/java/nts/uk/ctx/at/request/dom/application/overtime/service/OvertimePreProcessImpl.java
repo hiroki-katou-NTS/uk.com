@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -225,7 +226,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 		if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 			// アルゴリズム「社員所属職場履歴を取得」を実行する
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
-			//アルゴリズム「職場の特定日設定を取得する」を実行する (hung lam)
+			//アルゴリズム「職場の特定日設定を取得する」を実行する
 			if(sWkpHistImport != null){
 				wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
@@ -234,7 +235,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 			for(BonusPayTimeItem bonusItem : bonusPayTimeItems){
 				result.add(bonusItem);
 			}
-			if(wpSpecificDateSettingImport.getNumberList() != null){
+			if(!CollectionUtil.isEmpty(wpSpecificDateSettingImport.getNumberList())){
 				List<BonusPayTimeItem> bonusPayTimeItemSpecs = this.bPTimeItemRepository.getListSpecialBonusPayTimeItemInUse(companyID);
 				for(BonusPayTimeItem bonusItem : bonusPayTimeItemSpecs){
 					result.add(bonusItem);
