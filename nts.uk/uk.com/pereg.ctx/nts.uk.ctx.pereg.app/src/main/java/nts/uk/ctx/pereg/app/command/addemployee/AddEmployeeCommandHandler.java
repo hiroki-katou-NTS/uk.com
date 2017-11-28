@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
@@ -93,7 +94,8 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		this.commandFacade.add(inputContainer);
 		// add new user
-		User newUser = User.createFromJavaType(userId, command.getPassword(), command.getLoginId(), null,
+		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
+		User newUser = User.createFromJavaType(userId, passwordHash, command.getLoginId(), null,
 				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false, null, command.getEmployeeName(),
 				employeeId);
 
