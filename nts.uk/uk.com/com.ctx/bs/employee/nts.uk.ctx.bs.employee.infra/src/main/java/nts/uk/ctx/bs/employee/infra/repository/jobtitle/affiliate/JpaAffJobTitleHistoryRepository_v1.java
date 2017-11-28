@@ -116,10 +116,11 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 			return;
 		}
 		Optional<BsymtAffJobTitleHist> histItem = this.queryProxy().find(beforeItem.get().identifier(), BsymtAffJobTitleHist.class);
-		if (histItem.isPresent()){
-			updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
-			this.commandProxy().update(histItem.get());
+		if (!histItem.isPresent()){
+			return;
 		}
+		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
 	}
 	/**
 	 * Update entity from domain
@@ -144,10 +145,11 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 			return;
 		}
 		Optional<BsymtAffJobTitleHist> histItem  = this.queryProxy().find(aferItem.get().identifier(), BsymtAffJobTitleHist.class);
-		if (histItem.isPresent()){
-			updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
-			this.commandProxy().update(histItem.get());
+		if (!histItem.isPresent()){
+			return;
 		}
+		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
 	}
 
 }
