@@ -1378,14 +1378,14 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     var attendanceItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].attendanceItemId; });
                                     var presetItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].presetItemId; });
                                     var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
-                                    
-                                    if (itemName != "") {
+                         
+                                    if(itemName != "") {
                                         formulaResult += operator + " " + itemName + " ";
-                                    } else if (attendanceItem != null) {
+                                    } else if(attendanceItem != null) {
                                         formulaResult += operator + " " + attendanceItem.name + " ";
-                                    } else if (presetItem != null) {
+                                    } else if(presetItem != null) {
                                         formulaResult += operator + " " + presetItem.name + " ";
-                                    } else if (externalItem != null) {
+                                    } else if(externalItem != null) {
                                         formulaResult += operator + " " + externalItem.name + " ";
                                     }
                                 }

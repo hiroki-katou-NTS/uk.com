@@ -467,14 +467,14 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     calMethodAtr: self.selectedMethod(),
                     moneyFunc: {
                         categoryIndicatorTime: self.catCodeTime(),
-                        actualDisplayAtrTime: self.checkedTime(),
+                        actualDisplayAtrTime: self.checkedTime() ? 1 : 0,
                         lstMoney: formTime
                     },
                     timeUnit: {
                         roundingTime: self.roundingCd(),
                         roundingAtr: self.selectedProcessing(),
                         unitPrice: self.uPCd(),
-                        actualDisplayAtr: self.checked(),
+                        actualDisplayAtr: self.checked() ? 1 : 0,
                         lstTimeUnitFuncs: formAmount
                     }
                 }
@@ -504,7 +504,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     verticalCalCd: data.verticalCalCd,
                     verticalCalItemId: data.itemId,
                     categoryIndicator: self.catCode(),
-                    actualDisplayAtr: self.checkedAmount(),
+                    actualDisplayAtr: self.checkedAmount() ? 1 : 0,
                     lstMoney: formMoney
                 }
                 nts.uk.ui.windows.setShared("KML002_E_DATA", moneyData);
