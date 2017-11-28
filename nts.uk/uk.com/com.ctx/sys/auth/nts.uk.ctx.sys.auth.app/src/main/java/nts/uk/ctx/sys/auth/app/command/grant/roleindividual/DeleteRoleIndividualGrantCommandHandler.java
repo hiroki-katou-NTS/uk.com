@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.auth.app.command.grant.roleindividual;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
@@ -9,7 +11,8 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
+@Stateless
+@Transactional
 public class DeleteRoleIndividualGrantCommandHandler extends CommandHandler<DeleteRoleIndividualGrantCommand> {
 
 	@Inject

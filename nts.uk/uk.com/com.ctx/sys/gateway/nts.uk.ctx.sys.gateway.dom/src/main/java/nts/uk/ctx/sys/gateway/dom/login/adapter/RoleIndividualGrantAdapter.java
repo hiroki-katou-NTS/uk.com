@@ -29,4 +29,6 @@ public interface RoleIndividualGrantAdapter {
 	 * @return the by user
 	 */
 	RoleIndividualGrantImport getByUser (String userId,GeneralDate date);
+	
+	RoleIndividualGrantImport getByUser(String userId);
 }

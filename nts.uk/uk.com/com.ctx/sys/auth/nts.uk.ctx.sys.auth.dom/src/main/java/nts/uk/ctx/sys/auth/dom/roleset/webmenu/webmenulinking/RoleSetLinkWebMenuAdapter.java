@@ -18,20 +18,22 @@ public interface RoleSetLinkWebMenuAdapter {
 	
 	/**
 	 * add Role Set and Web menu link
-	 * @param roleSetAndWebMenus
+	 * @param roleSetLinkWebMenus
 	 */
-	void addRoleSetAndWebMenu(RoleSetLinkWebMenuImport roleSetAndWebMenu);
+	void addRoleSetLinkWebMenu(RoleSetLinkWebMenuImport roleSetLinkWebMenu);
 
+	void addAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenuImport> listRoleSetLinkWebMenu);
+	
 	/**
 	 * update Role Set and Web menu link
-	 * @param roleSetAndWebMenus
+	 * @param roleSetLinkWebMenus
 	 */	
-	void updateRoleSetAndWebMenu(RoleSetLinkWebMenuImport roleSetAndWebMenu);
+	void updateRoleSetLinkWebMenu(RoleSetLinkWebMenuImport roleSetLinkWebMenu);
 
 	/**
 	 * delete by roleSetCd 
 	 * @param companyId: CompanyId is companyId of login user
 	 * @param roleSetCd
 	 */
-	void deleteAllRoleSetAndWebMenu(String roleSetCd);
+	void deleteAllRoleSetLinkWebMenu(String roleSetCd);
 }

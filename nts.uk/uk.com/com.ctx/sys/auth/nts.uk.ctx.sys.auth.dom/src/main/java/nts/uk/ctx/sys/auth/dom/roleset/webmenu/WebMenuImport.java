@@ -18,7 +18,7 @@ public class WebMenuImport {
 	/** 既定メニュー */
 	private boolean defaultMenu;
 
-	public WebMenuImport(String webMenuCd, String webMenuName, String companyId, boolean defaultMenu) {
+	public WebMenuImport(String companyId, String webMenuCd, String webMenuName, boolean defaultMenu) {
 		this.webMenuCd = webMenuCd;
 		this.webMenuName = webMenuName;
 		this.companyId = companyId;
