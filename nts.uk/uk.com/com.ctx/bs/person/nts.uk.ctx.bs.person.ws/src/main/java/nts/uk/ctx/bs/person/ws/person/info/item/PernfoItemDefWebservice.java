@@ -54,9 +54,9 @@ public class PernfoItemDefWebservice extends WebService {
 	private UpdatePerInfoItemDefCopyCommandHandler updatePerInfoItemDefCopyCommandHandler;
 
 	@POST
-	@Path("findby/categoryId/{perInfoCtgId}")
-	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId) {
-		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId);
+	@Path("findby/categoryId1/{perInfoCtgId}/{personEmployeeType}")
+	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId, @PathParam("personEmployeeType") int personEmployeeType) {
+		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId, personEmployeeType);
 	}
 
 	@POST
