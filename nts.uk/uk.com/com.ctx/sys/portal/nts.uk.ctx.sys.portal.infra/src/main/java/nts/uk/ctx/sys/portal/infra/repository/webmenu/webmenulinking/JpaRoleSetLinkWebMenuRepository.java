@@ -35,9 +35,9 @@ public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements Ro
 			+ " WHERE rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
 	
 	private nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu toDomain(SptmtRoleSetWebMenu entity) {
-		return new RoleSetLinkWebMenu(entity.roleSetWebMenuPK.roleSetCd
+		return new RoleSetLinkWebMenu(entity.roleSetWebMenuPK.companyId
+				, entity.roleSetWebMenuPK.roleSetCd
 				, entity.roleSetWebMenuPK.webMenuCd
-				, entity.roleSetWebMenuPK.companyId
 				);
 	}
 
@@ -82,6 +82,8 @@ public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements Ro
 		this.commandProxy().insert(toEntity(domain));
 	}
 
+	
+	
 	@Override
 	public void update(RoleSetLinkWebMenu domain) {
 		 Optional<SptmtRoleSetWebMenu> upEntity = this.queryProxy().find(
@@ -107,6 +109,11 @@ public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements Ro
 		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, roleSetCd, webMenuCode);
 		this.commandProxy().remove(SptmtRoleSetWebMenu.class, pk);
 		
+	}
+
+	@Override
+	public void insert(List<RoleSetLinkWebMenu> listDomain) {
+		this.commandProxy().insertAll(listDomain);
 	}
 
 
