@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -174,6 +176,4 @@ public class OutsideWorkTimeSheet {
 		//return new ExcessOfStatutoryTimeOfDaily(totalExcessTime,Optional.empty(),Optional.empty());
 	}
 	
-	
-
 }

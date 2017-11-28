@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
@@ -99,7 +100,7 @@ public class OverTimeFrameTimeSheet extends CalculationTimeSheet{
 		afterVariableWork = dicisionCalcVariableWork(workingSystem,createTimeSheet,breakdownTimeDay,dailyTime,autoCalculationSet);
 		/*法定内残業　振替*/
 		List<OverTimeFrameTimeSheet> afterCalcStatutoryOverTimeWork = new ArrayList<>();
-		//afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,afterVariableWork,autoCalculationSet, prioritySet);
+		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,OverTimeOfDaily.sortedByPriority(afterVariableWork,prioritySet),autoCalculationSet);
 		/*return*/
 		return afterCalcStatutoryOverTimeWork;
 	}
@@ -117,19 +118,6 @@ public class OverTimeFrameTimeSheet extends CalculationTimeSheet{
 		return overTimeWorkFrameTimeSheetList;
 	}
 
-//	public List<OverTimeFrameTimeSheet> sortedByPriority(List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheetList){
-//		List<OverTimeFrameTimeSheet> copyList = new ArrayList<>();
-//		if(prioritySet.isPriorityNormal()) {
-//			/*普通を優先*/
-//			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
-//			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> tc.isGoEarly()).collect(Collectors.toList()));
-//		}else {
-//			/*早出を優先*/
-//			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> tc.isGoEarly()).collect(Collectors.toList()));
-//			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
-//		}
-//		return copyList;
-//	}
 	
 	/**
 	 * 法定内残業時間の計算をするか判定
@@ -145,7 +133,7 @@ public class OverTimeFrameTimeSheet extends CalculationTimeSheet{
 																	,AutoCalculationOfOverTimeWork autoCalculationSet) {
 		if(statutorySet.isAutoCalcStatutoryOverWork()) {
 			/*振替処理   法定内基準時間を計算する*/
-			//return reclassified(new AttendanceTime(dailyTime.minusMinutes(480).valueAsMinutes()),copyList ,autoCalculationSet,StatutoryAtr.DeformationCriterion);
+			return reclassified(new AttendanceTime(dailyTime.minusMinutes(480).valueAsMinutes()),overTimeWorkFrameTimeSheetList,autoCalculationSet,StatutoryAtr.DeformationCriterion);
 		}
 		return overTimeWorkFrameTimeSheetList;
 	}
