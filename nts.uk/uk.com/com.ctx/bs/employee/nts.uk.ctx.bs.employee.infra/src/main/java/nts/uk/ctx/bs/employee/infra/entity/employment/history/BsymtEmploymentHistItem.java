@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.infra.entity.employment.employmenthistory;
+package nts.uk.ctx.bs.employee.infra.entity.employment.history;
 
 import java.io.Serializable;
 

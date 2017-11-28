@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.employment.employmenthistory;
+package nts.uk.ctx.bs.employee.dom.employment.history;
 
 import java.util.List;
 
