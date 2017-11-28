@@ -18,7 +18,7 @@ __viewContext.ready(function () {
         
         openDialog() {
             var param: model.InputParam = {
-                reasonCD: this.selectedItems()
+                codeList: this.selectedItems()
             };
             nts.uk.ui.windows.setShared("CDL024", param);
 

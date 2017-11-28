@@ -9,8 +9,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 
 /**
- * ロールセット別�?付�?� - Class RoleSetAndWenMenu
- * ロールセット別紐付け
+ * ロールセット別紐付け - Class RoleSetLinkWenMenu
  * @author HieuNV
  */
 @Getter
@@ -32,7 +31,7 @@ public class RoleSetLinkWebMenu extends AggregateRoot {
 	 * @param webMenuCd
 	 * @param roleSetCd
 	 */
-	public RoleSetLinkWebMenu(String roleSetCd, String webMenuCd, String companyId) {
+	public RoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd) {
 		super();
 		this.roleSetCd = new RoleSetCode(roleSetCd);
 		this.webMenuCd = new WebMenuCode(webMenuCd);

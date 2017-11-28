@@ -16,6 +16,12 @@ public class DeleteRoleSetGrantedPersonCommandHandler extends CommandHandler<Rol
 
 	@Override
 	protected void handle(CommandHandlerContext<RoleSetGrantedPersonCommand> context) {
-		roleSetPersonRepo.delete(context.getCommand().getEmployeeId());
+		RoleSetGrantedPersonCommand command = context.getCommand();
+		roleSetPersonRepo.delete(command.getEmployeeId());
+		
+		//dummy code
+//		System.out.println("Deleting RoleSetGrantedPerson: EmpId = " + command.getEmployeeId() + " - RoleSetCode = "
+//				+ command.getRoleSetCd() + " - period= " + command.getStartDate() + " ~ " + command.getEndDate());
+//		System.out.println("Delete done!");
 	}
 }

@@ -31,8 +31,8 @@ module nts.uk.at.view.cdl024.viewmodel {
                 data = _.sortBy(data, ["code"]);
                 items(data);
                 let parameter: InputParam = nts.uk.ui.windows.getShared("CDL024");
-                if (parameter != null && parameter.reasonCD != null) {
-                    self.currentCodeList(parameter.reasonCD);
+                if (parameter != null && parameter.codeList != null) {
+                    self.currentCodeList(parameter.codeList);
                 }
                 dfd.resolve();
             });
@@ -48,6 +48,6 @@ module nts.uk.at.view.cdl024.viewmodel {
     }
     
     export interface InputParam {
-        reasonCD: Array<string>;
+        codeList: Array<string>;
     }
 }
