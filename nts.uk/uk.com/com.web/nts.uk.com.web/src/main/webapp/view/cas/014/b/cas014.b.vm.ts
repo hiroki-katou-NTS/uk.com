@@ -87,7 +87,7 @@ module nts.uk.com.view.cas014.b {
                 }).always(() => {
                     block.clear();
                 });
-                
+
                 return dfd.promise();
             }
 
@@ -145,29 +145,31 @@ module nts.uk.com.view.cas014.b {
 
             registerRoleSetPerson() {
                 let self = this, data: RoleSetPerson = ko.toJS(self.roleSetPerson);
+                $(".ntsDateRange_Component").trigger("validate");
+                if (!nts.uk.ui.errors.hasError() && data.employeeId) {
+                    let command: any = {
+                        roleSetCd: data.roleSetCd,
+                        employeeId: data.employeeId,
+                        startDate: data.startDate,
+                        endDate: data.endDate,
+                        mode: self.screenMode()
+                    };
 
-                let command: any = {
-                    roleSetCd: data.roleSetCd,
-                    employeeId: data.employeeId,
-                    startDate: data.startDate,
-                    endDate: data.endDate,
-                    mode: self.screenMode()
-                };
+                    block.invisible();
 
-                block.invisible();
+                    new service.Service().registerData(command).done(function() {
+                        //display registered data in selected state
+                        self.loadRoleSetHolder(self.selectedRoleSet(), data.employeeId);
 
-                new service.Service().registerData(command).done(function() {
-                    //display registered data in selected state
-                    self.loadRoleSetHolder(self.selectedRoleSet(), data.employeeId);
-
-                    info({ messageId: "Msg_15" }).then(() => {
-                        $("#B4_2").focus();
+                        info({ messageId: "Msg_15" }).then(() => {
+                            $("#B4_2").focus();
+                        });
+                    }).fail(error => {
+                        alertError({ messageId: error.message });
+                    }).always(() => {
+                        block.clear();
                     });
-                }).fail(error => {
-                    alertError({ messageId: error.message });
-                }).always(() => {
-                    block.clear();
-                });
+                }
             }
 
             deleteRoleSetPerson() {

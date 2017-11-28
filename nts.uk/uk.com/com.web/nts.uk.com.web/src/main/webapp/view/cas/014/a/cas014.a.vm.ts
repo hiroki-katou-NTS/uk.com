@@ -24,13 +24,17 @@ module nts.uk.com.view.cas014.a {
                 self.jobTitleList = ko.observableArray([]);
                 self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
                 $(".fixed-table").ntsFixedTable({ height: 300 });
+                self.date.subscribe((data) => {
+                    if (!data) {
+                        self.date(new Date().toISOString());
+                    }
+                });
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
                 block.invisible();
-
                 new service.Service().getAllData(self.date()).done(function(data: any) {
                     if (data) {
                         self.roleSetList.removeAll();
@@ -75,6 +79,7 @@ module nts.uk.com.view.cas014.a {
 
             register() {
                 let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails = [];
+
                 _.each(data.details, (d: any) => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
 
                 let command: any = {

@@ -9,14 +9,14 @@
 		<button tabindex="2"
 			data-bind="click: createNewRoleSetPerson, enable: true">#{i18n.getText('CAS014_10')}</button>
 		<button tabindex="3" class="proceed"
-			data-bind="click: registerRoleSetPerson, enable: true">#{i18n.getText('CAS014_11')}</button>
+			data-bind="click: registerRoleSetPerson, enable: $root.errors.isEmpty">#{i18n.getText('CAS014_11')}</button>
 		<button tabindex="4" class="danger"
 			data-bind="click: deleteRoleSetPerson, enable: screenMode() == 1">#{i18n.getText('CAS014_12')}</button>
 	</div>
 
 	<div class="contents-area-b">
 		<div class="block">
-			<div class="top-row">
+			<div class="top-row flex valign-center">
 				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
 			</div>
 			<div class="bottom-row">
@@ -39,7 +39,7 @@
 			</div>
 		</div>
 		<div class="block">
-			<div class="top-row cell valign-center">
+			<div class="top-row flex valign-center">
 				<label>#{i18n.getText('CAS014_33')}</label>
 			</div>
 			<div class="bottom-row">
