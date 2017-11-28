@@ -53,6 +53,7 @@ module nts.uk.at.view.kmk003.a {
             //data
             data: KnockoutObservable<any>;
             isClickSave: KnockoutObservable<boolean>;
+            isFlowMode: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
@@ -150,6 +151,11 @@ module nts.uk.at.view.kmk003.a {
                 //data get from service
                 self.data = ko.observable();
                 self.isClickSave = ko.observable(false);
+                
+                self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
+                self.selectedSettingMethod.subscribe(function(selectedSettingMethod) {
+                    self.isFlowMode(self.getFlowModeBySelected(selectedSettingMethod));
+                });
             }
 
             /**
@@ -175,6 +181,13 @@ module nts.uk.at.view.kmk003.a {
                 service.savePred(data).done(function() {
                     self.isClickSave(false);
                 });
+            }
+            
+            /**
+             * function get flow mode by selection ui
+             */
+            private getFlowModeBySelected(selectedSettingMethod: string): boolean {
+                return (selectedSettingMethod === '3');
             }
         }
 

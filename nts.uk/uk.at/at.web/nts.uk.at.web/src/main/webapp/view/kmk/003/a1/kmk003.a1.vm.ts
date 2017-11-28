@@ -115,8 +115,8 @@ module a1 {
             self.dayStartTime(data().startDateClock);
             self.oneDayRangeTime(data().rangeTimeDay);
             self.nightWorkShift(data().nightShift);
-            //            self.beforeUpdateWorkTime();//diff time
-            //            self.afterUpdateWorkTime();//diff time
+            // self.beforeUpdateWorkTime();//diff time
+            // self.afterUpdateWorkTime();//diff time
             let timezone1 = data().prescribedTimezoneSetting.timezone[0];
             let timezone2 = data().prescribedTimezoneSetting.timezone[1];
 
