@@ -57,6 +57,13 @@ module nts.uk.com.view.cas011.a.viewmodel {
                                               { code: false, name: resource.getText('CAS011_23') }
                                           ]);
 
+            self.employmentRoleName = ko.observable('');
+            self.hRRoleName = ko.observable('');
+            self.salaryRoleName = ko.observable('');
+            self.personInfRoleName = ko.observable('');
+            self.myNumberRoleName = ko.observable('');
+            self.officeHelperRoleName = ko.observable('');
+            
             self.isNewMode = ko.observable(false);
             //Subscribe: 項目変更→項目
  

@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
@@ -42,12 +40,7 @@ public class RoleSetServiceImp implements RoleSetService{
 	 */
 	@Override
 	public List<RoleSet> getAllRoleSet() {
-		String companyId = AppContexts.user().companyId();
-		if (StringUtils.isNoneEmpty(companyId)) {
-			return null;	
-		}
-			
-		return roleSetRepository.findByCompanyId(companyId);
+		return roleSetRepository.findByCompanyId(AppContexts.user().companyId());
 	}
 	
 	/**
@@ -150,11 +143,8 @@ public class RoleSetServiceImp implements RoleSetService{
 		/**
 		 * Validate constrains before perform deleting
 		 */
-		String companyId = AppContexts.user().companyId();
-		if (StringUtils.isNoneEmpty(companyId)) {
-			return;
-		}
-		Optional<RoleSet> roleSetOpt = roleSetRepository.findByRoleSetCdAndCompanyId(roleSetCd, companyId);
+
+		Optional<RoleSet> roleSetOpt = roleSetRepository.findByRoleSetCdAndCompanyId(roleSetCd, AppContexts.user().companyId());
 		if (!roleSetOpt.isPresent()) {
 			return;
 		}
@@ -163,16 +153,16 @@ public class RoleSetServiceImp implements RoleSetService{
 		//Confirm preconditions - 事前条件を確認する - ドメインモデル「既定のロールセット」を取得する
 		
 		// ロールセット個人別付与で使用されている場合は削除できない
-		if (isGrantedForPerson(companyId, roleSetCd)) {
-			throw new BusinessException("Msg_585");
+		if (isGrantedForPerson(roleSetDom.getCompanyId(), roleSetCd)) {
+			throw new BusinessException("Msg_580");
 		}
 		// ロールセット職位別付与で使用されている場合は削除できない
-		if (isGrantedForPosition(companyId, roleSetCd)) {
-			throw new BusinessException("Msg_585");
+		if (isGrantedForPosition(roleSetDom.getCompanyId(), roleSetCd)) {
+			throw new BusinessException("Msg_580");
 		}
 
 		// ドメインモデル「既定のロールセット」を取得する
-		if (isDefault(companyId, roleSetCd)) {
+		if (isDefault(roleSetDom.getCompanyId(), roleSetCd)) {
 			throw new BusinessException("Msg_585");
 		}		
 		
