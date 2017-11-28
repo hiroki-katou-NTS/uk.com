@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.processbatch;
 
-import java.util.Optional;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Class PerScheBatchCorrectProcessDto.
@@ -28,14 +28,14 @@ public class PerScheBatchCorrectProcessDto {
 	
 	/** The start time. */
 	// 開始時刻
-	private TimeWithDayAttr startTime; 
+	private GeneralDateTime startTime; 
 	
 	/** The end time. */
 	// 終了時刻
-	private TimeWithDayAttr endTime; 
+	private GeneralDateTime endTime; 
 	
 	/** The errors. */
 	// エラーリスト
-	private Optional<ErrorContentDto> errors;
+	private List<ErrorContentDto> errors;
 
 }

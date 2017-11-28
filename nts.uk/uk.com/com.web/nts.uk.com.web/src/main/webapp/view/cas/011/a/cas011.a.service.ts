@@ -4,7 +4,7 @@ module nts.uk.com.view.cas011.a.service {
     var paths = {
             getCompanyIdOfLoginUser:    "ctx/sys/auth/roleset/companyIdOfLoginUser",
             getAllRoleSet:             "ctx/sys/auth/roleset/findAllRoleSet",
-            getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findRoleSet",
+            getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findRoleSet/{roleSetCd}",
             addRoleSet:                 "ctx/sys/auth/roleset/addRoleSet",
             updateRoleSet:              "ctx/sys/auth/roleset/updateRoleSet",
             removeRoleSet:              "ctx/sys/auth/roleset/deleteRoleSet",            

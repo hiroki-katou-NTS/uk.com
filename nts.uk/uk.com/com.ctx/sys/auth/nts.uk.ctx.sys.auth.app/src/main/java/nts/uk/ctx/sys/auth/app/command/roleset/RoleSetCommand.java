@@ -19,22 +19,22 @@ public class RoleSetCommand {
 	private boolean approvalAuthority;
 
 	/** ロールID: オフィスヘルパーロール */
-	private String officeHelperRoleCd;
+	private String officeHelperRoleId;
 
 	/** ロールID: マイナンバーロール */
-	private String myNumberRoleCd;
+	private String myNumberRoleId;
 
 	/** ロールID: 人事ロール */
-	private String hRRoleCd;
+	private String hRRoleId;
 
 	/** ロールID: 個人情報ロール */
-	private String personInfRoleCd;
+	private String personInfRoleId;
 
 	/** ロールID: 就業ロール */
-	private String employmentRoleCd;
+	private String employmentRoleId;
 
 	/** ロールID: 給与ロール */
-	private String salaryRoleCd;
+	private String salaryRoleId;
 	
 	/** List of web menu code **/
 	private List<WebMenuCommand> webMenus;

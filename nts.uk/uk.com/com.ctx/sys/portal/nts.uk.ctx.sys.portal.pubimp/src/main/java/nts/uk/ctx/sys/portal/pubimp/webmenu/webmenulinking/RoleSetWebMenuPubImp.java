@@ -32,30 +32,42 @@ public class RoleSetWebMenuPubImp implements RoleSetLinkWebMenuPub {
 	public List<RoleSetLinkWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd) {
 		return roleSetAndWebMenuRepository.findByRoleSetCd(companyId, roleSetCd).stream()
 				.map(item -> new RoleSetLinkWebMenuExport(
-						item.getRoleSetCd().v()
+						item.getCompanyId()
+						, item.getRoleSetCd().v()
 						, item.getWebMenuCd().v()
-						, item.getCompanyId())
 						)
+					)
 				.collect(Collectors.toList());
 	}
 
 
 	@Override
-	public void addRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId) {
-		RoleSetLinkWebMenu domain = new RoleSetLinkWebMenu(roleSetCd, webMenuCd, companyId);
-		roleSetAndWebMenuService.createRoleSetWebMenuLink(domain);
+	public void addRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd) {
+		RoleSetLinkWebMenu domain = new RoleSetLinkWebMenu(companyId, roleSetCd, webMenuCd);
+		roleSetAndWebMenuService.createRoleSetLinkWebMenu(domain);
 	}
 
 	@Override
-	public void updateRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId) {
-		RoleSetLinkWebMenu domain = new RoleSetLinkWebMenu(roleSetCd, webMenuCd, companyId);
-		roleSetAndWebMenuService.updateRoleSetWebMenuLink(domain);
+	public void updateRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd) {
+		RoleSetLinkWebMenu domain = new RoleSetLinkWebMenu(companyId, roleSetCd, webMenuCd);
+		roleSetAndWebMenuService.updateRoleSetLinkWebMenu(domain);
 		
 	}
 
 	@Override
-	public void deleteRoleSetAndWebMenuByRoleSetCd(String roleSetCd) {
-		roleSetAndWebMenuService.deleteRoleSetWebMenuLinkByRoleCd(roleSetCd);
+	public void deleteRoleSetLinkWebMenuByRoleSetCd(String roleSetCd) {
+		roleSetAndWebMenuService.deleteRoleSetLinkWebMenuByRoleCd(roleSetCd);
+	}
+
+
+	@Override
+	public void addAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenuExport> listRoleSetLinkWebMenuExport) {
+		List<RoleSetLinkWebMenu> listRoleSetLinkWebMenu = listRoleSetLinkWebMenuExport.stream()
+				.map(item -> new RoleSetLinkWebMenu(item.getCompanyId(), item.getRoleSetCd(), 
+						item.getWebMenuCd())).collect(Collectors.toList());
+		
+		roleSetAndWebMenuService.createAllRoleSetLinkWebMenu(listRoleSetLinkWebMenu);
+		
 	}
 	
 	

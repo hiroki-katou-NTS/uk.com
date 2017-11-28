@@ -1,17 +1,14 @@
-module nts.uk.at.view.ksc001.f {
+module nts.uk.at.view.ksu007.b {
 
-import ScheduleExecutionLogSaveRespone = nts.uk.at.view.ksc001.b.service.model.ScheduleExecutionLogSaveRespone;
-import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
-import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
+    import ScheduleBatchCorrectSetting = nts.uk.at.view.ksu007.a.viewmodel.ScheduleBatchCorrectSetting;
+    import ScheduleBatchCorrectSettingSave = nts.uk.at.view.ksu007.a.service.model.ScheduleBatchCorrectSettingSave;
     export module viewmodel {
 
         export class ScreenModel {
-            errorLogs: KnockoutObservableArray<ScheduleErrorLogDto>;
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
             count: number = 100;
-            scheduleExecutionLogModel: ScheduleExecutionLogModel;
             executionStartDate: string;
             executionTotal: KnockoutObservable<string>;
             executionError: KnockoutObservable<string>;
@@ -20,10 +17,11 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
             totalRecord: KnockoutObservable<number>;
             numberSuccess: KnockoutObservable<number>;
             numberFail: KnockoutObservable<number>;
-            inputData: ScheduleExecutionLogSaveRespone;
+            inputData: ScheduleBatchCorrectSettingSave;
+            isError: KnockoutObservable<boolean>;
+            isFinish: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
-                self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KSC001_55"), key: 'employeeId', width: 80},
@@ -38,7 +36,10 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 self.totalRecord = ko.observable(0);
                 self.numberSuccess = ko.observable(0);
                 self.numberFail = ko.observable(0);
-                self.scheduleExecutionLogModel = new ScheduleExecutionLogModel();
+                self.executionTotal = ko.observable('xxxxxx');
+                self.executionError = ko.observable('yyyyyyyyy');
+                self.isError = ko.observable(false);
+                self.isFinish = ko.observable(false);
             }
 
             /**
@@ -48,17 +49,11 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 var self = this;
                 var dfd = $.Deferred();
                 var self = this;
-                var inputData: ScheduleExecutionLogSaveRespone = nts.uk.ui.windows.getShared('inputData');
+                var inputData: ScheduleBatchCorrectSettingSave = nts.uk.ui.windows.getShared('inputKSU007');
                 if (inputData) {
-                    service.findScheduleExecutionLogById(inputData.executionId).done(function(data) {
-                        self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
-                        self.executionTotal = ko.observable('0');
-                        self.executionError = ko.observable('0');
-                        self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate).format("YYYY/MM/DD HH:mm:ss");
-                        self.periodInfo = nts.uk.resource.getText("KSC001_46", [moment(data.period.startDate).format('YYYY/MM/DD'), (moment(data.period.endDate).format('YYYY/MM/DD'))])
-                        self.inputData = inputData;
-                        dfd.resolve();
-                    });
+                    self.inputData = inputData;
+                    // update data view
+                    dfd.resolve();
                 }
                 return dfd.promise();
             }
@@ -68,9 +63,9 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
             public execution(): void {
                 var self = this;
                 // find task id
-                service.executionScheduleExecutionLog(self.inputData).done(function(res: any) {
+                service.executionScheduleBatchCorrectSetting(self.inputData).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
-                    // updateState
+                    // update state
                     self.updateState();
                 }).fail(function(res: any) {
                     console.log(res);
@@ -92,18 +87,6 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 nts.uk.ui.windows.close();
             }
             
-            /**
-             * reload page by action stop execution
-             */
-            private reloadPage(): void {
-                var self = this;
-                service.findScheduleExecutionLogById(self.inputData.executionId).done(function(data) {
-                    self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
-                    service.findAllScheduleErrorLog(self.inputData.executionId).done(function(errorLogs){
-                       self.errorLogs(errorLogs); 
-                    });
-                });
-            }
             
             /**
              * updateState
@@ -118,10 +101,10 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                         // update state on screen
                         if (res.running || res.succeeded || res.cancelled) {
-                            service.findScheduleExecutionLogInfoById(self.inputData.executionId).done(function(data){
-                                self.totalRecord(data.totalNumber);
-                                self.numberSuccess(data.totalNumberCreated);
-                                self.numberFail(data.totalNumberError);
+                             _.forEach(res.taskDatas, item => {
+                                if (item.key == 'DATA_EXECUTION') {
+                                    console.log(item);
+                                }
                             });
                         }
                         self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
@@ -129,7 +112,6 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
                             $('.countdown').stopCount();
-                            self.reloadPage();
                             if (res.succeeded) {
                                 $('#closeDialog').focus();
                             }
@@ -139,20 +121,37 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                     return infor.pending || infor.running;
                 }).pause(1000));
             }
-            
 
-        }     
-        
-        
-        export class ScheduleExecutionLogModel{
-            completionStatus: KnockoutObservable<string>;
+            /**
+            * find by client service ScheduleBatchCorrectSetting by employee
+            * */
+            private findScheduleBatchCorrectSettingByEmployeeId(employeeId: string): JQueryPromise<ScheduleBatchCorrectSetting> {
+                return nts.uk.characteristics.restore("PersonalSchedule_" + employeeId);
+            }
+
+            /**
+             * find by client service ScheduleBatchCorrectSetting
+            */
+            private findScheduleBatchCorrectSetting(): JQueryPromise<ScheduleBatchCorrectSetting> {
+                var self = this;
+                var user: any = __viewContext.user;
+                return self.findScheduleBatchCorrectSettingByEmployeeId(user.employeeId);
+            }
             
-            constructor(){
-                this.completionStatus = ko.observable('');    
+              /**
+             * function cancel execution
+             */
+            private stopExecution(): void {
+                let self = this;
+                
+                if (nts.uk.text.isNullOrEmpty(self.taskId())) {
+                    return;
+                }
+                // interrupt process import then close dialog
+                nts.uk.request.asyncTask.requestToCancel(self.taskId());
             }
-            updateStatus(completionStatus: string) {
-                this.completionStatus(completionStatus);
-            }
-        }
+        }     
+
+        
     }
 }

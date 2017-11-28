@@ -2,11 +2,10 @@ package nts.uk.ctx.sys.auth.dom.roleset.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
@@ -15,6 +14,8 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepositor
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuImport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -31,18 +32,15 @@ public class RoleSetServiceImp implements RoleSetService{
 	@Inject
 	private RoleSetGrantedJobTitleRepository roleSetGrantedJobTitleRepository;
 	
+	@Inject
+	private RoleSetLinkWebMenuAdapter roleSetLinkWebMenuAdapter;
 	/**
 	 * Get all Role Set - ロールセットをすべて取得する
 	 * @return
 	 */
 	@Override
 	public List<RoleSet> getAllRoleSet() {
-		String companyId = AppContexts.user().companyId();
-		if (StringUtils.isNoneEmpty(companyId)) {
-			return null;	
-		}
-			
-		return roleSetRepository.findByCompanyId(companyId);
+		return roleSetRepository.findByCompanyId(AppContexts.user().companyId());
 	}
 	
 	/**
@@ -62,6 +60,44 @@ public class RoleSetServiceImp implements RoleSetService{
 		// Register Role Set into DB
 		this.roleSetRepository.insert(roleSet);
 	}
+
+	/**
+	 * アルゴリズム「新規登録」を実行する - Execute the algorithm "new registration"
+	 * @param roleSet
+	 * @param menuCds
+	 */
+	@Override
+	public void executeRegister(RoleSet roleSet, List<String> webMenuCds) {
+		// register to DB - ドメインモデル「ロールセット」を新規登録する
+		this.registerRoleSet(roleSet);
+
+		// アルゴリズム「ロールセット別紐付け新規登録」を実行する - Execute the algorithm "register new ties by role set"
+		this.executeRegisterLinkWebMenu(roleSet.getCompanyId()
+				, roleSet.getRoleSetCd().v()
+				, webMenuCds);
+	}
+	
+	/**
+	 * アルゴリズム「ロールセット別紐付け新規登録」を実行する - Execute the algorithm "register new ties by role set"
+	 * @param companyId
+	 * @param roleSetCd
+	 * @param webMenuCds
+	 */
+	private void executeRegisterLinkWebMenu(String companyId, String roleSetCd, List<String> webMenuCds) {
+		// pre-check : メニューが１件以上選択されていなければならない: Msg_583, メニュー
+		if (CollectionUtil.isEmpty(webMenuCds)) {
+			throw new BusinessException("Msg_583");
+		}
+
+		// register to web menu link - ドメインモデル「ロールセット別紐付け」を新規登録する
+		
+		List<RoleSetLinkWebMenuImport> listRoleSetLinkWebMenuImport = webMenuCds.stream()
+				.map(webMenuCd -> new RoleSetLinkWebMenuImport(companyId
+						, roleSetCd
+						, webMenuCd)).collect(Collectors.toList());
+		
+		this.roleSetLinkWebMenuAdapter.addAllRoleSetLinkWebMenu(listRoleSetLinkWebMenuImport);
+	}
 	
 	/**
 	 * Update Role Set - ロールセット更新登録
@@ -77,6 +113,28 @@ public class RoleSetServiceImp implements RoleSetService{
 	}
 	
 	/**
+	 * アルゴリズム「更新登録」を実行する - Execute algorithm "update registration"
+	 * @param roleSet
+	 * @param webMenuCds
+	 */
+	@Override
+	public	void executeUpdate(RoleSet roleSet, List<String> webMenuCds){
+		
+		// update to DB - ロールセット更新登録
+		this.updateRoleSet(roleSet);
+
+		// update to web menu link - アルゴリズム「ロールセット別紐付け更新登録」を実行する 
+		// step 1: delete all old web menu
+		this.roleSetLinkWebMenuAdapter.deleteAllRoleSetLinkWebMenu(roleSet.getRoleSetCd().v());
+
+		// step 2: register new role set link web menu
+		// アルゴリズム「ロールセット別紐付け新規登録」を実行する - Execute the algorithm "register new ties by role set"
+		this.executeRegisterLinkWebMenu(roleSet.getCompanyId()
+				, roleSet.getRoleSetCd().v()
+				, webMenuCds);
+	}
+	
+	/**
 	 * Delete Role Set - ロールセット削除
 	 * @param roleSetCd
 	 */
@@ -85,11 +143,8 @@ public class RoleSetServiceImp implements RoleSetService{
 		/**
 		 * Validate constrains before perform deleting
 		 */
-		String companyId = AppContexts.user().companyId();
-		if (StringUtils.isNoneEmpty(companyId)) {
-			return;
-		}
-		Optional<RoleSet> roleSetOpt = roleSetRepository.findByRoleSetCdAndCompanyId(roleSetCd, companyId);
+
+		Optional<RoleSet> roleSetOpt = roleSetRepository.findByRoleSetCdAndCompanyId(roleSetCd, AppContexts.user().companyId());
 		if (!roleSetOpt.isPresent()) {
 			return;
 		}
@@ -98,21 +153,35 @@ public class RoleSetServiceImp implements RoleSetService{
 		//Confirm preconditions - 事前条件を確認する - ドメインモデル「既定のロールセット」を取得する
 		
 		// ロールセット個人別付与で使用されている場合は削除できない
-		if (isGrantedForPerson(companyId, roleSetCd)) {
-			throw new BusinessException("Msg_???");
+		if (isGrantedForPerson(roleSetDom.getCompanyId(), roleSetCd)) {
+			throw new BusinessException("Msg_580");
 		}
 		// ロールセット職位別付与で使用されている場合は削除できない
-		if (isGrantedForPosition(companyId, roleSetCd)) {
-			throw new BusinessException("Msg_???");
+		if (isGrantedForPosition(roleSetDom.getCompanyId(), roleSetCd)) {
+			throw new BusinessException("Msg_580");
 		}
 
 		// ドメインモデル「既定のロールセット」を取得する
-		if (isDefault(companyId, roleSetCd)) {
+		if (isDefault(roleSetDom.getCompanyId(), roleSetCd)) {
 			throw new BusinessException("Msg_585");
 		}		
 		
 		// register to DB - ドメインモデル「ロールセット」を新規登録する
 		this.roleSetRepository.delete(roleSetDom.getRoleSetCd().v(), roleSetDom.getCompanyId());
+	}
+	
+	/**
+	 * アルゴリズム「削除」を実行する - Execute algorithm "delete"
+	 * @param roleSetCd
+	 */
+	@Override
+	public void executeDelete(String roleSetCd) {
+		
+		// remove Role Set from DB - ドメインモデル「ロールセット」を削除する
+		this.deleteRoleSet(roleSetCd);
+					
+		// remove role set link web menu - ドメインモデル「ロールセット別紐付け」を削除する
+		roleSetLinkWebMenuAdapter.deleteAllRoleSetLinkWebMenu(roleSetCd);
 	}
 	
 	/**

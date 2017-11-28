@@ -33,12 +33,12 @@ module nts.uk.com.view.cmm013.a {
             sequenceName: KnockoutObservable<string>;
 
             // UI binding
-            enable_A1_1: KnockoutObservable<boolean>;
-            enable_A1_3: KnockoutObservable<boolean>;
-            enable_A3_3: KnockoutObservable<boolean>;
-            enable_A3_4: KnockoutObservable<boolean>;
-            enable_A3_5: KnockoutObservable<boolean>;
-            enable_A3_9: KnockoutObservable<boolean>;
+            enable_button_create_mode: KnockoutObservable<boolean>;
+            enable_button_delete: KnockoutObservable<boolean>;
+            enable_button_add_history: KnockoutObservable<boolean>;
+            enable_button_update_history: KnockoutObservable<boolean>;
+            enable_button_delete_history: KnockoutObservable<boolean>;
+            enable_input_job_title_code: KnockoutObservable<boolean>;
 
             constructor() {
                 let _self = this;
@@ -88,12 +88,12 @@ module nts.uk.com.view.cmm013.a {
                 _self.sequenceName = ko.observable("");
 
                 // UI
-                _self.enable_A1_1 = ko.observable(null);
-                _self.enable_A1_3 = ko.observable(null);
-                _self.enable_A3_3 = ko.observable(null);
-                _self.enable_A3_4 = ko.observable(null);
-                _self.enable_A3_5 = ko.observable(null);
-                _self.enable_A3_9 = ko.observable(null);
+                _self.enable_button_create_mode = ko.observable(null);
+                _self.enable_button_delete = ko.observable(null);
+                _self.enable_button_add_history = ko.observable(null);
+                _self.enable_button_update_history = ko.observable(null);
+                _self.enable_button_delete_history = ko.observable(null);
+                _self.enable_input_job_title_code = ko.observable(null);
             }
 
             /**
@@ -221,19 +221,19 @@ module nts.uk.com.view.cmm013.a {
                     _self.sequenceName("");
 
                     // UI
-                    _self.enable_A1_1(false);
-                    _self.enable_A1_3(false);
-                    _self.enable_A3_3(false);
-                    _self.enable_A3_4(false);
-                    _self.enable_A3_5(false);
-                    _self.enable_A3_9(true);
+                    _self.enable_button_create_mode(false);
+                    _self.enable_button_delete(false);
+                    _self.enable_button_add_history(false);
+                    _self.enable_button_update_history(false);
+                    _self.enable_button_delete_history(false);
+                    _self.enable_input_job_title_code(true);
 
                     // Set focus
                     $('#job-title-code').focus();
                 } else {
                     // UI
-                    _self.enable_A1_1(true);
-                    _self.enable_A3_9(false);
+                    _self.enable_button_create_mode(true);
+                    _self.enable_input_job_title_code(false);
 
                     // Set focus
                     $('#job-title-name').focus();
@@ -249,10 +249,10 @@ module nts.uk.com.view.cmm013.a {
             public historyChangeMode(newValue: boolean): void {
                 let _self = this;
 
-                _self.enable_A1_3(newValue);
-                _self.enable_A3_3(newValue);
-                _self.enable_A3_4(newValue);
-                _self.enable_A3_5(newValue);
+                _self.enable_button_delete(newValue);
+                _self.enable_button_add_history(newValue);
+                _self.enable_button_update_history(newValue);
+                _self.enable_button_delete_history(newValue);
             }
 
             /**

@@ -57,7 +57,7 @@ public class RoleSetWebservice extends WebService {
 	// Role Set and Web menu link
 	
 	@Inject
-	private RoleSetLinkWebMenuAdapter roleSetAndWebMenuAdapter;
+	private RoleSetLinkWebMenuAdapter roleSetLinkWebMenuAdapter;
 	
 	@POST
 	@Path("findAllRoleSet")
@@ -113,7 +113,7 @@ public class RoleSetWebservice extends WebService {
 	@POST
 	@Path("findAllRoleSetWebMenu/{roleSetCd}")
 	public List<RoleSetLinkWebMenuImport> getAllRoleSetWebMenu(@PathParam("roleSetCd") String roleSetCd) {
-		return this.roleSetAndWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd);
+		return this.roleSetLinkWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd);
 	}
 	
 	// Get companyId of the login user

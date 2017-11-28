@@ -21,10 +21,10 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetperson.SacmtRoleSetGrantedP
 public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements RoleSetGrantedPersonRepository {
 
 	// private final String CHECK_ROLESET_CODE_EXIST = "select r FROM
-	// SacmtRoleSetGrantedPerson r Where r.companyId = :companyId and
+	// SaumtRoleSetGrantedPerson r Where r.companyId = :companyId and
 	// r.roleSetCd = :roleSetCd";
 
-	private final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRoleSetGrantedPerson r Where r.selectionItemId = :selectionItemId";
+	private final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRoleSetGrantedPerson r Where r.companyId = :companyId And r.roleSetCd = :roleSetCd";
 
 	private RoleSetGrantedPerson toDomain(SacmtRoleSetGrantedPerson entity) {
 		return new RoleSetGrantedPerson(entity.roleSetCd, entity.companyId, entity.startDate, entity.endDate,

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.ac.person;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,11 +14,10 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.adapter.person.EmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImport;
-import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedImport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
-import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
-import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
+import nts.uk.ctx.bs.person.pub.person.PersonInfoExport;
+import nts.uk.ctx.bs.person.pub.person.PersonPub;
 
 /**
  * The Class PersonInfoAdapterImpl.
@@ -25,46 +25,43 @@ import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 @Stateless
 public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 
-
-	/** The I person info pub. */
-	@Inject
-	private IPersonInfoPub IPersonInfoPub;
-
 	/** The employee info pub. */
 	@Inject
 	private EmployeeInfoPub employeeInfoPub;
 	
-//	@Inject
-//	private PersonPub personPub;
+	/** The person pub. */
+	@Inject
+	private PersonPub personPub;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter#getPersonInfo(java.lang.String)
 	 */
 	@Override
-	public PersonInfoImportedImport getPersonInfo(String employeeId) {
-		PersonInfoExport personInfoExport = IPersonInfoPub.getPersonInfo(employeeId);
-		if (personInfoExport == null) {
+	public PersonInfoImport getPersonInfo(String employeeId) {
+		List<String> listId = new ArrayList<>();
+		listId.add(employeeId);
+		
+		List<PersonInfoExport> result = this.personPub.findByListId(listId);
+		if (result.isEmpty()) {
 			return null;
 		}
-		PersonInfoImportedImport personInfoImported = PersonInfoImportedImport.builder()
-				.employeeId(personInfoExport.getEmployeeId())
-				.employeeName(personInfoExport.getEmployeeName())
+
+		return PersonInfoImport.builder()
+				.personId(result.get(0).getPersonId())
+				.personName(result.get(0).getPersonName())
 				.build();
-		
-		return personInfoImported;
-		
 	}
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter#getAllPersonInfo()
 	 */
 	@Override
-	public List<PersonInfoImportedImport> getListPerson(List<String> listPersonId) {		
-		return this.employeeInfoPub.getListEmpBasicInfo(listPersonId).stream()
+	public List<PersonInfoImport> getByListId(List<String> listPersonId) {		
+		return this.personPub.findByListId(listPersonId).stream()
 				.map(item -> {					
-					return PersonInfoImportedImport.builder()
-							.employeeId(item.getEmployeeId())
-							.employeeName(item.getPersonName())
+					return PersonInfoImport.builder()
+							.personId(item.getPersonId())
+							.personName(item.getPersonName())
 							.build();
 				})
 				.collect(Collectors.toList());
@@ -101,12 +98,6 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 				empBasicInfoExport.getGender()
 				);
 		return empBasicInfoImport;
-	}
-
-	@Override
-	public List<PersonInfoImport> getByListId(List<String> personId) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
