@@ -2,7 +2,8 @@ package nts.uk.shr.pereg.app.find;
 
 import java.util.List;
 
-import nts.uk.shr.pereg.app.find.dto.PeregDto;
+import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 public interface PeregFinder<T> {
 	/**
@@ -19,15 +20,21 @@ public interface PeregFinder<T> {
 	 */
 	Class<T> dtoClass();
 
-	PeregDto getSingleData(PeregQuery query);
+	/**
+	 * PERSON - EMPLOYEE
+	 * @return
+	 */
+	DataClassification dataType();
 
-	List<PeregDto> getListData(PeregQuery query);
+	PeregDomainDto getSingleData(PeregQuery query);
 
-	default PeregDto findSingle(PeregQuery query) {
+	List<PeregDomainDto> getListData(PeregQuery query);
+
+	default PeregDomainDto findSingle(PeregQuery query) {
 		return this.getSingleData(query);
 	}
 
-	default List<PeregDto> findList(PeregQuery query) {
+	default List<PeregDomainDto> findList(PeregQuery query) {
 		return this.getListData(query);
 	}
 

@@ -9,7 +9,8 @@ import javax.ejb.Stateless;
 
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.PeregDto;
+import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 /**
  * @author danpv
@@ -32,7 +33,7 @@ public class JobTitleMainFinder implements PeregFinder<JobTitleMainDto>{
 	 * @see nts.uk.shr.pereg.app.find.PeregSingleFinder#getSingleData(nts.uk.shr.pereg.app.find.PeregQuery)
 	 */
 	@Override
-	public PeregDto getSingleData(PeregQuery query) {
+	public PeregDomainDto getSingleData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -41,7 +42,16 @@ public class JobTitleMainFinder implements PeregFinder<JobTitleMainDto>{
 	 * @see nts.uk.shr.pereg.app.find.PeregFinder#getListData(nts.uk.shr.pereg.app.find.PeregQuery)
 	 */
 	@Override
-	public List<PeregDto> getListData(PeregQuery query) {
+	public List<PeregDomainDto> getListData(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.pereg.app.find.PeregFinder#dataType()
+	 */
+	@Override
+	public DataClassification dataType() {
 		// TODO Auto-generated method stub
 		return null;
 	}

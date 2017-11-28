@@ -1,5 +1,6 @@
 package nts.uk.shr.pereg.app.find;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @ApplicationScoped
@@ -45,12 +47,14 @@ public class LayoutingProcessor {
 		
 		// get domain data
 		val finderClass = this.finders.get(query.getCategoryCode());
-		PeregDto dto = finderClass.findSingle(query);
+		PeregDomainDto domainDto = finderClass.findSingle(query);
 		
+		PeregDto peregDto = new PeregDto(domainDto, finderClass.dtoClass(), finderClass.dataType());
 		// get optional data
-		setUserDefData(dto);
+		setUserDefData(peregDto);
 		
-		return dto;
+		return peregDto;
+		
 	}
 
 	/**
@@ -63,21 +67,27 @@ public class LayoutingProcessor {
 		
 		// get domain data
 		val finderClass = this.finders.get(query.getCategoryCode());
-		List<PeregDto> lstDtos = finderClass.findList(query);
+		List<PeregDomainDto> lstDtos = finderClass.findList(query);
 		
+		List<PeregDto> peregDtos = new ArrayList<>();
 		// get optional data
-		lstDtos.stream().forEach(dto -> {
-			setUserDefData(dto);
+		lstDtos.stream().forEach(domainDto -> {
+			PeregDto peregDto = new PeregDto(domainDto, finderClass.dtoClass(), finderClass.dataType());
+			setUserDefData(peregDto);
+			peregDtos.add(peregDto);
 		});
 		
-		return lstDtos;
+		return peregDtos;
 	}
 	
-	private void setUserDefData(PeregDto dto){
-		if(dto.getDataType() == DataClassification.PERSON)			
-			dto.setPerOptionalData(perOptRepo.getData(dto.getDomainDto().getRecordId()));
+	private void setUserDefData(PeregDto peregDto){
+		
+		if( peregDto.getDataType() == DataClassification.PERSON)
+			
+			peregDto.setPerOptionalData(perOptRepo.getData(peregDto.getDomainDto().getRecordId()));
 		else 
-			dto.setEmpOptionalData(empOptRepo.getData(dto.getDomainDto().getRecordId()));
+			peregDto.setEmpOptionalData(empOptRepo.getData(peregDto.getDomainDto().getRecordId()));
+		
 	}
 
 }

@@ -13,7 +13,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.PeregDto;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 /**
  * Temporary absence finder
@@ -37,16 +37,20 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 	public Class<TempAbsHisItemDto> dtoClass() {
 		return TempAbsHisItemDto.class;
 	}
+	
+	@Override
+	public DataClassification dataType() {
+		return DataClassification.EMPLOYEE;
+	}
 
 	@Override
-	public PeregDto getSingleData(PeregQuery query) {
+	public PeregDomainDto getSingleData(PeregQuery query) {
 		Optional<TempAbsenceHisItem> optionalData = tempAbsItemRepo.getItemByEmpIdAndReferDate(query.getEmployeeId(),
 				query.getStandardDate());
 		if (optionalData.isPresent()) {
 			TempAbsenceHisItem histItem = optionalData.get();
 			TempAbsenceHistory history = tempAbsHistRepo.getByHistId(histItem.getHistoryId()).get();
-			return new PeregDto(TempAbsHisItemDto.createFromDomain(history, histItem), TempAbsHisItemDto.class,
-					DataClassification.EMPLOYEE);
+			return TempAbsHisItemDto.createFromDomain(history, histItem);
 		}
 		return null;
 	}
@@ -59,8 +63,10 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 	 * find.PeregQuery)
 	 */
 	@Override
-	public List<PeregDto> getListData(PeregQuery query) {
+	public List<PeregDomainDto> getListData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 }

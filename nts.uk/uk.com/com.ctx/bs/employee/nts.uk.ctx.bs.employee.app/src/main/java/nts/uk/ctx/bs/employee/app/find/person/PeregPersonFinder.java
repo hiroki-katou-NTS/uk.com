@@ -11,7 +11,7 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.PeregDto;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
 public class PeregPersonFinder implements PeregFinder<PeregPersonDto> {
@@ -33,10 +33,9 @@ public class PeregPersonFinder implements PeregFinder<PeregPersonDto> {
 	 * the function handles finder return: PeregQueryResult
 	 */
 	@Override
-	public PeregDto getSingleData(PeregQuery query) {
+	public PeregDomainDto getSingleData(PeregQuery query) {
 		Optional<Person> person = personRepo.getByPersonId(query.getPersonId());
-		return new PeregDto(PeregPersonDto.createFromDomain(person.get()), PeregPersonDto.class,
-				DataClassification.PERSON);
+		return PeregPersonDto.createFromDomain(person.get());
 	}
 
 	/*
@@ -47,7 +46,16 @@ public class PeregPersonFinder implements PeregFinder<PeregPersonDto> {
 	 * find.PeregQuery)
 	 */
 	@Override
-	public List<PeregDto> getListData(PeregQuery query) {
+	public List<PeregDomainDto> getListData(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.pereg.app.find.PeregFinder#dataType()
+	 */
+	@Override
+	public DataClassification dataType() {
 		// TODO Auto-generated method stub
 		return null;
 	}
