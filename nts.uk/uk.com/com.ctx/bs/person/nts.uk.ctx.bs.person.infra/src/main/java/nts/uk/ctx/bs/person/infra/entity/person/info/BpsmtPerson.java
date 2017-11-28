@@ -39,7 +39,7 @@ public class BpsmtPerson extends UkJpaEntity implements Serializable {
 	@Column(name = "PERSON_NAME")
 	public String personName;
 
-	@Basic(optional = true)
+	@Basic(optional = false)
 	@Column(name = "PERSON_NAME_KANA")
 	public String personNameKana;
 
@@ -47,7 +47,7 @@ public class BpsmtPerson extends UkJpaEntity implements Serializable {
 	@Column(name = "BUSINESS_NAME")
 	public String businessName;
 	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "BUSINESS_NAME_KANA")
 	public String businessNameKana;
 
