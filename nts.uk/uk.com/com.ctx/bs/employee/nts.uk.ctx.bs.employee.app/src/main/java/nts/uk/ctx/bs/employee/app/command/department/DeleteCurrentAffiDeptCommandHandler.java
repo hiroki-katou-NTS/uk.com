@@ -26,7 +26,6 @@ public class DeleteCurrentAffiDeptCommandHandler extends CommandHandler<DeleteCu
 		return DeleteCurrentAffiDeptCommand.class;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void handle(CommandHandlerContext<DeleteCurrentAffiDeptCommand> context) {
 		val command = context.getCommand();

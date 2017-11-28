@@ -36,5 +36,9 @@ public class AffDepartmentHistoryItem extends AggregateRoot {
 	/** The Employee Id. */
 	// 社員ID
 	private DistributionRatio distributionRatio;
+	
+	public static AffDepartmentHistoryItem createFromJavaType(String histId, String sId, String departmentCode, String affHistTranfsType, String distributionRatio){
+		return new AffDepartmentHistoryItem(histId,sId, new DepartmentCode(departmentCode), affHistTranfsType, new DistributionRatio(distributionRatio));
+	}
 
 }

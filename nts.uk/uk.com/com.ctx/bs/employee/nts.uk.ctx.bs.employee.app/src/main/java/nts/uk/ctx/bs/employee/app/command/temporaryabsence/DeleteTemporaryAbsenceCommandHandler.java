@@ -44,18 +44,15 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid TempAbsenceHistory"); 
 		}
-		if (existHist.get().getDateHistoryItems().size() > 0){
-			
-			Optional<DateHistoryItem> itemToBeDelete = existHist.get().getDateHistoryItems().stream()
-                    .filter(h -> h.identifier().equals(command.getHistoyId()))
-                    .findFirst();
-			
-			if (!itemToBeDelete.isPresent()){
-				throw new RuntimeException("invalid TempAbsenceHistory");
-			}
-			existHist.get().remove(itemToBeDelete.get());
-			temporaryAbsenceHistRepository.deleteTemporaryAbsenceHist(existHist.get(),itemToBeDelete.get());
+		Optional<DateHistoryItem> itemToBeDelete = existHist.get().getDateHistoryItems().stream()
+                .filter(h -> h.identifier().equals(command.getHistoyId()))
+                .findFirst();
+		
+		if (!itemToBeDelete.isPresent()){
+			throw new RuntimeException("invalid TempAbsenceHistory");
 		}
+		existHist.get().remove(itemToBeDelete.get());
+		temporaryAbsenceHistRepository.deleteTemporaryAbsenceHist(existHist.get(),itemToBeDelete.get());
 		
 		temporaryAbsenceRepository.deleteTemporaryAbsence(command.getHistoyId());
 	}

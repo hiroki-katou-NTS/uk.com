@@ -9,6 +9,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @ApplicationScoped
 public class LayoutingProcessor {
@@ -17,6 +18,12 @@ public class LayoutingProcessor {
 	private PeregFinderProcessorCollector peregFinderCollector;
 
 	private Map<String, PeregFinder<?>> finders;
+	
+	@Inject
+	private PeregEmpUserDefFinderRepository peregEmpUserDefFinderRepository;
+	
+	@Inject 
+	private PeregPerUserDefFinderRepository peregPerUserDefFinderRepository;
 
 	/**
 	 * Initializes.
@@ -32,10 +39,12 @@ public class LayoutingProcessor {
 	 * @param query
 	 * @return
 	 */
-	public PeregResult findSingle(PeregQuery query) {
+	public PeregDto findSingle(PeregQuery query) {
 		val finderClass = this.finders.get(query.getCategoryCode());
 		val dto = finderClass.findSingle(query);
-		return new PeregResult(finderClass.dtoClass(), dto);
+		//if(dto.get)
+		//return new PeregDto(finderClass.dtoClass(), dto);
+		return null;
 	}
 
 	/**

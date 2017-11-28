@@ -59,15 +59,15 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public void addTemporaryAbsenceHist(TempAbsenceHistory domain) {
-
-		if (domain.getDateHistoryItems().size() > 0) {
-			// Insert last element
-			DateHistoryItem lastItem = domain.getDateHistoryItems().get(domain.getDateHistoryItems().size() - 1);
-			this.commandProxy().insert(toEntity(domain.getEmployeeId(), lastItem));
-
-			// Update item before and after
-			updateItemBefore(domain, lastItem);
+		if (domain.getDateHistoryItems().isEmpty()){
+			return;
 		}
+		// Insert last element
+		DateHistoryItem lastItem = domain.getDateHistoryItems().get(domain.getDateHistoryItems().size()-1);
+		this.commandProxy().insert(toEntity(domain.getEmployeeId(),lastItem));
+		
+		// Update item before and after
+		updateItemBefore(domain,lastItem);
 	}
 
 	@Override
@@ -155,8 +155,13 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		}
 		return Optional.empty();
 	}
-
-	private TempAbsenceHistory toDomainTemp(String employeeId, List<BsymtTempAbsHistory> listHist) {
+	/**
+	 * Convert to domain TempAbsenceHistory
+	 * @param employeeId
+	 * @param listHist
+	 * @return
+	 */
+	private TempAbsenceHistory toDomainTemp(String employeeId, List<BsymtTempAbsHistory> listHist){
 		TempAbsenceHistory domain = new TempAbsenceHistory(employeeId, new ArrayList<DateHistoryItem>());
 		for (BsymtTempAbsHistory item : listHist) {
 			DateHistoryItem dateItem = new DateHistoryItem(item.histId, new DatePeriod(item.startDate, item.endDate));

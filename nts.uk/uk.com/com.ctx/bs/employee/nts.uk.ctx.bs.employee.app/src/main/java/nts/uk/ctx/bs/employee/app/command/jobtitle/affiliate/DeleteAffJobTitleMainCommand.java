@@ -1,16 +1,16 @@
-package nts.uk.ctx.bs.employee.app.command.department;
+package nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate;
 
 import lombok.Getter;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
-public class DeleteAffiliationDepartmentCommand {
+public class DeleteAffJobTitleMainCommand {
 
-	/** The id. */
+	//職位ID
 	@PeregRecordId
-	private String historyId;
-	/** The employee id. */
+	private String histId;
+	
 	@PeregEmployeeId
 	private String employeeId;
 }

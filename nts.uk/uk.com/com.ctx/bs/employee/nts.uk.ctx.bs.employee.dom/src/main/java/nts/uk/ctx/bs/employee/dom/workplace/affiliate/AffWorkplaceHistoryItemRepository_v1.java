@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
+import java.util.List;
+
 public interface AffWorkplaceHistoryItemRepository_v1 {
 	/**
 	 * ドメインモデル「所属職場」を新規登録する
@@ -17,4 +19,6 @@ public interface AffWorkplaceHistoryItemRepository_v1 {
 	 * @param domain
 	 */
 	void updateAffWorkplaceHistory(AffWorkplaceHistoryItem domain);
+	
+	List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpId(String employeeId);
 }

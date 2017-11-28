@@ -1,13 +1,28 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
+import java.util.List;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 
+@Stateless
 public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository implements AffWorkplaceHistoryItemRepository_v1{
+	
+	/**
+	 * Convert from entity to domain
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	private AffWorkplaceHistoryItem toDomain(BsymtAffiWorkplaceHistItem entity){
+		return null;
+	}
+	
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -48,6 +63,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 		}
 		updateEntity(domain, existItem.get());
 		this.commandProxy().update(existItem.get());
+	}
+
+	@Override
+	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpId(String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
