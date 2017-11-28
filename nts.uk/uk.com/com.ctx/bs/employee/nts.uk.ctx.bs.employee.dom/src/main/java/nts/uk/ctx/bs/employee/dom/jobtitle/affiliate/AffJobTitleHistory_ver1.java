@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.jobtile.affiliate;
+package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
 import java.util.List;
 
@@ -21,17 +21,16 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @Setter
 public class AffJobTitleHistory_ver1 extends AggregateRoot
-implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
-	
-	
+		implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
+
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
-	
+
 	/** The Date History Item. */
 	// 履歴項目
 	private List<DateHistoryItem> historyItems;
-	
+
 	@Override
 	public List<DateHistoryItem> items() {
 		return historyItems;
