@@ -27,7 +27,7 @@ public class DeleteAffWorkplaceHistoryCommandHandler extends CommandHandler<Dele
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00010";
+		return "CS00017";
 	}
 
 	@Override

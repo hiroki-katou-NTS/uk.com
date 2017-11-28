@@ -29,7 +29,7 @@ public class UpdateAffWorkplaceHistoryCommandHandler extends CommandHandler<Upda
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00010";
+		return "CS00017";
 	}
 
 	@Override

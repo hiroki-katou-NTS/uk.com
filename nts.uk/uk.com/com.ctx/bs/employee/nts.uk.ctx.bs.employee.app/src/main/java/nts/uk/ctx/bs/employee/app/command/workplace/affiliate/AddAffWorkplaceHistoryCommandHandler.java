@@ -31,7 +31,7 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00010";
+		return "CS00017";
 	}
 
 	@Override
