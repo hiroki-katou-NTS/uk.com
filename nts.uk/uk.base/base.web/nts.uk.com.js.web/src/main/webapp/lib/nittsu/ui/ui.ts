@@ -483,7 +483,7 @@ module nts.uk.ui {
 		 *			text information text
 		 * @returns handler
 		 */
-        export function alert(text) {
+        export function alert(text) {  
             var then = $.noop;
             var $dialog = parent.$('<div/>').hide();
             $(function() {
