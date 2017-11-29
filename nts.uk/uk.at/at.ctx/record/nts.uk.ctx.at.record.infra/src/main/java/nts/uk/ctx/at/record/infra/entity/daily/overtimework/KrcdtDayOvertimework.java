@@ -199,6 +199,13 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	}
 	
 	
+	/**
+	 * create entity
+	 * @param employeeId
+	 * @param generalDate
+	 * @param overTimeOfDaily
+	 * @return
+	 */
 	public static KrcdtDayOvertimework create(String employeeId, GeneralDate generalDate, OverTimeOfDaily overTimeOfDaily) {
 		val entity = new KrcdtDayOvertimework();
 		entity.krcdtDayOvertimeworkPK = new KrcdtDayOvertimeworkPK(employeeId, generalDate);
