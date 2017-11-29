@@ -12,6 +12,7 @@ import javax.enterprise.util.TypeLiteral;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
 import nts.uk.ctx.bs.employee.app.find.department.AffiliationDepartmentDto;
 import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregFinderProcessorCollector;
 
@@ -23,7 +24,8 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 	private static final List<TypeLiteral<?>> FINDER_CTG_SINGLE_HANDLER_CLASSES = Arrays.asList(
 			new TypeLiteral<PeregFinder<AffiliationDepartmentDto>>(){},
 			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>(){},
-			new TypeLiteral<PeregFinder<AffClassificationDto>>(){}
+			new TypeLiteral<PeregFinder<AffClassificationDto>>(){},
+			new TypeLiteral<PeregFinder<AffWorlplaceHistItemDto>>(){}
 			);
 
 	@Override
