@@ -5,7 +5,7 @@ import lombok.Value;
 @Value
 public class WebMenuImportDto {
 
-	private String webMenuCd;
+	private String webMenuCode;
 
 	private String webMenuName;	
 }

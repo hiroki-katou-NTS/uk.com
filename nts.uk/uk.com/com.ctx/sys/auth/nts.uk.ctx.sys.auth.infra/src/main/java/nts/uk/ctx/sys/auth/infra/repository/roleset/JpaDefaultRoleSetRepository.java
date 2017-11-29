@@ -24,7 +24,7 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
 	
 	private static final String SELECT_DEFAULT_ROLE_SET_BY_COMPANY_ID_ROLE_SET_CD = "SELECT drs FROM SacmtDefaultRoleSet drs"
 			+ " WHERE drs.defaultRoleSetPK.companyId = :companyId "
-			+ " 	  drs.defaultRoleSetPK.roleSetCd = :roleSetCd ";
+			+ " 	  AND drs.defaultRoleSetPK.roleSetCd = :roleSetCd ";
 	
 	private DefaultRoleSet toDomain(SacmtDefaultRoleSet entity) {
 		return new DefaultRoleSet(entity.defaultRoleSetPK.companyId, entity.roleSetCd);

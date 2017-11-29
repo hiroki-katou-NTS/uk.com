@@ -41,8 +41,8 @@ public class RoleSetGrantedJobTitleFinder {
 		// get Job Title by date, companyId
 //		List<JobTitleDto> listJobTitle = jobTitleAdapter.findAll(companyId, refDate).stream().map(item -> new JobTitleDto(item.getPositionId(), item.getPositionCode(), item.getPositionName())).collect(Collectors.toList());
 //
-//		// get Sequence Master
-//
+//		// get Sequence Master return List <position ID, position code, position name, ranking code, sort order>
+//      no result => throw new BusinessException("Msg_713");
 //		// get Role Set by companyId, sort ASC
 //		List<RoleSetDto> listRoleSet = roleSetRepo.findByCompanyId(companyId).stream()
 //				.map(item -> new RoleSetDto(item.getRoleSetCd().v(), item.getRoleSetName().v())).collect(Collectors.toList());

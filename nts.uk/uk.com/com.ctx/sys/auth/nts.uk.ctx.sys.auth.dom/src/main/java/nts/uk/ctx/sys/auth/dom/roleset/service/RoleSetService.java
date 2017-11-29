@@ -13,41 +13,21 @@ public interface RoleSetService {
 	List<RoleSet> getAllRoleSet();
 	
 	/**
-	 * Register Role Set - ロールセット新規登録
+	 * アルゴリズム「新規登録」を実行する - Execute the algorithm "new registration"
 	 * @param roleSet
 	 */
 	void registerRoleSet(RoleSet roleSet);
-	
-	/**
-	 * Update Role Set - ロールセット更新登録
-	 * @param roleSet
-	 */
-	void updateRoleSet(RoleSet roleSet);
-	
-	/**
-	 * Delete Role Set - ロールセット削除
-	 * @param roleSetCd
-	 */
-	void deleteRoleSet(String roleSetCd);
-	
-	/**
-	 * アルゴリズム「新規登録」を実行する - Execute the algorithm "new registration"
-	 * @param roleSet
-	 * @param menuCds
-	 */
-	void executeRegister(RoleSet roleSet, List<String> webMenuCds);
 	
 	
 	/**
 	 * アルゴリズム「更新登録」を実行する - Execute algorithm "update registration"
 	 * @param roleSet
-	 * @param webMenuCds
 	 */
-	void executeUpdate(RoleSet roleSet, List<String> webMenuCds);
+	void updateRoleSet(RoleSet roleSet);
 	
 	/**
 	 * アルゴリズム「削除」を実行する - Execute algorithm "delete"
 	 * @param roleSetCd
 	 */
-	void executeDelete(String roleSetCd);
+	void deleteRoleSet(String roleSetCd);
 }

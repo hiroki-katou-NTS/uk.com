@@ -9,29 +9,47 @@ import java.util.List;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 
 /**
- * 既�?�?�ロールセット - Interface DefaultRoleSetRepository
+ * Interface RoleSetLinkWebMenuService
  * @author HieuNV
  *
  */
-public interface RoleSetAndWebMenuService {
+public interface RoleSetLinkWebMenuService {
 	
 	/**
-	 * Insert a RoleSetAndWebMenu - ロールセット別紐付け新規登録
+	 * Insert a RoleSetLinkWebMenu - ロールセット別紐付け新規登録
 	 * @param domain
 	 */
 	void createRoleSetLinkWebMenu(RoleSetLinkWebMenu domain);
 	
-	
+	/* 
+	* アルゴリズム「ロールセット別紐付け新規登録」を実行する"
+	 * @param companyId
+	 * @param roleSetCd
+	 * @param webMenuCds
+	 */
+	 void executeRegister(String companyId, String roleSetCd, List<String> webMenuCds);
+	/**
+	 * 
+	 * @param listRoleSetLinkWebMenu
+	 */
 	void createAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenu> listRoleSetLinkWebMenu);
 	
 	/**
-	 * Update the RoleSetAndWebMenu - ロールセット別紐付け更新登録
+	 * Update the RoleSetLinkWebMenu - ロールセット別紐付け更新登録
 	 * @param domain
 	 */
 	void updateRoleSetLinkWebMenu(RoleSetLinkWebMenu domain);
 	
 	/**
-	 * Delete the RoleSetAndWebMenu - ロールセット別紐付け削除
+	 * アルゴリズム「更新登録」を実行する - Execute algorithm "update registration"
+	 * @param companyId
+	 * @param roleSetCd
+	 * @param webMenuCds
+	 */
+	void executeUpdate(String companyId, String roleSetCd, List<String> webMenuCds);
+	
+	/**
+	 * Delete the RoleSetLinkWebMenu - ロールセット別紐付け削除
 	 * Company Id is login user's company id
 	 * @param roleSetCd
 	 */
