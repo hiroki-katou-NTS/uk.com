@@ -586,3 +586,6 @@ Screen K
 .nts-fixed-table{
 	margin-top: 20px!important;
 }
+#treegridItemsAmount_displayContainer{
+	height: 362px!important;
+}
