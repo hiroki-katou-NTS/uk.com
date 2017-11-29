@@ -186,7 +186,7 @@ module kmk003.base.fixtable {
             self.itemList = data.dataSource;
             
             self.isVisibleSelectAll = ko.computed(() => {
-                return self.isMultiple && self.itemList().length > 0;
+                return self.isMultiple && self.minRow < 1;
             });
             
             // update status button
@@ -200,7 +200,6 @@ module kmk003.base.fixtable {
 
             // subscribe itemList
             self.itemList.subscribe((newList) => {
-                
                 if (!newList) {
                      self.isSelectAll(false);
                     return;
@@ -218,9 +217,7 @@ module kmk003.base.fixtable {
                 if (self.isMultiple) {
                     self.addCheckBoxItemAtr();
                 }
-                
-                // re-load table
-                self.loadTable($input);
+                 self.subscribeChangeCheckbox();
             });
 
             // render table
@@ -285,9 +282,6 @@ module kmk003.base.fixtable {
                     
                     ko.applyBindings(self, $input[0]);
                     
-                    // override width control
-                    self.overrideWidthControl();
-                    
                     nts.uk.ui.block.clear();
                     
                     dfd.resolve();
@@ -297,32 +291,11 @@ module kmk003.base.fixtable {
         }
         
         /**
-         * Override width control
-         */
-        private overrideWidthControl() {
-            let self = this;
-            
-            // control ntsTimeEditor
-            let timeColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ntsTimeEditor') > -1)[0];
-            if (timeColumn && !nts.uk.util.isNullOrEmpty(timeColumn.cssClassName)) {
-                $('.' + timeColumn.cssClassName).find("span input").width(timeColumn.width - 27);
-            }
-
-            // control ntsComboBox
-            let comboBoxColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ntsComboBox') > -1)[0];
-            if (comboBoxColumn && !nts.uk.util.isNullOrEmpty(comboBoxColumn.cssClassName)) {
-                $('.' + comboBoxColumn.cssClassName).each(function() {
-                    $(this).find("div").first().width(comboBoxColumn.width - 5);
-                });
-            }
-        }
-        
-        /**
          * calStyleTable
          */
         private calStyleTable() {
             let self = this;
-            let heigthCell = 36;
+            let heigthCell = 32;
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
@@ -454,7 +427,7 @@ module kmk003.base.fixtable {
             if (!keyValue) {
                 return;
             }
-            let oldProperties: string = template.substring(template.indexOf("{") + 1, template.indexOf("}"));
+            let oldProperties: string = template.substring(template.indexOf("{") + 1, template.lastIndexOf("}"));
             
             // remove spaces
             let newProperties: string = oldProperties.replace(/\s/g, '');
@@ -472,10 +445,54 @@ module kmk003.base.fixtable {
                 newProperties = self.updateElement(newProperties, keyOptionValue,
                     "$parent.lstDataSource." + columnSetting.key);
             }
-            
+
             template = template.replace(oldProperties, newProperties.replace(/"/g, "'"));
             
+            // update width control
+            template = self.updateWidthControl(template, newProperties, columnSetting.width);
+            
             return "<td style='text-align: center;' class='" + columnSetting.cssClassName + "'>" + template + "</td>";
+        }
+        
+        /**
+         * Add/update width control
+         */
+        private updateWidthControl(template: string, properties: string, width: number): string {
+            let self = this;
+            
+            // ======================================== ntsComboBox ===================================
+            if (template.indexOf('ntsComboBox') > -1) {
+                let idx: number = template.indexOf('data-bind');
+                return template.substring(0, idx-1) + " style='width: " + (width - 5) + "px;' "
+                    + template.substring(idx, template.length);
+            }
+
+            // ======================================== ntsTimeEditor ===================================
+            if (template.indexOf('ntsTimeEditor') == -1) {
+                return template;
+            }
+            
+            width = width - 27;
+            
+            // find index
+            let idx: number = properties.indexOf('option');
+
+            // no option
+            if (idx == -1) {
+                return template.replace(properties, properties + ",option:{width:'" + width + "'}");
+            }
+            // has option 
+            let oldOption: string = properties.substring(properties.indexOf("{") + 1, properties.lastIndexOf("}"));
+            let newOption: string = oldOption;
+
+            // check has option width
+            let idxKey: number = newOption.indexOf('width');
+            if (idxKey == -1) {
+                newOption = newOption.replace(self.subString(newOption, idxKey), "width:" + width);
+            } else {
+                newOption += ",width:'" + width + "'";
+            }
+            return template.replace(properties, properties.replace(oldOption, newOption));
         }
         
         /**
