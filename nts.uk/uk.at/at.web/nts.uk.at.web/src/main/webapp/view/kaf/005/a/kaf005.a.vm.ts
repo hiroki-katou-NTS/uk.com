@@ -208,10 +208,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }
             self.workTypecodes(data.workTypes);
             self.workTimecodes(data.siftTypes);
-            self.timeStart1(data.workClockFrom1);
-            self.timeEnd1(data.workClockFrom2);
-            self.timeStart2(data.workClockTo1);
-            self.timeEnd2(data.workClockTo2);
+            self.timeStart1(data.workClockFrom1 == -1 ? null : data.workClockFrom1);
+            self.timeEnd1(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
+            self.timeStart2(data.workClockTo1 == -1 ? null : data.workClockTo1);
+            self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
             if(data.applicationReasonDtos != null){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -285,6 +285,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if (!nts.uk.util.isNullOrUndefined(self.multilContent2())) {
                 divergenceReason = divergenceReason + ":" + self.multilContent2();
             }
+            let overTimeShiftNightTmp: number = 0;
+            let flexExessTimeTmp: number = 0;
+            for (let i = 0; i < self.overtimeHours().length; i++) {
+                if(self.overtimeHours()[i].frameNo() == 11){
+                    overTimeShiftNightTmp = self.overtimeHours()[i].applicationTime;                    
+                }else if(self.overtimeHours()[i].frameNo() == 12){
+                    flexExessTimeTmp = self.overtimeHours()[i].applicationTime;  
+                }
+            }
             let overtime: common.AppOverTime = {
                 applicationDate: self.appDate(),
                 prePostAtr: self.prePostSelected(),
@@ -301,8 +310,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: 100,
-                flexExessTime: 100,
+                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp),
+                flexExessTime: ko.toJS(flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.manualSendMailAtr(),
                 calculateFlag: self.calculateFlag()
@@ -486,10 +495,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             siftCD: self.siftCD()
                         }
                     ).done(data => {
-                        self.timeStart1(data.startTime1);
-                        self.timeEnd1(data.endTime1);
-                        self.timeStart2(data.startTime2);
-                        self.timeEnd2(data.endTime2);    
+                        self.timeStart1(data.startTime1 == -1 ? null : data.startTime1);
+                        self.timeEnd1(data.endTime1 == -1 ? null : data.endTime1);
+                        self.timeStart2(data.startTime2 == -1 ? null : data.startTime2);
+                        self.timeEnd2(data.endTime2 == -1 ? null : data.endTime2);    
                     });
                 }
             })
