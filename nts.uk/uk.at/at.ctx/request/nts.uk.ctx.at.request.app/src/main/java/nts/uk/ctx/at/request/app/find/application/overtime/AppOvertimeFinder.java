@@ -374,6 +374,17 @@ public class AppOvertimeFinder {
 		});
 		
 		overTimeDto.setOverTimeInputs(overTimeInputs);
+		//01-09_事前申請を取得
+				if(overTimeDto.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
+					AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(appOverTime.getApplication().getApplicantSID(),overtimeRestAppCommonSet, appOverTime.getApplication().getApplicationDate().toString(DATE_FORMAT),appOverTime.getApplication().getPrePostAtr().value);
+					if(appOvertime != null){
+						PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
+						convertOverTimeDto(companyID,preAppOvertimeDto,overTimeDto,appOvertime);
+					}else{
+						overTimeDto.setPreAppPanelFlg(false);
+					}
+					
+		}
 		
 		return overTimeDto;
 	} 
