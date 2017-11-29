@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.app.plannedyearholiday.frame.find;
 
 import java.util.List;
@@ -11,11 +15,18 @@ import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameR
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * The Class PlanYearHdFrameFinder.
+ */
 @Stateless
 public class PlanYearHdFrameFinder {
-	@Inject PlanYearHolidayFrameRepository repository;
 	
-	/** Find all.
+	/** The repository. */
+	@Inject 
+	private PlanYearHolidayFrameRepository repository;
+	
+	/**
+	 * Find all.
 	 *
 	 * @return the list
 	 */
