@@ -6,25 +6,30 @@ module nts.uk.at.view.cdl025.test.viewmodel {
 
         currentCode: KnockoutObservable<string>;
         currentCodes: KnockoutObservableArray<string>;
+        listCodeSelect: KnockoutObservableArray<string>;
         constructor() {
             var self = this;
             self.currentCode = ko.observable("");
             self.currentCodes = ko.observableArray([]);
+            self.listCodeSelect = ko.observableArray([]);
             
         }
         
         openCDL025() {
             var self = this;
+            let param = {
+                    roleType : 1,
+                    multiple : true
+                };
+            nts.uk.ui.windows.setShared("paramCdl025",param);
             nts.uk.ui.windows.sub.modal("/view/cdl/025/index.xhtml").onClosed(function(){
-                let param = nts.uk.ui.windows.getShared("paramCdl025");
-                if(param != null){
-                    if(param.multiple)
-                        self.currentCodes = param.currentCode;
-                    else
-                        self.currentCode = param.currentCode;
-                }                    
+                let data = nts.uk.ui.windows.getShared("dataCdl025"); 
+                var arr = [];
+                for(var i = 0; i < data.currentCode.length; i++) {
+                    arr.push(""+data.currentCode[i]);
+                }
+                self.listCodeSelect(arr);    
             });
-            
         }
     }
     
