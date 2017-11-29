@@ -28,7 +28,7 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
 				, command.isApprovalAuthority() ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
 				, command.getOfficeHelperRoleId()
 				, command.getMyNumberRoleId()
-				, command.getHRRoleId()
+				, command.getHumanResourceRoleId()
 				, command.getPersonInfRoleId()
 				, command.getEmploymentRoleId()
 				, command.getSalaryRoleId());

@@ -3,7 +3,7 @@ package nts.uk.screen.com.app.command.sys.auth.roleset;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommandBase;
+import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommand;
 
 @Value
 public class RoleSetCommandBase {
@@ -38,5 +38,5 @@ public class RoleSetCommandBase {
 	private String salaryRoleId;
 	
 	/** List of web menu code **/
-	private List<WebMenuCommandBase> webMenus;
+	private List<WebMenuCommand> webMenus;
 }

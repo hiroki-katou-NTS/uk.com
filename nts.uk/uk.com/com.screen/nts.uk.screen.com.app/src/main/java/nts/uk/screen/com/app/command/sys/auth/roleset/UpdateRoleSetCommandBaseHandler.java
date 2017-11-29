@@ -12,7 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.app.command.roleset.RoleSetCommand;
 import nts.uk.ctx.sys.auth.app.command.roleset.UpdateRoleSetCommandHandler;
-import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommandBase;
+import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.RoleSetLinkWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.UpdateRoleSetLinkWebMenuCommandHandler;
 
@@ -48,7 +48,7 @@ public class UpdateRoleSetCommandBaseHandler extends CommandHandlerWithResult<Ro
 		this.updateRoleSetCommandHandler.handle(roleSetCommand);
 		
 		// build Role Set Link Web Menu command
-		List<WebMenuCommandBase> listWebMenus = command.getWebMenus();
+		List<WebMenuCommand> listWebMenus = command.getWebMenus();
 		
 		List<String> listWebMenuCds = !CollectionUtil.isEmpty(listWebMenus) ?
 				listWebMenus.stream().map(item -> item.getWebMenuCode()).collect(Collectors.toList()) : new ArrayList<String>();

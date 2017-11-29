@@ -40,7 +40,6 @@ public class RoleSetServiceImp implements RoleSetService{
 	/**
 	 * アルゴリズム「新規登録」を実行する - Execute the algorithm "new registration"
 	 * @param roleSet
-	 * @param menuCds
 	 */
 	@Override
 	public void registerRoleSet(RoleSet roleSet) {
@@ -59,7 +58,6 @@ public class RoleSetServiceImp implements RoleSetService{
 	/**
 	 * アルゴリズム「更新登録」を実行する - Execute algorithm "update registration"
 	 * @param roleSet
-	 * @param webMenuCds
 	 */
 	@Override
 	public	void updateRoleSet(RoleSet roleSet){

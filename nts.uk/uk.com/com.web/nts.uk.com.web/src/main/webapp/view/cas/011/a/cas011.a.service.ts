@@ -6,9 +6,9 @@ module nts.uk.com.view.cas011.a.service {
             getCompanyIdOfLoginUser:    "ctx/sys/auth/roleset/companyidofloginuser",
             getAllRoleSet:              "ctx/sys/auth/roleset/findallroleset",
             getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findroleset/{0}",
-            addRoleSet:                 "screen/sys/auth/roleset/addroleset",
-            updateRoleSet:              "screen/sys/auth/roleset/updateroleset",
-            removeRoleSet:              "screen/sys/auth/roleset/deleteroleset",            
+            addRoleSet:                 "screen/sys/auth/cas011/addroleset",
+            updateRoleSet:              "screen/sys/auth/cas011/updateroleset",
+            removeRoleSet:              "screen/sys/auth/cas011/deleteroleset",            
             getAllWebMenu:              "ctx/sys/auth/roleset/findallwebmenu",
             getRoleById:                "ctx/sys/auth/role/getrolebyroleid/{0}"
     }

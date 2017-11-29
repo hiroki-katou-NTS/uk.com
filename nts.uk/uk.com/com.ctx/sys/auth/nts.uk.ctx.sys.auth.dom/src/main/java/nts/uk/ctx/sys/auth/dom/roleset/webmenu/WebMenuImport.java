@@ -7,7 +7,7 @@ import lombok.Value;
 public class WebMenuImport {
 
 	/** Webメニューコード */
-	private String webMenuCd;
+	private String webMenuCode;
 
 	/** Webメニュー名称 */
 	private String webMenuName;
@@ -18,8 +18,8 @@ public class WebMenuImport {
 	/** 既定メニュー */
 	private boolean defaultMenu;
 
-	public WebMenuImport(String companyId, String webMenuCd, String webMenuName, boolean defaultMenu) {
-		this.webMenuCd = webMenuCd;
+	public WebMenuImport(String companyId, String webMenuCode, String webMenuName, boolean defaultMenu) {
+		this.webMenuCode = webMenuCode;
 		this.webMenuName = webMenuName;
 		this.companyId = companyId;
 		this.defaultMenu = defaultMenu;
