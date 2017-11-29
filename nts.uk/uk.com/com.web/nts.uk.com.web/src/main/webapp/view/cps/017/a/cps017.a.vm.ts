@@ -245,10 +245,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         if (itemList && itemList.length) {
                             itemList.forEach(x => self.listSelection.push(x));
                             self.selection().selectionID(self.listSelection()[0].selectionID);
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                            if (itemList.length == 1) {
-                                nts.uk.ui.dialog.alert({ messageId: "Msg_530" });
-                            }
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
+                                if (itemList.length == 1) {
+                                    nts.uk.ui.dialog.alert({ messageId: "Msg_530" });
+                                }
+                            });
+                            
                         }
 //                        let newItem = itemList[oldIndex];
 //                        currentItem.selectionCD(newItem.selectionCD);
