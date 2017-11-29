@@ -73,6 +73,9 @@ public class ScheCreExeWorkTypeHandler {
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command,
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
+		// 登録前削除区分をTrue（削除する）とする
+		command.setIsDeleteBeforInsert(true);
+
 		// setup command getter
 		WorkTypeGetterCommand commandWorktypeGetter = new WorkTypeGetterCommand();
 		commandWorktypeGetter.setBaseGetter(command.toBaseCommand());
@@ -84,20 +87,17 @@ public class ScheCreExeWorkTypeHandler {
 		commandWorktypeGetter.setReferenceWorkingHours(
 				personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceWorkingHours().value);
 		
-		Optional<String> optionalWorktypeCode = this.getWorktype(commandWorktypeGetter);
+		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter);
 
-		if (optionalWorktypeCode.isPresent()) {
-
-			String workTypeCode = optionalWorktypeCode.get();
-
+		if (optWorktype.isPresent()) {
 			WorkTimeGetterCommand commandWorkTimeGetter = commandWorktypeGetter.toWorkTime();
-			commandWorkTimeGetter.setWorkTypeCode(workTypeCode);	
+			commandWorkTimeGetter.setWorkTypeCode(optWorktype.get().getWorktypeCode());	
 			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter);
 
 			if (optionalWorkTime.isPresent()) {
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
-						personalWorkScheduleCreSet.getEmployeeId(), workTypeCode, optionalWorkTime.get());
+						personalWorkScheduleCreSet.getEmployeeId(), optWorktype.get(), optionalWorkTime.get());
 			}
 
 		}
@@ -248,7 +248,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return the worktype
 	 */
 	// 勤務種類を取得する
-	private Optional<String> getWorktype(WorkTypeGetterCommand command) {
+	private Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
 
 		// setup command getter
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
@@ -282,7 +282,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return the work type by employment status
 	 */
 	// 在職状態に対応する「勤務種類コード」を取得する
-	private Optional<String> getWorkTypeByEmploymentStatus(WorkTypeByEmpStatusGetterCommand command) {
+	private Optional<WorktypeDto> getWorkTypeByEmploymentStatus(WorkTypeByEmpStatusGetterCommand command) {
 		String worktypeCode = null;
 		// check 就業時間帯の参照先  == 個人曜日別
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
@@ -299,7 +299,7 @@ public class ScheCreExeWorkTypeHandler {
 
 		if (optionalWorktype.isPresent()
 				&& optionalWorktype.get().getDeprecate() == DeprecateClassification.NotDeprecated) {
-			return Optional.of(worktypeCode);
+			return Optional.of(new WorktypeDto(worktypeCode, optionalWorktype.get().getWorkTypeSet()));
 		} else {
 			// add error log message 590
 			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_590");

@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmm051.a.main.css" />
+			<com:scriptfile path="cmm051.a.start.js" />
+			<com:scriptfile path="cmm051.a.service.js" />
+			<com:scriptfile path="cmm051.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="add" data-bind="click: initWorkplace" tabindex="2">#{i18n.getText('CMM044_2')}</button>
+				<button class="proceed"
+					data-bind="click: addWorkplace">#{i18n.getText('CMM044_3')}</button>
+				<button class="danger"
+					data-bind="click: deleteWorkplace">#{i18n.getText('CMM044_6')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="left-content">
+
+					<!-- BEGIN A2_1 ~ A2_6 -->
+					<div id="left-content-top"
+						class="bg-green caret-bottom caret-inline caret-background">
+						<div class="cf">
+<!-- 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM011_2')}</div> -->
+<!-- 							<span data-bind="text: strDWorkplace"></span> -->
+<!-- 							<label style="margin-left: 8px;margin-right: 8px;">#{i18n.getText('CMM011_26')}</label> -->
+<!-- 							<span data-bind="text: endDWorkplace"></span> -->
+<!-- 							<button class="pull-right" tabindex="6" data-bind="click: openWkpConfigDialog">#{i18n.getText('CMM011_21')}</button> -->
+						</div>
+					</div>
+					<!-- END A2_1 ~ A2_6 -->
+
+					<!-- BEGIN A3_1 ~ A4_4 -->
+<!-- 					<div id="left-content-bottom" class="caret-right caret-background bg-green" data-bind="with: treeWorkplace"> -->
+<!-- 						<table id="single-tree-grid" class="cf" tabindex="8" data-bind="ntsTreeGridView:{ -->
+<!-- 								width: treeStyle.width, -->
+<!-- 								height: treeStyle.height, -->
+<!-- 								name: '#[CMM011_8]', -->
+<!-- 								dataSource: lstWorkplace, -->
+<!-- 								value: selectedWpkId, -->
+<!-- 								primaryKey: 'workplaceId', -->
+<!-- 								childDataKey: 'childs', -->
+<!-- 								primaryText: 'nodeText', -->
+<!-- 								multiple: false, -->
+<!-- 								enable: true, -->
+<!-- 								extColumns: treeColumns, -->
+<!-- 								showCheckBox: false}"> -->
+<!-- 						</table> -->
+<!-- 					</div>END A3_1 ~ A4_4 -->
+				</div>
+
+				<!-- BEGIN A5_1 ~ A_10_2 -->
+				<div id="right-content">
+					<table id="table-detail-setting">
+						<col width="150"></col>
+						<col width="260"></col>
+						<tr>
+							<td class="td-detail">
+								<div style="margin-left: 35px;margin-right: 20px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_23')}</div>
+							</td>
+							<td>
+<!-- 								<div tabindex="5" id="startDate" -->
+<!-- 									data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD'}"></div> -->
+<!-- 								<span style="margin: 20px;">#{i18n.getText('CMM011_26')}</span>  -->
+<!-- 								<div tabindex="5" id="startDate" -->
+<!-- 									data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD'}"></div> -->
+							</td>
+						</tr>
+					</table>
+				</div>
+				<!-- END A5_1 ~ A_10_2 -->
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -4,28 +4,33 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
+/**
+ * TanLV
+ * 人数計算式
+ * 
+ */
 @AllArgsConstructor
 @Getter
 public class FormPeopleFunc {
-	/* 会社ID */
+	/** 会社ID */
     private String companyId;
     
     /*コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /* 順番 */
+    /** 順番 */
     private int dispOrder;
     
-    /* 外部予算実績項目コード */
+    /** 外部予算実績項目コード */
     private String externalBudgetCd;
     
-    /* カテゴリ区分 */
+    /** カテゴリ区分 */
     private CategoryAtr categoryAtr;
     
-    /* 演算子区分 */
+    /** 演算子区分 */
     private OperatorAtr operatorAtr;
     
     /**

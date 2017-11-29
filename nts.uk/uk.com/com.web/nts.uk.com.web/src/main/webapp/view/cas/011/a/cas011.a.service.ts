@@ -1,15 +1,16 @@
 module nts.uk.com.view.cas011.a.service {
     import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
 
     var paths = {
-            getCompanyIdOfLoginUser:    "ctx/sys/auth/roleset/companyIdOfLoginUser",
-            getAllRoleSet:             "ctx/sys/auth/roleset/findAllRoleSet",
-            getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findRoleSet/{roleSetCd}",
-            addRoleSet:                 "ctx/sys/auth/roleset/addRoleSet",
-            updateRoleSet:              "ctx/sys/auth/roleset/updateRoleSet",
-            removeRoleSet:              "ctx/sys/auth/roleset/deleteRoleSet",            
-            getAllWebMenu:             "sys/portal/webmenu/find",
-            getRoleById:                "ctx/sys/auth/roleset/"
+            getCompanyIdOfLoginUser:    "ctx/sys/auth/roleset/companyidofloginuser",
+            getAllRoleSet:              "ctx/sys/auth/roleset/findallroleset",
+            getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findroleset/{0}",
+            addRoleSet:                 "screen/sys/auth/roleset/addroleset",
+            updateRoleSet:              "screen/sys/auth/roleset/updateroleset",
+            removeRoleSet:              "screen/sys/auth/roleset/deleteroleset",            
+            getAllWebMenu:              "ctx/sys/auth/roleset/findallwebmenu",
+            getRoleById:                "ctx/sys/auth/role/getrolebyroleid/{0}"
     }
 
     //get all role set
@@ -18,8 +19,8 @@ module nts.uk.com.view.cas011.a.service {
     }
 
     //get role set
-    export function getRoleSetByRoleSetCd(command) : JQueryPromise<any>{
-        return ajax(paths.getRoleSetByRoleSetCd);
+    export function getRoleSetByRoleSetCd(roleSetCd) : JQueryPromise<any>{
+        return ajax(format(paths.getRoleSetByRoleSetCd, roleSetCd));
     }
     
     //insert
@@ -38,7 +39,7 @@ module nts.uk.com.view.cas011.a.service {
     
     //get all web menu
     export function getAllWebMenu() : JQueryPromise<any>{
-        return ajax(paths.getAllWebMenus);
+        return ajax(paths.getAllWebMenu);
     }
 
     //get company id of login user
@@ -47,7 +48,7 @@ module nts.uk.com.view.cas011.a.service {
     }
     
     //get Role By Id
-    export function getRoleById(comman) : JQueryPromise<any>{
-        return ajax(paths.getRoleById, comman);
+    export function getRoleById(command) : JQueryPromise<any>{
+        return ajax(format(paths.getRoleById, command));
     }
 }

@@ -18,30 +18,30 @@ public interface RoleSetLinkWebMenuPub {
 	 * @return
 	 */
 	List<RoleSetLinkWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd);
-	
+	/*
 	/**
 	 * Register RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void addRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd);
+	//void addRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd);
 	
 	/**
 	 * Register list of Role Set link Web menu
 	 * @param listRoleSetLinkWebMenuExport
 	 */
-	void addAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenuExport> listRoleSetLinkWebMenuExport);
+	//void addAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenuExport> listRoleSetLinkWebMenuExport);
 	
 	/**
 	 * Update the RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void updateRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd);
+	//void updateRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd);
 	
 	/**
 	 * Delete the RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void deleteRoleSetLinkWebMenuByRoleSetCd(String roleSetCd);
+	//void deleteRoleSetLinkWebMenuByRoleSetCd(String roleSetCd);
 	
 	
 	

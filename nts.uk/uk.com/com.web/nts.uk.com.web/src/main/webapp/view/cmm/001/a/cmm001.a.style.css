@@ -185,8 +185,7 @@ button.search-btn {
 }
 
 #postal {
-	width: 100px;
-	text-align: center;
+	width: 70px;
 }
 
 #address1 {
@@ -278,7 +277,7 @@ body>div:nth-child(4) {
 	margin-left: -50px;	
 }
 #searchZipCode{
-	margin-left: -60px;
+	margin-left: -80px;
 }
 
 #checkbtn{
@@ -287,6 +286,7 @@ body>div:nth-child(4) {
 
 #corporateMyNumber{
 	margin-left: -50px;
+	width: 115px;
 }
 
 #presidentName{

@@ -33,6 +33,7 @@ module nts.uk.com.view.cas014.b {
                         if (item) {
                             self.roleSetPerson(item);
                             self.screenMode(ScreenMode.UPDATE);
+                            $(".ntsStartDatePicker").focus();
                         } else {
                             self.getEmployeeInfo(data);
                             self.screenMode(ScreenMode.NEW);
@@ -83,9 +84,10 @@ module nts.uk.com.view.cas014.b {
                 }).fail(function(error) {
                     alertError({ messageId: error.message });
                     dfd.reject();
+                }).always(() => {
+                    block.clear();
                 });
-                dfd.resolve();
-                block.clear();
+
                 return dfd.promise();
             }
 
@@ -111,8 +113,10 @@ module nts.uk.com.view.cas014.b {
                         }
 
                         self.screenMode(ScreenMode.UPDATE);
+                        $("#B4_2").focus();
                     } else {
                         self.createNewRoleSetPerson();
+                        $("#B3_2").focus();
                     }
                 }).fail(function(error) {
                     alertError({ messageId: error.message });
@@ -136,32 +140,36 @@ module nts.uk.com.view.cas014.b {
                 self.roleSetPerson(new RoleSetPerson('', '', '', '', '', ''));
                 self.dateValue({});
                 self.screenMode(ScreenMode.NEW);
+                $("#B5_1_1").focus();
             }
 
             registerRoleSetPerson() {
                 let self = this, data: RoleSetPerson = ko.toJS(self.roleSetPerson);
+                $(".ntsDateRange_Component").trigger("validate");
+                if (!nts.uk.ui.errors.hasError() && data.employeeId) {
+                    let command: any = {
+                        roleSetCd: data.roleSetCd,
+                        employeeId: data.employeeId,
+                        startDate: data.startDate,
+                        endDate: data.endDate,
+                        mode: self.screenMode()
+                    };
 
-                let command: any = {
-                    roleSetCd: data.roleSetCd,
-                    employeeId: data.employeeId,
-                    startDate: data.startDate,
-                    endDate: data.endDate,
-                    mode: self.screenMode()
-                };
+                    block.invisible();
 
-                block.invisible();
+                    new service.Service().registerData(command).done(function() {
+                        //display registered data in selected state
+                        self.loadRoleSetHolder(self.selectedRoleSet(), data.employeeId);
 
-                new service.Service().registerData(command).done(function() {
-                    //display registered data in selected state
-                    self.loadRoleSetHolder(self.selectedRoleSet(), data.employeeId);
-
-                    info({ messageId: "Msg_15" }).then(() => {
+                        info({ messageId: "Msg_15" }).then(() => {
+                            $("#B4_2").focus();
+                        });
+                    }).fail(error => {
+                        alertError({ messageId: error.message });
+                    }).always(() => {
                         block.clear();
                     });
-                }).fail(error => {
-                    alertError({ messageId: error.message });
-                    block.clear();
-                });
+                }
             }
 
             deleteRoleSetPerson() {
@@ -171,7 +179,7 @@ module nts.uk.com.view.cas014.b {
                     employeeId: data.employeeId
                 };
 
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_551" }).ifYes(() => {
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
                     // call service remove
                     block.invisible();
                     let indexItemDelete = _.findIndex(ko.toJS(self.roleSetPersonList), function(item: any) { return item.employeeId == data.employeeId; });
@@ -217,6 +225,7 @@ module nts.uk.com.view.cas014.b {
                     }
                     var output = getShared('CDL009Output');
                     self.selectedEmployeeId(output);
+                    $(".ntsStartDatePicker").focus();
                 });
             }
 

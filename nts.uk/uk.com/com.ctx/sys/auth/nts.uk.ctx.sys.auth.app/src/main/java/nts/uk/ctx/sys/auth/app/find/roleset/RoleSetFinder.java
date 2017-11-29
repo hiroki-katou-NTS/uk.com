@@ -64,7 +64,7 @@ public class RoleSetFinder {
 		}
 		//build to DTO and return result
 		return lstWebMenuCds.stream()
-				.map(webMenuCd -> new WebMenuImportDto(webMenuCd, ""))
+				.map(webMenuCode -> new WebMenuImportDto(webMenuCode, ""))
 				.collect(Collectors.toList());
 	}
 }

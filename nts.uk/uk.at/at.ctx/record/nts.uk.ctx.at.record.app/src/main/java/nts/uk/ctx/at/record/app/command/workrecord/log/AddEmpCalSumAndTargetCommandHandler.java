@@ -24,6 +24,9 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.EmployeeExecutionStatus;
 public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResult<ExecutionProcessingCommand, ExecutionCommandResult> {
 
 	@Inject
+	private ExecutionProcessingCommandAssembler empCalAndAggregationAssembler;
+	
+	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	
 	@Inject
@@ -37,7 +40,6 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 		val command = context.getCommand();
 				
 		// Insert EmpCalAndSumExeLog
-		ExecutionProcessingCommandAssembler empCalAndAggregationAssembler = new ExecutionProcessingCommandAssembler();
 		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndAggregationAssembler.fromDTO(command);
 		empCalAndSumExeLogRepository.add(empCalAndSumExeLog);
 		

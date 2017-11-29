@@ -46,7 +46,7 @@ module nts.uk.at.view.ksc001.h {
                     dfd.resolve();
                     blockUI.clear();
                 });
-                $("#fixed-table").ntsFixedTable();
+                $("#fixed-table").ntsFixedTable({});
                 return dfd.promise();
             }
 

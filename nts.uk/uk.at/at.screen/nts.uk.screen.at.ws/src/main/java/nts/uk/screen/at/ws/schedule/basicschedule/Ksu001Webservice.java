@@ -52,9 +52,15 @@ public class Ksu001Webservice extends WebService {
 	private PublicHolidayScreenProcessor publicHolidayScreenProcessor;
 
 	@POST
-	@Path("getData")
+	@Path("getDataBasicSchedule")
 	public List<BasicScheduleScreenDto> getData(BasicScheduleScreenParams params) {
 		return this.bScheduleScreenProces.getByListSidAndDate(params);
+	}
+	
+	@POST
+	@Path("getDataWorkScheTimezone")
+	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(BasicScheduleScreenParams params) {
+		return this.bScheduleScreenProces.getDataWorkScheTimezone(params);
 	}
 
 	@POST

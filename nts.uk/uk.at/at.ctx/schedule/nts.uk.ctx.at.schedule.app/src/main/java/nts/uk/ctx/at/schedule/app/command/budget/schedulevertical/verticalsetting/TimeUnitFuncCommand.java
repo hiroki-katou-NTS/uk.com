@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.TimeUnitFunc;
+
+/**
+ * TanLV
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +32,17 @@ public class TimeUnitFuncCommand {
     /** 演算子区分 */
     private int operatorAtr;
     
+    /**
+     * toDomainUnitFunc
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @param dispOrder
+     * @param attendanceItemId
+     * @param presetItemId
+     * @param operatorAtr
+     * @return
+     */
     public TimeUnitFunc toDomainUnitFunc(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder, String attendanceItemId, String presetItemId, int operatorAtr){
     	return TimeUnitFunc.createFromJavatype(companyId, verticalCalCd, verticalCalItemId, dispOrder, attendanceItemId, presetItemId, operatorAtr);
     }

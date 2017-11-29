@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
@@ -124,7 +125,13 @@ public class RegisterBasicScheduleCommandHandler
 				addMessage(errList, businessException.getMessageId());
 				continue;
 			}
-
+			List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheduleObj.getWorkScheduleTimeZones();
+			for (int i = 0; i < workScheduleTimeZones.size(); i++) {
+				if (basicScheduleService.isReverseStartAndEndTime(workScheduleTimeZones.get(i).getScheduleStartClock(),
+						workScheduleTimeZones.get(i).getScheduleEndClock())) {
+					throw new BusinessException("Msg_441", "KSU001_73", "KSU001_74");
+				}
+			}
 			// Check exist of basicSchedule
 			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(bSchedule.getEmployeeId(),
 					bSchedule.getDate());

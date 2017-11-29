@@ -8,6 +8,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * TanLV
+ *
+ */
 @Stateless
 public class DeleteVerticalSettingCommandHandler  extends CommandHandler<VerticalSettingCommand>{
 	@Inject

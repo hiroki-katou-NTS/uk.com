@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormBuilt;
 
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -37,6 +41,11 @@ public class FormBuiltDto {
     /* 演算子区分 */
     private int operatorAtr;
 
+    /**
+     * FormBuiltDto
+     * @param domain
+     * @return
+     */
 	public static FormBuiltDto fromDomain(FormBuilt domain) {
 		return new FormBuiltDto(
 				domain.getCompanyId(),

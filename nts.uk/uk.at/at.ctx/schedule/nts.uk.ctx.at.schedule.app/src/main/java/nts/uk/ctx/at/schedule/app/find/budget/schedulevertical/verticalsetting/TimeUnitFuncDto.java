@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.TimeUnitFunc;
+
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -29,6 +34,11 @@ public class TimeUnitFuncDto {
     /** 演算子区分 */
     private int operatorAtr;
     
+    /**
+     * fromDomain
+     * @param func
+     * @return
+     */
     public static TimeUnitFuncDto fromDomain (TimeUnitFunc func ){
     	return new TimeUnitFuncDto(
     			func.getCompanyId(),
