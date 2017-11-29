@@ -51,7 +51,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
             var self = this;
 
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
-            self.currentData = data.amount;
+            self.currentData = data.formulaAmount;
             self.currentDataMoney = data.unitPrice;
             self.attrLabel = ko.observable(data.attribute);
             self.itemNameLabel = ko.observable(data.itemName);
@@ -208,19 +208,19 @@ module nts.uk.at.view.kml002.e.viewmodel {
             if (self.currentData != null) {
                 if (self.unitSelect() == 0) {
                     if (self.currentData.calMethodAtr == 0) {
-                        self.checked(self.currentData.actualDisplayAtr == 0 ? false : true);
-                        self.bindData(self.currentData.lstTimeUnitFuncs);
+                        self.checked(self.currentData.timeUnit.actualDisplayAtr == 0 ? false : true);
+                        self.bindData(self.currentData.timeUnit.lstTimeUnitFuncs);
                     } else {
                         self.checkedTime(self.currentData.actualDisplayAtrTime);
-                        self.selectedMethod(self.currentData.calMethodAtr == 0 ? false : true);
-                        self.catCode(self.currentData.categoryIndicatorTime == 0 ? +false : +true);
-                        self.bindDataMoney(self.currentData.lstMoney);
+                        self.selectedMethod(self.currentData.moneyFunc.calMethodAtr == 0 ? false : true);
+                        self.catCode(self.currentData.moneyFunc.categoryIndicatorTime == 0 ? +false : +true);
+                        self.bindDataMoney(self.currentData.moneyFunc.lstMoney);
                     }
                 } else {
                     self.checkedAmount(self.currentData.actualDisplayAtrAmount == 0 ? false : true);
-                    self.selectedMethod(self.currentData.calMethodAtrAmount == 0 ? false : true);
-                    self.catCodeTime(self.currentData.categoryIndicatorAmount == 0 ? +false : +true);
-                    self.bindDataAmout(self.currentData.lstMoney);
+                    self.selectedMethod(self.currentData.moneyFunc.calMethodAtrAmount == 0 ? false : true);
+                    self.catCodeTime(self.currentData.moneyFunc.categoryIndicatorAmount == 0 ? +false : +true);
+                    self.bindDataAmout(self.currentData.moneyFunc.lstMoney);
                     $('.method-a').hide();
                     $('.method-b').hide();
                     $('.cal-method-selection').hide();
@@ -384,7 +384,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
 
                         if (self.allItem().length > 0) {
                             self.displayItemsRule(_.clone(self.allItem()), self.checked());
-                            self.bindData(self.currentData.lstTimeUnitFuncs);
+                            self.bindData(self.currentData.timeUnit.lstTimeUnitFuncs);
                         }
 
                     }).fail(function(res) {
@@ -395,7 +395,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
 
                         if (self.allItemTime().length > 0) {
                             self.displayItemsRuleTime(_.clone(self.allItemTime()), self.catCodeTime(), self.checkedTime());
-                            self.bindDataMoney(self.currentData.lstMoney);
+                            self.bindDataMoney(self.currentData.moneyFunc.lstMoney);
                         }
                     }).fail(function(res) {
                         dfd.reject(res);
@@ -464,7 +464,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 var formulaAmount = {
                     verticalCalCd: data.verticalCalCd,
                     verticalCalItemId: data.itemId,
-                    calMethodAtr: self.selectedMethod(),
+                    calMethodAtr: self.selectedMethod() ? 1 : 0,
                     moneyFunc: {
                         categoryIndicatorTime: self.catCodeTime(),
                         actualDisplayAtrTime: self.checkedTime() ? 1 : 0,
@@ -875,7 +875,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     let i = self.rightItemsTime().length;
 
                     self.rightItemsTime.push({
-                        code: i.toString(),
+                                                code: i.toString(),
                         trueCode: item.code.slice(0, -1),
                         itemType: item.itemType,
                         operatorAtr: nts.uk.resource.getText("KML002_37"),

@@ -122,7 +122,7 @@ public class JpaBasicScheduleSetMemento implements BasicScheduleSetMemento{
 	 */
 	@Override
 	public void setWorkScheduleTimeZones(List<WorkScheduleTimeZone> workScheduleTimeZones) {
-
+		//TODO: domain pending
 	}
 
 	/*
@@ -134,7 +134,7 @@ public class JpaBasicScheduleSetMemento implements BasicScheduleSetMemento{
 	 */
 	@Override
 	public void setWorkScheduleBreaks(List<WorkScheduleBreak> workScheduleBreaks) {
-
+		//TODO: domain pending
 	}
 
 	/*
@@ -146,7 +146,7 @@ public class JpaBasicScheduleSetMemento implements BasicScheduleSetMemento{
 	 */
 	@Override
 	public void setWorkScheduleTime(Optional<WorkScheduleTime> workScheduleTime) {
-
+		//TODO: domain pending
 	}
 
 	/*
@@ -158,7 +158,7 @@ public class JpaBasicScheduleSetMemento implements BasicScheduleSetMemento{
 	 */
 	@Override
 	public void setWorkSchedulePersonFees(List<WorkSchedulePersonFee> workSchedulePersonFees) {
-
+		//TODO: domain pending
 	}
 
 	/*
@@ -170,7 +170,7 @@ public class JpaBasicScheduleSetMemento implements BasicScheduleSetMemento{
 	 */
 	@Override
 	public void setChildCareSchedules(List<ChildCareSchedule> childCareSchedules) {
-		
+		//TODO: domain pending
 	}
 
 }

@@ -185,7 +185,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		for (KscstFormTimeunitFunc obj : timeUnit.listTime) {
 			lst.add(toDomainFormTime(obj));
 		}
-		return null;
+		return FormulaTimeUnit.createFromJavatype(timeUnit.kscstFormulaTimeUnitPK.companyId, timeUnit.kscstFormulaTimeUnitPK.verticalCalCd, timeUnit.kscstFormulaTimeUnitPK.verticalCalItemId, timeUnit.roundingTime, timeUnit.roundingAtr, timeUnit.unitPrice, timeUnit.actualDisplayAtr, lst) ;
 	}
 
 	/**

@@ -1138,8 +1138,8 @@ module ksu001.a.viewmodel {
                     workDayAtr: 0,
                     workScheduleTimeZoneSaveCommands:[{
                         scheduleCnt: 1,
-                        scheduleStartClock: moment.duration(arrCell[i].value.startTime).asMinutes(),
-                        scheduleEndClock: moment.duration(arrCell[i].value.endTime).asMinutes(),
+                        scheduleStartClock: (typeof arrCell[i].value.startTime === 'number' ) ? arrCell[i].value.startTime :moment.duration(arrCell[i].value.startTime).asMinutes(),
+                        scheduleEndClock: (typeof arrCell[i].value.endTime === 'number' ) ? arrCell[i].value.endTime :moment.duration(arrCell[i].value.endTime).asMinutes(),
                         //set static bounceAtr =  1
                         bounceAtr: 1
                     }]

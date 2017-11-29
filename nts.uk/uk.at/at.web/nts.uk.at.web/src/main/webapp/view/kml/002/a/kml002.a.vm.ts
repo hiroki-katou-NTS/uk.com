@@ -208,8 +208,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 curDataItem = sortedItems[i].formTime
                             } else if (sortedItems[i].formPeople != null) {
                                 curDataItem = sortedItems[i].formPeople
-                            } else if (sortedItems[i].amount != null) {
-                                curDataItem = sortedItems[i].amount
                             } else if (sortedItems[i].formulaAmount != null) {
                                 curDataItem = sortedItems[i].formulaAmount
                             } else if (sortedItems[i].numerical.length > 0) {
@@ -945,7 +943,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             formBuilt: self.calculatorItems()[i].formBuilt,
                             formTime: self.calculatorItems()[i].formTime,
                             formPeople: self.calculatorItems()[i].formPeople,
-                            amount: self.calculatorItems()[i].amount,
+                            formAmount: self.calculatorItems()[i].formAmount,
                             numerical: self.calculatorItems()[i].numerical,
                             unitPrice: self.calculatorItems()[i].unitPrice
                         };
@@ -980,7 +978,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         formBuilt: selectedItems[i].formBuilt,
                         formTime: selectedItems[i].formTime,
                         formPeople: selectedItems[i].formPeople,
-                        amount: selectedItems[i].amount,
+                        formAmount: selectedItems[i].formAmount,
                         numerical: selectedItems[i].numerical,
                         unitPrice: selectedItems[i].unitPrice
                     };
@@ -1419,29 +1417,34 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 }
                             }
                         } else if (attribute == 1) {
-                            if (data.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
+                            if (data.moneyFunc.lstMoney.length <=0 && data.timeUnit.lstTimeUnitFuncs.length <=0) {
                                 formulaResult = nts.uk.resource.getText("KML002_153");
-                            } else if (data.lstMoney.length > 0) {
-                                for (var i = 0; i < data.lstMoney.length; i++) {
-                                    var operator = data.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.lstMoney[i].name != null ? data.lstMoney[i].name : "";
-                                    var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.lstMoney[i].externalBudgetCd; });
-                                    var itemAttendance = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.lstTimeUnitFuncs[i].externalBudgetCd; });
-
+                            } else if (data.moneyFunc.lstMoney.length > 0) {
+                                for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
+                                    var operator = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
+                                    var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
+                                    var itemTime = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
+                                    var itemAttendance = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemId && o.itemType == 0; });
+                                    var itemPreset = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemId; });
                                     if (name != "") {
                                         formulaResult += operator + " " + name + " ";
                                     } else if (item != null) {
                                         formulaResult += operator + " " + item.externalBudgetName + " ";
-                                    } else if (itemAttendance != null) {
-                                        formulaResult += operator + " " + item.externalBudgetName + " ";
-                                    }
+                                    } else if (itemTime ! = null){
+                                        formulaResult += operator + " " + item.name + " ";
+                                    } else if (itemAttendance ! = null){
+                                        formulaResult += operator + " " + item.name + " ";
+                                    } else if (itemPreset ! = null){
+                                        formulaResult += operator + " " + item.name + " ";
+                                    } 
                                 }
-                            } else if (data.lstTimeUnitFuncs.length > 0) {
-                                for (var i = 0; i < data.lstTimeUnitFuncs.length; i++) {
-                                    var operator = data.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.lstTimeUnitFuncs[i].name != null ? data.lstTimeUnitFuncs[i].name : "";
-                                    var itemAttendance = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.lstTimeUnitFuncs[i].attendanceItemId && o.itemType == 0; });
-                                    var itemPreset = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.lstTimeUnitFuncs[i].presetItemId; });
+                            } else if (data.timeUnit.lstTimeUnitFuncs.length > 0) {
+                                for (var i = 0; i < data.timeUnit.lstTimeUnitFuncs.length; i++) {
+                                    var operator = data.timeUnit.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data.timeUnit.lstTimeUnitFuncs[i].name != null ? data.timeUnit.lstTimeUnitFuncs[i].name : "";
+                                    var itemAttendance = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].attendanceItemId && o.itemType == 0; });
+                                    var itemPreset = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].presetItemId; });
 
                                     if (name != "") {
                                         formulaResult += operator + " " + name + " ";
@@ -1511,7 +1514,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 }
                             }
                         } else if (attribute == 1) {
-                            if (data.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
+                            if (data.moneyFunc.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
                                 formulaResult = nts.uk.resource.getText("KML002_153");
                             } else if (data.lstMoney.length > 0) {
                                 for (var i = 0; i < data.lstMoney.length; i++) {
@@ -1525,17 +1528,19 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                         formulaResult += operator + " " + item.externalBudgetName + " ";
                                     }
                                 }
-                            } else if (data.lstTimeUnitFuncs.length > 0) {
-                                for (var i = 0; i < data.lstTimeUnitFuncs.length; i++) {
-                                    var operator = data.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.lstTimeUnitFuncs[i].name != null ? data.lstTimeUnitFuncs[i].name : "";
-                                    var itemAttendance = _.find(self.amountItems, function(o) { return o.attendanceItemId == data.lstTimeUnitFuncs[i].attendanceItemId; });
-                                    var itemPreset = _.find(self.amountItems, function(o) { return o.presetItemId == data.lstTimeUnitFuncs[i].presetItemId; });
+                            } else if (data.timeUnit.lstTimeUnitFuncs.length > 0) {
+                                for (var i = 0; i < data.timeUnit.lstTimeUnitFuncs.length; i++) {
+                                    var operator = data.timeUnit.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var name = data.timeUnit.lstTimeUnitFuncs[i].name != null ? data.timeUnit.lstTimeUnitFuncs[i].name : "";
+                                    var itemAttendance = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].attendanceItemId && o.itemType == 0; });
+                                    var itemPreset = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].presetItemId; });
 
                                     if (name != "") {
                                         formulaResult += operator + " " + name + " ";
-                                    } else if (item != null) {
-                                        formulaResult += operator + " " + item.name + " ";
+                                    } else if (itemAttendance != null) {
+                                        formulaResult += operator + " " + itemAttendance.name + " ";
+                                    }else if (itemPreset != null) {
+                                        formulaResult += operator + " " + itemPreset.name + " ";
                                     }
                                 }
                             }
