@@ -439,7 +439,7 @@ public class AppOvertimeFinder {
 						for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
 							workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
 						}
-						result.setSiftTypes(workTypeCodes);
+						result.setWorkTypes(workTypeCodes);
 						
 						// 08_就業時間帯取得(lay loai gio lam viec) 
 						List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
@@ -460,7 +460,7 @@ public class AppOvertimeFinder {
 			if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
 				result.setDisplayCaculationTime(true);
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting.get(0),result.getSiftType().getSiftCode());
+				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting.get(0),result.getSiftType() == null ? "" : result.getSiftType().getSiftCode());
 				result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
 				result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
 				result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
