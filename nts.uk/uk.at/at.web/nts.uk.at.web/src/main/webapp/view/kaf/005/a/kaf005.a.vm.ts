@@ -296,7 +296,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 workClockFrom1: self.timeStart1(),
                 workClockTo1: self.timeEnd1(),
                 workClockFrom2: self.timeStart2(),
-                workClockTo2: self.timeEnd1(),
+                workClockTo2: self.timeEnd2(),
                 bonusTimes: ko.toJS(self.bonusTimes()),
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
