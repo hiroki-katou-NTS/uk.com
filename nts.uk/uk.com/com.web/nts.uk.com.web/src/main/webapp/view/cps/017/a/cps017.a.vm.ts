@@ -34,6 +34,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
         selHistId: KnockoutObservable<string> = ko.observable('');
         enableDelHist: KnockoutObservable<boolean> = ko.observable(false);
         enableSelName: KnockoutObservable<boolean> = ko.observable(true);
+        
+        //en/dis: Selection
+        enDisDelSelec: KnockoutObservable<boolean> = ko.observable(false);
 
         //
         disbleAdUpHist: KnockoutObservable<boolean> = ko.observable(true);
@@ -169,8 +172,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.isDialog(param.isDialog);
                         self.closeUp(true);
                         self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
-                    }else{
-                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);}
+                    } else {
+                        self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    }
                 } else {
                     self.checkCreate(false);
                     alertError({ messageId: "Msg_455" });
@@ -228,6 +232,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listSelection: Array<Selection> = self.listSelection(),
                 _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
 
+//            oldIndex = _.findIndex(listSelection, x => x.selectionCD == currentItem.selectionCD());
             currentItem.histId(self.historySelection().histId());
             command = ko.toJS(currentItem);
             if (_selectionCD) {
@@ -240,10 +245,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         if (itemList && itemList.length) {
                             itemList.forEach(x => self.listSelection.push(x));
                             self.selection().selectionID(self.listSelection()[0].selectionID);
-                            if (itemList.length == 1){
+                            if (itemList.length == 1) {
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_530" });
                             }
                         }
+//                        let newItem = itemList[oldIndex];
+//                        currentItem.selectionCD(newItem.selectionCD);
                     });
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
 
@@ -381,13 +388,17 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listItems: Array<SelectionItem> = self.listItems(),
                 selectionItemList = _.find(listItems, x => x.selectionItemId == perInfoSelectionItem.selectionItemId);
 
+            /*
             let command = {
                 currentItem: currentItem,
                 selection: selection,
                 orderSection: orderSelection,
                 perInfoSelectionItem: perInfoSelectionItem
             };
-
+            */
+            
+            //perInfoSelectionItem.selectionItemId(self.perInfoSelectionItem().selectionItemId());
+            command = ko.toJS(perInfoSelectionItem);
             confirm({ messageId: "Msg_532", messageParams: ["1"] }).ifYes(() => {
                 service.reflUnrComp(command).done(function() {
                     self.listHistorySelection.removeAll();
