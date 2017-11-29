@@ -144,12 +144,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.singleSelectedCode.subscribe(function(value) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
-                
-                blockUI.invisible();
-                
+                $("#input-name").focus();                
                 self.isparentCall(true);
 
                 if (value.length > 0) {
+                    blockUI.invisible();
                     self.calculatorItems.removeAll();
 
                     service.getVerticalCalSetByCode(value).done(function(data) {
@@ -715,7 +714,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
          */
         newBtn() {
             var self = this;
-
+            
             self.addLineEnable(true);
             self.singleSelectedCode("");
             self.code("");
@@ -730,6 +729,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.workScheduleEnable(true);
             self.unitEnable(true);
             self.allItemsData = [];
+            $("#input-code").focus();
         }
 
         /**
