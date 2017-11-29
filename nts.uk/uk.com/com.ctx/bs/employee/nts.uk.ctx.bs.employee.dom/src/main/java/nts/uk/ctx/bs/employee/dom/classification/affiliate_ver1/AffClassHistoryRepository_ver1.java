@@ -17,5 +17,14 @@ public interface AffClassHistoryRepository_ver1 {
 	 * @return
 	 */
 	Optional<AffClassHistory_ver1> getByHistoryId(String historyId);
+	
+	/**
+	 * return historyDomain with periods
+	 * @param employeeId
+	 * @return
+	 */
+	Optional<AffClassHistory_ver1> getByEmployeeId(String employeeId);
+	
+	void add(AffClassHistory_ver1 history);
 
 }

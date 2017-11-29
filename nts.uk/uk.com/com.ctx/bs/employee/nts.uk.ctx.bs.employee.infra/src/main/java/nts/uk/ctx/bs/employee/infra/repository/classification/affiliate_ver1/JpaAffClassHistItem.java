@@ -37,4 +37,12 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 		return Optional.empty();
 	}
 
+	@Override
+	public void add(AffClassHistItem_ver1 item) {
+		KmnmtAffClassHistItem_Ver1 entity = new KmnmtAffClassHistItem_Ver1(item.getHistoryId(), item.getEmployeeId(),
+				item.getClassificationCode().v());
+		this.commandProxy().insert(entity);
+
+	}
+
 }
