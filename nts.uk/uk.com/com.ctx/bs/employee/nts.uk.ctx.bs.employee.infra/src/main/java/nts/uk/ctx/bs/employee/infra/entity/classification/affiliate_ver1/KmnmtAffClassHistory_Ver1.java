@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -17,6 +19,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KMNMT_AFF_CLASS_HISTORY")
+@NoArgsConstructor
+@AllArgsConstructor
 public class KmnmtAffClassHistory_Ver1 extends UkJpaEntity{
 
 	@Id
@@ -36,5 +40,7 @@ public class KmnmtAffClassHistory_Ver1 extends UkJpaEntity{
 	protected Object getKey() {
 		return historyId;
 	}
+	
+	
 
 }

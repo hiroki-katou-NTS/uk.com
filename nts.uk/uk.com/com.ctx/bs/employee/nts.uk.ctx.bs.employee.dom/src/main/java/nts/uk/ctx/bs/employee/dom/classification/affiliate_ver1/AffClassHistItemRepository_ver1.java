@@ -20,5 +20,11 @@ public interface AffClassHistItemRepository_ver1 {
 	 * @return
 	 */
 	Optional<AffClassHistItem_ver1> getByEmpIdAndReferDate(String employeeId, GeneralDate referenceDate);
+	
+	/**
+	 * add an AffClassHistItem_ver1
+	 * @param item
+	 */
+	void add(AffClassHistItem_ver1 item); 
 
 }
