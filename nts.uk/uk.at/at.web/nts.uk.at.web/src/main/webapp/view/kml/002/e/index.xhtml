@@ -226,7 +226,7 @@
 								columns: [
 									{ prop: 'catName', length: 10 }
 								]}"></div>
-						<div class="cbx-checked-e" data-bind="ntsCheckBox: { checked: checkedAmount , enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
+						<div class="cbx-checked-e" data-bind="ntsCheckBox: { checked: checkedAmount , enable: catCode()==0, text: '#{i18n.getText('KML002_27')}' }"></div>
 						
 						<div class="search-box"
 							data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
