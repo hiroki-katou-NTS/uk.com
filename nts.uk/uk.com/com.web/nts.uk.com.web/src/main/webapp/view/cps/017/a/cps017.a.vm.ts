@@ -103,8 +103,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (histCur != undefined) {
                         if (histCur.endDate !== '9999/12/31' || self.listHistorySelection().length <= 1) {
                             self.enableDelHist(false);
+                            self.revDisSel(false);
                         } else {
                             self.enableDelHist(true);
+                            self.revDisSel(true);
                         }
                     }
 
@@ -112,8 +114,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (adUpHist != undefined) {
                         if (adUpHist.endDate !== '9999/12/31' || self.listHistorySelection().length == 0) {
                             self.disbleAdUpHist(false);
+                            self.revDisSel(false);
                         } else {
                             self.disbleAdUpHist(true);
+                            self.revDisSel(true);
                         }
                     }
 
