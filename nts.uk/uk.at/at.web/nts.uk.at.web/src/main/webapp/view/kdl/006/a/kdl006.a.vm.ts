@@ -60,7 +60,8 @@ module nts.uk.at.view.kdl006.a {
                 $.when(_self.findCurrentPersonName(), _self.loadClosure(), _self.loadWorkplaceInfo())
                     .done(() => {
                         _self.loadWorkFixed()
-                            .then(() => {
+                            .then(() => {                               
+                                // Build table
                                 _self.buildTable();
 
                                 // Enable resize
@@ -77,7 +78,7 @@ module nts.uk.at.view.kdl006.a {
                                         currentScreen.setHeight(ui.size.height + 140);
                                     }
                                 });
-
+                                
                                 nts.uk.ui.block.clear();
                                 dfd.resolve();
                             });
@@ -386,9 +387,9 @@ module nts.uk.at.view.kdl006.a {
                     _self.listSaveWorkFixed.push(item);
                 }
 
-                let htmlParse: string = '<div data-bind="ntsCheckBox: { checked: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].checked }"></div>';
-                htmlParse += '<span data-bind="visible: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].checked, ';
-                htmlParse += 'text: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].text"></span>';
+                let htmlParse: string = '<div class="table-cell"><div data-bind="ntsCheckBox: { checked: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].checked }"></div>';
+                htmlParse += '<span class="limited-label" data-bind="visible: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].checked,';
+                htmlParse += ' text: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].text"></span></div>';
                 return htmlParse;
             }
 
@@ -457,7 +458,7 @@ module nts.uk.at.view.kdl006.a {
                     currentItem = _self.listWorkFixed[columnIndex];
                 }
             }
-
+                
             private refreshTable(): void {
                 let _self = this;
                 let $tableGrid: any = $("#grid-data-body");

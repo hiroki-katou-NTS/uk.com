@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -40,12 +41,19 @@ public class OvertimeWorkFrameSaveCommandHandler extends CommandHandler<Overtime
 		
 		for (OvertimeWorkFrameCommandDto item : command.getListData()) {
 			Optional<OvertimeWorkFrame> optPlanYearHdFr = this.repository.findOvertimeWorkFrame(new CompanyId(companyId), item.getOvertimeWorkFrNo());
-			if (item.getUseAtr() == 0){
-				item.setTransferFrName(optPlanYearHdFr.get().getTransferFrName().v());
-				item.setOvertimeWorkFrName(optPlanYearHdFr.get().getOvertimeWorkFrName().v());
+			OvertimeWorkFrame overtimeWorkFrame = new OvertimeWorkFrame(item);;
+			
+			if(optPlanYearHdFr.isPresent()){
+				if (item.getUseAtr() == 1){
+					
+				} else {
+					overtimeWorkFrame = optPlanYearHdFr.get();
+					overtimeWorkFrame.setUseClassification(NotUseAtr.NOT_USE);
+				}
+				this.repository.update(overtimeWorkFrame);
+			}else {
+				this.repository.add(overtimeWorkFrame);
 			}
-			OvertimeWorkFrame overtimeWorkFrame = new OvertimeWorkFrame(item);
-			this.repository.update(overtimeWorkFrame);
 		}
 	}
 

@@ -19,7 +19,9 @@ module nts.uk.com.view.cmm007.e {
          * 
          */
         export function saveOvertimeWorkFrame(data: model.OvertimeWorkFrameSaveCommand): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.save, data);
+            let listData:any = {};
+            listData.listData = ko.toJS(data);
+            return nts.uk.request.ajax("at", path.save, listData);
         }
     }
     
@@ -28,16 +30,17 @@ module nts.uk.com.view.cmm007.e {
      */
     export module model {
        export class OvertimeWorkFrameDto {
-            overtimeWorkFrNo: number;
-            overtimeWorkFrName: string;
-            transferFrName: string;
-            useAtr: number;
+            overtimeWorkFrNo: KnockoutObservable<number>;
+            overtimeWorkFrName: KnockoutObservable<string>;
+            transferFrName: KnockoutObservable<string>;
+            useAtr: KnockoutObservable<number>;
             
             constructor(no: number, name: string, transName:string, useAtr: number){
-                this.overtimeWorkFrNo = no;
-                this.overtimeWorkFrName = name;
-                this.transferFrName = transName;
-                this.useAtr = useAtr;
+                let _self = this;
+                _self.overtimeWorkFrNo = ko.observable(no);
+                _self.overtimeWorkFrName = ko.observable(name);
+                _self.transferFrName = ko.observable(transName);
+                _self.useAtr = ko.observable(useAtr);
             }
         }
         
