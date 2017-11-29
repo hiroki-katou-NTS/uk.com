@@ -11,6 +11,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import nts.uk.ctx.bs.employee.app.command.department.*;
 import nts.uk.ctx.bs.employee.app.command.employee.*;
+import nts.uk.ctx.bs.employee.app.command.employee.mngdata.UpdateEmployeeDataMngInfoCommand;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -64,7 +65,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilyCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
 //			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeDataMngInfoCommand>>(){},
 //			new TypeLiteral<PeregUpdateCommandHandler<UpdateAssignedWorkplaceCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAffiDeptCommand>>(){}
 			);
