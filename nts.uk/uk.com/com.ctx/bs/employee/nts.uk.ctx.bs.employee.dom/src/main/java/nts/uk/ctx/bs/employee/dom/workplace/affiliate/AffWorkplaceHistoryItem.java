@@ -26,18 +26,19 @@ public class AffWorkplaceHistoryItem {
 	
 	/** The workplaceCode. */
 	// 職場コード
-	private WorkplaceCode  workplaceCode;
+	private String  workplaceId;
 	
 	/** The normalWorkplaceCode. */
 	// 通常職場コード
-	private WorkplaceCode  normalWorkplaceCode;
+	private String  normalWorkplaceId;
 	
 	/** The normalWorkplaceCode. */
 	// 場所コード
 	private LocationCode  locationCode;
-	
-	public static AffWorkplaceHistoryItem createFromJavaType(String histId, String employeeId, String workplaceCd, String normalWorkplaceCode, String locationCode){
-		return new AffWorkplaceHistoryItem(histId,employeeId, new WorkplaceCode(workplaceCd), new WorkplaceCode(normalWorkplaceCode), new LocationCode(locationCode));
+
+	public static AffWorkplaceHistoryItem createFromJavaType(String histId, String employeeId, String workplaceId, String normalWorkplaceId, String locationCode){
+		return new AffWorkplaceHistoryItem(histId,employeeId, workplaceId, normalWorkplaceId, new LocationCode(locationCode));
+
 	}
 	
 }

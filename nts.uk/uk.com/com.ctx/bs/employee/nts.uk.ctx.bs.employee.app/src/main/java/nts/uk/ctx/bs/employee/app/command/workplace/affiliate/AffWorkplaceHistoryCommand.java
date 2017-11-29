@@ -21,12 +21,12 @@ public class AffWorkplaceHistoryCommand {
 	/** The workplaceCode. */
 	// 職場コード
 	@PeregItem("IS00084")
-	private String  workplaceCode;
+	private String  workplaceId;
 	
 	/** The normalWorkplaceCode. */
 	// 通常職場コード
 	@PeregItem("IS00086")
-	private String  normalWorkplaceCode;
+	private String  normalWorkplaceId;
 	
 	// 場所コード
 	@PeregItem("IS00085")

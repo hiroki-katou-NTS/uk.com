@@ -40,7 +40,7 @@ public class AffJobTitleDto extends PeregDomainDto {
 	 * 職位CD
 	 */
 	@PeregItem("IS00079")
-	private String jobTitleCode;
+	private String jobTitleId;
 
 	/**
 	 * 備考
@@ -61,7 +61,7 @@ public class AffJobTitleDto extends PeregDomainDto {
 		dto.setDateHistoryItem(history.getHistoryItems().get(0));
 		dto.setStartDate(history.getHistoryItems().get(0).start());
 		dto.setEndDate(history.getHistoryItems().get(0).end());
-		dto.setJobTitleCode(histItem.getJobTitleCode().v());
+		dto.setJobTitleId(histItem.getJobTitleId());
 		dto.setNote(histItem.getNote().v());
 		return dto;
 	}

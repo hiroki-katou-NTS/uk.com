@@ -37,14 +37,14 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	 */
 	private BsymtAffiWorkplaceHistItem toEntity(AffWorkplaceHistoryItem domain) {
 		// TODO Pending location code
-		return new BsymtAffiWorkplaceHistItem(domain.getHistoryId(),domain.getEmployeeId(),domain.getWorkplaceCode().v(),domain.getNormalWorkplaceCode().v(),"");
+		return new BsymtAffiWorkplaceHistItem(domain.getHistoryId(),domain.getEmployeeId(),domain.getWorkplaceId(),domain.getNormalWorkplaceId(),"");
 	}
 	
 	private void updateEntity(AffWorkplaceHistoryItem domain, BsymtAffiWorkplaceHistItem entity) {
 		// TODO Pending location code
 		entity.setSid(domain.getEmployeeId());
-		entity.setWorkPlaceCode(domain.getWorkplaceCode().v());
-		entity.setNormalWkpCode(domain.getNormalWorkplaceCode().v());
+		entity.setWorkPlaceId(domain.getWorkplaceId());
+		entity.setNormalWkpId(domain.getNormalWorkplaceId());
 		entity.setLocationCode("");
 	}
 	@Override

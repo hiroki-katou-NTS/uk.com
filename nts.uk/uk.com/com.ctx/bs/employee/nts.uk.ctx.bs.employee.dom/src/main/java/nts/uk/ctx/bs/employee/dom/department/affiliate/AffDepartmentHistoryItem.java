@@ -27,7 +27,7 @@ public class AffDepartmentHistoryItem extends AggregateRoot {
 
 	/** The department code. */
 	/* 部門コード */
-	private DepartmentCode departmentCode;
+	private String departmentId;
 
 	/** The Affiliation History Transfer type. */
 	// 所属履歴異動種類
@@ -37,8 +37,8 @@ public class AffDepartmentHistoryItem extends AggregateRoot {
 	// 社員ID
 	private DistributionRatio distributionRatio;
 	
-	public static AffDepartmentHistoryItem createFromJavaType(String histId, String sId, String departmentCode, String affHistTranfsType, String distributionRatio){
-		return new AffDepartmentHistoryItem(histId,sId, new DepartmentCode(departmentCode), affHistTranfsType, new DistributionRatio(distributionRatio));
+	public static AffDepartmentHistoryItem createFromJavaType(String histId, String sId, String departmentId, String affHistTranfsType, String distributionRatio){
+		return new AffDepartmentHistoryItem(histId,sId, departmentId, affHistTranfsType, new DistributionRatio(distributionRatio));
 	}
 
 }

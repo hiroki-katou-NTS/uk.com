@@ -16,7 +16,7 @@ public class AffJobTitleMainCommand {
 	/** The job title code. */
 	// 職位コード
 	@PeregItem("IS00079")
-	private String jobTitleCode;
+	private String jobTitleId;
 	
 	/** The AffJobHistoryItemNote. */
 	// 備考
