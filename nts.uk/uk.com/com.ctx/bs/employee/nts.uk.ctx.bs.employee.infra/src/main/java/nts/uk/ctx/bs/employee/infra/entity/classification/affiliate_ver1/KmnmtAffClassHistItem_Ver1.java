@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
@@ -16,6 +18,8 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
  */
 @Entity
 @Table(name = "KMNMT_AFF_CLASS_HIS_ITEM")
+@NoArgsConstructor
+@AllArgsConstructor
 public class KmnmtAffClassHistItem_Ver1 extends JpaEntity {
 
 	@Id

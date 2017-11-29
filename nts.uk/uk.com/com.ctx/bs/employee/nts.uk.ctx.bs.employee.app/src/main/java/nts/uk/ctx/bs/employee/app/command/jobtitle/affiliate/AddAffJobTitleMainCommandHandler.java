@@ -51,13 +51,12 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 		
 		// In case of exist history of this employee
 		if (existHist.isPresent()){
-			existHist.get().add(dateItem);
 			itemtoBeAdded = existHist.get();
 		} else {
 			// In case of non - exist history of this employee
 			itemtoBeAdded = new AffJobTitleHistory_ver1(command.getSid(),new ArrayList<>());
-			itemtoBeAdded.add(dateItem);
 		}
+		itemtoBeAdded.add(dateItem);
 		
 		affJobTitleHistoryRepository_ver1.add(itemtoBeAdded);
 		

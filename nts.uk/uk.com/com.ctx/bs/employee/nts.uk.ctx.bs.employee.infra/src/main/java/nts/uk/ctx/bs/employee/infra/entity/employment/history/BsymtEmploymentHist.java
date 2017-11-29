@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
@@ -25,6 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
 @Table(name = "BSYMT_EMPLOYMENT_HIST")
 public class BsymtEmploymentHist extends UkJpaEntity implements Serializable {
 

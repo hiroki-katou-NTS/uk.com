@@ -96,7 +96,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 			throw new RuntimeException("Invalid BsymtAffJobTitleHist");
 		}
 		this.commandProxy().remove(BsymtAffJobTitleHist.class, item.identifier());
-
+		
 		// Update item before
 		if (domain.getHistoryItems().size() > 0) {
 			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size() - 1);
