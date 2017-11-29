@@ -11,18 +11,6 @@ import nts.arc.layer.dom.DomainObject;
  * The Class GoOutTimezoneRoundingSet.
  */
 //時間帯別外出丸め設定
-
-/**
- * Gets the OT timezone.
- *
- * @return the OT timezone
- */
-
-/**
- * Gets the OT timezone.
- *
- * @return the OT timezone
- */
 @Getter
 public class GoOutTimezoneRoundingSet extends DomainObject {
 	

@@ -19,6 +19,7 @@ public class StampReflectTimezone extends DomainObject {
 	// 勤務NO
 	private WorkNo workNo;
 
+	/** The classification. */
 	// 出退勤区分
 	 private GoLeavingWorkAtr classification;
 

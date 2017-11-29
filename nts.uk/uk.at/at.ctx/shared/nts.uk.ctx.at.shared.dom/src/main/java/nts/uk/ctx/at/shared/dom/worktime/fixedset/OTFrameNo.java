@@ -4,18 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * The Class OTFrameNo.
  */
-//残業枠NO
-@IntegerRange(min = 1, max = 10)
-public class OTFrameNo extends IntegerPrimitiveValue<EmTimeFrameNo>  {
+// 残業枠NO
+@DecimalRange(min = "1", max = "10")
+@DecimalMantissaMaxLength(2)
+public class OTFrameNo extends DecimalPrimitiveValue<OTFrameNo> {
+
 	private static final long serialVersionUID = 1L;
 
-	public OTFrameNo(Integer rawValue) {
+	public OTFrameNo(BigDecimal rawValue) {
 		super(rawValue);
 	}
 

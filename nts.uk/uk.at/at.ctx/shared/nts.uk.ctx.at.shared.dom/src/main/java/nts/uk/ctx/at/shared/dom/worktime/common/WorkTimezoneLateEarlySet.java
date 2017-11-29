@@ -13,12 +13,6 @@ import nts.arc.layer.dom.DomainObject;
  * The Class WorkTimezoneLateEarlySet.
  */
 //就業時間帯の遅刻・早退設定
-
-/**
- * Gets the other class set.
- *
- * @return the other class set
- */
 @Getter
 public class WorkTimezoneLateEarlySet extends DomainObject{
 

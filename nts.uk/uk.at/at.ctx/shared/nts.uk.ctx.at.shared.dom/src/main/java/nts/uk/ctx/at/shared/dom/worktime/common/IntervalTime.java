@@ -5,14 +5,16 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
  * The Class IntervalTime.
  */
 //インターバル時間
 @Getter
-public class IntervalTime {
+public class IntervalTime extends DomainObject {
 	
 	/** The interval time. */
 	//インターバル時間
@@ -20,5 +22,5 @@ public class IntervalTime {
 	
 	/** The rounding. */
 	//丸め
-	private TimeRounding rounding;
+	private TimeRoundingSetting rounding;
 }

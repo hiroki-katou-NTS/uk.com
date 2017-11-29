@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
 
 /**
@@ -16,7 +17,7 @@ public class EmTimeZoneSet {
 
 	/** The Employment time frame no. */
 	//就業時間枠NO
-	private EmploymentTimeFrameNo EmploymentTimeFrameNo;
+	private EmTimeFrameNo EmploymentTimeFrameNo;
 	
 	/** The timezone. */
 	//時間帯

@@ -22,7 +22,8 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class WorkdayoffFrameFinder {
 	
 	/** The repository. */
-	@Inject WorkdayoffFrameRepository repository;
+	@Inject 
+	private WorkdayoffFrameRepository repository;
 	
 	/**
 	 * Find all.

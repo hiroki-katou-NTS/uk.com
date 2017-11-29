@@ -11,12 +11,6 @@ import nts.arc.layer.dom.DomainObject;
  * The Class PrioritySet.
  */
 //優先設定
-
-/**
- * Gets the stamp atr.
- *
- * @return the stamp atr
- */
 @Getter
 public class PrioritySet extends DomainObject {
 

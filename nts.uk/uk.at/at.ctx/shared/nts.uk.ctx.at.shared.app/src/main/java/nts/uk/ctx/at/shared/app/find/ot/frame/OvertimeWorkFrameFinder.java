@@ -22,7 +22,8 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class OvertimeWorkFrameFinder {
 	
 	/** The repository. */
-	@Inject OvertimeWorkFrameRepository repository;
+	@Inject 
+	private OvertimeWorkFrameRepository repository;
 	
 	/**
 	 * Find all.

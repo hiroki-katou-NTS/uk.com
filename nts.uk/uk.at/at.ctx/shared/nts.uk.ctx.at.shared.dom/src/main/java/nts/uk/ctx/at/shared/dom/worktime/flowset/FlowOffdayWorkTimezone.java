@@ -18,10 +18,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 public class FlowOffdayWorkTimezone extends DomainObject {
 
 	/** The rest time zone. */
-	//休憩時間帯
+	// 休憩時間帯
 	private FlowWorkRestTimezone restTimeZone;
-	
+
 	/** The work timezone. */
-	// 打刻反映時間帯
+	// 勤務時間帯
 	private List<FlowWorkHolidayTimeZone> lstWorkTimezone;
 }

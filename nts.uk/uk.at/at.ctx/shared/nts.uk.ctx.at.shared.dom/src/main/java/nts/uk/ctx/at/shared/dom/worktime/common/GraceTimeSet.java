@@ -11,12 +11,6 @@ import nts.arc.layer.dom.DomainObject;
  * The Class GraceTimeSet.
  */
 //猶予時間設定
-
-/**
- * Gets the grace time.
- *
- * @return the grace time
- */
 @Getter
 public class GraceTimeSet extends DomainObject {
 
