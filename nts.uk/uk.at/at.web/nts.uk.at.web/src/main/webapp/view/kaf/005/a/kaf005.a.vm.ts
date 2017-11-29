@@ -266,16 +266,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         //登録処理
         registerClick() {
+            let self = this;
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
-            
-            if (nts.uk.ui.errors.hasError()){return;}    
-            
+            //return if has error
+            if (nts.uk.ui.errors.hasError()){return;}   
+            if(!self.validate()){return;}
+            //block screen
             nts.uk.ui.block.invisible();
-            let self = this,
-                appReason: string,
+            let appReason: string,
                 divergenceReason: string;
-            appReason = self.getReasonName(self.reasonCombo(), self.selectedReason());
+            appReason = self.getReasonName( self.reasonCombo(), self.selectedReason());
             divergenceReason = self.getReasonName(self.reasonCombo2(), self.selectedReason2());       
             if (!nts.uk.util.isNullOrUndefined(self.multilContent())) {
                 appReason = appReason + ":" + self.multilContent();
@@ -344,9 +345,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });
-            }).always(function(){
-                nts.uk.ui.block.clear();
+                .then(function() { nts.uk.ui.block.clear(); });           
             });
         }
         //登録処理を実行
@@ -389,6 +388,42 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(attendanceId == 3){
                 $('td#breakTimesCheck_'+attendanceId+'_'+frameNo).css('background', 'pink')
             }*/
+        }
+        validate(): boolean{
+            let self = this;            
+            //勤務時間
+            if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
+                return false;
+            };
+            if ( self.timeStart2() != null ) {
+                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
+                    return false;
+                };
+                if ( !self.validateTime( self.timeEnd1(), self.timeStart2(), '#inpEndTime1' ) ) {
+                    return false;
+                };
+            }
+            //休憩時間
+            for (let i = 0; i < self.restTime().length; i++) {
+                let startTime = self.restTime()[i].startTime();
+                let endTime = self.restTime()[i].endTime();
+                let attendanceId = self.restTime()[i].attendanceID();
+                let frameNo = self.restTime()[i].frameNo();
+                if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                    return false;
+                };
+                //Check for next frame???
+            }
+            return true;            
+        }
+        //Validate input time
+        validateTime(startTime: number, endTime: number, elementId: string): boolean{            
+            if(startTime > endTime){
+                dialog.alertError({messageId:"Msg_307"})
+                 $(elementId).focus();
+                return false;
+            }
+            return true;
         }
         CaculationTime(){
             let self = this;
