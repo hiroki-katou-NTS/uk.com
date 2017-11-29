@@ -124,9 +124,9 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	}
 	
 	/**
-	 * 休　と外　の重　
-	 * @param baseTimeSheet 現ループ中のリス　
-	 * @param compareTimeSheet　次のループで取り出すリス　
+	 * 控除時間帯と控除時間帯の重複チェック
+	 * @param baseTimeSheet 現ループ中のリスト　
+	 * @param compareTimeSheet　次のループで取り出すリスト　
 	 */
 	public List<TimeSheetOfDeductionItem> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage
 															,boolean useFixedRestTime,FluidFixedAtr fluidFixedAtr,WorkTimeDailyAtr workTimeDailyAtr) {

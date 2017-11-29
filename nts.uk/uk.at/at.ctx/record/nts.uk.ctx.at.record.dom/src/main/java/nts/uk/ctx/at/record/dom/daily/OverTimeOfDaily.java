@@ -40,7 +40,7 @@ public class OverTimeOfDaily {
 	//変形法定内残業
 	private AttendanceTime irregularWithinPrescribedOverTimeWork = new AttendanceTime(0);
 	//フレックス時間
-	private FlexTime flexTime = new FlexTime(new AttendanceTimeOfExistMinus(0),new AttendanceTime(0)); 
+	private FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0)); 
 	//残業拘束時間
 	private AttendanceTime overTimeWorkSpentAtWork = new AttendanceTime(0);
 	

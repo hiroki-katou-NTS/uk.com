@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.daily.overtimework;
 
 import lombok.Value;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
  * フレックス時間
@@ -11,6 +11,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
  */
 @Value
 public class FlexTime {
-	private AttendanceTimeOfExistMinus flexTime;
+	private TimeWithCalculationMinusExist flexTime;
 	private AttendanceTime beforeApplicationTime; 
 }
