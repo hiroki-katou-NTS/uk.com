@@ -67,9 +67,6 @@ module nts.uk.at.view.ksc001.b {
             //for control field
             isReCreate: KnockoutObservable<boolean>;
             isReSetting: KnockoutObservable<boolean>;
-            //            isReCreate: KnockoutObservable<boolean>;
-            //            isReCreate: KnockoutObservable<boolean>;
-            //            isReCreate: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
 
@@ -208,16 +205,6 @@ module nts.uk.at.view.ksc001.b {
                 });
             }
             /**
-             * get user login
-             */
-            public getUserLogin(): UserInfoDto {
-                var userinfo: UserInfoDto = {
-                    companyId: '000000000000-0001',
-                    employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a'
-                };
-                return userinfo;
-            }
-            /**
              * save to client service PersonalSchedule by employeeId
             */
             private savePersonalScheduleByEmployeeId(employeeId: string, data: PersonalSchedule): void {
@@ -228,7 +215,7 @@ module nts.uk.at.view.ksc001.b {
             */
             private savePersonalSchedule(data: PersonalSchedule): void {
                 var self = this;
-                var user: UserInfoDto = self.getUserLogin();
+                var user: any = __viewContext.user;
                 self.savePersonalScheduleByEmployeeId(user.employeeId, data);
             }
 
@@ -244,7 +231,7 @@ module nts.uk.at.view.ksc001.b {
             */
             private findPersonalSchedule(): JQueryPromise<PersonalSchedule> {
                 var self = this;
-                var user: UserInfoDto = self.getUserLogin();
+                var user: any = __viewContext.user;
                 return nts.uk.characteristics.restore("PersonalSchedule_" + user.employeeId);
             }
             /**
@@ -332,7 +319,8 @@ module nts.uk.at.view.ksc001.b {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 550,
-                    maxRows: 15
+                    maxRows: 15,
+                    tabindex: 5
                 };
 
             }
@@ -343,7 +331,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 // check selection employee 
                 if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                    var user: UserInfoDto = self.getUserLogin();
+                    var user: any = __viewContext.user;
                     self.findPersonalScheduleByEmployeeId(user.employeeId).done(function(data) {
                         self.updatePersonalScheduleData(data);
 
@@ -375,7 +363,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private toPersonalScheduleData(): PersonalSchedule {
                 var self = this;
-                var user: UserInfoDto = self.getUserLogin();
+                var user: any = __viewContext.user;
                 var data: PersonalSchedule = new PersonalSchedule();
                 data.resetMasterInfo = self.resetMasterInfo();
                 data.resetAbsentHolidayBusines = self.resetAbsentHolidayBusines();

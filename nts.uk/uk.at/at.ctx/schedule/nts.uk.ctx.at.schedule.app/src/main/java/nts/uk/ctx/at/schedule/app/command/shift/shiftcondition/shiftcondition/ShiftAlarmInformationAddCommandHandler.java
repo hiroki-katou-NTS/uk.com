@@ -31,6 +31,12 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * command add shift alarm
+ * 
+ * @author trungtran
+ *
+ */
 @Stateless
 public class ShiftAlarmInformationAddCommandHandler extends AsyncCommandHandler<ShiftAlarmInformationCommand> {
 	@Inject
@@ -65,11 +71,7 @@ public class ShiftAlarmInformationAddCommandHandler extends AsyncCommandHandler<
 
 		}
 		alarmInformation = processCheckAlarm(alarmInformation, empIds, conditionNos, startTime, endTime, companyId);
-		if (alarmInformation.getErrorState() == ErrorState.NO_ERROR) {
-			setter.setData("IS_ERROR", false);
-		} else {
-			setter.setData("IS_ERROR", true);
-		}
+		setter.setData("IS_ERROR", alarmInformation.isError());
 		// 条件NO → 条件名称
 		List<ShiftCondition> conditions = conditionRepo.getListShiftCondition(companyId);
 		Map<Integer, ShiftCondition> mapConditon = conditions.stream()
@@ -78,6 +80,9 @@ public class ShiftAlarmInformationAddCommandHandler extends AsyncCommandHandler<
 		List<ShiftConditionCategory> conditionCates = condtionCateRepo.getListShifConditionCategory(companyId);
 		Map<Integer, ShiftConditionCategory> mapConditonCategory = conditionCates.stream()
 				.collect(Collectors.toMap(ShiftConditionCategory::getCategoryNo, Function.identity()));
+		if(!alarmInformation.getAlarm().isPresent()){
+			return;
+		}
 		List<ShiftAlarm> liShiftAlarms = alarmInformation.getAlarm().get();
 		for (int i = 0; i < liShiftAlarms.size(); i++) {
 			ShiftAlarm alarm = liShiftAlarms.get(i);

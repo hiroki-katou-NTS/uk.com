@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
+/**
+ * TanLV
+ * 人数計算式
+ * 
+ */
 @AllArgsConstructor
 @Getter
 public class FormPeopleFunc {

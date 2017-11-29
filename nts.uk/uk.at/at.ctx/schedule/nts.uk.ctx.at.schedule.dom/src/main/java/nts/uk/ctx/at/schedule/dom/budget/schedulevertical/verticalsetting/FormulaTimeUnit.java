@@ -7,6 +7,11 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 
+/**
+ * TanLV
+ * 計算関数
+ * 
+ */
 @AllArgsConstructor
 @Getter
 public class FormulaTimeUnit {
@@ -33,6 +38,18 @@ public class FormulaTimeUnit {
 
 	private List<TimeUnitFunc> lstTimeUnitFuncs;
 	
+	/**
+	 * Create From Javatype
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @param roundingTime
+	 * @param roundingAtr
+	 * @param unitPrice
+	 * @param actualDisplayAtr
+	 * @param lstTimeUnitFuncs
+	 * @return
+	 */
 	public static FormulaTimeUnit createFromJavatype(String companyId, String verticalCalCd, String verticalCalItemId,
 			int roundingTime, int roundingAtr, int unitPrice, int actualDisplayAtr,List<TimeUnitFunc> lstTimeUnitFuncs) {
 		return new FormulaTimeUnit(companyId, verticalCalCd, verticalCalItemId,

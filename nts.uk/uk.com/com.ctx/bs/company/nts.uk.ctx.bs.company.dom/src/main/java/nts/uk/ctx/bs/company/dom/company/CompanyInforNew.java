@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.company.dom.company;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -93,11 +94,20 @@ public class CompanyInforNew extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		
 		// company code: 0000
-		if("0000".equals(this.companyCode)){
+		if("0000".equals(this.companyCode.v())){
 			throw new BusinessException("Msg_809");
 		}
+	}
+	/** check number company discarded, can't discard all list company */
+	public void checkAbolition(Boolean check){
+		if(check){ 
+			throw new BusinessException("Msg_810");
+		}		
+	}
+	/** if company be discarded: true-1: be discarded, false-0: be not discarded*/
+	public boolean isAbolition() {
+		return AbolitionAtr.ABOLITION == this.isAbolition;
 	}
 
 }

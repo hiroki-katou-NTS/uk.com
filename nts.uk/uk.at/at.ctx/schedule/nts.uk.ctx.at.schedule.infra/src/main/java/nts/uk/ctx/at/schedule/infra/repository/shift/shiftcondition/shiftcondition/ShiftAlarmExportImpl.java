@@ -14,7 +14,11 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
-
+/**
+ * ShiftAlram Export implement
+ * @author trungtran
+ *
+ */
 @Stateless
 @DomainID(value = "ShiftAlarm")
 public class ShiftAlarmExportImpl implements MasterListData {
@@ -22,6 +26,7 @@ public class ShiftAlarmExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
+		@SuppressWarnings("unchecked")
 		List<Map<String, String>> errors = (List<Map<String, String>>) query.getData();
 		errors.stream().forEach(error -> {
 			Map<String, Object> data = new HashMap<>();

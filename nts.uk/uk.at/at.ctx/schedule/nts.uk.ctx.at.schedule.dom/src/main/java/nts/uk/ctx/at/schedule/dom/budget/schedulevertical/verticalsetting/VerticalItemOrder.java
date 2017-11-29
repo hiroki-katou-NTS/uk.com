@@ -3,6 +3,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * TanLV
+ * 汎用縦計項目の並び順
+ */
 @AllArgsConstructor
 @Getter
 public class VerticalItemOrder {

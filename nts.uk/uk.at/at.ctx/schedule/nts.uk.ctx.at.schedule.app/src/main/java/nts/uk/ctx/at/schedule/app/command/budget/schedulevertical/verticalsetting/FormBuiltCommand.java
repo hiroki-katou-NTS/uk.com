@@ -40,6 +40,13 @@ public class FormBuiltCommand {
     /** 演算子区分 */
     private int operatorAtr;
     
+    /**
+     * toDomainFormBuilt
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @return
+     */
     public FormBuilt toDomainFormBuilt(String companyId, String verticalCalCd, String verticalCalItemId){
     	return FormBuilt.createFromJavaTypeFormBuilt(companyId, verticalCalCd, verticalCalItemId, settingMethod1, verticalCalItem1, verticalInputItem1, settingMethod2,
     			verticalCalItem2, verticalInputItem2, operatorAtr);

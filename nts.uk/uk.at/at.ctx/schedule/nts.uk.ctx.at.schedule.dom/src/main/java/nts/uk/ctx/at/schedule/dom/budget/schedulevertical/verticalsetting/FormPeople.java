@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
+/**
+ * TanLV
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class FormPeople {

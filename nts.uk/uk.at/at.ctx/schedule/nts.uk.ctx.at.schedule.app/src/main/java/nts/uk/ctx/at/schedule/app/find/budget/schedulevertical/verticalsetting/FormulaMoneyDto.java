@@ -7,6 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
+
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -27,7 +32,13 @@ public class FormulaMoneyDto {
     
     private List<MoneyFuncDto> lstMoney;
     
+    /**
+     * fromDomain
+     * @param money
+     * @return
+     */
     	public static FormulaMoneyDto fromDomain(FormulaMoney money){
+    		if(money == null) {return null;}
     		List<MoneyFuncDto> items = money.getLstMoney().stream()
     				.map(x-> MoneyFuncDto.fromDomain(x))
     				.collect(Collectors.toList());

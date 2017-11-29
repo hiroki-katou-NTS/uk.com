@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
+/**
+ * TanLV
+ * 計算区分
+ * 
+ */
 @AllArgsConstructor
 @Getter
 public class FormBuilt {
@@ -35,6 +40,20 @@ public class FormBuilt {
     /* 演算子区分 */
     private OperatorAtr operatorAtr;
 
+    /**
+     * Create From Javatype
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @param settingMethod1
+     * @param verticalCalItem1
+     * @param verticalInputItem1
+     * @param settingMethod2
+     * @param verticalCalItem2
+     * @param verticalInputItem2
+     * @param operatorAtr
+     * @return
+     */
 	public static FormBuilt createFromJavaTypeFormBuilt(String companyId, String verticalCalCd, String verticalCalItemId, int settingMethod1, String verticalCalItem1, 
 			String verticalInputItem1, int settingMethod2, String verticalCalItem2, String verticalInputItem2, int operatorAtr) {
 

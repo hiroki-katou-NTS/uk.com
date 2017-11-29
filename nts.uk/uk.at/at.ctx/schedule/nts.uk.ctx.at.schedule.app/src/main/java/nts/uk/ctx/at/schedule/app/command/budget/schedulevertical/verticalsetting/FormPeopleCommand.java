@@ -29,6 +29,13 @@ public class FormPeopleCommand {
     
     private List<FormPeopleFuncCommand> lstPeopleFunc;
     
+    /**
+     * toDomainFormPeople
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @return
+     */
     public FormPeople toDomainFormPeople(String companyId, String verticalCalCd, String verticalCalItemId){
     	List<FormPeopleFunc> formPeopleLst = this.lstPeopleFunc != null
     			? this.lstPeopleFunc.stream().map(c -> c.toDomainFunc(companyId, 

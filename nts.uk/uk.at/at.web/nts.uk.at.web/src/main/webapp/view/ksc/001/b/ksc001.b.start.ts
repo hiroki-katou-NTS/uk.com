@@ -6,6 +6,7 @@ module nts.uk.at.view.ksc001.b {
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
                 self.employeeList = ko.observableArray<UnitModel>([]);
                 self.applyKCP005ContentSearch([]);
+                $('.btn_showhide').attr('tabindex', '2');
                 // Load employee list component
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
                     $('#dateRangePickerPeriod').find('input').first().focus();

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaNumerical;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,10 +39,17 @@ public class VerticalSettingCommand {
     
     private List<VerticalCalItemCommand> verticalCalItems;
 
+    /**
+     * toDomain
+     * @return
+     */
 	public VerticalCalSet toDomain() {
 		String companyId = AppContexts.user().companyId();
 		
 		List<VerticalCalItem> items = this.verticalCalItems.stream().map(x-> {
+			List<FormulaNumerical> numerical = x.getNumerical() !=null 
+					? x.getNumerical().stream().map(n -> n.toDomainNumerical(companyId)).collect(Collectors.toList())
+					: null;
 			VerticalCalItem domain = VerticalCalItem.createFromJavatype(companyId, x.getVerticalCalCd(), x.getItemId(), x.getItemName(), 
 					x.getCalculateAtr(),
 					x.getDisplayAtr(),
@@ -54,7 +62,7 @@ public class VerticalSettingCommand {
 					x.getFormTime() != null ? x.getFormTime().toDomainFormTime(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
 					x.getFormPeople() != null ? x.getFormPeople().toDomainFormPeople(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
 					x.getFormulaAmount() !=null ? x.getFormulaAmount().toDomainFormAmount(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
-					x.getFormulaNumerical() !=null ? x.getFormulaNumerical().toDomainNumerical(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
+					numerical,
 					x.getUnitPrice() != null ? x.getUnitPrice().toDomainUnitPrice(companyId, x.getVerticalCalCd(), x.getItemId()) : null);
 					
 			domain.validate();
