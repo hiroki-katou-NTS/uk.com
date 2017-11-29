@@ -97,6 +97,23 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 
 	}
 
+	@Override
+	public void delete(AffClassHistory_ver1 history, DateHistoryItem item) {
+		this.commandProxy().remove(KmnmtAffClassHistory_Ver1.class, item.identifier());
+		if ( !history.getPeriods().isEmpty()) {
+			DateHistoryItem lastItem = history.getPeriods().get( history.getPeriods().size() - 1);
+			Optional<KmnmtAffClassHistory_Ver1> lastItemEntityOpt = this.queryProxy().find(lastItem.identifier(), KmnmtAffClassHistory_Ver1.class);
+			if ( !lastItemEntityOpt.isPresent()) {
+				throw new RuntimeException("Invalid KmnmtAffClassHistory_Ver1");
+			}
+			KmnmtAffClassHistory_Ver1 entity = lastItemEntityOpt.get();
+			entity.endDate = lastItem.end();
+			
+			this.commandProxy().update(entity);
+		}
+		
+	}
+
 	private void updateItemBefore(AffClassHistory_ver1 history, DateHistoryItem item) {
 		// Update item before
 		Optional<DateHistoryItem> beforeItemOpt = history.immediatelyBefore(item);

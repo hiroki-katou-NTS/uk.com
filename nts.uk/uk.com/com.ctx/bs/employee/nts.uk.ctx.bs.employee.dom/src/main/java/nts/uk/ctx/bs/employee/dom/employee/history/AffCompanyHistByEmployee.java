@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 所属会社履歴（社員別） */
-public class AffCompanyHistByEmployee extends DomainObject
+public class AffCompanyHistByEmployee extends DomainEvent
 		implements UnduplicatableHistory<AffCompanyHistItem, DatePeriod, GeneralDate> {
 	/** 社員ID */
 	private String sId;

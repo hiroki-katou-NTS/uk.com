@@ -32,5 +32,10 @@ public interface AffClassHistItemRepository_ver1 {
 	 * @param item
 	 */
 	void update(AffClassHistItem_ver1 item); 
+	
+	/**
+	 * @param historyId
+	 */
+	void delete(String historyId); 
 
 }

@@ -11,9 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate_ver1.KmnmtAffClassHistItem_Ver1;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 
 /**
  * @author danpv
@@ -55,11 +53,21 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 		if (!entityOpt.isPresent()) {
 			throw new RuntimeException("invalid TempAbsenceHisItem");
 		}
-		KmnmtAffClassHistItem_Ver1 ent = entityOpt.get(); 
+		KmnmtAffClassHistItem_Ver1 ent = entityOpt.get();
 		ent.classificationCode = item.getClassificationCode().v();
 		this.commandProxy().update(ent);
-		
+
 	}
-	
+
+	@Override
+	public void delete(String historyId) {
+		Optional<KmnmtAffClassHistItem_Ver1> entityOpt = this.queryProxy().find(historyId,
+				KmnmtAffClassHistItem_Ver1.class);
+
+		if (!entityOpt.isPresent()) {
+			throw new RuntimeException("invalid TempAbsenceHisItem");
+		}
+		this.commandProxy().update(entityOpt.get());
+	}
 
 }
