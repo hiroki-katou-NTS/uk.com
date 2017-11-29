@@ -41,8 +41,19 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             let dfd = $.Deferred();
             var params: shareModel.executionProcessingCommand = nts.uk.ui.windows.getShared("KDWL001E");
             
-            service.insertData(params).done((data: shareModel.executionResult) => {
-                console.log(data);
+            service.insertData(params).done(info => {
+                console.log(info);
+                let taskId = info.id;
+
+                nts.uk.deferred.repeat(conf => conf
+                    .task(() => {
+                        return nts.uk.request.asyncTask.getInfo(taskId).done(res => {
+                            console.log(res);
+                        });
+                    })
+                    .while(info => true)
+                    .pause(1000));
+                //console.log(data);
                 //self.executionDate(data.periodStartDate);
                 //self.executionContents(data.enumComboBox);
                 // Start checking proceess
