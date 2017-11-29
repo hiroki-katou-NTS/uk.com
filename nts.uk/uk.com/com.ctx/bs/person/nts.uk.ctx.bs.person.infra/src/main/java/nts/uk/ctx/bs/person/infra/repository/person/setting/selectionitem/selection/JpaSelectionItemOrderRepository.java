@@ -33,8 +33,8 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 	}
 
 	@Override
-	public void remove(String selectionItemOrder) {
-		PpemtSelItemOrderPK pk = new PpemtSelItemOrderPK(selectionItemOrder);
+	public void remove(String selectionId) {
+		PpemtSelItemOrderPK pk = new PpemtSelItemOrderPK(selectionId);
 		this.commandProxy().remove(PpemtSelItemOrder.class, pk);
 
 	}
