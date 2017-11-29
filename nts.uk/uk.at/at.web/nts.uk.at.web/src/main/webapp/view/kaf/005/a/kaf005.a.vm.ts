@@ -285,6 +285,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if (!nts.uk.util.isNullOrUndefined(self.multilContent2())) {
                 divergenceReason = divergenceReason + ":" + self.multilContent2();
             }
+            let overTimeShiftNightTmp: number = 0;
+            let flexExessTimeTmp: number = 0;
+            for (let i = 0; i < self.overtimeHours().length; i++) {
+                if(self.overtimeHours()[i].frameNo() == 11){
+                    overTimeShiftNightTmp = self.overtimeHours()[i].applicationTime;                    
+                }else if(self.overtimeHours()[i].frameNo() == 12){
+                    flexExessTimeTmp = self.overtimeHours()[i].applicationTime;  
+                }
+            }
             let overtime: common.AppOverTime = {
                 applicationDate: self.appDate(),
                 prePostAtr: self.prePostSelected(),
@@ -301,8 +310,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: 100,
-                flexExessTime: 100,
+                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp),
+                flexExessTime: ko.toJS(flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.manualSendMailAtr(),
                 calculateFlag: self.calculateFlag()
