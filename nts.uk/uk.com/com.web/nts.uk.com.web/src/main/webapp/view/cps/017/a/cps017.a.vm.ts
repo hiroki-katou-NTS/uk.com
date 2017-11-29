@@ -44,14 +44,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
                 selection: Selection = self.selection();
 
-            //xu ly dialog: 
-            let param = getShared('CPS017_PARAMS');
-
-            if (param != null && param != undefined) {
-                self.isDialog(param.isDialog);
-                self.closeUp(true);
-                self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
-            }
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
@@ -165,12 +157,20 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 dfd = $.Deferred();
 
             nts.uk.ui.errors.clearAll();
+            //xu ly dialog: 
+            let param = getShared('CPS017_PARAMS');
+
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length > 0) {
                     self.checkCreate(true);
                     self.listItems(itemList);
-                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    if (param != null && param != undefined) {
+                        self.isDialog(param.isDialog);
+                        self.closeUp(true);
+                        self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
+                    }else{
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);}
                 } else {
                     self.checkCreate(false);
                     alertError({ messageId: "Msg_455" });

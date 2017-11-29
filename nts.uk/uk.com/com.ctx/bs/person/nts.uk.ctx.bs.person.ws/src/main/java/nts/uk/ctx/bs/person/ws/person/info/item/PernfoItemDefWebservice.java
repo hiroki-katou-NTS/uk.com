@@ -74,7 +74,7 @@ public class PernfoItemDefWebservice extends WebService {
 
 	@POST
 	@Path("findby/itemId/{Id}")
-	public PerInfoItemDefDto getPerInfoItemDefById(@PathParam("Id") String Id) {
+	public PerInfoItemChangeDefDto getPerInfoItemDefById(@PathParam("Id") String Id) {
 		return itemDefFinder.getPerInfoItemDefById(Id);
 	}
 
