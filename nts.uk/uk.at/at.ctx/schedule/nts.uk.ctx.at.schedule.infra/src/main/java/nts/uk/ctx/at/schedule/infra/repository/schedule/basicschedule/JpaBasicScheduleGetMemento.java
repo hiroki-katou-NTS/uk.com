@@ -45,6 +45,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 			entity.setKscdpBSchedulePK(new KscdtBasicSchedulePK());
 		}
 		this.entity = entity;
+		this.entityTimeZones = entityTimeZones;
 	}
 
 	/* (non-Javadoc)
