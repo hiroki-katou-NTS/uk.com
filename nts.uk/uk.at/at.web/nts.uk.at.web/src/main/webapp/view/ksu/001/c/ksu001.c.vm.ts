@@ -124,7 +124,7 @@ module nts.uk.at.view.ksu001.c {
                             if (res.cancelled || res.failed) {
                                 $('.countdown').stopCount();
                                 self.processingState(nts.uk.resource.getText('KSU001_215'));
-                                self.state('KSU001_213');
+                                self.state(nts.uk.resource.getText('KSU001_213'));
                             }
                         });
                     })
