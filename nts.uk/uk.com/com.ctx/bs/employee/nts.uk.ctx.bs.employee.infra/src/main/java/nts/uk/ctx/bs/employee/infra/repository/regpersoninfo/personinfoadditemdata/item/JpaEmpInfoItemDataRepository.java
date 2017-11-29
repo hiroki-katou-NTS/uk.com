@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.regpersoninfo.personinfoadditemdata.item;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,8 +57,9 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 	@Override
 	public List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId) {
-		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
+		List<EmpInfoItemData> lstObj =  this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
 				.setParameter("recordId", recordId).getList(c -> toDomain(c));
+		return lstObj == null ? new ArrayList<>() : lstObj;
 	}
 
 	/**

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
+import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -27,16 +27,17 @@ public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public BsymtEmpFileManagementPK bsymtEmpFileManagementPK;
 	
-	/** The name. */
+	/** 個人ID */
 	@Basic(optional = false)
-	@Column(name = "SID")
-	public String sid;
+	@Column(name = "PID")
+	public String pid;
 	
+	/** 個人ID */
 	@Basic(optional = true)
 	@Column(name = "FILE_TYPE")
 	public int filetype;
 	
-
+	/** 個人ID */
 	@Basic(optional = true)
 	@Column(name = "DISPORDER")
 	public Integer disPOrder;
@@ -48,13 +49,12 @@ public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return bsymtEmpFileManagementPK;
 	}
 
 
-	public BsymtEmpFileManagement updateFromDomain(EmployeeFileManagement domain) {
-		this.filetype = domain.getTypeFile();
+	public BsymtEmpFileManagement updateFromDomain(PersonFileManagement domain) {
+		this.filetype = domain.getTypeFile().value;
 		this.disPOrder = domain.getUploadOrder();
 		this.personInfoctgId = domain.getPersonInfoCategoryId();
 		return this;

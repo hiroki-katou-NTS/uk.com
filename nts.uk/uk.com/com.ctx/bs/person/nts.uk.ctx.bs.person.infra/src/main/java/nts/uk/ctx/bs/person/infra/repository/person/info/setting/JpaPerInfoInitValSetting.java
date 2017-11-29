@@ -83,7 +83,7 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 
 	@Override
 	public Optional<PerInfoInitValueSetting> getDetailInitValSetting(String settingId) {
-		this.getEntityManager().flush();
+		
 		Optional<PerInfoInitValueSetting> x = this.queryProxy().query(SEL_BY_SET_ID, PpemtPersonInitValueSetting.class)
 				.setParameter("settingId", settingId).getSingle(c -> toDomain(c));
 		return x;

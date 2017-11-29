@@ -8,4 +8,10 @@ public interface CurrentAffiDeptRepository {
 	 * @param domain
 	 */
 	void updateCurrentAffiDept(CurrentAffiDept domain);
+	
+	/**
+	 * ドメインモデル「所属部門（兼務）」を削除する
+	 * @param currrentAffiDeptId
+	 */
+	void deleteCurrentAffiDept(String currrentAffiDeptId);
 }

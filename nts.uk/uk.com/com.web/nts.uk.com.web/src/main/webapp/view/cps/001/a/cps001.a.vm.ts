@@ -43,14 +43,12 @@ module cps001.a.vm {
             },
             onSearchOfWorkplaceClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
-                console.log('xxx');
+
                 self.listEmployee.removeAll();
                 self.listEmployee(dataList);
             },
             onSearchWorkplaceChildClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
-
-                console.log('xxx xxx');
 
                 self.listEmployee.removeAll();
                 self.listEmployee(dataList);
@@ -67,13 +65,18 @@ module cps001.a.vm {
         auth: KnockoutObservable<PersonAuth> = ko.observable(new PersonAuth());
 
         // current tab active id (layout/category)
-        tabActive: KnockoutObservable<string> = ko.observable('layout');
-
-        person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
+        tabActive: KnockoutObservable<TABS> = ko.observable(TABS.LAYOUT);
 
         // for employee info.
         listEmployee: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
         employee: KnockoutObservable<EmployeeInfo> = ko.observable(new EmployeeInfo({ employeeId: '', workplaceId: '' }));
+
+        person: KnockoutComputed<PersonInfo> = ko.computed(() => {
+            let self = this,
+                employee = self.employee();
+
+            return employee.personInfo();
+        });
 
         // for case: layout
         listLayout: KnockoutObservableArray<ILayout> = ko.observableArray([]);
@@ -87,11 +90,14 @@ module cps001.a.vm {
         listTabCategory: KnockoutObservableArray<ICategory> = ko.observableArray([]);
         currentTabCategory: KnockoutObservable<string> = ko.observable('cat1');
 
+        // resource id for title in category mode
+        titleResource: KnockoutObservable<string> = ko.observable('');
+
         constructor() {
             let self = this,
                 auth = self.auth(),
-                person = self.person(),
                 employee = self.employee(),
+                person = employee.personInfo(),
                 layout = self.currentLayout(),
                 category = self.currentCategory();
 
@@ -103,13 +109,14 @@ module cps001.a.vm {
                 }
             });
 
-            self.tabActive.subscribe(x => {
+            self.tabActive.subscribe(tab => {
                 let employeeId = employee.employeeId();
                 if (!!employeeId) {
-                    if (x) {
-                        // clear all error message
-                        clearError();
-                        if (x == 'layout') { // layout mode
+                    // clear all error message
+                    clearError();
+                    switch (tab) {
+                        default:
+                        case TABS.LAYOUT: // layout mode
                             self.listLayout.removeAll();
                             service.getAllLayout().done((data: Array<ILayout>) => {
                                 if (data && data.length) {
@@ -117,64 +124,35 @@ module cps001.a.vm {
                                     layout.maintenanceLayoutID(data[0].maintenanceLayoutID);
                                 }
                             });
-                        } else { // category mode
+                            break;
+                        case TABS.CATEGORY: // category mode
                             self.listCategory.removeAll();
                             service.getCats(employeeId).done((data: Array<ICategory>) => {
                                 self.listCategory(data);
                             });
-                        }
+                            break;
                     }
                 }
             });
 
-            employee.employeeId.subscribe(x => {
-                if (x) {
-
-                    permision().done((perm: IPersonAuth) => {
-                        // Current Employee has permision view other employee avatar
-                        if (!!perm.allowAvatarRef) {
-                            service.getAvatar(x).done((data: any) => {
-                                person.avatar(data.fileId ? liveView(data.fileId) : undefined);
-                            });
-                        }
-                    });
-
-                    service.getPerson(x).done((data: IPersonInfo) => {
-                        if (data) {
-                            person.personId(data.personId);
-                            person.birthDate(data.birthDate);
-                            person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
-                        }
-                    });
+            employee.employeeId.subscribe(id => {
+                if (id) {
                     self.tabActive.valueHasMutated();
-
-                    service.getEmpInfo(x).done((data: IEmployeeInfo) => {
-                        employee.daysOfEntire(data.daysOfEntire);
-                        employee.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
-                    }).fail(() => {
-                        employee.daysOfEntire(0);
-                    });
-
-                    let emp = _.find(self.listEmployee(), e => e.employeeId == x);
-                    if (emp) {
-                        employee.employeeCode(emp.employeeCode);
-                        employee.employeeName(emp.employeeName);
-                    }
                 }
             });
 
-            employee.employeeId.subscribe(x => {
+            employee.employeeId.subscribe(id => {
                 //self.tabActive.valueHasMutated();
             }, self, "beforeChange");
 
             employee.employeeId.valueHasMutated();
 
-            layout.maintenanceLayoutID.subscribe(x => {
-                if (x) {
+            layout.maintenanceLayoutID.subscribe(id => {
+                if (id) {
                     // clear all error message
                     clearError();
 
-                    service.getCurrentLayout(x).done((data: ILayout) => {
+                    service.getCurrentLayout(id).done((data: ILayout) => {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');
 
@@ -216,6 +194,20 @@ module cps001.a.vm {
                 }
             });
 
+            category.id.subscribe(id => {
+                if (id) {
+                    let query = {
+                        ctgId: id,
+                        empId: employee.employeeId(),
+                        standardDate: moment.utc()
+                    };
+
+                    service.getTabInfo(query).done(data => {
+                        debugger;
+                    });
+                }
+            });
+
             self.start();
         }
 
@@ -242,20 +234,20 @@ module cps001.a.vm {
 
         chooseAvatar() {
             let self = this,
-                person: PersonInfo = self.person(),
-                employee: IEmployeeInfo = ko.toJS(self.employee);
+                employee: EmployeeInfo = self.employee(),
+                iemp: IEmployeeInfo = ko.toJS(employee);
 
             // cancel click if hasn't emp
-            if (!employee || !employee.employeeId) {
+            if (!iemp || !iemp.employeeId) {
                 return;
             }
 
             permision().done((perm: IPersonAuth) => {
                 if (!!perm.allowAvatarUpload) {
-                    setShared("CPS001D_PARAMS", employee);
+                    setShared("CPS001D_PARAMS", iemp);
                     modal('../d/index.xhtml').onClosed(() => {
                         let data = getShared("CPS001D_VALUES");
-                        person.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                        employee.avatar(data.fileId ? liveView(data.fileId) : undefined);
                     });
                 }
             });
@@ -362,6 +354,7 @@ module cps001.a.vm {
         text?: string;
         employeeCode?: string;
         employeeName?: string;
+        avatar?: string;
         workplaceId: string;
         workplaceCode?: string;
         workplaceName?: string;
@@ -373,11 +366,13 @@ module cps001.a.vm {
         employeeId: KnockoutObservable<string> = ko.observable('');
         employeeCode: KnockoutObservable<string> = ko.observable('');
         employeeName: KnockoutObservable<string> = ko.observable('');
+        avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
         workplaceId: KnockoutObservable<string> = ko.observable('');
         workplaceCode: KnockoutObservable<string> = ko.observable('');
         workplaceName: KnockoutObservable<string> = ko.observable('');
         daysOfEntire: KnockoutObservable<number> = ko.observable(0);
         daysOfTemporaryAbsence: KnockoutObservable<number> = ko.observable(0);
+        personInfo: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
 
         // calc days of work process
         entire: KnockoutComputed<string> = ko.computed(() => {
@@ -394,7 +389,19 @@ module cps001.a.vm {
         });
 
         constructor(param: IEmployeeInfo) {
-            let self = this;
+            let self = this,
+                person = self.personInfo(),
+                perInfo = (data?: IPersonInfo) => {
+                    if (data) {
+                        person.personId(data.personId);
+                        person.birthDate(data.birthDate);
+                        person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
+                    } else {
+                        person.personId('');
+                        person.birthDate(undefined);
+                        person.fullName(self.employeeName());
+                    }
+                };
 
             if (param) {
                 self.employeeId(param.employeeId);
@@ -407,7 +414,52 @@ module cps001.a.vm {
 
                 self.daysOfEntire(param.daysOfEntire);
                 self.daysOfTemporaryAbsence(param.daysOfTemporaryAbsence);
+
+
+                self.avatar(param.avatar || DEF_AVATAR);
             }
+
+            self.employeeId.subscribe(id => {
+                if (id) {
+                    service.getPerson(id).done((data: IPersonInfo) => {
+                        perInfo(data);
+                    }).fail(() => {
+                        perInfo();
+                    });
+
+                    // get employee && employment info
+                    service.getEmpInfo(id).done((data: IEmployeeInfo) => {
+                        self.employeeCode(data.employeeCode);
+
+                        // set entire days with data receive
+                        self.daysOfEntire(data.daysOfEntire);
+                        self.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                    }).fail(() => {
+                        self.employeeCode(undefined);
+
+                        // set entire days is zero
+                        self.daysOfEntire(0);
+                        self.daysOfTemporaryAbsence(0);
+                    });
+
+                    permision().done((perm: IPersonAuth) => {
+                        // Current Employee has permision view other employee avatar
+                        if (!!perm.allowAvatarRef) {
+                            service.getAvatar(id).done((data: any) => {
+                                self.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                            });
+                        }
+                    });
+                } else {
+                    perInfo();
+                }
+            });
+
+            self.avatar.subscribe(x => {
+                if (!x) {
+                    self.avatar(DEF_AVATAR);
+                }
+            });
         }
     }
 
@@ -419,7 +471,6 @@ module cps001.a.vm {
         mailAddress?: string;
         personMobile?: string;
         code?: string;
-        avatar?: string;
         bloodType?: number;
         personNameGroup?: PersonNameGroup;
     }
@@ -439,7 +490,6 @@ module cps001.a.vm {
     class PersonInfo {
         personId: KnockoutObservable<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
-        avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
         fullName: KnockoutObservable<string> = ko.observable('');
         birthDate: KnockoutObservable<Date> = ko.observable(undefined);
         constructor(param: IPersonInfo) {
@@ -447,14 +497,7 @@ module cps001.a.vm {
 
             self.personId(param.personId || '');
             self.code(param.code || '');
-            self.avatar(param.avatar || DEF_AVATAR);
             self.fullName(param.personNameGroup && param.personNameGroup.personName || '');
-
-            self.avatar.subscribe(x => {
-                if (!x) {
-                    self.avatar(DEF_AVATAR);
-                }
-            });
         }
 
         age: KnockoutComputed<string> = ko.computed(() => {
@@ -495,7 +538,17 @@ module cps001.a.vm {
     }
 
     enum TABS {
-        LAYOUT = 1,
-        CATEGORY = 2
+        LAYOUT = <any>"layout",
+        CATEGORY = <any>"category"
+    }
+
+
+
+    interface IPeregQuery {
+        ctgId: string;
+        ctgCd?: string;
+        empId: string;
+        standardDate: Date;
+        infoId?: string;
     }
 }

@@ -9,7 +9,7 @@ module cps001.a.service {
         },
         category: {
             'getData': 'bs/employee/category/getAll/{0}',
-            'getTabInfo': 'bs/employee/category/tabchildren/find/getTabDetail/{0}/{1}/{2}', //{employeeId}/{categoryId}/{infoId} 
+            'getTabInfo': 'ctx/pereg/layout/find/getTabDetail',
         },
         person: {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
@@ -61,5 +61,9 @@ module cps001.a.service {
 
     export function getFileInfo(id: string) {
         return ajax(paths.file, id);
+    }
+
+    export function getTabInfo(data: any) {
+        return ajax(paths.category.getTabInfo, data);
     }
 }

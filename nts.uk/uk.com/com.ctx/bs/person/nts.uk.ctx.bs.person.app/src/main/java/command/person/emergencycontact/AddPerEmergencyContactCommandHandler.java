@@ -20,7 +20,7 @@ public class AddPerEmergencyContactCommandHandler extends CommandHandlerWithResu
 	private PersonEmergencyCtRepository perEmergencyContact;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00015";
 	}
 
