@@ -43,13 +43,13 @@ public class BsymtAffiWorkplaceHistItem extends UkJpaEntity implements Serializa
 	
 	/** The workPlaceCode. */
 	@Basic(optional = false)
-	@Column(name = "WORKPLACE_CODE")
-	private String workPlaceCode;
+	@Column(name = "WORKPLACE_ID")
+	private String workPlaceId;
 	
 	/** The workPlaceCode. */
 	@Basic(optional = false)
-	@Column(name = "NORMAL_WORKPLACE_CD")
-	private String normalWkpCode;
+	@Column(name = "NORMAL_WORKPLACE_ID")
+	private String normalWkpId;
 	
 	/** The workPlaceCode. */
 	@Basic(optional = false)

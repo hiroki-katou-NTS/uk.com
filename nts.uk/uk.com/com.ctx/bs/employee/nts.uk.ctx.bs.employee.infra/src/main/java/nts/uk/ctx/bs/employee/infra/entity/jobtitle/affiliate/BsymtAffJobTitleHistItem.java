@@ -43,8 +43,8 @@ public class BsymtAffJobTitleHistItem extends UkJpaEntity implements Serializabl
 	
 	/** The empCode. */
 	@Basic(optional = false)
-	@Column(name = "JOB_TITLE_CODE")
-	private String jobTitleCode;
+	@Column(name = "JOB_TITLE_ID")
+	private String jobTitleId;
 	
 	@Basic(optional = false)
 	@Column(name = "NOTE")

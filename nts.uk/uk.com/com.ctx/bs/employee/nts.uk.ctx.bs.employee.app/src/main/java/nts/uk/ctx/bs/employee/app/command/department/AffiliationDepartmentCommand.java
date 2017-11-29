@@ -22,7 +22,7 @@ public class AffiliationDepartmentCommand {
 	/** The department code. */
 	/* 部門コード */
 	@PeregItem("IS00073")
-	private String departmentCode;
+	private String departmentId;
 
 	/** The Affiliation History Transfer type. */
 	// 所属履歴異動種類

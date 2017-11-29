@@ -18,14 +18,14 @@ public class JpaAffDepartmentHistoryItemRepository extends JpaRepository impleme
 	 * @return
 	 */
 	private BsymtAffiDepartmentHistItem toEntity(AffDepartmentHistoryItem domain){
-		return new BsymtAffiDepartmentHistItem(domain.getHistoryId(),domain.getEmployeeId(),domain.getDepartmentCode().v(), domain.getAffHistoryTranfsType(),domain.getDepartmentCode().v());
+		return new BsymtAffiDepartmentHistItem(domain.getHistoryId(),domain.getEmployeeId(),domain.getDepartmentId(), domain.getAffHistoryTranfsType(),domain.getDistributionRatio().v());
 	}
 	
 	private void updateEntity(AffDepartmentHistoryItem domain, BsymtAffiDepartmentHistItem entity){
 		entity.setSid(domain.getEmployeeId());
-		entity.setDepCode(domain.getDepartmentCode().v());
+		entity.setDepId(domain.getDepartmentId());
 		entity.setAffHistTranfsType(domain.getAffHistoryTranfsType());
-		entity.setDepCode(domain.getDistributionRatio().v());
+		entity.setDistrRatio(domain.getDistributionRatio().v());
 	}
 	
 	

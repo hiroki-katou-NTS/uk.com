@@ -25,7 +25,7 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	 * @return
 	 */
 	private BsymtAffJobTitleHistItem toEntity(AffJobTitleHistoryItem domain) {
-		return new BsymtAffJobTitleHistItem(domain.getHistoryId(), domain.getEmployeeId(), domain.getJobTitleCode().v(),
+		return new BsymtAffJobTitleHistItem(domain.getHistoryId(), domain.getEmployeeId(), domain.getJobTitleId(),
 				domain.getNote().v());
 	}
 
@@ -37,7 +37,7 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	 */
 	private void updateEntity(AffJobTitleHistoryItem domain, BsymtAffJobTitleHistItem entity) {
 		entity.setSid(domain.getEmployeeId());
-		entity.setJobTitleCode(domain.getJobTitleCode().v());
+		entity.setJobTitleId(domain.getJobTitleId());
 		entity.setNote(domain.getNote().v());
 	}
 
@@ -79,7 +79,7 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 		if (optionData.isPresent()) {
 			BsymtAffJobTitleHistItem ent = optionData.get();
 			return Optional.of(AffJobTitleHistoryItem.createFromJavaType(ent.getHisId(), ent.getSid(),
-					ent.getJobTitleCode(), ent.getNote()));
+					ent.getJobTitleId(), ent.getNote()));
 		}
 		return Optional.empty();
 	}

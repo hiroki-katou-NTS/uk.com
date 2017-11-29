@@ -60,7 +60,7 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 		
 		affJobTitleHistoryRepository_ver1.add(itemtoBeAdded);
 		
-		AffJobTitleHistoryItem domain = AffJobTitleHistoryItem.createFromJavaType(histId, command.getSid(), command.getJobTitleCode(), command.getNote());
+		AffJobTitleHistoryItem domain = AffJobTitleHistoryItem.createFromJavaType(histId, command.getSid(), command.getJobTitleId(), command.getNote());
 		affJobTitleHistoryItemRepository_v1.add(domain);
 		
 		return new PeregAddCommandResult(histId);

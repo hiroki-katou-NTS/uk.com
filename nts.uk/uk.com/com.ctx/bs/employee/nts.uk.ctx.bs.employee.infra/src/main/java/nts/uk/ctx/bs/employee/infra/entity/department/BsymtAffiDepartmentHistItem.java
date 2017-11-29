@@ -43,8 +43,8 @@ public class BsymtAffiDepartmentHistItem extends UkJpaEntity implements Serializ
 	
 	/** The empCode. */
 	@Basic(optional = false)
-	@Column(name = "DEP_CODE")
-	private String depCode;
+	@Column(name = "DEP_ID")
+	private String depId;
 	
 	@Basic(optional = false)
 	@Column(name = "AFF_HIST_TRANFS_TYPE")
