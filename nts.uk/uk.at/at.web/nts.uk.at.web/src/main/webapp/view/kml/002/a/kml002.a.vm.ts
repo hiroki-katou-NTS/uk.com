@@ -1508,7 +1508,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         } else if (attribute == 1) {
                             if (data.moneyFunc.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
                                 formulaResult = "";
-                            } else if (data.lstMoney.length > 0) {
+                            } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
                                     var operatorAtrTime = data.moneyFunc.lstMoney[i].operatorAtrTime == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                     var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
