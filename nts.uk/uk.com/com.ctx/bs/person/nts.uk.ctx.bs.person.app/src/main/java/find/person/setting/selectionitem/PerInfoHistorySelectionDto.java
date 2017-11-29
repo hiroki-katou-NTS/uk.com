@@ -8,13 +8,13 @@ import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelec
 public class PerInfoHistorySelectionDto {
 	private String histId;
 	private String selectionItemId;
-	private String companyCode;
+	private String companyId;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 
 	public static PerInfoHistorySelectionDto fromDomainHistorySelection(PerInfoHistorySelection domain) {
 
-		return new PerInfoHistorySelectionDto(domain.getHistId(), domain.getSelectionItemId(), domain.getCompanyCode(),
+		return new PerInfoHistorySelectionDto(domain.getHistId(), domain.getSelectionItemId(), domain.getCompanyId(),
 				domain.getPeriod().start(), domain.getPeriod().end());
 	}
 }

@@ -3,6 +3,8 @@ package find.person.info.item;
 import java.math.BigDecimal;
 import java.util.List;
 
+import find.person.setting.init.item.SelectionInitDto;
+import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import lombok.Value;
 import nts.arc.enums.EnumConstant;
 
@@ -22,4 +24,6 @@ public class PerInfoItemChangeDefDto {
 	private BigDecimal selectionItemRefType;
 	private ItemTypeStateDto itemTypeState;
 	private List<EnumConstant> selectionItemRefTypes;
+	private String selectionItemName;
+	private List<SelectionInitDto> selectionLst;
 }
