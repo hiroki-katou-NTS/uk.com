@@ -12,32 +12,32 @@ import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor
 @Getter
 public class FormBuilt {
-	/* 会社ID */
+	/** 会社ID  */
     private String companyId;
     
-    /*コード*/
+    /** コード**/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /* 設定方法 */
+    /** 設定方法 */
     private SettingMethod settingMethod1;
     
     private String verticalCalItem1;
     
-    /* 縦計入力項目 */
+    /** 縦計入力項目 */
     private String verticalInputItem1;
     
-    /* 設定方法 */
+    /** 設定方法 */
     private SettingMethod settingMethod2;
     
     private String verticalCalItem2;
     
-    /* 縦計入力項目 */
+    /** 縦計入力項目 */
     private String verticalInputItem2;
     
-    /* 演算子区分 */
+    /** 演算子区分 */
     private OperatorAtr operatorAtr;
 
     /**

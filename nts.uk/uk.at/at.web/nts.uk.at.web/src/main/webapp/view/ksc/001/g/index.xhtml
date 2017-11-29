@@ -21,13 +21,13 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
+			<div id="functions-area" style="display: none" data-bind="visible: true">
 				<!-- Go back Style -->
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/ksc/001/a/index.xhtml' }">
 					#{i18n.getText('KSC001_40')} </a>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<label class="navigation-label">#{i18n.getText('KSC001_62')}</label>
 				<div class="ksc001-panel"
 					data-bind="ntsPanel:{

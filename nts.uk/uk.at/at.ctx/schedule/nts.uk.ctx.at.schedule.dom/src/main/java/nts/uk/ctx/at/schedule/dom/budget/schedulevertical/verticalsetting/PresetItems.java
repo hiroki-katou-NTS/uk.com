@@ -11,15 +11,15 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class PresetItems {
-	/* 会社ID */
+	/** 会社ID */
     private String companyId;
     
-    /* ID */
+    /** ID */
     private String Id;
     
-    /* 名称 */
+    /** 名称 */
     private String name;
     
-    /* 属性 */
+    /** 属性 */
     private Attributes attributes;
 }
