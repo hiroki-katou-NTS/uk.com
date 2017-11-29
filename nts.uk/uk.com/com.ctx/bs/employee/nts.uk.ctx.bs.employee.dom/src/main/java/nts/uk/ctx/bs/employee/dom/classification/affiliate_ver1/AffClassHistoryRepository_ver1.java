@@ -29,7 +29,7 @@ public interface AffClassHistoryRepository_ver1 {
 	
 	/**
 	 * add domain history
-	 * add last item and update before item
+	 * add last item and update before items
 	 * @param history
 	 */
 	void add(AffClassHistory_ver1 history);
@@ -40,5 +40,13 @@ public interface AffClassHistoryRepository_ver1 {
 	 * @param history
 	 */
 	void update(AffClassHistory_ver1 history, DateHistoryItem item);
+	
+	/**
+	 * delete domain history
+	 * delete last item and update nearly item
+	 * @param history
+	 * @param item
+	 */
+	void delete(AffClassHistory_ver1 history, DateHistoryItem item);
 
 }
