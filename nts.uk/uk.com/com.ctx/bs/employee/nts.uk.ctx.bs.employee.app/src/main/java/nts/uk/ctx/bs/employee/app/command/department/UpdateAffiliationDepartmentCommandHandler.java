@@ -18,7 +18,7 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 	private AffDepartmentRepository affDepartmentRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00011";
 	}
 

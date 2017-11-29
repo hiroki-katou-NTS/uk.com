@@ -52,7 +52,8 @@ public class PerInfoCtgWebservice extends WebService {
 	@POST
 	@Path("find/withItemsName/{Id}")
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(@PathParam("Id") String id) {
-		return perInfoCtgFinder.getPerInfoCtgWithItemsName(id);
+		PerInfoCtgWithItemsNameDto ctg = perInfoCtgFinder.getPerInfoCtgWithItemsName(id);
+		return ctg;
 	}
 	
 	//vinhpx: start

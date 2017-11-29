@@ -10,10 +10,13 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
 
 @Stateless
 public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemCommand, String> {
@@ -24,6 +27,9 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
 
+	@Inject
+	private SelectionRepository selectionRepo;
+
 	private final static String SPECIAL_ITEM_CODE = "IO";
 	private final static int ITEM_CODE_DEFAUT_NUMBER = 0;
 
@@ -32,7 +38,17 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		String perInfoItemId = null;
 		AddItemCommand addItemCommand = context.getCommand();
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
-		if (!this.pernfoItemDefRep.checkItemNameIsUnique(addItemCommand.getPerInfoCtgId(), addItemCommand.getItemName(), "")) {
+		if (addItemCommand.getSingleItem().getDataType() == 6) {
+			List<Selection> selection = this.selectionRepo.getAllSelectionByHistoryId(
+					addItemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today());
+			if (selection == null || selection.size() == 0) {
+				
+				throw new BusinessException(new RawErrorMessage("Msg_587"));
+
+			}
+		}
+		if (!this.pernfoItemDefRep.checkItemNameIsUnique(addItemCommand.getPerInfoCtgId(), addItemCommand.getItemName(),
+				"")) {
 			throw new BusinessException(new RawErrorMessage("Msg_358"));
 		}
 		PersonInfoCategory perInfoCtg = this.perInfoCtgRep

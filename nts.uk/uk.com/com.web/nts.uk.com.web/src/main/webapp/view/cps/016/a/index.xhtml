@@ -7,7 +7,8 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS008_1')}</title>
+<!-- 			<title>#{i18n.getText('CPS008_1')}</title> -->
+			<script>var dialogSize = { width: 1300, height: 750 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionItemName
 					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionCodeLength
@@ -33,9 +34,13 @@
 				<button id="A_BTN_COPPY">マスタ修正ログ</button>
 				<button id="A_BTN_DELETE" class="danger"
 					data-bind="click : removeDataSelectioItem, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS016_3')}</button>
-				<button tabindex="4" id="A_BTN_CPS016_4"
-					data-bind="visible: closeUp">#{i18n.getText('CPS016_4')}</button>
-				<button class="goout" id="A_BTN_JUMP" data-bind="click:OpenCPS017, enable: checkCreate()==false">#{i18n.getText('CPS016_23')}</button>
+				 <com:ko-if bind="(isDialog() === true)">
+					<button tabindex="4" id="A_BTN_CPS016_4"
+						data-bind="click: closeDialog">#{i18n.getText('CPS016_4')}</button> 
+				 </com:ko-if>
+ 				<button class="goout" id="A_BTN_JUMP"
+					data-bind="click:OpenCPS017, enable: checkCreate()==false">#{i18n.getText('CPS016_23')}</button>
+			 
 			</div>
 
 			<div id="contents-area">
@@ -44,8 +49,8 @@
 					<i class="icon icon-searchbox"></i>
 					<div class="cf">
 						<div style="float: left">
-   							<div style="width: 395px"       
-   								data-bind="ntsSearchBox: {       
+							<div style="width: 395px"
+								data-bind="ntsSearchBox: {       
    									searchMode: 'filter',       
    									targetKey: 'selectionItemId',        
    									comId: 'single-list',       
@@ -54,7 +59,7 @@
    									selectedKey: 'selectionItemId',        
    									fields: ['selectionItemName'],        
    									mode: 'igGrid'       
-   									}" />       
+   									}" />
 							<table id="single-list"
 								data-bind="ntsGridList: {
 									height: 490,

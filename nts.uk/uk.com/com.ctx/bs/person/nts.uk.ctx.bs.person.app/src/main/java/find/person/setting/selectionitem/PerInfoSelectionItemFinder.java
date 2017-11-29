@@ -24,11 +24,19 @@ public class PerInfoSelectionItemFinder {
 	}
 
 	public PerInfoSelectionItemDto getPerInfoSelectionItem(String selectionItemId) {
-		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo.getSelectionItemBySelectionItemId(selectionItemId);
+		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo
+				.getSelectionItemBySelectionItemId(selectionItemId);
 
 		if (!opt.isPresent()) {
 			return null;
 		}
 		return PerInfoSelectionItemDto.fromDomain(opt.get());
+	}
+	//getAllSelection
+	
+	public List<PerInfoSelectionItemDto> getAllSelectionItem(int selectionItemClsAtr) {
+		return this.perInfoSelectionItemRepo.getAllSelection(selectionItemClsAtr).stream()
+				.map(c -> PerInfoSelectionItemDto.fromDomain(c))
+				.collect(Collectors.toList());
 	}
 }
