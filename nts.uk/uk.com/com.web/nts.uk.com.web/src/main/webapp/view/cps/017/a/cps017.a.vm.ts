@@ -37,7 +37,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         //en/dis: Selection
         enDisDelSelec: KnockoutObservable<boolean> = ko.observable(false);
-        revDisSel: KnockoutObservable<boolean> = ko.observable(false);
+        revDisSel01: KnockoutObservable<boolean> = ko.observable(false);
+        revDisSel02: KnockoutObservable<boolean> = ko.observable(false);
+        revDisSel03: KnockoutObservable<boolean> = ko.observable(false);
+        revDisSel04: KnockoutObservable<boolean> = ko.observable(false);
 
         //
         disbleAdUpHist: KnockoutObservable<boolean> = ko.observable(true);
@@ -76,8 +79,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.disbleAdUpHist(false);
                             self.enableDelHist(false);
                             self.enableSelName(false);
-                            self.revDisSel(false);
-                            
+                            self.revDisSel02(false);
+                            self.revDisSel01(false);
+                            self.revDisSel03(false);
+                            self.revDisSel04(false);
+
                             historySelection.histId(undefined);
                             nts.uk.ui.errors.clearAll();
                             self.selection().selectionID('');
@@ -103,10 +109,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (histCur != undefined) {
                         if (histCur.endDate !== '9999/12/31' || self.listHistorySelection().length <= 1) {
                             self.enableDelHist(false);
-                            self.revDisSel(false);
+                            self.revDisSel02(false);
+                            self.revDisSel01(false);
+                            self.revDisSel03(false);
+                            self.revDisSel04(false);
                         } else {
                             self.enableDelHist(true);
-                            self.revDisSel(true);
+                            self.revDisSel01(true);
+                            self.revDisSel02(true);
+                            self.revDisSel03(true);
+                            self.revDisSel04(true);
                         }
                     }
 
@@ -114,10 +126,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (adUpHist != undefined) {
                         if (adUpHist.endDate !== '9999/12/31' || self.listHistorySelection().length == 0) {
                             self.disbleAdUpHist(false);
-                            self.revDisSel(false);
+                            self.revDisSel02(false);
+                            self.revDisSel01(false);
+                            self.revDisSel03(false);
+                            self.revDisSel04(false);
                         } else {
                             self.disbleAdUpHist(true);
-                            self.revDisSel(true);
+                            self.revDisSel01(true);
+                            self.revDisSel02(true);
+                            self.revDisSel03(true);
+                            self.revDisSel04(true);
                         }
                     }
 
@@ -135,7 +153,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             //self.checkCreate(false);
                         } else {
                             self.enableSelName(true);
-                            self.registerData();
+                            self.revDisSel02(false);
+                            //self.registerData();
                         }
 
                     });
@@ -242,6 +261,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listSelection: Array<Selection> = self.listSelection(),
                 _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
 
+            oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
+
             currentItem.histId(self.historySelection().histId());
             command = ko.toJS(currentItem);
             if (_selectionCD) {
@@ -253,7 +274,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
                         if (itemList && itemList.length) {
                             itemList.forEach(x => self.listSelection.push(x));
-                            self.selection().selectionID(self.listSelection()[0].selectionID);
+
+                            self.selection().selectionCD(currentItem.selectionCD);
+
                             nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function() {
                                 if (itemList.length == 1) {
                                     nts.uk.ui.dialog.alert({ messageId: "Msg_530" });
