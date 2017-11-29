@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.bonuspay.setting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,11 +14,22 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.bonuspay.primitives.BonusPayTime;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.bonuspay.enums.RoundingAtr;
+import nts.uk.ctx.at.record.dom.bonuspay.enums.UnitAtr;
+import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.RoundingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPayTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Rounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -25,6 +37,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author hungnm
  *
  */
+@Getter
 public class BonusPayTimesheet extends CalculationTimeSheet{
 
 	private int timeSheetId;
@@ -41,10 +54,16 @@ public class BonusPayTimesheet extends CalculationTimeSheet{
 
 	private RoundingAtr roundingAtr;
 
-	public BonusPayTimesheet(int timeSheetId, UseAtr useAtr, String timeItemId,
+	public BonusPayTimesheet(TimeSpanWithRounding withRounding
+			,TimeSpanForCalc timeSpan
+			,List<TimeSheetOfDeductionItem> deductionTimeSheets
+			,List<BonusPayTimesheet> bonusPayTimeSheet
+			,List<SpecBonusPayTimesheet> SpecBonusPayTimesheet
+			,Optional<MidNightTimeSheet> midNighttimeSheet,
+			int timeSheetId, UseAtr useAtr, String timeItemId,
 			AttendanceClock startTime, AttendanceClock endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr) {
-		super();
+		super(withRounding,timeSpan,deductionTimeSheets,bonusPayTimeSheet,SpecBonusPayTimesheet,midNighttimeSheet);
 		this.timeSheetId = timeSheetId;
 		this.useAtr = useAtr;
 		this.timeItemId = timeItemId;
@@ -58,20 +77,50 @@ public class BonusPayTimesheet extends CalculationTimeSheet{
 //		super();
 //	}
 
-//	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, Long startTime,
-//			Long endTime, int roundingTimeAtr, int roundingAtr) {
+	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
+			int endTime, int roundingTimeAtr, int roundingAtr) {
+		return new BonusPayTimesheet(
+				new TimeSpanWithRounding(new TimeWithDayAttr(startTime),new TimeWithDayAttr(endTime),
+										 Finally.of(new TimeRoundingSetting(EnumAdaptor.valueOf(roundingTimeAtr, Unit.class),EnumAdaptor.valueOf(roundingAtr, Rounding.class)))),
+				new TimeSpanForCalc(new TimeWithDayAttr(startTime),new TimeWithDayAttr(endTime)),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Optional.empty(),
+				timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
+				new AttendanceClock(startTime), new AttendanceClock(endTime),
+				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
+				EnumAdaptor.valueOf(roundingAtr, RoundingAtr.class));
+	}
+	
+//                           -----------------origin---------------
+//	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
+//			int endTime, int roundingTimeAtr, int roundingAtr) {
 //		return new BonusPayTimesheet(timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
-//				new AttendanceClock(startTime), new AttendanceClock(endTime),
+//				new BonusPayTime(startTime), new BonusPayTime(endTime),
 //				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
 //				EnumAdaptor.valueOf(roundingAtr, RoundingAtr.class));
 //	}
-	
+//	
 	/**
 	 * 開始と終了時刻を入れ替え作り直す
 	 * @return 加給時間帯クラス
 	 */
 	public BonusPayTimesheet reCreateCalcRange(TimeSpanForCalc newRange) {
-		return new BonusPayTimesheet(this.timeSheetId,this.useAtr,this.getTimeItemId(),newRange.getStart(),newRange.getEnd(),this.getRoundingTimeAtr(),this.getRoundingAtr());
+		return new BonusPayTimesheet(
+									new TimeSpanWithRounding(newRange.getStart(), newRange.getEnd(), this.timeSheet.getRounding()),
+									this.calcrange,
+									this.deductionTimeSheet,
+									this.bonusPayTimeSheet,
+									this.specBonusPayTimesheet,
+									this.midNightTimeSheet,
+									this.timeSheetId,
+									this.useAtr,
+									this.timeItemId,
+									this.startTime,
+									this.endTime,
+									this.roundingTimeAtr,
+									this.roundingAtr);
 	}
 	
 	/**
@@ -117,20 +166,25 @@ public class BonusPayTimesheet extends CalculationTimeSheet{
 			List<TimeSheetOfDeductionItem> deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
 			List<BonusPayTimesheet>        bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
 			Optional<MidNightTimeSheet>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
-			TimeSpanForCalc renewSpan = decisionNewEndPoint(this.calculationTimeSheet,baseTime,isDateBefore);
+			TimeSpanForCalc renewSpan = decisionNewSpan(this.calcrange,baseTime,isDateBefore);
 			
-			return new BonusPayTimesheet();
+			return new BonusPayTimesheet(new TimeSpanWithRounding(renewSpan.getStart(), renewSpan.getEnd(), this.timeSheet.getRounding()),
+										 renewSpan,
+										 deductionTimeSheets,
+										 bonusPayTimeSheet,
+										 this.specBonusPayTimesheet,
+										 midNighttimeSheet,
+										 this.timeSheetId,
+										 this.useAtr,
+										 this.timeItemId,
+										 this.startTime,
+										 this.endTime,
+										 this.roundingTimeAtr,
+										 this.roundingAtr);
 			//return new BonusPayTimesheet(this.timeSheetId,this.useAtr,this.timeItemId,this.startTime,newEnd,this.roundingTimeAtr,this.roundingAtr);
 	}
 	
 
-	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
-			int endTime, int roundingTimeAtr, int roundingAtr) {
-		return new BonusPayTimesheet(timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
-				new BonusPayTime(startTime), new BonusPayTime(endTime),
-				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
-				EnumAdaptor.valueOf(roundingAtr, RoundingAtr.class));
-	}
 	
 	
 	/**

@@ -4,13 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestTimeSetting;
 
 /**
  * The Class BreakTime.
+ * 流動勤務の休憩時間帯
  */
 @Getter
+@AllArgsConstructor
 // 流動勤務の休憩時間帯
 public class FluRestTime {
 
@@ -22,4 +25,12 @@ public class FluRestTime {
 
 	// 休憩時間帯を固定にする
 	private Boolean useFixedRestTime;
+	
+	
+	/**
+	 * 休憩時間帯を固定にする　に変更する
+	 */
+	public void changeTrueUseFixedRestTime() {
+		useFixedRestTime = true;
+	}
 }

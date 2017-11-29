@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.dom.bonuspay.setting;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 
 /**
  * @author hungnm

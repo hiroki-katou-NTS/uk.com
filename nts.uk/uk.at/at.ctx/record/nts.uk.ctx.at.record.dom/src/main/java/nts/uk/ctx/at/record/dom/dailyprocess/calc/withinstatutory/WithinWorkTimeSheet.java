@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
@@ -34,7 +35,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheetList;
 import nts.uk.ctx.at.shared.dom.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationAddTime;
@@ -48,7 +48,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdd
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSet;
@@ -56,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSetList
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexworkset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -73,11 +73,39 @@ public class WithinWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 	//private RaisingSalaryTime
 	//private Optional<> flexTimeSheet;
 	private final List<WithinWorkTimeFrame> withinWorkTimeFrame;
-	private final List<LeaveEarlyDecisionClock> leaveEarlyDecisionClock;
-	private final List<LateDecisionClock> lateDecisionClock;
-	private List<LateTimeOfDaily> lateTimeOfDaily;
-	private final FlexWithinWorkTimeSheet flexTimeSheet;
+//	private final List<LeaveEarlyDecisionClock> leaveEarlyDecisionClock;
+//	private final List<LateDecisionClock> lateDecisionClock;
+//	private List<LateTimeOfDaily> lateTimeOfDaily;
+//	private final FlexWithinWorkTimeSheet flexTimeSheet;
 	
+	
+	
+	/**
+	 * 就業時間内時間帯
+	 * 
+	 * @param workType 勤務種類クラス
+	 * @param predetermineTimeSet 所定時間設定クラス
+	 * @param fixedWorkSetting 固定勤務設定クラス
+	 * @param workTimeCommonSet 就業時間帯の共通設定
+	 * @param deductionTimeSheet 控除時間帯
+	 * @param bonusPaySetting 加給設定
+	 * @return 就業時間内時間帯
+	 */
+	public static WithinWorkTimeSheet createAsFixed(WorkType workType,
+													WorkTimeSet predetermineTimeSet,
+													FixedWorkSetting fixedWorkSetting,
+													WorkTimeCommonSet workTimeCommonSet,
+													DeductionTimeSheet deductionTimeSheet,
+													BonusPaySetting bonusPaySetting) {
+		
+		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
+		if(workType.isWeekDayAttendance()) {
+			timeFrames = isWeekDayProcess(workType,predetermineTimeSet,fixedWorkSetting,workTimeCommonSet
+									 							,deductionTimeSheet,bonusPaySetting);
+		}
+		return new WithinWorkTimeSheet(timeFrames);
+	}
+
 	/**
 	 * 就業時間内時間帯の作成
 	 * @param workType　勤務種類クラス
@@ -85,10 +113,9 @@ public class WithinWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 	 * @param fixedWorkSetting  固定勤務設定クラス
 	 * @return 就業時間内時間帯クラス
 	 */
-	public static WithinWorkTimeSheet createAsFixedWork(
-			WorkNo workNo,
+	private static List<WithinWorkTimeFrame> isWeekDayProcess(
 			WorkType workType,
-			PredetermineTimeSet predetermineTimeSet,
+			WorkTimeSet predetermineTimeSet,
 			FixedWorkSetting fixedWorkSetting,
 			WorkTimeCommonSet workTimeCommonSet,
 			DeductionTimeSheet deductionTimeSheet,
@@ -109,7 +136,7 @@ public class WithinWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 		
 		for (int frameNo = 0; frameNo < workingHourSet.toArray().length; frameNo++) {
 			List<BonusPayTimesheet> bonusPayTimeSheet = new ArrayList<>();
-			List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet = new ArrayList<>();
+			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet = new ArrayList<>();
 			Optional<MidNightTimeSheet> midNightTimeSheet;
 			for(WorkTimeOfTimeSheetSet duplicateTimeSheet :workingHourSet) {
 				//DeductionTimeSheet deductionTimeSheet = /*控除時間を分割する*/
@@ -120,7 +147,7 @@ public class WithinWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 				/*深夜*/
 				midNightTimeSheet = timeFrame.createMidNightTimeSheet();
 				
-				timeFrames.add(new WithinWorkTimeFrame(timeFrame.getWorkingHoursTimeNo(),timeFrame.getTimeSheet(),timeFrame.getCalcrange(),timeFrame.getDeductionTimeSheets(),bonusPayTimeSheet,midNightTimeSheet,specifiedBonusPayTimeSheet));
+				timeFrames.add(new WithinWorkTimeFrame(timeFrame.getWorkingHoursTimeNo(),timeFrame.getTimeSheet(),timeFrame.getCalcrange(),timeFrame.getDeductionTimeSheet(),bonusPayTimeSheet,midNightTimeSheet,specifiedBonusPayTimeSheet));
 			}
 		}
 		
@@ -233,19 +260,20 @@ public class WithinWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 //		return new WithinWorkTimeSheet(this.withinWorkTimeFrame,this.leaveEarlyDecisionClock,this.lateDecisionClock,new FlexWithinWorkTimeSheet());
 //	}
 	
+	
 	/**
-	  * 就業時間(法定内用)の計算
-	  * @param calcActualTime 実働のみで計算する
-	  * @param dedTimeSheet　控除時間帯
-	  * @return 就業時間の計算結果
-	  */
-	 public AttendanceTime calcWorkTimeForStatutory(CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet) {
-	  return calcWorkTime(HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime),dedTimeSheet);
-	 }
+	 * 就業時間(法定内用)の計算
+	 * @param calcActualTime 実働のみで計算する
+	 * @param dedTimeSheet　控除時間帯
+	 * @return 就業時間の計算結果
+	 */
+	public AttendanceTime calcWorkTimeForStatutory(CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet) {
+		return calcWorkTime(HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime),dedTimeSheet);
+	}
 	
 	
 	/**
-	 * 就業時間の計算(控除時間差し引いた後)
+	 * 就業時間の計算(控除時間差し引いた後) →　ループ処理　
 	 * @return 就業時間
 	 */
 	public AttendanceTime calcWorkTime(CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily) {

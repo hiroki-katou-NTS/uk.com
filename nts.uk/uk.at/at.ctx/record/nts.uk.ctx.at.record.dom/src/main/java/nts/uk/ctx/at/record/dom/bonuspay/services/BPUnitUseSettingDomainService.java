@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BPUnitUseSetting;
 
+
 @Stateless
 public class BPUnitUseSettingDomainService implements BPUnitUseSettingService {
 	@Inject

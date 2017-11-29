@@ -9,6 +9,7 @@ import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * The Class DailyTime.
+ * 日単位
  */
 @TimeRange(max = "24:00", min = "00:00")
 public class DailyTime extends TimeDurationPrimitiveValue<DailyTime> {

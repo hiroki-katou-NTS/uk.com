@@ -9,6 +9,6 @@ import lombok.Value;
  */
 @Value
 public class FluidBreakTimeSet {
-	private FluidBreakTimeOfCalcMethod calcMethod;
+	private FlowRestCalcMethod calcMethod;
 	private boolean conbineStamp;
 }

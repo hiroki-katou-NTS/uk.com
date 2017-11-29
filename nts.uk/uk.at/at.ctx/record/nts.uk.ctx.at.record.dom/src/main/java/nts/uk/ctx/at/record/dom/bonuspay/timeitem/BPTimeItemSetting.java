@@ -7,10 +7,10 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.bonuspay.primitives.TimeItemId;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.HTCalSettingAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.OTCalSettingAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.WTCalSettingAtr;
+import nts.uk.ctx.at.record.dom.bonuspay.enums.HTCalSettingAtr;
+import nts.uk.ctx.at.record.dom.bonuspay.enums.OTCalSettingAtr;
+import nts.uk.ctx.at.record.dom.bonuspay.enums.TimeItemTypeAtr;
+import nts.uk.ctx.at.record.dom.bonuspay.enums.WTCalSettingAtr;
 
 /**
  * @author hungnm

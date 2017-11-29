@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.BreakClockOfManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
 
 /**
  * 控除時間帯の重複部分を調整する処理を担うクラス
@@ -31,22 +31,28 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param clockManage
 	 * 
 	 */
-	public List<TimeSheetOfDeductionItem> reCreate(WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
+	public List<TimeSheetOfDeductionItem> reCreate(WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr){
 		List<TimeSheetOfDeductionItem> originCopyList = timeSpanList;
 		int processedListNumber = 0;
+		//
 		while(originCopyList.size() - 1 > processedListNumber) {
+			
 			for(int number = 0 ;  number < originCopyList.size()  ; number++) {
+				processedListNumber = number;
+				int beforeCorrectSize = originCopyList.size();
+				
 				for(int nextNumber = number + 1; nextNumber < originCopyList.size(); nextNumber++) {
-					processedListNumber = number;
-					if(isDeplicated(originCopyList.get(number).calcrange, originCopyList.get(nextNumber).calcrange)){
-						int beforeCorrectSize = originCopyList.size();
-						originCopyList = convertFromDeductionItemToList(originCopyList,number,nextNumber, setMethod, clockManage);
-						if(originCopyList.size()>beforeCorrectSize) {
+					/*isDeplicatedはTimeSpanForCalcへ持っていく*/
+					if(originCopyList.get(number).calcrange.contains(originCopyList.get(nextNumber).calcrange)){
+						originCopyList = convertFromDeductionItemToList(originCopyList,number,nextNumber, setMethod, clockManage,workTimeDailyAtr);
+						if(originCopyList.size()>beforeCorrectSize)
 							/*追加された*/
 							break;
-						}
 					}
 				}
+				if(originCopyList.size()>beforeCorrectSize)
+					/*追加された*/
+					break;
 			}
 		}
 		timeSpanList = originCopyList;
@@ -61,9 +67,11 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param clockManage　休憩打刻の時刻管理設定区分
 	 * @return 調整後の値を入れたList
 	 */
-	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,int nextNumber,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
-		return replaceListItem(originList,originList.get(number).DeplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,true,FluidFixedAtr.FixedWork),number,nextNumber).stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart())).collect(Collectors.toList()
-						);
+	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,int nextNumber,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr){
+		return replaceListItem(originList,
+							   originList.get(number)
+							   .DeplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,true,FluidFixedAtr.FixedWork,workTimeDailyAtr)
+							   ,number,nextNumber);
 	}
 	
 	/**
@@ -77,16 +85,6 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 		nowList.remove(number);
 		nowList.remove(nextNumber);
 		nowList.addAll(newItems);
-		return nowList;
-	}
-	
-	/**
-	 * 重複チェック
-	 * @param nowTimeSpan 
-	 * @param nextTimeSpan
-	 * @return　重複している
-	 */
-	private boolean isDeplicated(TimeSpanForCalc nowTimeSpan,TimeSpanForCalc nextTimeSpan) {
-		return nowTimeSpan.checkDuplication(nextTimeSpan).isDuplicated();
+		return nowList.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart())).collect(Collectors.toList());
 	}
 }

@@ -17,4 +17,12 @@ public enum SalaryCalAttr {
 	USE(1);
 	
 	public final int value;
+	
+	/**
+	 * 使用するか判定する
+	 * @return　使用する
+	 */
+	public boolean isUse() {
+		return USE.equals(this);
+	}
 }

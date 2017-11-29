@@ -19,8 +19,6 @@ import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -74,6 +72,7 @@ public class VacationClass {
 			} else {
 				breakdownTimeDay = vacationAddTimeSet.getAdditionTime();
 			}
+			return predetermineTimeSet.getAdditionSet().getAddTime();
 		}
 		return breakdownTimeDay;
 	}

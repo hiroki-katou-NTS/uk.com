@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.CommomSetting;
+
+import lombok.Value;
+import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
+
+
 /**
  * 所定時間
  * @author keisuke_hoshina
  *
  */
-
-import lombok.Value;
-import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 
 @Value
 public class PredetermineTime {

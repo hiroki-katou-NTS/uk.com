@@ -170,6 +170,10 @@ public class WorkType extends AggregateRoot {
 		return this.dailyWork.getAttendanceHolidayAttr();
 	}
 	
+	/**
+	 * 出勤系か判定する
+	 * @return　出勤系である
+	 */
 	public boolean isWeekDayAttendance() {
 		return this.dailyWork.isWeekDayAttendance();
 	}

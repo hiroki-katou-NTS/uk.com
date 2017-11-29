@@ -1,23 +1,27 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
-import lombok.Value;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.CommonRestSetting;
 
 /**
- * 休出時間の時間帯設定
+ * 固定勤務の休憩設定
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
+@AllArgsConstructor
 public class FixRestSetting {
-	private TimeSpanWithRounding hours;
+	//共通の休憩設定
+	private CommonRestSetting commonSet;
+	//計算方法
+	private FixRestCalcMethod fixRestCalcMethod;
 	
-	private HolidayWorkFrameNo legalHolidayFrameNo;
-	private HolidayWorkFrameNo statutoryHolidayFrameNo;
-	private HolidayWorkFrameNo NonStatutoryDayoffConstraintTime;
-	
-	private boolean isLegalHolidayConstraintTime;
-	private boolean isNonStatutoryHolidayConstraintTime;
-	private boolean isNonStatutoryDayoffConstraintTime;
+	/*:
+	 * 固定休憩の計算方法を「予定を参照する」に変更
+	 */
+	public void changeCalcMethodToSchedule() {
+		this.fixRestCalcMethod = FixRestCalcMethod.ReferToSchedule;
+	}
 }

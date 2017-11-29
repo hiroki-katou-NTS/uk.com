@@ -14,5 +14,5 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeOfDaily;
 @Getter
 public class GoOutManagement {
 	private List<OutingTimeOfDailyPerformance> dailyWorkOfGoOutTimeSheet;
-	private GoOutTimeOfDaily dailyOfGoOutTime;
+	//private GoOutTimeOfDaily dailyOfGoOutTime;
 }

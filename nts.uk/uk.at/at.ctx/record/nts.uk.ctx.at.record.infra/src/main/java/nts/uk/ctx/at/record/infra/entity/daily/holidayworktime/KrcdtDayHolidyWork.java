@@ -7,6 +7,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -197,12 +198,9 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 	}
 	
 	
-	public static KrcdtDayHolidyWorkPK create(String employeeId, GeneralDate date, AttendanceTimeOfDailyPerformance domain) {
-		
-		
-		
-		
-		
+	public static KrcdtDayHolidyWork create(String employeeId, GeneralDate date, AttendanceTimeOfDailyPerformance domain) {
+		val entity = new KrcdtDayHolidyWork();
+		return entity;
 	}
 	
 	

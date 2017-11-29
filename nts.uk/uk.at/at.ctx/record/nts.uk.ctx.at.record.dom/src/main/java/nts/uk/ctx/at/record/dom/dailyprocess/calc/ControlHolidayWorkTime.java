@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Value;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 
 /**
  * 休出枠時間を計算するためのクラス
@@ -22,20 +23,20 @@ public class ControlHolidayWorkTime {
 	public void correct() {
 		List<HolidayWorkFrameTime> returnList = new ArrayList<>(10);
 		for(int holidayWorkNo = 0 ; holidayWorkNo < holidayWorkFrame.size() ; holidayWorkNo++) {
-			HolidayWorkFrameTime a  = returnList.get(holidayWorkFrame.get(holidayWorkNo).getHolidayFrameNo().v());
+			HolidayWorkFrameTime a  = returnList.get(holidayWorkFrame.get(holidayWorkNo).getHolidayFrameNo().v().intValue());
 			
-			TimeWithCalculation ove_a = TimeWithCalculation.of(a.getHolidayWorkTime().getTime()+holidayWorkFrame.get(holidayWorkNo).getHolidayWorkTime().getTime()
-															  ,a.getHolidayWorkTime().getCalcTime()+holidayWorkFrame.get(holidayWorkNo).getHolidayWorkTime().getCalcTime());
-			TimeWithCalculation tran_a = TimeWithCalculation.of(a.getTransferTime().getTime()+holidayWorkFrame.get(holidayWorkNo).getTransferTime().getTime()
-					  										  ,a.getTransferTime().getCalcTime()+holidayWorkFrame.get(holidayWorkNo).getTransferTime().getCalcTime());
+			TimeWithCalculation ove_a = TimeWithCalculation.createTimeWithCalculation(a.getHolidayWorkTime().get().getTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getHolidayWorkTime().get().getTime().valueAsMinutes())
+															  						 ,a.getHolidayWorkTime().get().getCalcTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getHolidayWorkTime().get().getCalcTime().valueAsMinutes()));
+			TimeWithCalculation tran_a = TimeWithCalculation.createTimeWithCalculation(a.getTransferTime().get().getTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getTransferTime().get().getTime().valueAsMinutes())
+																					 ,a.getTransferTime().get().getCalcTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getTransferTime().get().getCalcTime().valueAsMinutes()));
 			
 			
 			
 			HolidayWorkFrameTime b  = new HolidayWorkFrameTime(a.getHolidayFrameNo()
-																,ove_a
-					   											,tran_a
+																,Finally.of(ove_a)
+					   											,Finally.of(tran_a)
 					   											,a.getBeforeApplicationTime());
-			returnList.set(holidayWorkFrame.get(holidayWorkNo).getHolidayFrameNo().v(),b);
+			returnList.set(holidayWorkFrame.get(holidayWorkNo).getHolidayFrameNo().v().intValue(),b);
 		}
 	}
 }
