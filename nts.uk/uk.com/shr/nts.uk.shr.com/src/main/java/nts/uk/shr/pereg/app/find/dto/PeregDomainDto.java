@@ -29,6 +29,10 @@ public class PeregDomainDto {
 	public PeregDomainDto() {
 	}
 
+	public PeregDomainDto(String recordId) {
+		this.recordId = recordId;
+	}
+
 	public PeregDomainDto(String recordId, String employeeId, String personId) {
 		this.recordId = recordId;
 		this.employeeId = employeeId;
