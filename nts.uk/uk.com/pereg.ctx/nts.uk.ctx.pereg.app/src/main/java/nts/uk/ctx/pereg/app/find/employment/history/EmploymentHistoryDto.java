@@ -8,6 +8,10 @@ import lombok.EqualsAndHashCode;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class EmploymentHistoryDto extends PeregDomainDto {

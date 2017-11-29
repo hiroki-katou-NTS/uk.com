@@ -8,6 +8,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DateHistoryItemDto extends PeregDomainDto {

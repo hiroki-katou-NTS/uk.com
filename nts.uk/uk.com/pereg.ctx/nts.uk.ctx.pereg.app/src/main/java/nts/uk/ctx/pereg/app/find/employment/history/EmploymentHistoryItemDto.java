@@ -7,6 +7,10 @@ import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 //雇用履歴項目
+/**
+ * @author sonnlb
+ *
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class EmploymentHistoryItemDto extends PeregDomainDto {

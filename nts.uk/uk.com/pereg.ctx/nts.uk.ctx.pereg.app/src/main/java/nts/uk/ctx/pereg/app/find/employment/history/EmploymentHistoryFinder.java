@@ -13,11 +13,15 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Stateless
 public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto> {
 
 	@Inject
-	private EmploymentHistoryRepository empHistoryRepo;
+	private EmploymentHistoryRepository empHistRepo;
 
 	@Override
 	public String targetCategoryCode() {
@@ -39,7 +43,7 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		Optional<EmploymentHistory> optHis = this.empHistoryRepo.getByEmployeeId(query.getEmployeeId());
+		Optional<EmploymentHistory> optHis = this.empHistRepo.getByEmployeeId(query.getEmployeeId());
 
 		if (!optHis.isPresent()) {
 			return null;
