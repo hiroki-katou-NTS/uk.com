@@ -5797,6 +5797,22 @@ var nts;
                                 var $row = $("<tr></tr>");
                                 $row.click(function () {
                                     error.$control[0].focus();
+                                    var $dialogContainer = $dialog.closest("[role='dialog']");
+                                    var $currentDialog = nts.uk.ui.windows.getSelf().$dialog.closest("[role='dialog']");
+                                    var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                                    var currentDialogOffset = $currentDialog.offset();
+                                    var currentControlOffset = error.$control.offset();
+                                    var top = currentDialogOffset.top + currentControlOffset.top + $currentHeadBar.height() + error.$control.outerHeight() - window.scrollY;
+                                    var left = currentDialogOffset.left + currentControlOffset.left - window.scrollX;
+                                    var $errorDialogOffset = $dialogContainer.offset();
+                                    var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                                    var maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                                    if ($errorDialogOffset.top < top && top < maxTop) {
+                                        $dialogContainer.css("top", top + 15);
+                                    }
+                                    if (($errorDialogOffset.left < left && left < maxLeft)) {
+                                        $dialogContainer.css("left", left);
+                                    }
                                 });
                                 $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
                                 headers.forEach(function (header) {
@@ -5860,7 +5876,7 @@ var nts;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
-                        var immediate = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+                        var immediate = false;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var valueUpdate = (immediate === true) ? 'input' : 'change';
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
@@ -5995,10 +6011,16 @@ var nts;
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
+                                $input.data("inputting", true);
                                 $input.ntsError('clear');
                                 if (!result.isValid) {
                                     $input.ntsError('set', result.errorMessage, result.errorCode);
                                 }
+                                setTimeout(function () {
+                                    $input.val(newText);
+                                    $input.focus();
+                                    $input.data("inputting", false);
+                                }, 10);
                             }
                         });
                         $input.blur(function () {
@@ -6014,21 +6036,23 @@ var nts;
                         });
                         $input.on("change", function (e) {
                             if (!$input.attr('readonly')) {
-                                var validator = self.getValidator(data);
-                                var newText = $input.val();
-                                var result = validator.validate(newText, { isCheckExpression: true });
-                                $input.ntsError('clear');
-                                if (result.isValid) {
-                                    if (value() === result.parsedValue) {
-                                        $input.val(result.parsedValue);
+                                if (!$input.data("inputting")) {
+                                    var validator = self.getValidator(data);
+                                    var newText = $input.val();
+                                    var result = validator.validate(newText, { isCheckExpression: true });
+                                    $input.ntsError('clear');
+                                    if (result.isValid) {
+                                        if (value() === result.parsedValue) {
+                                            $input.val(result.parsedValue);
+                                        }
+                                        else {
+                                            value(result.parsedValue);
+                                        }
                                     }
                                     else {
-                                        value(result.parsedValue);
+                                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                                        value(newText);
                                     }
-                                }
-                                else {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode);
-                                    value(newText);
                                 }
                             }
                         });
