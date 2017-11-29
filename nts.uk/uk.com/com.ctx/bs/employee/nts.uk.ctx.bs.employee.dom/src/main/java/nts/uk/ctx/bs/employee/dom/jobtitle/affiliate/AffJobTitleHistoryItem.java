@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 
 /**
  * The Class AffJobHistoryItem.
@@ -27,7 +26,7 @@ public class AffJobTitleHistoryItem extends AggregateRoot{
 	private String employeeId;
 	
 	/** The job title code. */
-	// 職位コード
+	// 職位ID
 	private String jobTitleId;
 	
 	/** The AffJobHistoryItemNote. */
