@@ -13,6 +13,7 @@ module ksu001.o.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         nameWorkTimeType: KnockoutComputed<ExCell>;
+        currentScreen: any = null;
 
         constructor() {
             let self = this;
@@ -37,14 +38,15 @@ module ksu001.o.viewmodel {
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
                 let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
+                let startTime, endTime: any;
                 if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
                     let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
                     if (d) {
                         workTypeName = d.abbreviationName;
                         workTypeCode = d.workTypeCode;
                     } else {
-                        workTypeName = '';
-                        workTypeCode = '';
+                        workTypeName = null;
+                        workTypeCode = null;
                     }
 
                     let siftCode: string = null;
@@ -58,9 +60,13 @@ module ksu001.o.viewmodel {
                     if (c) {
                         workTimeName = c.abName;
                         workTimeCode = c.siftCd;
+                        startTime = c.start;
+                        endTime = c.end;
                     } else {
-                        workTimeName = '';
-                        workTimeCode = '';
+                        workTimeName = null;
+                        workTimeCode = null;
+                        startTime = null;
+                        endTime = null;
                     }
                 }
                 return new ExCell({
@@ -69,8 +75,8 @@ module ksu001.o.viewmodel {
                     workTimeCode: workTimeCode,
                     workTimeName: workTimeName,
                     symbol: null,
-                    startTime: null,
-                    endTime: null
+                    startTime: startTime,
+                    endTime: endTime
                 });
             });
 
@@ -87,10 +93,14 @@ module ksu001.o.viewmodel {
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
 
-            nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml").onClosed(() => {
-                $('#contain-view').show();
-                //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
-                $("#extable").exTable("stickData", self.nameWorkTimeType());
+            self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml");
+            self.currentScreen.onClosed(() => {
+                self.currentScreen = null;
+                if (__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {
+                    $('#contain-view').show();
+                    //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
+                    $("#extable").exTable("stickData", self.nameWorkTimeType());
+                }
             });
         }
 
@@ -128,8 +138,8 @@ module ksu001.o.viewmodel {
                     methodAtr: undefined,
                     displayAtr: undefined,
                     note: null,
-                    amStartClock: undefined,
-                    pmEndClock: undefined,
+                    start: undefined,
+                    end: undefined,
                     timeNumberCnt: undefined,
                 }));
                 // insert item 「なし」 with code = '000'
@@ -142,8 +152,8 @@ module ksu001.o.viewmodel {
                     methodAtr: undefined,
                     displayAtr: undefined,
                     note: null,
-                    amStartClock: undefined,
-                    pmEndClock: undefined,
+                    start: undefined,
+                    end: undefined,
                     timeNumberCnt: undefined,
                 }));
                 // insert item 「個人情報設定」 with code = '000'
@@ -156,8 +166,8 @@ module ksu001.o.viewmodel {
                     methodAtr: undefined,
                     displayAtr: undefined,
                     note: null,
-                    amStartClock: undefined,
-                    pmEndClock: undefined,
+                    start: undefined,
+                    end: undefined,
                     timeNumberCnt: undefined,
                 }));
 
@@ -165,9 +175,9 @@ module ksu001.o.viewmodel {
                     _.each(data, function(wT) {
                         let workTimeObj: WorkTime = _.find(self.listWorkTime(), ['siftCd', wT.siftCd]);
                         if (workTimeObj && wT.timeNumberCnt == 1) {
-                            workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.pmEndClock, true).format();
+                            workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.start, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.end, true).format();
                         } else if (workTimeObj && wT.timeNumberCnt == 2) {
-                            workTimeObj.timeZone2 = nts.uk.time.parseTime(wT.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.pmEndClock, true).format();
+                            workTimeObj.timeZone2 = nts.uk.time.parseTime(wT.start, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.end, true).format();
                         } else {
                             self.listWorkTime.push(new WorkTime({
                                 siftCd: wT.siftCd,
@@ -178,8 +188,8 @@ module ksu001.o.viewmodel {
                                 methodAtr: wT.methodAtr,
                                 displayAtr: wT.dailyWorkAtr,
                                 note: wT.note,
-                                amStartClock: wT.amStartClock,
-                                pmEndClock: wT.pmEndClock,
+                                start: wT.start,
+                                end: wT.end,
                                 timeNumberCnt: wT.timeNumberCnt
                             }));
                         }
@@ -226,8 +236,8 @@ module ksu001.o.viewmodel {
         methodAtr: number,
         displayAtr: number,
         note: string,
-        amStartClock: number,
-        pmEndClock: number,
+        start: number,
+        end: number,
         timeNumberCnt: number,
     }
 
@@ -241,8 +251,8 @@ module ksu001.o.viewmodel {
         displayAtr: number;
         note: string;
         codeName: string;
-        amStartClock: number;
-        pmEndClock: number;
+        start: number;
+        end: number;
         timeNumberCnt: number;
         timeZone1: string;
         timeZone2: string;
@@ -257,11 +267,11 @@ module ksu001.o.viewmodel {
             this.displayAtr = params.displayAtr;
             this.note = params.note || '';
             this.codeName = this.siftCd + this.name;
-            this.amStartClock = params.amStartClock;
-            this.pmEndClock = params.pmEndClock;
+            this.start = params.start;
+            this.end = params.end;
             this.timeNumberCnt = params.timeNumberCnt;
-            this.timeZone1 = this.timeNumberCnt == 1 ? nts.uk.time.parseTime(this.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.pmEndClock, true).format() : '';
-            this.timeZone2 = this.timeNumberCnt == 2 ? nts.uk.time.parseTime(this.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.pmEndClock, true).format() : '';
+            this.timeZone1 = this.timeNumberCnt == 1 ? nts.uk.time.parseTime(this.start, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.end, true).format() : '';
+            this.timeZone2 = this.timeNumberCnt == 2 ? nts.uk.time.parseTime(this.start, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.end, true).format() : '';
         }
     }
 

@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 /**
  * 
  * @author nampt
- * 日別実績の計算区分 - root
+ * 日別実績の所属情報 - root
  *
  */
 @Getter
@@ -20,10 +20,8 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 	
 	private String employeeId;
 	
-	//職位ID - primitive value
 	private String jobTitleID;
 	
-	//職場ID - primitive value
 	private String wplID;
 	
 	private GeneralDate ymd;
@@ -31,5 +29,17 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 	private ClassificationCode clsCode;
 	
 	private BonusPaySettingCode bonusPaySettingCode;
+
+	public AffiliationInforOfDailyPerfor(EmploymentCode employmentCode, String employeeId, String jobTitleID,
+			String wplID, GeneralDate ymd, ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode) {
+		super();
+		this.employmentCode = employmentCode;
+		this.employeeId = employeeId;
+		this.jobTitleID = jobTitleID;
+		this.wplID = wplID;
+		this.ymd = ymd;
+		this.clsCode = clsCode;
+		this.bonusPaySettingCode = bonusPaySettingCode;
+	}
 
 }

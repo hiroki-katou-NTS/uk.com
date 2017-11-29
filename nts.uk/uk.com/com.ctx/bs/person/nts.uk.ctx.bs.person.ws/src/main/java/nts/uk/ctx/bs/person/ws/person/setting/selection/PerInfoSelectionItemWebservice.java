@@ -18,10 +18,19 @@ import command.person.setting.selectionitem.selection.AddSelectionCommand;
 import command.person.setting.selectionitem.selection.AddSelectionCommandHandler;
 import command.person.setting.selectionitem.selection.AddSelectionHistoryCommand;
 import command.person.setting.selectionitem.selection.AddSelectionHistoryCommandHandler;
+import command.person.setting.selectionitem.selection.EditHistoryCommand;
+import command.person.setting.selectionitem.selection.EditHistoryCommandHandler;
+import command.person.setting.selectionitem.selection.ReflUnrCompCommand;
+import command.person.setting.selectionitem.selection.ReflUnrCompCommandHandler;
+import command.person.setting.selectionitem.selection.RemoveHistoryCommand;
+import command.person.setting.selectionitem.selection.RemoveHistoryCommandHandler;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommand;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommandHandler;
+import command.person.setting.selectionitem.selection.UpdateSelOrderCommand;
+import command.person.setting.selectionitem.selection.UpdateSelOrderCommandHandler;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommand;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommandHandler;
+import find.person.setting.init.item.SelectionInitDto;
 import find.person.setting.selectionitem.PerInfoHistorySelectionDto;
 import find.person.setting.selectionitem.PerInfoHistorySelectionFinder;
 import find.person.setting.selectionitem.PerInfoSelectionItemDto;
@@ -31,6 +40,7 @@ import find.person.setting.selectionitem.selection.SelectionItemOrderDto;
 import find.person.setting.selectionitem.selection.SelectionItemOrderFinder;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 
 @Path("ctx/bs/person/info/setting/selection")
 @Produces("application/json")
@@ -70,8 +80,25 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	private RemoveSelectionCommandHandler removeSelection;
 
 	// add history data: screen C:
+	@Inject
 	AddSelectionHistoryCommandHandler addHistory;
 
+	// Edit History:
+	@Inject
+	EditHistoryCommandHandler editHistory;
+
+	// Delete history:
+	@Inject
+	RemoveHistoryCommandHandler removeHistory;
+
+	// Phan anh cong ty:
+	@Inject
+	ReflUnrCompCommandHandler reflUnrComp;
+
+	//hoatt - update selection order
+	@Inject
+	private UpdateSelOrderCommandHandler updateSelOrder;
+	
 	@POST
 	@Path("findAll")
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
@@ -149,6 +176,42 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("addHistoryData")
 	public void AddHistoryData(AddSelectionHistoryCommand command) {
 		this.addHistory.handle(command);
+	}
 
+	// Edit History:
+	@POST
+	@Path("editHistory")
+	public void EditHistory(EditHistoryCommand command) {
+		this.editHistory.handle(command);
+	}
+
+	// Delete History:
+	@POST
+	@Path("removeHistory")
+	public void RemoveHistory(RemoveHistoryCommand command) {
+		this.removeHistory.handle(command);
+	}
+
+	
+	
+	// Lanlt
+	@POST
+	@Path("find/{selectionItemId}/{baseDate}")
+	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId, @PathParam("baseDate") String baseDate) {
+		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate );
+	}
+
+	// Phan anh cong ty:
+	@POST
+	@Path("reflunrcomp")
+	public void ReflUnrComp(ReflUnrCompCommand command) {
+		this.reflUnrComp.handle(command);
+	}
+	
+	//update selection order
+	@POST
+	@Path("updateSelOrder")
+	public void updateSelOrder(List<UpdateSelOrderCommand> lstSelOrder){
+		this.updateSelOrder.handle(lstSelOrder);
 	}
 }

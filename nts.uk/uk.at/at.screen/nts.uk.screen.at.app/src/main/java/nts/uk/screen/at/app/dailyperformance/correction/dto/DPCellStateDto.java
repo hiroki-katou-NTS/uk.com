@@ -18,10 +18,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DPCellStateDto {
 
-	private Integer rowId;
+	private String rowId;
 	
     private String columnKey;
     
     private List<String> state;
+    
+    public void addState(String state) {
+    	this.state.add(state);
+    }
     
 }

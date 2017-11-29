@@ -4,8 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
+import java.util.Optional;
+
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -18,11 +19,11 @@ public class AmountRange extends DomainObject {
 
 	/** The upper limit. */
 	// 上限値
-	private AmountRangeValue upperLimit;
+	private Optional<AmountRangeValue> upperLimit;
 
 	/** The lower limit. */
 	// 下限値
-	private AmountRangeValue lowerLimit;
+	private Optional<AmountRangeValue> lowerLimit;
 
 	/**
 	 * Instantiates a new amount range.
@@ -30,18 +31,17 @@ public class AmountRange extends DomainObject {
 	 * @param upperLimit the upper limit
 	 * @param lowerLimit the lower limit
 	 */
-	public AmountRange(int upperLimit, int lowerLimit) {
+	public AmountRange(Integer upperLimit, Integer lowerLimit) {
 		super();
-		this.upperLimit = new AmountRangeValue(upperLimit);
-		this.lowerLimit = new AmountRangeValue(lowerLimit);
-	}
-
-	/**
-	 * Validate range.
-	 */
-	public void validateRange() {
-		if (isInvalidRange()) {
-			throw new BusinessException("Msg_574");
+		if (upperLimit == null) {
+			this.upperLimit = Optional.empty();
+		} else {
+			this.upperLimit = Optional.of(new AmountRangeValue(upperLimit));
+		}
+		if (lowerLimit == null) {
+			this.lowerLimit = Optional.empty();
+		} else {
+			this.lowerLimit = Optional.of(new AmountRangeValue(lowerLimit));
 		}
 	}
 
@@ -50,10 +50,10 @@ public class AmountRange extends DomainObject {
 	 *
 	 * @return true, if is invalid range
 	 */
-	private boolean isInvalidRange() {
-		if (this.upperLimit.lessThan(this.lowerLimit)) {
-			return true;
+	public boolean isInvalidRange() {
+		if (this.upperLimit.get().greaterThan(this.lowerLimit.get())) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

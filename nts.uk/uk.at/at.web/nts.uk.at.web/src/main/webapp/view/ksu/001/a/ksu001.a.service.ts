@@ -1,9 +1,16 @@
 module ksu001.a.service {
     var paths: any = {
-        getDataBasicSchedule: "screen/at/schedule/basicschedule/getData",
+        getDataBasicSchedule: "screen/at/schedule/basicschedule/getDataBasicSchedule",
+        getDataWorkScheduleState: "screen/at/schedule/basicschedule/getDataWorkScheduleState",
         registerData: "at/schedule/basicschedule/register",
         getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition",
-        getShiftConditionCategory: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftConCategory"
+        getShiftConditionCategory: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftConCategory",
+        checkStateWorkTypeCode: "screen/at/schedule/basicschedule/checkStateWorkTypeCode",
+        getDataWkpSpecificDate: "screen/at/schedule/basicschedule/getDataWkpSpecificDate",
+        getDataComSpecificDate: "screen/at/schedule/basicschedule/getDataComSpecificDate",
+        getDataPublicHoliday: "screen/at/schedule/basicschedule/getDataPublicHoliday",
+        getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
+        getDataWorkSchTimeZone: "screen/at/schedule/basicschedule/getDataWorkScheTimezone",
     }
 
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
@@ -19,4 +26,33 @@ module ksu001.a.service {
     export function getShiftConditionCategory(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getShiftConditionCategory);
     }
+
+    export function getDataWorkScheduleState(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWorkScheduleState, obj);
+    }
+
+    export function checkStateWorkTypeCode(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkStateWorkTypeCode, obj);
+    }
+
+    export function getDataWkpSpecificDate(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWkpSpecificDate, obj);
+    }
+
+    export function getDataComSpecificDate(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataComSpecificDate, obj);
+    }
+
+    export function getDataPublicHoliday(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataPublicHoliday, obj);
+    }
+
+    export function getDataScheduleDisplayControl(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataScheduleDisplayControl);
+    }
+
+    export function getDataWorkSchTimeZone(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWorkSchTimeZone, obj);
+    }
+
 }

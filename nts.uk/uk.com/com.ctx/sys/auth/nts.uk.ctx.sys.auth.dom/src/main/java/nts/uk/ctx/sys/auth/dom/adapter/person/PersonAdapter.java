@@ -1,8 +1,11 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.adapter.person;
+
+import java.util.List;
+
 
 /**
  * The Interface PersonAdapter.
@@ -10,11 +13,11 @@ package nts.uk.ctx.sys.auth.dom.adapter.person;
 public interface PersonAdapter {
 
 	/**
-	 * Find by id.
+	 * Find by person ids.
 	 *
-	 * @param personId the person id
-	 * @return the person import
+	 * @param personIds the person ids
+	 * @return the list
 	 */
-	// RequestList #86
-	PersonImport findById(String personId);
+	List<PersonImport> findByPersonIds(List<String> personIds);
+	
 }

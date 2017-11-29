@@ -73,7 +73,7 @@ module ksu001 {
             //checkAll
             $('#checkAll').click(() => {
                 data.value([]);
-                _.each($('.ntsCheckBox-label'), (x) => {
+                _.each($('.checkBox-calendar .ntsCheckBox-label'), (x) => {
                     data.value.push($(x).closest('td').attr("data-date"));
                     $(x)[0].childNodes[0].checked = true;
                 });
@@ -82,7 +82,7 @@ module ksu001 {
             //unCheckAll
             $('#unCheckAll').click(() => {
                 data.value([]);
-                _.each($('.ntsCheckBox-label'), (x) => {
+                _.each($('.checkBox-calendar .ntsCheckBox-label'), (x) => {
                     $(x)[0].childNodes[0].checked = false;
                 });
             });

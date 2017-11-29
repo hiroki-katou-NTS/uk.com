@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.worktime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
@@ -15,6 +17,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @AllArgsConstructor
+@Setter
+@NoArgsConstructor
 public class WorkStamp extends DomainObject{
 	
 	//丸め後の時刻
@@ -29,5 +33,12 @@ public class WorkStamp extends DomainObject{
 	//打刻元情報
 	private StampSourceInfo stampSourceInfo;
 
-
+	public WorkStamp(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
+			StampSourceInfo stampSourceInfo) {
+		super();
+		AfterRoundingTime = afterRoundingTime;
+		this.timeWithDay = timeWithDay;
+		this.locationCode = locationCode;
+		this.stampSourceInfo = stampSourceInfo;
+	}
 }

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.worktime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 
@@ -11,6 +13,8 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
+@Setter
+@NoArgsConstructor
 public class TimeActualStamp {
 	
 	private WorkStamp actualStamp;
@@ -39,7 +43,6 @@ public class TimeActualStamp {
 									stamp,
 									this.numberOfReflectionStamp);
 	}
-	
 	/**
 	 * 打刻時間を指定時間分戻した勤怠打刻を返す
 	 * @param moveTime 指定時間
@@ -60,4 +63,9 @@ public class TimeActualStamp {
 								   stamp,
                 				   this.numberOfReflectionStamp);
 	}
+	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp) {
+		super();
+		this.actualStamp = actualStamp;
+		this.stamp = stamp;
+		this.numberOfReflectionStamp = numberOfReflectionStamp;
 }

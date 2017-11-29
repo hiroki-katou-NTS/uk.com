@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 
 /**
  * 

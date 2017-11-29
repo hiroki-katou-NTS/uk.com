@@ -13,44 +13,38 @@
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveJobAutoCal">#{i18n.getText('KMK006_9')}</button>
 			<button tabindex="2" class="danger"
-				data-bind="click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
+				data-bind="enable: createModeScreenC, click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
-		<ui:define name="extended-111">
-		</ui:define>
+
 		<ui:define name="extended-222">
-			<div id="component-items-list"
-				style="margin-left: 80px; margin-top: 100px"></div>
+			<div id="component-items-list" style="margin-left: 20px; margin-top: 100px"></div>
 			<div class="personalEstablishment">
 				<table class="table-label">
 					<tr style="margin-top: 10px">
 						<td class="pull-left">
-							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('Com_Jobtitle')}</div>
+							<div data-bind="ntsFormLabel: {required: false }">#{i18n.getText('Com_Jobtitle')}</div>
 							<span data-bind="text: componentItemCode"></span> 
 							<span data-bind="text: componentItemName"></span>
 						</td>
 						<td class="pull-right">
-							<div class="pull-left">
-								<div data-bind="ntsFormLabel: {}">
-									<label>#{i18n.getText('KMK006_7')}</label>
-								</div>
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_7')}</label>
 							</div>
 							<div tabindex="-1" class="pull-left helpButton">
 								<button tabindex="-1"
-									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_2.png', position: 'right top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_2.png', position: 'left top', enable: true }">?</button>
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td class="pull-left"></td>
 						<td class="pull-right">
-							<div class="pull-left">
-								<div data-bind="ntsFormLabel: {}">
-									<label>#{i18n.getText('KMK006_8')}</label>
-								</div>
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_8')}</label>
 							</div>
 							<div tabindex="-1" class="pull-left helpButton">
 								<button tabindex="-1"
-									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_3.png', position: 'right top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_3.png', position: 'left top', enable: true }">?</button>
 							</div>
 						</td>
 					</tr>

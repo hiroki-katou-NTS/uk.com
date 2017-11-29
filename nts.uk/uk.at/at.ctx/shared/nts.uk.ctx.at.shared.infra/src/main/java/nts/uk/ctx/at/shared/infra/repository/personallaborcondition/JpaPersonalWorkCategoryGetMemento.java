@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.PersonalWorkAtr;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.WorkCategoryAtr;
 
 /**
  * The Class JpaPersonalWorkCategoryGetMemento.
@@ -20,17 +20,17 @@ import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.PersonalWorkAtr;
 public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGetMemento {
 	
 	/** The entitys. */
-	private List<KshmtSingleDaySche> entitys;
-	
+	private List<KshmtPerWorkCategory> entitys;
+
 	/** The Constant FIRST_DATA. */
 	public static final int FIRST_DATA = 0;
-	
+
 	/**
 	 * Instantiates a new jpa personal work category get memento.
 	 *
 	 * @param entitys the entitys
 	 */
-	public JpaPersonalWorkCategoryGetMemento(List<KshmtSingleDaySche> entitys) {
+	public JpaPersonalWorkCategoryGetMemento(List<KshmtPerWorkCategory> entitys) {
 		this.entitys = entitys;
 	}
 
@@ -42,102 +42,122 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 	 */
 	@Override
 	public SingleDaySchedule getHolidayWork() {
-		Optional<KshmtSingleDaySche> optionalHolidayWork = this.findById(this.entitys,
-				PersonalWorkAtr.HOLIDAY_WORK.value);
+		Optional<KshmtPerWorkCategory> optionalHolidayWork = this.findById(this.entitys,
+				WorkCategoryAtr.HOLIDAY_WORK.value);
 		if (optionalHolidayWork.isPresent()) {
 			return this.toDomain(optionalHolidayWork.get());
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getHolidayTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getHolidayTime()
 	 */
 	@Override
 	public SingleDaySchedule getHolidayTime() {
-		Optional<KshmtSingleDaySche> optionalHolidayTime = this.findById(this.entitys,
-				PersonalWorkAtr.HOLIDAY_TIME.value);
+		Optional<KshmtPerWorkCategory> optionalHolidayTime = this.findById(this.entitys,
+				WorkCategoryAtr.HOLIDAY_TIME.value);
 		if (optionalHolidayTime.isPresent()) {
 			return this.toDomain(optionalHolidayTime.get());
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getWeekdayTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getWeekdayTime()
 	 */
 	@Override
 	public SingleDaySchedule getWeekdayTime() {
-		Optional<KshmtSingleDaySche> optionalWeekTime = this.findById(this.entitys,
-				PersonalWorkAtr.WEEKDAY_TIME.value);
+		Optional<KshmtPerWorkCategory> optionalWeekTime = this.findById(this.entitys,
+				WorkCategoryAtr.WEEKDAY_TIME.value);
 		if (optionalWeekTime.isPresent()) {
 			return this.toDomain(optionalWeekTime.get());
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getPublicHolidayWork()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getPublicHolidayWork()
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getPublicHolidayWork() {
-		Optional<KshmtSingleDaySche> optionalPublicHolidayWork = this.findById(this.entitys,
-				PersonalWorkAtr.PUBLIC_HOLIDAY_WORK.value);
+		Optional<KshmtPerWorkCategory> optionalPublicHolidayWork = this.findById(this.entitys,
+				WorkCategoryAtr.PUBLIC_HOLIDAY_WORK.value);
 		if (optionalPublicHolidayWork.isPresent()) {
 			return optionalPublicHolidayWork.map(entity -> this.toDomain(entity));
 		}
-		return null;
+		return Optional.empty();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getInLawBreakTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getInLawBreakTime()
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getInLawBreakTime() {
-		Optional<KshmtSingleDaySche> optionalInlawBreakTime = this.findById(this.entitys,
-				PersonalWorkAtr.INLAW_BREAK_TIME.value);
+		Optional<KshmtPerWorkCategory> optionalInlawBreakTime = this.findById(this.entitys,
+				WorkCategoryAtr.INLAW_BREAK_TIME.value);
 		if (optionalInlawBreakTime.isPresent()) {
 			return optionalInlawBreakTime.map(entity -> this.toDomain(entity));
 		}
-		return null;
+		return Optional.empty();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getOutsideLawBreakTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getOutsideLawBreakTime()
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getOutsideLawBreakTime() {
-		Optional<KshmtSingleDaySche> optionalOutsideLawBreakTime = this.findById(this.entitys,
-				PersonalWorkAtr.OUTSIDE_LAW_BREAK_TIME.value);
+		Optional<KshmtPerWorkCategory> optionalOutsideLawBreakTime = this.findById(this.entitys,
+				WorkCategoryAtr.OUTSIDE_LAW_BREAK_TIME.value);
 		if (optionalOutsideLawBreakTime.isPresent()) {
 			return optionalOutsideLawBreakTime.map(entity -> this.toDomain(entity));
 		}
-		return null;
+		return Optional.empty();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getHolidayAttendanceTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getHolidayAttendanceTime()
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getHolidayAttendanceTime() {
-		Optional<KshmtSingleDaySche> optionalHolidayAttendance = this.findById(this.entitys,
-				PersonalWorkAtr.HOLIDAY_ATTENDANCE_TIME.value);
+		Optional<KshmtPerWorkCategory> optionalHolidayAttendance = this.findById(this.entitys,
+				WorkCategoryAtr.HOLIDAY_ATTENDANCE_TIME.value);
 		if (optionalHolidayAttendance.isPresent()) {
 			return optionalHolidayAttendance.map(entity -> this.toDomain(entity));
 		}
-		return null;
+		return Optional.empty();
 	}
 	
 	/**
 	 * Find by id.
 	 *
 	 * @param entitys the entitys
-	 * @param perWorkAtr the per work atr
+	 * @param workCategoryAtr the work category atr
 	 * @return the optional
 	 */
-	private Optional<KshmtSingleDaySche> findById(List<KshmtSingleDaySche> entitys, int perWorkAtr) {
-		List<KshmtSingleDaySche> enityfinders = entitys.stream()
-				.filter(singleDaySchedule -> singleDaySchedule.getKshmtSingleDaySchePK().getPersWorkAtr() == perWorkAtr)
+	private Optional<KshmtPerWorkCategory> findById(List<KshmtPerWorkCategory> entitys,
+			int workCategoryAtr) {
+		List<KshmtPerWorkCategory> enityfinders = entitys.stream()
+				.filter(workCategory -> workCategory.getKshmtPerWorkCategoryPK()
+						.getWorkCategoryAtr() == workCategoryAtr)
 				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(enityfinders)) {
 			return Optional.empty();
@@ -151,8 +171,8 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 	 * @param entity the entity
 	 * @return the single day schedule
 	 */
-	private SingleDaySchedule toDomain( KshmtSingleDaySche entity){
-		return new SingleDaySchedule(new JpaSingleDayScheduleGetMemento(entity));
+	private SingleDaySchedule toDomain( KshmtPerWorkCategory entity){
+		return new SingleDaySchedule(new JpaSingleDayScheduleWorkCategoryGetMemento(entity));
 	}
 
 }

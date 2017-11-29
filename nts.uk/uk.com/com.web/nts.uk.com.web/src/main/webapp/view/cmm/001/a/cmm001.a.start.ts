@@ -3,7 +3,13 @@ __viewContext.ready(function() {
     screenModel.start(undefined).done(function(){
         nts.uk.ui.confirmSave(screenModel.dirtyObject);
         __viewContext.bind(screenModel);
-        screenModel.dirtyObject.reset();
+        if(screenModel.sel001Data().length > 0){
+                $("#companyName").focus();
+            }else{
+                screenModel.checkInsert(true);
+                $("#companyCode").focus(); 
+            }
     });
    
 });
+   

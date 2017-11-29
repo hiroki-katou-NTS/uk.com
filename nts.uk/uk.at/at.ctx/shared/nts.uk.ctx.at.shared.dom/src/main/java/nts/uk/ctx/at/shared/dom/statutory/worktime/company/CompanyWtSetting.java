@@ -8,6 +8,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.DeformationLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.FlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.NormalSetting;

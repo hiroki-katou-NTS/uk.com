@@ -4,8 +4,8 @@ module nts.uk.at.view.ksc001.b {
            findPeriodById: "ctx/at/shared/workrule/closure/findPeriodById",
            checkThreeMonth: "ctx/at/shared/workrule/closure/checkThreeMonth",
            checkMonthMax: "ctx/at/shared/workrule/closure/checkMonthMax",
-           addScheduleExecutionLog: "at/schedule/exelog/add" 
-            
+           addScheduleExecutionLog: "at/schedule/exelog/add",
+           findDailyPatternSetting: "ctx/at/schedule/shift/pattern/daily"            
         }
         
         /**
@@ -31,7 +31,8 @@ module nts.uk.at.view.ksc001.b {
         /**
          * call service add ScheduleExecutionLog
          */
-        export function addScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto): JQueryPromise<model.ScheduleExecutionLogSaveRespone> {
+        export function addScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto)
+            : JQueryPromise<model.ScheduleExecutionLogSaveRespone> {
             return nts.uk.request.ajax('at', paths.addScheduleExecutionLog, command);
         }
         

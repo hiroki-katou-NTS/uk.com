@@ -4,20 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.ws.workrecord.workfixed;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.workrecord.workfixed.WorkFixedRemoveCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.workfixed.WorkFixedRemoveCommandHandler;
-import nts.uk.ctx.at.record.app.command.workrecord.workfixed.WorkFixedSaveCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.workfixed.WorkFixedSaveCommandHandler;
-import nts.uk.ctx.at.record.app.find.workrecord.workfixed.PersonInfoWorkFixedFinder;
+import nts.uk.ctx.at.record.app.command.workrecord.workfixed.SaveWorkFixedCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.workfixed.SaveWorkFixedCommandHandler;
+import nts.uk.ctx.at.record.app.find.workrecord.workfixed.PersonInfoWorkFixedDto;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkFixedFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkFixedFinderDto;
+import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkPlaceInfFinder;
+import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkPlaceInfoDto;
 
 
 /**
@@ -27,65 +28,61 @@ import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkFixedFinderDto;
 @Produces("application/json")
 public class WorkfixedWebService extends WebService{
 
-	/** The work fixed save command handler. */
+	/** The work fixed command handler. */
 	@Inject
-	private WorkFixedSaveCommandHandler workFixedSaveCommandHandler;
-	
-	/** The work fixed remove command handler. */
-	@Inject
-	private WorkFixedRemoveCommandHandler workFixedRemoveCommandHandler;
-	
-	/** The person info work fixed finder. */
-	@Inject
-	private PersonInfoWorkFixedFinder personInfoWorkFixedFinder;
+	private SaveWorkFixedCommandHandler workFixedCommandHandler;
 	
 	/** The work fixed finder. */
 	@Inject
 	private WorkFixedFinder workFixedFinder;
 	
+	/** The work place inf finder. */
+	@Inject
+	private WorkPlaceInfFinder workPlaceInfFinder;
+	
+	
 	/**
-	 * Register work fixed.
+	 * Find work fixed info.
 	 *
-	 * @param command the command
+	 * @param listDto the list dto
+	 * @return the list
 	 */
+	@Path("find")
 	@POST
-	@Path("register")
-	public void registerWorkFixed(WorkFixedSaveCommand command) {
-		this.workFixedSaveCommandHandler.handle(command);
-	}
-		
-	/**
-	 * Removes the work fixed.
-	 *
-	 * @param command the command
-	 */
-	@POST
-	@Path("remove")
-	public void removeWorkFixed(WorkFixedRemoveCommand command) {
-		this.workFixedRemoveCommandHandler.handle(command);
+	public List<WorkFixedFinderDto> findWorkFixedInfo(List<WorkFixedFinderDto> listDto) {
+		return this.workFixedFinder.findWorkFixedInfo(listDto);
 	}
 	
 	/**
-	 * Gets the person info by person id.
+	 * Save work fixed info.
 	 *
-	 * @param personId the person id
-	 * @return the person info by person id
+	 * @param listCommand the list command
 	 */
-	@Path("personInfo/{personId}")
+	@Path("save")
 	@POST
-	public void getPersonInfoByPersonId(@PathParam("personId") String personId) {
-		this.personInfoWorkFixedFinder.getPersonInfo(personId);
+	public void saveWorkFixedInfo(List<SaveWorkFixedCommand> listCommand) {
+		listCommand.forEach(this.workFixedCommandHandler::handle);
 	}
 	
 	/**
-	 * Find work fixed by wkp id and closure id.
+	 * Find work place info.
 	 *
-	 * @param dto the dto
-	 * @return the work fixed finder dto
+	 * @return the list
 	 */
-	@Path("findWorkFixed")
+	@Path("findWkpInfo")
 	@POST
-	public WorkFixedFinderDto findWorkFixedByWkpIdAndClosureId(WorkFixedFinderDto dto) {
-		return this.workFixedFinder.findWorkFixedByWkpIdAndClosureId(dto.getWkpId(), dto.getClosureId());
+	public List<WorkPlaceInfoDto> findWorkPlaceInfo() {		
+		return this.workPlaceInfFinder.findWorkPlaceInfo();
+	}
+	
+	/**
+	 * Find current person name.
+	 *
+	 * @return the person info work fixed dto
+	 */
+	@Path("currentPerson")
+	@POST
+	public PersonInfoWorkFixedDto findCurrentPersonName() {
+		return this.workFixedFinder.findCurrentPersonName();
 	}
 }

@@ -26,7 +26,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '/view/kaf/004/a/index.xhtml' }">#{i18n.getText('KAF004_4')}</a>
+					data-bind="ntsLinkButton: { jump: '/view/kaf/004/a/index.xhtml' }">#{i18n.getText('KAF004_7')}</a>
 				<button class="proceed" data-bind="click : registryButtonClick">#{i18n.getText('KAF004_8')}</button>
 				<button >#{i18n.getText('KAF004_9')}</button>
 				<div data-bind="ntsCheckBox: { checked: sendMail }">#{i18n.getText('KAF004_10')}</div>
@@ -34,8 +34,20 @@
 			<div id="contents-area">
 			<div style="display: inline-flex;">
 				<div class="contents-left">
-					<div class="header">
-						<label class="header">#{i18n.getText('KAF004_3')}</label>
+					<div data-bind="if: showScreen == 'B'">
+						<div class="header">
+							<label class="header">#{i18n.getText('KAF004_3')}</label>
+						</div>
+					</div>
+					<div data-bind="if: showScreen == 'C'">
+						<div class="header">
+							<label class="header">#{i18n.getText('KAF004_4')}</label>
+						</div>
+					</div>
+					<div data-bind="if: showScreen == 'D'">
+						<div class="header">
+							<label class="header">#{i18n.getText('KAF004_5')}</label>
+						</div>
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_11')}</div>
@@ -76,14 +88,14 @@
 															   inputFormat: 'time',
 															   mode: 'time' ,
 															   required: late2,
-															   name: '#[KAF004_45]'}" />
+															   name: '#[KAF004_50]'}" />
 								<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
 								<input class="col2" id = "inpEarlyTime2"
 									data-bind="ntsTimeEditor: {value: earlyTime2, 
 																inputFormat: 'time',
 																mode: 'time' ,
 																required: early2 ,
-																name: '#[KAF004_46]'}" />
+																name: '#[KAF004_51]'}" />
 							</div>
 							</com:ko-if>
 						</div>
@@ -229,6 +241,7 @@
 						<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_17')}</div>
 						<div id="combo-box"
 							data-bind="ntsComboBox: {
+							name: '#[KAF004_17]',
 							options: ListTypeReason,
 							optionsValue: 'reasonID',
 							visibleItemsCount: 5,
@@ -236,7 +249,7 @@
 							optionsText: 'reasonTemp',
 							enable: true,
 							columns: [
-								{ prop: 'reasonTemp', length: 4 },
+								{ prop: 'reasonTemp', length: 15 },
 							
 							]}"></div>
 					</div>
@@ -245,8 +258,9 @@
 						<div id="multiline" style="margin-left: 5px;">
 							<textarea
 								data-bind="ntsMultilineEditor: {
+								name: '#[KAF004_18]',
 								value: appreason,
-								constraint: 'ResidenceCode',
+								constraint: 'AppReason',
 								option: {
 									resizeable: false,
 			                    	width: '500',
@@ -264,7 +278,7 @@
 				<!--RIGHT CONTENT -->
 				<div class="right-contents">
 					<div class="panel panel-gray-bg panel-frame">
-						<label>実際の内容 :</label> <BR /> <BR />
+						<label>#{i18n.getText('KAF004_44')} :</label> <BR /> <BR />
 						<label>日付 :</label> <BR /> <BR /> <label>勤務種類
 							:</label> <BR /> <label>就業時間帯 :</label> <BR /> <BR />
 						<label>勤務時間 :</label>

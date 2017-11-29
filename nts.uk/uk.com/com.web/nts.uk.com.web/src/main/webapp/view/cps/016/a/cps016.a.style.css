@@ -85,12 +85,8 @@ button.search-btn {
 	border-left: none;
 }
 
-.clear-btn {
-	visibility: hidden;
-}
-
 div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 365px;
+	width: 395px;
 }
 
 i.icon.icon-searchbox {

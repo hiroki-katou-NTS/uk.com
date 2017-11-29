@@ -2,7 +2,13 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 
+/**
+ * TanLV
+ * 時間計算式
+ * 
+ */
 @AllArgsConstructor
 @Getter
 public class FormTimeFunc {
@@ -14,6 +20,9 @@ public class FormTimeFunc {
     
     /* 汎用縦計項目ID */
     private String verticalCalItemId;
+    
+    /* 順番 */
+    private int dispOrder;
     
     /* 予定項目ID */
     private String presetItemId;
@@ -27,6 +36,29 @@ public class FormTimeFunc {
     /* 演算子区分 */
     private OperatorAtr operatorAtr;
     
-    /* 順番 */
-    private int dispOrder;
+    /**
+     * Create From JavaType
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @param dispOrder
+     * @param presetItemId
+     * @param attendanceItemId
+     * @param externalBudgetCd
+     * @param operatorAtr
+     * @return
+     */
+	public static FormTimeFunc createFromJavaType(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder,
+			String presetItemId, String attendanceItemId, String externalBudgetCd, int operatorAtr) {
+		
+		return new FormTimeFunc(companyId, 
+				verticalCalCd, 
+				verticalCalItemId, 
+				dispOrder,
+				presetItemId, 
+				attendanceItemId, 
+				externalBudgetCd,
+				EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class)
+			);
+	}
 }

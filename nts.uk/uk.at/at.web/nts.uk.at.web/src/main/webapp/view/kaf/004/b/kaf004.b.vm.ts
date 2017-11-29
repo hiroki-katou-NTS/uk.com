@@ -59,6 +59,10 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
             });
+            self.date.subscribe(value => {
+                self.kaf000_a2.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
+                self.kaf000_a2.getAllApprovalRoot();
+            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -66,7 +70,15 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getByCode("").done(function(data) {
-                self.ListTypeReason(data.listApplicationReasonDto);
+                self.ListTypeReason.removeAll();
+                _.forEach(data.listApplicationReasonDto, data => {
+                    let reasonTmp: TypeReason = {reasonID: data.reasonID, reasonTemp: data.reasonTemp};
+                    self.ListTypeReason.push(reasonTmp); 
+                    if(data.defaultFlg == 1){
+                        self.selectedCode(data.reasonID);
+                    }          
+                });
+                
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
                 self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
@@ -109,6 +121,13 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         
                     prePostAtr = 0;
                 }
+                nts.uk.ui.block.invisible();
+                let txtReasonTmp = self.selectedCode();
+                if(!nts.uk.text.isNullOrEmpty(self.selectedCode())){
+                    let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                    txtReasonTmp = reasonText.reasonTemp;
+                }
+                
                 let lateOrLeaveEarly: LateOrLeaveEarly = {
                     prePostAtr: prePostAtr, 
                     applicationDate: self.date(),
@@ -121,7 +140,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     lateTime2: self.lateTime2(),
                     early2: self.early2() ? 1 : 0,
                     earlyTime2: self.earlyTime2(),
-                    reasonTemp: self.selectedCode(),
+                    reasonTemp: txtReasonTmp,
                     appReason: self.appreason(),
                     appApprovalPhaseCmds: self.kaf000_a2.approvalList
                 };
@@ -130,7 +149,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         location.reload();
                     });
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});  
                 });
 
             }

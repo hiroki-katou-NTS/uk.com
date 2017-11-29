@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalFor
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationDto {
+	private Long version;
 	/**
 	 * 会社ID
 	 */
@@ -67,7 +69,6 @@ public class ApplicationDto {
 	/**
 	 * 申請理由
 	 */
-	private String appReasonID;
 	private String applicationReason;
 	/**
 	 * 申請種類
@@ -127,6 +128,7 @@ public class ApplicationDto {
 	
 	public static ApplicationDto fromDomain(Application domain) {
 		return new ApplicationDto(
+				domain.getVersion(),
 				domain.getCompanyID(),
 				domain.getApplicationID(),
 				domain.getPrePostAtr().value,
@@ -134,7 +136,6 @@ public class ApplicationDto {
 				domain.getEnteredPersonSID(), 
 				domain.getReversionReason().v(), 
 				domain.getApplicationDate() == null ? null :domain.getApplicationDate().toString(), 
-				domain.getAppReasonID(),
 				domain.getApplicationReason().v(),
 				domain.getApplicationType().value, 
 				domain.getApplicantSID(), 
@@ -152,14 +153,13 @@ public class ApplicationDto {
 				);
 	}
 	public static Application toEntity(ApplicationDto entity) {
-		return new Application(entity.getCompanyID(), 
+		Application app = new Application(entity.getCompanyID(), 
 				entity.getApplicationID(), 
 				EnumAdaptor.valueOf(entity.getPrePostAtr(), PrePostAtr.class), 
-				entity.getInputDate() == null?null :GeneralDate.fromString(entity.getInputDate(), "yyyy/MM/dd"), 
+				entity.getInputDate() == null?null :GeneralDateTime.now(), 
 				entity.getEnteredPersonSID(), 
 				new AppReason(entity.getReversionReason()), 
 				entity.getApplicationDate() == null?null :GeneralDate.fromString(entity.getApplicationDate(), "yyyy/MM/dd"),   
-				entity.getAppReasonID(),
 				new AppReason(entity.getApplicationReason()), 
 				EnumAdaptor.valueOf(entity.getApplicationType(), ApplicationType.class), 
 				entity.getApplicantSID(), 
@@ -175,6 +175,8 @@ public class ApplicationDto {
 				entity.getEndDate() == null?null :GeneralDate.fromString(entity.getEndDate(), "yyyy/MM/dd"), 
 				entity.getListPhase() == null ? null: entity.getListPhase().stream().map(x -> AppApprovalPhaseDto.toEntity(x)).collect(Collectors.toList())
 				);//entity.getListPhase()
+		app.setVersion(entity.version);
+		return app;
 	}
 	
 	

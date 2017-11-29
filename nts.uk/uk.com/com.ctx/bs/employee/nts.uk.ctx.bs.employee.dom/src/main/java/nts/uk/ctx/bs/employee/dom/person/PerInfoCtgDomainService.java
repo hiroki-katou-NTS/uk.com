@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.dom.person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -24,6 +25,7 @@ import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoAuthType;
+import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
 
 /**
@@ -44,34 +46,18 @@ public class PerInfoCtgDomainService {
 
 	@Inject
 	private PersonInfoItemAuthRepository personInfoItemAuthRepository;
-	 
-
 	/**
 	 * get person information item definition
 	 * @param paramObject
 	 * @return List<PersonInfoItemDefinition>
 	 */
 
-	public List<PersonInfoItemDefinition> getPerItemDef(ParamForGetPerItem paramObject) {
-		
-		// get person infor role auth
-//		PersonInfoRoleAuth personInfoRoleAuth = personInfoRoleAuthRepository
-//				.getDetailPersonRoleAuth(paramObject.getRoleId(), paramObject.getCompanyId()).get();
-		PersonInfoItemDefinition parrentPerInfoDef = new PersonInfoItemDefinition();
-		if (paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.MULTIINFO) 
-			parrentPerInfoDef = getPerInfoItemDefWithAuth(paramObject).get(0);
+	public List<PersonInfoItemDefinition> getPerItemDef(ParamForGetPerItem paramObject) {		
+		if (paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.MULTIINFO
+				|| paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.SINGLEINFO) 
+			return getPerInfoItemDefWithAuth(paramObject);
 		else 
-			parrentPerInfoDef = getPerInfoItemDefWithHis(paramObject);
-		
-		List<PersonInfoItemDefinition> lstResult = new ArrayList<>();
-		if (parrentPerInfoDef.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
-			//get itemId list of children
-			SetItem setItem = (SetItem) parrentPerInfoDef.getItemTypeState();
-			// get children by itemId list
-			lstResult = perInfoItemDefRepositoty.getPerInfoItemDefByListId(setItem.getItems(), paramObject.getContractCode());
-		}
-		lstResult.add(parrentPerInfoDef);		
-		return lstResult;
+			return getPerInfoItemDefWithHis(paramObject);	
 	}
 	
 	/**
@@ -80,23 +66,26 @@ public class PerInfoCtgDomainService {
 	 * @return List<PersonInfoItemDefinition>
 	 */
 	
-	public List<PersonInfoItemDefinition> getPerInfoItemDefWithAuth(ParamForGetPerItem paramObject){
+	private List<PersonInfoItemDefinition> getPerInfoItemDefWithAuth(ParamForGetPerItem paramObject){
 		// get per info item def with order
-		List<PersonInfoItemDefinition> lstPerInfoDef = perInfoItemDefRepositoty.getPerInfoItemByCtgId(
-				paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getCompanyId(),
-				paramObject.getContractCode());
+		List<PersonInfoItemDefinition> lstPerInfoDef = perInfoItemDefRepositoty.getAllPerInfoItemDefByCategoryId(
+				paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getContractCode());
 		// filter by auth
 		return lstPerInfoDef.stream().filter(x -> {
-			return paramObject
-					.isSelfAuth()
-							? personInfoItemAuthRepository
-									.getItemDetai(paramObject.getRoleId(), paramObject.getParentInfoId(),
-											x.getPerInfoItemDefId())
-									.get().getSelfAuth() != PersonInfoAuthType.HIDE
-							: personInfoItemAuthRepository
-									.getItemDetai(paramObject.getRoleId(), paramObject.getParentInfoId(),
-											x.getPerInfoItemDefId())
-									.get().getOtherAuth() != PersonInfoAuthType.HIDE;
+			Optional<PersonInfoItemAuth> personInfoItemAuth = personInfoItemAuthRepository
+					.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
+							x.getPerInfoItemDefId());
+			if(personInfoItemAuth.isPresent())
+				return paramObject.isSelfAuth()?
+						personInfoItemAuthRepository
+							.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
+									x.getPerInfoItemDefId())
+							.get().getSelfAuth() != PersonInfoAuthType.HIDE:
+						personInfoItemAuthRepository
+							.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
+									x.getPerInfoItemDefId())
+							.get().getOtherAuth() != PersonInfoAuthType.HIDE;
+			else return false;			
 		}).collect(Collectors.toList());
 	}
 	
@@ -105,7 +94,7 @@ public class PerInfoCtgDomainService {
 	 * @param paramObject
 	 * @return List<PersonInfoItemDefinition>
 	 */
-	private PersonInfoItemDefinition getPerInfoItemDefWithHis(ParamForGetPerItem paramObject){
+	private List<PersonInfoItemDefinition> getPerInfoItemDefWithHis(ParamForGetPerItem paramObject){
 		DateRangeItem dateRangeItem = this.perInfoCategoryRepositoty
 				.getDateRangeItemByCtgId(paramObject.getParentInfoId());
 		return perInfoItemDefRepositoty
@@ -113,7 +102,7 @@ public class PerInfoCtgDomainService {
 						paramObject.getContractCode())
 				.stream().filter(x -> {
 					return x.getPerInfoItemDefId() == dateRangeItem.getDateRangeItemId();
-				}).findFirst().get();
+				}).collect(Collectors.toList());
 	}
 
 }

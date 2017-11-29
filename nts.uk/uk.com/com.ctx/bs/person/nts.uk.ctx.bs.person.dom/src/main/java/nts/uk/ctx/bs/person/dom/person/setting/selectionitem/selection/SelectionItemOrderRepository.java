@@ -13,5 +13,13 @@ public interface SelectionItemOrderRepository {
 
 	void remove(String selectionItemOrder);
 	
-	List<SelectionItemOrder> getAllOrderItemSelection(String selectedId);
+	List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId);
+	
+	List<SelectionItemOrder> getAllOrderBySelectionId(String selectionId);
+	//hoatt
+	/**
+	 * update List Selection Item Order
+	 * @param lstSelOrder
+	 */
+	void updateListSelOrder(List<SelectionItemOrder> lstSelOrder);
 }

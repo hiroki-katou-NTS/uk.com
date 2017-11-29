@@ -3,9 +3,9 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**

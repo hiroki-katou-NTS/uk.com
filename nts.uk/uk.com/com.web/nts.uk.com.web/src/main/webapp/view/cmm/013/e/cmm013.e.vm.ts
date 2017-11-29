@@ -3,6 +3,9 @@ module nts.uk.com.view.cmm013.e {
     export module viewmodel {
         
         import Constants = base.Constants;
+        import SavePeriod = base.SavePeriod;   
+        import SaveHistory = base.SaveHistory;          
+        import SaveJobTitleHistoryCommand = service.model.SaveJobTitleHistoryCommand;
         
         export class ScreenModel {
             
@@ -47,14 +50,15 @@ module nts.uk.com.view.cmm013.e {
                 }               
                 nts.uk.ui.block.grayout();
                 service.saveJobTitleHistory(_self.toJSON())
-                    .done(() => {
-                        nts.uk.ui.block.clear();
+                    .done(() => {                       
                         nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_EDIT_HISTORY, true);
                         _self.close();
                     })
                     .fail((res: any) => {
-                        nts.uk.ui.block.clear();
-                        _self.showBundledErrorMessage(res);
+                        _self.showMessageError(res);
+                    })
+                    .always(() => {
+                        nts.uk.ui.block.clear();    
                     });
             }
             
@@ -68,37 +72,43 @@ module nts.uk.com.view.cmm013.e {
             /**
              * toJSON
              */
-            private toJSON(): any {
+            private toJSON(): SaveJobTitleHistoryCommand {
                 let _self = this;
-                return {
-                    isCreateMode: false,
-                    jobTitleId: _self.jobTitleId,
-                    jobTitleHistory: {
-                        historyId: _self.historyId,
-                        period: {
-                            startDate: _self.startDate(),
-                            endDate: new Date("9999-12-31")
-                        }
-                    }
-                }
+                
+                let jobTitleHistory: SaveHistory = new SaveHistory(_self.historyId, new SavePeriod(new Date(_self.startDate()), new Date("9999-12-31")));
+                let command: SaveJobTitleHistoryCommand = new SaveJobTitleHistoryCommand(false, _self.jobTitleId, jobTitleHistory);
+                return command;              
             }
             
             /**
              * Validate
              */
             private validate(): boolean {
-                let _self = this;               
-                $('#start-date').ntsError('clear');                
+                let _self = this;             
+                  
+                // Clear error
+                nts.uk.ui.errors.clearAll();    
+                              
                 $('#start-date').ntsEditor('validate');               
                 return !$('.nts-input').ntsError('hasError');
             }
             
             /**
              * Show Error Message
-             */
-            private showBundledErrorMessage(res: any): void {
-                nts.uk.ui.dialog.bundledErrors(res); 
-            }           
+             */        
+            public showMessageError(res: any): void {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }
         }
     }    
 }

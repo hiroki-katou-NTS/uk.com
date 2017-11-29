@@ -26,11 +26,7 @@ public class KrcdtErrMessageInfo extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtErrMessageInfoPK krcdtErrMessageInfoPK;
 	
-	@Column(name = "EXECUTION_CONTENT")
-	public int executionContent;
 	
-	@Column(name = "DISPOSAL_DAY")
-	public GeneralDate disposalDay;
 	
 	@Column(name = "MESSAGE_ERROR")
 	public String messageError;

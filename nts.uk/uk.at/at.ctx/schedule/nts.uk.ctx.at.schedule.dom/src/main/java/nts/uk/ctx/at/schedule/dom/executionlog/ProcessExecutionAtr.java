@@ -16,7 +16,7 @@ public enum ProcessExecutionAtr {
 
 	/** The reconfig. */
 	// 再設定する
-	RECONFIG(1, "Enum_ProcessExecutionAtr_reconfig", "就業時間帯区分");
+	RECONFIG(1, "Enum_ProcessExecutionAtr_reconfig", "再設定する");
 
 	/** The value. */
 	public final int value;

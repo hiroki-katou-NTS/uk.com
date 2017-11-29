@@ -13,18 +13,9 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 
 /**
- * Gets the late night time.
- *
- * @return the late night time
+ * The Class AutoCalRestTimeSettingDto.
  */
 @Getter
-
-/**
- * Sets the late night time.
- *
- * @param lateNightTime
- *            the new late night time
- */
 @Setter
 public class AutoCalRestTimeSettingDto {
 
@@ -42,17 +33,14 @@ public class AutoCalRestTimeSettingDto {
 	 *            the company id
 	 * @return the auto cal rest time setting
 	 */
-	public AutoCalRestTimeSetting toDomain(String companyId) {
-		return new AutoCalRestTimeSetting(new DtoGetMemento(companyId, this));
+	public AutoCalRestTimeSetting toDomain() {
+		return new AutoCalRestTimeSetting(new DtoGetMemento(this));
 	}
 
 	/**
 	 * The Class DtoGetMemento.
 	 */
 	private class DtoGetMemento implements AutoCalRestTimeSettingGetMemento {
-
-		/** The company id. */
-		private String companyId;
 
 		/** The command. */
 		private AutoCalRestTimeSettingDto command;
@@ -65,8 +53,7 @@ public class AutoCalRestTimeSettingDto {
 		 * @param command
 		 *            the command
 		 */
-		public DtoGetMemento(String companyId, AutoCalRestTimeSettingDto command) {
-			this.companyId = companyId;
+		public DtoGetMemento(AutoCalRestTimeSettingDto command) {
 			this.command = command;
 		}
 

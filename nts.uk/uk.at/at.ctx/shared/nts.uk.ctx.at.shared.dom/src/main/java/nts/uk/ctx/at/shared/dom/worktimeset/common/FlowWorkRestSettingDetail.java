@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktimeset.common;
 
 import lombok.Getter;
@@ -12,7 +16,7 @@ public class FlowWorkRestSettingDetail extends DomainObject {
 
 	/** The flow rest setting. */
 	// 流動休憩設定
-	//private FlowRestSet flowRestSetting;
+	private FlowRestSet flowRestSetting;
 
 	/** The flow fixed rest setting. */
 	// 流動固定休憩設定

@@ -15,9 +15,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttdItemLinkRequest;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
-import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItemAtr;
-import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItemRepository;
+import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -118,17 +118,15 @@ public class MonthlyAttendanceItemFinder {
 	 * @return the int
 	 */
 	private int convertToAttdItemType(int formulaAtr) {
-		final int AMOUNT = OptionalItemAtr.AMOUNT.value;
-		final int NUMBER = OptionalItemAtr.NUMBER.value;
-		final int TIMTE = OptionalItemAtr.TIME.value;
-
-		if (formulaAtr == AMOUNT) {
+		OptionalItemAtr vl = OptionalItemAtr.valueOf(formulaAtr);
+		switch (vl) {
+		case AMOUNT:
 			return MonthlyAttendanceItemAtr.AMOUNT.value;
-		} else if (formulaAtr == NUMBER) {
-			return MonthlyAttendanceItemAtr.NUMBER.value;
-		} else if (formulaAtr == TIMTE) {
+		case TIME:
 			return MonthlyAttendanceItemAtr.TIME.value;
-		} else {
+		case NUMBER:
+			return MonthlyAttendanceItemAtr.NUMBER.value;
+		default:
 			throw new RuntimeException("value not found");
 		}
 	}

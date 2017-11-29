@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -56,8 +57,8 @@ public class LateOrLeaveEarly extends Application {
 	private TimeDay lateTime2;
 
 	/** All Agrs constructor */
-	public LateOrLeaveEarly(String companyID, String appID, int prePostAtr, GeneralDate inputDate,
-			String enteredPersonSID, String reversionReason, GeneralDate applicationDate, String appReasonID, String applicationReason,
+	public LateOrLeaveEarly(String companyID, String appID, int prePostAtr, GeneralDateTime inputDate,
+			String enteredPersonSID, String reversionReason, GeneralDate applicationDate, String applicationReason,
 			int applicationType, String applicantSID, int reflectPlanScheReason,
 			GeneralDate reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,
 			int reflectPerScheReason, GeneralDate reflectPerTime, int reflectPerState,
@@ -65,7 +66,7 @@ public class LateOrLeaveEarly extends Application {
 			int early1, int earlyTime1, int late1, int lateTime1,
 			int early2, int earlyTime2, int late2, int lateTime2) {
 		super(companyID, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), inputDate, enteredPersonSID,
-				new AppReason(reversionReason), applicationDate, appReasonID, new AppReason(applicationReason),
+				new AppReason(reversionReason), applicationDate, new AppReason(applicationReason),
 				EnumAdaptor.valueOf(applicationType, ApplicationType.class), applicantSID, EnumAdaptor.valueOf(reflectPlanScheReason, ReflectPlanScheReason.class),
 				reflectPlanTime, EnumAdaptor.valueOf(reflectPlanState, ReflectPlanPerState.class),
 				EnumAdaptor.valueOf(reflectPlanEnforce, ReflectPlanPerEnforce.class), EnumAdaptor.valueOf(reflectPerScheReason, ReflectPerScheReason.class),

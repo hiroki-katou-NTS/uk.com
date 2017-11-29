@@ -133,6 +133,24 @@ public class PerInfoItemDefFinder {
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
 	};
+	
+	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCatgoryId(String perInfoCtgId) {
+		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
+				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
+				.filter(e -> e.getItemParentCode().equals(""))
+				.collect(Collectors.toList());
+		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
+		return mappingItemAndOrder(itemDefs, itemOrders);
+	};
+	
+	public PerInfoItemDefDto getPerInfoItemDefByItemDefId(String perInfoItemDefId) {
+		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
+				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).orElse(null);
+		int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(itemDef.getPerInfoCategoryId(),
+				itemDef.getPerInfoItemDefId());
+		return mappingFromDomaintoDto(itemDef, dispOrder);
+	}
+	
 
 	public PerInfoItemDefDto getPerInfoItemDefByIdForLayout(String perInfoItemDefId) {
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
@@ -166,9 +184,10 @@ public class PerInfoItemDefFinder {
 		String contractId = AppContexts.user().contractCode();
 		return pernfoItemDefRep.getPerInfoItemByCtgId(perInfoCategoryId, 
 				companyId, contractId).stream().map(item ->{
-					//boolean alreadyCopy = pernfoItemDefRep.countPerInfoItemDefInCopySetting(perInfoCategoryId, companyId) > 0 ? true : false;
-					boolean alreadyCopy = false;
-					return new PerInfoItemDefMapDto(item.getPerInfoItemDefId(), item.getPerInfoCategoryId(),
+					String itemId  = item.getPerInfoItemDefId();
+					boolean alreadyCopy = pernfoItemDefRep.countPerInfoItemDefInCopySetting(itemId, companyId) > 0 ? true : false;
+					//boolean alreadyCopy = false;
+					return new PerInfoItemDefMapDto(itemId, item.getPerInfoCategoryId(),
 							item.getItemName().v(), alreadyCopy);
 				}).collect(Collectors.toList());
 	}

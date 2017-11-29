@@ -4,32 +4,42 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHist;
 
 /**
  * The Class JpaClosureGetMemento.
  */
+@Getter
+@Setter
 public class JpaClosureGetMemento implements ClosureGetMemento{
 	
 	/** The Kclmt closure. */
-	@Setter
 	private KclmtClosure kclmtClosure;
+	
+	/** The kclmt closure history. */
+	private List<KclmtClosureHist> kclmtClosureHistorys;
 	
 	/**
 	 * Instantiates a new jpa closure get memento.
 	 *
 	 * @param KclmtClosure the kclmt closure
 	 */
-	public JpaClosureGetMemento(KclmtClosure kclmtClosure) {
+	public JpaClosureGetMemento(KclmtClosure kclmtClosure, List<KclmtClosureHist> kclmtClosureHistorys) {
 		this.kclmtClosure = kclmtClosure;
+		this.kclmtClosureHistorys = kclmtClosureHistorys;
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +79,12 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public List<ClosureHistory> getClosureHistories() {
-		return null;
+		if(CollectionUtil.isEmpty(this.kclmtClosureHistorys)){
+			return new ArrayList<>();
+		}
+		return this.kclmtClosureHistorys.stream()
+				.map(entity -> new ClosureHistory(new JpaClosureHistoryGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 }

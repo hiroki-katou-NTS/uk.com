@@ -13,27 +13,44 @@ import lombok.Getter;
 public class PartResetClassification {
 
 	//マスタ再設定
-	private boolean masterReset;
+	private Boolean masterReconfiguration;
 
 	//休業再設定
-	private boolean holidayReset;
+	private Boolean closedHolidays;
 
 	// 就業時間帯再設定
-	private boolean workingHoursReset;
+	private Boolean resettingWorkingHours;
 
 	// 打刻のみ再度反映
-	private boolean reflectsTheNumberOfFingerprintChecks;
+	private Boolean reflectsTheNumberOfFingerprintChecks;
 
 	// 特定日区分再設定
-	private boolean specificDateClassificationReset;
+	private Boolean specificDateClassificationResetting;
 
 	// 申し送り時間再設定
-	private boolean assignmentTimeReset;
+	private Boolean resetTimeAssignment;
 
 	// 育児・介護短時間再設定
-	private boolean childOrNurseCareTimeReset;
+	private Boolean resetTimeChildOrNurseCare;
 
 	// 計算区分再設定
-	private boolean calculationClassificationReset;
+	private Boolean calculationClassificationResetting;
 
+	public PartResetClassification(Boolean masterReconfiguration, Boolean closedHolidays, Boolean resettingWorkingHours,
+			Boolean reflectsTheNumberOfFingerprintChecks, Boolean specificDateClassificationResetting,
+			Boolean resetTimeAssignment, Boolean resetTimeChildOrNurseCare,
+			Boolean calculationClassificationResetting) {
+		super();
+		this.masterReconfiguration = masterReconfiguration;
+		this.closedHolidays = closedHolidays;
+		this.resettingWorkingHours = resettingWorkingHours;
+		this.reflectsTheNumberOfFingerprintChecks = reflectsTheNumberOfFingerprintChecks;
+		this.specificDateClassificationResetting = specificDateClassificationResetting;
+		this.resetTimeAssignment = resetTimeAssignment;
+		this.resetTimeChildOrNurseCare = resetTimeChildOrNurseCare;
+		this.calculationClassificationResetting = calculationClassificationResetting;
+	}
+
+
+	
 }

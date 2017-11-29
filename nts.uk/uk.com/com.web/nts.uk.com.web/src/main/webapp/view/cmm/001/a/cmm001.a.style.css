@@ -149,22 +149,25 @@ button.search-btn {
 }
 
 #companyCode {
-	margin-left: 28px !important;
+	margin-left: -26px !important;
 	margin-bottom: 0px !important;
 }
 
 #companyName{
 	width: 360px !important;
+	margin-left: -50px !important;
 }
 
 #companyNameKana {
 	width: 360px !important;
 	margin-bottom: 10px;
+	margin-left: -50px !important;
 }
 
 #companyNameAbb {
 	width: 360px !important;
 	margin-top: -20px;
+	margin-left: -50px !important;
 }
 
 #presidentName {
@@ -182,8 +185,7 @@ button.search-btn {
 }
 
 #postal {
-	width: 100px;
-	text-align: center;
+	width: 70px;
 }
 
 #address1 {
@@ -250,6 +252,7 @@ body>div:nth-child(4) {
 #termBeginMon {
 	width: 80px !important;
 	margin-top: 5px !important;
+	margin-left: -70px;
 }
 
 #contents-area>div.nts-right-content>div.table.fixed-height {
@@ -274,5 +277,43 @@ body>div:nth-child(4) {
 	margin-left: -50px;	
 }
 #searchZipCode{
-	margin-left: -60px;
+	margin-left: -80px;
+}
+
+#checkbtn{
+	height: 25px;
+}
+
+#corporateMyNumber{
+	margin-left: -50px;
+	width: 115px;
+}
+
+#presidentName{
+	margin-left: -50px;
+}
+
+#presidentJobTitle{
+	margin-left: -50px;
+}
+
+#codeNameLb{
+	margin-top: -8px;
+}
+
+.ntsCheckBox-label{
+	width: 130px;
+}
+
+#faxNo{
+	margin-left: -50px;
+}
+
+.cf1{
+	margin-left: -70px;
+}
+
+#switchhelpbtn{
+    margin-left: 30px;
+    height: 27px;
 }

@@ -13,11 +13,11 @@ public class Company extends AggregateRoot {
 
 	/** The company code. */
 	// 会社コード
-	private CompanyCode companyCode;
+	private CCD companyCode;
 
 	/** The company code. */
 	// 会社名
-	private CompanyName companyName;
+	private Name companyName;
 
 	/** The company id. */
 	// 会社ID
@@ -29,7 +29,7 @@ public class Company extends AggregateRoot {
 
 	/** The Abolition */
 	// 廃止区分
-	private IsAbolition isAbolition;
+	private AbolitionAtr isAbolition;
 
 	/** システム利用設定 - System Use Setting */
 	private SystemUseSetting systemUseSetting;
@@ -70,7 +70,7 @@ public class Company extends AggregateRoot {
 	 * @param companyId
 	 * @param isAbolition
 	 */
-	public Company(CompanyCode companyCode, CompanyName companyName, CompanyId companyId, IsAbolition isAbolition,
+	public Company(CCD companyCode, Name companyName, CompanyId companyId, AbolitionAtr isAbolition,
 			SystemUseSetting systemUseSetting) {
 		super();
 		this.companyCode = companyCode;
@@ -82,10 +82,10 @@ public class Company extends AggregateRoot {
 
 	public static Company createFromJavaType(String companyCode, String companyName, String companyId, int isAbolition,
 			int personSystem, int employmentSystem, int payrollSystem) {
-		return new Company(new CompanyCode(companyCode), 
-				           new CompanyName(companyName), 
+		return new Company(new CCD(companyCode), 
+				           new Name(companyName), 
 				           new CompanyId(companyId),
-				           EnumAdaptor.valueOf(isAbolition, IsAbolition.class),
+				           EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class),
 				           new SystemUseSetting(EnumAdaptor.valueOf(personSystem, SystemUseClassification.class),
 						   EnumAdaptor.valueOf(employmentSystem, SystemUseClassification.class),
 						   EnumAdaptor.valueOf(payrollSystem, SystemUseClassification.class)));

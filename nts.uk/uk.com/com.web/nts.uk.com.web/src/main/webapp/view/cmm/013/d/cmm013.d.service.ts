@@ -1,5 +1,8 @@
 module nts.uk.com.view.cmm013.d {
     
+    import SaveHistory = base.SaveHistory;
+    import SaveJobTitleHistoryCommand = service.model.SaveJobTitleHistoryCommand;
+    
     export module service {
         
         /**
@@ -12,7 +15,7 @@ module nts.uk.com.view.cmm013.d {
         /**
          * saveWorkplaceHistory
          */
-        export function saveJobTitleHistory(command: any): JQueryPromise<any> {
+        export function saveJobTitleHistory(command: SaveJobTitleHistoryCommand): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveJobTitleHistory, command);
         }
         
@@ -21,6 +24,21 @@ module nts.uk.com.view.cmm013.d {
         */
         export module model {
             
+            /**
+             * JobTitleHistory save command
+             */
+            export class SaveJobTitleHistoryCommand {
+                
+                isCreateMode: boolean;
+                jobTitleId: string;
+                jobTitleHistory: SaveHistory;
+                
+                constructor(isCreateMode: boolean, jobTitleId: string, jobTitleHistory: SaveHistory) {
+                    this.isCreateMode = isCreateMode;
+                    this.jobTitleId = jobTitleId;
+                    this.jobTitleHistory = jobTitleHistory;
+                }
+            }
         }
     }
 }

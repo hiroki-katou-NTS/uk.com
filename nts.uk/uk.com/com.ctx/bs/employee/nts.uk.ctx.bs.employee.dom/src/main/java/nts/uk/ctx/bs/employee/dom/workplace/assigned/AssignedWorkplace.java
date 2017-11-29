@@ -1,11 +1,26 @@
 package nts.uk.ctx.bs.employee.dom.workplace.assigned;
 
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+/**
+ * 所属職場履歴
+ * 
+ * @author xuan vinh
+ *
+ */
+
 @Getter
-public class AssignedWorkplace extends AggregateRoot{
+@AllArgsConstructor
+public class AssignedWorkplace extends AggregateRoot implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	
 	/**Employee id*/
 	//// 社員ID
@@ -17,30 +32,18 @@ public class AssignedWorkplace extends AggregateRoot{
 	//職場ID
 	private String assignedWorkplaceId;
 	
-	/** The history id. */
-	//履歴ID
-	private String historyId;
+	private String workplaceId;
+	
+	private List<DateHistoryItem> dateHistoryItem;
 
-	/** The period. */
-	//期間
-	private DatePeriod period;
-	
-	public AssignedWorkplace(AssignedWorkplaceMemento memento){
-		this.employeeId = memento.getEmployeeId();
-		this.assignedWorkplaceId = memento.getAssignedWorkplaceId();
-		this.historyId = memento.getHistoryId();
-		this.period = memento.getPeriod();
+	@Override
+	public List items() {
+		return this.dateHistoryItem;
 	}
 	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(AssignedWorkplaceMemento memento){
-		memento.setEmployeeId(this.employeeId);
-		memento.setAssignedWorkplaceId(this.assignedWorkplaceId);
-		memento.setHistoryId(this.historyId);
-		memento.setPeriod(this.period);
+	public static AssignedWorkplace creatFromJavaType(String employeeId, String assignedWorkplaceId , String workplaceId) {
+		return new AssignedWorkplace(employeeId, assignedWorkplaceId, workplaceId, null);
+		
 	}
+	
 }

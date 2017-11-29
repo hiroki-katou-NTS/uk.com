@@ -123,7 +123,8 @@ module nts.custombinding {
                         overflow: hidden;
                     }
 
-                    .layout-control .item-classification div.set-item-list div.set-item {
+                    .layout-control .item-classification div.set-item-list div.set-item,
+                    .layout-control .item-classification div.item-control .single-item-list>div {
                         display: inline-block;
                     }
 
@@ -337,12 +338,12 @@ module nts.custombinding {
 
                     .layout-control.inputable tr:hover .number,
                     .layout-control.inputable .index:hover .number {
-                        display: none;
+                        display: block;
                     }
 
                     .layout-control.inputable tr:hover .remove-btn,
                     .layout-control.inputable .index:hover .remove-btn {
-                        display: block;
+                        display: none;
                     }
 
                     .layout-control.inputable .remove-btn:hover {
@@ -370,9 +371,16 @@ module nts.custombinding {
 
                     .layout-control.dragable .add-rows,
                     .layout-control.dragable .add-rows button,
+                    .layout-control.inputable .add-rows,
+                    .layout-control.inputable .add-rows button,
                     .layout-control.readonly:not(.inputable) .add-rows,
                     .layout-control.readonly:not(.inputable) .add-rows button {
                         display: none;
+                    }
+
+                    .layout-control.dragable .color-operation-case-character,
+                    .layout-control.readonly:not(.inputable) .color-operation-case-character {
+                        color: #000 !important;
                     }
 
                     .layout-control .add-rows button {
@@ -427,17 +435,23 @@ module nts.custombinding {
                             <div class="form-group item-classification"
                                     data-bind="let: { 
                                         cls: $data, 
-                                        _item: items && items()[0], 
+                                        _item: items && _.find(items(), function(x, i) { return i == 0}), 
                                         _items: items && _.filter(items(), function(x, i) { return i > 0}),
                                         __items: items && _.filter(items(), function(x, i) { return i >= 0})
                                     }">
-                               <div data-bind="if: layoutItemType == 0">
+                               <div data-bind="if: layoutItemType == 'ITEM'">
                                     <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
                                             .filter(function(x) { return [3, 4, 5, 6].indexOf((x.item||{}).dataTypeValue) == -1})
-                                            .map(function(x) { return x.itemCode })
+                                            .map(function(x) { return x.itemDefId.replace(/-/g, '') })
                                             .value() }">
                                         <div data-bind="ntsFormLabel: { 
-                                            text: className || '', 
+                                            text: className || '',
+                                            cssClass: ko.computed(function() {
+                                                if(!!_.find(__items, function(x) { return x.value() })) {
+                                                     return '';
+                                                }
+                                                return 'color-operation-case-character'; 
+                                            }),
                                             required: !!_.find(__items, function(x) { return x.required }),
                                             constraint: _constraint.length && _constraint || undefined  }"></div>
                                         <div data-bind="if: (_item || {}).type == 1" class="set-items">
@@ -458,7 +472,7 @@ module nts.custombinding {
                                         </div>
                                     </div>
                                 </div>
-                                <div data-bind="if: layoutItemType == 1">            
+                                <div data-bind="if: layoutItemType == 'LIST'">            
                                     <div class="item-controls">
                                         <div data-bind="ntsFormLabel: { required: !!_.find(_items, function(x) { return !!x.required }), text: className || '' }"></div>
                                         <div class="multiple-items table-container header-1rows">
@@ -470,7 +484,7 @@ module nts.custombinding {
                                                             <th class="index"><div>⁝</div></th>
                                                             <!-- /ko -->
                                                             <th data-bind="template: { afterRender: function(childs, data) { let div = $(childs[1]); setInterval(function() { div.css('width', (div.parent().width() - 3) + 'px') }, 0); } }">
-                                                                <div data-bind="ntsFormLabel: { constraint: [3, 4, 5, 6].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemCode : undefined, required: header.required, text: header.itemName || '', inline: true }"></div>
+                                                                <div data-bind="ntsFormLabel: { constraint: [3, 4, 5, 6].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/-/g, '') : undefined, required: header.required, text: header.itemName || '', inline: true }"></div>
                                                             </th>
                                                         </tr>
                                                     </thead>
@@ -499,6 +513,7 @@ module nts.custombinding {
                                                                                 itemCode: _obj.itemCode,
                                                                                 itemName: _obj.itemName,
                                                                                 required: _obj.required,
+                                                                                itemDefId: _obj.itemDefId,
                                                                                 value: ko.observable(undefined),
                                                                                 readonly: ko.observable(false),
                                                                                 editable: ko.observable(true),
@@ -520,7 +535,7 @@ module nts.custombinding {
                                         </div>
                                     </div>
                                 </div>
-                                <div data-bind="if: layoutItemType == 2" class="item-sperator">
+                                <div data-bind="if: layoutItemType == 'SeparatorLine'" class="item-sperator">
                                     <hr />
                                 </div>
                                 <span class="close-btn" data-bind="click: function($data, event) { ko.bindingHandlers['ntsLayoutControl'].remove(cls, event); }">✖</span>
@@ -535,7 +550,7 @@ module nts.custombinding {
                             <input data-bind="attr: { title: itemName, id: itemCode },
                                 ntsTextEditor: {
                                     value: value,
-                                    constraint: itemCode,
+                                    constraint: itemDefId.replace(/-/g, ''),
                                     required: false, 
                                     option: {
                                         textmode: 'text',
@@ -549,7 +564,7 @@ module nts.custombinding {
                         <div data-bind="if: item.stringItemType != 4 && item.stringItemLength >= 40">
                             <textarea data-bind="ntsMultilineEditor: {
                                 value: value,
-                                constraint: itemCode,
+                                constraint: itemDefId.replace(/-/g, ''),
                                 option: {
                                     textmode: 'text',
                                     placeholder: itemName
@@ -562,7 +577,7 @@ module nts.custombinding {
                     <div data-bind="if: item.dataTypeValue == 2" class="numeric">
                         <input data-bind="ntsNumberEditor: { 
                                     value: value,
-                                    constraint: itemCode,
+                                    constraint: itemDefId.replace(/-/g, ''),
                                     option: {
                                         grouplength: 3,
                                         decimallength: 2,
@@ -576,7 +591,7 @@ module nts.custombinding {
                     <div data-bind="if: item.dataTypeValue == 3" class="date">
                         <div data-bind="ntsDatePicker: {
                                     value: value,
-                                    constraint: itemCode,
+                                    constraint: itemDefId.replace(/-/g, ''),
                                     dateFormat: 'YYYY/MM/DD',
                                     enable: editable,
                                     readonly: readonly
@@ -585,18 +600,18 @@ module nts.custombinding {
                     <div data-bind="if: item.dataTypeValue == 4" class="time">
                         <input data-bind="ntsTimeEditor: {
                             value: value,
-                            constraint: itemCode,
+                            constraint: itemDefId.replace(/-/g, ''),
                             inputFormat: 'HH:mm',
                             enable: editable,
-                            readonly: item.readonly }, attr: { placeholder: itemName, id: itemCode }" />
+                            readonly: readonly }, attr: { placeholder: itemName, id: itemCode }" />
                     </div>
                     <div data-bind="if: item.dataTypeValue == 5" class="timepoint">
                         <input data-bind="ntsTimeEditor: {
                             value: value, 
-                            constraint: itemCode,
+                            constraint: itemDefId.replace(/-/g, ''),
                             inputFormat: 'HH:mm',
                             enable: editable,
-                            readonly:  readonly
+                            readonly: readonly
                         }, attr: { placeholder: itemName, id: itemCode }" />
                     </div>
                     <div data-bind="if: item.dataTypeValue == 6" class="selection">
@@ -1020,7 +1035,7 @@ module nts.custombinding {
                             let dts = x.item,//(x.itemTypeState || <IItemTypeState>{}).dataTypeState,
                                 constraint: any = {
                                     itemName: x.itemName,
-                                    itemCode: x.itemCode,
+                                    itemCode: x.itemDefId.replace(/-/g, ""),
                                     required: x.required// !!x.isRequired
                                 };
 
@@ -1051,7 +1066,7 @@ module nts.custombinding {
                                                 } else {
                                                     constraint.valueType = "Integer";
                                                 }
-                                                constraint.max = dts.numericItemMax || 99999999;
+                                                constraint.max = dts.numericItemMax || undefined;
                                                 constraint.min = dts.numericItemMin || 0;
                                                 break;
                                             case ITEM_STRING_TYPE.KANA:
@@ -1067,7 +1082,7 @@ module nts.custombinding {
                                             constraint.mantissaMaxLength = dts.decimalPart;
                                         }
                                         constraint.charType = 'Numeric';
-                                        constraint.max = dts.numericItemMax || 99999999;
+                                        constraint.max = dts.numericItemMax || undefined;
                                         constraint.min = dts.numericItemMin || 0;
                                         break;
                                     case ITEM_SINGLE_TYPE.DATE:
@@ -1208,14 +1223,20 @@ module nts.custombinding {
                 _.each(data, (x, i) => {
                     // define common function for init new item value
                     let modifitem = (def: any, item: any) => {
-                        def.itemCode = item.itemCode;
-                        def.itemName = item.itemName;
-                        def.required = !!item.isRequired;
+                        def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
+                        def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
+
+                        def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
+                        def.required = _.has(def, "required") && def.required || !!item.isRequired;
+
                         def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
-                        def.readonly = !!opts.sortable.isEnabled();
-                        def.editable = !!opts.sortable.isEditable();
-                        def.type = (item.itemTypeState || <any>{}).itemType;
-                        def.item = $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+
+                        def.hidden = _.has(def, "actionRole") ? def.actionRole == 0 : true;
+                        def.readonly = _.has(def, "actionRole") ? def.actionRole == 1 : !!opts.sortable.isEnabled();
+                        def.editable = _.has(def, "actionRole") ? def.actionRole == 2 : !!opts.sortable.isEditable();;
+
+                        def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
+                        def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
                     };
 
                     x.dispOrder = i + 1;
@@ -1237,10 +1258,14 @@ module nts.custombinding {
                         switch (x.layoutItemType) {
                             case IT_CLA_TYPE.ITEM:
                                 _.each((x.listItemDf || []), (item, i) => {
-                                    let def = x.items()[i];
-
+                                    let def = _.find(x.items(), (m: any) => m.itemDefId == item.id);
                                     if (!def) {
-                                        def = {};
+                                        def = {
+                                            itemCode: item.itemCode,
+                                            itemName: item.itemName,
+                                            itemDefId: item.id,
+                                            value: ko.observable()
+                                        };
                                         x.items.push(def);
                                     }
 
@@ -1264,10 +1289,15 @@ module nts.custombinding {
                                     x.items()[i] = row;
 
                                     _.each((x.listItemDf || []), (item, j) => {
-                                        let def = row[j];
+                                        let def = _.find(row, (m: any) => m.itemDefId == item.id);
 
                                         if (!def) {
-                                            def = {};
+                                            def = {
+                                                itemCode: item.itemCode,
+                                                itemName: item.itemName,
+                                                itemDefId: item.id,
+                                                value: ko.observable()
+                                            };
                                             row.push(def);
                                         }
                                         modifitem(def, item);
@@ -1733,9 +1763,9 @@ module nts.custombinding {
 
     // define ITEM_CLASSIFICATION_TYPE
     enum IT_CLA_TYPE {
-        ITEM = 0, // single item
-        LIST = 1, // list item
-        SPER = 2 // line item
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 
     // define ITEM_CATEGORY_TYPE

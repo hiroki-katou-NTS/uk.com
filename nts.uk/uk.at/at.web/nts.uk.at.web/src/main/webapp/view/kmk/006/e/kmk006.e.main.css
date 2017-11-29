@@ -1,24 +1,23 @@
 @CHARSET "UTF-8";
 
 .description-top {
-	margin-top: 20px;
+	margin-top: 10px;
+	margin-left: 30px;
 	white-space: pre-line;
-	text-align: center;
 }
 
 .companyInfo {
-	margin-left: 80px;
-	margin-top: 50px;
+	margin-left: 65px;
+	margin-top: 25px;
 }
 
 .checkSetting {
-	margin-top: 10px;
-	margin-left: 45px;
+	margin-top: 20px;
+	margin-left: 30px;
 }
 
 .imageSettings {
 	float: right;
-	margin-right: 25%;
 	margin-top: 15px;
 	text-align: center;
 	position: initial;

@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
@@ -16,8 +20,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
@@ -46,6 +52,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	AppApprovalPhaseRepository appApprovalPhaseRepository;
 	@Inject 
 	NewAfterRegister newAfterRegister;
+	@Inject
+	ApplicationSettingRepository applicationSettingRepository;
 
 	/**
 	 * 
@@ -57,6 +65,13 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		//2-2.新規画面登録時承認反映情報の整理 
 		Application newApp = registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
 		goBackDirectRepo.insert(goBackDirectly);
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+				.getApplicationSettingByComID(goBackDirectly.getCompanyID());
+		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+				&& Strings.isBlank(application.getApplicationReason().v())) {
+			throw new BusinessException("Msg_115");
+		}
 		approvalRegistration(appApprovalPhases,newApp.getApplicationID());
 		appRepo.addApplication(newApp);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 

@@ -1,4 +1,4 @@
-module ksu001.d {
+module nts.uk.at.view.ksu001.d {
     import getShare = nts.uk.ui.windows.getShared;
 
     let __viewContext: any = window["__viewContext"] || {};

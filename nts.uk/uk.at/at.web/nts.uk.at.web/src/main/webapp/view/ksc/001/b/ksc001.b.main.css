@@ -31,7 +31,7 @@
 	margin-left: 45px;
 	height: 700px;
 	margin-left: 45px;
-	width: 500px;
+	width: 580px;
 }
 
 .contentD {
@@ -47,7 +47,7 @@
 	margin-left: 45px;
 	height: 700px;
 	margin-left: 45px;
-	width: 700px;
+	width: 530px;
 }
 
 .periodCovered {
@@ -75,6 +75,7 @@
 
 .selectionCase {
 	margin-top: 15px;
+	margin-left: 60px;
 	padding: 10px;
 	background-color: #eaeaea;
 }
@@ -118,10 +119,13 @@ button.nts-switch-button {
 }
 
 .lableCaseAll {
-	margin-left: 20px;
 	margin-top: 20px;
 	display: inline-flex;
 	width: 100%;
+}
+
+.contentELable {
+	margin-left: 20px;
 }
 
 .buttonCase {
@@ -181,11 +185,12 @@ button.nts-switch-button {
 
 .labelContents {
 	background-color: #eaeaea;
-	width: 500px;
+	width: 350px;
 	white-space: pre-line;
 	padding: 5px;
 	max-height: 300px;
-	overflow-y: overlay;
+	overflow-y: scroll;
+	position: relative;
 }
 
 .labelCenter {

@@ -48,37 +48,18 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 
 	@Inject
 	ApproveAcceptedRepository approveAcceptedRepository;
-	/**承認者一覧*/
-	private List<String> listApproverID = new ArrayList<>();
-	/**承認代行者一覧*/
-	private List<String> listRepresenter = new ArrayList<>();
-	/**
-	 * get 承認者一覧 , 承認代行者一覧
-	 * @param applicationData
-	 */
-	private void getApprover(Application applicationData) {
-		applicationData.getListPhase().stream()
-		.forEach(x -> {
-			x.getListFrame().stream().forEach(y -> {
-				y.getListApproveAccepted().stream().forEach(z ->{
-					this.listRepresenter.add(z.getRepresenterSID());
-					//承認者リストに重複な承認者を削除する
-					if(!this.listApproverID.contains(z.getApproverSID())) {
-						this.listApproverID.add(z.getApproverSID());
-					}
-				});
-			});
-		});
-	}
+	
 
 	@Override
 	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(Application applicationData,
 			GeneralDate baseDate) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		getApprover(applicationData);
 		// Output variables
-		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false);
+		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false);
+		if(applicationData.getEnteredPersonSID().contains(employeeID)) {
+			outputData.setLoginInputOrApproval(true);
+		}
 		//4.社員の当月の期間を算出する
 		PeriodCurrentMonth listDate = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID,
 				employeeID, baseDate);
@@ -88,21 +69,21 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			//ステータス = 過去申請(status= 過去申請)
 			outputData.setReflectPlanState(ReflectPlanPerState.PASTAPP);
 		} else {
-			
-			outputData.setReflectPlanState(applicationData.getReflectPlanState());
+			//ステータス = ドメインモデル「反映情報」．実績反映状態(Set status = 「反映情報」．実績反映状態)
+			outputData.setReflectPlanState(applicationData.getReflectPerState());
 		}	
 		
 		// get User
 		// "Application".Applicant = login If employee ID is true
 		//ログイン者が承認者かチェックする(Check xem login có phải là người approve ko?)
-		// ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
+		
 		if (decideByApprover(applicationData)) {
+			outputData.setLoginInputOrApproval(true);
 			//ログイン者が申請本人かチェックする(Check xem login có phải là 申請本人 không)
-			//ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
+			// ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
 			if (applicationData.getApplicantSID().equals(employeeID)) {
-				//利用者 = 申請本人&承認者
+				//利用者 = 申請本人&承認者				
 				outputData.setUser(User.APPLICANT_APPROVER);
-				
 			} else {
 				//利用者 = 承認者
 				outputData.setUser(User.APPROVER);
@@ -117,6 +98,18 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				outputData.setUser(User.OTHER);
 			}
 		}
+		
+		outputData.setApprovalATR(ApprovalAtr.UNAPPROVED);
+		applicationData.getListPhase().stream().forEach(x -> {
+			x.getListFrame().stream().forEach(y ->{
+				//ログイン者の承認区分
+				y.getListApproveAccepted().stream().forEach(z ->{
+					if(z.getApproverSID().equals(employeeID)) {
+						outputData.setApprovalATR(z.getApprovalATR());
+					}
+				});				
+			});
+		});
 		// 利用者をチェックする(Check người sử dụng)
 		// 利用者が「申請本人&承認者」、又は「承認者」の場合
 		if (outputData.getUser() == User.APPLICANT_APPROVER 
@@ -124,7 +117,6 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			// アルゴリズム「承認できるかの判断」を実行する(phán đoán xem có thể approve hay không)
 			CanBeApprovedOutput canBeApprovedOutput = canBeApproved(applicationData, outputData.getReflectPlanState());
 			outputData.setAlternateExpiration(canBeApprovedOutput.getAlternateExpiration());
-			outputData.setApprovalATR(canBeApprovedOutput.getApprovalATR());
 			outputData.setAuthorizableFlags(canBeApprovedOutput.getAuthorizableFlags());
 			return outputData;
 			
@@ -344,14 +336,28 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	public boolean decideByApprover(Application applicationData) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		boolean approverFlag = false;		
+		boolean approverFlag = false;
+		List<String> listApproverID = new ArrayList<>();
+		List<String> listRepresenter = new ArrayList<>();
+		applicationData.getListPhase().stream().forEach(x -> {
+			x.getListFrame().stream().forEach(y -> {		
+				y.getListApproveAccepted().stream().forEach(z -> {
+					
+					listApproverID.add(z.getApproverSID());
+					if(z.getRepresenterSID() != null) {
+						listRepresenter.add(z.getRepresenterSID());
+					}
+				});
+			});
+		});
+		if(listApproverID.contains(employeeID)) {
+			return true;
+		}
 		//ログイン者が承認者かチェックする Whether the loginer is an approver
-		if (this.listApproverID.contains(employeeID)) {
-			approverFlag = true;
-		} else {
+		if (!approverFlag) {
 			//アルゴリズム「承認代行情報の取得処理」を実行する
 			AgentPubImport approvalAgencyInformationOutput = approvalAgencyInformationService
-					.getApprovalAgencyInformation(companyID, this.listApproverID);
+					.getApprovalAgencyInformation(companyID, listApproverID);
 			//ログイン者が代行承認者かチェックする
 			if (approvalAgencyInformationOutput.getListRepresenterSID().contains(employeeID)) {
 				return true;
@@ -359,9 +365,9 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		}
 		// 承認者フラグをチェックする
 		// Check Approver Flag
-		if (approverFlag == false){
+		if (!approverFlag){
 			// ログイン者が承認代行者として承認を行ったかチェックする
-			if(this.listRepresenter.contains(employeeID)) {
+			if(listRepresenter.contains(employeeID)) {
 				return true;
 			}else {
 				approverFlag = false;

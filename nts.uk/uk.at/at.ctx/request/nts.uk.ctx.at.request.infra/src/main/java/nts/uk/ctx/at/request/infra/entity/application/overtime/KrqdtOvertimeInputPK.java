@@ -10,11 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Getter
 @Setter
 @Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class KrqdtOvertimeInputPK implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -28,6 +29,9 @@ public class KrqdtOvertimeInputPK implements Serializable{
 	    @Column(name = "ATTENDANCE_ID")
 	    private int attendanceId;
 	    
-	    @Column(name = "ATTENDANCE_NO")
-	    private int attendanceNo;
+	    @Column(name = "FRAME_NO")
+	    private int frameNo;
+	    
+	    @Column(name ="TIME_ITEM_TYPE_ATR")
+	    private int timeItemTypeAtr;
 }

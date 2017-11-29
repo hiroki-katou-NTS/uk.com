@@ -12,10 +12,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttdItemLinkRequest;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -34,6 +34,12 @@ public class AttendanceItemLinkingFinder {
 	@Inject
 	private OptionalItemRepository optItemRepo;
 
+	/** The Constant MONTHLY_FRAME_TYPE. */
+	private static final int MONTHLY_FRAME_TYPE = 1;
+
+	/** The Constant DAILY_FRAME_TYPE. */
+	private static final int DAILY_FRAME_TYPE = 3;
+
 	/**
 	 * Find by any item.
 	 *
@@ -44,6 +50,7 @@ public class AttendanceItemLinkingFinder {
 		// find list optional item by attribute
 		Map<String, String> filteredByAtr = this.optItemRepo
 				.findByAtr(AppContexts.user().companyId(), request.getFormulaAtr()).stream()
+				.filter(ii -> ii.isUsed())
 				.collect(Collectors.toMap(i -> i.getOptionalItemNo().v(), i -> i.getOptionalItemNo().v()));
 
 		// filter list optional item by selectable list parameters.
@@ -63,9 +70,7 @@ public class AttendanceItemLinkingFinder {
 	 * @param performanceAtr the performance atr
 	 * @return the int
 	 */
-	private static final int convertToFrameType(int performanceAtr) {
-		final int MONTHLY_FRAME_TYPE = 1;
-		final int DAILY_FRAME_TYPE = 3;
+	private int convertToFrameType(int performanceAtr) {
 		return performanceAtr == PerformanceAtr.DAILY_PERFORMANCE.value ? DAILY_FRAME_TYPE : MONTHLY_FRAME_TYPE;
 	}
 

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.worktime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -14,6 +16,8 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  */
 @Getter
 @AllArgsConstructor
+@Setter
+@NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
 	//勤務NO
@@ -23,6 +27,14 @@ public class TimeLeavingWork extends DomainObject{
 	
 	private TimeActualStamp leaveStamp;
 	
+
+	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
+		super();
+		this.workNo = workNo;
+		this.attendanceStamp = attendanceStamp;
+		this.leaveStamp = leaveStamp;
+	}
+
 	/**
 	 * 出勤時刻と退勤時刻から計算用時間帯クラス作成
 	 * @return　計算用時間帯クラス
@@ -31,6 +43,7 @@ public class TimeLeavingWork extends DomainObject{
 		return new TimeSpanForCalc(attendanceStamp.getStamp().getTimeWithDay()
 								  ,leaveStamp.getStamp().getTimeWithDay());
 	}
+
 	
 	/**
 	 * ジャスト遅刻・早退の設定を見て時刻を調整する

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.record.dom.workrecord.log.CalExeSettingInfor;
 
 @Getter
 @Setter
@@ -18,10 +19,27 @@ public class CalExeSettingInforDto {
 	 * 3 : 月別集計
 	 */
 	private int executionContent;
-	
 	/**
-	 * 通常実行
-	 * 再実行
+	 *  0 :通常実行
+	 *  1 :再実行
 	 */
 	private int executionType;
+	
+	/**
+	 * executionType : name Japan
+	 */
+	private String executionTypeName;
+	
+	private String calExecutionSetInfoID;
+	
+	public static CalExeSettingInforDto fromDomain(CalExeSettingInfor domain) {
+		return new CalExeSettingInforDto(
+				domain.getExecutionContent().value,
+				domain.getExecutionType().value,
+				domain.getExecutionType().nameId,
+				domain.getCalExecutionSetInfoID()
+				);
+		
+	}
+	
 }

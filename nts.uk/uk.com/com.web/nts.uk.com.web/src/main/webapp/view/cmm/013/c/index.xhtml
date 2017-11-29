@@ -10,7 +10,8 @@
 			
 			<script>
 				var dialogSize = {
-					width : 290,
+					//width : 290,
+					width : 500,
 					height : 500
 				};
 			</script>
@@ -27,12 +28,12 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="contents-area">
-				<div>#{i18n.getText('CMM013_21')}</div>
+				<div class="header-text">#{i18n.getText('CMM013_21')}</div>
 				
 				<table id="single-list" tabindex="1" data-bind="ntsGridList: {	
 					name: '#[CMM013_22]',
-					width: 270,					
-					height: 350,
+					width: 480,					
+					height: 330,
 					dataSource: items,
 					primaryKey: 'sequenceCode',
 					columns: columns,

@@ -20,6 +20,14 @@ public interface ScheduleCreatorRepository {
 	public List<ScheduleCreator> findAll(String executionId);
 	
 	/**
+	 * Countd all.
+	 *
+	 * @param executionId the execution id
+	 * @return the int
+	 */
+	public int countdAll(String executionId);
+	
+	/**
 	 * Adds the.
 	 *
 	 * @param domain the domain
@@ -39,5 +47,15 @@ public interface ScheduleCreatorRepository {
 	 * @param domains the domains
 	 */
 	public void saveAll(List<ScheduleCreator> domains);
+	
+	
+	/**
+	 * Count by status.
+	 *
+	 * @param executionId the execution id
+	 * @param executionStatus the execution status
+	 * @return the int
+	 */
+	public int countByStatus(String executionId, int executionStatus);
 
 }

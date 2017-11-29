@@ -11,9 +11,9 @@ public interface IPerInfoSelectionItemRepository {
 
 	void remove(String selectionItemId);
 
-	List<PerInfoSelectionItem> getAllPerInfoSelectionItem(String contractCd);
+	List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCd);
 
-	Optional<PerInfoSelectionItem> getPerInfoSelectionItem(String selectionItemId);
+	Optional<PerInfoSelectionItem> getSelectionItemBySelectionItemId(String selectionItemId);
 
-	Optional<PerInfoSelectionItem> getSelectionByName(String selectionItemName);
+	Optional<PerInfoSelectionItem> getSelectionItemByName(String selectionItemName);
 }

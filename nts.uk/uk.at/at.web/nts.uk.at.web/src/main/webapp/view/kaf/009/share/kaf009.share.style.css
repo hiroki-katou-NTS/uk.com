@@ -24,7 +24,7 @@
 }
 /*Set margin button */
 .location-button {
-	margin: 5px 0px 0px -150px;
+	margin: 0px 0px 0px -150px;
 }
 
 .link-label {
@@ -93,7 +93,7 @@ div.form-label.broken {
 }
 
 .lblTitle {
-	width: 110px;
+	width: 143px;
 }
 
 .btnSendMail {

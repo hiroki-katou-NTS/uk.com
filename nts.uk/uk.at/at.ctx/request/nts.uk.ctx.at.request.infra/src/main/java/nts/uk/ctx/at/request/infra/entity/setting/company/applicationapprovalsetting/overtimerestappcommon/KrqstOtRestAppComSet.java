@@ -68,7 +68,7 @@ public class KrqstOtRestAppComSet extends UkJpaEntity implements Serializable {
     @Column(name = "APP_DATE_CONTRADICTION_ATR")
     private int appDateContradictionAtr;
     
-    @Column(name = "CALCULATION_OVERTIME_DISPLAY_ATR")
+    @Column(name = "CAL_OVERTIME_DISPLAY_ATR")
     private int calculationOvertimeDisplayAtr;
 
 	@Override

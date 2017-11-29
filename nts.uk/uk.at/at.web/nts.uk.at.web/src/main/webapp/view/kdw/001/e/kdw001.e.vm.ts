@@ -1,76 +1,97 @@
 module nts.uk.at.view.kdw001.e.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import shareModel = nts.uk.at.view.kdw001.share.model;
+    
     export class ScreenModel {
-        //combo box 
-        itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
-        //gridlist
-        items: KnockoutObservableArray<Gridlist>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
+        // Combo box 
+        executionContents: KnockoutObservableArray<any>;
+        selectedExeContent: KnockoutObservable<string>;
+
+        // GridList
+        errorMessageInfo: KnockoutObservableArray<Gridlist>;
+        columns: KnockoutObservableArray<any>;
+        currentCode: KnockoutObservable<any>;
+        
+        /** 実行開始日時  Start date and time of execution*/
+        executionDate: KnockoutObservable<string>;
+        disposalDay: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
-            self.itemList = ko.observableArray([
-                new ItemModel('1'),
-                new ItemModel('2'),
-                new ItemModel('3')
-            ]);
 
-            self.selectedCode = ko.observable('1');
-            self.items = ko.observableArray([]);
-
-            for (let i = 1; i < 100; i++) {
-                this.items.push(new Gridlist('00' + i, '基本給', "description " + i, i % 3 === 0, "2010/1/1"));
-            }
-            this.columns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100 },
-                { headerText: '名称', key: 'name', width: 150 },
-                { headerText: '説明', key: 'description', width: 150 },
-                { headerText: '説明1', key: 'other1', width: 150 },
-                { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' }
+            self.executionContents = ko.observableArray([]);
+            self.selectedExeContent = ko.observable('1');
+            
+            self.errorMessageInfo = ko.observableArray([]);
+            self.columns = ko.observableArray([
+                { headerText: getText('KDW001_33'), key: 'empCD', width: 110 },
+                { headerText: getText('KDW001_35'), key: 'code', width: 150 },
+                { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
+                { headerText: getText('KDW001_37'), key: 'errContents', width: 290 },
             ]);
-            this.currentCode = ko.observable();
+            self.currentCode = ko.observable();
+
+            self.executionDate = ko.observable('');
+            self.disposalDay = ko.observable('');
+
         }
 
         startPage(): JQueryPromise<any> {
-            var self = this;
-
-            var dfd = $.Deferred();
-            service.getImplementationResult().done(function(data) {
-                cosole.log(data);
-                 dfd.resolve(data);
-            });          
-
+            let self = this;
+            let dfd = $.Deferred();
+            var params: shareModel.executionProcessingCommand = nts.uk.ui.windows.getShared("KDWL001E");
+            
+            service.insertData(params).done((data: shareModel.executionResult) => {
+                console.log(data);
+                //self.executionDate(data.periodStartDate);
+                //self.executionContents(data.enumComboBox);
+                // Start checking proceess
+                //self.executeTask(data);
+                dfd.resolve();
+            });
+            
             return dfd.promise();
         }
-          
+
+        cancelTask() {
+            
+            nts.uk.ui.windows.close();
+        }
+        
+        closeDialog() {
+            nts.uk.ui.windows.close();
+        }
+        
+        private executeTask(data: shareModel.executionResult) {
+            var self = this;            
+            nts.uk.deferred.repeat(conf => conf.task(() => {
+                    return service.executeTask(data).done((info) => {
+                        console.log(info);
+                    });
+                })
+                .while(info => !info.isComplete)
+                .pause(1000)
+            );
+        }
+
+    }
+
+    class Gridlist {
+        empCD: string;
+        code: string;
+        disposalDay: string;
+        errContents: string;
+
+
+        constructor(empCD: string, code: string, disposalDay: string, errContents: string) {
+            this.empCD = empCD;
+            this.code = code;
+            this.disposalDay = disposalDay;
+            this.errContents = errContents;
+
+        }
+
+    }
+
 
 }
-    class ItemModel {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
-
-class Gridlist {
-    code: string;
-    name: string;
-    description: string;
-    other1: string;
-    other2: string;
-    deletable: boolean;
-    switchValue: boolean;
-    constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-        this.code = code;
-        this.name = name;
-        this.description = description;
-        this.other1 = other1;
-        this.other2 = other2 || other1;
-        this.deletable = deletable;
-        this.switchValue = ((code % 3) + 1).toString();
-    
-    }
-

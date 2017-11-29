@@ -6,6 +6,7 @@ module nts.uk.com.view.cmm013 {
          * Constants
          */
         export class Constants {           
+            public static IS_ACCEPT_DIALOG_SELECT_SEQUENCE: string = "IS_ACCEPT_DIALOG_SELECT_SEQUENCE";
             public static SHARE_IN_DIALOG_REMOVE_JOB: string = "SHARE_IN_DIALOG_REMOVE_JOB";
             public static SHARE_OUT_DIALOG_REMOVE_JOB: string = "SHARE_OUT_DIALOG_REMOVE_JOB"; 
             public static SHARE_IN_DIALOG_SELECT_SEQUENCE: string = "SHARE_IN_DIALOG_SELECT_SEQUENCE";
@@ -87,11 +88,7 @@ module nts.uk.com.view.cmm013 {
                 this.jobTitleId = jobTitleId;
             }
         }
-               
-        
-        
-        
-        
+                        
         /**
          * History
          */
@@ -111,6 +108,20 @@ module nts.uk.com.view.cmm013 {
         }    
         
         /**
+         * History (for save command)
+         */
+        export class SaveHistory {
+            
+            historyId: string;
+            period: SavePeriod;
+            
+            constructor(historyId: string, period: SavePeriod) {
+                this.historyId = historyId;
+                this.period = period
+            }          
+        }
+        
+        /**
          * Period
          */
         export class Period {
@@ -119,6 +130,20 @@ module nts.uk.com.view.cmm013 {
             endDate: string;
             
             constructor(startDate: string, endDate: string){
+                this.startDate = startDate;
+                this.endDate = endDate;
+            }
+        }
+        
+        /**
+         * Period (for save command)
+         */
+        export class SavePeriod {
+            
+            startDate: Date;
+            endDate: Date;
+            
+            constructor(startDate: Date, endDate: Date){
                 this.startDate = startDate;
                 this.endDate = endDate;
             }
@@ -139,35 +164,6 @@ module nts.uk.com.view.cmm013 {
                 this.order = order;
             }    
         }
-        
-        /**
-         * SequenceMaster save command
-         */
-        export class SequenceMasterSaveCommand {
-            
-            isCreateMode: boolean;
-            sequenceCode: string;
-            sequenceName: string;
-            order: number;
-            
-            constructor(isCreateMode: boolean, sequenceCode: string, sequenceName: string, order: number) {
-                this.isCreateMode = isCreateMode;
-                this.sequenceCode = sequenceCode;
-                this.sequenceName = sequenceName;
-                this.order = order;
-            }
-        }
-        
-        /**
-         * SequenceMaster remove command
-         */
-        export class SequenceMasterRemoveCommand {
-            
-            sequenceCode: string;
-            
-            constructor(sequenceCode: string) {
-                this.sequenceCode = sequenceCode;
-            }
-        }      
+               
     }
 }

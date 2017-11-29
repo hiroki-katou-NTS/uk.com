@@ -1,6 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
-import java.util.Arrays;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 
 @Getter
 @Setter
@@ -41,16 +42,12 @@ public class Employee extends AggregateRoot {
 	/** The List JobEntryHistory 入社履歴 */
 	private List<JobEntryHistory> listEntryJobHist;
 
+	private List<TemporaryAbsence> listTemporaryAbsence;
+
 	public static Employee createFromJavaType(String companyId, String pId, String sId, String sCd, String companyMail,
 			String mobileMail, String companyMobile) {
 		return new Employee(companyId, pId, sId, new EmployeeCode(sCd), new EmployeeMail(companyMail),
-				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), null);
-	}
-
-	public static List<String> getItemCodes() {
-
-		return Arrays.asList("IS00020", "IS00021", "IS00022", "IS00024", "IS00025", "IS00026", "IS00027", "IS00028");
-
+				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), null, null);
 	}
 
 	public GeneralDate getJoinDate() {
@@ -71,5 +68,26 @@ public class Employee extends AggregateRoot {
 			}
 		}
 		return retirementDate;
+	}
+
+	// calculate year of entire in current company
+	public int getDaysOfEntire() {
+		if (listEntryJobHist == null || listEntryJobHist.isEmpty()) {
+			return 0;
+		}
+
+		return listEntryJobHist.stream()
+				.map(m -> ChronoUnit.DAYS.between(m.getJoinDate().localDate(), m.getAdoptDate().localDate()))
+				.mapToInt(m -> Math.abs(m.intValue())).sum();
+	}
+
+	public int getDaysOfTemporaryAbsence() {
+		if (listTemporaryAbsence == null || listTemporaryAbsence.isEmpty()) {
+			return 0;
+		}
+
+		return listTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS
+				.between(m.getDateHistoryItem().start().localDate(), m.getDateHistoryItem().end().localDate()))
+				.mapToInt(m -> Math.abs(m.intValue())).sum();
 	}
 }

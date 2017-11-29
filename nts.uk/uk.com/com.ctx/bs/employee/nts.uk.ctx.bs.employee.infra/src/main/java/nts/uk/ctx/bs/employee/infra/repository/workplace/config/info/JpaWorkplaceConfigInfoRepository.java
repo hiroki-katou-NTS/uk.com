@@ -12,6 +12,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -150,6 +152,11 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 
 		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
 
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}
@@ -185,6 +192,11 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 
 		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
 
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}
@@ -231,6 +243,11 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 
 		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
 
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}
@@ -251,22 +268,77 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		for (WorkplaceHierarchy wkpHierarchy : wkpConfigInfo.getLstWkpHierarchy()) {
 			BsymtWkpConfigInfoPK pk = new BsymtWkpConfigInfoPK(companyId, historyId,
 					wkpHierarchy.getWorkplaceId());
-			Optional<BsymtWkpConfigInfo> optional = this.queryProxy().find(pk,
-					BsymtWkpConfigInfo.class);
+			BsymtWkpConfigInfo entity = this.queryProxy().find(pk, BsymtWkpConfigInfo.class)
+					.orElse(new BsymtWkpConfigInfo(pk));
 
-			BsymtWkpConfigInfo entity = null;
-			if (optional.isPresent()) {
-				entity = optional.get();
-			} else {
-				entity = new BsymtWkpConfigInfo();
-				entity.setBsymtWkpConfigInfoPK(pk);
-			}
 			lstEntity.add(entity);
 		}
 		JpaWorkplaceConfigInfoSetMemento memento = new JpaWorkplaceConfigInfoSetMemento(lstEntity);
 		wkpConfigInfo.saveToMemento(memento);
 
 		return lstEntity;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.
+	 * WorkplaceConfigInfoRepository#findAllParentByWkpId(java.lang.String,
+	 * nts.arc.time.GeneralDate, java.lang.String)
+	 */
+	@Override
+	public Optional<WorkplaceConfigInfo> findAllParentByWkpId(String companyId,
+			GeneralDate baseDate, String wkpId) {
+		WorkplaceConfigInfo wkpConfigInfo = this.find(companyId, baseDate, wkpId).get();
+
+		String prHierarchyCode = wkpConfigInfo.getLstWkpHierarchy().get(FIRST_ITEM_INDEX)
+				.getHierarchyCode().v();
+
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfigInfo> cq = criteriaBuilder
+				.createQuery(BsymtWkpConfigInfo.class);
+		Root<BsymtWkpConfigInfo> root = cq.from(BsymtWkpConfigInfo.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid),
+				companyId));
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK)
+						.get(BsymtWkpConfigInfoPK_.historyId), wkpConfigInfo.getHistoryId()));
+
+		ParameterExpression<String> prHierarchyCodeParameter = criteriaBuilder
+				.parameter(String.class, "prHierarchyCodeParameter");
+		Path<String> senderEmailPath = root.get(BsymtWkpConfigInfo_.hierarchyCd);
+
+		lstpredicateWhere.add(criteriaBuilder.like(prHierarchyCodeParameter,
+				criteriaBuilder.concat(senderEmailPath, "%")));
+
+		// Ignore the wkp
+		lstpredicateWhere.add(criteriaBuilder.notEqual(root.get(BsymtWkpConfigInfo_.hierarchyCd),
+				prHierarchyCode));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtWkpConfigInfo_.hierarchyCd)));
+
+		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq)
+				.setParameter("prHierarchyCodeParameter", prHierarchyCode).getResultList();
+
+		
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional
+				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}
 
 }

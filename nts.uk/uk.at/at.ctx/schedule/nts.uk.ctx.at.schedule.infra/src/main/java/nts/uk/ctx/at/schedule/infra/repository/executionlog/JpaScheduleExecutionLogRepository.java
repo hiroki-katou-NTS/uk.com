@@ -18,7 +18,6 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog;
@@ -42,8 +41,7 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<ScheduleExecutionLog> findById(String companyId, String executionId) {
-		return this.queryProxy()
-				.find(new KscdtScheExeLogPK(companyId, executionId), KscdtScheExeLog.class)
+		return this.queryProxy().find(new KscdtScheExeLogPK(companyId, executionId), KscdtScheExeLog.class)
 				.map(entity -> this.toDomain(entity));
 	}
 	
@@ -52,16 +50,17 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository#
-	 * find(java.lang.String, nts.uk.ctx.at.shared.dom.workrule.closure.Period)
+	 * findByDateTime(java.lang.String, nts.arc.time.GeneralDateTime,
+	 * nts.arc.time.GeneralDateTime)
 	 */
 	@Override
-	public List<ScheduleExecutionLog> find(String companyId, GeneralDateTime startDate,GeneralDateTime endDate) {
+	public List<ScheduleExecutionLog> findByDateTime(String companyId, GeneralDateTime startDate,
+			GeneralDateTime endDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KscdtScheExeLog> cq = criteriaBuilder
-				.createQuery(KscdtScheExeLog.class);
+		CriteriaQuery<KscdtScheExeLog> cq = criteriaBuilder.createQuery(KscdtScheExeLog.class);
 		Root<KscdtScheExeLog> root = cq.from(KscdtScheExeLog.class);
 
 		// select root
@@ -69,23 +68,25 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscdtScheExeLog_.kscdtScheExeLogPK)
-						.get(KscdtScheExeLogPK_.cid), companyId));
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KscdtScheExeLog_.exeStrD), endDate));
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KscdtScheExeLog_.exeStrD), startDate));
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtScheExeLog_.kscdtScheExeLogPK).get(KscdtScheExeLogPK_.cid), companyId));
+
+		// less than or equal end date
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KscdtScheExeLog_.exeStrD), endDate));
+
+		// greater than or equal start date
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KscdtScheExeLog_.exeStrD), startDate));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+
+		// order by execution start date
 		cq.orderBy(criteriaBuilder.desc(root.get(KscdtScheExeLog_.exeStrD)));
 
 		List<KscdtScheExeLog> lstKscmtScheduleExcLog = em.createQuery(cq).getResultList();
-		
-		// check empty
-		if (CollectionUtil.isEmpty(lstKscmtScheduleExcLog)) {
-			return null;
-		}
+
+		// return data full
 		return lstKscmtScheduleExcLog.stream().map(item -> {
 			return new ScheduleExecutionLog(new JpaScheduleExecutionLogGetMemento(item));
 		}).collect(Collectors.toList());
@@ -131,18 +132,18 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kscmt schedule exc log
 	 */
-	private KscdtScheExeLog toEntityUpdate(ScheduleExecutionLog domain){
-		Optional<KscdtScheExeLog> opentity = this.queryProxy().find(
-				new KscdtScheExeLogPK(domain.getCompanyId().v(), domain.getExecutionId()),
-				KscdtScheExeLog.class);
-		KscdtScheExeLog entity = new KscdtScheExeLog();
-		if(opentity.isPresent()){
-			entity = opentity.get();
-		}
+	private KscdtScheExeLog toEntityUpdate(ScheduleExecutionLog domain) {
+
+		// find by key
+		Optional<KscdtScheExeLog> opentity = this.queryProxy()
+				.find(new KscdtScheExeLogPK(domain.getCompanyId().v(), domain.getExecutionId()), KscdtScheExeLog.class);
+		KscdtScheExeLog entity = opentity.get();
+
+		// update entity by domain
 		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
 		return entity;
 	}
-	
+
 	/**
 	 * To domain.
 	 *
@@ -152,6 +153,5 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	private ScheduleExecutionLog toDomain(KscdtScheExeLog entity){
 		return new ScheduleExecutionLog(new JpaScheduleExecutionLogGetMemento(entity));
 	}
-
 
 }

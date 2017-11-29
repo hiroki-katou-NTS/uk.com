@@ -11,7 +11,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK;
-import nts.uk.ctx.bs.employee.infra.repository.workplace.info.IsManagerStatus;
 
 /**
  * The Class JpaJobTitleInfoSetMemento.
@@ -92,7 +91,8 @@ public class JpaJobTitleInfoSetMemento implements JobTitleInfoSetMemento {
 	public void setIsManager(boolean isManager) {
 		if (isManager) {
 			this.entity.setIsManager(IsManagerStatus.TRUE.value);
-		} else {
+		} 
+		else {
 			this.entity.setIsManager(IsManagerStatus.FALSE.value);
 		}		
 	}

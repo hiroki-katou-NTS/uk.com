@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 計算区分
+ *
+ */
 @AllArgsConstructor
 public enum CalculateAtr {
 	/** 0- 計算項目選択 **/

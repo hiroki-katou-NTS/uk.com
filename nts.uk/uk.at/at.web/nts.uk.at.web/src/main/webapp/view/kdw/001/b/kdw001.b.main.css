@@ -1,7 +1,7 @@
-#button36Area{
+#button36Area {
 	margin-top: 3px;
 	display: inline-block;
-    float: left;
+	float: left;
 }
 
 #button6 {
@@ -94,14 +94,31 @@ button {
 	margin-top: 16px;
 	margin-left: 35px;
 }
+#checkBox2 {
+	margin-top: 16px;
+	margin-left: 35px;
+}
+#checkBox3 {
+	margin-top: 16px;
+	margin-left: 35px;
+}
+#checkBox4 {
+	margin-top: 16px;
+	margin-left: 35px;
+}
 
 #label1 {
 	margin-left: 19px;
 }
 
+.ntsRadioBox {
+	display: block;
+	margin-bottom: 10px;
+}
+
 .nts-wizard.vertical>.content {
 	width: 830px;
-	height : 800px;
+	height: 800px;
 	margin: 0 0 0 0;
 	background: none;
 	height: 800px;
@@ -113,7 +130,8 @@ button {
 }
 
 .nts-wizard {
-    width: 1200px;
+	width: 1200px;
+	height: inherit;
 }
 
 #linkButton1 {

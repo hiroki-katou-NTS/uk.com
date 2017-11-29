@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
-import nts.uk.ctx.bs.company.dom.company.CompanyCode;
+import nts.uk.ctx.bs.company.dom.company.CCD;
 import nts.uk.ctx.bs.company.dom.company.CompanyId;
-import nts.uk.ctx.bs.company.dom.company.CompanyName;
+import nts.uk.ctx.bs.company.dom.company.Name;
 import nts.uk.ctx.bs.company.dom.company.CompanySetMemento;
 import nts.uk.ctx.bs.company.dom.company.StartMonth;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
@@ -35,7 +35,7 @@ public class JpaCompanySetMemento implements CompanySetMemento{
 	 * @param companyCode the new company code
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(CCD companyCode) {
 		this.company.setCcd(companyCode.v());
 	}
 
@@ -60,7 +60,7 @@ public class JpaCompanySetMemento implements CompanySetMemento{
 	}
 
 	@Override
-	public void setCompanyName(CompanyName companyName) {
+	public void setCompanyName(Name companyName) {
 		this.company.setCompanyName(companyName.v());
 	}
 

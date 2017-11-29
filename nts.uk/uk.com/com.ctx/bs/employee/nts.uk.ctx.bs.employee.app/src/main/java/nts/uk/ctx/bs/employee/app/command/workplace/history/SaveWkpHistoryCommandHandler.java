@@ -12,13 +12,13 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.employee.app.command.workplace.service.WorkplaceService;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.service.WorkplaceService;
-import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
+import nts.uk.ctx.bs.employee.dom.workplace.policy.HistoryPolicy;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -81,7 +81,7 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
         WorkplaceHistory latestWkpHistory = workplace.getWkpHistoryLatest();
         
         // validate add new history
-        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpHistory.span().start(),
+        HistoryPolicy.validStartDate(Boolean.TRUE, latestWkpHistory.span().start(),
                 command.getWorkplaceHistory().getPeriod().getStartDate());
 
         // add workplace
@@ -115,7 +115,7 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
         WorkplaceHistory prevWkpLatest = workplaceDatabase.items().get(idxPrevLatestHist);
         
         // validate new start date of history
-        HistoryUtil.validStartDate(wkpCommand.getWkpHistoryLatest().span(), prevWkpLatest.span());
+        HistoryPolicy.validStartDate(wkpCommand.getWkpHistoryLatest().span(), prevWkpLatest.span());
 
         // set end date of previous history (below of history latest)
         int dayOfAgo = -1;

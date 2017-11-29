@@ -19,9 +19,9 @@ module nts.uk.at.view.kaf002.m5 {
                 self.stampPlaceDisplay(data.stampPlaceDisp);
                 if(data.stampAtr_Work_Disp==1) self.stampAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_29') });
                 if(data.stampAtr_GoOut_Disp==1) self.stampAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_31') });
-                if(data.stampAtr_Care_Disp==1) self.stampAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_32') });
-                if(data.stampAtr_Sup_Disp==1) self.stampAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_33') });
-                self.stampAtrList.push({ code: 4, name: nts.uk.resource.getText('KAF002_34') });
+                if(data.stampAtr_Care_Disp==1) self.stampAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_33') });
+                if(data.stampAtr_Sup_Disp==1) self.stampAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_34') });
+                self.stampAtrList.push({ code: 4, name: nts.uk.resource.getText('KAF002_35') });
                 self.stampAtr(_.first(self.stampAtrList()).code);
                 if(data.stampGoOutAtr_Private_Disp==1) self.stampGoOutAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_40') });
                 if(data.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
@@ -138,7 +138,7 @@ module nts.uk.at.view.kaf002.m5 {
                     });     
                 })
                 .fail(function(res) { 
-                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
                 }); 
             }
             
@@ -175,7 +175,7 @@ module nts.uk.at.view.kaf002.m5 {
                             location.reload();
                         });    
                     } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});   
                     }
                 });  
             }

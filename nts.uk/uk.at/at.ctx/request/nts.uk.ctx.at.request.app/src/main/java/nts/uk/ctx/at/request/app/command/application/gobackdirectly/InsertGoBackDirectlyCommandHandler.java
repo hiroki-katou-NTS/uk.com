@@ -62,6 +62,12 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 						))
 				.collect(Collectors.toList());
 		//get new Application Item
+		String appReason = "";
+		if(!command.appCommand.getAppReasonID().isEmpty() || !command.appCommand.getApplicationReason().isEmpty()) {
+			appReason = !command.appCommand.getAppReasonID().isEmpty() ? command.appCommand.getAppReasonID() 
+					+ System.lineSeparator() 
+					+ command.appCommand.getApplicationReason() : command.appCommand.getApplicationReason();
+		}
 		Application newApp = Application.createFromJavaType(
 				companyId, 
 				command.appCommand.getPrePostAtr(),
@@ -69,8 +75,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.appCommand.getEnteredPersonSID(),
 				command.appCommand.getReversionReason(), 
 				command.appCommand.getApplicationDate(),
-				command.appCommand.getAppReasonID(),
-				command.appCommand.getApplicationReason(),
+				appReason,
 				command.appCommand.getApplicationType(), 
 				command.appCommand.getApplicantSID(),
 				command.appCommand.getReflectPlanScheReason(), 

@@ -16,6 +16,7 @@ import find.person.info.category.PerInfoCtgWithItemsNameDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutItemType;
 
 @Stateless
 public class LayoutPersonInfoClsFinder {
@@ -40,8 +41,8 @@ public class LayoutPersonInfoClsFinder {
 		if (listItemCls.size() > 0) {
 			for (LayoutPersonInfoClsDto classDto : listItemCls) {
 				switch (classDto.getLayoutItemType()) {
-				case 0: // single item
-				case 1: // list item
+				case ITEM: // single item
+				case LIST: // list item
 
 					List<String> listId = this.clsItemDefFinder.getItemDefineIds(classDto.getLayoutID(),
 							classDto.getDispOrder());
@@ -62,13 +63,13 @@ public class LayoutPersonInfoClsFinder {
 
 						classDto.setListItemDf(listItemDefDto);
 
-						if (classDto.getLayoutItemType() == 0 && !listItemDefDto.isEmpty()
+						if (classDto.getLayoutItemType() == LayoutItemType.ITEM && !listItemDefDto.isEmpty()
 								&& listItemDefDto.get(0) != null) {
 							classDto.setClassName(listItemDefDto.get(0).getItemName());
 						}
 					}
 
-					if (classDto.getLayoutItemType() == 1) {
+					if (classDto.getLayoutItemType() == LayoutItemType.LIST) {
 						PerInfoCtgWithItemsNameDto catDto = this.catFinder
 								.getPerInfoCtgWithItemsName(classDto.getPersonInfoCategoryID());
 
@@ -77,13 +78,14 @@ public class LayoutPersonInfoClsFinder {
 						}
 					}
 					break;
-				case 2: // SeparatorLine
+				case SeparatorLine: // SeparatorLine
 					break;
 				}
 			}
 		}
 		return listItemCls.stream()
-				.filter(m -> (m.getLayoutItemType() != 2 && !m.getListItemDf().isEmpty()) || m.getLayoutItemType() == 2)
+				.filter(m -> (m.getLayoutItemType() != LayoutItemType.SeparatorLine && !m.getListItemDf().isEmpty())
+						|| m.getLayoutItemType() == LayoutItemType.SeparatorLine)
 				.collect(Collectors.toList());
 	}
 }

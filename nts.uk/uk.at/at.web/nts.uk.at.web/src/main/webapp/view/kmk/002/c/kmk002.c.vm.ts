@@ -1,5 +1,5 @@
 module nts.uk.at.view.kmk002.c {
-    import DailyAttendanceItemDto = service.model.AttendanceItemDto;
+    import AttdItemDto = service.model.AttendanceItemDto;
     import AttdItemLinkRequest = service.model.AttdItemLinkRequest;
     import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;
     import ItemSelectionDto = nts.uk.at.view.kmk002.a.service.model.ItemSelectionDto;
@@ -8,10 +8,10 @@ module nts.uk.at.view.kmk002.c {
     export module viewmodel {
         export class ScreenModel {
 
-            leftItems: KnockoutObservableArray<DailyAttendanceItemDto>;
+            leftItems: KnockoutObservableArray<AttdItemDto>;
             rightItems: KnockoutObservableArray<AttendanceItemDto>;
             selectedLeftItem: KnockoutObservableArray<number>;
-            selectedRightItem: KnockoutObservable<number>;
+            selectedRightItem: KnockoutObservableArray<number>;
             minusSegment: KnockoutObservable<boolean>;
             columnsLeft: any;
             columnsRight: any;
@@ -20,7 +20,7 @@ module nts.uk.at.view.kmk002.c {
 
             constructor() {
                 let self = this;
-                self.selectedRightItem = ko.observable(null);
+                self.selectedRightItem = ko.observableArray([]);
                 self.leftItems = ko.observableArray([]);
                 self.selectedLeftItem = ko.observableArray([]);
                 self.rightItems = ko.observableArray([]);
@@ -28,12 +28,14 @@ module nts.uk.at.view.kmk002.c {
 
                 // data source
                 self.columnsLeft = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemId', width: 50 },
+                    { headerText: '', key: 'attendanceItemId', hidden: true },
+                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemDisplayNumber', width: 50 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'attendanceItemName', width: 100 }
                 ]);
                 self.columnsRight = ko.observableArray([
+                    { headerText: '', key: 'attendanceItemId', hidden: true },
                     { headerText: nts.uk.resource.getText('KMK002_58'), key: 'operatorText', width: 50 },
-                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemId', width: 50 },
+                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemDisplayNumber', width: 50 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'attendanceItemName', width: 100 }
                 ]);
 
@@ -46,14 +48,13 @@ module nts.uk.at.view.kmk002.c {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                // Get param from parent screen
-                let param: ParamToC = nts.uk.ui.windows.getShared('paramToC');
-
-                // Set param to view model.
-                self.fromDto(param);
+                // block ui.
+                nts.uk.ui.block.invisible();
 
                 // load attendance items
-                self.loadAttendanceItems(param).done(() => dfd.resolve());
+                self.loadAttendanceItems()
+                    .done(() => dfd.resolve())
+                    .always(() => nts.uk.ui.block.clear()); // clear block ui.;
 
                 return dfd.promise();
             }
@@ -61,9 +62,12 @@ module nts.uk.at.view.kmk002.c {
             /**
              * Load attendance items.
              */
-            private loadAttendanceItems(param: ParamToC): JQueryPromise<void> {
+            private loadAttendanceItems(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+
+                // Get param from parent screen
+                let param: ParamToC = nts.uk.ui.windows.getShared('paramToC');
 
                 // create request object
                 let request = <AttdItemLinkRequest>{};
@@ -75,25 +79,43 @@ module nts.uk.at.view.kmk002.c {
                 if (param.performanceAtr == 1) {
                     // get list daily attendance item
                     service.findDailyAttdItem(request).done(data => {
-                        self.leftItems(data);
-
-                        // remove selected items from left table.
-                        self.removeItemFromLeftTable(param.itemSelection.attendanceItems);
+                        self.setDatasource(param, data);
 
                         dfd.resolve();
                     });
                 } else {
                     // get list monthly attendance item
                     service.findMonthlyAttdItem(request).done(data => {
-                        self.leftItems(data);
-
-                        // remove selected items from left table.
-                        self.removeItemFromLeftTable(param.itemSelection.attendanceItems);
+                        self.setDatasource(param, data);
 
                         dfd.resolve();
                     });
                 }
+
                 return dfd.promise();
+            }
+
+            /**
+             * Set datasource for viewmodel
+             */
+            private setDatasource(param: ParamToC, data: Array<AttdItemDto>): void {
+                let self = this;
+
+                // set datasource for left table
+                self.leftItems(data);
+
+                // set displayNumber for right table
+                param.itemSelection.attendanceItems.forEach(item => {
+                    let vl = _.find(data, it => it.attendanceItemId == item.attendanceItemId);
+                    item.attendanceItemDisplayNumber = vl.attendanceItemDisplayNumber;
+                });
+
+                // Set param to view model.
+                self.fromDto(param);
+
+                // remove selected items from left table.
+                self.removeItemFromLeftTable(param.itemSelection.attendanceItems);
+
             }
 
             /**
@@ -132,43 +154,48 @@ module nts.uk.at.view.kmk002.c {
             /**
              * Event on click add button
              */
-            private onClickAdd(): void {
+            public onClickAdd(): void {
                 let self = this;
-                if (self.selectedLeftItem()) {
-                    _.forEach(self.selectedLeftItem(), id => {
-                        // get selected item by selected id
-                        let item = _.find(self.leftItems(), item => item.attendanceItemId == id);
-
-                        // push item to right table
-                        self.rightItems.push(self.toSelectDto(item, AddSubOperator.ADD));
-
-                        // remove item from left table
-                        self.leftItems.remove(item);
-                    });
-                    // sort right table
-                    self.sortRightTable();
-
-                    // clear selected item
-                    self.selectedLeftItem([]);
-                }
+                self.toRightTable(AddSubOperator.ADD);
             }
 
             /**
              * Event on click subtract button
              */
-            private onClickSubtract(): void {
+            public onClickSubtract(): void {
                 let self = this;
-                if (self.selectedLeftItem()) {
+                self.toRightTable(AddSubOperator.SUBTRACT);
+            }
+
+            /**
+             * Push items of left to right table.
+             */
+            private toRightTable(method: AddSubOperator): void {
+                let self = this;
+                if (!nts.uk.util.isNullOrEmpty(self.selectedLeftItem())) {
+                    let rightItems = [];
+                    let removedItems = [];
+
                     _.forEach(self.selectedLeftItem(), id => {
                         // get selected item by selected id
                         let item = _.find(self.leftItems(), item => item.attendanceItemId == id);
+                        removedItems.push(item);
 
                         // push item to right table
-                        self.rightItems.push(self.toSelectDto(item, AddSubOperator.SUBTRACT));
+                        if (method == AddSubOperator.ADD) {
+                            rightItems.push(self.toSelectDto(item, AddSubOperator.ADD));
+                        } else {
+                            rightItems.push(self.toSelectDto(item, AddSubOperator.SUBTRACT));
+                        }
 
-                        // remove item from left table
-                        self.leftItems.remove(item);
                     });
+
+                    // remove from left table
+                    self.leftItems.removeAll(removedItems);
+
+                    // set right items.
+                    self.rightItems(self.rightItems().concat(rightItems));
+
                     // sort right table
                     self.sortRightTable();
 
@@ -182,21 +209,30 @@ module nts.uk.at.view.kmk002.c {
              */
             private onClickBack(): void {
                 let self = this;
-                if (self.selectedRightItem()) {
-                    let item = _.find(self.rightItems(),
-                        item => item.attendanceItemId == self.selectedRightItem());
+                if (!nts.uk.util.isNullOrEmpty(self.selectedRightItem())) {
+                    let leftItems = [];
+                    let removedItems = [];
 
-                    // push item to left table
-                    self.leftItems.push(self.toBackDto(item));
+                    _.forEach(self.selectedRightItem(), id => {
+                        // get selected item by selected id
+                        let item = _.find(self.rightItems(), item => item.attendanceItemId == id);
+                        removedItems.push(item);
 
-                    // remove item from right table
-                    self.rightItems.remove(item);
+                        // push item to left table
+                        leftItems.push(self.toBackDto(item));
+                    });
+
+                    // remove from left table
+                    self.rightItems.removeAll(removedItems);
+
+                    // set left items
+                    self.leftItems(self.leftItems().concat(leftItems));
 
                     // sort left table
                     self.sortLeftTable();
 
                     // clear selected item.
-                    self.selectedRightItem(null);
+                    self.selectedRightItem([]);
                 }
             }
 
@@ -205,7 +241,7 @@ module nts.uk.at.view.kmk002.c {
              */
             private sortLeftTable(): void {
                 let self = this;
-                let sortedList = _.sortBy(self.leftItems(), item => item.attendanceItemId);
+                let sortedList = _.sortBy(self.leftItems(), item => item.attendanceItemDisplayNumber);
                 self.leftItems(sortedList);
             }
 
@@ -214,7 +250,7 @@ module nts.uk.at.view.kmk002.c {
              */
             private sortRightTable(): void {
                 let self = this;
-                let sortedList = _.sortBy(self.rightItems(), item => item.attendanceItemId);
+                let sortedList = _.sortBy(self.rightItems(), item => item.attendanceItemDisplayNumber);
                 self.rightItems(sortedList);
             }
 
@@ -232,19 +268,20 @@ module nts.uk.at.view.kmk002.c {
             /**
              * to select data object
              */
-            private toSelectDto(data: DailyAttendanceItemDto, method: number): AttendanceItemDto {
-                var operatorText: string = '';
+            private toSelectDto(data: AttdItemDto, method: number): AttendanceItemDto {
+                let operatorText: string = '';
                 if (method == AddSubOperator.ADD) {
-                    operatorText = nts.uk.resource.getText('KMK002_56');
+                    operatorText = nts.uk.resource.getText('Enum_OperatorAtr_ADD');
                 }
                 else {
-                    operatorText = nts.uk.resource.getText('KMK002_57');
+                    operatorText = nts.uk.resource.getText('Enum_OperatorAtr_SUBTRACT');
                 }
-                var dto: AttendanceItemDto = {
+                let dto: AttendanceItemDto = {
                     operator: method,
                     operatorText: operatorText,
                     attendanceItemId: data.attendanceItemId,
-                    attendanceItemName: data.attendanceItemName
+                    attendanceItemName: data.attendanceItemName,
+                    attendanceItemDisplayNumber: data.attendanceItemDisplayNumber
                 };
                 return dto;
             }
@@ -252,10 +289,11 @@ module nts.uk.at.view.kmk002.c {
             /**
              * to back data object
              */
-            private toBackDto(data: AttendanceItemDto): DailyAttendanceItemDto {
-                var dto: DailyAttendanceItemDto = {
+            private toBackDto(data: AttendanceItemDto): AttdItemDto {
+                var dto: AttdItemDto = {
                     attendanceItemId: data.attendanceItemId,
-                    attendanceItemName: data.attendanceItemName
+                    attendanceItemName: data.attendanceItemName,
+                    attendanceItemDisplayNumber: data.attendanceItemDisplayNumber
                 };
                 return dto;
             }

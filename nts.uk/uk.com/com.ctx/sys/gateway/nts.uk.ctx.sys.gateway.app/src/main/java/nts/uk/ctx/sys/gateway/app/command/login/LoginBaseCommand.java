@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,16 +12,15 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
@@ -48,8 +45,8 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 	@Inject
 	private RoleIndividualGrantAdapter roleIndividualGrantAdapter;
 
-	@Inject 
-	private RoleAdapter roleAdapter;
+	@Inject
+	private ListCompanyAdapter listCompanyAdapter;
 	
 	@Inject
 	private LoginUserContextManager manager;
@@ -92,9 +89,10 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 //	}
 	
 	protected void initSession(User user) {
-		List<String> lstCompanyId = this.getListCompany(user);
+		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatedPersonId());
 		if (lstCompanyId.isEmpty()) {
-
+			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatedPersonId(), user.getContractCode().v(), null,
+					null, null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
@@ -109,33 +107,33 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 		this.setRoleId(user.getUserId());
 	}
 	
-	protected List<String> getListCompany(User user) {
-		List<String> lstCompanyId = new ArrayList<String>();
-		// get roleIndividualGrant
-		RoleIndividualGrantImport individualGrant = roleIndividualGrantAdapter.getByUser(user.getUserId(),
-				GeneralDate.today());
-		// get roles by roleId
-		List<RoleImport> lstRole = roleAdapter.getAllById(individualGrant.getRoleId());
-		// TODO get list employee imported by User associated Id #No.124
-		List<EmployeeImport> lstEm = Arrays.asList();
-
-		// merge duplicate companyId from lstRole and lstEm
-		for (RoleImport item : lstRole) {
-			if (item.getCompanyId() != null) {
-				lstCompanyId.add(item.getCompanyId());
-			}
-		}
-
-		for (EmployeeImport em : lstEm) {
-			boolean haveComId = lstCompanyId.stream().anyMatch(item -> {
-				return em.getCompanyId().equals(item);
-			});
-			if (!haveComId) {
-				lstCompanyId.add(em.getCompanyId());
-			}
-		}
-		return lstCompanyId;
-	}
+//	protected List<String> getListCompany(User user) {
+//		List<String> lstCompanyId = new ArrayList<String>();
+//		// get roleIndividualGrant
+//		RoleIndividualGrantImport individualGrant = roleIndividualGrantAdapter.getByUser(user.getUserId(),
+//				GeneralDate.today());
+//		// get roles by roleId
+//		List<RoleImport> lstRole = roleAdapter.getAllById(individualGrant.getRoleId());
+//		// TODO get list employee imported by User associated Id #No.124
+//		List<EmployeeImport> lstEm = Arrays.asList();
+//
+//		// merge duplicate companyId from lstRole and lstEm
+//		for (RoleImport item : lstRole) {
+//			if (item.getCompanyId() != null) {
+//				lstCompanyId.add(item.getCompanyId());
+//			}
+//		}
+//
+//		for (EmployeeImport em : lstEm) {
+//			boolean haveComId = lstCompanyId.stream().anyMatch(item -> {
+//				return em.getCompanyId().equals(item);
+//			});
+//			if (!haveComId) {
+//				lstCompanyId.add(em.getCompanyId());
+//			}
+//		}
+//		return lstCompanyId;
+//	}
 	protected EmployeeImport getEmployeeInfo(String companyId, String employeeCode) {
 		// TODO
 		EmployeeImport em = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode).get();
@@ -151,41 +149,41 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 	
 	protected void setRoleId(String userId)
 	{
+		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
+		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
+		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
+		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
+		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER);
+		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO);
 		// 就業
-		if (this.getRoleId(userId, RoleType.EMPLOYMENT) != null) {
-			manager.roleIdSetter().forPersonnel(this.getRoleId(userId, RoleType.EMPLOYMENT));
+		if (employmentRoleId != null) {
+			manager.roleIdSetter().forPersonnel(employmentRoleId);
 		}
-		
 		// 給与
-		if (this.getRoleId(userId, RoleType.SALARY) != null) {
-			manager.roleIdSetter().forPayroll(this.getRoleId(userId, RoleType.SALARY));
+		if (salaryRoleId != null) {
+			manager.roleIdSetter().forPayroll(salaryRoleId);
 		}
-		
-		//人事
-		
-		
-		// オフィスヘルパー
-		if (this.getRoleId(userId, RoleType.OFFICE_HELPER) != null) {
-			manager.roleIdSetter().forOfficeHelper(this.getRoleId(userId, RoleType.OFFICE_HELPER));
-		}
-		
-		//会計
-		//マイナンバー
-		//グループ会社管理
-		
-		// 会社管理者
-		if (this.getRoleId(userId, RoleType.COMPANY_MANAGER) != null) {
-			manager.roleIdSetter().forCompanyAdmin(this.getRoleId(userId, RoleType.COMPANY_MANAGER));
-		}
+		// 人事
 
-		//システム管理者
-		if (this.getRoleId(userId, RoleType.SYSTEM_MANAGER) != null) {
-			manager.roleIdSetter().forSystemAdmin(this.getRoleId(userId, RoleType.SYSTEM_MANAGER));
+		// オフィスヘルパー
+		if (officeHelperRoleId != null) {
+			manager.roleIdSetter().forOfficeHelper(officeHelperRoleId);
 		}
-		
-		//個人情報
-		if (this.getRoleId(userId, RoleType.PERSONAL_INFO) != null) {
-			manager.roleIdSetter().forPersonalInfo(this.getRoleId(userId, RoleType.PERSONAL_INFO));
+		// 会計
+		// マイナンバー
+		// グループ会社管理
+
+		// 会社管理者
+		if (companyManagerRoleId != null) {
+			manager.roleIdSetter().forCompanyAdmin(companyManagerRoleId);
+		}
+		// システム管理者
+		if (systemManagerRoleId != null) {
+			manager.roleIdSetter().forSystemAdmin(systemManagerRoleId);
+		}
+		// 個人情報
+		if (personalInfoRoleId != null) {
+			manager.roleIdSetter().forPersonalInfo(personalInfoRoleId);
 		}
 	}
 

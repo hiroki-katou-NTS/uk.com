@@ -12,6 +12,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TemporaryAbsenceFinder;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmployeeBusiness;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,6 +31,9 @@ public class EmployeeFinder {
 
 	@Inject
 	private EmployeeBusiness employeeBusiness;
+
+	@Inject
+	private TemporaryAbsenceFinder tAbsFinder;
 
 	/**
 	 * Gets the person id by employee code.
@@ -145,6 +150,7 @@ public class EmployeeFinder {
 
 	/**
 	 * Get All Employee temporary deletion
+	 * 
 	 * @return
 	 */
 	public List<EmployeeToDeleteDto> getAllEmployeeInfoToDelete() {
@@ -152,7 +158,7 @@ public class EmployeeFinder {
 		return this.employeeRepository.getAllEmployeeInfoToDelete().stream()
 				.map(item -> EmployeeToDeleteDto.fromDomain(item)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Gets EmployeeInfo to Delete by employeeId.
 	 *
@@ -162,8 +168,23 @@ public class EmployeeFinder {
 	 */
 	public EmployeeToDeleteDetailDto getEmployeeDetailInfoToDelete(String employeeId) {
 
-		EmployeeToDeleteDetailDto s =  this.employeeRepository.getEmployeeDetailToDelete(employeeId)
+		EmployeeToDeleteDetailDto s = this.employeeRepository.getEmployeeDetailToDelete(employeeId)
 				.map(item -> EmployeeToDeleteDetailDto.fromDomain(item)).get();
 		return s;
+	}
+
+	public Optional<EmployeeDto> getInfoById(String employeeId) {
+		Optional<Employee> emp = employeeRepository.getBySid(employeeId);
+
+		if (emp.isPresent()) {
+			return emp.map(m -> {
+				// set list temporary absence to employee domain
+				m.setListTemporaryAbsence(tAbsFinder.getListBySid(employeeId));
+
+				return EmployeeDto.fromDomain(m);
+			});
+		}
+
+		return Optional.empty();
 	}
 }

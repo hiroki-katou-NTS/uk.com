@@ -12,7 +12,7 @@ module kml002.l.viewmodel {
             self.rootItems = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML002_6"), prop: 'totalCountNo', key: 'totalCountNo', width: 55 },
-                { headerText: nts.uk.resource.getText("KML002_6"), prop: 'totalTimesName', key: 'totalTimesName', width: 167 },
+                { headerText: nts.uk.resource.getText("KML002_7"), prop: 'totalTimesName', key: 'totalTimesName', width: 167 },
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
             ]);
             self.currentCodeList = ko.observableArray([]);

@@ -132,135 +132,61 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   background-color: #F7EFD4;
 }
 
-/* line 7, ../sass/components/_color.scss */
-.color-daily-holiday {
-  color: #FF2D2D;
-}
+.color-working-day {color: #31859C !important;}
+.color-non-working-day {color: #FF3B3B !important;}
+.color-attendance {color: #0000ff !important;}
+.color-holiday {color: #ff0000 !important;}
+.color-daily-holiday {color: #FF2D2D !important;}
+.color-daily-extra-holiday {color: #0086EA !important;}
+.bg-daily-alter-self {background-color:#94B7FE !important;}
+.bg-daily-alter-other {background-color:#CEE6FF !important;}
+.bg-daily-reflect-application {background-color:#92F29B !important;}
+.bg-daily-error {background-color:#FEC6C6 !important;}
+.bg-daily-alarm {background-color:#E3F385 !important;}
+.bg-daily-calculated {background-color:#E4C9FF !important;}
 
-/* line 8, ../sass/components/_color.scss */
-.color-daily-extra-holiday {
-  color: #0086EA;
-}
+.color-schedule-performance {color:#92D050 !important;}
+.color-schedule-error {color:#FF0000 !important;}
+.color-schedule-saturday {color:#0000FF !important;}
+.color-schedule-sunday {color:#FF0000 !important;}
+.bg-schedule-support {background-color:#fedfe6 !important;}
+.bg-schedule-no-empl-insurance {background-color:#ef7f7f !important;}
+.bg-schedule-no-health-insurance {background-color:#acfe2f !important;}
+.bg-schedule-no-empl-health-insurance {background-color:#fea400 !important;}
+.bg-schedule-fixed {background-color:#eccefb !important;}
+.bg-schedule-uncorrectable {background-color:#ddddd2 !important;}
+.bg-schedule-work-by-dow {background-color:#FFFF69 !important;}
+.bg-schedule-shift-work {background-color:#FFE699 !important;}
+.bg-schedule-saturday {background-color:#8bd8ff !important;}
+.bg-schedule-sunday {background-color:#fabf8f !important;}
+.bg-schedule-specific-date {background-color:#ffc0cb !important;}
+.bg-schedule-that-day {background-color:#ffff00 !important;}
+.bg-schedule-focus {background-color:#ffffcc !important;}
 
-/* line 9, ../sass/components/_color.scss */
-.bg-daily-alter-self {
-  background-color: #94B7FE;
-}
+.bg-choice-row {background-color:#CEE6FF !important;}
+.bg-calendar-ym-set {background-color:#BFEA60 !important;}
+.bg-workinh-result-excess {background-color:#ffff00 !important;}
+.bg-pre-application-excess {background-color:#ffc0cb !important;}
+.bg-application-approved {background-color:#BFEA60 !important;}
+.bg-application-reflected {background-color:#CEE6FF !important;}
+.bg-denial-application {background-color:#FD4D4D !important;}
+.bg-unapproved-application {background-color:#ffffff !important;}
+.bg-remanded-application {background-color:#FD4D4D !important;}
+.bg-canceled-application {background-color:#F6F636 !important;}
 
-/* line 10, ../sass/components/_color.scss */
-.bg-daily-alter-other {
-  background-color: #CEE6FF;
-}
-
-/* line 11, ../sass/components/_color.scss */
-.bg-daily-reflect-application {
-  background-color: #92F29B;
-}
-
-/* line 12, ../sass/components/_color.scss */
-.bg-daily-error {
-  background-color: #FEC6C6;
-}
-
-/* line 13, ../sass/components/_color.scss */
-.bg-daily-alarm {
-  background-color: #E3F385;
-}
-
-/* line 14, ../sass/components/_color.scss */
-.bg-daily-calculated {
-  background-color: #E4C9FF;
-}
-
-/* line 16, ../sass/components/_color.scss */
-.color-schedule-performance {
-  color: #92D050;
-}
-
-/* line 17, ../sass/components/_color.scss */
-.color-schedule-error {
-  color: #FF0000;
-}
-
-/* line 18, ../sass/components/_color.scss */
-.color-schedule-saturday {
-  color: #0000FF;
-}
-
-/* line 19, ../sass/components/_color.scss */
-.color-schedule-sunday {
-  color: #FF0000;
-}
-
-/* line 20, ../sass/components/_color.scss */
-.bg-schedule-support {
-  background-color: #fedfe6;
-}
-
-/* line 21, ../sass/components/_color.scss */
-.bg-schedule-no-empl-insurance {
-  background-color: #ef7f7f;
-}
-
-/* line 22, ../sass/components/_color.scss */
-.bg-schedule-no-health-insurance {
-  background-color: #acfe2f;
-}
-
-/* line 23, ../sass/components/_color.scss */
-.bg-schedule-no-empl-health-insurance {
-  background-color: #fea400;
-}
-
-/* line 24, ../sass/components/_color.scss */
-.bg-schedule-fixed {
-  background-color: #eccefb;
-}
-
-/* line 25, ../sass/components/_color.scss */
-.bg-schedule-uncorrectable {
-  background-color: #ddddd2;
-}
-
-/* line 26, ../sass/components/_color.scss */
-.bg-schedule-work-by-dow {
-  background-color: #FFFF69;
-}
-
-/* line 27, ../sass/components/_color.scss */
-.bg-schedule-shift-work {
-  background-color: #FFE699;
-}
-
-/* line 28, ../sass/components/_color.scss */
-.bg-schedule-saturday {
-  background-color: #8bd8ff;
-}
-
-/* line 29, ../sass/components/_color.scss */
-.bg-schedule-sunday {
-  background-color: #fabf8f;
-}
-
-/* line 30, ../sass/components/_color.scss */
-.bg-schedule-specific-date {
-  background-color: #ffc0cb;
-}
-
-/* line 31, ../sass/components/_color.scss */
-.bg-schedule-that-day {
-  background-color: #ffff00;
-}
-
-/* line 32, ../sass/components/_color.scss */
-.bg-schedule-focus {
-  background-color: #ffffcc;
-}
-
-/* line 34, ../sass/components/_color.scss */
-.bg-calendar-ym-set {
-  background-color: #BFEA60;
-}
+.color-operation-case-character {color: #ff0000 !important;}
+.color-working-schedule {color: #00cc00 !important;}
+.color-sunday {color: #FF2D2D !important;}
+.color-saturday {color: #0086EA !important;}
+.color-half-day-work {color: #FF7F27 !important;}
+.bg-weekdays {background-color:#D9D9D9 !important;}
+.color-weekdays {color: #404040 !important;}
+.bg-pasted {background-color:#F8CBAD !important;}
+.bg-updating-cell {background-color:#FFD966 !important;}
+.bg-selecting {background-color:#BDD7EE !important;}
+.bg-added-row {background-color:#AFEEEE !important;}
+.bg-actual-superior-unverified {background-color:#FF7F27 !important;}
+.bg-error-actual {background-color:#ffc0cb !important;}
 
 /*****************************
   Overwrite JQueryUI
@@ -579,7 +505,9 @@ div.popup-panel {
 div.label {
   width: 100%;
 }
-
+.pre {
+    white-space: pre-wrap;
+}
 /*****************************
   Icon
 *****************************/
@@ -3037,6 +2965,11 @@ button.nts-switch-button[disabled]:hover {
   min-width: 65px;
 }
 
+.nts-searchbbox-wrapper div.input-wrapper {
+	display: inline-block;
+	line-height: 32px;
+}
+
 /*!
  * Datepicker v@VERSION
  * https://github.com/fengyuanchen/datepicker
@@ -3686,6 +3619,16 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
 }
 
+.nts-editor-container {
+	height: 100%;
+	margin-left: -1px;
+}
+
+.nts-editor-wrapper {
+	width: 100%;
+	margin: 1px;
+}
+
 /* line 231, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
@@ -3701,10 +3644,14 @@ button.nts-switch-button[disabled]:hover {
   position: relative;
 }
 
+.extable table th, .extable table td {
+	border: 1px solid #AAB7B8;
+}
+
 /* line 4, ../sass/components/_extable.scss */
 .extable .xheader td {
   color: #000;
-  background-color: #CFF1A5;
+  background-color: #D9D9D9;
   font-weight: bold;
 }
 
@@ -3726,6 +3673,14 @@ button.nts-switch-button[disabled]:hover {
 /* line 18, ../sass/components/_extable.scss */
 .extable div.edited, .extable td.edited {
   background-color: #FAD7A0;
+}
+
+.extable div.xhidden, .extable td.xhidden {
+	background-color: #CCC;
+}
+
+.extable div.xseal, .extable td.xseal {
+	background-color: #CCC;
 }
 
 /* line 21, ../sass/components/_extable.scss */
@@ -4014,15 +3969,23 @@ div .ex-area-line.x-stay {
 .nts-fixed-table table.fixed-table > tbody > tr:hover > th {
   background-color: #C5F1F7;
 }
+.nts-fixed-table table.fixed-table tbody td:last-child {
+  border-right: 0px;
+}
+.nts-fixed-table table.fixed-table thead th:last-child {
+  border-right: 0px;
+}
 /* line 20, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-header-container {
-  overflow: auto;
+  overflow: hidden; 
+  border-right: 1px #CCC solid;
 }
 /* line 24, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-container {
   overflow: auto;
   float: left;
   border: 1px solid #CCC;
+  border-top: 0px;
 }
 /* line 30, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-wrapper {
@@ -4288,6 +4251,43 @@ div .ex-area-line.x-stay {
 .cropper-crop-box {
   outline-color: rgba(255, 0, 0, 0.75) !important;
   outline: 1px solid red !important;
+}
+
+.ntsTable td{
+	border: 0px;
+}
+	
+.ntsTable .ntsButtonTableButton {
+  	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
+  	border: 1px solid LightGrey;
+  	margin-bottom: 0px;
+	position: unset;
+}
+.ntsTable .ntsButtonTableButton:active {
+	position: unset;
+}
+.ntsTable .ntsButtonTableButton:hover {
+	background: #fff;
+}
+.ntsTable .ntsButtonTableButton:focus{
+	border: 1px solid LightGrey;
+}
+.ntsTable .ntsButtonCellData {
+  	border: 1px solid black;
+}
+.ntsTable .ntsButtonCellData:focus{
+	border: 1px solid black;
+}
+.ntsTable .ntsButtonCellSelected{
+	background-color: #BDD7EE;
+  	border: 1px solid DodgerBlue;
+}
+.ntsTable .ntsButtonCellSelected:focus{
+  	border: 1px solid DodgerBlue;
+}
+.ntsTable .ntsButtonCellSelected:hover{
+	background-color: #BDD7EE;
+  	border: 1px solid DodgerBlue;
 }
 
 /* line 49, ../sass/base.scss */

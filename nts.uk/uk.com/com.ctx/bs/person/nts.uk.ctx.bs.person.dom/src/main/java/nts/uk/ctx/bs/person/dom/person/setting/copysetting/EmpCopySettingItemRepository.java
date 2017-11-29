@@ -6,5 +6,5 @@ import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySettingIt
 
 public interface EmpCopySettingItemRepository {
 
-	List<EmpCopySettingItem> getAllItemFromCategoryId(String categoryId);
+	List<EmpCopySettingItem> getAllItemFromCategoryCd(String categoryCd, String companyId, boolean isSelf);
 }

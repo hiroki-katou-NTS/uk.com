@@ -10,6 +10,8 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 public class CanceLateOrLeaveEarlyCommand {
+	private Long version;
+	
 	/** 会社ID */
 	private String companyID;
 

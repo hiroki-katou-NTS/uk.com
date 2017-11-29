@@ -264,47 +264,156 @@ module nts.uk.com.view.cps017.a.viewmodel {
             }
         }
 
+        removeHistory() {
+            //alert("delete history!!");    
+            let self = this,
+                items = ko.unwrap(self.listHistorySelection),
+                currentItem: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection();
+
+            currentItem.histId(self.historySelection().histId());
+            command = ko.toJS(currentItem);
+            oldIndex = _.findIndex(listHistorySelection, x => x.histId == currentItem.histId());
+            lastIndex = items.length - 1;
+            if (items.length > 0) {
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.removeHistory(command).done(function() {
+                        self.listHistorySelection.removeAll();
+                        service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<IHistorySelection>) => {
+                            if (itemList && itemList.length) {
+                                itemList.forEach(x => self.listHistorySelection.push(x));
+                                if (oldIndex == lastIndex) {
+                                    oldIndex--;
+                                }
+                                let newItem = itemList[oldIndex];
+                                currentItem.histId(newItem.histId);
+                            }
+                        });
+                        self.listItems.valueHasMutated();
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                    });
+                }).ifNo(() => {
+                    self.listItems.valueHasMutated();
+                    return;
+                })
+            } else {
+                alertError({ messageId: "Msg_521" });
+                self.registerDataSelectioItem();
+            }
+        }
+
+        //
+        ReflUnrComp() {
+            //alert("ReflUnrComp!!!");
+            let self = this,
+                currentItem: IHistorySelection = ko.toJS(self.historySelection),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId),
+
+                selection: ISelection = ko.toJS(self.selection),
+                listSelection: Array<Selection> = self.listSelection(),
+                selectionList = _.find(listSelection, x => x.selectionID == selection.selectionID),
+
+                orderSelection: IOrderSelection = ko.toJS(self.orderSelection),
+                listOrderSelection: Array<OrderSelection> = self.listOrderSelection(),
+                orderList = _.find(listOrderSelection, x => x.selectionID == orderSelection.selectionID),
+
+                perInfoSelectionItem: ISelectionItem = ko.toJS(self.perInfoSelectionItem),
+                listItems: Array<SelectionItem> = self.listItems(),
+                selectionItemList = _.find(listItems, x => x.selectionItemId == perInfoSelectionItem.selectionItemId);
+
+            let command = {
+                currentItem: currentItem,
+                selection: selection,
+                orderSection: orderSelection,
+                perInfoSelectionItem: perInfoSelectionItem
+            };
+
+            confirm({ messageId: "Msg_532" }).ifYes(() => {
+                service.reflUnrComp(command).done(function() {
+                    self.listHistorySelection.removeAll();
+                    service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<>) => {
+                        if (itemList && itemList.length) {
+                            itemList.forEach(x => self.listHistorySelection.push(x));
+                        }
+                    });
+                    self.listItems.valueHasMutated();
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                });
+            }).ifNo(() => {
+                self.listItems.valueHasMutated();
+                return;
+            })
+        }
+
         //ダイアログC画面
         openDialogB() {
             let self = this,
                 currentItem: Selection = self.selection();
 
             //set histID 
+            //setShared('selectedItem', { selectedHisId: self.historySelection().histId(), selectionItemId: currentItem.selectionID });
             setShared('selectedHisId', self.historySelection().histId());
+
             block.invisible();
             modal('/view/cps/017/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 block.clear();
             });
         }
-        
+
         //ダイアログC画面
         openDialogC() {
             let self = this,
-                obj = {
-                    sel_id: "0001",
-                    sel_name: " Du DT"
-                };
+                currentItem: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId()),
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems(),
+                selectionItemNameList = _.find(listItems, x => x.selectionItemName == perInfoSelectionItem.selectionItemName());
 
-            setShared('historyInfo', obj);
+            //set histID
+            //setShared('selectedHisId', self.historySelection().histId());
+            setShared('selectHistory', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });
+
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
+                self.start();
                 block.clear();
+
+                //                service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((_selectionItemList: IHistorySelection) => {
+                //                    self.listHistorySelection(_selectionIte         //                });
+
+
             });
         }
 
         //ダイアログD画面
         openDialogD() {
             let self = this,
-                obj = {
-                    sel_id: "0001",
-                    sel_name: " Du DT"
-                };
-            setShared('historyInfo', obj);
+                currentItem: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId()),
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems(),
+                selectionItemNameList = _.find(listItems, x => x.selectionItemName == perInfoSelectionItem.selectionItemName());
+            
+            setShared('selectHistory', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });            
+            
             block.invisible();
             modal('/view/cps/017/d/index.xhtml', { title: '' }).onClosed(function(): any {
                 block.clear();
             });
         }
+
+        // load lai history
+        //        reloadHistory() {
+        //            service.getAllPerInfoHistorySelection(self).done((itemList: Array<IHistorySelection>) => {
+        //                if (itemList && itemList.length) {
+        //                    itemList.forEach(x => self.listHistorySelection.push(x));
+        //                }
+        //            });
+        //
+        //        }
     }
 
     //SelectionItem

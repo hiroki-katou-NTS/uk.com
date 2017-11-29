@@ -15,6 +15,9 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoPermissionType;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -29,6 +32,9 @@ public class PerInfoCategoryFinder {
 
 	@Inject
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
+	
+	@Inject
+	private PersonInfoCategoryAuthRepository personInfoCategoryAuthRepository;
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
 		return perInfoCtgRepositoty
@@ -64,10 +70,10 @@ public class PerInfoCategoryFinder {
 		List<PerInfoCtgMapDto> lstReturn = null;
 		if (lstFilter.size() != 0) {
 			lstReturn = PersonInfoCategory.getAllPerInfoCategoryWithCondition(lstFilter).stream().map(p -> {
-				// boolean alreadyCopy =
-				// perInfoCtgRepositoty.checkPerInfoCtgAlreadyCopy(p.getPersonInfoCategoryId(),
-				// companyId);
-				boolean alreadyCopy = true;
+				 boolean alreadyCopy =
+				 perInfoCtgRepositoty.checkPerInfoCtgAlreadyCopy(p.getPersonInfoCategoryId(),
+				 companyId);
+				//boolean alreadyCopy = true;
 				return new PerInfoCtgMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 						p.getCategoryName().v(), alreadyCopy);
 			}).collect(Collectors.toList());
@@ -94,6 +100,27 @@ public class PerInfoCategoryFinder {
 							p.getCategoryType().value, p.getIsFixed().value, 1);
 				}).orElse(null));
 		return lstResult;
+	}
+	
+	/**
+	 * check exist auth of ctg by empId and ctgId
+	 * 
+	 * @param empId
+	 * @param ctgId
+	 * @return
+	 */
+	public boolean checkPerInfoCtgAuth(String empId, String ctgId) {
+		String loginEmpId = AppContexts.user().employeeId();
+		//String roleId = AppContexts.user().roles().forPersonalInfo();
+		String roleId ="99900000-0000-0000-0000-000000000001";
+		boolean isSelfAuth = empId.equals(loginEmpId);
+		// get perInfoCtgAuth
+		PersonInfoCategoryAuth personInfoCategoryAuth = personInfoCategoryAuthRepository
+				.getDetailPersonCategoryAuthByPId(roleId, ctgId).get();
+		if (isSelfAuth) {
+			return personInfoCategoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES;
+		} else
+			return personInfoCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES;
 	}
 
 	// vinhpx: end

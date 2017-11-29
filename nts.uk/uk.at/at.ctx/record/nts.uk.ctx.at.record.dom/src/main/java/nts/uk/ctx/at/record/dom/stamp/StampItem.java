@@ -7,7 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
-import nts.uk.shr.com.time.AttendanceClock;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 
 @AllArgsConstructor

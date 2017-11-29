@@ -1,8 +1,11 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktimeset.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
 
 /**
  * The Class FlowFixedRestSet.
@@ -26,13 +29,11 @@ public class FlowFixedRestSet extends DomainObject{
 	/** The calculate method. */
 	//計算方法
 	private FlowFixedRestCalcMethod calculateMethod;
-	
+
 	/*:
 	 * 流動固定休憩の計算方法を「予定を参照する」に変更
 	 */
 	public void changeCalcMethodToSchedule() {
 		this.calculateMethod = FlowFixedRestCalcMethod.REFER_SCHEDULE;
 	}
-	
-	
 }

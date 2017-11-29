@@ -45,7 +45,8 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KscdtScheExeTarget> cq = criteriaBuilder.createQuery(KscdtScheExeTarget.class);
+		CriteriaQuery<KscdtScheExeTarget> cq = criteriaBuilder
+				.createQuery(KscdtScheExeTarget.class);
 		Root<KscdtScheExeTarget> root = cq.from(KscdtScheExeTarget.class);
 
 		// select root
@@ -54,18 +55,52 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.exeId), executionId));
+				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.exeId),
+				executionId));
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
 
-		cq.orderBy(criteriaBuilder
-				.desc(root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.sid)));
+		cq.orderBy(criteriaBuilder.desc(
+				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.sid)));
 
 		// create query
 		TypedQuery<KscdtScheExeTarget> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+				.collect(Collectors.toList());
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository#countdAll(java.lang.String)
+	 */
+	@Override
+	public int countdAll(String executionId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		Root<KscdtScheExeTarget> root = cq.from(KscdtScheExeTarget.class);
+
+		// select count (*) root
+		cq.select(criteriaBuilder.count(root));
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal execution id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.exeId), executionId));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+
+		// create query
+		TypedQuery<Long> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getSingleResult().intValue();
 	}
 
 	/**
@@ -118,6 +153,45 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 				domains.stream().map(domain -> this.toEntity(domain)).collect(Collectors.toList()));
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository#
+	 * countByStatus(java.lang.String, int)
+	 */
+	@Override
+	public int countByStatus(String executionId, int executionStatus) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		Root<KscdtScheExeTarget> root = cq.from(KscdtScheExeTarget.class);
+
+		// select count (*) root
+		cq.select(criteriaBuilder.count(root));
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal execution id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.exeId),
+				executionId));
+
+		// equal execution status
+		lstpredicateWhere.add(
+				criteriaBuilder.equal(root.get(KscdtScheExeTarget_.exeStatus), executionStatus));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+
+		// create query
+		TypedQuery<Long> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getSingleResult().intValue();
+	}
+	
 	/**
 	 * To entity.
 	 *
@@ -136,18 +210,15 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kscmt schedule creator
 	 */
-	private KscdtScheExeTarget toEntityUpdate(ScheduleCreator domain){
-		Optional<KscdtScheExeTarget> opEntity = this.findById(domain.getExecutionId(), domain.getEmployeeId());
-		KscdtScheExeTarget entity = new KscdtScheExeTarget();
-		
-		if(opEntity.isPresent()){
-			entity = opEntity.get();
-		}
-		
+	private KscdtScheExeTarget toEntityUpdate(ScheduleCreator domain) {
+		Optional<KscdtScheExeTarget> opEntity = this.findById(domain.getExecutionId(),
+				domain.getEmployeeId());
+		KscdtScheExeTarget entity = opEntity.get();
+
 		domain.saveToMemento(new JpaScheduleCreatorSetMemento(entity));
 		return entity;
 	}
-	
+
 	/**
 	 * To domain.
 	 *

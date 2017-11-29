@@ -16,12 +16,14 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
@@ -110,7 +112,13 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 
 	@Override
 	public String empEmail(String sID) {
-		return this.personPub.getPersonInfo(sID).getCompanyMail();
+		PersonInfoExport data = this.personPub.getPersonInfo(sID);
+		if(!data.getCompanyMail().isEmpty()) {
+			return data.getCompanyMail();
+		}else {
+			return null;
+		}
+		
 	}
 
 	@Override
@@ -123,6 +131,36 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 						x.getJobId(),
 						x.getJobCls().value)).collect(Collectors.toList());
 		return data;
+	}
+	
+	@Override
+	public SEmpHistImport getEmpHist(String companyId, String employeeId,
+			GeneralDate baseDate){
+		SEmpHistImport sEmpHistImport = new SEmpHistImport();
+		Optional<SEmpHistExport> sEmpHistExport = this.employmentPub.findSEmpHistBySid(companyId, employeeId, baseDate);
+		if(sEmpHistExport.isPresent()){
+			sEmpHistImport.setEmployeeId(sEmpHistExport.get().getEmployeeId());
+			sEmpHistImport.setEmploymentCode(sEmpHistExport.get().getEmploymentCode());
+			sEmpHistImport.setEmploymentName(sEmpHistExport.get().getEmploymentName());
+			sEmpHistImport.setPeriod(sEmpHistExport.get().getPeriod());
+			return sEmpHistImport;
+		}
+		return null;
+	}
+
+	@Override
+	public SWkpHistImport getSWkpHistByEmployeeID(String employeeId, GeneralDate baseDate) {
+		Optional<SWkpHistExport> sWkpHistExport = this.workplacePub.findBySid(employeeId, baseDate);
+		if(sWkpHistExport.isPresent()){
+			SWkpHistImport sWkpHistImport = new SWkpHistImport(sWkpHistExport.get().getDateRange(),
+					sWkpHistExport.get().getEmployeeId(),
+					sWkpHistExport.get().getWorkplaceId(),
+					sWkpHistExport.get().getWorkplaceCode(), 
+					sWkpHistExport.get().getWorkplaceName(),
+					sWkpHistExport.get().getWkpDisplayName());
+			return sWkpHistImport;	
+		}
+		return null;
 	}
 	
 }

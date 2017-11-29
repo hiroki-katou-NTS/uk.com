@@ -26,6 +26,7 @@
 						<button data-bind="click: selectSomeItems">Select some items</button>
 						<button data-bind="click: deselectAll">Deselect all</button>
 						<button data-bind="click: addItem">Add</button>
+						<button data-bind="click: updateItem">Update Item</button>
 						<button data-bind="click: removeItem">Remove</button>
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<hr />
@@ -40,7 +41,10 @@
 								value: currentCode,
 								rows: 10
 							}"></table>
-						currentCode: <span data-bind="text: currentCode"></span>
+						currentCode: <span data-bind="text: currentCode"></span><br/>
+						<button data-bind="click: prev">Prev</button>
+						<button data-bind="click: next">Next</button>
+						<button data-bind="click: jump">Jump</button>
 						<hr/>
 						<h3>Multiple selecting mode</h3>
 						<table id="multi-list" data-bind="ntsGridList: {

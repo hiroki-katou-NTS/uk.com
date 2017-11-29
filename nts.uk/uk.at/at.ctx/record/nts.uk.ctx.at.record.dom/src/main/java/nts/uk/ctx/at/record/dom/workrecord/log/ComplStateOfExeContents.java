@@ -16,13 +16,15 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 @AllArgsConstructor
 public class ComplStateOfExeContents {
 
-	/**
-	 * 実行内容
-	 */
+	/** 実行内容 */
 	private ExecutionContent executionContent;
-	/**
-	 * 従業員の実行状況
-	 */
+	
+	/** 従業員の実行状況 */
 	private EmployeeExecutionStatus status;
 
+	/** Check Status is Complete */
+	public boolean isComplete() {
+		return this.status == EmployeeExecutionStatus.COMPLETE;
+	}
+	
 }

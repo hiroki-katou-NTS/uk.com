@@ -95,6 +95,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             startPage(appId : string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let dfd = $.Deferred();
                 let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
@@ -155,11 +156,10 @@ module nts.uk.at.view.kaf009.b {
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
                         self.siftName(detailData.workTimeName);
-                        self.workLocationName(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
+                        self.workLocationName(detailData.workLocationName1 == null ? '' : detailData.workLocationName1);
                         self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
                         self.multilContent(detailData.appReason);
-                        self.selectedReason(detailData.appReasonId);
                         self.appDate(detailData.appDate);
                         self.employeeName(detailData.employeeName);
                         //Set Value of control
@@ -180,6 +180,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 var promiseResult = self.checkBeforeUpdate();
                 promiseResult.done((result) => {
@@ -195,7 +196,7 @@ module nts.uk.at.view.kaf009.b {
                                     location.reload();
                                 });    
                             } else {
-                                nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
                             }
                         });
                     }
@@ -230,11 +231,11 @@ module nts.uk.at.view.kaf009.b {
                                 $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
                             }
                         } else{
-                           nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });     
+                           nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
                         }
                     })
                 }
-                return dfd;
+                return dfd.promise();
             }
             
             /**
@@ -305,9 +306,13 @@ module nts.uk.at.view.kaf009.b {
                 goBackCommand.workLocationCD1 = self.workLocationCD();
                 goBackCommand.workLocationCD2 = self.workLocationCD2();
                 
-                
+                let txtReasonTmp = self.selectedReason();
+                if(!nts.uk.text.isNullOrEmpty(self.selectedReason())){
+                    let reasonText = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});;
+                    txtReasonTmp = reasonText.reasonName;
+                }
                 let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
-                    self.selectedReason(),
+                    txtReasonTmp,
                     self.prePostSelected(),
                     self.appDate(),
                     self.employeeID,
@@ -391,11 +396,12 @@ module nts.uk.at.view.kaf009.b {
             setReasonControl(data: Array<common.ReasonDto>) {
                 let self = this;
                 let comboSource: Array<common.ComboReason> = [];
-                comboSource.push(new common.ComboReason(0, '選択してください', ''));
                 _.forEach(data, function(value: common.ReasonDto) {
-                    comboSource.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                    self.reasonCombo.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                    if(value.defaultFlg === 1){
+                        self.selectedReason(value.reasonID);
+                    }
                 });
-                self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
             }
 
             /**

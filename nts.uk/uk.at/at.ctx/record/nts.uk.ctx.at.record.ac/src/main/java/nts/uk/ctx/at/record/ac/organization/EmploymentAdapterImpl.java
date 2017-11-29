@@ -5,11 +5,14 @@
 package nts.uk.ctx.at.record.ac.organization;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.EmploymentImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
@@ -36,6 +39,14 @@ public class EmploymentAdapterImpl implements EmploymentAdapter {
 		return this.empPub.findAll(comId).stream()
 				.map(item -> new EmploymentImported(comId, item.getCode(), item.getName()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId,
+			GeneralDate baseDate) {
+		return this.empPub.findSEmpHistBySid(companyId, employeeId, baseDate).map(f -> 
+			new EmploymentHistoryImported(f.getEmployeeId(), f.getEmploymentCode(), f.getPeriod())
+		);
 	}
 
 }

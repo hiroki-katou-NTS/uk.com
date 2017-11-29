@@ -19,8 +19,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -136,8 +136,6 @@ public class WorkMonthlySettingFinder {
 			// check exist data
 			if (mapWorkMonthlySetting.containsKey(this.getYearMonthDay(startMonth))) {
 				
-				WorkType worktype = null;
-				WorkTime worktime = null;
 				
 				// get data object by year month day of start month
 				WorkMonthlySettingDto dto = mapWorkMonthlySetting
@@ -150,17 +148,12 @@ public class WorkMonthlySettingFinder {
 					// set type color ATTENDANCE
 					dto.setTypeColor(ATTENDANCE);
 					
-					// get work type of map
-					worktype = mapWorkType.get(dto.getWorkTypeCode());
-					
 					// set work type name
-					dto.setWorkTypeName(worktype.getName().v());
-					
-					// get work time of map
-					worktime = mapWorkTime.get(dto.getWorkingCode());
-					
+					dto.setWorkTypeName(mapWorkType.get(dto.getWorkTypeCode()).getName().v());
+
 					// set work time name
-					dto.setWorkingName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
+					dto.setWorkingName(mapWorkTime.get(dto.getWorkingCode())
+							.getWorkTimeDisplayName().getWorkTimeName().v());
 				}
 				else {
 					
@@ -169,11 +162,9 @@ public class WorkMonthlySettingFinder {
 
 					// check exist work type of map
 					if (mapWorkType.containsKey(dto.getWorkTypeCode())) {
-						// get work type of map
-						worktype = mapWorkType.get(dto.getWorkTypeCode());
 
 						// set work type name
-						dto.setWorkTypeName(worktype.getName().v());
+						dto.setWorkTypeName(mapWorkType.get(dto.getWorkTypeCode()).getName().v());
 					} else {
 						// set work type name NONE_SETTING
 						dto.setWorkTypeName(TextResource.localize(NONE_SETTING));

@@ -56,6 +56,8 @@ public class ProgramIdConsts {
 	
 	public static final String CCG031C = "CCG031C";
 	
+	public static final String CDL024 = "CDL024";
+	
 	public static final String CDL022A = "CDL022A";
 	
 	public static final String CPS007B = "CPS007B";
@@ -421,4 +423,22 @@ public class ProgramIdConsts {
 	public static final String CMM018M = "CMM018M";
 
 	public static final String CMM018N = "CMM018N";
+
+	public static final String KDL032A = "KDL032A";
+
+	public static final String CPS009A = "CPS009A";
+
+	public static final String CPS009B = "CPS009B";
+
+	public static final String CPS009C = "CPS009C";
+
+	public static final String CPS009D = "CPS009D";
+
+	public static final String CPS017A = "CPS017A";
+
+	public static final String CPS017B = "CPS017B";
+
+	public static final String CPS017C = "CPS017C";
+
+	public static final String CPS017D = "CPS017D";
 }

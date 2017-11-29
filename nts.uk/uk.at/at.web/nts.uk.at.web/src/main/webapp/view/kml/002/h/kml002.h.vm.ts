@@ -68,14 +68,14 @@ module nts.uk.at.view.kml002 {
         }
 
         interface ITabModel {
-            id: string;
+            id: any;
             name: string;
             active?: boolean;
             display?: boolean;
         }
 
         class TabModel {
-            id: string;
+            id: any;
             name: string;
             active: KnockoutObservable<boolean> = ko.observable(false);
             display: KnockoutObservable<boolean> = ko.observable(true);
@@ -115,6 +115,7 @@ module nts.uk.at.view.kml002 {
             start() {
                 var self = this;
                 var dfd = $.Deferred();
+                self.items.removeAll();
                 self.getAllFixedVertical();
                 dfd.resolve();
 
@@ -152,6 +153,7 @@ module nts.uk.at.view.kml002 {
             getAllFixedVertical(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                self.items.removeAll();
                 service.findByCid().done(function(totalTimeArr: Array<ITotalTime>) {
                     _.forEach(totalTimeArr, function(res: ITotalTime) {
                         var totalTime: ITotalTime = {
@@ -160,6 +162,7 @@ module nts.uk.at.view.kml002 {
                             useAtr: res.useAtr,
                             verticalDetailedSettings: res.verticalDetailedSettings
                         };
+                        
                         self.items.push(new TotalTime(totalTime));
                     });
                 });

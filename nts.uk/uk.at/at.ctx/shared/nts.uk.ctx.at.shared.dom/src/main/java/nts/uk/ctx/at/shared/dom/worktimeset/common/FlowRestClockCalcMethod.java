@@ -1,5 +1,8 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktimeset.common;
-
 
 /**
  * The Enum FlowRestClockCalcMethod.
@@ -62,7 +65,6 @@ public enum FlowRestClockCalcMethod {
 		// Not found.
 		return null;
 	}
-	
 	/**
 	 * 外出を休憩時間として計算するであるか判定する
 	 * @return　外出を休憩時間として計算するである
@@ -70,5 +72,4 @@ public enum FlowRestClockCalcMethod {
 	public boolean isRestTimeToCalculate() {
 		return this.equals(USE_REST_TIME_TO_CALCULATE);
 	}
-
 }

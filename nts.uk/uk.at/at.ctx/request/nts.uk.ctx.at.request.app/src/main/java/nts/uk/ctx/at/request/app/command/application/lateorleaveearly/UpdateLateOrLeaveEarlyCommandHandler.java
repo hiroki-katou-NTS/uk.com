@@ -47,6 +47,10 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 	protected void handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
 		UpdateLateOrLeaveEarlyCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		String appReason = "";
+		if(!command.getReasonTemp().isEmpty() || !command.getAppReason().isEmpty()) {
+			appReason = !command.getReasonTemp().isEmpty() ? command.getReasonTemp() +  System.lineSeparator() + command.getAppReason() : command.getAppReason();
+		}
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds().stream()
 				.map(appApprovalPhaseCmd -> new AppApprovalPhase(companyId, command.getAppID(), appApprovalPhaseCmd.getPhaseID(),
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class),
@@ -66,8 +70,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 				command.getAppID(),
         		command.getApplicationDate(),
         		command.getPrePostAtr(),
-        		command.getReasonTemp(),
-        		command.getAppReason(),
+        		appReason,
         		null,
         		command.getEarly1(),
         		command.getEarlyTime1(),
