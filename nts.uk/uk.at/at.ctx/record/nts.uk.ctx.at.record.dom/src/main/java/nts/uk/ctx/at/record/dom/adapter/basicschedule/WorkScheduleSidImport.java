@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
-public class WorkScheduleSidDto {
+public class WorkScheduleSidImport {
 	
 	public String sId;
 
@@ -28,7 +28,7 @@ public class WorkScheduleSidDto {
 	// 直行直帰区分
 	private int bounceAtr;
 
-	public WorkScheduleSidDto(String sId, GeneralDate date, int scheduleCnt, int scheduleStartClock,
+	public WorkScheduleSidImport(String sId, GeneralDate date, int scheduleCnt, int scheduleStartClock,
 			int scheduleEndClock, int bounceAtr) {
 		super();
 		this.sId = sId;

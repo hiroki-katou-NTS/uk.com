@@ -50,7 +50,7 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param empCalAndSumExecLogID
 	 * 
 	 */
-	void updateLogInfo(String empCalAndSumExecLogID);
+	void updateLogInfo(String empCalAndSumExecLogID, int status);
 
 	/**
 	 * get all EmpCalAndSumExeLog by startDate and endDate
@@ -63,5 +63,7 @@ public interface EmpCalAndSumExeLogRepository {
 			GeneralDate endDate);
 
 	void add(EmpCalAndSumExeLog empCalAndSumExeLog);
+	
+	void updateStatus(String empCalAndSumExecLogID, int executionStatus);
 	
 }
