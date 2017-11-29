@@ -330,6 +330,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             devChange = false;
                             self.calculatorItems([]);
                             self.bindCalculatorItems();
+                            
+                            if (self.calculatorItems().length > 0) {
+                                self.deleteLineEnable(true);
+                            }
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -355,6 +359,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             devChange = false;
                             self.calculatorItems([]);
                             self.bindCalculatorItems();
+                            
+                            if (self.calculatorItems().length > 0) {
+                                self.deleteLineEnable(true);
+                            }
                         }).ifNo(() => {
                             devChange = true;
                             
