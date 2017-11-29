@@ -245,6 +245,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         if (itemList && itemList.length) {
                             itemList.forEach(x => self.listSelection.push(x));
                             self.selection().selectionID(self.listSelection()[0].selectionID);
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                             if (itemList.length == 1) {
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_530" });
                             }
@@ -252,7 +253,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 //                        let newItem = itemList[oldIndex];
 //                        currentItem.selectionCD(newItem.selectionCD);
                     });
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    
 
                     self.listSelection.valueHasMutated();
                     $("#name").focus();
@@ -379,7 +380,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 perInfoSelectionItem: ISelectionItem = ko.toJS(self.perInfoSelectionItem),
                 listItems: Array<SelectionItem> = self.listItems(),
                 selectionItemList = _.find(listItems, x => x.selectionItemId == perInfoSelectionItem.selectionItemId),
-                selItemList: SelectionItem = self.perInfoSelectionItem(),;
+                selItemList: SelectionItem = self.perInfoSelectionItem();
 
             command = ko.toJS(perInfoSelectionItem);
             confirm({ messageId: "Msg_532", messageParams: ["1"] }).ifYes(() => {
