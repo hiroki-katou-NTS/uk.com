@@ -53,13 +53,11 @@ module nts.uk.at.view.kmk003.a {
             //data
             data: KnockoutObservable<any>;
             isClickSave: KnockoutObservable<boolean>;
-            isFlowMode: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
-                    new ItemWorkForm('1', '基本給'),
-                    new ItemWorkForm('2', '役職手当'),
-                    new ItemWorkForm('3', '基本給')
+                    new ItemWorkForm('1', '通常勤務・変形労働用'),
+                    new ItemWorkForm('2', 'フレックス勤務用')
                 ]);
                 self.selectedWorkForm = ko.observable('1');
                 self.settingMethodOptions = ko.observableArray([
@@ -151,11 +149,6 @@ module nts.uk.at.view.kmk003.a {
                 //data get from service
                 self.data = ko.observable();
                 self.isClickSave = ko.observable(false);
-                
-                self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
-                self.selectedSettingMethod.subscribe(function(selectedSettingMethod) {
-                    self.isFlowMode(self.getFlowModeBySelected(selectedSettingMethod));
-                });
             }
 
             /**
@@ -189,6 +182,7 @@ module nts.uk.at.view.kmk003.a {
             private getFlowModeBySelected(selectedSettingMethod: string): boolean {
                 return (selectedSettingMethod === '3');
             }
+          
         }
 
         export class ItemWorkForm {

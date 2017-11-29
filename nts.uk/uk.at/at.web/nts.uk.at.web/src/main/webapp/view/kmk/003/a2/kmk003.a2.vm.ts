@@ -4,7 +4,10 @@ module a2 {
         fixTableOptionOneDay: any;
         fixTableOptionMorning: any;
         fixTableOptionAfternoon: any;
+        selectedSettingMethod: KnockoutObservable<string>;
+        selectedTab: KnockoutObservable<string>;
         isFlowMode: KnockoutObservable<boolean>;
+        isActiveTab: KnockoutObservable<boolean>;
         dataSourceOneDay: KnockoutObservableArray<any>;
         dataSourceMorning: KnockoutObservableArray<any>;
         dataSourceAfternoon: KnockoutObservableArray<any>;
@@ -21,9 +24,12 @@ module a2 {
         /**
         * Constructor.
         */
-        constructor(data: any, isFlowMode: any) {
+        constructor(data: any, selectedSettingMethod: any, selectedTab: any) {
             let self = this;
-            self.isFlowMode = isFlowMode;
+            self.selectedSettingMethod = selectedSettingMethod;
+            self.selectedTab = selectedTab;
+            self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
+            self.isActiveTab = ko.observable(self.getActiveTabBySelected(self.selectedTab()));
             self.data = ko.observable(data());
             self.dataSourceOneDay = ko.observableArray([]);
             self.dataSourceMorning = ko.observableArray([]);
@@ -80,9 +86,21 @@ module a2 {
                 columns: self.columnSettingAfternoon(),
                 tabindex: -1
             };
-             self.isFlowMode.subscribe(function(isFlowMode) {
-                if (!isFlowMode) {
-                   self.updateByFlowMode();
+            self.selectedTab.subscribe(function(selectedTab) {
+                self.isActiveTab(self.getActiveTabBySelected(selectedTab));
+            });
+            self.selectedSettingMethod.subscribe(function(selectedSettingMethod) {
+                self.isFlowMode(self.getFlowModeBySelected(selectedSettingMethod));
+            });
+            self.isFlowMode.subscribe(function(isFlowMode) {
+                if (!isFlowMode && self.isActiveTab()) {
+                    self.updateViewByFlowMode();
+                }
+            });
+
+            self.isActiveTab.subscribe(function(isActiveTab) {
+                if (!self.isFlowMode() && isActiveTab) {
+                    self.updateViewByFlowMode();
                 }
             });
             
@@ -91,21 +109,43 @@ module a2 {
         }
 
         /**
+         * function get flow mode by selection ui
+         */
+        private getFlowModeBySelected(selectedSettingMethod: string): boolean {
+            return (selectedSettingMethod === '3');
+        }
+        
+        /**
+        * function get active tab by selection ui
+        */
+        private getActiveTabBySelected(selectedTab: string): boolean {
+            return (selectedTab === 'tab-2');
+        }
+        /**
          * function update view by selected mode flow
          */
-        public updateByFlowMode(): void {
+       /* public updateByFlowMode(): void {
             var self = this;
             (<any>ko.bindingHandlers).rended = {
                 update: function(element: any, valueAccessor: any, allBindings: KnockoutAllBindingsAccessor) {
-                    $('#nts-fix-table-a2-oneday').ntsFixTableCustom(self.fixTableOptionOneDay);
-                    $('#nts-fix-table-a2-morning').ntsFixTableCustom(self.fixTableOptionMorning);
-                    $('#nts-fix-table-a2-afternoon').ntsFixTableCustom(self.fixTableOptionMorning);
+                    
                 }
             }
-        }
+        }*/
         //bind data to screen items
         public bindDataToScreen(data: any) {
             let self = this;
+        }
+        
+        /**
+         * update view by flow mode
+         */
+        public updateViewByFlowMode(): void {
+            var self = this;
+            window.setTimeout(1000);
+            $('#nts-fix-table-a2-oneday').ntsFixTableCustom(self.fixTableOptionOneDay);
+            $('#nts-fix-table-a2-morning').ntsFixTableCustom(self.fixTableOptionMorning);
+            $('#nts-fix-table-a2-afternoon').ntsFixTableCustom(self.fixTableOptionAfternoon);
         }
 
         /**
@@ -244,15 +284,16 @@ module a2 {
             //get data
             let input = valueAccessor();
             let data = input.data;
-            let isFlowMode = input.flowAction;
+            let selectedSettingMethod = input.settingMethod;
+            let selectedTab = input.settingTab;
 
-            let screenModel = new ScreenModel(data, isFlowMode);
+            let screenModel = new ScreenModel(data, selectedSettingMethod, selectedTab);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
                 screenModel.bindDataToScreen(data);
-                if (!screenModel.isFlowMode()) {
-                    screenModel.updateByFlowMode();
+                if(!screenModel.isFlowMode()){
+                    screenModel.updateViewByFlowMode();
                 }
             });
         }
