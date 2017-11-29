@@ -79,6 +79,18 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
 		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, itemToBeDeleted.identifier());
+		
+		// Update last item
+		if (domain.getHistoryItems().size() >0){
+			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
+			histItem = this.queryProxy().find(lastItem.identifier(), BsymtEmploymentHist.class);
+			if (!histItem.isPresent()){
+				throw new RuntimeException("invalid BsymtEmploymentHist");
+			}
+			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
+			this.commandProxy().update(histItem.get());
+		}
+		
 	}
 	/**
 	 * Convert from domain to entity

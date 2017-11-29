@@ -93,6 +93,17 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 		}
 		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, item.identifier());
+		
+		// Update last item
+		if (domain.getHistoryItems().size() >0){
+			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
+			histItem = this.queryProxy().find(lastItem.identifier(), BsymtAffiWorkplaceHist.class);
+			if (!histItem.isPresent()){
+				throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
+			}
+			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
+			this.commandProxy().update(histItem.get());
+		}
 	}
 
 	@Override

@@ -95,7 +95,16 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			throw new RuntimeException("invalid BsymtTempAbsHistory");
 		}
 		this.commandProxy().remove(BsymtTempAbsHistory.class, item.identifier());
-
+		// Update item before
+		if (domain.getDateHistoryItems().size() > 0) {
+			DateHistoryItem lastItem = domain.getDateHistoryItems().get(domain.getDateHistoryItems().size() - 1);
+			histItem = this.queryProxy().find(lastItem.identifier(), BsymtTempAbsHistory.class);
+			if (!histItem.isPresent()) {
+				throw new RuntimeException("invalid BsymtTempAbsHistory");
+			}
+			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
+			this.commandProxy().update(histItem.get());
+		}
 	}
 
 	/**
