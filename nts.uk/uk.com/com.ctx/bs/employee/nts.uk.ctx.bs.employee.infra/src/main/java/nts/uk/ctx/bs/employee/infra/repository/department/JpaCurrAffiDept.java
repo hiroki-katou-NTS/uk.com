@@ -88,4 +88,10 @@ public class JpaCurrAffiDept extends JpaRepository implements CurrentAffiDeptRep
 		this.commandProxy().update(existItem.get());
 	}
 
+	@Override
+	public void deleteCurrentAffiDept(String currrentAffiDeptId) {
+		// TODO Auto-generated method stub
+		this.commandProxy().remove(CurrentAffiDept.class,currrentAffiDeptId);
+	}
+
 }

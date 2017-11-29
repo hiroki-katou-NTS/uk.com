@@ -51,7 +51,7 @@ public class OverTimeInput{
 	 */
 	private TimeItemTypeAtr timeItemTypeAtr;
 	
-	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, int startTime, int endTime, int applicationTime, int timeItemTypeAtr){
+	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, Integer startTime, Integer endTime, Integer applicationTime, int timeItemTypeAtr){
 		return new OverTimeInput(companyID,
 				appID,
 				EnumAdaptor.valueOf(attendanceID, AttendanceID.class),

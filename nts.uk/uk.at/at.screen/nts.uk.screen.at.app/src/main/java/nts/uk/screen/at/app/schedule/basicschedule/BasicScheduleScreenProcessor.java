@@ -26,10 +26,19 @@ public class BasicScheduleScreenProcessor {
 	@Inject
 	private BasicScheduleService bScheduleService;
 
+	/**
+	 * 
+	 * @param params
+	 * @return
+	 */
 	public List<BasicScheduleScreenDto> getByListSidAndDate(BasicScheduleScreenParams params) {
 		return this.bScheduleScreenRepo.getByListSidAndDate(params.employeeId, params.startDate, params.endDate);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public List<WorkTimeScreenDto> getListWorkTime() {
 		String companyId = AppContexts.user().companyId();
 		return this.bScheduleScreenRepo.getListWorkTime(companyId, DisplayAtr.DisplayAtr_Display.value);
@@ -78,5 +87,9 @@ public class BasicScheduleScreenProcessor {
 	public ScheduleDisplayControlDto getScheduleDisplayControl() {
 		String companyId = AppContexts.user().companyId();
 		return this.bScheduleScreenRepo.getListScheduleDisControl(companyId);
+	}
+
+	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(BasicScheduleScreenParams params) {
+		return this.bScheduleScreenRepo.getDataWorkScheTimezone(params.employeeId, params.startDate, params.endDate);
 	}
 }

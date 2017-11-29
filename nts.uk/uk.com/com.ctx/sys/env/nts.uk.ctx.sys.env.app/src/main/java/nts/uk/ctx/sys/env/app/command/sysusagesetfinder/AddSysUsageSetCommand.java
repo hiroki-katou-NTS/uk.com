@@ -14,12 +14,6 @@ public class AddSysUsageSetCommand {
 	/**会社ID**/
 	private String companyId;
 	
-	// 会社コード
-	private String companyCode;
-	
-	/** 契約コード */
-	private String contractCd;
-	
 	/** 人事システム **/
 	private int jinji;
 	/** 就業システム **/

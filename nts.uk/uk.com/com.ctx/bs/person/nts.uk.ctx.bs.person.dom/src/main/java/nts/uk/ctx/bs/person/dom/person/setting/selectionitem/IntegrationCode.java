@@ -5,6 +5,11 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
+/**
+ * 
+ * @author tuannv
+ *
+ */
 @StringMaxLength(2)
 @StringCharType(CharType.NUMERIC)
 public class IntegrationCode extends StringPrimitiveValue<IntegrationCode> {

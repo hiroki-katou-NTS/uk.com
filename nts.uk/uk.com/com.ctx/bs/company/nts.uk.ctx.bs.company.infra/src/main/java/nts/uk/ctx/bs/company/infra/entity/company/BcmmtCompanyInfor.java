@@ -22,6 +22,14 @@ public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public BcmmtCompanyInforPK bcmmtCompanyInforPK;
 	
+	/** 会社コード */
+	@Column(name = "CCD")
+	public String companyCode;
+	
+	/** 契約コード */
+	@Column(name ="CONTRACT_CD")
+	public String contractCd;
+	
 	/** 会社名 */
 	@Column(name = "NAME")
 	public String companyName;

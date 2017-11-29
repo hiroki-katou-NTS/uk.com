@@ -105,6 +105,7 @@ public class ExecutionProcessingCommandAssembler {
 		List<ExecutionLog> result = new ArrayList<ExecutionLog>();
 		// Create DailyCreationSetInfo
 		if (command.isDailyCreation()) {
+			ExecutionType executionType = EnumAdaptor.valueOf(command.getCreationType(), ExecutionType.class);
 			DailyRecreateClassification creationType = EnumAdaptor.valueOf(command.getResetClass(), DailyRecreateClassification.class);
 			// Create PartResetClassification
 			Optional<PartResetClassification> getPartResetClassification = Optional.empty();
@@ -127,11 +128,12 @@ public class ExecutionProcessingCommandAssembler {
 						// calculationClassificationResetting
 						command.isCalClassReset()));
 			}
+			
 			SettingInforForDailyCreation dailyCreationSetInfo = new SettingInforForDailyCreation(
 					// executionContent
 					ExecutionContent.DAILY_CREATION,
 					// executionType
-					EnumAdaptor.valueOf(command.getCreationType(), ExecutionType.class), 
+					executionType, 
 					// calExecutionSetInfoID
 					IdentifierUtil.randomUniqueId(), 
 					// creationType

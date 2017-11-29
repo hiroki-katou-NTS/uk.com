@@ -57,25 +57,25 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
     private String siftCode;
     
     @Column(name = "WORK_CLOCK_FROM1")
-    private int workClockFrom1;
+    private Integer workClockFrom1;
     
     @Column(name = "WORK_CLOCK_TO1")
-    private int workClockTo1;
+    private Integer workClockTo1;
     
     @Column(name = "WORK_CLOCK_FROM2")
-    private int workClockFrom2;
+    private Integer workClockFrom2;
     
     @Column(name = "WORK_CLOCK_TO2")
-    private int workClockTo2;
+    private Integer workClockTo2;
     
     @Column(name = "DIVERGENCE_REASON")
     private String divergenceReason;
     
     @Column(name = "FLEX_EXCESS_TIME")
-    private int flexExcessTime;
+    private Integer flexExcessTime;
     
     @Column(name = "OVERTIME_SHIFT_NIGHT")
-    private int overtimeShiftNight;
+    private Integer overtimeShiftNight;
     
     @OneToMany(targetEntity=KrqdtOvertimeInput.class, mappedBy="appOvertime", cascade = CascadeType.ALL)
     @JoinTable(name = "KRQDT_OVERTIME_INPUT")

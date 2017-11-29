@@ -20,20 +20,20 @@ public class FormulaNumerical {
     /** 汎用縦計項目ID **/
     private String verticalCalItemId;
     
+    /** 順番 **/
+    private int dispOrder;
+    
     /** 外部予算実績項目コード **/
     private String externalBudgetCd;
     
     /** 演算子区分 **/
     private OperatorAtr operatorAtr;
     
-    /** 順番 **/
-    private int dispOrder;
-    
-    public static FormulaNumerical createFromJavatype(String companyId, String verticalCalCd, String verticalCalItemId,
-			String externalBudgetCd, int operatorAtr, int dispOrder) {
+    public static FormulaNumerical createFromJavatype(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder,
+			String externalBudgetCd, int operatorAtr) {
 		return new FormulaNumerical(companyId, verticalCalCd, verticalCalItemId,
+				dispOrder,
 				externalBudgetCd, 
-				EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class),
-				dispOrder);
+				EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class));
 	}
 }

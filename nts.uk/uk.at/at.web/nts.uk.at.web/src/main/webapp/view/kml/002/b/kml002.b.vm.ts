@@ -162,6 +162,10 @@ module nts.uk.at.view.kml002.b.viewmodel {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_420" });
             }
             
+            if(nts.uk.ui.errors.hasError()) {
+                success = false;
+            }
+            
             return success;
         }
         

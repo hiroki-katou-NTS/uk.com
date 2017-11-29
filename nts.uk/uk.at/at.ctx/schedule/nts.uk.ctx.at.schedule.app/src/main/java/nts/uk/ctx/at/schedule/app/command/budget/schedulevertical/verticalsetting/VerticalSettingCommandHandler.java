@@ -12,6 +12,10 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Vertic
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * TanLV
+ *
+ */
 @Transactional
 @Stateless
 public class VerticalSettingCommandHandler extends CommandHandler<VerticalSettingCommand> {
@@ -23,6 +27,7 @@ public class VerticalSettingCommandHandler extends CommandHandler<VerticalSettin
 		VerticalSettingCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		VerticalCalSet verticalCalSet = command.toDomain();
+		verticalCalSet.validate();
 		Optional<VerticalCalSet> data = this.repository.getVerticalCalSetByCode(companyId, command.getVerticalCalCd());
 		
 		if (data.isPresent()) {

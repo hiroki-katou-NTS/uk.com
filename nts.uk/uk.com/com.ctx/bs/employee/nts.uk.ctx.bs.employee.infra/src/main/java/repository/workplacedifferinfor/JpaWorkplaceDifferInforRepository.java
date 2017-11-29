@@ -23,8 +23,7 @@ public class JpaWorkplaceDifferInforRepository extends JpaRepository implements 
 		 * author: Hoang Yen
 		 */
 		private static DivWorkDifferInfor toDomainDiv(BcmmtDivWorkDifferInfor entity){
-			DivWorkDifferInfor domain = DivWorkDifferInfor.createFromJavaType(entity.bcmmtDivWorkDifferInforPK.companyCode,
-																				entity.bcmmtDivWorkDifferInforPK.contractCd,
+			DivWorkDifferInfor domain = DivWorkDifferInfor.createFromJavaType(entity.bcmmtDivWorkDifferInforPK.companyId,
 																				entity.regWorkDiv);
 			return domain;
 		}
@@ -37,9 +36,7 @@ public class JpaWorkplaceDifferInforRepository extends JpaRepository implements 
 		 */
 		private BcmmtDivWorkDifferInfor toEntityDiv(DivWorkDifferInfor domain){
 			val entity = new BcmmtDivWorkDifferInfor();
-			entity.bcmmtDivWorkDifferInforPK = new BcmmtDivWorkDifferInforPK(domain.getCompanyId(),
-																				domain.getCompanyCode().v(),
-																				domain.getContractCd().v());
+			entity.bcmmtDivWorkDifferInforPK = new BcmmtDivWorkDifferInforPK(domain.getCompanyId());
 			entity.regWorkDiv = domain.getRegWorkDiv().value;
 			return entity;
 		}
@@ -49,8 +46,8 @@ public class JpaWorkplaceDifferInforRepository extends JpaRepository implements 
 		 * author: Hoang Yen
 		 */
 		@Override
-		public Optional<DivWorkDifferInfor> findDivWork(String companyId, String companyCode, String contractCd) {
-			return this.queryProxy().find(new BcmmtDivWorkDifferInforPK(companyId, companyCode, contractCd), BcmmtDivWorkDifferInfor.class)
+		public Optional<DivWorkDifferInfor> findDivWork(String companyId) {
+			return this.queryProxy().find(new BcmmtDivWorkDifferInforPK(companyId), BcmmtDivWorkDifferInfor.class)
 					.map(c -> toDomainDiv(c));
 		}
 
@@ -82,7 +79,7 @@ public class JpaWorkplaceDifferInforRepository extends JpaRepository implements 
 		 */
 		@Override
 		public void deleteDivWork(String companyId, String companyCode, String contractCd) {
-			BcmmtDivWorkDifferInforPK pk = new BcmmtDivWorkDifferInforPK(companyId, companyCode, contractCd);
+			BcmmtDivWorkDifferInforPK pk = new BcmmtDivWorkDifferInforPK(companyId);
 			this.commandProxy().remove(BcmmtDivWorkDifferInforPK.class, pk);
 		}
 
