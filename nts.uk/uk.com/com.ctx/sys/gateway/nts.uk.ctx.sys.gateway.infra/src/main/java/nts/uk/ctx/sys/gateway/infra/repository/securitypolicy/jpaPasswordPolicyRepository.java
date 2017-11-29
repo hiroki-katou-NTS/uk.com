@@ -45,24 +45,24 @@ public class jpaPasswordPolicyRepository extends JpaRepository implements Passwo
 				sgwstPasswordPolicy.symbolCharacters = passwordPolicy.getSymbolCharacters().v();
 				sgwstPasswordPolicy.alphabetDigit = passwordPolicy.getAlphabetDigit().v();
 			} else {
-				sgwstPasswordPolicy.notificationPasswordChange = null;
-				sgwstPasswordPolicy.loginCheck = null;
-				sgwstPasswordPolicy.initialPasswordChange = null;
+				sgwstPasswordPolicy.notificationPasswordChange = new BigDecimal(0);
+				sgwstPasswordPolicy.loginCheck = new BigDecimal(0);
+				sgwstPasswordPolicy.initialPasswordChange = new BigDecimal(0);
 				sgwstPasswordPolicy.isUse = new BigDecimal(0);
-				sgwstPasswordPolicy.historyCount = null;
-				sgwstPasswordPolicy.lowestDigits = null;
-				sgwstPasswordPolicy.validityPeriod = null;
-				sgwstPasswordPolicy.numberOfDigits = null;
-				sgwstPasswordPolicy.symbolCharacters = null;
-				sgwstPasswordPolicy.alphabetDigit = null;
+				sgwstPasswordPolicy.historyCount = new BigDecimal(0);
+				sgwstPasswordPolicy.lowestDigits = new BigDecimal(1);
+				sgwstPasswordPolicy.validityPeriod = new BigDecimal(0);
+				sgwstPasswordPolicy.numberOfDigits = new BigDecimal(0);
+				sgwstPasswordPolicy.symbolCharacters = new BigDecimal(0);
+				sgwstPasswordPolicy.alphabetDigit = new BigDecimal(0);
 			}
 
 		} else {
 			if (passwordPolicy.isUse()) {
 				this.commandProxy().insert(this.toEntity(passwordPolicy));
 			} else {
-				this.commandProxy().insert(new SgwstPasswordPolicy(passwordPolicy.getContractCode().v(), null, null,
-						null, new BigDecimal(0), null, null, null, null, null, null));
+				this.commandProxy().insert(new SgwstPasswordPolicy(passwordPolicy.getContractCode().v(), new BigDecimal(0), new BigDecimal(0),
+						new BigDecimal(0), new BigDecimal(0), new BigDecimal(0), new BigDecimal(1), new BigDecimal(0), new BigDecimal(0), new BigDecimal(0), new BigDecimal(0)));
 			}
 		}
 	}
