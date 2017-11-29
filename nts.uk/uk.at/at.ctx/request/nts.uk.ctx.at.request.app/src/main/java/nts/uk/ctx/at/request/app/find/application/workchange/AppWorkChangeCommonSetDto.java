@@ -25,6 +25,10 @@ public class AppWorkChangeCommonSetDto {
 	 */
 	String sID;
 	/**
+	 * 共通設定.複数回勤務
+	 */
+	boolean isMultipleTime;
+	/**
 	 * 申請定型理由
 	 */
 	List<ApplicationReasonDto> listReasonDto;
@@ -36,7 +40,9 @@ public class AppWorkChangeCommonSetDto {
 	public static AppWorkChangeCommonSetDto fromDomain(WorkChangeBasicData domain) {
 		return new AppWorkChangeCommonSetDto(AppWorkChangeSetDto.fromDomain(domain.getWorkChangeCommonSetting().get()),
 				domain.getEmployeeName(),
-				domain.getSID(), domain.getListAppReason().stream().map(x -> ApplicationReasonDto.convertToDto(x))
+				domain.getSID(), 
+				domain.isMultipleTime(),
+				domain.getListAppReason().stream().map(x -> ApplicationReasonDto.convertToDto(x))
 						.collect(Collectors.toList()),
 				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()));
 	}
