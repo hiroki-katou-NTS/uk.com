@@ -14,19 +14,19 @@ import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor
 @Getter
 public class FormTime {
-	/* 会社ID */
+	/** 会社ID */
     private String companyId;
     
-    /*コード*/
+    /** コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /* カテゴリ区分 */
+    /** カテゴリ区分 */
     private CategoryIndicator categoryIndicator;
     
-    /* 実績表示区分 */
+    /** 実績表示区分 */
     private ActualDisplayAtr actualDisplayAtr;
     
     private List<FormTimeFunc> lstFormTimeFunc;
