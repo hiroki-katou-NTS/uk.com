@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.employee.app.find.affiliationdepartment;
+package nts.uk.ctx.bs.employee.app.find.department;
 
 import java.util.List;
 
