@@ -26,5 +26,11 @@ public interface AffClassHistItemRepository_ver1 {
 	 * @param item
 	 */
 	void add(AffClassHistItem_ver1 item); 
+	
+	/**
+	 * update an AffClassHistItem_ver1
+	 * @param item
+	 */
+	void update(AffClassHistItem_ver1 item); 
 
 }

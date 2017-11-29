@@ -80,21 +80,59 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 		updateItemBefore(history, historyItem);
 	}
 
+	@Override
+	public void update(AffClassHistory_ver1 history, DateHistoryItem item) {
+		Optional<KmnmtAffClassHistory_Ver1> historyItemOpt = this.queryProxy().find(item.identifier(),
+				KmnmtAffClassHistory_Ver1.class);
+		if (!historyItemOpt.isPresent()) {
+			throw new RuntimeException("Invalid KmnmtAffClassHistory_Ver1");
+		}
+		KmnmtAffClassHistory_Ver1 entity = historyItemOpt.get();
+		entity.startDate = item.start();
+		entity.endDate = item.end();
+		this.commandProxy().update(entity);
+
+		updateItemBefore(history, item);
+		updateItemAfter(history, item);
+
+	}
+
 	private void updateItemBefore(AffClassHistory_ver1 history, DateHistoryItem item) {
 		// Update item before
 		Optional<DateHistoryItem> beforeItemOpt = history.immediatelyBefore(item);
-		
+
 		if (beforeItemOpt.isPresent()) {
-			
+
 			Optional<KmnmtAffClassHistory_Ver1> beforeEntOpt = this.queryProxy().find(beforeItemOpt.get().identifier(),
 					KmnmtAffClassHistory_Ver1.class);
-			
+
 			if (beforeEntOpt.isPresent()) {
-				
+
 				KmnmtAffClassHistory_Ver1 beforeEnt = beforeEntOpt.get();
 				beforeEnt.endDate = beforeItemOpt.get().end();
-				
+
 				this.commandProxy().update(beforeEnt);
+			}
+
+		}
+
+	}
+
+	private void updateItemAfter(AffClassHistory_ver1 history, DateHistoryItem item) {
+		// Update item before
+		Optional<DateHistoryItem> afterItemOpt = history.immediatelyAfter(item);
+
+		if (afterItemOpt.isPresent()) {
+
+			Optional<KmnmtAffClassHistory_Ver1> afterEntOpt = this.queryProxy().find(afterItemOpt.get().identifier(),
+					KmnmtAffClassHistory_Ver1.class);
+
+			if (afterEntOpt.isPresent()) {
+
+				KmnmtAffClassHistory_Ver1 afterEnt = afterEntOpt.get();
+				afterEnt.startDate = afterItemOpt.get().start();
+
+				this.commandProxy().update(afterEnt);
 			}
 
 		}
