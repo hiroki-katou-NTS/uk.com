@@ -83,8 +83,8 @@ table.input-form-a tr {
 }
 
 table.calculator-items {
-	margin-top: 10px;
 	float: left;
+	width: 145%;
 }
 
 table.calculator-items thead {
@@ -102,14 +102,8 @@ table.calculator-items td {
 	padding: 3px 4px;
 }
 
-table.calculator-items thead, table.calculator-items tbody {
-	display: block;
-}
-
 table.calculator-items tbody {
-	height: 350px;
-	overflow-y: auto;
-	overflow-x: hidden;
+	height: auto;
 	border: 1px solid #CCC;
 }
 
@@ -123,6 +117,24 @@ table.calculator-items tbody td:nth-child(4), table.calculator-items tbody td:nt
 table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nth-child(7)
 {
 	text-align: center;
+}
+
+#table-wrapper {
+	position:relative;
+    width: 850px;
+}
+
+#table-scroll {
+	height:300px;
+	overflow:auto;  
+	margin-top:20px;
+}
+
+#popup-area {
+	top: 380px;
+    white-space: pre-wrap;
+    text-align: left;
+    right: 276px;
 }
 
 .formula-text {
@@ -145,7 +157,7 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .display-atr {
 	min-width: 0 !important;
-	width: 94px !important;
+	width: 96px !important;
 	margin-left: 2px;
 	height: 31px !important;
 }
@@ -265,10 +277,9 @@ table.link-notes td {
 }
 
 .up-down-button {
-	float: right;
-	width: 30px;
-	padding: 16px;
-	margin-top: 132px;
+    float: right;
+    width: 30px;
+    margin: -200px -28px 0 0;
 }
 
 .down-btn {

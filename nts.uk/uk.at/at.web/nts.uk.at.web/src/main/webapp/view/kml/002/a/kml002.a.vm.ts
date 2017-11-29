@@ -1011,35 +1011,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             return selectedItems;
         }
-
+        
         /**
-         * Move up calculator item.
+         * Reset formula.
          */
-        upBtn() {
+        resetFormula(temp: any) {
             var self = this;
-            var prevIdx = -1;
-            var $scope = _.clone(self.calculatorItems());
-            var temp = [];
-
-            var multiRowSelected = _.filter($scope, function(item: CalculatorItem) {
-                return item.isChecked();
-            });
-
-            _.forEach(multiRowSelected, function(item) {
-                var idx = _.findIndex($scope, function(o: CalculatorItem) { return o.itemCd() == item.itemCd(); });
-                if (idx - 1 === prevIdx) {
-                    prevIdx = idx
-                } else if (idx > 0) {
-                    var itemToMove = $scope.splice(idx, 1)
-                    $scope.splice(idx - 1, 0, itemToMove[0]);
-                }
-            });
-
-            _.forEach($scope, function(item, index) {
-                item.order(index + 1);
-                temp.push(item);
-            });
-
+            
             var curDataItem = null;
             var beforeFormula = "";
             var formularTxt = "";
@@ -1071,8 +1049,41 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                 temp[i].formula(formularTxt);
             }
+            
+            return temp;
+        }
 
-            self.calculatorItems(temp);
+        /**
+         * Move up calculator item.
+         */
+        upBtn() {
+            var self = this;
+            var prevIdx = -1;
+            var $scope = _.clone(self.calculatorItems());
+            var temp = [];
+
+            var multiRowSelected = _.filter($scope, function(item: CalculatorItem) {
+                return item.isChecked();
+            });
+
+            _.forEach(multiRowSelected, function(item) {
+                var idx = _.findIndex($scope, function(o: CalculatorItem) { return o.itemCd() == item.itemCd(); });
+                if (idx - 1 === prevIdx) {
+                    prevIdx = idx
+                } else if (idx > 0) {
+                    var itemToMove = $scope.splice(idx, 1)
+                    $scope.splice(idx - 1, 0, itemToMove[0]);
+                }
+            });
+
+            _.forEach($scope, function(item, index) {
+                item.order(index + 1);
+                temp.push(item);
+            });
+
+            var data = self.resetFormula(temp);
+
+            self.calculatorItems(data);
         }
 
         /**
@@ -1107,39 +1118,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 temp.push(item);
             });
 
-            var curDataItem = null;
-            var beforeFormula = "";
-            var formularTxt = "";
+            var data = self.resetFormula(temp);
 
-            for (var i = 0; i < temp.length; i++) {
-                if (temp[i].formBuilt != null) {
-                    curDataItem = temp[i].formBuilt
-                } else if (temp[i].formTime != null) {
-                    curDataItem = temp[i].formTime
-                } else if (temp[i].formPeople != null) {
-                    curDataItem = temp[i].formPeople
-                } else if (temp[i].formulaAmount != null) {
-                    curDataItem = temp[i].formulaAmount
-                } else if (temp[i].numerical.length > 0) {
-                    curDataItem = temp[i].numerical
-                } else if (temp[i].unitPrice != null) {
-                    curDataItem = temp[i].unitPrice
-                }
-
-                if (i > 0) {
-                    beforeFormula = temp[i - 1].formula();
-                }
-
-                if (i == 0) {
-                    formularTxt = self.formulaGeneration(temp[i].itemName(), temp[i].settingMethod(), temp[i].attribute(), i, curDataItem, beforeFormula, true);
-                } else {
-                    formularTxt = self.formulaGeneration(temp[i].itemName(), temp[i].settingMethod(), temp[i].attribute(), i, curDataItem, beforeFormula, false);
-                }
-
-                temp[i].formula(formularTxt);
-            }
-
-            self.calculatorItems(temp);
+            self.calculatorItems(data);
         }
 
         /**
@@ -1364,9 +1345,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                     if (beforeFormula != "") {
                         formulaResult = beforeFormula + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
-                    } else if(self.calculatorItems().length > 0) {
+                    } else if(self.calculatorItems().length > 0 && index > 0) {
                         formulaResult = self.calculatorItems()[index - 1].formula() + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
-                    } else if(self.allItemsData.length > 0) {
+                    } else if(self.allItemsData.length > 0 && index > 0) {
                         formulaResult = self.allItemsData[index - 1].formula() + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
                     }
                 } else {
