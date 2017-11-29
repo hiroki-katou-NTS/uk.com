@@ -12,7 +12,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstPasswordPolicy;
 
 @Stateless
-public class jpaPasswordPolicyRepository extends JpaRepository implements PasswordPolicyRepository {
+public class JpaPasswordPolicyRepository extends JpaRepository implements PasswordPolicyRepository {
 	private final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstPasswordPolicy c WHERE c.contractCode = :contractCode";
 
 	@Override

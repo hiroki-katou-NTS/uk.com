@@ -12,7 +12,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstAccountLockPolicy;
 
 @Stateless
-public class jpaAccountLockPolicy extends JpaRepository implements AccountLockPolicyRepository {
+public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPolicyRepository {
 	private final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstAccountLockPolicy c WHERE c.contractCode = :contractCode";
 
 	@Override
