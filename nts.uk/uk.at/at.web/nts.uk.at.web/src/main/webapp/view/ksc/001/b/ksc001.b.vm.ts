@@ -274,6 +274,8 @@ module nts.uk.at.view.ksc001.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                // block ui
+                nts.uk.ui.block.invisible();
 
                 // find closure by id = 1
                 service.findPeriodById(1).done(function(data) {
