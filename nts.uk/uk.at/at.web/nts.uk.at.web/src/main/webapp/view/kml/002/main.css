@@ -84,7 +84,7 @@ table.input-form-a tr {
 
 table.calculator-items {
 	float: left;
-	width: 145%;
+	width: 152%;
 }
 
 table.calculator-items thead {
@@ -121,7 +121,7 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 #table-wrapper {
 	position:relative;
-    width: 850px;
+    width: 780px;
 }
 
 #table-scroll {
@@ -131,10 +131,9 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 #popup-area {
-	top: 380px;
+	top: 380px !important;
     white-space: pre-wrap;
     text-align: left;
-    right: 276px;
 }
 
 .formula-text {
@@ -279,7 +278,7 @@ table.link-notes td {
 .up-down-button {
     float: right;
     width: 30px;
-    margin: -200px 0 0 0;
+    margin: -210px -22px 0 0;
 }
 
 .down-btn {
@@ -290,6 +289,10 @@ table.link-notes td {
 	background: url(../002/a/KML002_1.png) no-repeat scroll 0 0 transparent;
 	width: 28px;
 	height: 28px;
+}
+
+.input-name {
+    width: 170px !important;
 }
 
 /* 

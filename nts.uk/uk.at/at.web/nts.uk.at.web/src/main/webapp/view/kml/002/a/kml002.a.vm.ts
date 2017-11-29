@@ -1,4 +1,6 @@
 module nts.uk.at.view.kml002.a.viewmodel {
+    import blockUI = nts.uk.ui.block;
+    
     export class ScreenModel {
         settingItems: KnockoutObservableArray<SettingItemModel>;
         settingColumns: KnockoutObservable<any>;
@@ -143,6 +145,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
                 
+                blockUI.invisible();
+                
                 self.isparentCall(true);
 
                 if (value.length > 0) {
@@ -226,6 +230,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
 
                         self.calculatorItems(sortedItems);
+                        
+                        blockUI.clear();
                     }).fail(function(res) {
 
                     });
@@ -374,6 +380,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
+            blockUI.invisible();
+            
             $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.getDataMount(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
 
                 if (self.settingItems().length > 0) {
@@ -383,6 +391,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 if (self.calculatorItems().length == 0) {
                     self.bindCalculatorItems();
                 }
+                
+                blockUI.clear();
                 
                 dfd.resolve();
             }).fail(function(res) {
@@ -824,6 +834,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
 
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                blockUI.invisible();
+                
                 let count = 0;
                 for (let i = 0; i <= self.settingItems().length; i++) {
                     if (self.settingItems()[i].code == self.singleSelectedCode()) {
@@ -860,7 +872,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    blockUI.clear();
                 });
             }).ifNo(() => {
                 return;
