@@ -5,10 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.employee.dom.department.DepartmentCode;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.department.affiliate.DistributionRatio;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtAffiDepartmentHistItem;
 
 @Stateless
@@ -18,7 +16,7 @@ public class JpaAffDepartmentHistoryItemRepository extends JpaRepository impleme
 			+ " WHERE adh.hisId = :historyId";
 	
 	private AffDepartmentHistoryItem toDomain(BsymtAffiDepartmentHistItem entity){
-		return AffDepartmentHistoryItem.createFromJavaType(entity.getHisId(), entity.getSid(), entity.getDepCode(), 
+		return AffDepartmentHistoryItem.createFromJavaType(entity.getHisId(), entity.getSid(), entity.getDepId(), 
 				entity.getAffHistTranfsType(), entity.getDistrRatio());				
 	}
 	

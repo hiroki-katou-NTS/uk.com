@@ -63,8 +63,8 @@ public class AffWorlplaceHistItemDto extends PeregDomainDto{
 	private static AffWorlplaceHistItemDto getBaseOnDateHist( AffWorkplaceHistoryItem affWrkplcHistItem, GeneralDate startDate, GeneralDate endDate){
 		AffWorlplaceHistItemDto dto = new AffWorlplaceHistItemDto(affWrkplcHistItem.getHistoryId(), affWrkplcHistItem.getEmployeeId());
 		dto.setRecordId(affWrkplcHistItem.getHistoryId());
-		dto.setWorkplaceCode(affWrkplcHistItem.getWorkplaceCode().v());
-		dto.setNormalWorkplaceCode(affWrkplcHistItem.getNormalWorkplaceCode().v());
+		dto.setWorkplaceCode(affWrkplcHistItem.getWorkplaceId());
+		dto.setNormalWorkplaceCode(affWrkplcHistItem.getNormalWorkplaceId());
 		dto.setStartDate(startDate);
 		dto.setEndDate(endDate);
 		return dto;

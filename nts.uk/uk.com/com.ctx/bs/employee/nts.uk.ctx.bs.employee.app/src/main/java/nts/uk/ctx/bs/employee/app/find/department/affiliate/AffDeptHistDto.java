@@ -64,7 +64,7 @@ class AffDeptHistDto extends PeregDomainDto{
 	
 	private static AffDeptHistDto getBaseOnDateHist( AffDepartmentHistoryItem affDeptHistItem, GeneralDate startDate, GeneralDate endDate){
 		AffDeptHistDto dto = new AffDeptHistDto(affDeptHistItem.getHistoryId(), affDeptHistItem.getEmployeeId());
-		dto.setDepartmentCode(affDeptHistItem.getDepartmentCode().v());
+		dto.setDepartmentCode(affDeptHistItem.getDepartmentId());
 		dto.setAffHistoryTranfsType(affDeptHistItem.getAffHistoryTranfsType());
 		dto.setDistributionRatio(affDeptHistItem.getDistributionRatio().v());
 		dto.setStartDate(startDate);
