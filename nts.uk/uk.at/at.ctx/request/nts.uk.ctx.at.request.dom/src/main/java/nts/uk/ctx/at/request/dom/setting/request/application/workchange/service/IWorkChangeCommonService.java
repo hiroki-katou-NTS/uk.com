@@ -12,5 +12,5 @@ public interface IWorkChangeCommonService {
 	 * ・勤務変更申請共通設定
 	 * ・社員.社員名
 	 */
-	WorkChangeBasicData getSettingData(String SID);
+	WorkChangeBasicData getSettingData(String compayId, String sId);
 }

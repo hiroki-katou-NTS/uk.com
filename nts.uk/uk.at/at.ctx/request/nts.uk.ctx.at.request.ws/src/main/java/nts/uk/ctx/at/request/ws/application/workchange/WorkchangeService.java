@@ -18,7 +18,6 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommon
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
-import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/workchange")
 @Produces("application/json")
@@ -39,19 +38,25 @@ public class WorkchangeService extends WebService {
 	@Inject
 	WorkChangeDetailFinder detailFinder;
 	
-	
-	@POST
-	@Path("getWorkchangeByAppID/{appId}")
-	public WorkChangeDetailDto getWorkchangeByAppID(@PathParam("appID") String appId) {
-		return detailFinder.getWorkChangeDetailById(appId);
-	}
-	
+	/**
+	 * 起動する
+	 * アルゴリズム「勤務変更申請画面初期（新規）」を実行する
+	 * @return
+	 */
 	@POST
 	@Path("getWorkChangeCommonSetting")
 	public AppWorkChangeCommonSetDto getWorkChangeCommonSetting()
-	{
-		String sId = AppContexts.user().employeeId();
-		return commonFinder.getWorkChangeCommonSetting(sId);
+	{		
+		return commonFinder.getWorkChangeCommonSetting();
+	}
+	/**
+	 * 共通アルゴリズム「申請日を変更する」を実行する
+	 * @param command : 申請日付分　（開始日～終了日）
+	 */
+	@POST
+	@Path("checkChangeApplicationDate")
+	public void checkChangeApplicationDate(ApplicationDateCommand command){
+		checkHander.handle(command);
 	}
 	
 	/**
@@ -63,6 +68,17 @@ public class WorkchangeService extends WebService {
 		return addHandler.handle(command);
 	}
 	/**
+	 * 
+	 * @param appId
+	 * @return
+	 */
+	@POST
+	@Path("getWorkchangeByAppID/{appId}")
+	public WorkChangeDetailDto getWorkchangeByAppID(@PathParam("appID") String appId) {
+		return detailFinder.getWorkChangeDetailById(appId);
+	}
+	
+	/**
 	 * アルゴリズム「勤務変更申請登録（更新）」を実行する
 	 */
 	@POST
@@ -71,14 +87,6 @@ public class WorkchangeService extends WebService {
 		updateHandler.handle(command);
 	}
 	
-	/**
-	 * 共通アルゴリズム「申請日を変更する」を実行する
-	 * @param command : 申請日付分　（開始日～終了日）
-	 */
-	@POST
-	@Path("checkChangeApplicationDate")
-	public void checkChangeApplicationDate(ApplicationDateCommand command){
-		checkHander.handle(command);
-	}
+	
 	
 }
