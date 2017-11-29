@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
-import nts.uk.ctx.at.record.dom.adapter.basicschedule.WorkScheduleSidDto;
+import nts.uk.ctx.at.record.dom.adapter.basicschedule.WorkScheduleSidImport;
 
 @Stateless
 public class BasicScheduleAdapterImpl implements BasicScheduleAdapter{
@@ -18,7 +18,7 @@ public class BasicScheduleAdapterImpl implements BasicScheduleAdapter{
 	}
 
 	@Override
-	public List<WorkScheduleSidDto> findAllWorkSchedule() {
+	public List<WorkScheduleSidImport> findAllWorkSchedule() {
 		// TODO Auto-generated method stub
 		return null;
 	}

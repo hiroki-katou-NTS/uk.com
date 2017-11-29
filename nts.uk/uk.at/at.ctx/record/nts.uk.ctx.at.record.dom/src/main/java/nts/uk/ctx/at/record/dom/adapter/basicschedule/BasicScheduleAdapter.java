@@ -6,6 +6,6 @@ public interface BasicScheduleAdapter {
 	
 	List<BasicScheduleSidDto> findAllBasicSchedule();
 	
-	List<WorkScheduleSidDto> findAllWorkSchedule();
+	List<WorkScheduleSidImport> findAllWorkSchedule();
 
 }
