@@ -14,14 +14,14 @@ public interface CompanyGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	CCD getCompanyCode();
 
 	/**
 	 * Gets the company name.
 	 *
 	 * @return the company name
 	 */
-	CompanyName getCompanyName();
+	Name getCompanyName();
 	
 	/**
 	 * Gets the company id.

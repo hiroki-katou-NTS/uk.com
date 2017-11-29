@@ -30,13 +30,13 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrCompCommand, String> {
 
 	@Inject
-	private PerInfoHistorySelectionRepository historySelectionRepository;
+	private PerInfoHistorySelectionRepository historyRepo;
 
 	@Inject
 	private SelectionRepository selectionRepo;
 
 	@Inject
-	private SelectionItemOrderRepository selectionOrderRepo;
+	private SelectionItemOrderRepository selectOrderRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<ReflUnrCompCommand> context) {
@@ -48,23 +48,31 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 		// Delete data:
 		for (String cid : companyIdList) {
 			// History:
-			List<PerInfoHistorySelection> historyList = this.historySelectionRepository
+			List<PerInfoHistorySelection> historyList = this.historyRepo
 					.getAllHistoryBySelectionItemIdAndCompanyId(selectionItemId, cid);
-			historyList.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionItemId()));
+			historyList.stream().forEach(x -> {
+				String histId = x.getHistId();
 
-			// Selection
-			String selectionId = command.getSelectionId();
-			List<Selection> selectionBySelectionId = this.selectionRepo.getAllSelectionBySelectionID(selectionId);
-			selectionBySelectionId.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionID()));
+				// delete data History:
+				this.historyRepo.remove(histId);
 
-			// Order:
-			List<SelectionItemOrder> orderBySelectionId = this.selectionOrderRepo.getAllOrderBySelectionId(selectionId);
-			orderBySelectionId.stream().forEach(x -> this.selectionOrderRepo.remove(x.getSelectionID()));
+				// delete data Selection
+				List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(histId);
+				selectionList.forEach(z -> {
+					this.selectionRepo.remove(z.getSelectionID());
+				});
+
+				// delete data OrderSelection:
+				List<SelectionItemOrder> orderList = this.selectOrderRepo.getAllOrderSelectionByHistId(histId);
+				orderList.forEach(y -> {
+					this.selectOrderRepo.remove(y.getSelectionID());
+				});
+			});
 		}
 
+		// copy
 		String rootCompanyId = PersonInfoCategory.ROOT_COMPANY_ID;
-		List<PerInfoHistorySelection> histList = this.historySelectionRepository
-				.getAllHistoryByCompanyID(rootCompanyId);
+		List<PerInfoHistorySelection> histList = this.historyRepo.getAllHistoryByCompanyID(rootCompanyId);
 
 		companyIdList.forEach(x -> {
 			createHistoryList(histList, x);
@@ -82,13 +90,10 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 			// copy tat ca history cua cty: 000000000000-0000 vao cty khac:
 			PerInfoHistorySelection domain = PerInfoHistorySelection.createHistorySelection(newHistId,
 					x.getSelectionItemId(), comId, x.getPeriod());
-			this.historySelectionRepository.add(domain);
+			this.historyRepo.add(domain);
 
 			// get all data Selection theo histId cty: 000000000000-0000
 			createSelectionList(oldHistId, newHistId);
-
-			//create order by hist id
-			createOrderList(oldHistId, newHistId);
 		});
 
 	}
@@ -97,25 +102,20 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 	// khac:
 	private void createSelectionList(String oldHistId, String histId) {
 		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(oldHistId);
+		List<SelectionItemOrder> orderList = this.selectOrderRepo.getAllOrderSelectionByHistId(oldHistId);
 		selectionList.forEach(x -> {
 			String newSelectionID = IdentifierUtil.randomUniqueId();
 			Selection domain = Selection.createFromSelection(newSelectionID, histId, x.getSelectionCD().v(),
 					x.getSelectionName().v(), x.getExternalCD().v(), x.getMemoSelection().v());
 
 			this.selectionRepo.add(domain);
-		});
 
-	}
-
-	private void createOrderList(String oldHistId, String histId) {
-		List<SelectionItemOrder> orderList = this.selectionOrderRepo.getAllOrderSelectionByHistId(oldHistId);
-		orderList.forEach(x -> {
-			String newSelectionID = IdentifierUtil.randomUniqueId();
+			SelectionItemOrder orderOrg = orderList.stream().filter(o -> o.getSelectionID().equals(x.getSelectionID()))
+					.collect(Collectors.toList()).get(0);
 			SelectionItemOrder domainOrder = SelectionItemOrder.selectionItemOrder(newSelectionID, histId,
-					x.getDisporder().v(), x.getInitSelection().value);
+					orderOrg.getDisporder().v(), orderOrg.getInitSelection().value);
 
-			this.selectionOrderRepo.add(domainOrder);
+			this.selectOrderRepo.add(domainOrder);
 		});
-
 	}
 }

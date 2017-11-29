@@ -194,7 +194,7 @@ table tr td, table tr th {
 
 .contents-header td {
 	border: 1px solid #CCC;
-	text-align: center;
+	text-align: left;
 	height: 15px;
 	padding: 0px 0px;
 	font-weight: bold;
@@ -213,7 +213,7 @@ table tr td, table tr th {
 }
 
 #A2_012 {
-	margin-left: 0px;
+    margin-left: 15px;
 	width: 97px;
 	height: 21px;
 	padding: 0px 0px !important;

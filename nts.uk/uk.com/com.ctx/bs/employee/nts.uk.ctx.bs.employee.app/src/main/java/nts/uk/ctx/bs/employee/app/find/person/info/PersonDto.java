@@ -28,8 +28,20 @@ public class PersonDto {
 	/** The person id - 個人ID */
 	private String personId;
 
+	/** The Person Mail Address - 個人メールアドレス */
+	private String mailAddress;
+
+	/** The Person Mobile - 個人携帯 */
+	private String personMobile;
+
 	/** The PersonNameGroup - 個人名グループ */
 	private PersonNameGroupDto personNameGroup;
+
+	/** The Hobby - 趣味 */
+	private String hobBy;
+
+	/** The countryId - 国籍 chua xac dinh duoc PrimitiveValue */
+	private String countryId;
 
 	static PersonDto fromDomain(Person person) {
 		if (person == null) {
@@ -51,6 +63,31 @@ public class PersonDto {
 			gender = genderType.value;
 		}
 
-		return new PersonDto(person.getBirthDate(), blood, gender, person.getPersonId(), nameGroup);
+		String mail = "";
+		PersonMailAddress mailAddress = person.getMailAddress();
+		if (mailAddress != null) {
+			mail = mailAddress.v();
+		}
+
+		String mobile = "";
+		PersonMobile personMobile = person.getPersonMobile();
+		if (personMobile != null) {
+			mobile = personMobile.v();
+		}
+
+		String hobBy = "";
+		Hobby hobby = person.getHobBy();
+		if (hobby != null) {
+			hobBy = hobby.v();
+		}
+
+		String countryId = "";
+		Nationality country = person.getCountryId();
+		if (country != null) {
+			countryId = country.v();
+		}
+
+		return new PersonDto(person.getBirthDate(), blood, gender, person.getPersonId(), mail, mobile, nameGroup, hobBy,
+				countryId);
 	}
 }

@@ -6,19 +6,17 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '370px', direction: '', showIcon: true, visible: true}">
-			<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'roleCode', comId: 'multi-list', 
+			<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'roleCode', comId: 'multi-list', 
 				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" />																																														
 			<table id="multi-list" data-bind="ntsGridList: {
 					height: 320,
 					options: listRole ,
 					optionsValue: 'roleCode',
 					columns: columns,
-					multiple: false,
-					value: currentCodeList
+					multiple: setting.multiple,
+					value: currentCode
 				}">
 			</table>
-		</div>
 	</ui:composition>
 </body>
 </html>

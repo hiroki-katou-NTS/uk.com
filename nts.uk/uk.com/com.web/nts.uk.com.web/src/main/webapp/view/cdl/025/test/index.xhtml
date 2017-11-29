@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="main.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			
+			<button data-bind="click: openCDL025">Detail Screen</button>
+			
+			<div><span data-bind="text : currentCode"></span></div>
+			<div><span data-bind="text : currentCodes"></span></div>
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

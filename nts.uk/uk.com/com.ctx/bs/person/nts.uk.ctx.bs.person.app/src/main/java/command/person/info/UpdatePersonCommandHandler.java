@@ -32,10 +32,10 @@ public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonComma
 		
 		val command = context.getCommand();
 		
-		Person newPerson = Person.createFromJavaType(command.getBirthDate(),command.getBloodType(),command.getGender(),command.getPersonId(),
-				command.getBusinessName(),command.getBusinessNameKana(),command.getPersonName(),command.getPersonNameKana(),command.getBusinessOtherName(),command.getBusinessEnglishName(),
+		Person newPerson = Person.createFromJavaType(command.getBirthDate(),command.getBloodType(),command.getGender(),command.getPersonId(),command.getMailAddress(),
+				command.getPersonMobile(),command.getBusinessName(),command.getPersonName(),command.getBusinessOtherName(),command.getBusinessEnglishName(),command.getPersonNameKana(),
 				command.getPersonRomanji(),command.getPersonRomanjiKana(),command.getTodokedeFullName(),command.getTodokedeFullNameKana(),command.getOldName(),command.getOldNameKana(),
-				command.getPersonalNameMultilingual(),command.getPersonalNameMultilingualKana());
+				command.getTodokedeOldFullName(),command.getTodokedeOldFullNameKana(),command.getHobby(),command.getCountryId(),command.getTaste());
 		
 		personRepository.update(newPerson);
 	}

@@ -7,27 +7,38 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
+
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class FormulaMoneyDto {
     private String companyId;
     
-    /*コード*/
+    /**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /*カテゴリ区分 */
+    /**カテゴリ区分 */
     private int categoryIndicator;
     
-    /* 実績表示区分 */
+    /** 実績表示区分 */
     private int actualDisplayAtr;
     
     private List<MoneyFuncDto> lstMoney;
     
+    /**
+     * fromDomain
+     * @param money
+     * @return
+     */
     	public static FormulaMoneyDto fromDomain(FormulaMoney money){
+    		if(money == null) {return null;}
     		List<MoneyFuncDto> items = money.getLstMoney().stream()
     				.map(x-> MoneyFuncDto.fromDomain(x))
     				.collect(Collectors.toList());

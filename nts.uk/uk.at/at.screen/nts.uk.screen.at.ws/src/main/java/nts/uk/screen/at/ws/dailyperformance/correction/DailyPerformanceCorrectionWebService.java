@@ -15,6 +15,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrecti
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.selectitem.DailyPerformanceSelectItemProcessor;
 
 /**
  * @author hungnm
@@ -28,12 +30,30 @@ public class DailyPerformanceCorrectionWebService {
 	private DailyPerformanceCorrectionProcessor processor;
 	
 	@Inject
+	private DailyPerformanceErrorCodeProcessor errorProcessor;
+	
+	@Inject
+	private DailyPerformanceSelectItemProcessor selectProcessor;
+	
+	@Inject
 	private DPUpdateColWidthCommandHandler commandHandler;
 	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily);
+	}
+	
+	@POST
+	@Path("errorCode")
+	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
+		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily, params.errorCodes);
+	}
+	
+	@POST
+	@Path("selectCode")
+	public DailyPerformanceCorrectionDto selectFormatCode(DPParams params ) throws InterruptedException{
+		return this.selectProcessor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily, params.formatCodes);
 	}
 	
 	@POST

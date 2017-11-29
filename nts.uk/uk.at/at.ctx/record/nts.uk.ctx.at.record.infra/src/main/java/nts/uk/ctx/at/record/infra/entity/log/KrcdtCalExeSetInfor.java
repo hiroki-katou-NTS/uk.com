@@ -141,6 +141,7 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 	public <T> T toDomain() {
 		if (this.executionContent == ExecutionContent.DAILY_CREATION.value) {
 			Optional<PartResetClassification> partResetClassification = Optional.empty();
+			
 			if (this.creationType == DailyRecreateClassification.PARTLY_MODIFIED.value) {
 				partResetClassification = Optional.of(new PartResetClassification(
 						this.masterReconfiguration,
@@ -192,6 +193,25 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 
 	//create
 	public static KrcdtCalExeSetInfor toEntity(SettingInforForDailyCreation domain) {
+		Boolean isMasterReconfiguration = null;
+		Boolean isClosedHolidays = null;
+		Boolean isResettingWorkingHours = null;
+		Boolean isReflectsTheNumberOfFingerprintChecks = null;
+		Boolean isSpecificDateClassificationResetting = null;
+		Boolean isResetTimeAssignment = null;
+		Boolean isResetTimeChildOrNurseCare = null;
+		Boolean isCalculationClassificationResetting = null;
+		
+		if (domain.getPartResetClassification().isPresent()) {
+			isMasterReconfiguration = domain.getPartResetClassification().get().getMasterReconfiguration();
+			isClosedHolidays = domain.getPartResetClassification().get().getClosedHolidays();
+			isResettingWorkingHours = domain.getPartResetClassification().get().getResettingWorkingHours();
+			isReflectsTheNumberOfFingerprintChecks =  domain.getPartResetClassification().get().getReflectsTheNumberOfFingerprintChecks();
+			isSpecificDateClassificationResetting = domain.getPartResetClassification().get().getSpecificDateClassificationResetting();
+			isResetTimeAssignment = domain.getPartResetClassification().get().getResetTimeAssignment() ;
+			isResetTimeChildOrNurseCare = domain.getPartResetClassification().get().getResetTimeChildOrNurseCare();
+			isCalculationClassificationResetting = domain.getPartResetClassification().get().getCalculationClassificationResetting() ;
+		}
 		return new KrcdtCalExeSetInfor(
 					new KrcdtCalExeSetInforPK(
 						domain.getCalExecutionSetInfoID()
@@ -200,14 +220,14 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 					domain.getExecutionType().value,
 					null,
 					domain.getCreationType().value,
-					domain.getPartResetClassification().get().isMasterReconfiguration(),
-					domain.getPartResetClassification().get().isClosedHolidays(),
-					domain.getPartResetClassification().get().isResettingWorkingHours(),
-					domain.getPartResetClassification().get().isReflectsTheNumberOfFingerprintChecks(),
-					domain.getPartResetClassification().get().isSpecificDateClassificationResetting(),
-					domain.getPartResetClassification().get().isResetTimeAssignment(),
-					domain.getPartResetClassification().get().isResetTimeChildOrNurseCare(),
-					domain.getPartResetClassification().get().isCalculationClassificationResetting()
+					isMasterReconfiguration,
+					isClosedHolidays,
+					isResettingWorkingHours,
+					isReflectsTheNumberOfFingerprintChecks,
+					isSpecificDateClassificationResetting,
+					isResetTimeAssignment,
+					isResetTimeChildOrNurseCare,
+					isCalculationClassificationResetting 
 				);
 	}
 	//calculation,aggregation

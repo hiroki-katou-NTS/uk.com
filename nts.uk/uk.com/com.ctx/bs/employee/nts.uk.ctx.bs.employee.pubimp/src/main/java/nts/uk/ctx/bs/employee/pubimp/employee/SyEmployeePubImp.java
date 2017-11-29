@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.pubimp.employee;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -30,7 +31,6 @@ import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 
 /**
@@ -58,7 +58,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	/** The person repository. */
 	@Inject
 	private PersonRepository personRepository;
-	
 
 	/*
 	 * (non-Javadoc)
@@ -67,20 +66,23 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	 * findByWpkIds(java.lang.String, java.util.List, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<EmployeeExport> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate) {
+	public List<EmployeeExport> findByWpkIds(String companyId, List<String> workplaceIds,
+			GeneralDate baseDate) {
 		// Query
-		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository.searchWorkplaceHistory(baseDate,
-				workplaceIds);
+		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository
+				.searchWorkplaceHistory(baseDate, workplaceIds);
 
-		List<String> employeeIds = affWorkplaceHistories.stream().map(AffWorkplaceHistory::getEmployeeId)
-				.collect(Collectors.toList());
+		List<String> employeeIds = affWorkplaceHistories.stream()
+				.map(AffWorkplaceHistory::getEmployeeId).collect(Collectors.toList());
 
-		List<Employee> employeeList = employeeRepository.findByListEmployeeId(companyId, employeeIds);
+		List<Employee> employeeList = employeeRepository.findByListEmployeeId(companyId,
+				employeeIds);
 
 		// Return
 		return employeeList.stream()
-				.map(item -> EmployeeExport.builder().companyId(item.getCompanyId()).pId(item.getPId())
-						.sId(item.getSId()).sCd(item.getSCd().v()).sMail(item.getCompanyMail().v())
+				.map(item -> EmployeeExport.builder().companyId(item.getCompanyId())
+						.pId(item.getPId()).sId(item.getSId()).sCd(item.getSCd().v())
+						.sMail(item.getCompanyMail().v())
 						.retirementDate(item.getListEntryJobHist().get(0).getRetirementDate())
 						.joinDate(item.getListEntryJobHist().get(0).getJoinDate()).build())
 				.collect(Collectors.toList());
@@ -94,16 +96,20 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	 * java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate) {
+	public List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId,
+			GeneralDate baseDate) {
 		// Query
-		List<AffJobTitleHistory> affJobTitleHistories = this.affJobTitleHistoryRepository.findByJobId(jobId, baseDate);
+		List<AffJobTitleHistory> affJobTitleHistories = this.affJobTitleHistoryRepository
+				.findByJobId(jobId, baseDate);
 
-		List<String> employeeIds = affJobTitleHistories.stream().map(AffJobTitleHistory::getEmployeeId)
+		List<String> employeeIds = affJobTitleHistories.stream()
+				.map(AffJobTitleHistory::getEmployeeId).collect(Collectors.toList());
+
+		List<Employee> employeeList = this.employeeRepository.findByListEmployeeId(companyId,
+				employeeIds);
+
+		List<String> personIds = employeeList.stream().map(Employee::getPId)
 				.collect(Collectors.toList());
-
-		List<Employee> employeeList = this.employeeRepository.findByListEmployeeId(companyId, employeeIds);
-
-		List<String> personIds = employeeList.stream().map(Employee::getPId).collect(Collectors.toList());
 
 		List<PersonImport> persons = this.syPersonAdapter.findByPersonIds(personIds);
 
@@ -113,19 +119,23 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		// Return
 		// TODO: Du san Q&A for jobCls #
 		return employeeList.stream()
-				.map(item -> ConcurrentEmployeeExport.builder().employeeId(item.getSId()).employeeCd(item.getSCd().v())
-						.personName(personNameMap.get(item.getPId())).jobId(jobId).jobCls(JobClassification.Principal)
-						.build())
+				.map(item -> ConcurrentEmployeeExport.builder().employeeId(item.getSId())
+						.employeeCd(item.getSCd().v()).personName(personNameMap.get(item.getPId()))
+						.jobId(jobId).jobCls(JobClassification.Principal).build())
 				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#findByEmpId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#findByEmpId(java.lang.
+	 * String)
 	 */
 	@Override
-	public EmployeeBasicInfoExport findByEmpId(String empId) {
+	public EmployeeBasicInfoExport findBySId(String sId) {
 		// Employee Opt
-		Optional<Employee> empOpt = this.employeeRepository.getBySid(empId);
+		Optional<Employee> empOpt = this.employeeRepository.getBySid(sId);
 		if (!empOpt.isPresent()) {
 			return null;
 		}
@@ -138,22 +148,70 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 		// Get Person
 		Person person = personOpt.get();
-		FullName pname = person.getPersonNameGroup().getPersonName().getFullName();
+		PersonName pname = person.getPersonNameGroup().getPersonName();
 		EmployeeMail comMailAddr = emp.getCompanyMail();
-		
+
 		EmployeeBasicInfoExport empBasicInfo = EmployeeBasicInfoExport.builder()
-				.pId(person.getPersonId())
+				.pId(person.getPersonId()).employeeId(emp.getSId() == null ? null : emp.getSId())
 				.pName((pname == null ? null : pname.v()))
-				.companyMailAddr(comMailAddr == null? null : new MailAddress(emp.getCompanyMail().v()))
+				.gender(person.getGender().value)
 				.birthDay(person.getBirthDate() == null ? null : person.getBirthDate())
-				.pMailAddr(null)
-				.empId(emp.getSId() == null ? null : emp.getSId())
-				.empCode(emp.getSCd() == null ? null : emp.getSCd().v())
+				.pMailAddr(person.getMailAddress() == null ? null
+						: new MailAddress(person.getMailAddress().v()))
+				.employeeCode(emp.getSCd() == null ? null : emp.getSCd().v())
 				.entryDate(emp.getListEntryJobHist().get(0).getJoinDate())
 				.retiredDate(emp.getListEntryJobHist().get(0).getRetirementDate())
+				.companyMailAddr(
+						comMailAddr == null ? null : new MailAddress(emp.getCompanyMail().v()))
 				.build();
-			
+
 		return empBasicInfo;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#findBySIds(java.util.
+	 * List)
+	 */
+	@Override
+	public List<EmployeeBasicInfoExport> findBySIds(List<String> sIds) {
+
+		List<Employee> employees = this.employeeRepository.getByListEmployeeId(sIds);
+
+		List<String> pIds = employees.stream().map(Employee::getPId).collect(Collectors.toList());
+
+		List<Person> persons = this.personRepository.getPersonByPersonIds(pIds);
+
+		Map<String, Person> mapPersons = persons.stream()
+				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
+
+		return employees.stream().map(employee -> {
+
+			// Get Person
+			Person person = mapPersons.get(employee.getPId());
+
+			PersonName pname = person.getPersonNameGroup().getPersonName();
+
+			EmployeeBasicInfoExport empBasicInfo = EmployeeBasicInfoExport.builder()
+					.pId(person.getPersonId())
+					.employeeId(employee.getSId() == null ? null : employee.getSId())
+					.pName((pname == null ? null : pname.v()))
+					.gender(person.getGender().value)
+					.birthDay(person.getBirthDate() == null ? null : person.getBirthDate())
+					.pMailAddr(person.getMailAddress() == null ? null
+							: new MailAddress(person.getMailAddress().v()))
+					.employeeCode(employee.getSCd() == null ? null : employee.getSCd().v())
+					.entryDate(employee.getListEntryJobHist().get(0).getJoinDate())
+					.retiredDate(employee.getListEntryJobHist().get(0).getRetirementDate())
+					.companyMailAddr(
+							employee.getCompanyMail() == null ? null : new MailAddress(employee.getCompanyMail().v()))
+					.build();
+
+			return empBasicInfo;
+		}).collect(Collectors.toList());
+
 	}
 
 	/*

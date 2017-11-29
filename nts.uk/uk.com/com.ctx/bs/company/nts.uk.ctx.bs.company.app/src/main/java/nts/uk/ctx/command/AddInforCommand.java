@@ -12,12 +12,8 @@ import nts.uk.ctx.bs.company.dom.company.AddInfor;
 @Data
 @AllArgsConstructor
 public class AddInforCommand {
-	/**会社ID**/
+	/** 会社ID **/
 	private String companyId;
-	
-	/** 会社コード */
-	private String companyCode;
-	
 	/** FAX番号 **/
 	private String faxNum;
 	/** 住所１ **/
@@ -33,8 +29,8 @@ public class AddInforCommand {
 	/** 電話番号 **/
 	private String phoneNum;
 	
-	public AddInfor toDomainAdd(String contractCd, String companyId, String companyCode){
-		return AddInfor.createFromJavaType(companyId, companyCode, contractCd, 
+	public AddInfor toDomainAdd(String companyId){
+		return AddInfor.createFromJavaType( companyId,
 											faxNum, add_1, add_2, 
 											addKana_1, addKana_2, postCd, phoneNum);
 	}

@@ -28,7 +28,8 @@ import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetPK;
 public class JpaRoleSetRepository extends JpaRepository implements RoleSetRepository {
 
 	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSet rs"
-			+ " WHERE rs.roleSetPK.companyId = :companyId ";
+			+ " WHERE rs.roleSetPK.companyId = :companyId "
+			+ " ORDER BY rs.roleSetPK.roleSetCd ASC ";
 	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE = "SELECT rs FROM SacmtRoleSet rs"
 			+ " WHERE rs.roleSetPK.companyId = :companyId AND rs.personInfRole = :personRoleId ";
 	
@@ -52,12 +53,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		return new SacmtRoleSet(key
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, RoleSet.getRoleId(domain.getOfficeHelperRole())
-				, RoleSet.getRoleId(domain.getMyNumberRole())
-				, RoleSet.getRoleId(domain.getHRRole())
-				, RoleSet.getRoleId(domain.getPersonInfRole())
-				, RoleSet.getRoleId(domain.getEmploymentRole())
-				, RoleSet.getRoleId(domain.getSalaryRole())
+				, domain.getOfficeHelperRoleId()
+				, domain.getMyNumberRoleId()
+				, domain.getHRRoleId()
+				, domain.getPersonInfRoleId()
+				, domain.getEmploymentRoleId()
+				, domain.getSalaryRoleId()
 				);
 
 	}
@@ -66,12 +67,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		upEntity.buildEntity(upEntity.roleSetPK
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, RoleSet.getRoleId(domain.getOfficeHelperRole())
-				, RoleSet.getRoleId(domain.getMyNumberRole())
-				, RoleSet.getRoleId(domain.getHRRole())
-				, RoleSet.getRoleId(domain.getPersonInfRole())
-				, RoleSet.getRoleId(domain.getEmploymentRole())
-				, RoleSet.getRoleId(domain.getSalaryRole()));
+				, domain.getOfficeHelperRoleId()
+				, domain.getMyNumberRoleId()
+				, domain.getHRRoleId()
+				, domain.getPersonInfRoleId()
+				, domain.getEmploymentRoleId()
+				, domain.getSalaryRoleId());
 		return upEntity;
 	}
 

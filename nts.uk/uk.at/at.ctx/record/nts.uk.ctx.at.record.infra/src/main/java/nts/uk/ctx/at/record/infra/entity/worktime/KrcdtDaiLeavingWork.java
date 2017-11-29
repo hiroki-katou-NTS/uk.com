@@ -13,14 +13,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
-import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -42,9 +36,6 @@ public class KrcdtDaiLeavingWork extends UkJpaEntity implements Serializable {
 	
 	@Column(name = "WORK_TIMES")
 	public BigDecimal workTimes;
-
-	@Column(name = "WORK_NO")
-	public String workNo;
 	
 	@OneToMany(mappedBy="daiLeavingWork", cascade = CascadeType.ALL)
 	public List<KrcdtTimeLeavingWork> timeLeavingWorks;

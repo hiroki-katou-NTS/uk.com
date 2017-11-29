@@ -16,7 +16,7 @@ __viewContext.ready(function () {
                 new ItemModel('3', '基本給')
             ]);
             self.selectedCode = ko.observable('1');
-            $("#fixed-table").ntsFixedTable({ height: 300 });
+            $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
         }
     }
     

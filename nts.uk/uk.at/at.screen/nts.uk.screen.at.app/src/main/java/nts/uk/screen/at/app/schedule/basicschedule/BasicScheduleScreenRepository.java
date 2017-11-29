@@ -35,4 +35,24 @@ public interface BasicScheduleScreenRepository {
 	 * @return List WorkType
 	 */
 	List<WorkTypeScreenDto> findByCIdAndDeprecateCls(String companyId, int deprecateCls);
+
+	/**
+	 * get data Working employment combination by companyId, workType , workTime
+	 */
+	WorkEmpCombineDto getListWorkEmpCobine(String companyId, String workTypeCode, String workTimeCode);
+
+	/**
+	 * get data ScheduleDisplayControl by companyId
+	 * 
+	 */
+	ScheduleDisplayControlDto getListScheduleDisControl(String companyId);
+
+	/**
+	 * 
+	 * @param sId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<BasicScheduleScreenDto> getDataWorkScheTimezone(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 }

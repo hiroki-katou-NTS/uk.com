@@ -71,5 +71,23 @@ public class SelectionFinder {
 
 	}
 
+	// ham nay su dung chu y selectionItemClsAtr co gia tri la 0 vs 1 
+	// con bang itemCommon thi co gia tri la 1 vs 2 ko map vs nhau
+	// do do ma ham nay phai chuyen doi de co du lieu chinh xac
+	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate,
+			int selectionItemClsAtr) {
+		GeneralDate baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
+		List<SelectionInitDto> selectionLst = new ArrayList<>();
+		if (selectionItemClsAtr == 1) {
+			selectionLst = this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert, 0).stream()
+					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+		} else if (selectionItemClsAtr == 2) {
+			selectionLst = this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert, 1).stream()
+					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+		}
+		return selectionLst;
+
+	}
+
 	// Lanlt
 }

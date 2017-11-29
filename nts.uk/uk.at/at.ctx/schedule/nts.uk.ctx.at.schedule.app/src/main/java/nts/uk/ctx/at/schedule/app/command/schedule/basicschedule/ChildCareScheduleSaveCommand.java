@@ -15,12 +15,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class ChildCareScheduleSaveCommand.
  */
 @Getter
-
-/**
- * Sets the child care atr.
- *
- * @param childCareAtr the new child care atr
- */
 @Setter
 public class ChildCareScheduleSaveCommand implements ChildCareScheduleGetMemento{
 	

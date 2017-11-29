@@ -237,7 +237,8 @@
 					</div>
 				</div>
 
-				<div id="popup-area8" class="popup-area popup-panel" style="z-index: 100">
+				<div id="popup-area8" class="popup-area popup-panel"
+					style="z-index: 100">
 					<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_342')}</div>
 					<span data-bind="text: selectedDate"></span><br /> <span>#{i18n.getText('KSU001_343')}</span>
 					<hr />
@@ -269,7 +270,7 @@
 				<div id="popup-area9" class="popup-area popup-panel">
 					<span>#{i18n.getText('KSU001_306')}</span>
 					<hr />
-					<div class="ml-20">
+					<div class="ml-3">
 						<div>
 							<div class="popup-div">
 								<div class="square bg-schedule-uncorrectable"></div>
@@ -302,7 +303,7 @@
 
 					<span>#{i18n.getText('KSU001_307')}</span>
 					<hr />
-					<div class="div-popup ml-20">
+					<div class="div-popup ml-3">
 						<div class="popup-div">
 							<div id="color-7" class="square"></div>
 							<span>#{i18n.getText('KSU001_315')}</span>
@@ -319,7 +320,7 @@
 
 					<span>#{i18n.getText('KSU001_308')}</span>
 					<hr />
-					<div class="ml-20">
+					<div class="ml-3">
 						<div>
 							<div class="popup-div">
 								<div class="square bg-schedule-saturday"></div>
@@ -344,7 +345,7 @@
 
 					<span>#{i18n.getText('KSU001_309')}</span>
 					<hr />
-					<div class="ml-20">
+					<div class="ml-3">
 						<div>
 							<div class="popup-div" style="width: 285px !important">
 								<div class="square bg-schedule-no-health-insurance"></div>
@@ -374,18 +375,21 @@
 					</div>
 					<div class="right-content">
 						<div id="top-area">
-							<div>
-								<span data-bind="text: workPlaceNameDisplay"></span> <span
-									data-bind="text: lengthListSid"></span>
+							<div id="top-area-left">
+								<span class="set-font-size"
+									data-bind="text: workPlaceNameDisplay"></span> <span
+									class="set-font-size" data-bind="text: lengthListSid"></span>
 							</div>
-							<div id="top-area-2">
-								<button tabindex="-1" id="prevMonth" data-bind="click: backMonth"></button>
+							<div id="top-area-right">
+								<button tabindex="-1" id="prevMonth" class="size-image-button1"
+									data-bind="click: backMonth"></button>
 								<span id="date-time-prev" data-bind="text: dateTimePrev"></span><span
 									id="special">#{i18n.getText('KSU001_66')}</span> <span
 									id="date-time-after" data-bind="text: dateTimeAfter"></span>
-								<button tabindex="-1" id="nextMonth" data-bind="click: nextMonth"></button>
+								<button tabindex="-1" id="nextMonth" class="size-image-button1"
+									data-bind="click: nextMonth"></button>
 
-								<label class="ml-30">#{i18n.getText('KSU001_38')}:</label>
+								<label class="ml-3">#{i18n.getText('KSU001_38')}:</label>
 								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: timePeriod,
@@ -393,7 +397,7 @@
 										optionsText: 'name',
 										value: selectedTimePeriod}">
 								</div>
-								<label class="ml-30">#{i18n.getText('KSU001_42')}:</label>
+								<label class="ml-3">#{i18n.getText('KSU001_42')}:</label>
 								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: modeDisplay,
@@ -401,7 +405,7 @@
 										optionsText: 'name',
 										value: selectedModeDisplay}">
 								</div>
-								<label class="ml-30">#{i18n.getText('KSU001_46')}:</label>
+								<label class="ml-3">#{i18n.getText('KSU001_46')}:</label>
 								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: modeDisplayObject,
@@ -409,31 +413,33 @@
 										optionsText: 'name',
 										value: selectedModeDisplayObject}">
 								</div>
-								<button tabindex="-1" class="color-button"></button>
-								<button tabindex="-1" class="setting-button"></button>
+								<button tabindex="-1"
+									class="color-button ml-3 size-image-button1"></button>
+								<button tabindex="-1" class="setting-button size-image-button1"></button>
 							</div>
 						</div>
 						<div id="contain-view">
 							<div id="group-bt">
-								<button id="paste" data-bind="click: pasteData"></button>
-								<button id="copy" data-bind="click: copyData"></button>
+								<button id="paste" class="size-image-button2"
+									data-bind="click: pasteData"></button>
+								<button id="copy" class="size-image-button2"
+									data-bind="click: copyData"></button>
 								<br />
-								<button id="undo" data-bind="click: undoData"></button>
+								<button id="undo" class="size-image-button2"
+									data-bind="click: undoData"></button>
 							</div>
 							<div id="oViewModel">
 								<div data-bind="with: $parent.viewO">
 									<ui:include src="../o/index.xhtml" />
 								</div>
 							</div>
-							<div id="qViewModel">
+							<div id="qViewModel" style="display: none">
 								<div data-bind="with: $parent.viewQ">
 									<ui:include src="../q/index.xhtml" />
 								</div>
 							</div>
 						</div>
-						<div>
-							<div id="extable"></div>
-						</div>
+						<div id="extable"></div>
 					</div>
 				</div>
 			</div>

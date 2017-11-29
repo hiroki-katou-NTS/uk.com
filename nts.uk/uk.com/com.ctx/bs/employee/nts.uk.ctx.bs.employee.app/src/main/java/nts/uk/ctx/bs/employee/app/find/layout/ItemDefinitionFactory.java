@@ -164,11 +164,11 @@ public class ItemDefinitionFactory {
 			switch (itemDef.getItemCode()) {
 			case "IS00001":
 				// 個人名グループ．個人名
-				data = person.getPersonNameGroup().getPersonName().getFullName().v();
+				data = person.getPersonNameGroup().getPersonName().v();
 				break;
 			case "IS00002":
 				// 個人名グループ．個人名カナ
-				data = person.getPersonNameGroup().getPersonName().getFullNameKana().v();
+				data = person.getPersonNameGroup().getPersonNameKana().v();
 				break;
 			case "IS00003":
 				// 個人名グループ．個人名ローマ字．氏名

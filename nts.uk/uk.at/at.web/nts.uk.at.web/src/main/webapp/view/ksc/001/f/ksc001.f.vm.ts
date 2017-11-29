@@ -20,7 +20,10 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
             totalRecord: KnockoutObservable<number>;
             numberSuccess: KnockoutObservable<number>;
             numberFail: KnockoutObservable<number>;
+            isError: KnockoutObservable<boolean>;
+            isFinish: KnockoutObservable<boolean>;
             inputData: ScheduleExecutionLogSaveRespone;
+            
             constructor() {
                 var self = this;
                 self.errorLogs = ko.observableArray([]);
@@ -38,6 +41,8 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 self.totalRecord = ko.observable(0);
                 self.numberSuccess = ko.observable(0);
                 self.numberFail = ko.observable(0);
+                self.isError = ko.observable(false);
+                self.isFinish = ko.observable(false);
                 self.scheduleExecutionLogModel = new ScheduleExecutionLogModel();
             }
 
@@ -54,8 +59,11 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                         self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                         self.executionTotal = ko.observable('0');
                         self.executionError = ko.observable('0');
-                        self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate).format("YYYY/MM/DD HH:mm:ss");
-                        self.periodInfo = nts.uk.resource.getText("KSC001_46", [moment(data.period.startDate).format('YYYY/MM/DD'), (moment(data.period.endDate).format('YYYY/MM/DD'))])
+                        self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate)
+                            .format("YYYY/MM/DD HH:mm:ss");
+                        self.periodInfo = nts.uk.resource.getText("KSC001_46",
+                            [data.period.startDate,
+                            data.period.endDate])
                         self.inputData = inputData;
                         dfd.resolve();
                     });
@@ -92,6 +100,7 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 nts.uk.ui.windows.close();
             }
             
+            
             /**
              * reload page by action stop execution
              */
@@ -100,7 +109,20 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 service.findScheduleExecutionLogById(self.inputData.executionId).done(function(data) {
                     self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                     service.findAllScheduleErrorLog(self.inputData.executionId).done(function(errorLogs){
-                       self.errorLogs(errorLogs); 
+                        // check error log
+                        if (errorLogs && errorLogs.length > 0) {
+                            self.isError(true);
+                            
+                            // resize windows
+                            var windowSize = nts.uk.ui.windows.getSelf();
+                            windowSize.$dialog.dialog('option', {
+                                width: 650,
+                                height: 700
+                            });
+                            windowSize.$dialog.resize();
+                            // update error to view
+                            self.errorLogs(errorLogs); 
+                        }
                     });
                 });
             }
@@ -118,21 +140,15 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                         // update state on screen
                         if (res.running || res.succeeded || res.cancelled) {
-                            service.findScheduleExecutionLogInfoById(self.inputData.executionId).done(function(data){
-                                self.totalRecord(data.totalNumber);
-                                self.numberSuccess(data.totalNumberCreated);
-                                self.numberFail(data.totalNumberError);
-                            });
+                            self.updateInfoStatus();
                         }
-                        self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
-                        self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
                             $('.countdown').stopCount();
+                            self.updateInfoStatus();
+                            self.isFinish(true);
                             self.reloadPage();
-                            if (res.succeeded) {
-                                $('#closeDialog').focus();
-                            }
+                            $('#closeDialog').focus();
                         }
                     });
                 }).while(infor => {
@@ -140,6 +156,40 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 }).pause(1000));
             }
             
+            /**
+             * update info status execution
+             */
+            private updateInfoStatus(): void {
+                var self = this;
+                service.findScheduleExecutionLogInfoById(self.inputData.executionId).done(function(data) {
+                    self.totalRecord(data.totalNumber);
+                    self.numberSuccess(data.totalNumberCreated);
+                    self.numberFail(data.totalNumberError);
+                    self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
+                    self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
+                });
+            }
+            
+            /**
+             * function cancel execution
+             */
+            private stopExecution(): void {
+                let self = this;
+                
+                if (nts.uk.text.isNullOrEmpty(self.taskId())) {
+                    return;
+                }
+                // interrupt process import then close dialog
+                nts.uk.request.asyncTask.requestToCancel(self.taskId());
+            }
+
+            /**
+             * function export file error by client click
+             */
+            private exportFileError(): void{
+                var self = this;
+                service.exportScheduleErrorLog(self.inputData.executionId);    
+            }
 
         }     
         

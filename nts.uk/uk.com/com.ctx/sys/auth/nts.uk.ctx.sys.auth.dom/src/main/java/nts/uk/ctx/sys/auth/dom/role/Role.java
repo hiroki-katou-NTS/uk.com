@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.auth.dom.role;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.IdentifierUtil;
 
 /**
  * ロール
@@ -53,7 +54,11 @@ public class Role extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public Role(RoleGetMemento memento) {
-		this.roleId = memento.getRoleId();
+		if(memento.getRoleId() == null ){
+			this.roleId = IdentifierUtil.randomUniqueId();
+		} else{
+			this.roleId = memento.getRoleId();
+		}
 		this.roleCode = memento.getRoleCode();
 		this.roleType = memento.getRoleType();
 		this.employeeReferenceRange = memento.getEmployeeReferenceRange();

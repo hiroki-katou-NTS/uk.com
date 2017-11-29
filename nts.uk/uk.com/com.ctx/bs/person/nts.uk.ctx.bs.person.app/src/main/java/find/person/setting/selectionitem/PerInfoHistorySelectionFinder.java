@@ -19,7 +19,7 @@ public class PerInfoHistorySelectionFinder {
 	public List<PerInfoHistorySelectionDto> historySelection(String selectedId) {
 
 		// gia lap: Kiem tra quyen User
-		boolean isSystemAdmin = false;
+		boolean isSystemAdmin = true;
 
 		// ログインしているユーザーの権限をチェックする(Kiểm tra quyền User login)
 		String cid = isSystemAdmin == true ? PersonInfoCategory.ROOT_COMPANY_ID : AppContexts.user().companyId();

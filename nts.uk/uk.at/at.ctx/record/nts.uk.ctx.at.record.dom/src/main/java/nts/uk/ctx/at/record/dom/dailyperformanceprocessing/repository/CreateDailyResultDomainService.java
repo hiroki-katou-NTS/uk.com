@@ -14,6 +14,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CreateDailyResultDomainService {
 
-	int createDailyResult(List<String> emloyeeIds, int reCreateAttr, DatePeriod periodTime, int executionAttr, String empCalAndSumExecLogID);
+	int createDailyResult(List<String> emloyeeIds, int reCreateAttr, DatePeriod periodTime, int executionAttr, String companyId, String empCalAndSumExecLogID);
 	
 }

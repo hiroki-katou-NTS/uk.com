@@ -24,10 +24,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             
             self.errorMessageInfo = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: getText('KDW001_33'), key: 'empCD', width: 100 },
+                { headerText: getText('KDW001_33'), key: 'empCD', width: 110 },
                 { headerText: getText('KDW001_35'), key: 'code', width: 150 },
                 { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
-                { headerText: getText('KDW001_37'), key: 'errContents', width: 150 },
+                { headerText: getText('KDW001_37'), key: 'errContents', width: 290 },
             ]);
             self.currentCode = ko.observable();
 
@@ -43,10 +43,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             
             service.insertData(params).done((data: shareModel.executionResult) => {
                 console.log(data);
-                self.executionDate(data.periodStartDate);
-                self.executionContents(data.enumComboBox);
+                //self.executionDate(data.periodStartDate);
+                //self.executionContents(data.enumComboBox);
                 // Start checking proceess
-                self.executeTask(data);
+                //self.executeTask(data);
                 dfd.resolve();
             });
             
@@ -55,10 +55,11 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
         cancelTask() {
             
+            nts.uk.ui.windows.close();
         }
         
         closeDialog() {
-            
+            nts.uk.ui.windows.close();
         }
         
         private executeTask(data: shareModel.executionResult) {

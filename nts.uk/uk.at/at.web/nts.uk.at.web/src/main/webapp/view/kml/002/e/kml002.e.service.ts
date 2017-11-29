@@ -14,16 +14,16 @@ module nts.uk.at.view.kml002.e.service {
     export function getDailyItems(param: any): Array<BaseItemsDto> {
         var path = nts.uk.text.format(servicePath.getDailyItems);
         return nts.uk.request.ajax("at", path, param);
-    }  
-    
+    }
+
     export interface BaseItemsDto {
         id: number,
         itemId: string,
         itemName: string,
         itemType: number,
-        dispOrder: number 
+        dispOrder: number
     }
     export function getByAtr(param) {
         return nts.uk.request.ajax(servicePath.findByAtr, param);
-        }
     }
+}

@@ -24,4 +24,13 @@ public interface DivWorkDifferInforRepository {
 	 * author: Hoang Yen
 	 */
 	void insertDivWork(DivWorkDifferInfor divWorkDifferInfor);
+	
+	/**
+	 * delete a item
+	 * @param companyId
+	 * @param companyCode
+	 * @param contractCd
+	 * author: Hoang Yen
+	 */
+	void deleteDivWork(String companyId, String companyCode, String contractCd);
 }

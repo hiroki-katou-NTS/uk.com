@@ -13,13 +13,9 @@
 					height : 430
 				};
 			</script>
-<!-- 			<com:ValidatorScript> -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceYears -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceMonths -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt -->
-<!-- 			</com:ValidatorScript> -->
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalInputItem
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../main.css" />
 			<com:scriptfile path="kml002.b.vm.js" />
@@ -54,7 +50,7 @@
 					</tr>
 					<tr>
 						<td rowspan="2">
-							<div data-bind="ntsRadioBoxGroup: {
+							<div tabindex="1" data-bind="ntsRadioBoxGroup: {
 								options: radioForm,
 								optionsValue: 'id',
 								optionsText: 'name',
@@ -62,7 +58,7 @@
 								enable: true}"></div>
 						</td>
 						<td>
-							<div class="project-item" data-bind="ntsComboBox: {
+							<div tabindex="2" class="project-item" data-bind="ntsComboBox: {
 								options: verticalCalItems,
 								optionsValue: 'itemCode',
 								value: selectedItem1,
@@ -73,7 +69,7 @@
 								]}"></div>
 						</td>
 						<td rowspan="2">
-							<div class="operator-item" data-bind="ntsComboBox: {
+							<div tabindex="3" class="operator-item" data-bind="ntsComboBox: {
 								options: operatorItem,
 								optionsValue: 'operatorCode',
 								value: selectedOperator,
@@ -84,7 +80,7 @@
 								]}"></div>
 						</td>
 						<td rowspan="2">
-							<div data-bind="ntsRadioBoxGroup: {
+							<div tabindex="4" data-bind="ntsRadioBoxGroup: {
 								options: radioForm,
 								optionsValue: 'id',
 								optionsText: 'name',
@@ -92,7 +88,7 @@
 								enable: true}"></div>
 						</td>
 						<td>
-							<div class="project-item" data-bind="ntsComboBox: {
+							<div tabindex="5" class="project-item" data-bind="ntsComboBox: {
 								options: verticalCalItems,
 								optionsValue: 'itemCode',
 								value: selectedItem2,
@@ -104,9 +100,9 @@
 						</td>
 					</tr>
 					<tr>
-						<td><input class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem1, enable: enableVerticalInputItem1 }" /></td>						
+						<td><input tabindex="6" class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem1, enable: enableVerticalInputItem1, constraint:['VerticalInputItem'] }" /></td>						
 						
-						<td><input class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem2, enable: enableVerticalInputItem2 }" /></td>
+						<td><input tabindex="7" class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem2, enable: enableVerticalInputItem2, constraint:['VerticalInputItem'] }" /></td>
 					</tr>
 				</table>
 			</div>
@@ -114,9 +110,9 @@
 			
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area-bottom">
-				<button id="submit-btn" class="x-large proceed"
+				<button tabindex="8" id="submit-btn" class="x-large proceed"
 					data-bind="click: submit">#{i18n.getText('KML002_40')}</button>
-				<button id="cancel-btn" data-bind="click: cancel"
+				<button tabindex="9" id="cancel-btn" data-bind="click: cancel"
 					class="large">#{i18n.getText('KML002_41')}</button>
 			</div>
 			<!-- END FUNCTION AREA-->

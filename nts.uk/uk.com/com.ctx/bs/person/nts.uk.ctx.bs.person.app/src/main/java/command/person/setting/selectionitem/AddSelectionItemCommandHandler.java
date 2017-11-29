@@ -34,8 +34,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 	protected String handle(CommandHandlerContext<AddSelectionItemCommand> context) {
 		AddSelectionItemCommand command = context.getCommand();
 		String newId = IdentifierUtil.randomUniqueId();
-//		String rootCID = PersonInfoCategory.ROOT_COMPANY_ID;
-		String rootCID = AppContexts.user().companyId();
+		String rootCID = PersonInfoCategory.ROOT_COMPANY_ID;
 		String newHistId = IdentifierUtil.randomUniqueId();
 
 		// ドメインモデル「個人情報の選択項目」のエラーチェック

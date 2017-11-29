@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
@@ -29,7 +30,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ "WHERE c.applicantSID = :applicantSID "
 			+ "AND c.applicationDate = :appDate "
 			+ "AND c.prePostAtr = :prePostAtr "
-			+ "AND c.applicationType = :applicationType ";
+			+ "AND c.applicationType = :applicationType "
+			+ "ORDER BY c.inputDate DESC";
 	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
 			+ " AND c.applicationDate = :appDate "
 			+ " AND c.inputDate = :inputDate "
@@ -145,18 +147,18 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 	
 	@Override
-	public Optional<Application> getApp(String applicantSID, GeneralDate appDate, int prePostAtr,
+	public List<Application> getApp(String applicantSID, GeneralDate appDate, int prePostAtr,
 			int appType) {
 		return this.queryProxy().query(SELECT_APP, KafdtApplication.class)
 				.setParameter("applicantSID", applicantSID)
 				.setParameter("appDate", appDate)
 				.setParameter("prePostAtr", prePostAtr)
 				.setParameter("applicationType", appType)
-				.getSingle(c -> c.toDomain());
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
-	public List<Application> getBeforeApplication(String companyId, GeneralDate appDate, GeneralDate inputDate, int appType, int prePostAtr){
+	public List<Application> getBeforeApplication(String companyId, GeneralDate appDate, GeneralDateTime inputDate, int appType, int prePostAtr){
 		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KafdtApplication.class)
 				.setParameter("companyID", companyId)
 				.setParameter("appDate", appDate)

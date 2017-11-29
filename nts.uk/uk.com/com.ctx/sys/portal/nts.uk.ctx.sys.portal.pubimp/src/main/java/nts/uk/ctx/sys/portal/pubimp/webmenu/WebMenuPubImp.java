@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuPub;
-import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuPubDto;
+import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuExport;
 
 /**
  * The Class WebmenuPubImp.
@@ -25,9 +25,9 @@ public class WebMenuPubImp implements WebMenuPub {
 	private WebMenuRepository webMenuRepository;
 
 	@Override
-	public List<WebMenuPubDto> findByCompanyId(String companyId) {
+	public List<WebMenuExport> findByCompanyId(String companyId) {
 		return webMenuRepository.findAll(companyId).stream()
-				.map(item -> new WebMenuPubDto(
+				.map(item -> new WebMenuExport(
 						item.getWebMenuCode().v()
 						, item.getWebMenuName().v()
 						, item.getCompanyId()

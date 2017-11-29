@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset;
 
-import javax.inject.Inject;
-
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -16,8 +14,6 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class DefaultRoleSet extends AggregateRoot {
 
-	@Inject
-	private DefaultRoleSetRepository defaultRoleSetRepository;
 	/** 会社ID */
 	private String companyId;
 
@@ -34,13 +30,5 @@ public class DefaultRoleSet extends AggregateRoot {
 		super();
 		this.companyId = companyId;
 		this.roleSetCd = new RoleSetCode(roleSetCd);
-	}
-	
-	/** 
-	 * check if there are set default role set for the company id
-	 * @return
-	 */
-	public boolean isCompanyHasDefaultRoleSet() {
-		return defaultRoleSetRepository.findByCompanyId(this.companyId).isPresent();
 	}
 }

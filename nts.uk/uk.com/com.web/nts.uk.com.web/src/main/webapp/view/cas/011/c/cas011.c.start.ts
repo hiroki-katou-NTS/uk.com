@@ -4,6 +4,5 @@ module nts.uk.com.view.cas011.c {
         __viewContext["viewModel"].start().done(function(){
             __viewContext.bind(__viewContext["viewModel"]);
         });
-        __viewContext.bind(__viewContext["viewModel"]);
     });
 }

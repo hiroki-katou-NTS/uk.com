@@ -27,6 +27,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         //History reference date
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
         lstItemFilter: Array<any> = [];
+        ctgIdUpdate: KnockoutObservable<boolean> = ko.observable(false);;
         constructor() {
 
             let self = this;
@@ -36,6 +37,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.initSettingId.subscribe(function(value: string) {
 
                 nts.uk.ui.errors.clearAll();
+                self.currentCategory().ctgList.removeAll();
                 if (value) {
                     service.getAllCtg(value).done((data: any) => {
                         self.currentCategory().setData({
@@ -43,9 +45,18 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             settingName: data.settingName,
                             ctgList: data.ctgList
                         });
+                        if (!self.ctgIdUpdate()) {
+                            //perInfoCtgId
+                            if (data.ctgList.length > 0) {
+                                self.currentCategory().currentItemId(data.ctgList[0].perInfoCtgId);
+                            } else {
+                                self.currentCategory().currentItemId();
+                            }
+                        }
                         self.currentCategory.valueHasMutated();
                         self.getItemList(value, self.currentCategory().currentItemId());
                     });
+
                 } else {
 
                     return;
@@ -130,6 +141,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             service.getAll().done((data: Array<IPerInfoInitValueSettingDto>) => {
+                self.ctgIdUpdate(false);
                 if (data.length > 0) {
                     self.isUpdate = true;
                     self.initValSettingLst.removeAll();
@@ -206,14 +218,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // thiet lap item hang loat
         openBDialog() {
-            let self = this;
-            let ctgCurrent = self.findCtg(self.currentCategory().ctgList(), self.currentCategory().currentItemId());
-            let params = {
-                settingId: self.initSettingId(),
-                ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
-                categoryId: self.currentCategory().currentItemId()
-            };
-
+            let self = this,
+                ctgCurrent = self.findCtg(self.currentCategory().ctgList(), self.currentCategory().currentItemId()),
+                params = {
+                    settingId: self.initSettingId(),
+                    ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
+                    categoryId: self.currentCategory().currentItemId()
+                };
+            self.ctgIdUpdate(false);
             setShared('CPS009B_PARAMS', params);
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
@@ -252,7 +264,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     settingCode: ko.toJS(self.currentCategory().settingCode),
                     settingName: ko.toJS(self.currentCategory().settingName)
                 };
-
+            self.ctgIdUpdate(false);
             setShared('CPS009C_PARAMS', params);
 
             block.invisible();
@@ -270,7 +282,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         openDDialog() {
 
             let self = this;
-
+            self.ctgIdUpdate(false);
             block.invisible();
 
             modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
@@ -290,6 +302,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     settingId: self.initSettingId(),
                     settingCode: self.currentCategory().settingCode()
                 };
+            self.ctgIdUpdate(false);
             block.invisible();
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.deleteInitVal(objDelete).done(function(data) {
@@ -373,15 +386,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
             service.update(updateObj).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     $('#ctgName').focus();
-                    self.currentCategory().ctgList.removeAll();
+
                     self.initSettingId("");
                     self.initSettingId(updateObj.settingId);
                     self.currentCategory().currentItemId("");
                     self.currentCategory().currentItemId(updateObj.perInfoCtgId);
-                    self.currentCategory().currentItemId.valueHasMutated();
-                    self.initSettingId.valueHasMutated();
+                    self.ctgIdUpdate(true);
                 });
-
+                self.currentCategory().currentItemId(updateObj.perInfoCtgId);
                 block.clear();
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.bundledErrors(res);
@@ -500,11 +512,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.settingCode(params.settingCode);
             self.settingName(params.settingName);
             self.ctgList(params.ctgList);
-            if (self.ctgList().length > 0) {
-                self.currentItemId(params.ctgList[0].perInfoCtgId);
-            } else {
-                self.currentItemId('');
-            }
+
         }
     }
 
@@ -756,7 +764,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM"));
                     }
                 } else if (params.dateType === 3) {
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
+                    if (params.dateValue === null) {
+                        self.dateValue = ko.observable(undefined);
+                    } else {
+                        self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
+                    }
                 }
 
             }
@@ -800,7 +812,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     numberDecimalPart: params.numberDecimalPart,
                     numberIntegerPart: params.numberIntegerPart
                 }) || null;
-            if (params.numberDecimalPart === 0 && params.numberIntegerPart === 0) {
+            if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
                 self.numbereditor = {
                     value: ko.observable(params.intValue || 0),
                     constraint: params.itemCode,

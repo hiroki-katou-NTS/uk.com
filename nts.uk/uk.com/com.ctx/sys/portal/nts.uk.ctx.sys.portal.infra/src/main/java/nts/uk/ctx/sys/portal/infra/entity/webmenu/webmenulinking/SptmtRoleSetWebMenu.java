@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SACMT_DEFAULT_ROLE_SET")
+@Table(name = "SPTMT_ROLE_SET_WEB_MENU")
 public class SptmtRoleSetWebMenu extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

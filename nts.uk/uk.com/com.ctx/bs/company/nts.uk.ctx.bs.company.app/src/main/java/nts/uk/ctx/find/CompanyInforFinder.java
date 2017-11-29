@@ -30,6 +30,7 @@ public class CompanyInforFinder {
 			adddto = null;
 			return adddto;
 		}
+		adddto.setCompanyId(add.getCompanyId());
 		adddto.setFaxNum(add.getFaxNum().v());
 		adddto.setAdd_1(add.getAdd_1().v());
 		adddto.setAdd_2(add.getAdd_2().v());
@@ -47,15 +48,15 @@ public class CompanyInforFinder {
 	 */
 	public List<CompanyInforDto> finder(){
 		String contractCd = AppContexts.user().contractCode();
-		return this.comRep.findAll(contractCd)
+		return this.comRep.findAll()
 							.stream()
 							.map(x -> {
 								return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),
-															x.getCompanyId().v(), x.getStartMonth().value,
+															x.getCompanyId(), x.getStartMonth().value,
 															x.getIsAbolition().value, x.getRepname().v(),
-															x.getRepost().v(), x.getComNameKana().v(),
+															x.getRepjob().v(), x.getComNameKana().v(),
 															x.getShortComName().v(), contractCd, 
-															x.getTaxNum(), fromDomainAdd(x.getAddInfor()));
+															x.getTaxNo().v(), fromDomainAdd(x.getAddInfor()));
 							}).collect(Collectors.toList());
 	}
 }

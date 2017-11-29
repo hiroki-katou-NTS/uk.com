@@ -14,6 +14,7 @@ module nts.uk.at.view.kdw001.g {
             objectPeriod : Array<any>;
             listPeson : Array<any>;
             listTargetPerson: KnockoutObservableArray<any>;
+            executionContent : number;
             
             constructor() {
                 let self = this;
@@ -26,11 +27,15 @@ module nts.uk.at.view.kdw001.g {
                     self.objectPeriod = param.objectPeriod;
                     self.listPeson = param.listTargetPerson;
                     self.listTargetPerson = ko.observableArray([]);
+                    self.executionContent = param.executionContent;
                     
                     for(let i = 0;i<self.listPeson.length;i++){
                         self.listTargetPerson().push({employeeCode: self.listPeson[i].employeeId, 
                          employeeName :self.listPeson[i].employeeId,
-                         status :self.listPeson[i].state.statusName
+                         
+                         status : _.find(self.listPeson[i].state, function(state) { 
+                                return state.executionContent == self.executionContent; }).statusName 
+                         
                          });
                     }
                 }

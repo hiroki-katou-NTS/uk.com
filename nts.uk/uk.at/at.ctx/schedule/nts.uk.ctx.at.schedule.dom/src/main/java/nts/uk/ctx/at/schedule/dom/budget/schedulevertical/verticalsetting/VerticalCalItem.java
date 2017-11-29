@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 
+/**
+ * TanLV
+ * 汎用縦計項目
+ */
 @AllArgsConstructor
 @Getter
 public class VerticalCalItem extends DomainObject {
@@ -29,13 +34,15 @@ public class VerticalCalItem extends DomainObject {
     private DisplayAtr displayAtr;
     
     /* 累計区分 */
-    private CumulativeAtr cumulativeAtr;
+    private int cumulativeAtr;
     
     /* 属性 */
     private Attributes attributes;
     
     // 端数処理
- 	private Rounding rounding;
+ 	private int rounding;
+ 	
+ 	private int roundingProcessing;
  	
  	private int dispOrder;
  	
@@ -51,7 +58,11 @@ public class VerticalCalItem extends DomainObject {
  	// E
  	private FormulaAmount formulaAmount;
  	
- 	private FormulaNumerical numerical;
+ 	// F
+ 	private List<FormulaNumerical> numerical;
+ 	
+ 	//G
+ 	private FormulaUnitprice unitprice;
  	
  	/**
  	 * author: Hoang Yen
@@ -60,26 +71,34 @@ public class VerticalCalItem extends DomainObject {
  													String itemId, String itemName, 
  													int calculateAtr, int displayAtr, 
  													int cumulativeAtr, int attributes, 
- 													int rounding, int dispOrder, 
+ 													int rounding, int roundingProcessing,
+ 													int dispOrder, 
  													FormBuilt formBuilt,
  													FormTime formTime,
  													FormPeople formPeople,
  													FormulaAmount formulaAmount,
- 													FormulaNumerical numerical){
+ 													List<FormulaNumerical> numerical,
+ 													FormulaUnitprice unitprice){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
  				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
- 				EnumAdaptor.valueOf(cumulativeAtr, CumulativeAtr.class), 
+ 				cumulativeAtr, 
  				EnumAdaptor.valueOf(attributes, Attributes.class),
- 				EnumAdaptor.valueOf(rounding, Rounding.class),
+ 				rounding,
+ 				roundingProcessing,
  				dispOrder,
  				formBuilt,
  				formTime,
  				formPeople,
  				formulaAmount,
- 				numerical);
+ 				numerical,
+ 				unitprice);
  	}
  	
+ 	/**
+ 	 * Validate
+ 	 * @param index
+ 	 */
  	public void validate(int index) {
  		if(this.calculateAtr == CalculateAtr.FORMULA_SETTING) {
  			if (this.formBuilt == null) {
@@ -94,9 +113,9 @@ public class VerticalCalItem extends DomainObject {
 					break;
 					
 				case AMOUNT:
-		//			if (this.formPeople == null) {
-		//				throw new BusinessException("Msg_111", String.valueOf(index));
-		//			}
+					if (this.formulaAmount == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
 					break;
 					
 				case NUMBER_OF_PEOPLE:
@@ -106,15 +125,15 @@ public class VerticalCalItem extends DomainObject {
 					break;
 					
 				case NUMBER:
-		//			if (this.formPeople == null) {
-		//				throw new BusinessException("Msg_111", String.valueOf(index));
-		//			}
+					if (this.numerical == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
 					break;
 					
 				case AVERAGE_PRICE:
-		//			if (this.formPeople == null) {
-		//				throw new BusinessException("Msg_111", String.valueOf(index));
-		//			}
+					if (this.unitprice == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
 					break;
 					
 				default:

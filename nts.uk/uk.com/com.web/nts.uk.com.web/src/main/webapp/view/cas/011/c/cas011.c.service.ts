@@ -1,24 +1,23 @@
 module nts.uk.com.view.cas011.c.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-    import ajax = nts.uk.request.ajax;
 
     var paths = {
-            getAllRoleSets:             "ctx/sys/auth/roleset/findAllRoleSet",
-            getCurrentDefaultRoleSet:   "ctx/sys/auth/roleset/findDefaultRoleSet",
-            addDefaultRoleSet:          "ctx/sys/auth/roleset/addRoleSet",
+            getAllRoleSet:             "ctx/sys/auth/roleset/findAllRoleSet",
+            getCurrentDefaultRoleSet:  "ctx/sys/auth/roleset/findDefaultRoleSet",
+            addDefaultRoleSet:         "ctx/sys/auth/roleset/addRoleSet"
     }
 
-    export function getAllRoleSet() {
-        return ajax(path.getAllRoleSets);
+    export function getAllRoleSet() : JQueryPromise<any> {
+        return ajax(paths.getAllRoleSet);
     }
 
-    export function getCurrentDefaultRoleSet() {
-        return ajax(path.getCurrentDefaultRoleSet);
+    export function getCurrentDefaultRoleSet() : JQueryPromise<any> {
+        return ajax(paths.getCurrentDefaultRoleSet);
     }
 
     // add Default Role Set:
-    export function addDefaultRoleSet(command) {
+    export function addDefaultRoleSet(command) : JQueryPromise<any> {
         return ajax(paths.addDefaultRoleSet, command);
     }
 }

@@ -1,8 +1,13 @@
 package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OvertimeInputDto {
 	/**
 	 * 会社ID
@@ -35,13 +40,26 @@ public class OvertimeInputDto {
 	/**
 	 * 開始時間
 	 */
-	private int startTime;
+	private Integer startTime;
 	/**
 	 * 完了時間
 	 */
-	private int endTime;
+	private Integer endTime;
 	/**
 	 * 申請時間
 	 */
-	private int applicationTime;
+	private Integer applicationTime;
+	
+	public static OvertimeInputDto fromDomain(OverTimeInput overTimeInput){
+		return new OvertimeInputDto(
+				overTimeInput.getCompanyID(), 
+				overTimeInput.getAppID(), 
+				overTimeInput.getAttendanceID().value, 
+				overTimeInput.getFrameNo(), 
+				overTimeInput.getTimeItemTypeAtr().value, 
+				"", 
+				overTimeInput.getStartTime().v(), 
+				overTimeInput.getEndTime().v(), 
+				overTimeInput.getApplicationTime().v());
+	}
 }
