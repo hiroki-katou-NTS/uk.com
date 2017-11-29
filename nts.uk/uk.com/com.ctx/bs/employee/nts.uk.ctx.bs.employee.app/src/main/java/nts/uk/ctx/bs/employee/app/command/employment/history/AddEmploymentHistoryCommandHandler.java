@@ -48,12 +48,12 @@ implements PeregAddCommandHandler<AddEmploymentHistoryCommand> {
 		
 		Optional<EmploymentHistory> histItem = employmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
 		if (histItem.isPresent()){
-			histItem.get().add(dateItem);
 			itemtoBeAdded = histItem.get();
 		} else {
 			itemtoBeAdded = new EmploymentHistory(command.getEmployeeId(), new ArrayList<>());
-			itemtoBeAdded.add(dateItem);
 		}
+		itemtoBeAdded.add(dateItem);
+		
 		employmentHistoryRepository.add(itemtoBeAdded);
 		
 		EmploymentHistoryItem domain = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getSalarySegment(), command.getEmploymentCode());

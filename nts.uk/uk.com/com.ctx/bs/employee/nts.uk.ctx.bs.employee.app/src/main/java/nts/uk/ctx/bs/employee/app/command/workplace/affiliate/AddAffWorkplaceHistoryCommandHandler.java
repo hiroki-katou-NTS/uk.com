@@ -52,13 +52,12 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 		
 		// In case of exist history of this employee
 		if (existHist.isPresent()){
-			existHist.get().add(dateItem);
 			itemtoBeAdded = existHist.get();
 		} else {
 			// In case of non - exist history of this employee
 			itemtoBeAdded = new AffWorkplaceHistory_ver1(command.getEmployeeId(),new ArrayList<>());
-			itemtoBeAdded.add(dateItem);
 		}
+		itemtoBeAdded.add(dateItem);
 		
 		affWorkplaceHistoryRepository.add(itemtoBeAdded);
 		

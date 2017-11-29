@@ -70,17 +70,6 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		}
 		this.commandProxy().remove(BsymtAffiDepartmentHist.class, item.identifier());
 		
-		// Update item before
-		if (domain.getHistoryItems().size() >0){
-			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-			Optional<BsymtAffiDepartmentHist> histItem  = this.queryProxy().find(lastItem.identifier(), BsymtAffiDepartmentHist.class);
-			if (!histItem.isPresent()){
-				throw new RuntimeException("invalid BsymtAffiDepartmentHist");
-			}
-			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
-			this.commandProxy().update(histItem.get());
-		}
-		
 	}
 	
 	private BsymtAffiDepartmentHist toEntity(String employeeId, DateHistoryItem item){
