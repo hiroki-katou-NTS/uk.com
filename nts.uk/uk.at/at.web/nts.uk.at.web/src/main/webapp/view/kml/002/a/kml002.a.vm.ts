@@ -706,6 +706,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         newBtn() {
             var self = this;
 
+            self.addLineEnable(true);
             self.singleSelectedCode("");
             self.code("");
             self.editMode(true);
@@ -718,7 +719,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.workScheduleEnable(true);
             self.unitEnable(true);
-            self.addLineEnable(true);
             self.allItemsData = [];
         }
 
@@ -1431,11 +1431,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                         formulaResult += operator + " " + name + " ";
                                     } else if (item != null) {
                                         formulaResult += operator + " " + item.externalBudgetName + " ";
-                                    } else if (itemTime ! = null){
+                                    } else if (itemTime != null){
                                         formulaResult += operator + " " + item.name + " ";
-                                    } else if (itemAttendance ! = null){
+                                    } else if (itemAttendance != null){
                                         formulaResult += operator + " " + item.name + " ";
-                                    } else if (itemPreset ! = null){
+                                    } else if (itemPreset != null){
                                         formulaResult += operator + " " + item.name + " ";
                                     } 
                                 }
