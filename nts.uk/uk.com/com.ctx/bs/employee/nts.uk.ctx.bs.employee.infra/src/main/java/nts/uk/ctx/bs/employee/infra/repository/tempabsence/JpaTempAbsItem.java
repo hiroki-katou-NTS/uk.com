@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.repository.temporaryabsence;
+package nts.uk.ctx.bs.employee.infra.repository.tempabsence;
 
 import java.util.List;
 import java.util.Optional;
