@@ -26,7 +26,7 @@ public class UpdateRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
 				, command.isApprovalAuthority() ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
 				, command.getOfficeHelperRoleId()
 				, command.getMyNumberRoleId()
-				, command.getHRRoleId()
+				, command.getHumanResourceRoleId()
 				, command.getPersonInfRoleId()
 				, command.getEmploymentRoleId()
 				, command.getSalaryRoleId());

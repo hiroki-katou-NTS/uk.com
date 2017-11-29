@@ -7,7 +7,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.app.command.roleset.DeleteRoleSetCommand;
 import nts.uk.ctx.sys.auth.app.command.roleset.DeleteRoleSetCommandHandler;
-import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.DeleteRoleSetLinkWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.DeleteRoleSetLinkWebMenuCommandHandler;
 

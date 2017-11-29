@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.auth.app.command.roleset;
 
-import java.util.List;
-
 import lombok.Value;
 
 @Value
@@ -25,7 +23,7 @@ public class RoleSetCommand {
 	private String myNumberRoleId;
 
 	/** ロールID: 人事ロール */
-	private String hRRoleId;
+	private String humanResourceRoleId;
 
 	/** ロールID: 個人情報ロール */
 	private String personInfRoleId;

@@ -27,7 +27,7 @@ public class RoleSetDto {
 	private String myNumberRoleId;
 
 	/** ロールID: 人事ロール */
-	private String hRRoleId;
+	private String humanResourceRoleId;
 
 	/** ロールID: 個人情報ロール */
 	private String personInfRoleId;
@@ -51,7 +51,7 @@ public class RoleSetDto {
 		result.setApprovalAuthority(roleSet.hasApprovalAuthority());
 		result.setCompanyId(roleSet.getCompanyId());
 		result.setEmploymentRoleId(roleSet.getEmploymentRoleId());
-		result.setHRRoleId(roleSet.getHRRoleId());
+		result.setHumanResourceRoleId(roleSet.getHRRoleId());
 		result.setMyNumberRoleId(roleSet.getMyNumberRoleId());
 		result.setOfficeHelperRoleId(roleSet.getOfficeHelperRoleId());
 		result.setPersonInfRoleId(roleSet.getPersonInfRoleId());

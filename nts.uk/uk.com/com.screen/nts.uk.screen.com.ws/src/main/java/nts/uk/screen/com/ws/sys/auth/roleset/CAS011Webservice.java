@@ -14,9 +14,9 @@ import nts.uk.screen.com.app.command.sys.auth.roleset.RoleSetCommandBase;
 import nts.uk.screen.com.app.command.sys.auth.roleset.UpdateRoleSetCommandBaseHandler;
 
 
-@Path("screen/sys/auth/roleset")
+@Path("screen/sys/auth/cas011")
 @Produces("application/json")
-public class RoleSetWebservice extends WebService {
+public class CAS011Webservice extends WebService {
 
 
 	@Inject

@@ -27,7 +27,7 @@
 						enable: !isNewMode()" >#{i18n.getText('CAS011_6')}</button>
 
 				<button id="A1_004" data-bind="click: openDialogSettingC,
-				 enable: listRoleSets &amp;&amp; (listRoleSets.length > 0)">#{i18n.getText('CPS016_7')}</button>
+				 		enable: roleSetCount() > 0">#{i18n.getText('CPS016_7')}</button>
 			</div>
  
 			<div id="contents-area" class="cf">
@@ -41,11 +41,11 @@
 											height: 425,
 											width: 230,
 											options: listRoleSets,
-											optionsValue: currentRoleSet().roleSetCd,
+											optionsValue: selectedRoleSetCd,
 											primaryKey: 'roleSetCd',
 											columns: gridColumns,
 											multiple: false,
-											value: currentRoleSet().roleSetCd,
+											value: selectedRoleSetCd,
 											showNumbering:false,
 											enable: true}">
 							</table>
