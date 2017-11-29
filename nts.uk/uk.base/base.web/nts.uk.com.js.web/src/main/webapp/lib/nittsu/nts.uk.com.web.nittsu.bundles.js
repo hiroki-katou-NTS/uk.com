@@ -4189,9 +4189,39 @@ var nts;
                                 tab = tab.parent().closest("[role='tabpanel']");
                             }
                             element.focus();
+                            var $dialogContainer = errorBody.closest(".bundled-errors-alert").closest("[role='dialog']");
+                            var $self = nts.uk.ui.windows.getSelf();
+                            var additonalTop = 0;
+                            var additonalLeft = 0;
+                            if (!$self.isRoot) {
+                                var $currentDialog = $self.$dialog.closest("[role='dialog']");
+                                var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                                var currentDialogOffset = $currentDialog.offset();
+                                additonalTop = currentDialogOffset.top + $currentHeadBar.height();
+                                additonalLeft = currentDialogOffset.left;
+                            }
+                            var currentControlOffset = element.offset();
+                            var top = additonalTop + currentControlOffset.top + element.outerHeight() - window.scrollY;
+                            var left = additonalLeft + currentControlOffset.left - window.scrollX;
+                            var $errorDialogOffset = $dialogContainer.offset();
+                            var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                            var maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                            if ($errorDialogOffset.top < top && top < maxTop) {
+                                $dialogContainer.css("top", top + 15);
+                            }
+                            if (($errorDialogOffset.left < left && left < maxLeft)) {
+                                $dialogContainer.css("left", left);
+                            }
                         });
                     }
                     row.appendTo(errorBody);
+                }
+                function getRoot() {
+                    var self = nts.uk.ui.windows.getSelf();
+                    while (!self.isRoot) {
+                        self = self.parent;
+                    }
+                    return $(self.globalContext.document).find("body");
                 }
                 function bundledErrors(errors) {
                     var then = $.noop;
@@ -4209,7 +4239,7 @@ var nts;
                     closeButton.appendTo(functionArea);
                     functionArea.appendTo(container);
                     errorBoard.appendTo(container);
-                    container.appendTo($("body"));
+                    container.appendTo(getRoot());
                     setTimeout(function () {
                         container.dialog({
                             title: "エラー一覧",
@@ -5798,12 +5828,19 @@ var nts;
                                 $row.click(function () {
                                     error.$control[0].focus();
                                     var $dialogContainer = $dialog.closest("[role='dialog']");
-                                    var $currentDialog = nts.uk.ui.windows.getSelf().$dialog.closest("[role='dialog']");
-                                    var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
-                                    var currentDialogOffset = $currentDialog.offset();
+                                    var $self = nts.uk.ui.windows.getSelf();
+                                    var additonalTop = 0;
+                                    var additonalLeft = 0;
+                                    if (!$self.isRoot) {
+                                        var $currentDialog = $self.$dialog.closest("[role='dialog']");
+                                        var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                                        var currentDialogOffset = $currentDialog.offset();
+                                        additonalTop = currentDialogOffset.top + $currentHeadBar.height();
+                                        additonalLeft = currentDialogOffset.left;
+                                    }
                                     var currentControlOffset = error.$control.offset();
-                                    var top = currentDialogOffset.top + currentControlOffset.top + $currentHeadBar.height() + error.$control.outerHeight() - window.scrollY;
-                                    var left = currentDialogOffset.left + currentControlOffset.left - window.scrollX;
+                                    var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - window.scrollY;
+                                    var left = additonalLeft + currentControlOffset.left - window.scrollX;
                                     var $errorDialogOffset = $dialogContainer.offset();
                                     var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
                                     var maxTop = $errorDialogOffset.top + $dialogContainer.height();
