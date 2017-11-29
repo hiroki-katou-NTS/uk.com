@@ -22,7 +22,7 @@ public class JpaUserSetting extends JpaRepository implements UserSettingReposito
 		BpsstUserSettingPk pk = new BpsstUserSettingPk(userSetting.getEmployeeId());
 		BpsstUserSetting entity = new BpsstUserSetting(pk, userSetting.getEmpCodeValType().value,
 				userSetting.getCardNoValType().value, userSetting.getRecentRegType().value,
-				userSetting.getEmpCodeLetter(), userSetting.getCardNoLetter());
+				userSetting.getEmpCodeLetter().v(), userSetting.getCardNoLetter().v());
 		return entity;
 	}
 

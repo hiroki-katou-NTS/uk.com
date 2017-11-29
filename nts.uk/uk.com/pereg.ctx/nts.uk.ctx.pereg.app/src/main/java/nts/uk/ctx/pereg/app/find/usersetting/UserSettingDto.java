@@ -15,7 +15,7 @@ public class UserSettingDto {
 	public static UserSettingDto fromDomain(UserSetting domain) {
 
 		return new UserSettingDto(domain.getEmpCodeValType().value, domain.getRecentRegType().value,
-				domain.getCardNoValType().value, domain.getEmpCodeLetter(), domain.getCardNoLetter());
+				domain.getCardNoValType().value, domain.getEmpCodeLetter().v(), domain.getCardNoLetter().v());
 
 	}
 }
