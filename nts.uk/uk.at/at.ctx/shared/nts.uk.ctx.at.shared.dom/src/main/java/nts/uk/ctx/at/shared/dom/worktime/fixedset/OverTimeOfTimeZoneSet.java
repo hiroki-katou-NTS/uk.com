@@ -29,12 +29,12 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 	private TimeZoneRounding timezone;
 
 	/** The OT frame no. */
-	// TODO 残業枠NO
-	private Integer OTFrameNo;
+	// 残業枠NO
+	private OTFrameNo OTFrameNo;
 
 	/** The legal O tframe no. */
 	// 法定内残業枠NO
-	private Integer legalOTframeNo;
+	private OTFrameNo legalOTframeNo;
 
 	/** The settlement order. */
 	// 精算順序

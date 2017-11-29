@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 
@@ -38,6 +39,10 @@ public class FixedWorkSetting extends AggregateRoot {
 	// 半日用シフトを使用する
 	private Boolean useHalfDayShift;
 
+	/** The fixed work rest setting. */
+	//固定勤務の休憩設定
+	private FixedWorkRestSet fixedWorkRestSetting;
+	
 	/** The half day work timezone. */
 	// 平日勤務時間帯
 	private List<FixHalfDayWorkTimezone> halfDayWorkTimezone;

@@ -8,14 +8,15 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * The Class EmTimezoneNo.
+ * The Class WorkNo.
  */
-// 就業時間帯NO
-@IntegerRange(min = 1, max = 10)
-public class EmTimezoneNo extends IntegerPrimitiveValue<EmTimezoneNo> {
+//勤務NO
+@IntegerRange(min = 1, max = 3)
+public class WorkNo extends IntegerPrimitiveValue<WorkNo>{
+
 	private static final long serialVersionUID = 1L;
 
-	public EmTimezoneNo(Integer rawValue) {
+	public WorkNo(Integer rawValue) {
 		super(rawValue);
 	}
 

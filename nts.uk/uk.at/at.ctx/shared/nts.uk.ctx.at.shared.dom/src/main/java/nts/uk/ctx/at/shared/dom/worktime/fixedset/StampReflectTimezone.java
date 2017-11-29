@@ -16,8 +16,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class StampReflectTimezone extends DomainObject {
 
 	/** The work no. */
-	// TODO 勤務NO
-	private Integer workNo;
+	// 勤務NO
+	private WorkNo workNo;
 
 	// 出退勤区分
 	 private GoLeavingWorkAtr classification;

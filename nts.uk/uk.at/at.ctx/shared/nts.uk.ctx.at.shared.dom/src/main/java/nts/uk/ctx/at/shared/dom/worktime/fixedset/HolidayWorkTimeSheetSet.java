@@ -13,8 +13,14 @@ import nts.arc.layer.dom.DomainObject;
 // 休出時間の時間帯設定
 @Getter
 public class HolidayWorkTimeSheetSet extends DomainObject {
-	// TODO 時間帯
-	// private timezone;
+	
+	/** The work time no. */
+	//就業時間帯NO
+	private Integer workTimeNo;
+	
+	/** The timezone. */
+	//時間帯
+	private TimeZoneRounding timezone;
 
 	/** The is legal holiday constraint time. */
 	// 法定内休出を拘束時間として扱う
