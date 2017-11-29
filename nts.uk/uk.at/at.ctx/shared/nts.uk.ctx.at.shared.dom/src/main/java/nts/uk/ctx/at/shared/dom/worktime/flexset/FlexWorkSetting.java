@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
 
@@ -25,7 +26,7 @@ public class FlexWorkSetting extends AggregateRoot {
 
 	/** The work time code. */
 	// 就業時間帯コード
-	private String workTimeCode;
+	private WorkTimeCode workTimeCode;
 
 	/** The core time setting. */
 	// コアタイム時間帯

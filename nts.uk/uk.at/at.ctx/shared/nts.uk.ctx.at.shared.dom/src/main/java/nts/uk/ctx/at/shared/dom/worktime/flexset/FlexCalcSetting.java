@@ -11,13 +11,7 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 /**
  * The Class FlexCalcSetting.
  */
-//フレックス計算設定
-
-/**
- * Gets the calculate sharing.
- *
- * @return the calculate sharing
- */
+// フレックス計算設定
 @Getter
 public class FlexCalcSetting extends DomainObject {
 
