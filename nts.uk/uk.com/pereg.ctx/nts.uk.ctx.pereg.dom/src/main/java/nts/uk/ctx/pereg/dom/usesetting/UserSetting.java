@@ -6,12 +6,18 @@ import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
 public class UserSetting extends AggregateRoot {
+	// 社員ID
 	private String employeeId;
+	// 社員コード初期値
 	private EmpCodeValType empCodeValType;
+	// カードNO初期値
 	private CardNoValType cardNoValType;
+	// 最近の登録
 	private RecentRegType recentRegType;
-	private String empCodeLetter;
-	private String cardNoLetter;
+	// 社員コード頭文字
+	private EmpCodeLetter empCodeLetter;
+	// カードNO頭文字
+	private CardNoLetter cardNoLetter;
 
 	private UserSetting(String employeeId, int empCodeValType, int cardNoValType, int recentRegType,
 			String empCodeLetter, String cardNoLetter) {
@@ -19,8 +25,8 @@ public class UserSetting extends AggregateRoot {
 		this.empCodeValType = EnumAdaptor.valueOf(empCodeValType, EmpCodeValType.class);
 		this.cardNoValType = EnumAdaptor.valueOf(cardNoValType, CardNoValType.class);
 		this.recentRegType = EnumAdaptor.valueOf(recentRegType, RecentRegType.class);
-		this.empCodeLetter = empCodeLetter;
-		this.cardNoLetter = cardNoLetter;
+		this.empCodeLetter = new EmpCodeLetter(empCodeLetter);
+		this.cardNoLetter = new CardNoLetter(cardNoLetter);
 	}
 
 	public static UserSetting generateFullObject(String employeeId, int empCodeValType, int cardNoValType,

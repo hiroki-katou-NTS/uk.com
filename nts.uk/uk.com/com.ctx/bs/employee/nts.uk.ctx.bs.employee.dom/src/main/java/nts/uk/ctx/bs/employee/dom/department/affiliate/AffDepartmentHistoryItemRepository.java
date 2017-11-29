@@ -6,15 +6,15 @@ public interface AffDepartmentHistoryItemRepository {
 	 * ドメインモデル「所属部門」を新規登録する
 	 * @param domain
 	 */
-	void addAffDepartment(AffDepartmentHistoryItem domain);
+	void add(AffDepartmentHistoryItem domain);
 	/**
 	 * 取得した「所属部門」を更新する
 	 * @param domain
 	 */
-	void updateAffDepartment(AffDepartmentHistoryItem domain);
+	void update(AffDepartmentHistoryItem domain);
 	/**
 	 * ドメインモデル「所属部門（兼務）」を削除する
 	 * @param domain
 	 */
-	void deleteAffDepartment(String histId);
+	void delete(String histId);
 }

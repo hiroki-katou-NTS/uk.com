@@ -52,7 +52,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 		person.setPersonNameGroup(nameGroup);
 		
 		//update person
-		personRepo.updatePerson(person);
+		personRepo.update(person);
 		
 		// remove Employee Delete Management
 		DeleteEmpManagement delEmp = deleteEmpRepo.getBySid(command.getSId()).get();

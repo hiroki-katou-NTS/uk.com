@@ -71,7 +71,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	}
 
 	@Override
-	public void addAffWorkplaceHistory(AffWorkplaceHistory_ver1 domain) {
+	public void add(AffWorkplaceHistory_ver1 domain) {
 		if (domain.getHistoryItems().isEmpty()){
 			return;
 		}
@@ -85,7 +85,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	}
 
 	@Override
-	public void deleteAffWorkplaceHistory(AffWorkplaceHistory_ver1 domain, DateHistoryItem item) {
+	public void delete(AffWorkplaceHistory_ver1 domain, DateHistoryItem item) {
 		
 		Optional<BsymtAffiWorkplaceHist> histItem = null;
 		histItem = this.queryProxy().find(item.identifier(), BsymtAffiWorkplaceHist.class);
@@ -107,7 +107,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	}
 
 	@Override
-	public void updateAffWorkplaceHistory(AffWorkplaceHistory_ver1 domain, DateHistoryItem item) {
+	public void update(AffWorkplaceHistory_ver1 domain, DateHistoryItem item) {
 		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(item.identifier(), BsymtAffiWorkplaceHist.class);
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");

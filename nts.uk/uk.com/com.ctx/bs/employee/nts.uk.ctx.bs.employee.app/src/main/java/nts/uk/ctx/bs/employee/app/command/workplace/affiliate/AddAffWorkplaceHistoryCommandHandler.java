@@ -31,7 +31,7 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00010";
+		return "CS00017";
 	}
 
 	@Override
@@ -60,10 +60,10 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 			itemtoBeAdded.add(dateItem);
 		}
 		
-		affWorkplaceHistoryRepository.addAffWorkplaceHistory(itemtoBeAdded);
+		affWorkplaceHistoryRepository.add(itemtoBeAdded);
 		
 		AffWorkplaceHistoryItem domain = AffWorkplaceHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getWorkplaceCode(), command.getNormalWorkplaceCode(), command.getLocationCode());
-		affWorkplaceHistoryItemRepository.addAffWorkplaceHistory(domain);
+		affWorkplaceHistoryItemRepository.add(domain);
 		
 		return new PeregAddCommandResult(newHistID);
 	}

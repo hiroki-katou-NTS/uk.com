@@ -18,16 +18,16 @@ public interface AffWorkplaceHistoryRepository_v1 {
 	 * ドメインモデル「所属職場」を新規登録する
 	 * @param domain
 	 */
-	void addAffWorkplaceHistory(AffWorkplaceHistory_ver1 domain);
+	void add(AffWorkplaceHistory_ver1 domain);
 	/**
 	 * ドメインモデル「所属職場」を削除する
 	 * @param domain
 	 */
-	void deleteAffWorkplaceHistory(AffWorkplaceHistory_ver1 domain, DateHistoryItem item);
+	void delete(AffWorkplaceHistory_ver1 domain, DateHistoryItem item);
 	
 	/**
 	 * ドメインモデル「所属職場」を取得する
 	 * @param domain
 	 */
-	void updateAffWorkplaceHistory(AffWorkplaceHistory_ver1 domain, DateHistoryItem item);
+	void update(AffWorkplaceHistory_ver1 domain, DateHistoryItem item);
 }

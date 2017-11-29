@@ -10,10 +10,10 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory_ver1;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -30,7 +30,7 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00009";
+		return "CS00016";
 	}
 
 	@Override
@@ -59,10 +59,10 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 			itemtoBeAdded.add(dateItem);
 		}
 		
-		affJobTitleHistoryRepository_ver1.addJobTitleMain(itemtoBeAdded);
+		affJobTitleHistoryRepository_ver1.add(itemtoBeAdded);
 		
 		AffJobTitleHistoryItem domain = AffJobTitleHistoryItem.createFromJavaType(histId, command.getSid(), command.getJobTitleCode(), command.getNote());
-		affJobTitleHistoryItemRepository_v1.addJobTitleMain(domain);
+		affJobTitleHistoryItemRepository_v1.add(domain);
 		
 		return new PeregAddCommandResult(histId);
 	}

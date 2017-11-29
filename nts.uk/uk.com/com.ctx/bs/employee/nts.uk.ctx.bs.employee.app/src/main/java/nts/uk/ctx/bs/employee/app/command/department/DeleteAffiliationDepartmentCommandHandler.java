@@ -27,7 +27,7 @@ public class DeleteAffiliationDepartmentCommandHandler extends CommandHandler<De
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00011";
+		return "CS00015";
 	}
 
 	@Override
@@ -49,9 +49,9 @@ public class DeleteAffiliationDepartmentCommandHandler extends CommandHandler<De
 			throw new RuntimeException("Invalid AffDepartmentHistory");
 		}
 		itemHist.get().remove(itemToBeRemoved.get());
-		affDepartmentHistoryRepository.deleteAffDepartment(itemHist.get(), itemToBeRemoved.get());
+		affDepartmentHistoryRepository.delete(itemHist.get(), itemToBeRemoved.get());
 		
-		affDepartmentHistoryItemRepository.deleteAffDepartment(command.getHistoryId());
+		affDepartmentHistoryItemRepository.delete(command.getHistoryId());
 	}
 
 }

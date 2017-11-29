@@ -27,7 +27,7 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00008";
+		return "CS00018";
 	}
 
 	@Override
@@ -52,9 +52,9 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 			throw new RuntimeException("invalid TempAbsenceHistory");
 		}
 		existHist.get().remove(itemToBeDelete.get());
-		temporaryAbsenceHistRepository.deleteTemporaryAbsenceHist(existHist.get(),itemToBeDelete.get());
+		temporaryAbsenceHistRepository.delete(existHist.get(),itemToBeDelete.get());
 		
-		temporaryAbsenceRepository.deleteTemporaryAbsence(command.getHistoyId());
+		temporaryAbsenceRepository.delete(command.getHistoyId());
 	}
 
 }

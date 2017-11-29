@@ -8,10 +8,10 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory_ver1;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
@@ -27,7 +27,7 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00009";
+		return "CS00016";
 	}
 
 	@Override
@@ -53,10 +53,10 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		affJobTitleHistoryRepository_ver1.updateJobTitleMain(existHist.get(), itemToBeUpdate.get());
+		affJobTitleHistoryRepository_ver1.update(existHist.get(), itemToBeUpdate.get());
 	
 		AffJobTitleHistoryItem domain = AffJobTitleHistoryItem.createFromJavaType(command.getHistoryId(), command.getSid(), command.getJobTitleCode(), command.getNote());
-		affJobTitleHistoryItemRepository_v1.updateJobTitleMain(domain);
+		affJobTitleHistoryItemRepository_v1.update(domain);
 	}
 
 }

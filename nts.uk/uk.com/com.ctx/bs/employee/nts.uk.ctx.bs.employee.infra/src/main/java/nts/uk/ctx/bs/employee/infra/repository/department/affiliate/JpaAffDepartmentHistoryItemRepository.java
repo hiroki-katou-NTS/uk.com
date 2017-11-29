@@ -30,12 +30,12 @@ public class JpaAffDepartmentHistoryItemRepository extends JpaRepository impleme
 	
 	
 	@Override
-	public void addAffDepartment(AffDepartmentHistoryItem domain) {
+	public void add(AffDepartmentHistoryItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	public void updateAffDepartment(AffDepartmentHistoryItem domain) {
+	public void update(AffDepartmentHistoryItem domain) {
 		Optional<BsymtAffiDepartmentHistItem> existItem = this.queryProxy().find(domain.getHistoryId(), BsymtAffiDepartmentHistItem.class);
 		if (!existItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiDepartmentHistItem");
@@ -46,7 +46,7 @@ public class JpaAffDepartmentHistoryItemRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public void deleteAffDepartment(String histId) {
+	public void delete(String histId) {
 		Optional<BsymtAffiDepartmentHistItem> existItem = this.queryProxy().find(histId, BsymtAffiDepartmentHistItem.class);
 		if (!existItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiDepartmentHistItem");

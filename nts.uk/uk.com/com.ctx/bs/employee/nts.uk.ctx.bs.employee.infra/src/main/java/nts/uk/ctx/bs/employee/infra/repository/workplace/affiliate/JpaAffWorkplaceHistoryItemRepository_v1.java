@@ -42,12 +42,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 		entity.setLocationCode("");
 	}
 	@Override
-	public void addAffWorkplaceHistory(AffWorkplaceHistoryItem domain) {
+	public void add(AffWorkplaceHistoryItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	public void deleteAffWorkplaceHistory(String histID) {
+	public void delete(String histID) {
 		Optional<BsymtAffiWorkplaceHistItem> existItem = this.queryProxy().find(histID, BsymtAffiWorkplaceHistItem.class);
 		if (!existItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHistItem");
@@ -56,7 +56,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	}
 
 	@Override
-	public void updateAffWorkplaceHistory(AffWorkplaceHistoryItem domain) {
+	public void update(AffWorkplaceHistoryItem domain) {
 		Optional<BsymtAffiWorkplaceHistItem> existItem = this.queryProxy().find(domain.getHistoryId(), BsymtAffiWorkplaceHistItem.class);
 		if (!existItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHistItem");

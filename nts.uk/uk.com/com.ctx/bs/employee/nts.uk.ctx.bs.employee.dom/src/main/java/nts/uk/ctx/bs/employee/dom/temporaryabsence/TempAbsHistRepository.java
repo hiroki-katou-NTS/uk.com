@@ -27,17 +27,17 @@ public interface TempAbsHistRepository {
 	 * ドメインモデル「休職休業」を新規登録する
 	 * @param domain
 	 */
-	void addTemporaryAbsenceHist(TempAbsenceHistory domain);
+	void add(TempAbsenceHistory domain);
 	/**
 	 * 取得した「休職休業」を更新する
 	 * @param domain
 	 */
-	void updateTemporaryAbsenceHist(TempAbsenceHistory domain, DateHistoryItem item);
+	void update(TempAbsenceHistory domain, DateHistoryItem item);
 	
 	/**
 	 * ドメインモデル「休職休業」を削除する
 	 * @param domain
 	 */
-	void deleteTemporaryAbsenceHist(TempAbsenceHistory domain, DateHistoryItem item);
+	void delete(TempAbsenceHistory domain, DateHistoryItem item);
 	
 }

@@ -65,12 +65,12 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	}
 
 	@Override
-	public void addTemporaryAbsence(TempAbsenceHisItem domain) {
+	public void add(TempAbsenceHisItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	public void updateTemporaryAbsence(TempAbsenceHisItem domain) {
+	public void update(TempAbsenceHisItem domain) {
 		Optional<BsymtTempAbsHisItem> tempAbs = this.queryProxy().find(domain.getHistoryId(),
 				BsymtTempAbsHisItem.class);
 
@@ -83,7 +83,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	}
 
 	@Override
-	public void deleteTemporaryAbsence(String histId) {
+	public void delete(String histId) {
 		Optional<BsymtTempAbsHisItem> tempAbs = this.queryProxy().find(histId, BsymtTempAbsHisItem.class);
 
 		if (!tempAbs.isPresent()) {
@@ -104,41 +104,35 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		case LEAVE_OF_ABSENCE:
 			Leave leave = (Leave) domain;
 			return new BsymtTempAbsHisItem(leave.getHistoryId(), leave.getEmployeeId(),
-					leave.getLeaveHolidayType().value, leave.getRemarks().v(), leave.getSoInsPayCategory(), null, null,
-					null, null, null, null, null);
+					leave.getLeaveHolidayType().value, leave.getRemarks().v(), leave.getSoInsPayCategory());
 		case MIDWEEK_CLOSURE:
 			MidweekClosure midweek = (MidweekClosure) domain;
 			return new BsymtTempAbsHisItem(midweek.getHistoryId(), midweek.getEmployeeId(),
 					midweek.getLeaveHolidayType().value, midweek.getRemarks().v(), midweek.getSoInsPayCategory(),
-					midweek.getMultiple() ? 1 : 0, null, null, null, null, null, null);
+					midweek.getMultiple());
 		case AFTER_CHILDBIRTH:
 			AfterChildbirth childBirth = (AfterChildbirth) domain;
 			return new BsymtTempAbsHisItem(childBirth.getHistoryId(), childBirth.getEmployeeId(),
 					childBirth.getLeaveHolidayType().value, childBirth.getRemarks().v(),
-					childBirth.getSoInsPayCategory(), null, childBirth.getFamilyMemberId(), null, null, null, null,
-					null);
+					childBirth.getSoInsPayCategory(),childBirth.getFamilyMemberId());
 		case CHILD_CARE_NURSING:
 			ChildCareHoliday childCare = (ChildCareHoliday) domain;
 			return new BsymtTempAbsHisItem(childCare.getHistoryId(), childCare.getEmployeeId(),
-					childCare.getLeaveHolidayType().value, childCare.getRemarks().v(), childCare.getSoInsPayCategory(),
-					null, childCare.getFamilyMemberId(), childCare.getSameFamily() ? 1 : 0, childCare.getChildType(),
-					childCare.getCreateDate(), childCare.getSpouseIsLeave() ? 1 : 0, null);
+					childCare.getLeaveHolidayType().value, childCare.getRemarks().v(), childCare.getSoInsPayCategory(), childCare.getSameFamily(), childCare.getChildType(),childCare.getFamilyMemberId(), 
+					childCare.getCreateDate(), childCare.getSpouseIsLeave());
 		case NURSING_CARE_LEAVE:
 			CareHoliday careLeave = (CareHoliday) domain;
 			return new BsymtTempAbsHisItem(careLeave.getHistoryId(), careLeave.getEmployeeId(),
-					careLeave.getLeaveHolidayType().value, careLeave.getRemarks().v(), careLeave.getSoInsPayCategory(),
-					null, careLeave.getFamilyMemberId(), careLeave.getSameFamily() ? 1 : 0, null, null, null,
-					careLeave.getSameFamilyDays());
+					careLeave.getLeaveHolidayType().value, careLeave.getRemarks().v(), careLeave.getSoInsPayCategory(), careLeave.getSameFamily() ,
+					careLeave.getSameFamilyDays(), careLeave.getFamilyMemberId());
 		case SICK_LEAVE:
 			SickLeave sickLeave = (SickLeave) domain;
 			return new BsymtTempAbsHisItem(sickLeave.getHistoryId(), sickLeave.getEmployeeId(),
-					sickLeave.getLeaveHolidayType().value, sickLeave.getRemarks().v(), sickLeave.getSoInsPayCategory(),
-					null, null, null, null, null, null, null);
+					sickLeave.getLeaveHolidayType().value, sickLeave.getRemarks().v(), sickLeave.getSoInsPayCategory());
 		case ANY_LEAVE:
 			AnyLeave anyLeave = (AnyLeave) domain;
 			return new BsymtTempAbsHisItem(anyLeave.getHistoryId(), anyLeave.getEmployeeId(),
-					anyLeave.getLeaveHolidayType().value, anyLeave.getRemarks().v(), anyLeave.getSoInsPayCategory(),
-					null, null, null, null, null, null, null);
+					anyLeave.getLeaveHolidayType().value, anyLeave.getRemarks().v(), anyLeave.getSoInsPayCategory());
 		default:
 			return null;
 		}
@@ -152,7 +146,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	 * @return
 	 */
 	private void updateEntity(TempAbsenceHisItem domain, BsymtTempAbsHisItem entity) {
-
+		// Common value
 		entity.histId = domain.getHistoryId();
 		entity.sid = domain.getEmployeeId();
 		entity.leaveHolidayAtr = domain.getLeaveHolidayType().value;

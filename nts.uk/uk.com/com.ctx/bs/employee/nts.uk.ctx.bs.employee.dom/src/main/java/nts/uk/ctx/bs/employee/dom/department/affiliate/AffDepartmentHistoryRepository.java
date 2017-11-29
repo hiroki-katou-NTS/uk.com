@@ -15,15 +15,15 @@ public interface AffDepartmentHistoryRepository {
 	 * ドメインモデル「所属部門」を新規登録する
 	 * @param domain
 	 */
-	void addAffDepartment(AffDepartmentHistory domain);
+	void add(AffDepartmentHistory domain);
 	/**
 	 * 取得した「所属部門」を更新する
 	 * @param domain
 	 */
-	void updateAffDepartment(AffDepartmentHistory domain, DateHistoryItem item);
+	void update(AffDepartmentHistory domain, DateHistoryItem item);
 	/**
 	 * ドメインモデル「所属部門（兼務）」を削除する
 	 * @param domain
 	 */
-	void deleteAffDepartment(AffDepartmentHistory domain, DateHistoryItem item);
+	void delete(AffDepartmentHistory domain, DateHistoryItem item);
 }

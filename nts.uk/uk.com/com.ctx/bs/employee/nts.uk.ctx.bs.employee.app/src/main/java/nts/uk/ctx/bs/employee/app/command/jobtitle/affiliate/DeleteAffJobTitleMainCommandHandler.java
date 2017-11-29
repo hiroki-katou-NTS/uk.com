@@ -8,9 +8,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory_ver1;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 @Stateless
@@ -25,7 +25,7 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00009";
+		return "CS00016";
 	}
 
 	@Override
@@ -51,9 +51,9 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 		}
 		existHist.get().remove(itemToBeDelete.get());
 		
-		affJobTitleHistoryRepository_ver1.deleteJobTitleMain(existHist.get(), itemToBeDelete.get());
+		affJobTitleHistoryRepository_ver1.delete(existHist.get(), itemToBeDelete.get());
 		
-		affJobTitleHistoryItemRepository_v1.deleteJobTitleMain(command.getHistId());
+		affJobTitleHistoryItemRepository_v1.delete(command.getHistId());
 	}
 
 }
