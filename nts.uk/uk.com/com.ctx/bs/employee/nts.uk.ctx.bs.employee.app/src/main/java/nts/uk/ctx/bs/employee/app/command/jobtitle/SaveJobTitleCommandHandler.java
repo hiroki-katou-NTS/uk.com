@@ -34,15 +34,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleCommand> {
 
-	/** The Constant DATE_FORMAT. */
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
-
-	/** The Constant MIN_DATE. */
-	private static final String MIN_DATE = "1900/01/01";
-
-	/** The Constant MAX_DATE. */
-	private static final String MAX_DATE = "9999/12/31";
-
 	/** The job title repository. */
 	@Inject
 	private JobTitleRepository jobTitleRepository;
@@ -132,8 +123,7 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 
 		// Insert JobTitle history
 		JobTitleHistoryDto newJobTitleHistoryDto = new JobTitleHistoryDto();
-		newJobTitleHistoryDto.setPeriod(new PeriodDto(GeneralDate.fromString(MIN_DATE, DATE_FORMAT),
-				GeneralDate.fromString(MAX_DATE, DATE_FORMAT)));
+		newJobTitleHistoryDto.setPeriod(new PeriodDto(GeneralDate.min(), GeneralDate.max()));
 
 		JobTitleDto newJobTitleDto = new JobTitleDto();
 		newJobTitleDto.setJobTitleHistory(newJobTitleHistoryDto);
