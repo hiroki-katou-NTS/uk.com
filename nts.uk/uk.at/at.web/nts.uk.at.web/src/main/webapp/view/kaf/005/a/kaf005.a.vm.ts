@@ -208,10 +208,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }
             self.workTypecodes(data.workTypes);
             self.workTimecodes(data.siftTypes);
-            self.timeStart1(data.workClockFrom1);
-            self.timeEnd1(data.workClockFrom2);
-            self.timeStart2(data.workClockTo1);
-            self.timeEnd2(data.workClockTo2);
+            self.timeStart1(data.workClockFrom1 == -1 ? null : data.workClockFrom1);
+            self.timeEnd1(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
+            self.timeStart2(data.workClockTo1 == -1 ? null : data.workClockTo1);
+            self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
             if(data.applicationReasonDtos != null){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -495,10 +495,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             siftCD: self.siftCD()
                         }
                     ).done(data => {
-                        self.timeStart1(data.startTime1);
-                        self.timeEnd1(data.endTime1);
-                        self.timeStart2(data.startTime2);
-                        self.timeEnd2(data.endTime2);    
+                        self.timeStart1(data.startTime1 == -1 ? null : data.startTime1);
+                        self.timeEnd1(data.endTime1 == -1 ? null : data.endTime1);
+                        self.timeStart2(data.startTime2 == -1 ? null : data.startTime2);
+                        self.timeEnd2(data.endTime2 == -1 ? null : data.endTime2);    
                     });
                 }
             })
