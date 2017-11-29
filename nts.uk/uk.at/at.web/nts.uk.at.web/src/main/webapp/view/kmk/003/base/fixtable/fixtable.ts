@@ -134,6 +134,8 @@ module kmk003.base.fixtable {
         mapControl: Array<IControl>;
         tabindex: number;
         
+        tableId: string;
+        
         constructor() {
             let self = this;
             
@@ -149,6 +151,8 @@ module kmk003.base.fixtable {
             };
             self.lstDataSource = {};
             self.mapControl = self.createMapControl();
+            
+            self.tableId = "nts-fixed-table-custom-" + nts.uk.util.randomId();
             
             // subscribe
             self.isSelectAll.subscribe(newValue => {
@@ -275,6 +279,10 @@ module kmk003.base.fixtable {
                 // render table
                 self.renderTable().done(() => {
                     ko.cleanNode($input[0]);
+                    
+                    // update table id
+                    $('#fixed-table-custom').attr('id', self.tableId);
+                    
                     ko.applyBindings(self, $input[0]);
                     
                     // override width control
