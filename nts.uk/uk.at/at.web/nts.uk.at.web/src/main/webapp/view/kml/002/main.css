@@ -151,7 +151,7 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .item-name {
-	width: 120px;
+	width: 120px !important;
 }
 
 .display-atr {
