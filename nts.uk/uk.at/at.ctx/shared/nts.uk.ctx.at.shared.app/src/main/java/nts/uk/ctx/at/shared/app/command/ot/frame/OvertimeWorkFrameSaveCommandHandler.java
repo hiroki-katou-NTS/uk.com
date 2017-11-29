@@ -39,15 +39,13 @@ public class OvertimeWorkFrameSaveCommandHandler extends CommandHandler<Overtime
 		OvertimeWorkFrameSaveCommand command = context.getCommand();
 		
 		for (OvertimeWorkFrameCommandDto item : command.getListData()) {
-			if (item.getUseAtr() == 1){
-				Optional<OvertimeWorkFrame> optPlanYearHdFr = this.repository.findOvertimeWorkFrame(new CompanyId(companyId), item.getOvertimeWorkFrNo());
-				OvertimeWorkFrame overtimeWorkFrame = new OvertimeWorkFrame(item);
-				if(optPlanYearHdFr.isPresent()){
-					this.repository.update(overtimeWorkFrame);
-				}else {
-					this.repository.add(overtimeWorkFrame);
-				}
+			Optional<OvertimeWorkFrame> optPlanYearHdFr = this.repository.findOvertimeWorkFrame(new CompanyId(companyId), item.getOvertimeWorkFrNo());
+			if (item.getUseAtr() == 0){
+				item.setTransferFrName(optPlanYearHdFr.get().getTransferFrName().v());
+				item.setOvertimeWorkFrName(optPlanYearHdFr.get().getOvertimeWorkFrName().v());
 			}
+			OvertimeWorkFrame overtimeWorkFrame = new OvertimeWorkFrame(item);
+			this.repository.update(overtimeWorkFrame);
 		}
 	}
 

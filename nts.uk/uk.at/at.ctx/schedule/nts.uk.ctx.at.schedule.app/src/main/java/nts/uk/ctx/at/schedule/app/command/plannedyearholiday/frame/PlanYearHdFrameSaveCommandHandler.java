@@ -38,15 +38,13 @@ public class PlanYearHdFrameSaveCommandHandler extends CommandHandler<PlanYearHd
 		PlanYearHdFrameSaveCommand command = context.getCommand();
 		
 		for (PlanYearHdFrameCommandDto item : command.getListData()) {
-			if (item.getUseAtr() == 1){
-				Optional<PlanYearHolidayFrame> optPlanYearHdFr = this.repository.findPlanYearHolidayFrame(new CompanyId(companyId), item.getPlanYearHdFrameNo());
-				PlanYearHolidayFrame planYearHolidayFrame = new PlanYearHolidayFrame(item);
-				if(optPlanYearHdFr.isPresent()){
-					this.repository.update(planYearHolidayFrame);
-				}else {
-					this.repository.add(planYearHolidayFrame);
-				}
+			Optional<PlanYearHolidayFrame> optPlanYearHdFr = this.repository.findPlanYearHolidayFrame(new CompanyId(companyId), item.getPlanYearHdFrameNo());
+			if (item.getUseAtr() == 0){
+				item.setPlanYearHdFrameName(optPlanYearHdFr.get().getPlanYearHolidayFrName().v());	
 			}
+			
+			PlanYearHolidayFrame planYearHolidayFrame = new PlanYearHolidayFrame(item);
+			this.repository.update(planYearHolidayFrame);
 		}
 	}
 

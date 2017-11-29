@@ -29,10 +29,10 @@ module nts.uk.com.view.cmm007.c {
      */
     export module model {
         export class TempAbsenceFrameDto{
-            companyId: string,
-            tempAbsenceFrNo: number, 
-            useClassification: number, 
-            tempAbsenceFrName: string
+            companyId: string;
+            tempAbsenceFrNo: number; 
+            useClassification: number; 
+            tempAbsenceFrName: string;
             
             constructor(companyId: string, tempAbsenceFrNo: number, useClassification: number, tempAbsenceFrName: string){
                 this.companyId = companyId;

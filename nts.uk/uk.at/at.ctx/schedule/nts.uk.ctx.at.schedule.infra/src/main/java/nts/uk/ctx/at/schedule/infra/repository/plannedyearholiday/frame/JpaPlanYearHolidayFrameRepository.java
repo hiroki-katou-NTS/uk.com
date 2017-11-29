@@ -16,7 +16,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrame;
@@ -31,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class JpaPlanYearHolidayFrameRepository.
  */
 @Stateless
-@Transactional
 public class JpaPlanYearHolidayFrameRepository extends JpaRepository
 	implements PlanYearHolidayFrameRepository {
 
