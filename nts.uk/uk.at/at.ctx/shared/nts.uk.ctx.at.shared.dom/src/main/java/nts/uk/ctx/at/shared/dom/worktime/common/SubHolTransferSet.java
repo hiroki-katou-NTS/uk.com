@@ -6,21 +6,27 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 
+/**
+ * The Class SubHolTransferSet.
+ */
 //代休振替設定
 @Getter
 public class SubHolTransferSet extends DomainObject{
 	
+	/** The certain time. */
 	//一定時間
 	private OneDayTime certainTime;
 	
+	/** The use division. */
 	//使用区分
 	private boolean useDivision;
 	
+	/** The designated time. */
 	//指定時間
 	private DesignatedTime designatedTime;
 	
+	/** The Sub hol transfer set atr. */
 	//振替区分
 	private SubHolTransferSetAtr SubHolTransferSetAtr;
 }

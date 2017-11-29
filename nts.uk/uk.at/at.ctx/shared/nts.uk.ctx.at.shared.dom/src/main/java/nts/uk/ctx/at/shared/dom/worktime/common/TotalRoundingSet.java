@@ -11,12 +11,6 @@ import nts.arc.layer.dom.DomainObject;
  * The Class TotalRoundingSet.
  */
 //合計丸め設定
-
-/**
- * Gets the frame stradd rounding set.
- *
- * @return the frame stradd rounding set
- */
 @Getter
 public class TotalRoundingSet extends DomainObject {
 

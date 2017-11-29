@@ -16,23 +16,23 @@ public enum StampPiorityAtr {
 
 	/** The leave work. */
 	// 退勤
-	LEAVE_WORK(0, "Enum_StampPiorityAtr_allEmployee", "退勤"),
+	LEAVE_WORK(1, "Enum_StampPiorityAtr_allEmployee", "退勤"),
 
 	/** The entering. */
 	// 入門
-	ENTERING(0, "Enum_StampPiorityAtr_allEmployee", "入門"),
+	ENTERING(2, "Enum_StampPiorityAtr_allEmployee", "入門"),
 
 	/** The exit. */
 	// 退門
-	EXIT(0, "Enum_StampPiorityAtr_allEmployee", "退門"),
+	EXIT(3, "Enum_StampPiorityAtr_allEmployee", "退門"),
 
 	/** The pclogin. */
 	// PCログイン
-	PCLOGIN(0, "Enum_StampPiorityAtr_pcLogin", "PCログイン"),
+	PCLOGIN(4, "Enum_StampPiorityAtr_pcLogin", "PCログイン"),
 
 	/** The pc logout. */
 	// PCログオフ
-	PC_LOGOUT(1, "Enum_StampPiorityAtr_pcLogout", "PCログオフ");
+	PC_LOGOUT(5, "Enum_StampPiorityAtr_pcLogout", "PCログオフ");
 
 	/** The value. */
 	public final int value;
