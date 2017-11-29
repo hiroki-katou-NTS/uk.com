@@ -29,6 +29,10 @@ public class WorkChangeBasicData {
 	 */
 	private String sID;
 	/**
+	 * 共通設定.複数回勤務
+	 */
+	private boolean isMultipleTime;
+	/**
 	 * 定型理由のリストにセットするため
 	 */
 	private List<ApplicationReason> listAppReason;

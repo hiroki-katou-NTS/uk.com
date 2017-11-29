@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -16,6 +18,8 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -26,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
@@ -40,6 +45,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.AtWorkAtr;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayBreakTime;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayFlg;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
@@ -60,8 +66,10 @@ import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrameRepository;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class OvertimePreProcessImpl implements IOvertimePreProcess{
@@ -110,6 +118,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	@Inject
 	private WorkTimeSetRepository workTimeSetRepository;
 	
+	@Inject
+	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	
 	
 	@Override
 	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID) {
@@ -121,9 +132,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
 					OverTimeInstruct overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
 					if(overtimeInstruct != null){
+						TimeWithDayAttr startTime = new TimeWithDayAttr(overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
+						TimeWithDayAttr endTime = new TimeWithDayAttr(overtimeInstruct.getEndClock() == null ? -1 :  overtimeInstruct.getEndClock().v());
 						overtimeInstructInformation.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() 
-								+" "+ convert(overtimeInstruct.getStartClock().v())
-								+"~"+ convert(overtimeInstruct.getEndClock().v()) 
+								+" "+ startTime.getDayDivision().description + " " + convert(overtimeInstruct.getStartClock().v())
+								+"~"+ endTime.getDayDivision().description + " " + convert(overtimeInstruct.getEndClock().v())
 								+" "+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson())
 								+" ("+employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
 					}else{
@@ -170,16 +183,83 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public void getWorkingHours(String companyID, String employeeID, String appDate,
-			RequestAppDetailSetting requestAppDetailSetting) {
-		if(requestAppDetailSetting != null){
-			if(appDate != null){
-				int atWorkAtr = requestAppDetailSetting.getAtworkTimeBeginDisFlg().value;
-				if(atWorkAtr == AtWorkAtr.DISPLAY.value){
-					// team anh lương
-				}
-			}
+	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, String appDate,
+			RequestAppDetailSetting requestAppDetailSetting, String siftCD) {
+		UseAtr recordWorkDisplay = UseAtr.NOTUSE;
+		Integer startTime1 = -1;
+		Integer endTime1 = -1;
+		Integer startTime2 = -1;
+		Integer endTime2 = -1;
+		if(requestAppDetailSetting.timeCalUseAtr.equals(UseAtr.NOTUSE)){
+			return new RecordWorkOutput(recordWorkDisplay,startTime1,endTime1,startTime2,endTime2);
 		}
+		recordWorkDisplay = UseAtr.USE;
+		if(appDate == null){
+			return new RecordWorkOutput(recordWorkDisplay,startTime1,endTime1,startTime2,endTime2);
+		}
+		
+		AtWorkAtr atWorkAtr = requestAppDetailSetting.getAtworkTimeBeginDisFlg();
+		switch (atWorkAtr) {
+			case NOTDISPLAY: {
+				break;
+			}
+			case DISPLAY: {
+				// 01-14-2_実績から出退勤を初期表示
+				RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
+				startTime1 = recordWorkInfoImport.getAttendanceStampTimeFirst();
+				endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
+				startTime2 = recordWorkInfoImport.getAttendanceStampTimeSecond();
+				endTime2 = recordWorkInfoImport.getLeaveStampTimeSecond();
+				break;
+			}
+			case AT_START_WORK_OFF_PERFORMANCE: {
+				// 01-14-3_始業時刻、退勤時刻を初期表示
+				RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
+				Optional<WorkTimeSet> workTimeSet = workTimeSetRepository.findByCode(companyID, siftCD);
+				if(workTimeSet.isPresent()){
+					if(workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().size()>1){
+						startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(1).getStart().v();
+					}
+					if(workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().size()>0){
+						startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(0).getStart().v();
+					}
+				}
+				if(recordWorkInfoImport.getLeaveStampTimeFirst()==-1){
+					if(requestAppDetailSetting.getTimeEndDispFlg().equals(DisplayBreakTime.SYSTEM_TIME)){
+						endTime1 = GeneralDateTime.now().hours()*60+GeneralDateTime.now().minutes();
+					}
+				} else {
+					endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
+				}
+				if(recordWorkInfoImport.getLeaveStampTimeSecond()==-1){
+					if(requestAppDetailSetting.getTimeEndDispFlg().equals(DisplayBreakTime.SYSTEM_TIME)){
+						endTime2 = GeneralDateTime.now().hours()*60+GeneralDateTime.now().minutes();
+					}
+				} else {
+					endTime2 = recordWorkInfoImport.getLeaveStampTimeSecond();
+				}
+				break;
+			}
+			case AT_START_WORK_OFF_ENDWORK: {
+				// 01-14-4_始業時刻、終業時刻を初期表示
+				Optional<WorkTimeSet> workTimeSet = workTimeSetRepository.findByCode(companyID, siftCD);
+				if(workTimeSet.isPresent()){
+					if(workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().size()>1){
+						startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(1).getStart().v();
+						endTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(1).getEnd().v();
+					}
+					if(workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().size()>0){
+						startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(0).getStart().v();
+						endTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(0).getEnd().v();
+					}
+				}
+				break;
+			}
+			default:
+				break;
+		}
+		
+		return new RecordWorkOutput(recordWorkDisplay,startTime1,endTime1,startTime2,endTime2);
 	}
 
 	@Override
@@ -225,7 +305,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 		if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 			// アルゴリズム「社員所属職場履歴を取得」を実行する
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
-			//アルゴリズム「職場の特定日設定を取得する」を実行する (hung lam)
+			//アルゴリズム「職場の特定日設定を取得する」を実行する
 			if(sWkpHistImport != null){
 				wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
@@ -234,7 +314,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 			for(BonusPayTimeItem bonusItem : bonusPayTimeItems){
 				result.add(bonusItem);
 			}
-			if(wpSpecificDateSettingImport.getNumberList() != null){
+			if(!CollectionUtil.isEmpty(wpSpecificDateSettingImport.getNumberList())){
 				List<BonusPayTimeItem> bonusPayTimeItemSpecs = this.bPTimeItemRepository.getListSpecialBonusPayTimeItemInUse(companyID);
 				for(BonusPayTimeItem bonusItem : bonusPayTimeItemSpecs){
 					result.add(bonusItem);

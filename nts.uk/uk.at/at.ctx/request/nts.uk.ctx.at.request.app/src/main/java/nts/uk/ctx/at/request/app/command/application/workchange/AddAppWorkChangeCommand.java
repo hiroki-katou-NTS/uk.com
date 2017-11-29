@@ -11,15 +11,15 @@ public class AddAppWorkChangeCommand {
 	/**
 	 * 勤務変更申請
 	 */
-	AppWorkChangeCommand workChangeCommand;
+	AppWorkChangeCommand workChange;
 		
 	/**
 	 * 申請
 	 */
-	CreateApplicationCommand appCommand;
+	CreateApplicationCommand application;
 
 	/**
 	 * Approval Phase
 	 */
-	List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
+	List<AppApprovalPhaseCmd> appApprovalPhases;
 }

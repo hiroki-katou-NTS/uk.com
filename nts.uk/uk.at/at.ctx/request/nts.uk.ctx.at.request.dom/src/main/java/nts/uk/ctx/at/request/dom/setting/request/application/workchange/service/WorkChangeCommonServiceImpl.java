@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.request.application.workchange.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,6 +15,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -37,26 +40,32 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	@Inject
 	private StartApprovalRootService startApprovalRootService;
 
+	@Inject 
+	WorkManagementMultipleRepository workManagerRepo;
+	
 	@Override
-	public WorkChangeBasicData getSettingData(String SID) {
-		String companyID = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
+	public WorkChangeBasicData getSettingData(String companyId, String sId) {		
 		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
-				SID, 1, ApplicationType.WORK_CHANGE_APPLICATION, null);
+		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyId,
+				sId, 1, ApplicationType.WORK_CHANGE_APPLICATION, null);
 
 		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
-		startApprovalRootService.getApprovalRootPattern(companyID, employeeId, 1,
+		startApprovalRootService.getApprovalRootPattern(companyId, sId, 1,
 				ApplicationType.WORK_CHANGE_APPLICATION.value, null);
 
 		// アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
 		startCheckErrorService.checkError(ApplicationType.WORK_CHANGE_APPLICATION.value);
 
 		// アルゴリズム「勤務変更申請基本データ（新規）」を実行する
-		WorkChangeBasicData wcBasicData = getWorkChangeBasicData(companyID);
+		WorkChangeBasicData wcBasicData = getWorkChangeBasicData(companyId);
 		// 申請共通設定
 		wcBasicData.setAppCommonSettingOutput(appCommonSetting);
 
+		// 共通設定.複数回勤務
+		Optional<WorkManagementMultiple> workManagement = workManagerRepo.findByCode(companyId);
+		if (workManagement.isPresent()) {
+			wcBasicData.setMultipleTime(workManagement.get().getUseATR().value == 1 ? true : false);
+		}
 		// 勤務変更申請基本データ
 		return wcBasicData;
 	}
@@ -66,7 +75,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		WorkChangeBasicData wcBasicData = new WorkChangeBasicData();
 
 		// ドメインモデル「勤務変更申請設定」より取得する
-		wcBasicData.setWorkChangeCommonSetting(workChangeRepository.findWorkChangeByID(cid));
+		wcBasicData.setWorkChangeCommonSetting(workChangeRepository.findWorkChangeSetByID(cid));
 
 		// アルゴリズム「社員IDから社員を取得する」を実行する
 		String employeeName = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());

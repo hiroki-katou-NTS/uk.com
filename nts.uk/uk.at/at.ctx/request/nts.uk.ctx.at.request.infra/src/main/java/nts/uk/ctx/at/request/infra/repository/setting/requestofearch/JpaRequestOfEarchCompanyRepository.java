@@ -73,7 +73,8 @@ public class JpaRequestOfEarchCompanyRepository extends JpaRepository implements
 				c.requiredInstructionFlg,
 				c.instructionAtr,
 				c.instructionMemo,
-				c.instructionUseAtr);
+				c.instructionUseAtr,
+				c.timeEndDispFlg);
 	}
 
 }
