@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtAffiDepartmentHist;
@@ -18,6 +19,9 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	private final String QUERY_GET_AFFDEPARTMENT_BYSID = "select ad "
 			+ "from BsymtAffiDepartmentHist ad "
 			+ "where ad.sid = :sid order by ad.strDate";
+	
+	private static final String SELECT_BY_EMPID_HISTID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
+			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate <= ad.endDate";
 	
 	private AffDepartmentHistory toAffDepartment(String sId, List<BsymtAffiDepartmentHist> listHist){
 		AffDepartmentHistory affDepart = new AffDepartmentHistory(sId, new ArrayList<>());
@@ -132,5 +136,16 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		}
 		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
+	}
+
+	@Override
+	public Optional<AffDepartmentHistory> getAffDeptHistByEmpHistStandDate(String employeeId, GeneralDate standardDate) {
+		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(SELECT_BY_EMPID_HISTID_STANDARDDATE,BsymtAffiDepartmentHist.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("standardDate", standardDate).getList();
+		if (!listHist.isEmpty()){
+			return Optional.of(toAffDepartment(employeeId,listHist));
+		}
+		return Optional.empty();
 	}
 }

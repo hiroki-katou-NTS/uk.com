@@ -8,52 +8,62 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
+import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
+
+/**
+ * AffDeptHistDto
+ * 所属部門履歴 and 所属部門履歴項目
+ * CS00015
+ * @author xuan vinh
+ *
+ */
+
 
 @Getter
 @Setter
 class AffDeptHistDto extends PeregDomainDto{
 	
-	/** The history Id. */
-	// 履歴ID
-	private String historyId;
+	//期間
+	@PeregItem("IS00070")
+	private String period;
+	
+	//発令日
+	@PeregItem("IS00071")
+	private GeneralDate startDate;
+	
+	//終了日
+	@PeregItem("IS00072")
+	private GeneralDate endDate;
 	
 	/** The department code. */
 	/* 部門コード */
+	@PeregItem("IS00073")
 	private String departmentCode;
 
 	/** The Affiliation History Transfer type. */
 	// 所属履歴異動種類
+	@PeregItem("IS00074")
 	private String affHistoryTranfsType;
 
-	/** The Employee Id. */
-	// 社員ID
+	// 分配率
+	@PeregItem("IS00075")
 	private String distributionRatio;
-	
-	//期間
-	private String period;
-	
-	//発令日
-	private GeneralDate startDate;
-	
-	//終了日
-	private GeneralDate endDate;
-	
+		
 	private AffDeptHistDto(String recordId, String employeeId) {
 		super(recordId, employeeId, null);
 	}
 	
-	public AffDeptHistDto getFirstFromDomain(AffDepartmentHistory affDeptHist, AffDepartmentHistoryItem affDeptHistItem){
+	public static AffDeptHistDto getFirstFromDomain(AffDepartmentHistory affDeptHist, AffDepartmentHistoryItem affDeptHistItem){
 		return getBaseOnDateHist(affDeptHistItem, affDeptHist.getHistoryItems().get(0).start(), affDeptHist.getHistoryItems().get(0).end());
 	}
 	
-	public List<AffDeptHistDto> getListFromDomain(AffDepartmentHistory affDeptHist, AffDepartmentHistoryItem affDeptHistItem){
+	public static List<AffDeptHistDto> getListFromDomain(AffDepartmentHistory affDeptHist, AffDepartmentHistoryItem affDeptHistItem){
 		return affDeptHist.getHistoryItems().stream().map(item -> getBaseOnDateHist(affDeptHistItem, item.start(), item.end())).collect(Collectors.toList());
 	}
 	
-	private AffDeptHistDto getBaseOnDateHist( AffDepartmentHistoryItem affDeptHistItem, GeneralDate startDate, GeneralDate endDate){
+	private static AffDeptHistDto getBaseOnDateHist( AffDepartmentHistoryItem affDeptHistItem, GeneralDate startDate, GeneralDate endDate){
 		AffDeptHistDto dto = new AffDeptHistDto(affDeptHistItem.getHistoryId(), affDeptHistItem.getEmployeeId());
-		dto.setHistoryId(affDeptHistItem.getHistoryId());
 		dto.setDepartmentCode(affDeptHistItem.getDepartmentCode().v());
 		dto.setAffHistoryTranfsType(affDeptHistItem.getAffHistoryTranfsType());
 		dto.setDistributionRatio(affDeptHistItem.getDistributionRatio().v());

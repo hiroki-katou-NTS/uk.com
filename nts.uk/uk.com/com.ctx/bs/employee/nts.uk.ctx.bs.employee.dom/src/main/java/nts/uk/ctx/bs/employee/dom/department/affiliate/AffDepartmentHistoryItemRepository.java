@@ -1,6 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.department.affiliate;
 
+import java.util.Optional;
+
 public interface AffDepartmentHistoryItemRepository {
+	
+	Optional<AffDepartmentHistoryItem> getByHistId(String historyId);
 	
 	/**
 	 * ドメインモデル「所属部門」を新規登録する

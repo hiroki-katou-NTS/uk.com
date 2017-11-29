@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AffWorkplaceHistoryItemRepository_v1 {
 	/**
@@ -21,4 +22,6 @@ public interface AffWorkplaceHistoryItemRepository_v1 {
 	void update(AffWorkplaceHistoryItem domain);
 	
 	List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpId(String employeeId);
+	
+	Optional<AffWorkplaceHistoryItem> getByHistId(String historyId);
 }

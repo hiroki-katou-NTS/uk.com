@@ -11,6 +11,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHist;
@@ -25,6 +26,8 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID = "select aw "
 			+ "from BsymtAffiWorkplaceHist aw "
 			+ "where aw.sid = :sid order by aw.strDate";
+	private static final String SELECT_BY_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate <= aw.endDate";
 	
 	/**
 	 * Convert from domain to entity
@@ -155,6 +158,17 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		}
 		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
+	}
+
+	@Override
+	public Optional<AffWorkplaceHistory_ver1> getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_EMPID_STANDDATE,BsymtAffiWorkplaceHist.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("standDate", standDate).getList();
+		if (!listHist.isEmpty()){
+			return Optional.of(toDomainTemp(employeeId, listHist));
+		}
+		return Optional.empty();
 	}
 	
 }

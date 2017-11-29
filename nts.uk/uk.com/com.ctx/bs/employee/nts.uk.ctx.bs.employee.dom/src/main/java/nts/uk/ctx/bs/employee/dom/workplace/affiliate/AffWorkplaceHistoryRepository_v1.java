@@ -6,12 +6,20 @@ package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * The Interface AffiliationWorkplaceHistoryRepository.
  */
 public interface AffWorkplaceHistoryRepository_v1 {
+	/**
+	 * get AffWorkplaceHistory_ver1 by employee id and stand date
+	 * @param employeeId
+	 * @param generalDate
+	 * @return AffWorkplaceHistory_ver1
+	 */
+	Optional<AffWorkplaceHistory_ver1> getByEmpIdAndStandDate(String employeeId, GeneralDate generalDate);
 	
 	Optional<AffWorkplaceHistory_ver1> getAffWorkplaceHistByEmployeeId(String employeeId);
 	/**

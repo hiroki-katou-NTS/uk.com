@@ -2,9 +2,20 @@ package nts.uk.ctx.bs.employee.dom.department.affiliate;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 public interface AffDepartmentHistoryRepository {
+	/**
+	 *  get AffDepartmentHistory by employeeId, historyId and standard date
+	 *  
+	 * @param employeeId
+	 * @param historyId
+	 * @param standardDate
+	 * @return AffDepartmentHistory domain
+	 */
+	Optional<AffDepartmentHistory> getAffDeptHistByEmpHistStandDate(String employeeId, GeneralDate standardDate);
+	
 	/**
 	 * Get affiliation department history by employeeid
 	 * @param employeeId
