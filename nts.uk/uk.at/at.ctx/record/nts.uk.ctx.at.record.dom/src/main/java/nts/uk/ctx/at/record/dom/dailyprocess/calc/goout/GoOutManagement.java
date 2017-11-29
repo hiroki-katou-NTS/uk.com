@@ -2,15 +2,17 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.goout;
 
 import java.util.List;
 
+import lombok.Getter;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeSheetOfDailyWork;
 
 /**
  * 外出管理
  * @author keisuke_hoshina
  *
  */
+@Getter
 public class GoOutManagement {
-	private List<GoOutTimeSheetOfDailyWork> dailyWorkOfGoOutTimeSheet;
+	private List<OutingTimeOfDailyPerformance> dailyWorkOfGoOutTimeSheet;
 	private GoOutTimeOfDaily dailyOfGoOutTime;
 }

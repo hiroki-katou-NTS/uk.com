@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly;
+package nts.uk.ctx.at.shared.dom.worktime.CommomSetting.lateleaveearlysetting;
 
 import lombok.Value;
 
@@ -9,8 +9,10 @@ import lombok.Value;
  */
 @Value
 public class LateLeaveEarlySettingOfWorkTime {
-	private LateLeaveEarlyEachSettingOfWorkTime lateSettingOfWorkTime;
-	private LateLeaveEarlyEachSettingOfWorkTime leaveEarlyEachSettingOfWorkTime;
+//	private LateLeaveEarlyEachSettingOfWorkTime lateSettingOfWorkTime;
+//	private LateLeaveEarlyEachSettingOfWorkTime leaveEarlyEachSettingOfWorkTime;
+	private OtherEmTimezoneLateEarlySet lateSet;
+	private OtherEmTimezoneLateEarlySet leaveEarlySet;
 	private LateLeaveEarlyCommonSettingOfWorkTime commonSetting;
 }
 

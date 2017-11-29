@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.daily.CalcAtrOfDaily;
 
 /**

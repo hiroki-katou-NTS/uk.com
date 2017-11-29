@@ -17,5 +17,15 @@ public enum ChildCareAttribute {
 	CARE(1);
 	
 	public final int value;
+	
+	/**
+	 * 育児か判定する
+	 * @author ken_takasu
+	 * @return 育児
+	 */
+	public boolean isChildCare() {
+		return CHILD_CARE.equals(this);
+	}
+	
 
 }

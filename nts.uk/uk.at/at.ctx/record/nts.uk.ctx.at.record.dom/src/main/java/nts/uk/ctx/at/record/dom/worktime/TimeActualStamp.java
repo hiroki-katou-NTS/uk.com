@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
+import java.util.Optional;
+
 import lombok.Getter;
 
 /**
@@ -13,7 +15,7 @@ public class TimeActualStamp {
 	
 	private WorkStamp actualStamp;
 	
-	private WorkStamp stamp;
+	private Optional<WorkStamp> stamp;
 	
 	private int numberOfReflectionStamp;
 }

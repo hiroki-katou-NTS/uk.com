@@ -1,19 +1,27 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.StampGoOutReason;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.DeductionAtr;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
@@ -26,10 +34,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
-	private Finally<GoingOutReason> goOutReason;
-	private Finally<BreakClassification> breakAtr;
+	private Optional<GoingOutReason> goOutReason;
+	private Optional<BreakClassification> breakAtr;
 	private final DeductionClassification deductionAtr;
-	private final WithinStatutoryAtr withinStatutoryAtr;
 	
 //	private final DedcutionClassification deductionClassification;
 //	private final BreakClassification breakClassification;
@@ -46,17 +53,15 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 									,TimeSpanForCalc timeSpan
 									,List<TimeSheetOfDeductionItem> deductionTimeSheets
 									,List<BonusPayTimesheet> bonusPayTimeSheet
-									,List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet
+									,List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet
 									,Optional<MidNightTimeSheet> midNighttimeSheet
-									,Finally<GoingOutReason> goOutReason
-									,Finally<BreakClassification> breakAtr
-									,DeductionClassification deductionAtr
-									,WithinStatutoryAtr withinStatutoryAtr) {
+									,Optional<GoingOutReason> goOutReason
+									,Optional<BreakClassification> breakAtr
+									,DeductionClassification deductionAtr) {
 		super(withRounding,timeSpan,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.goOutReason = goOutReason;
 		this.breakAtr = breakAtr;
 		this.deductionAtr = deductionAtr;
-		this.withinStatutoryAtr = withinStatutoryAtr;
 	}
 	
 	/**
@@ -72,12 +77,11 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			,TimeSpanForCalc timeSpan
 			,List<TimeSheetOfDeductionItem> deductionTimeSheets
 			,List<BonusPayTimesheet> bonusPayTimeSheet
-			,List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet
+			,List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet
 			,Optional<MidNightTimeSheet> midNighttimeSheet
-			,Finally<GoingOutReason> goOutReason
-			,Finally<BreakClassification> breakAtr
-			,DeductionClassification deductionAtr
-			,WithinStatutoryAtr withinStatutoryAtr) {
+			,Optional<GoingOutReason> goOutReason
+			,Optional<BreakClassification> breakAtr
+			,DeductionClassification deductionAtr) {
 		
 		return new TimeSheetOfDeductionItem(
 				withRounding
@@ -88,8 +92,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				,midNighttimeSheet
 				,goOutReason
 				,breakAtr
-				,deductionAtr
-				,withinStatutoryAtr);
+				,deductionAtr);
 	}
 	
 
@@ -460,23 +463,40 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.calcrange,this.deductionTimeSheets,this.bonusPayTimeSheet,this.specifiedBonusPayTimeSheet,this.midNightTimeSheet,this.goOutReason,this.breakAtr,this.deductionAtr,WithinStatutoryAtr.WithinStatutory);
 	}
 	
-	
+
 	/**
 	 * 外出時間の休暇時間相殺
+	 * @author ken_takasu
+	 * @param remainingTime  残時間
+	 * @param timeVacationAdditionRemainingTime 日別実績の時間休暇使用時間
 	 * @return
 	 */
-	public DeductionOffSetTime calcDeductionOffSetTime(
-			TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime,//時間休暇使用残時間
-			DeductionAtr deductionAtr) {
-		
-		
-		
+	public DeductionOffSetTime calcGoOutDeductionOffSetTime(
+			int remainingTime,
+			TimevacationUseTimeOfDaily timeVacationAdditionRemainingTime
+			) {
+		DeductionOffSetTime deductionOffSetTime = new DeductionOffSetTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
+		deductionOffSetTime.createDeductionOffSetTime(remainingTime, timeVacationAdditionRemainingTime);		
+		return deductionOffSetTime;
 	}
-	
-	
-	
-	
-	
-	
-	
+
+	/**
+	 * 再帰的に控除項目の時間帯を取得する
+	 * @author ken_takasu
+	 * @return
+	 */
+	public List<TimeSheetOfDeductionItem> collectDeductionTimeSheet() {
+		
+		// 末端の（＝子を持たない）控除項目の時間帯だけを収集する
+		if (this.deductionTimeSheet.isEmpty()) {
+			return Arrays.asList(this);
+		}
+		
+		List<TimeSheetOfDeductionItem> results = new ArrayList<>();
+		this.deductionTimeSheet.forEach(ts -> {
+			results.addAll(ts.collectDeductionTimeSheet());
+		});
+		
+		return results;
+	}
 }

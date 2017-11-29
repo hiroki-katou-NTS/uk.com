@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly;
+package nts.uk.ctx.at.shared.dom.worktime.CommomSetting.lateleaveearlysetting;
 
 import nts.uk.ctx.at.shared.dom.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;

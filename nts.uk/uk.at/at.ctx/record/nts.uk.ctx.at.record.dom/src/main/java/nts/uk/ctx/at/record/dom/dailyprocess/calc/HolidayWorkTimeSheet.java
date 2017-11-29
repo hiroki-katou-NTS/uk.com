@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
@@ -22,21 +23,17 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-public class HolidayWorkTimeSheet extends CalculationTimeSheet{
+public class HolidayWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 	
-	private HolidayWorkTimeOfDaily workHolidayTime;
-	
-	/**
-	 * Constructor
-	 */
-	public HolidayWorkTimeSheet(
-			TimeSpanWithRounding roundingSheet,
-			TimeSpanForCalc calculationTimeSheet,
-			HolidayWorkTimeOfDaily holidayWorkOfDaily) {
-		
-		super(roundingSheet,calculationTimeSheet);
-		this.workHolidayTime = holidayWorkOfDaily;
-	}
+	@Getter
+	 private HolidayWorkTimeOfDaily workHolidayTime;
+	 
+	 /**
+	  * Constructor
+	  */
+	 public HolidayWorkTimeSheet(HolidayWorkTimeOfDaily holidayWorkOfDaily) {
+	  this.workHolidayTime = holidayWorkOfDaily;
+	 }
 	
 	
 	/**
