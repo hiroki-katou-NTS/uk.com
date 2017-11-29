@@ -309,34 +309,38 @@ module nts.uk.com.view.cas011.a.viewmodel {
             }
             block.invisible();
 
-            windows.setShared('roleType', rlType); //TODO - using IModel???
+            windows.setShared('roleType', rlType);
+            windows.setShared('multiple', false);
 
-            windows.sub.modal('/view/ccg/025/index.xhtml', { title: '' }).onClosed(function(): any {
+            windows.sub.modal('/view/cdl/025/index.xhtml', { title: '' }).onClosed(function(): any {
               //get data from share window
-                var roleId = windows.getShared('roleId');
-                var roleName = windows.getShared('roleName');
+                var data = windows.getShared('dataCdl025');
+                var roleId = '';
+                if (data) {
+                    roleId = data.currentCode;
+                }
                 
-                dialog.info("Data from dialog: " + roleId + " - " + roleName);
+                //dialog.info("Data from dialog: " + roleId);
 
                 // set data back 
                 switch (rlType) {
                 case ROLE_TYPE.EMPLOYMENT:
                     currentRoleSet.employmentRoleId(roleId);
                     break;
-                case ROLE_TYPE.HR:
-                    currentRoleSet.humanResourceRoleId(roleId);
-                    break;
                 case ROLE_TYPE.SALARY:
                     currentRoleSet.salaryRoleId(roleId);
                     break;
-                case ROLE_TYPE.PERSON_INF:
-                    currentRoleSet.personInfRoleId(roleId);
+                case ROLE_TYPE.HR:
+                    currentRoleSet.humanResourceRoleId(roleId);
+                    break;
+                case ROLE_TYPE.OFFICE_HELPER:
+                    currentRoleSet.officeHelperRoleId(roleId);
                     break;
                 case ROLE_TYPE.MY_NUMBER:
                     currentRoleSet.myNumberRoleId(roleId);
                     break;
-                case ROLE_TYPE.OFFICE_HELPER:
-                    currentRoleSet.officeHelperRoleId(roleId);
+                case ROLE_TYPE.PERSON_INF:
+                    currentRoleSet.personInfRoleId(roleId);
                     break;
                 default:
                     dialog.info("NO ROLE TYPE" + roleId + " - " + roleName);
@@ -505,12 +509,12 @@ module nts.uk.com.view.cas011.a.viewmodel {
      * The enum of ROLE TYPE 
      */
     export enum ROLE_TYPE {
-        EMPLOYMENT = 0,
-        HR,
-        SALARY,
-        PERSON_INF,
-        MY_NUMBER,
-        OFFICE_HELPER
+        EMPLOYMENT = 3,
+        SALARY = 4,
+        HR = 5,
+        OFFICE_HELPER = 6,
+        MY_NUMBER = 7,
+        PERSON_INF = 8
     }
 
     // The Web menu
