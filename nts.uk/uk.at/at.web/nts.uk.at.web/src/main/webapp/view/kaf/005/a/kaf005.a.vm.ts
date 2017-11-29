@@ -94,11 +94,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         siftCodePre:  KnockoutObservable<string> = ko.observable("");
         siftNamePre:  KnockoutObservable<string> = ko.observable("");
         //TIME LINE 1
-        workClockFrom1Pre: KnockoutObservable<string> = ko.observable(null);
-        workClockTo1Pre: KnockoutObservable<string> = ko.observable(null);
+        workClockFrom1To1Pre: KnockoutObservable<string> = ko.observable(null);
         //TIME LINE 2
-        workClockFrom2Pre: KnockoutObservable<string> = ko.observable(null);
-        workClockTo2Pre: KnockoutObservable<string> = ko.observable(null);
+        workClockFrom2To2Pre: KnockoutObservable<string> = ko.observable(null);
         overtimeHoursPre: KnockoutObservableArray<common.AppOvertimePre> = ko.observableArray([]);
         overTimeShiftNightPre: KnockoutObservable<string> = ko.observable(null);
         flexExessTimePre: KnockoutObservable<string> = ko.observable(null);
@@ -588,10 +586,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     self.siftCodePre(data.preAppOvertimeDto.siftTypePre.siftCode);
                     self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
                 }
-                self.workClockFrom1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre));
-                self.workClockTo1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
-                self.workClockFrom2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre));
-                self.workClockTo2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
+                if(data.preAppOvertimeDto.workClockFrom1Pre != -1 || data.preAppOvertimeDto.workClockTo1Pre!= -1){
+                     self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
+                }
+                if(data.preAppOvertimeDto.workClockFrom2Pre != -1 || data.preAppOvertimeDto.workClockTo2Pre!= -1){
+                    self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
+                }
+                
                 self.overtimeHoursPre.removeAll();
                 if(data.preAppOvertimeDto.overTimeInputsPre != null){
                     for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {

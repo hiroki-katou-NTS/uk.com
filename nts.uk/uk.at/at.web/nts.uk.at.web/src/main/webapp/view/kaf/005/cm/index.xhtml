@@ -127,7 +127,7 @@
 					<div class="cell valign-center">
 						<div>
 							<!--A4_9 勤務時間From1--> 							
-							<input tabindex="8" class="row-cell-margin" id="inpStartTime1"
+							<input tabindex="8" class="row-cell-margin right-content" id="inpStartTime1"
 								data-bind="ntsTimeWithDayEditor: { name: 'Time Start 1', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
 							<!--A4_10 ~1--> 								
 							<label class="valign-center link-label-kaf005">#{i18n.getText('KAF005_38')}</label>
@@ -136,7 +136,7 @@
 					<div class="cell valign-center">
 						<div class="row-cell-margin">
 							<!--A4_11 勤務時間To1--> 							
-							<input tabindex="9" id="inpEndTime1"
+							<input tabindex="9" id="inpEndTime1" class  ="right-content"
 								data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
 						</div>
 					</div>
@@ -151,7 +151,7 @@
 					<div class="cell valign-center">
 						<div>
 							<!--A4_12 勤務時間From2--> 							
-							<input tabindex="10" class="row-cell-margin" id="inpStartTime2"
+							<input tabindex="10" class="row-cell-margin right-content" id="inpStartTime2"
 								data-bind="ntsTimeWithDayEditor: {name: 'Time Start 2',constraint:'TimeWithDayAttr',value: timeStart2}" />
 							<!--A4_13 ~2--> 								
 							<label class="valign-center link-label-kaf005">#{i18n.getText('KAF005_39')}</label>
@@ -160,7 +160,7 @@
 					<div class="cell valign-center">
 						<div>
 							<!--A4_14 勤務時間To2--> 							
-							<input tabindex="11" class="row-cell-margin" id="inpEndTime2"
+							<input tabindex="11" class="row-cell-margin right-content" id="inpEndTime2"
 								data-bind="ntsTimeWithDayEditor: {name: 'Time End 2', constraint:'TimeWithDayAttr',value: timeEnd2}" />
 						</div>
 					</div>
@@ -192,10 +192,10 @@
 							<!--A5_5 休憩時間順序--> 						
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A5_6 開始時刻--> 						
-							<td><input tabindex="12"
+							<td><input tabindex="12" class="right-content"
 								data-bind="ntsTimeWithDayEditor: {value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
 							<!--A5_7 終了時刻--> 						
-							<td><input tabindex="13"
+							<td><input tabindex="13" class="right-content"
 								data-bind="ntsTimeWithDayEditor: {value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
 						</tr>
 					</tbody>
@@ -233,7 +233,7 @@
 							<!--A6_7 残業時間名称--> 						
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15"
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15" class="right-content"
 								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
 							<!--A6_9 残業事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
@@ -269,7 +269,7 @@
 							<!--A7_7 休出時間名称--> 						
 							<td class="header" data-bind=" text: frameName"></td>
 							<!--A7_8 休出申請時間入力--> 						
-							<td><input tabindex="16"
+							<td><input tabindex="16" class="right-content"
 								data-bind="ntsTimeEditor: {name: '#[KAF005_76]',value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime' }" /></td>
 							<!--A7_9 休出事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
@@ -304,7 +304,7 @@
 							<!--A8_6 加給時間名称ラベル--> 												
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A8_7 加給時間入力--> 
-							<td><input tabindex="17"
+							<td><input tabindex="17" class="right-content"
 								data-bind="ntsTimeEditor: {name: '#[KAF005_85]',value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
 							<!--A8_8 事前申請時間--> 
 							<td class="right-content" data-bind="text: preAppTime"></td>
@@ -414,15 +414,15 @@
 			<!--A3_1 申請者-->
 			<label>#{i18n.getText('KAF005_103')} :</label>
 			<!--A3_2 申請者表示氏名-->
-			<label>12:00</label>
-			<label>#{i18n.getText('KAF005_104')}</label>
-			<label>14:00</label>
+			<label></label>
+			
+			<label></label>
 			</div>
 			<div class="control-group">
 			<!--A3_2 申請者表示氏名-->
-			<label style ="margin-left: 72px">12:00</label>
-			<label>#{i18n.getText('KAF005_104')}</label>
-			<label>14:00</label>
+			<label style ="margin-left: 72px"></label>
+			<label></label>
+			<label></label>
 			</div>
 			<BR /> <BR />
 			<div class="control-group">
@@ -471,19 +471,19 @@
 				<!--A12_12 -->
 				<label>#{i18n.getText('KAF005_125')} :</label>
 				<!--A12_13-->
-				<label data-bind="text : workClockFrom1Pre"></label>
-				<!--A12_14-->
-				<label>#{i18n.getText('KAF005_126')}</label>
-				<!--A12_15-->
-				<label data-bind="text : workClockTo1Pre"></label>
+				<label data-bind="text : workClockFrom1To1Pre"></label>
+<!-- 				A12_14 -->
+<!-- 				<label>#{i18n.getText('KAF005_126')}</label> -->
+<!-- 				A12_15 -->
+<!-- 				<label data-bind="text : workClockTo1Pre"></label> -->
 				</div>
 				<div class="control-group">
 				<!--A12_28 -->
-				<label style ="margin-left: 72px" data-bind="text : workClockFrom2Pre"></label>
-				<!--A12_29 -->
-				<label>#{i18n.getText('KAF005_126')}</label>
-				<!--A12_30 -->
-				<label data-bind="text : workClockTo2Pre"></label>
+				<label style ="margin-left: 72px" data-bind="text : workClockFrom2To2Pre"></label>
+<!-- 				A12_29 -->
+<!-- 				<label>#{i18n.getText('KAF005_126')}</label> -->
+<!-- 				A12_30 -->
+<!-- 				<label data-bind="text : workClockTo2Pre"></label> -->
 				</div>
 				
 				<div class="control-group" data-bind ="foreach: overtimeHoursPre">

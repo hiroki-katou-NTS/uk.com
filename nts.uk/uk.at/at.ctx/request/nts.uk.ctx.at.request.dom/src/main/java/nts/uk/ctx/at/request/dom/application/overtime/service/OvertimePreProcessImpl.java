@@ -69,6 +69,7 @@ import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.O
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class OvertimePreProcessImpl implements IOvertimePreProcess{
@@ -131,9 +132,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
 					OverTimeInstruct overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
 					if(overtimeInstruct != null){
+						TimeWithDayAttr startTime = new TimeWithDayAttr(overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
+						TimeWithDayAttr endTime = new TimeWithDayAttr(overtimeInstruct.getEndClock() == null ? -1 :  overtimeInstruct.getEndClock().v());
 						overtimeInstructInformation.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() 
-								+" "+ convert(overtimeInstruct.getStartClock().v())
-								+"~"+ convert(overtimeInstruct.getEndClock().v()) 
+								+" "+ startTime.getDayDivision().description + " " + convert(overtimeInstruct.getStartClock().v())
+								+"~"+ endTime.getDayDivision().description + " " + convert(overtimeInstruct.getEndClock().v())
 								+" "+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson())
 								+" ("+employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
 					}else{

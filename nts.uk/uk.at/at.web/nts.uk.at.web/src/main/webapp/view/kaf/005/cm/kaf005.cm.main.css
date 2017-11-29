@@ -131,7 +131,7 @@ div.form-label.broken {
 	box-sizing: border-box;
 }
 .right-content {
-	text-align: right !important;
+	text-align: center !important;
     padding-right: 10px !important;
 }
 .combo-box{
