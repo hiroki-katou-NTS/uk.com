@@ -37,6 +37,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         //en/dis: Selection
         enDisDelSelec: KnockoutObservable<boolean> = ko.observable(false);
+        revDisSel: KnockoutObservable<boolean> = ko.observable(false);
 
         //
         disbleAdUpHist: KnockoutObservable<boolean> = ko.observable(true);
@@ -75,6 +76,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.disbleAdUpHist(false);
                             self.enableDelHist(false);
                             self.enableSelName(false);
+                            self.revDisSel(false);
+                            
                             historySelection.histId(undefined);
                             nts.uk.ui.errors.clearAll();
                             self.selection().selectionID('');
@@ -116,7 +119,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                     self.listSelection.removeAll();
                     service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length) {
-                            self.enableSelName(self.enableDelHist());
+                            if (histCur.endDate == '9999/12/31') {
+                                self.enableSelName(true);
+                                $("#name").focus();
+                            } else {
+                                self.enableSelName(self.enableDelHist());
+                            }
                             self.checkCreateaaa(false);
                             itemList.forEach(x => self.listSelection.push(x));
                             self.selection().selectionID(self.listSelection()[0].selectionID);
@@ -242,12 +250,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         if (itemList && itemList.length) {
                             itemList.forEach(x => self.listSelection.push(x));
                             self.selection().selectionID(self.listSelection()[0].selectionID);
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function() {
                                 if (itemList.length == 1) {
                                     nts.uk.ui.dialog.alert({ messageId: "Msg_530" });
                                 }
                             });
-                            
+
                         }
                     });
 
@@ -357,6 +365,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
                         nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                     });
+                    $("#name").focus();
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();
                     return;

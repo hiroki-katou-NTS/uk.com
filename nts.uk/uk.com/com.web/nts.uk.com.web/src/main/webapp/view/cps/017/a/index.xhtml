@@ -7,8 +7,13 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		   <script>var dialogSize = { width: 1300, height: 750 };</script>
-<!-- 			<title>#{i18n.getText('CPS008_1')}</title> -->
+			<script>
+				var dialogSize = {
+					width : 1300,
+					height : 750
+				};
+			</script>
+			<!-- 			<title>#{i18n.getText('CPS008_1')}</title> -->
 			<com:ValidatorScript>
 					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionItemName
 					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionCodeLength
@@ -36,13 +41,15 @@
 				<button id="A1_002" class="proceed" tabindex="2"
 					data-bind="click : addData, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('CPS017_2')}</button>
 				<button id="A1_005" class="danger" tabindex="3"
-					data-bind="click : remove, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS017_4')}</button>
-                <com:ko-if bind="(isDialog() === true)">
-				<button id="A1_008" tabindex="4" style="display:none" data-bind="visible: closeUp, click: close">#{i18n.getText('CPS017_50')}</button>
+					data-bind="click : remove, enable: revDisSel()==false &amp;&amp; $root.errors.isEmpty() ">#{i18n.getText('CPS017_4')}</button>
+				<com:ko-if bind="(isDialog() === true)">
+					<button id="A1_008" tabindex="4" style="display: none"
+						data-bind="visible: closeUp, click: close">#{i18n.getText('CPS017_50')}</button>
 				</com:ko-if>
 				<button id="A1_003" data-bind="click: openDialogB" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
-				<button id="A1_007" tabindex="6" data-bind="click: ReflUnrComp, enable: checkCreate()==true">#{i18n.getText('CPS017_49')}</button>
+				<button id="A1_007" tabindex="6"
+					data-bind="click: ReflUnrComp, enable: checkCreate()==true">#{i18n.getText('CPS017_49')}</button>
 
 			</div>
 			<div id="contents-area" class="cf">
@@ -80,8 +87,12 @@
 
 					<!-- khu vực thêm lịch sử, sửa lịch sử  -->
 					<div id="history">
-						<button id="A2_8" data-bind="click: openDialogC, enable: disbleAdUpHist" tabindex="9">#{i18n.getText('CPS017_8')}</button>
-						<button id="A2_9" data-bind="click: openDialogD, enable: disbleAdUpHist" tabindex="10">#{i18n.getText('CPS017_9')}</button>
+						<button id="A2_8"
+							data-bind="click: openDialogC, enable: disbleAdUpHist"
+							tabindex="9">#{i18n.getText('CPS017_8')}</button>
+						<button id="A2_9"
+							data-bind="click: openDialogD, enable: disbleAdUpHist"
+							tabindex="10">#{i18n.getText('CPS017_9')}</button>
 						<button id="A2_10" tabindex="11" class="danger"
 							data-bind="click : removeHistory, enable: enableDelHist ">#{i18n.getText('CPS017_10')}</button>
 
@@ -176,7 +187,7 @@
 					</div>
 
 					<div class="formlabel">
-						<div class="coll" style="margin-right: 26px; "
+						<div class="coll" style="margin-right: 26px;"
 							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">#{i18n.getText('CPS017_23')}</div>
 						<input style="width: 150px; margin-left: 40px;"
 							data-bind="ntsTextEditor: {
@@ -185,7 +196,7 @@
 									constraint: 'listSelection',
 									option: '',
 									required: false,
-									enable: true,
+									enable: $parent.enableSelName,
 									readonly: false}" />
 					</div>
 
@@ -194,8 +205,9 @@
 							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">
 							<label>#{i18n.getText('CPS016_25')}</label>
 						</div>
-						<textarea style="width: 260px; height: 80px; vertical-align: top; margin-left: -14px;"
-							data-bind="ntsMultilineEditor: { name: '#[CPS017_26]',value: memoSelection , constraint: 'MemoSelection',required: false}" />
+						<textarea
+							style="width: 260px; height: 80px; vertical-align: top; margin-left: -14px;"
+							data-bind="ntsMultilineEditor: { name: '#[CPS017_26]',value: memoSelection , constraint: 'MemoSelection',required: false, enable: $parent.enableSelName}" />
 					</div>
 
 				</div>
