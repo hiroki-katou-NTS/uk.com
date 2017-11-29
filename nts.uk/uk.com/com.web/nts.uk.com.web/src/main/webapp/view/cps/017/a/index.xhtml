@@ -37,19 +37,19 @@
 		<ui:define name="content">
 			<div id="functions-area">
 
-				<button id="A1_001" tabindex="1" data-bind="click : registerData">#{i18n.getText('CPS017_1')}</button>
+				<button id="A1_001" tabindex="1" data-bind="click : registerData, enable: revDisSel">#{i18n.getText('CPS017_1')}</button>
 				<button id="A1_002" class="proceed" tabindex="2"
-					data-bind="click : addData, enable: checkCreate()==true &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('CPS017_2')}</button>
+					data-bind="click : addData, enable: revDisSel">#{i18n.getText('CPS017_2')}</button>
 				<button id="A1_005" class="danger" tabindex="3"
 					data-bind="click : remove, enable: revDisSel ">#{i18n.getText('CPS017_4')}</button>
 				<com:ko-if bind="(isDialog() === true)">
 					<button id="A1_008" tabindex="4" style="display: none"
 						data-bind="visible: closeUp, click: close">#{i18n.getText('CPS017_50')}</button>
 				</com:ko-if>
-				<button id="A1_003" data-bind="click: openDialogB" tabindex="5">#{i18n.getText('CPS017_3')}</button>
+				<button id="A1_003" data-bind="click: openDialogB, enable: revDisSel" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
 				<button id="A1_007" tabindex="6"
-					data-bind="click: ReflUnrComp, enable: checkCreate()==true">#{i18n.getText('CPS017_49')}</button>
+					data-bind="click: ReflUnrComp, enable: checkCreate()==false">#{i18n.getText('CPS017_49')}</button>
 
 			</div>
 			<div id="contents-area" class="cf">
