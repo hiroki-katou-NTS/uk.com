@@ -4,22 +4,23 @@ module nts.uk.com.view.cmm007.c {
          * define path to service
          */
         var path: any = {
-                find: "sys/env/mailserver/find",
-                save: "sys/env/mailserver/save",
+                getTempAbsenceFrameByCId: "bs/employee/temporaryabsence/frame/findTempAbsenceFrameByCId",
+                getTempAbsenceFrameByCIdAndFrameNo: "bs/employee/temporaryabsence/frame/findTempAbsenceFrameByCIdAndFrameNo",
+                updateTempAbsenceFrame: "bs/employee/temporaryabsence/frame/updateTempAbsenceFrameByCidAndFrameNo"
             };
         
-        /**
-         * 
-         */
-        export function findMailServerSetting(): JQueryPromise<model.SampleDto>{
-            return nts.uk.request.ajax(path.find);
+        export function getTempAbsenceFrameByCId(): JQueryPromise<Array<model.TempAbsenceFrameDto>> {
+            return nts.uk.request.ajax(path.getTempAbsenceFrameByCId);
         }
         
-        /**
-         * 
-         */
-        export function registerMailServerSetting(data: model.SampleDto): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.save, data);
+        export function getTempAbsenceFrameByCIdAndFrameNo(): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getTempAbsenceFrameByCIdAndFrameNo);
+        }
+        
+        export function updateTempAbsenceFrame(lstDto: Array<viewmodel.moduleDto>): JQueryPromise<any> {
+            let dto: any = {};
+            dto.dto = ko.toJS(lstDto);
+            return nts.uk.request.ajax(path.updateTempAbsenceFrame, dto);
         }
     }
     
@@ -27,10 +28,18 @@ module nts.uk.com.view.cmm007.c {
      * Model define.
      */
     export module model {
-        export class SampleDto {
+        export class TempAbsenceFrameDto{
+            companyId: string;
+            tempAbsenceFrNo: number; 
+            useClassification: number; 
+            tempAbsenceFrName: string;
             
-            constructor(){}
+            constructor(companyId: string, tempAbsenceFrNo: number, useClassification: number, tempAbsenceFrName: string){
+                this.companyId = companyId;
+                this.tempAbsenceFrNo = tempAbsenceFrNo;
+                this.useClassification = useClassification;
+                this.tempAbsenceFrName = tempAbsenceFrName;
+            }
         }
     }
-    
 }

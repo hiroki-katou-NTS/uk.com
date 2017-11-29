@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 /**
  * The Enum CompensatoryOccurrenceDivision.
  */
+// 代休発生元区分
 public enum CompensatoryOccurrenceDivision {
 	
 	/** The From over time. */

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
 /**
  * The Interface PlanYearHolidayFrameSetMemento.
  */
@@ -14,7 +16,7 @@ public interface PlanYearHolidayFrameSetMemento {
 	 *
 	 * @param companyId the new company id
 	 */
-	public void setCompanyId(String companyId);
+	public void setCompanyId(CompanyId companyId);
 
 	/**
 	 * Sets the plan year holiday frame no.

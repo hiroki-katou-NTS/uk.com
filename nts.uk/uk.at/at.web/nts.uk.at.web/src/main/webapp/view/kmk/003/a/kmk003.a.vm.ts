@@ -56,18 +56,17 @@ module nts.uk.at.view.kmk003.a {
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
-                    new ItemWorkForm('1', '基本給'),
-                    new ItemWorkForm('2', '役職手当'),
-                    new ItemWorkForm('3', '基本給')
+                    new ItemWorkForm('1', '通常勤務・変形労働用'),
+                    new ItemWorkForm('2', 'フレックス勤務用')
                 ]);
                 self.selectedWorkForm = ko.observable('1');
                 self.settingMethodOptions = ko.observableArray([
-                    new ItemSettingMethod('1', '基本給'),
-                    new ItemSettingMethod('2', '役職手当'),
-                    new ItemSettingMethod('3', '基本給')
+                    new ItemSettingMethod('1', "固定勤務"),
+                    new ItemSettingMethod('2', "時差勤務"),
+                    new ItemSettingMethod('3', "流動勤務")
                 ]);
                 self.selectedSettingMethod = ko.observable('1');
-
+                
                 self.workTimezoneItems = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'code', width: 100 },
@@ -176,6 +175,14 @@ module nts.uk.at.view.kmk003.a {
                     self.isClickSave(false);
                 });
             }
+            
+            /**
+             * function get flow mode by selection ui
+             */
+            private getFlowModeBySelected(selectedSettingMethod: string): boolean {
+                return (selectedSettingMethod === '3');
+            }
+          
         }
 
         export class ItemWorkForm {

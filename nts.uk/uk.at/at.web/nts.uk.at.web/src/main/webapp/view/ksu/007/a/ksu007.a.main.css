@@ -1,0 +1,50 @@
+.employeeInfoSearch {
+	margin-top: 135px;
+	display: inline-flex;
+}
+
+.employeeAction {
+	width: 600px;
+}
+
+.infoKDL003 {
+	width: 250px;
+}
+
+.periodCovered {
+	display: inline-flex;
+}
+
+.lableInfo {
+	margin-top: 8px;
+	margin-left: 10px;
+	width: 100%;
+}
+
+.buttonWorkSetting {
+	margin-left: -5px;
+	height: 60px;
+}
+
+.infoButtonSetting {
+	width: 200px;
+	display: inline-flex;
+}
+
+.selectionEmployee {
+	margin-left: 85px;
+	padding: 5px;
+	width: 600px;
+}
+
+.labelRangeDate {
+	margin-left: 15px;
+	width: 120px;
+}
+
+.labelWork {
+	margin-top: 30px;
+	margin-left: 15px;
+	width: 120px;
+}
+

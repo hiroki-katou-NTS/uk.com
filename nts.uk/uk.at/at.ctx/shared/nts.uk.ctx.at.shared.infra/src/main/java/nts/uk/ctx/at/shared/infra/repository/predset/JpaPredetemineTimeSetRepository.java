@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.infra.repository.predset;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,13 +14,12 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSet;
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.predset.KwtspWorkTimeSetPKNew_;
 import nts.uk.ctx.at.shared.infra.entity.predset.KwtstWorkTimeSetNew;
 import nts.uk.ctx.at.shared.infra.entity.predset.KwtstWorkTimeSetNew_;
 
-@Stateless
 public class JpaPredetemineTimeSetRepository extends JpaRepository implements PredetemineTimeSetRepository {
 
 	@Override

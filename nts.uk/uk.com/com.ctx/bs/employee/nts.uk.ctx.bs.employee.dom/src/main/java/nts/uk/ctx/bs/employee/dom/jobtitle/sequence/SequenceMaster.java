@@ -8,13 +8,8 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 
-/**
- * Gets the sequence name.
- *
- * @return the sequence name
- */
 @Getter
-//序列マスタ
+//序列
 public class SequenceMaster extends AggregateRoot {
 
 	/** The company id. */

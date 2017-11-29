@@ -10,7 +10,6 @@ import java.util.List;
  * The Interface PersonInfoAdapter.
  */
 public interface PersonInfoAdapter {
-
 	
 	/**
 	 * Gets the person info.
@@ -18,17 +17,21 @@ public interface PersonInfoAdapter {
 	 * @param employeeId the employee id
 	 * @return the person info
 	 */
-	PersonInfoImportedImport getPersonInfo(String employeeId);
-	/**
-	 * get list person info by list employeeId (sid)
-	 * @param sid
-	 * @return
-	 */
-	List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid);
+	PersonInfoImport getPersonInfo(String employeeId);
+	
 	/**
 	 * get list person by list person ID
 	 * @param personId
 	 * @return
 	 */
 	List<PersonInfoImport> getByListId(List<String> personId);
+	
+	/**
+	 * Gets the list person info.
+	 *
+	 * @param listSid the list sid
+	 * @return the list person info
+	 */
+	List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid);
+
 }

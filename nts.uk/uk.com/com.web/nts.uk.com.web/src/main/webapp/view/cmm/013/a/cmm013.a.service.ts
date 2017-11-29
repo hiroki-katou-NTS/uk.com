@@ -11,6 +11,7 @@ module nts.uk.com.view.cmm013.a {
             findJobInfoByJobCode: "bs/employee/jobtitle/info/findByJobCode",
             saveJobTitle: "bs/employee/jobtitle/save",
             removeJobTitleHistory: "bs/employee/jobtitle/history/remove",
+            findAllSequenceMaster: "bs/employee/jobtitle/sequence/findAll",
         }
     
         /**
@@ -46,6 +47,13 @@ module nts.uk.com.view.cmm013.a {
          */
         export function removeJobTitleHistory(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.removeJobTitleHistory, command);
+        }
+        
+        /**
+         * findAllSequenceMaster
+         */   
+        export function findAllSequenceMaster(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findAllSequenceMaster);
         }
         
         /**
