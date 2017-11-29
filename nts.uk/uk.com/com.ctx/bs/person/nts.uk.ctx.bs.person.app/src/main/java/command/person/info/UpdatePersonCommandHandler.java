@@ -19,7 +19,7 @@ public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonComma
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00001";
+		return "CS00002";
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonComma
 				command.getPersonRomanji(),command.getPersonRomanjiKana(),command.getTodokedeFullName(),command.getTodokedeFullNameKana(),command.getOldName(),command.getOldNameKana(),
 				command.getPersonalNameMultilingual(),command.getPersonalNameMultilingualKana());
 		
-		personRepository.updatePerson(newPerson);
+		personRepository.update(newPerson);
 	}
 
 }

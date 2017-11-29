@@ -4,6 +4,7 @@ package command.person.info;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregPersonId;
 
 @Getter
 public class PersonCommand {
@@ -23,6 +24,7 @@ public class PersonCommand {
 	private int gender;
 
 	/** The person id - 個人ID */
+	@PeregPersonId
 	private String personId;
 
 	/** The PersonNameGroup - 個人名グループ*/

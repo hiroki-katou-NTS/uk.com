@@ -203,7 +203,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 * @param person
 	 */
 	@Override
-	public void updatePerson(Person person) {
+	public void update(Person person) {
 		// Get entity
 		Optional<BpsmtPerson> existItem = this.queryProxy().find(new BpsmtPersonPk(person.getPersonId()),
 				BpsmtPerson.class);

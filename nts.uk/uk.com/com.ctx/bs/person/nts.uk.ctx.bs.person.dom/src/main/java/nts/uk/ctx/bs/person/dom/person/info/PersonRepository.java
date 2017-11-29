@@ -31,7 +31,7 @@ public interface PersonRepository {
 	
 	String getLastCardNo(String companyId, String startCardNoLetters);
 	
-	void updatePerson(Person person);
+	void update(Person person);
 
 
 	void addNewPerson(Person newPerson);
