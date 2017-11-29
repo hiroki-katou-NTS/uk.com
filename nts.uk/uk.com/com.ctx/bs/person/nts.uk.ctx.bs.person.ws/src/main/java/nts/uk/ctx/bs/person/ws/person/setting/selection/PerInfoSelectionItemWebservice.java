@@ -37,10 +37,8 @@ import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import find.person.setting.selectionitem.selection.SelectionFinder;
 import find.person.setting.selectionitem.selection.SelectionItemOrderDto;
-import find.person.setting.selectionitem.selection.SelectionItemOrderFinder;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 
 @Path("ctx/bs/person/info/setting/selection")
 @Produces("application/json")
@@ -63,9 +61,6 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	@Inject
 	private SelectionFinder selecFider;
-
-	@Inject
-	private SelectionItemOrderFinder selecItemOrderFider;
 
 	// Add selection:
 	@Inject
@@ -95,10 +90,10 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Inject
 	ReflUnrCompCommandHandler reflUnrComp;
 
-	//hoatt - update selection order
+	// hoatt - update selection order
 	@Inject
 	private UpdateSelOrderCommandHandler updateSelOrder;
-	
+
 	@POST
 	@Path("findAll")
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
@@ -192,14 +187,22 @@ public class PerInfoSelectionItemWebservice extends WebService {
 		this.removeHistory.handle(command);
 	}
 
-	
-	
 	// Lanlt
 	@POST
 	@Path("find/{selectionItemId}/{baseDate}")
-	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId, @PathParam("baseDate") String baseDate) {
-		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate );
+	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId,
+			@PathParam("baseDate") String baseDate) {
+		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
 	}
+	
+	// Lanlt
+	@POST
+	@Path("find/{selectionItemId}/{baseDate}/{selectionItemClsAtr}")
+	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId,
+			@PathParam("baseDate") String baseDate, @PathParam("selectionItemClsAtr")int selectionItemClsAtr) {
+		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate, selectionItemClsAtr);
+	}
+
 
 	// Phan anh cong ty:
 	@POST
@@ -207,11 +210,18 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public void ReflUnrComp(ReflUnrCompCommand command) {
 		this.reflUnrComp.handle(command);
 	}
-	
-	//update selection order
+
+	// Lanlt
+	@POST
+	@Path("findAllSelectionItem/{selectionItemClsAtr}")
+	public List<PerInfoSelectionItemDto> getAllelectionItem(@PathParam("selectionItemClsAtr")int selectionItemClsAtr) {
+		return this.finder.getAllSelectionItem(selectionItemClsAtr);
+	}
+
+	// update selection order
 	@POST
 	@Path("updateSelOrder")
-	public void updateSelOrder(List<UpdateSelOrderCommand> lstSelOrder){
+	public void updateSelOrder(List<UpdateSelOrderCommand> lstSelOrder) {
 		this.updateSelOrder.handle(lstSelOrder);
 	}
 }

@@ -8,4 +8,6 @@ public class UpdateItemChangeCommand {
 	private String itemName;
 	private int isAbolition;
 	private int isRequired;
+	private int dataType;
+	private String selectionItemId;
 }

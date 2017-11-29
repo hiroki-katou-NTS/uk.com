@@ -17,7 +17,7 @@ public class UpdateSubJobPositionCommandHandler extends CommandHandler<UpdateSub
 	@Inject
 	private SubJobPosRepository subJobPosRepository;
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00013";
 	}
 
