@@ -10,9 +10,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Interface WorkTimeGetMemento.
+ * The Interface WorkTimeSettingGetMemento.
  */
-public interface WorkTimeGetMemento {
+public interface WorkTimeSettingGetMemento {
 	
 	/**
 	 * Gets the company id.

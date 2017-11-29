@@ -17,7 +17,7 @@ import nts.uk.shr.com.primitive.Memo;
  * @return the note
  */
 @Getter
-public class WorkTime extends AggregateRoot {
+public class WorkTimeSetting extends AggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -57,7 +57,7 @@ public class WorkTime extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public WorkTime(WorkTimeGetMemento memento) {
+	public WorkTimeSetting(WorkTimeSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.worktimeCode = memento.getWorktimeCode();
 		this.workTimeDivision = memento.getWorkTimeDivision();
@@ -74,7 +74,7 @@ public class WorkTime extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(WorkTimeSetMemento memento) {
+	public void saveToMemento(WorkTimeSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setWorktimeCode(this.worktimeCode);
 		memento.setWorkTimeDivision(this.workTimeDivision);
@@ -110,9 +110,9 @@ public class WorkTime extends AggregateRoot {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof WorkTime))
+		if (!(obj instanceof WorkTimeSetting))
 			return false;
-		WorkTime other = (WorkTime) obj;
+		WorkTimeSetting other = (WorkTimeSetting) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
