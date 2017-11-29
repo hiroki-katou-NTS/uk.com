@@ -300,9 +300,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             //削除  ○
                             self.displayButtonControl().enableDelete(true);    
                         }else{
-                            //登録 ○
+                            //登録  ×
                             self.displayButtonControl().enableUpdate(false);
-                            //削除  ○
+                            //削除    ×
                             self.displayButtonControl().enableDelete(false);  
                         }
                         //承認できるフラグ(false)
@@ -337,6 +337,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                                 }
                             }
                         }
+                    }
+                }else{//利用者が『本人』、又は『その他』
+                    //反映済
+                    if(approvalATR　== Status.REFLECTED){
+                        //取消   〇
+                        self.displayButtonControl().enableCancel(true);
+                    }
+                    if(approvalATR == Status.NOTREFLECTED || approvalATR == Status.REMAND){//未反映 , 差し戻し
+                        //登録 ○
+                        self.displayButtonControl().enableUpdate(true);
+                        //削除  ○
+                        self.displayButtonControl().enableDelete(true);  
+                        //差し戻し理由  ○
+                        self.displayButtonControl().enableReturnReason(true);
                     }
                 }
             }
