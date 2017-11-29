@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         
-        static DATEFORMART: string = "YYYY/MM/DD";
+        DATEFORMART: string = "YYYY/MM/DD";
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
@@ -21,7 +21,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         workState: KnockoutObservable<boolean> = ko.observable(true);;
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        appDate: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM/DD"));
+        appDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATEFORMART));
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(null);
         timeEnd1: KnockoutObservable<number> = ko.observable(null);
@@ -88,7 +88,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
 
         // preAppOvertime
-        appDatePre: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM/DD"));
+        appDatePre: KnockoutObservable<string> = ko.observable(moment().format(this.DATEFORMART));
         workTypeCodePre:  KnockoutObservable<string> = ko.observable("");
         workTypeNamePre:  KnockoutObservable<string> = ko.observable("");
         siftCodePre:  KnockoutObservable<string> = ko.observable("");
@@ -117,7 +117,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format("YYYY/MM/DD")).done(function() {
+                self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format(self.DATEFORMART)).done(function() {
                     self.approvalSource = self.kaf000_a.approvalList;
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
@@ -136,7 +136,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.getOvertimeByUI({
                 url: urlParam,
-                appDate: moment(new Date()).format("YYYY/MM/DD"),
+                appDate: moment(new Date()).format(self.DATEFORMART),
                 uiType: 0
             }).done((data) => {
                 self.initData(data);
@@ -145,7 +145,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.appDate.subscribe(function(value){
                 var dfd = $.Deferred();
                 service.findByChangeAppDate({
-                    appDate: moment(value).format("YYYY/MM/DD"),
+                    appDate: moment(value).format(self.DATEFORMART),
                     prePostAtr: self.prePostSelected    
                 }).done((data) =>{
                     self.findBychangeAppDateData(data);
@@ -159,7 +159,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     let dfd =$.Deferred();
                     service.checkConvertPrePost({
                     prePostAtr: value,
-                    appDate: moment(self.appDate()).format("YYYY/MM/DD")
+                    appDate: moment(self.appDate()).format(self.DATEFORMART)
                     }).done((data) =>{
                         self.convertpreAppOvertimeDto(data);
                         self.referencePanelFlg(data.referencePanelFlg);
@@ -392,7 +392,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 bonusTimes: ko.toJS(self.bonusTimes()),
                 prePostAtr : self.prePostSelected(),
-                appDate : moment(self.appDate()).format("YYYY/MM/DD")
+                appDate : moment(self.appDate()).format(self.DATEFORMART)
             }
             
             service.getCaculationResult(param).done(function(data){
@@ -482,7 +482,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     service.getRecordWork(
                         {
                             employeeID: self.employeeID(), 
-                            appDate: moment(self.appDate()).format("YYYY/MM/DD"),
+                            appDate: moment(self.appDate()).format(self.DATEFORMART),
                             siftCD: self.siftCD()
                         }
                     ).done(data => {
@@ -606,9 +606,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                  self.flexExessTimePre(self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
             }
         }
-       convertIntToTime(data : number) : string{
+       convertIntToTime(data : any) : string{
            let hourMinute : string = "";
-        if(data == -1){
+        if(data == -1 || data == ""){
             return null;
         }else if (data == 0) {
             hourMinute = "00:00";

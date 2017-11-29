@@ -43,9 +43,9 @@ public class CaculationTime {
 	/**
 	 * 完了時間
 	 */
-	private Integer preAppTime;
+	private String preAppTime;
 	/**
 	 * 申請時間
 	 */
-	private Integer caculationTime;
+	private String caculationTime;
 }
