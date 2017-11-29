@@ -1,11 +1,12 @@
-package nts.uk.ctx.sys.auth.app.command.roleset;
+package nts.uk.screen.com.app.command.sys.auth.roleset;
 
 import java.util.List;
 
 import lombok.Value;
+import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommandBase;
 
 @Value
-public class RoleSetCommand {
+public class RoleSetCommandBase {
 	/** ロールセットコード. */
 	private String roleSetCd;
 
@@ -36,4 +37,6 @@ public class RoleSetCommand {
 	/** ロールID: 給与ロール */
 	private String salaryRoleId;
 	
+	/** List of web menu code **/
+	private List<WebMenuCommandBase> webMenus;
 }

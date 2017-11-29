@@ -29,7 +29,7 @@ public class AuthWebMenuAdapterImpl implements WebMenuAdapter {
 	@Override
 	public List<WebMenuImport> findByCompanyId() {		
 		return this.webMenuPub.findByCompanyId(AppContexts.user().companyId()).stream().map(item ->
-			new WebMenuImport(item.getCompanyId(), item.getWebMenuCd(), item.getWebMenuName(), item.isDefaultMenu())
+			new WebMenuImport(item.getCompanyId(), item.getWebMenuCode(), item.getWebMenuName(), item.isDefaultMenu())
 			).collect(Collectors.toList());
 	}
 }

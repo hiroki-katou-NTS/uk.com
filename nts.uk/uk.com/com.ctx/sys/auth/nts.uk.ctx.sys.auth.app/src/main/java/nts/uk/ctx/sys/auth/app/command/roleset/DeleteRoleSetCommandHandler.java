@@ -8,7 +8,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 
 @Stateless
-@javax.transaction.Transactional
+//@javax.transaction.Transactional
 public class DeleteRoleSetCommandHandler extends CommandHandlerWithResult<DeleteRoleSetCommand, String> {
 
 	@Inject
@@ -19,7 +19,7 @@ public class DeleteRoleSetCommandHandler extends CommandHandlerWithResult<Delete
 		DeleteRoleSetCommand command = context.getCommand();
 
 		//アルゴリズム「削除」を実行する - Execute algorithm "delete"
-		this.roleSetService.executeDelete(command.getRoleSetCd());
+		this.roleSetService.deleteRoleSet(command.getRoleSetCd());
 		
 		return command.getRoleSetCd();
 	}

@@ -40,7 +40,7 @@ public class RoleSetWebMenuPubImp implements RoleSetLinkWebMenuPub {
 				.collect(Collectors.toList());
 	}
 
-
+/*
 	@Override
 	public void addRoleSetLinkWebMenu(String companyId, String roleSetCd, String webMenuCd) {
 		RoleSetLinkWebMenu domain = new RoleSetLinkWebMenu(companyId, roleSetCd, webMenuCd);
@@ -64,11 +64,11 @@ public class RoleSetWebMenuPubImp implements RoleSetLinkWebMenuPub {
 	public void addAllRoleSetLinkWebMenu(List<RoleSetLinkWebMenuExport> listRoleSetLinkWebMenuExport) {
 		List<RoleSetLinkWebMenu> listRoleSetLinkWebMenu = listRoleSetLinkWebMenuExport.stream()
 				.map(item -> new RoleSetLinkWebMenu(item.getCompanyId(), item.getRoleSetCd(), 
-						item.getWebMenuCd())).collect(Collectors.toList());
+						item.getWebMenuCode())).collect(Collectors.toList());
 		
 		roleSetAndWebMenuService.createAllRoleSetLinkWebMenu(listRoleSetLinkWebMenu);
 		
 	}
 	
-	
+	*/
 }

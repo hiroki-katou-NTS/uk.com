@@ -49,7 +49,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                                            ]);
             
             self.swapColumns = ko.observableArray([
-                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCd', width: 100 },
+                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 100 },
                                                { headerText: resource.getText('CAS011_34'), key: 'webMenuName', width: 150 }
                                            ]);
             
@@ -367,7 +367,10 @@ module nts.uk.com.view.cas011.a.viewmodel {
             let self = this,
                 currentRoleSet: RoleSet = self.currentRoleSet();
             
-            self.hasInitialized = false;
+            if (currentRoleSet.roleSetCd()) {
+                // set flag for reset screen
+                self.hasInitialized = false;
+            }
             
             // clear selected role set
             currentRoleSet.roleSetCd('');
@@ -546,17 +549,17 @@ module nts.uk.com.view.cas011.a.viewmodel {
 */
     // The Web menu
     export interface IWebMenu {
-        webMenuCd: string;
+        webMenuCode: string;
         webMenuName: string;
     }
 
     export class WebMenu {
-        webMenuCd: KnockoutObservable<string> = ko.observable('');
+        webMenuCode: KnockoutObservable<string> = ko.observable('');
         webMenuName: KnockoutObservable<string> = ko.observable('');
 
         constructor(param: IWebMenu) {
             let self = this;
-            self.webMenuCd(param.webMenuCd || '');
+            self.webMenuCode(param.webMenuCode || '');
             self.webMenuName(param.webMenuName || '');
         }
     }
