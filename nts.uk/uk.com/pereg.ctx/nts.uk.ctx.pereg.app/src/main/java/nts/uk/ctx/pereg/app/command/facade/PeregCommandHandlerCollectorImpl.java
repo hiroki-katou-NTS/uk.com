@@ -27,6 +27,8 @@ import command.person.family.*;
 import command.person.info.*;
 import command.person.widowhistory.*;
 import nts.uk.ctx.bs.employee.app.command.workplace.assigned.UpdateAssignedWorkplaceCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.*;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.*;
 
 @Stateless
 @SuppressWarnings("serial")
@@ -37,12 +39,14 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddAffiliationDepartmentCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSubJobPositionCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddTemporaryAbsenceCommand>>(){},
-//			new TypeLiteral<PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddCurrentAddressCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddPerEmergencyContactCommand>>(){},
+//			new TypeLiteral<PeregAddCommandHandler<AddPerEmergencyContactCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddFamilyCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddWidowHistoryCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddEmployeeCommand>>(){}
+//			new TypeLiteral<PeregAddCommandHandler<AddWidowHistoryCommand>>(){},
+//			new TypeLiteral<PeregAddCommandHandler<AddEmployeeCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddCurrentAffiDeptCommand>>(){}
 			);
 	
 	/** Update handlers */
@@ -54,14 +58,14 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilySocialInsuranceCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSubJobPositionCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAddressCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerEmergencyContactCommand>>(){},
+//			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerEmergencyContactCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilyCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){},
+//			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAssignedWorkplaceCommand>>(){},
+//			new TypeLiteral<PeregUpdateCommandHandler<UpdateAssignedWorkplaceCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAffiDeptCommand>>(){}
 			);
 	
@@ -73,7 +77,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteCurrentAffiDeptCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteFamilySocialInsuranceCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteJobTitleMainCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteSubJobPositionCommand>>(){}
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteSubJobPositionCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteTemporaryAbsenceCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffWorkplaceHistoryCommand>>(){}
 			);
 	
 	@Override
