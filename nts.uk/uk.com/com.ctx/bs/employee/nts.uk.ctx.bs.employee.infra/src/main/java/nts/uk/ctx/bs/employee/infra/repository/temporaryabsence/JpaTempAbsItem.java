@@ -65,12 +65,12 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	}
 
 	@Override
-	public void addTemporaryAbsence(TempAbsenceHisItem domain) {
+	public void add(TempAbsenceHisItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	public void updateTemporaryAbsence(TempAbsenceHisItem domain) {
+	public void update(TempAbsenceHisItem domain) {
 		Optional<BsymtTempAbsHisItem> tempAbs = this.queryProxy().find(domain.getHistoryId(),
 				BsymtTempAbsHisItem.class);
 
@@ -83,7 +83,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	}
 
 	@Override
-	public void deleteTemporaryAbsence(String histId) {
+	public void delete(String histId) {
 		Optional<BsymtTempAbsHisItem> tempAbs = this.queryProxy().find(histId, BsymtTempAbsHisItem.class);
 
 		if (!tempAbs.isPresent()) {

@@ -58,10 +58,10 @@ public class AddAffiliationDepartmentCommandHandler extends CommandHandlerWithRe
 			itemToBeAdded.add(dateItem);
 		}
 		
-		affDepartmentHistoryRepository.addAffDepartment(itemToBeAdded);
+		affDepartmentHistoryRepository.add(itemToBeAdded);
 		
 		AffDepartmentHistoryItem domain = AffDepartmentHistoryItem.createFromJavaType(newHistId, command.getEmployeeId(), command.getDepartmentCode(), command.getAffHistoryTranfsType(), command.getDepartmentCode());
-		affDepartmentHistoryItemRepository.addAffDepartment(domain);
+		affDepartmentHistoryItemRepository.add(domain);
 		
 		return new PeregAddCommandResult(newHistId);
 	}

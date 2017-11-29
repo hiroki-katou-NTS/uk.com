@@ -53,12 +53,12 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 			throw new RuntimeException("invalid TempAbsenceHistory");
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
-		temporaryAbsenceHistRepository.updateTemporaryAbsenceHist(existHist.get(), itemToBeUpdate.get());
+		temporaryAbsenceHistRepository.update(existHist.get(), itemToBeUpdate.get());
 		
 		// Update detail table
 		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr(), command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory(), command.isMultiple(),
 				command.getFamilyMemberId(), command.isSameFamily(), command.getChildType(), command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays());
-		temporaryAbsenceRepository.updateTemporaryAbsence(temporaryAbsence);
+		temporaryAbsenceRepository.update(temporaryAbsence);
 	}
 
 }

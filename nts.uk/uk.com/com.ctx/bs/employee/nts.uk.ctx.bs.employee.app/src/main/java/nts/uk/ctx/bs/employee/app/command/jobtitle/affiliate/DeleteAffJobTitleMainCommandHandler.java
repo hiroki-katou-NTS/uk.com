@@ -51,9 +51,9 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 		}
 		existHist.get().remove(itemToBeDelete.get());
 		
-		affJobTitleHistoryRepository_ver1.deleteJobTitleMain(existHist.get(), itemToBeDelete.get());
+		affJobTitleHistoryRepository_ver1.delete(existHist.get(), itemToBeDelete.get());
 		
-		affJobTitleHistoryItemRepository_v1.deleteJobTitleMain(command.getHistId());
+		affJobTitleHistoryItemRepository_v1.delete(command.getHistId());
 	}
 
 }

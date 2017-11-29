@@ -16,19 +16,19 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	 * 
 	 * @param domain
 	 */
-	void addJobTitleMain(AffJobTitleHistory_ver1 domain);
+	void add(AffJobTitleHistory_ver1 domain);
 
 	/**
 	 * 取得した「職務職位」を更新する
 	 * 
 	 * @param domain
 	 */
-	void updateJobTitleMain(AffJobTitleHistory_ver1 domain, DateHistoryItem item);
+	void update(AffJobTitleHistory_ver1 domain, DateHistoryItem item);
 
 	/**
 	 * ドメインモデル「職務職位」を削除する
 	 * 
 	 * @param jobTitleMainId
 	 */
-	void deleteJobTitleMain(AffJobTitleHistory_ver1 domain, DateHistoryItem item);
+	void delete(AffJobTitleHistory_ver1 domain, DateHistoryItem item);
 }

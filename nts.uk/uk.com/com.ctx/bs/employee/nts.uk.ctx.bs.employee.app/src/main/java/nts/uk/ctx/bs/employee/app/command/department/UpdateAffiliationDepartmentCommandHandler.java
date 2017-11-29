@@ -54,11 +54,11 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 		
 		itemHist.get().changeSpan(itemToBeChanged.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		affDepartmentHistoryRepository.updateAffDepartment(itemHist.get(), itemToBeChanged.get());
+		affDepartmentHistoryRepository.update(itemHist.get(), itemToBeChanged.get());
 		
 		
 		AffDepartmentHistoryItem domain = AffDepartmentHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getDepartmentCode(), command.getAffHistoryTranfsType(), command.getDistributionRatio());
-		affDepartmentHistoryItemRepository.updateAffDepartment(domain);
+		affDepartmentHistoryItemRepository.update(domain);
 		
 		
 	}

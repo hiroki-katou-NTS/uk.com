@@ -60,7 +60,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	}
 
 	@Override
-	public void addTemporaryAbsenceHist(TempAbsenceHistory domain) {
+	public void add(TempAbsenceHistory domain) {
 		if (domain.getDateHistoryItems().isEmpty()){
 			return;
 		}
@@ -73,7 +73,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	}
 
 	@Override
-	public void updateTemporaryAbsenceHist(TempAbsenceHistory domain, DateHistoryItem item) {
+	public void update(TempAbsenceHistory domain, DateHistoryItem item) {
 
 		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(item.identifier(), BsymtTempAbsHistory.class);
 		if (!histItem.isPresent()) {
@@ -89,7 +89,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	}
 
 	@Override
-	public void deleteTemporaryAbsenceHist(TempAbsenceHistory domain, DateHistoryItem item) {
+	public void delete(TempAbsenceHistory domain, DateHistoryItem item) {
 		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(item.identifier(), BsymtTempAbsHistory.class);
 		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtTempAbsHistory");

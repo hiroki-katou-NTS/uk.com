@@ -42,12 +42,12 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	}
 
 	@Override
-	public void addJobTitleMain(AffJobTitleHistoryItem domain) {
+	public void add(AffJobTitleHistoryItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	public void updateJobTitleMain(AffJobTitleHistoryItem domain) {
+	public void update(AffJobTitleHistoryItem domain) {
 
 		Optional<BsymtAffJobTitleHistItem> existItem = this.queryProxy().find(domain.getHistoryId(),
 				BsymtAffJobTitleHistItem.class);
@@ -61,7 +61,7 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	}
 
 	@Override
-	public void deleteJobTitleMain(String histId) {
+	public void delete(String histId) {
 		Optional<BsymtAffJobTitleHistItem> existItem = this.queryProxy().find(histId, BsymtAffJobTitleHistItem.class);
 
 		if (!existItem.isPresent()) {

@@ -53,10 +53,10 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		affJobTitleHistoryRepository_ver1.updateJobTitleMain(existHist.get(), itemToBeUpdate.get());
+		affJobTitleHistoryRepository_ver1.update(existHist.get(), itemToBeUpdate.get());
 	
 		AffJobTitleHistoryItem domain = AffJobTitleHistoryItem.createFromJavaType(command.getHistoryId(), command.getSid(), command.getJobTitleCode(), command.getNote());
-		affJobTitleHistoryItemRepository_v1.updateJobTitleMain(domain);
+		affJobTitleHistoryItemRepository_v1.update(domain);
 	}
 
 }

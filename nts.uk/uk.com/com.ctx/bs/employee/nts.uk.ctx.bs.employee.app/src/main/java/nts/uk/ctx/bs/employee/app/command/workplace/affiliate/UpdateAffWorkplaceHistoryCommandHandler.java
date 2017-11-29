@@ -56,10 +56,10 @@ public class UpdateAffWorkplaceHistoryCommandHandler extends CommandHandler<Upda
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		affWorkplaceHistoryRepository.updateAffWorkplaceHistory(existHist.get(), itemToBeUpdate.get());
+		affWorkplaceHistoryRepository.update(existHist.get(), itemToBeUpdate.get());
 		
 		AffWorkplaceHistoryItem domain = AffWorkplaceHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getWorkplaceCode(), command.getNormalWorkplaceCode(), command.getLocationCode());
-		affWorkplaceHistoryItemRepository.updateAffWorkplaceHistory(domain);
+		affWorkplaceHistoryItemRepository.update(domain);
 	}
 	
 }

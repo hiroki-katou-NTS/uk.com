@@ -19,7 +19,7 @@ public class UpdateEmployeeJobHistCommandHandler extends CommandHandler<UpdateEm
 	private JobEntryHistoryRepository jobEntryHistoryRepository;
 	@Override
 	public String targetCategoryCd() {
-		return "CS00002";
+		return "CS00001";
 	}
 
 	@Override

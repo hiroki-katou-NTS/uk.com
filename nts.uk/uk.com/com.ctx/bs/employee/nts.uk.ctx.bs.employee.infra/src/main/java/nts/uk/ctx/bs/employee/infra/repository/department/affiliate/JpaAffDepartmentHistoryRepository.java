@@ -41,7 +41,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	}
 
 	@Override
-	public void addAffDepartment(AffDepartmentHistory domain) {
+	public void add(AffDepartmentHistory domain) {
 		DateHistoryItem itemToBeAdded = domain.getHistoryItems().get(domain.getHistoryItems().size() -1);
 		this.commandProxy().insert(toEntity(domain.getEmployeeId(), itemToBeAdded));
 		// Update item before
@@ -49,7 +49,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	}
 
 	@Override
-	public void updateAffDepartment(AffDepartmentHistory domain, DateHistoryItem item) {
+	public void update(AffDepartmentHistory domain, DateHistoryItem item) {
 		Optional<BsymtAffiDepartmentHist> itemToBeUpdated = this.queryProxy().find(item.identifier(), BsymtAffiDepartmentHist.class);
 		if (!itemToBeUpdated.isPresent()){
 			throw new RuntimeException("Invalid BsymtAffiDepartmentHist");
@@ -63,7 +63,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	}
 
 	@Override
-	public void deleteAffDepartment(AffDepartmentHistory domain, DateHistoryItem item) {
+	public void delete(AffDepartmentHistory domain, DateHistoryItem item) {
 		Optional<BsymtAffiDepartmentHist> itemToBeDeleted = this.queryProxy().find(item.identifier(), BsymtAffiDepartmentHist.class);
 		if (!itemToBeDeleted.isPresent()){
 			throw new RuntimeException("Invalid BsymtAffiDepartmentHist");

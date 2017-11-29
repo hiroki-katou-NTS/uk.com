@@ -39,20 +39,20 @@ public interface TempAbsItemRepository {
 	 * 
 	 * @param domain
 	 */
-	void addTemporaryAbsence(TempAbsenceHisItem domain);
+	void add(TempAbsenceHisItem domain);
 
 	/**
 	 * 取得した「休職休業」を更新する
 	 * 
 	 * @param domain
 	 */
-	void updateTemporaryAbsence(TempAbsenceHisItem domain);
+	void update(TempAbsenceHisItem domain);
 
 	/**
 	 * ドメインモデル「休職休業」を削除する
 	 * 
 	 * @param domain
 	 */
-	void deleteTemporaryAbsence(String histId);
+	void delete(String histId);
 
 }

@@ -49,9 +49,9 @@ public class DeleteAffiliationDepartmentCommandHandler extends CommandHandler<De
 			throw new RuntimeException("Invalid AffDepartmentHistory");
 		}
 		itemHist.get().remove(itemToBeRemoved.get());
-		affDepartmentHistoryRepository.deleteAffDepartment(itemHist.get(), itemToBeRemoved.get());
+		affDepartmentHistoryRepository.delete(itemHist.get(), itemToBeRemoved.get());
 		
-		affDepartmentHistoryItemRepository.deleteAffDepartment(command.getHistoryId());
+		affDepartmentHistoryItemRepository.delete(command.getHistoryId());
 	}
 
 }

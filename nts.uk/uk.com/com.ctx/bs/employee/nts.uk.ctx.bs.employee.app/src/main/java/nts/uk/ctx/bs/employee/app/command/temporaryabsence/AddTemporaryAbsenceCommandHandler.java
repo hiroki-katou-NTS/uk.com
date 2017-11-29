@@ -60,11 +60,11 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 			itemtoBeAdded.add(dateItem);
 		}
 		
-		temporaryAbsenceHistRepository.addTemporaryAbsenceHist(itemtoBeAdded);
+		temporaryAbsenceHistRepository.add(itemtoBeAdded);
 		
 		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr(), newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory(), command.isMultiple(),
 				command.getFamilyMemberId(), command.isSameFamily(), command.getChildType(), command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays());
-		temporaryAbsenceRepository.addTemporaryAbsence(temporaryAbsence);
+		temporaryAbsenceRepository.add(temporaryAbsence);
 		
 		return new PeregAddCommandResult(newHistID);
 	}

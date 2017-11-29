@@ -59,10 +59,10 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 			itemtoBeAdded.add(dateItem);
 		}
 		
-		affJobTitleHistoryRepository_ver1.addJobTitleMain(itemtoBeAdded);
+		affJobTitleHistoryRepository_ver1.add(itemtoBeAdded);
 		
 		AffJobTitleHistoryItem domain = AffJobTitleHistoryItem.createFromJavaType(histId, command.getSid(), command.getJobTitleCode(), command.getNote());
-		affJobTitleHistoryItemRepository_v1.addJobTitleMain(domain);
+		affJobTitleHistoryItemRepository_v1.add(domain);
 		
 		return new PeregAddCommandResult(histId);
 	}

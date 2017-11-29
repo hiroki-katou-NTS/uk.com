@@ -54,9 +54,9 @@ public class DeleteAffWorkplaceHistoryCommandHandler extends CommandHandler<Dele
 		}
 		existHist.get().remove(itemToBeDelete.get());
 		
-		affWorkplaceHistoryRepository.deleteAffWorkplaceHistory(existHist.get(), itemToBeDelete.get());
+		affWorkplaceHistoryRepository.delete(existHist.get(), itemToBeDelete.get());
 		
-		affWorkplaceHistoryItemRepository.deleteAffWorkplaceHistory(command.getHistoryId());
+		affWorkplaceHistoryItemRepository.delete(command.getHistoryId());
 	}
 	
 }
