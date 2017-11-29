@@ -15,6 +15,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
         itemNameLabel: KnockoutObservable<String>;
         enableReturn: KnockoutObservable<boolean>;
         currentData: any;
+        tblHeigh: KnockoutObservable<number>;
         
         constructor() {
             var self = this;
@@ -54,6 +55,17 @@ module nts.uk.at.view.kml002.c.viewmodel {
             
             self.checked = ko.observable(true);
             self.enable = ko.observable(true);
+            
+            if(data.unit == 1) {
+                self.catCode(1);
+                $('.cat-lbl').hide();
+                $('.categories').hide();
+                $('.cbx-checked').hide();
+            } else {
+                $('.cat-lbl').show();
+                $('.categories').show();
+                $('.cbx-checked').show();
+            }
             
             var devChange = false;
             
