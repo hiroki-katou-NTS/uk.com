@@ -375,29 +375,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 currentItem: IHistorySelection = ko.toJS(self.historySelection),
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
                 selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId),
-
-                selection: ISelection = ko.toJS(self.selection),
-                listSelection: Array<Selection> = self.listSelection(),
-                selectionList = _.find(listSelection, x => x.selectionID == selection.selectionID),
-
-                orderSelection: IOrderSelection = ko.toJS(self.orderSelection),
-                listOrderSelection: Array<OrderSelection> = self.listOrderSelection(),
-                orderList = _.find(listOrderSelection, x => x.selectionID == orderSelection.selectionID),
-
+                
                 perInfoSelectionItem: ISelectionItem = ko.toJS(self.perInfoSelectionItem),
                 listItems: Array<SelectionItem> = self.listItems(),
-                selectionItemList = _.find(listItems, x => x.selectionItemId == perInfoSelectionItem.selectionItemId);
+                selectionItemList = _.find(listItems, x => x.selectionItemId == perInfoSelectionItem.selectionItemId),
+                selItemList: SelectionItem = self.perInfoSelectionItem(),;
 
-            /*
-            let command = {
-                currentItem: currentItem,
-                selection: selection,
-                orderSection: orderSelection,
-                perInfoSelectionItem: perInfoSelectionItem
-            };
-            */
-            
-            //perInfoSelectionItem.selectionItemId(self.perInfoSelectionItem().selectionItemId());
             command = ko.toJS(perInfoSelectionItem);
             confirm({ messageId: "Msg_532", messageParams: ["1"] }).ifYes(() => {
                 service.reflUnrComp(command).done(function() {
@@ -408,6 +391,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         }
                     });
                     self.listItems.valueHasMutated();
+                    selItemList.selectionItemId.valueHasMutated();
                     nts.uk.ui.dialog.alert({ messageId: "Msg_81" });
                 });
             }).ifNo(() => {
