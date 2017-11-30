@@ -14,7 +14,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 public class FaxNum extends StringPrimitiveValue<FaxNum>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
-	/** 代表者名  */
+	/** FAX番号  */
 	public FaxNum (String rawValue){
 		super(rawValue);
 	}
