@@ -430,7 +430,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     var unitMoney = {
                         verticalCalCd: data.verticalCalCd,
                         verticalCalItemId: data.itemId,
-                        dispOrderAmount: self.rightItemsAmount()[i].id,
+                        dispOrder: self.rightItemsAmount()[i].id,
                         externalBudgetCd: self.rightItemsAmount()[i].itemType == GrantPeriodicMethod.EXTERNAL ? self.rightItemsAmount()[i].trueCode : null,
                         operatorAtr: self.rightItemsAmount()[i].operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
                         name: self.rightItemsAmount()[i].name
@@ -443,6 +443,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     moneyFunc: {
                         lstMoney: formMoney
                     }
+                    
                 }
                 nts.uk.ui.windows.setShared("KML002_E_DATA", moneyData);
             }
