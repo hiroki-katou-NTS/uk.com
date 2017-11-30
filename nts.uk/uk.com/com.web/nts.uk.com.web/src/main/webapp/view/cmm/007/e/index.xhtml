@@ -9,6 +9,7 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
    			<span class="title">#{i18n.getText('CMM007_49')}</span>
+   			<!-- E1_1 -->
 			<button style="margin-left: 200px" class="proceed" data-bind="click: saveOvertimeWorkFrSetting">#{i18n.getText('CMM007_5')}</button>
 		</div>
 		<div class="contents-area screen-main-e">
@@ -21,13 +22,13 @@
 					<table>
 						 <tr>
 							<!-- E3_1 -->
-							<td style="padding-right: 60px"><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM007_49')}</div></td>
+							<td style="padding-right: 60px"><div data-bind="ntsFormLabel: { required: true, constraint: 'OvertimeWorkFrameName' }">#{i18n.getText('CMM007_49')}</div></td>
 							<td>
 							
 								<!-- E3_2 -->
 								<div class="minimalist" data-bind="ntsCheckBox: { 
 																					checked: checkStatusEnable(mapObj.get(1).overtimeWorkFrNo()), 
-																					enable: 'true',
+																					enable: true,
 																				},
 																				click: function (data) { myFunction(mapObj.get(1).overtimeWorkFrNo(), data)}">
 																				
@@ -40,7 +41,8 @@
 																			value: mapObj.get(1).overtimeWorkFrName,
 																			name: '#[CMM007_51]',
 																			enable: checkStatusEnable(mapObj.get(1).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="2"></input>
 							</td>
 						</tr>
@@ -63,7 +65,8 @@
 																			name: '#[CMM007_52]',
 																			value: mapObj.get(2).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(2).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="3"></input>
 							</td>
 						</tr>
@@ -86,7 +89,8 @@
 																			name: '#[CMM007_53]',
 																			value: mapObj.get(3).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(3).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="4"></input>
 							</td>
 						</tr>
@@ -109,7 +113,8 @@
 																			name: '#[CMM007_54]',
 																			value: mapObj.get(4).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(4).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="5"></input>
 							</td>
 						</tr>
@@ -132,7 +137,8 @@
 																			name: '#[CMM007_55]',
 																			value: mapObj.get(5).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(5).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="6"></input>
 							</td>
 						</tr>
@@ -155,7 +161,8 @@
 																			name: '#[CMM007_56]',
 																			value: mapObj.get(6).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(6).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="7"></input>
 							</td>
 						</tr>
@@ -178,7 +185,8 @@
 																			name: '#[CMM007_57]',
 																			value: mapObj.get(7).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(7).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="8"></input>
 							</td>
 						</tr>
@@ -201,7 +209,8 @@
 																			name: '#[CMM007_58]',
 																			value: mapObj.get(8).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(8).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="9"></input>
 							</td>
 						</tr>
@@ -224,7 +233,8 @@
 																			name: '#[CMM007_59]',
 																			value: mapObj.get(9).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(9).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="10"></input>
 							</td>
 						</tr>
@@ -247,7 +257,8 @@
 																			name: '#[CMM007_60]',
 																			value: mapObj.get(10).overtimeWorkFrName,
 																			enable: checkStatusEnable(mapObj.get(10).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="11"></input>
 							</td>
 						</tr> 
@@ -259,7 +270,7 @@
 					<table>
 						  <tr>
 							<!-- F3_1 -->
-							<td style="padding-right: 60px"><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM007_61')}</div></td>
+							<td style="padding-right: 60px"><div data-bind="ntsFormLabel: { required: true, constraint: 'OvertimeWorkFrameName' }">#{i18n.getText('CMM007_61')}</div></td>
 							<td>
 								<!-- F3_2 -->
 								<span>&#160;&#160;#{i18n.getText('CMM007_28')}</span>
@@ -267,10 +278,11 @@
 							<td>
 								<!-- F3_3 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_51]',
+																			name: '#[CMM007_63]',
 																			value: mapObj.get(1).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(1).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="12"></input>
 							</td>
 						</tr>
@@ -283,10 +295,11 @@
 							<td>
 								<!-- F3_5 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_52]',
+																			name: '#[CMM007_64]',
 																			value: mapObj.get(2).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(2).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="13"></input>
 							</td>
 						</tr>
@@ -299,10 +312,11 @@
 							<td>
 								<!-- F3_7 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_53]',
+																			name: '#[CMM007_65]',
 																			value: mapObj.get(3).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(3).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="14"></input>
 							</td>
 						</tr>
@@ -315,10 +329,11 @@
 							<td>
 								<!-- F3_9 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_54]',
+																			name: '#[CMM007_66]',
 																			value: mapObj.get(4).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(4).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="15"></input>
 							</td>
 						</tr>
@@ -331,10 +346,11 @@
 							<td>
 								<!-- F3_11 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_55]',
+																			name: '#[CMM007_67]',
 																			value: mapObj.get(5).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(5).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="16"></input>
 							</td>
 						</tr>
@@ -347,10 +363,11 @@
 							<td>
 								<!-- F3_13 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_56]',
+																			name: '#[CMM007_68]',
 																			value: mapObj.get(6).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(6).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="17"></input>
 							</td>
 						</tr>
@@ -363,10 +380,11 @@
 							<td>
 								<!-- F3_15 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_57]',
+																			name: '#[CMM007_69]',
 																			value: mapObj.get(7).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(7).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="18"></input>
 							</td>
 						</tr>
@@ -382,7 +400,8 @@
 																			name: '#[CMM007_58]',
 																			value: mapObj.get(8).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(8).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="19"></input>
 							</td>
 						</tr>
@@ -395,10 +414,11 @@
 							<td>
 								<!-- F3_19 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_59]',
+																			name: '#[CMM007_70]',
 																			value: mapObj.get(9).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(9).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="20"></input>
 							</td>
 						</tr>
@@ -411,10 +431,11 @@
 							<td>
 								<!-- F3_21 -->
 								<input id="" type="text" data-bind="ntsTextEditor: { 
-																			name: '#[CMM007_60]',
+																			name: '#[CMM007_72]',
 																			value: mapObj.get(10).transferFrName,
 																			enable: checkStatusEnable(mapObj.get(10).overtimeWorkFrNo()),
-																			constraint: 'OvertimeWorkFrameName'
+																			constraint: 'OvertimeWorkFrameName',
+																			required: true,
 																		}" tabindex="21"></input>
 							</td>
 						</tr> 
