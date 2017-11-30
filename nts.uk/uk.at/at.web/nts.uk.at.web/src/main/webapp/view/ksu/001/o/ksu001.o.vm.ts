@@ -90,6 +90,7 @@ module ksu001.o.viewmodel {
             let self = this;
 
             $('#contain-view').hide();
+            //            $("#extable").exTable("viewMode", "shortName", { y: 115 }); 
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
 
@@ -97,6 +98,7 @@ module ksu001.o.viewmodel {
             self.currentScreen.onClosed(() => {
                 self.currentScreen = null;
                 if (__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {
+                    //                    $("#extable").exTable("viewMode", "shortName", { y: 100 }); 
                     $('#contain-view').show();
                     //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
                     $("#extable").exTable("stickData", self.nameWorkTimeType());

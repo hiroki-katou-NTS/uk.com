@@ -50,7 +50,7 @@ public class KscmtScheDispControl extends UkJpaEntity implements Serializable {
 
 	/** 半日記号 */
 	@Column(name = "SYMBOL_HALF_DAY_NAME")
-	public boolean symbolHalfDayName;
+	public String symbolHalfDayName;
 
 	@Override
 	protected Object getKey() {
