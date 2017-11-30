@@ -382,14 +382,14 @@
                     this.value = orDefault(value, null);
                 }
 
-                ifPresent(consumer: (value: V) => {}) {
+                ifPresent(consumer: (value: V) => void) {
                     if (this.isPresent()) {
                         consumer(this.value);
                     }
                     return this;
                 }
 
-                ifEmpty(action: () => {}) {
+                ifEmpty(action: () => void) {
                     if (!this.isPresent()) {
                         action();
                     }

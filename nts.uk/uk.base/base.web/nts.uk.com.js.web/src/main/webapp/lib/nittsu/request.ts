@@ -355,6 +355,23 @@ module nts.uk.request {
 
         window.location.href = path;
     }
+    
+    export module login {
+        
+        var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+        
+        export function keepUsedLoginPage() {
+            uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+        }
+        
+        export function jumpToUsedLoginPage() {
+            uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
+                window.location.href = path;
+            }).ifEmpty(() => {
+                request.jump('/ccg007/a/index.xhtml');
+            });
+        }
+    }
 
     export function resolvePath(path: string) {
         var destination: Locator;

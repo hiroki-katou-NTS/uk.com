@@ -2831,6 +2831,22 @@ var nts;
                 window.location.href = path;
             }
             request.jump = jump;
+            var login;
+            (function (login) {
+                var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+                function keepUsedLoginPage() {
+                    uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+                }
+                login.keepUsedLoginPage = keepUsedLoginPage;
+                function jumpToUsedLoginPage() {
+                    uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
+                        window.location.href = path;
+                    }).ifEmpty(function () {
+                        request.jump('/ccg007/a/index.xhtml');
+                    });
+                }
+                login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+            })(login = request.login || (request.login = {}));
             function resolvePath(path) {
                 var destination;
                 if (path.charAt(0) === '/') {
@@ -22989,3 +23005,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
