@@ -512,7 +512,7 @@ module nts.uk.com.view.cmm011.a {
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
 
-                    if (res.messageId == "Msg_373") {
+                    if (res.messageId == 'Msg_373') {
                         nts.uk.ui.dialog.info(res.message).then(() => {
                             self.lstWorkplace([]);
                         });
