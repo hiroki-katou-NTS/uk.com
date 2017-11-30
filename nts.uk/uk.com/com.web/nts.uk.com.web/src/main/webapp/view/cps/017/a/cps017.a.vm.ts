@@ -139,9 +139,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length) {
                             if (histCur.endDate == '9999/12/31') {
                                 self.enableSelName(true);
-                                $("#name").focus();
+                                self.revDisSel03(false);
+                                $("#code").focus();
                             } else {
                                 self.enableSelName(self.enableDelHist());
+                                
                             }
                             self.checkCreateaaa(false);
                             itemList.forEach(x => self.listSelection.push(x));
@@ -277,11 +279,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 itemList.forEach(x => self.listSelection.push(x));
                                 //
                                 let itemSelected = _.find(itemList, item => _.indexOf(oldIds, item.selectionID) == -1);
-                                
+
                                 if (itemSelected) {
                                     self.selection().selectionID(itemSelected.selectionID);
                                 }
-                                
+
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function() {
                                     if (itemList.length == 1) {
                                         nts.uk.ui.dialog.alert({ messageId: "Msg_530" });
@@ -290,7 +292,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                             }
                         });
-                    
+
                     self.listSelection.valueHasMutated();
                     $("#name").focus();
                 });
@@ -305,9 +307,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listSelection: Array<Selection> = self.listSelection(),
                 _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
 
-            oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
+            let oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
             currentItem.histId(self.historySelection().histId());
-            command = ko.toJS(currentItem);
+            let command = ko.toJS(currentItem);
+
             service.updateDataSelection(command).done(function() {
                 self.checkCreateaaa(false);
                 self.listSelection.removeAll();
@@ -332,9 +335,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listSelection: Array<Selection> = self.listSelection();
 
             currentItem.histId(self.historySelection().histId());
-            command = ko.toJS(currentItem);
-            oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
-            lastIndex = items.length - 1;
+            let command = ko.toJS(currentItem);
+            let oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
+            let lastIndex = items.length - 1;
+
             if (items.length > 0) {
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.removeDataSelection(command).done(function() {
@@ -375,9 +379,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listItems: Array<SelectionItem> = self.listItems();
 
             currentItem.histId(self.historySelection().histId());
-            command = ko.toJS(currentItem);
-            oldIndex = _.findIndex(listHistorySelection, x => x.histId == currentItem.histId());
-            lastIndex = items.length - 1;
+            let command = ko.toJS(currentItem);
+            let oldIndex = _.findIndex(listHistorySelection, x => x.histId == currentItem.histId());
+            let lastIndex = items.length - 1;
+
             if (items.length > 0) {
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.removeHistory(command).done(function() {
@@ -419,7 +424,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 selectionItemList = _.find(listItems, x => x.selectionItemId == perInfoSelectionItem.selectionItemId),
                 selItemList: SelectionItem = self.perInfoSelectionItem();
 
-            command = ko.toJS(perInfoSelectionItem);
+            let command = ko.toJS(perInfoSelectionItem);
+
             confirm({ messageId: "Msg_532", messageParams: ["1"] }).ifYes(() => {
                 service.reflUnrComp(command).done(function() {
                     self.listHistorySelection.removeAll();
