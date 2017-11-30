@@ -26,7 +26,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         selectedExeContent: KnockoutObservable<string> = ko.observable('1');
 
         // GridList
-        errorMessageInfo: KnockoutObservableArray<Gridlist> = ko.observableArray([]);
+        errorMessageInfo: KnockoutObservableArray<any> = ko.observableArray([]);
+        filterErrorMessageInfo: KnockoutObservableArray<Gridlist> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
 
@@ -40,6 +41,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
                 { headerText: getText('KDW001_37'), key: 'errContents', width: 290 },
             ]);
+            
+            self.selectedExeContent.subscribe((value) => {
+                self.filterErrorMessage();
+            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -50,7 +55,6 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.endPeriod(params.periodEndDate);
 
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
-                console.log(res);
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);
                 self.executionContents(res.enumComboBox);
                 self.startAsyncTask();
@@ -78,7 +82,6 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 periodEndDate: self.endPeriod()
             };
             service.checkTask(data).done(res => {
-                console.log(res);
                 self.taskId(res.id);
                 self.repeatCheckAsyncResult();
             });
@@ -89,7 +92,6 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
-                        console.log(info);
                         // DailyCreate
                         self.dailyCreateCount(self.getAsyncData(info.taskDatas, "dailyCreateCount").valueAsNumber);
                         self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
@@ -114,16 +116,25 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         }
 
         private getAsyncData(data: Array<any>, key: string): any {
-            return _.find(data, (item) => {
+            var result = _.find(data, (item) => {
                 return item.key == key;
             });
+            return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
         }
 
         private getLogData(empCalAndSumExecLogID: string): void {
             var self = this;
             service.getErrorMessageInfo(empCalAndSumExecLogID).done((res) => {
                 self.errorMessageInfo(res.errMessageInfoDto);
+                self.filterErrorMessage();
             });
+        }
+        
+        private filterErrorMessage() {
+            var self = this;
+            self.filterErrorMessageInfo(_.filter(self.errorMessageInfo(), (item) => {
+                return item.executionContent == self.selectedExeContent();
+            }));
         }
 
     }

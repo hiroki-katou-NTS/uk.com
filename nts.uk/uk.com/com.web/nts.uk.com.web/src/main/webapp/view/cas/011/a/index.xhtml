@@ -60,7 +60,7 @@
                             <col width="*" />
                         </colgroup>
                         <tr class="row">
-                            <td style ="width: 181px;">
+                            <td style ="width: 175px;">
                                 <!-- A3_001 -->
                                 <div data-bind="ntsFormLabel: {required: true,constraint: ['RoleSetCode', 'RoleSetName'] }">#{i18n.getText('CAS011_11')}</div>
                             </td>
@@ -249,8 +249,8 @@
                     <div id="swap-list" class = "pad_left_5px" 
                         data-bind="ntsSwapList: {
                             name: '#[CAS011_24]',
-                            height: 300,
-                            width: 480,
+                            height: 250,
+                            width: 280,
                             dataSource: $parent.listWebMenus,
                             disableMoveButton: false,
                             primaryKey: 'webMenuCode',
@@ -259,8 +259,7 @@
                             draggable: true,
                             multipleDrag: { left: true, right: false },
                             innerDrag: { left: false, right: true },
-                            outerDrag: { left: true, right: true },
-                            showNumbering: false
+                            outerDrag: { left: true, right: true }
                         }">
                     </div>
                 </div>
