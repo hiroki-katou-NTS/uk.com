@@ -167,23 +167,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             service.startScreen(param).done((data) => {
                 console.log(data);
                 self.formatCodes(data.lstControlDisplayItem.formatCode);
-                _.each(data.lstControlDisplayItem.lstHeader, function(item) {
-                    if (item.group.length > 0) {
-                        delete item.group[0].group;
-                        if (item.group[0].dataType == "String") {
-                            item.group[0].onChange = self.search;
-                            delete item.group[0].ntsControl;
-                        } else {
-                            delete item.group[0].onChange;
-                            delete item.group[0].ntsControl;
-                        }
-                        delete item.group[1].group;
-                    } else {
-                        delete item.group;
-                    }
-                });
-                _.each(data.lstFixedHeader, function(item) {
-                    delete item.group;
+                _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+                    item.columns.unshift("sign");
                 });
                 self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr));
                 self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto));
@@ -198,7 +183,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.selectedEmployee(self.lstEmployee()[0].id);
                 self.extractionData();
                 self.loadGrid();
-                self.extraction();
+              //  self.extraction();
                 self.initCcg001();
                 self.loadCcg001();
                 nts.uk.ui.block.clear();
@@ -221,6 +206,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         btnExtraction_Click() {
             var self = this;
+            console.log(self.dailyPerfomanceData());
             if (!nts.uk.ui.errors.hasError()) {
                 if (self.displayFormat() == 0) {
                     $("#emp-component").css("display", "block");
@@ -251,26 +237,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.grayout();
                 service.startScreen(param).done((data) => {
                     self.formatCodes(data.lstControlDisplayItem.formatCode);
-                    _.each(data.lstControlDisplayItem.lstHeader, function(item) {
-                        if (item.group.length > 0) {
-                            delete item.group[0].group;
-                            if (item.group[0].dataType == "String") {
-                                item.group[0].onChange = self.search;
-                                item.group[0].click = function(id, key) {
-                                    console.log(id + " - " + key);
-                                };
-                                delete item.group[0].ntsControl;
-                            } else {
-                                delete item.group[0].onChange;
-                                delete item.group[0].ntsControl;
-                            }
-                            delete item.group[1].group;
-                        } else {
-                            delete item.group;
-                        }
-                    });
-                    _.each(data.lstFixedHeader, function(item) {
-                        delete item.group;
+                    _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+                        item.columns.unshift("sign");
                     });
                     self.receiveData(data);
                     self.extraction();
@@ -340,23 +308,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectErrorCode(param).done((data) => {
-                            _.each(data.lstControlDisplayItem.lstHeader, function(item) {
-                                if (item.group.length > 0) {
-                                    delete item.group[0].group;
-                                    if (item.group[0].dataType == "String") {
-                                        item.group[0].onChange = self.search;
-                                        delete item.group[0].ntsControl;
-                                    } else {
-                                        delete item.group[0].onChange;
-                                        delete item.group[0].ntsControl;
-                                    }
-                                    delete item.group[1].group;
-                                } else {
-                                    delete item.group;
-                                }
-                            });
-                            _.each(data.lstFixedHeader, function(item) {
-                                delete item.group;
+                            _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+                                item.columns.unshift("sign");
                             });
                             self.receiveData(data);
                             self.extraction();
@@ -407,23 +360,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectFormatCode(param).done((data) => {
-                            _.each(data.lstControlDisplayItem.lstHeader, function(item) {
-                                if (item.group.length > 0) {
-                                    delete item.group[0].group;
-                                    if (item.group[0].dataType == "String") {
-                                        item.group[0].onChange = self.search;
-                                        delete item.group[0].ntsControl;
-                                    } else {
-                                        delete item.group[0].onChange;
-                                        delete item.group[0].ntsControl;
-                                    }
-                                    delete item.group[1].group;
-                                } else {
-                                    delete item.group;
-                                }
-                            });
-                            _.each(data.lstFixedHeader, function(item) {
-                                delete item.group;
+                            _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+                                item.columns.unshift("sign");
                             });
                             self.receiveData(data);
                             self.extraction();
@@ -537,7 +475,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         extraction() {
             var self = this;
-            $("#dpGrid").ntsGrid("destroy");
+            self.destroyGrid();
             self.extractionData();
             self.loadGrid();
         }
@@ -561,13 +499,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             _.forEach(self.dailyPerfomanceData(), (data) => {
                 if (!self.isDisableRow(data.id)) {
                     data.sign = !data.sign;
+                    $("#dpGrid").ntsGrid("updateRow", "_"+data.id, {sign: data.sign});
                 }
             });
             self.dailyPerfomanceData.valueHasMutated();
-            $("#grid2").ntsGrid("destroy");
-            self.loadGrid();
+//            self.destroyGrid();
+//            self.loadGrid();
         }
-
+        
+        destroyGrid() {
+            $("#dpGrid").ntsGrid("destroy");
+            $("#dpGrid").remove();
+            $(".nts-grid-sheet-buttons").remove();
+            $('<table id="dpGrid"></table>').appendTo('#gid');
+        }
         setColorWeekend() {
             var self = this;
             self.textColors([]);
@@ -802,16 +747,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' },
                     {
                         name: 'Link2',
-                        //                        click: function(ui, evt) {
-                        //                            alert('Do something12344:' + ui);
-                        //                            var rowId;
-                        //                            var rows = $("#dpGrid").igGridSelection("selectedRows");
-                        //                            $.each(rows, function(ix, el) {
-                        //                                rowId = el.element.attr("data-id");
-                        //                                var cellValue = $("#dpGrid").igGrid("getCellValue", rowId, "ContractID");
-                        //                                alert(cellValue);
-                        //                            });
-                        //                        },
+                                                click: function(ui, evt) {
+                                                   var rowId = $("#dpGrid").igGrid("activeCell").id;
+                                                   var key = $("#dpGrid").igGrid("activeCell").columnKey;
+                                                    alert('rowId/key:' + rowId+"/"+key);
+
+                                                },
                         controlType: 'LinkLabel'
                     },
                     { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
@@ -854,20 +795,48 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let tempList = [];
             if (mode == 0) {
                 _.forEach(self.employeeModeHeader, (header) => {
+                     delete header.group;
                     tempList.push(header);
                 });
             } else if (mode == 1) {
                 self.displayProfileIcon();
                 _.forEach(self.dateModeHeader, (header) => {
+                     delete header.group;
                     tempList.push(header);
                 });
             } else if (mode == 2) {
                 _.forEach(self.errorModeHeader, (header) => {
+                     delete header.group;
                     tempList.push(header);
                 });
             }
             self.dislayNumberHeaderText();
             _.forEach(self.optionalHeader, (header) => {
+                if (header.group != undefined) {
+                    if (header.group.length > 0) {
+                        delete header.group[0].group;
+                        delete header.key;
+                        delete header.dataType;
+                        delete header.width;
+                        delete header.ntsControl;
+                        delete header.changedByOther;
+                        delete header.changedByYou;
+                        delete header.color;
+                        delete header.hidden;
+                        delete header.ntsType;
+                        delete header.onChange;
+                        if (header.group[0].dataType == "String") {
+                            header.group[0].onChange = self.search;
+                            delete header.group[0].ntsControl;
+                        } else {
+                            delete header.group[0].onChange;
+                            delete header.group[0].ntsControl;
+                        }
+                        delete header.group[1].group;
+                    } else {
+                        delete header.group;
+                    }
+                }
                 tempList.push(header);
             });
             self.headersGrid(tempList);
