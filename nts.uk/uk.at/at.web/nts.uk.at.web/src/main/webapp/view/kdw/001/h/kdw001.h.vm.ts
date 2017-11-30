@@ -18,6 +18,7 @@ module nts.uk.at.view.kdw001.h {
             listErrMessage: Array<any>;
             listErrMessageInfo: KnockoutObservableArray<model.ErrMessageInfo>;
             executionContent: number;
+            executionContentName:string;
 
             constructor() {
                 let self = this;
@@ -31,8 +32,10 @@ module nts.uk.at.view.kdw001.h {
                     self.objectPeriod = param.objectPeriod;
                     self.listPeson = param.listTargetPerson;
                     self.listErrMessage = param.listErrMessageInfo;
+                    self.executionContentName = param.executionContentName;
                     self.listErrMessageInfo = ko.observableArray([]);
                     self.listTargetPerson = ko.observableArray([]);
+                    
 
 
                 }
@@ -43,7 +46,7 @@ module nts.uk.at.view.kdw001.h {
                     { headerText: getText('KDW001_33'), key: 'employeeID', width: 100 },
                     { headerText: getText('KDW001_35'), key: 'resourceID', width: 100 },
                     { headerText: getText('KDW001_36'), key: 'disposalDay', width: 100 },
-                    { headerText: getText('KDW001_37'), key: 'messageError', width: 100 },
+                    { headerText: getText('KDW001_37'), key: 'messageError', width: 199 },
                     { headerText: '', key: 'GUID', width: 1 ,hirren :true },
                 ]);
             }
