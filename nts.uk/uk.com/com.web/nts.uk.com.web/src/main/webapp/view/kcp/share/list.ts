@@ -354,7 +354,9 @@ module kcp.share.list {
             if (data.tabindex) {
                 return {
                     searchBox: data.tabindex,
-                    table: data.tabindex
+                    table: data.tabindex,
+                    baseDateInput: data.tabindex,
+                    decideButton: data.tabindex
                 }
             }
             switch(data.listType) {

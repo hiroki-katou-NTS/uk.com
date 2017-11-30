@@ -188,7 +188,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 					overtimeInput.getTimeItemTypeAtr().value,
 					"",
 					null,
-					overtimeInput.getApplicationTime().v(),
+					overtimeInput.getApplicationTime().v().toString(),
 					null);
 			caculations.add(caculationTime);
 		}

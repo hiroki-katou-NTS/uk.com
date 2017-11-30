@@ -33,8 +33,17 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 				.getPerInfoItemDefById(command.getId(), AppContexts.user().contractCode()).get();
 		List<Selection> selection = new ArrayList<>();
 		if (command.getDataType() == 6) {
-			selection = this.selectionRepo.getAllSelectionByHistoryId(command.getSelectionItemId(),
-					GeneralDate.today());
+			if (command.getPersonEmployeeType() == 1) {
+				
+				selection = this.selectionRepo.getAllSelectionByHistoryId(command.getSelectionItemId(),
+						GeneralDate.today(), 0);
+				
+			} else if (command.getPersonEmployeeType() == 2) {
+				
+				selection = this.selectionRepo.getAllSelectionByHistoryId(command.getSelectionItemId(),
+						GeneralDate.today(), 1);
+
+			}
 			if (selection == null || selection.size() == 0) {
 
 				throw new BusinessException(new RawErrorMessage("Msg_587"));

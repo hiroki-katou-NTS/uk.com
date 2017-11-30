@@ -4,13 +4,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.service.IWorkChangeCommonService;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AppWorkChangeCommonSetFinder {
 	@Inject
     private IWorkChangeCommonService workChangeCommonService;
 	
-	public AppWorkChangeCommonSetDto getWorkChangeCommonSetting(String sid){
-		return AppWorkChangeCommonSetDto.fromDomain( workChangeCommonService.getSettingData(sid));
+	public AppWorkChangeCommonSetDto getWorkChangeCommonSetting(){
+		String sId = AppContexts.user().employeeId();
+		String companyId = AppContexts.user().companyId();
+		return AppWorkChangeCommonSetDto.fromDomain( workChangeCommonService.getSettingData(companyId, sId));
 	}
 }

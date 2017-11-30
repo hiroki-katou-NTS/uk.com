@@ -6,13 +6,11 @@ package nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,19 +35,29 @@ public class KmnmtAffiliJobTitleHist extends UkJpaEntity implements Serializable
     protected KmnmtAffiliJobTitleHistPK kmnmtJobTitleHistPK;
     
     /** The end D. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "END_D")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endD;
 
+    /**
+     * Instantiates a new kmnmt affili job title hist.
+     */
     public KmnmtAffiliJobTitleHist() {
+    	super();
     }
 
+    /**
+     * Instantiates a new kmnmt affili job title hist.
+     *
+     * @param kmnmtJobTitleHistPK the kmnmt job title hist PK
+     */
     public KmnmtAffiliJobTitleHist(KmnmtAffiliJobTitleHistPK kmnmtJobTitleHistPK) {
         this.kmnmtJobTitleHistPK = kmnmtJobTitleHistPK;
     }
     
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
 		return this.kmnmtJobTitleHistPK;

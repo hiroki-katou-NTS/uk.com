@@ -6,10 +6,8 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,14 +24,10 @@ public class KscmtMonthPatternPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The cid. */
-	@Basic(optional = false)
-    @NotNull
     @Column(name = "CID")
     private String cid;
     
     /** The m pattern cd. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "M_PATTERN_CD")
     private String mPatternCd;
 
@@ -41,6 +35,7 @@ public class KscmtMonthPatternPK implements Serializable {
      * Instantiates a new kmpmt month pattern PK.
      */
     public KscmtMonthPatternPK() {
+    	super();
     }
 
 	/**
@@ -67,6 +62,9 @@ public class KscmtMonthPatternPK implements Serializable {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

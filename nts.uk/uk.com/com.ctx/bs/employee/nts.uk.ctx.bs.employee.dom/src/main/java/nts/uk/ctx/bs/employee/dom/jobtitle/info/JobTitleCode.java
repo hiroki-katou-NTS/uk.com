@@ -13,7 +13,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 /**
  * The Class PositionCode.
  */
-@StringCharType(CharType.NUMERIC)
+@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(5)
 @ZeroPaddedCode
 // 職位コード

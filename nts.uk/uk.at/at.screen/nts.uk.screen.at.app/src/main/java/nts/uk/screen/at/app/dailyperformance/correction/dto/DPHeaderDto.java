@@ -83,36 +83,36 @@ public class DPHeaderDto {
 	
 	public static DPHeaderDto createSimpleHeader(String key, String width, Map<Integer,DPAttendanceItem>  mapDP) {
 		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, "", false, "", false, false);
-		int attendanceAtr = mapDP.get(Integer.parseInt(key.trim())).getAttendanceAtr() ;
+		int attendanceAtr = mapDP.get(Integer.parseInt(key.trim().substring(1, key.trim().length()))).getAttendanceAtr() ;
 		if(attendanceAtr == DailyAttendanceAtr.Code.value ){
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length()-2))/2;
-			groups.add(new DPHeaderDto("コード", "Code"+key, "String", String.valueOf(withChild)+"px", "",false, "","code","search", false, false));
-			groups.add(new DPHeaderDto("名称", "Name"+key, "String", String.valueOf(withChild)+"px", "",false, "Link2", false, false));
+			groups.add(new DPHeaderDto("コード", "Code"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "","code","search", false, false));
+			groups.add(new DPHeaderDto("名称", "Name"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "Link2", false, false));
 			dto.setGroup(groups);
 		}
 		if(attendanceAtr == DailyAttendanceAtr.Classification.value ){
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length()-2))/2;
-			groups.add(new DPHeaderDto("コード", "Code"+key, "number", String.valueOf(withChild)+"px", "",false, "","comboCode","", false, false));
-			groups.add(new DPHeaderDto("名称", "Name"+key, "String", String.valueOf(withChild)+"px", "",false, "Combobox2", false, false));
+			groups.add(new DPHeaderDto("コード", "Code"+key.trim().substring(1, key.trim().length()), "number", String.valueOf(withChild)+"px", "",false, "","comboCode","", false, false));
+			groups.add(new DPHeaderDto("名称", "Name"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "Combobox2", false, false));
 			dto.setGroup(groups);
 		}
 		if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
-			dto.setNtsControl("TextEditor");
+			dto.setNtsControl("TextEditorNumberSeparated");
 		}
 		if(attendanceAtr == DailyAttendanceAtr.Time.value){
-			dto.setNtsControl("TextEditor");
+			dto.setNtsControl("TextEditorTimeShortHM");
 		}
 		return dto;
 	}
 
 	public void setHeaderText(DPAttendanceItem param) {
 		if (param.getLineBreakPosition() > 0) {
-			this.headerText = param.getName().substring(0, param.getLineBreakPosition()) + "<br/>"
-					+ param.getName().substring(param.getLineBreakPosition(), param.getName().length());
+			this.headerText = param.getName() != null ? param.getName().substring(0, param.getLineBreakPosition()) + "<br/>"
+					+ param.getName().substring(param.getLineBreakPosition(), param.getName().length()) : "";
 		} else {
-			this.headerText = param.getName();
+			this.headerText = param.getName() != null ? param.getName() : "";
 		}
 	}
 

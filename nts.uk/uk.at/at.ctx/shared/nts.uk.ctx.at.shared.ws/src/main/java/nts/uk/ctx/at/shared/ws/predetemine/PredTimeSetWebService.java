@@ -26,8 +26,8 @@ import nts.uk.ctx.at.shared.app.find.pred.dto.PredDto;
 public class PredTimeSetWebService extends WebService {
 
 	/** The pred finder. */
-	@Inject
-	private PredFinder predFinder;
+//	@Inject
+//	private PredFinder predFinder;
 
 	@Inject
 	private PredCommandHandler predCommandHandler;
@@ -42,7 +42,8 @@ public class PredTimeSetWebService extends WebService {
 	@POST
 	@Path("findByCode/{workTimeCode}")
 	public PredDto findByCode(@PathParam("workTimeCode") String workTimeCode) {
-		return this.predFinder.findByCode(workTimeCode);
+//		return this.predFinder.findByCode(workTimeCode);
+		return null;
 	}
 
 	@POST

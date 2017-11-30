@@ -83,11 +83,15 @@ module nts.uk.at.view.kdl006.a {
                 processDate: number;
                 employeeName: string;
                 
+                // State
+                isEdited: boolean;
+                
                 // CheckBox
                 checked: KnockoutObservable<boolean>;
                 text: KnockoutObservable<string>;
                 
-                constructor (closureId: number, wkpId: string) {
+                constructor (isEdited: boolean, closureId: number, wkpId: string) {
+                    this.isEdited = isEdited;
                     this.closureId = closureId;
                     this.wkpId = wkpId;                   
                 }
@@ -108,13 +112,15 @@ module nts.uk.at.view.kdl006.a {
                 CONFIRM
             }
             
-            export class SaveWorkFixedCommand {                
+            export class SaveWorkFixedCommand {       
+                isEdited: boolean;         
                 closureId: number;              
                 wkpId: string;
                 confirmClsStatus: number;
                 processDate: number;
                 
-                constructor (closureId: number, wkpId: string, confirmClsStatus: number, processDate: number) {
+                constructor (isEdited: boolean, closureId: number, wkpId: string, confirmClsStatus: number, processDate: number) {
+                    this.isEdited = isEdited;
                     this.closureId = closureId;
                     this.wkpId = wkpId;
                     this.confirmClsStatus = confirmClsStatus;

@@ -15,22 +15,21 @@ import nts.arc.layer.infra.data.JpaRepository;
 public class JpaAppWorkChangeSetRepository extends JpaRepository implements IAppWorkChangeSetRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqstAppWorkChangeSet f";
-	private static final String SELECT_BY_KEY_STRING = String.join(SELECT_ALL_QUERY_STRING,
-			" WHERE f.appWorkChangeSetPk.cid =:companyID");
+	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
+														+ " WHERE f.appWorkChangeSetPk.cid =:companyID";
 
 	@Override
 	public List<AppWorkChangeSet> getAllAppWorkChangeSet() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrqstAppWorkChangeSet.class)
 				.getList(item -> toDomain(item));
 	}
-	
+
 	@Override
-	public Optional<AppWorkChangeSet> findWorkChangeByID(String cid){
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstAppWorkChangeSet.class)
-				.setParameter("companyID", cid)
+	public Optional<AppWorkChangeSet> findWorkChangeSetByID(String cid) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstAppWorkChangeSet.class).setParameter("companyID", cid)
 				.getSingle(c -> toDomain(c));
 	}
-	
+
 	@Override
 	public void add(AppWorkChangeSet domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -45,6 +44,7 @@ public class JpaAppWorkChangeSetRepository extends JpaRepository implements IApp
 	public void remove(AppWorkChangeSet domain) {
 		this.commandProxy().remove(toEntity(domain));
 	}
+
 	@Override
 	public void remove(String key) {
 		this.commandProxy().remove(KrqstAppWorkChangeSetPk.class, new KrqstAppWorkChangeSetPk(key));

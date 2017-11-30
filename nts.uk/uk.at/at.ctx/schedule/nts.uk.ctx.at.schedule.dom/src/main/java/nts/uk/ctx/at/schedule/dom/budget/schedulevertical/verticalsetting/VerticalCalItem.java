@@ -107,25 +107,25 @@ public class VerticalCalItem extends DomainObject {
  		} else {
  			switch (this.attributes) {
 				case TIME:
-					if (this.formTime == null) {
+					if (this.formTime.getLstFormTimeFunc().size() == 0) {
 						throw new BusinessException("Msg_111", String.valueOf(index));
 					}
 					break;
 					
 				case AMOUNT:
-					if (this.formulaAmount == null) {
+					if (this.formulaAmount.getMoneyFunc().getLstMoney().size() == 0 && this.formulaAmount.getTimeUnit().getLstTimeUnitFuncs().size() == 0) {
 						throw new BusinessException("Msg_111", String.valueOf(index));
 					}
 					break;
 					
 				case NUMBER_OF_PEOPLE:
-					if (this.formPeople == null) {
+					if (this.formPeople.getLstPeopleFunc().size() == 0) {
 						throw new BusinessException("Msg_111", String.valueOf(index));
 					}
 					break;
 					
 				case NUMBER:
-					if (this.numerical == null) {
+					if (this.numerical.size() == 0) {
 						throw new BusinessException("Msg_111", String.valueOf(index));
 					}
 					break;

@@ -38,11 +38,11 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		AddAppWorkChangeCommand addCommand = context.getCommand();
 
 		// Application command
-		CreateApplicationCommand appCommand = addCommand.getAppCommand();
+		CreateApplicationCommand appCommand = addCommand.getApplication();
 		// Work change command
-		AppWorkChangeCommand workChangeCommand = addCommand.getWorkChangeCommand();
+		AppWorkChangeCommand workChangeCommand = addCommand.getWorkChange();
 		// Phase command
-		List<AppApprovalPhaseCmd> approvalPhaseCommand = addCommand.getAppApprovalPhaseCmds();
+		List<AppApprovalPhaseCmd> approvalPhaseCommand = addCommand.getAppApprovalPhases();
 
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
@@ -68,8 +68,8 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				appCommand.getApplicationDate(), appCommand.getApplicationDate(), pharseList);
 
 		// 勤務変更申請
-		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(workChangeCommand.getCid(),
-				workChangeCommand.getAppId(), workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),
+		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(companyId, appID,
+				workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),
 				workChangeCommand.getExcludeHolidayAtr(), workChangeCommand.getWorkChangeAtr(),
 				workChangeCommand.getGoWorkAtr1(), workChangeCommand.getBackHomeAtr1(),
 				workChangeCommand.getBreakTimeStart1(), workChangeCommand.getBreakTimeEnd1(),

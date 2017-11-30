@@ -230,13 +230,15 @@
 						
 						<tr class="row">
 							<td>
+								<!-- A3_27 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_23')}</div>
 							</td>
 							<td>
 								<!-- A3_28 Open dialog KDL002-->
 								<button tabindex="13"
 									data-bind="click: openKDL002Dialog_A3_28, enable: enableAtdBtn">#{i18n.getText('KMK009_15')}</button>
-								<span class="nts-input" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span>
+								<!-- <span class="nts-input" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span> -->
+								<span class="label" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span>
 							</td>
 						</tr>
 						

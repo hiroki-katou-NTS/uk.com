@@ -56,6 +56,15 @@ public interface JobTitleInfoRepository {
 	 * @return the optional
 	 */
 	Optional<JobTitleInfo> find(String companyId, String jobTitleId, GeneralDate baseDate);
+	
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param jobTitleId the job title id
+	 * @return the optional
+	 */
+	Optional<JobTitleInfo> find(String companyId, String jobTitleId);
 
 	/**
 	 * @param jobTitleId the job title id
