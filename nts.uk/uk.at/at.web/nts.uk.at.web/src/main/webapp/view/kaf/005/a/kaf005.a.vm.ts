@@ -343,11 +343,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         for (let i = 0; i < self.overtimeHours().length; i++) {
                             self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
                         }
-                        nts.uk.ui.block.clear();
+                        dialog.alertError({messageId:"Msg_424"}) .then(function() { nts.uk.ui.block.clear(); }); 
                     }else{
                       //Change background color
                         self.changeColor( data.attendanceId, data.frameNo);
-                        nts.uk.ui.block.clear();
+                        dialog.alertError({messageId:"Msg_424"}) .then(function() { nts.uk.ui.block.clear(); }); 
                     }                    
                 }
             }).fail((res) => {

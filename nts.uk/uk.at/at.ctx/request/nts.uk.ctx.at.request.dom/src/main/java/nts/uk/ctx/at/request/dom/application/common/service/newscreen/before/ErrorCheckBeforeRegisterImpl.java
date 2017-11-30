@@ -108,8 +108,8 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 否認以外：
 		// 反映情報.実績反映状態＝未反映、反映済、反映待ち
 		ReflectPlanPerState refPlan = beforeApplication.get(0).getReflectPerState();
-		if (refPlan.equals(ReflectPlanPerState.NOTREFLECTED) || refPlan.equals(ReflectPlanPerState.REFLECTED)
-				|| refPlan.equals(ReflectPlanPerState.WAITREFLECTION)) {
+		if (!refPlan.equals(ReflectPlanPerState.NOTREFLECTED) && !refPlan.equals(ReflectPlanPerState.REFLECTED)
+				&& !refPlan.equals(ReflectPlanPerState.WAITREFLECTION)) {
 			// 背景色を設定する
 			result.setErrorCode(1);
 			return result;
