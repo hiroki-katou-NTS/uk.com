@@ -56,7 +56,7 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		GeneralDate startDate = command.getStartDate();
 		DatePeriod period = new DatePeriod(startDate, endDateLast);
 
-		boolean userLogin = true;
+		boolean userLogin = false;
 		if (userLogin == true) {
 			String cid = PersonInfoCategory.ROOT_COMPANY_ID;
 

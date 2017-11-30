@@ -1,5 +1,6 @@
 package command.person.info.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -21,26 +22,35 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 
 	@Inject
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
-	
+
 	@Inject
 	private SelectionRepository selectionRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<UpdateItemCommand> context) {
 		UpdateItemCommand itemCommand = context.getCommand();
-		//String mess = "Msg_233";
+		// String mess = "Msg_233";
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
-		
+
 		if (itemCommand.getSingleItem().getDataType() == 6) {
-			List<Selection> selection = this.selectionRepo.getAllSelectionByHistoryId(
-					itemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today());
+
+			List<Selection> selection = new ArrayList<>();
+			if (itemCommand.getPersonEmployeeType() == 1) {
+				selection = this.selectionRepo.getAllSelectionByHistoryId(
+						itemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today(), 0);
+			} else if (itemCommand.getPersonEmployeeType() == 2) {
+				selection = this.selectionRepo.getAllSelectionByHistoryId(
+						itemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today(), 1);
+			}
 			if (selection == null || selection.size() == 0) {
-				
+
 				throw new BusinessException(new RawErrorMessage("Msg_587"));
 
 			}
+
 		}
-		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemCommand.getPerInfoCtgId(), itemCommand.getItemName(), itemCommand.getPerInfoItemDefId())) {
+		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemCommand.getPerInfoCtgId(), itemCommand.getItemName(),
+				itemCommand.getPerInfoItemDefId())) {
 			throw new BusinessException(new RawErrorMessage("Msg_358"));
 		}
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep
@@ -50,25 +60,26 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		}
 		oldItem.setItemName(itemCommand.getItemName());
 		PersonInfoItemDefinition newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand, oldItem);
-//		if (!checkQuantityItemData()) {
-//			newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand, oldItem);
-//			mess = null;
-//		}
+		// if (!checkQuantityItemData()) {
+		// newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand,
+		// oldItem);
+		// mess = null;
+		// }
 		this.pernfoItemDefRep.updatePerInfoItemDefRoot(newItem, contractCd);
 		return null;
 	}
 
-//	private boolean checkQuantityItemData() {
-//		// TODO-TuongVC: sau nay khi lam den domain [PersonInfoItemData] can
-//		// hoan thien not
-//		/*
-//		 * activity lien quan: [PersonInfoItemData] ở đây lấy như thế nào nhỉ
-//		 * Đứclần giải thích tiếp theo sẽ có giải thích về bảng này anh cứ viết
-//		 * method check để return true là mặc định sau khi có bảng rồi thì viết
-//		 * logic sau cũng được
-//		 */
-//		// Hiện tại trả về true ~ số lượng > 1
-//		return true;
-//	}
+	// private boolean checkQuantityItemData() {
+	// // TODO-TuongVC: sau nay khi lam den domain [PersonInfoItemData] can
+	// // hoan thien not
+	// /*
+	// * activity lien quan: [PersonInfoItemData] ở đây lấy như thế nào nhỉ
+	// * Đứclần giải thích tiếp theo sẽ có giải thích về bảng này anh cứ viết
+	// * method check để return true là mặc định sau khi có bảng rồi thì viết
+	// * logic sau cũng được
+	// */
+	// // Hiện tại trả về true ~ số lượng > 1
+	// return true;
+	// }
 
 }

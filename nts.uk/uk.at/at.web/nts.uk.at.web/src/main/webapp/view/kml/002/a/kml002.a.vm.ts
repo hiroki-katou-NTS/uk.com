@@ -142,9 +142,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             //Bind data to from when user select item on grid
             self.singleSelectedCode.subscribe(function(value) {
+                $("#input-name").focus();    
+                
                 // clear all error
                 nts.uk.ui.errors.clearAll();
-                $("#input-name").focus();                
+                            
                 self.isparentCall(true);
 
                 if (value.length > 0) {
@@ -328,6 +330,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             devChange = false;
                             self.calculatorItems([]);
                             self.bindCalculatorItems();
+                            
+                            if (self.calculatorItems().length > 0) {
+                                self.deleteLineEnable(true);
+                            }
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -353,6 +359,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             devChange = false;
                             self.calculatorItems([]);
                             self.bindCalculatorItems();
+                            
+                            if (self.calculatorItems().length > 0) {
+                                self.deleteLineEnable(true);
+                            }
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -1319,6 +1329,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
          */
         formulaGeneration(itemName: string, settingMethod: number, attribute: number, index: number, data: any, beforeFormula: string, isFirstLoad: boolean) {
             let self = this;
+            beforeFormula = "";
             var formulaResult = "";
 
             // 計算式設定
@@ -1363,7 +1374,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         formulaResult = self.allItemsData[index - 1].formula() + " " + nts.uk.resource.getText("KML002_37") + " " + text1 + " " + operator + " " + text2;
                     }
                 } else {
-                    formulaResult = nts.uk.resource.getText("KML002_153");
+                    formulaResult = "";
                 }
             } else { // 項目選択
                 // 平均単価
@@ -1389,7 +1400,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     if (index == 0) {
                         if (attribute == 0) {
                             if (data.lstFormTimeFunc.length <= 0) {
-                                formulaResult = nts.uk.resource.getText("KML002_153");
+                                formulaResult = "";
                             } else {
                                 for (var i = 0; i < data.lstFormTimeFunc.length; i++) {
                                     var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
@@ -1411,7 +1422,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 1) {
                             if (data.moneyFunc.lstMoney.length <=0 && data.timeUnit.lstTimeUnitFuncs.length <=0) {
-                                formulaResult = nts.uk.resource.getText("KML002_153");
+                                formulaResult = "";
                             } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
                                     var operatorAtrTime = data.moneyFunc.lstMoney[i].operatorAtrTime == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
@@ -1450,7 +1461,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 2) {
                             if (data.lstPeopleFunc.length <= 0) {
-                                formulaResult = nts.uk.resource.getText("KML002_153");
+                                formulaResult = "";
                             } else {
                                 for (var i = 0; i < data.lstPeopleFunc.length; i++) {
                                     var operator = data.lstPeopleFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
@@ -1466,7 +1477,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 3) {
                             if(data == null || data.length <= 0) {
-                                formulaResult = nts.uk.resource.getText("KML002_153");
+                                formulaResult = "";
                             } else {
                                 for (var i = 0; i < data.length; i++) {
                                     var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
@@ -1484,10 +1495,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 }
                             }
                         }
-
-                        if (_.startsWith(formulaResult, nts.uk.resource.getText("KML002_37"))) {
-                            formulaResult = formulaResult.substr(2);
-                        }
                     } else {
                         var before = "";
 
@@ -1499,7 +1506,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                         if (attribute == 0) {
                             if (data.lstFormTimeFunc.length <= 0) {
-                                formulaResult = nts.uk.resource.getText("KML002_153");
+                                formulaResult = "";
                             } else {
                                 for (var i = 0; i < data.lstFormTimeFunc.length; i++) {
                                     var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
@@ -1508,8 +1515,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 1) {
                             if (data.moneyFunc.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
-                                formulaResult = nts.uk.resource.getText("KML002_153");
-                            } else if (data.lstMoney.length > 0) {
+                                formulaResult = "";
+                            } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
                                     var operatorAtrTime = data.moneyFunc.lstMoney[i].operatorAtrTime == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                     var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
@@ -1547,7 +1554,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 2) {
                             if (data.lstPeopleFunc.length <= 0) {
-                                formulaResult = nts.uk.resource.getText("KML002_153");
+                                formulaResult = "";
                             } else {
                                 for (var i = 0; i < data.lstPeopleFunc.length; i++) {
                                     var operator = data.lstPeopleFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
@@ -1563,7 +1570,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 3) {
                             if(data == null || data.length <= 0) {
-                                formulaResult = nts.uk.resource.getText("KML002_153");
+                                formulaResult = "";
                             } else {
                                 for (var i = 0; i < data.length; i++) {
                                     var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
@@ -1587,9 +1594,14 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 }
             }
 
+            if (_.startsWith(formulaResult.trim(), nts.uk.resource.getText("KML002_37"))) {
+                formulaResult = formulaResult.substr(2);
+            }
+            
             return formulaResult.trim();
         }
     }
+    
 
     export class SettingItemModel {
         code: string;

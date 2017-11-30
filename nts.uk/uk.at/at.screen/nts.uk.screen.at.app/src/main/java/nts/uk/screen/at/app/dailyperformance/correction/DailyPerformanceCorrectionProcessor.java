@@ -149,7 +149,7 @@ public class DailyPerformanceCorrectionProcessor {
     				List<DPHeaderDto> lstHeader = new ArrayList<>();
     				for(FormatDPCorrectionDto dto : lstFormat){
     					// chia cot con code name cua AttendanceItemId chinh va set 
-    					lstHeader.add(DPHeaderDto.createSimpleHeader(String.valueOf(dto.getAttendanceItemId()),
+    					lstHeader.add(DPHeaderDto.createSimpleHeader("_"+String.valueOf(dto.getAttendanceItemId()),
     							String.valueOf(dto.getColumnWidth()) + "px", mapDP));
     				}
     				result.setLstHeader(lstHeader);
@@ -178,7 +178,7 @@ public class DailyPerformanceCorrectionProcessor {
         				result.addColumnsToSheet(lstFormat, mapDP);
         				List<DPHeaderDto> lstHeader = new ArrayList<>();
         				for(FormatDPCorrectionDto dto : lstFormat){
-        					lstHeader.add(DPHeaderDto.createSimpleHeader(String.valueOf(dto.getAttendanceItemId()),
+        					lstHeader.add(DPHeaderDto.createSimpleHeader("_"+String.valueOf(dto.getAttendanceItemId()),
         							String.valueOf(dto.getColumnWidth()) + "px", mapDP));
         				}
         				result.setLstHeader(lstHeader);
@@ -194,13 +194,15 @@ public class DailyPerformanceCorrectionProcessor {
         				result.setColumnsAccessModifier(lstDPBusinessTypeControl);
         			}
         		}
-						// set text to header
-						result.setHeaderText(lstAttendanceItem);
-						// set color to header
-						List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
-								.getListAttendanceItemControl(lstAtdItemUnique);
-						result.setLstAttendanceItem(lstAttendanceItem);
-						result.setHeaderColor(lstAttendanceItemControl);
+			if (!lstAttendanceItem.isEmpty()) {
+				// set text to header
+				result.setHeaderText(lstAttendanceItem);
+				// set color to header
+				List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
+						.getListAttendanceItemControl(lstAtdItemUnique);
+				result.setLstAttendanceItem(lstAttendanceItem);
+				result.setHeaderColor(lstAttendanceItemControl);
+			}
 		}
 		return result;
 	}
@@ -303,7 +305,7 @@ public class DailyPerformanceCorrectionProcessor {
 						cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()), "Link Name"+ item.getId(),
 								String.valueOf(item.getAttendanceAtr()), "Link2"));
 					} else {
-						cellDatas.add(new DPCellDataDto(String.valueOf(item.getId()), String.valueOf(a),
+						cellDatas.add(new DPCellDataDto("_"+String.valueOf(item.getId()), String.valueOf(a),
 								String.valueOf(item.getAttendanceAtr()), "label"));
 					}
 				});
