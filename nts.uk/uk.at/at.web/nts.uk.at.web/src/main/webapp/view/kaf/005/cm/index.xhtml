@@ -193,10 +193,10 @@
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A5_6 開始時刻--> 						
 							<td><input tabindex="12" class="right-content"
-								data-bind="ntsTimeWithDayEditor: {value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
 							<!--A5_7 終了時刻--> 						
 							<td><input tabindex="13" class="right-content"
-								data-bind="ntsTimeWithDayEditor: {value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
 						</tr>
 					</tbody>
 				</table>
