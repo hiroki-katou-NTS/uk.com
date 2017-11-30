@@ -45,16 +45,16 @@ public class DeleteAffWorkplaceHistoryCommandHandler extends CommandHandler<Dele
 			throw new RuntimeException("invalid AffWorkplaceHistory"); 
 		}
 			
-		Optional<DateHistoryItem> itemToBeDelete = existHist.get().getHistoryItems().stream()
+		Optional<DateHistoryItem> itemToBeDeleted = existHist.get().getHistoryItems().stream()
                 .filter(h -> h.identifier().equals(command.getHistoryId()))
                 .findFirst();
 		
-		if (!itemToBeDelete.isPresent()){
+		if (!itemToBeDeleted.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory");
 		}
-		existHist.get().remove(itemToBeDelete.get());
+		existHist.get().remove(itemToBeDeleted.get());
 		
-		affWorkplaceHistoryRepository.delete(existHist.get(), itemToBeDelete.get());
+		affWorkplaceHistoryRepository.delete(existHist.get(), itemToBeDeleted.get());
 		
 		affWorkplaceHistoryItemRepository.delete(command.getHistoryId());
 	}

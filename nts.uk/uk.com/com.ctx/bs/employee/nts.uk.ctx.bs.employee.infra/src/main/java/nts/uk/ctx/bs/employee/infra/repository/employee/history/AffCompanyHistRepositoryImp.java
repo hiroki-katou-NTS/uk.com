@@ -162,7 +162,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 	
 	/**
-	 * Update item before when updating or deleting
+	 * Update item before when updating
 	 * @param domain
 	 * @param item
 	 */
@@ -189,7 +189,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		entity.endDate = item.end();
 	}
 	/**
-	 * Update item after when updating or deleting
+	 * Update item after when updating
 	 * @param domain
 	 * @param item
 	 */
@@ -219,16 +219,19 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 	@Override
 	public void add(AffCompanyHistByEmployee domain, String pId) {
+		// Insert last item
 		AffCompanyHistItem itemToBeAdded = domain.getLstAffCompanyHistoryItem().get(domain.getLstAffCompanyHistoryItem().size() -1);
 		this.commandProxy().insert(toEntity(itemToBeAdded, pId, domain.getSId()));
-		// Update before item
+		// Update item before
 		updateItemBefore(domain,itemToBeAdded);
 	}
 	
 	@Override
 	public void update(AffCompanyHistByEmployee domain, AffCompanyHistItem itemToBeUpdated) {
+		
 		Optional<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
 				.setParameter("histId", itemToBeUpdated.getHistoryId()).getSingle();
+		
 		if (!existItem.isPresent()){
 			throw new RuntimeException("Invalid AffCompanyHistItem");
 		}
@@ -242,8 +245,10 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	@Override
 	public void delete(AffCompanyHistByEmployee domain, AffCompanyHistItem itemToBeDelted) {
+		
 		Optional<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
 				.setParameter("histId", itemToBeDelted.getHistoryId()).getSingle();
+		
 		if (!existItem.isPresent()){
 			throw new RuntimeException("Invalid AffCompanyHistItem");
 		}
@@ -254,12 +259,15 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		// Update last item
 		if (domain.getLstAffCompanyHistoryItem().size() > 0){
 			AffCompanyHistItem itemToBeUpdated = domain.getLstAffCompanyHistoryItem().get(domain.getLstAffCompanyHistoryItem().size()-1);
-			existItem = this.queryProxy().find(itemToBeUpdated.getHistoryId(), BsymtAffCompanyHist.class);
+			
+			existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
+					.setParameter("histId", itemToBeUpdated.getHistoryId()).getSingle();
 			if (!existItem.isPresent()){
 				throw new RuntimeException("Invalid AffCompanyHistItem");
 			}
+			
 			updateEntity(itemToBeUpdated, existItem.get());
-			this.commandProxy().remove(BsymtAffCompanyHist.class, existItem.get().bsymtAffCompanyHistPk);
+			this.commandProxy().update( existItem.get());
 			
 		}
 	}

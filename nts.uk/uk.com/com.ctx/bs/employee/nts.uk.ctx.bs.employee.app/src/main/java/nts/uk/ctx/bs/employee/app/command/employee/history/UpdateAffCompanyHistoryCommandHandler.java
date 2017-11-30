@@ -45,9 +45,9 @@ public class UpdateAffCompanyHistoryCommandHandler extends CommandHandler<Update
 		}
 		 AffCompanyHistByEmployee listHistBySID = listHist.getAffCompanyHistByEmployee(command.getSId());
 		
-		
 		Optional<AffCompanyHistItem> itemToBeUpdated = listHistBySID.getLstAffCompanyHistoryItem().stream()
 				.filter(h->h.identifier().equals(command.getHistoryId())).findFirst();
+		
 		if (!itemToBeUpdated.isPresent()){
 			throw new RuntimeException("Invalid AffCompanyHist");
 		}

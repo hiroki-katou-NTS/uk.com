@@ -17,8 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaEmploymentHistoryRepository extends JpaRepository implements EmploymentHistoryRepository{
 	
-	private final String QUERY_BYEMPLOYEEID = "SELECT ep"
-			+ " FROM BsymtEmploymentHist ep"
+	private final String QUERY_BYEMPLOYEEID = "SELECT ep FROM BsymtEmploymentHist ep"
 			+ " WHERE ep.sid = :sid ORDER BY ep.strDate";
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
@@ -62,7 +61,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
-		updateEntity(domain.getEmployeeId(), itemToBeUpdated, histItem.get());
+		updateEntity(itemToBeUpdated, histItem.get());
 		this.commandProxy().update(histItem.get());
 		
 		// Update item before and after
@@ -73,8 +72,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public void delete(EmploymentHistory domain, DateHistoryItem itemToBeDeleted) {
-		Optional<BsymtEmploymentHist> histItem = null;
-		histItem = this.queryProxy().find(itemToBeDeleted.identifier(), BsymtEmploymentHist.class);
+		Optional<BsymtEmploymentHist> histItem = this.queryProxy().find(itemToBeDeleted.identifier(), BsymtEmploymentHist.class);
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
@@ -87,7 +85,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			if (!histItem.isPresent()){
 				throw new RuntimeException("invalid BsymtEmploymentHist");
 			}
-			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
+			updateEntity(lastItem, histItem.get());
 			this.commandProxy().update(histItem.get());
 		}
 		
@@ -108,7 +106,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	 * @param item
 	 * @return
 	 */
-	private void updateEntity(String employeeID, DateHistoryItem item,BsymtEmploymentHist entity){	
+	private void updateEntity(DateHistoryItem item,BsymtEmploymentHist entity){	
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}
@@ -127,7 +125,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		if (!histItem.isPresent()){
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		updateEntity(beforeItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 	
@@ -146,7 +144,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		if (!histItem.isPresent()){
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		updateEntity(aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 }

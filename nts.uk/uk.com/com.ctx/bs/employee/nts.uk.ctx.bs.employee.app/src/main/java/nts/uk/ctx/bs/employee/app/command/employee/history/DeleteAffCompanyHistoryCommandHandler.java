@@ -43,7 +43,6 @@ public class DeleteAffCompanyHistoryCommandHandler extends CommandHandler<Delete
 		}
 		 AffCompanyHistByEmployee listHistBySID = listHist.getAffCompanyHistByEmployee(command.getSId());
 		
-		
 		Optional<AffCompanyHistItem> itemToBeDeleted = listHistBySID.getLstAffCompanyHistoryItem().stream()
 				.filter(h->h.identifier().equals(command.getHistoryId())).findFirst();
 		

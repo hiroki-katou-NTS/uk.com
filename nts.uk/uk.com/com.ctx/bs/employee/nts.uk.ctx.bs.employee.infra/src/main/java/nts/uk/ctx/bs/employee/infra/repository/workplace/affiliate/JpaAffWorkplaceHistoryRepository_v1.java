@@ -23,9 +23,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implements AffWorkplaceHistoryRepository_v1 {
-	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID = "select aw "
-			+ "from BsymtAffiWorkplaceHist aw "
-			+ "where aw.sid = :sid order by aw.strDate";
+	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID = "SELECT aw FROM BsymtAffiWorkplaceHist aw "
+			+ "WHERE aw.sid = :sid ORDER BY aw.strDate";
 	private static final String SELECT_BY_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate <= aw.endDate";
 	
@@ -45,7 +44,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	 * @param item
 	 * @return
 	 */
-	private void updateEntity(String employeeID, DateHistoryItem item,BsymtAffiWorkplaceHist entity){	
+	private void updateEntity(DateHistoryItem item,BsymtAffiWorkplaceHist entity){	
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}
@@ -89,8 +88,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	@Override
 	public void delete(AffWorkplaceHistory_ver1 domain, DateHistoryItem item) {
 		
-		Optional<BsymtAffiWorkplaceHist> histItem = null;
-		histItem = this.queryProxy().find(item.identifier(), BsymtAffiWorkplaceHist.class);
+		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(item.identifier(), BsymtAffiWorkplaceHist.class);
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 		}
@@ -103,7 +101,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 			if (!histItem.isPresent()){
 				throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 			}
-			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
+			updateEntity(lastItem, histItem.get());
 			this.commandProxy().update(histItem.get());
 		}
 	}
@@ -114,7 +112,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 		}
-		updateEntity(domain.getEmployeeId(), item, histItem.get());
+		updateEntity(item, histItem.get());
 		this.commandProxy().update(histItem.get());
 		
 		// Update item before and after
@@ -136,7 +134,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		if (!histItem.isPresent()){
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		updateEntity(beforeItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 	
@@ -155,7 +153,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		if (!histItem.isPresent()){
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		updateEntity(aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 

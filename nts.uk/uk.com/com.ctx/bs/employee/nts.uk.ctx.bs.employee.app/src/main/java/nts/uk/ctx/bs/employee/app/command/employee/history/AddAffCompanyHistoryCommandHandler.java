@@ -45,13 +45,11 @@ public class AddAffCompanyHistoryCommandHandler extends CommandHandlerWithResult
 		String newHistId = IdentifierUtil.randomUniqueId();
 		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(command.getSId());
 		
-		AffCompanyHist companyHist = new AffCompanyHist(command.getPId(),new ArrayList<>());
 		AffCompanyHistByEmployee itemToBeAdded = new AffCompanyHistByEmployee(command.getSId(), new ArrayList<>());
 		if (listHist != null){
-			companyHist = listHist;
-			itemToBeAdded = companyHist.getAffCompanyHistByEmployee(command.getSId());
+			itemToBeAdded = listHist.getAffCompanyHistByEmployee(command.getSId());
 		}
-		AffCompanyHistItem histItem = new AffCompanyHistItem(newHistId, true, new DatePeriod(command.getStartDate(), command.getEndDate()));
+		AffCompanyHistItem histItem = new AffCompanyHistItem(newHistId, false, new DatePeriod(command.getStartDate(), command.getEndDate()));
 		itemToBeAdded.add(histItem);
 		
 		affCompanyHistRepository.add(itemToBeAdded,command.getPId());
