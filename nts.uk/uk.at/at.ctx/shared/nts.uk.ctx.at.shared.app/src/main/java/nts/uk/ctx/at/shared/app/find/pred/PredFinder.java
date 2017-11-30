@@ -4,23 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.pred;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.uk.ctx.at.shared.app.find.pred.dto.PredDto;
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSet;
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PredFinder.
  */
-@Stateless
+//@Stateless
 public class PredFinder {
 
 	/** The predetemine time set repository. */
-	@Inject
-	private PredetemineTimeSetRepository predetemineTimeSetRepository;
+//	@Inject
+//	private PredetemineTimeSetRepository predetemineTimeSetRepository;
 
 	/**
 	 * Find by code.
@@ -29,10 +23,10 @@ public class PredFinder {
 	 * @return the pred dto
 	 */
 	public PredDto findByCode(String workTimeCode) {
-		String companyId = AppContexts.user().companyId();
-		PredetemineTimeSet pre = this.predetemineTimeSetRepository.findByCode(companyId, workTimeCode);
+//		String companyId = AppContexts.user().companyId();
+//		PredetemineTimeSet pre = this.predetemineTimeSetRepository.findByCode(companyId, workTimeCode);
 		PredDto dto = new PredDto();
-		pre.saveToMemento(dto);
+//		pre.saveToMemento(dto);
 		return dto;
 	}
 

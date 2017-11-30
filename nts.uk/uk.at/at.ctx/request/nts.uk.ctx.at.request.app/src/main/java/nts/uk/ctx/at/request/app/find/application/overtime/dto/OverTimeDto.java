@@ -112,11 +112,11 @@ public class OverTimeDto {
 	/**
 	 * フレックス超過時間
 	 */
-	private int flexExessTime;
+	private Integer flexExessTime;
 	/**
 	 * 就業時間外深夜時間
 	 */
-	private int overTimeShiftNight;
+	private Integer overTimeShiftNight;
 	/**
 	 * 時刻計算利用
 	 */

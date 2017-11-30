@@ -7,10 +7,10 @@ package nts.uk.ctx.at.shared.infra.repository.predset;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.predset.PredetemineTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.predset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.predset.Timezone;
-import nts.uk.ctx.at.shared.dom.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.infra.entity.predset.KwtstWorkTimeSetNew;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 

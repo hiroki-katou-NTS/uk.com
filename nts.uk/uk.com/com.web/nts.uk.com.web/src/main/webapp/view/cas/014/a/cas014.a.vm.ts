@@ -15,6 +15,8 @@ module nts.uk.com.view.cas014.a {
             jobTitleList: KnockoutObservableArray<JobTitle>;
             roleSetJobTitle: KnockoutObservable<RoleSetJobTitle>;
 
+            viewmodelB = new cas014.b.viewmodel.ScreenModel();
+
             constructor() {
                 let self = this;
                 self.date = ko.observable(new Date().toISOString());
@@ -22,54 +24,66 @@ module nts.uk.com.view.cas014.a {
                 self.jobTitleList = ko.observableArray([]);
                 self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
                 $(".fixed-table").ntsFixedTable({ height: 300 });
+                self.date.subscribe((data) => {
+                    if (!data) {
+                        self.date(new Date().toISOString());
+                    }
+                });
             }
 
-            //startPage(): void {
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
                 block.invisible();
-
                 new service.Service().getAllData(self.date()).done(function(data: any) {
                     if (data) {
                         self.roleSetList.removeAll();
-                        let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, rs => {
+                        let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, (rs: any) => {
                             return new RoleSet(rs.code, rs.name);
                         });
                         _.each(_rsList, rs => self.roleSetList.push(rs));
-                        
+
                         self.jobTitleList.removeAll();
-                        let _jtList: Array<JobTitle> = _.map(data.listJobTitleDto, jt => {
+                        let _jtList: Array<JobTitle> = _.map(data.listJobTitleDto, (jt: any) => {
                             return new JobTitle(jt.id, jt.code, jt.name);
                         });
                         _.each(_jtList, jt => self.jobTitleList.push(jt));
-                        
-                        self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(data.roleSetGrantedJobTitleDto.applyToConcurrentPerson, self.jobTitleList(), self.roleSetList()));
-                        _.each(self.roleSetJobTitle().details, d => {
-                            _.each(data.roleSetGrantedJobTitleDto.details, dd => {
-                                if (d.jobTitleId == dd.jobTitleId) {
-                                    d.roleSetCd = dd.roleSetCd;
-                                    //let _roleSet: RoleSet = _.find(ko.toJS(self.roleSetList), (rs: RoleSet) => rs.code == dd.roleSetCd);
-                                    //d.roleSet = _roleSet;
-                                }
+
+                        self.roleSetJobTitle(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
+                        if (data.roleSetGrantedJobTitleDto){
+                            self.roleSetJobTitle().applyToConcurrentPerson(data.roleSetGrantedJobTitleDto.applyToConcurrentPerson);
+                            let details = self.roleSetJobTitle().details();
+                            _.each(details, (d: any) => {
+                                _.each(data.roleSetGrantedJobTitleDto.details, (dd: any) => {
+                                    if (d.jobTitleId == dd.jobTitleId) {
+                                        d.roleSetCd(dd.roleSetCd);
+                                    }
+                                });
                             });
-                        });
-                        self.roleSetJobTitle.valueHasMutated();
-                    } 
+                            self.roleSetJobTitle().details(details);
+                        }
+                    } else {
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    }
+                    self.viewmodelB.startPage();
+                    $("#A4").focus();
                     dfd.resolve();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError("shit happened!");
+                    alertError({ messageId: error.messageId }).then(() => {
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    });
                     dfd.reject();
+                }).always(() => {
+                    block.clear();
                 });
-                block.clear();
+
                 return dfd.promise();
             }
 
             register() {
                 let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails = [];
-                _.each(data.details, d => {
-                    if (d.roleSetCd != '00') regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId })
-                });
+
+                _.each(data.details, (d: any) => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
 
                 let command: any = {
                     applyToConcurrentPerson: data.applyToConcurrentPerson,
@@ -80,10 +94,11 @@ module nts.uk.com.view.cas014.a {
 
                 new service.Service().registerData(command).done(function() {
                     info({ messageId: "Msg_15" }).then(() => {
-                        block.clear();
+                        $("#A4").focus();
                     });
                 }).fail(error => {
-                    alertError({ messageId: error.message });
+                    alertError({ messageId: error.messageId });
+                }).always(() => {
                     block.clear();
                 });
             }
@@ -137,6 +152,6 @@ module nts.uk.com.view.cas014.a {
             _.each(jobTitleList, j => this.details.push(new RoleSetJobTitleDetail(j, roleSetList)));
         }
     }
-    
+
 }
 

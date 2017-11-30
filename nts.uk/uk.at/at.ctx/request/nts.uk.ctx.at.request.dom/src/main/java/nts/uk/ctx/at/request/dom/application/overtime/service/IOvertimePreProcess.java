@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
@@ -104,7 +105,7 @@ public interface IOvertimePreProcess {
 	 * @param appDate
 	 * @param requestAppDetailSetting
 	 */
-	public void getWorkingHours(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting);
+	public RecordWorkOutput getWorkingHours(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD);
 	/**
 	 *  01-17_休憩時間取得
 	 * @param requestAppDetailSetting

@@ -1,9 +1,0 @@
-diff a/nts.uk/uk.com/com.ctx/sys/auth/nts.uk.ctx.sys.auth.dom/src/main/java/nts/uk/ctx/sys/auth/dom/roleset/RoleSet.java b/nts.uk/uk.com/com.ctx/sys/auth/nts.uk.ctx.sys.auth.dom/src/main/java/nts/uk/ctx/sys/auth/dom/roleset/RoleSet.java	(rejected hunks)
-@@ -16,7 +16,6 @@
- import lombok.Getter;
- import nts.arc.layer.dom.AggregateRoot;
- import nts.gul.collection.CollectionUtil;
--import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPersonRepository;
- import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
- import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
- import nts.uk.ctx.sys.auth.dom.role.Role;

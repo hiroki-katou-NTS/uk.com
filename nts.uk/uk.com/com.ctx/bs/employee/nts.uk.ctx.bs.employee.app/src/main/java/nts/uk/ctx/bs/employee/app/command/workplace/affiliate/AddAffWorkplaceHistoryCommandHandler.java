@@ -20,7 +20,7 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00010";
 	}
 

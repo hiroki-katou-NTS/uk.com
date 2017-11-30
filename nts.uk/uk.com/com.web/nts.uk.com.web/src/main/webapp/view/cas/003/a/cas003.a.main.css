@@ -1,0 +1,62 @@
+html{
+	overflow: hidden;
+}
+#contents-area {
+	margin-left: 8px;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+#functions-area {
+	height: 80px;
+}
+
+.proceed {
+	margin-top: 30px;
+	margin-left: 30px;
+}
+
+.contentPassComplex {
+	margin-left: 170px;
+	margin-bottom: 10px;
+}
+
+.contentPassComplex1 {
+	margin-left: 143px;
+}
+
+.contentsymbol {
+	margin-left: 201px;
+	margin-bottom: 10px;
+}
+
+#panelPassPolicy {
+	height: 370px;
+}
+
+.component-area {
+	display: block;
+	margin: 10px;
+}
+
+.form1 {
+	float: left;
+}
+
+#pabelAccLock {
+	height: 200px;
+}
+
+.labelInfo {
+	margin-left: 30px;
+}
+
+.labelInfo1 {
+	margin-left: 15px;
+}
+
+.textAreaSize {
+	height: 60px;
+	margin-left: 10px;
+}

@@ -29,6 +29,9 @@ module nts.uk.at.view.kdw003.c.viewmodel {
                     }
                 }
             });
+            
+            // TODO - remove when commit
+            self.selectedPerfFmtCodeList = new Array('001', '002', '009');
         }
         
         changeSelectedPerfFmtCode(foundItem) {

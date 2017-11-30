@@ -18,7 +18,7 @@ public class UpdateFamilySocialInsuranceCommandHandler extends CommandHandler<Up
 	private FamilySocialInsuranceRepository familySocialInsuranceRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00006";
 	}
 

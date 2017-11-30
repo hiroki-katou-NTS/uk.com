@@ -7,8 +7,8 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
-import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
@@ -16,10 +16,10 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 public class AddFamilyCommandHandler extends CommandHandlerWithResult<AddFamilyCommand,PeregAddCommandResult> 
 implements PeregAddCommandHandler<AddFamilyCommand>{
 	@Inject 
-	private FamilyRepository familyRepository;
+	private FamilyMemberRepository familyRepository;
 
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00004";
 	}
 
@@ -35,7 +35,7 @@ implements PeregAddCommandHandler<AddFamilyCommand>{
 		// Create new Id
 		String newId = IdentifierUtil.randomUniqueId();
 		
-		Family family = Family.createFromJavaType(command.getBirthday(), command.getDeadDay(), command.getEntryDate(),
+		FamilyMember family = FamilyMember.createFromJavaType(command.getBirthday(), command.getDeadDay(), command.getEntryDate(),
 				command.getExpelledDate(), newId, command.getFullName(), command.getFullNameKana(), command.getNameMultiLangFull(),
 				command.getNameMultiLangFullKana(), command.getNameRomajiFull(), command.getNameRomajiFullKana(), 
 				command.getNationalityId(), command.getOccupationName(), command.getPersonId(), command.getRelationship(), 

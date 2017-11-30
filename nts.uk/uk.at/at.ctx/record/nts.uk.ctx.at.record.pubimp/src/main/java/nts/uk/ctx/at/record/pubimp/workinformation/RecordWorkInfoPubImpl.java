@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.pubimp.workinformation;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -25,9 +28,13 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	 */
 	@Override
 	public RecordWorkInfoPubExport getRecordWorkInfo(String employeeId, GeneralDate ymd) {
+		Optional<WorkInfoOfDailyPerformance> otpWorkInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, ymd);
+		if(!otpWorkInfoOfDailyPerformance.isPresent()) {
+			return new RecordWorkInfoPubExport("", "", -1, -1, -1, -1, -1, -1, -1, -1, -1);
+		}
 		
 		// 日別実績の勤務情報
-		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, ymd).get();
+		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = otpWorkInfoOfDailyPerformance.get();
 		
 		//日別実績の出退勤
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, ymd).get();

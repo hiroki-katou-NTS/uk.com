@@ -35,27 +35,27 @@ public class PreAppOvertimeDto {
 	/**
 	 * 勤務時間From1
 	 */
-	private int workClockFrom1Pre;
+	private Integer workClockFrom1Pre;
 	/**
 	 * 勤務時間To1
 	 */
-	private int workClockTo1Pre;
+	private Integer workClockTo1Pre;
 	/**
 	 * 勤務時間From2
 	 */
-	private int workClockFrom2Pre;
+	private Integer workClockFrom2Pre;
 	/**
 	 * 勤務時間To2
 	 */
-	private int workClockTo2Pre;
+	private Integer workClockTo2Pre;
 	
 	/**
 	 * フレックス超過時間
 	 */
-	private int flexExessTimePre;
+	private Integer flexExessTimePre;
 	/**
 	 * 就業時間外深夜時間
 	 */
-	private int overTimeShiftNightPre;
+	private Integer overTimeShiftNightPre;
 
 }

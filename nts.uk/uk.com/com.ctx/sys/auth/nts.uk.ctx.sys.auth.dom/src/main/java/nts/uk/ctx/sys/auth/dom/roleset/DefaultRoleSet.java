@@ -14,21 +14,21 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class DefaultRoleSet extends AggregateRoot {
 
-	/** 会社ID */
-	private String companyId;
+    /** 会社ID */
+    private String companyId;
 
-	/** ロールセットコード. */
-	private RoleSetCode roleSetCd;
+    /** ロールセットコード. */
+    private RoleSetCode roleSetCd;
 
-	/**
-	 * Instantiates a new default role set.
-	 * 
-	 * @param companyId
-	 * @param roleSetCd
-	 */
-	public DefaultRoleSet(String companyId, String roleSetCd) {
-		super();
-		this.companyId = companyId;
-		this.roleSetCd = new RoleSetCode(roleSetCd);
-	}
+    /**
+     * Instantiates a new default role set.
+     * 
+     * @param companyId
+     * @param roleSetCd
+     */
+    public DefaultRoleSet(String companyId, String roleSetCd) {
+        super();
+        this.companyId = companyId;
+        this.roleSetCd = new RoleSetCode(roleSetCd);
+    }
 }

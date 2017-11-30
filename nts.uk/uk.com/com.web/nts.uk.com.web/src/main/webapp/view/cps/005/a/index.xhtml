@@ -8,9 +8,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+		<title>#{i18n.getText('CPS005_36')}</title>
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.person.dom.person.info.category.CategoryName
 			</com:ValidatorScript>
+
 
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps005.a.main.css" />

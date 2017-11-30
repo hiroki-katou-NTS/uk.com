@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1130, height: 680 };</script>
+			<script>var dialogSize = { width: 600, height: 320 };</script>
 			<com:stylefile path="csa005.b.main.css" />
 			
 			<com:scriptfile set="IGNITE" />
@@ -16,10 +16,35 @@
 			<com:scriptfile path="csa005.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area" style="margin-top: 30px;margin-left: 30px">
-				<div id="pannel-top" data-bind="ntsPanel:{width: '400px', height: '430px', direction: '', showIcon: true, visible: true}">
-					
-				</div> 
+			<div id="contents-area">
+				<div id="body-form">
+					<table id="table-label" class="from-label" style="">
+						<tr>
+							<td style="width: 100px">#{i18n.getText('CAS005_100')}</td>
+							<td style="width: 140px">
+								<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('CAS005_101')}</div>
+							</td>
+							<td style="width: 60px"><label data-bind="text : roleCode" ></label></td>
+							<td style="width: 130px;"><label style="margin-left: 10px;" data-bind="text : roleName"></label></td>
+						</tr>
+						<tr>
+							<td style="width: 100px">#{i18n.getText('CAS005_102')}</td>
+							<td style="width: 140px">
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_103')}</div>
+							</td>
+							<td style="width: 60px"><input style="width: 60px" data-bind="ntsTextEditor: {value: value1}" /></td>
+							<td style="width: 130px"><input style="width: 130px;margin-left: 10px;" data-bind="ntsTextEditor: {value: value2}" /></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<div style=" margin-bottom: 10px;" data-bind="ntsCheckBox: { checked: checked, style: 'warnpanel'}">#{i18n.getText('CAS005_106')}</div>
+				<div>
+					<button class="proceed x-large">#{i18n.getText('CAS005_107')}</button>
+					<button class="large" data-bind="click: closeDialog" >#{i18n.getText('CAS005_108')}</button>
+				</div>
+				
 			</div>
 		</ui:define>
 

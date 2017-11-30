@@ -42,7 +42,7 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param executionContent
 	 * @return
 	 */
-	Optional<EmpCalAndSumExeLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent);
+	Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent);
 
 	/**
 	 * KIF 001 4 ログ情報（実行ログ）
@@ -50,7 +50,7 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param empCalAndSumExecLogID
 	 * 
 	 */
-	void updateLogInfo(String empCalAndSumExecLogID);
+	void updateLogInfo(String empCalAndSumExecLogID,int executionContent, int processStatus);
 
 	/**
 	 * get all EmpCalAndSumExeLog by startDate and endDate
@@ -63,5 +63,7 @@ public interface EmpCalAndSumExeLogRepository {
 			GeneralDate endDate);
 
 	void add(EmpCalAndSumExeLog empCalAndSumExeLog);
+	
+	void updateStatus(String empCalAndSumExecLogID, int executionStatus);
 	
 }

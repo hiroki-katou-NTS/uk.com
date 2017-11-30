@@ -18,7 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DPCellStateDto {
 
-	private Integer rowId;
+	private String rowId;
 	
     private String columnKey;
     

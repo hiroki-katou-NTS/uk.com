@@ -47,6 +47,10 @@ module nts.uk.at.view.kaf002.b {
                         nts.uk.ui.block.clear();
                     });
                 }); 
+                self.cm.application().appDate.subscribe(value => {
+                    self.kaf000_a2.objApprovalRootInput().standardDate = value;
+                    self.kaf000_a2.getAllApprovalRoot();
+                });
             }
             
             startPage(): JQueryPromise<any> {

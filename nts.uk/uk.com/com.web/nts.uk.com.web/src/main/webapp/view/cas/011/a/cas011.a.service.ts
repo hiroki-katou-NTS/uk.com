@@ -1,52 +1,55 @@
 module nts.uk.com.view.cas011.a.service {
     import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
 
     var paths = {
-            getLoginUserCompanyId:      "ctx/sys/auth/roleset/loginUserCompnayId",
-            getAllRoleSets:             "ctx/sys/auth/roleset/findAllRoleSet",
-            getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findRoleSet",
-            addRoleSet:                 "ctx/sys/auth/roleset/addRoleSet",
-            updateRoleSet:              "ctx/sys/auth/roleset/updateRoleSet",
-            removeRoleSet:              "ctx/sys/auth/roleset/deleteRoleSet",            
-            getAllWebMenus:             "sys/portal/webmenu/find",
-            getRoleById:                "ctx/sys/auth/roleset/",
+            getCompanyIdOfLoginUser:    "ctx/sys/auth/roleset/companyidofloginuser",
+            getAllRoleSet:              "ctx/sys/auth/roleset/findallroleset",
+            getRoleSetByRoleSetCd:      "ctx/sys/auth/roleset/findroleset/{0}",
+            addRoleSet:                 "screen/sys/auth/cas011/addroleset",
+            updateRoleSet:              "screen/sys/auth/cas011/updateroleset",
+            removeRoleSet:              "screen/sys/auth/cas011/deleteroleset",
+            getAllWebMenu:              "ctx/sys/auth/roleset/findallwebmenu",
+            getRoleById:                "ctx/sys/auth/role/getrolebyroleid/{0}"
     }
 
     //get all role set
-    export function getAllRoleSets() : JQueryPromise<any>{
-        return ajax(paths.getAllRoleSets);
+    export function getAllRoleSet() : JQueryPromise<any>{
+        return ajax(paths.getAllRoleSet);
     }
 
     //get role set
-    export function getRoleSetByRoleSetCd(command) : JQueryPromise<any>{
-        return ajax(paths.getRoleSetByRoleSetCd);
+    export function getRoleSetByRoleSetCd(roleSetCd) : JQueryPromise<any>{
+        return ajax(format(paths.getRoleSetByRoleSetCd, roleSetCd));
     }
-    
+
     //insert
-    export function addRoleSet(command) {
+    export function addRoleSet(command) : JQueryPromise<any> {
         return ajax(paths.addRoleSet, command);
     }
-    
+
     //update
-    export function updateRoleSet(command) {
+    export function updateRoleSet(command) : JQueryPromise<any> {
         return ajax(paths.updateRoleSet, command);
     }
+
     //delete
-    export function removeRoleSet(command) {
+    export function removeRoleSet(command) : JQueryPromise<any> {
         return ajax(paths.removeRoleSet, command);
-    }    
-    
+    }
+
     //get all web menu
-    export function getAllWebMenus() : JQueryPromise<any>{
-        return ajax(paths.getAllWebMenus);
+    export function getAllWebMenu() : JQueryPromise<any>{
+        return ajax(paths.getAllWebMenu);
     }
-    //get company id of login uset
-    export function getLoginUserCompanyId() : JQueryPromise<any>{
-        return ajax(paths.getLoginUserCompanyId);
+
+    //get company id of login user
+    export function getCompanyIdOfLoginUser() : JQueryPromise<any>{
+        return ajax(paths.getCompanyIdOfLoginUser);
     }
-    
-    //get company id of login uset
-    export function getRoleById(comman) : JQueryPromise<any>{
-        return ajax(paths.getRoleById, comman);
+
+    //get Role By Id
+    export function getRoleById(command) : JQueryPromise<any>{
+        return ajax(format(paths.getRoleById, command));
     }
 }

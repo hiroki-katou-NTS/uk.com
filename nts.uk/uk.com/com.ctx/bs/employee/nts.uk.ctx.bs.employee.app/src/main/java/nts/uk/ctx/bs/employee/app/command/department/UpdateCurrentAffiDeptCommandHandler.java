@@ -22,7 +22,7 @@ public class UpdateCurrentAffiDeptCommandHandler extends CommandHandler<UpdateCu
 	private CurrentAffiDeptRepository currentAffiDeptRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00012";
 	}
 

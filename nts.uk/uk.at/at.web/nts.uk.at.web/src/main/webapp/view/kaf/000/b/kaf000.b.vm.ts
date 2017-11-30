@@ -76,7 +76,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             
             self.inputDetail().baseDate = baseDate;
             let dfd = $.Deferred();
-            //let dfdMessageDeadline = self.getMessageDeadline(self.appType());
+            // let dfdMessageDeadline = self.getMessageDeadline(self.appID(), self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
 
@@ -84,7 +84,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
                 let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
                 self.getDetailCheck(self.inputDetail());
-                self.getMessageDeadline(data);
+                self.getMessageDeadline({
+                    appID: data.appID,
+                    appType: data.appType,
+                    appDate: moment(data.appDate)   
+                });
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             });
@@ -296,9 +300,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             //削除  ○
                             self.displayButtonControl().enableDelete(true);    
                         }else{
-                            //登録 ○
+                            //登録  ×
                             self.displayButtonControl().enableUpdate(false);
-                            //削除  ○
+                            //削除    ×
                             self.displayButtonControl().enableDelete(false);  
                         }
                         //承認できるフラグ(false)
@@ -333,6 +337,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                                 }
                             }
                         }
+                    }
+                }else{//利用者が『本人』、又は『その他』
+                    //反映済
+                    if(approvalATR　== Status.REFLECTED){
+                        //取消   〇
+                        self.displayButtonControl().enableCancel(true);
+                    }
+                    if(approvalATR == Status.NOTREFLECTED || approvalATR == Status.REMAND){//未反映 , 差し戻し
+                        //登録 ○
+                        self.displayButtonControl().enableUpdate(true);
+                        //削除  ○
+                        self.displayButtonControl().enableDelete(true);  
+                        //差し戻し理由  ○
+                        self.displayButtonControl().enableReturnReason(true);
                     }
                 }
             }

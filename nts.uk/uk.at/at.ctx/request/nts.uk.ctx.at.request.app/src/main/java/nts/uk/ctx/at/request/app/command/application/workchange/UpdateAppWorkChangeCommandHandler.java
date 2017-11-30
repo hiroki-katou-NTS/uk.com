@@ -35,9 +35,9 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 	protected void handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
 		AddAppWorkChangeCommand updateCommand = context.getCommand();
 		// Command data
-		CreateApplicationCommand appCommand = updateCommand.getAppCommand();
-		AppWorkChangeCommand workChangeCommand = updateCommand.getWorkChangeCommand();
-		List<AppApprovalPhaseCmd> phaseCommand = updateCommand.getAppApprovalPhaseCmds();
+		CreateApplicationCommand appCommand = updateCommand.getApplication();
+		AppWorkChangeCommand workChangeCommand = updateCommand.getWorkChange();
+		List<AppApprovalPhaseCmd> phaseCommand = updateCommand.getAppApprovalPhases();
 
 		// 会社ID
 		String companyId = AppContexts.user().companyId();

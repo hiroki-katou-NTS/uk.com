@@ -40,15 +40,15 @@ public class OvertimeInputDto {
 	/**
 	 * 開始時間
 	 */
-	private int startTime;
+	private Integer startTime;
 	/**
 	 * 完了時間
 	 */
-	private int endTime;
+	private Integer endTime;
 	/**
 	 * 申請時間
 	 */
-	private int applicationTime;
+	private Integer applicationTime;
 	
 	public static OvertimeInputDto fromDomain(OverTimeInput overTimeInput){
 		return new OvertimeInputDto(

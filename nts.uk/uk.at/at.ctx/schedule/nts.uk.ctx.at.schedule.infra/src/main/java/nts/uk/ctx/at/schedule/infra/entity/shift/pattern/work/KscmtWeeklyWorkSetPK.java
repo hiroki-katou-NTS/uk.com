@@ -6,16 +6,14 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KwwstWeeklyWorkSetPK.
+ * The Class KscmtWeeklyWorkSetPK.
  */
 @Getter
 @Setter
@@ -26,20 +24,26 @@ public class KscmtWeeklyWorkSetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The cid. */
-	@Basic(optional = false)
-    @NotNull
     @Column(name = "CID")
     private String cid;
     
     /** The day of week. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "DAY_OF_WEEK")
     private Integer dayOfWeek;
 
+    /**
+     * Instantiates a new kscmt weekly work set PK.
+     */
     public KscmtWeeklyWorkSetPK() {
+    	super();
     }
 
+	/**
+	 * Instantiates a new kscmt weekly work set PK.
+	 *
+	 * @param cid the cid
+	 * @param dayOfWeek the day of week
+	 */
 	public KscmtWeeklyWorkSetPK(String cid, Integer dayOfWeek) {
 		super();
 		this.cid = cid;

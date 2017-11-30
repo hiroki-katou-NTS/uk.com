@@ -1,35 +1,22 @@
 module nts.uk.at.view.kdw001 {
     export module share.model {
-        export interface SpecificExe {
-            specificExeID: string;
-            sortBy: number;
-            settingInfor: number;
-            operationCaseName: string;
-            executionContents: number;
-            executionType: number;
-            settingForReflect: boolean;
-            alsoForciblyReflectEvenIfItIsConfirmed: boolean;
+        
+        // CheckProcessCommand
+        export interface CheckProcessCommand {
+            empCalAndSumExecLogID: string;
+            periodStartDate: string;
+            periodEndDate: string;
         }
 
-        export interface SettingForDaily {
-            creationType: number;
-            materReconfiguration: boolean;
-            closedHolidays: boolean;
-            resetWorkingHour: boolean;
-            refNumberFingerCheck: boolean;
-            specDateClassReset: boolean;
-            resetTimeForAssig: boolean;
-            resetTimeForChildOrNurseCare: boolean;
-            calClassReset: boolean;
-        }
-        
-        export interface executionResult {
+        // AddEmpCalSumAndTargetCommandResult
+        export interface AddEmpCalSumAndTargetCommandResult {
             enumComboBox: Array<any>;
             empCalAndSumExecLogID: string;
             periodStartDate: string;
             periodEndDate: string;
         }
 
+        // AddEmpCalSumAndTargetCommand
         export class executionProcessingCommand implements paramScreenA, paramScreenB, paramScreenC, paramScreenJ {
             private screen: string;
             // Screen A
@@ -59,21 +46,21 @@ module nts.uk.at.view.kdw001 {
             summaryClass: number;
             // Screen J
             caseSpecExeContentID: string;
-            
+
             constructor() {
-                
+
             }
-            
+
             setParamsScreenA(params: paramScreenA): void {
                 this.closure = params.closure;
             }
-            
+
             setParamsScreenC(params: paramScreenC): void {
                 this.lstEmployeeID = params.lstEmployeeID;
                 this.periodStartDate = params.periodStartDate;
                 this.periodEndDate = params.periodEndDate;
             }
-            
+
             setParamsScreenB(params: paramScreenB): void {
                 this.screen = "B";
                 this.dailyCreation = params.dailyCreation;
@@ -95,7 +82,7 @@ module nts.uk.at.view.kdw001 {
                 this.monthlyAggregation = params.monthlyAggregation;
                 this.summaryClass = params.summaryClass;
             }
-            
+
             setParamsScreenJ(params: paramScreenJ): void {
                 this.screen = "J";
                 this.caseSpecExeContentID = params.caseSpecExeContentID;

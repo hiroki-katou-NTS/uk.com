@@ -3,11 +3,19 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureEmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.Com60HVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CompensLeaveComDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
@@ -17,11 +25,19 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.YearHolidaySettingDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 
 /**
  * @author hungnm
@@ -39,6 +55,8 @@ public interface DailyPerformanceScreenRepo {
 	 * return: closure object
 	 */
 	ClosureDto getClosure(String sId, GeneralDate baseDate);
+	
+	ClosureDto getClosureId(String sId, GeneralDate baseDate);
 
 	/** Query select KALMT_ANNUAL_PAID_LEAVE by company id */
 	YearHolidaySettingDto getYearHolidaySetting();
@@ -94,10 +112,40 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list daily performance error */
 	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee);
 	
+	/** Get list daily performance error with error list code */
+	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String>errorCodes);
+	
 	/** Get error settings */
 	List<DPErrorSettingDto> getErrorSetting(List<String> listErrorCode);
 	
 	/** Get list sheet */
 	List<DPSheetDto> getFormatSheets(List<String> lstBusinessType);
 	
+	AffEmploymentHistoryDto getAffEmploymentHistory(String employeeId, DateRange dateRange);
+	
+	EmploymentDto findEmployment(String companyId, String employmentCode);
+	
+	ClosureEmploymentDto findByEmploymentCD(String companyID, String employmentCD);
+	
+	List<DailyRecEditSetDto> getDailyRecEditSet(List<String> listEmployeeId, DateRange dateRange);
+	
+	List<WorkInfoOfDailyPerformanceDetailDto> find(List<String> listEmployeeId, DateRange dateRange);
+	
+	Optional<ActualLockDto> findAutualLockById(String companyId, int closureId);
+	
+	Optional<WorkFixedDto> findWorkFixed(int closureId, int yearMonth);
+	
+	OperationOfDailyPerformanceDto findOperationOfDailyPerformance();
+	
+	List<AuthorityFormatInitialDisplayDto> findAuthorityFormatInitialDisplay(String companyId);
+	
+	List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, List<String> formatCode);
+	
+	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
+	
+	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
+	
+	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
+	
+	List<DailyPerformanceAuthorityDto> findDailyAuthority(String roleId);
 }

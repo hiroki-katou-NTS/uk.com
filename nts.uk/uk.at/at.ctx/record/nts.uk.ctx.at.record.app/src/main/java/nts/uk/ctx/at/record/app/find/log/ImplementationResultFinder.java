@@ -42,16 +42,22 @@ public class ImplementationResultFinder {
 	public ScreenImplementationResultDto getScreenImplementationResult (String empCalAndSumExecLogID ){
 		//Get List EmpCalAndSumExeLog
 		Optional<EmpCalAndSumExeLog> listEmpCalAndSumExeLog = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+		
 		//Conver to Dto
 		Optional<EmpCalAndSumExeLogDto> empCalAndSumExeLogDto = listEmpCalAndSumExeLog.map(c -> EmpCalAndSumExeLogDto.fromDomain(c));
+		
 		//Get List TargetPerson
 		List<TargetPerson> listTargetPerSon  = targetPersonRepository.getByempCalAndSumExecLogID(empCalAndSumExecLogID);
+		
 		//Convert Dto
 		List<TargetPersonDto> listTargetPersonDto = listTargetPerSon.stream().map(c -> TargetPersonDto.fromDomain(c)).collect(Collectors.toList());
+		
 		//Get List Enum ComboBox
-		List<EnumConstant> enumComboBox =EnumAdaptor.convertToValueNameList(ExecutionContent.class);
+		List<EnumConstant> enumComboBox = EnumAdaptor.convertToValueNameList(ExecutionContent.class);
+		
 		//Get List ErrMessageInfo
 		List<ErrMessageInfo> listErrMessageInfo = errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
+		
 		//Conver to Dto
 		List<ErrMessageInfoDto> listErrMessageInfoDto = listErrMessageInfo.stream().map(c -> ErrMessageInfoDto.fromDomain(c)).collect(Collectors.toList());
 		 

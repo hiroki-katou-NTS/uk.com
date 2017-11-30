@@ -38,12 +38,10 @@ public class KclmtCompensLeaveCom extends UkJpaEntity implements Serializable {
 
     /** The cid. */
     @Id
-    @Basic(optional = false)
     @Column(name = "CID")
     private String cid;
 
     /** The manage atr. */
-    @Basic(optional = false)
     @Column(name = "MANAGE_ATR")
     private Integer manageAtr;
     
@@ -66,6 +64,7 @@ public class KclmtCompensLeaveCom extends UkJpaEntity implements Serializable {
      * Instantiates a new kclmt compens leave com.
      */
     public KclmtCompensLeaveCom() {
+    	super();
     }
 
     /**

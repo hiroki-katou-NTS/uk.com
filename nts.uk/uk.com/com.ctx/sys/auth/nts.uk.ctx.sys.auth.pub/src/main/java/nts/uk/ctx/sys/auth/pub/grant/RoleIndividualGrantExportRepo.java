@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.auth.pub.grant;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface RoleIndividualGrantExportRepo.
@@ -28,4 +29,8 @@ public interface RoleIndividualGrantExportRepo {
 	 * @return the by user
 	 */
 	RoleIndividualGrantExport getByUser(String userId,GeneralDate date);
+	
+	RoleIndividualGrantExport getByUser(String userId);
+	
+	
 }

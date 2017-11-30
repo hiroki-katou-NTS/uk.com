@@ -3,7 +3,7 @@ package nts.uk.shr.pereg.app.find;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
@@ -32,8 +32,8 @@ public class LayoutingProcessor {
 	 */
 	public LayoutingResult handler(PeregQuery query){
 		val finderClass = this.peregProcess.get(query.getCtgCd());
- 		val domainData = finderClass.handleProcessor(query);
-		return new LayoutingResult(finderClass.finderClass(), domainData);
+ 		val queryResult = finderClass.handleProcessor(query);
+		return new LayoutingResult(finderClass.finderClass(), queryResult);
 	}
 	
 }
