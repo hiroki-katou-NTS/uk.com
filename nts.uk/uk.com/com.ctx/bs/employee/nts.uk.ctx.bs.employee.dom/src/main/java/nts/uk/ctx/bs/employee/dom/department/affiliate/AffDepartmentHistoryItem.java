@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.department.DepartmentCode;
 
 /**
  * The Class AffDepartmentHistoryItem.

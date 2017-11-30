@@ -140,7 +140,6 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	 * @return
 	 */
 	private void updateEntity(String employeeID, DateHistoryItem item, BsymtAffJobTitleHist entity) {
-		entity.setSid(employeeID);
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}

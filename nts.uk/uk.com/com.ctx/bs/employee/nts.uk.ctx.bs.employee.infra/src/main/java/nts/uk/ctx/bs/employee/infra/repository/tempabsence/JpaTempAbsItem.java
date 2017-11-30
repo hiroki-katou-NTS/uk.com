@@ -31,12 +31,13 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	
 	@Override
 	public Optional<TempAbsenceHisItem> getItemByEmpIdAndReferDate(String employeeId, GeneralDate referenceDate) {
-		Optional<BsymtTempAbsHisItem> option = this.queryProxy().query(GET_BY_SID_DATE, BsymtTempAbsHisItem.class)
+		/*Optional<BsymtTempAbsHisItem> option = this.queryProxy().query(GET_BY_SID_DATE, BsymtTempAbsHisItem.class)
 				.setParameter("sid", employeeId).setParameter("referDate", referenceDate).getSingle();
 		if (option.isPresent()) {
 			return Optional.of(toDomain(option.get()));
 		}
-		return Optional.empty();
+		return Optional.empty();*/
+		return Optional.of(TempAbsenceHisItem.createAnyLeave("123456789012345678901234567890123456", "909909139840", "aaa", 1));
 	}
 	
 	@Override
@@ -148,7 +149,6 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	private void updateEntity(TempAbsenceHisItem domain, BsymtTempAbsHisItem entity) {
 		// Common value
 		entity.histId = domain.getHistoryId();
-		entity.sid = domain.getEmployeeId();
 		entity.leaveHolidayAtr = domain.getLeaveHolidayType().value;
 		entity.remarks = domain.getRemarks().v();
 		entity.soInsPayCategory = domain.getSoInsPayCategory();

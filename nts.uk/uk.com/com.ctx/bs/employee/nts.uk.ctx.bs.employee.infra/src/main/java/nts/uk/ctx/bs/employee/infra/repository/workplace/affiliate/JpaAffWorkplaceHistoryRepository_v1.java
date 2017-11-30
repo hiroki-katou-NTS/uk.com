@@ -46,7 +46,6 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	 * @return
 	 */
 	private void updateEntity(String employeeID, DateHistoryItem item,BsymtAffiWorkplaceHist entity){	
-		entity.setSid(employeeID);
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}

@@ -109,7 +109,6 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	 * @return
 	 */
 	private void updateEntity(String employeeID, DateHistoryItem item,BsymtEmploymentHist entity){	
-		entity.setSid(employeeID);
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}
