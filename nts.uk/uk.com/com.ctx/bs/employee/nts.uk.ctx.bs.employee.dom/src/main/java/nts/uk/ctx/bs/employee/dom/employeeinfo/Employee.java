@@ -82,14 +82,12 @@ public class Employee extends AggregateRoot {
 	}
 
 	public int getDaysOfTemporaryAbsence() {
-		/*if (listTemporaryAbsence == null || listTemporaryAbsence.isEmpty()) {
+		if (temporaryAbsenceHistory == null || temporaryAbsenceHistory.getDateHistoryItems().isEmpty()) {
 			return 0;
 		}
 
-		return listTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS
-				.between(m.get)
-				.mapToInt(m -> Math.abs(m.intValue())).sum();*/
-		return 0;
-		// TODO
+		return temporaryAbsenceHistory.items().stream()
+				.map(m -> ChronoUnit.DAYS.between(m.start().localDate(), m.end().localDate()))
+				.mapToInt(m -> Math.abs(m.intValue())).sum();
 	}
 }
