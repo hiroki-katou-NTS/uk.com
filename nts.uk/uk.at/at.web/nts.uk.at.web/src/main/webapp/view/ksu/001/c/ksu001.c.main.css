@@ -6,7 +6,7 @@
 
 #error-status th, #error-status td, #processing-state th,
 	#processing-state td {
-	padding: 5px;
+	padding: 2px;
 	text-align: left;
 }
 
@@ -34,14 +34,12 @@
 	width: 230px
 }
 
-#error-status tbody {
-	height: 117px;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
-
 #error-status tbody, #error-status thead {
-	display: block;
+	display: block;	
+}
+#error-status tbody {
+	height: 478px;
+	overflow: scroll;
 }
 
 #error-status, #processing-state {
