@@ -71,7 +71,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         if (!nts.uk.util.isNullOrUndefined(self.param.selectionItemId)) {
                             self.perInfoSelectionItem().selectionItemId(self.param.selectionItemId);
                         } else {
-                             self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                         }
                     } else {
                         self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
@@ -146,18 +146,27 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listItems.push(x));
                     }
+
+                    //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                    confirm({ messageId: "Msg_456" }).ifYes(() => {
+                        let params = {
+                            isDialog: true,
+                            selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
+                        }
+                        setShared('CPS017_PARAMS', params);
+
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+                        });
+                    }).ifNo(() => {
+                        self.listItems.valueHasMutated();
+                        return;
+                    })
+
                 });
                 self.listItems.valueHasMutated();
                 self.perInfoSelectionItem().selectionItemId(selectId);
 
-                //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
-                confirm({ messageId: "Msg_456" }).ifYes(() => {
-                    modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
-                    });
-                }).ifNo(() => {
-                    self.listItems.valueHasMutated();
-                    return;
-                })
+
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
             });
