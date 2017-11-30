@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset.webmenu;
 
 import java.util.List;
@@ -8,11 +12,11 @@ import java.util.List;
  */
 public interface WebMenuAdapter {
 
-	/**
-	 * Find by company id.
-	 * companyId is companyId of login user
-	 * @return
-	 */
-	// RequestList #??
-	List<WebMenuImport> findByCompanyId();
+    /**
+     * Find by company id.
+     * companyId is companyId of login user
+     * @return
+     */
+    // RequestList #??
+    List<WebMenuImport> findByCompanyId();
 }

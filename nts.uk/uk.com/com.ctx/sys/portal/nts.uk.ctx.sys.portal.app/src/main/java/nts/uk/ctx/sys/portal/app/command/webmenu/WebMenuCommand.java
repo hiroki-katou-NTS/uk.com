@@ -3,11 +3,16 @@ package nts.uk.ctx.sys.portal.app.command.webmenu;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+* The Class WebMenuCommand.
+* @author HieuNV
+*/
 @NoArgsConstructor
 @Data
 public class WebMenuCommand {
-	private String webMenuCode;
+    /** Webメニューコード */
+    private String webMenuCode;
 
-	private String webMenuName;
-
+    /** Webメニュー名称 */
+    private String webMenuName;
 }
