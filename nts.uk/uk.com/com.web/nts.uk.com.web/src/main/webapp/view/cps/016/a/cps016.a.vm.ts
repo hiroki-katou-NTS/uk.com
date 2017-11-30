@@ -136,11 +136,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 listItems: Array<SelectionItem> = self.listItems(),
                 _selectionItemName = _.find(listItems, x => x.selectionItemName == currentItem.selectionItemName()),
                 formatSelection = currentItem.formatSelection(),
-                command = ko.toJS(currentItem),
-                params = {
-                    isDialog: true,
-                    selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
-                };
+                command = ko.toJS(currentItem);
 
             //「個人情報の選択項目」を登録する
             service.saveDataSelectionItem(command).done(function(selectId) {
@@ -150,20 +146,27 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listItems.push(x));
                     }
+
+                    //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                    confirm({ messageId: "Msg_456" }).ifYes(() => {
+                        let params = {
+                            isDialog: true,
+                            selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
+                        }
+                        setShared('CPS017_PARAMS', params);
+
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+                        });
+                    }).ifNo(() => {
+                        self.listItems.valueHasMutated();
+                        return;
+                    })
+
                 });
                 self.listItems.valueHasMutated();
                 self.perInfoSelectionItem().selectionItemId(selectId);
 
-                //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
-                confirm({ messageId: "Msg_456" }).ifYes(() => {
-                    setShared('CPS017_PARAMS', params);
-                    
-                    modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
-                    });
-                }).ifNo(() => {
-                    self.listItems.valueHasMutated();
-                    return;
-                })
+
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
             });

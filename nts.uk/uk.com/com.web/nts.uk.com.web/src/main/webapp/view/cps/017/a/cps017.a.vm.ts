@@ -139,7 +139,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length) {
                             if (histCur.endDate == '9999/12/31') {
                                 self.enableSelName(true);
-                                self.revDisSel03(false);
+                                self.revDisSel03(true);
                                 $("#code").focus();
                             } else {
                                 self.enableSelName(self.enableDelHist());
