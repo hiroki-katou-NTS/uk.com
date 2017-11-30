@@ -12,6 +12,10 @@ import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
+/**
+ * The Class AcquisitionRule.
+ */
+//休暇の取得ルール
 @Getter
 @EqualsAndHashCode(callSuper = false, of = { "companyId" })
 public class AcquisitionRule extends DomainObject {

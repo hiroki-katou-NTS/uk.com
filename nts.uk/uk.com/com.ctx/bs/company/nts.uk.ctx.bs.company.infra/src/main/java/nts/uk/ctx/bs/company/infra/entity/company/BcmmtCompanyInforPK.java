@@ -15,12 +15,5 @@ public class BcmmtCompanyInforPK implements Serializable {
 	/** 会社ID **/
 	@Column(name = "CID")
 	public String companyId;
-	
-	/** 会社コード */
-	@Column(name = "CCD")
-	public String companyCode;
-	
-	/** 契約コード */
-	@Column(name ="CONTRACT_CD")
-	public String contractCd;
+
 }

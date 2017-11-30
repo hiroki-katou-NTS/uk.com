@@ -18,7 +18,7 @@ public class UpdateFamilyCareCommandHandler extends CommandHandler<UpdateFamilyC
 	private FamilyCareRepository familyCareRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00007";
 	}
 

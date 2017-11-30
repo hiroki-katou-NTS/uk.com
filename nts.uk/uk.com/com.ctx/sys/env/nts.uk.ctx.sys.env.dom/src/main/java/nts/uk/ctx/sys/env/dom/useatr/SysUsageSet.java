@@ -20,22 +20,15 @@ public class SysUsageSet extends AggregateRoot{
 	/**会社ID**/
 	private String companyId;
 	
-	// 会社コード
-	private CCD companyCode;
-	
-	/** 契約コード */
-	private ContractCd contractCd;
-	
 	/** 人事システム **/
 	private Jinji jinji;
 	/** 就業システム **/
 	private ShuGyo shugyo;
 	/** 給与システム **/
 	private Kyuyo kyuyo;
-	public static SysUsageSet createFromJavaType(String companyCd, String contractCd, 
+	public static SysUsageSet createFromJavaType(String companyId, 
 													int jinji, int shugyo, int kyuyo){
-		return new SysUsageSet(new CCD(companyCd),
-								new ContractCd(contractCd),
+		return new SysUsageSet(companyId,
 							EnumAdaptor.valueOf(jinji, Jinji.class),
 							EnumAdaptor.valueOf(shugyo, ShuGyo.class),
 							EnumAdaptor.valueOf(kyuyo, Kyuyo.class));
@@ -50,13 +43,11 @@ public class SysUsageSet extends AggregateRoot{
 		super.validate();
 	}
 
-	public SysUsageSet(CCD companyCode, ContractCd contractCd, Jinji jinji, ShuGyo shugyo, Kyuyo kyuyo) {
-		super();
-		this.companyCode = companyCode;
-		this.contractCd = contractCd;
-		this.jinji = jinji;
-		this.shugyo = shugyo;
-		this.kyuyo = kyuyo;
-		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
-	}
+//	public SysUsageSet(String companyId, Jinji jinji, ShuGyo shugyo, Kyuyo kyuyo) {
+//		super();
+//		this.jinji = jinji;
+//		this.shugyo = shugyo;
+//		this.kyuyo = kyuyo;
+//		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
+//	}
 }

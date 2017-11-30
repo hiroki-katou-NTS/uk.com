@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.portal.infra.repository.webmenu.webmenulinking;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -23,16 +24,16 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleSetWeb
 @Stateless
 public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements RoleSetLinkWebMenuRepository {
 
-	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID = "SELECT rw FROM SacmtRoleSetWebMenu rw"
+	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID = "SELECT rw FROM SptmtRoleSetWebMenu rw"
 			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId ";
 
-	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD = "SELECT rw FROM SacmtRoleSetWebMenu rw"
+	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD = "SELECT rw FROM SptmtRoleSetWebMenu rw"
 			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId"
-			+ " rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
+			+ " 	AND rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
 	
-	private static final String DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD = "DELETE FROM SacmtRoleSetWebMenu rw"
+	private static final String DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD = "DELETE FROM SptmtRoleSetWebMenu rw"
 			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId "
-			+ " WHERE rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
+			+ " AND rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
 	
 	private nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu toDomain(SptmtRoleSetWebMenu entity) {
 		return new RoleSetLinkWebMenu(entity.roleSetWebMenuPK.companyId
@@ -113,7 +114,9 @@ public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements Ro
 
 	@Override
 	public void insert(List<RoleSetLinkWebMenu> listDomain) {
-		this.commandProxy().insertAll(listDomain);
+		List<SptmtRoleSetWebMenu> lstSptmtRoleSetWebMenu = listDomain.stream()
+				.map(domain -> toEntity(domain)).collect(Collectors.toList());
+		this.commandProxy().insertAll(lstSptmtRoleSetWebMenu);
 	}
 
 

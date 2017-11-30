@@ -14,13 +14,13 @@ import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
 /**
@@ -218,26 +218,6 @@ public class ItemDefinitionFactory {
 				// 性別
 				data = person.getGender().value;
 				break;
-			case "IS00015":
-				// 個人携帯
-				data = person.getPersonMobile().v();
-				break;
-			case "IS00016":
-				// 個人メールアドレス
-				data = person.getMailAddress().v();
-				break;
-			case "IS00017":
-				// 趣味
-				data = person.getHobBy().v();
-				break;
-			case "IS00018":
-				// 嗜好
-				data = person.getTaste().v();
-				break;
-			case "IS00019":
-				// 国籍
-				data = person.getCountryId().v();
-				break;
 			}
 			if (data != null) {
 				authClassItem.getItems()
@@ -246,7 +226,7 @@ public class ItemDefinitionFactory {
 		}
 	}
 
-	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Family family,
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, FamilyMember family,
 			ActionRole actionRole) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
 			Object data = null;
@@ -378,7 +358,7 @@ public class ItemDefinitionFactory {
 
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			TemporaryAbsence leaveHoliday, ActionRole actionRole) {
+			TempAbsenceHisItem leaveHoliday, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
@@ -418,12 +398,12 @@ public class ItemDefinitionFactory {
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,
-			List<Family> families) {
+			List<FamilyMember> families) {
 		return null;
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamily(LayoutPersonInfoClsDto personInfoClsDto,
-			ActionRole actionRole, List<Family> families) {
+			ActionRole actionRole, List<FamilyMember> families) {
 		return null;
 	}
 
@@ -444,12 +424,12 @@ public class ItemDefinitionFactory {
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
-			LayoutPersonInfoClsDto personInfoClsDto, List<TemporaryAbsence> temporaryAbsence) {
+			LayoutPersonInfoClsDto personInfoClsDto, List<TempAbsenceHistory> temporaryAbsence) {
 		return null;
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
-			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole, List<TemporaryAbsence> temporaryAbsence) {
+			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole, List<TempAbsenceHistory> temporaryAbsence) {
 		return null;
 	}
 

@@ -18,16 +18,17 @@
 			<com:scriptfile path="cas005.a.service.js" />
 			<com:EnumScript>
 				nts.uk.ctx.sys.auth.dom.role.RoleType
+				nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange
 			</com:EnumScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_001 -->
-				<button class="large ">#{i18n.getText('CAS005_10')}</button>
+				<button class="large " data-bind="click :createButton ">#{i18n.getText('CAS005_10')}</button>
 				<!-- A1_002 -->
-				<button class="proceed large ">#{i18n.getText('CAS005_11')}</button>
+				<button class="proceed large "  data-bind="click : registerButton ,enable : isRegister">#{i18n.getText('CAS005_11')}</button>
 				<!-- A1_003 -->
-				<button class="danger large ">#{i18n.getText('CAS005_12')}</button>
+				<button class="danger large " data-bind="click : deleteButton ,enable : isDelete">#{i18n.getText('CAS005_12')}</button>
 				<!-- A1_004 -->
 				<button class="large ">#{i18n.getText('CAS005_13')}</button>
 				<!-- A1_005 -->
@@ -65,8 +66,8 @@
 								<div style="padding-right: 20px; padding-bottom: 5px;"
 									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_30')}</div>
 							</td>
-							<td><input style="width: 70px;"
-								data-bind="ntsTextEditor: {value: roleType}" /><input
+							<td><input id="roleTypeCd" style="width: 70px;"
+								data-bind="ntsTextEditor: {value: roleCode}" /><input
 								style="margin-left: 11px;"
 								data-bind="ntsTextEditor:  {value: roleName}" /></td>
 						</tr>
@@ -79,10 +80,10 @@
 							<td>
 								<div class="cf"
 									data-bind="ntsSwitchButton: {
-												options: roundingRules,
+												options: categoryAssign,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: selectedRuleCode,
+												value: selectCategoryAssign,
 												enable: true }">
 								</div>
 							</td>
@@ -96,14 +97,13 @@
 							<td>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-												options: itemList1,
-												optionsValue: 'code',
-												value: selectedCode,
+												options: listEmployeeReferenceRange,
+												optionsValue: 'value',
+												value: selectedEmployeeReferenceRange,
 												optionsText: 'name',
 												editable: false,
 												enable: isEnable,
 												columns: [
-													{ prop: 'code', length: 4 },
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
@@ -118,10 +118,10 @@
 							<td>
 								<div class="cf"
 									data-bind="ntsSwitchButton: {
-												options: roundingRules2,
+												options: referenceAuthority,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: selectedRuleCode,
+												value: selectReferenceAuthority ,
 												enable: true }">
 								</div>
 							</td>
@@ -135,15 +135,14 @@
 							<td>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-												options: itemList1,
-												optionsValue: 'code',
-												value: selectedCode,
-												optionsText: 'name',
+												options: listWebMenu,
+												optionsValue: 'webMenuCd',
+												value: selectWebMenu,
+												optionsText: 'webMenuName',
 												editable: false,
 												enable: isEnable,
 												columns: [
-													{ prop: 'code', length: 4 },
-													{ prop: 'name', length: 10 },
+													{ prop: 'webMenuName', length: 10 },
 												]}">
 								</div>
 							</td>
@@ -157,14 +156,13 @@
 							<td>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-												options: itemList1,
-												optionsValue: 'code',
-												value: selectedCode,
+												options: listEmployeeReferenceRange,
+												optionsValue: 'value',
+												value: bookingScreen,
 												optionsText: 'name',
 												editable: false,
 												enable: isEnable,
 												columns: [
-													{ prop: 'code', length: 4 },
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
@@ -179,14 +177,13 @@
 							<td>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-												options: itemList1,
-												optionsValue: 'code',
-												value: selectedCode,
+												options: listEmployeeReferenceRange,
+												optionsValue: 'value',
+												value: scheduleScreen,
 												optionsText: 'name',
 												editable: false,
 												enable: isEnable,
 												columns: [
-													{ prop: 'code', length: 4 },
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
@@ -201,14 +198,13 @@
 							<td>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-												options: itemList1,
-												optionsValue: 'code',
-												value: selectedCode,
+												options: listEmployeeReferenceRange,
+												optionsValue: 'value',
+												value: registeredInquiries,
 												optionsText: 'name',
 												editable: false,
 												enable: isEnable,
 												columns: [
-													{ prop: 'code', length: 4 },
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>
@@ -223,14 +219,13 @@
 							<td>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-												options: itemList1,
-												optionsValue: 'code',
-												value: selectedCode,
+												options: listEmployeeReferenceRange,
+												optionsValue: 'value',
+												value: specifyingAgent,
 												optionsText: 'name',
 												editable: false,
 												enable: isEnable,
 												columns: [
-													{ prop: 'code', length: 4 },
 													{ prop: 'name', length: 10 },
 												]}">
 								</div>

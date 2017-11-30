@@ -93,7 +93,7 @@ public class TotalTimes extends AggregateRoot {
 		memento.setCountAtr(this.countAtr);
 		memento.setSummaryAtr(this.summaryAtr);
 		memento.setTotalSubjects(this.totalSubjects);
-		memento.setTotalCondition(totalCondition);
+		memento.setTotalCondition(this.totalCondition);
 		memento.setTotalCountNo(this.totalCountNo);
 		memento.setTotalTimesABName(this.totalTimesABName);
 		memento.setTotalTimesName(this.totalTimesName);

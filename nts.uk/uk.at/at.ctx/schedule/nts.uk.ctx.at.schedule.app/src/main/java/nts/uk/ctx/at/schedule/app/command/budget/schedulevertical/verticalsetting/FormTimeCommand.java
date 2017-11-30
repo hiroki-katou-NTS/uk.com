@@ -32,6 +32,13 @@ public class FormTimeCommand {
     
     private List<FormTimeFuncCommand> lstFormTimeFunc;
     
+    /**
+     * toDomainFormTime
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @return
+     */
     public FormTime toDomainFormTime(String companyId, String verticalCalCd, String verticalCalItemId){
     	List<FormTimeFunc> formFormTimeFuncLst = this.lstFormTimeFunc != null
     			? this.lstFormTimeFunc.stream().map(c -> c.toDomainFunc(companyId, 

@@ -36,6 +36,4 @@ public class RoleSetCommand {
 	/** ロールID: 給与ロール */
 	private String salaryRoleId;
 	
-	/** List of web menu code **/
-	private List<WebMenuCommand> webMenus;
 }

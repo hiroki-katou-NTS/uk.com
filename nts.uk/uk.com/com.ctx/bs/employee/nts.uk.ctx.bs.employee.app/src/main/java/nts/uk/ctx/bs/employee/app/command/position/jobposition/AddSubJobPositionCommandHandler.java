@@ -19,7 +19,7 @@ public class AddSubJobPositionCommandHandler extends CommandHandlerWithResult<Ad
 	@Inject
 	private SubJobPosRepository subJobPosRepository;
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00013";
 	}
 

@@ -15,16 +15,16 @@ import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.incometax.IncomeTax;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsurance;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
 /**
- * Item definition factory: (thay ??i so v?i cai hi?n t?i ?? tuy ch?nh theo ch?c n?ng)
+ * Item definition factory: (thay đổi so với cái hiện tại để tùy chỉnh theo chức năng)
  * @author xuan vinh
  *
  */
@@ -94,26 +94,6 @@ public class ItemDefFactoryNew {
 			case "IS00014":
 				// 性別
 				data = person.getGender().value;
-				break;
-			case "IS00015":
-				// 個人携帯
-				data = person.getPersonMobile().v();
-				break;
-			case "IS00016":
-				// 個人メールアドレス
-				data = person.getMailAddress().v();
-				break;
-			case "IS00017":
-				// 趣味
-				data = person.getHobBy().v();
-				break;
-			case "IS00018":
-				// 嗜好
-				data = person.getTaste().v();
-				break;
-			case "IS00019":
-				// 国籍
-				data = person.getCountryId().v();
 				break;
 			}
 			if (data != null) {
@@ -190,7 +170,7 @@ public class ItemDefFactoryNew {
 	}
 	
 	//Family
-	public static LayoutPersonInfoClsDto matchInformation(String categoryCode, List<PerInfoItemDefDto> listItemDef, ActionRole actionRole, Family family) {
+	public static LayoutPersonInfoClsDto matchInformation(String categoryCode, List<PerInfoItemDefDto> listItemDef, ActionRole actionRole, FamilyMember family) {
 		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 		layoutPerInfoClsDto.setListItemDf(listItemDef);
 		layoutPerInfoClsDto.setItems(new ArrayList<>());
@@ -341,7 +321,7 @@ public class ItemDefFactoryNew {
 	}
 	
 	//TemporaryAbsence
-	public static LayoutPersonInfoClsDto matchInformation(String categoryCode, List<PerInfoItemDefDto> listItemDef, ActionRole actionRole, TemporaryAbsence temporaryAbsence) {
+	public static LayoutPersonInfoClsDto matchInformation(String categoryCode, List<PerInfoItemDefDto> listItemDef, ActionRole actionRole, TempAbsenceHisItem temporaryAbsence) {
 		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 		layoutPerInfoClsDto.setListItemDf(listItemDef);
 		layoutPerInfoClsDto.setItems(new ArrayList<>());

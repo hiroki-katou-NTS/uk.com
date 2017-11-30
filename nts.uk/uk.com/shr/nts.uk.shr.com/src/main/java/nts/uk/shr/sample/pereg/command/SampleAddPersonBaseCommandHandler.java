@@ -24,7 +24,7 @@ public class SampleAddPersonBaseCommandHandler extends CommandHandlerWithResult<
 	}
 
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00001";
 	}
 

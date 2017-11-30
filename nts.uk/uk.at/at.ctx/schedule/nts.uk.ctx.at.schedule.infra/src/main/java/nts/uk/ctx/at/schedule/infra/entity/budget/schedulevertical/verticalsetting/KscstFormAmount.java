@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORM_AMOUNT")
+@Table(name = "KSCMT_FORM_AMOUNT")
 public class KscstFormAmount extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

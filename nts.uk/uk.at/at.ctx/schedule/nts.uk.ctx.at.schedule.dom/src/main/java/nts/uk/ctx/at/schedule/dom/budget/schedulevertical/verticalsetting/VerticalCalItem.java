@@ -1,11 +1,17 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
+/**
+ * TanLV
+ * 汎用縦計項目
+ */
 @AllArgsConstructor
 @Getter
 public class VerticalCalItem extends DomainObject {
@@ -53,7 +59,7 @@ public class VerticalCalItem extends DomainObject {
  	private FormulaAmount formulaAmount;
  	
  	// F
- 	private FormulaNumerical numerical;
+ 	private List<FormulaNumerical> numerical;
  	
  	//G
  	private FormulaUnitprice unitprice;
@@ -71,7 +77,7 @@ public class VerticalCalItem extends DomainObject {
  													FormTime formTime,
  													FormPeople formPeople,
  													FormulaAmount formulaAmount,
- 													FormulaNumerical numerical,
+ 													List<FormulaNumerical> numerical,
  													FormulaUnitprice unitprice){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
@@ -89,6 +95,10 @@ public class VerticalCalItem extends DomainObject {
  				unitprice);
  	}
  	
+ 	/**
+ 	 * Validate
+ 	 * @param index
+ 	 */
  	public void validate(int index) {
  		if(this.calculateAtr == CalculateAtr.FORMULA_SETTING) {
  			if (this.formBuilt == null) {

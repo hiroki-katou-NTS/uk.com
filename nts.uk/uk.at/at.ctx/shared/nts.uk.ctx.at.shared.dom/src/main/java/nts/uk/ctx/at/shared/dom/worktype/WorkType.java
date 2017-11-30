@@ -182,4 +182,68 @@ public class WorkType extends AggregateRoot {
 	public boolean isOneDay() {
 		return this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay;
 	}
+
+	/**
+	 * Checks if is attendance or shooting.
+	 *
+	 * @param worktypeCls the worktype cls
+	 * @return true, if is attendance or shooting
+	 */
+	public boolean isAttendanceOrShooting(WorkTypeClassification worktypeCls) {
+		return worktypeCls == WorkTypeClassification.Attendance || worktypeCls == WorkTypeClassification.Shooting;
+	}
+
+	/**
+	 * Checks if is attendance or shooting or holiday work.
+	 *
+	 * @param worktypeCls the worktype cls
+	 * @return true, if is attendance or shooting or holiday work
+	 */
+	public boolean isAttendanceOrShootingOrHolidayWork(WorkTypeClassification worktypeCls) {
+		return worktypeCls == WorkTypeClassification.Attendance || worktypeCls == WorkTypeClassification.Shooting
+				|| worktypeCls == WorkTypeClassification.HolidayWork;
+	}
+
+	/**
+	 * Gets the work type set by atr.
+	 *
+	 * @param atr the atr
+	 * @return the work type set by atr
+	 */
+	public WorkTypeSet getWorkTypeSetByAtr(WorkAtr atr) {
+		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst().get();
+	}
+
+	/**
+	 * Gets the work type set.
+	 *
+	 * @return the work type set
+	 */
+	public WorkTypeSet getWorkTypeSet() {
+		// 1日
+		if (this.isOneDay()) {
+			if (this.isAttendanceOrShootingOrHolidayWork(this.dailyWork.getOneDay())) {
+				return this.getWorkTypeSetByAtr(WorkAtr.OneDay);
+			} else {
+				return null;
+			}
+		}
+		// 午前と午後
+		else {
+			if (this.isAttendanceOrShooting(this.dailyWork.getMorning())) {
+				WorkTypeSet am = this.getWorkTypeSetByAtr(WorkAtr.Monring);
+				if (this.isAttendanceOrShooting(this.dailyWork.getAfternoon())) {
+					WorkTypeSet pm = this.getWorkTypeSetByAtr(WorkAtr.Afternoon);
+					return new WorkTypeSet(pm.getTimeLeaveWork(), am.getAttendanceTime());
+				}
+				return am;
+			} else {
+				if (this.isAttendanceOrShooting(this.dailyWork.getAfternoon())) {
+					return this.getWorkTypeSetByAtr(WorkAtr.Afternoon);
+				} else {
+					return null;
+				}
+			}
+		}
+	}
 }

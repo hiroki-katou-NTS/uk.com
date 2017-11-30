@@ -112,7 +112,7 @@ public class ScheCreExeErrorLogHandler {
 		 */
 		@Override
 		public String getErrorContent() {
-			return messageId + " " + internationalization.localize(messageId).get();
+			return internationalization.localize(messageId).get();
 		}
 
 		/* (non-Javadoc)

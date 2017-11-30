@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.person.dom.person.info.item;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
@@ -12,6 +13,7 @@ import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 @Getter
 public class PersonInfoItemDefinition extends AggregateRoot {
 	private String perInfoItemDefId;
+	@Setter
 	private String perInfoCategoryId;
 	private ItemCode itemCode;
 	private ItemCode itemParentCode;

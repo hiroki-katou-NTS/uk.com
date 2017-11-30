@@ -6,12 +6,10 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,8 +31,6 @@ public class KscmtWorkMonthSet extends JpaEntity implements Serializable {
     protected KscmtWorkMonthSetPK kscmtWorkMonthSetPK;
     
     /** The work type cd. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "WORK_TYPE_CD")
     private String workTypeCd;
     
@@ -42,9 +38,12 @@ public class KscmtWorkMonthSet extends JpaEntity implements Serializable {
     @Column(name = "WORKING_CD")
     private String workingCd;
 
+    /**
+     * Instantiates a new kscmt work month set.
+     */
     public KscmtWorkMonthSet() {
+    	super();
     }
-
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

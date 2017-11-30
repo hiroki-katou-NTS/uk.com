@@ -19,12 +19,6 @@ public class AddInfor {
 	/**会社ID**/
 	private String companyId;
 	
-	// 会社コード
-	private CCD companyCode;
-	
-	/** 契約コード */
-	private ContractCd contractCd;
-	
 	/** FAX番号 **/
 	private FaxNum faxNum;
 	/** 住所１ **/
@@ -40,15 +34,11 @@ public class AddInfor {
 	/** 電話番号 **/
 	private PhoneNum phoneNum;
 	
-	public static AddInfor createFromJavaType(String companyCode, 
-												String contractCd,
-												String faxNum, String add_1, 
+	public static AddInfor createFromJavaType(String companyId, String faxNum, String add_1, 
 												String add_2, String addKana_1, 
 												String addKana_2, String postCd, 
 												String phoneNum){
-		return new AddInfor(new CCD(companyCode),
-							new ContractCd(contractCd),
-							new FaxNum(faxNum), new Add_1(add_1),
+		return new AddInfor(companyId, new FaxNum(faxNum), new Add_1(add_1),
 							new Add_2(add_2), new Add_Kana_1(addKana_1),
 							new Add_Kana_2(addKana_2), new PostCd(postCd),
 							new PhoneNum(phoneNum));
@@ -58,18 +48,4 @@ public class AddInfor {
 		return contractCd + "-" + companyCode;
 	}
 
-	public AddInfor(CCD companyCode, ContractCd contractCd, FaxNum faxNum, Add_1 add_1, Add_2 add_2,
-			Add_Kana_1 addKana_1, Add_Kana_2 addKana_2, PostCd postCd, PhoneNum phoneNum) {
-		super();
-		this.companyCode = companyCode;
-		this.contractCd = contractCd;
-		this.faxNum = faxNum;
-		this.add_1 = add_1;
-		this.add_2 = add_2;
-		this.addKana_1 = addKana_1;
-		this.addKana_2 = addKana_2;
-		this.postCd = postCd;
-		this.phoneNum = phoneNum;
-		this.companyId = createCompanyId(companyCode.v(), contractCd.v());
-	}
 }

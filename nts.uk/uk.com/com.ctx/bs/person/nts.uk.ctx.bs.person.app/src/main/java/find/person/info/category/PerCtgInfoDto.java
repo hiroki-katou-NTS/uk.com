@@ -18,5 +18,6 @@ public class PerCtgInfoDto {
 	private boolean isAbolition;
 	private int systemRequired;
 	private int isExistedItemLst;
+	private int personEmployeeType;
 	private List<PersonInfoItemDefDto> itemLst;
 }

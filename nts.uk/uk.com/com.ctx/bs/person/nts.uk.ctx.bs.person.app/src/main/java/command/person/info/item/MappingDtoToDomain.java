@@ -29,7 +29,7 @@ public class MappingDtoToDomain {
 	public static PersonInfoItemDefinition mappingFromDomaintoDtoForEndtDate(AddItemCommand addItemCommand) {
 		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createFromJavaType(addItemCommand.getPerInfoCtgId(),
 				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), ITEM_NAME_END_DATE,
-				IsAbolition.NOT_ABOLITION.value, IsFixed.FIXED.value, IsRequired.NONE_REQUIRED.value);
+				IsAbolition.NOT_ABOLITION.value, IsFixed.FIXED.value, IsRequired.REQUIRED.value);
 		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SINGLE_ITEM, DataTypeValue.DATE));
 		return itemDef;
 	}
@@ -90,13 +90,14 @@ public class MappingDtoToDomain {
 			return DataTypeState.createTimePointItem(singleI.getTimePointItemMin(), singleI.getTimePointItemMax());
 		case 6:
 			ReferenceTypeState referenceType = null;
-			if (singleI.getReferenceType() == ReferenceTypes.DESIGNATED_MASTER.value) {
-				referenceType = ReferenceTypeState.createMasterReferenceCondition(singleI.getReferenceCode());
-			} else if (singleI.getReferenceType() == ReferenceTypes.CODE_NAME.value) {
-				referenceType = ReferenceTypeState.createCodeNameReferenceType(singleI.getReferenceCode());
-			} else {
-				referenceType = ReferenceTypeState.createEnumReferenceCondition(singleI.getReferenceCode());
-			}
+			referenceType = ReferenceTypeState.createCodeNameReferenceType(singleI.getReferenceCode());
+//			if (singleI.getReferenceType() == ReferenceTypes.DESIGNATED_MASTER.value) {
+//				referenceType = ReferenceTypeState.createMasterReferenceCondition(singleI.getReferenceCode());
+//			} else if (singleI.getReferenceType() == ReferenceTypes.CODE_NAME.value) {
+				
+//			} else {
+//				referenceType = ReferenceTypeState.createEnumReferenceCondition(singleI.getReferenceCode());
+//			}
 			return DataTypeState.createSelectionItem(referenceType);
 		default:
 			return null;

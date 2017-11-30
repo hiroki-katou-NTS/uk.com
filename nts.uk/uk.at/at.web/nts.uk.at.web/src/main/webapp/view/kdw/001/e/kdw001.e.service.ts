@@ -10,7 +10,7 @@ module nts.uk.at.view.kdw001.e.service {
         return nts.uk.request.ajax("at", nts.uk.text.format(paths.getImplementationResult + "/" + empCalAndSumExecLogID));
     }
     
-    export function insertData(params: shareModel.executionProcessingCommand): JQueryPromise<shareModel.executionResult> {
+    export function insertData(params: shareModel.executionProcessingCommand): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.insertData, params);
     }
 

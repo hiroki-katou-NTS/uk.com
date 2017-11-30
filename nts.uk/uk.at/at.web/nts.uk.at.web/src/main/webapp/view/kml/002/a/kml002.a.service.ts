@@ -50,7 +50,7 @@ module nts.uk.at.view.kml002.a.service {
     }  
     
     /**
-     *  Get D data by code
+     *  Get D, F data by code
      */
     export function getByAtr(param: any){   
         return nts.uk.request.ajax(servicePath.findByAtr, param);   

@@ -34,8 +34,6 @@ public class KscmtWeeklyWorkSet extends UkJpaEntity implements Serializable {
     protected KscmtWeeklyWorkSetPK kscmtWeeklyWorkSetPK;
     
     /** The work day div. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "WORK_DAY_ATR")
     private int workDayAtr;
 
