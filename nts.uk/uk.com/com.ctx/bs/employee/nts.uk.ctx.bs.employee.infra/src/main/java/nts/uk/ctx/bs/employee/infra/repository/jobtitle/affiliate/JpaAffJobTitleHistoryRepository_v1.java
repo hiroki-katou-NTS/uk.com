@@ -16,12 +16,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements AffJobTitleHistoryRepository_ver1 {
 
-	private final String QUERY_GET_AFFJOBTITLEHIST_BYSID = "select jb " + "from BsymtAffJobTitleHist jb "
-			+ "where jb.sid = :sid order by jb.strDate";
+	private final String QUERY_GET_AFFJOBTITLEHIST_BYSID = "SELECT jb FROM BsymtAffJobTitleHist jb"
+			+ " WHERE jb.sid = :sid ORDER BY jb.strDate";
 
 	/**
 	 * Convert from domain to entity
-	 * 
 	 * @param employeeId
 	 * @param listHist
 	 * @return
@@ -38,7 +37,6 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 
 	/**
 	 * Convert from domain to BsymtAffJobTitleHist entity
-	 * 
 	 * @param sId
 	 * @param domain
 	 * @return
@@ -49,7 +47,6 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 
 	@Override
 	public Optional<AffJobTitleHistory_ver1> getListBySid(String sid) {
-		// TODO Auto-generated method stub
 		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
 				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID, BsymtAffJobTitleHist.class).setParameter("sid", sid).getList();
 		if (!listHist.isEmpty()) {
@@ -79,7 +76,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 			throw new RuntimeException("Invalid BsymtAffJobTitleHist");
 		}
 		// Update entity
-		updateEntity(domain.getEmployeeId(), item, itemToBeUpdated.get());
+		updateEntity(item, itemToBeUpdated.get());
 		this.commandProxy().update(itemToBeUpdated.get());
 
 		// Update item before and after
@@ -105,15 +102,14 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 			if (!histItem.isPresent()) {
 				throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 			}
-			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
+			updateEntity(lastItem, histItem.get());
 			this.commandProxy().update(histItem.get());
 		}
 
 	}
 
 	/**
-	 * Update item before when updating or deleting
-	 * 
+	 * Update item before when updating
 	 * @param domain
 	 * @param item
 	 */
@@ -128,25 +124,23 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		if (!histItem.isPresent()) {
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		updateEntity(beforeItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 
 	/**
 	 * Update entity from domain
-	 * 
 	 * @param employeeID
 	 * @param item
 	 * @return
 	 */
-	private void updateEntity(String employeeID, DateHistoryItem item, BsymtAffJobTitleHist entity) {
+	private void updateEntity(DateHistoryItem item, BsymtAffJobTitleHist entity) {
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}
 
 	/**
-	 * Update item after when updating or deleting
-	 * 
+	 * Update item after when updating
 	 * @param domain
 	 * @param item
 	 */
@@ -161,7 +155,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		if (!histItem.isPresent()) {
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		updateEntity(aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 

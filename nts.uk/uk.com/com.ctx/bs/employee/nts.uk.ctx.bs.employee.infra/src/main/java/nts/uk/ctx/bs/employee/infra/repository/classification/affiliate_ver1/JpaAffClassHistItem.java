@@ -37,6 +37,19 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 		return Optional.empty();*/
 		return Optional.of(AffClassHistItem_ver1.createFromJavaType("909909139840", "98765432109876543210654321", "1213132132121231321"));
 	}
+	
+	@Override
+	public Optional<AffClassHistItem_ver1> getByHistoryId(String historyId) {
+		Optional<KmnmtAffClassHistItem_Ver1> optionData = this.queryProxy().find(historyId, KmnmtAffClassHistItem_Ver1.class);
+		if ( optionData.isPresent() ) {
+			return Optional.of(toDomain(optionData.get()));
+		}
+		return Optional.empty();
+	}
+	
+	private AffClassHistItem_ver1 toDomain(KmnmtAffClassHistItem_Ver1 entity) {
+		return AffClassHistItem_ver1.createFromJavaType(entity.sid, entity.historyId, entity.classificationCode);
+	}
 
 	@Override
 	public void add(AffClassHistItem_ver1 item) {
@@ -70,5 +83,6 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 		}
 		this.commandProxy().update(entityOpt.get());
 	}
+
 
 }

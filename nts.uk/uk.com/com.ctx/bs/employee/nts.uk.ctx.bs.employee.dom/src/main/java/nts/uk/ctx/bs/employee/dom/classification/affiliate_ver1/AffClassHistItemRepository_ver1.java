@@ -22,6 +22,13 @@ public interface AffClassHistItemRepository_ver1 {
 	Optional<AffClassHistItem_ver1> getByEmpIdAndReferDate(String employeeId, GeneralDate referenceDate);
 	
 	/**
+	 * get AffClassHistItem_ver1 by history id
+	 * @param historyId
+	 * @return
+	 */
+	Optional<AffClassHistItem_ver1> getByHistoryId(String historyId);
+	
+	/**
 	 * add an AffClassHistItem_ver1
 	 * @param item
 	 */

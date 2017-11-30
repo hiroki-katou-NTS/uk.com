@@ -24,7 +24,7 @@ public class AffWorkplaceHistoryItem {
 	// 社員ID
 	private String employeeId;
 	
-	/** The workplaceCode. */
+	/** The workplaceId. */
 	// 職場コード
 	private String  workplaceId;
 	
@@ -32,12 +32,8 @@ public class AffWorkplaceHistoryItem {
 	// 通常職場コード
 	private String  normalWorkplaceId;
 	
-	/** The normalWorkplaceCode. */
-	// 場所コード
-	private LocationCode  locationCode;
-
-	public static AffWorkplaceHistoryItem createFromJavaType(String histId, String employeeId, String workplaceId, String normalWorkplaceId, String locationCode){
-		return new AffWorkplaceHistoryItem(histId,employeeId, workplaceId, normalWorkplaceId, new LocationCode(locationCode));
+	public static AffWorkplaceHistoryItem createFromJavaType(String histId, String employeeId, String workplaceId, String normalWorkplaceId){
+		return new AffWorkplaceHistoryItem(histId,employeeId, workplaceId, normalWorkplaceId);
 
 	}
 	

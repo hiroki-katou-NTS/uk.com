@@ -41,22 +41,16 @@ public class BsymtAffiWorkplaceHistItem extends UkJpaEntity implements Serializa
 	@Column(name = "SID")
 	private String sid;
 	
-	/** The workPlaceCode. */
+	/** The workPlaceId. */
 	@Basic(optional = false)
 	@Column(name = "WORKPLACE_ID")
 	private String workPlaceId;
 	
-	/** The workPlaceCode. */
+	/** The workPlaceId. */
 	@Basic(optional = false)
 	@Column(name = "NORMAL_WORKPLACE_ID")
 	private String normalWkpId;
 	
-	/** The workPlaceCode. */
-	@Basic(optional = false)
-	@Column(name = "LOCATION_CD")
-	private String locationCode;
-	
-
 	/**
 	 * Instantiates a new cempt employment.
 	 */

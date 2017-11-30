@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -37,12 +38,13 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			"WHERE c.bsymtAffCompanyHistPk.pId = :pId");
 
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
-			"WHERE c.bsymtAffCompanyHistPk.sId = :sId");
+			"WHERE c.bsymtAffCompanyHistPk.sId = :sId ORDER BY c.startDate ");
 
 	private static final String SELECT_BY_PRIMARY_KEY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.pId = :pId", "AND c.bsymtAffCompanyHistPk.sId = :sId",
 			"AND c.bsymtAffCompanyHistPk.historyId = :histId");
-
+	private static final String SELECT_BY_HISTORY_ID = String.join(" ", SELECT_NO_PARAM,
+			"WHERE c.bsymtAffCompanyHistPk.historyId = :histId");
 	@Override
 	public void add(AffCompanyHist domain) {
 		this.commandProxy().insertAll(toEntities(domain));
@@ -107,7 +109,9 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 
 	private AffCompanyHist toDomain(List<BsymtAffCompanyHist> entities) {
-
+		if (entities.isEmpty()){
+			return null;
+		}
 		AffCompanyHist domain = new AffCompanyHist();
 
 		for (BsymtAffCompanyHist item : entities) {
@@ -155,5 +159,116 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		}
 
 		return entities;
+	}
+	
+	/**
+	 * Update item before when updating
+	 * @param domain
+	 * @param item
+	 */
+	private void updateItemBefore(AffCompanyHistByEmployee domain, AffCompanyHistItem item){
+		// Update item before
+		Optional <AffCompanyHistItem> beforeItem = domain.immediatelyBefore(item);
+		if (!beforeItem.isPresent()){
+			return;
+		}
+		Optional<BsymtAffCompanyHist> histItem = this.queryProxy().find(beforeItem.get().identifier(), BsymtAffCompanyHist.class);
+		if (!histItem.isPresent()){
+			return;
+		}
+		updateEntity(beforeItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
+	}
+	/**
+	 * Update entity from domain
+	 * @param item
+	 * @param entity
+	 */
+	private void updateEntity(AffCompanyHistItem item,BsymtAffCompanyHist entity){	
+		entity.startDate = item.start();
+		entity.endDate = item.end();
+	}
+	/**
+	 * Update item after when updating
+	 * @param domain
+	 * @param item
+	 */
+	private void updateItemAfter(AffCompanyHistByEmployee domain,AffCompanyHistItem item){
+		// Update item after
+		Optional<AffCompanyHistItem> aferItem = domain.immediatelyAfter(item);
+		if (!aferItem.isPresent()){
+			return;
+		}
+		Optional<BsymtAffCompanyHist> histItem  = this.queryProxy().find(aferItem.get().identifier(), BsymtAffCompanyHist.class);
+		if (!histItem.isPresent()){
+			return;
+		}
+		updateEntity(aferItem.get(), histItem.get());
+		this.commandProxy().update(histItem.get());
+	}
+	/**
+	 * Convert to entity
+	 * @param histItem
+	 * @param pId
+	 * @param sid
+	 * @return BsymtAffCompanyHist
+	 */
+	private BsymtAffCompanyHist toEntity(AffCompanyHistItem histItem, String pId, String sid){
+		BsymtAffCompanyHistPk bsymtAffCompanyHistPk = new BsymtAffCompanyHistPk(pId, sid, histItem.getHistoryId());
+		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, 0, histItem.start(), histItem.end(), null);
+	}
+	@Override
+	public void add(AffCompanyHistByEmployee domain, String pId) {
+		// Insert last item
+		AffCompanyHistItem itemToBeAdded = domain.getLstAffCompanyHistoryItem().get(domain.getLstAffCompanyHistoryItem().size() -1);
+		this.commandProxy().insert(toEntity(itemToBeAdded, pId, domain.getSId()));
+		// Update item before
+		updateItemBefore(domain,itemToBeAdded);
+	}
+	
+	@Override
+	public void update(AffCompanyHistByEmployee domain, AffCompanyHistItem itemToBeUpdated) {
+		
+		Optional<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
+				.setParameter("histId", itemToBeUpdated.getHistoryId()).getSingle();
+		
+		if (!existItem.isPresent()){
+			throw new RuntimeException("Invalid AffCompanyHistItem");
+		}
+		updateEntity(itemToBeUpdated, existItem.get());
+		this.commandProxy().update(existItem.get());
+		
+		// Update item before and after
+		updateItemBefore(domain, itemToBeUpdated);
+		updateItemAfter(domain, itemToBeUpdated);
+	}
+
+	@Override
+	public void delete(AffCompanyHistByEmployee domain, AffCompanyHistItem itemToBeDelted) {
+		
+		Optional<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
+				.setParameter("histId", itemToBeDelted.getHistoryId()).getSingle();
+		
+		if (!existItem.isPresent()){
+			throw new RuntimeException("Invalid AffCompanyHistItem");
+		}
+		BsymtAffCompanyHistPk bsymtAffCompanyHistPk = existItem.get().bsymtAffCompanyHistPk;
+		
+		this.commandProxy().remove(BsymtAffCompanyHist.class, bsymtAffCompanyHistPk);
+		
+		// Update last item
+		if (domain.getLstAffCompanyHistoryItem().size() > 0){
+			AffCompanyHistItem itemToBeUpdated = domain.getLstAffCompanyHistoryItem().get(domain.getLstAffCompanyHistoryItem().size()-1);
+			
+			existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
+					.setParameter("histId", itemToBeUpdated.getHistoryId()).getSingle();
+			if (!existItem.isPresent()){
+				throw new RuntimeException("Invalid AffCompanyHistItem");
+			}
+			
+			updateEntity(itemToBeUpdated, existItem.get());
+			this.commandProxy().update( existItem.get());
+			
+		}
 	}
 }
