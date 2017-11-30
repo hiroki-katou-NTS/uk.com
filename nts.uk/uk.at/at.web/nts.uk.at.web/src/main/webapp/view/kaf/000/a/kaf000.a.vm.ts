@@ -32,6 +32,9 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         reasonOutputMessDealine : string = nts.uk.resource.getText('KAF000_2');
         reasonOutputMessDealineFull: KnockoutObservable<string> = ko.observable('');
         messageArea : KnockoutObservable<boolean> = ko.observable(true);
+        
+        errorFlag: number = 0;
+        errorMsg: string = '';
         constructor(){
             let self = this;
             let baseDate = new Date();
@@ -72,64 +75,75 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let dfd = $.Deferred<any>();
             nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
                 self.listApprovalRoot(data);
-                if(self.listApprovalRoot !=null && self.listApprovalRoot().length>0 ){
-                    self.approvalRoot(self.listApprovalRoot()[0]);
-                }
-                let listPhase = self.approvalRoot().beforeApprovers; 
-                let approvalList = [];
-                if(!nts.uk.util.isNullOrUndefined(listPhase)){
-                    for(let x = 1; x <= listPhase.length; x++){
-                        let phaseLoop = listPhase[x-1];
-                        let appPhase = new shrvm.model.AppApprovalPhase(
-                            "",
-                            "",
-                            phaseLoop.approvalForm,
-                            x,
-                            0,
-                            []); 
-                        for(let y = 1; y <= phaseLoop.approvers.length; y++){
-                            let frameLoop = phaseLoop.approvers[y-1];
-                            let appFrame = new shrvm.model.ApprovalFrame(
-                                "",
-                                y,
-                                []);
-                            if(!nts.uk.util.isNullOrUndefined(frameLoop.sid)){
-                                let representerSID = "";
-                                if(!nts.uk.util.isNullOrUndefined(frameLoop.frameLoop)){
-                                    representerSID = frameLoop.frameLoop;            
-                                }
-                                let appAccepted = new shrvm.model.ApproveAccepted(
-                                "",
-                                frameLoop.sid,
-                                0,
-                                frameLoop.confirmPerson ? 1 : 0,
-                                "",
-                                "",
-                                representerSID);
-                                appFrame.listApproveAccepted.push(appAccepted);     
-                            } else {
-                                for(let z = 1; z <= frameLoop.approverSIDList.length; z++){
-                                    let representerSID = "";
-                                    if(!nts.uk.util.isNullOrUndefined(frameLoop.representerNameList[z-1])){
-                                        representerSID = frameLoop.representerNameList[z-1];            
-                                    }
-                                    let appAccepted = new shrvm.model.ApproveAccepted(
+                if(self.listApprovalRoot() ==null || self.listApprovalRoot().length==0 ){
+                                
+                } else {
+                    self.errorFlag = self.listApprovalRoot()[0].errorFlag;
+                    if(self.errorFlag == 1){
+                        self.errorMsg = 'Msg_324';    
+                    } else if(self.errorFlag == 2){
+                        self.errorMsg = 'Msg_238';
+                    } else if(self.errorFlag == 3){
+                        self.errorMsg = 'Msg_237';
+                    } else {
+                        self.approvalRoot(self.listApprovalRoot()[0]);
+                        let listPhase = self.approvalRoot().beforeApprovers; 
+                        let approvalList = [];
+                        if(!nts.uk.util.isNullOrUndefined(listPhase)){
+                            for(let x = 1; x <= listPhase.length; x++){
+                                let phaseLoop = listPhase[x-1];
+                                let appPhase = new shrvm.model.AppApprovalPhase(
                                     "",
-                                    frameLoop.approverSIDList[z-1],
+                                    "",
+                                    phaseLoop.approvalForm,
+                                    x,
                                     0,
-                                    frameLoop.confirmPerson ? 1 : 0,
-                                    "",
-                                    "",
-                                    representerSID);
-                                    appFrame.listApproveAccepted.push(appAccepted);        
-                                }       
+                                    []); 
+                                for(let y = 1; y <= phaseLoop.approvers.length; y++){
+                                    let frameLoop = phaseLoop.approvers[y-1];
+                                    let appFrame = new shrvm.model.ApprovalFrame(
+                                        "",
+                                        y,
+                                        []);
+                                    if(!nts.uk.util.isNullOrUndefined(frameLoop.sid)){
+                                        let representerSID = "";
+                                        if(!nts.uk.util.isNullOrUndefined(frameLoop.frameLoop)){
+                                            representerSID = frameLoop.frameLoop;            
+                                        }
+                                        let appAccepted = new shrvm.model.ApproveAccepted(
+                                        "",
+                                        frameLoop.sid,
+                                        0,
+                                        frameLoop.confirmPerson ? 1 : 0,
+                                        "",
+                                        "",
+                                        representerSID);
+                                        appFrame.listApproveAccepted.push(appAccepted);     
+                                    } else {
+                                        for(let z = 1; z <= frameLoop.approverSIDList.length; z++){
+                                            let representerSID = "";
+                                            if(!nts.uk.util.isNullOrUndefined(frameLoop.representerNameList[z-1])){
+                                                representerSID = frameLoop.representerNameList[z-1];            
+                                            }
+                                            let appAccepted = new shrvm.model.ApproveAccepted(
+                                            "",
+                                            frameLoop.approverSIDList[z-1],
+                                            0,
+                                            frameLoop.confirmPerson ? 1 : 0,
+                                            "",
+                                            "",
+                                            representerSID);
+                                            appFrame.listApproveAccepted.push(appAccepted);        
+                                        }       
+                                    }
+                                    appPhase.listFrame.push(appFrame);   
+                                };
+                                approvalList.push(appPhase);    
                             }
-                            appPhase.listFrame.push(appFrame);   
-                        };
-                        approvalList.push(appPhase);    
+                        }
+                        self.approvalList = approvalList;
                     }
                 }
-                self.approvalList = approvalList;
                 dfd.resolve(data);    
             }).fail(function (res: any){
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
