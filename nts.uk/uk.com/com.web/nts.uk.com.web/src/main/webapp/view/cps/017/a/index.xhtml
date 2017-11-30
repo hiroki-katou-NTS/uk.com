@@ -43,7 +43,7 @@
 				<button id="A1_005" class="danger" tabindex="3"
 					data-bind="click : remove, enable: revDisSel02 ">#{i18n.getText('CPS017_4')}</button>
 				<com:ko-if bind="(isDialog() === true)">
-					<button id="A1_008" tabindex="4" style="display: none"
+					<button id="A1_008" tabindex="5" style="display: none"
 						data-bind="visible: closeUp, click: close">#{i18n.getText('CPS017_50')}</button>
 				</com:ko-if>
 				<button id="A1_003" data-bind="click: openDialogB, enable: revDisSel03" tabindex="5">#{i18n.getText('CPS017_3')}</button>
@@ -57,7 +57,7 @@
 					data-bind="ntsPanel:{width: '270px', height: '540px',
 					direction: 'right', showIcon: true, visible: true}">
 
-					<div id="search" tabindex="1"
+					<div id="search" tabindex="7"
 						data-bind="ntsSearchBox: {
 						searchMode: 'filter',
 						targetKey: 'selectionItemId',
