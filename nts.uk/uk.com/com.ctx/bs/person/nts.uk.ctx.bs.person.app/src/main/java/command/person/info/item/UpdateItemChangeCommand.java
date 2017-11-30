@@ -10,4 +10,5 @@ public class UpdateItemChangeCommand {
 	private int isRequired;
 	private int dataType;
 	private String selectionItemId;
+	private int personEmployeeType;
 }

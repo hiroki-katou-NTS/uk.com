@@ -9,4 +9,5 @@ public class AddItemCommand {
 	private String itemParentCode;
 	private String itemName;
 	private SingleItemCommand singleItem;
+	private int personEmployeeType;
 }
