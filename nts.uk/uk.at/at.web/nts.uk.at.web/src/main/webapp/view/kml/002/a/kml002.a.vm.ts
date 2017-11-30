@@ -1501,7 +1501,20 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             } else {
                                 for (var i = 0; i < data.lstFormTimeFunc.length; i++) {
                                     var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    formulaResult += operator + " " + data.lstFormTimeFunc[i].name + " ";
+                                    var itemName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
+                                    var attendanceItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].attendanceItemId; });
+                                    var presetItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].presetItemId; });
+                                    var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
+                         
+                                    if(itemName != "") {
+                                        formulaResult += operator + " " + itemName + " ";
+                                    } else if(attendanceItem != null) {
+                                        formulaResult += operator + " " + attendanceItem.name + " ";
+                                    } else if(presetItem != null) {
+                                        formulaResult += operator + " " + presetItem.name + " ";
+                                    } else if(externalItem != null) {
+                                        formulaResult += operator + " " + externalItem.name + " ";
+                                    }
                                 }
                             }
                         } else if (attribute == 1) {
