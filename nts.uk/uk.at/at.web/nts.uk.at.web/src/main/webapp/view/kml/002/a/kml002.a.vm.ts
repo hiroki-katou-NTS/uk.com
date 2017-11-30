@@ -96,7 +96,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.cbxAttribute = ko.observableArray([
                 { attrCode: 0, attrName: nts.uk.resource.getText("Enum_Attributes_TIME") },
-                { attrCode: 1, attrName: nts.uk.resource.getText("Enum_Attributes_AMOUNT") },
+                { attrCode: 1, attrName: nts.uk.resource.getText("Enum_Attribute_Section_Money") },
                 { attrCode: 2, attrName: nts.uk.resource.getText("Enum_Attributes_NUMBER_OF_PEOPLE") },
                 { attrCode: 3, attrName: nts.uk.resource.getText("Enum_Attributes_NUMBER") },
                 { attrCode: 4, attrName: nts.uk.resource.getText("Enum_Attributes_AVERAGE_PRICE") }
@@ -747,6 +747,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             // clear all error
             nts.uk.ui.errors.clearAll();
+            
+            blockUI.invisible();
 
             // validate
             $(".input-code").trigger("validate");
@@ -819,7 +821,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    blockUI.clear();
                 });
             } else {
                 $('#checkall').ntsError('set', { messageId: "Msg_110" });
@@ -832,6 +834,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         settingBtn() {
             var self = this;
 
+            nts.uk.ui.windows.sub.modal("/view/kdl/024/a/index.xhtml");
         }
 
         /**
