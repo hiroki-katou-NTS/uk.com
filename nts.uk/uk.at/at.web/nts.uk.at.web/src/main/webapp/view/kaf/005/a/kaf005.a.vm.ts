@@ -103,14 +103,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //　初期起動時、計算フラグ=1とする。
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
         constructor() {
-
             let self = this;
-            
-            $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
-            $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
-            $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
-            
-           
+             
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
@@ -119,6 +113,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     self.approvalSource = self.kaf000_a.approvalList;
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
+                    $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
+                    $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
+                    $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
                 })
             })
 

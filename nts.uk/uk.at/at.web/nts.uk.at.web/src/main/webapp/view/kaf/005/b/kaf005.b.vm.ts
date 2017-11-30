@@ -32,6 +32,8 @@ module nts.uk.at.view.kaf005.b {
             //勤務種類
             siftCD: KnockoutObservable<string> = ko.observable('');
             siftName: KnockoutObservable<string> = ko.observable('');
+            workTypecodes: KnockoutObservableArray<string> = ko.observableArray([]);
+            workTimecodes: KnockoutObservableArray<string> = ko.observableArray([]);
             //comboBox 定型理由
             reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
             selectedReason: KnockoutObservable<string> = ko.observable('');
@@ -159,6 +161,10 @@ module nts.uk.at.view.kaf005.b {
                     self.workTypeCd(data.workType.workTypeCode);
                     self.workTypeName(data.workType.workTypeName);
                 }
+                
+                self.workTypecodes(data.workTypes);
+                self.workTimecodes(data.siftTypes);
+                
                 self.timeStart1(data.workClockFrom1 == -1 ? null : data.workClockFrom1);
                 self.timeEnd1(data.workClockTo1 == -1 ? null : data.workClockTo1);
                 self.timeStart2(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
@@ -430,13 +436,11 @@ module nts.uk.at.view.kaf005.b {
              */
             openDialogKdl003() {
                 let self = this;
-                let workTypeCodes = [];
-                let workTimeCodes = [];
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: workTypeCodes,
-                    selectedWorkTypeCode: self.workTypeCd(),
-                    workTimeCodes: workTimeCodes,
-                    selectedWorkTimeCode: self.siftCD()
+                   workTypeCodes: self.workTypecodes(),
+                selectedWorkTypeCode: self.workTypeCd(),
+                workTimeCodes: self.workTimecodes(),
+                selectedWorkTimeCode: self.siftCD()
                 }, true);
     
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {

@@ -264,9 +264,25 @@ public class AppOvertimeFinder {
 					overTimeDto.setDisplayCaculationTime(true);
 					// 07_勤務種類取得: lay loai di lam 
 					WorkType workType = workTypeRepository.findByPK(companyID, appOverTime.getWorkTypeCode().v()).get();
-					overTimeDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v())); 
+					overTimeDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
 					
-					// 08_就業時間帯取得(lay loai gio lam viec)
+					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
+					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, appOverTime.getApplication().getApplicantSID(),requestAppDetailSetting.get(0),appEmploymentWorkType);
+					
+					List<String> workTypeCodes = new ArrayList<>();
+					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
+						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
+					}
+					overTimeDto.setWorkTypes(workTypeCodes);
+					
+					// 08_就業時間帯取得(lay loai gio lam viec) 
+					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, appOverTime.getApplication().getApplicantSID(), requestAppDetailSetting.get(0));
+					List<String> siftCodes = new ArrayList<>();
+					for(SiftType siftType : siftTypes){
+						siftCodes.add(siftType.getSiftCode());
+					}
+					overTimeDto.setSiftTypes(siftCodes);
+					
 					WorkTime workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
 					overTimeDto.setSiftType(new SiftType(workTime.getSiftCD().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
 					
