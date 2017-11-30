@@ -515,7 +515,6 @@ module nts.uk.com.view.cps005.b {
 
                 new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate,
                     __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
-                        console.log(data);
                         if (data.length > 0) {
                             self.selectionLst.removeAll();
                             self.selectionLst(data);
