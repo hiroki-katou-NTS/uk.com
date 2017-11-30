@@ -57,10 +57,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 			// 社員1人分の処理
 			for (String employee : emloyeeIds) {
 				
-				// fake data
-				employee = "90000000-0000-0000-0000-000000000001";
-				companyId = "000000000000-0001";
-				
 				// 状態を確認する
 				// status from activity ⑤社員の日別実績を作成する
 				status = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext, employee,
