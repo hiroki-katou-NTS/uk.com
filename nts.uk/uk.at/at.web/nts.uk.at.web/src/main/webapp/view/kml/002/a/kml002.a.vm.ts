@@ -1595,6 +1595,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             return formulaResult.trim();
         }
     }
+    
 
     export class SettingItemModel {
         code: string;
