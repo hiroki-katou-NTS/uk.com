@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset;
 
 import java.util.List;
 
+import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
@@ -31,5 +32,5 @@ public class KscstEstAggregateSet_ {
 	public static volatile SingularAttribute<KscstEstAggregateSet, Integer> havyHdAtr;
 	
 	/** The kscst per cost extra item. */
-	public static volatile SingularAttribute<KscstEstAggregateSet, List<KscstPerCostExtraItem>> kscstPerCostExtraItem;
+	public static volatile ListAttribute<KscstEstAggregateSet, KscstPerCostExtraItem> kscstPerCostExtraItem;
 }
