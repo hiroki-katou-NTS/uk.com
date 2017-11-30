@@ -1498,12 +1498,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     } else {
                         var before = "";
 
-                        if (isFirstLoad) {
-                            before = beforeFormula;
-                        } else {
-                            before = self.calculatorItems()[index - 1].formula();
-                        }
-
                         if (attribute == 0) {
                             if (data.lstFormTimeFunc.length <= 0) {
                                 formulaResult = "";
@@ -1514,7 +1508,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 }
                             }
                         } else if (attribute == 1) {
-                            if (data.moneyFunc.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
+                            if (data.moneyFunc.lstMoney.length <= 0 && data.timeUnit.lstTimeUnitFuncs.length <= 0) {
                                 formulaResult = "";
                             } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
