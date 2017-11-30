@@ -32,7 +32,7 @@ public class DeleteAffClassCommandHandler extends CommandHandler<DeleteAffClassi
 
 	@Override
 	public String targetCategoryCd() {
-		return "CS00014";
+		return "CS00004";
 	}
 
 	@Override

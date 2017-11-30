@@ -34,7 +34,7 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 
 	@Override
 	public String targetCategoryCd() {
-		return "CS00014";
+		return "CS00004";
 	}
 
 	@Override
