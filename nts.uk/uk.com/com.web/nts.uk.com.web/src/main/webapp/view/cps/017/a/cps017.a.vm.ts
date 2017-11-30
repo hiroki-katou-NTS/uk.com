@@ -279,8 +279,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let command = ko.toJS(currentItem);
 
             if (_selectionCD) {
-                alertError({ messageId: "Msg_3" });
-                $("#code").focus();
+//                alertError({ messageId: "Msg_3" });
+//                $("#code").focus();
+                
+                $('#code').ntsError('set', {messageId:"Msg_3"});
             } else {
                 service.saveDataSelection(command).done(function() {
                     self.checkCreateaaa(false);
