@@ -51,8 +51,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             if (data.ctgList.length > 0) {
                                 self.currentCategory().currentItemId(data.ctgList[0].perInfoCtgId);
                             } else {
-                                self.currentCategory().currentItemId();
+                                self.currentCategory().currentItemId("");
                             }
+                        } else {
+                            self.ctgIdUpdate(false);
+                            self.ctgIdUpdate.valueHasMutated();
                         }
                         self.currentCategory.valueHasMutated();
                         self.getItemList(value, self.currentCategory().currentItemId());
