@@ -15,6 +15,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         workPlaceName: string;
         listEmployee: Array<any>;
         listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+        listEmployeeSwapTemp: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
@@ -25,7 +26,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
             { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
         ]);
-
+        onlyEmpNotTeam : KnockoutObservable<boolean> =  ko.observable(false);
 
         constructor() {
             let self = this;
@@ -44,7 +45,11 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
                 self.selectedEmployeeSwap(teamSelected);
                 self.listEmployeeSwap(newListEmployeeSwap);
+                //self.listEmployeeSwapTemp(_.clone(newListEmployeeSwap));
                 self.teamName(_.find(self.listTeam(), ['code', self.selectedTeam()]).name);
+            });
+            self.onlyEmpNotTeam.subscribe(function(value) {
+                self.filterEmpNotTeam(value);  
             });
         }
         startPage(): JQueryPromise<any> {
@@ -194,6 +199,22 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 }).then(() => { nts.uk.ui.block.clear(); });
             }
 
+        }
+        
+        /**
+         * Event checkbox: filter employee not in team
+         */
+        filterEmpNotTeam(isChecked) {
+            var self = this;
+            var empsInTeam = _.clone(self.listEmployeeSwapTemp());
+            if (isChecked) {
+//                var emps = _.filter(empsInTeam, function(item) {
+//                    return "なし" == item.teamCode;
+//                });
+//                self.listEmployeeSwap(emps);
+            } else {
+//                self.listEmployeeSwap(empsInTeam);    
+            }
         }
     }
     class TeamModel {
