@@ -186,35 +186,35 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .cbx-list-header {
-	width: 32px;
+	width: 28px;
 }
 
 .number-header {
-	width: 30px;
+	width: 28px;
 }
 
 .attribute-header {
-	width: 97px;
+	width: 96px;
 }
 
 .name-header {
-	width: 150px;
+	width: 142px;
 }
 
 .setting-header {
-	width: 437px;
+	width: 435px;
 }
 
 .display-atr-header {
-	width: 97px;
+	width: 96px;
 }
 
 .total-header {
-	width: 68px;
+	width: 96px;
 }
 
 .rounding-header {
-	width: 104px;
+	width: 96px;
 }
 
 .fraction-header {
