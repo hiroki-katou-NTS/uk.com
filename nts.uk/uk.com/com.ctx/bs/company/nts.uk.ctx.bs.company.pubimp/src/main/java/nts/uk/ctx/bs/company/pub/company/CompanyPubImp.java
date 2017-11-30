@@ -53,7 +53,7 @@ public class CompanyPubImp implements ICompanyPub {
 			result.setCompanyCode(company.getCompanyCode() == null ? "" : company.getCompanyCode().v());
 			result.setCompanyId(company.getCompanyId());
 			result.setCompanyName(company.getCompanyName() == null ? "" : company.getCompanyName().v());
-			result.setIsAbolition(company.getIsAbolition() == null ? 0 : company.getIsAbolition().value);
+			result.setIsAbolition(company.getIsAbolition().value);
 		}
 		return result;
 
