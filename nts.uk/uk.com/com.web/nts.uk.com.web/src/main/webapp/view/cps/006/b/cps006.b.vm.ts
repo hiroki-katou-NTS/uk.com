@@ -136,10 +136,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     }
                 }
                 self.currentSelectId(selectedId);
-                 block.clear();
-
                 dfd.resolve();
 
+            }).always(() => {
+                block.clear();
             });
             return dfd.promise();
         }
@@ -148,7 +148,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 dfd = $.Deferred(),
                 categoryId = self.currentCategory.id;
-             block.clear();
+            block.invisible();
             service.getItemInfoDefList(categoryId, self.ckbDisplayAbolition()).done(function(itemInfoDefList: Array<IItemInfoDef>) {
 
                 self.itemInfoDefList([]);
@@ -167,9 +167,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 }
 
-                 block.clear();
                 dfd.resolve();
 
+            }).always(() => {
+                block.clear();
             });
             return dfd.promise();
         }
@@ -184,7 +185,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     isAbolition: self.ckbIsAbolition() === true ? 1 : 0,
                     isRequired: self.isRequired(),
                     dataType: self.dataType(),
-                    selectionItemId: self.currentItem().itemTypeState.dataTypeState.typeCode
+                    selectionItemId: self.currentItem().itemTypeState.dataTypeState.typeCode,
+                    personEmployeeType: self.currentCategory.personEmployeeType
                 },
                 baseDate = moment(new Date()).format('YYYY-MM-DD');
 
@@ -213,6 +215,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 }).fail(function() {
 
                     dialog({ messageId: "Msg_233" });
+                    block.clear();
 
                 });
 
@@ -436,8 +439,6 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 debugger;
                 self.currentItem().selectionLst([]);
                 service.getAllSelByHistory(params.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
-                    //                    self.currentItem().
-                    console.log(self.currentItem());
                     self.currentItem().selectionLst(data);
                     self.currentItem().selectionLst.valueHasMutated();
 
