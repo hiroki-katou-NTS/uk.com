@@ -148,7 +148,6 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	private void updateEntity(TempAbsenceHisItem domain, BsymtTempAbsHisItem entity) {
 		// Common value
 		entity.histId = domain.getHistoryId();
-		entity.sid = domain.getEmployeeId();
 		entity.leaveHolidayAtr = domain.getLeaveHolidayType().value;
 		entity.remarks = domain.getRemarks().v();
 		entity.soInsPayCategory = domain.getSoInsPayCategory();

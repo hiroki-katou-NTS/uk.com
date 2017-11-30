@@ -8,8 +8,6 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.LocationCode;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 
 @Stateless
@@ -42,7 +40,6 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	
 	private void updateEntity(AffWorkplaceHistoryItem domain, BsymtAffiWorkplaceHistItem entity) {
 		// TODO Pending location code
-		entity.setSid(domain.getEmployeeId());
 		entity.setWorkPlaceId(domain.getWorkplaceId());
 		entity.setNormalWkpId(domain.getNormalWorkplaceId());
 		entity.setLocationCode("");

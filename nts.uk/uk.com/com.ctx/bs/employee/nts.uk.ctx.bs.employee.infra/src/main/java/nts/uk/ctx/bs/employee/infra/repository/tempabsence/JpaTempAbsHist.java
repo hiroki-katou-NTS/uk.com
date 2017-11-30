@@ -39,7 +39,6 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	 * @return
 	 */
 	private void updateEntity(String employeeID, DateHistoryItem item, BsymtTempAbsHistory entity) {
-		entity.sid = employeeID;
 		entity.startDate = item.start();
 		entity.endDate = item.end();
 	}

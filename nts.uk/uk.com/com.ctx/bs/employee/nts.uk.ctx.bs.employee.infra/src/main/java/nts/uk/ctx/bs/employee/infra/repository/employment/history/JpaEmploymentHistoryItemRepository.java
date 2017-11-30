@@ -28,7 +28,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	private void updateEntity(EmploymentHistoryItem domain, BsymtEmploymentHistItem entity){
 		entity.setEmpCode(domain.getEmploymentCode().v());
 		entity.setSalarySegment(domain.getSalarySegment().value);
-		entity.setEmpCode(domain.getEmployeeId());
+//		entity.setSid(domain.getEmployeeId());
 	}
 	@Override
 	public void adḍ̣̣̣(EmploymentHistoryItem domain) {

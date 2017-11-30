@@ -30,7 +30,6 @@ public class JpaAffDepartmentHistoryItemRepository extends JpaRepository impleme
 	}
 	
 	private void updateEntity(AffDepartmentHistoryItem domain, BsymtAffiDepartmentHistItem entity){
-		entity.setSid(domain.getEmployeeId());
 		entity.setDepId(domain.getDepartmentId());
 		entity.setAffHistTranfsType(domain.getAffHistoryTranfsType());
 		entity.setDistrRatio(domain.getDistributionRatio().v());

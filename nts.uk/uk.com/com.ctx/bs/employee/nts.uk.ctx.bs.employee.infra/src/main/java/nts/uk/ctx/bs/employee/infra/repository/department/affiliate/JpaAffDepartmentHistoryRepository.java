@@ -115,7 +115,6 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	 * @return
 	 */
 	private void updateEntity(String employeeID, DateHistoryItem item,BsymtAffiDepartmentHist entity){	
-		entity.setSid(employeeID);
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}
