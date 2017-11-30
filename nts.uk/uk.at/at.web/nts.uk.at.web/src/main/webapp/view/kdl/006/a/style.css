@@ -57,22 +57,6 @@
 	border-bottom: none !important;
 }
 
-.table-cell {
-	width: 160px;
-	white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .limited-label {
-	width: auto;
-	overflow: initial;
-}
-
-.tooltip-label-view {
-	background: #ffc;
-	border: solid 1px #b85 !important;
-	padding: 5px;
-	z-index: 120100;
-	border-radius: 0px;
+	padding-top: 4px;
 }

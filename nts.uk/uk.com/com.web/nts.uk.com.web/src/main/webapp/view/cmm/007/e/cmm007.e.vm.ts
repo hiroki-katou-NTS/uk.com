@@ -33,6 +33,11 @@ module nts.uk.com.view.cmm007.e {
              */
             public saveOvertimeWorkFrSetting(): JQueryPromise<void> {
                 let _self = this;
+                
+                if (_self.hasError()) {
+                    return true;    
+                }
+                
                 var dfd = $.Deferred<void>();
                
                let arrDto = new Array<model.OvertimeWorkFrameDto>();
@@ -44,6 +49,7 @@ module nts.uk.com.view.cmm007.e {
                 
                 service.saveOvertimeWorkFrame(arrDto).done(() => {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
+                        $('#overtime_work_name1').focus();
                     });
                     dfd.resolve();
                     
@@ -87,6 +93,36 @@ module nts.uk.com.view.cmm007.e {
             public myFunction(value): void {
                 let _self = this;
                 _self.mapObj.get(value).useAtr() == 1 ? _self.mapObj.get(value).useAtr(0) : _self.mapObj.get(value).useAtr(1);
+            }
+            
+             /**
+             * Check Errors all input.
+             */
+            private hasError(): boolean {
+                let _self = this;
+                _self.clearErrors();
+                for (let i=1; i<=10; i++) {
+                    $('#overtime_work_name' + i).ntsEditor("validate");
+                    $('#tranfer_work_name' + i).ntsEditor("validate");    
+                }
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Clear Errors
+             */
+            private clearErrors(): void {
+                 // Clear errors
+                for (let i=1; i<=10; i++) {
+                    $('#overtime_work_name' + i).ntsEditor("clear");
+                    $('#tranfer_work_name' + i).ntsEditor("clear");    
+                }
+                
+                // Clear error inputs
+                $('.nts-input').ntsError('clear');
             }
        }
     }
