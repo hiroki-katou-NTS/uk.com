@@ -570,12 +570,14 @@ module nts.uk.com.view.cps005.b {
     }
     export class AddItemModel {
         perInfoCtgId: string;
+        personEmployeeType: number;
         itemName: string;
         singleItem: SingleItemAddModel;
         constructor(data: PersonInfoItem) {
             let self = this;
             if (!data) return;
             self.itemName = data.itemName();
+            self.personEmployeeType = __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType;
             self.singleItem = new SingleItemAddModel(data);
         }
     }
@@ -583,6 +585,7 @@ module nts.uk.com.view.cps005.b {
     export class UpdateItemModel {
         perInfoItemDefId: string;
         perInfoCtgId: string;
+        personEmployeeType: number;
         itemName: string;
         singleItem: SingleItemAddModel;
         constructor(data: PersonInfoItem) {
@@ -590,6 +593,7 @@ module nts.uk.com.view.cps005.b {
             if (!data) return;
             self.perInfoItemDefId = data.id;
             self.itemName = data.itemName();
+            self.personEmployeeType = __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType;
             self.singleItem = new SingleItemAddModel(data);
         }
     }
@@ -658,9 +662,18 @@ module nts.uk.com.view.cps005.b {
                     self.decimalPart = data.numericItem().decimalPart();
                 }
 
-                self.numericItemMin = data.numericItem().numericItemMin();
+                if (self.decimalPart === 0) {
+                    
+                    self.numericItemMin = 0;
 
-                self.numericItemMax = data.numericItem().numericItemMax();
+                    self.numericItemMax = Math.pow(10, self.integerPart)  - 1;
+                    
+                } else {
+                    
+                    self.numericItemMin = data.numericItem().numericItemMin();
+
+                    self.numericItemMax = data.numericItem().numericItemMax();
+                }
 
 
 
