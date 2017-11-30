@@ -110,13 +110,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
             ]);
 
             self.cbxDisplayAtr = ko.observableArray([
-                { displayAttrCode: 0, displayAttrName: nts.uk.resource.getText("KML002_21") },
-                { displayAttrCode: 1, displayAttrName: nts.uk.resource.getText("KML002_22") }
+                { displayAttrCode: 0, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_NonDisplay") },
+                { displayAttrCode: 1, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_Display") }
             ]);
 
             self.cbxTotal = ko.observableArray([
-                { totalCode: 0, totalName: nts.uk.resource.getText("KML002_22") },
-                { totalCode: 1, totalName: nts.uk.resource.getText("KML002_23") }
+                { totalCode: 0, totalName: nts.uk.resource.getText("Enum_CumulativeAtr_NOT_ACCUMULATE") },
+                { totalCode: 1, totalName: nts.uk.resource.getText("Enum_CumulativeAtr_ACCUMULATE") }
             ]);
 
             self.dailyItems = [];
