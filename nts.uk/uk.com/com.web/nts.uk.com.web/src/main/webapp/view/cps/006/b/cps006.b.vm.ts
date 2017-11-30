@@ -48,7 +48,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return;
                 }
 
-                service.getPerInfoItemDefById(newValue).done(function(data: IItemInfoDef) {
+                service.getPerInfoItemDefById(newValue, self.currentCategory.personEmployeeType).done(function(data: IItemInfoDef) {
 
                     self.currentItem(new ItemInfoDef(data));
 
