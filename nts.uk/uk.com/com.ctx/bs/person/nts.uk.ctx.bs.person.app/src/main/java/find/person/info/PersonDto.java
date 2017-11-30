@@ -70,12 +70,35 @@ public class PersonDto extends PeregDomainDto{
 	private String PersonalNameMultilingualKana;
 	
 	public static PersonDto createFromDomain(Person person){
-		return new PersonDto(person.getBirthDate(), person.getBloodType().value, person.getGender().value, person.getPersonNameGroup().getPersonName().getFullName().v(),
-				person.getPersonNameGroup().getPersonName().getFullNameKana().v(), person.getPersonNameGroup().getBusinessName().v(), person.getPersonNameGroup().getBusinessNameKana().v(), 
-				person.getPersonNameGroup().getBusinessEnglishName().v(), person.getPersonNameGroup().getBusinessOtherName().v(), person.getPersonNameGroup().getPersonRomanji().getFullName().v(), 
-				person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v(), person.getPersonNameGroup().getOldName().getFullName().v(), person.getPersonNameGroup().getOldName().getFullNameKana().v(), 
-				person.getPersonNameGroup().getTodokedeFullName().getFullName().v(), person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v(), 
-				person.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v(), person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v());
+		boolean hasBusinessNameKana = person.getPersonNameGroup().getBusinessNameKana().v() != null;
+		boolean hasBusinessOtherName = person.getPersonNameGroup().getBusinessOtherName().v() != null;
+		boolean hasBusinessEnglishName = person.getPersonNameGroup().getBusinessEnglishName().v() != null;
+		boolean hasPerRomanjiFullName = person.getPersonNameGroup().getPersonRomanji().getFullName().v() != null;
+		boolean hasPerRomanjiFullNameKana = person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v() != null;
+		boolean hasTodokedeFullName = person.getPersonNameGroup().getTodokedeFullName().getFullName().v() != null;
+		boolean hasTodokedeFullNameFullName = person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v() != null;
+		boolean hasOldNameFullName = person.getPersonNameGroup().getOldName().getFullName().v() != null;
+		boolean hasOldNameFullNameKana = person.getPersonNameGroup().getOldName().getFullNameKana().v() != null;
+		boolean hasPerNameMultilLang = person.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v() != null;
+		boolean hasPerNameMultilLangKana = person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v() != null;
+
+		return new PersonDto(person.getBirthDate(), 
+				person.getBloodType().value, 
+				person.getGender().value, 
+				person.getPersonNameGroup().getPersonName().getFullName().v(),
+				person.getPersonNameGroup().getPersonName().getFullNameKana().v(), 
+				person.getPersonNameGroup().getBusinessName().v(), 
+				hasBusinessNameKana ? person.getPersonNameGroup().getBusinessNameKana().v() : "", 
+				hasBusinessEnglishName ? person.getPersonNameGroup().getBusinessEnglishName().v() : "", 
+				hasBusinessOtherName ? person.getPersonNameGroup().getBusinessOtherName().v() : "", 
+				hasPerRomanjiFullName ? person.getPersonNameGroup().getPersonRomanji().getFullName().v() : "", 
+				hasPerRomanjiFullNameKana ? person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v() : "", 
+				hasOldNameFullName ? person.getPersonNameGroup().getOldName().getFullName().v() : "", 
+				hasOldNameFullNameKana ? person.getPersonNameGroup().getOldName().getFullNameKana().v() : "", 
+				hasTodokedeFullName ? person.getPersonNameGroup().getTodokedeFullName().getFullName().v() : "", 
+				hasTodokedeFullNameFullName ? person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v() : "", 
+				hasPerNameMultilLang ? person.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v() : "", 
+				hasPerNameMultilLangKana ? person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v() : "");
 	}
 	
 }

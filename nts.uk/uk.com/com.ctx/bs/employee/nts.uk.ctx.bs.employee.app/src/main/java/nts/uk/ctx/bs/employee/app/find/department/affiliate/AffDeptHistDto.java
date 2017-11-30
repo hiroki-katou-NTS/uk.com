@@ -22,7 +22,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Getter
 @Setter
-class AffDeptHistDto extends PeregDomainDto{
+public class AffDeptHistDto extends PeregDomainDto{
 	
 	//期間
 	@PeregItem("IS00070")
