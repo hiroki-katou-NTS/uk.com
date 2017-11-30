@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.adapter.basicschedule;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -8,31 +10,30 @@ import nts.arc.time.GeneralDate;
 @Setter
 public class BasicScheduleSidDto {
 	
-	public String sId;
+	private String sId;
 
-	public GeneralDate date;
+	private GeneralDate date;
 	
 	/** The work type code. */
-	public String workTypeCode;
+	private String workTypeCode;
 
 	/** The work time code. */
-	public String workTimeCode;
-
-	/** The confirmed atr. */
-	public int confirmedAtr;
+	private String workTimeCode;
 
 	/** The working day atr. */
-	public int workingDayAtr;
+	private int workingDayAtr;
+	
+	private List<WorkScheduleSidImport> workScheduleSidImports;
 
-	public BasicScheduleSidDto(String sId, GeneralDate date, String workTypeCode, String workTimeCode, int confirmedAtr,
-			int workingDayAtr) {
+	public BasicScheduleSidDto(String sId, GeneralDate date, String workTypeCode, String workTimeCode,
+			int workingDayAtr, List<WorkScheduleSidImport> workScheduleSidImports) {
 		super();
 		this.sId = sId;
 		this.date = date;
 		this.workTypeCode = workTypeCode;
 		this.workTimeCode = workTimeCode;
-		this.confirmedAtr = confirmedAtr;
 		this.workingDayAtr = workingDayAtr;
+		this.workScheduleSidImports = workScheduleSidImports;
 	}
 
 }

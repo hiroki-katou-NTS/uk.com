@@ -39,6 +39,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.currentCategory().ctgList.removeAll();
                 if (value) {
+                    block.invisible();
                     service.getAllCtg(value).done((data: any) => {
                         self.currentCategory().setData({
                             settingCode: data.settingCode,
@@ -55,13 +56,18 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                         self.currentCategory.valueHasMutated();
                         self.getItemList(value, self.currentCategory().currentItemId());
+                    }).always(() => {
+                        block.clear();
                     });
+
 
                 } else {
 
                     return;
                 }
+
                 $('#ctgName').focus();
+
             });
 
             self.currentCategory().currentItemId.subscribe(function(value: string) {
@@ -80,6 +86,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         getItemList(settingId: string, ctgId: string) {
             let self = this;
             self.currentCategory().itemList.removeAll();
+            block.invisible();
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
@@ -133,7 +140,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentCategory().itemList.valueHasMutated();
 
                 }
-            });
+            }).always(() => {
+                block.clear();
+            });;
             self.currentCategory().itemList.valueHasMutated();
         }
 
@@ -283,6 +292,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             let self = this;
             self.ctgIdUpdate(false);
+            self.currentCategory().setData({
+                settingCode: "",
+                settingName: "",
+                ctgList: []
+            });
+            self.currentCategory().itemList.removeAll();
+            self.currentCategory().itemList([]);
+            self.currentCategory.valueHasMutated();
             block.invisible();
 
             modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
