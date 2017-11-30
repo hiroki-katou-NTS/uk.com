@@ -23,10 +23,10 @@ public interface WorkTimeSettingRepository {
 	/**
 	 * Find all.
 	 *
-	 * @param companyID the company ID
+	 * @param companyId the company id
 	 * @return the list
 	 */
-	public List<WorkTimeSetting> findAll(String companyID);
+	public List<WorkTimeSetting> findAll(String companyId);
 
 	/**
 	 * Find by codes.
@@ -41,10 +41,10 @@ public interface WorkTimeSettingRepository {
 	 * Find by code.
 	 *
 	 * @param companyID the company ID
-	 * @param siftCD the sift CD
+	 * @param workTimeCode the work time code
 	 * @return the optional
 	 */
-	public Optional<WorkTimeSetting> findByCode(String companyID, String siftCD);
+	public Optional<WorkTimeSetting> findByCode(String companyID, String workTimeCode);
 
 	/**
 	 * Find by code list.

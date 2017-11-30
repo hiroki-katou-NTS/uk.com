@@ -10,12 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.primitive.Memo;
-
-/**
- * Gets the note.
- *
- * @return the note
- */
+//就業時間帯の設定
 @Getter
 public class WorkTimeSetting extends AggregateRoot {
 

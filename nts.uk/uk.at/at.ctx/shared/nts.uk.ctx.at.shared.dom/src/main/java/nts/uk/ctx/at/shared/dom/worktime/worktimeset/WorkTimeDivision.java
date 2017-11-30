@@ -4,14 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
+import lombok.Builder;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 //就業時間帯勤務区分
 /**
  * The Class WorkTimeDivision.
  */
 @Getter
-public class WorkTimeDivision {
+@Builder
+public class WorkTimeDivision extends DomainObject {
 
 	/** The work time daily atr. */
 	// 勤務形態区分
@@ -20,24 +23,4 @@ public class WorkTimeDivision {
 	/** The work time method set. */
 	// 就業時間帯の設定方法
 	private WorkTimeMethodSet workTimeMethodSet;
-
-	/**
-	 * Instantiates a new work time division.
-	 *
-	 * @param memento the memento
-	 */
-	public WorkTimeDivision(WorkTimeDivivsionGetMemento memento) {
-		this.workTimeDailyAtr = memento.getWorkTimeDailyAtr();
-		this.workTimeMethodSet = memento.getWorkTimeMethodSet();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(WorkTimeDivivsionSetMemento memento) {
-		memento.setWorkTimeDailyAtr(this.workTimeDailyAtr);
-		memento.setWorkTimeMethodSet(this.workTimeMethodSet);
-	}
 }

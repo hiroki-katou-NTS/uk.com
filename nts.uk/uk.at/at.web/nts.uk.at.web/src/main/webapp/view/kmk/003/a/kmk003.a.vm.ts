@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk003.a {
             settingMethodOptions: KnockoutObservableArray<ItemSettingMethod>;
             selectedSettingMethod: KnockoutObservable<string>;
 
-            workTimezoneItems: KnockoutObservableArray<any>;
+            workTimezoneItems: KnockoutObservableArray<WorkTimeItem>;
             columns: KnockoutObservable<any>;
             selectedWorkTimezone: KnockoutObservable<string>;
 
@@ -158,14 +158,25 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                service.findWorkTimeSetByCode("AAC").done(function(data: any) {
+                service.findAllWorkTimeSet().done(function(data: any) {
+                    self.pushDataWorkTime(data);
                     self.data(data);
                 });
                 // set ntsFixedTable style
                 dfd.resolve();
                 return dfd.promise();
             }
-
+            
+            private pushDataWorkTime(data: any) {
+                let self = this;
+                let listData:any = [];
+                data.forEach(function(item: any, index: any) {
+                    listData.push(new WorkTimeItem(item.worktimeCode
+                        , item.workTimeDisplayName.workTimeName));
+                });
+                self.workTimezoneItems(listData);
+            }
+            
             private save() {
                 let self = this;
                 let data = self.data();
@@ -184,7 +195,17 @@ module nts.uk.at.view.kmk003.a {
             }
           
         }
+        
+         export class WorkTimeItem {
+            code: string;
+            name: string;
 
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+        
         export class ItemWorkForm {
             code: string;
             name: string;
