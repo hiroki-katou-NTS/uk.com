@@ -150,7 +150,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 self.isparentCall(true);
 
                 if (value.length > 0) {
-                    blockUI.invisible();
                     self.calculatorItems.removeAll();
 
                     service.getVerticalCalSetByCode(value).done(function(data) {
@@ -231,8 +230,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
 
                         self.calculatorItems(sortedItems);
-                        
-                        blockUI.clear();
                     }).fail(function(res) {
 
                     });
