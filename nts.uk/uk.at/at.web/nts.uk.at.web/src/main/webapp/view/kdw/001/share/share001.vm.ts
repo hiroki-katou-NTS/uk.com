@@ -1,28 +1,6 @@
 module nts.uk.at.view.kdw001 {
     export module share.model {
-        export interface SpecificExe {
-            specificExeID: string;
-            sortBy: number;
-            settingInfor: number;
-            operationCaseName: string;
-            executionContents: number;
-            executionType: number;
-            settingForReflect: boolean;
-            alsoForciblyReflectEvenIfItIsConfirmed: boolean;
-        }
-
-        export interface SettingForDaily {
-            creationType: number;
-            materReconfiguration: boolean;
-            closedHolidays: boolean;
-            resetWorkingHour: boolean;
-            refNumberFingerCheck: boolean;
-            specDateClassReset: boolean;
-            resetTimeForAssig: boolean;
-            resetTimeForChildOrNurseCare: boolean;
-            calClassReset: boolean;
-        }
-
+        
         // CheckProcessCommand
         export interface CheckProcessCommand {
             empCalAndSumExecLogID: string;
