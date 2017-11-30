@@ -45,12 +45,21 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		Optional<TempAbsenceHisItem> optionalData = tempAbsItemRepo.getItemByEmpIdAndReferDate(query.getEmployeeId(),
-				query.getStandardDate());
-		if (optionalData.isPresent()) {
-			TempAbsenceHisItem histItem = optionalData.get();
-			TempAbsenceHistory history = tempAbsHistRepo.getByHistId(histItem.getHistoryId()).get();
+		TempAbsenceHisItem histItem;
+		TempAbsenceHistory history;
+		if ( query.getInfoId() != null ) {
+			String historyId = query.getInfoId();
+			histItem = tempAbsItemRepo.getItemByHitoryID(historyId).get();
+			history = tempAbsHistRepo.getByHistId(historyId).get();
 			return TempAbsHisItemDto.createFromDomain(history, histItem);
+		} else {
+			Optional<TempAbsenceHisItem> optionalData = tempAbsItemRepo.getItemByEmpIdAndReferDate(query.getEmployeeId(),
+					query.getStandardDate());
+			if (optionalData.isPresent()) {
+				histItem = optionalData.get();
+				history = tempAbsHistRepo.getByHistId(histItem.getHistoryId()).get();
+				return TempAbsHisItemDto.createFromDomain(history, histItem);
+			}
 		}
 		return null;
 	}

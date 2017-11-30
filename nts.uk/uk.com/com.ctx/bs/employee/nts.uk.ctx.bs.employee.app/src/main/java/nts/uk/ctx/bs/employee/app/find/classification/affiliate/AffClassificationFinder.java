@@ -48,12 +48,21 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 
 	@Override
 	public AffClassificationDto getSingleData(PeregQuery query) {
-		Optional<AffClassHistItem_ver1> itemOption = affClassHistItemRepo.getByEmpIdAndReferDate(query.getEmployeeId(),
-				query.getStandardDate());
-		if ( itemOption.isPresent()) {
-			AffClassHistItem_ver1 histItem = itemOption.get();
-			AffClassHistory_ver1 history = affClassHistRepo.getByHistoryId(histItem.getHistoryId()).get();
+		AffClassHistItem_ver1 histItem;
+		AffClassHistory_ver1 history;
+		if (query.getInfoId() != null) {
+			String historyId = query.getInfoId();
+			histItem = affClassHistItemRepo.getByHistoryId(historyId).get();
+			history = affClassHistRepo.getByHistoryId(historyId).get();
 			return AffClassificationDto.createFromDomain(histItem, history);
+		} else {
+			Optional<AffClassHistItem_ver1> itemOption = affClassHistItemRepo
+					.getByEmpIdAndReferDate(query.getEmployeeId(), query.getStandardDate());
+			if (itemOption.isPresent()) {
+				histItem = itemOption.get();
+				history = affClassHistRepo.getByHistoryId(histItem.getHistoryId()).get();
+				return AffClassificationDto.createFromDomain(histItem, history);
+			}
 		}
 		return null;
 	}
