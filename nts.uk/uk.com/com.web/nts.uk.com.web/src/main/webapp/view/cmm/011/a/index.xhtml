@@ -167,7 +167,7 @@
 						
 						<!-- BEGIN A9_1 ~ A9_2 -->
 						<tr>
-							<td class="td-detail"><div data-bind="ntsFormLabel: {constraint: 'WorkplaceDisplayName'}">
+							<td class="td-detail"><div data-bind="ntsFormLabel: {required: true, constraint: 'WorkplaceDisplayName'}">
 								#{i18n.getText('CMM011_16')}</div></td>
 							<td colspan="2"><div><input id="wkpDisplayName" tabindex="16" data-bind="ntsTextEditor: {
 											value: wkpDisplayName,
@@ -183,7 +183,7 @@
 						
 						<!-- BEGIN A10_1 ~ A10_2 -->
 						<tr>
-							<td class="td-detail"><div data-bind="ntsFormLabel: {constraint: 'WorkplaceGenericName'}">
+							<td class="td-detail"><div data-bind="ntsFormLabel: {required: true, constraint: 'WorkplaceGenericName'}">
 								#{i18n.getText('CMM011_17')}</div></td>
 							<td colspan="4"><div><input id="wkpFullName" tabindex="17" data-bind="ntsTextEditor: {
 											value: wkpFullName,
