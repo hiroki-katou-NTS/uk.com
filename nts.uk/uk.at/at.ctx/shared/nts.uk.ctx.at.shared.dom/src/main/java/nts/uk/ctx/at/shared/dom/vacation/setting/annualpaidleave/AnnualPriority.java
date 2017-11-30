@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 /**
  * The Enum PreemptionPermit.
  */
+// 年休消化優先
 public enum AnnualPriority {
 
 	/** The fifo. */

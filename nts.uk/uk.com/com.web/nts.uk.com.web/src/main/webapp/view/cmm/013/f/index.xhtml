@@ -33,10 +33,10 @@
 		<ui:define name="content">
 		
 			<div id="functions-area">
-				<button tabindex="1" data-bind="click: startCreateMode, enable: enable_F1_1" class="btnStyle">#{i18n.getText('CMM013_41')}</button>
+				<button tabindex="1" data-bind="click: startCreateMode, enable: enable_button_create_mode" class="btnStyle">#{i18n.getText('CMM013_41')}</button>
 				<button tabindex="2" data-bind="click: save" class="proceed btnStyle">#{i18n.getText('CMM013_42')}</button>
 				<button tabindex="3" data-bind="click: close" class="btnStyle">#{i18n.getText('CMM013_43')}</button>
-				<button tabindex="4" data-bind="click: remove, enable: enable_F1_4" class="danger btnStyle">#{i18n.getText('CMM013_44')}</button>
+				<button tabindex="4" data-bind="click: remove, enable: enable_button_delete" class="danger btnStyle">#{i18n.getText('CMM013_44')}</button>
 			</div>
 		
 			<div id="contents-area">
@@ -88,7 +88,7 @@
 										width: '30px',
 									},
 									required: true,
-									enable: enable_F3_2
+									enable: enable_input_sequence_code
 								}"
 								/>
 							</td>

@@ -10,6 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class YearVacationManageSetting.
  */
+// 年休管理設定
 @Getter
 public class ManageAnnualSetting extends DomainObject {
     
