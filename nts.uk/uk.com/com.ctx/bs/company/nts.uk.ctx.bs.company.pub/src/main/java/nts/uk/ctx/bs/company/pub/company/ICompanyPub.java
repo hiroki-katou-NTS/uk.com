@@ -12,13 +12,20 @@ public interface ICompanyPub {
 
 	List<CompanyExport> getAllCompany();
 
-	
 	/**
 	 * for request list No.108
 	 * 
-	 * @return  Company Info
+	 * @return Company Info
 	 */
 
 	BeginOfMonthExport getBeginOfMonth(String cid);
+
+	/**
+	 * for request list No.125
+	 * 
+	 * @return Company Info
+	 */
+
+	CompanyExport getCompanyByCid(String cid);
 
 }

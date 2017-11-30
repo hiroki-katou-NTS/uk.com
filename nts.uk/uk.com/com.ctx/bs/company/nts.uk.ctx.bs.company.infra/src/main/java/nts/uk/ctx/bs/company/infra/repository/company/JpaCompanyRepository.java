@@ -51,6 +51,9 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	private final String SELECT_ADD_NO_WHERE = "SELECT  c FROM BcmmtAddInfor c ";
 	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
 
+	
+	private final String GET_BY_CID = SELECT_NO_WHERE + " WHERE c.bcmmtAddInforPK.companyId = :cid";
+	
 	/**
 	 * @param entity
 	 * @return new Company(companyCode,companyName,companyId,isAboltiton)
@@ -271,5 +274,20 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 				.collect(Collectors.toList());
 		long totalCompanyBy = listTrue.size();
 		return totalCompanyBy == totalCompany - 1;
+	}
+
+	@Override
+	public Optional<CompanyInforNew> getComanyByCid(String cid) {
+		BcmmtCompanyInfor entity = this.queryProxy().query(GET_BY_CID, BcmmtCompanyInfor.class)
+				.setParameter("cid", cid).getSingleOrNull();
+
+		CompanyInforNew company = new CompanyInforNew();
+		if (entity != null) {
+			company = toDomainCom(entity);
+			return Optional.of(company);
+
+		} else {
+			return Optional.empty();
+		}
 	}
 }
