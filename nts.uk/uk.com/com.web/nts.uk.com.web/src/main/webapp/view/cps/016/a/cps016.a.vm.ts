@@ -79,6 +79,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 } else {//0件の場合: エラーメッセージの表示(#Msg_455)
                     alertError({ messageId: "Msg_455" });
                     self.registerDataSelectioItem();
+                    $("#selectionItemName").focus();
                 }
                 dfd.resolve();
             }).fail(error => {//0件の場合: エラーメッセージの表示(#Msg_455)
