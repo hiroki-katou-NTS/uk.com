@@ -68,6 +68,10 @@ module nts.uk.com.view.cmm007.c {
             public regsiter(): void {
                 let _self = this;
                 
+                if (_self.hasError()) {
+                    return true;    
+                }
+                
                 let lstDto: Array<viewmodel.moduleDto> = new Array();
                 for (let i=1; i<=_self.mapModel.size; i++) {
                     lstDto.push(_self.mapModel.get(i));
@@ -75,10 +79,43 @@ module nts.uk.com.view.cmm007.c {
                 
                 service.updateTempAbsenceFrame(lstDto).done(function(data){
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
+                        $('#c3_15').focus();
                     });
                 }).fail(function(data) {
 //                    console.log(data);
                 })
+            }
+            
+              /**
+             * Check Errors all input.
+             */
+            private hasError(): boolean {
+                let _self = this;
+                _self.clearErrors();
+                $('#c3_15').ntsEditor("validate");
+                $('#c3_17').ntsEditor("validate");
+                $('#c3_19').ntsEditor("validate");
+                $('#c3_21').ntsEditor("validate"); 
+               
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Clear Errors
+             */
+            private clearErrors(): void {
+    
+                 // Clear errors
+                $('#c3_15').ntsEditor("clear");
+                $('#c3_17').ntsEditor("clear");
+                $('#c3_19').ntsEditor("clear");
+                $('#c3_21').ntsEditor("clear");
+                
+                // Clear error inputs
+                $('.nts-input').ntsError('clear');
             }
        }      
         
