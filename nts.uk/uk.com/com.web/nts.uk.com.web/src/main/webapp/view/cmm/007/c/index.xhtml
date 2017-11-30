@@ -9,6 +9,7 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
    			<span class="title">#{i18n.getText('CMM007_3')}</span>
+   			<!-- C1_1 -->
 			<button data-bind="click: regsiter"  class="proceed" tabindex="1">#{i18n.getText('CMM007_5')}</button>
 		</div>
 		<div class="contents-area" style="margin-left: 20px">
@@ -20,7 +21,7 @@
 				<table>
 					<tr>
 						<!-- C3_1 -->
-						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM007_3')}</div></td>
+						<td><div data-bind="ntsFormLabel: { required: true, constraint: 'TempAbsenceFrameName' }">#{i18n.getText('CMM007_3')}</div></td>
 						<td>
 							<div class="minimalist" data-bind="ntsCheckBox: { 
 																				checked: checkStatusEnable(mapModel.get(1).tempAbsenceFrNo()), 
@@ -140,6 +141,7 @@
 																		value: mapModel.get(7).tempAbsenceFrName ,
 																		enable: checkStatusEnable(mapModel.get(7).tempAbsenceFrNo()),
 																		constraint: 'TempAbsenceFrameName',
+																		required: true,
 																	}" tabindex="2"></input>
 						</td>
 					</tr>
@@ -161,7 +163,8 @@
 																		name: '#[CMM007_40]',
 																		value: mapModel.get(8).tempAbsenceFrName,
 																		enable: checkStatusEnable(mapModel.get(8).tempAbsenceFrNo()),
-																		constraint: 'TempAbsenceFrameName', 
+																		constraint: 'TempAbsenceFrameName',
+																		required: true, 
 																	}" tabindex="3"></input>
 						</td>
 					</tr>
@@ -184,7 +187,8 @@
 																		name: '#[CMM007_41]',
 																		value: mapModel.get(9).tempAbsenceFrName,
 																		enable: checkStatusEnable(mapModel.get(9).tempAbsenceFrNo()),
-																		constraint: 'TempAbsenceFrameName', 
+																		constraint: 'TempAbsenceFrameName',
+																		required: true, 
 																	}" tabindex="4"></input>
 						</td>
 					</tr>
@@ -207,7 +211,8 @@
 																		name: '#[CMM007_42]',
 																		value: mapModel.get(10).tempAbsenceFrName ,
 																		enable: checkStatusEnable(mapModel.get(10).tempAbsenceFrNo()),
-																		constraint: 'TempAbsenceFrameName'
+																		constraint: 'TempAbsenceFrameName',
+																		required: true,
 																	}" tabindex="5"></input>
 						</td>
 					</tr>
