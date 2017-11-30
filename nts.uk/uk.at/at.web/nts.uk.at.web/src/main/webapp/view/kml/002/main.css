@@ -127,7 +127,10 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 #table-scroll {
 	height:300px;
 	overflow:auto;  
-	margin-top:20px;
+}
+
+.toggle-link {
+    margin-left: 108px;
 }
 
 #popup-area {
@@ -265,10 +268,6 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .ntsControl .nts-input {
 	padding: 7px 10px !important;
-}
-
-table.link-notes {
-	width: 95.5%;
 }
 
 table.link-notes td {
