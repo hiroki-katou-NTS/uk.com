@@ -7,17 +7,17 @@ public enum TypeLink {
 
 	WORK_HOURS(2, "就業時間帯"),
 	
-	SERVICE_PLACE(30, "勤務場所"),
+	SERVICE_PLACE(3, "勤務場所"),
 	
-	REASON(398, "乖離理由"),
+	REASON(4, "乖離理由"),
 	
-    WORKPLACE(560, "職場"),
+    WORKPLACE(5, "職場"),
     
-    CLASSIFICATION(561, "分類"),
+    CLASSIFICATION(6, "分類"),
 	
-    POSSITION(562, "職位"),
+    POSSITION(7, "職位"),
     
-    EMPLOYMENT(563, "雇用区分");
+    EMPLOYMENT(8, "雇用区分");
 						
 	/** The value. */
 	public int value;

@@ -12,13 +12,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+* 勤務変更申請
+*/
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KRQDT_APP_WORK_CHANGE")
-/**
-* 勤務変更申請
-*/
 public class KrqdtAppWorkChange extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -28,21 +28,7 @@ public class KrqdtAppWorkChange extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public KrqdtAppWorkChangePk appWorkChangePk;
-    
-    /**
-    * 会社ID
-    */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
-    
-    /**
-    * 申請ID
-    */
-    @Basic(optional = false)
-    @Column(name = "APP_ID")
-    public String appId;
-    
+        
     /**
     * 勤務種類コード
     */

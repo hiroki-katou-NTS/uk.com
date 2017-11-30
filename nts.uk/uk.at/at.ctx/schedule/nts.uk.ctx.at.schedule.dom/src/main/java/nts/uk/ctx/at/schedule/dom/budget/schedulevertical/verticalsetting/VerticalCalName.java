@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * TanLV
  *
  */
-@StringMaxLength(30)
+@StringMaxLength(20)
 public class VerticalCalName extends StringPrimitiveValue<VerticalCalName> {
 	private static final long serialVersionUID = 1L;
 

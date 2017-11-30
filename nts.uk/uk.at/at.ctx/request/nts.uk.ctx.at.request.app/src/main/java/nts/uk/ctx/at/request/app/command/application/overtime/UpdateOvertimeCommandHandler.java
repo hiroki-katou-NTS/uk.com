@@ -48,10 +48,10 @@ public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeC
 		}
 		AppOverTime appOverTime = opAppOverTime.get();
 		List<OverTimeInput> overTimeInputs = new ArrayList<>();
-		overTimeInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=null||x.getEndTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		
 		appOverTime.setDivergenceReason(command.getDivergenceReasonContent());
 		appOverTime.setFlexExessTime(command.getFlexExessTime());
