@@ -1,5 +1,6 @@
 package command.person.info.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -39,8 +40,14 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		AddItemCommand addItemCommand = context.getCommand();
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
 		if (addItemCommand.getSingleItem().getDataType() == 6) {
-			List<Selection> selection = this.selectionRepo.getAllSelectionByHistoryId(
-					addItemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today());
+			List<Selection> selection = new ArrayList<>();
+			if(addItemCommand.getPersonEmployeeType() == 1) {
+			    selection = this.selectionRepo.getAllSelectionByHistoryId(
+					addItemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today(), 0);
+			}else if(addItemCommand.getPersonEmployeeType() == 2) {
+				selection = this.selectionRepo.getAllSelectionByHistoryId(
+						addItemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today(), 1);
+			}
 			if (selection == null || selection.size() == 0) {
 				
 				throw new BusinessException(new RawErrorMessage("Msg_587"));
@@ -60,7 +67,7 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		String itemCodeLastes = this.pernfoItemDefRep.getPerInfoItemCodeLastest(contractCd, categoryCd);
 		String newItemCode = createNewCode(itemCodeLastes, SPECIAL_ITEM_CODE);
 		AddItemCommand newItemCommand = new AddItemCommand(context.getCommand().getPerInfoCtgId(), newItemCode, null,
-				context.getCommand().getItemName(), context.getCommand().getSingleItem());
+				context.getCommand().getItemName(), context.getCommand().getSingleItem(), context.getCommand().getPersonEmployeeType());
 		PersonInfoItemDefinition perInfoItemDef = MappingDtoToDomain.mappingFromDomaintoCommand(newItemCommand);
 		perInfoItemId = this.pernfoItemDefRep.addPerInfoItemDefRoot(perInfoItemDef, contractCd, categoryCd);
 		// get List PerInfoCtgId.
