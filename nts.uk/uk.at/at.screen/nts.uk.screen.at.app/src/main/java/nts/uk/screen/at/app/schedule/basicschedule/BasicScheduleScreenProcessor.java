@@ -75,20 +75,25 @@ public class BasicScheduleScreenProcessor {
 	 * @param params
 	 * @return WorkEmpCombineDto
 	 */
-	public WorkEmpCombineDto getListWorkEmpCombine(ScheduleScreenSymbolParams params) {
+	public List<WorkEmpCombineScreenDto> getListWorkEmpCombine(ScheduleScreenSymbolParams params) {
 		String companyId = AppContexts.user().companyId();
-		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.workTypeCode, params.workTimeCode);
+		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.lstWorkTypeCode, params.lstWorkTypeCode);
 	}
 
 	/**
 	 * 
-	 * @return ScheduleDisplayControlDto
+	 * @return list ScheduleDisplayControlDto
 	 */
-	public ScheduleDisplayControlDto getScheduleDisplayControl() {
+	public ScheduleDisplayControlScreenDto getScheduleDisplayControl() {
 		String companyId = AppContexts.user().companyId();
-		return this.bScheduleScreenRepo.getListScheduleDisControl(companyId);
+		return this.bScheduleScreenRepo.getScheduleDisControl(companyId).orElse(null);
 	}
 
+	/**
+	 * 
+	 * @param params
+	 * @return
+	 */
 	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(BasicScheduleScreenParams params) {
 		return this.bScheduleScreenRepo.getDataWorkScheTimezone(params.employeeId, params.startDate, params.endDate);
 	}

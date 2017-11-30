@@ -12,10 +12,10 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
-import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlDto;
+import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleScreenSymbolParams;
 import nts.uk.screen.at.app.schedule.basicschedule.StateWorkTypeCodeDto;
-import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
@@ -56,7 +56,7 @@ public class Ksu001Webservice extends WebService {
 	public List<BasicScheduleScreenDto> getData(BasicScheduleScreenParams params) {
 		return this.bScheduleScreenProces.getByListSidAndDate(params);
 	}
-	
+
 	@POST
 	@Path("getDataWorkScheTimezone")
 	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(BasicScheduleScreenParams params) {
@@ -112,13 +112,13 @@ public class Ksu001Webservice extends WebService {
 
 	@POST
 	@Path("getWorkEmpCombine")
-	public WorkEmpCombineDto getWorkEmpCombines(ScheduleScreenSymbolParams params) {
+	public List<WorkEmpCombineScreenDto> getWorkEmpCombines(ScheduleScreenSymbolParams params) {
 		return this.bScheduleScreenProces.getListWorkEmpCombine(params);
 	}
 
 	@POST
 	@Path("getScheduleDisplayControl")
-	public ScheduleDisplayControlDto getScheduleDisplayControl() {
+	public ScheduleDisplayControlScreenDto getScheduleDisplayControl() {
 		return this.bScheduleScreenProces.getScheduleDisplayControl();
 	}
 }
