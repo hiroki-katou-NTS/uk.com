@@ -142,10 +142,11 @@ module a2 {
          */
         public updateViewByFlowMode(): void {
             var self = this;
-            window.setTimeout(1000);
-            $('#nts-fix-table-a2-oneday').ntsFixTableCustom(self.fixTableOptionOneDay);
-            $('#nts-fix-table-a2-morning').ntsFixTableCustom(self.fixTableOptionMorning);
-            $('#nts-fix-table-a2-afternoon').ntsFixTableCustom(self.fixTableOptionAfternoon);
+            _.defer(() => {
+                $('#nts-fix-table-a2-oneday').ntsFixTableCustom(self.fixTableOptionOneDay);
+                $('#nts-fix-table-a2-morning').ntsFixTableCustom(self.fixTableOptionMorning);
+                $('#nts-fix-table-a2-afternoon').ntsFixTableCustom(self.fixTableOptionAfternoon);
+            });
         }
 
         /**

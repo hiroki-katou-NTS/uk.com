@@ -9,7 +9,7 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
    			<span class="title">#{i18n.getText('CMM007_4')}</span>
-			<button style="margin-left: 200px" class="proceed" data-bind="click: savePlanYearHdFrSetting">#{i18n.getText('CMM007_5')}</button>
+			<button tabindex="1" style="margin-left: 200px" class="proceed" data-bind="click: savePlanYearHdFrSetting">#{i18n.getText('CMM007_5')}</button>
 		</div>
 		<div class="contents-area">
 			<div class="plan_year_holiday">
@@ -25,7 +25,7 @@
 							<div class="minimalist" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo1,
 									text: planYearHdFrCheckboxLabel1}"></div>
-							<input id="plan_year_hd_frame1"
+							<input id="plan_year_hd_frame1" tabindex="2"
 								data-bind="ntsTextEditor: {
 									name: '#[CMM007_44]',
 									value: planYearHdFrName1,
@@ -43,7 +43,7 @@
 							<div class="minimalist" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo2,
 									text: planYearHdFrCheckboxLabel2}"></div>
-							<input id="plan_year_hd_frame2"
+							<input id="plan_year_hd_frame2" tabindex="3"
 								data-bind="ntsTextEditor: {
 									name: '#[CMM007_45]',
 									value: planYearHdFrName2,
@@ -61,7 +61,7 @@
 							<div class="minimalist" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo3,
 									text: planYearHdFrCheckboxLabel3}"></div>
-							<input id="plan_year_hd_frame3"
+							<input id="plan_year_hd_frame3" tabindex="4"
 								data-bind="ntsTextEditor: {
 									name: '#[CMM007_46]',
 									value: planYearHdFrName3,
@@ -79,7 +79,7 @@
 							<div class="minimalist" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo4,
 									text: planYearHdFrCheckboxLabel4}"></div>
-							<input id="plan_year_hd_frame4"
+							<input id="plan_year_hd_frame4" tabindex="5"
 								data-bind="ntsTextEditor: {
 									name: '#[CMM007_47]',
 									value: planYearHdFrName4,
@@ -97,7 +97,7 @@
 							<div class="minimalist" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo5,
 									text: planYearHdFrCheckboxLabel5}"></div>
-							<input id="plan_year_hd_frame5"
+							<input id="plan_year_hd_frame5" tabindex="6"
 								data-bind="ntsTextEditor: {
 									name: '#[CMM007_48]',
 									value: planYearHdFrName5,
