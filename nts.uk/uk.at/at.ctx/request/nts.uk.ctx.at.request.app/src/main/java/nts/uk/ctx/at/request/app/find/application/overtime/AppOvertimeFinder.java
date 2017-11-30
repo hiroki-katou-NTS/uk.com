@@ -48,7 +48,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeAndSiftTyp
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
@@ -687,9 +686,8 @@ public class AppOvertimeFinder {
 			DivergenceReasonDto divergenceReasonDto = new DivergenceReasonDto();
 			divergenceReasonDto.setDivergenceReasonID(divergenceReason.getReasonTypeItem().getReasonID());
 			divergenceReasonDto.setReasonTemp(divergenceReason.getReasonTypeItem().getReasonTemp().toString());
-			if(divergenceReason.getReasonTypeItem().getDefaultFlg().value == DefaultFlg.DEFAULT.value){
-				divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getReasonID());
-			}
+			divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getDefaultFlg().value);
+			
 			divergenceReasonDtos.add(divergenceReasonDto);
 		}
 		result.setDivergenceReasonDtos(divergenceReasonDtos);
