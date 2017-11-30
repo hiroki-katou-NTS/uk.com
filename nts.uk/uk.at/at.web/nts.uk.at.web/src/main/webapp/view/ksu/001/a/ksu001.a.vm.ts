@@ -1196,12 +1196,25 @@ module ksu001.a.viewmodel {
             let self = this;
             let arrObj: any[] = [],
                 arrCell: Cell[] = $("#extable").exTable("updatedCells"),
-                lengthArrCell = arrCell.length;
-            if (lengthArrCell == 0) {
+                arrTmp: Cell[] = _.clone(arrCell);
+            if (arrCell.length == 0) {
                 return;
             }
 
-            for (let i = 0; i < lengthArrCell; i += 1) {
+            if (self.selectedModeDisplay() == 2) {
+                _.each(arrTmp, (item) => {
+                    let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
+                    if (arrFilter.length > 1) {
+                        _.each(arrFilter, (data) => {
+                            if (data.value.startTime == "" || data.value.endTime == "") {
+                                _.remove(arrCell, data);
+                            }
+                        });
+                    };
+                });
+            }
+
+            for (let i = 0; i < arrCell.length; i += 1) {
                 arrObj.push({
                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
                     date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
@@ -1214,8 +1227,10 @@ module ksu001.a.viewmodel {
                     workDayAtr: 0,
                     workScheduleTimeZoneSaveCommands: [{
                         scheduleCnt: 1,
-                        scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime : moment.duration(arrCell[i].value.startTime).asMinutes(),
-                        scheduleEndClock: (typeof arrCell[i].value.endTime === 'number') ? arrCell[i].value.endTime : moment.duration(arrCell[i].value.endTime).asMinutes(),
+                        scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime
+                            : (arrCell[i].value.startTime ? moment.duration(arrCell[i].value.startTime).asMinutes() : null),
+                        scheduleEndClock: (typeof arrCell[i].value.endTime === 'number') ? arrCell[i].value.endTime
+                            : (arrCell[i].value.endTime ? moment.duration(arrCell[i].value.endTime).asMinutes() : null),
                         //set static bounceAtr =  1
                         bounceAtr: 1
                     }]
