@@ -16,43 +16,40 @@ import nts.uk.ctx.at.record.app.command.workrecord.log.CheckProcessCommandHandle
 import nts.uk.ctx.at.record.app.find.log.ImplementationResultFinder;
 import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
 
-
 /**
  * 
  * @author hieult
  *
- */	
+ */
 @Path("/at/record/log")
 @Produces("application/json")
-public class ImplementationResultWebService extends WebService{
-	
+public class ImplementationResultWebService extends WebService {
+
 	@Inject
 	private ImplementationResultFinder implementationResultFinder;
-	
+
 	@Inject
 	private CheckProcessCommandHandler queryExecutionStatusCommandHandler;
-	
-	@Inject 
+
+	@Inject
 	private AddEmpCalSumAndTargetCommandHandler addEmpCalSumAndTargetCommandHandler;
-		
+
 	@POST
 	@Path("addEmpCalSumAndTarget")
 	public AddEmpCalSumAndTargetCommandResult addEmpCalSumAndTarget(AddEmpCalSumAndTargetCommand command) {
 		return addEmpCalSumAndTargetCommandHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("checkprocess")
 	public AsyncTaskInfo executeTask(CheckProcessCommand command) {
 		return queryExecutionStatusCommandHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("getErrorMessageInfo/{empCalAndSumExecLogID}")
-	public ScreenImplementationResultDto getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID") String empCalAndSumExecLogID){
-		ScreenImplementationResultDto data = implementationResultFinder.getScreenImplementationResult(empCalAndSumExecLogID);
-		return data;
+	public ScreenImplementationResultDto getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID") String empCalAndSumExecLogID) {
+		return implementationResultFinder.getScreenImplementationResult(empCalAndSumExecLogID);
 	}
-	
+
 }
-	
