@@ -122,11 +122,17 @@ module nts.uk.at.view.kaf005.b {
                     self.initData(data);
                     dfd.resolve(); 
                 })
-                .fail(function(res) { 
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){
-                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); T
-                        nts.uk.ui.block.clear();
-                    });
+                .fail(function(res) {
+                    if(res.messageId == 'Msg_426'){
+                        dialog.alertError(res.message).then(function(){
+                            nts.uk.ui.block.clear();
+                        });
+                    }else{ 
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); T
+                            nts.uk.ui.block.clear();
+                        });
+                    }
                     dfd.reject(res);  
                 });
                 return dfd.promise();
@@ -154,8 +160,8 @@ module nts.uk.at.view.kaf005.b {
                     self.workTypeName(data.workType.workTypeName);
                 }
                 self.timeStart1(data.workClockFrom1 == -1 ? null : data.workClockFrom1);
-                self.timeEnd1(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
-                self.timeStart2(data.workClockTo1 == -1 ? null : data.workClockTo1);
+                self.timeEnd1(data.workClockTo1 == -1 ? null : data.workClockTo1);
+                self.timeStart2(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
                 self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
                 if(data.applicationReasonDtos != null){
                     let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
@@ -532,7 +538,7 @@ module nts.uk.at.view.kaf005.b {
             
             convertIntToTime(data : number) : string{
                 let hourMinute : string = "";
-                if(data == -1){
+                if(data == -1 || data == ""){
                     return null;
                 }else if (data == 0) {
                     hourMinute = "00:00";
