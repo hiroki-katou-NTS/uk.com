@@ -361,6 +361,14 @@ public class AppOvertimeFinder {
 				overTimeDto.setDisplayBonusTime(false);
 			}
 		}
+		for(int i = 1; i < 11; i++){
+			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
+			overtimeInputDto.setAttendanceID(AttendanceID.RESTTIME.value);
+			overtimeInputDto.setFrameNo(i);
+			overtimeInputDto.setFrameName(Integer.toString(i));
+			overtimeInputDto.setTimeItemTypeAtr(0);
+			overTimeInputs.add(overtimeInputDto);
+		}
 		overTimeDto.getOverTimeInputs().forEach(item -> {
 			overTimeInputs.stream().filter(x -> 
 				(x.getAttendanceID()==item.getAttendanceID())
