@@ -1,12 +1,14 @@
 package nts.uk.ctx.bs.employee.infra.repository.tempabsence;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
@@ -16,8 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaTempAbsHist extends JpaRepository implements TempAbsHistRepository {
 
-	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "select ta "
-			+ "from BsymtTempAbsHistory ta "
+	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "select ta " + "from BsymtTempAbsHistory ta "
 			+ "where ta.sid = :sid order by ta.startDate";
 
 	/**
@@ -60,15 +61,15 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public void add(TempAbsenceHistory domain) {
-		if (domain.getDateHistoryItems().isEmpty()){
+		if (domain.getDateHistoryItems().isEmpty()) {
 			return;
 		}
 		// Insert last element
-		DateHistoryItem lastItem = domain.getDateHistoryItems().get(domain.getDateHistoryItems().size()-1);
-		this.commandProxy().insert(toEntity(domain.getEmployeeId(),lastItem));
-		
+		DateHistoryItem lastItem = domain.getDateHistoryItems().get(domain.getDateHistoryItems().size() - 1);
+		this.commandProxy().insert(toEntity(domain.getEmployeeId(), lastItem));
+
 		// Update item before and after
-		updateItemBefore(domain,lastItem);
+		updateItemBefore(domain, lastItem);
 	}
 
 	@Override
@@ -150,19 +151,25 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public Optional<TempAbsenceHistory> getByHistId(String histId) {
-		Optional<BsymtTempAbsHistory> existItem = this.queryProxy().find(histId, BsymtTempAbsHistory.class);
-		if (existItem.isPresent()) {
-			return Optional.of(toDomain(existItem.get()));
-		}
-		return Optional.empty();
+		/*
+		 * Optional<BsymtTempAbsHistory> existItem =
+		 * this.queryProxy().find(histId, BsymtTempAbsHistory.class); if
+		 * (existItem.isPresent()) { return
+		 * Optional.of(toDomain(existItem.get())); } return Optional.empty();
+		 */
+		return Optional.of(new TempAbsenceHistory("909909139840",
+				Arrays.asList(new DateHistoryItem("123456789012345678901234567890123456",
+						new DatePeriod(GeneralDate.ymd(2017, 5, 20), GeneralDate.ymd(2017, 10, 10))))));
 	}
+
 	/**
 	 * Convert to domain TempAbsenceHistory
+	 * 
 	 * @param employeeId
 	 * @param listHist
 	 * @return
 	 */
-	private TempAbsenceHistory toDomainTemp(String employeeId, List<BsymtTempAbsHistory> listHist){
+	private TempAbsenceHistory toDomainTemp(String employeeId, List<BsymtTempAbsHistory> listHist) {
 		TempAbsenceHistory domain = new TempAbsenceHistory(employeeId, new ArrayList<DateHistoryItem>());
 		for (BsymtTempAbsHistory item : listHist) {
 			DateHistoryItem dateItem = new DateHistoryItem(item.histId, new DatePeriod(item.startDate, item.endDate));

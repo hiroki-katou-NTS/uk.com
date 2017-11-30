@@ -26,7 +26,7 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 
 	@Override
 	public Optional<AffClassHistItem_ver1> getByEmpIdAndReferDate(String employeeId, GeneralDate referenceDate) {
-		Optional<KmnmtAffClassHistItem_Ver1> optionData = this.queryProxy()
+		/*Optional<KmnmtAffClassHistItem_Ver1> optionData = this.queryProxy()
 				.query(GET_BY_SID_DATE, KmnmtAffClassHistItem_Ver1.class).setParameter("sid", employeeId)
 				.setParameter("referDate", referenceDate).getSingle();
 		if (optionData.isPresent()) {
@@ -34,7 +34,8 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 			return Optional
 					.of(AffClassHistItem_ver1.createFromJavaType(ent.sid, ent.historyId, ent.classificationCode));
 		}
-		return Optional.empty();
+		return Optional.empty();*/
+		return Optional.of(AffClassHistItem_ver1.createFromJavaType("909909139840", "98765432109876543210654321", "1213132132121231321"));
 	}
 
 	@Override

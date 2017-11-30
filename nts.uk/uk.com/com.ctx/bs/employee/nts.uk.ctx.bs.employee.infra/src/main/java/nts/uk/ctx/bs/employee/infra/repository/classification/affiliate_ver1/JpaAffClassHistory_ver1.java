@@ -4,12 +4,14 @@
 package nts.uk.ctx.bs.employee.infra.repository.classification.affiliate_ver1;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate_ver1.KmnmtAffClassHistory_Ver1;
@@ -27,13 +29,16 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 
 	@Override
 	public Optional<AffClassHistory_ver1> getByHistoryId(String historyId) {
-		Optional<KmnmtAffClassHistory_Ver1> optionData = this.queryProxy().find(historyId,
-				KmnmtAffClassHistory_Ver1.class);
-		if (optionData.isPresent()) {
-			KmnmtAffClassHistory_Ver1 ent = optionData.get();
-			return Optional.of(toDomain(ent));
-		}
-		return Optional.empty();
+		/*
+		 * Optional<KmnmtAffClassHistory_Ver1> optionData =
+		 * this.queryProxy().find(historyId, KmnmtAffClassHistory_Ver1.class);
+		 * if (optionData.isPresent()) { KmnmtAffClassHistory_Ver1 ent =
+		 * optionData.get(); return Optional.of(toDomain(ent)); } return
+		 * Optional.empty();
+		 */
+		return Optional.of(
+				new AffClassHistory_ver1("909909139840", Arrays.asList(new DateHistoryItem("98765432109876543210654321",
+						new DatePeriod(GeneralDate.ymd(2017, 1, 15), GeneralDate.ymd(2017, 6, 15))))));
 	}
 
 	private AffClassHistory_ver1 toDomain(KmnmtAffClassHistory_Ver1 entity) {
@@ -100,18 +105,19 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 	@Override
 	public void delete(AffClassHistory_ver1 history, DateHistoryItem item) {
 		this.commandProxy().remove(KmnmtAffClassHistory_Ver1.class, item.identifier());
-		if ( !history.getPeriods().isEmpty()) {
-			DateHistoryItem lastItem = history.getPeriods().get( history.getPeriods().size() - 1);
-			Optional<KmnmtAffClassHistory_Ver1> lastItemEntityOpt = this.queryProxy().find(lastItem.identifier(), KmnmtAffClassHistory_Ver1.class);
-			if ( !lastItemEntityOpt.isPresent()) {
+		if (!history.getPeriods().isEmpty()) {
+			DateHistoryItem lastItem = history.getPeriods().get(history.getPeriods().size() - 1);
+			Optional<KmnmtAffClassHistory_Ver1> lastItemEntityOpt = this.queryProxy().find(lastItem.identifier(),
+					KmnmtAffClassHistory_Ver1.class);
+			if (!lastItemEntityOpt.isPresent()) {
 				throw new RuntimeException("Invalid KmnmtAffClassHistory_Ver1");
 			}
 			KmnmtAffClassHistory_Ver1 entity = lastItemEntityOpt.get();
 			entity.endDate = lastItem.end();
-			
+
 			this.commandProxy().update(entity);
 		}
-		
+
 	}
 
 	private void updateItemBefore(AffClassHistory_ver1 history, DateHistoryItem item) {
