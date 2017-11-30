@@ -21,7 +21,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
             { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
-            { headerText: nts.uk.resource.getText("KSU001_1121"), key: 'teamCode', width: 100 },
+            { headerText: nts.uk.resource.getText("KSU001_1121"), key: 'teamName', width: 100 },
         ]);
         columnsRightSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
@@ -130,10 +130,14 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     let employee = new EmployeeModel(value);
                     if (employeeSeting) {
                         //check team exist
-                        if (_.findKey(teamDB, ['teamCode', employeeSeting.teamCode])) {
-                            employee.teamCode = employeeSeting.teamCode;
-                            employee.teamCodeOld = employeeSeting.teamCode;
+                        var team = _.find(teamDB, function(item) {return item.teamCode == employeeSeting.teamCode;});
+                        if (team) {
+                            employee.teamCode = team.teamCode;
+                            employee.teamCodeOld = team.teamCode;
+                            employee.teamName = team.teamName;
                         }
+                    } else {
+                        employee.teamName = "なし";
                     }
                     if (employee.teamCode == self.selectedTeam()) {
                         employeesSwapRight.push(employee);
