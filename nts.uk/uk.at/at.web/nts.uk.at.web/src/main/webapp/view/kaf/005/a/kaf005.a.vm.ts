@@ -222,12 +222,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.selectedReason(reasonID);
                 
                 self.multilContent(data.application.applicationReason);
-            }
+            } 
             
             if(data.divergenceReasonDtos != null){
                 self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                self.selectedReason2(data.divergenceReasonDtos.divergenceReasonIdDefault);
-                self.multilContent2(data.divergenceReasonContent);
+                let reasonID = _.find(data.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 }).divergenceReasonID;
+                self.selectedReason2(reasonID);
+                self.multilContent2(data.divergenceReasonContent); 
             }
             
             self.instructInforFlag(data.displayOvertimeInstructInforFlg);
