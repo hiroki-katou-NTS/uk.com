@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 import java.util.List;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 
 /**
  * The Class DiffTimezoneSet.

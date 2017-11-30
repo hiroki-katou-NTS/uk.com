@@ -27,22 +27,22 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SACMT_DEFAULT_ROLE_SET")
 public class SacmtDefaultRoleSet extends UkJpaEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public SacmtDefaultRoleSetPK defaultRoleSetPK;
+    @EmbeddedId
+    public SacmtDefaultRoleSetPK defaultRoleSetPK;
 
-	/**コード */
-	@Basic(optional = false)
-	@Column(name = "ROLE_SET_CD")
-	public String roleSetCd;
+    /**コード */
+    @Basic(optional = false)
+    @Column(name = "ROLE_SET_CD")
+    public String roleSetCd;
 
-	@Override
-	protected Object getKey() {
-		return defaultRoleSetPK;
-	}
-	
-	public void buildEntity(SacmtDefaultRoleSetPK defaultRoleSetPK, String roleSetCd) {
-		this.roleSetCd = roleSetCd;
-	}
+    @Override
+    protected Object getKey() {
+        return this.defaultRoleSetPK;
+    }
+
+    public void buildEntity(SacmtDefaultRoleSetPK defaultRoleSetPK, String roleSetCd) {
+        this.roleSetCd = roleSetCd;
+    }
 }

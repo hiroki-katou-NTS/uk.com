@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 
 @Data
 @NoArgsConstructor
-public class ExecutionCommandResult {
+public class AddEmpCalSumAndTargetCommandResult {
 	
 	private List<EnumConstant> enumComboBox;
 	
@@ -21,7 +21,7 @@ public class ExecutionCommandResult {
     /** 対象期間終了日 */
     private String periodEndDate;
 	    	    
-    public ExecutionCommandResult(String empCalAndSumExecLogID,
+    public AddEmpCalSumAndTargetCommandResult(String empCalAndSumExecLogID,
     		String periodStartDate, String periodEndDate) {
     	this.enumComboBox = EnumAdaptor.convertToValueNameList(ExecutionContent.class, ExecutionContent.DAILY_CREATION, ExecutionContent.DAILY_CALCULATION, ExecutionContent.MONTHLY_AGGREGATION);
 		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
