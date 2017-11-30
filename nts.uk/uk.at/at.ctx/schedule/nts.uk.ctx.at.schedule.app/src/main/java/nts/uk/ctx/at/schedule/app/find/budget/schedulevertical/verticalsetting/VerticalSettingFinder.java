@@ -130,7 +130,7 @@ public class VerticalSettingFinder {
 			externalItem.setItemId(externalItems.get(i).getExternalBudgetCode());
 			externalItem.setItemName(externalItems.get(i).getExternalBudgetName());
 			externalItem.setItemType(ItemTypes.EXTERNAL.value);
-			externalItem.setDispOrder(Integer.parseInt(externalItems.get(i).getExternalBudgetCode()));
+			externalItem.setDispOrder(i);
 			
 			baseItems.add(externalItem);
 		}
