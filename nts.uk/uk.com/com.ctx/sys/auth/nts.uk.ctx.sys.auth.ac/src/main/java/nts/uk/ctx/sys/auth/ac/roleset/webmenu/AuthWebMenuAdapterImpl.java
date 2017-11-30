@@ -21,15 +21,16 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AuthWebMenuAdapterImpl implements WebMenuAdapter {
-	
-	/** The web menu pub. */
-	@Inject
-	private WebMenuPub webMenuPub;
+    
+    /** The web menu pub. */
+    @Inject
+    private WebMenuPub webMenuPub;
 
-	@Override
-	public List<WebMenuImport> findByCompanyId() {		
-		return this.webMenuPub.findByCompanyId(AppContexts.user().companyId()).stream().map(item ->
-			new WebMenuImport(item.getCompanyId(), item.getWebMenuCode(), item.getWebMenuName(), item.isDefaultMenu())
-			).collect(Collectors.toList());
-	}
+    @Override
+    public List<WebMenuImport> findByCompanyId() {
+        return this.webMenuPub.findByCompanyId(AppContexts.user().companyId()).stream()
+                .map(item -> new WebMenuImport(item.getCompanyId(), item.getWebMenuCode(),
+                        item.getWebMenuName(), item.isDefaultMenu())
+            ).collect(Collectors.toList());
+    }
 }

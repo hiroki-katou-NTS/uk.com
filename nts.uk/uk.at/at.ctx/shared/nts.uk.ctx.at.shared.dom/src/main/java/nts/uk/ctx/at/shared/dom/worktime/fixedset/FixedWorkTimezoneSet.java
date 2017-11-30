@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 
 /**
  * The Class FixedWorkTimezoneSet.
@@ -18,7 +19,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 
 	/** The working timezone. */
 	// 就業時間帯
-	private List<EmTimeOfTimezoneSet> workingTimezone;
+	private List<EmTimeZoneSet> workingTimezone;
 
 	/** The OT timezone. */
 	// 残業時間帯

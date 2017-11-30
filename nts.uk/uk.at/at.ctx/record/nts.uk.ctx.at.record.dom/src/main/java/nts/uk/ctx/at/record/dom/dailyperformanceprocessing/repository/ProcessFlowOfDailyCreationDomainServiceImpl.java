@@ -48,10 +48,9 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			String empCalAndSumExecLogID) {
 		
 		TaskDataSetter dataSetter = asyncContext.getDataSetter();
-		dataSetter.updateData("dailyCreateCount", 0);
-		dataSetter.updateData("dailyCreateStatus", ExecutionStatus.PROCESSING.nameId);
-		dataSetter.updateData("dailyCreateHasError", "");
-
+		dataSetter.setData("dailyCreateCount", 0);
+		dataSetter.setData("dailyCreateStatus", ExecutionStatus.PROCESSING.nameId);
+		dataSetter.setData("dailyCreateHasError", "");
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -77,6 +76,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			return f.getEmployeeId();
 		}).collect(Collectors.toList());
 		
+		dataSetter.setData("dailyCreateTotal", targetPersons.size());
+		
 		//各処理の実行		
 		ProcessState status = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList, periodTime, executionAttr, companyId, empCalAndSumExecLogID);
 		
@@ -90,7 +91,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, executionStatus.value);
 		}
 		
-		dataSetter.setData("dailyCreateStatus", ExecutionStatus.DONE.nameId);
+		dataSetter.updateData("dailyCreateStatus", ExecutionStatus.DONE.nameId);
 		
 	}
 	

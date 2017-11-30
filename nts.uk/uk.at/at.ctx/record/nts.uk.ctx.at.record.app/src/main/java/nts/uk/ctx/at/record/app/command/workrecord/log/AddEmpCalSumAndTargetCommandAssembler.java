@@ -30,12 +30,12 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class ExecutionProcessingCommandAssembler {
+public class AddEmpCalSumAndTargetCommandAssembler {
 
 	@Inject 
 	CaseSpecExeContentRepository caseSpecExeContentRepository;
 	
-	public EmpCalAndSumExeLog fromDTO(ExecutionProcessingCommand command) {
+	public EmpCalAndSumExeLog fromDTO(AddEmpCalSumAndTargetCommand command) {
 		// ログインしている社員の社員IDを取得する (Lấy login EmployeeID)
 		String employeeID = AppContexts.user().employeeId();
 		// 実行ボタン押下時のシステム日付を取得する (lấy thời gian hệ thống)
@@ -101,7 +101,7 @@ public class ExecutionProcessingCommandAssembler {
 	}
 
 	/** Build list ExecutionLog for Screen B */
-	private List<ExecutionLog> buildExecutionLog(String empCalAndSumExecLogID, ExecutionProcessingCommand command) {
+	private List<ExecutionLog> buildExecutionLog(String empCalAndSumExecLogID, AddEmpCalSumAndTargetCommand command) {
 		List<ExecutionLog> result = new ArrayList<ExecutionLog>();
 		// Create DailyCreationSetInfo
 		if (command.isDailyCreation()) {
@@ -179,7 +179,7 @@ public class ExecutionProcessingCommandAssembler {
 	}
 
 	/** Build each ExecutionLog */
-	private ExecutionLog createExecutionLog(String empCalAndSumExecLogID, ExecutionContent executionContent, ExecutionProcessingCommand command) {
+	private ExecutionLog createExecutionLog(String empCalAndSumExecLogID, ExecutionContent executionContent, AddEmpCalSumAndTargetCommand command) {
 		ExecutionLog executionLog = ExecutionLog.createFromJavaType(
 				empCalAndSumExecLogID,
 				executionContent.value,

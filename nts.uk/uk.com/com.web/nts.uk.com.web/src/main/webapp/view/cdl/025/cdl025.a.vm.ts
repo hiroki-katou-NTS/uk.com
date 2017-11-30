@@ -2,11 +2,9 @@ module nts.uk.com.view.cdl025.a {
     import getText = nts.uk.resource.getText;
     import ccg = nts.uk.com.view.ccg025.a;
     import model = nts.uk.com.view.ccg025.a.component.model;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     
-    export interface Option {
-        roleType?: number;
-        multiple?: boolean;
-    }
     export module viewmodel {
         export class ScreenModel {
             component: ccg.component.viewmodel.ComponentModel;
@@ -16,23 +14,19 @@ module nts.uk.com.view.cdl025.a {
             roleType : number;
             multiple : boolean;
             //
-            private defaultOption: Option = {
-                multiple: true
-            }
-            private setting: Option;
             private searchMode: string;
             
-            constructor(option: Option) {
+            constructor() {
                 let self = this;
-                //
-                self.setting = $.extend({}, self.defaultOption, option);
-                self.searchMode = (self.setting.multiple) ? "highlight" : "filter";
-                //
-//                self.roleType = 1;
-//                self.multiple = true;
+                let param = nts.uk.ui.windows.getShared("paramCdl025"); 
+                if(param !=null){
+                    self.roleType = param.roleType;
+                    self.multiple = param.multiple;    
+                }
+                
                 self.component = new ccg.component.viewmodel.ComponentModel({ 
-                    roleType: self.setting.roleType,
-                    multiple: self.setting.multiple
+                    roleType: self.roleType,
+                    multiple: self.multiple
                 });
                 self.listRole = ko.observableArray([]);
                 self.currentCode = ko.observable('');
@@ -59,7 +53,7 @@ module nts.uk.com.view.cdl025.a {
                     currentCode : self.component.currentCode(),
                     multiple :  self.multiple
                 };
-                nts.uk.ui.windows.setShared("paramCdl025", param);
+                nts.uk.ui.windows.setShared("dataCdl025", param);
                 nts.uk.ui.windows.close();
                 //nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml");
                 

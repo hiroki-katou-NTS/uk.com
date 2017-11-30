@@ -32,6 +32,7 @@ module nts.uk.com.view.cas011.c.viewmodel {
                 if (itemList && itemList.length > 0) {
                     listDefaultRoleSets(itemList);
                     self.settingSelectedDefaultRoleSet();
+                    $('#combo-box').focus();
                 } else { //in case number of RoleSet is zero
                     self.closeDialog();
                 }    
@@ -105,7 +106,6 @@ module nts.uk.com.view.cas011.c.viewmodel {
             let self = this;
             self.roleSetCd(param.roleSetCd || '');
             self.roleSetName(param.roleSetName || '');
-
         }
     }
 }

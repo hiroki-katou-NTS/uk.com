@@ -182,6 +182,10 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	private static FormulaTimeUnit toDomainFormFormulaTime(KscstFormTimeUnit timeUnit) {
 		List<TimeUnitFunc> lst = new ArrayList<>();
+		if(timeUnit == null) {
+			return null;
+		}
+		
 		for (KscstFormTimeunitFunc obj : timeUnit.listTime) {
 			lst.add(toDomainFormTime(obj));
 		}

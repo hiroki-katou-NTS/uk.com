@@ -8,7 +8,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class ExecutionProcessingCommand {
+public class AddEmpCalSumAndTargetCommand {
 
     /** Screen B or J*/
     private String screen;
