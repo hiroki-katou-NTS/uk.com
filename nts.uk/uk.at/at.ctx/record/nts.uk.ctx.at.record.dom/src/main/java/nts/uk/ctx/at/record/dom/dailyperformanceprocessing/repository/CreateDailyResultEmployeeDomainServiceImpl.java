@@ -63,27 +63,15 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		// 中断 : 1
 		ProcessState status = ProcessState.SUCCESS;
 
-		List<String> employeeIds = new ArrayList<>();
-
-		List<EmployeeIdClosureIdStatusOutput> statusOutput = new ArrayList<>();
-
 		GeneralDate processingDate = periodTime.start();
 
 		// lits day between startDate and endDate
 		List<GeneralDate> listDayBetween = this.getDaysBetween(periodTime.start(), periodTime.end());
 
 		// Imported（就業）「所属雇用履歴」を取得する
-		// TODO - waiting request list
-		// param : employeeId, processingDate
-		// this.employmentAdapter.getEmpHistBySid(
-		// employeeIds, processingDate);
-		Optional<EmploymentHistoryImported> employentHisOptional = null;
-		String employmentCode = employentHisOptional.get().getEmploymentCode();
-		List<EmploymentHistoryImported> employmentHis = new ArrayList<>();
-
-		List<String> emloymentCodes = employmentHis.stream().map(f -> {
-			return f.getEmploymentCode();
-		}).collect(Collectors.toList());
+//		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, employeeId, processingDate);
+		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, "90000000-0000-0000-0000-000000000001", processingDate);
+		String employmentCode = employmentHisOptional.get().getEmploymentCode();
 
 		for (GeneralDate day : listDayBetween) {
 			Map<GeneralDate, Integer> statusOfDayMap = new HashMap<GeneralDate, Integer>();
@@ -92,16 +80,16 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, employmentCode);
 
-			if (processingDate.afterOrEquals(employentHisOptional.get().getPeriod().end())
-					&& processingDate.beforeOrEquals(employentHisOptional.get().getPeriod().start())) {
+			if (processingDate.afterOrEquals(employmentHisOptional.get().getPeriod().end())
+					&& processingDate.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
 				statusOfDayMap.put(day, 0);
 			} else {
 				EmployeeAndClosure employeeAndClosureDto = new EmployeeAndClosure();
-				if (employentHisOptional.get().getEmploymentCode() == closureEmploymentOptional.get()
-						.getEmploymentCD()) {
+				if (employmentHisOptional.get().getEmploymentCode().equals(closureEmploymentOptional.get()
+						.getEmploymentCD())) {
 					employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
 					employeeAndClosureDto.setEmployeeId(employeeId);
-					employeeAndClosureDto.setPeriod(employentHisOptional.get().getPeriod());
+					employeeAndClosureDto.setPeriod(employmentHisOptional.get().getPeriod());
 				}
 
 				// アルゴリズム「実績ロックされているか判定する」を実行する
@@ -189,7 +177,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		// empCalAndSumExecLogID, reCreateAttr);
 
 		// 中断依頼が出されているかチェックする
-		// TODO - interruption in E screen
+		//  - interruption in E screen
 		// status = 1;
 		// EmployeeIdClosureIdStatusOutput statusInterruption = new
 		// EmployeeIdClosureIdStatusOutput();
@@ -216,7 +204,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		/**
 		 * ロック : 1 , アンロック : 0
 		 */
-		List<ClosureIdLockOutput> locks = new ArrayList<>();
 
 		EmployeeAndClosure employeeAndClosureDto = new EmployeeAndClosure();
 
