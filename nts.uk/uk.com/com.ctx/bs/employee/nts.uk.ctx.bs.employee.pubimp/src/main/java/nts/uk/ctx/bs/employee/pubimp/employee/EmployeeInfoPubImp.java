@@ -70,11 +70,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		if (!listEmpDomain.isEmpty()) {
 
 			listResult = listEmpDomain.stream()
-					.map(item -> EmpBasicInfoExport.builder()
-							.employeeId(item.getSId())
-							.employeeCode(item.getSCd().v())
-							.pId(item.getPId())
-							.companyMailAddress(item.getCompanyMail().v())
+					.map(item -> EmpBasicInfoExport.builder().employeeId(item.getSId()).employeeCode(item.getSCd().v())
+							.pId(item.getPId()).companyMailAddress(item.getCompanyMail().v())
 							.entryDate(item.getListEntryJobHist().get(0).getJoinDate())
 							.retiredDate(item.getListEntryJobHist().get(0).getRetirementDate()).build())
 					.collect(Collectors.toList());
@@ -86,11 +83,12 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			if (!listPersonDomain.isEmpty()) {
 				for (int j = 0; j < listResult.size(); j++) {
 					EmpBasicInfoExport resultItem = listResult.get(j);
-					Person per = listPersonDomain.stream()
-							.filter(m -> m.getPersonId() == resultItem.getPId()).collect(Collectors.toList()).get(0);
+					Person per = listPersonDomain.stream().filter(m -> m.getPersonId().equals(resultItem.getPId()))
+							.collect(Collectors.toList()).get(0);
 					listResult.get(j).setPersonMailAddress(null);
-					listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().getFullName().v());
-					listResult.get(j).setGender(per.getGender().value);
+					listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().getFullName() == null ? ""
+							: per.getPersonNameGroup().getPersonName().getFullName().v());
+					listResult.get(j).setGender(per.getGender() == null ? 0 : per.getGender().value);
 					listResult.get(j).setBirthDay(per.getBirthDate());
 				}
 			}
