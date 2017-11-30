@@ -94,12 +94,12 @@ module nts.uk.com.view.cas011.a.viewmodel {
             });
 
             //Setting role name
+            currentRoleSet.humanResourceRoleId.subscribe(hRRoleId => {
+                self.hRRoleName(self.getRoleNameByRoleId(ROLE_TYPE.HR, hRRoleId));
+            });
             currentRoleSet.salaryRoleId.subscribe(salaryRoleId => {
                 self.salaryRoleName(self.getRoleNameByRoleId(ROLE_TYPE.SALARY, salaryRoleId));
                 
-            });
-            currentRoleSet.humanResourceRoleId.subscribe(hRRoleId => {
-                self.hRRoleName(self.getRoleNameByRoleId(ROLE_TYPE.HR, hRRoleId));
             });
             currentRoleSet.myNumberRoleId.subscribe(myNumberRoleId => {
                 self.myNumberRoleName(self.getRoleNameByRoleId(ROLE_TYPE.MY_NUMBER, myNumberRoleId));
@@ -278,9 +278,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 } else {
                     block.clear();
                 }
-            }).ifNo(() => {
+            }).then(() => { 
                 block.clear();
-            });
+            });;
         }
 
         /**
@@ -331,7 +331,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
        openDialogSettingC() {
            let self = this;
            block.invisible();
-           windows.sub.modal('/view/cas/011/c/index.xhtml', { title: '' }).onClosed(function(): any {
+           let dialogTile = resource.getText('CAS011_3');
+           windows.sub.modal('/view/cas/011/c/index.xhtml', 
+                   {title: dialogTile}).onClosed(function(): any {
                block.clear();
                $('#inpRoleSetCd').focus();
                //self.setFocus();
