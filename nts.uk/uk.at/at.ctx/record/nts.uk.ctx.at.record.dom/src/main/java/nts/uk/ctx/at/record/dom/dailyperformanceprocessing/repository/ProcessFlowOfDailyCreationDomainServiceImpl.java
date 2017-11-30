@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
@@ -19,7 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
@@ -42,8 +40,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	
-	@Inject
-	private PersonInfoAdapter personInfoAdapter;
+//	@Inject
+//	private PersonInfoAdapter personInfoAdapter;
 
 	@Override
 	public <C> void processFlowOfDailyCreation(AsyncCommandHandlerContext<C> asyncContext, ExecutionAttr executionAttr, DatePeriod periodTime,

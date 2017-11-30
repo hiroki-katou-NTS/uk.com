@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
@@ -13,13 +12,12 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
-@Transactional
 public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWorkChangeRepository
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqdtAppWorkChange f";
     
-    private static final String SELECT_BY_KEY_STRING = String.join(SELECT_ALL_QUERY_STRING, " WHERE f.appWorkChangePk.cid =:companyID AND f.appWorkChangePk.appId =:appId ");
+    private static final String SELECT_BY_KEY_STRING =SELECT_ALL_QUERY_STRING + " WHERE f.appWorkChangePk.cid =:companyID AND f.appWorkChangePk.appId =:appId ";
 
     @Override
     public List<AppWorkChange> getAllAppWorkChange(){
@@ -55,14 +53,14 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
     }
     
 	private static AppWorkChange toDomain(KrqdtAppWorkChange entity) {
-		return AppWorkChange.createFromJavaType(entity.cid, entity.appId, entity.workTypeCd, entity.workTimeCd,
+		return AppWorkChange.createFromJavaType(entity.appWorkChangePk.cid, entity.appWorkChangePk.appId, entity.workTypeCd, entity.workTimeCd,
 				entity.excludeHolidayAtr, entity.workChangeAtr, entity.goWorkAtr1, entity.backHomeAtr1,
 				entity.breakTimeStart1, entity.breakTimeEnd1, entity.workTimeStart1, entity.workTimeEnd1,
 				entity.workTimeStart2, entity.workTimeEnd2, entity.goWorkAtr2, entity.backHomeAtr2);
 	}
 
 	private KrqdtAppWorkChange toEntity(AppWorkChange domain) {
-		return new KrqdtAppWorkChange(new KrqdtAppWorkChangePk(), domain.getCid(), domain.getAppId(),
+		return new KrqdtAppWorkChange(new KrqdtAppWorkChangePk(domain.getCid(), domain.getAppId()),
 				domain.getWorkTypeCd(), domain.getWorkTimeCd(), domain.getExcludeHolidayAtr(),
 				domain.getWorkChangeAtr(), domain.getGoWorkAtr1(), domain.getBackHomeAtr1(),
 				domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(), domain.getWorkTimeStart1(),

@@ -24,12 +24,12 @@ public class KrqdtAppWorkChangePk implements Serializable
      */
     @Basic(optional = false)
     @Column(name = "CID")
-    private String cid;
+    public String cid;
     
     /**
      * 申請ID
      */
     @Basic(optional = false)
     @Column(name = "APP_ID")
-    private String appId;
+    public String appId;
 }

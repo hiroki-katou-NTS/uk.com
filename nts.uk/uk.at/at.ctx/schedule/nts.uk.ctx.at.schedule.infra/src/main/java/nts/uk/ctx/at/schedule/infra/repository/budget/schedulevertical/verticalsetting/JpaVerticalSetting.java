@@ -427,7 +427,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		entity.kscstFormulaAmountPK = new KscstFormAmountPK(formulaAmount.getCompanyId(),
 				formulaAmount.getVerticalCalCd(), formulaAmount.getVerticalCalItemId());
 		entity.calMethodAtr = formulaAmount.getCalMethodAtr().value;
+		if(entity.moneyFunc == null){return null;}
 		entity.moneyFunc = toEntityFormulaMoney(formulaAmount.getMoneyFunc());
+		if(entity.timeUnit == null){return null;}
 		entity.timeUnit = toEntityFormTimeUnit(formulaAmount.getTimeUnit());
 
 		return entity;

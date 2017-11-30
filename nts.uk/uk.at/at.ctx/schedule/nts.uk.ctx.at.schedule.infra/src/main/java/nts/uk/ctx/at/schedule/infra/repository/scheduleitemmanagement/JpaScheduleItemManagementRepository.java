@@ -112,7 +112,7 @@ public class JpaScheduleItemManagementRepository extends JpaRepository implement
 				kscmtScheduleItem.kscmtScheduleItemPK.scheduleItemId, 
 				kscmtScheduleItem.scheduleItemName,
 				kscmtScheduleItem.scheduleItemAtr,
-				kscmtScheduleItem.scheduleItemOrder.dispOrder);
+				kscmtScheduleItem.scheduleItemOrder != null ? kscmtScheduleItem.scheduleItemOrder.dispOrder : 0);
 		
 		return scheduleItem;
 	}

@@ -34,56 +34,60 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	private TargetPersonRepository targetPersonRepository;
 
 	@Override
-	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds, DatePeriod periodTime, ExecutionAttr executionAttr,
-			String companyId, String empCalAndSumExecLogID) {
-		
+	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
+			DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID) {
+
 		val dataSetter = asyncContext.getDataSetter();
-		
+
 		ProcessState status = ProcessState.SUCCESS;
 
 		// AsyncCommandHandlerContext<SampleCancellableAsyncCommand> ABC;
 
 		// ③日別実績の作成処理
 		// 日別作成を実行するかチェックする
-		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndSumExeLogRepository.getByExecutionContent(empCalAndSumExecLogID, 0).get();
-		Optional<ExecutionLog> optDailyRecreate = empCalAndSumExeLog.getExecutionLogs().stream().filter(c -> c.getExecutionContent() == ExecutionContent.DAILY_CREATION).findAny();
-		if (optDailyRecreate.isPresent()) {
-			
-			DailyRecreateClassification reCreateAttr = optDailyRecreate.get().getDailyCreationSetInfo().get().getCreationType();
-			if (reCreateAttr == DailyRecreateClassification.REBUILD) {
-				// ④ログ情報（実行ログ）を更新する
-					empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, ExecutionStatus.PROCESSING.value);	
-					
-					int dailyCreateCount = 0;
-					// 社員1人分の処理
-					for (String employee : emloyeeIds) {
-						// 状態を確認する 
-						// status from activity ⑤社員の日別実績を作成する
-						status = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext, employee, periodTime, companyId,
-								empCalAndSumExecLogID, reCreateAttr);
-						if (status == ProcessState.SUCCESS) {
-							dailyCreateCount++;
-							// ログ情報（実行内容の完了状態）を更新する
-							updateExecutionStatusOfDailyCreation(executionAttr.value, empCalAndSumExecLogID);
-							status = ProcessState.SUCCESS;
-							dataSetter.updateData("dailyCreateCount", dailyCreateCount);
-						} else if (status == ProcessState.INTERRUPTION) {
-							status = ProcessState.INTERRUPTION;
-							break;
-						}
-					};					
-			} else {
-				status = ProcessState.INTERRUPTION;
+		Optional<ExecutionLog> executionLog = empCalAndSumExeLogRepository.getByExecutionContent(empCalAndSumExecLogID,
+				ExecutionContent.DAILY_CREATION.value);
+
+		DailyRecreateClassification reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getCreationType();
+		if (executionLog.isPresent()) {
+			// ④ログ情報（実行ログ）を更新する
+			empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.PROCESSING.value);
+
+			int dailyCreateCount = 0;
+			// 社員1人分の処理
+			for (String employee : emloyeeIds) {
+				
+				// fake data
+				employee = "90000000-0000-0000-0000-000000000001";
+				companyId = "000000000000-0001";
+				
+				// 状態を確認する
+				// status from activity ⑤社員の日別実績を作成する
+				status = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext, employee,
+						periodTime, companyId, empCalAndSumExecLogID, reCreateAttr);
+				if (status == ProcessState.SUCCESS) {
+					dailyCreateCount++;
+					// ログ情報（実行内容の完了状態）を更新する
+					updateExecutionStatusOfDailyCreation(executionAttr.value, empCalAndSumExecLogID);
+					status = ProcessState.SUCCESS;
+					dataSetter.updateData("dailyCreateCount", dailyCreateCount);
+				} else if (status == ProcessState.INTERRUPTION) {
+					status = ProcessState.INTERRUPTION;
+					break;
+				}
 			}
+			;
+		} else {
+			status = ProcessState.INTERRUPTION;
 		}
-		
+
 		return status;
 	}
 
 	private void updateExecutionStatusOfDailyCreation(int executionAttr, String empCalAndSumExecLogID) {
 
 		if (executionAttr == 0) {
-			empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0);
+			empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID,0, ExecutionStatus.DONE.value);
 		}
 
 	}

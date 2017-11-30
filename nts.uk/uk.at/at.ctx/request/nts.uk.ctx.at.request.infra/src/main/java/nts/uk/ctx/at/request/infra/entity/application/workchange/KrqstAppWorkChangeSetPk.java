@@ -9,12 +9,13 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Embeddable
 /**
 * 勤務変更申請設定: 主キー情報
 */
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
 public class KrqstAppWorkChangeSetPk implements Serializable
 {
     private static final long serialVersionUID = 1L;

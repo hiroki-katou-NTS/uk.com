@@ -98,7 +98,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
-				ApplicationType.OVER_TIME_APPLICATION.value, prePostAtr.value);
+				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			// TODO: QA Pending
 			result.setErrorCode(0);
@@ -108,7 +108,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 否認以外：
 		// 反映情報.実績反映状態＝未反映、反映済、反映待ち
 		ReflectPlanPerState refPlan = beforeApplication.get(0).getReflectPerState();
-		if (refPlan.equals(ReflectPlanPerState.NOTREFLECTED) || refPlan.equals(ReflectPlanPerState.NOTREFLECTED)
+		if (refPlan.equals(ReflectPlanPerState.NOTREFLECTED) || refPlan.equals(ReflectPlanPerState.REFLECTED)
 				|| refPlan.equals(ReflectPlanPerState.WAITREFLECTION)) {
 			// 背景色を設定する
 			result.setErrorCode(1);

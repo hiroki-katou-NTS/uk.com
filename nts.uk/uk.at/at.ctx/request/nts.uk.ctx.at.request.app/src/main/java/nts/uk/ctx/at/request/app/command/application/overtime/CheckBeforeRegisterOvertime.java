@@ -178,7 +178,7 @@ public class CheckBeforeRegisterOvertime {
 			int startTime = item.getStartTime() == null ? -1 : item.getStartTime().intValue();
 			int endTime = item.getEndTime() == null ? -1 : item.getEndTime().intValue();
 			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
-			return startTime != 0 || endTime != 0 || appTime != 0;
+			return startTime != -1 || endTime != -1 || appTime != -1;
 		}).map(item -> {
 			int startTime = item.getStartTime() == null ? -1 : item.getStartTime().intValue();
 			int endTime = item.getEndTime() == null ? -1 : item.getEndTime().intValue();

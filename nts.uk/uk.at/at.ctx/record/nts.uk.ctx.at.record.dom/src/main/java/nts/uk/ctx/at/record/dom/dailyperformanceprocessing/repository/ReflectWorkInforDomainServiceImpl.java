@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -69,7 +68,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
@@ -245,19 +243,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		Optional<PersonalLaborCondition> personalLaborHasData = this.personalLaborConditionRepository.findById(employeeID, day);
 
 		// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
-		Optional<BasicScheduleSidDto> basicScheduleHasData = null;
+		Optional<BasicScheduleSidDto> basicScheduleHasData = this.basicScheduleAdapter.findAllBasicSchedule(employeeID, day);
 
 		// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
-		List<WorkScheduleSidImport> workScheduleSidDtos = new ArrayList<>();
+		List<WorkScheduleSidImport> workScheduleHasData = basicScheduleHasData.get().getWorkScheduleSidImports();
 
 		// ドメインモデル「打刻反映管理」を取得する
 		Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
 				.findByCid(companyId);
 		
-		// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
-		List<WorkScheduleSidImport> workScheduleHasData = workScheduleSidDtos.stream()
-				.filter(item -> item.getSId().equals(employeeID) && item.getDate().equals(day))
-				.collect(Collectors.toList());
 
 		// 所属職場履歴
 		Optional<AffWorkPlaceSidImport> workPlaceHasData = affWorkplaceDtos.stream()
@@ -523,19 +517,19 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					// workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
 					// superitory
 					// TODO - requetsList newwave
-					InstantRounding instantRounding = new InstantRounding();
-					int attendanceTimeAfterRouding = this.roudingTime(sheet.getAttendance().v(),
-							instantRounding.getFontRearSection().value, instantRounding.getRoundingTimeUnit().value);
-					int leaveTimeAfterRounding = this.roudingTime(sheet.getLeaveWork().v(),
-							instantRounding.getFontRearSection().value, instantRounding.getRoundingTimeUnit().value);
-
-					// ドメインモデル「所属職場履歴」を取得する
-					attendanceStamp.setStamp(new WorkStamp(new TimeWithDayAttr(attendanceTimeAfterRouding),
-							sheet.getAttendance(), new WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
-							automaticStampSetDetailDto.getAttendanceStamp()));
-					leaveStamp.setStamp(new WorkStamp(new TimeWithDayAttr(leaveTimeAfterRounding), sheet.getLeaveWork(),
-							new WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
-							automaticStampSetDetailDto.getLeavingStamp()));
+//					InstantRounding instantRounding = new InstantRounding();
+//					int attendanceTimeAfterRouding = this.roudingTime(sheet.getAttendance().v(),
+//							instantRounding.getFontRearSection().value, instantRounding.getRoundingTimeUnit().value);
+//					int leaveTimeAfterRounding = this.roudingTime(sheet.getLeaveWork().v(),
+//							instantRounding.getFontRearSection().value, instantRounding.getRoundingTimeUnit().value);
+//
+//					// ドメインモデル「所属職場履歴」を取得する
+//					attendanceStamp.setStamp(new WorkStamp(new TimeWithDayAttr(attendanceTimeAfterRouding),
+//							sheet.getAttendance(), new WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
+//							automaticStampSetDetailDto.getAttendanceStamp()));
+//					leaveStamp.setStamp(new WorkStamp(new TimeWithDayAttr(leaveTimeAfterRounding), sheet.getLeaveWork(),
+//							new WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
+//							automaticStampSetDetailDto.getLeavingStamp()));
 
 					timeLeavingWork.setAttendanceStamp(attendanceStamp);
 					timeLeavingWork.setLeaveStamp(leaveStamp);
@@ -550,43 +544,43 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
 					// 所定時間帯を取得する - TODO
 					// waiting newwave
-					PredetemineTimeSet predetemineTimeSet = null;
+//					PredetemineTimeSet predetemineTimeSet = null;
 					// 所定時間設定を自動打刻セット詳細に入れる
 					// 所定時間帯．時間帯を順次確認する
-					predetemineTimeSet.getPrescribedTimezoneSetting().getTimezone().forEach(timezone -> {
-						if (timezone.getUseAtr() == UseSetting.USE) {
-							TimeLeavingWork timeLeavingWorkTemp = new TimeLeavingWork();
-							TimeActualStamp attendanceStampTemp = new TimeActualStamp();
-							TimeActualStamp leaveStampTemp = new TimeActualStamp();
-
-							// param : int workTimeMethodSet, String
-							// companyId, String siftCode, int
-							// superitory
-							// param : 0, companyId,
-							// workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
-							// superitory
-							// TODO - requetsList newwave
-							InstantRounding instantRounding = new InstantRounding();
-							// 出勤系時刻を丸める (làm tròn thời gian 出勤)
-							int attendanceTimeAfterRouding = this.roudingTime(timezone.getStart().v(),
-									instantRounding.getFontRearSection().value,
-									instantRounding.getRoundingTimeUnit().value);
-							int leaveTimeAfterRounding = this.roudingTime(timezone.getEnd().v(),
-									instantRounding.getFontRearSection().value,
-									instantRounding.getRoundingTimeUnit().value);
-
-							timeLeavingWorkTemp.setWorkNo(new WorkNo(new BigDecimal(timezone.getWorkNo())));
-							attendanceStampTemp.setStamp(
-									new WorkStamp(new TimeWithDayAttr(attendanceTimeAfterRouding), timezone.getStart(),
-											new WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
-											automaticStampSetDetailDto.getAttendanceStamp()));
-							leaveStampTemp.setStamp(new WorkStamp(new TimeWithDayAttr(leaveTimeAfterRounding),
-									timezone.getEnd(), new WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
-									automaticStampSetDetailDto.getLeavingStamp()));
-
-							timeLeavingWorks.add(timeLeavingWorkTemp);
-						}
-					});
+//					predetemineTimeSet.getPrescribedTimezoneSetting().getTimezone().forEach(timezone -> {
+//						if (timezone.getUseAtr() == UseSetting.USE) {
+//							TimeLeavingWork timeLeavingWorkTemp = new TimeLeavingWork();
+//							TimeActualStamp attendanceStampTemp = new TimeActualStamp();
+//							TimeActualStamp leaveStampTemp = new TimeActualStamp();
+//
+//							// param : int workTimeMethodSet, String
+//							// companyId, String siftCode, int
+//							// superitory
+//							// param : 0, companyId,
+//							// workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
+//							// superitory
+//							// TODO - requetsList newwave
+//							InstantRounding instantRounding = new InstantRounding();
+//							// 出勤系時刻を丸める (làm tròn thời gian 出勤)
+//							int attendanceTimeAfterRouding = this.roudingTime(timezone.getStart().v(),
+//									instantRounding.getFontRearSection().value,
+//									instantRounding.getRoundingTimeUnit().value);
+//							int leaveTimeAfterRounding = this.roudingTime(timezone.getEnd().v(),
+//									instantRounding.getFontRearSection().value,
+//									instantRounding.getRoundingTimeUnit().value);
+//
+//							timeLeavingWorkTemp.setWorkNo(new WorkNo(new BigDecimal(timezone.getWorkNo())));
+//							attendanceStampTemp.setStamp(
+//									new WorkStamp(new TimeWithDayAttr(attendanceTimeAfterRouding), timezone.getStart(),
+//											new WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
+//											automaticStampSetDetailDto.getAttendanceStamp()));
+//							leaveStampTemp.setStamp(new WorkStamp(new TimeWithDayAttr(leaveTimeAfterRounding),
+//									timezone.getEnd(), new WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
+//									automaticStampSetDetailDto.getLeavingStamp()));
+//
+//							timeLeavingWorks.add(timeLeavingWorkTemp);
+//						}
+//					});
 				}
 			}
 			automaticStampSetDetailDto.setTimeLeavingWorks(timeLeavingWorks);

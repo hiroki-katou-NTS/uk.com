@@ -51,13 +51,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Override
 	public int checkOvertime(String url) {
-		if(url.equals("0")){
-			return OverTimeAtr.PREOVERTIME.value;
-		}else if(url.equals("1")){
-			return OverTimeAtr.REGULAROVERTIME.value;
-		}else if(url.equals("2")){
-			return OverTimeAtr.ALL.value;
+		if(url == null){
+			return 0;
 		}
+			if(url.equals("0")){
+				return OverTimeAtr.PREOVERTIME.value;
+			}else if(url.equals("1")){
+				return OverTimeAtr.REGULAROVERTIME.value;
+			}else if(url.equals("2")){
+				return OverTimeAtr.ALL.value;
+			}
 		return 3;
 	}
 
