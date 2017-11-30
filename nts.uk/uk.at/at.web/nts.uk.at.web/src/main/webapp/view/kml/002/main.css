@@ -159,14 +159,14 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .display-atr {
 	min-width: 0 !important;
-	width: 96px !important;
+	width: 98px !important;
 	margin-left: 2px;
 	height: 31px !important;
 }
 
 .total {
 	min-width: 0 !important;
-	width: 65px !important;
+	width: 98px !important;
 	margin-left: 2px;
 	height: 31px !important;
 }
