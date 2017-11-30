@@ -15,7 +15,9 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         workPlaceName: string;
         listEmployee: Array<any>;
         listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+        listEmployeeSwapTemp: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+        listEmployeeTemporary:KnockoutObservableArray<any> = ko.observableArray([]);
         columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
             { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
@@ -25,13 +27,14 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
             { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
         ]);
-
-
+        onlyEmpNotTeam : KnockoutObservable<boolean> =  ko.observable(false);
+        
         constructor() {
             let self = this;
             self.workPlaceId = nts.uk.ui.windows.getShared('workPlaceId');
             self.listEmployee = nts.uk.ui.windows.getShared('listEmployee');
             self.selectedEmployeeSwap = ko.observableArray([]);
+            self.listEmployeeTemporary = ko.observableArray([]);
             self.selectedTeam('');
             self.teamName('');
             if (self.listEmployee.length > 0) {
@@ -40,11 +43,26 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 self.workPlaceName = '';
             }
             self.selectedTeam.subscribe(function(newValue) {
-                let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', newValue]);
-                let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
-                self.selectedEmployeeSwap(teamSelected);
-                self.listEmployeeSwap(newListEmployeeSwap);
+                if (self.onlyEmpNotTeam() == false) {
+                    self.listEmployeeSwap().concat(self.listEmployeeTemporary());
+                    let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', newValue]);
+                    let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
+                    self.selectedEmployeeSwap(teamSelected);
+                    self.listEmployeeSwap(newListEmployeeSwap);
+                } else {
+                    //self.listEmployeeTemporary(self.selectedEmployeeSwap());
+                    let teamSelected = _.filter(self.listEmployeeTemporary(), ['teamCode', newValue]);
+                    let temporary = _.reject(self.listEmployeeSwap(), ['teamCode', 'なし']);
+                    let teamSelectedTemp = self.selectedEmployeeSwap().concat(temporary);
+                    self.listEmployeeTemporary(teamSelectedTemp);
+                    self.selectedEmployeeSwap(teamSelected);
+                }
+               
+                //self.listEmployeeSwapTemp(_.clone(newListEmployeeSwap));
                 self.teamName(_.find(self.listTeam(), ['code', self.selectedTeam()]).name);
+            });
+            self.onlyEmpNotTeam.subscribe(function(value) {
+                self.filterEmpNotTeam(value);
             });
         }
         startPage(): JQueryPromise<any> {
@@ -194,6 +212,22 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 }).then(() => { nts.uk.ui.block.clear(); });
             }
 
+        }
+        
+        /**
+         * Event checkbox: filter employee not in team
+         */
+        filterEmpNotTeam(isChecked) {
+            var self = this;
+            if (isChecked == true) {
+                let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', 'なし']);
+                let temporary = _.reject(self.listEmployeeSwap(), ['teamCode', 'なし']);
+                self.listEmployeeTemporary(temporary);
+                self.listEmployeeSwap(teamSelected);
+            } else {
+                let newListEmployeeSwap = self.listEmployeeSwap().concat(self.listEmployeeTemporary());
+                self.listEmployeeSwap(newListEmployeeSwap);
+            }  
         }
     }
     class TeamModel {

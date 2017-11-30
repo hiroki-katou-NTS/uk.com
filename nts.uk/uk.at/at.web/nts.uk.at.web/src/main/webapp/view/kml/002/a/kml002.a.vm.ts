@@ -96,7 +96,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.cbxAttribute = ko.observableArray([
                 { attrCode: 0, attrName: nts.uk.resource.getText("Enum_Attributes_TIME") },
-                { attrCode: 1, attrName: nts.uk.resource.getText("Enum_Attributes_AMOUNT") },
+                { attrCode: 1, attrName: nts.uk.resource.getText("Enum_Attribute_Section_Money") },
                 { attrCode: 2, attrName: nts.uk.resource.getText("Enum_Attributes_NUMBER_OF_PEOPLE") },
                 { attrCode: 3, attrName: nts.uk.resource.getText("Enum_Attributes_NUMBER") },
                 { attrCode: 4, attrName: nts.uk.resource.getText("Enum_Attributes_AVERAGE_PRICE") }
@@ -150,7 +150,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 self.isparentCall(true);
 
                 if (value.length > 0) {
-                    blockUI.invisible();
                     self.calculatorItems.removeAll();
 
                     service.getVerticalCalSetByCode(value).done(function(data) {
@@ -231,8 +230,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
 
                         self.calculatorItems(sortedItems);
-                        
-                        blockUI.clear();
                     }).fail(function(res) {
 
                     });
@@ -750,6 +747,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             // clear all error
             nts.uk.ui.errors.clearAll();
+            
+            blockUI.invisible();
 
             // validate
             $(".input-code").trigger("validate");
@@ -776,12 +775,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var verticalCalItems = new Array<VerticalCalItemDto>();
 
             for (var i = 0; i < self.calculatorItems().length; i++) {
-                var dataB = self.dataB == null ? self.calculatorItems()[i].formBuilt : self.dataB;
-                var dataC = self.dataC == null ? self.calculatorItems()[i].formTime : self.dataC;
-                var dataD = self.dataD == null ? self.calculatorItems()[i].formPeople : self.dataD;
-                var dataE = self.dataE == null ? self.calculatorItems()[i].formulaAmount : self.dataE;
-                var dataF = self.dataF == null ? self.calculatorItems()[i].numerical : self.dataF;
-                var dataG = self.dataG == null ? self.calculatorItems()[i].unitPrice : self.dataG;
+                var dataB = self.calculatorItems()[i].formBuilt != null ? self.calculatorItems()[i].formBuilt : self.dataB;
+                var dataC = self.calculatorItems()[i].formTime != null ? self.calculatorItems()[i].formTime : self.dataC;
+                var dataD = self.calculatorItems()[i].formPeople != null ? self.calculatorItems()[i].formPeople : self.dataD;
+                var dataE = self.calculatorItems()[i].formulaAmount != null ? self.calculatorItems()[i].formulaAmount : self.dataE;
+                var dataF = self.calculatorItems()[i].numerical != null ? self.calculatorItems()[i].numerical : self.dataF;
+                var dataG = self.calculatorItems()[i].unitPrice != null ? self.calculatorItems()[i].unitPrice : self.dataG;
 
                 var item = {
                     verticalCalCd: code,
@@ -822,7 +821,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    blockUI.clear();
                 });
             } else {
                 $('#checkall').ntsError('set', { messageId: "Msg_110" });
@@ -835,6 +834,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         settingBtn() {
             var self = this;
 
+            nts.uk.ui.windows.sub.modal("/view/kdl/024/a/index.xhtml");
         }
 
         /**
@@ -1184,9 +1184,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 verticalCalItems.push(item);
             }
 
-            // Get data form db to display on Dialog
-            var dataTranfer = _.find(self.calculatorItems(), function(o) { return o.itemName() == itemName; });
-
             var data = {
                 verticalCalCd: self.code(),
                 itemId: itemCd,
@@ -1195,12 +1192,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 unit: self.unitSelected(),
                 itemName: itemName,
                 verticalItems: currentItem.settingMethod() == 1 ? verticalCalItems : null,
-                formBuilt: dataTranfer.formBuilt,
-                formTime: dataTranfer.formTime,
-                formPeople: dataTranfer.formPeople,
-                formulaAmount: dataTranfer.formulaAmount,
-                numerical: dataTranfer.numerical,
-                unitPrice: dataTranfer.unitPrice
+                formBuilt: currentItem.formBuilt,
+                formTime: currentItem.formTime,
+                formPeople: currentItem.formPeople,
+                formulaAmount: currentItem.formulaAmount,
+                numerical: currentItem.numerical,
+                unitPrice: currentItem.unitPrice
             };
 
             nts.uk.ui.windows.setShared("KML002_A_DATA", data);
@@ -1498,23 +1495,30 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     } else {
                         var before = "";
 
-                        if (isFirstLoad) {
-                            before = beforeFormula;
-                        } else {
-                            before = self.calculatorItems()[index - 1].formula();
-                        }
-
                         if (attribute == 0) {
                             if (data.lstFormTimeFunc.length <= 0) {
                                 formulaResult = "";
                             } else {
                                 for (var i = 0; i < data.lstFormTimeFunc.length; i++) {
                                     var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    formulaResult += operator + " " + data.lstFormTimeFunc[i].name + " ";
+                                    var itemName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
+                                    var attendanceItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].attendanceItemId; });
+                                    var presetItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].presetItemId; });
+                                    var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
+                         
+                                    if(itemName != "") {
+                                        formulaResult += operator + " " + itemName + " ";
+                                    } else if(attendanceItem != null) {
+                                        formulaResult += operator + " " + attendanceItem.name + " ";
+                                    } else if(presetItem != null) {
+                                        formulaResult += operator + " " + presetItem.name + " ";
+                                    } else if(externalItem != null) {
+                                        formulaResult += operator + " " + externalItem.name + " ";
+                                    }
                                 }
                             }
                         } else if (attribute == 1) {
-                            if (data.moneyFunc.lstMoney.length <= 0 && data.lstTimeUnitFuncs.length <= 0) {
+                            if (data.moneyFunc.lstMoney.length <= 0 && data.timeUnit.lstTimeUnitFuncs.length <= 0) {
                                 formulaResult = "";
                             } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
