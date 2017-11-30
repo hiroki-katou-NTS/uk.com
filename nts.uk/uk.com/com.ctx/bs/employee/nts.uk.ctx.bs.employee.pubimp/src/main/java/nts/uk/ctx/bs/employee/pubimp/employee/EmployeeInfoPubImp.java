@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,11 +10,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -27,6 +34,9 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 	@Inject
 	PersonRepository personRepo;
+
+	@Inject
+	AffCompanyHistRepository affCompanyHistRepo;
 
 	@Override
 	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode,
@@ -97,4 +107,61 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		return listResult;
 	}
 
+	/**
+	 * Get Employee Info By Pid. Requets List No.124
+	 */
+	@Override
+	public List<EmpInfoExport> getEmpInfoByPid(String pid) {
+
+		List<EmpInfoExport> listResult = new ArrayList<>();
+
+		if (pid == null) {
+			return null;
+		}
+		// get domain Affiliated Company History-所属会社履歴
+		AffCompanyHist affCompanyHist = this.affCompanyHistRepo.getAffCompanyHistoryOfPerson(pid);
+
+		// get systemDate
+		Date date = new Date();
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
+
+		if (affCompanyHist != null) {
+
+			if (!CollectionUtil.isEmpty(affCompanyHist.getLstAffCompanyHistByEmployee())) {
+
+				// check all item in List<AffCompanyHistItem>
+				for (AffCompanyHistByEmployee affCompanyHistByEmployee : affCompanyHist.getLstAffCompanyHistByEmployee()) {
+
+					if (!CollectionUtil.isEmpty(affCompanyHistByEmployee.getLstAffCompanyHistoryItem())) {
+
+						for (AffCompanyHistItem affCompanyHistItem : affCompanyHistByEmployee
+								.getLstAffCompanyHistoryItem()) {
+							
+							if (systemDate.beforeOrEquals(affCompanyHistItem.end())
+									&& systemDate.afterOrEquals(affCompanyHistItem.start())) {
+								Optional<Person> personOpt = personRepo.getByPersonId(affCompanyHist.getPId());
+								if (personOpt.isPresent()) {
+									Person person = personOpt.get();
+									EmpInfoExport empInfoExport = new EmpInfoExport();
+									empInfoExport.setPId(person.getPersonId() == null ? "" : null);
+									empInfoExport.setPersonName(person.getPersonNameGroup().getPersonName().toString() == null ? "" : null);
+									empInfoExport.setEmployeeId(affCompanyHistByEmployee.getSId() == null ? "" : null);
+									if (affCompanyHistByEmployee.getSId() != null) {
+										Optional<Employee> employeeOpt = this.repo.getBySid(affCompanyHistByEmployee.getSId());
+										if (employeeOpt.isPresent()) {
+											Employee employee = employeeOpt.get();
+											empInfoExport.setEmployeeCode(employee.getSCd() == null ? "" : employee.getSCd().v());
+											empInfoExport.setCompanyId(employee.getCompanyId());
+										}
+									}
+									listResult.add(empInfoExport);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return listResult;
+	}
 }
