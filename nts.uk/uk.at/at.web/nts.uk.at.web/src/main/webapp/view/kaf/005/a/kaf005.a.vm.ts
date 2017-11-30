@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import common = nts.uk.at.view.kaf005.share.common;
     import service = nts.uk.at.view.kaf005.shr.service;
     import dialog = nts.uk.ui.dialog;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ScreenModel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -282,13 +283,29 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             nts.uk.ui.block.invisible();
             let appReason: string,
                 divergenceReason: string;
-            appReason = self.getReasonName( self.reasonCombo(), self.selectedReason());
-            divergenceReason = self.getReasonName(self.reasonCombo2(), self.selectedReason2());       
-            if (!nts.uk.util.isNullOrUndefined(self.multilContent())) {
-                appReason = appReason + ":" + self.multilContent();
+            appReason = self.getReason(
+                self.typicalReasonDisplayFlg(),
+                self.selectedReason(),
+                self.reasonCombo(),
+                self.displayAppReasonContentFlg(),
+                self.multilContent()
+            );
+            let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+            if(appReasonError){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
+                return;    
             }
-            if (!nts.uk.util.isNullOrUndefined(self.multilContent2())) {
-                divergenceReason = divergenceReason + ":" + self.multilContent2();
+            divergenceReason = self.getReason(
+                self.displayDivergenceReasonForm(),
+                self.selectedReason2(),
+                self.reasonCombo2(),
+                self.displayDivergenceReasonInput(),
+                self.multilContent2()
+            );
+            let divergenceReasonError = !appcommon.CommonProcess.checkAppReason(true, self.displayDivergenceReasonForm(), self.displayDivergenceReasonInput(), divergenceReason);
+            if(divergenceReasonError){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});   
+                return;     
             }
             let overTimeShiftNightTmp: number = 0;
             let flexExessTimeTmp: number = 0;
@@ -553,51 +570,52 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         findBychangeAppDateData(data: any) {
             var self = this;
-            self.manualSendMailAtr(data.manualSendMailAtr);
-            self.prePostSelected(data.application.prePostAtr);
-            self.displayCaculationTime(data.displayCaculationTime);
-            self.restTimeDisFlg(data.displayRestTime);
-            self.employeeName(data.employeeName);
-            if (data.siftType != null) {
-                self.siftCD(data.siftType.siftCode);
-                self.siftName(data.siftType.siftName);
+            let overtimeDto = data.overtimeDto;
+            self.manualSendMailAtr(overtimeDto.manualSendMailAtr);
+            self.prePostSelected(overtimeDto.application.prePostAtr);
+            self.displayCaculationTime(overtimeDto.displayCaculationTime);
+            self.restTimeDisFlg(overtimeDto.displayRestTime);
+            self.employeeName(overtimeDto.employeeName);
+            if (overtimeDto.siftType != null) {
+                self.siftCD(overtimeDto.siftType.siftCode);
+                self.siftName(overtimeDto.siftType.siftName);
             }
-            if (data.workType != null) {
-                self.workTypeCd(data.workType.workTypeCode);
-                self.workTypeName(data.workType.workTypeName);
+            if (overtimeDto.workType != null) {
+                self.workTypeCd(overtimeDto.workType.workTypeCode);
+                self.workTypeName(overtimeDto.workType.workTypeName);
             }
-            self.timeStart1(data.workClockFrom1);
-            self.timeEnd1(data.workClockFrom2);
-            self.timeStart2(data.workClockTo1);
-            self.timeEnd2(data.workClockTo2);
-            if(data.applicationReasonDtos != null){
-                self.reasonCombo(_.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); }));
-                self.selectedReason(_.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID);
-                self.multilContent(data.application.applicationReason);
-            }
-            
-            if(data.divergenceReasonDtos != null){
-                self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                self.selectedReason2(data.divergenceReasonDtos.divergenceReasonIdDefault);
-                self.multilContent2(data.divergenceReasonContent);
+            self.timeStart1(data.workClockFrom1 == -1 ? null : data.workClockFrom1);
+            self.timeEnd1(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
+            self.timeStart2(data.workClockTo1 == -1 ? null : data.workClockTo1);
+            self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
+            if(overtimeDto.applicationReasonDtos != null){
+                self.reasonCombo(_.map(overtimeDto.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); }));
+                self.selectedReason(_.find(overtimeDto.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID);
+                self.multilContent(overtimeDto.application.applicationReason);
             }
             
-            self.instructInforFlag(data.displayOvertimeInstructInforFlg);
-            self.instructInfor(data.overtimeInstructInformation);
+            if(overtimeDto.divergenceReasonDtos != null){
+                self.reasonCombo2(_.map(overtimeDto.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
+                self.selectedReason2(overtimeDto.divergenceReasonDtos.divergenceReasonIdDefault);
+                self.multilContent2(overtimeDto.divergenceReasonContent);
+            }
+            
+            self.instructInforFlag(overtimeDto.displayOvertimeInstructInforFlg);
+            self.instructInfor(overtimeDto.overtimeInstructInformation);
             // preAppOvertime
-            self.convertpreAppOvertimeDto(data);
+            self.convertpreAppOvertimeDto(overtimeDto);
            
              // 残業時間
-            if (data.overTimeInputs != null) {
-                for (let i = 0; i < data.overTimeInputs.length; i++) {
-                    if (data.overTimeInputs[i].attendanceID == 1) {
-                        self.overtimeHours.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,0, data.overTimeInputs[i].frameName, null, null, null,"#[KAF005_55]"));
+            if (overtimeDto.overTimeInputs != null) {
+                for (let i = 0; i < overtimeDto.overTimeInputs.length; i++) {
+                    if (overtimeDto.overTimeInputs[i].attendanceID == 1) {
+                        self.overtimeHours.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,0, overtimeDto.overTimeInputs[i].frameName, null, null, null,"#[KAF005_55]"));
                     }
-                    if (data.overTimeInputs[i].attendanceID == 2) {
-                        self.breakTimes.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,0,data.overTimeInputs[i].frameName, null, null, null,""));
+                    if (overtimeDto.overTimeInputs[i].attendanceID == 2) {
+                        self.breakTimes.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,0,overtimeDto.overTimeInputs[i].frameName, null, null, null,""));
                     }
-                    if (data.overTimeInputs[i].attendanceID == 3) {
-                        self.bonusTimes.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,data.overTimeInputs[i].timeItemTypeAtr ,data.overTimeInputs[i].frameName, null, null, null,""));
+                    if (overtimeDto.overTimeInputs[i].attendanceID == 3) {
+                        self.bonusTimes.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,overtimeDto.overTimeInputs[i].timeItemTypeAtr ,overtimeDto.overTimeInputs[i].frameName, null, null, null,""));
                     }
                 }
             }
@@ -607,18 +625,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 //                self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), 0, null, null,"KAF005_64"));
 //            }
 //             self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), 0, null, null,"KAF005_66"));
-            if(data.overtimeAtr == 0){
+            if(overtimeDto.overtimeAtr == 0){
                 self.heightOvertimeHours(58);   
-            }else if(data.overtimeAtr == 1){
+            }else if(overtimeDto.overtimeAtr == 1){
                 self.heightOvertimeHours(180);
             }else{
                 self.heightOvertimeHours(216);
             }
 
-        }
-         convertpreAppOvertimeDto(data :any){
-             let self = this;
-             if(data.preAppOvertimeDto != null){
+         }
+            convertpreAppOvertimeDto(data :any){
+                let self = this;
+                if(data.preAppOvertimeDto != null){
                 self.appDatePre(data.preAppOvertimeDto.appDatePre);
                 if(data.preAppOvertimeDto.workTypePre != null){
                     self.workTypeCodePre(data.preAppOvertimeDto.workTypePre.workTypeCode);
@@ -656,21 +674,42 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
                  self.overTimeShiftNightPre(self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
                  self.flexExessTimePre(self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
+                }
             }
-        }
-       convertIntToTime(data : any) : string{
-           let hourMinute : string = "";
-        if(data == -1 || data == ""){
-            return null;
-        }else if (data == 0) {
-            hourMinute = "00:00";
-        }else if(data != null){
-            let hour = Math.floor(data/60);
-            let minutes = Math.floor(data%60);
-            hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
-        }
-           return hourMinute;
-       } 
+            convertIntToTime(data : any) : string{
+                let hourMinute : string = "";
+                if(data == -1 || data == ""){
+                    return null;
+                }else if (data == 0) {
+                    hourMinute = "00:00";
+                }else if(data != null){
+                    let hour = Math.floor(data/60);
+                    let minutes = Math.floor(data%60);
+                    hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+                }
+                return hourMinute;
+            } 
+            getReason(inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string): string{
+                let appReason = '';
+                let inputReason: string = '';
+                if(inputReasonID!=''){
+                    inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;    
+                }    
+                if(inputReasonDisp==true&&detailReasonDisp==true){
+                    if(inputReason.trim()!=''&&detailReason.trim()!=''){
+                        appReason = inputReason + ":" + detailReason;
+                    } else if(inputReason.trim()!=''&&detailReason.trim()==''){
+                        appReason = inputReason; 
+                    } else if(inputReason.trim()==''&&detailReason.trim()!=''){
+                        appReason = detailReason;             
+                    }                
+                } else if(inputReasonDisp==true&&detailReasonDisp==false){
+                    appReason = inputReason;                 
+                } else if(inputReasonDisp==false&&detailReasonDisp==true){
+                    appReason = detailReason;     
+                } 
+                return appReason;
+            }
         
     }
 

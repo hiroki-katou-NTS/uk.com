@@ -230,7 +230,7 @@ module nts.uk.at.view.kaf000.shr{
                         return true;
                     }
                 }
-                if(appReason.trim()){
+                if(appReason.trim()==''){
                     // throw new BusinessException("Msg_115");
                     return false;
                 }
