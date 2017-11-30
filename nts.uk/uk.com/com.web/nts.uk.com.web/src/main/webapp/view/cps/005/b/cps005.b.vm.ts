@@ -13,7 +13,6 @@ module nts.uk.com.view.cps005.b {
             currentItemData: KnockoutObservable<ItemDataModel>;
             isUpdate: boolean = false;
             isEnableButtonProceed: KnockoutObservable<boolean>;
-            isClickRegister: KnockoutObservable<boolean> = ko.observable(false);
             currentCtg: any = getShared("CPS005_A");
             constructor() {
                 let self = this,
@@ -66,7 +65,6 @@ module nts.uk.com.view.cps005.b {
 
             register() {
                 let self = this;
-                self.isClickRegister(true);
                 nts.uk.ui.errors.clearAll();
                 self.currentItemData().perInfoItemSelectCode("");
                 self.currentItemData().currentItemSelected(new PersonInfoItem(null));
@@ -79,7 +77,6 @@ module nts.uk.com.view.cps005.b {
             addUpdateData() {
                 let self = this,
                     newItemDef;
-                self.isClickRegister(false);
                 block.invisible();
                 debugger;
 
@@ -283,7 +280,6 @@ module nts.uk.com.view.cps005.b {
                 self.perInfoItemSelectCode.subscribe(newItemId => {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     nts.uk.ui.errors.clearAll();
-                    __viewContext['screenModelB'].isClickRegister(false);
                     new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
                         debugger;
                         self.currentItemSelected(new PersonInfoItem(data));
@@ -331,35 +327,10 @@ module nts.uk.com.view.cps005.b {
             let self = this;
             self.dataType.subscribe(function(value) {
                 if (value === 6) {
-                    if (__viewContext['screenModelB'].isClickRegister()) {
-                        let baseDate = moment(new Date()).format('YYYY-MM-DD');
-                        if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
-                            new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
-                                baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
-                                    console.log(data);
-                                    if (data.length > 0) {
-                                        self.selectionItem().selectionLst([]);
-                                        self.selectionItem().selectionLst(data);
-                                        self.selectionItem().selectionLst.valueHasMutated();
-
-                                    } else {
-                                        self.selectionItem().selectionLst.removeAll();
-                                        self.selectionItem().selectionLst([]);
-                                        self.selectionItem().selectionLst.valueHasMutated();
-
-                                    }
-
-
-                                });
-
-                        }
-
-                        self.selectionItem().selectionItemId.subscribe(function(value) {
-                            if (!value) {
-                                return;
-                            }
-                            new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
-                                console.log(data);
+                    let baseDate = moment(new Date()).format('YYYY-MM-DD');
+                    if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
+                        new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
+                            baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                                 if (data.length > 0) {
                                     self.selectionItem().selectionLst([]);
                                     self.selectionItem().selectionLst(data);
@@ -372,11 +343,30 @@ module nts.uk.com.view.cps005.b {
 
                                 }
 
-                            });
-                        });
 
+                            });
 
                     }
+
+                    self.selectionItem().selectionItemId.subscribe(function(value) {
+                        if (!value) {
+                            return;
+                        }
+                        new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                            if (data.length > 0) {
+                                self.selectionItem().selectionLst([]);
+                                self.selectionItem().selectionLst(data);
+                                self.selectionItem().selectionLst.valueHasMutated();
+
+                            } else {
+                                self.selectionItem().selectionLst.removeAll();
+                                self.selectionItem().selectionLst([]);
+                                self.selectionItem().selectionLst.valueHasMutated();
+
+                            }
+
+                        });
+                    });
                 }
             });
             if (data) {

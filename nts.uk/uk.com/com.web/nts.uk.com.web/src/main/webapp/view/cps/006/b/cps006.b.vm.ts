@@ -97,7 +97,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 dfd = $.Deferred(),
                 lastSelectedIndex = self.itemInfoDefList().indexOf(_.find(self.itemInfoDefList(), function(i) { return i.id == self.currentSelectId() })),
                 selectedId;
-
+            block.invisible();
             self.loadItemInfoDefList().done(function() {
 
                 //set selected item for gridlist
@@ -136,6 +136,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     }
                 }
                 self.currentSelectId(selectedId);
+                 block.clear();
 
                 dfd.resolve();
 
@@ -147,6 +148,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 dfd = $.Deferred(),
                 categoryId = self.currentCategory.id;
+             block.clear();
             service.getItemInfoDefList(categoryId, self.ckbDisplayAbolition()).done(function(itemInfoDefList: Array<IItemInfoDef>) {
 
                 self.itemInfoDefList([]);
@@ -165,6 +167,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 }
 
+                 block.clear();
                 dfd.resolve();
 
             });
