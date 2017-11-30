@@ -322,15 +322,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             self.unitSelected.subscribe(function(value) {
                 if(!devChange){
-                    if (!self.isparentCall()) {
+                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_125" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
-                            self.bindCalculatorItems();
-                            
-                            if (self.calculatorItems().length > 0) {
-                                self.deleteLineEnable(true);
-                            }
+                            self.deleteLineEnable(false);
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -351,15 +347,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.workScheduleSelected.subscribe(function(value) {
                 if(!devChange){
-                    if (!self.isparentCall()) {
+                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_191" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
-                            self.bindCalculatorItems();
-                            
-                            if (self.calculatorItems().length > 0) {
-                                self.deleteLineEnable(true);
-                            }
+                            self.deleteLineEnable(false);
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -392,10 +384,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                 if (self.settingItems().length > 0) {
                     self.singleSelectedCode(self.settingItems()[0].code);
-                }
-
-                if (self.calculatorItems().length == 0) {
-                    self.bindCalculatorItems();
                 }
                 
                 blockUI.clear();
@@ -731,12 +719,14 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.useClsSelected(0);
             self.workScheduleSelected(0);
             self.calculatorItems([]);
-            self.bindCalculatorItems();
 
             self.workScheduleEnable(true);
             self.unitEnable(true);
             self.allItemsData = [];
             $("#input-code").focus();
+            
+            // clear all error
+            nts.uk.ui.errors.clearAll();
         }
 
         /**
