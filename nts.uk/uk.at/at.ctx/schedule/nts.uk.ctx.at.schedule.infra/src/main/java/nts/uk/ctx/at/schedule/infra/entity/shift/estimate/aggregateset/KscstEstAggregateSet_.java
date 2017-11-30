@@ -29,7 +29,5 @@ public class KscstEstAggregateSet_ {
 	
 	/** The havy hd atr. */
 	public static volatile SingularAttribute<KscstEstAggregateSet, Integer> havyHdAtr;
-	
-	/** The kscst per cost extra item. */
-	public static volatile SingularAttribute<KscstEstAggregateSet, List<KscstPerCostExtraItem>> kscstPerCostExtraItem;
+
 }
