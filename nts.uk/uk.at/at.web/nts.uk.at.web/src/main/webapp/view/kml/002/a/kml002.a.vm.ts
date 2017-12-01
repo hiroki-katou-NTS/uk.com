@@ -369,6 +369,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 
                 devChange = false;
             });
+            
+            $("#fixed-table").ntsFixedTable({ height: 300, width: 780 });
         }
 
         /**
