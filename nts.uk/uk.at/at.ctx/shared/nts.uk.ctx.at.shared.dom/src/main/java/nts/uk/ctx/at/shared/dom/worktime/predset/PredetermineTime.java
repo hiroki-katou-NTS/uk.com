@@ -2,19 +2,25 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.common;
+package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class CommonRestSet.
+ * The Class PredetermineTime.
  */
-//共通の休憩設定
+@Builder
 @Getter
-public class CommonRestSet extends DomainObject{
+//所定時間
+public class PredetermineTime extends DomainObject {
+
+	/** The add time. */
+	//就業加算時間
+	private BreakDownTimeDay addTime;
 	
-	/** The calculate method. */
-	// 休憩時間中に退勤した場合の計算方法
-	private RestTimeOfficeWorkCalcMethod calculateMethod;
+	/** The pred time. */
+	//所定時間
+	private BreakDownTimeDay predTime;
 }

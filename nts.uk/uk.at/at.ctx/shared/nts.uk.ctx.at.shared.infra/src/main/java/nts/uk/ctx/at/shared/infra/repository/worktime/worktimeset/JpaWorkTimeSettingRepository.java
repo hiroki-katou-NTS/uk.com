@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -65,7 +64,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	}
 
 	@Override
-	public Optional<WorkTimeSetting> findByCode(String companyId, String worktimeCode) {
+	public WorkTimeSetting findByCode(String companyId, String worktimeCode) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -88,7 +87,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 
 		KshmtWorkTimeSet kwtstWorkTimeSet = em.createQuery(cq).getSingleResult();
 
-		return Optional.of(new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(kwtstWorkTimeSet)));
+		return new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(kwtstWorkTimeSet));
 	}
 
 	@Override

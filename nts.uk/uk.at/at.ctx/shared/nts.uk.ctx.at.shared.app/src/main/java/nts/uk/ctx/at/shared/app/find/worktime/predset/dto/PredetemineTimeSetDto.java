@@ -2,46 +2,46 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.find.pred.dto;
+package nts.uk.ctx.at.shared.app.find.worktime.predset.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class PredDto.
  */
-public class PredDto implements PredetemineTimeSetMemento {
+public class PredetemineTimeSetDto implements PredetemineTimeSetMemento {
 
+	private static final Integer TRUE_VAL = 1;
 	/** The company id. */
-	// 会社ID
 	public String companyId;
 
 	/** The range time day. */
-	// １日の範囲時間
 	public int rangeTimeDay;
 
 	/** The sift CD. */
-	// コード
-	public String siftCD;
+	public String workTimeCode;
 
 	/** The addition set ID. */
-	// 所定時間
-	public String additionSetID;
+	public PredetermineTimeDto predTime;
 
 	/** The night shift. */
-	// 夜勤区分
 	public boolean nightShift;
 
 	/** The prescribed timezone setting. */
-	// 所定時間帯
-	public PrescribedTimezoneSetting prescribedTimezoneSetting;
+	public PrescribedTimezoneSettingDto prescribedTimezoneSetting;
 
 	/** The start date clock. */
-	// 日付開始時刻
 	public int startDateClock;
 
 	/** The predetermine. */
-	// 残業を含めた所定時間帯を設定する
 	public boolean predetermine;
 
 	/* (non-Javadoc)
@@ -56,24 +56,37 @@ public class PredDto implements PredetemineTimeSetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetMemento#setRangeTimeDay(int)
 	 */
 	@Override
-	public void setRangeTimeDay(int rangeTimeDay) {
-		this.rangeTimeDay = rangeTimeDay;
+	public void setRangeTimeDay(AttendanceTime rangeTimeDay) {
+		this.rangeTimeDay = rangeTimeDay.v();
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetMemento#setSiftCD(java.lang.String)
 	 */
 	@Override
-	public void setSiftCD(String siftCD) {
-		this.siftCD = siftCD;
+	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
+		this.workTimeCode = workTimeCode.v();
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetMemento#setAdditionSetID(java.lang.String)
 	 */
 	@Override
-	public void setAdditionSetID(String additionSetID) {
-		this.additionSetID = additionSetID;
+	public void setPredTime(PredetermineTime predTime) {
+		BreakDownTimeDayDto addTimeDto = BreakDownTimeDayDto.builder()
+				.oneDay(predTime.getAddTime().getOneDay().v())
+				.morning(predTime.getAddTime().getMorning().v())
+				.afternoon(predTime.getAddTime().getAfternoon().v())
+				.build();
+		BreakDownTimeDayDto predTimeDto = BreakDownTimeDayDto.builder()
+				.oneDay(predTime.getPredTime().getOneDay().v())
+				.morning(predTime.getPredTime().getMorning().v())
+				.afternoon(predTime.getPredTime().getAfternoon().v())
+				.build();
+		this.predTime = PredetermineTimeDto.builder()
+				.addTime(addTimeDto)
+				.predTime(predTimeDto)
+				.build();
 	}
 
 	/* (non-Javadoc)
@@ -89,15 +102,27 @@ public class PredDto implements PredetemineTimeSetMemento {
 	 */
 	@Override
 	public void setPrescribedTimezoneSetting(PrescribedTimezoneSetting prescribedTimezoneSetting) {
-		this.prescribedTimezoneSetting= prescribedTimezoneSetting;
+		List<TimezoneDto> timezoneDtos = prescribedTimezoneSetting.getTimezone().stream().map(item->{
+			return TimezoneDto.builder()
+					.workNo(item.getWorkNo())
+					.useAtr(item.getUseAtr().value == TRUE_VAL)
+					.start(item.getStart().v())
+					.end(item.getEnd().v()).build();
+		}).collect(Collectors.toList());
+		
+		this.prescribedTimezoneSetting= PrescribedTimezoneSettingDto.builder()
+				.morningEndTime(prescribedTimezoneSetting.getMorningEndTime().v())
+				.afternoonStartTime(prescribedTimezoneSetting.getAfternoonStartTime().v())
+				.timezone(timezoneDtos)
+				.build();
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetMemento#setStartDateClock(int)
 	 */
 	@Override
-	public void setStartDateClock(int startDateClock) {
-		this.startDateClock = startDateClock;
+	public void setStartDateClock(TimeWithDayAttr startDateClock) {
+		this.startDateClock = startDateClock.v();
 	}
 
 	/* (non-Javadoc)

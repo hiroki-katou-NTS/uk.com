@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -8,6 +9,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class Timezone.
  */
 //時間帯(使用区分付き)
+@Builder
 @Getter
 public class Timezone extends DomainObject{
 
@@ -27,21 +29,6 @@ public class Timezone extends DomainObject{
 	//終了
 	private TimeWithDayAttr end;
 
-	/**
-	 * Instantiates a new timezone.
-	 *
-	 * @param useAtr the use atr
-	 * @param workNo the work no
-	 * @param start the start
-	 * @param end the end
-	 */
-	public Timezone(UseSetting useAtr, int workNo, TimeWithDayAttr start, TimeWithDayAttr end) {
-		super();
-		this.useAtr = useAtr;
-		this.workNo = workNo;
-		this.start = start;
-		this.end = end;
-	}
 	
 	public void updateStartTime(TimeWithDayAttr start) {
 		this.start = start;

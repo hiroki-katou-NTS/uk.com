@@ -2,11 +2,13 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 //所定時間帯設定
+@Builder
 @Getter
 public class PrescribedTimezoneSetting extends DomainObject{
 
@@ -21,19 +23,4 @@ public class PrescribedTimezoneSetting extends DomainObject{
 	/** The timezone. */
 	//時間帯
 	private List<Timezone> timezone;
-
-	/**
-	 * Instantiates a new prescribed timezone setting.
-	 *
-	 * @param morningEndTime the morning end time
-	 * @param afternoonStartTime the afternoon start time
-	 * @param timezone the timezone
-	 */
-	public PrescribedTimezoneSetting(TimeWithDayAttr morningEndTime, TimeWithDayAttr afternoonStartTime,
-			List<Timezone> timezone) {
-		super();
-		this.morningEndTime = morningEndTime;
-		this.afternoonStartTime = afternoonStartTime;
-		this.timezone = timezone;
-	}
 }
