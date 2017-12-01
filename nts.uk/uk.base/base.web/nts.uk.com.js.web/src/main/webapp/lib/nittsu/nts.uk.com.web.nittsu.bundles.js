@@ -10607,6 +10607,7 @@ var nts;
                                 bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
                             }
                             var resizeEvent = function () {
+                                $header.height($headerContainer.height());
                                 if (bodyHeight < $originTable.height()) {
                                     if (/Edge/.test(navigator.userAgent)) {
                                         $headerScroll.width(12);
@@ -10618,21 +10619,6 @@ var nts;
                                     }
                                 }
                                 else {
-                                    if ($originTable.height() !== 0) {
-                                        if (/Edge/.test(navigator.userAgent)) {
-                                            $bodyWrapper.height($originTable.height());
-                                            $bodyContainer.height($originTable.height() + 12);
-                                        }
-                                        else {
-                                            $bodyWrapper.height($originTable.height());
-                                            $bodyContainer.height($originTable.height() + 17);
-                                        }
-                                        $headerScroll.width(0);
-                                        $bodyWrapper.removeClass("body-no-record");
-                                    }
-                                    else {
-                                        $bodyWrapper.addClass("body-no-record");
-                                    }
                                     $bodyContainer.css("padding-right", "0px");
                                 }
                                 setTimeout(resizeEvent, 20);
@@ -23127,4 +23113,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
