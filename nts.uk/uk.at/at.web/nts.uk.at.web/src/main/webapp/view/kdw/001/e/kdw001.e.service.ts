@@ -7,8 +7,8 @@ module nts.uk.at.view.kdw001.e.service {
         checkprocess: "at/record/log/checkprocess"
     }
     
-    export function getErrorMessageInfo(empCalAndSumExecLogID: string): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getErrorMessageInfo + "/" + empCalAndSumExecLogID);
+    export function getErrorMessageInfo(params: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getErrorMessageInfo, params);
     }
     
     export function insertData(params: shareModel.executionProcessingCommand): JQueryPromise<shareModel.AddEmpCalSumAndTargetCommandResult> {

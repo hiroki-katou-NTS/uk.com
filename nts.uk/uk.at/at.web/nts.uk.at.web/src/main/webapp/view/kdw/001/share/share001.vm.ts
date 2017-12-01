@@ -1,5 +1,13 @@
 module nts.uk.at.view.kdw001 {
     export module share.model {
+                
+        // ErrMessageInfoDto
+        export interface PersonInfoErrMessageLogDto {
+            employeeCode: string;
+            personName: string;
+            disposalDay: string;
+            messageError: number;
+        }
         
         // CheckProcessCommand
         export interface CheckProcessCommand {
