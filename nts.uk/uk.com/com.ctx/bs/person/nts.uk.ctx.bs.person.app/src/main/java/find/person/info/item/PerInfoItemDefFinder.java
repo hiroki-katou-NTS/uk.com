@@ -98,7 +98,8 @@ public class PerInfoItemDefFinder {
 
 	}
 
-	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(String perInfoItemDefId) {
+	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(String perInfoItemDefId,
+			int personEmployeeType) {
 
 		PerInfoItemDefDto itemDefDto = this.pernfoItemDefRep
 				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).map(item -> {
@@ -109,12 +110,12 @@ public class PerInfoItemDefFinder {
 
 		String itemDefaultName = this.pernfoItemDefRep.getItemDefaultName(ctgDto.getCategoryCode(),
 				itemDefDto.getItemCode());
-		PerInfoItemChangeDefDto item = mappingFromDomaintoChangeDto(itemDefDto, itemDefaultName, 0);
+		PerInfoItemChangeDefDto item = mappingFromDomaintoChangeDto(itemDefDto, itemDefaultName, 0, personEmployeeType);
 		return item;
 	};
 
 	private PerInfoItemChangeDefDto mappingFromDomaintoChangeDto(PerInfoItemDefDto itemDefDto, String defaultName,
-			int dispOrder) {
+			int dispOrder, int personEmployeeType) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 
 		GeneralDate baseDateConvert = GeneralDate.today();
@@ -127,9 +128,16 @@ public class PerInfoItemDefFinder {
 					SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
 					if (selelection.getReferenceType().value == 2) {
 						CodeNameRefTypeDto typeCode = (CodeNameRefTypeDto) selelection;
-						selectionLst = this.selectionRepo
-								.getAllSelectionByHistoryId(typeCode.getTypeCode(), baseDateConvert, 0).stream()
-								.map(c -> SelectionInitDto.fromDomainSelection1(c)).collect(Collectors.toList());
+						if (personEmployeeType == 1) {
+							selectionLst = this.selectionRepo
+									.getAllSelectionByHistoryId(typeCode.getTypeCode(), baseDateConvert, 0).stream()
+									.map(c -> SelectionInitDto.fromDomainSelection1(c)).collect(Collectors.toList());
+						} else if (personEmployeeType == 2) {
+							selectionLst = this.selectionRepo
+									.getAllSelectionByHistoryId(typeCode.getTypeCode(), baseDateConvert, 1).stream()
+									.map(c -> SelectionInitDto.fromDomainSelection1(c)).collect(Collectors.toList());
+						}
+
 					}
 				}
 			}
@@ -153,7 +161,7 @@ public class PerInfoItemDefFinder {
 				.getPerInfoItemDefById(perInfoItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(item -> {
 					return mappingFromDomaintoDto_for_Selection(item, 0);
 				}).orElse(null);
-		
+
 		return itemDto;
 	};
 
@@ -256,7 +264,8 @@ public class PerInfoItemDefFinder {
 				createItemTypeStateDto(itemDef.getItemTypeState()), selectionItemRefTypes);
 	}
 
-	private PerInfoItemChangeDefDto mappingFromDomaintoDto_for_Selection(PersonInfoItemDefinition itemDef, int dispOrder) {
+	private PerInfoItemChangeDefDto mappingFromDomaintoDto_for_Selection(PersonInfoItemDefinition itemDef,
+			int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		PerInfoItemDefDto itemDefDto = mappingFromDomaintoDto(itemDef, 0);
 		List<SelectionInitDto> selectionLst = new ArrayList<>();
@@ -276,11 +285,10 @@ public class PerInfoItemDefFinder {
 			}
 
 		}
-		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(),
-				itemDefDto.getItemCode(), itemDefDto.getItemName(), "", itemDefDto.getIsAbolition(),
-				itemDefDto.getIsFixed(), itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(),
-				itemDefDto.getRequireChangable(), dispOrder, itemDefDto.getSelectionItemRefType(),
-				itemDefDto.getItemTypeState(), selectionItemRefTypes,
+		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(), itemDefDto.getItemCode(),
+				itemDefDto.getItemName(), "", itemDefDto.getIsAbolition(), itemDefDto.getIsFixed(),
+				itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(), itemDefDto.getRequireChangable(), dispOrder,
+				itemDefDto.getSelectionItemRefType(), itemDefDto.getItemTypeState(), selectionItemRefTypes,
 				selectionLst.size() > 0 ? selectionLst.get(0).getSelectionItemName() : " ",
 				// sua loi them sel item lst
 				selectionLst);

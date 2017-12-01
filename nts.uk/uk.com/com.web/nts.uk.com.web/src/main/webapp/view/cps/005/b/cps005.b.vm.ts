@@ -290,7 +290,13 @@ module nts.uk.com.view.cps005.b {
                             self.isEnableButtonProceed(false);
                             self.isEnableButtonDelete(false);
                         }
-                        self.currentItemSelected().selectionItem().selectionItemId(data.itemTypeState.dataTypeState.typeCode || undefined);
+                        
+                        if (data.itemTypeState.dataTypeState !== undefined 
+                                    && data.itemTypeState.dataTypeState.dataTypeValue === 6 
+                                    && data.itemTypeState.dataTypeState.referenceType === "CODE_NAME") {
+                            self.currentItemSelected().selectionItem().selectionItemId(data.itemTypeState.dataTypeState.typeCode || undefined);
+                        }
+                        
                         self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
