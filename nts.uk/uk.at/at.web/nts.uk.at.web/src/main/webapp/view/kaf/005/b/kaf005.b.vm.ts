@@ -226,31 +226,58 @@ module nts.uk.at.view.kaf005.b {
                     }    
                 } else {
                     _.forEach(dataRestTime, (item) => { 
-                        self.restTime.push(new common.OverTimeInput(
-                            item.companyID, 
-                            item.appID, 
-                            item.attendanceID, 
-                            "", 
-                            item.frameNo, 
-                            item.timeItemTypeAtr, 
-                            item.frameName, 
-                            item.startTime, 
-                            item.endTime, 
-                            item.applicationTime, ""));
+                        
+                            self.restTime.push(new common.OverTimeInput(
+                                item.companyID, 
+                                item.appID, 
+                                item.attendanceID, 
+                                "", 
+                                item.frameNo, 
+                                item.timeItemTypeAtr, 
+                                item.frameName, 
+                                item.startTime, 
+                                item.endTime, 
+                                item.applicationTime, ""));
                     });
                 };
                 _.forEach(dataOverTime, (item) => { 
-                    self.overtimeHours.push(new common.OvertimeCaculation(
-                        item.companyID, 
-                        item.appID, 
-                        item.attendanceID, 
-                        "", 
-                        item.frameNo, 
-                        item.timeItemTypeAtr, 
-                        item.frameName, 
-                        item.applicationTime, 
-                        null, 
-                        null, ""));
+                    if(item.frameNo == 11){
+                                self.overtimeHours.push(new common.OvertimeCaculation(
+                                    item.companyID, 
+                                    item.appID, 
+                                    item.attendanceID, 
+                                    "", 
+                                    item.frameNo, 
+                                    item.timeItemTypeAtr, 
+                                    nts.uk.resource.getText("KAF005_63"), 
+                                    item.applicationTime, 
+                                    null, 
+                                    null,"#[KAF005_64]"));
+                            }else if(item.frameNo == 12){
+                                self.overtimeHours.push(new common.OvertimeCaculation(
+                                    item.companyID, 
+                                    item.appID, 
+                                    item.attendanceID, 
+                                    "", 
+                                    item.frameNo, 
+                                    item.timeItemTypeAtr, 
+                                    nts.uk.resource.getText("KAF005_65"), 
+                                    item.applicationTime, 
+                                    null, 
+                                    null,"#[KAF005_66]"));
+                            }else{
+                                self.overtimeHours.push(new common.OvertimeCaculation(
+                                    item.companyID, 
+                                    item.appID, 
+                                    item.attendanceID, 
+                                    "", 
+                                    item.frameNo, 
+                                    item.timeItemTypeAtr, 
+                                    item.frameName, 
+                                    item.applicationTime, 
+                                    null, 
+                                    null, "#[KAF005_55]"));
+                        }
                 }); 
                 _.forEach(dataBreakTime, (item) => { 
                     self.breakTimes.push(new common.OvertimeCaculation(

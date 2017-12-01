@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class AppOvertimeFinder {
@@ -342,6 +343,15 @@ public class AppOvertimeFinder {
 			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeFrameName().toString());
 			overTimeInputs.add(overtimeInputDto);
 		}
+		OvertimeInputDto overtimeInputShiftNight = new OvertimeInputDto();
+		overtimeInputShiftNight.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+		overtimeInputShiftNight.setFrameNo(11);
+		overTimeInputs.add(overtimeInputShiftNight);
+		
+		OvertimeInputDto overtimeInputFlexExessTime = new OvertimeInputDto();
+		overtimeInputFlexExessTime.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+		overtimeInputFlexExessTime.setFrameNo(12);
+		overTimeInputs.add(overtimeInputFlexExessTime);
 		
 		// lay breakTime
 		List<BreaktimeFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
@@ -669,7 +679,7 @@ public class AppOvertimeFinder {
 		}
 		if(overtimeRestAppCommonSet.isPresent()){
 			//01-08_乖離定型理由を取得
-			if(result.getApplication().getPrePostAtr() == PrePostAtr.PREDICT.value && overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+			if(result.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value && overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
 				result.setDisplayDivergenceReasonForm(true);
 				List<DivergenceReason> divergenceReasons = iOvertimePreProcess.getDivergenceReasonForm(companyID,ApplicationType.OVER_TIME_APPLICATION.value,overtimeRestAppCommonSet);
 				convertToDivergenceReasonDto(divergenceReasons,result);
@@ -677,7 +687,7 @@ public class AppOvertimeFinder {
 				result.setDisplayDivergenceReasonForm(false);
 			}
 			//01-07_乖離理由を取得
-			result.setDisplayDivergenceReasonInput(result.getApplication().getPrePostAtr() == PrePostAtr.PREDICT.value && iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
+			result.setDisplayDivergenceReasonInput(result.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value && iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
 		}
 		//01-09_事前申請を取得
 		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
