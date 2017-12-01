@@ -49,18 +49,10 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 	/** Add handlers */
 	private static final List<TypeLiteral<?>> ADD_HANDLER_CLASSES = Arrays.asList(
 			new TypeLiteral<PeregAddCommandHandler<AddAffiliationDepartmentCommand>>(){},
-//			new TypeLiteral<PeregAddCommandHandler<AddSubJobPositionCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
-//			new TypeLiteral<PeregAddCommandHandler<AddCurrentAddressCommand>>(){},
-//			new TypeLiteral<PeregAddCommandHandler<AddPerEmergencyContactCommand>>(){},
-//			new TypeLiteral<PeregAddCommandHandler<AddFamilyCommand>>(){},
-//			new TypeLiteral<PeregAddCommandHandler<AddWidowHistoryCommand>>(){},
-//			new TypeLiteral<PeregAddCommandHandler<AddEmployeeCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffJobTitleMainCommand>>(){},
-//			new TypeLiteral<PeregAddCommandHandler<AddCurrentAffiDeptCommand>>(){}
 			new TypeLiteral<PeregAddCommandHandler<AddEmploymentHistoryCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddAffCompanyHistoryCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){}
 			);
 	
@@ -68,20 +60,10 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffiliationDepartmentCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateJobTitleMainCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilyCareCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateIncomeTaxCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilySocialInsuranceCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateSubJobPositionCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAddressCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerEmergencyContactCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateFamilyCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateWidowHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeDataMngInfoCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateAssignedWorkplaceCommand>>(){},
-//			new TypeLiteral<PeregUpdateCommandHandler<UpdateCurrentAffiDeptCommand>>(){}
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmploymentHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffCompanyHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>(){}
@@ -89,17 +71,11 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 	
 	/** Delete handlers */
 	private static final List<TypeLiteral<?>> DELETE_HANDLER_CLASSES = Arrays.asList(
-//			new TypeLiteral<PeregDeleteCommandHandler<DeleteFamilyCareCommand>>(){},
-//			new TypeLiteral<PeregDeleteCommandHandler<DeleteIncomeTaxCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffiliationDepartmentCommand>>(){},
-//			new TypeLiteral<PeregDeleteCommandHandler<DeleteCurrentAffiDeptCommand>>(){},
-//			new TypeLiteral<PeregDeleteCommandHandler<DeleteFamilySocialInsuranceCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteJobTitleMainCommand>>(){},
-//			new TypeLiteral<PeregDeleteCommandHandler<DeleteSubJobPositionCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmploymentHistoryCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffCompanyHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){}
 			);
 	
