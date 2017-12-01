@@ -71,7 +71,7 @@ table.input-form-a tr {
 }
 
 .work-collection {
-	padding-left: 30px;
+	padding-left: 12px;
 }
 
 .help-box {
@@ -79,7 +79,7 @@ table.input-form-a tr {
 }
 
 .switch-box {
-	padding-left: 20px;
+	padding-left: 8px;
 }
 
 table.calculator-items {
@@ -96,15 +96,10 @@ table.calculator-items tr {
 }
 
 table.calculator-items td {
-	border-bottom: 1px solid #CCC;
-	border-top: 1px solid #CCC;
-	border-left: 1px solid #CCC;
-	padding: 3px 4px;
 }
 
 table.calculator-items tbody {
 	height: auto;
-	border: 1px solid #CCC;
 }
 
 table.calculator-items thead td:nth-child(1), table.calculator-items thead td:nth-child(2)
@@ -277,7 +272,7 @@ table.link-notes td {
 .up-down-button {
     float: right;
     width: 30px;
-    margin: -210px -22px 0 0;
+    margin: -210px -25px 0 0;
 }
 
 .down-btn {
@@ -291,7 +286,7 @@ table.link-notes td {
 }
 
 .input-name {
-    width: 170px !important;
+    width: 132px !important;
 }
 
 /* 
