@@ -20,8 +20,11 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 			+ "from BsymtAffiDepartmentHist ad "
 			+ "where ad.sid = :sid order by ad.strDate";
 	
-	private static final String SELECT_BY_EMPID_HISTID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
+	private static final String SELECT_BY_EMPID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate <= ad.endDate";
+	
+	private static final String SELECT_BY_HISTID = "SELECT ad FROM BsymtAffiDepartmentHist ad"
+			+ " WHERE ad.hisId = :historyId";
 	
 	private AffDepartmentHistory toAffDepartment(String sId, List<BsymtAffiDepartmentHist> listHist){
 		AffDepartmentHistory affDepart = new AffDepartmentHistory(sId, new ArrayList<>());
@@ -139,11 +142,21 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 
 	@Override
 	public Optional<AffDepartmentHistory> getAffDeptHistByEmpHistStandDate(String employeeId, GeneralDate standardDate) {
-		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(SELECT_BY_EMPID_HISTID_STANDARDDATE,BsymtAffiDepartmentHist.class)
+		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(SELECT_BY_EMPID_STANDARDDATE,BsymtAffiDepartmentHist.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("standardDate", standardDate).getList();
 		if (!listHist.isEmpty()){
 			return Optional.of(toAffDepartment(employeeId,listHist));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<AffDepartmentHistory> getByHistId(String historyId) {
+		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(SELECT_BY_HISTID,BsymtAffiDepartmentHist.class)
+				.setParameter("historyId", historyId).getList();
+		if (!listHist.isEmpty()){
+			return Optional.of(toAffDepartment(listHist.get(0).getSid(),listHist));
 		}
 		return Optional.empty();
 	}
