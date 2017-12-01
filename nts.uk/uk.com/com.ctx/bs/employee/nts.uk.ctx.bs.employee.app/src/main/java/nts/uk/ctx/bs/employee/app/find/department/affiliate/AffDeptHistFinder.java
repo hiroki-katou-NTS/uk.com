@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
@@ -41,12 +42,8 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getAffDeptHistByEmpHistStandDate(query.getEmployeeId(), query.getStandardDate());
-		if(affDeptHist.isPresent()){
-			Optional<AffDepartmentHistoryItem> affDeptHistItem = affDeptHistItemRepo.getByHistId(affDeptHist.get().getHistoryItems().get(0).identifier());
-			return AffDeptHistDto.getFirstFromDomain(affDeptHist.get(), affDeptHistItem.get());
-		}
-		return new PeregDomainDto();
+		return query.getInfoId() == null ? getByEmpIdAndStandDate(query.getEmployeeId(), query.getStandardDate())
+				: getByHistId(query.getInfoId());
 	}
 
 	@Override
@@ -55,4 +52,21 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 		return null;
 	}
 
+	private PeregDomainDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate){
+		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getAffDeptHistByEmpHistStandDate(employeeId, standDate);
+		if(affDeptHist.isPresent()){
+			Optional<AffDepartmentHistoryItem> affDeptHistItem = affDeptHistItemRepo.getByHistId(affDeptHist.get().getHistoryItems().get(0).identifier());
+			return AffDeptHistDto.getFirstFromDomain(affDeptHist.get(), affDeptHistItem.get());
+		}
+		return new PeregDomainDto();
+	}
+	
+	private PeregDomainDto getByHistId(String historyId){
+		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getByHistId(historyId);
+		if(affDeptHist.isPresent()){
+			Optional<AffDepartmentHistoryItem> affDeptHistItem = affDeptHistItemRepo.getByHistId(affDeptHist.get().getHistoryItems().get(0).identifier());
+			return AffDeptHistDto.getFirstFromDomain(affDeptHist.get(), affDeptHistItem.get());
+		}
+		return new PeregDomainDto();
+	} 
 }

@@ -11,11 +11,12 @@ import nts.uk.ctx.bs.person.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 
 @Getter
+@Setter
 public class PersonInfoItemDefinition extends AggregateRoot {
 	private String perInfoItemDefId;
-	@Setter
 	private String perInfoCategoryId;
 	private ItemCode itemCode;
+	
 	private ItemCode itemParentCode;
 	private ItemName itemName;
 	private IsAbolition isAbolition;

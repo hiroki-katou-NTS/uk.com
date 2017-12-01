@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
@@ -41,12 +42,8 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(query.getEmployeeId(), query.getStandardDate());
-		if(affWrkplcHist.isPresent()){
-			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
-			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
-		}
-		return new PeregDomainDto();
+		return query.getInfoId() == null ? getByEmpIdAndStandDate(query.getEmployeeId(), query.getStandardDate()) 
+				: getByHistId(query.getInfoId());
 	}
 
 	@Override
@@ -54,5 +51,22 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	private PeregDomainDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate){
+		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(employeeId, standDate);
+		if(affWrkplcHist.isPresent()){
+			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
+			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
+		}
+		return new PeregDomainDto();
+	}
+	
+	private PeregDomainDto getByHistId(String historyId){
+		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByHistId(historyId);
+		if(affWrkplcHist.isPresent()){
+			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
+			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
+		}
+		return new PeregDomainDto();
+	}
 }
