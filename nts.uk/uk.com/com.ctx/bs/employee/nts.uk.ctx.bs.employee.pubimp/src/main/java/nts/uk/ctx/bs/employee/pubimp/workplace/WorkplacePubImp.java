@@ -159,8 +159,10 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		// Return workplace id
 		WorkplaceInfo wkpInfo = optWorkplaceInfo.get();
-		return Optional.of(SWkpHistExport.builder().workplaceCode(wkpInfo.getWorkplaceCode().v())
-				.workplaceName(wkpInfo.getWorkplaceName().v()).workplaceId(wkpInfo.getWorkplaceId())
+		return Optional.of(SWkpHistExport.builder().dateRange(affWorkplaceHistory.getPeriod())
+				.employeeId(affWorkplaceHistory.getEmployeeId())
+				.workplaceId(wkpInfo.getWorkplaceId()).workplaceCode(wkpInfo.getWorkplaceCode().v())
+				.workplaceName(wkpInfo.getWorkplaceName().v())
 				.wkpDisplayName(wkpInfo.getWkpDisplayName().v()).build());
 	}
 

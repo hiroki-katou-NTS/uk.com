@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -28,6 +29,21 @@ public class TimeZoneRounding extends DomainObject {
 	// 終了
 	private TimeWithDayAttr end;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		
+		if (this.start.greaterThanOrEqualTo(this.end)) {
+			throw new BusinessException("Msg_770");
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return start + "," + end;
