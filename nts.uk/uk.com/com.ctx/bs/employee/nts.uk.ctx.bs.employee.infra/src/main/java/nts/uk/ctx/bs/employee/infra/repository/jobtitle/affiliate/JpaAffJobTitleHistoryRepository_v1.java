@@ -56,19 +56,12 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	}
 
 	@Override
-	public void add(AffJobTitleHistory_ver1 domain) {
-		if (domain.getHistoryItems().isEmpty()) {
-			return;
-		}
-		DateHistoryItem itemToBeAdded = domain.getHistoryItems().get(domain.getHistoryItems().size() - 1);
-		this.commandProxy().insert(toEntity(domain.getEmployeeId(), itemToBeAdded));
-
-		// Update item before
-		updateItemBefore(domain, itemToBeAdded);
+	public void add(String sid, DateHistoryItem item) {
+		this.commandProxy().insert(toEntity(sid, item));
 	}
 
 	@Override
-	public void update(AffJobTitleHistory_ver1 domain, DateHistoryItem item) {
+	public void update(DateHistoryItem item) {
 		Optional<BsymtAffJobTitleHist> itemToBeUpdated = this.queryProxy().find(item.identifier(),
 				BsymtAffJobTitleHist.class);
 
@@ -78,54 +71,16 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		// Update entity
 		updateEntity(item, itemToBeUpdated.get());
 		this.commandProxy().update(itemToBeUpdated.get());
-
-		// Update item before and after
-		updateItemBefore(domain, item);
-		updateItemAfter(domain, item);
 	}
 
 	@Override
-	public void delete(AffJobTitleHistory_ver1 domain, DateHistoryItem item) {
-		Optional<BsymtAffJobTitleHist> itemToBeDeleted = this.queryProxy().find(item.identifier(),
-				BsymtAffJobTitleHist.class);
+	public void delete(String histId) {
+		Optional<BsymtAffJobTitleHist> itemToBeDeleted = this.queryProxy().find(histId, BsymtAffJobTitleHist.class);
 
 		if (!itemToBeDeleted.isPresent()) {
 			throw new RuntimeException("Invalid BsymtAffJobTitleHist");
 		}
-		this.commandProxy().remove(BsymtAffJobTitleHist.class, item.identifier());
-		
-		// Update item before
-		if (domain.getHistoryItems().size() > 0) {
-			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size() - 1);
-			Optional<BsymtAffJobTitleHist> histItem = this.queryProxy().find(lastItem.identifier(),
-					BsymtAffJobTitleHist.class);
-			if (!histItem.isPresent()) {
-				throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
-			}
-			updateEntity(lastItem, histItem.get());
-			this.commandProxy().update(histItem.get());
-		}
-
-	}
-
-	/**
-	 * Update item before when updating
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemBefore(AffJobTitleHistory_ver1 domain, DateHistoryItem item) {
-		// Update item before
-		Optional<DateHistoryItem> beforeItem = domain.immediatelyBefore(item);
-		if (!beforeItem.isPresent()) {
-			return;
-		}
-		Optional<BsymtAffJobTitleHist> histItem = this.queryProxy().find(beforeItem.get().identifier(),
-				BsymtAffJobTitleHist.class);
-		if (!histItem.isPresent()) {
-			return;
-		}
-		updateEntity(beforeItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
+		this.commandProxy().remove(BsymtAffJobTitleHist.class, histId);
 	}
 
 	/**
@@ -137,26 +92,6 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	private void updateEntity(DateHistoryItem item, BsymtAffJobTitleHist entity) {
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
-	}
-
-	/**
-	 * Update item after when updating
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemAfter(AffJobTitleHistory_ver1 domain, DateHistoryItem item) {
-		// Update item after
-		Optional<DateHistoryItem> aferItem = domain.immediatelyAfter(item);
-		if (!aferItem.isPresent()) {
-			return;
-		}
-		Optional<BsymtAffJobTitleHist> histItem = this.queryProxy().find(aferItem.get().identifier(),
-				BsymtAffJobTitleHist.class);
-		if (!histItem.isPresent()) {
-			return;
-		}
-		updateEntity(aferItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
 	}
 
 	@Override

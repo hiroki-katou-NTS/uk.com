@@ -14,21 +14,22 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	/**
 	 * ドメインモデル「職務職位」を新規登録する
 	 * 
-	 * @param domain
+	 * @param item
+	 * @param sid
 	 */
-	void add(AffJobTitleHistory_ver1 domain);
+	void add(String sid, DateHistoryItem item);
 
 	/**
 	 * 取得した「職務職位」を更新する
 	 * 
-	 * @param domain
+	 * @param item
 	 */
-	void update(AffJobTitleHistory_ver1 domain, DateHistoryItem item);
+	void update(DateHistoryItem item);
 
 	/**
 	 * ドメインモデル「職務職位」を削除する
 	 * 
-	 * @param jobTitleMainId
+	 * @param sid
 	 */
-	void delete(AffJobTitleHistory_ver1 domain, DateHistoryItem item);
+	void delete(String sid);
 }

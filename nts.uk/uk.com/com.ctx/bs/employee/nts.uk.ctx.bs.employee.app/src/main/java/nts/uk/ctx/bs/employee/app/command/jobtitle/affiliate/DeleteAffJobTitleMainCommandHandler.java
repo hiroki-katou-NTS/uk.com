@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryDomainService;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory_ver1;
@@ -22,6 +23,9 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 	
 	@Inject
 	private AffJobTitleHistoryItemRepository_v1 affJobTitleHistoryItemRepository_v1;
+	
+	@Inject 
+	private AffJobTitleHistoryDomainService affJobTitleHistoryDomainService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -51,7 +55,7 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 		}
 		existHist.get().remove(itemToBeDelete.get());
 		
-		affJobTitleHistoryRepository_ver1.delete(existHist.get(), itemToBeDelete.get());
+		affJobTitleHistoryDomainService.delete(existHist.get(), itemToBeDelete.get());
 		
 		affJobTitleHistoryItemRepository_v1.delete(command.getHistId());
 	}
