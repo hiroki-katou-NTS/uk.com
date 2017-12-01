@@ -29,4 +29,24 @@ public class WorkTimezoneStampSet extends DomainObject{
 	/** The priority set. */
 	//優先設定
 	private List<PrioritySet> prioritySet;
+
+	/**
+	 * Instantiates a new work timezone stamp set.
+	 *
+	 * @param memento the memento
+	 */
+	public WorkTimezoneStampSet(WorkTimezoneStampSetGetMemento memento) {
+		this.roundingSet = memento.getRoundingSet();
+		this.prioritySet = memento.getPrioritySet();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkTimezoneStampSetSetMemento memento) {
+		memento.setRoundingSet(this.roundingSet);
+		memento.setPrioritySet(this.prioritySet);
+	}
 }

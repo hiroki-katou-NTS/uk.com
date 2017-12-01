@@ -54,4 +54,38 @@ public class FlowWorkSetting extends AggregateRoot {
 	/** The flow setting. */
 	// 流動設定
 	private FlowWorkDedicateSetting flowSetting;
+
+	/**
+	 * Instantiates a new flow work setting.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowWorkSetting(FlowWorkSettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.workingCode = memento.getWorkingCode();
+		this.restSetting = memento.getRestSetting();
+		this.offdayWorkTimezone = memento.getOffdayWorkTimezone();
+		this.commonSetting = memento.getCommonSetting();
+		this.halfDayWorkTimezone = memento.getHalfDayWorkTimezone();
+		this.stampReflectTimezone = memento.getStampReflectTimezone();
+		this.designatedSetting = memento.getDesignatedSetting();
+		this.flowSetting = memento.getFlowSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowWorkSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setWorkingCode(this.workingCode);
+		memento.setRestSetting(this.restSetting);
+		memento.setOffdayWorkTimezone(this.offdayWorkTimezone);
+		memento.setCommonSetting(this.commonSetting);
+		memento.setHalfDayWorkTimezone(this.halfDayWorkTimezone);
+		memento.setStampReflectTimezone(this.stampReflectTimezone);
+		memento.setDesignatedSetting(this.designatedSetting);
+		memento.setFlowSetting(this.flowSetting);
+	}
 }

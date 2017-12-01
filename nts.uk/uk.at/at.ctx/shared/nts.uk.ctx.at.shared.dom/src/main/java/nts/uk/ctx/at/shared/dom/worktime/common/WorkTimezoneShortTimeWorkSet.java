@@ -25,4 +25,26 @@ public class WorkTimezoneShortTimeWorkSet extends DomainObject{
 	/** The child care work use. */
 	//育児時間帯に勤務した場合に勤務として扱う
 	private boolean childCareWorkUse;
+
+	/**
+	 * Instantiates a new work timezone short time work set.
+	 *
+	 * @param memento the memento
+	 */
+	public WorkTimezoneShortTimeWorkSet(WorkTimezoneShortTimeWorkSetGetMemento memento) {
+		this.nursTimezoneWorkUse = memento.getNursTimezoneWorkUse();
+		this.employmentTimeDeduct = memento.getEmploymentTimeDeduct();
+		this.childCareWorkUse = memento.getChildCareWorkUse();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkTimezoneShortTimeWorkSetSetMemento memento) {
+		memento.setNursTimezoneWorkUse(this.nursTimezoneWorkUse);
+		memento.setEmploymentTimeDeduct(this.employmentTimeDeduct);
+		memento.setChildCareWorkUse(this.childCareWorkUse);
+	}
 }
