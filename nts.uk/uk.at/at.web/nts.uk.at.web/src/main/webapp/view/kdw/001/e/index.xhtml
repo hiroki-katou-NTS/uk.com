@@ -82,9 +82,10 @@
 				</div>
 				
 				<div class="log-selection control-group valign-center">
-					<label>#{i18n.getText('KDW001_30')}</label>
+					<label data-bind="css: {disappear: !isComplete()}">#{i18n.getText('KDW001_30')}</label>
 					<div tabindex="1" id="combo-box"
-						data-bind="ntsComboBox: {
+						data-bind="css: {disappear: !isComplete()},
+						ntsComboBox: {
 						options: executionContents,
 						optionsValue: 'value',　
 						visibleItemsCount: 5,
@@ -94,12 +95,13 @@
 						columns: [
 							{ prop: 'localizedName', length: 4 }
 						]}"></div>
-					<button class="pull-right" tabindex="2">#{i18n.getText('KDW001_31')}</button>
+					<button class="pull-right" tabindex="2" data-bind="css: {disappear: !isComplete()}, click: exportLog">#{i18n.getText('KDW001_31')}</button>
 				</div>
 				<div class="place-holder">
 					<table id="single-list"
-						data-bind="ntsGridList: {
-							dataSource: filterErrorMessageInfo,
+						data-bind="css: {disappear: !isComplete()},
+						ntsGridList: {
+							dataSource: errorMessageInfo,
 							primaryKey: 'code',
 							columns: columns,
 							multiple: false,

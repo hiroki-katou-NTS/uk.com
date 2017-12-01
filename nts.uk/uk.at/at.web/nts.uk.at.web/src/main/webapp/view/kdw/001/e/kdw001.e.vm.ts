@@ -5,6 +5,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
     export class ScreenModel {
         // Time data
+        isComplete: KnockoutObservable<boolean> = ko.observable(false);
         taskId: KnockoutObservable<string> = ko.observable("");
         startTime: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
         endTime: KnockoutObservable<string> = ko.observable("");
@@ -23,11 +24,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
         // Combo box 
         executionContents: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedExeContent: KnockoutObservable<string> = ko.observable('1');
+        selectedExeContent: KnockoutObservable<number> = ko.observable(1);
 
         // GridList
-        errorMessageInfo: KnockoutObservableArray<any> = ko.observableArray([]);
-        filterErrorMessageInfo: KnockoutObservableArray<Gridlist> = ko.observableArray([]);
+        errorMessageInfo: KnockoutObservableArray<shareModel.PersonInfoErrMessageLogDto> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
 
@@ -43,14 +43,13 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             ]);
             
             self.selectedExeContent.subscribe((value) => {
-                self.filterErrorMessage();
+                self.getLogData();
             });
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage(params: shareModel.executionProcessingCommand): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            var params: shareModel.executionProcessingCommand = nts.uk.ui.windows.getShared("KDWL001E");
             self.startPeriod(params.periodStartDate);
             self.endPeriod(params.periodEndDate);
 
@@ -62,6 +61,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             });
 
             return dfd.promise();
+        }
+        
+        exportLog(): void {
+            var self = this;
         }
 
         cancelTask(): void {
@@ -92,11 +95,15 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
+                        console.log(info);
+                        
                         // DailyCreate
                         self.dailyCreateCount(self.getAsyncData(info.taskDatas, "dailyCreateCount").valueAsNumber);
                         self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
                         
                         if (!info.pending && !info.running) {
+                            self.isComplete(true);
+                            
                             // End Time
                             self.elapseTime.end();
                             self.endTime(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
@@ -106,7 +113,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
                             
                             // Get Log data
-                            self.getLogData(self.empCalAndSumExecLogID());
+                            self.getLogData();
                         }
                     });
                 })
@@ -122,34 +129,17 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
         }
 
-        private getLogData(empCalAndSumExecLogID: string): void {
+        private getLogData(): void {
             var self = this;
-            service.getErrorMessageInfo(empCalAndSumExecLogID).done((res) => {
-                self.errorMessageInfo(res.errMessageInfoDto);
-                self.filterErrorMessage();
+            var params = {
+                empCalAndSumExecLogID: self.empCalAndSumExecLogID(),
+                executionContent: self.selectedExeContent()
+            };
+            service.getErrorMessageInfo(params).done((res: Array<shareModel.PersonInfoErrMessageLogDto>) => {
+                self.errorMessageInfo(res);
             });
         }
         
-        private filterErrorMessage() {
-            var self = this;
-            self.filterErrorMessageInfo(_.filter(self.errorMessageInfo(), (item) => {
-                return item.executionContent == self.selectedExeContent();
-            }));
-        }
-
-    }
-
-    class Gridlist {
-        empCD: string;
-        code: string;
-        disposalDay: string;
-        errContents: string;
-        constructor(empCD: string, code: string, disposalDay: string, errContents: string) {
-            this.empCD = empCD;
-            this.code = code;
-            this.disposalDay = disposalDay;
-            this.errContents = errContents;
-        }
     }
 
 }
