@@ -327,6 +327,8 @@ module nts.uk.com.view.cmm011.a {
                             self.creationType = creationType;
                             self.workplaceHistory().newHistory();
                         }
+                        // Focus
+                        $('#wkpCd').focus();
                     });
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
@@ -513,7 +515,7 @@ module nts.uk.com.view.cmm011.a {
                     nts.uk.ui.block.clear();
 
                     if (res.messageId == 'Msg_373') {
-                        nts.uk.ui.dialog.info(res.message).then(() => {
+                        nts.uk.ui.dialog.info({messageId: res.messageId}).then(() => {
                             self.lstWorkplace([]);
                         });
                     } else {
