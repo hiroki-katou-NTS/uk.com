@@ -6,7 +6,7 @@ module nts.uk.at.view.ksu001.lx.viewmodel {
         selectedTeam: KnockoutObservable<any> = ko.observable();
         columnsTeam: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1110"), key: 'code', width: 60 },
-            { headerText: nts.uk.resource.getText("KSU001_1111"), key: 'name', width: 120 }
+            { headerText: nts.uk.resource.getText("KSU001_1111"), key: 'name', width: 120, formatter: _.escape }
         ]);
         teamCode: KnockoutObservable<string>;
         teamName: KnockoutObservable<string>;
