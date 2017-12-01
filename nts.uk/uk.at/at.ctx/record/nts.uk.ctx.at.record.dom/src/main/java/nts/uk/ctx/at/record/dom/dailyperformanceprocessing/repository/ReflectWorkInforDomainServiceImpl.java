@@ -39,6 +39,7 @@ import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
@@ -257,6 +258,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// 存在しない - no data
 		WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate = new WorkInfoOfDailyPerformance();
 		
+		workInfoOfDailyPerformanceUpdate.setEmployeeId(employeeID);
+		workInfoOfDailyPerformanceUpdate.setCalculationState(CalculationState.Calculated);
+		workInfoOfDailyPerformanceUpdate.setYmd(day);
+		
 		if (!personalLaborHasData.isPresent()) {
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 					new ErrMessageResource("005"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
@@ -277,6 +282,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				else {
 					workInfoOfDailyPerformanceUpdate.setScheduleWorkInformation(
 							new WorkInformation(basicScheduleHasData.get().getWorkTypeCode(),
+									basicScheduleHasData.get().getWorkTimeCode()));
+					workInfoOfDailyPerformanceUpdate.setRecordWorkInformation(new WorkInformation(basicScheduleHasData.get().getWorkTypeCode(),
 									basicScheduleHasData.get().getWorkTimeCode()));
 				}
 
@@ -449,7 +456,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				WorkInformation scheduleWorkInformation = new WorkInformation(calendarInfoDto.getWorkTimeCode(),
 						calendarInfoDto.getWorkTypeCode());
 				workInfoOfDailyPerformanceUpdate.setScheduleWorkInformation(scheduleWorkInformation);
-
+				workInfoOfDailyPerformanceUpdate.setRecordWorkInformation(scheduleWorkInformation);
+				
 				// 所定時間帯を取得する
 				// 所定時間設定
 				// this step can not processing, waiting Newwave
@@ -689,6 +697,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				});
 			}
 		}
+		
 
 
 		this.errMessageInfoRepository.addList(errMesInfos);
