@@ -2,6 +2,8 @@ package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -68,6 +70,41 @@ public class Employee extends AggregateRoot {
 			}
 		}
 		return retirementDate;
+	}
+
+	public Optional<JobEntryHistory> getHistoryWithReferDate(GeneralDate referenceDate) {
+		return this.listEntryJobHist.stream().filter(history -> history.getJoinDate().before(referenceDate)
+				&& history.getRetirementDate().after(referenceDate)).findFirst();
+	}
+
+	public Optional<JobEntryHistory> getHistoryBeforeReferDate(GeneralDate referenceDate) {
+		List<JobEntryHistory> matchedListEntryJobHist = this.listEntryJobHist.stream()
+				.filter(history -> history.getRetirementDate().before(referenceDate)).collect(Collectors.toList());
+		if (matchedListEntryJobHist.isEmpty()) {
+			return Optional.empty();
+		}
+		JobEntryHistory lastJobEntryHistory = matchedListEntryJobHist.get(0);
+		for (JobEntryHistory jobEntryHistory : matchedListEntryJobHist) {
+			if (jobEntryHistory.getRetirementDate().after(lastJobEntryHistory.getRetirementDate())) {
+				lastJobEntryHistory = jobEntryHistory;
+			}
+		}
+		return Optional.of(lastJobEntryHistory);
+	}
+	
+	public Optional<JobEntryHistory> getHistoryAfterReferDate(GeneralDate referenceDate) {
+		List<JobEntryHistory> matchedListEntryJobHist = this.listEntryJobHist.stream()
+				.filter(history -> history.getJoinDate().after(referenceDate)).collect(Collectors.toList());
+		if (matchedListEntryJobHist.isEmpty()) {
+			return Optional.empty();
+		}
+		JobEntryHistory firstJobEntryHistory = matchedListEntryJobHist.get(0);
+		for (JobEntryHistory jobEntryHistory : matchedListEntryJobHist) {
+			if (jobEntryHistory.getJoinDate().before(firstJobEntryHistory.getRetirementDate())) {
+				firstJobEntryHistory = jobEntryHistory;
+			}
+		}
+		return Optional.of(firstJobEntryHistory);
 	}
 
 	// calculate year of entire in current company
