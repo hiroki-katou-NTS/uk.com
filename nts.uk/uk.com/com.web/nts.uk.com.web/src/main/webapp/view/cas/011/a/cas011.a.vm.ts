@@ -76,7 +76,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
              */
             self.selectedRoleSetCd.subscribe(roleSetCd => {
                 errors.clearAll();
-
                 // do not process anything if it is new mode.
                 if (roleSetCd) {
                     service.getRoleSetByRoleSetCd(roleSetCd).done ((_roleSet : IRoleSet) => {
@@ -199,6 +198,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 if (deferred) {
                     deferred.resolve();
                 }
+                // set focus
+                self.setFocus();
             });
         }
 
@@ -362,8 +363,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
             self.selectedRoleSetCd('');
             // Set new mode
             self.isNewMode(true);
-            // focus
-            self.setFocus();
         }
 
         /**
@@ -375,8 +374,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
            self.selectedRoleSetCd(selectedRoleSetCd);
            //Setting update mode
            self.isNewMode(false);
-           // set focus
-           self.setFocus();
        }
 
         /**
