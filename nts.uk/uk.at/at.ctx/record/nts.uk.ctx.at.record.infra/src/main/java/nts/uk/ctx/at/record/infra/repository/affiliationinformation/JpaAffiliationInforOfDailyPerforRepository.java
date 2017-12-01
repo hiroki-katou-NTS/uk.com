@@ -25,7 +25,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE a ");
+		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiAffiliationInf a ");
 		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
@@ -48,8 +48,9 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createNamedQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override
