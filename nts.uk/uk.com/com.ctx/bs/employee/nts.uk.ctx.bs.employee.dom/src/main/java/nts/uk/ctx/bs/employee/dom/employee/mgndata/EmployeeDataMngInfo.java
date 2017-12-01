@@ -39,7 +39,14 @@ public class EmployeeDataMngInfo extends AggregateRoot {
 
 	/** 外部コード */
 	private ExternalCode externalCode;
-
+	
+	public EmployeeDataMngInfo(String cId, String pId, String sId, String employeeCode, String externalCode){
+		this.companyId = cId;
+		this.personId = pId;
+		this.employeeId = sId;
+		this.employeeCode = new EmployeeCode(employeeCode);
+		this.externalCode = new ExternalCode(externalCode);
+	}
 	public static EmployeeDataMngInfo createFromJavaType(String cId, String pId, String sId, String sCd, int delStatus,
 			GeneralDate delTemp, String removeReason, String extCode) {
 		return new EmployeeDataMngInfo(cId, pId, sId, new EmployeeCode(sCd),

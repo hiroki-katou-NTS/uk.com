@@ -34,7 +34,7 @@ public class UpdateEmployeeDataMngInfoCommandHandler extends CommandHandler<Upda
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
-		EmployeeDataMngInfo domain = EmployeeDataMngInfo.createFromJavaType(companyId,command.getPersonId(), command.getEmployeeId(),command.getEmployeeCode(),0,null,null,command.getExternalCode());
+		EmployeeDataMngInfo domain = new EmployeeDataMngInfo(companyId,command.getPersonId(), command.getEmployeeId(),command.getEmployeeCode(),command.getExternalCode());
 		
 		employeeDataMngInfoRepository.update(domain);
 	}

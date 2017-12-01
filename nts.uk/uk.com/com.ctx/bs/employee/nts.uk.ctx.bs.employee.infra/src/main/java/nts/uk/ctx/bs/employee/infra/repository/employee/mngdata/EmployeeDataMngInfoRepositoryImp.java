@@ -40,10 +40,11 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 		if (entity != null) {
 
-			entity.delDateTmp = domain.getDeleteDateTemporary();
-			entity.delStatus = domain.getDeletedStatus().value;
-			entity.removeReason = domain.getRemoveReason().v();
-
+//			entity.delDateTmp = domain.getDeleteDateTemporary();
+//			entity.delStatus = domain.getDeletedStatus().value;
+//			entity.removeReason = domain.getRemoveReason().v();
+			entity.employeeCode = domain.getEmployeeCode().v();
+			entity.extCode = domain.getExternalCode().v();
 			commandProxy().update(entity);
 		}
 	}
