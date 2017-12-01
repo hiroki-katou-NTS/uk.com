@@ -21,5 +21,6 @@ public class FlowWorkRestSettingDetailDto {
 	private FlowFixedRestSetDto flowFixedRestSetting;
 
 	/** The use plural work rest time. */
-	private boolean usePluralWorkRestTime;
+	private boolean usePluralWorkRestTime;	
+	
 }

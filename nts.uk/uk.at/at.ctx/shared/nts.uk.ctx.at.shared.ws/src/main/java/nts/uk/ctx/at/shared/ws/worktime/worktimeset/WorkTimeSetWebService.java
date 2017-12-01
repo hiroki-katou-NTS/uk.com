@@ -10,10 +10,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 
 /**
@@ -36,14 +38,20 @@ public class WorkTimeSetWebService extends WebService {
 	 */
 	@POST
 	@Path("findAll")
-	public List<WorkTimeSettingDto> findAll() {
-		return this.workTimeSetFinder.findAll();
+	public List<SimpleWorkTimeSettingDto> findAll() {
+		return this.workTimeSetFinder.findAllSimple();
 	}
 
-//	@POST
-//	@Path("save")
-//	public void savePred(PredCommand command) {
-//		this.predCommandHandler.handle(command);
-//	}
+	/**
+	 * Find by code.
+	 *
+	 * @param worktimeCode the worktime code
+	 * @return the work time setting dto
+	 */
+	@POST
+	@Path("findByCode/{worktimeCode}")
+	public WorkTimeSettingDto findByCode(@PathParam("worktimeCode") String worktimeCode) {
+		return this.workTimeSetFinder.findByCode(worktimeCode);
+	}
 
 }

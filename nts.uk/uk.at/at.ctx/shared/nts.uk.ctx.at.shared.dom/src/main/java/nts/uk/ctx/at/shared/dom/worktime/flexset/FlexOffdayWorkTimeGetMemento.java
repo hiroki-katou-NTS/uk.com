@@ -1,0 +1,31 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.dom.worktime.flexset;
+
+import java.util.List;
+
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSetting;
+
+/**
+ * The Interface FlexOffdayWorkTimeGetMemento.
+ */
+public interface FlexOffdayWorkTimeGetMemento {
+
+	/**
+	 * Gets the work timezone.
+	 *
+	 * @return the work timezone
+	 */
+	List<HDWorkTimeSheetSetting> getWorkTimezone();
+	
+	
+	/**
+	 * Gets the rest timezone.
+	 *
+	 * @return the rest timezone
+	 */
+	FlowWorkRestTimezone getRestTimezone();
+}

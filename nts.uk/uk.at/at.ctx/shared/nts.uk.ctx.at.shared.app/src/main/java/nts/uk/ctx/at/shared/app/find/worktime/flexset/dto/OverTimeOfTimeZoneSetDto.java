@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.TimeZoneRoundingDto;
 
 /**
  * The Class OverTimeOfTimeZoneSetDto.

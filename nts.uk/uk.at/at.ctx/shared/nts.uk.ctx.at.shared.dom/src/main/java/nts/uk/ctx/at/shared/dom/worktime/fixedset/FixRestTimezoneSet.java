@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
 
 /**
  * The Class FixRestTimezoneSet.
@@ -17,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
 @Getter
 public class FixRestTimezoneSet extends DomainObject {
 
-	/** The timezone. */
+	/** The lst timezone. */
 	// 時間帯
-	private List<DeductionTime> timezone;
+	private List<DeductionTime> lstTimezone;
 }

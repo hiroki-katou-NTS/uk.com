@@ -27,13 +27,13 @@ public class KshmtWorkTimeSheetSet extends UkJpaEntity implements Serializable {
 	protected KshmtWorkTimeSheetSetPK kshmtWorkTimeSheetSetPK;
 
 	@Column(name = "USE_ATR")
-	private short useAtr;
+	private Integer useAtr;
 
 	@Column(name = "START_TIME")
-	private short startTime;
+	private Integer startTime;
 
 	@Column(name = "END_TIME")
-	private short endTime;
+	private Integer endTime;
 
 	public KshmtWorkTimeSheetSet() {
 	}

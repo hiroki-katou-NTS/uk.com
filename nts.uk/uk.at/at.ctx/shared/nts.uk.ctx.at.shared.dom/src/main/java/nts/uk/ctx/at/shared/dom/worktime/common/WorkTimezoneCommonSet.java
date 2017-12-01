@@ -60,4 +60,42 @@ public class WorkTimezoneCommonSet extends DomainObject {
 	/** The late early set. */
 	// 遅刻・早退設定
 	private WorkTimezoneLateEarlySet lateEarlySet;
+
+	/**
+	 * Instantiates a new work timezone common set.
+	 *
+	 * @param memento the memento
+	 */
+	public WorkTimezoneCommonSet(WorkTimezoneCommonSetGetMemento memento) {
+		this.ZeroHStraddCalculateSet = memento.getZeroHStraddCalculateSet();
+		this.intervalSet = memento.getIntervalSet();
+		this.subHolTimeSet = memento.getSubHolTimeSet();
+		this.raisingSalarySet = memento.getRaisingSalarySet();
+		this.medicalSet = memento.getMedicalSet();
+		this.goOutSet = memento.getGoOutSet();
+		this.stampSet = memento.getStampSet();
+		this.lateNightTimeSet = memento.getLateNightTimeSet();
+		this.shortTimeWorkSet = memento.getShortTimeWorkSet();
+		this.extraordTimeSet = memento.getExtraordTimeSet();
+		this.lateEarlySet = memento.getLateEarlySet();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkTimezoneCommonSetSetMemento memento) {
+		memento.setZeroHStraddCalculateSet(this.ZeroHStraddCalculateSet);
+		memento.setIntervalSet(this.intervalSet);
+		memento.setSubHolTimeSet(this.subHolTimeSet);
+		memento.setRaisingSalarySet(this.raisingSalarySet);
+		memento.setMedicalSet(this.medicalSet);
+		memento.setGoOutSet(this.goOutSet);
+		memento.setStampSet(this.stampSet);
+		memento.setLateNightTimeSet(this.lateNightTimeSet);
+		memento.setShortTimeWorkSet(this.shortTimeWorkSet);
+		memento.setExtraordTimeSet(this.extraordTimeSet);
+		memento.setLateEarlySet(this.lateEarlySet);
+	}
 }

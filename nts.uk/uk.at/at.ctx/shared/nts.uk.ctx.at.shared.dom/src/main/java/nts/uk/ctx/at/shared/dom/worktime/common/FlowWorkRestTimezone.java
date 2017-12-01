@@ -25,4 +25,21 @@ public class FlowWorkRestTimezone extends DomainObject{
 	/** The flow rest timezone. */
 	//流動休憩時間帯
 	private FlowRestTimezone flowRestTimezone;
+
+	/**
+	 * Instantiates a new flow work rest timezone.
+	 *
+	 * @param fixRestTime the fix rest time
+	 * @param fixedRestTimezone the fixed rest timezone
+	 * @param flowRestTimezone the flow rest timezone
+	 */
+	public FlowWorkRestTimezone(boolean fixRestTime, TimezoneOfFixedRestTimeSet fixedRestTimezone,
+			FlowRestTimezone flowRestTimezone) {
+		super();
+		this.fixRestTime = fixRestTime;
+		this.fixedRestTimezone = fixedRestTimezone;
+		this.flowRestTimezone = flowRestTimezone;
+	}
+	
+	
 }

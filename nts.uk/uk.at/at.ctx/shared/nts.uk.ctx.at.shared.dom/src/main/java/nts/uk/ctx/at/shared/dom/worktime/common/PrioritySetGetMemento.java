@@ -4,17 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
-
 /**
- * The Class CommonRestSet.
+ * The Interface PrioritySetGetMemento.
  */
-//共通の休憩設定
-@Getter
-public class CommonRestSet extends DomainObject{
-	
-	/** The calculate method. */
-	// 休憩時間中に退勤した場合の計算方法
-	private RestTimeOfficeWorkCalcMethod calculateMethod;
+public interface PrioritySetGetMemento {
+
+	/**
+	 * Gets the priority atr.
+	 *
+	 * @return the priority atr
+	 */
+	 MultiStampTimePiorityAtr getPriorityAtr();
+
+	/**
+	 * Gets the stamp atr.
+	 *
+	 * @return the stamp atr
+	 */
+	 StampPiorityAtr getStampAtr();
 }

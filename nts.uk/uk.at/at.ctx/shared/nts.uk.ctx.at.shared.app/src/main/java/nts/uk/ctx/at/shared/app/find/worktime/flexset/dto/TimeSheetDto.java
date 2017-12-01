@@ -6,13 +6,15 @@ package nts.uk.ctx.at.shared.app.find.worktime.flexset.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetSetMemento;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class TimeSheetDto.
  */
 @Getter
 @Setter
-public class TimeSheetDto {
+public class TimeSheetDto implements TimeSheetSetMemento{
 
 	/** The start time. */
 	private Integer startTime;
@@ -20,16 +22,27 @@ public class TimeSheetDto {
 	/** The end time. */
 	private Integer endTime;
 
-	/**
-	 * Instantiates a new time sheet dto.
-	 *
-	 * @param startTime the start time
-	 * @param endTime the end time
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetSetMemento#
+	 * setStartTime(nts.uk.shr.com.time.TimeWithDayAttr)
 	 */
-	public TimeSheetDto(Integer startTime, Integer endTime) {
-		super();
-		this.startTime = startTime;
-		this.endTime = endTime;
+	@Override
+	public void setStartTime(TimeWithDayAttr startTime) {
+		this.startTime = startTime.valueAsMinutes();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetSetMemento#setEndTime(
+	 * nts.uk.shr.com.time.TimeWithDayAttr)
+	 */
+	@Override
+	public void setEndTime(TimeWithDayAttr endTime) {
+		this.endTime = endTime.valueAsMinutes();
 	}
 	
 	

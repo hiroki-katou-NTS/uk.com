@@ -11,13 +11,7 @@ import lombok.Getter;
 /**
  * The Class DiffTimeRestTimezone.
  */
-//時差勤務の休憩時間帯
-
-/**
- * Gets the rest timezone.
- *
- * @return the rest timezone
- */
+// 時差勤務の休憩時間帯
 @Getter
 public class DiffTimeRestTimezone {
 	

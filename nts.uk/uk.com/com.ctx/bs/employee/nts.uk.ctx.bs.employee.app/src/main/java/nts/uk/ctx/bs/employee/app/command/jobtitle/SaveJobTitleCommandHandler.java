@@ -21,6 +21,7 @@ import nts.uk.ctx.bs.employee.app.command.jobtitle.dto.JobTitleHistoryDto;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.dto.PeriodDto;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
@@ -145,15 +146,14 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 	 */
 	private void updateJobTitle(String companyId, SaveJobTitleCommand command) {		
 		
-		
 		// Get old JobTitleCode
-		Optional<JobTitleInfo> opJobTitleInfo = this.jobTitleInfoRepository.find(companyId, command.getJobTitleInfo().getJobTitleId());
-		if (!opJobTitleInfo.isPresent()) {
+		Optional<JobTitleCode> opJobTitleCode = this.jobTitleInfoRepository.findJobTitleCode(companyId, command.getJobTitleInfo().getJobTitleId());
+		if (!opJobTitleCode.isPresent()) {
 			return;
 		}
 		
 		// JobTitleCode is not changable
-		command.getJobTitleInfo().setJobTitleCode(opJobTitleInfo.get().getJobTitleCode().v());
+		command.getJobTitleInfo().setJobTitleCode(opJobTitleCode.get().v());
 		this.jobTitleInfoRepository.update(command.toDomain(companyId));
 	}
 }

@@ -162,6 +162,9 @@ module nts.uk.at.view.kmk003.a {
                     self.pushDataWorkTime(data);
                     self.data(data);
                 });
+                service.getPredByWorkTimeCode("AAA").done(function(data: any) {
+                    alert();
+                });
                 // set ntsFixedTable style
                 dfd.resolve();
                 return dfd.promise();

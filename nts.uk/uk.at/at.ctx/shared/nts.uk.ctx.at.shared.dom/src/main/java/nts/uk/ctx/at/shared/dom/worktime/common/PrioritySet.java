@@ -21,4 +21,24 @@ public class PrioritySet extends DomainObject {
 	/** The stamp atr. */
 	//打刻区分
 	private StampPiorityAtr stampAtr;
+
+	/**
+	 * Instantiates a new priority set.
+	 *
+	 * @param memento the memento
+	 */
+	public PrioritySet(PrioritySetGetMemento memento) {
+		this.priorityAtr = memento.getPriorityAtr();
+		this.stampAtr = memento.getStampAtr();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PrioritySetSetMemento memento) {
+		memento.setPriorityAtr(this.priorityAtr);
+		memento.setStampAtr(this.stampAtr);
+	}
 }

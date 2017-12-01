@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.ws.predetemine;
+package nts.uk.ctx.at.shared.ws.worktime.predetemine;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,8 +14,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.pred.PredCommand;
 import nts.uk.ctx.at.shared.app.command.pred.PredCommandHandler;
-import nts.uk.ctx.at.shared.app.find.pred.PredFinder;
-import nts.uk.ctx.at.shared.app.find.pred.dto.PredDto;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.PredetemineTimeSetFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSetDto;
 
 /**
  * The Class PredTimeSetWebService.
@@ -26,8 +26,8 @@ import nts.uk.ctx.at.shared.app.find.pred.dto.PredDto;
 public class PredTimeSetWebService extends WebService {
 
 	/** The pred finder. */
-//	@Inject
-//	private PredFinder predFinder;
+	@Inject
+	private PredetemineTimeSetFinder predetemineTimeSetFinder;
 
 	@Inject
 	private PredCommandHandler predCommandHandler;
@@ -40,10 +40,9 @@ public class PredTimeSetWebService extends WebService {
 	 * @return the pred dto
 	 */
 	@POST
-	@Path("findByCode/{workTimeCode}")
-	public PredDto findByCode(@PathParam("workTimeCode") String workTimeCode) {
-//		return this.predFinder.findByCode(workTimeCode);
-		return null;
+	@Path("findByWorkTimeCode/{workTimeCode}")
+	public PredetemineTimeSetDto findByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode) {
+		return this.predetemineTimeSetFinder.findByWorkTimeCode(workTimeCode);
 	}
 
 	@POST

@@ -15,7 +15,7 @@ public class FixedWorkRestSet {
 
 	/** The common rest set. */
 	//共通の休憩設定
-	private CommonRestSet commonRestSet; 
+	private CommonRestSetting commonRestSet; 
 	
 	/** The calculate method. */
 	//計算方法
