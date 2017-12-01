@@ -30,4 +30,16 @@ public class StampReflectTimezone extends DomainObject {
 	/** The start time. */
 	// 開始時刻
 	private TimeWithDayAttr startTime;
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		
+		// TODO: Validate message 516
+	}
+	
+	
 }

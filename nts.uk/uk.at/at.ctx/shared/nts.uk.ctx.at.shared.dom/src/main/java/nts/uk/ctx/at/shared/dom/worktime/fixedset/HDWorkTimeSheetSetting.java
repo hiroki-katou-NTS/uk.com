@@ -77,4 +77,15 @@ public class HDWorkTimeSheetSetting extends DomainObject {
 		memento.setIsNonStatutoryHolidayConstraintTime(this.isNonStatutoryHolidayConstraintTime);
 		memento.setOutLegalPubHDFrameNo(this.outLegalPubHDFrameNo);
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		
+		// TODO: validate message 516
+	}
+	
 }

@@ -614,7 +614,7 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.8.10')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.8.16')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.8.14')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.8.16')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.8.17')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.ac', version: '0.8.4')
 		
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.app', version: '0.5.3')
