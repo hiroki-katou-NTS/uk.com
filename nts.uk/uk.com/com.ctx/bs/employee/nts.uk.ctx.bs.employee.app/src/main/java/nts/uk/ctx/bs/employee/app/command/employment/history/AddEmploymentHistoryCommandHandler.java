@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryDomainService;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
@@ -27,6 +28,9 @@ implements PeregAddCommandHandler<AddEmploymentHistoryCommand> {
 	private EmploymentHistoryRepository employmentHistoryRepository;
 	@Inject
 	private EmploymentHistoryItemRepository employmentHistoryItemRepository;
+	
+	@Inject
+	private EmploymentHistoryDomainService employmentHistoryDomainService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -54,7 +58,7 @@ implements PeregAddCommandHandler<AddEmploymentHistoryCommand> {
 		}
 		itemtoBeAdded.add(dateItem);
 		
-		employmentHistoryRepository.add(itemtoBeAdded);
+		employmentHistoryDomainService.add(itemtoBeAdded);
 		
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getSalarySegment(), command.getEmploymentCode());
 		employmentHistoryItemRepository.adḍ̣̣̣(histItem);

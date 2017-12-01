@@ -14,21 +14,20 @@ public interface EmploymentHistoryRepository {
 	
 	/**
 	 * Add employment history
+	 * @param sid
 	 * @param domain
 	 */
-	void add(EmploymentHistory domain);
+	void add(String sid, DateHistoryItem domain);
 	
 	/**
 	 * Update employment history
-	 * @param domain
 	 * @param itemToBeUpdated
 	 */
-	void update(EmploymentHistory domain, DateHistoryItem itemToBeUpdated);
+	void update(DateHistoryItem itemToBeUpdated);
 	
 	/**
 	 * Delete employment history
-	 * @param domain
-	 * @param itemToBeDeleted
+	 * @param histId
 	 */
-	void delete(EmploymentHistory domain, DateHistoryItem itemToBeDeleted);
+	void delete(String histId);
 }

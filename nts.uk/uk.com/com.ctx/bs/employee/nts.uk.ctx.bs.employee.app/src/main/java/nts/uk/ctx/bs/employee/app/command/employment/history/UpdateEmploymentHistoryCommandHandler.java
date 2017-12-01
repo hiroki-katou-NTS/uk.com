@@ -9,6 +9,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryDomainService;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
@@ -24,6 +25,9 @@ public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<Update
 	private EmploymentHistoryRepository employmentHistoryRepository;
 	@Inject
 	private EmploymentHistoryItemRepository employmentHistoryItemRepository;
+	
+	@Inject
+	private EmploymentHistoryDomainService employmentHistoryDomainService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -51,7 +55,7 @@ public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<Update
 			throw new RuntimeException("invalid employmentHistory");
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
-		employmentHistoryRepository.update(existHist.get(), itemToBeUpdate.get());
+		employmentHistoryDomainService.update(existHist.get(), itemToBeUpdate.get());
 		
 		// Update detail table
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getSalarySegment(), command.getEmploymentCode());

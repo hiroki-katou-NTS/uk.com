@@ -45,18 +45,12 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 
 	@Override
-	public void add(EmploymentHistory domain) {
-		// Insert last element
-		DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-		this.commandProxy().insert(toEntity(domain.getEmployeeId(),lastItem));
-		
-		// Update item before and after
-		updateItemBefore(domain,lastItem);
-		
+	public void add(String sid, DateHistoryItem domain) {
+		this.commandProxy().insert(toEntity(sid,domain));
 	}
 
 	@Override
-	public void update(EmploymentHistory domain, DateHistoryItem itemToBeUpdated) {
+	public void update(DateHistoryItem itemToBeUpdated) {
 		Optional<BsymtEmploymentHist> histItem = this.queryProxy().find(itemToBeUpdated.identifier(), BsymtEmploymentHist.class);
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtEmploymentHist");
@@ -64,30 +58,15 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		updateEntity(itemToBeUpdated, histItem.get());
 		this.commandProxy().update(histItem.get());
 		
-		// Update item before and after
-		updateItemBefore(domain,itemToBeUpdated);
-		updateItemAfter(domain,itemToBeUpdated);
-		
 	}
 
 	@Override
-	public void delete(EmploymentHistory domain, DateHistoryItem itemToBeDeleted) {
-		Optional<BsymtEmploymentHist> histItem = this.queryProxy().find(itemToBeDeleted.identifier(), BsymtEmploymentHist.class);
+	public void delete(String histId) {
+		Optional<BsymtEmploymentHist> histItem = this.queryProxy().find(histId, BsymtEmploymentHist.class);
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
-		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, itemToBeDeleted.identifier());
-		
-		// Update last item
-		if (domain.getHistoryItems().size() >0){
-			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-			histItem = this.queryProxy().find(lastItem.identifier(), BsymtEmploymentHist.class);
-			if (!histItem.isPresent()){
-				throw new RuntimeException("invalid BsymtEmploymentHist");
-			}
-			updateEntity(lastItem, histItem.get());
-			this.commandProxy().update(histItem.get());
-		}
+		this.commandProxy().remove(BsymtAffiWorkplaceHist.class,histId);
 		
 	}
 	/**

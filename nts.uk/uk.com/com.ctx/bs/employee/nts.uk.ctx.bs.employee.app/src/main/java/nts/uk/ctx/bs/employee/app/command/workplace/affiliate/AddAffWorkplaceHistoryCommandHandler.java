@@ -10,6 +10,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryDomainService;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
@@ -62,7 +63,7 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 		}
 		itemtoBeAdded.add(dateItem);
 		
-		affWorkplaceHistoryRepository.add(itemtoBeAdded);
+		affWorkplaceHistoryDomainService.add(itemtoBeAdded);
 		
 		AffWorkplaceHistoryItem histItem = AffWorkplaceHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getWorkplaceId(), command.getNormalWorkplaceId());
 		affWorkplaceHistoryItemRepository.add(histItem);

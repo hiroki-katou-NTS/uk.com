@@ -9,6 +9,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryDomainService;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -22,6 +23,9 @@ public class DeleteEmploymentHistoryCommandHandler extends CommandHandler<Delete
 	private EmploymentHistoryRepository employmentHistoryRepository;
 	@Inject
 	private EmploymentHistoryItemRepository employmentHistoryItemRepository;
+	
+	@Inject
+	private EmploymentHistoryDomainService employmentHistoryDomainService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -49,7 +53,7 @@ public class DeleteEmploymentHistoryCommandHandler extends CommandHandler<Delete
 			throw new RuntimeException("invalid employmentHistory");
 		}
 		existHist.get().remove(itemToBeDelete.get());
-		employmentHistoryRepository.delete(existHist.get(),itemToBeDelete.get());
+		employmentHistoryDomainService.delete(existHist.get(),itemToBeDelete.get());
 		
 		employmentHistoryItemRepository.delete(command.getHistoryId());
 	}
