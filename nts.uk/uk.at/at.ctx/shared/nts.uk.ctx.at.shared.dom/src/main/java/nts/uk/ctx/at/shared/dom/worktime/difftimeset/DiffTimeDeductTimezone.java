@@ -10,13 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class DiffTimeDeductTimezone.
  */
-//時差勤務の控除時間帯
-
-/**
- * Checks if is update start time.
- *
- * @return true, if is update start time
- */
+// 時差勤務の控除時間帯
 @Getter
 public class DiffTimeDeductTimezone extends DomainObject {
 

@@ -11,9 +11,8 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstOvertimeFramePK_.
  */
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-11-17T14:08:22")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-11-30T09:30:55")
 @StaticMetamodel(KshstOvertimeFramePK.class)
-
 public class KshstOvertimeFramePK_ { 
 
     /** The ot fr no. */

@@ -10,11 +10,11 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 public interface PredetemineTimeSetRepository {
 	
 	/**
-	 * Find by code.
+	 * Find by work time code.
 	 *
-	 * @param companyID the company ID
-	 * @param siftCD the sift CD
+	 * @param companyId the company id
+	 * @param workTimeCode the work time code
 	 * @return the predetemine time set
 	 */
-	public PredetemineTimeSet findByCode(String companyID, String siftCD);
+	public PredetemineTimeSet findByWorkTimeCode(String companyId, String workTimeCode);
 }

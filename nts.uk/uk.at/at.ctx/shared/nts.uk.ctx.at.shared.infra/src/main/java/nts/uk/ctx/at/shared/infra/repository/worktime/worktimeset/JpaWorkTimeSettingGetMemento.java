@@ -7,68 +7,71 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.predset.KwtstWorkTimeSetNew;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
+import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet;
 import nts.uk.shr.com.primitive.Memo;
 
 public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 
-	// TODO
-	Object entity;
+	private KshmtWorkTimeSet entity;
 
-	public JpaWorkTimeSettingGetMemento(KwtstWorkTimeSetNew entity) {
+	public JpaWorkTimeSettingGetMemento(KshmtWorkTimeSet entity) {
 		this.entity = entity;
 	}
 
 	@Override
 	public String getCompanyId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entity.getKshmtWorkTimeSetPK().getCid();
 	}
 
 	@Override
 	public WorkTimeCode getWorktimeCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimeCode(this.entity.getKshmtWorkTimeSetPK().getWorktimeCd());
 	}
 
 	@Override
 	public WorkTimeDivision getWorkTimeDivision() {
-		// TODO Auto-generated method stub
-		return null;
+		return WorkTimeDivision.builder()
+				.workTimeDailyAtr(WorkTimeDailyAtr.valueOf(this.entity.getDailyWorkAtr()))
+				.workTimeMethodSet(WorkTimeMethodSet.valueOf(this.entity.getWorktimeSetMethod()))
+				.build();
 	}
 
 	@Override
 	public AbolishAtr getAbolishAtr() {
-		// TODO Auto-generated method stub
-		return null;
+		return AbolishAtr.valueOf(this.entity.getAbolitionAtr());
 	}
 
 	@Override
 	public ColorCode getColorCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ColorCode(this.entity.getColor());
 	}
 
 	@Override
 	public WorkTimeDisplayName getWorkTimeDisplayName() {
-		// TODO Auto-generated method stub
-		return null;
+		return WorkTimeDisplayName.builder()
+				.workTimeName(new WorkTimeName(this.entity.getName()))
+				.workTimeAbName(new WorkTimeAbName(this.entity.getAbName()))
+				.workTimeSymbol(new WorkTimeSymbol(this.entity.getSymbol()))
+				.build();
 	}
 
 	@Override
 	public Memo getMemo() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Memo(this.entity.getMemo());
 	}
 
 	@Override
 	public WorkTimeNote getNote() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimeNote(this.entity.getNote());
 	}
 
 }

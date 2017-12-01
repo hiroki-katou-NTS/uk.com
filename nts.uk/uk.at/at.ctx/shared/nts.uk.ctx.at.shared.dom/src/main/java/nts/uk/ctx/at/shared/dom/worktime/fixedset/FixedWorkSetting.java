@@ -43,13 +43,13 @@ public class FixedWorkSetting extends AggregateRoot {
 	//固定勤務の休憩設定
 	private FixedWorkRestSet fixedWorkRestSetting;
 	
-	/** The half day work timezone. */
+	/** The lst half day work timezone. */
 	// 平日勤務時間帯
-	private List<FixHalfDayWorkTimezone> halfDayWorkTimezone;
+	private List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone;
 
-	/** The stamp reflect timezone. */
+	/** The lst stamp reflect timezone. */
 	// 打刻反映時間帯
-	private List<StampReflectTimezone> stampReflectTimezone;
+	private List<StampReflectTimezone> lstStampReflectTimezone;
 
 	/** The legal OT setting. */
 	// 法定内残業設定

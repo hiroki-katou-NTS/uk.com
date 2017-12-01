@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist_;
@@ -333,7 +334,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<JobTitleInfo> find(String companyId, String jobTitleId) {
+	public Optional<JobTitleCode> findJobTitleCode(String companyId, String jobTitleId) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -354,6 +355,6 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 
 		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
 
-		return Optional.of(new JobTitleInfo(new JpaJobTitleInfoGetMemento(result.get(0))));
+		return Optional.of(new JobTitleInfo(new JpaJobTitleInfoGetMemento(result.get(0))).getJobTitleCode());
 	}
 }

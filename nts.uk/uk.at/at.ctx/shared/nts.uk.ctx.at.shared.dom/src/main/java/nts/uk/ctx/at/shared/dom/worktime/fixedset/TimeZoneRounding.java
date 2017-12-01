@@ -28,4 +28,9 @@ public class TimeZoneRounding extends DomainObject {
 	// 終了
 	private TimeWithDayAttr end;
 
+	@Override
+	public String toString() {
+		return start + "," + end;
+	}
+	
 }

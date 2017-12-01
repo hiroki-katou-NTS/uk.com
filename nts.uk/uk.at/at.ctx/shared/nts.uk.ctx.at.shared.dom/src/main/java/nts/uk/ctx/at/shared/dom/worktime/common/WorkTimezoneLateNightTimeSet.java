@@ -18,4 +18,22 @@ public class WorkTimezoneLateNightTimeSet extends DomainObject {
 	/** The rounding setting. */
 	// 丸め設定
 	private TimeRoundingSetting roundingSetting;
+
+	/**
+	 * Instantiates a new work timezone late night time set.
+	 *
+	 * @param memento the memento
+	 */
+	public WorkTimezoneLateNightTimeSet(WorkTimezoneLateNightTimeSetGetMemento memento) {
+		this.roundingSetting = memento.getRoundingSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkTimezoneLateNightTimeSetSetMemento memento) {
+		memento.setRoundingSetting(this.roundingSetting);
+	}
 }

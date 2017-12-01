@@ -27,5 +27,27 @@ public class CoreTimeSetting extends DomainObject {
 	/** The min work time. */
 	// 最低勤務時間
 	private AttendanceTime minWorkTime;
+	
+	
+	/**
+	 * Instantiates a new core time setting.
+	 *
+	 * @param memento the memento
+	 */
+	public CoreTimeSetting(CoreTimeSettingGetMemento memento) {
+		this.coreTimeSheet = memento.getCoreTimeSheet();
+		this.timesheet = memento.getTimesheet();
+		this.minWorkTime = memento.getMinWorkTime();
+	}
 
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(CoreTimeSettingSetMemento memento){
+		memento.setCoreTimeSheet(this.coreTimeSheet);
+		memento.setTimesheet(this.timesheet);
+		memento.setMinWorkTime(this.minWorkTime);
+	}
 }
