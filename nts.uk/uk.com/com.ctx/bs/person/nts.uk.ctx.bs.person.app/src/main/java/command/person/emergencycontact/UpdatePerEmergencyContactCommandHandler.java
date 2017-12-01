@@ -19,7 +19,7 @@ public class UpdatePerEmergencyContactCommandHandler extends CommandHandler<Upda
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00015";
+		return null;
 	}
 
 	@Override
