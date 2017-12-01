@@ -18,5 +18,9 @@ module nts.uk.at.view.kdw001.e.service {
     export function checkTask(params: shareModel.CheckProcessCommand): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkprocess, params);
     }
+    
+    export function saveAsCsv(data:any): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "personError", domainType: "personerror", languageId: 'ja', reportType: 3 ,data:data});
+    }
 
 }
