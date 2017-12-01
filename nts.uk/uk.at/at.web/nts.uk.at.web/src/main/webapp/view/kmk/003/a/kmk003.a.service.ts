@@ -5,12 +5,13 @@ module nts.uk.at.view.kmk003.a {
         *  Service paths
         */
         let servicePath: any = {
+            getAllWorktime: "at/shared/worktimeset/findAll"
             getPredByCode: "at/shared/pred/findByCode",
             savePred: "at/shared/pred/save",
         };
 
-        export function findWorkTimeSetByCode(worktimeCode: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getPredByCode + "/" + worktimeCode);
+        export function findAllWorkTimeSet(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getAllWorktime);
         }
 
         export function savePred(data: any): JQueryPromise<any> {

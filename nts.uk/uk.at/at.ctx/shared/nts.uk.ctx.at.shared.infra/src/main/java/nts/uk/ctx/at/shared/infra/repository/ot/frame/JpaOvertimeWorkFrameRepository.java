@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK_;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame_;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalConditionPK_;
 
 /**
  * The Class JpaOvertimeWorkFrameRepository.
@@ -76,6 +78,8 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 		CriteriaQuery<KshstOvertimeFrame> cq = criteriaBuilder
 			.createQuery(KshstOvertimeFrame.class);
 
+		val x = KshstTotalConditionPK_.cid;
+		
 		// root data
 		Root<KshstOvertimeFrame> root = cq.from(KshstOvertimeFrame.class);
 
