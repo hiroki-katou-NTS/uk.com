@@ -20,4 +20,24 @@ public class FixedWorkRestSet {
 	/** The calculate method. */
 	//計算方法
 	private FixedRestCalculateMethod calculateMethod;
+
+	/**
+	 * Instantiates a new fixed work rest set.
+	 *
+	 * @param memento the memento
+	 */
+	public FixedWorkRestSet(FixedWorkRestSetGetMemento memento) {
+		this.commonRestSet = memento.getCommonRestSet();
+		this.calculateMethod = memento.getCalculateMethod();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FixedWorkRestSetSetMemento memento) {
+		memento.setCommonRestSet(this.commonRestSet);
+		memento.setCalculateMethod(this.calculateMethod);
+	}
 }
