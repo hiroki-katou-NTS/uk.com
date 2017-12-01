@@ -23,23 +23,7 @@ public class FlexHalfDayWorkTimeDto {
 	/** The work timezone. */
 	private FixedWorkTimezoneSetDto workTimezone;
 	
-	/** The Am pm classification. */
-	private Integer AmPmClassification;
-
-	/**
-	 * Instantiates a new flex half day work time dto.
-	 *
-	 * @param restTimezone the rest timezone
-	 * @param workTimezone the work timezone
-	 * @param amPmClassification the am pm classification
-	 */
-	public FlexHalfDayWorkTimeDto(List<FlowWorkRestTimezoneDto> restTimezone, FixedWorkTimezoneSetDto workTimezone,
-			Integer amPmClassification) {
-		super();
-		this.restTimezone = restTimezone;
-		this.workTimezone = workTimezone;
-		AmPmClassification = amPmClassification;
-	}
-
+	/** The Am pm atr. */
+	private Integer AmPmAtr;
 	
 }

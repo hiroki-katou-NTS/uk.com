@@ -19,18 +19,6 @@ public class TimeRoundingSettingDto {
 	
 	/** The rounding. */
 	private Integer rounding;
-
-	/**
-	 * Instantiates a new time rounding setting dto.
-	 *
-	 * @param roundingTime the rounding time
-	 * @param rounding the rounding
-	 */
-	public TimeRoundingSettingDto(Integer roundingTime, Integer rounding) {
-		super();
-		this.roundingTime = roundingTime;
-		this.rounding = rounding;
-	}
 	
 	
 }

@@ -18,6 +18,6 @@ public class FlowWorkRestSettingDto {
 	private Integer commonRestSetting;
 
 	/** The flow rest setting. */
-	private FlowWorkRestSettingDetailDto flowRestSetting;
+	private FlowWorkRestSettingDetailDto flowRestSetting;	
 
 }
