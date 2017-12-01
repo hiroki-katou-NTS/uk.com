@@ -75,91 +75,29 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	}
 
 	@Override
-	public void add(AffWorkplaceHistory_ver1 domain) {
-		if (domain.getHistoryItems().isEmpty()){
-			return;
-		}
-		// Insert last element
-		DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-		this.commandProxy().insert(toEntity(domain.getEmployeeId(),lastItem));
-		
-		// Update item before and after
-		updateItemBefore(domain,lastItem);
-		
+	public void add(String sid, DateHistoryItem item) {
+		this.commandProxy().insert(toEntity(sid,item));
 	}
 
 	@Override
-	public void delete(AffWorkplaceHistory_ver1 domain, DateHistoryItem item) {
+	public void delete(String histId) {
 		
-		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(item.identifier(), BsymtAffiWorkplaceHist.class);
+		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(histId, BsymtAffiWorkplaceHist.class);
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 		}
-		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, item.identifier());
-		
-		// Update last item
-		if (domain.getHistoryItems().size() >0){
-			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-			histItem = this.queryProxy().find(lastItem.identifier(), BsymtAffiWorkplaceHist.class);
-			if (!histItem.isPresent()){
-				throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
-			}
-			updateEntity(lastItem, histItem.get());
-			this.commandProxy().update(histItem.get());
-		}
+		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, histId);
 	}
 
 	@Override
-	public void update(AffWorkplaceHistory_ver1 domain, DateHistoryItem item) {
+	public void update(DateHistoryItem item) {
 		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(item.identifier(), BsymtAffiWorkplaceHist.class);
 		if (!histItem.isPresent()){
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 		}
 		updateEntity(item, histItem.get());
 		this.commandProxy().update(histItem.get());
-		
-		// Update item before and after
-		updateItemBefore(domain,item);
-		updateItemAfter(domain,item);
 	}
-	/**
-	 * Update item before when updating 
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemBefore(AffWorkplaceHistory_ver1 domain, DateHistoryItem item){
-		// Update item before
-		Optional <DateHistoryItem> beforeItem = domain.immediatelyBefore(item);
-		if (!beforeItem.isPresent()){
-			return;
-		}
-		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(beforeItem.get().identifier(), BsymtAffiWorkplaceHist.class);
-		if (!histItem.isPresent()){
-			return;
-		}
-		updateEntity(beforeItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
-	}
-	
-	/**
-	 * Update item after when updating
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemAfter(AffWorkplaceHistory_ver1 domain, DateHistoryItem item){
-		// Update item after
-		Optional<DateHistoryItem> aferItem = domain.immediatelyAfter(item);
-		if (!aferItem.isPresent()){
-			return;
-		}
-		Optional<BsymtAffiWorkplaceHist> histItem  = this.queryProxy().find(aferItem.get().identifier(), BsymtAffiWorkplaceHist.class);
-		if (!histItem.isPresent()){
-			return;
-		}
-		updateEntity(aferItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
-	}
-
 	@Override
 	public Optional<AffWorkplaceHistory_ver1> getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_EMPID_STANDDATE,BsymtAffiWorkplaceHist.class)

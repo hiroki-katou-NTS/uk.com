@@ -29,6 +29,9 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 	@Inject
 	private AffWorkplaceHistoryItemRepository_v1 affWorkplaceHistoryItemRepository;
 	
+	@Inject 
+	private AffWorkplaceHistoryDomainService affWorkplaceHistoryDomainService;
+	
 	@Override
 	public String targetCategoryCd() {
 		return "CS00017";

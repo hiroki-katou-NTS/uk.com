@@ -31,18 +31,19 @@ public interface AffWorkplaceHistoryRepository_v1 {
 	Optional<AffWorkplaceHistory_ver1> getAffWorkplaceHistByEmployeeId(String employeeId);
 	/**
 	 * ドメインモデル「所属職場」を新規登録する
-	 * @param domain
+	 * @param item
+	 * @param sid
 	 */
-	void add(AffWorkplaceHistory_ver1 domain);
+	void add(String sid, DateHistoryItem item);
 	/**
 	 * ドメインモデル「所属職場」を削除する
-	 * @param domain
+	 * @param histId
 	 */
-	void delete(AffWorkplaceHistory_ver1 domain, DateHistoryItem item);
+	void delete(String histId);
 	
 	/**
 	 * ドメインモデル「所属職場」を取得する
-	 * @param domain
+	 * @param item
 	 */
-	void update(AffWorkplaceHistory_ver1 domain, DateHistoryItem item);
+	void update(DateHistoryItem item);
 }
