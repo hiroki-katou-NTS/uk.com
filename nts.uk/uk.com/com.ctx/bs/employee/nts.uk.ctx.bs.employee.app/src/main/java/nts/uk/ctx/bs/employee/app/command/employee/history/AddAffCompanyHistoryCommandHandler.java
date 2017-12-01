@@ -49,13 +49,13 @@ public class AddAffCompanyHistoryCommandHandler extends CommandHandlerWithResult
 		if (listHist != null){
 			itemToBeAdded = listHist.getAffCompanyHistByEmployee(command.getSId());
 		}
-		AffCompanyHistItem histItem = new AffCompanyHistItem(newHistId, false, new DatePeriod(command.getStartDate(), command.getEndDate()));
-		itemToBeAdded.add(histItem);
+		AffCompanyHistItem hist = new AffCompanyHistItem(newHistId, false, new DatePeriod(command.getStartDate(), command.getEndDate()));
+		itemToBeAdded.add(hist);
 		
 		affCompanyHistRepository.add(itemToBeAdded,command.getPId());
 		
-		AffCompanyInfo domain = AffCompanyInfo.createFromJavaType(newHistId, command.getRecruitmentClassification(), command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());
-		affCompanyInfoRepository.add(domain);
+		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(newHistId, command.getRecruitmentClassification(), command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());
+		affCompanyInfoRepository.add(histItem);
 		
 		return new PeregAddCommandResult(newHistId);
 	}

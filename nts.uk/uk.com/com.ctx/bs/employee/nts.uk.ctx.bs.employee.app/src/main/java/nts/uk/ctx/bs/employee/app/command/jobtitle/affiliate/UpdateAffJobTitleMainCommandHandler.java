@@ -55,8 +55,8 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 		
 		affJobTitleHistoryRepository_ver1.update(existHist.get(), itemToBeUpdate.get());
 	
-		AffJobTitleHistoryItem domain = AffJobTitleHistoryItem.createFromJavaType(command.getHistoryId(), command.getSid(), command.getJobTitleId(), command.getNote());
-		affJobTitleHistoryItemRepository_v1.update(domain);
+		AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(command.getHistoryId(), command.getSid(), command.getJobTitleId(), command.getNote());
+		affJobTitleHistoryItemRepository_v1.update(histItem);
 	}
 
 }

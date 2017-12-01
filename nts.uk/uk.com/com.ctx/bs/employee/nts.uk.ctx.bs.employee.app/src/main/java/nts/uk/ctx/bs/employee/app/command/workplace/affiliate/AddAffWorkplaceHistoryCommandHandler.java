@@ -61,8 +61,8 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 		
 		affWorkplaceHistoryRepository.add(itemtoBeAdded);
 		
-		AffWorkplaceHistoryItem domain = AffWorkplaceHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getWorkplaceId(), command.getNormalWorkplaceId());
-		affWorkplaceHistoryItemRepository.add(domain);
+		AffWorkplaceHistoryItem histItem = AffWorkplaceHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getWorkplaceId(), command.getNormalWorkplaceId());
+		affWorkplaceHistoryItemRepository.add(histItem);
 		
 		return new PeregAddCommandResult(newHistID);
 	}

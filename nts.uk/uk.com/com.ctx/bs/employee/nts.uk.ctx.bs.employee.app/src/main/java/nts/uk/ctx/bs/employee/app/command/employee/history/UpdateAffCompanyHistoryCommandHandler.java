@@ -54,8 +54,8 @@ public class UpdateAffCompanyHistoryCommandHandler extends CommandHandler<Update
 		listHistBySID.changeSpan(itemToBeUpdated.get(),new DatePeriod(command.getStartDate(),command.getEndDate()) );
 		affCompanyHistRepository.update(listHistBySID, itemToBeUpdated.get());
 		
-		AffCompanyInfo domain = AffCompanyInfo.createFromJavaType(command.getHistoryId(), command.getRecruitmentClassification(), command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());
-		affCompanyInfoRepository.update(domain);
+		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(command.getHistoryId(), command.getRecruitmentClassification(), command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());
+		affCompanyInfoRepository.update(histItem);
 		
 	}
 

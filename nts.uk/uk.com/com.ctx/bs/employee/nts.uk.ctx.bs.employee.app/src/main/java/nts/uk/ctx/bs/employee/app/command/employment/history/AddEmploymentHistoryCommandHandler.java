@@ -46,9 +46,9 @@ implements PeregAddCommandHandler<AddEmploymentHistoryCommand> {
 		
 		EmploymentHistory itemtoBeAdded = null;
 		
-		Optional<EmploymentHistory> histItem = employmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
-		if (histItem.isPresent()){
-			itemtoBeAdded = histItem.get();
+		Optional<EmploymentHistory> histBySid = employmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
+		if (histBySid.isPresent()){
+			itemtoBeAdded = histBySid.get();
 		} else {
 			itemtoBeAdded = new EmploymentHistory(command.getEmployeeId(), new ArrayList<>());
 		}
@@ -56,8 +56,8 @@ implements PeregAddCommandHandler<AddEmploymentHistoryCommand> {
 		
 		employmentHistoryRepository.add(itemtoBeAdded);
 		
-		EmploymentHistoryItem domain = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getSalarySegment(), command.getEmploymentCode());
-		employmentHistoryItemRepository.adḍ̣̣̣(domain);
+		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getSalarySegment(), command.getEmploymentCode());
+		employmentHistoryItemRepository.adḍ̣̣̣(histItem);
 		
 		return new PeregAddCommandResult(newHistID);
 	}
