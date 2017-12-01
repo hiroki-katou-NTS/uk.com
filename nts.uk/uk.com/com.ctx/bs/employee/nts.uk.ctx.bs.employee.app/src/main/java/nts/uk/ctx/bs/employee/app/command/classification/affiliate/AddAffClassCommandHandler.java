@@ -38,7 +38,7 @@ public class AddAffClassCommandHandler
 
 	@Override
 	public String targetCategoryCd() {
-		return "CS00014";
+		return "CS00004";
 	}
 
 	@Override

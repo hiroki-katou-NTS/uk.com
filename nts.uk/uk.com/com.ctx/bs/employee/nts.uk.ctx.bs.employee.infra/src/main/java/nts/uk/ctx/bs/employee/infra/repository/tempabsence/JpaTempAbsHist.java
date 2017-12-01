@@ -18,8 +18,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaTempAbsHist extends JpaRepository implements TempAbsHistRepository {
 
-	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "select ta " + "from BsymtTempAbsHistory ta "
-			+ "where ta.sid = :sid order by ta.startDate";
+	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "SELECT ta FROM BsymtTempAbsHistory ta"
+			+ " WHERE ta.sid = :sid ORDER BY ta.startDate";
 
 	/**
 	 * Convert from domain to entity
@@ -39,7 +39,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	 * @param item
 	 * @return
 	 */
-	private void updateEntity(String employeeID, DateHistoryItem item, BsymtTempAbsHistory entity) {
+	private void updateEntity(DateHistoryItem item, BsymtTempAbsHistory entity) {
 		entity.startDate = item.start();
 		entity.endDate = item.end();
 	}
@@ -79,7 +79,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 		}
-		updateEntity(domain.getEmployeeId(), item, histItem.get());
+		updateEntity(item, histItem.get());
 		this.commandProxy().update(histItem.get());
 
 		// Update item before and after
@@ -102,13 +102,13 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			if (!histItem.isPresent()) {
 				throw new RuntimeException("invalid BsymtTempAbsHistory");
 			}
-			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
+			updateEntity(lastItem, histItem.get());
 			this.commandProxy().update(histItem.get());
 		}
 	}
 
 	/**
-	 * Update item before when updating or deleting
+	 * Update item before when updating
 	 * 
 	 * @param domain
 	 * @param item
@@ -124,12 +124,12 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		if (!histItem.isPresent()) {
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		updateEntity(beforeItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 
 	/**
-	 * Update item after when updating or deleting
+	 * Update item after when updating
 	 * 
 	 * @param domain
 	 * @param item
@@ -145,7 +145,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		if (!histItem.isPresent()) {
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		updateEntity(aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 

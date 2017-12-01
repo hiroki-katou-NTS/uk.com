@@ -28,11 +28,6 @@ public class AffWorkplaceHistoryCommand {
 	@PeregItem("IS00086")
 	private String  normalWorkplaceId;
 	
-	// 場所コード
-	@PeregItem("IS00085")
-	// TODO pending Q&A
-	private String  locationCode;
-	
 	/** 期間 */
 	/** 開始日 */
 	@PeregItem("IS00082")

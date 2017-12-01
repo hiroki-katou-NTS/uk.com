@@ -24,7 +24,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	 */
 	private AffWorkplaceHistoryItem toDomain(BsymtAffiWorkplaceHistItem entity){
 		return AffWorkplaceHistoryItem.createFromJavaType(entity.getHisId(), entity.getSid(), entity.getWorkPlaceId(), 
-				entity.getNormalWkpId(), entity.getLocationCode());
+				entity.getNormalWkpId());
 	}
 	
 	/**
@@ -35,14 +35,13 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	 */
 	private BsymtAffiWorkplaceHistItem toEntity(AffWorkplaceHistoryItem domain) {
 		// TODO Pending location code
-		return new BsymtAffiWorkplaceHistItem(domain.getHistoryId(),domain.getEmployeeId(),domain.getWorkplaceId(),domain.getNormalWorkplaceId(),"");
+		return new BsymtAffiWorkplaceHistItem(domain.getHistoryId(),domain.getEmployeeId(),domain.getWorkplaceId(),domain.getNormalWorkplaceId());
 	}
 	
 	private void updateEntity(AffWorkplaceHistoryItem domain, BsymtAffiWorkplaceHistItem entity) {
 		// TODO Pending location code
 		entity.setWorkPlaceId(domain.getWorkplaceId());
 		entity.setNormalWkpId(domain.getNormalWorkplaceId());
-		entity.setLocationCode("");
 	}
 	@Override
 	public void add(AffWorkplaceHistoryItem domain) {

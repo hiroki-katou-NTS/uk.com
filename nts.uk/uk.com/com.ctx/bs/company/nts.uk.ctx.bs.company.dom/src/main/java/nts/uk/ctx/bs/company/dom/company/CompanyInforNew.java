@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -18,6 +19,7 @@ import nts.uk.ctx.bs.company.dom.company.primitive.TaxNo;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CompanyInforNew extends AggregateRoot {
 	/** The company code. */
 	// 会社コード

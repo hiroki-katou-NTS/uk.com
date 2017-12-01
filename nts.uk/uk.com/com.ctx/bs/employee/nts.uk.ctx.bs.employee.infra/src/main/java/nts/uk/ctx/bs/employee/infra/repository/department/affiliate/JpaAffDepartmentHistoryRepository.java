@@ -16,9 +16,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements AffDepartmentHistoryRepository{
-	private final String QUERY_GET_AFFDEPARTMENT_BYSID = "select ad "
-			+ "from BsymtAffiDepartmentHist ad "
-			+ "where ad.sid = :sid order by ad.strDate";
+	private final String QUERY_GET_AFFDEPARTMENT_BYSID = "SELECT ad FROM BsymtAffiDepartmentHist ad "
+			+ "WHERE ad.sid = :sid ORDER BY ad.strDate";
 	
 	private static final String SELECT_BY_EMPID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate <= ad.endDate";
@@ -61,7 +60,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		if (!itemToBeUpdated.isPresent()){
 			throw new RuntimeException("Invalid BsymtAffiDepartmentHist");
 		}
-		updateEntity(domain.getEmployeeId(),item, itemToBeUpdated.get());
+		updateEntity(item, itemToBeUpdated.get());
 		this.commandProxy().update(itemToBeUpdated.get());
 		
 		// Update item before and after
@@ -84,7 +83,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 			if (!histItem.isPresent()){
 				throw new RuntimeException("invalid BsymtAffiDepartmentHist");
 			}
-			updateEntity(domain.getEmployeeId(), lastItem, histItem.get());
+			updateEntity(lastItem, histItem.get());
 			this.commandProxy().update(histItem.get());
 		}
 		
@@ -94,7 +93,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		return new BsymtAffiDepartmentHist(item.identifier(), employeeId, item.start(), item.end());
 	}
 	/**
-	 * Update item before when updating or deleting
+	 * Update item before when updating
 	 * @param domain
 	 * @param item
 	 */
@@ -108,7 +107,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		if (!histItem.isPresent()){
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), beforeItem.get(), histItem.get());
+		updateEntity(beforeItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 	/**
@@ -117,12 +116,12 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	 * @param item
 	 * @return
 	 */
-	private void updateEntity(String employeeID, DateHistoryItem item,BsymtAffiDepartmentHist entity){	
+	private void updateEntity(DateHistoryItem item,BsymtAffiDepartmentHist entity){	
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}
 	/**
-	 * Update item after when updating or deleting
+	 * Update item after when updating
 	 * @param domain
 	 * @param item
 	 */
@@ -136,7 +135,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		if (!histItem.isPresent()){
 			return;
 		}
-		updateEntity(domain.getEmployeeId(), aferItem.get(), histItem.get());
+		updateEntity(aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
 
