@@ -78,7 +78,6 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     newItemDef;
                 block.invisible();
-                debugger;
 
                 newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
 
@@ -281,7 +280,6 @@ module nts.uk.com.view.cps005.b {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     nts.uk.ui.errors.clearAll();
                     new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
-                        debugger;
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
@@ -662,20 +660,9 @@ module nts.uk.com.view.cps005.b {
                     self.decimalPart = data.numericItem().decimalPart();
                 }
 
-                if (self.decimalPart === 0) {
-                    
-                    self.numericItemMin = 0;
+                self.numericItemMin = data.numericItem().numericItemMin();
 
-                    self.numericItemMax = Math.pow(10, self.integerPart)  - 1;
-                    
-                } else {
-                    
-                    self.numericItemMin = data.numericItem().numericItemMin();
-
-                    self.numericItemMax = data.numericItem().numericItemMax();
-                }
-
-
+                self.numericItemMax = data.numericItem().numericItemMax();
 
             }
             if (data.dateItem()) {
