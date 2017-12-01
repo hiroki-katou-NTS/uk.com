@@ -5,7 +5,6 @@ import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregPersonId;
 @Getter
-	
 public class EmployeeDataMngInfoCommand {
 	/** 個人ID */
 	@PeregPersonId

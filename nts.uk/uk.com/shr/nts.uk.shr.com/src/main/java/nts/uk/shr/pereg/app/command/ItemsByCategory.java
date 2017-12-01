@@ -10,7 +10,6 @@ import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
-import nts.uk.shr.pereg.app.PeregHistoryId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregPersonId;
 import nts.uk.shr.pereg.app.PeregRecordId;
@@ -23,9 +22,6 @@ public class ItemsByCategory {
 	
 	/** Record Id, but this is null when new record */
 	private final String recordId;
-	
-	/** For history domain */
-	private final String historyId;
 	
 	/** input items */
 	private final List<ItemValue> items;
@@ -50,11 +46,6 @@ public class ItemsByCategory {
 			ReflectionUtil.setFieldValue(field, command, this.recordId);
 		});
 		
-		// set history ID
-		AnnotationUtil.getFieldAnnotated(commandClass, PeregHistoryId.class).ifPresent(field -> {
-			ReflectionUtil.setFieldValue(field, command, this.historyId);
-		});
-
 		// set item values
 		val inputsMap = this.createInputsMap();
 		
