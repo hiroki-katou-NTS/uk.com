@@ -103,7 +103,7 @@ module nts.uk.at.view.kaf005.b {
             //　初期起動時、計算フラグ=1とする。
             //calculateFlag: KnockoutObservable<number> = ko.observable(1);
             //TODO: test-setting calculateFlag = 0
-            calculateFlag: KnockoutObservable<number> = ko.observable(0);
+            calculateFlag: KnockoutObservable<number> = ko.observable(1);
             version: number = 0;
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
@@ -331,11 +331,6 @@ module nts.uk.at.view.kaf005.b {
                     self.displayDivergenceReasonInput(),
                     self.multilContent2()
                 );
-                let divergenceReasonError = !appcommon.CommonProcess.checkAppReason(true, self.displayDivergenceReasonForm(), self.displayDivergenceReasonInput(), divergenceReason);
-                if(divergenceReasonError){
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});   
-                    return;     
-                }
                 let command = {
                     version: self.version,
                     appID: self.appID(),
@@ -586,15 +581,15 @@ module nts.uk.at.view.kaf005.b {
             getReason(inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string): string{
                 let appReason = '';
                 let inputReason: string = '';
-                if(inputReasonID!=''){
+                if(!nts.uk.util.isNullOrEmpty(inputReasonID)){
                     inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;    
-                }
+                }    
                 if(inputReasonDisp==true&&detailReasonDisp==true){
-                    if(inputReason.trim()!=''&&detailReason.trim()!=''){
+                    if(!nts.uk.util.isNullOrEmpty(inputReason)&&!nts.uk.util.isNullOrEmpty(detailReason)){
                         appReason = inputReason + ":" + detailReason;
-                    } else if(inputReason.trim()!=''&&detailReason.trim()==''){
+                    } else if(!nts.uk.util.isNullOrEmpty(inputReason)&&nts.uk.util.isNullOrEmpty(detailReason)){
                         appReason = inputReason; 
-                    } else if(inputReason.trim()==''&&detailReason.trim()!=''){
+                    } else if(nts.uk.util.isNullOrEmpty(inputReason)&&!nts.uk.util.isNullOrEmpty(detailReason)){
                         appReason = detailReason;             
                     }                
                 } else if(inputReasonDisp==true&&detailReasonDisp==false){

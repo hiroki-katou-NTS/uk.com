@@ -139,18 +139,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
-                var dfd = $.Deferred();
-                service.findByChangeAppDate({
-                    appDate: moment(value).format(self.DATEFORMART),
-                    prePostAtr: self.prePostSelected    
-                }).done((data) =>{
-                    self.findBychangeAppDateData(data);
-                    dfd.resolve(data);
-                }).fail((res) =>{
-                        dfd.reject(res);
+                    var dfd = $.Deferred();
+                    service.findByChangeAppDate({
+                        appDate: moment(value).format(self.DATEFORMART),
+                        prePostAtr: self.prePostSelected    
+                    }).done((data) =>{
+                        self.findBychangeAppDateData(data);
+                        self.kaf000_a.objApprovalRootInput().standardDate = moment(new Date(value)).format(self.DATEFORMART);
+                        self.kaf000_a.getAllApprovalRoot();
+                        self.kaf000_a.getMessageDeadline(0, value);
+                        dfd.resolve(data);
+                    }).fail((res) =>{
+                            dfd.reject(res);
+                        });
+                        return dfd.promise();
                     });
-                    return dfd.promise();
-                });
                 self.prePostSelected.subscribe(function(value){
                     let dfd =$.Deferred();
                     service.checkConvertPrePost({
@@ -299,11 +302,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.displayDivergenceReasonInput(),
                 self.multilContent2()
             );
-            let divergenceReasonError = !appcommon.CommonProcess.checkAppReason(true, self.displayDivergenceReasonForm(), self.displayDivergenceReasonInput(), divergenceReason);
-            if(divergenceReasonError){
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});   
-                return;     
-            }
             let overTimeShiftNightTmp: number = 0;
             let flexExessTimeTmp: number = 0;
             for (let i = 0; i < self.overtimeHours().length; i++) {
@@ -567,7 +565,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         findBychangeAppDateData(data: any) {
             var self = this;
-            let overtimeDto = data.overtimeDto;
+            let overtimeDto = data;
             self.manualSendMailAtr(overtimeDto.manualSendMailAtr);
             self.prePostSelected(overtimeDto.application.prePostAtr);
             self.displayCaculationTime(overtimeDto.displayCaculationTime);
@@ -629,84 +627,86 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }else{
                 self.heightOvertimeHours(216);
             }
-
-         }
-            convertpreAppOvertimeDto(data :any){
-                let self = this;
-                if(data.preAppOvertimeDto != null){
-                self.appDatePre(data.preAppOvertimeDto.appDatePre);
-                if(data.preAppOvertimeDto.workTypePre != null){
-                    self.workTypeCodePre(data.preAppOvertimeDto.workTypePre.workTypeCode);
-                    self.workTypeNamePre(data.preAppOvertimeDto.workTypePre.workTypeName);
-                }
-                if(data.preAppOvertimeDto.siftTypePre != null){
-                    self.siftCodePre(data.preAppOvertimeDto.siftTypePre.siftCode);
-                    self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
-                }
-                if(data.preAppOvertimeDto.workClockFrom1Pre != -1 || data.preAppOvertimeDto.workClockTo1Pre!= -1){
-                     self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
-                }
-                if(data.preAppOvertimeDto.workClockFrom2Pre != -1 || data.preAppOvertimeDto.workClockTo2Pre!= -1){
-                    self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
-                }
-                
-                self.overtimeHoursPre.removeAll();
-                if(data.preAppOvertimeDto.overTimeInputsPre != null){
-                    for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
-                        if(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime != -1){
-                            if(data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 11 && data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 12){
-                                self.overtimeHoursPre.push(new common.AppOvertimePre("", "", 
-                            data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
-                            "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,
-                            0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
-                            data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
-                            data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
-                            self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime) ,null));
-                            }
-                        }else{
-                            continue;    
+        }
+        
+        convertpreAppOvertimeDto(data :any){
+            let self = this;
+            if(data.preAppOvertimeDto != null){
+            self.appDatePre(data.preAppOvertimeDto.appDatePre);
+            if(data.preAppOvertimeDto.workTypePre != null){
+                self.workTypeCodePre(data.preAppOvertimeDto.workTypePre.workTypeCode);
+                self.workTypeNamePre(data.preAppOvertimeDto.workTypePre.workTypeName);
+            }
+            if(data.preAppOvertimeDto.siftTypePre != null){
+                self.siftCodePre(data.preAppOvertimeDto.siftTypePre.siftCode);
+                self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
+            }
+            if(data.preAppOvertimeDto.workClockFrom1Pre != -1 || data.preAppOvertimeDto.workClockTo1Pre!= -1){
+                 self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
+            }
+            if(data.preAppOvertimeDto.workClockFrom2Pre != -1 || data.preAppOvertimeDto.workClockTo2Pre!= -1){
+                self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
+            }
+            
+            self.overtimeHoursPre.removeAll();
+            if(data.preAppOvertimeDto.overTimeInputsPre != null){
+                for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
+                    if(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime != -1){
+                        if(data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 11 && data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 12){
+                            self.overtimeHoursPre.push(new common.AppOvertimePre("", "", 
+                        data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
+                        "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,
+                        0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
+                        data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
+                        data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
+                        self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime) ,null));
                         }
-                        
+                    }else{
+                        continue;    
                     }
-                }
-                 self.overTimeShiftNightPre(self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
-                 self.flexExessTimePre(self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
+                    
                 }
             }
-            convertIntToTime(data : any) : string{
-                let hourMinute : string = "";
-                if(data == -1 || data == ""){
-                    return null;
-                }else if (data == 0) {
-                    hourMinute = "00:00";
-                }else if(data != null){
-                    let hour = Math.floor(data/60);
-                    let minutes = Math.floor(data%60);
-                    hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
-                }
-                return hourMinute;
+             self.overTimeShiftNightPre(self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
+             self.flexExessTimePre(self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
+            }
+        }
+        
+        convertIntToTime(data : any) : string{
+            let hourMinute : string = "";
+            if(data == -1 || data == ""){
+                return null;
+            }else if (data == 0) {
+                hourMinute = "00:00";
+            }else if(data != null){
+                let hour = Math.floor(data/60);
+                let minutes = Math.floor(data%60);
+                hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+            }
+            return hourMinute;
+        } 
+        
+        getReason(inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string): string{
+            let appReason = '';
+            let inputReason: string = '';
+            if(!nts.uk.util.isNullOrEmpty(inputReasonID)){
+                inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;    
+            }    
+            if(inputReasonDisp==true&&detailReasonDisp==true){
+                if(!nts.uk.util.isNullOrEmpty(inputReason)&&!nts.uk.util.isNullOrEmpty(detailReason)){
+                    appReason = inputReason + ":" + detailReason;
+                } else if(!nts.uk.util.isNullOrEmpty(inputReason)&&nts.uk.util.isNullOrEmpty(detailReason)){
+                    appReason = inputReason; 
+                } else if(nts.uk.util.isNullOrEmpty(inputReason)&&!nts.uk.util.isNullOrEmpty(detailReason)){
+                    appReason = detailReason;             
+                }                
+            } else if(inputReasonDisp==true&&detailReasonDisp==false){
+                appReason = inputReason;                 
+            } else if(inputReasonDisp==false&&detailReasonDisp==true){
+                appReason = detailReason;     
             } 
-            getReason(inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string): string{
-                let appReason = '';
-                let inputReason: string = '';
-                if(inputReasonID!=''){
-                    inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;    
-                }    
-                if(inputReasonDisp==true&&detailReasonDisp==true){
-                    if(inputReason.trim()!=''&&detailReason.trim()!=''){
-                        appReason = inputReason + ":" + detailReason;
-                    } else if(inputReason.trim()!=''&&detailReason.trim()==''){
-                        appReason = inputReason; 
-                    } else if(inputReason.trim()==''&&detailReason.trim()!=''){
-                        appReason = detailReason;             
-                    }                
-                } else if(inputReasonDisp==true&&detailReasonDisp==false){
-                    appReason = inputReason;                 
-                } else if(inputReasonDisp==false&&detailReasonDisp==true){
-                    appReason = detailReason;     
-                } 
-                return appReason;
-            }
+            return appReason;
+        }
         
     }
 
