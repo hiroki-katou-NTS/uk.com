@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.shr.pereg.app.find.LayoutingResult;
 import nts.uk.shr.pereg.app.find.PeregFinder;
-import nts.uk.shr.pereg.app.find.PeregFinderProcessorCollector;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 @ApplicationScoped
