@@ -69,14 +69,10 @@ module nts.uk.at.view.kdw001.j {
                     //Set data cho view model data-binding: with
                     self.currentItem(itemSelection);
                         //*2j
-                    if (!nts.uk.util.isNullOrUndefined(itemSelection.dailyCreationSetInfo()) && itemSelection.dailyCreationSetInfo().executionType == 1) {
+                    if ((!nts.uk.util.isNullOrUndefined(itemSelection.dailyCreationSetInfo()) && itemSelection.dailyCreationSetInfo().executionType == 1)||(!nts.uk.util.isNullOrUndefined(itemSelection.dailyCalSetInfo()) && itemSelection.dailyCalSetInfo().executionType == 1)||(!nts.uk.util.isNullOrUndefined(itemSelection.monlyAggregationSetInfo()) && itemSelection.monlyAggregationSetInfo().executionType == 1)) {
                         self.warnVisible(true);
-                    }
-                    if (!nts.uk.util.isNullOrUndefined(itemSelection.dailyCalSetInfo()) && itemSelection.dailyCalSetInfo().executionType == 1) {
-                        self.warnVisible(true);
-                    }
-                    if (!nts.uk.util.isNullOrUndefined(itemSelection.monlyAggregationSetInfo()) && itemSelection.monlyAggregationSetInfo().executionType == 1) {
-                        self.warnVisible(true);
+                    }else{
+                        self.warnVisible(false);
                     }
 
                 });
