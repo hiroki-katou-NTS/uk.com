@@ -410,7 +410,7 @@
 											<!-- number   -->
 											<com:ko-if bind="(dataType() === 2)">
 											
-											<com:ko-if bind=" ((numbericItem.numberDecimalPart == 0) &amp; (numbericItem.numberIntegerPart !== 0)) ">
+											<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart !== 0)) ">
 												<com:ko-if bind="(isRequired() === 1)">
 												<div data-bind="with: numbereditor">
 									
