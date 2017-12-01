@@ -28,8 +28,8 @@
 								options: roleSetList,
 								primaryKey: 'code',
 								columns: [
-					                { headerText: '#{i18n.getText('CAS014_31')}', key: 'code', width: 140 },
-					                { headerText: '#{i18n.getText('CAS014_32')}', key: 'name', width: 150 }
+					                { headerText: '#{i18n.getText('CAS014_31')}', key: 'code', width: 140, formatter: _.escape },
+					                { headerText: '#{i18n.getText('CAS014_32')}', key: 'name', width: 150, formatter: _.escape }
 					            ],
 								multiple: false,
 								value: selectedRoleSet
@@ -51,9 +51,9 @@
 							primaryKey: 'employeeId',
 							columns: [
 								{ headerText: 'id', key: 'employeeId', width: 10, hidden: true },
-				                { headerText: '#{i18n.getText('CAS014_35')}', key: 'employeeCd', width: 110 },
-				                { headerText: '#{i18n.getText('CAS014_36')}', key: 'employeeName', width: 120 },
-				                { headerText: '#{i18n.getText('CAS014_37')}', key: 'displayDateRange', width: 220 }
+				                { headerText: '#{i18n.getText('CAS014_35')}', key: 'employeeCd', width: 110, formatter: _.escape },
+				                { headerText: '#{i18n.getText('CAS014_36')}', key: 'employeeName', width: 120, formatter: _.escape },
+				                { headerText: '#{i18n.getText('CAS014_37')}', key: 'displayDateRange', width: 220, formatter: _.escape }
 				            ],
 							multiple: false,
 							value: selectedEmployeeId

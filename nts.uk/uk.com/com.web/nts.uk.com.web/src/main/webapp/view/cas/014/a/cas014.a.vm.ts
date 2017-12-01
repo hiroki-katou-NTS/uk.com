@@ -23,7 +23,7 @@ module nts.uk.com.view.cas014.a {
                 self.roleSetList = ko.observableArray([]);
                 self.jobTitleList = ko.observableArray([]);
                 self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
-                $(".fixed-table").ntsFixedTable({ height: 300 });
+                $("#A4").ntsFixedTable({ height: 300 });
                 self.date.subscribe((data) => {
                     if (!data) {
                         self.date(new Date().toISOString());
