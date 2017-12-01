@@ -22,6 +22,6 @@ public class FixOffdayWorkTimezone extends DomainObject {
 
 	/** The work timezone. */
 	// 勤務時間帯
-	private List<HolidayWorkTimeSheetSet> workTimezone;
+	private List<HDWorkTimeSheetSetting> workTimezone;
 
 }

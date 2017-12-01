@@ -24,4 +24,18 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	/** The OT timezone. */
 	// 残業時間帯
 	private List<OverTimeOfTimeZoneSet> OTTimezone;
+
+	/**
+	 * Instantiates a new fixed work timezone set.
+	 *
+	 * @param workingTimezone the working timezone
+	 * @param oTTimezone the o T timezone
+	 */
+	public FixedWorkTimezoneSet(List<EmTimeZoneSet> workingTimezone, List<OverTimeOfTimeZoneSet> oTTimezone) {
+		super();
+		this.workingTimezone = workingTimezone;
+		OTTimezone = oTTimezone;
+	}
+	
+	
 }
