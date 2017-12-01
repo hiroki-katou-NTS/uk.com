@@ -2,26 +2,25 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.flowset;
+package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
 
 /**
- * The Class FlowWorkTimezoneSetting.
+ * The Class FlowWorkTimezoneSettingDto.
  */
-//流動勤務時間帯設定
 @Getter
-public class FlowWorkTimezoneSetting extends DomainObject {
+@Setter
+public class FlowWorkTimezoneSettingDto extends DomainObject {
 
 	/** The work time rounding. */
-	//就業時間丸め
-	private TimeRoundingSetting workTimeRounding;
+	private TimeRoundingSettingDto workTimeRounding;
 	
-	/** The OT timezone. */
-	//残業時間帯
-	private List<FlowOTTimezone> lstOTTimezone;
+	/** The lst OT timezone. */
+	private List<FlowOTTimezoneDto> lstOTTimezone;
 }

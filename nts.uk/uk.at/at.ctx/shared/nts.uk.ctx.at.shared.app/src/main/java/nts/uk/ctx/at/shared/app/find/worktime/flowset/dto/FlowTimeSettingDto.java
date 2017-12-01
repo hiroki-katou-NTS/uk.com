@@ -2,25 +2,23 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.flowset;
+package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
 
 /**
- * The Class FlowTimeSetting.
+ * The Class FlowTimeSettingDto.
  */
-//流動時間設定
 @Getter
-public class FlowTimeSetting extends DomainObject {
+@Setter
+public class FlowTimeSettingDto extends DomainObject {
 
 	/** The rouding. */
-	// 丸め
-	private TimeRoundingSetting rouding;
+	private TimeRoundingSettingDto rouding;
 
 	/** The passage time. */
-	// 経過時間
-	private AttendanceTime passageTime;
+	private Integer passageTime;
 }
