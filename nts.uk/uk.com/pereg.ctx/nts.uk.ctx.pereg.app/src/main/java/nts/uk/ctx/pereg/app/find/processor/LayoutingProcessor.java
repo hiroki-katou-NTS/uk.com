@@ -1,4 +1,4 @@
-package nts.uk.shr.pereg.app.find;
+package nts.uk.ctx.pereg.app.find.processor;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,6 +10,10 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.shr.pereg.app.find.LayoutingResult;
+import nts.uk.shr.pereg.app.find.PeregFinder;
+import nts.uk.shr.pereg.app.find.PeregFinderProcessorCollector;
+import nts.uk.shr.pereg.app.find.PeregQuery;
 
 @ApplicationScoped
 public class LayoutingProcessor {
