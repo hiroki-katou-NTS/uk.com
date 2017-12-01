@@ -9,10 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestSettingDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
 
 @Getter
 @Setter
@@ -31,22 +28,17 @@ public class FlexWorkSettingDto {
 	private FlexOffdayWorkTimeDto offdayWorkTime;
 
 	/** The common setting. */
-	// 共通設定
-	private WorkTimezoneCommonSet commonSetting;
+	private WorkTimezoneCommonSetDto commonSetting;
 
 	/** The use half day shift. */
-	// 半日用シフトを使用する
 	private boolean useHalfDayShift;
 
 	/** The half day work timezone. */
-	// 平日勤務時間帯
-	private List<FlexHalfDayWorkTime> halfDayWorkTimezone;
+	private List<FlexHalfDayWorkTimeDto> halfDayWorkTimezone;
 
 	/** The stamp reflect timezone. */
-	// 打刻反映時間帯
-	private List<StampReflectTimezone> stampReflectTimezone;
+	private List<StampReflectTimezoneDto> stampReflectTimezone;
 
 	/** The calculate setting. */
-	// 計算設定
-	private FlexCalcSetting calculateSetting;
+	private FlexCalcSettingDto calculateSetting;
 }
