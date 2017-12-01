@@ -308,23 +308,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					}
 					
 					ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet();
-					if (items.getBounceAtr() == 0) {
-						scheduleTimeSheet.setWorkNo(new WorkNo(new BigDecimal(items.getScheduleCnt())));
-						scheduleTimeSheet.setAttendance(EnumAdaptor.valueOf(0, TimeWithDayAttr.class));
-						scheduleTimeSheet.setLeaveWork(EnumAdaptor.valueOf(1, TimeWithDayAttr.class));
-					} else if (items.getBounceAtr() == 1) {
-						scheduleTimeSheet.setWorkNo(new WorkNo(new BigDecimal(items.getScheduleCnt())));
-						scheduleTimeSheet.setAttendance(EnumAdaptor.valueOf(1, TimeWithDayAttr.class));
-						scheduleTimeSheet.setLeaveWork(EnumAdaptor.valueOf(1, TimeWithDayAttr.class));
-					} else if (items.getBounceAtr() == 2) {
-						scheduleTimeSheet.setWorkNo(new WorkNo(new BigDecimal(items.getScheduleCnt())));
-						scheduleTimeSheet.setAttendance(EnumAdaptor.valueOf(1, TimeWithDayAttr.class));
-						scheduleTimeSheet.setLeaveWork(EnumAdaptor.valueOf(0, TimeWithDayAttr.class));
-					} else if (items.getBounceAtr() == 3) {
-						scheduleTimeSheet.setWorkNo(new WorkNo(new BigDecimal(items.getScheduleCnt())));
-						scheduleTimeSheet.setAttendance(EnumAdaptor.valueOf(0, TimeWithDayAttr.class));
-						scheduleTimeSheet.setLeaveWork(EnumAdaptor.valueOf(0, TimeWithDayAttr.class));
-					}
+					scheduleTimeSheet.setWorkNo(new WorkNo(new BigDecimal(items.getScheduleCnt())));
+					scheduleTimeSheet.setAttendance(new TimeWithDayAttr(items.getScheduleStartClock()));
+					scheduleTimeSheet.setLeaveWork(new TimeWithDayAttr(items.getScheduleStartClock()));
 					scheduleTimeSheets.add(scheduleTimeSheet);					
 				});
 				
