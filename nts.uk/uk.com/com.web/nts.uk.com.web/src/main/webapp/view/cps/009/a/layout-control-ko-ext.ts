@@ -34,7 +34,7 @@ module CPS009Constraint {
                             break;
                         case ITEM_STRING_TYPE.NUMERIC:
                             constraint.charType = 'Numeric';
-                            if (dts.decimalPart > 0) {
+                            if (dts.numberDecimalPart > 0) {
                                 constraint.valueType = "Decimal";
                                 constraint.mantissaMaxLength = dts.numberDecimalPart;
                             } else {
@@ -49,7 +49,7 @@ module CPS009Constraint {
                     }
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
-                    if (dts.decimalPart == 0) {
+                    if (dts.numberDecimalPart == 0) {
                         constraint.valueType = "Integer";
                     } else {
                         constraint.valueType = "Decimal";
