@@ -50,7 +50,7 @@ module nts.uk.com.view.cdl025.a {
             decision(){
                 let self = this;
                 let param = {
-                    currentCode : self.component.currentCode(),
+                    currentCode :self.component.currentCode(),
                     multiple :  self.multiple
                 };
                 nts.uk.ui.windows.setShared("dataCdl025", param);
