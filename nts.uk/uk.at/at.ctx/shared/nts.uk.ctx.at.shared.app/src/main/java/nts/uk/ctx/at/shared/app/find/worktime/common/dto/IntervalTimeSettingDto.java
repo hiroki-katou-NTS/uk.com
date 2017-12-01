@@ -8,11 +8,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class IntervalTimeSetDto.
+ * The Class IntervalTimeSettingDto.
  */
 @Getter
 @Setter
-public class IntervalTimeSetDto {
+public class IntervalTimeSettingDto {
 
 	/** The use interval exemption time. */
 	private boolean useIntervalExemptionTime;
@@ -24,6 +24,5 @@ public class IntervalTimeSetDto {
 	private IntervalTimeDto intervalTime;
 
 	/** The use interval time. */
-	// インターバル時間を使用する
 	private boolean useIntervalTime;
 }

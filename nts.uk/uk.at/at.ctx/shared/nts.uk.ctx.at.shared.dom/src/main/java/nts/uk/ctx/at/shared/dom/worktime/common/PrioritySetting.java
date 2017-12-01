@@ -8,11 +8,11 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class PrioritySet.
+ * The Class PrioritySetting.
  */
 //優先設定
 @Getter
-public class PrioritySet extends DomainObject {
+public class PrioritySetting extends DomainObject {
 
 	/** The priority atr. */
 	//優先区分
@@ -27,7 +27,7 @@ public class PrioritySet extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public PrioritySet(PrioritySetGetMemento memento) {
+	public PrioritySetting(PrioritySettingGetMemento memento) {
 		this.priorityAtr = memento.getPriorityAtr();
 		this.stampAtr = memento.getStampAtr();
 	}
@@ -37,7 +37,7 @@ public class PrioritySet extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(PrioritySetSetMemento memento) {
+	public void saveToMemento(PrioritySettingSetMemento memento) {
 		memento.setPriorityAtr(this.priorityAtr);
 		memento.setStampAtr(this.stampAtr);
 	}

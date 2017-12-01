@@ -5,21 +5,23 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 /**
- * The Interface PrioritySetSetMemento.
+ * The Interface GraceTimeSettingGetMemento.
  */
-public interface PrioritySetSetMemento {
-
+public interface GraceTimeSettingGetMemento {
+	
 	/**
-	 * Sets the priority atr.
+	 * Gets the include working hour.
 	 *
-	 * @param atr the new priority atr
+	 * @return the include working hour
 	 */
-	 void setPriorityAtr(MultiStampTimePiorityAtr atr);
-
+	boolean getIncludeWorkingHour();
+	
+	
 	/**
-	 * Sets the stamp atr.
+	 * Gets the grace time.
 	 *
-	 * @param atr the new stamp atr
+	 * @return the grace time
 	 */
-	 void setStampAtr(StampPiorityAtr  atr);
+	LateEarlyGraceTime getGraceTime();
+
 }

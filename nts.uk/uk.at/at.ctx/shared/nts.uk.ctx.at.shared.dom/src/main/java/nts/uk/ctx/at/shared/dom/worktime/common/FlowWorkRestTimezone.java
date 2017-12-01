@@ -25,21 +25,27 @@ public class FlowWorkRestTimezone extends DomainObject{
 	/** The flow rest timezone. */
 	//流動休憩時間帯
 	private FlowRestTimezone flowRestTimezone;
-
+	
 	/**
 	 * Instantiates a new flow work rest timezone.
 	 *
-	 * @param fixRestTime the fix rest time
-	 * @param fixedRestTimezone the fixed rest timezone
-	 * @param flowRestTimezone the flow rest timezone
+	 * @param memento the memento
 	 */
-	public FlowWorkRestTimezone(boolean fixRestTime, TimezoneOfFixedRestTimeSet fixedRestTimezone,
-			FlowRestTimezone flowRestTimezone) {
-		super();
-		this.fixRestTime = fixRestTime;
-		this.fixedRestTimezone = fixedRestTimezone;
-		this.flowRestTimezone = flowRestTimezone;
+	public FlowWorkRestTimezone(FlowWorkRestTimezoneGetMemento memento) {
+		this.fixRestTime = memento.getFixRestTime();
+		this.fixedRestTimezone = memento.getFixedRestTimezone();
+		this.flowRestTimezone = memento.getFlowRestTimezone();
 	}
 	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowWorkRestTimezoneSetMemeto memento){
+		memento.setFixRestTime(this.fixRestTime);
+		memento.setFixedRestTimezone(this.fixedRestTimezone);
+		memento.setFlowRestTimezone(this.flowRestTimezone);
+	}
 	
 }

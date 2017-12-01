@@ -2,23 +2,21 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.common;
+package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import lombok.Setter;
 
 /**
- * The Class GraceTimeSet.
+ * The Class GraceTimeSettingDto.
  */
-//猶予時間設定
 @Getter
-public class GraceTimeSet extends DomainObject {
+@Setter
+public class GraceTimeSettingDto {
 
 	/** The include working hour. */
-	//就業時間に含める
 	private boolean includeWorkingHour;
 	
 	/** The grace time. */
-	//猶予時間
-	private LateEarlyGraceTime graceTime;
+	private Integer graceTime;
 }

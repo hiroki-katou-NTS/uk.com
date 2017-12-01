@@ -20,7 +20,7 @@ public class WorkTimezoneStampSetDto {
 	private List<RoundingSetDto> roundingSet;
 	
 	/** The priority set. */
-	private List<PrioritySetDto> prioritySet;
+	private List<PrioritySettingDto> prioritySet;
 
 	/**
 	 * Instantiates a new work timezone stamp set dto.
@@ -28,7 +28,7 @@ public class WorkTimezoneStampSetDto {
 	 * @param roundingSet the rounding set
 	 * @param prioritySet the priority set
 	 */
-	public WorkTimezoneStampSetDto(List<RoundingSetDto> roundingSet, List<PrioritySetDto> prioritySet) {
+	public WorkTimezoneStampSetDto(List<RoundingSetDto> roundingSet, List<PrioritySettingDto> prioritySet) {
 		super();
 		this.roundingSet = roundingSet;
 		this.prioritySet = prioritySet;

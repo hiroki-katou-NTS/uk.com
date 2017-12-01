@@ -23,5 +23,5 @@ public interface WorkTimezoneStampSetSetMemento {
 	 *
 	 * @param prSet the new priority set
 	 */
-	 void setPrioritySet(List<PrioritySet> prSet);
+	 void setPrioritySet(List<PrioritySetting> prSet);
 }

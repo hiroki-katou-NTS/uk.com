@@ -23,4 +23,25 @@ public class IntervalTime extends DomainObject {
 	/** The rounding. */
 	//丸め
 	private TimeRoundingSetting rounding;
+	
+	
+	/**
+	 * Instantiates a new interval time.
+	 *
+	 * @param memento the memento
+	 */
+	public IntervalTime(IntervalTimeGetMemento memento) {
+		this.intervalTime = memento.getIntervalTime();
+		this.rounding = memento.getRounding();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(IntervalTimeSetMemento memento){
+		memento.setIntervalTime(this.intervalTime);
+		memento.setRounding(this.rounding);
+	}
 }

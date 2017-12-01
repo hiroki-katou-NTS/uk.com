@@ -8,11 +8,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class PrioritySetDto.
+ * The Class PrioritySettingDto.
  */
 @Getter
 @Setter
-public class PrioritySetDto {
+public class PrioritySettingDto{
 	
 	/** The priority atr. */
 	private Integer priorityAtr;
@@ -20,18 +20,6 @@ public class PrioritySetDto {
 	/** The stamp atr. */
 	private Integer stampAtr;
 
-	/**
-	 * Instantiates a new priority set dto.
-	 *
-	 * @param priorityAtr the priority atr
-	 * @param stampAtr the stamp atr
-	 */
-	public PrioritySetDto(Integer priorityAtr, Integer stampAtr) {
-		super();
-		this.priorityAtr = priorityAtr;
-		this.stampAtr = stampAtr;
-	}
-	
-	
+
 
 }

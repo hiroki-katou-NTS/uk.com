@@ -14,24 +14,10 @@ import lombok.Setter;
 @Setter
 public class InstantRoundingDto {
 	
-	/** The Font rear section. */
-	private Integer FontRearSection;
+	/** The font rear section. */
+	private Integer fontRearSection;
 
 	/** The rounding time unit. */
-	private Integer roundingTimeUnit;
-
-	/**
-	 * Instantiates a new instant rounding dto.
-	 *
-	 * @param fontRearSection the font rear section
-	 * @param roundingTimeUnit the rounding time unit
-	 */
-	public InstantRoundingDto(Integer fontRearSection, Integer roundingTimeUnit) {
-		super();
-		FontRearSection = fontRearSection;
-		this.roundingTimeUnit = roundingTimeUnit;
-	}
+	private Integer roundingTimeUnit;	
 	
-	
-
 }

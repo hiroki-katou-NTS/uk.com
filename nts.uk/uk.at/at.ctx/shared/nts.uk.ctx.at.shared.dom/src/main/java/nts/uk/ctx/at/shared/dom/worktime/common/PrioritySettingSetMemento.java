@@ -5,21 +5,21 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 /**
- * The Interface PrioritySetGetMemento.
+ * The Interface PrioritySettingSetMemento.
  */
-public interface PrioritySetGetMemento {
+public interface PrioritySettingSetMemento {
 
 	/**
-	 * Gets the priority atr.
+	 * Sets the priority atr.
 	 *
-	 * @return the priority atr
+	 * @param atr the new priority atr
 	 */
-	 MultiStampTimePiorityAtr getPriorityAtr();
+	 void setPriorityAtr(MultiStampTimePiorityAtr atr);
 
 	/**
-	 * Gets the stamp atr.
+	 * Sets the stamp atr.
 	 *
-	 * @return the stamp atr
+	 * @param atr the new stamp atr
 	 */
-	 StampPiorityAtr getStampAtr();
+	 void setStampAtr(StampPiorityAtr  atr);
 }
