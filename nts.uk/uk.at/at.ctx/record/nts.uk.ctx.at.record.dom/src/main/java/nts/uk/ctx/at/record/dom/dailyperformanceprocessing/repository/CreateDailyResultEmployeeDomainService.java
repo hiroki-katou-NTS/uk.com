@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -14,6 +14,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CreateDailyResultEmployeeDomainService {
 	
-	ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId, DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, DailyRecreateClassification reCreateAttr);
+	ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId, DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, ExecutionType reCreateAttr);
 
 }

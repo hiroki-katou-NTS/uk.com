@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.sample.asyncmd.SampleCancellableAsyncCommand;
 
@@ -48,7 +49,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		Optional<ExecutionLog> executionLog = empCalAndSumExeLogRepository.getByExecutionContent(empCalAndSumExecLogID,
 				ExecutionContent.DAILY_CREATION.value);
 
-		DailyRecreateClassification reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getCreationType();
+		ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getExecutionType();
 		if (executionLog.isPresent()) {
 			// ④ログ情報（実行ログ）を更新する
 			empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.PROCESSING.value);
