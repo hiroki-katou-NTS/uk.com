@@ -75,7 +75,7 @@
 							name: '#[CPS009_9]',	
 							dataSource: initValSettingLst ,
 							primaryKey: 'settingId' ,
-							columns: ctgColums ,
+							columns: settingColums ,
 							multiple: false,
 							value: initSettingId,
 							rows:15 }" tabindex="6">
@@ -135,13 +135,13 @@
 							</div>
 							<div id='sub-left'>	
 								<!-- A3_005: list カテゴリ一覧 -->								
-								<table id="item_grid"   
+ 								<table id="item_grid"   
 									data-bind="ntsGridList: {	
 									dataSource: currentCategory().ctgList ,
 									primaryKey: 'perInfoCtgId' ,
 									columns: currentCategory().ctgColums ,
 									multiple: false,
-									value: currentCategory().currentItemId ,
+									value: currentItemId,
 									rows:15 }" tabindex="10">
 								</table >
 								<div style=" margin-top: 40px;">
