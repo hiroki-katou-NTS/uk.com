@@ -22,7 +22,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 , officeHelperRoleId: ''
                 , approvalAuthority: true
                 , humanResourceRoleId: ''
-                , webMenus: new Array()
+                , webMenus: []
             }));
 
         selectedRoleSetCd: KnockoutObservable<string> = ko.observable('');
@@ -392,7 +392,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
             currentRoleSet.approvalAuthority(true);
             currentRoleSet.officeHelperRoleId('');
             currentRoleSet.humanResourceRoleId('');
-            currentRoleSet.webMenus(new Array());
+            currentRoleSet.webMenus([]);
 
             // build swap web menu
             self.buildSwapWebMenu();
@@ -406,7 +406,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
             let self = this,
                 currentRoleSet: RoleSet = self.currentRoleSet();
 
-            currentRoleSet.companyId = _roleSet.companyId;
+            currentRoleSet.companyId(_roleSet.companyId);
             currentRoleSet.roleSetCd(_roleSet.roleSetCd);
             currentRoleSet.roleSetName(_roleSet.roleSetName);
             currentRoleSet.salaryRoleId(_roleSet.salaryRoleId);
@@ -503,7 +503,6 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 break;
             case ROLE_TYPE.MY_NUMBER: //A3-18
                 currentRoleSet.myNumberRoleId(roleId);
-                $('#A3_021').focus();
                 break;
             case ROLE_TYPE.OFFICE_HELPER: //A3-21
                 currentRoleSet.officeHelperRoleId(roleId);
@@ -616,7 +615,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
     }
 
     export class RoleSet {
-        companyId = '';
+        companyId:          KnockoutObservable<string> = ko.observable('');
         roleSetCd:          KnockoutObservable<string> = ko.observable('');
         roleSetName:        KnockoutObservable<string> = ko.observable('');
         salaryRoleId:       KnockoutObservable<string> = ko.observable(null);
@@ -630,11 +629,11 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
         constructor(param: IRoleSet) {
             let self = this;
-            self.companyId = param.companyId;
+            self.companyId(param.companyId);
             self.roleSetCd(param.roleSetCd || '');
             self.roleSetName(param.roleSetName || '');
             self.salaryRoleId(param.salaryRoleId || '');
-            self.webMenus(param.webMenus || new Array());
+            self.webMenus(param.webMenus || []);
             self.myNumberRoleId(param.myNumberRoleId || '');
             self.personInfRoleId(param.personInfRoleId || '');
             self.employmentRoleId(param.employmentRoleId || '');
