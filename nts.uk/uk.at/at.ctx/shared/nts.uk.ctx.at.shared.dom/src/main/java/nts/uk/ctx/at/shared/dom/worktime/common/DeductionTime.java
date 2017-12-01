@@ -5,6 +5,8 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -12,7 +14,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 // 控除時間帯(丸め付き)
-public class DeductionTime {
+public class DeductionTime extends DomainObject {
 
 	/** The start. */
 	// 開始
@@ -22,11 +24,6 @@ public class DeductionTime {
 	// 終了
 	private TimeWithDayAttr end;
 
-	@Override
-	public String toString() {
-		return start + "," + end;
-	}
-	
 	/**
 	 * Instantiates a new deduction time.
 	 *
@@ -46,4 +43,25 @@ public class DeductionTime {
 		memento.setStart(this.start);
 		memento.setEnd(this.end);
 	}
+	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		
+		if (this.start.greaterThanOrEqualTo(this.end)) {
+			throw new BusinessException("Msg_770");
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return start + "," + end;
+	}
+	
 }
