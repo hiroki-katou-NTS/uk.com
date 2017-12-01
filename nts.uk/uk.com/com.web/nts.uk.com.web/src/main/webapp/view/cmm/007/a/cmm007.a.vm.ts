@@ -21,7 +21,6 @@ module nts.uk.com.view.cmm007.a {
             
             public onSelectTabC(): void {
                  $('#c3_15').focus();
-                alert("lon");
             }
             
             public onSelectTabD(): void {
