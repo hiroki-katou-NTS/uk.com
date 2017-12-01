@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
  */
 // 時差勤務打刻反映時間帯
 @Getter
-public class TimeDiffWorkStampReflectTimezone {
+public class DiffTimeWorkStampReflectTimezone {
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯

@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
  */
 //時差勤務の平日出勤用勤務時間帯
 @Getter
-public class TimeDiffHalfDayWorkTimezone extends DomainObject{
+public class DiffTimeHalfDayWorkTimezone extends DomainObject{
 
 	/** The rest timezone. */
 	//休憩時間帯
