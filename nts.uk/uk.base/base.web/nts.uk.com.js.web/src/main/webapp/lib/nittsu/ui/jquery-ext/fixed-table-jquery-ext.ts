@@ -71,6 +71,7 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 let resizeEvent = function () {
+                    $header.height($headerContainer.height());
                     if(bodyHeight < $originTable.height()){
                         if(/Edge/.test(navigator.userAgent)){
                             $headerScroll.width(12);
@@ -80,19 +81,19 @@ module nts.uk.ui.jqueryExtentions {
                             $bodyContainer.css("padding-right", "17px");
                         }        
                     } else {
-                        if($originTable.height() !== 0){
-                            if(/Edge/.test(navigator.userAgent)){
-                                $bodyWrapper.height($originTable.height());
-                                $bodyContainer.height($originTable.height() + 12);
-                            }else {
-                                $bodyWrapper.height($originTable.height());
-                                $bodyContainer.height($originTable.height() + 17);
-                            } 
-                            $headerScroll.width(0);   
-                            $bodyWrapper.removeClass("body-no-record");   
-                        } else {
-                            $bodyWrapper.addClass("body-no-record");    
-                        }
+//                        if($originTable.height() !== 0){
+//                            if(/Edge/.test(navigator.userAgent)){
+//                                $bodyWrapper.height($originTable.height());
+//                                $bodyContainer.height($originTable.height() + 12);
+//                            }else {
+//                                $bodyWrapper.height($originTable.height());
+//                                $bodyContainer.height($originTable.height() + 17);
+//                            } 
+//                            $headerScroll.width(0);   
+//                            $bodyWrapper.removeClass("body-no-record");   
+//                        } else {
+//                            $bodyWrapper.addClass("body-no-record");    
+//                        }
                         $bodyContainer.css("padding-right", "0px");
                     }
                 
