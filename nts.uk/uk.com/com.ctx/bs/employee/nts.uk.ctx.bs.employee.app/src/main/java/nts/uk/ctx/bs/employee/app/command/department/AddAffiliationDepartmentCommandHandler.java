@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryDomainService;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
@@ -28,6 +29,9 @@ public class AddAffiliationDepartmentCommandHandler extends CommandHandlerWithRe
 	
 	@Inject
 	private AffDepartmentHistoryItemRepository affDepartmentHistoryItemRepository;
+	
+	@Inject
+	private AffDepartmentHistoryDomainService affDepartmentHistoryDomainService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -57,7 +61,7 @@ public class AddAffiliationDepartmentCommandHandler extends CommandHandlerWithRe
 		}
 		itemToBeAdded.add(dateItem);
 		
-		affDepartmentHistoryRepository.add(itemToBeAdded);
+		affDepartmentHistoryDomainService.add(itemToBeAdded);
 		
 		AffDepartmentHistoryItem histItem = AffDepartmentHistoryItem.createFromJavaType(newHistId, command.getEmployeeId(), command.getDepartmentId(), command.getAffHistoryTranfsType(), command.getDistributionRatio());
 		affDepartmentHistoryItemRepository.add(histItem);

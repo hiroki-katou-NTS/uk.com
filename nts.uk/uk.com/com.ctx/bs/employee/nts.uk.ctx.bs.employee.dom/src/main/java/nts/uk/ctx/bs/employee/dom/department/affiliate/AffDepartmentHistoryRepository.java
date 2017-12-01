@@ -31,17 +31,18 @@ public interface AffDepartmentHistoryRepository {
 	Optional<AffDepartmentHistory> getAffDepartmentHistorytByEmployeeId(String employeeId);
 	/**
 	 * ドメインモデル「所属部門」を新規登録する
+	 * @param sid
 	 * @param domain
 	 */
-	void add(AffDepartmentHistory domain);
+	void add(String sid, DateHistoryItem domain);
 	/**
 	 * 取得した「所属部門」を更新する
 	 * @param domain
 	 */
-	void update(AffDepartmentHistory domain, DateHistoryItem item);
+	void update(DateHistoryItem domain);
 	/**
-	 * ドメインモデル「所属部門（兼務）」を削除する
-	 * @param domain
+	 *  ドメインモデル「所属部門（兼務）」を削除する
+	 * @param histId
 	 */
-	void delete(AffDepartmentHistory domain, DateHistoryItem item);
+	void delete(String histId);
 }

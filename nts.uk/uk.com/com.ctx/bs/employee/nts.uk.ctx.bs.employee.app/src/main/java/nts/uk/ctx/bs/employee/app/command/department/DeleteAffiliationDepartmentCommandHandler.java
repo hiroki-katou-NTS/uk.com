@@ -9,6 +9,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryDomainService;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -24,6 +25,8 @@ public class DeleteAffiliationDepartmentCommandHandler extends CommandHandler<De
 	@Inject
 	private AffDepartmentHistoryItemRepository affDepartmentHistoryItemRepository;
 	
+	@Inject
+	private AffDepartmentHistoryDomainService affDepartmentHistoryDomainService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -49,7 +52,7 @@ public class DeleteAffiliationDepartmentCommandHandler extends CommandHandler<De
 			throw new RuntimeException("Invalid AffDepartmentHistory");
 		}
 		itemHist.get().remove(itemToBeRemoved.get());
-		affDepartmentHistoryRepository.delete(itemHist.get(), itemToBeRemoved.get());
+		affDepartmentHistoryDomainService.delete(itemHist.get(), itemToBeRemoved.get());
 		
 		affDepartmentHistoryItemRepository.delete(command.getHistoryId());
 	}

@@ -47,68 +47,32 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	}
 
 	@Override
-	public void add(AffDepartmentHistory domain) {
-		DateHistoryItem itemToBeAdded = domain.getHistoryItems().get(domain.getHistoryItems().size() -1);
-		this.commandProxy().insert(toEntity(domain.getEmployeeId(), itemToBeAdded));
-		// Update item before
-		updateItemBefore(domain, itemToBeAdded);
+	public void add(String sid, DateHistoryItem domain) {
+		this.commandProxy().insert(toEntity(sid, domain));
 	}
 
 	@Override
-	public void update(AffDepartmentHistory domain, DateHistoryItem item) {
-		Optional<BsymtAffiDepartmentHist> itemToBeUpdated = this.queryProxy().find(item.identifier(), BsymtAffiDepartmentHist.class);
+	public void update(DateHistoryItem domain) {
+		Optional<BsymtAffiDepartmentHist> itemToBeUpdated = this.queryProxy().find(domain.identifier(), BsymtAffiDepartmentHist.class);
 		if (!itemToBeUpdated.isPresent()){
 			throw new RuntimeException("Invalid BsymtAffiDepartmentHist");
 		}
-		updateEntity(item, itemToBeUpdated.get());
+		updateEntity(domain, itemToBeUpdated.get());
 		this.commandProxy().update(itemToBeUpdated.get());
-		
-		// Update item before and after
-		updateItemBefore(domain, item);
-		updateItemAfter(domain, item);
 	}
 
 	@Override
-	public void delete(AffDepartmentHistory domain, DateHistoryItem item) {
-		Optional<BsymtAffiDepartmentHist> itemToBeDeleted = this.queryProxy().find(item.identifier(), BsymtAffiDepartmentHist.class);
+	public void delete(String histId) {
+		Optional<BsymtAffiDepartmentHist> itemToBeDeleted = this.queryProxy().find(histId, BsymtAffiDepartmentHist.class);
 		if (!itemToBeDeleted.isPresent()){
 			throw new RuntimeException("Invalid BsymtAffiDepartmentHist");
 		}
-		this.commandProxy().remove(BsymtAffiDepartmentHist.class, item.identifier());
-		
-		// Update item before
-		if (domain.getHistoryItems().size() >0){
-			DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-			Optional<BsymtAffiDepartmentHist> histItem  = this.queryProxy().find(lastItem.identifier(), BsymtAffiDepartmentHist.class);
-			if (!histItem.isPresent()){
-				throw new RuntimeException("invalid BsymtAffiDepartmentHist");
-			}
-			updateEntity(lastItem, histItem.get());
-			this.commandProxy().update(histItem.get());
-		}
+		this.commandProxy().remove(BsymtAffiDepartmentHist.class, histId);
 		
 	}
 	
 	private BsymtAffiDepartmentHist toEntity(String employeeId, DateHistoryItem item){
 		return new BsymtAffiDepartmentHist(item.identifier(), employeeId, item.start(), item.end());
-	}
-	/**
-	 * Update item before when updating
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemBefore(AffDepartmentHistory domain, DateHistoryItem item){
-		// Update item before
-		Optional <DateHistoryItem> beforeItem = domain.immediatelyBefore(item);
-		if (!beforeItem.isPresent()){
-			return;
-		}
-		Optional<BsymtAffiDepartmentHist> histItem = this.queryProxy().find(beforeItem.get().identifier(), BsymtAffiDepartmentHist.class);
-		if (!histItem.isPresent()){
-			return;
-		}
-		updateEntity(beforeItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
 	}
 	/**
 	 * Update entity from domain
@@ -119,24 +83,6 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	private void updateEntity(DateHistoryItem item,BsymtAffiDepartmentHist entity){	
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
-	}
-	/**
-	 * Update item after when updating
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemAfter(AffDepartmentHistory domain, DateHistoryItem item){
-		// Update item after
-		Optional<DateHistoryItem> aferItem = domain.immediatelyAfter(item);
-		if (!aferItem.isPresent()){
-			return;
-		}
-		Optional<BsymtAffiDepartmentHist> histItem  = this.queryProxy().find(aferItem.get().identifier(), BsymtAffiDepartmentHist.class);
-		if (!histItem.isPresent()){
-			return;
-		}
-		updateEntity(aferItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
 	}
 
 	@Override
