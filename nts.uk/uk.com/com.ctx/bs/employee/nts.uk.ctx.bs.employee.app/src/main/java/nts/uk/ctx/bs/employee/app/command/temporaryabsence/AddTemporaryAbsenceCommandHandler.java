@@ -13,6 +13,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryDomainService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -28,6 +29,9 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 	
 	@Inject
 	private TempAbsHistRepository temporaryAbsenceHistRepository;
+	
+	@Inject
+	private TempAbsHistoryDomainService tempAbsHistoryDomainService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -59,7 +63,7 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<
 		}
 		itemtoBeAdded.add(dateItem);
 		
-		temporaryAbsenceHistRepository.add(itemtoBeAdded);
+		tempAbsHistoryDomainService.add(itemtoBeAdded);
 		
 		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr(), newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory(), command.isMultiple(),
 				command.getFamilyMemberId(), command.isSameFamily(), command.getChildType(), command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays());

@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -60,20 +60,12 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	}
 
 	@Override
-	public void add(TempAbsenceHistory domain) {
-		if (domain.getDateHistoryItems().isEmpty()) {
-			return;
-		}
-		// Insert last element
-		DateHistoryItem lastItem = domain.getDateHistoryItems().get(domain.getDateHistoryItems().size() - 1);
-		this.commandProxy().insert(toEntity(domain.getEmployeeId(), lastItem));
-
-		// Update item before and after
-		updateItemBefore(domain, lastItem);
+	public void add(String sid, DateHistoryItem item) {
+		this.commandProxy().insert(toEntity(sid, item));
 	}
 
 	@Override
-	public void update(TempAbsenceHistory domain, DateHistoryItem item) {
+	public void update(DateHistoryItem item) {
 
 		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(item.identifier(), BsymtTempAbsHistory.class);
 		if (!histItem.isPresent()) {
@@ -81,72 +73,15 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		}
 		updateEntity(item, histItem.get());
 		this.commandProxy().update(histItem.get());
-
-		// Update item before and after
-		updateItemBefore(domain, item);
-		updateItemAfter(domain, item);
-
 	}
 
 	@Override
-	public void delete(TempAbsenceHistory domain, DateHistoryItem item) {
-		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(item.identifier(), BsymtTempAbsHistory.class);
+	public void delete(String histId) {
+		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(histId, BsymtTempAbsHistory.class);
 		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtTempAbsHistory");
 		}
-		this.commandProxy().remove(BsymtTempAbsHistory.class, item.identifier());
-		// Update item before
-		if (domain.getDateHistoryItems().size() > 0) {
-			DateHistoryItem lastItem = domain.getDateHistoryItems().get(domain.getDateHistoryItems().size() - 1);
-			histItem = this.queryProxy().find(lastItem.identifier(), BsymtTempAbsHistory.class);
-			if (!histItem.isPresent()) {
-				throw new RuntimeException("invalid BsymtTempAbsHistory");
-			}
-			updateEntity(lastItem, histItem.get());
-			this.commandProxy().update(histItem.get());
-		}
-	}
-
-	/**
-	 * Update item before when updating
-	 * 
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemBefore(TempAbsenceHistory domain, DateHistoryItem item) {
-		// Update item before
-		Optional<DateHistoryItem> beforeItem = domain.immediatelyBefore(item);
-		if (!beforeItem.isPresent()) {
-			return;
-		}
-		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(beforeItem.get().identifier(),
-				BsymtTempAbsHistory.class);
-		if (!histItem.isPresent()) {
-			return;
-		}
-		updateEntity(beforeItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
-	}
-
-	/**
-	 * Update item after when updating
-	 * 
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemAfter(TempAbsenceHistory domain, DateHistoryItem item) {
-		// Update item after
-		Optional<DateHistoryItem> aferItem = domain.immediatelyAfter(item);
-		if (!aferItem.isPresent()) {
-			return;
-		}
-		Optional<BsymtTempAbsHistory> histItem = this.queryProxy().find(aferItem.get().identifier(),
-				BsymtTempAbsHistory.class);
-		if (!histItem.isPresent()) {
-			return;
-		}
-		updateEntity(aferItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
+		this.commandProxy().remove(BsymtTempAbsHistory.class, histId);
 	}
 
 	@Override

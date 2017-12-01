@@ -25,19 +25,20 @@ public interface TempAbsHistRepository {
 	// ------------------------------ COMMAND HISTORY---------------------------------
 	/**
 	 * ドメインモデル「休職休業」を新規登録する
-	 * @param domain
+	 * @param item
+	 * @param sid
 	 */
-	void add(TempAbsenceHistory domain);
+	void add(String sid, DateHistoryItem item);
 	/**
 	 * 取得した「休職休業」を更新する
 	 * @param domain
 	 */
-	void update(TempAbsenceHistory domain, DateHistoryItem item);
+	void update(DateHistoryItem domain);
 	
 	/**
 	 * ドメインモデル「休職休業」を削除する
-	 * @param domain
+	 * @param histId
 	 */
-	void delete(TempAbsenceHistory domain, DateHistoryItem item);
+	void delete(String histId);
 	
 }
