@@ -14,12 +14,12 @@ import nts.uk.ctx.sys.auth.dom.roleset.webmenu.WebMenuImport;
 @Produces("application/json")
 public class WebMenuWebService {
 
-	@Inject
-	private WebmenuFider webmenuFider;
-	
-	@POST
-	@Path("getlistwebmenu")
-	public List<WebMenuImport> removeSelectionItem() {
-		return this.webmenuFider.getListWebMenuByCid();
-	}
+    @Inject
+    private WebmenuFider webmenuFider;
+
+    @POST
+    @Path("getlistwebmenu")
+    public List<WebMenuImport> removeSelectionItem() {
+        return this.webmenuFider.getListWebMenuByCid();
+    }
 }

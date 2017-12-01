@@ -103,8 +103,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setStringValue(new StringValue(entity.stringValue == null ? "" : entity.stringValue.toString()));
 		domain.setIntValue(entity.intValue == null ? null : new IntValue(entity.intValue));
 
-		domain.setDateValue(entity.dateValue == null ? null
-				: GeneralDate.fromString(String.valueOf(entity.dateValue), "yyyy-MM-dd"));
+		domain.setDateValue(entity.dateValue == null ? null : entity.dateValue);
 
 		return domain;
 
@@ -232,7 +231,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		entity.saveDataType = domain.getSaveDataType() == null ? null : domain.getSaveDataType().value;
 		entity.stringValue = domain.getStringValue() == null ? null : domain.getStringValue().v();
 		entity.intValue = domain.getIntValue() == null ? null : domain.getIntValue().v();
-		entity.dateValue = domain.getDateValue() == null ? null : domain.getDateValue().toString();
+		entity.dateValue = domain.getDateValue() == null ? null : domain.getDateValue();
 		return entity;
 
 	}

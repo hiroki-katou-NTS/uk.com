@@ -11,26 +11,25 @@ package nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking;
 @lombok.Value
 public class RoleSetLinkWebMenuImport {
 
-	/** �?社ID */
-	private String companyId;
+    /** �?社ID */
+    private String companyId;
 
-	/** ロールセットコード. */
-	private String roleSetCd;
+    /** ロールセットコード. */
+    private String roleSetCd;
 
-	/** メニューコードリスト */
-	private String webMenuCd;
+    /** メニューコードリスト */
+    private String webMenuCd;
 
-	/**
-	 * Instantiates a new default role set.
-	 * 
-	 * @param companyId
-	 * @param roleSetCd
-	 * @param webMenuCd
-	 */
-	public RoleSetLinkWebMenuImport(String companyId, String roleSetCd, String webMenuCd) {
-		this.companyId = companyId;
-		this.roleSetCd = roleSetCd;
-		this.webMenuCd = webMenuCd;
-	}
-	
+    /**
+     * Instantiates a new default role set.
+     * 
+     * @param companyId
+     * @param roleSetCd
+     * @param webMenuCd
+     */
+    public RoleSetLinkWebMenuImport(String companyId, String roleSetCd, String webMenuCd) {
+        this.companyId = companyId;
+        this.roleSetCd = roleSetCd;
+        this.webMenuCd = webMenuCd;
+    }
 }

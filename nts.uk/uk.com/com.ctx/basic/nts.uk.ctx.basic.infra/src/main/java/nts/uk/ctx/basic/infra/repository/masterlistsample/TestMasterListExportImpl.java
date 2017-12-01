@@ -45,7 +45,7 @@ public class TestMasterListExportImpl implements MasterListData{
 		int i = 1;
 		
 		while (i <= 100) {
-			columns.add(new MasterHeaderColumn("Column " + i, "", ColumnTextAlign.CENTER, "", true));
+			columns.add(new MasterHeaderColumn("Column " + i, "Column " + i, ColumnTextAlign.CENTER, "", true));
 			i++;
 		}
 		
