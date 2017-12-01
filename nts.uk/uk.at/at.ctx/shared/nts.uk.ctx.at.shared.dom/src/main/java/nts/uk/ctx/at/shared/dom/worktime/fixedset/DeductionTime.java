@@ -5,25 +5,19 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class TimeZoneRounding.
+ * The Class DeductionTime.
  */
-//時間帯(丸め付き)
 @Getter
-public class TimeZoneRounding extends DomainObject {
-
-	/** The rounding. */
-	// 丸め
-	private TimeRoundingSetting rounding;
+// 控除時間帯(丸め付き)
+public class DeductionTime {
 
 	/** The start. */
 	// 開始
 	private TimeWithDayAttr start;
-	
+
 	/** The end. */
 	// 終了
 	private TimeWithDayAttr end;
@@ -32,5 +26,6 @@ public class TimeZoneRounding extends DomainObject {
 	public String toString() {
 		return start + "," + end;
 	}
+	
 	
 }

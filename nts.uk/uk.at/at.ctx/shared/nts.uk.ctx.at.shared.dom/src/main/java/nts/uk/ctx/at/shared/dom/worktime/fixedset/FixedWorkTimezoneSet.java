@@ -17,25 +17,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 @Getter
 public class FixedWorkTimezoneSet extends DomainObject {
 
-	/** The working timezone. */
+	/** The lst working timezone. */
 	// 就業時間帯
-	private List<EmTimeZoneSet> workingTimezone;
+	private List<EmTimeZoneSet> lstWorkingTimezone;
 
-	/** The OT timezone. */
+	/** The lst OT timezone. */
 	// 残業時間帯
-	private List<OverTimeOfTimeZoneSet> OTTimezone;
-
-	/**
-	 * Instantiates a new fixed work timezone set.
-	 *
-	 * @param workingTimezone the working timezone
-	 * @param oTTimezone the o T timezone
-	 */
-	public FixedWorkTimezoneSet(List<EmTimeZoneSet> workingTimezone, List<OverTimeOfTimeZoneSet> oTTimezone) {
-		super();
-		this.workingTimezone = workingTimezone;
-		OTTimezone = oTTimezone;
-	}
-	
-	
+	private List<OverTimeOfTimeZoneSet> lstOTTimezone;
 }

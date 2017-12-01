@@ -11,7 +11,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 //時間帯(使用区分付き)
 @Builder
 @Getter
-public class Timezone extends DomainObject{
+public class Timezone extends DomainObject {
 
 	/** The use atr. */
 	//使用区分

@@ -20,8 +20,14 @@ public class FixOffdayWorkTimezone extends DomainObject {
 	// 休憩時間帯
 	private FixRestTimezoneSet restTimezone;
 
-	/** The work timezone. */
+	/** The lst work timezone. */
 	// 勤務時間帯
-	private List<HDWorkTimeSheetSetting> workTimezone;
+	private List<HDWorkTimeSheetSetting> lstWorkTimezone;
+
+	@Override
+	public void validate() {
+		super.validate();
+		
+	}
 
 }

@@ -4,12 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.util.stream.Collectors;
+
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * The Class PredetemineTimeSet.
+ */
 // 所定時間設定
 @Getter
 public class PredetemineTimeSet extends AggregateRoot {
@@ -46,9 +52,6 @@ public class PredetemineTimeSet extends AggregateRoot {
 	// 残業を含めた所定時間帯を設定する
 	private boolean predetermine;
 
-	private static final Integer SHIFT1 = 1;
-	private static final Integer SHIFT2 = 2;
-
 	/**
 	 * Instantiates a new predetemine time set.
 	 *
@@ -77,72 +80,29 @@ public class PredetemineTimeSet extends AggregateRoot {
 		memento.setPredetermine(this.predetermine);
 	}
 
-	/**
-	 * Update start time shift 1.
-	 *
-	 * @param start
-	 *            the start
-	 */
-	public void updateStartTimeShift1(TimeWithDayAttr start) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
-		tz.updateStartTime(start);
-	}
-
-	/**
-	 * Update end time shift 1.
-	 *
-	 * @param end
-	 *            the end
-	 */
-	public void updateEndTimeShift1(TimeWithDayAttr end) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
-		tz.updateEndTime(end);
-	}
-
-	/**
-	 * Removes the shift 1.
-	 */
-	public void removeShift1() {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
-		tz.updateStartTime(null);
-		tz.updateEndTime(null);
-	}
-
-	/**
-	 * Removes the shift 2.
-	 */
-	public void removeShift2() {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
-		tz.updateStartTime(null);
-		tz.updateEndTime(null);
-	}
-
-	/**
-	 * Update start time shift 2.
-	 *
-	 * @param start
-	 *            the start
-	 */
-	public void updateStartTimeShift2(TimeWithDayAttr start) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
-		tz.updateStartTime(start);
-	}
-
-	/**
-	 * Update end time shift 2.
-	 *
-	 * @param end
-	 *            the end
-	 */
-	public void updateEndTimeShift2(TimeWithDayAttr end) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
-		tz.updateEndTime(end);
+	@Override
+	public void validate() {
+		super.validate();
+		
+		// valid case greater than 23:59
+		if (this.startDateClock.greaterThanOrEqualTo(TimeWithDayAttr.THE_NEXT_DAY_0000)) {
+			throw new BusinessException("Msg_785");
+		}
+		
+		/** Valid timezone
+		 * 開始←所定時間設定．日付開始時刻, 終了← 所定時間設定．１日の範囲時間　経過後
+		 * 開始～終了の間であること。
+		 */
+		int startMinutes = this.startDateClock.v();
+		int endMinutes = this.rangeTimeDay.v();
+		boolean isInValidTimezone = this.prescribedTimezoneSetting.getLstTimezone().stream()
+				.filter(timezone -> timezone.getStart().v() >= startMinutes && timezone.getStart().v() <= endMinutes
+						&& timezone.getEnd().v() >= startMinutes && timezone.getEnd().v() <= endMinutes)
+				.collect(Collectors.toList())
+				.isEmpty();
+		if (isInValidTimezone) {
+			throw new BusinessException("Msg_516");
+		}
 	}
 
 	/* (non-Javadoc)

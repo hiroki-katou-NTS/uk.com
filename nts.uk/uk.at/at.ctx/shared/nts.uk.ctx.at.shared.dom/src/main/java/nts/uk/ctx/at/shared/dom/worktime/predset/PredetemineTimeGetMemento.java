@@ -20,12 +20,12 @@ public interface PredetemineTimeGetMemento {
 	 */
 	public String getCompanyID();
 
-    /**
-     * Gets the range time day.
-     *
-     * @return the range time day
-     */
-    public AttendanceTime getRangeTimeDay();
+	/**
+	 * Gets the range time day.
+	 *
+	 * @return the range time day
+	 */
+	public AttendanceTime getRangeTimeDay();
 
     /**
      * Gets the work time code.
@@ -55,12 +55,12 @@ public interface PredetemineTimeGetMemento {
      */
     public PrescribedTimezoneSetting getPrescribedTimezoneSetting();
 
-    /**
-     * Gets the start date clock.
-     *
-     * @return the start date clock
-     */
-    public TimeWithDayAttr getStartDateClock();
+	/**
+	 * Gets the start date clock.
+	 *
+	 * @return the start date clock
+	 */
+	public TimeWithDayAttr getStartDateClock();
 
     /**
      * Checks if is predetermine.
