@@ -94,13 +94,13 @@ public class PeregProcessor {
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
 		// get Employee
-		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), layoutQuery.getEmpId()).get();
+		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), layoutQuery.getBrowsingEmpId()).get();
 		itemClassList.forEach(item -> {
 			// get ctgCd
 			PersonInfoCategory perInfoCtg = perInfoCtgRepositoty
 					.getPerInfoCategory(item.getPersonInfoCategoryID(), AppContexts.user().contractCode()).get();
 			PeregQuery query = new PeregQuery(item.getPersonInfoCategoryID(), perInfoCtg.getCategoryCode().v(),
-					layoutQuery.getEmpId(), employee.getPId(), layoutQuery.getStandardDate(), null);
+					layoutQuery.getBrowsingEmpId(), employee.getPId(), layoutQuery.getStandardDate(), null);
 			if (item.getLayoutItemType() == LayoutItemType.LIST) {
 				// //get data
 				List<PeregDto> lstPeregDtos = layoutingProcessor.findList(query);
@@ -112,7 +112,7 @@ public class PeregProcessor {
 					EmpMaintLayoutDto empLayoutDto = new EmpMaintLayoutDto();
 					matching(empLayoutDto, perInfoCtg, finderDto, peregDto.getDtoClass(),
 							item.getListItemDf().stream()
-									.map(x -> perInfoItemDefForLayoutFinder.createFromItemDefDto(layoutQuery.getEmpId(),
+									.map(x -> perInfoItemDefForLayoutFinder.createFromItemDefDto(layoutQuery.getBrowsingEmpId(),
 											x, perInfoCtg.getCategoryCode().v(), item.getDispOrder()))
 									.collect(Collectors.toList()),
 							empOptionalData, perOptionalData);
@@ -123,7 +123,7 @@ public class PeregProcessor {
 			} else {
 				setEmpMaintLayoutDto(empMaintLayoutDto, query, perInfoCtg,
 						item.getListItemDf().stream()
-								.map(x -> perInfoItemDefForLayoutFinder.createFromItemDefDto(layoutQuery.getEmpId(), x,
+								.map(x -> perInfoItemDefForLayoutFinder.createFromItemDefDto(layoutQuery.getBrowsingEmpId(), x,
 										perInfoCtg.getCategoryCode().v(), item.getDispOrder()))
 								.collect(Collectors.toList()));
 			}
