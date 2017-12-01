@@ -689,15 +689,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             getReason(inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string): string{
                 let appReason = '';
                 let inputReason: string = '';
-                if(inputReasonID!=''){
+                if(!nts.uk.util.isNullOrEmpty(inputReasonID)){
                     inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;    
                 }    
                 if(inputReasonDisp==true&&detailReasonDisp==true){
-                    if(inputReason.trim()!=''&&detailReason.trim()!=''){
+                    if(!nts.uk.util.isNullOrEmpty(inputReason)&&!nts.uk.util.isNullOrEmpty(detailReason)){
                         appReason = inputReason + ":" + detailReason;
-                    } else if(inputReason.trim()!=''&&detailReason.trim()==''){
+                    } else if(!nts.uk.util.isNullOrEmpty(inputReason)&&nts.uk.util.isNullOrEmpty(detailReason)){
                         appReason = inputReason; 
-                    } else if(inputReason.trim()==''&&detailReason.trim()!=''){
+                    } else if(nts.uk.util.isNullOrEmpty(inputReason)&&!nts.uk.util.isNullOrEmpty(detailReason)){
                         appReason = detailReason;             
                     }                
                 } else if(inputReasonDisp==true&&detailReasonDisp==false){
