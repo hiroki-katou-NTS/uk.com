@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.shr.pereg.app.command.PeregCommandFacade;
+import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
 @Path("/facade/pereg")
