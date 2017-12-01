@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.fixedset;
+package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -27,5 +27,23 @@ public class DeductionTime {
 		return start + "," + end;
 	}
 	
+	/**
+	 * Instantiates a new deduction time.
+	 *
+	 * @param memento the memento
+	 */
+	public DeductionTime(DeductionTimeGetMemento memento){
+		this.start = memento.getStart();
+		this.end = memento.getEnd();
+	}
 	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(DeductionTimeSetMemento memento){
+		memento.setStart(this.start);
+		memento.setEnd(this.end);
+	}
 }
