@@ -44,6 +44,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems(),
                 historySelection: HistorySelection = self.historySelection(),
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
                 selection: Selection = self.selection();
@@ -55,6 +56,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
+
                     let selectedObject = _.find(self.listItems(), (item) => {
                         return item.selectionItemId == x;
                     });
@@ -89,9 +91,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.historySelection().histId(self.listHistorySelection()[0].histId);
                         }
                     });
-                }
-                else {
-                    historySelection.histId(undefined);
+                } else {
+                    //historySelection.histId(undefined);
                     self.registerData();
                 }
             });
@@ -135,7 +136,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.revDisSel04(true);
                         }
                     }
-                    
+
                     let ondeHisIdlits = _.find(self.listHistorySelection(), a => a.histId == x);
                     if (ondeHisIdlits != undefined) {
                         if (ondeHisIdlits.endDate == '9999/12/31') {
@@ -145,14 +146,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.enableSelName(false);
                         }
                     }
-                    
+
 
                     self.listSelection.removeAll();
                     service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length > 0) {
                             self.checkCreateaaa(false);
                             //self.enableSelName(true);
                             //self.revDisSel02(true);
-                            
+
                             itemList.forEach(x => self.listSelection.push(x));
                             self.selection().selectionID(self.listSelection()[0].selectionID);
                         } else {
@@ -162,7 +163,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             //self.registerData();
                             //$("#code").focus();
                         }
-                        
+
                         self.listSelection.valueHasMutated();
 
                     });
@@ -216,6 +217,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 } else {
                     self.checkCreate(false);
                     alertError({ messageId: "Msg_455" });
+                    //                    self.registerData();
+                    self.enableSelName(false);
                 }
                 dfd.resolve();
             }).fail(error => {
@@ -279,8 +282,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let command = ko.toJS(currentItem);
 
             if (_selectionCD) {
-                alertError({ messageId: "Msg_3" });
-                $("#code").focus();
+                $('#code').ntsError('set', { messageId: "Msg_3" });
+
             } else {
                 service.saveDataSelection(command).done(function() {
                     self.checkCreateaaa(false);
@@ -295,6 +298,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                                 if (itemSelected) {
                                     self.selection().selectionID(itemSelected.selectionID);
+                                    self.revDisSel02(true);
+                                    self.revDisSel03(true);
                                 }
 
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function() {
@@ -304,13 +309,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 });
 
                             }
-//                            histList.histId.valueHasMutated();
-                            
+
                         });
                     perInfoSelectionItem.selectionItemId.valueHasMutated();
 
                     self.listSelection.valueHasMutated();
-                    
+
                     $("#name").focus();
                 });
             }
@@ -372,12 +376,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 currentItem.selectionID(newItem.selectionID);
                             } else {
                                 self.registerData();
+                                histList.histId.valueHasMutated();
                             }
-//                            histList.histId.valueHasMutated();
+                            //                            histList.histId.valueHasMutated();
                         });
                         self.listItems.valueHasMutated();
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
-                        
+
                         nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                     });
 
