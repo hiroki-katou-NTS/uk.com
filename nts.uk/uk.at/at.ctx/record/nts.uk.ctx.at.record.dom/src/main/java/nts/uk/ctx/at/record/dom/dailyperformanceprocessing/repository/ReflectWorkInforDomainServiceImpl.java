@@ -508,17 +508,17 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					// workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
 					// superitory
 					// TODO - requetsList newwave
-					InstantRounding instantRounding = new InstantRounding();
-					int attendanceTimeAfterRouding = this.roudingTime(sheet.getAttendance().v(),
-							instantRounding.getFontRearSection().value, instantRounding.getRoundingTimeUnit().value);
-					int leaveTimeAfterRounding = this.roudingTime(sheet.getLeaveWork().v(),
-							instantRounding.getFontRearSection().value, instantRounding.getRoundingTimeUnit().value);
+//					InstantRounding instantRounding = new InstantRounding();
+//					int attendanceTimeAfterRouding = this.roudingTime(sheet.getAttendance().v(),
+//							instantRounding.getFontRearSection().value, instantRounding.getRoundingTimeUnit().value);
+//					int leaveTimeAfterRounding = this.roudingTime(sheet.getLeaveWork().v(),
+//							instantRounding.getFontRearSection().value, instantRounding.getRoundingTimeUnit().value);
 
 					// ドメインモデル「所属職場履歴」を取得する
-					attendanceStamp.setStamp(new WorkStamp(new TimeWithDayAttr(attendanceTimeAfterRouding),
+					attendanceStamp.setStamp(new WorkStamp(new TimeWithDayAttr(sheet.getAttendance().v()),
 							sheet.getAttendance(), new WorkLocationCD("0001"),
 							automaticStampSetDetailDto.getAttendanceStamp()));
-					leaveStamp.setStamp(new WorkStamp(new TimeWithDayAttr(leaveTimeAfterRounding), sheet.getLeaveWork(),
+					leaveStamp.setStamp(new WorkStamp(new TimeWithDayAttr(sheet.getLeaveWork().v()), sheet.getLeaveWork(),
 							new WorkLocationCD("0001"),
 							automaticStampSetDetailDto.getLeavingStamp()));
 
@@ -612,9 +612,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							work.setAttendanceStamp(timeActualStamp);
 
 							timeLeavingOptional.get().getTimeLeavingWorks().add(work);
-							this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
-									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-									.getAttendanceStamp());
+//							this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
+//									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+//									.getAttendanceStamp());
 						}
 
 						// 存在する && 入っていない
@@ -626,9 +626,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
 									.getAttendanceStamp().setStamp(timeLeaving.getAttendanceStamp().getStamp());
 
-							this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
-									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-									.getAttendanceStamp());
+//							this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
+//									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+//									.getAttendanceStamp());
 						}
 					}
 					;
@@ -664,9 +664,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							timeLeaving.setLeaveStamp(actualStamp);
 
 							timeLeavingOptional.get().getTimeLeavingWorks().add(timeLeaving);
-							this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
-									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-									.getLeaveStamp());
+//							this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
+//									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+//									.getLeaveStamp());
 						}
 
 						// 存在する && 入っていない
@@ -678,9 +678,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							timeLeavingOptional.get().getTimeLeavingWorks().stream()
 									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
 									.getLeaveStamp().setStamp(timeLeaving.getLeaveStamp().getStamp());
-							this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
-									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-									.getLeaveStamp());
+//							this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
+//									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+//									.getLeaveStamp());
 						}
 					}
 				});
@@ -745,15 +745,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		return daysBetween;
 	}
 
-	private void lateCorrection(TimeActualStamp timeActualStamp) {
-		// ドメインモデル「就業時間帯の遅刻・早退設定」を取得する
-		OtherEmTimezoneLateEarlySet earlySet = new OtherEmTimezoneLateEarlySet();
-		if (earlySet.isStampExactlyTimeIsLateEarly() && !timeActualStamp.getStamp().equals(null)) {
-			timeActualStamp.setStamp(new WorkStamp(
-					new TimeWithDayAttr(timeActualStamp.getStamp().getAfterRoundingTime().v() - 1),
-					new TimeWithDayAttr(timeActualStamp.getStamp().getTimeWithDay().valueAsMinutes() - 1),
-					timeActualStamp.getStamp().getLocationCode(), timeActualStamp.getStamp().getStampSourceInfo()));
-		}
-	}
+//	private void lateCorrection(TimeActualStamp timeActualStamp) {
+//		// ドメインモデル「就業時間帯の遅刻・早退設定」を取得する
+//		OtherEmTimezoneLateEarlySet earlySet = new OtherEmTimezoneLateEarlySet();
+//		if (earlySet.isStampExactlyTimeIsLateEarly() && !timeActualStamp.getStamp().equals(null)) {
+//			timeActualStamp.setStamp(new WorkStamp(
+//					new TimeWithDayAttr(timeActualStamp.getStamp().getAfterRoundingTime().v() - 1),
+//					new TimeWithDayAttr(timeActualStamp.getStamp().getTimeWithDay().valueAsMinutes() - 1),
+//					timeActualStamp.getStamp().getLocationCode(), timeActualStamp.getStamp().getStampSourceInfo()));
+//		}
+//	}
 
 }
