@@ -29,6 +29,9 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	private static final String SELECT_BY_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate <= aw.endDate";
 	
+	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " WHERE aw.hisId = :histId";
+	
 	/**
 	 * Convert from domain to entity
 	 * @param employeeID
@@ -166,6 +169,16 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 				.setParameter("standDate", standDate).getList();
 		if (!listHist.isEmpty()){
 			return Optional.of(toDomainTemp(employeeId, listHist));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<AffWorkplaceHistory_ver1> getByHistId(String histId) {
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_HISTID,BsymtAffiWorkplaceHist.class)
+				.setParameter("histId", histId).getList();
+		if (!listHist.isEmpty()){
+			return Optional.of(toDomainTemp(listHist.get(0).getSid(), listHist));
 		}
 		return Optional.empty();
 	}
