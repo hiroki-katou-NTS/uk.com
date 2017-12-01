@@ -161,24 +161,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		return entities;
 	}
 	
-	/**
-	 * Update item before when updating
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemBefore(AffCompanyHistByEmployee domain, AffCompanyHistItem item){
-		// Update item before
-		Optional <AffCompanyHistItem> beforeItem = domain.immediatelyBefore(item);
-		if (!beforeItem.isPresent()){
-			return;
-		}
-		Optional<BsymtAffCompanyHist> histItem = this.queryProxy().find(beforeItem.get().identifier(), BsymtAffCompanyHist.class);
-		if (!histItem.isPresent()){
-			return;
-		}
-		updateEntity(beforeItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
-	}
+
 	/**
 	 * Update entity from domain
 	 * @param item
@@ -188,24 +171,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		entity.startDate = item.start();
 		entity.endDate = item.end();
 	}
-	/**
-	 * Update item after when updating
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemAfter(AffCompanyHistByEmployee domain,AffCompanyHistItem item){
-		// Update item after
-		Optional<AffCompanyHistItem> aferItem = domain.immediatelyAfter(item);
-		if (!aferItem.isPresent()){
-			return;
-		}
-		Optional<BsymtAffCompanyHist> histItem  = this.queryProxy().find(aferItem.get().identifier(), BsymtAffCompanyHist.class);
-		if (!histItem.isPresent()){
-			return;
-		}
-		updateEntity(aferItem.get(), histItem.get());
-		this.commandProxy().update(histItem.get());
-	}
+
 	/**
 	 * Convert to entity
 	 * @param histItem
@@ -218,16 +184,12 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, 0, histItem.start(), histItem.end(), null);
 	}
 	@Override
-	public void add(AffCompanyHistByEmployee domain, String pId) {
-		// Insert last item
-		AffCompanyHistItem itemToBeAdded = domain.getLstAffCompanyHistoryItem().get(domain.getLstAffCompanyHistoryItem().size() -1);
-		this.commandProxy().insert(toEntity(itemToBeAdded, pId, domain.getSId()));
-		// Update item before
-		updateItemBefore(domain,itemToBeAdded);
+	public void add(String sid, String pId, AffCompanyHistItem item) {
+		this.commandProxy().insert(toEntity(item, pId, sid));
 	}
 	
 	@Override
-	public void update(AffCompanyHistByEmployee domain, AffCompanyHistItem itemToBeUpdated) {
+	public void update(AffCompanyHistItem itemToBeUpdated) {
 		
 		Optional<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
 				.setParameter("histId", itemToBeUpdated.getHistoryId()).getSingle();
@@ -237,38 +199,6 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		}
 		updateEntity(itemToBeUpdated, existItem.get());
 		this.commandProxy().update(existItem.get());
-		
-		// Update item before and after
-		updateItemBefore(domain, itemToBeUpdated);
-		updateItemAfter(domain, itemToBeUpdated);
 	}
 
-	@Override
-	public void delete(AffCompanyHistByEmployee domain, AffCompanyHistItem itemToBeDelted) {
-		
-		Optional<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
-				.setParameter("histId", itemToBeDelted.getHistoryId()).getSingle();
-		
-		if (!existItem.isPresent()){
-			throw new RuntimeException("Invalid AffCompanyHistItem");
-		}
-		BsymtAffCompanyHistPk bsymtAffCompanyHistPk = existItem.get().bsymtAffCompanyHistPk;
-		
-		this.commandProxy().remove(BsymtAffCompanyHist.class, bsymtAffCompanyHistPk);
-		
-		// Update last item
-		if (domain.getLstAffCompanyHistoryItem().size() > 0){
-			AffCompanyHistItem itemToBeUpdated = domain.getLstAffCompanyHistoryItem().get(domain.getLstAffCompanyHistoryItem().size()-1);
-			
-			existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
-					.setParameter("histId", itemToBeUpdated.getHistoryId()).getSingle();
-			if (!existItem.isPresent()){
-				throw new RuntimeException("Invalid AffCompanyHistItem");
-			}
-			
-			updateEntity(itemToBeUpdated, existItem.get());
-			this.commandProxy().update( existItem.get());
-			
-		}
-	}
 }

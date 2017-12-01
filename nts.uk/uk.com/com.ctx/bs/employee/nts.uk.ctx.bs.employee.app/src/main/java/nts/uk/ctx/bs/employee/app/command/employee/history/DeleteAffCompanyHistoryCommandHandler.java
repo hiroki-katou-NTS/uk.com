@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistDomainService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
@@ -23,6 +24,10 @@ public class DeleteAffCompanyHistoryCommandHandler extends CommandHandler<Delete
 	
 	@Inject
 	private AffCompanyInfoRepository affCompanyInfoRepository;
+	
+	@Inject
+	private AffCompanyHistDomainService affCompanyHistDomainService;
+	
 	@Override
 	public String targetCategoryCd() {
 		return "CS00003";
@@ -51,7 +56,7 @@ public class DeleteAffCompanyHistoryCommandHandler extends CommandHandler<Delete
 		}
 		
 		listHistBySID.remove(itemToBeDeleted.get());
-		affCompanyHistRepository.delete(listHistBySID, itemToBeDeleted.get());
+		affCompanyHistDomainService.delete(listHistBySID, itemToBeDeleted.get(), command.getPId());
 		
 		affCompanyInfoRepository.remove(command.getHistoryId());
 		

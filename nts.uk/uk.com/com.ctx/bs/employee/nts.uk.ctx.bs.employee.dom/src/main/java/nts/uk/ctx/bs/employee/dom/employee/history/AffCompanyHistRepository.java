@@ -26,12 +26,9 @@ public interface AffCompanyHistRepository {
 	/** Hop.NT */
 	
 	/** Add new affiliation history */
-	void add(AffCompanyHistByEmployee domain, String pId);
+	void add(String sid, String pId, AffCompanyHistItem item);
 	/** Update one affiliation history */
-	void update(AffCompanyHistByEmployee domain, AffCompanyHistItem itemToBeUpdated);
-	
-	/** Delete one affiliation history */
-	void delete(AffCompanyHistByEmployee domain, AffCompanyHistItem itemToBeDelted);
+	void update(AffCompanyHistItem item);
 	
 	/** End */
 }

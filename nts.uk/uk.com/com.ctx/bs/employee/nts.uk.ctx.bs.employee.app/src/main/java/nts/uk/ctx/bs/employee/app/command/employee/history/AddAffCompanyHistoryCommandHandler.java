@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistDomainService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
@@ -28,6 +29,9 @@ public class AddAffCompanyHistoryCommandHandler extends CommandHandlerWithResult
 	
 	@Inject
 	private AffCompanyInfoRepository affCompanyInfoRepository;
+	
+	@Inject
+	private AffCompanyHistDomainService affCompanyHistDomainService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -52,7 +56,7 @@ public class AddAffCompanyHistoryCommandHandler extends CommandHandlerWithResult
 		AffCompanyHistItem hist = new AffCompanyHistItem(newHistId, false, new DatePeriod(command.getStartDate(), command.getEndDate()));
 		itemToBeAdded.add(hist);
 		
-		affCompanyHistRepository.add(itemToBeAdded,command.getPId());
+		affCompanyHistDomainService.add(itemToBeAdded,command.getPId());
 		
 		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(newHistId, command.getRecruitmentClassification(), command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());
 		affCompanyInfoRepository.add(histItem);
