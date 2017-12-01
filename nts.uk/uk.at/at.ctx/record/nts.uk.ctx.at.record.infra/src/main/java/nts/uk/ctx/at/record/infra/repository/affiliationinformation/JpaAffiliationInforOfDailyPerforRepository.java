@@ -63,7 +63,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
 		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode().v();
+		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() : null;
 		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode().v();
 		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode().v();
 		entity.jobtitleID = affiliationInforOfDailyPerfor.getJobTitleID();
