@@ -94,6 +94,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             self.appDate.subscribe(value => {
                 self.kaf000_a.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
                 self.kaf000_a.getAllApprovalRoot();
+                self.kaf000_a.getMessageDeadline(4, value);
             });
             
         }

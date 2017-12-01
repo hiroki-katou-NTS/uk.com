@@ -50,6 +50,7 @@ module nts.uk.at.view.kaf002.b {
                 self.cm.application().appDate.subscribe(value => {
                     self.kaf000_a2.objApprovalRootInput().standardDate = value;
                     self.kaf000_a2.getAllApprovalRoot();
+                    self.kaf000_a2.getMessageDeadline(7, value);
                 });
             }
             
