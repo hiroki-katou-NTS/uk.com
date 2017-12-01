@@ -102,7 +102,7 @@ public class PredetemineTimeSetDto implements PredetemineTimeSetMemento {
 	 */
 	@Override
 	public void setPrescribedTimezoneSetting(PrescribedTimezoneSetting prescribedTimezoneSetting) {
-		List<TimezoneDto> timezoneDtos = prescribedTimezoneSetting.getTimezone().stream().map(item->{
+		List<TimezoneDto> timezoneDtos = prescribedTimezoneSetting.getLstTimezone().stream().map(item->{
 			return TimezoneDto.builder()
 					.workNo(item.getWorkNo())
 					.useAtr(item.getUseAtr().value == TRUE_VAL)

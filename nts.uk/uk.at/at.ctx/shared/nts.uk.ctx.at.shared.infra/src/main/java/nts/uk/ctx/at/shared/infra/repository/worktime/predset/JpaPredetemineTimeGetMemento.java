@@ -121,7 +121,7 @@ public class JpaPredetemineTimeGetMemento implements PredetemineTimeGetMemento {
 		return PrescribedTimezoneSetting.builder()
 				.morningEndTime(new TimeWithDayAttr(this.kshmtPredTimeSet.getMorningEndTime()))
 				.afternoonStartTime(new TimeWithDayAttr(this.kshmtPredTimeSet.getAfternoonStartTime()))
-				.timezone(timezones).build();
+				.lstTimezone(timezones).build();
 	}
 
 	/*
