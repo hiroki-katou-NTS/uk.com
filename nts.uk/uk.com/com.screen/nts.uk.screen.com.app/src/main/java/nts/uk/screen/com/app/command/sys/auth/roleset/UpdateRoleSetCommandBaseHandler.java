@@ -49,7 +49,7 @@ public class UpdateRoleSetCommandBaseHandler extends CommandHandlerWithResult<Ro
                 , command.isApprovalAuthority()
                 , command.getOfficeHelperRoleId()
                 , command.getMyNumberRoleId()
-                , command.getHRRoleId()
+                , command.getHumanResourceRoleId()
                 , command.getPersonInfRoleId()
                 , command.getEmploymentRoleId()
                 , command.getSalaryRoleId());

@@ -11,13 +11,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstWorkdayoffFramePK_.
  */
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-11-17T14:08:22")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-11-30T09:30:56")
 @StaticMetamodel(KshstWorkdayoffFramePK.class)
-
 public class KshstWorkdayoffFramePK_ { 
 
-    /** The ot fr no. */
-    public static volatile SingularAttribute<KshstWorkdayoffFramePK, Short> otFrNo;
+    /** The wdo fr no. */
+    public static volatile SingularAttribute<KshstWorkdayoffFramePK, Short> wdoFrNo;
     
     /** The cid. */
     public static volatile SingularAttribute<KshstWorkdayoffFramePK, String> cid;

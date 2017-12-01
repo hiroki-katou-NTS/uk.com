@@ -17,4 +17,22 @@ public class CommonRestSetting extends DomainObject{
 	/** The calculate method. */
 	//休憩時間中に退勤した場合の計算方法
 	private RestTimeOfficeWorkCalcMethod calculateMethod;
+
+	/**
+	 * Instantiates a new common rest setting.
+	 *
+	 * @param memento the memento
+	 */
+	public CommonRestSetting(CommonRestSettingGetmemento memento) {
+		this.calculateMethod = memento.getCalculateMethod();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(CommonRestSettingSetmemento memento) {
+		memento.setCalculateMethod(this.calculateMethod);
+	}
 }

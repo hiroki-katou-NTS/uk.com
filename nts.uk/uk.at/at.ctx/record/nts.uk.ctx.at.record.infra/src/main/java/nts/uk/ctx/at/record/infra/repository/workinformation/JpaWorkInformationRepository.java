@@ -33,7 +33,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ");
 		DEL_BY_KEY = builderString.toString();
 
@@ -47,7 +47,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 	}

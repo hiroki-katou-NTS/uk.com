@@ -63,6 +63,12 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
             return dfd.promise();
         }
+        
+        exportLog(): void {
+            var self = this;
+            if (self.errorMessageInfo().length > 0)
+                service.saveAsCsv(self.errorMessageInfo());
+        }
 
         cancelTask(): void {
             var self = this;

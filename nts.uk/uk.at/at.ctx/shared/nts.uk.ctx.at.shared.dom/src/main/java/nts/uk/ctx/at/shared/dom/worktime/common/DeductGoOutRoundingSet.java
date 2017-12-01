@@ -21,4 +21,24 @@ public class DeductGoOutRoundingSet extends DomainObject {
 	/** The appro time rounding setting. */
 	//計上時間の丸め設定
 	private GoOutTimeRoundingSetting approTimeRoundingSetting;
+
+	/**
+	 * Instantiates a new deduct go out rounding set.
+	 *
+	 * @param memento the memento
+	 */
+	public DeductGoOutRoundingSet (DeductGoOutRoundingSetGetMemento memento) {
+		this.deductTimeRoundingSetting = memento.getDeductTimeRoundingSetting();
+		this.approTimeRoundingSetting = memento.getApproTimeRoundingSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento (DeductGoOutRoundingSetSetMemento memento) {
+		memento.setDeductTimeRoundingSetting(this.deductTimeRoundingSetting);
+		memento.setApproTimeRoundingSetting(this.approTimeRoundingSetting);
+	} 
 }

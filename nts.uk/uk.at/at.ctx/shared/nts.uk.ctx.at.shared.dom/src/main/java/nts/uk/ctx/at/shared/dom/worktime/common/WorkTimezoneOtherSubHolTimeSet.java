@@ -25,4 +25,26 @@ public class WorkTimezoneOtherSubHolTimeSet extends DomainObject {
 	/** The origin atr. */
 	// 発生元区分
 	private OriginAtr originAtr;
+
+	/**
+	 * Instantiates a new work timezone other sub hol time set.
+	 *
+	 * @param memento the memento
+	 */
+	public WorkTimezoneOtherSubHolTimeSet(WorkTimezoneOtherSubHolTimeSetGetMemento memento) {
+		this.subHolTimeSet = memento.getSubHolTimeSet();
+		this.workTimeCode = memento.getWorkTimeCode();
+		this.originAtr = memento.getOriginAtr();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkTimezoneOtherSubHolTimeSetSetMemento memento) {
+		memento.setSubHolTimeSet(this.subHolTimeSet);
+		memento.setWorkTimeCode(this.workTimeCode);
+		memento.setOriginAtr(this.originAtr);
+	}
 }

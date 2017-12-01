@@ -18,6 +18,7 @@ import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
 import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;
 import nts.uk.ctx.bs.person.dom.person.setting.reghistory.EmpRegHistoryRepository;
+import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.sys.gateway.dom.login.User;
@@ -25,7 +26,6 @@ import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
-import nts.uk.shr.pereg.app.command.PeregCommandFacade;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
 /**

@@ -7,8 +7,6 @@ package nts.uk.ctx.sys.auth.app.command.roleset;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
@@ -31,10 +29,8 @@ public class AddOrUpdateDefaultRoleSetCommandHandler extends CommandHandlerWithR
     protected String handle(CommandHandlerContext<DefaultRoleSetCommand> context) {
         DefaultRoleSetCommand command = context.getCommand();
         String companyId = AppContexts.user().companyId();
-        if (StringUtils.isNoneEmpty(companyId)){
-            DefaultRoleSet defaultRoleSetDom = new DefaultRoleSet(companyId, command.getRoleSetCd());
-            this.defaultRoleSetRepository.addOrUpdate(defaultRoleSetDom);
-        }
+        DefaultRoleSet defaultRoleSetDom = new DefaultRoleSet(companyId, command.getRoleSetCd());
+        this.defaultRoleSetRepository.addOrUpdate(defaultRoleSetDom);
         return command.getRoleSetCd();
     }
 }

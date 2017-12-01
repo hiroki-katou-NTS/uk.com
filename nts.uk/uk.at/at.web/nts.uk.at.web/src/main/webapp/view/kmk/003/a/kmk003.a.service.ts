@@ -5,14 +5,19 @@ module nts.uk.at.view.kmk003.a {
         *  Service paths
         */
         let servicePath: any = {
-            getPredByCode: "at/shared/pred/findByCode",
+            getAllWorktime: "at/shared/worktimeset/findAll",
+            getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",
         };
 
-        export function findWorkTimeSetByCode(worktimeCode: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getPredByCode + "/" + worktimeCode);
+        export function findAllWorkTimeSet(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getAllWorktime);
         }
 
+        export function getPredByWorkTimeCode(workTimeCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getPredByWorkTimeCode + "/" + workTimeCode);
+        }
+        
         export function savePred(data: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.savePred, data);
         }

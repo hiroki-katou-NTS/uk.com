@@ -35,4 +35,28 @@ public class FlowRestSet extends DomainObject {
 	/** The calculate method. */
 	//計算方法
 	private FlowRestCalcMethod calculateMethod;
+
+	/**
+	 * Instantiates a new flow rest set.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowRestSet (FlowRestSetGetMemento memento) {
+		this.useStamp = memento.getUseStamp();
+		this.useStampCalcMethod = memento.getUseStampCalcMethod();
+		this.timeManagerSetAtr = memento.getTimeManagerSetAtr();
+		this.calculateMethod = memento.getCalculateMethod();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowRestSetSetMemento memento) {
+		memento.setUseStamp(this.useStamp);
+		memento.setUseStampCalcMethod(this.useStampCalcMethod);
+		memento.setTimeManagerSetAtr(this.timeManagerSetAtr);
+		memento.setCalculateMethod(this.calculateMethod);
+	}
 }

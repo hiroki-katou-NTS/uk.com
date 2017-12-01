@@ -16,4 +16,22 @@ public class EmTimezoneLateEarlyCommonSet {
 	/** The del from em time. */
 	// 就業時間から控除する
 	private boolean delFromEmTime;
+
+	/**
+	 * Instantiates a new em timezone late early common set.
+	 *
+	 * @param memento the memento
+	 */
+	public EmTimezoneLateEarlyCommonSet(EmTimezoneLateEarlyCommonSetGetMemento memento) {
+		this.delFromEmTime = memento.getDelFromEmTime();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EmTimezoneLateEarlyCommonSetSetMemento memento) {
+		memento.setDelFromEmTime(this.delFromEmTime);
+	}
 }

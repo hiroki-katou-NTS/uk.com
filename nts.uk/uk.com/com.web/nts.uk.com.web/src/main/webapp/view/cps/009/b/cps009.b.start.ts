@@ -3,8 +3,8 @@ module nts.uk.com.view.cps009.b {
         __viewContext["viewModel"] = new viewmodel.ViewModel();
         __viewContext["viewModel"].start().done(function(data) {
             init();
-            __viewContext.bind(__viewContext["viewModel"]);
              $("#grid_B").igGrid("option", "dataSource", __viewContext["viewModel"].itemInitLst);
+            __viewContext.bind(__viewContext["viewModel"]);
             $("#grid_B_table_isCheckBox").focus();
         });
 
