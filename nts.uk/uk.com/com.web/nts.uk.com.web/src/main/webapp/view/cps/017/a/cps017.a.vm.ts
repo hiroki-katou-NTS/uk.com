@@ -299,6 +299,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 if (itemSelected) {
                                     self.selection().selectionID(itemSelected.selectionID);
                                     self.revDisSel02(true);
+                                    self.revDisSel03(true);
                                 }
 
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function() {
