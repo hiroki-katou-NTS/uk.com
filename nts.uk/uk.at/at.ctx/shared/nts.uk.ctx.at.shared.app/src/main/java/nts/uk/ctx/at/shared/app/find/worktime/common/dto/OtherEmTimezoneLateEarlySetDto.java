@@ -21,7 +21,7 @@ public class OtherEmTimezoneLateEarlySetDto {
 	private boolean stampExactlyTimeIsLateEarly;
 	
 	/** The grace time set. */
-	private GraceTimeSetDto graceTimeSet;
+	private GraceTimeSettingDto graceTimeSet;
 	
 	/** The record time rounding set. */
 	private TimeRoundingSettingDto recordTimeRoundingSet;

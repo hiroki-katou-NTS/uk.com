@@ -4,24 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import java.util.List;
-
 /**
- * The Interface WorkTimezoneStampSetGetMemento.
+ * The Interface InstantRoundingGetMemento.
  */
-public interface WorkTimezoneStampSetGetMemento {
-
+public interface InstantRoundingGetMemento {
+	
 	/**
- 	 * Gets the rounding set.
- 	 *
- 	 * @return the rounding set
- 	 */
- 	List<RoundingSet> getRoundingSet();
-
-	/**
-	 * Gets the priority set.
+	 * Gets the font rear section.
 	 *
-	 * @return the priority set
+	 * @return the font rear section
 	 */
-	 List<PrioritySetting> getPrioritySet();
+	FontRearSection getFontRearSection();
+	
+	/**
+	 * Gets the rounding time unit.
+	 *
+	 * @return the rounding time unit
+	 */
+	RoundingTimeUnit getRoundingTimeUnit();
+
 }

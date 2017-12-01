@@ -8,16 +8,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class InstantRoundingDto.
+ * The Class GraceTimeSettingDto.
  */
 @Getter
 @Setter
-public class InstantRoundingDto {
-	
-	/** The font rear section. */
-	private Integer fontRearSection;
+public class GraceTimeSettingDto {
 
-	/** The rounding time unit. */
-	private Integer roundingTimeUnit;	
+	/** The include working hour. */
+	private boolean includeWorkingHour;
 	
+	/** The grace time. */
+	private Integer graceTime;
 }

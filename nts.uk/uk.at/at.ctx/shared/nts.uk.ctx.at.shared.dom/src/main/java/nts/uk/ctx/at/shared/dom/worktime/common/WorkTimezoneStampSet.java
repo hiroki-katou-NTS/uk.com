@@ -28,7 +28,7 @@ public class WorkTimezoneStampSet extends DomainObject{
 	
 	/** The priority set. */
 	//優先設定
-	private List<PrioritySet> prioritySet;
+	private List<PrioritySetting> prioritySet;
 
 	/**
 	 * Instantiates a new work timezone stamp set.

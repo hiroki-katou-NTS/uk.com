@@ -25,7 +25,7 @@ public interface WorkTimezoneCommonSetSetMemento {
 	 *
 	 * @param itvset the new interval set
 	 */
-	 void setIntervalSet(IntervalTimeSet itvset);
+	 void setIntervalSet(IntervalTimeSetting itvset);
 
 	/**
 	 * Sets the sub hol time set.

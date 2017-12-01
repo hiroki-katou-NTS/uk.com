@@ -8,16 +8,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class InstantRoundingDto.
+ * The Class PrioritySettingDto.
  */
 @Getter
 @Setter
-public class InstantRoundingDto {
+public class PrioritySettingDto{
 	
-	/** The font rear section. */
-	private Integer fontRearSection;
+	/** The priority atr. */
+	private Integer priorityAtr;
+	
+	/** The stamp atr. */
+	private Integer stampAtr;
 
-	/** The rounding time unit. */
-	private Integer roundingTimeUnit;	
-	
+
+
 }

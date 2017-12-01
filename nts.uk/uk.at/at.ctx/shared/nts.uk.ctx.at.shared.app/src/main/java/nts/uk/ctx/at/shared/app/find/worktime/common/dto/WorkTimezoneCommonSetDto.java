@@ -20,7 +20,7 @@ public class WorkTimezoneCommonSetDto {
 	private boolean ZeroHStraddCalculateSet;
 
 	/** The interval set. */
-	private IntervalTimeSetDto intervalSet;
+	private IntervalTimeSettingDto intervalSet;
 
 	/** The sub hol time set. */
 	private WorkTimezoneOtherSubHolTimeSetDto subHolTimeSet;

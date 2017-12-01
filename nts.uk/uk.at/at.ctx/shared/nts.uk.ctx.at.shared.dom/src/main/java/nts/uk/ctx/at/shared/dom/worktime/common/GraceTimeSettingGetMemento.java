@@ -4,24 +4,24 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import java.util.List;
-
 /**
- * The Interface WorkTimezoneStampSetGetMemento.
+ * The Interface GraceTimeSettingGetMemento.
  */
-public interface WorkTimezoneStampSetGetMemento {
-
+public interface GraceTimeSettingGetMemento {
+	
 	/**
- 	 * Gets the rounding set.
- 	 *
- 	 * @return the rounding set
- 	 */
- 	List<RoundingSet> getRoundingSet();
-
-	/**
-	 * Gets the priority set.
+	 * Gets the include working hour.
 	 *
-	 * @return the priority set
+	 * @return the include working hour
 	 */
-	 List<PrioritySetting> getPrioritySet();
+	boolean getIncludeWorkingHour();
+	
+	
+	/**
+	 * Gets the grace time.
+	 *
+	 * @return the grace time
+	 */
+	LateEarlyGraceTime getGraceTime();
+
 }

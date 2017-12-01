@@ -23,7 +23,7 @@ public class WorkTimezoneCommonSet extends DomainObject {
 
 	/** The interval set. */
 	// インターバル時間設定
-	private IntervalTimeSet intervalSet;
+	private IntervalTimeSetting intervalSet;
 
 	/** The sub hol time set. */
 	// 代休時間設定

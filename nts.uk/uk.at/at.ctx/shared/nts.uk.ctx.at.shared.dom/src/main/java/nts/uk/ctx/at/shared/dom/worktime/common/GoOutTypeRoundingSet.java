@@ -21,4 +21,24 @@ public class GoOutTypeRoundingSet extends DomainObject {
 	/** The private union go out. */
 	//私用、組合外出
 	private DeductGoOutRoundingSet privateUnionGoOut;
+	
+	/**
+	 * Instantiates a new go out type rounding set.
+	 *
+	 * @param memento the memento
+	 */
+	public GoOutTypeRoundingSet(GoOutTypeRoundingSetGetMemento memento) {
+		this.officalUseCompenGoOut = memento.getOfficalUseCompenGoOut();
+		this.privateUnionGoOut = memento.getPrivateUnionGoOut();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(GoOutTypeRoundingSetSetMemento memento){
+		memento.setOfficalUseCompenGoOut(this.officalUseCompenGoOut);
+		memento.setPrivateUnionGoOut(this.privateUnionGoOut);
+	}
 }

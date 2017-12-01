@@ -4,24 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import java.util.List;
-
 /**
- * The Interface WorkTimezoneStampSetGetMemento.
+ * The Interface PrioritySettingGetMemento.
  */
-public interface WorkTimezoneStampSetGetMemento {
+public interface PrioritySettingGetMemento {
 
 	/**
- 	 * Gets the rounding set.
- 	 *
- 	 * @return the rounding set
- 	 */
- 	List<RoundingSet> getRoundingSet();
-
-	/**
-	 * Gets the priority set.
+	 * Gets the priority atr.
 	 *
-	 * @return the priority set
+	 * @return the priority atr
 	 */
-	 List<PrioritySetting> getPrioritySet();
+	 MultiStampTimePiorityAtr getPriorityAtr();
+
+	/**
+	 * Gets the stamp atr.
+	 *
+	 * @return the stamp atr
+	 */
+	 StampPiorityAtr getStampAtr();
 }

@@ -8,16 +8,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class InstantRoundingDto.
+ * The Class IntervalTimeSettingDto.
  */
 @Getter
 @Setter
-public class InstantRoundingDto {
-	
-	/** The font rear section. */
-	private Integer fontRearSection;
+public class IntervalTimeSettingDto {
 
-	/** The rounding time unit. */
-	private Integer roundingTimeUnit;	
-	
+	/** The use interval exemption time. */
+	private boolean useIntervalExemptionTime;
+
+	/** The interval exemption time round. */
+	private TimeRoundingSettingDto intervalExemptionTimeRound;
+
+	/** The interval time. */
+	private IntervalTimeDto intervalTime;
+
+	/** The use interval time. */
+	private boolean useIntervalTime;
 }
