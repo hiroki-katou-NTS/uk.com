@@ -67,7 +67,9 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 
 	@Override
 	public Optional<AffClassHistory_ver1> getByEmployeeId(String employeeId) {
-		List<KmnmtAffClassHistory_Ver1> entities = this.queryProxy().query(GET_BY_EID, KmnmtAffClassHistory_Ver1.class)
+		List<KmnmtAffClassHistory_Ver1> entities = 
+				this.queryProxy().query(GET_BY_EID, KmnmtAffClassHistory_Ver1.class)
+				.setParameter("sid", employeeId)
 				.getList();
 		return toDomain(entities);
 	}

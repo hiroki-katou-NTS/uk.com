@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pereg.app.find.layout.GetLayoutByCeateTypeDto;
-import nts.uk.ctx.pereg.app.find.layout.LayoutFinder;
+import nts.uk.ctx.pereg.app.find.layout.LayoutFinderOld;
 import nts.uk.ctx.pereg.app.find.layout.LayoutQuery;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
@@ -22,7 +22,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 public class LayoutWebService extends WebService {
 
 	@Inject
-	private LayoutFinder layoutFinder;
+	private LayoutFinderOld layoutFinder;
 
 	@Path("getAllSimpleLayouts/{employeeId}")
 	@POST

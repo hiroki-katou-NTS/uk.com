@@ -3,22 +3,20 @@
  */
 package nts.uk.ctx.pereg.app.find.layout;
 
-import java.util.Date;
-
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 /**
  * @author danpv
  *
  */
-@Data
+@Getter
 public class LayoutQuery {
 
-	private String mainteLayoutId;
+	private String layoutId;
 	
 	private String browsingEmpId;
 	
-	private Date standardDate;
+	private GeneralDate standardDate;
 
 }
