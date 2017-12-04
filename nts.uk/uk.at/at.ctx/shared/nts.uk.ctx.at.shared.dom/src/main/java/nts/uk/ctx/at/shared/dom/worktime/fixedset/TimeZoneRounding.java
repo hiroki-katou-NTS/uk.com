@@ -29,6 +29,28 @@ public class TimeZoneRounding extends DomainObject {
 	// 終了
 	private TimeWithDayAttr end;
 
+	/**
+	 * Instantiates a new time zone rounding.
+	 *
+	 * @param memento the memento
+	 */
+	public TimeZoneRounding(TimeZoneRoundingGetMemento memento) {
+		this.rounding = memento.getRounding();
+		this.start = memento.getStart();
+		this.end = memento.getEnd();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(TimeZoneRoundingSetMemento memento) {
+		memento.setRounding(this.rounding);
+		memento.setStart(this.start);
+		memento.setEnd(this.end);
+	}
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
