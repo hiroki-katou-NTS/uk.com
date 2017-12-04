@@ -45,7 +45,7 @@ public class LayoutWebService extends WebService {
 	
 	@Path("find/getCtgTab/{categoryId}")
 	@POST
-	public List<PerInfoCtgFullDto> getTabDetail(@PathParam("categoryId")String ctgId){
+	public List<PerInfoCtgFullDto> getCtgTab(@PathParam("categoryId")String ctgId){
 		return this.layoutProcessor.getCtgTab(ctgId);
 	}
 	

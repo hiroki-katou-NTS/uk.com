@@ -9,10 +9,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import find.person.info.category.PerInfoCtgFullDto;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.employee.category.EmployeeCategoryFinder;
-import nts.uk.ctx.bs.employee.app.find.employee.category.CategoryPersonInfoClsDto;
-import nts.uk.shr.com.context.AppContexts;
 
 @Path("bs/employee/category")
 @Produces(MediaType.APPLICATION_JSON)
@@ -23,9 +22,8 @@ public class EmpCategoryWebService extends WebService {
 
 	@POST
 	@Path("getAll/{employeeId}")
-	public List<CategoryPersonInfoClsDto> getAllPerInfoCtg(@PathParam("employeeId") String employeeIdSelected) {
-		String companyId = AppContexts.user().companyId();
-		return empCtgFinder.getAllPerInfoCtg(companyId, employeeIdSelected);
+	public List<PerInfoCtgFullDto> getAllPerInfoCtg(@PathParam("employeeId") String employeeIdSelected) {
+		return empCtgFinder.getAllPerInfoCtg(employeeIdSelected);
 	}
 
 	//
