@@ -21,7 +21,7 @@ public class FlexHalfDayWorkTime extends DomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
-	private List<FlowWorkRestTimezone> restTimezone;
+	private List<FlowWorkRestTimezone> lstRestTimezone;
 	
 	/** The work timezone. */
 	// 勤務時間帯
@@ -37,7 +37,7 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public FlexHalfDayWorkTime(FlexHalfDayWorkTimeGetMemento memento) {
-		this.restTimezone = memento.getRestTimezone();
+		this.lstRestTimezone = memento.getLstRestTimezone();
 		this.workTimezone = memento.getWorkTimezone();
 		this.amPmAtr = memento.getAmPmAtr();
 	}
@@ -48,7 +48,7 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(FlexHalfDayWorkTimeSetMemento memento){
-		memento.setRestTimezone(this.restTimezone);
+		memento.setLstRestTimezone(this.lstRestTimezone);
 		memento.setWorkTimezone(this.workTimezone);
 		memento.setAmPmAtr(this.amPmAtr);
 	}

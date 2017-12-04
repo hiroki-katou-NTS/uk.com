@@ -16,11 +16,11 @@ public interface FlexOffdayWorkTimeSetMemento {
 	
 	
 	/**
-	 * Sets the work timezone.
+	 * Sets the lst work timezone.
 	 *
-	 * @param workTimezone the new work timezone
+	 * @param lstWorkTimezone the new lst work timezone
 	 */
-	void setWorkTimezone(List<HDWorkTimeSheetSetting> workTimezone);
+	void setLstWorkTimezone(List<HDWorkTimeSheetSetting> lstWorkTimezone);
 
 	
 	/**

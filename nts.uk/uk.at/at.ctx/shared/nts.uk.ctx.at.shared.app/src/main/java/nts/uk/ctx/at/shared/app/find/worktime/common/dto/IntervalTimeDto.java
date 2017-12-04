@@ -15,11 +15,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetMemento;
  */
 @Getter
 @Setter
-public class IntervalTimeDto implements IntervalTimeSetMemento {
+public class IntervalTimeDto implements IntervalTimeSetMemento{
 
 	/** The interval time. */
 	private Integer intervalTime;
-
+	
 	/** The rounding. */
 	private TimeRoundingSettingDto rounding;
 
@@ -30,7 +30,7 @@ public class IntervalTimeDto implements IntervalTimeSetMemento {
 	 */
 	@Override
 	public void setIntervalTime(AttendanceTime intervalTime) {
-		this.intervalTime = intervalTime.v();
+		this.intervalTime = intervalTime.valueAsMinutes();
 	}
 
 	/**
@@ -43,4 +43,7 @@ public class IntervalTimeDto implements IntervalTimeSetMemento {
 		this.rounding = new TimeRoundingSettingDto(rounding.getRoundingTime().value, rounding.getRounding().value);
 	}
 
+
+	
+	
 }
