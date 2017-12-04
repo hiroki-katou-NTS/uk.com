@@ -185,7 +185,6 @@ module nts.uk.com.view.cmm007.d {
                                break;
                         }
                     });
-                    $('#plan_year_hd_frame1').focus();
                     dfd.resolve();
                 });
                 
