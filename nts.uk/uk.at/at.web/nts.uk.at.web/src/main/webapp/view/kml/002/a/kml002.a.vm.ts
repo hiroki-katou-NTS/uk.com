@@ -746,6 +746,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             $(".input-name").trigger("validate");
 
             if (nts.uk.ui.errors.hasError()) {
+                blockUI.clear();
                 return;
             }
 
@@ -754,6 +755,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                 if(filter.length > 0) {
                     $('#input-code').ntsError('set', { messageId: "Msg_3" });
+                    blockUI.clear();
                     return;
                 }
             }
@@ -1411,11 +1413,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 1) {
                             if(data.timeUnit != null) {
-                                if (data.timeUnit.lstTimeUnitFuncs.length <=0) {
-                                formulaResult = "";
-                            }}
-                                if(data.moneyFunc.lstMoney.length <=0 ){
-                                formulaResult = "";
+                                if (data.timeUnit.lstTimeUnitFuncs.length <=0 && data.moneyFunc.lstMoney.length <=0) {
+                                    formulaResult = "";
+                                }
                             } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
                                     var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
@@ -1515,11 +1515,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 1) {
                             if(data.timeUnit != null) {
-                                if (data.timeUnit.lstTimeUnitFuncs.length <=0) {
-                                formulaResult = "";
-                            }}
-                                if(data.moneyFunc.lstMoney.length <=0 ){
-                                formulaResult = "";
+                                if (data.timeUnit.lstTimeUnitFuncs.length <=0 && data.moneyFunc.lstMoney.length <=0) {
+                                    formulaResult = "";
+                                }
                             } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
                                     var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
