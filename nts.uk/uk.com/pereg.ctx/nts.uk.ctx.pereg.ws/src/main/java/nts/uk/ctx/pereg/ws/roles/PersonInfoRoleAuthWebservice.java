@@ -12,9 +12,9 @@ import command.roles.auth.SavePersonInfoRoleAuthCommand;
 import command.roles.auth.SavePersonInfoRoleAuthCommandHandler;
 import command.roles.auth.UpdatePersonInfoRoleAuthCommand;
 import command.roles.auth.UpdatePersonInfoRoleAuthCommandHandler;
-import find.roles.auth.PersonInfoRoleAuthDto;
-import find.roles.auth.PersonInfoRoleAuthFinder;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pereg.app.find.roles.auth.PersonInfoRoleAuthDto;
+import nts.uk.ctx.pereg.app.find.roles.auth.PersonInfoRoleAuthFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("ctx/pereg/roles/auth")

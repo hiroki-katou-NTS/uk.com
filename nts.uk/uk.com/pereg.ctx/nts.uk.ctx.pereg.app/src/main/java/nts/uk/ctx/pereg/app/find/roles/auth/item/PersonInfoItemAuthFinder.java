@@ -1,4 +1,4 @@
-package find.roles.auth.item;
+package nts.uk.ctx.pereg.app.find.roles.auth.item;
 
 import java.util.List;
 import java.util.stream.Collectors;

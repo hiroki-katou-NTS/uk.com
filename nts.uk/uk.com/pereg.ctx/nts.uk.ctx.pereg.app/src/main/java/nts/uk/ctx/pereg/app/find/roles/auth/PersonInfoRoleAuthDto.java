@@ -1,4 +1,4 @@
-package find.roles.auth;
+package nts.uk.ctx.pereg.app.find.roles.auth;
 
 import lombok.Value;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuth;

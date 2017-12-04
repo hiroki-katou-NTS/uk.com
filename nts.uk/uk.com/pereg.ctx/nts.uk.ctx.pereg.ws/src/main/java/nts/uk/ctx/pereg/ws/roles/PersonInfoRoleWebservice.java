@@ -8,9 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import find.roles.PersonInforRoleDto;
-import find.roles.PersonInforRoleFinder;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pereg.app.find.roles.PersonInforRoleDto;
+import nts.uk.ctx.pereg.app.find.roles.PersonInforRoleFinder;
 
 @Path("ctx/pereg/roles/roles")
 @Produces("application/json")

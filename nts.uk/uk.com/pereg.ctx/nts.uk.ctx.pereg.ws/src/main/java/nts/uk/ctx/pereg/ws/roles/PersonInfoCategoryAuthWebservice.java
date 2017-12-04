@@ -10,10 +10,10 @@ import javax.ws.rs.Produces;
 
 import command.roles.auth.category.UpdatePersonInfoCategoryAuthCommand;
 import command.roles.auth.category.UpdatePersonInfoCategoryAuthCommandHandler;
-import find.roles.auth.category.PersonInfoCategoryAuthDto;
-import find.roles.auth.category.PersonInfoCategoryAuthFinder;
-import find.roles.auth.category.PersonInfoCategoryDetailDto;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthDto;
+import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthFinder;
+import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryDetailDto;
 
 @Path("ctx/pereg/roles/auth/category")
 @Produces("application/json")
