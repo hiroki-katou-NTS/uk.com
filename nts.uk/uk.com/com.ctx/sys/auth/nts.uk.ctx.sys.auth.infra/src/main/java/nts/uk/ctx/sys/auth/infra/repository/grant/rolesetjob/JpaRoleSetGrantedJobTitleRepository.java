@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetail;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
-import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SaumtRoleSetGrantedJobTitle;
-import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SaumtRoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobTitle;
+import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobTitleDetail;
 
 /**
  * 
@@ -24,31 +24,31 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SaumtRoleSetGrantedJobT
 @Transactional
 public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implements RoleSetGrantedJobTitleRepository {
 
-	private final String GET_All_BY_COMPANY_ID = "SELECT d FROM SaumtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
+	private final String GET_All_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
 
-	private RoleSetGrantedJobTitle toDomain(SaumtRoleSetGrantedJobTitle entity) {
+	private RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitle entity) {
 		return new RoleSetGrantedJobTitle(entity.companyId, entity.applyToConcurrentPerson, entity.details.stream()
 				.map(item -> new RoleSetGrantedJobTitleDetail(item.roleSetGrantedJobTitleDetailPK.roleSetCd,
 						item.roleSetGrantedJobTitleDetailPK.jobTitleId, item.roleSetGrantedJobTitleDetailPK.companyId))
 				.collect(Collectors.toList()));
 	}
 
-	private SaumtRoleSetGrantedJobTitle toEntity(RoleSetGrantedJobTitle domain) {
-		return new SaumtRoleSetGrantedJobTitle(domain.getCompanyId(), domain.isApplyToConcurrentPerson(),
-				domain.getDetails().stream().map(item -> new SaumtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(),
+	private SacmtRoleSetGrantedJobTitle toEntity(RoleSetGrantedJobTitle domain) {
+		return new SacmtRoleSetGrantedJobTitle(domain.getCompanyId(), domain.isApplyToConcurrentPerson(),
+				domain.getDetails().stream().map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(),
 						item.getJobTitleId(), item.getCompanyId())).collect(Collectors.toList()));
 	}
 
 	@Override
 	public List<RoleSetGrantedJobTitle> getAllByCompanyId(String companyId) {
-		return this.queryProxy().query(GET_All_BY_COMPANY_ID, SaumtRoleSetGrantedJobTitle.class)
+		return this.queryProxy().query(GET_All_BY_COMPANY_ID, SacmtRoleSetGrantedJobTitle.class)
 				.setParameter("companyId", companyId).getList(d -> toDomain(d));
 	}
 
 	@Override
 	public Optional<RoleSetGrantedJobTitle> getOneByCompanyId(String companyId) {
-		SaumtRoleSetGrantedJobTitle entity = this.queryProxy()
-				.query(GET_All_BY_COMPANY_ID, SaumtRoleSetGrantedJobTitle.class).setParameter("companyId", companyId)
+		SacmtRoleSetGrantedJobTitle entity = this.queryProxy()
+				.query(GET_All_BY_COMPANY_ID, SacmtRoleSetGrantedJobTitle.class).setParameter("companyId", companyId)
 				.getSingleOrNull();
 		if (entity == null) {
 			return Optional.empty();
@@ -64,26 +64,38 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 
 	@Override
 	public void update(RoleSetGrantedJobTitle domain) {
-		SaumtRoleSetGrantedJobTitle entity = this.queryProxy()
-				.find(domain.getCompanyId(), SaumtRoleSetGrantedJobTitle.class).get();
+		SacmtRoleSetGrantedJobTitle entity = this.queryProxy()
+				.find(domain.getCompanyId(), SacmtRoleSetGrantedJobTitle.class).get();
 		entity.applyToConcurrentPerson = domain.isApplyToConcurrentPerson();
-		entity.details = domain.getDetails().stream()
-				.map(item -> new SaumtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(), item.getJobTitleId(),
+		List<SacmtRoleSetGrantedJobTitleDetail> oldDetails = entity.details;
+		List<SacmtRoleSetGrantedJobTitleDetail> newDetails = domain.getDetails().stream()
+				.map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(), item.getJobTitleId(),
 						item.getCompanyId()))
 				.collect(Collectors.toList());
+		
+		for (SacmtRoleSetGrantedJobTitleDetail newDetail : newDetails){
+			for (SacmtRoleSetGrantedJobTitleDetail oldDetail : oldDetails){
+				if (oldDetail.roleSetGrantedJobTitleDetailPK.equals(newDetail.roleSetGrantedJobTitleDetailPK)){
+					newDetails.set(newDetails.indexOf(newDetail), oldDetail);
+					break;
+				}
+			}
+		} 
+		
+		entity.details = newDetails;
 		this.commandProxy().update(entity);
 	}
 
 	@Override
 	public void delete(String companyId) {
-		this.commandProxy().remove(SaumtRoleSetGrantedJobTitle.class, companyId);
+		this.commandProxy().remove(SacmtRoleSetGrantedJobTitle.class, companyId);
 
 	}
 
 	@Override
 	public boolean checkRoleSetCdExist(String roleSetCd, String companyId) {
-		SaumtRoleSetGrantedJobTitle entity = this.queryProxy()
-				.query(GET_All_BY_COMPANY_ID, SaumtRoleSetGrantedJobTitle.class).setParameter("companyId", companyId)
+		SacmtRoleSetGrantedJobTitle entity = this.queryProxy()
+				.query(GET_All_BY_COMPANY_ID, SacmtRoleSetGrantedJobTitle.class).setParameter("companyId", companyId)
 				.getSingleOrNull();
 		if (entity == null) {
 			return false;

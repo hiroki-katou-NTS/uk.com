@@ -32,13 +32,13 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	@Override
 	public EmployeeImport findByEmpId(String empId) {
 		// Get Employee Basic Info
-		EmployeeBasicInfoExport empExport = employeePub.findByEmpId(empId);
+		EmployeeBasicInfoExport empExport = employeePub.findBySId(empId);
 		// Check Null
 		if (empExport != null) {
 			// Map to EmployeeImport
 			EmployeeImport empDto = EmployeeImport.builder()
-					.employeeId(empExport.getEmpId())
-					.employeeCode(empExport.getEmpCode())
+					.employeeId(empExport.getEmployeeId())
+					.employeeCode(empExport.getEmployeeCode())
 					.employeeName(empExport.getPName())
 					.employeeMailAddress(
 							empExport.getPMailAddr() == null ? null : (new MailAddress(empExport.getPMailAddr().v())))

@@ -1,86 +1,57 @@
 module nts.uk.com.view.cps017.d.viewmodel {
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
     import getShared = nts.uk.ui.windows.getShared;
-    import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
-    import dialog = nts.uk.ui.dialog;
-    import formatDate = nts.uk.time.formatDate;
 
     export class ScreenModel {
         listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
-        historySelection: KnockoutObservable<HistorySelection> = ko.observable(new HistorySelection({ histId: '', selectionItemId: '' }));
-
+        selectionName: KnockoutObservable<string> = ko.observable('');
+        startDate: KnockoutObservable<string> = ko.observable('');
+        data: any;
         constructor() {
             let self = this;
-
+            self.data = getShared('CPS017D_PARAMS');
+            self.selectionName(self.data.sel_name);
+            self.startDate(self.data.sel_history.startDate);
         }
-
-        start(): JQueryPromise<any> {
-
-        }
-
+        /**
+         * close dialog when click button キャンセル
+         */
         closeDialog() {
             nts.uk.ui.windows.close();
         }
 
+        /**
+         * update history when click button 決定 
+         */
         editHistory() {
-            let self = this,
-                currentItem: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selectHistory = getShared('selectHistory');
-
-            currentItem.companyCode(selectHistory.companyCode);
-            currentItem.selectionItemId(selectHistory.selectionItemId);
-            currentItem.histId(selectHistory.histId);
-            //currentItem.endDate(selectHistory.endDate);
-            command = ko.toJS(currentItem);
-
-            service.editHistoryData(command).done(function() {
-                self.AddHistoryList.removeAll();
-                service.getAllPerInfoHistorySelection(self.historySelection().selectionItemId()).done((itemList: Array<IHistorySelection>) => {
-                    if (itemList && itemList.length) {
-                        itemList.forEach(x => self.listHistorySelection.push(x));
-                    }
-                });
-
-                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                self.listHistorySelection.valueHasMutated();
+            block.invisible();
+            let self = this;
+            let history: IHistorySelection = self.data.sel_history;
+            let data = { startDateNew: moment(self.startDate()).format("YYYY/MM/DD"),
+                        startDate: history.startDate,
+                        endDate: history.endDate,
+                        histId: history.histId,
+                        selectionItemId: history.selectionItemId,
+            }
+            service.editHistoryData(data).done(function() {
+                nts.uk.ui.windows.close();
+            }).fail(function(res){
+                if(res.messageId == 'Msg_127'){
+                    $('#start-date-sel').ntsError('set', {messageId: res.messageId});
+                }else{
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }
+            }).always(() => {
+                block.clear();
             });
-
         }
     }
-
-
 
     // History:
     interface IHistorySelection {
         histId?: string;
         selectionItemId?: string;
-        companyCode: string;
         startDate: string;
         endDate: string;
     }
-
-    class HistorySelection {
-        histId: KnockoutObservable<string> = ko.observable('');
-        selectionItemId: KnockoutObservable<string> = ko.observable('');
-        companyCode: KnockoutObservable<string> = ko.observable('');
-        startDate: KnockoutObservable<string> = ko.observable(formatDate(new Date()) || undefined);
-        endDate: KnockoutObservable<string> = ko.observable('');
-
-        constructor(param: IHistorySelection) {
-            let self = this;
-            self.histId(param.histId || '');
-            self.selectionItemId(param.selectionItemId || '');
-            self.companyCode(param.companyCode || '');
-            self.startDate(formatDate(new Date()) || undefined);
-            self.endDate(param.endDate || '');
-        }
-
-    }
-
 }

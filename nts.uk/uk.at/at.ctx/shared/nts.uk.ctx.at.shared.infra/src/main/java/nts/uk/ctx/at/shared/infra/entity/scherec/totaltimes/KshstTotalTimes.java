@@ -62,14 +62,14 @@ public class KshstTotalTimes extends UkJpaEntity implements Serializable {
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "TOTAL_TIMES_NO", referencedColumnName = "TOTAL_TIMES_NO", insertable = false, updatable = false) })
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	public List<KshstTotalSubjects> listTotalSubjects;
 
 	/** The total condition. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "TOTAL_TIMES_NO", referencedColumnName = "TOTAL_TIMES_NO", insertable = false, updatable = false) })
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	public KshstTotalCondition totalCondition;
 
 	/**

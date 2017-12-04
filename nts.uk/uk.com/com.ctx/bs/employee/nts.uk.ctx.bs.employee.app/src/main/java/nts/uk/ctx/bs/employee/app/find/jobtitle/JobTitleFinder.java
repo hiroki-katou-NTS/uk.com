@@ -62,8 +62,11 @@ public class JobTitleFinder {
 		List<JobTitleInfo> jobs = this.jobTitleInfoRepository.findAll(companyId, baseDate);
 
 		return jobs.stream()
-				.map(job -> JobTitleItemDto.builder().id(job.getJobTitleId())
-				.code(job.getJobTitleCode().v()).name(job.getJobTitleName().v()).build())
+				.map(job -> JobTitleItemDto.builder()
+						.id(job.getJobTitleId())
+						.code(job.getJobTitleCode().v())
+						.name(job.getJobTitleName().v())
+						.build())
 				.sorted((job1, job2) -> job1.getCode().compareTo(job2.getCode()))
 				.collect(Collectors.toList());
 	}

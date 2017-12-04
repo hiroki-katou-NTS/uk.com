@@ -5,19 +5,19 @@ import java.util.Optional;
 
 public interface EmpFileManagementRepository {
 	
-	void insert(EmployeeFileManagement domain);
+	void insert(PersonFileManagement domain);
 	
-	void update(EmployeeFileManagement domain);
+	void update(PersonFileManagement domain);
 	
-	void remove(EmployeeFileManagement domain);
+	void remove(PersonFileManagement domain);
 	
 	void removebyFileId(String fileId);
 	
-	List<EmployeeFileManagement> getDataByParams(String employeeId, int fileType);
+	List<PersonFileManagement> getDataByParams(String employeeId, int fileType);
 	
 	boolean checkObjectExist(String employeeId, int fileType);
 	
-	Optional<EmployeeFileManagement> getEmpMana(String fileid);
+	Optional<PersonFileManagement> getEmpMana(String fileid);
 
 	List<Object[]> getListDocumentFile(String employeeId, int fileType);
 	

@@ -31,12 +31,12 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ "AND c.applicationDate = :appDate "
 			+ "AND c.prePostAtr = :prePostAtr "
 			+ "AND c.applicationType = :applicationType "
-			+ "ORDER BY c.inputDate";
+			+ "ORDER BY c.inputDate DESC";
 	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
 			+ " AND c.applicationDate = :appDate "
-			+ " AND c.inputDate = :inputDate "
+			//+ " AND c.inputDate = :inputDate "
 			+ " AND c.applicationType = :applicationType "
-			+ " AND c.prePostAtr = :prePostAtr ORDER BY c.inputDate";
+			+ " AND c.prePostAtr = :prePostAtr ORDER BY c.inputDate DESC";
 	/**
 	 * Get ALL application
 	 */
@@ -162,7 +162,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KafdtApplication.class)
 				.setParameter("companyID", companyId)
 				.setParameter("appDate", appDate)
-				.setParameter("inputDate", inputDate)
+				//.setParameter("inputDate", inputDate)
 				.setParameter("applicationType", appType)
 				.setParameter("prePostAtr", prePostAtr)				
 				.getList(c -> c.toDomain());

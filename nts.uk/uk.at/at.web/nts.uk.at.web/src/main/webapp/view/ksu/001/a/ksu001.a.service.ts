@@ -9,8 +9,9 @@ module ksu001.a.service {
         getDataWkpSpecificDate: "screen/at/schedule/basicschedule/getDataWkpSpecificDate",
         getDataComSpecificDate: "screen/at/schedule/basicschedule/getDataComSpecificDate",
         getDataPublicHoliday: "screen/at/schedule/basicschedule/getDataPublicHoliday",
-        getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
         getDataWorkSchTimeZone: "screen/at/schedule/basicschedule/getDataWorkScheTimezone",
+        getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
+        getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
     }
 
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
@@ -47,12 +48,15 @@ module ksu001.a.service {
         return nts.uk.request.ajax("at", paths.getDataPublicHoliday, obj);
     }
 
-    export function getDataScheduleDisplayControl(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataScheduleDisplayControl);
-    }
-
     export function getDataWorkSchTimeZone(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataWorkSchTimeZone, obj);
     }
 
+    export function getDataScheduleDisplayControl(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataScheduleDisplayControl);
+    }
+
+    export function getDataWorkEmpCombine(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWorkEmpCombine, obj);
+    }
 }

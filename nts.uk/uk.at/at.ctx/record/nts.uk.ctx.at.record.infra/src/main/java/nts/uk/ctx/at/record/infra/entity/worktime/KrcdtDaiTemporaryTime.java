@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -37,9 +36,6 @@ public class KrcdtDaiTemporaryTime extends UkJpaEntity implements Serializable {
 	
 	@Column(name = "WORK_TIMES")
 	public BigDecimal workTimes;
-
-	@Column(name = "WORK_NO")
-	public String workNo;
 	
 	@OneToMany(mappedBy="daiTemporaryTime", cascade = CascadeType.ALL)
 	public List<KrcdtTimeLeavingWork> timeLeavingWorks;

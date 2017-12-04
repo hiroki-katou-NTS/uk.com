@@ -947,6 +947,7 @@ project (':wk.ctx:nts.uk.ctx.workflow.pubimp') {
 
 project (':pereg.ctx:nts.uk.ctx.pereg.ac') {
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.app')
 	}
@@ -954,6 +955,7 @@ project (':pereg.ctx:nts.uk.ctx.pereg.ac') {
 
 project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 		compile project (':shr:nts.uk.shr.find')
 		
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
@@ -980,17 +982,20 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 
 project (':pereg.ctx:nts.uk.ctx.pereg.dom') {
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 	}
 }
 
 project (':pereg.ctx:nts.uk.ctx.pereg.infra') {
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 		compile project(':pereg.ctx:nts.uk.ctx.pereg.dom')
 	}
 }
 
 project (':pereg.ctx:nts.uk.ctx.pereg.ws') {
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 		compile project(':pereg.ctx:nts.uk.ctx.pereg.app')
 	}
 }

@@ -41,7 +41,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK;
 
-	@Column(name = "ATD_ACTUAL_ROUDING_TIME")
+	@Column(name = "ATD_ACTUAL_ROUDING_TIME_DAY")
 	public BigDecimal attendanceActualRoudingTime;
 
 	@Column(name = "ATD_ACTUAL_TIME")
@@ -53,7 +53,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	@Column(name = "ATD_ACTUAL_SOURCE_INFO")
 	public BigDecimal attendanceActualSourceInfo;
 
-	@Column(name = "ATD_STAMP_ROUDING_TIME")
+	@Column(name = "ATD_STAMP_ROUDING_TIME_DAY")
 	public BigDecimal attendanceStampRoudingTime;
 
 	@Column(name = "ATD_STAMP_TIME")
@@ -68,7 +68,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	@Column(name = "ATD_NUMBER_STAMP")
 	public BigDecimal attendanceNumberStamp;
 
-	@Column(name = "LWK_ACTUAL_ROUDING_TIME")
+	@Column(name = "LWK_ACTUAL_ROUDING_TIME_DAY")
 	public BigDecimal leaveWorkActualRoundingTime;
 
 	@Column(name = "LWK_ACTUAL_TIME")
@@ -80,7 +80,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	@Column(name = "LWK_ACTUAL_SOURCE_INFO")
 	public BigDecimal leaveActualSourceInfo;
 
-	@Column(name = "LWK_STAMP_ROUDING_TIME")
+	@Column(name = "LWK_STAMP_ROUDING_TIME_DAY")
 	public BigDecimal leaveWorkStampRoundingTime;
 
 	@Column(name = "LWK_STAMP_TIME")

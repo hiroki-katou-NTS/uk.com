@@ -96,7 +96,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.cbxAttribute = ko.observableArray([
                 { attrCode: 0, attrName: nts.uk.resource.getText("Enum_Attributes_TIME") },
-                { attrCode: 1, attrName: nts.uk.resource.getText("Enum_Attributes_AMOUNT") },
+                { attrCode: 1, attrName: nts.uk.resource.getText("Enum_Attribute_Section_Money") },
                 { attrCode: 2, attrName: nts.uk.resource.getText("Enum_Attributes_NUMBER_OF_PEOPLE") },
                 { attrCode: 3, attrName: nts.uk.resource.getText("Enum_Attributes_NUMBER") },
                 { attrCode: 4, attrName: nts.uk.resource.getText("Enum_Attributes_AVERAGE_PRICE") }
@@ -110,13 +110,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
             ]);
 
             self.cbxDisplayAtr = ko.observableArray([
-                { displayAttrCode: 0, displayAttrName: nts.uk.resource.getText("KML002_21") },
-                { displayAttrCode: 1, displayAttrName: nts.uk.resource.getText("KML002_22") }
+                { displayAttrCode: 0, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_NonDisplay") },
+                { displayAttrCode: 1, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_Display") }
             ]);
 
             self.cbxTotal = ko.observableArray([
-                { totalCode: 0, totalName: nts.uk.resource.getText("KML002_22") },
-                { totalCode: 1, totalName: nts.uk.resource.getText("KML002_23") }
+                { totalCode: 0, totalName: nts.uk.resource.getText("Enum_CumulativeAtr_NOT_ACCUMULATE") },
+                { totalCode: 1, totalName: nts.uk.resource.getText("Enum_CumulativeAtr_ACCUMULATE") }
             ]);
 
             self.dailyItems = [];
@@ -150,7 +150,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 self.isparentCall(true);
 
                 if (value.length > 0) {
-                    blockUI.invisible();
                     self.calculatorItems.removeAll();
 
                     service.getVerticalCalSetByCode(value).done(function(data) {
@@ -231,8 +230,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
 
                         self.calculatorItems(sortedItems);
-                        
-                        blockUI.clear();
                     }).fail(function(res) {
 
                     });
@@ -325,15 +322,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             self.unitSelected.subscribe(function(value) {
                 if(!devChange){
-                    if (!self.isparentCall()) {
+                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_125" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
-                            self.bindCalculatorItems();
-                            
-                            if (self.calculatorItems().length > 0) {
-                                self.deleteLineEnable(true);
-                            }
+                            self.deleteLineEnable(false);
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -354,15 +347,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.workScheduleSelected.subscribe(function(value) {
                 if(!devChange){
-                    if (!self.isparentCall()) {
+                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_191" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
-                            self.bindCalculatorItems();
-                            
-                            if (self.calculatorItems().length > 0) {
-                                self.deleteLineEnable(true);
-                            }
+                            self.deleteLineEnable(false);
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -395,10 +384,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                 if (self.settingItems().length > 0) {
                     self.singleSelectedCode(self.settingItems()[0].code);
-                }
-
-                if (self.calculatorItems().length == 0) {
-                    self.bindCalculatorItems();
                 }
                 
                 blockUI.clear();
@@ -733,12 +718,14 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.useClsSelected(0);
             self.workScheduleSelected(0);
             self.calculatorItems([]);
-            self.bindCalculatorItems();
 
             self.workScheduleEnable(true);
             self.unitEnable(true);
             self.allItemsData = [];
             $("#input-code").focus();
+            
+            // clear all error
+            nts.uk.ui.errors.clearAll();
         }
 
         /**
@@ -749,6 +736,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             // clear all error
             nts.uk.ui.errors.clearAll();
+            
+            blockUI.invisible();
 
             // validate
             $(".input-code").trigger("validate");
@@ -821,7 +810,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    blockUI.clear();
                 });
             } else {
                 $('#checkall').ntsError('set', { messageId: "Msg_110" });
@@ -834,6 +823,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         settingBtn() {
             var self = this;
 
+            nts.uk.ui.windows.sub.modal("/view/kdl/024/a/index.xhtml");
         }
 
         /**

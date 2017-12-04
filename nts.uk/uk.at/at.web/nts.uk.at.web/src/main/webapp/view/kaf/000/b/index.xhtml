@@ -79,7 +79,9 @@
 									visible: !displayButtonControl().displayRelease()" >#{i18n.getText('KAF000_18')}</button>
 					
 					<!-- B1_8 -->
-					<button class="proceed" data-bind="click: update">#{i18n.getText('KAF000_19')}</button>	
+					<button class="proceed" data-bind="click: update,
+													enable : displayButtonControl().enableUpdate(), 
+-													visible: !displayButtonControl().displayUpdate()">#{i18n.getText('KAF000_19')}</button>	
 
 					<!-- B1_9 -->
 					<button >#{i18n.getText('KAF000_20')}</button>
@@ -89,7 +91,9 @@
 					<button data-bind="click: btnSendEmail" >#{i18n.getText('KAF000_22')}</button>
 					
 					<!-- B1_12 -->
-					<button  class="danger" data-bind="click: btnDelete" >#{i18n.getText('KAF000_23')}</button>
+					<button  class="danger" data-bind="click: btnDelete,
+													enable : displayButtonControl().enableDelete(),
+-													visible: !displayButtonControl().displayDelete()" >#{i18n.getText('KAF000_23')}</button>
 					
 					<!-- B1_13 -->
 					<button  class="danger" data-bind="click: btnCancel , 

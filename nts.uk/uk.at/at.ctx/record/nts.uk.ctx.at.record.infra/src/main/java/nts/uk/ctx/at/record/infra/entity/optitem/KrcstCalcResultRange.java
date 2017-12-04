@@ -6,13 +6,9 @@ package nts.uk.ctx.at.record.infra.entity.optitem;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -66,11 +62,6 @@ public class KrcstCalcResultRange extends UkJpaEntity implements Serializable {
 	/** The lower amount range. */
 	@Column(name = "LOWER_AMOUNT_RANGE")
 	private Integer lowerAmountRange;
-
-	@OneToOne(optional = true, cascade = CascadeType.ALL)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO") })
-	public KrcstCalcResultRange krcstCalcResultRange;
 
 	/**
 	 * Instantiates a new krcst calc result range.

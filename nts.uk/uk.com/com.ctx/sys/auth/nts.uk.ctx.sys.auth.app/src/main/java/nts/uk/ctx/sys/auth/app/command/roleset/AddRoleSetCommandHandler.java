@@ -1,73 +1,46 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.auth.app.command.roleset;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
-import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+* The Class AddRoleSetCommandHandler.
+* @author HieuNV
+*/
 @Stateless
-@javax.transaction.Transactional
 public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCommand, String> {
 
-	@Inject
-	private RoleSetService roleSetService;
-	
-	@Inject
-	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
-	
-	@Override
-	protected String handle(CommandHandlerContext<RoleSetCommand> context) {
-		RoleSetCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyId();
-		if (!StringUtils.isNoneEmpty(companyId)) {
-			// build webMenuCode
-			List<WebMenuCommand> listWebMenus = command.getWebMenus();
-			List<String> listWebMenuCds = CollectionUtil.isEmpty(listWebMenus) ?
-					listWebMenus.stream().map(item -> item.getWebMenuCd()).collect(Collectors.toList()) : new ArrayList<>();
+    @Inject
+    private RoleSetService roleSetService;
 
-			RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()
-					, companyId
-					, command.getRoleSetName()
-					, command.isApprovalAuthority() ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
-					, command.getOfficeHelperRoleCd()
-					, command.getMyNumberRoleCd()
-					, command.getHRRoleCd()
-					, command.getPersonInfRoleCd()
-					, command.getEmploymentRoleCd()
-					, command.getSalaryRoleCd());
-	
-			// register to DB - ドメインモデル「ロールセット」を新規登録する
-			this.roleSetService.registerRoleSet(roleSetDom);
-	
-			// pre-check : メニューが１件以上選択されていなければならない: Msg_583, メニュー
-			if (CollectionUtil.isEmpty(listWebMenuCds)) {
-				throw new BusinessException("Msg_583");
-			}
+    @Override
+    protected String handle(CommandHandlerContext<RoleSetCommand> context) {
+        RoleSetCommand command = context.getCommand();
+        RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()
+                , AppContexts.user().companyId()
+                , command.getRoleSetName()
+                , command.isApprovalAuthority() ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
+                , command.getOfficeHelperRoleId()
+                , command.getMyNumberRoleId()
+                , command.getHumanResourceRoleId()
+                , command.getPersonInfRoleId()
+                , command.getEmploymentRoleId()
+                , command.getSalaryRoleId());
 
-			// register to web menu link - ドメインモデル「ロールセット別紐付け」を新規登録する
-			listWebMenuCds.forEach(webMenuCd-> {
-				this.roleSetAndWebMenuAdapter.addRoleSetAndWebMenu(new RoleSetAndWebMenu(
-						roleSetDom.getCompanyId()
-						, roleSetDom.getRoleSetCd().v()
-						, webMenuCd));
-			});
-			return command.getRoleSetCd();
-		}
-		return null;
-	}
+        //アルゴリズム「新規登録」を実行する - Execute the algorithm "new registration"
+        this.roleSetService.registerRoleSet(roleSetDom);
+
+        return command.getRoleSetCd();
+    }
 }

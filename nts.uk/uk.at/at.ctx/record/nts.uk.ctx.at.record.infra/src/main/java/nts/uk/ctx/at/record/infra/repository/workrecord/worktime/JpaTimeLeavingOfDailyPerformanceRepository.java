@@ -73,8 +73,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public Optional<TimeLeavingOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd) {
-		return this.queryProxy().query(FIND_BY_KEY, KrcdtDaiLeavingWork.class).setParameter("employeeIds", employeeId)
-				.setParameter("ymds", ymd).getSingle(f -> f.toDomain());
+		return this.queryProxy().query(FIND_BY_KEY, KrcdtDaiLeavingWork.class).setParameter("employeeId", employeeId)
+				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 	}
 
 }

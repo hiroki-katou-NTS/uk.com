@@ -6,7 +6,7 @@
             empCalAndSumExecLogID: string;
             empCalAndSumExecLog: KnockoutObservable<modelkdw001f.EmpCalAndSumExeLog>;
             processingMonthName: KnockoutObservable<string>;
-            executedMenuJapan: KnockoutObservable<string>;
+            executedMenuName: string;
             listExecutionLog: KnockoutObservableArray<modelkdw001f.ExecutionLog>;
             objectPeriod: KnockoutObservable<modelkdw001f.ObjectPeriod>;
             periodStartDate: KnockoutObservable<string>;
@@ -34,10 +34,10 @@
                 if(param != null){
                     self.empCalAndSumExecLogID = param.empCalAndSumExecLogID;
                     self.nameClosure = param.nameClosure;
+                    self.executedMenuName = param.executedMenuName;
                 }
                 self.empCalAndSumExecLog = ko.observable(null);
                 self.processingMonthName = ko.observable('');
-                self.executedMenuJapan = ko.observable('');
                 self.listExecutionLog = ko.observableArray([]);
                 self.objectPeriod = ko.observable(null);
                 //start - end
@@ -85,7 +85,6 @@
                     self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data));
                     self.processingMonthName(self.empCalAndSumExecLog().processingMonthName);
                     self.processingMonth(self.empCalAndSumExecLog().processingMonth%100);
-                    self.executedMenuJapan(self.empCalAndSumExecLog().executedMenuJapan);
                     //date
                     let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data.executionLogs, ['executionContent'], ['desc']);
                     self.listExecutionLog(_.map(sortData, (value) => {
@@ -159,6 +158,7 @@
                 let param = {
                     //・就業計算と集計実行ログID
                     empCalAndSumExecLogID : self.empCalAndSumExecLogID,
+                    executionContentName : execution.executionContentName,
                     executionContent : execution.executionContent,
                     //・社員ID（list）  ・従業員の実行状況
                     listTargetPerson : self.listTargetPerson(),
@@ -185,6 +185,7 @@
                 let param = {
                     //・就業計算と集計実行ログID
                     empCalAndSumExecLogID : self.empCalAndSumExecLogID,
+                    executionContentName : execution.executionContentName,
                     executionContent : execution.executionContent,
                     //・社員ID（list）  ・従業員の実行状況
                     listTargetPerson : self.listTargetPerson(), 

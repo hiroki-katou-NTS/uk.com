@@ -4,21 +4,21 @@ module nts.uk.com.view.cmm007.b {
          * define path to service
          */
         var path: any = {
-                find: "sys/env/mailserver/find",
-                save: "sys/env/mailserver/save",
+                findList: "screen/com/systemresource/findList",
+                save: "screen/com/systemresource/save",
             };
         
         /**
          * 
          */
-        export function findMailServerSetting(): JQueryPromise<model.SampleDto>{
-            return nts.uk.request.ajax(path.find);
+        export function findListSystemResource(): JQueryPromise<Array<model.SystemResourceDto>>{
+            return nts.uk.request.ajax(path.findList);
         }
         
         /**
          * 
          */
-        export function registerMailServerSetting(data: model.SampleDto): JQueryPromise<any> {
+        export function saveSysResourceSetting(data: model.SystemResourceSaveCommand): JQueryPromise<any> {
             return nts.uk.request.ajax(path.save, data);
         }
     }
@@ -27,9 +27,22 @@ module nts.uk.com.view.cmm007.b {
      * Model define.
      */
     export module model {
-        export class SampleDto {
+        export class SystemResourceDto {
+            resourceId: string;
+            resourceContent: string;
             
-            constructor(){}
+            constructor(id: string, content: string){
+                this.resourceId = id;
+                this.resourceContent = content;
+            }
+        }
+        
+        export class SystemResourceSaveCommand {
+            listData: Array<model.SystemResourceDto>;
+
+            constructor(data: Array<model.SystemResourceDto>){
+               this.listData = data;
+            }
         }
     }
     

@@ -127,7 +127,10 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 #table-scroll {
 	height:300px;
 	overflow:auto;  
-	margin-top:20px;
+}
+
+.toggle-link {
+    margin-left: 108px;
 }
 
 #popup-area {
@@ -156,14 +159,14 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .display-atr {
 	min-width: 0 !important;
-	width: 96px !important;
+	width: 98px !important;
 	margin-left: 2px;
 	height: 31px !important;
 }
 
 .total {
 	min-width: 0 !important;
-	width: 65px !important;
+	width: 98px !important;
 	margin-left: 2px;
 	height: 31px !important;
 }
@@ -183,35 +186,35 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .cbx-list-header {
-	width: 32px;
+	width: 28px;
 }
 
 .number-header {
-	width: 30px;
+	width: 28px;
 }
 
 .attribute-header {
-	width: 97px;
+	width: 96px;
 }
 
 .name-header {
-	width: 150px;
+	width: 142px;
 }
 
 .setting-header {
-	width: 437px;
+	width: 435px;
 }
 
 .display-atr-header {
-	width: 97px;
+	width: 96px;
 }
 
 .total-header {
-	width: 68px;
+	width: 96px;
 }
 
 .rounding-header {
-	width: 104px;
+	width: 96px;
 }
 
 .fraction-header {
@@ -265,10 +268,6 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .ntsControl .nts-input {
 	padding: 7px 10px !important;
-}
-
-table.link-notes {
-	width: 95.5%;
 }
 
 table.link-notes td {

@@ -8,4 +8,5 @@ public class UpdateItemCommand {
 	private String perInfoCtgId;
 	private String itemName;
 	private SingleItemCommand singleItem;
+	private int personEmployeeType;
 }

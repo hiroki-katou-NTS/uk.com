@@ -45,4 +45,10 @@ public class RoleIndividualGrantAdapterImpl implements RoleIndividualGrantAdapte
 		RoleIndividualGrantExport export = roleIndividualGrantExportRepo.getByUser(userId,date);
 		return new RoleIndividualGrantImport(export.getRoleId());
 	}
+
+	@Override
+	public RoleIndividualGrantImport getByUser(String userId) {
+		RoleIndividualGrantExport export = roleIndividualGrantExportRepo.getByUser(userId);
+		return new RoleIndividualGrantImport(export.getRoleId());
+	}
 }

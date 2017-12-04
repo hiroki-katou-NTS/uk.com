@@ -33,7 +33,7 @@
 }
 
 .detailSetting {
-	margin-top: 25px;
+	margin-top: 37px;
 	height: 60px;
 }
 
@@ -45,3 +45,22 @@
 	width: 100px;
 	margin-left: 10px;
 }
+#comparison-target {
+	margin-top: 45px;
+}
+#comp-target-label {
+	float: left;
+	width: 120px;
+	margin-left: 20px;
+}
+#comp-target-content {
+	float: left;
+	width: 180px;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+.com-target-detail {
+	width: 160px;
+}
+
+

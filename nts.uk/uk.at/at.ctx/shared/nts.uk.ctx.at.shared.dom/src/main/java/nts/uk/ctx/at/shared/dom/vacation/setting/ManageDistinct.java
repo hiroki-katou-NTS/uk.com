@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting;
 /**
  * The Enum ManageDistinct.
  */
+// 管理区分
 public enum ManageDistinct {
 
 	/** The yes. */

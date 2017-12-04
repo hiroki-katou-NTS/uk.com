@@ -12,7 +12,7 @@ module cmm001.a {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         itemList: KnockoutObservable<any>;
-        roundingRules:  KnockoutObservableArray<RoundingRule>;
+        roundingRules:  KnockoutObservableArray<RoundingRule>;  
         roundingRules3: KnockoutObservableArray<RoundingRule>;
         // check true false A2_2
         display: KnockoutObservable<boolean>;
@@ -302,15 +302,15 @@ module cmm001.a {
                     return;
                 }
                 // address_1 after finded
-                item[0].stateProvince = item[0].stateProvince;
+//                item[0].stateProvince = item[0].stateProvince;
                 item[0].city = item[0].city;
                 item[0].townArea = item[0].townArea;
                 // address kana 1 after finded
                 item[0].townAreaKana = item[0].townAreaKana;
                 item[0].cityKanaName = item[0].cityKanaName;
-                item[0].townAreaKana = item[0].townAreaKana;
-                self.currentCompany().addinfor().add_1(item[0].stateProvince + item[0].city + item[0].townArea);
-                self.currentCompany().addinfor().addKana_1(item[0].townAreaKana + item[0].cityKanaName + item[0].townAreaKana);
+//                item[0].townAreaKana = item[0].townAreaKana;
+                self.currentCompany().addinfor().add_1(item[0].city + item[0].townArea);
+                self.currentCompany().addinfor().addKana_1(item[0].cityKanaName + item[0].townAreaKana);
             }).always(()=>{
                         nts.uk.ui.block.clear();    
                     });

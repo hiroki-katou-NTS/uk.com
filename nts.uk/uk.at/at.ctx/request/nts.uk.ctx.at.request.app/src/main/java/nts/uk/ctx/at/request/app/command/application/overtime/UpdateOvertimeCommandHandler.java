@@ -48,12 +48,13 @@ public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeC
 		}
 		AppOverTime appOverTime = opAppOverTime.get();
 		List<OverTimeInput> overTimeInputs = new ArrayList<>();
-		overTimeInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getStartTime()!=0).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		
-		appOverTime.setDivergenceReason(command.getDivergenceReasonContent());
+		overTimeInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=null||x.getEndTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		overTimeInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		String divergenceReason = command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator());
+		String applicationReason = command.getApplicationReason().replaceFirst(":", System.lineSeparator());
+		appOverTime.setDivergenceReason(divergenceReason);
 		appOverTime.setFlexExessTime(command.getFlexExessTime());
 		appOverTime.setOverTimeAtr(EnumAdaptor.valueOf(command.getOvertimeAtr(), OverTimeAtr.class));
 		appOverTime.setOverTimeInput(overTimeInputs);
@@ -64,7 +65,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeC
 		appOverTime.setWorkClockTo1(command.getWorkClockTo1());
 		appOverTime.setWorkClockTo2(command.getWorkClockTo2());
 		appOverTime.setWorkTypeCode(new WorkTypeCode(command.getWorkTypeCode()));
-		appOverTime.getApplication().setApplicationReason(new AppReason(command.getApplicationReason()));
+		appOverTime.getApplication().setApplicationReason(new AppReason(applicationReason));
 		appOverTime.setVersion(command.getVersion());
 		appOverTime.getApplication().setVersion(appOverTime.getVersion());
 		

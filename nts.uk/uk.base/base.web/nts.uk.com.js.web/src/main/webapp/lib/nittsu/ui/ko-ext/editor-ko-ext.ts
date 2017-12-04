@@ -14,7 +14,7 @@ module nts.uk.ui.koExtentions {
             var value: KnockoutObservable<any> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+            var immediate: boolean = false;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var valueUpdate: string = (immediate === true) ? 'input' : 'change';
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
@@ -153,18 +153,25 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
-            $input.on("keyup", (e) => {
-                var code = e.keyCode || e.which;
-                if (!readonly && code.toString() !== '9') {
-                let validator = self.getValidator(data);
-                    var newText = $input.val();
-                    var result = validator.validate(newText,{ isCheckExpression: true });
-                    $input.ntsError('clear');
-                    if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage, result.errorCode);
-                    }
-                }
-            });
+//            $input.on("keyup", (e) => {
+//                var code = e.keyCode || e.which;
+//                if (!readonly && code.toString() !== '9') {
+//                    let validator = self.getValidator(data);
+//                    var newText = $input.val();
+//                    var result = validator.validate(newText,{ isCheckExpression: true });
+//                    $input.data("inputting", true);
+//                    $input.ntsError('clear');
+//                    if (!result.isValid) {
+//                        $input.ntsError('set', result.errorMessage, result.errorCode);
+//                    } 
+//                    
+//                    setTimeout(function(){
+//                        $input.val(newText);
+//                        $input.focus(); 
+//                        $input.data("inputting", false);
+//                    }, 10);
+//                }
+//            });
             
             // Format on blur
             $input.blur(() => {
@@ -181,20 +188,22 @@ module nts.uk.ui.koExtentions {
 
             $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
-                    let validator = self.getValidator(data);
-                    var newText = $input.val();
-                    var result = validator.validate(newText, { isCheckExpression: true });
-                    $input.ntsError('clear');
-                    if (result.isValid) {
-                        if (value() === result.parsedValue) {
-                            $input.val(result.parsedValue);
+//                    if (!$input.data("inputting")) {
+                        let validator = self.getValidator(data);
+                        var newText = $input.val();
+                        var result = validator.validate(newText, { isCheckExpression: true });
+                        $input.ntsError('clear');
+                        if (result.isValid) {
+                            if (value() === result.parsedValue) {
+                                $input.val(result.parsedValue);
+                            } else {
+                                value(result.parsedValue);
+                            }
                         } else {
-                            value(result.parsedValue);
-                        }
-                    } else {
-                        $input.ntsError('set', result.errorMessage, result.errorCode);
-                        value(newText);
-                    }
+                            $input.ntsError('set', result.errorMessage, result.errorCode);
+                            value(newText);
+                        }   
+//                    }
                 }
             });
 

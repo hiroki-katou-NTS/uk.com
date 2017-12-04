@@ -48,16 +48,21 @@ public class CheckBeforeRegisterOvertime {
 		String appID = IdentifierUtil.randomUniqueId();
 
 		// Phase list
-		List<AppApprovalPhase> pharseList = getAppApprovalPhaseList(command, companyId, appID);
+		List<AppApprovalPhase> pharseList = CheckBeforeRegisterOvertime.getAppApprovalPhaseList(command, companyId, appID);
 		// Create Application
 		Application appRoot = factoryOvertime.buildApplication(appID, command.getApplicationDate(),
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(), pharseList);
 
+		int workClockFrom1 = command.getWorkClockFrom1() == null ? -1 : command.getWorkClockFrom1().intValue();
+		int workClockTo1 = command.getWorkClockTo1() == null ? -1 : command.getWorkClockTo1().intValue();
+		int workClockFrom2 = command.getWorkClockFrom2() == null ? -1 : command.getWorkClockFrom2().intValue();
+		int workClockTo2 = command.getWorkClockTo2() == null ? -1 : command.getWorkClockTo2().intValue();
+
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), command.getWorkClockFrom1(),
-				command.getWorkClockTo1(), command.getWorkClockFrom2(), command.getWorkClockTo2(),
-				command.getDivergenceReasonContent(), command.getFlexExessTime(), command.getOverTimeShiftNight(),
-				getOverTimeInput(command, companyId, appID));
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
+				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				command.getFlexExessTime(), command.getOverTimeShiftNight(),
+				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID));
 
 		return CheckBeforeRegister(command.getCalculateFlag(), appRoot, overTimeDomain);
 	}
@@ -71,13 +76,13 @@ public class CheckBeforeRegisterOvertime {
 		newBeforeRegister.processBeforeRegister(app);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
-		beforeCheck.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1, ApplicationType.OVER_TIME_APPLICATION,
-				app.getApplicationDate());
+		beforeCheck.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,
+				ApplicationType.OVER_TIME_APPLICATION, app.getApplicationDate());
 		// 事前申請超過チェック
 		Map<AttendanceID, List<OverTimeInput>> findMap = overtime.getOverTimeInput().stream()
 				.collect(groupingBy(OverTimeInput::getAttendanceID));
 		// Only check for [残業時間]
-		//時間①～フレ超過時間　まで　背景色をピンク
+		// 時間①～フレ超過時間 まで 背景色をピンク
 		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceID.NORMALOVERTIME);
 		if (overtimeInputs == null || overtimeInputs.isEmpty()) {
 			result.setErrorCode(1);
@@ -85,8 +90,8 @@ public class CheckBeforeRegisterOvertime {
 			result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
 			return result;
 		}
-		res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(),
-				app.getInputDate(), app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
+		res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(), app.getInputDate(),
+				app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
 		if (res.getErrorCode() != 0) {
 			result.setErrorCode(res.getErrorCode());
 			result.setFrameNo(res.getFrameNo());
@@ -110,15 +115,12 @@ public class CheckBeforeRegisterOvertime {
 	/**
 	 * Convert Phase command list to Approve Phase list
 	 * 
-	 * @param command
-	 *            : create command
-	 * @param companyId:
-	 *            会社ID
-	 * @param appID:
-	 *            申請ID
+	 * @param command: create command
+	 * @param companyId: 会社ID
+	 * @param appID: 申請ID
 	 * @return
 	 */
-	private List<AppApprovalPhase> getAppApprovalPhaseList(CreateOvertimeCommand command, String companyId,
+	public static List<AppApprovalPhase> getAppApprovalPhaseList(CreateOvertimeCommand command, String companyId,
 			String appID) {
 		return command.getAppApprovalPhaseCmds().stream()
 				.map(appApprovalPhaseCmd -> new AppApprovalPhase(companyId, appID, IdentifierUtil.randomUniqueId(),
@@ -139,43 +141,50 @@ public class CheckBeforeRegisterOvertime {
 				.collect(Collectors.toList());
 	}
 
-	private List<OverTimeInput> getOverTimeInput(CreateOvertimeCommand command, String Cid, String appId) {
+	public static List<OverTimeInput> getOverTimeInput(CreateOvertimeCommand command, String Cid, String appId) {
 		List<OverTimeInput> overTimeInputs = new ArrayList<OverTimeInput>();
 		/**
-		 * 休出時間 ATTENDANCE_ID = 0
+		 * 休出時間 ATTENDANCE_ID = 2
 		 */
 		if (null != command.getBreakTimes()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getBreakTimes(), Cid, appId, AttendanceAtr.Time.value));
+			overTimeInputs.addAll(getOverTimeInput(command.getBreakTimes(), Cid, appId, AttendanceID.BREAKTIME.value));
 		}
 		/**
 		 * 残業時間 ATTENDANCE_ID = 1
 		 */
 		if (null != command.getOvertimeHours()) {
 			overTimeInputs
-					.addAll(getOverTimeInput(command.getOvertimeHours(), Cid, appId, AttendanceAtr.TimeOfDay.value));
+					.addAll(getOverTimeInput(command.getOvertimeHours(), Cid, appId, AttendanceID.NORMALOVERTIME.value));
 		}
 		/**
-		 * 加給時間 ATTENDANCE_ID = 2
+		 * 加給時間 ATTENDANCE_ID = 0
 		 */
 		if (null != command.getRestTime()) {
 			overTimeInputs
-					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceAtr.NumberOfTime.value));
+					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceID.RESTTIME.value));
 		}
 		/**
 		 * 加給時間 ATTENDANCE_ID = 3
 		 */
 		if (null != command.getBonusTimes()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceAtr.Attribute.value));
+			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceID.BONUSPAYTIME.value));
 		}
 		return overTimeInputs;
 	}
 
-	private List<OverTimeInput> getOverTimeInput(List<OvertimeInputCommand> inputCommand, String Cid, String appId,
+	private static List<OverTimeInput> getOverTimeInput(List<OvertimeInputCommand> inputCommand, String Cid, String appId,
 			int attendanceId) {
-		return inputCommand.stream()
-				.filter(item -> item.getStartTime() != 0 || item.getEndTime() != 0 || item.getApplicationTime() != 0)
-				.map(item -> OverTimeInput.createSimpleFromJavaType(Cid, appId, attendanceId, item.getFrameNo(),
-						item.getStartTime(), item.getEndTime(), item.getApplicationTime(),item.getTimeItemTypeAtr()))
-				.collect(Collectors.toList());
+		return inputCommand.stream().filter(item -> {
+			int startTime = item.getStartTime() == null ? -1 : item.getStartTime().intValue();
+			int endTime = item.getEndTime() == null ? -1 : item.getEndTime().intValue();
+			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
+			return startTime != -1 || endTime != -1 || appTime != -1;
+		}).map(item -> {
+			int startTime = item.getStartTime() == null ? -1 : item.getStartTime().intValue();
+			int endTime = item.getEndTime() == null ? -1 : item.getEndTime().intValue();
+			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
+			return OverTimeInput.createSimpleFromJavaType(Cid, appId, attendanceId, item.getFrameNo(), startTime,
+					endTime, appTime, item.getTimeItemTypeAtr());
+		}).collect(Collectors.toList());
 	}
 }

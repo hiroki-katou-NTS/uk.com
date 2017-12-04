@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.List;
 
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -14,6 +16,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CreateDailyResultDomainService {
 
-	int createDailyResult(List<String> emloyeeIds, int reCreateAttr, DatePeriod periodTime, int executionAttr, String companyId, String empCalAndSumExecLogID);
+	ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds, DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID);
 	
 }
