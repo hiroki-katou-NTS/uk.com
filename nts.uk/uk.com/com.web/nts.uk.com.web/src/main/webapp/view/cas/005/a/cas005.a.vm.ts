@@ -22,7 +22,7 @@ module nts.uk.com.view.cas005.a {
             //table
             currentCodeList: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
-            items: KnockoutObservableArray<model.ItemModel2>;
+            items: KnockoutObservableArray<model.WorkPlaceFunction>;
             //table-right
             component: ccg.component.viewmodel.ComponentModel;
             
@@ -78,15 +78,12 @@ module nts.uk.com.view.cas005.a {
                 self.isEditable = ko.observable(true);
                 //table
                 self.items = ko.observableArray([]);
-                for (let i = 1; i < 100; i++) {
-                    this.items.push(new model.ItemModel2('00' + i, '基本給 基本給', "description " + i, i % 3 === 0, "2010/1/1"));
-                }
+                
                 self.columns = ko.observableArray([
-                    { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                    { headerText: '名称', key: 'name', width: 150, columnCssClass: "test" },
-                    { headerText: '説明', key: 'description', width: 150 },
-                    { headerText: '説明1', key: 'other1', width: 150 },
-                    { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' }
+                    { headerText: 'Name', key: 'functionNo', width: 100, hidden: true },
+                    { headerText: 'Name', key: 'displayName', width: 150 },
+                    { headerText: 'Description', key: 'description', width: 400 },
+                    
                 ]);
                 self.currentCodeList = ko.observableArray([]);
                 //list
@@ -102,16 +99,18 @@ module nts.uk.com.view.cas005.a {
                     multiple: false
                 });
                 self.component.currentCode.subscribe((value) => {
-                    self.roleCode(value);
-                    let item = _.find(self.listRole(), ['roleCode', value]);
+                    
+                    let item = _.find(self.listRole(), ['roleId', value]);
                     if(item !== undefined){
                         self.roleName(item.name);
                         self.assignAtr(item.assignAtr);   
-                        self.employeeReferenceRange(item.employeeReferenceRange);   
+                        self.employeeReferenceRange(item.employeeReferenceRange);  
+                        self.roleCode(item.roleCode); 
                     }else{
                         self.roleName('');
                         self.assignAtr(1);
                         self.employeeReferenceRange(1);
+                        self.roleCode('');
                     }
                 });
                 
@@ -147,15 +146,31 @@ module nts.uk.com.view.cas005.a {
                 
                 self.isRegister(true);
                 self.isDelete(true);
+                self.getAllWorkPlaceFunction();
                 self.component.startPage().done(function(){
                     self.selectRoleCodeByIndex(0);  
                     self.listRole(self.component.listRole());
-                    //self.roleCode = self.component.currentCode();
                     self.getListWebMenu();
                     dfd.resolve();    
                 });
                 return dfd.promise();
             }//end start page
+            
+            /**
+             * function get AllWorkPlace Function
+             */
+            getAllWorkPlaceFunction(){
+                let self = this;
+                let dfd = $.Deferred();
+                service.getAllWorkPlaceFunction().done(function(data){
+                    self.items(data);
+                    dfd.resolve(data);  
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                dfd.resolve(); 
+            }
             
             /**
              * btnCreate
@@ -220,22 +235,18 @@ module nts.uk.com.view.cas005.a {
 
     //module model
     export module model {
-        
-
-        export class ItemModel2 {
-            code: string;
-            name: string;
+        export class WorkPlaceFunction {
+            functionNo: number;
+            displayName: string;
+            displayOrder: number;
             description: string;
-            other1: string;
-            other2: string;
-            deletable: boolean;
-            constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-                this.code = code;
-                this.name = name;
+            initialValue: boolean;
+            constructor(functionNo: number, displayName: string, displayOrder: number, description: string, initialValue: boolean) {
+                this.functionNo = functionNo;
+                this.displayName = displayName;
+                this.displayOrder = displayOrder;
                 this.description = description;
-                this.other1 = other1;
-                this.other2 = other2 || other1;
-                this.deletable = deletable;
+                this.initialValue = initialValue;
             }
         }
 
