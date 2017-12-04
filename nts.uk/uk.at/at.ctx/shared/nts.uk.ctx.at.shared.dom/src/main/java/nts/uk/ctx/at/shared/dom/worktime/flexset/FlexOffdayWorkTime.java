@@ -1,0 +1,48 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.dom.worktime.flexset;
+
+import java.util.List;
+
+import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSetting;
+
+/**
+ * The Class FlexOffdayWorkTime.
+ */
+@Getter
+// フレックス勤務の休日出勤用勤務時間帯
+public class FlexOffdayWorkTime {
+
+	/** The work timezone. */
+	// 勤務時間帯
+	private List<HDWorkTimeSheetSetting> workTimezone;
+
+	/** The rest timezone. */
+	// 休憩時間帯
+	private FlowWorkRestTimezone restTimezone;
+
+	/**
+	 * Instantiates a new flex offday work time.
+	 *
+	 * @param memento the memento
+	 */
+	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento) {
+		this.workTimezone = memento.getWorkTimezone();
+		this.restTimezone = memento.getRestTimezone();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlexOffdayWorkTimeSetMemento memento){
+		memento.setWorkTimezone(this.workTimezone);
+		memento.setRestTimezone(this.restTimezone);
+	}
+	
+}

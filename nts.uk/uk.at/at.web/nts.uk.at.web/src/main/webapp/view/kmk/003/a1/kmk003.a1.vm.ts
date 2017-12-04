@@ -112,18 +112,18 @@ module a1 {
         //bind data to screen items
         public bindDataToScreen(data: any) {
             let self = this;
-            self.dayStartTime(data().startDateClock);
-            self.oneDayRangeTime(data().rangeTimeDay);
-            self.nightWorkShift(data().nightShift);
-            //            self.beforeUpdateWorkTime();//diff time
-            //            self.afterUpdateWorkTime();//diff time
-            let timezone1 = data().prescribedTimezoneSetting.timezone[0];
-            let timezone2 = data().prescribedTimezoneSetting.timezone[1];
+//            self.dayStartTime(data().startDateClock);
+//            self.oneDayRangeTime(data().rangeTimeDay);
+//            self.nightWorkShift(data().nightShift);
+//            // self.beforeUpdateWorkTime();//diff time
+//            // self.afterUpdateWorkTime();//diff time
+//            let timezone1 = data().prescribedTimezoneSetting.timezone[0];
+//            let timezone2 = data().prescribedTimezoneSetting.timezone[1];
 
-            self.firstFixedStartTime(timezone1.start.inDayTimeWithFormat);
-            self.firstFixedEndTime(timezone1.end.inDayTimeWithFormat);
-            self.secondFixedStartTime(timezone2.start.inDayTimeWithFormat);
-            self.secondFixedEndTime(timezone2.end.inDayTimeWithFormat);
+//            self.firstFixedStartTime(timezone1.start.inDayTimeWithFormat);
+//            self.firstFixedEndTime(timezone1.end.inDayTimeWithFormat);
+//            self.secondFixedStartTime(timezone2.start.inDayTimeWithFormat);
+//            self.secondFixedEndTime(timezone2.end.inDayTimeWithFormat);
             self.useCoreTime();
             self.coreTimeStart();
             self.coreTimeEnd();

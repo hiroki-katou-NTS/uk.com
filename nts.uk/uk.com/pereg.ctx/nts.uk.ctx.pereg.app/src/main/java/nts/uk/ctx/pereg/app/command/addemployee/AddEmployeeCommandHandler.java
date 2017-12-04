@@ -13,13 +13,19 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
+import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
+import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
+import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;
+import nts.uk.ctx.bs.person.dom.person.setting.reghistory.EmpRegHistoryRepository;
+import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
-import nts.uk.shr.pereg.app.command.PeregCommandFacade;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
 /**
@@ -37,6 +43,12 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 	@Inject
 	private UserRepository userRepository;
 
+	@Inject
+	private EmpFileManagementRepository perFileManagementRepository;
+
+	@Inject
+	private EmpRegHistoryRepository empHisRepo;
+
 	@Override
 	protected void handle(CommandHandlerContext<AddEmployeeCommand> context) {
 
@@ -47,10 +59,6 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		// merge data from client with dataList
 		mergeData(dataList, command.getInputContainer().getInputs());
-
-		String personId = IdentifierUtil.randomUniqueId();
-		String employeeId = IdentifierUtil.randomUniqueId();
-		String userId = IdentifierUtil.randomUniqueId();
 
 		// 個人基本 1st
 
@@ -75,6 +83,12 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		});
 
+		String personId = IdentifierUtil.randomUniqueId();
+
+		String employeeId = IdentifierUtil.randomUniqueId();
+
+		String userId = IdentifierUtil.randomUniqueId();
+
 		PeregInputContainer inputContainer = new PeregInputContainer(personId, employeeId, inputs);
 
 		this.commandFacade.add(inputContainer);
@@ -84,6 +98,32 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 				employeeId);
 
 		this.userRepository.addNewUser(newUser);
+		// register avatar
+		PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, command.getAvatarId(),
+				TypeFile.AVATAR_FILE.value, null, null);
+
+		this.perFileManagementRepository.insert(perFile);
+
+		// Update employee registration history
+
+		String companyId = AppContexts.user().companyId();
+
+		String currentEmpId = AppContexts.user().employeeId();
+
+		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getLastRegHistory(currentEmpId);
+
+		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(employeeId, companyId, GeneralDate.today(),
+				currentEmpId);
+
+		if (optRegHist.isPresent()) {
+
+			this.empHisRepo.update(newEmpRegHistory);
+
+		} else {
+			
+			this.empHisRepo.add(newEmpRegHistory);
+
+		}
 
 	}
 
@@ -122,7 +162,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 					item.getSaveData().getSaveDataType().value));
 		});
 
-		return new ItemsByCategory(categoryCd, null,null, items);
+		return new ItemsByCategory(categoryCd, null, null, items);
 
 	}
 

@@ -27,13 +27,13 @@ public class PersonCategoryItemData {
 	
 	public PersonCategoryItemData() {
 		// CS00001 - 個人基本情報 CO00001 CS00001
-		CategoryMap.put("CO00001", createItemDataOfPersonCategory());
+		CategoryMap.put("CS00001", createItemDataOfPersonCategory());
 
 		// CS00002 - 社員基本情報
-		CategoryMap.put("CO00002", createItemDataOfEmployeeCategory());
+		CategoryMap.put("CS00002", createItemDataOfEmployeeCategory());
 
 		// CS00003 - 現住所
-		CategoryMap.put("CO00003", createItemDataOfAddressCategory());
+		CategoryMap.put("CS00003", createItemDataOfAddressCategory());
 		
 
 	}
@@ -50,83 +50,83 @@ public class PersonCategoryItemData {
 		ReferenceStateData referenceData = new ReferenceStateData();
 		
 		referenceData.setConstraint("PersonName");
-		itemData.put("IO00001", referenceData);
+		itemData.put("IS00001", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("PersonNameKana");
-		itemData.put("IO00002", referenceData);
+		itemData.put("IS00002", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("FullName");
-		itemData.put("IO00003", referenceData);
+		itemData.put("IS00003", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("FullNameKana");
-		itemData.put("IO00004", referenceData);
+		itemData.put("IS00004", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("BusinessName");
-		itemData.put("IO00005", referenceData);
+		itemData.put("IS00005", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("BusinessEnglishName");
-		itemData.put("IO00006", referenceData);
+		itemData.put("IS00006", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("BusinessOtherName");
-		itemData.put("IO00007", referenceData);
+		itemData.put("IS00007", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("FullName");
-		itemData.put("IO00008", referenceData);
+		itemData.put("IS00008", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("FullNameKana");
-		itemData.put("IO00009", referenceData);
+		itemData.put("IS00009", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("FullName");
-		itemData.put("IO00010", referenceData);
+		itemData.put("IS00010", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("FullNameKana");
-		itemData.put("IO00011", referenceData);
+		itemData.put("IS00011", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("FullName");
-		itemData.put("IO00012", referenceData);
+		itemData.put("IS00012", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("FullNameKana");
-		itemData.put("IO00013", referenceData);
+		itemData.put("IS00013", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("GenderPerson");
 		
-		itemData.put("IO00014", referenceData);
+		itemData.put("IS00014", referenceData);
 		Map<Integer, String>  selSub = new HashMap<>();
 		selSub.put(3, "女");
 		selSub.put(3, "男");
 		referenceData.selectionLst.put(3, selSub);
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("PersonMobile");
-		itemData.put("IO00015", referenceData);
+		itemData.put("IS00015", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("PersonMailAddress");
-		itemData.put("IO00016", referenceData);
+		itemData.put("IS00016", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("Hobby");
-		itemData.put("IO00017", referenceData);
+		itemData.put("IS00017", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("Taste");
-		itemData.put("IO00018", referenceData);
+		itemData.put("IS00018", referenceData);
 		
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("Nationality");
-		itemData.put("IO00019", referenceData);
+		itemData.put("IS00019", referenceData);
 		return itemData;
 	}
 
@@ -141,36 +141,36 @@ public class PersonCategoryItemData {
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("EmployeeCode");
-		itemData.put("IO00020", reference);
+		itemData.put("IS00020", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("GeneralDate");
-		itemData.put("IO00021", reference);
+		itemData.put("IS00021", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("GeneralDate");
-		itemData.put("IO00022", reference);
+		itemData.put("IS00022", reference);
 		// IO00023 sao lai khong co???
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("EmployeeMail");
-		itemData.put("IO00024", reference);
+		itemData.put("IS00024", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("EmployeeMail");
-		itemData.put("IO00025", reference);
+		itemData.put("IS00025", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("CompanyMobile");
-		itemData.put("IO00026", reference);
+		itemData.put("IS00026", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("HiringType");
-		itemData.put("IO00027", reference);
+		itemData.put("IS00027", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("GeneralDate");
-		itemData.put("IO00028", reference);
+		itemData.put("IS00028", reference);
 		return itemData;
 	}
 
@@ -185,48 +185,48 @@ public class PersonCategoryItemData {
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("GeneralDate");
-		itemData.put("IO00029", reference);
+		itemData.put("IS00029", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("PostalCode");
-		itemData.put("IO00030", reference);
+		itemData.put("IS00030", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("Perfectures");
-		itemData.put("IO00031", reference);
+		itemData.put("IS00031", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("CountryId");
-		itemData.put("IO00032", reference);
+		itemData.put("IS00032", reference);
 		// IO00033 address 1 ? validate kieu gi
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("PersonAddress1");
-		itemData.put("IO00033", reference);
+		itemData.put("IS00033", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("PersonAddressKana1");
-		itemData.put("IO00034", reference);
+		itemData.put("IS00034", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("PersonAddress2");
-		itemData.put("IO00035", reference);
+		itemData.put("IS00035", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("PersonAddressKana2");
-		itemData.put("IO00036", reference);
+		itemData.put("IS00036", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("PhoneNumber");
-		itemData.put("IO00037", reference);
+		itemData.put("IS00037", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("HomeSituationType");
-		itemData.put("IO00038", reference);
+		itemData.put("IS00038", reference);
 		
 		reference = new ReferenceStateData();
 		reference.setConstraint("HouseRent");
-		itemData.put("IO00039", reference);
+		itemData.put("IS00039", reference);
 		return itemData;
 	}
 	

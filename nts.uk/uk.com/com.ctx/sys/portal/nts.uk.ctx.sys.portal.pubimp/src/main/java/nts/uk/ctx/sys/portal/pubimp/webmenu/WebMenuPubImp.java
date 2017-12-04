@@ -12,27 +12,28 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuPub;
-import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuPubDto;
+import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuExport;
 
 /**
  * The Class WebmenuPubImp.
+ * @author HieuNV
  */
 @Stateless
 public class WebMenuPubImp implements WebMenuPub {
 
-	/** The webmenu repository. */
-	@Inject
-	private WebMenuRepository webMenuRepository;
+    /** The WebMenuRepository. */
+    @Inject
+    private WebMenuRepository webMenuRepository;
 
-	@Override
-	public List<WebMenuPubDto> findByCompanyId(String companyId) {
-		return webMenuRepository.findAll(companyId).stream()
-				.map(item -> new WebMenuPubDto(
-						item.getWebMenuCode().v()
-						, item.getWebMenuName().v()
-						, item.getCompanyId()
-						, item.isDefault())
-						)
-				.collect(Collectors.toList());
-	}
+    @Override
+    public List<WebMenuExport> findByCompanyId(String companyId) {
+        return webMenuRepository.findAll(companyId).stream()
+                .map(item -> new WebMenuExport(
+                        item.getWebMenuCode().v()
+                        , item.getWebMenuName().v()
+                        , item.getCompanyId()
+                        , item.isDefault())
+                        )
+                .collect(Collectors.toList());
+    }
 }

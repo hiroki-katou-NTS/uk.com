@@ -7,26 +7,26 @@ import nts.arc.time.GeneralDate;
 
 public interface TemporaryAbsenceRepository {
 
-	Optional<TemporaryAbsence> getBySidAndReferDate(String sid, GeneralDate referenceDate);
+	Optional<TempAbsenceHisItem> getBySidAndReferDate(String sid, GeneralDate referenceDate);
 	
-	Optional<TemporaryAbsence> getByTempAbsenceId(String tempAbsenceId);
+	Optional<TempAbsenceHisItem> getByTempAbsenceId(String tempAbsenceId);
 	
-	List<TemporaryAbsence> getListBySid(String sid);
+	List<TempAbsenceHisItem> getListBySid(String sid);
 	/**
 	 * ドメインモデル「休職休業」を新規登録する
 	 * @param domain
 	 */
-	void addTemporaryAbsence(TemporaryAbsence domain);
+	void addTemporaryAbsence(TempAbsenceHisItem domain);
 	/**
 	 * 取得した「休職休業」を更新する
 	 * @param domain
 	 */
-	void updateTemporaryAbsence(TemporaryAbsence domain);
+	void updateTemporaryAbsence(TempAbsenceHisItem domain);
 	
 	/**
 	 * ドメインモデル「休職休業」を削除する
 	 * @param domain
 	 */
-	void deleteTemporaryAbsence(TemporaryAbsence domain);
+	void deleteTemporaryAbsence(TempAbsenceHisItem domain);
 	
 }

@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.auth.app.find.grant.rolesetjob.RoleSetDto;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeAdapter;
@@ -38,7 +36,7 @@ public class RoleSetGrantedPersonFinder {
 
 	public List<RoleSetDto> getAllRoleSet() {
 		String companyId = AppContexts.user().companyId();
-		if (StringUtils.isNoneEmpty(companyId))
+		if (companyId == null)
 			return null;
 		// get Role Set by companyId, sort ASC
 		List<RoleSetDto> listRoleSet = roleSetRepo.findByCompanyId(companyId).stream()
@@ -51,19 +49,18 @@ public class RoleSetGrantedPersonFinder {
 
 		listRoleSet.sort((rs1, rs2) -> rs1.getCode().compareTo(rs2.getCode()));
 		return listRoleSet;
-
 	}
 
 	public List<RoleSetGrantedPersonDto> getAllRoleSetGrantedPersonByRoleSetCd(String roleSetCd) {
 		String companyId = AppContexts.user().companyId();
-		if (StringUtils.isNoneEmpty(companyId))
+		if (companyId == null)
 			return null;
 		List<RoleSetGrantedPerson> listRoleSetPerson = roleSetPersonRepo.getAll(roleSetCd, companyId);
 
 		if (listRoleSetPerson != null && !listRoleSetPerson.isEmpty()) {
 			List<RoleSetGrantedPersonDto> listRoleSetPersonDto = new ArrayList<>();
 			for (RoleSetGrantedPerson rp : listRoleSetPerson) {
-				EmployeeImport empInfo = employeeAdapter.findByEmpId(rp.getEmployeeID());
+				EmployeeImport empInfo = new EmployeeImport("XXXX YYYY", rp.getEmployeeID(), "99999999");// employeeAdapter.findByEmpId(rp.getEmployeeID());
 				RoleSetGrantedPersonDto dto = new RoleSetGrantedPersonDto(rp.getRoleSetCd().v(), rp.getEmployeeID(),
 						empInfo.getEmployeeCode(), empInfo.getPersonalName(), rp.getValidPeriod().start(),
 						rp.getValidPeriod().end());
@@ -74,5 +71,11 @@ public class RoleSetGrantedPersonFinder {
 			return listRoleSetPersonDto;
 		} else
 			return null;
+	}
+
+	public EmployeeImport getEmployeeInfo(String employeeId) {
+		// return employeeAdapter.findByEmpId(employeeId);
+		// dummy code
+		return new EmployeeImport("XXXX YYYY", employeeId, "99999999");
 	}
 }

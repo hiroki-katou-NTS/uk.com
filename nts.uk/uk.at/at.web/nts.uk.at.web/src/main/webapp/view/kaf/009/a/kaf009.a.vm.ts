@@ -90,7 +90,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.approvalSource = self.kaf000_a.approvalList;
                     nts.uk.ui.block.clear();
                 })    
-            })
+            });
+            self.appDate.subscribe(value => {
+                self.kaf000_a.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
+                self.kaf000_a.getAllApprovalRoot();
+                self.kaf000_a.getMessageDeadline(4, value);
+            });
             
         }
         /**
@@ -229,7 +234,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             //check before Insert 
-            self.checkUse();
+            let errorFlag = self.kaf000_a.errorFlag;
+            let errorMsg = self.kaf000_a.errorMsg;
+            if(errorFlag!=0){
+                nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
+            } else {
+                self.checkUse();
+            }
             return dfd.promise();
         }
         checkRegister(){

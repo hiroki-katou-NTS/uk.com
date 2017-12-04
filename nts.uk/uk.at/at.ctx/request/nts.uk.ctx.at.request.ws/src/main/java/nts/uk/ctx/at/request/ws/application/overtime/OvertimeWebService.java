@@ -18,10 +18,10 @@ import nts.uk.ctx.at.request.app.command.application.overtime.UpdateOvertimeComm
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCaculationOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @Path("at/request/application/overtime")
 @Produces("application/json")
@@ -57,8 +57,8 @@ public class OvertimeWebService extends WebService{
 	}
 	@POST
 	@Path("getCaculationResult")
-	public List<OvertimeInputDto> getCaculationResult(ParamCaculationOvertime param) {
-		return this.overtimeFinder.getCaculationValue(param.getOvertimeInputDtos(), param.getPrePostAtr(), param.getAppDate());
+	public List<CaculationTime> getCaculationResult(ParamCaculationOvertime param) {
+		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate());
 	}
 	
 	
@@ -84,6 +84,12 @@ public class OvertimeWebService extends WebService{
 	public void update(UpdateOvertimeCommand command) {
 		this.updateOvertimeCommandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("getRecordWork")
+	public RecordWorkDto getRecordWork(RecordWorkParam param) {
+		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD);
+	}
 }
 
 @Value
@@ -91,4 +97,10 @@ class Param{
 	private String url;
 	private String appDate;
 	private int uiType;
+}
+@Value
+class RecordWorkParam {
+	public String employeeID; 
+	public String appDate;
+	public String siftCD;
 }

@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<title>#{i18n.getText('CPS005_36')}</title>
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.person.dom.person.info.category.CategoryName
 			</com:ValidatorScript>
@@ -120,15 +121,15 @@
 								</div>
 
 								<com:ko-if bind="categoryType === 3 ">
-									<label id="continue">#{i18n.getText('Enum_HistoryType_Continuous')}</label>
+									<label id="continue">#{i18n.getText('Enum_HistoryTypes_CONTINUOUS')}</label>
 								</com:ko-if>
 
 								<com:ko-if bind="categoryType === 4 ">
-									<label id="continue">#{i18n.getText('Enum_HistoryType_NoDuplicate')}</label>
+									<label id="continue">#{i18n.getText('Enum_HistoryTypes_NO_DUPLICATE')}</label>
 								</com:ko-if>
 
 								<com:ko-if bind="categoryType === 5 ">
-									<label id="continue">#{i18n.getText('Enum_HistoryType_Duplicate')}</label>
+									<label id="continue">#{i18n.getText('Enum_HistoryTypes_DUPLICATE')}</label>
 								</com:ko-if>
 
 								<button
@@ -145,16 +146,14 @@
 						</com:ko-if>
 						<table id="item_grid"
 							data-bind="ntsGridList: {	
-						dataSource: currentCategory().itemList ,
-						primaryKey: 'id' ,
-						columns: currentCategory().itemColums ,
-						multiple: false,
-						value: currentCategory().currentItemId ,
-						rows:10 }">
+							dataSource: currentCategory().itemList ,
+							primaryKey: 'id' ,
+							columns: currentCategory().itemColums ,
+							multiple: false,
+							value: currentCategory().currentItemId ,
+							rows:10 }">
 						</table>
 					</div>
-
-
 				</div>
 			</div>
 			</div>

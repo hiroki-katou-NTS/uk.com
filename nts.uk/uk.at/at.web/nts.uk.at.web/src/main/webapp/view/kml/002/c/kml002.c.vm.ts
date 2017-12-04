@@ -312,6 +312,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
          * Addition function.
          */
         addition() {
+            var t0 = performance.now();
             let self = this;
             
             if(self.currentCodeList().length + self.rightItems().length > 100) {
@@ -340,6 +341,8 @@ module nts.uk.at.view.kml002.c.viewmodel {
             } else {
                 self.enableReturn(false);
             }
+             var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         
         /**

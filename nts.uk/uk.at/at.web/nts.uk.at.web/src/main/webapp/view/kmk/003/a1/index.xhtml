@@ -8,15 +8,15 @@
    	</com:ValidatorScript>
 	<table>
 		<tr>
-			<td class="a1-td" colspan="7"><div>#{i18n.getText('KMK003_41')}</div>
+			<td class="td-cell" colspan="7"><div>#{i18n.getText('KMK003_41')}</div>
 				<div>
 					<hr />
 				</div></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_32')}</div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: dayStartTime,
 							constraint: 'TimeWithDayAttr',
@@ -29,9 +29,9 @@
 							immediate: false}" /></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_33')}</div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><input
 				data-bind="ntsTextEditor: {
 										value: oneDayRangeTime,
 										constraint: '',
@@ -40,16 +40,16 @@
 										enable: true
 										}" />
 			</td>
-			<td class="a1-td"><span>#{i18n.getText('KMK003_211')}</span></td>
-			<td class="a1-td">
+			<td class="td-cell"><span>#{i18n.getText('KMK003_211')}</span></td>
+			<td class="td-cell">
 				<div data-bind="ntsCheckBox: { checked: nightWorkShift }">#{i18n.getText('KMK003_34')}</div>
 			</td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_125')}</div></td>
-			<td class="a1-td"><span>#{i18n.getText('KMK003_126')}</span></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><span>#{i18n.getText('KMK003_126')}</span></td>
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: beforeUpdateWorkTime,
 							constraint: '',
@@ -60,8 +60,8 @@
 							enable: true,
 							readonly: false,
 							immediate: false}" /></td>
-			<td class="a1-td"><span>#{i18n.getText('KMK003_127')}</span></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><span>#{i18n.getText('KMK003_127')}</span></td>
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: afterUpdateWorkTime,
 							constraint: '',
@@ -72,14 +72,14 @@
 							enable: true,
 							readonly: false,
 							immediate: false}" /></td>
-			<td class="a1-td"></td>
+			<td class="td-cell"></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_216')}</div></td>
-			<td class="a1-td"><span>#{i18n.getText('KMK003_36')}</span> <span>#{i18n.getText('KMK003_209')}</span>
+			<td class="td-cell"><span>#{i18n.getText('KMK003_36')}</span> <span>#{i18n.getText('KMK003_209')}</span>
 			</td>
-			<td class="a1-td"><input
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: firstFixedStartTime,
 							constraint: '',
@@ -90,8 +90,8 @@
 							enable: true,
 							readonly: false,
 							immediate: false}" /></td>
-			<td class="a1-td"><span>#{i18n.getText('KMK003_210')}</span></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><span>#{i18n.getText('KMK003_210')}</span></td>
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: firstFixedEndTime,
 							constraint: '',
@@ -102,15 +102,15 @@
 							enable: true,
 							readonly: false,
 							immediate: false}" /></td>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsCheckBox: { checked: includeOTTime }">#{i18n.getText('KMK003_38')}</div></td>
 		</tr>
 		<tr>
-			<td class="a1-td"></td>
-			<td class="a1-td"><div
+			<td class="td-cell"></td>
+			<td class="td-cell"><div
 					data-bind="ntsCheckBox: { checked: secondTimes }">#{i18n.getText('KMK003_37')}</div>
 				<span>#{i18n.getText('KMK003_209')}</span></td>
-			<td data-bind="visible:isDetailMode" class="a1-td"><input
+			<td data-bind="visible:isDetailMode" class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: secondFixedStartTime,
 							constraint: '',
@@ -121,8 +121,8 @@
 							enable: secondTimes,
 							readonly: false,
 							immediate: false}" /></td>
-			<td class="a1-td"><span>#{i18n.getText('KMK003_210')}</span></td>
-			<td data-bind="visible:isDetailMode" class="a1-td"><input
+			<td class="td-cell"><span>#{i18n.getText('KMK003_210')}</span></td>
+			<td data-bind="visible:isDetailMode" class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: secondFixedEndTime,
 							constraint: '',
@@ -135,16 +135,16 @@
 							immediate: false}" /></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_157')}</div></td>
-			<td class="a1-td"><div class="cf"
+			<td class="td-cell"><div class="cf"
 					data-bind="ntsSwitchButton: {
 							options: useCoreTimeOptions,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: useCoreTime,
 							enable: true }"></div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: coreTimeStart,
 							constraint: '',
@@ -155,8 +155,8 @@
 							enable: true,
 							readonly: false,
 							immediate: false}" /></td>
-			<td class="a1-td">#{i18n.getText('KMK003_160')}</td>
-			<td class="a1-td"><input
+			<td class="td-cell">#{i18n.getText('KMK003_160')}</td>
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: coreTimeEnd,
 							constraint: '',
@@ -169,9 +169,9 @@
 							immediate: false}" /></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_184')}</div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: leastWorkTime,
 							constraint: '',
@@ -184,9 +184,9 @@
 							immediate: false}" /></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_39')}</div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: morningEndTime,
 							constraint: '',
@@ -199,9 +199,9 @@
 							immediate: false}" /></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_40')}</div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: afternoonStartTime,
 							constraint: '',
@@ -214,15 +214,15 @@
 							immediate: false}" /></td>
 		</tr>
 		<tr>
-			<td class="a1-td" colspan="7"><div>#{i18n.getText('KMK003_41')}</div>
+			<td class="td-cell" colspan="7"><div>#{i18n.getText('KMK003_41')}</div>
 				<div>
 					<hr />
 				</div></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div
+			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_42')}</div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: oneDay,
 							constraint: '',
@@ -235,8 +235,8 @@
 							immediate: false}" /></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_43')}</div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_43')}</div></td>
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: morning,
 							constraint: '',
@@ -249,8 +249,8 @@
 							immediate: false}" /></td>
 		</tr>
 		<tr>
-			<td class="a1-td"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_44')}</div></td>
-			<td class="a1-td"><input
+			<td class="td-cell"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_44')}</div></td>
+			<td class="td-cell"><input
 				data-bind="ntsTimeEditor: {
 							value: afternoon,
 							constraint: '',

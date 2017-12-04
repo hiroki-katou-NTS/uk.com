@@ -1,5 +1,6 @@
 package find.person.setting.init.category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,10 +31,25 @@ public class PerInfoInitValueSettingCtgFinder {
 		String companyId = AppContexts.user().companyId();
 
 		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId, settingId);
+		List<String> ctgId = ctgLst.stream().map(c ->  c.getPerInfoCtgId())
+				.collect(Collectors.toList());
+		List<String> ctgFilter = this.settingItemRepo.isExistItem(ctgId);
+		
+		List<PerInfoInitValueSettingCtg>  ctgList = new ArrayList<>();
+		ctgLst.stream().forEach(c -> {
+			ctgFilter.stream().forEach(  filter -> {
+				if(c.getPerInfoCtgId().equals(filter)) {
+					ctgList.add(c);
+				}
+			});
+			
+		});
+		
 
-		if (ctgLst.size() > 0) {
 
-			return ctgLst.stream().map(c -> {
+		if (ctgList.size() > 0) {
+
+			return ctgList.stream().map(c -> {
 				PerInfoInitValueSettingCtg ctg = new PerInfoInitValueSettingCtg();
 				ctg.setCategoryName(c.getCategoryName());
 				ctg.setPerInfoCtgId(c.getPerInfoCtgId());
@@ -44,7 +60,7 @@ public class PerInfoInitValueSettingCtgFinder {
 			}).collect(Collectors.toList());
 		}
 
-		return ctgLst;
+		return ctgList;
 	}
 
 	// sonnlb code start

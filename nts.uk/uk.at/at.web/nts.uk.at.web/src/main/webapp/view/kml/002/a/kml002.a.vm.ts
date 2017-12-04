@@ -110,13 +110,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
             ]);
 
             self.cbxDisplayAtr = ko.observableArray([
-                { displayAttrCode: 0, displayAttrName: nts.uk.resource.getText("KML002_21") },
-                { displayAttrCode: 1, displayAttrName: nts.uk.resource.getText("KML002_22") }
+                { displayAttrCode: 0, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_NonDisplay") },
+                { displayAttrCode: 1, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_Display") }
             ]);
 
             self.cbxTotal = ko.observableArray([
-                { totalCode: 0, totalName: nts.uk.resource.getText("KML002_22") },
-                { totalCode: 1, totalName: nts.uk.resource.getText("KML002_23") }
+                { totalCode: 0, totalName: nts.uk.resource.getText("Enum_CumulativeAtr_NOT_ACCUMULATE") },
+                { totalCode: 1, totalName: nts.uk.resource.getText("Enum_CumulativeAtr_ACCUMULATE") }
             ]);
 
             self.dailyItems = [];
@@ -322,15 +322,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             self.unitSelected.subscribe(function(value) {
                 if(!devChange){
-                    if (!self.isparentCall()) {
+                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_125" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
-                            self.bindCalculatorItems();
-                            
-                            if (self.calculatorItems().length > 0) {
-                                self.deleteLineEnable(true);
-                            }
+                            self.deleteLineEnable(false);
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -351,15 +347,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.workScheduleSelected.subscribe(function(value) {
                 if(!devChange){
-                    if (!self.isparentCall()) {
+                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_191" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
-                            self.bindCalculatorItems();
-                            
-                            if (self.calculatorItems().length > 0) {
-                                self.deleteLineEnable(true);
-                            }
+                            self.deleteLineEnable(false);
                         }).ifNo(() => {
                             devChange = true;
                             
@@ -377,6 +369,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 
                 devChange = false;
             });
+            
+            $("#fixed-table").ntsFixedTable({ height: 300, width: 700 });
         }
 
         /**
@@ -392,10 +386,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                 if (self.settingItems().length > 0) {
                     self.singleSelectedCode(self.settingItems()[0].code);
-                }
-
-                if (self.calculatorItems().length == 0) {
-                    self.bindCalculatorItems();
                 }
                 
                 blockUI.clear();
@@ -534,8 +524,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             dailyAttendanceAtrs.push(5);
             var param = {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
-                scheduleAtr: 1,
-                budgetAtr: 1,
+                scheduleAtr: 0,
+                budgetAtr: 0,
                 unitAtr: 0
             };
             service.getDailyItems(param).done(function(data) {
@@ -558,7 +548,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
         }
         
         formulaTime(): JQueryPromise<any> {
-
             var self = this;
             var dfd = $.Deferred();
             self.dailyItems = [];
@@ -567,8 +556,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             dailyAttendanceAtrs.push(3);
             var param = {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
-                scheduleAtr: 1,
-                budgetAtr: 1,
+                scheduleAtr: 2,
+                budgetAtr: 2,
                 unitAtr: 0
             };
             service.getDailyItems(param).done(function(data) {
@@ -731,12 +720,14 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.useClsSelected(0);
             self.workScheduleSelected(0);
             self.calculatorItems([]);
-            self.bindCalculatorItems();
 
             self.workScheduleEnable(true);
             self.unitEnable(true);
             self.allItemsData = [];
             $("#input-code").focus();
+            
+            // clear all error
+            nts.uk.ui.errors.clearAll();
         }
 
         /**
@@ -1324,6 +1315,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         /**
          * Generate the formula when the dialog setting passed data to A screen.
          */
+        
         formulaGeneration(itemName: string, settingMethod: number, attribute: number, index: number, data: any, beforeFormula: string, isFirstLoad: boolean) {
             let self = this;
             beforeFormula = "";
@@ -1418,26 +1410,30 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 }
                             }
                         } else if (attribute == 1) {
-                            if (data.moneyFunc.lstMoney.length <=0 && data.timeUnit.lstTimeUnitFuncs.length <=0) {
+                            if(data.timeUnit != null) {
+                                if (data.timeUnit.lstTimeUnitFuncs.length <=0) {
+                                formulaResult = "";
+                            }}
+                                if(data.moneyFunc.lstMoney.length <=0 ){
                                 formulaResult = "";
                             } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
-                                    var operatorAtrTime = data.moneyFunc.lstMoney[i].operatorAtrTime == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                     var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
                                     var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
                                     var itemTime = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
                                     var attendanceTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemIdTime && o.itemType == 0; });
                                     var presetTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemIdTime; });
                                     if (name != "") {
-                                        formulaResult += operator + " " + name + " ";
+                                        formulaResult += operatorAtr + " " + name + " ";
                                     } else if (item != null) {
-                                        formulaResult += operator + " " + item.externalBudgetName + " ";
+                                        formulaResult += operatorAtr + " " + item.externalBudgetName + " ";
                                     } else if (itemTime != null){
-                                        formulaResult += operatorAtrTime + " " + itemTime.name + " ";
+                                        formulaResult += operatorAtr + " " + itemTime.name + " ";
                                     } else if (attendanceTime != null){
-                                        formulaResult += operatorAtrTime + " " + attendanceTime.name + " ";
+                                        formulaResult += operatorAtr + " " + attendanceTime.name + " ";
                                     } else if (presetTime != null){
-                                        formulaResult += operatorAtrTime + " " + presetTime.name + " ";
+                                        formulaResult += operatorAtr + " " + presetTime.name + " ";
                                     } 
                                 }
                             } else if (data.timeUnit.lstTimeUnitFuncs.length > 0) {
@@ -1518,26 +1514,30 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 }
                             }
                         } else if (attribute == 1) {
-                            if (data.moneyFunc.lstMoney.length <= 0 && data.timeUnit.lstTimeUnitFuncs.length <= 0) {
+                            if(data.timeUnit != null) {
+                                if (data.timeUnit.lstTimeUnitFuncs.length <=0) {
+                                formulaResult = "";
+                            }}
+                                if(data.moneyFunc.lstMoney.length <=0 ){
                                 formulaResult = "";
                             } else if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
-                                    var operatorAtrTime = data.moneyFunc.lstMoney[i].operatorAtrTime == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                    var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                     var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
                                     var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
                                     var itemTime = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
                                     var attendanceTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemIdTime && o.itemType == 0; });
                                     var presetTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemIdTime; });
                                     if (name != "") {
-                                        formulaResult += operator + " " + name + " ";
+                                        formulaResult += operatorAtr + " " + name + " ";
                                     } else if (item != null) {
-                                        formulaResult += operator + " " + item.externalBudgetName + " ";
+                                        formulaResult += operatorAtr + " " + item.externalBudgetName + " ";
                                     } else if (itemTime != null){
-                                        formulaResult += operatorAtrTime + " " + itemTime.name + " ";
+                                        formulaResult += operatorAtr + " " + itemTime.name + " ";
                                     } else if (attendanceTime != null){
-                                        formulaResult += operatorAtrTime + " " + attendanceTime.name + " ";
+                                        formulaResult += operatorAtr + " " + attendanceTime.name + " ";
                                     } else if (presetTime != null){
-                                        formulaResult += operatorAtrTime + " " + presetTime.name + " ";
+                                        formulaResult += operatorAtr + " " + presetTime.name + " ";
                                     } 
                                 }
                             } else if (data.timeUnit.lstTimeUnitFuncs.length > 0) {

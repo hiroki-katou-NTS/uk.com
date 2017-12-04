@@ -220,5 +220,24 @@ module nts.uk.at.view.kaf000.shr{
             }
         }
         
+        export class CommonProcess {
+            public static checkAppReason(appReasonRequired: boolean, inputReasonDisp: boolean, detailReasonDisp: boolean, appReason: string): boolean {
+                if(appReasonRequired == false) {
+                    return true;
+                }
+                if(inputReasonDisp == false){
+                    if(detailReasonDisp == false){
+                        return true;
+                    }
+                }
+                if(nts.uk.util.isNullOrEmpty(appReason)){
+                    // throw new BusinessException("Msg_115");
+                    return false;
+                }
+                return true;
+        
+            }
+        }
+        
     }
 }

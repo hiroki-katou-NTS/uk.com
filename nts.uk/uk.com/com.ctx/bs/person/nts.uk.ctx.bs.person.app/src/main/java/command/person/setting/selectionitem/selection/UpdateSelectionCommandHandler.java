@@ -22,7 +22,7 @@ public class UpdateSelectionCommandHandler extends CommandHandler<UpdateSelectio
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSelectionCommand> context) {
 		UpdateSelectionCommand command = context.getCommand();
-		
+
 		Selection domain = Selection.createFromSelection(command.getSelectionID(), command.getHistId(),
 				command.getSelectionCD(), command.getSelectionName(), command.getExternalCD(),
 				command.getMemoSelection());

@@ -62,11 +62,14 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 			// Sequence code + order is not changable
 			Optional<SequenceMaster> opSequenceMaster = this.repository.findBySequenceCode(companyId,
 					command.getSequenceCode());
-			SequenceMaster oldDomain = opSequenceMaster.get();
-			command.setOrder(oldDomain.getOrder());
-			command.setSequenceCode(oldDomain.getSequenceCode().v());
+			
+			if (opSequenceMaster.isPresent()) {
+				SequenceMaster oldDomain = opSequenceMaster.get();
+				command.setOrder(oldDomain.getOrder());
+				command.setSequenceCode(oldDomain.getSequenceCode().v());
 
-			this.repository.update(command.toDomain(companyId));
+				this.repository.update(command.toDomain(companyId));
+			}			
 		}
 	}
 

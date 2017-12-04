@@ -14,7 +14,7 @@
 					nts.uk.ctx.bs.person.dom.person.setting.init.ValueSettingCode
 					nts.uk.ctx.bs.person.dom.person.setting.init.ValueSettingName
 					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName
-					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana
+<!-- 					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana -->
 					nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
 					nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameKana
 					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName
@@ -75,10 +75,10 @@
 							name: '#[CPS009_9]',	
 							dataSource: initValSettingLst ,
 							primaryKey: 'settingId' ,
-							columns: ctgColums ,
+							columns: settingColums ,
 							multiple: false,
 							value: initSettingId,
-							rows:15 }">
+							rows:15 }" tabindex="6">
 						</table>
 					</div>
 					<div id="content-right">
@@ -94,7 +94,7 @@
 								value: currentCategory().settingCode ,
 								constraint: 'ValueSettingCode',
 								enable: false,
-								immediate: false}"></input>
+								immediate: false}" tabindex="7"></input>
 							<!-- A3_003: 名称 -->
 							<input id="ctgName"
 								data-bind="ntsTextEditor: {
@@ -103,12 +103,12 @@
 								constraint: 'ValueSettingName',
 								enable: true,
 								immediate: false,
-								required: true}"></input>
+								required: true}" tabindex="8"></input>
 						</div>
 						<div id='sub-content-right'>
 							<div id="search_his" class='flex valign-center'>
 							<!-- A3_004: カテゴリー検索 -->
-							<div id="search" tabindex="6"
+							<div id="search" tabindex="9"
 									data-bind="ntsSearchBox: {
 									name: '#[CPS009_17]',
 									searchMode: 'filter',
@@ -118,31 +118,31 @@
 									items: currentCategory().ctgList ,  
 									selectedKey: 'perInfoCtgId',
 									fields: ['categoryName']}" />
-								<div id="history">
+								<div id="history" class="flex valign-center">
 									<!-- A3_012: Label: 基準日ラベル -->
 									<label> #{i18n.getText('CPS009_19')}</label>
 									<!-- A3_13: button ヘルプボタン -->
-									<button class="small" data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }">?</button>
+									<button id="A3_13" class="small" data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }" tabindex="11">?</button>
 									<!-- A3_014: 履歴参照基準日(History reference date) -->
 									<div id="date1" data-bind="ntsDatePicker: {
 											name: '#[CPS009_19]',
 											value: baseDate, 
 											required: true,
-											dateFormat: 'YYYY/MM/DD'}"></div>
+											dateFormat: 'YYYY/MM/DD'}" tabindex="12"></div>
 									<!-- A3_15: button 適用 -->
-									<button data-bind="click: historyFilter_Lan">#{i18n.getText('CPS009_20')}</button>
+									<button id="A3_15" data-bind="click: historyFilter_Lan" tabindex="13">#{i18n.getText('CPS009_20')}</button>
 								</div>							
 							</div>
 							<div id='sub-left'>	
 								<!-- A3_005: list カテゴリ一覧 -->								
-								<table id="item_grid"   
+ 								<table id="item_grid"   
 									data-bind="ntsGridList: {	
 									dataSource: currentCategory().ctgList ,
 									primaryKey: 'perInfoCtgId' ,
 									columns: currentCategory().ctgColums ,
 									multiple: false,
-									value: currentCategory().currentItemId ,
-									rows:15 }">
+									value: currentItemId,
+									rows:15 }" tabindex="10">
 								</table >
 								<div style=" margin-top: 40px;">
 								<!-- A3_011: label 済マーク説明 -->
@@ -152,18 +152,18 @@
 							<div id='sub-center'>
 							 <span class="caret-background caret-right direction-right" style="margin-top: 135px;"></span>
 							</div>
-							<div id='sub-right'>
+							<div id='sub-right' tabindex="14">
 								<!-- A3_016: table 項目初期値設定表 -->
-								<table class="contents-header">
+								<table class="contents-header" >
 								<thead>
 										<tr>
 											<!-- A3_017: header 項目名 -->
 											<td id="COL_1" colspan="2">#{i18n.getText('CPS009_21')}</td>
 											<td id="COL_2" colspan="2">
 												<!-- A3_018: button 一括設定ボタン -->
-												<button id="A2_012" class = "small" data-bind=" click: openBDialog">#{i18n.getText('CPS009_22')} </button>
+												<button id="A2_012" class = "small" data-bind=" click: openBDialog" tabindex="15">#{i18n.getText('CPS009_22')} </button>
 												<!-- A3_019: help button -->
-												<button id="help" data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }" NameID="A">?</button>
+												<button id="help" data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }" tabindex="16">?</button>
 											</td>
 											<!-- A3_020: header 値 -->
 											<td id="COL_3" >#{i18n.getText('CPS009_23')}</td>
@@ -173,7 +173,7 @@
 
 								 <section class="table-container">
 								  <div>
-								  <table>
+								  <table > 
 							         
 									<tbody data-bind="foreach: currentCategory().itemList()">
 										<td id="name" class='input-units-1'
@@ -193,7 +193,7 @@
 												enable: true,
 												columns: [
 													{ prop: 'name', length: 10 },
-												]}"></div>
+												]}" ></div>
 
 										</td>
 										  
@@ -206,9 +206,10 @@
  						 	 		<com:ko-if bind="(selectedRuleCode() === 2 )">   
 										<td class="input-units-3 ">
 											<!-- String  -->
-											<com:ko-if bind="(dataType() === 0) || (dataType() === 1)">
+											<com:ko-if bind="(dataType() === 1)">
 												
 												<com:ko-if bind="(isRequired() === 1)">
+													<com:ko-if bind="(fixedItem === true)">
 													<input id="string" class="sub-input-units save-error"
 															data-bind="ntsTextEditor: {
 															name:  itemName ,
@@ -216,15 +217,40 @@
 															constraint: constraint,
 															required: true},
 															attr: { NameID: itemName }" />
+													</com:ko-if> 
+													
+													<com:ko-if bind="(fixedItem === false)">
+													<input id="string" class="sub-input-units save-error"
+															data-bind="ntsTextEditor: {
+															name:  itemName ,
+															value: stringValue , 
+															constraint: itemCode,
+															required: true},
+															attr: { NameID: itemName }" />
+													</com:ko-if> 
+																										
 												</com:ko-if> 
 												
 												<com:ko-if bind="(isRequired() === 0)">
+													<com:ko-if bind="(fixedItem === true)">
 													<input id="string" class="sub-input-units save-error"
 															data-bind="ntsTextEditor: {
 															name:  itemName ,
 															value: stringValue , 
 															constraint: constraint},
 															attr: { NameID: itemName }" />
+													</com:ko-if> 
+													
+													<com:ko-if bind="(fixedItem === false)">
+													<input id="string" class="sub-input-units save-error"
+															data-bind="ntsTextEditor: {
+															name:  itemName ,
+															value: stringValue , 
+															constraint: itemCode},
+															attr: { NameID: itemName }" />
+													</com:ko-if> 													
+												
+
 												</com:ko-if> 
 											</com:ko-if> 
 											
@@ -241,7 +267,7 @@
 															 dateFormat: 'YYYY/MM/DD',
 															 valueFormat: 'YYYY/MM/DD',
 															 required: true
-															 }, attr: { NameID: itemName }">
+															 }, attr: { NameID: itemName }" >
 														 </div>
 													 </com:ko-if> 
 													 
@@ -252,7 +278,7 @@
 															 value: dateValue, 
 															 dateFormat: 'YYYY/MM/DD',
 															 valueFormat: 'YYYY/MM/DD'
-															 }, attr: { NameID: itemName }">
+															 }, attr: { NameID: itemName }" >
 														 </div>
 													 </com:ko-if> 													 
 												</com:ko-if>
@@ -268,7 +294,7 @@
 		                   									dateFormat: 'YYYY/MM', 
 		                   									valueFormat: 'YYYY/MM',
 		                   									required: true
-		                   									}, attr: { NameID: itemName }">
+		                   									}, attr: { NameID: itemName }" >
 		                   								</div>	
 	                   								 </com:ko-if> 	
 	                   								 
@@ -279,7 +305,7 @@
 		                   									value: dateValue, 
 		                   									dateFormat: 'YYYY/MM', 
 		                   									valueFormat: 'YYYY/MM'
-		                   									}, attr: { NameID: itemName }">
+		                   									}, attr: { NameID: itemName }" >
 		                   								</div>	
 	                   								</com:ko-if> 	
 	                   									                   								 								
@@ -295,7 +321,7 @@
 															dateFormat: 'YYYY', 
 															valueFormat: 'YYYY',
 															required: true},
-															attr: { NameID: itemName }">
+															attr: { NameID: itemName }" >
 														</div>	
 													</com:ko-if> 	
 																										
@@ -306,7 +332,7 @@
 															value: dateValue, 
 															dateFormat: 'YYYY', 
 															valueFormat: 'YYYY'},
-															attr: { NameID: itemName }">
+															attr: { NameID: itemName }" >
 														</div>	
 													</com:ko-if> 	
 												</com:ko-if>	
@@ -335,7 +361,7 @@
 														value: dateWithDay, 
 														enable: true, 
 														readonly: false},
-														attr: { NameID: itemName }" />
+														attr: { NameID: itemName }"  />
 												</com:ko-if> 	
 											</com:ko-if>
 											
@@ -378,13 +404,13 @@
 													enable: true,
 													columns: [
 														{ prop: 'selectionName', length: 5 },
-													]}"></div>
+													]}" ></div>
 											</com:ko-if>
 											
 											<!-- number   -->
 											<com:ko-if bind="(dataType() === 2)">
 											
-											<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart === 0)) ">
+											<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart !== 0)) ">
 												<com:ko-if bind="(isRequired() === 1)">
 												<div data-bind="with: numbereditor">
 									

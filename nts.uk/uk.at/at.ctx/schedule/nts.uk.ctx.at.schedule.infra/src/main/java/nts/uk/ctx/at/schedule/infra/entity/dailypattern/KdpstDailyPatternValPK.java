@@ -11,18 +11,9 @@ import javax.persistence.Embeddable;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.query.DBCharPaddingAs;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternCode;
 
 /**
  * The Class KdpstDailyPatternValPK.
- */
-
-/**
- * Sets the cid.
- *
- * @param cid
- *            the new cid
  */
 @Setter
 @Getter
@@ -37,7 +28,6 @@ public class KdpstDailyPatternValPK implements Serializable {
 	private String cid;
 
 	/** The pattern cd. */
-//	@DBCharPaddingAs(PatternCode.class)
 	@Column(name = "PATTERN_CD")
 	private String patternCd;
 
@@ -49,6 +39,7 @@ public class KdpstDailyPatternValPK implements Serializable {
 	 * Instantiates a new kdpst daily pattern val PK.
 	 */
 	public KdpstDailyPatternValPK() {
+		super();
 	}
 
 	/**

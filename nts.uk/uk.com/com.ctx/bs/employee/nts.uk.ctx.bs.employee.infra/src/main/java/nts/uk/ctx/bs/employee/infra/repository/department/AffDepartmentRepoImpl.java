@@ -113,8 +113,8 @@ public class AffDepartmentRepoImpl extends JpaRepository implements AffDepartmen
 	 * @param domain
 	 */
 	@Override
-	public void deleteAffDepartment(AffiliationDepartment domain) {
-		this.commandProxy().remove(BsymtAffiDepartment.class, domain.getId());
+	public void deleteAffDepartment(String affiDepartmentID) {
+		this.commandProxy().remove(BsymtAffiDepartment.class, affiDepartmentID);
 	}
 
 	@Override

@@ -93,22 +93,26 @@ module nts.uk.at.view.kaf002.cm {
                 self.approvalList = approvalList;
             }
             
-            register(){
+            register(errorFlag: any, errorMsg: any){
                 var self = this;
-                if(!nts.uk.text.isNullOrEmpty(self.currentReason())){
-                    var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
-                    self.application().titleReason(reasonText.content);    
-                }else{
-                    self.application().titleReason("");
+                if(errorFlag!=0){
+                    nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
+                } else {
+                    if(!nts.uk.text.isNullOrEmpty(self.currentReason())){
+                        var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
+                        self.application().titleReason(reasonText.content);    
+                    }else{
+                        self.application().titleReason("");
+                    }
+                    switch(self.stampRequestMode()){
+                        case 0: self.m1.register(self.application(), self.approvalList);break;    
+                        case 1: self.m2.register(self.application(), self.approvalList);break;  
+                        case 2: self.m3.register(self.application(), self.approvalList);break; 
+                        case 3: self.m4.register(self.application(), self.approvalList);break; 
+                        case 4: self.m5.register(self.application(), self.approvalList);break; 
+                        default: break;
+                    }    
                 }
-                switch(self.stampRequestMode()){
-                    case 0: self.m1.register(self.application(), self.approvalList);break;    
-                    case 1: self.m2.register(self.application(), self.approvalList);break;  
-                    case 2: self.m3.register(self.application(), self.approvalList);break; 
-                    case 3: self.m4.register(self.application(), self.approvalList);break; 
-                    case 4: self.m5.register(self.application(), self.approvalList);break; 
-                    default: break;
-                }    
             }
             
             update(approvalList: Array<vmbase.AppApprovalPhase>){

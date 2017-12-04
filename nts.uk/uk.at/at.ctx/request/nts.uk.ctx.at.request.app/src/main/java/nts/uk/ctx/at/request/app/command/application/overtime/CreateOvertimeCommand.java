@@ -68,22 +68,22 @@ public class CreateOvertimeCommand {
 	/**
 	 * 残業申請.勤務開始時刻1
 	 */
-	private int workClockFrom1;
+	private Integer workClockFrom1;
 	/**
 	 * 残業申請.勤務終了時刻1
 	 */
-	private int workClockTo1;
+	private Integer workClockTo1;
 	/**
 	 * 残業申請.勤務開始時刻2
 	 */
-	private int workClockFrom2;
+	private Integer workClockFrom2;
 	/**
 	 * 残業申請.勤務終了時刻2
 	 */
-	private int workClockTo2;
+	private Integer workClockTo2;
 	/**
 	 * 休出時間
-	 * ATTENDANCE_ID = 0
+	 * ATTENDANCE_ID = 2
 	 */
 	private List<OvertimeInputCommand> breakTimes;
 	
@@ -94,7 +94,7 @@ public class CreateOvertimeCommand {
 	private List<OvertimeInputCommand> overtimeHours;
 	/**
 	 * 加給時間
-	 * ATTENDANCE_ID = 2
+	 * ATTENDANCE_ID = 0
 	 */
 	private List<OvertimeInputCommand> restTime;
 	/**

@@ -36,51 +36,51 @@ public class KscstEstComSet extends UkJpaEntity implements Serializable {
 	private String cid;
 
 	/** The time yearly disp cond. */
-	@Column(name = "TIME_YEAR_DISP")
+	@Column(name = "TIME_Y_DISP")
 	private int timeYearlyDispCond;
 
 	/** The time monthly disp cond. */
-	@Column(name = "TIME_MONTH_DISP")
+	@Column(name = "TIME_M_DISP")
 	private int timeMonthlyDispCond;
 
 	/** The time year alarm check cond. */
-	@Column(name = "TIME_YEAR_ALARM_CHECK")
+	@Column(name = "TIME_Y_ALARM_CHECK")
 	private int timeYearAlarmCheckCond;
 	
 	/** The time month alarm check cond. */
-	@Column(name = "TIME_MONTH_ALARM_CHECK")
+	@Column(name = "TIME_M_ALARM_CHECK")
 	private int timeMonthAlarmCheckCond;
 
 	/** The price yearly disp cond. */
-	@Column(name = "PRICE_YEAR_DISP")
+	@Column(name = "PRICE_Y_DISP")
 	private int priceYearlyDispCond;
 
 	/** The price monthly disp cond. */
-	@Column(name = "PRICE_MONTH_DISP")
+	@Column(name = "PRICE_M_DISP")
 	private int priceMonthlyDispCond;
 
 	/** The price year alarm check cond. */
-	@Column(name = "PRICE_YEAR_ALARM_CHECK")
+	@Column(name = "PRICE_Y_ALARM_CHECK")
 	private int priceYearAlarmCheckCond;
 	
 	/** The price month alarm check cond. */
-	@Column(name = "PRICE_MONTH_ALARM_CHECK")
+	@Column(name = "PRICE_M_ALARM_CHECK")
 	private int priceMonthAlarmCheckCond;
 
 	/** The num of day yearly disp cond. */
-	@Column(name = "NUM_OF_DAY_YEAR_DISP")
+	@Column(name = "DAYS_Y_DISP")
 	private int numOfDayYearlyDispCond;
 
 	/** The num of day monthly disp cond. */
-	@Column(name = "NUM_OF_DAY_MONTH_DISP")
+	@Column(name = "DAYS_M_DISP")
 	private int numOfDayMonthlyDispCond;
 
 	/** The num of day alarm check cond. */
-	@Column(name = "DAYS_YEAR_ALARM_CHECK")
+	@Column(name = "DAYS_Y_ALARM_CHECK")
 	private int daysYearAlarmCheckCond;
 	
 	/** The num of day alarm check cond. */
-	@Column(name = "DAYS_MONTH_ALARM_CHECK")
+	@Column(name = "DAYS_M_ALARM_CHECK")
 	private int daysMonthAlarmCheckCond;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstGuideSetting", orphanRemoval = true)

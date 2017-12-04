@@ -29,6 +29,7 @@ public class CbmstBeginningMonth extends UkJpaEntity implements Serializable {
 
 	/** The cid. */
 	@Id
+	@Column(name = "CID")
 	private String cid;
 
 	/** The month. */

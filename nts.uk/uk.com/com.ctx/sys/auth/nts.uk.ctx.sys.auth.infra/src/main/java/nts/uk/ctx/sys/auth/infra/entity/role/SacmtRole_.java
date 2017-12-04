@@ -10,11 +10,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class SacmtRole_.
  */
-@StaticMetamodel(SaumtRole.class)
+@StaticMetamodel(SacmtRole.class)
 public class SacmtRole_ {
 	/** The id. */
-	public static volatile SingularAttribute<SaumtRole, String> id;
+	public static volatile SingularAttribute<SacmtRole, String> roleId;
 	
 	/** The cid. */
-	public static volatile SingularAttribute<SaumtRole, String> cid;
+	public static volatile SingularAttribute<SacmtRole, String> cid;
 }
