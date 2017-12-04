@@ -21,7 +21,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.Wo
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 
 @Stateless
-public class BasicScheduleUpdateCommandHandle extends CommandHandler<BasicScheduleUpdateCommand> {
+public class BasicScheduleUpdateCommandHandler extends CommandHandler<BasicScheduleUpdateCommand> {
 
 	@Inject
 	private BasicScheduleRepository basicScheduleRepository;

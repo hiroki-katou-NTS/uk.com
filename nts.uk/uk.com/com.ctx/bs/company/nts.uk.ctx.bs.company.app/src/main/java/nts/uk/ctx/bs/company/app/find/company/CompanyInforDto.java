@@ -1,4 +1,4 @@
-package nts.uk.ctx.find;
+package nts.uk.ctx.bs.company.app.find.company;
 
 import java.math.BigDecimal;
 

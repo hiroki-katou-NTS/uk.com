@@ -42,7 +42,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " AND c.deprecateAtr = :deprecateClassification";
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
 			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode IN :workTypeCode"
-			+ " AND c.workTimeCode IN :workTimeCode";
+			+ " OR c.workTimeCode IN :workTimeCode";
 	private static final String GET_WORK_SCH_TIMEZONE = "SELECT a FROM KscdtWorkScheduleTimeZone a"
 			+ " WHERE a.kscdtWorkScheduleTimeZonePk.sId IN :sId"
 			+ " AND a.kscdtWorkScheduleTimeZonePk.date >= :startDate"

@@ -1,4 +1,4 @@
-package nts.uk.ctx.command;
+package nts.uk.ctx.bs.company.app.command.company;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public class DeleteCompanyInforCommandHandler extends CommandHandler<DeleteCompa
 	protected void handle(CommandHandlerContext<DeleteCompanyInforCommand> context) {
 		DeleteCompanyInforCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
-		Optional<CompanyInforNew> com = comRep.findComByCode(data.getCompanyId());
+		Optional<CompanyInforNew> com = comRep.find(data.getCompanyId());
 		if(!com.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}

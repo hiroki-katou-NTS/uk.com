@@ -1,4 +1,4 @@
-package nts.uk.ctx.command;
+package nts.uk.ctx.bs.company.app.command.company;
 
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public class AddCompanyInforCommandHandler extends CommandHandler<AddCompanyInfo
 	protected void handle(CommandHandlerContext<AddCompanyInforCommand> context) {
 		AddCompanyInforCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
-		Optional<CompanyInforNew> com = comRep.findComByCode(CompanyInforNew.createCompanyId(data.getCcd(), data.getContractCd()));
+		Optional<CompanyInforNew> com = comRep.find(CompanyInforNew.createCompanyId(data.getCcd(), data.getContractCd()));
 		// company existed
 		if(com.isPresent()){
 			throw new BusinessException("Msg_3");
