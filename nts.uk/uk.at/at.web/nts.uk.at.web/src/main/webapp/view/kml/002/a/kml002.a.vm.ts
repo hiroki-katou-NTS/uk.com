@@ -537,8 +537,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             dailyAttendanceAtrs.push(5);
             var param = {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
-                scheduleAtr: 1,
-                budgetAtr: 1,
+                scheduleAtr: 0,
+                budgetAtr: 0,
                 unitAtr: 0
             };
             service.getDailyItems(param).done(function(data) {
@@ -561,7 +561,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
         }
         
         formulaTime(): JQueryPromise<any> {
-
             var self = this;
             var dfd = $.Deferred();
             self.dailyItems = [];
@@ -570,8 +569,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             dailyAttendanceAtrs.push(3);
             var param = {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
-                scheduleAtr: 1,
-                budgetAtr: 1,
+                scheduleAtr: 2,
+                budgetAtr: 2,
                 unitAtr: 0
             };
             service.getDailyItems(param).done(function(data) {

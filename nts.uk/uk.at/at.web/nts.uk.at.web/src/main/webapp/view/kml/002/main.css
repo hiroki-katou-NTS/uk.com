@@ -589,3 +589,6 @@ Screen K
 #treegridItemsAmount_displayContainer{
 	height: 362px!important;
 }
+.ui-igcombo-list{
+	max-height: 300px!important;
+}
