@@ -5,6 +5,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
     export class ScreenModel {
         // Time data
+        isComplete: KnockoutObservable<boolean> = ko.observable(false);
         taskId: KnockoutObservable<string> = ko.observable("");
         startTime: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
         endTime: KnockoutObservable<string> = ko.observable("");
@@ -103,6 +104,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                         self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
                         
                         if (!info.pending && !info.running) {
+                            self.isComplete(true);
+                            
                             // End Time
                             self.elapseTime.end();
                             self.endTime(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
