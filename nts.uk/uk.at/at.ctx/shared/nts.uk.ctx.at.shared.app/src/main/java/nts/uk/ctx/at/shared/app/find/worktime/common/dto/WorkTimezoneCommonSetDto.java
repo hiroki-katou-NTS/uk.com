@@ -50,7 +50,7 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 	private WorkTimezoneStampSetDto stampSet;
 
 	/** The late night time set. */
-	private TimeRoundingSettingDto lateNightTimeSet;
+	private WorkTimezoneLateNightTimeSetDto lateNightTimeSet;
 
 	/** The short time work set. */
 	private WorkTimezoneShortTimeWorkSetDto shortTimeWorkSet;

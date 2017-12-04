@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneSetMemeto;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
  */
 @Getter
 @Setter
-public class FlowWorkRestTimezoneDto implements FlowWorkRestTimezoneSetMemeto{
+public class FlowWorkRestTimezoneDto implements FlowWorkRestTimezoneSetMemento{
 	/** The fix rest time. */
 	private boolean fixRestTime;
 	
