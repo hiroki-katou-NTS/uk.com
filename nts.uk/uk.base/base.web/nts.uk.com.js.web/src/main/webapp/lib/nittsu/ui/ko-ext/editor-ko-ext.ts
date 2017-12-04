@@ -163,7 +163,7 @@ module nts.uk.ui.koExtentions {
                     if (!result.isValid) {
                         $input.ntsError('set', result.errorMessage, result.errorCode);
                     } 
-                }
+                } 
             });
             
             // Format on blur
