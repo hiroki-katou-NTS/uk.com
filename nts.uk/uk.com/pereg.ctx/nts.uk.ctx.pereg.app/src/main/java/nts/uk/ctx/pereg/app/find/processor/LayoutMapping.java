@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import find.layout.classification.LayoutPersonInfoClsDto;
-import find.layout.classification.LayoutPersonInfoValueDto;
-import find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
-import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.PeregComboList;
 import nts.uk.shr.pereg.app.PeregItem;

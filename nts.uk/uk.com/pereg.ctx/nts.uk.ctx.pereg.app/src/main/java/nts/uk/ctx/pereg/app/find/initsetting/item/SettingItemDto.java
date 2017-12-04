@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
-import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 
 /**
  * @author sonnlb

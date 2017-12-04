@@ -7,11 +7,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import find.person.info.category.PerInfoCtgMapDto;
-import find.person.setting.init.category.SettingCtgDto;
 import nts.uk.ctx.pereg.app.command.copysetting.setting.UpdatePerInfoCtgCopyCommand;
 import nts.uk.ctx.pereg.app.command.copysetting.setting.UpdatePerInfoCtgCopyCommandHandler;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgMapDto;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.SettingCtgDto;
 
 /**
  * @author sonnlb

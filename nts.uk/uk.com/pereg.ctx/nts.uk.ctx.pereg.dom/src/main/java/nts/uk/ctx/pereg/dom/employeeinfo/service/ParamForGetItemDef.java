@@ -2,7 +2,7 @@ package nts.uk.ctx.pereg.dom.employeeinfo.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 
 @Getter
 @AllArgsConstructor
