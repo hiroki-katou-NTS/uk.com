@@ -21,7 +21,7 @@ module cmm001.a {
         constructor() {  
             let self = this;
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: nts.uk.resource.getText("CMM001_16"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-1', title: nts.uk.resource.getText("CMM001_16"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
                 { id: 'tab-2', title: nts.uk.resource.getText("CMM001_17"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-3', title: nts.uk.resource.getText("CMM001_18"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
@@ -52,7 +52,7 @@ module cmm001.a {
             self.currentCompany = ko.observable(null);   
             self.currentCompanyCode = ko.observable('');  
             self.sel001Data = ko.observableArray([]);
-            self.display = ko.observable(false);
+            self.display = ko.observable(true);
             self.checkInsert = ko.observable(false);
             
             self.roundingRules = ko.observableArray([
@@ -65,7 +65,7 @@ module cmm001.a {
             ]);
             // subscribe each company
             self.currentCompanyCode.subscribe((value) => {
-                nts.uk.ui.errors.clearAll();
+                nts.uk.ui.errors.clearAll();   
                 if (value) {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
@@ -99,15 +99,15 @@ module cmm001.a {
                         $("#companyName").focus();
                     });
                 }
-            });
+            });  
             // subscribe when check A2_2
             self.display.subscribe((item) => {
                 if(item){
-                    self.sel001Data(_.filter(self.listCom(), function(obj) {
+                    self.sel001Data(self.listCom());
+                }else{
+                         self.sel001Data(_.filter(self.listCom(), function(obj) {
                         return obj.isAbolition == 1;
                     }));
-                }else{
-                    self.sel001Data(self.listCom());    
                 }
             });
         }
