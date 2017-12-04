@@ -4,6 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-public class BreakoutFrameNo {
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
+/**
+ * The Class BreakoutFrameNo.
+ */
+// 休出枠NO
+@IntegerRange(min = 1, max = 10)
+public class BreakoutFrameNo extends IntegerPrimitiveValue<BreakoutFrameNo> {
+	private static final long serialVersionUID = 1L;
+
+	public BreakoutFrameNo(Integer rawValue) {
+		super(rawValue);
+	}
 }
