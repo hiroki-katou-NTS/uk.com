@@ -1,4 +1,4 @@
-package command.roles.auth;
+package nts.uk.ctx.pereg.app.command.roles.auth;
 
 import java.util.List;
 

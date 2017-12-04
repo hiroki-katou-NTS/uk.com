@@ -1,4 +1,4 @@
-package command.roles.auth.category;
+package nts.uk.ctx.pereg.app.command.roles.auth.category;
 
 import lombok.Getter;
 import lombok.Setter;

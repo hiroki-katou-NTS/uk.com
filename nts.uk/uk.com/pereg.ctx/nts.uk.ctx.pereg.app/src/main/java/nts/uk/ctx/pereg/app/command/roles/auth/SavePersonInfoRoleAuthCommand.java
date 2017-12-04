@@ -1,8 +1,8 @@
-package command.roles.auth;
+package nts.uk.ctx.pereg.app.command.roles.auth;
 
-import command.roles.auth.category.SavePersonInfoCategoryAuthCommand;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pereg.app.command.roles.auth.category.SavePersonInfoCategoryAuthCommand;
 
 @Getter
 @Setter

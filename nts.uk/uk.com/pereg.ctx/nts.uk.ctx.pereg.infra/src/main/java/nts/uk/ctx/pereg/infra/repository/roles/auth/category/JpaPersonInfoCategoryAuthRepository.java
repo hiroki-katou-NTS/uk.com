@@ -32,7 +32,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId"
 			+ " AND c.abolitionAtr = 0" + "	ORDER BY co.disporder";
 
-	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName "
+	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT cJpaPersonInfoItemAuthRepository.java.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName "
 			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
 			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
 			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"

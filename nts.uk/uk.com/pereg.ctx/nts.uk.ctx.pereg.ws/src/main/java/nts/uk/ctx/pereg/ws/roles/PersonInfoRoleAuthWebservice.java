@@ -8,11 +8,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import command.roles.auth.SavePersonInfoRoleAuthCommand;
-import command.roles.auth.SavePersonInfoRoleAuthCommandHandler;
-import command.roles.auth.UpdatePersonInfoRoleAuthCommand;
-import command.roles.auth.UpdatePersonInfoRoleAuthCommandHandler;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pereg.app.command.roles.auth.SavePersonInfoRoleAuthCommand;
+import nts.uk.ctx.pereg.app.command.roles.auth.SavePersonInfoRoleAuthCommandHandler;
+import nts.uk.ctx.pereg.app.command.roles.auth.UpdatePersonInfoRoleAuthCommand;
+import nts.uk.ctx.pereg.app.command.roles.auth.UpdatePersonInfoRoleAuthCommandHandler;
 import nts.uk.ctx.pereg.app.find.roles.auth.PersonInfoRoleAuthDto;
 import nts.uk.ctx.pereg.app.find.roles.auth.PersonInfoRoleAuthFinder;
 import nts.uk.shr.com.context.AppContexts;

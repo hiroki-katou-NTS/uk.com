@@ -1,4 +1,4 @@
-package command.roles.auth;
+package nts.uk.ctx.pereg.app.command.roles.auth;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,12 +11,12 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuth;
-import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
-import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuth;
-import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoRoleAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoRoleAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

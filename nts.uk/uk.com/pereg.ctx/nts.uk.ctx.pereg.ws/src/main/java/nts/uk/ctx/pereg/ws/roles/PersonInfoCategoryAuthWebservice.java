@@ -8,9 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import command.roles.auth.category.UpdatePersonInfoCategoryAuthCommand;
-import command.roles.auth.category.UpdatePersonInfoCategoryAuthCommandHandler;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pereg.app.command.roles.auth.category.UpdatePersonInfoCategoryAuthCommand;
+import nts.uk.ctx.pereg.app.command.roles.auth.category.UpdatePersonInfoCategoryAuthCommandHandler;
 import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthDto;
 import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthFinder;
 import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryDetailDto;
