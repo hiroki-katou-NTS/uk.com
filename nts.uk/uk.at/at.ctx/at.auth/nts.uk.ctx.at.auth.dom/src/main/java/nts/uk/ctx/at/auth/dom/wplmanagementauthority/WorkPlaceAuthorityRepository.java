@@ -41,5 +41,5 @@ public interface WorkPlaceAuthorityRepository {
 	 * @param roleId
 	 * @param functionNo
 	 */
-	void deleteWorkPlaceAuthority(String companyId, String roleId,int functionNo);
+	void deleteWorkPlaceAuthority(String companyId, String roleId);
 }
