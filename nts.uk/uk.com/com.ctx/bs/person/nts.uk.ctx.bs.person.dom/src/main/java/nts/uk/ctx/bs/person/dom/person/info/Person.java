@@ -15,10 +15,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessEnglishName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
-import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessOtherName;
-import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
-import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessNameKana;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessOtherName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 
 /**
  * The Class Person.

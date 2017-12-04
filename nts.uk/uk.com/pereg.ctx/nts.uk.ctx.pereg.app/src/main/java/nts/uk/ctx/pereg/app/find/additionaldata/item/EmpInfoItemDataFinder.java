@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 
 @Stateless
 public class EmpInfoItemDataFinder {

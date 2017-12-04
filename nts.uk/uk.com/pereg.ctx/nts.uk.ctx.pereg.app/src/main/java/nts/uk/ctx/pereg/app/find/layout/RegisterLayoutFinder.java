@@ -9,27 +9,26 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.layout.NewLayoutDto;
-import find.layout.classification.LayoutPersonInfoClsDto;
-import find.layout.classification.LayoutPersonInfoClsFinder;
-import find.layout.classification.LayoutPersonInfoValueDto;
-import find.person.info.item.PerInfoItemDefDto;
-import find.person.info.item.SingleItemDto;
-import find.person.info.item.StringItemDto;
-import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
-import find.person.setting.init.category.SettingCtgDto;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
-import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
-import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
-import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.StringItemDto;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.SettingCtgDto;
+import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
+import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 
 /**
  * @author sonnlb

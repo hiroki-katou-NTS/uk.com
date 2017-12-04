@@ -2,7 +2,7 @@ package nts.uk.ctx.pereg.app.find.initsetting.item;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 
 /**
  * @author sonnlb

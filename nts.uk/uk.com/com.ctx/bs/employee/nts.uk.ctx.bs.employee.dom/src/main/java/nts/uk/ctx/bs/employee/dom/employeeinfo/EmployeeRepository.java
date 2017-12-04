@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 /**
  * The Interface EmployeeRepository.
@@ -129,14 +128,6 @@ public interface EmployeeRepository {
 	 */
 	Optional<Employee> findBySidCidSystemDate(String companyId, String personId , GeneralDate systemDate);
 	
-	/**
-	 * 
-	 * @param companyId
-	 * @return
-	 */
-	List<PersonInfoCategory> getAllPerInfoCtg(String companyId);
-	
-	List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId );
 	//sonnlb code start
 
 	void addNewEmployee(Employee newEmployee);

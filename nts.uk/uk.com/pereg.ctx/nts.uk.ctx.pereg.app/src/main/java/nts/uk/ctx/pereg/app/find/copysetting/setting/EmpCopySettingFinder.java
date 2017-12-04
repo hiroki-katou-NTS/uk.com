@@ -7,15 +7,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.person.info.category.PerInfoCtgMapDto;
-import find.person.setting.init.category.SettingCtgDto;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgMapDto;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.SettingCtgDto;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySetting;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 
