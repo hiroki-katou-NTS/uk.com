@@ -10,9 +10,11 @@ import java.util.Optional;
 
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregRecordId;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -45,9 +47,35 @@ public class MappingFactory {
 
 	}
 	
-	public static void mapListClsDto(PeregDto peregDto, List<LayoutPersonInfoClsDto> lstClsItem){
+	public static void mapListClsDto(EmpMaintLayoutDto empMaintLayoutDto, PeregDto peregDto, List<PerInfoItemDefForLayoutDto> lstClsItem){
 		// get dto value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getClass());
+		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem);
+	}
+	
+	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto ,
+			Map<String, Object> dtoFieldValue, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
+		
+		lstPerInfoItemDef.forEach(item -> {
+			if(item.getItemDefType() == 2){
+				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);			
+			}
+			else{
+				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);	
+				setEmpMaintLayoutDto(empMaintLayoutDto, dtoFieldValue, item.getLstChildItemDef());
+			}
+		});
+		
+	}
+		
+	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue){
+		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+		Object value = dtoFieldValue.get(item.getItemCode());
+		if(value != null){		
+			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
+			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
+			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+		}
 	}
 	
 	/**

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.LayoutQuery;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
@@ -209,9 +210,8 @@ public class PeregProcessor {
 			//get domain data
 			PeregDto queryResult = layoutingProcessor.findSingle(query);
 
-			//set fixed data			
-			matching(empMaintLayoutDto, perInfoCtg,  queryResult.getDomainDto(), queryResult.getDtoClass(), 
-					lstPerInfoItemDef, queryResult.getEmpOptionalData(), queryResult.getPerOptionalData());
+			//set fixed data	
+			MappingFactory.mapListClsDto(empMaintLayoutDto, queryResult, lstPerInfoItemDef);
 		}else{
 			setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
 		}
@@ -220,7 +220,6 @@ public class PeregProcessor {
 	private void matching(EmpMaintLayoutDto empMaintLayoutDto, PersonInfoCategory perInfoCtg, Object dto, Class<?> finderClass, 
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, List<EmpOptionalDto> empOptionalData, List<PersonOptionalDto> perOptionalData ){
 		LayoutMapping.mapFixDto(empMaintLayoutDto, dto, finderClass, lstPerInfoItemDef);
-		
 		int startOptionDtoPos = lstPerInfoItemDef.size();
 		if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
 				LayoutMapping.mapEmpOptionalDto(empMaintLayoutDto, empOptionalData, lstPerInfoItemDef, startOptionDtoPos);
