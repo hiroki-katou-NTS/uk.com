@@ -34,9 +34,22 @@
 		float: left;
 		border: 1px solid #CCC;
 		border-top: 0px;
+		border-left: 0px #CCC;
+	}
+	
+	.nts-fixed-header{
+		display: inline-block;
+	}
+	
+	.scroll-header{
+		background-color: #EDE9ED;
 	}
 	
 	.nts-fixed-body-wrapper {
-		margin: -1px 0 0 -1px;
+		margin: -1px 0 0 -1px;    
+		border-left: 1px solid;
+	}
+	.body-no-record{
+		margin-left: 0px;
 	}
 }

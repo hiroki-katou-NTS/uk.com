@@ -65,11 +65,14 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	}
 
 	@Override
-	public void updateLogInfo(String empCalAndSumExecLogID,int executionContent, int processStatus) {
-		this.getEntityManager().createQuery(UPDATE_LOG_INFO)
+	public void updateLogInfo(String empCalAndSumExecLogID, int executionContent, int processStatus) {
+		KrcdtExecutionLog krcdtExecutionLog = this.queryProxy()
+				.query(SELECT_BY_EXECUTION_LOG, KrcdtExecutionLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
-				.setParameter("processStatus", processStatus)
-				.setParameter("executionContent", executionContent).executeUpdate();
+				.setParameter("executionContent", executionContent).getSingle().get();
+		krcdtExecutionLog.processStatus = processStatus;
+		
+		this.commandProxy().update(krcdtExecutionLog);
 		this.getEntityManager().flush();
 	}
 

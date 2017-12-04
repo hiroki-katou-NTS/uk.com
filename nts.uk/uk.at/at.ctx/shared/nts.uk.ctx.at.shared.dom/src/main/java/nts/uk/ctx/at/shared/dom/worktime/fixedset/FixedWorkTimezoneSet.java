@@ -24,4 +24,25 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	/** The lst OT timezone. */
 	// 残業時間帯
 	private List<OverTimeOfTimeZoneSet> lstOTTimezone;
+	
+	
+	/**
+	 * Instantiates a new fixed work timezone set.
+	 *
+	 * @param memento the memento
+	 */
+	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento) {
+		this.lstWorkingTimezone = memento.getLstWorkingTimezone();
+		this.lstOTTimezone = memento.getLstOTTimezone();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FixedWorkTimezoneSetSetMemento memento){
+		memento.setLstWorkingTimezone(this.lstWorkingTimezone);
+		memento.setLstOTTimezone(this.lstOTTimezone);
+	}
 }

@@ -66,18 +66,18 @@ public interface FlexWorkSettingGetMemento {
 	 boolean getUseHalfDayShift();
 
 	/**
-	 * Gets the half day work timezone.
+	 * Gets the lst half day work timezone.
 	 *
-	 * @return the half day work timezone
+	 * @return the lst half day work timezone
 	 */
-	 List<FlexHalfDayWorkTime> getHalfDayWorkTimezone();
+	 List<FlexHalfDayWorkTime> getLstHalfDayWorkTimezone();
 
 	/**
 	 * Gets the stamp reflect timezone.
 	 *
 	 * @return the stamp reflect timezone
 	 */
-	 List<StampReflectTimezone> getStampReflectTimezone();
+	 List<StampReflectTimezone> getLstStampReflectTimezone();
 
 	/**
 	 * Gets the calculate setting.

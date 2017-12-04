@@ -2,12 +2,14 @@ module nts.uk.com.view.cas005.a {
     import getText = nts.uk.resource.getText;
     import ccg = nts.uk.com.view.ccg025.a;
     import errors = nts.uk.ui.errors;
+
     export module viewmodel {
         export class ScreenModel {
             //text
-            roleType: KnockoutObservable<number>;
             roleName: KnockoutObservable<string>;
             roleCode: KnockoutObservable<string>;
+            assignAtr : KnockoutObservable<number>;
+            employeeReferenceRange : KnockoutObservable<number>;
             //switch
             categoryAssign: KnockoutObservableArray<any>;
             referenceAuthority: KnockoutObservableArray<any>;
@@ -23,9 +25,8 @@ module nts.uk.com.view.cas005.a {
             items: KnockoutObservableArray<model.ItemModel2>;
             //table-right
             component: ccg.component.viewmodel.ComponentModel;
+            
             //table-left
-            columnRoleType : KnockoutObservableArray<any>;
-            currentType : KnockoutObservable<any>;
             //enum
             listEnumRoleType  :KnockoutObservableArray<any>;
             listEmployeeReferenceRange  :KnockoutObservableArray<any>;
@@ -37,12 +38,10 @@ module nts.uk.com.view.cas005.a {
             //list 
             listWebMenu : KnockoutObservableArray<any>;
             selectWebMenu : any;
+            listRole : KnockoutObservableArray<any>;
             //enable
             isRegister :KnockoutObservable<boolean>;
             isDelete :KnockoutObservable<boolean>;
-            
-            
-           
             
             constructor() {
                 let self = this;
@@ -54,33 +53,22 @@ module nts.uk.com.view.cas005.a {
                 self.scheduleScreen = ko.observable("");
                 self.registeredInquiries = ko.observable("");
                 self.specifyingAgent = ko.observable("");
-                self.columnRoleType = ko.observableArray([
-                    { headerText: 'コード', key: 'value', width: 100 },
-                    { headerText: '名称', key: 'name', width: 170 }
-                ]);
-                self.currentType = ko.observable(null);
+              
                 //text
                 self.roleName = ko.observable('');
-                self.roleType = ko.observable(123);
                 self.roleCode = ko.observable('');
-                self.roleType.subscribe((value) => {
-                    let item = _.find(self.listEnumRoleType(), ['value', Number(value)]).name;
-                    if(item !== undefined){
-                        self.roleName(item);   
-                    }else{
-                        self.roleName('');
-                    }
-                });
+                self.assignAtr = ko.observable(0);
+                self.employeeReferenceRange = ko.observable(0);
                 
 
                 //switch
                 self.categoryAssign = ko.observableArray([
-                    { code: '1', name: getText('CAS005_35') },
-                    { code: '2', name: getText('CAS005_36') }
+                    { code: '0', name: getText('CAS005_35') },
+                    { code: '1', name: getText('CAS005_36') }
                 ]);
                 self.referenceAuthority = ko.observableArray([
-                    { code: '1', name: getText('CAS005_41') },
-                    { code: '2', name: getText('CAS005_42') }
+                    { code: '0', name: getText('CAS005_41') },
+                    { code: '1', name: getText('CAS005_42') }
                 ]);
                 self.selectCategoryAssign = ko.observable(1);
                 self.selectReferenceAuthority = ko.observable(1);
@@ -104,19 +92,47 @@ module nts.uk.com.view.cas005.a {
                 //list
                 self.listWebMenu = ko.observableArray([]);
                 self.selectWebMenu = ko.observable(0);
+                self.listRole = ko.observableArray([]);
                 //enable
                 self.isRegister = ko.observable(false);
                 self.isDelete= ko.observable(false);
+                //table right
+                self.component = new ccg.component.viewmodel.ComponentModel({ 
+                    roleType: 3,
+                    multiple: false
+                });
+                self.component.currentCode.subscribe((value) => {
+                    self.roleCode(value);
+                    let item = _.find(self.listRole(), ['roleCode', value]);
+                    if(item !== undefined){
+                        self.roleName(item.name);
+                        self.assignAtr(item.assignAtr);   
+                        self.employeeReferenceRange(item.employeeReferenceRange);   
+                    }else{
+                        self.roleName('');
+                        self.assignAtr(1);
+                        self.employeeReferenceRange(1);
+                    }
+                });
+                
 
             }
             /** Select TitleMenu by Index: Start & Delete case */
-            private selectRoleTypeByIndex(index: number) {
+            private selectRoleCodeByIndex(index: number) {
                 var self = this;
-                var selectRoleTypeByIndex = _.nth(self.listEnumRoleType(), index);
-                if (selectRoleTypeByIndex !== undefined)
-                    self.roleType(selectRoleTypeByIndex.value);
-                else
-                    self.roleType(null);
+                var selectRoleCodeByIndex = _.nth(self.component.listRole(), index);
+                if (selectRoleCodeByIndex !== undefined){
+                    self.roleCode(selectRoleCodeByIndex.roleCode);
+                    self.roleName(selectRoleCodeByIndex.name);
+                    self.assignAtr(selectRoleCodeByIndex.assignAtr);
+                    self.employeeReferenceRange(selectRoleCodeByIndex.employeeReferenceRange);
+                }
+                else{
+                    self.roleCode(null);
+                    self.roleName(null);
+                    self.assignAtr(1);
+                    self.employeeReferenceRange(1);
+                }
                 
             }
             
@@ -128,12 +144,15 @@ module nts.uk.com.view.cas005.a {
                 
                 let self = this;
                 let dfd = $.Deferred();
-                self.selectRoleTypeByIndex(0);
+                
                 self.isRegister(true);
                 self.isDelete(true);
-                let dfdGetWebMenu = self.getListWebMenu();
-                $.when(dfdGetWebMenu).done((dfdGetWebMenuData) => {
-                    dfd.resolve();
+                self.component.startPage().done(function(){
+                    self.selectRoleCodeByIndex(0);  
+                    self.listRole(self.component.listRole());
+                    //self.roleCode = self.component.currentCode();
+                    self.getListWebMenu();
+                    dfd.resolve();    
                 });
                 return dfd.promise();
             }//end start page
@@ -143,7 +162,6 @@ module nts.uk.com.view.cas005.a {
              */
             createButton(){
                 let self = this;
-                self.roleType(null);    
                 self.roleName(null);
                 errors.clearAll();
                 $("#roleTypeCd").focus()
@@ -158,7 +176,7 @@ module nts.uk.com.view.cas005.a {
                 let self =this;
                 self.isRegister(true);
                 self.isDelete(true);
-                self.selectRoleTypeByIndex(0);    
+                self.selectRoleCodeByIndex(0);    
             }
             /**
              * btn delete

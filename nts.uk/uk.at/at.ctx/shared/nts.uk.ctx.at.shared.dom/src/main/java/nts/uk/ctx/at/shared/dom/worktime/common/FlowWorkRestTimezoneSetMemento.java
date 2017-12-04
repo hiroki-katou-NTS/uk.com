@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 /**
  * The Interface FlowWorkRestTimezoneSetMemeto.
  */
-public interface FlowWorkRestTimezoneSetMemeto {
+public interface FlowWorkRestTimezoneSetMemento {
 	
 	/**
 	 * Sets the fix rest time.

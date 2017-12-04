@@ -39,4 +39,35 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 	/** The settlement order. */
 	// 精算順序
 	private SettlementOrder settlementOrder;
+	
+	
+	/**
+	 * Instantiates a new over time of time zone set.
+	 *
+	 * @param memento the memento
+	 */
+	public OverTimeOfTimeZoneSet(OverTimeOfTimeZoneSetGetMemento memento) {
+		this.workTimezoneNo = memento.getWorkTimezoneNo();
+		this.restraintTimeUse = memento.getRestraintTimeUse();
+		this.earlyOTUse = memento.getEarlyOTUse();
+		this.timezone = memento.getTimezone();
+		this.OTFrameNo = memento.getOTFrameNo();
+		this.legalOTframeNo = memento.getLegalOTframeNo();
+		this.settlementOrder = memento.getSettlementOrder();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(OverTimeOfTimeZoneSetSetMemento memento){
+		memento.setWorkTimezoneNo(this.workTimezoneNo);
+		memento.setRestraintTimeUse(this.restraintTimeUse);
+		memento.setEarlyOTUse(this.earlyOTUse);
+		memento.setTimezone(this.timezone);
+		memento.setOTFrameNo(this.OTFrameNo);
+		memento.setLegalOTframeNo(this.legalOTframeNo);
+		memento.setSettlementOrder(this.settlementOrder);
+	}
 }

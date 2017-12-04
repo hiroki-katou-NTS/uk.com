@@ -82,7 +82,7 @@ module nts.uk.com.view.cas014.b {
                     }
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError({ messageId: error.message });
+                    alertError({ messageId: error.messageId });
                     dfd.reject();
                 }).always(() => {
                     block.clear();
@@ -103,7 +103,7 @@ module nts.uk.com.view.cas014.b {
                         _.each(_rspList, rsp => self.roleSetPersonList.push(rsp));
 
                         if (empId) {
-                            //select first 
+                            //select empId 
                             self.selectedEmployeeId(empId);
                             //self.selectedEmployeeId.valueHasMutated();
                         } else {
@@ -119,7 +119,7 @@ module nts.uk.com.view.cas014.b {
                         $("#B3_2").focus();
                     }
                 }).fail(function(error) {
-                    alertError({ messageId: error.message });
+                    alertError({ messageId: error.messageId });
                 });
             }
 
@@ -130,7 +130,7 @@ module nts.uk.com.view.cas014.b {
                         self.roleSetPerson(new RoleSetPerson(self.selectedRoleSet(), empId, data.employeeCode, data.personalName, _data.startDate, _data.endDate));
                     }
                 }).fail(function(error) {
-                    alertError({ messageId: error.message });
+                    alertError({ messageId: error.messageId });
                 });
             }
 
@@ -165,7 +165,7 @@ module nts.uk.com.view.cas014.b {
                             $("#B4_2").focus();
                         });
                     }).fail(error => {
-                        alertError({ messageId: error.message });
+                        alertError({ messageId: error.messageId });
                     }).always(() => {
                         block.clear();
                     });
@@ -199,7 +199,7 @@ module nts.uk.com.view.cas014.b {
                             block.clear();
                         });
                     }).fail(error => {
-                        alertError({ messageId: error.message });
+                        alertError({ messageId: error.messageId });
                     }).always(() => {
                         block.clear();
                     });

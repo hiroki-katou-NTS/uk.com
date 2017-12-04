@@ -144,30 +144,30 @@ public class CheckBeforeRegisterOvertime {
 	public static List<OverTimeInput> getOverTimeInput(CreateOvertimeCommand command, String Cid, String appId) {
 		List<OverTimeInput> overTimeInputs = new ArrayList<OverTimeInput>();
 		/**
-		 * 休出時間 ATTENDANCE_ID = 0
+		 * 休出時間 ATTENDANCE_ID = 2
 		 */
 		if (null != command.getBreakTimes()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getBreakTimes(), Cid, appId, AttendanceAtr.Time.value));
+			overTimeInputs.addAll(getOverTimeInput(command.getBreakTimes(), Cid, appId, AttendanceID.BREAKTIME.value));
 		}
 		/**
 		 * 残業時間 ATTENDANCE_ID = 1
 		 */
 		if (null != command.getOvertimeHours()) {
 			overTimeInputs
-					.addAll(getOverTimeInput(command.getOvertimeHours(), Cid, appId, AttendanceAtr.TimeOfDay.value));
+					.addAll(getOverTimeInput(command.getOvertimeHours(), Cid, appId, AttendanceID.NORMALOVERTIME.value));
 		}
 		/**
-		 * 加給時間 ATTENDANCE_ID = 2
+		 * 加給時間 ATTENDANCE_ID = 0
 		 */
 		if (null != command.getRestTime()) {
 			overTimeInputs
-					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceAtr.NumberOfTime.value));
+					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceID.RESTTIME.value));
 		}
 		/**
 		 * 加給時間 ATTENDANCE_ID = 3
 		 */
 		if (null != command.getBonusTimes()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceAtr.Attribute.value));
+			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceID.BONUSPAYTIME.value));
 		}
 		return overTimeInputs;
 	}

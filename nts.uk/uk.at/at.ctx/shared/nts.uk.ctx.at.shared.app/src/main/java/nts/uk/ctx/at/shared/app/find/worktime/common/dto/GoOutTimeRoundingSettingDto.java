@@ -6,13 +6,16 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSettingSetMemento;
 
 /**
  * The Class GoOutTimeRoundingSettingDto.
  */
 @Getter
 @Setter
-public class GoOutTimeRoundingSettingDto {
+public class GoOutTimeRoundingSettingDto implements GoOutTimeRoundingSettingSetMemento {
 
 	/** The rounding method. */
 	private Integer roundingMethod;
@@ -20,17 +23,22 @@ public class GoOutTimeRoundingSettingDto {
 	/** The rounding setting. */
 	private TimeRoundingSettingDto roundingSetting;
 
-	/**
-	 * Instantiates a new go out time rounding setting dto.
-	 *
-	 * @param roundingMethod the rounding method
-	 * @param roundingSetting the rounding setting
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimeRoundingSettingSetMemento#setRoundingMethod(nts.uk.ctx.at.shared
+	 * .dom.worktime.common.GoOutTimeRoundingMethod)
 	 */
-	public GoOutTimeRoundingSettingDto(Integer roundingMethod, TimeRoundingSettingDto roundingSetting) {
-		super();
-		this.roundingMethod = roundingMethod;
-		this.roundingSetting = roundingSetting;
+	@Override
+	public void setRoundingMethod(GoOutTimeRoundingMethod roundingMethod) {
+		this.roundingMethod = roundingMethod.value;
 	}
-	
-	
+
+	@Override
+	public void setRoundingSetting(TimeRoundingSetting roundingSetting) {
+		this.roundingSetting = new TimeRoundingSettingDto(roundingSetting.getRoundingTime().value,
+				roundingSetting.getRounding().value);
+	}
+
 }

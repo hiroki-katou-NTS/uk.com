@@ -6,13 +6,16 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetMemento;
 
 /**
  * The Class IntervalTimeDto.
  */
 @Getter
 @Setter
-public class IntervalTimeDto {
+public class IntervalTimeDto implements IntervalTimeSetMemento{
 
 	/** The interval time. */
 	private Integer intervalTime;
@@ -21,16 +24,26 @@ public class IntervalTimeDto {
 	private TimeRoundingSettingDto rounding;
 
 	/**
-	 * Instantiates a new interval time dto.
+	 * Sets the interval time.
 	 *
-	 * @param intervalTime the interval time
-	 * @param rounding the rounding
+	 * @param intervalTime the new interval time
 	 */
-	public IntervalTimeDto(Integer intervalTime, TimeRoundingSettingDto rounding) {
-		super();
-		this.intervalTime = intervalTime;
-		this.rounding = rounding;
+	@Override
+	public void setIntervalTime(AttendanceTime intervalTime) {
+		this.intervalTime = intervalTime.valueAsMinutes();
 	}
+
+	/**
+	 * Sets the rounding.
+	 *
+	 * @param rounding the new rounding
+	 */
+	@Override
+	public void setRounding(TimeRoundingSetting rounding) {
+		this.rounding = new TimeRoundingSettingDto(rounding.getRoundingTime().value, rounding.getRounding().value);
+	}
+
+
 	
 	
 }

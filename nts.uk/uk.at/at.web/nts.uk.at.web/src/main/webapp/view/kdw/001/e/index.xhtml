@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 800, height: 655 };</script>
+			<script>var dialogSize = { width: 810, height: 655 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -25,47 +25,47 @@
 					<table class="info-table">
 						<tr>
 							<td class="fix-width">#{i18n.getText('KDW001_24')}</td>
-							<td><span data-bind = "text : executionDate"> </span> </td>
+							<td><span data-bind="text: startTime"></span></td>
 						</tr>
 						<tr>
 							<td class="fix-width">#{i18n.getText('KDW001_25')}</td>
-							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+							<td><span data-bind="text: endTime"></span></td>
 						</tr>
 						<tr>
 							<td class="fix-width">#{i18n.getText('KDW001_26')}</td>
-							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+							<td><span id="elapseTime"></span></td>
 						</tr>
 						<tr>
 							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_9')}</span>
-								<span class="process-count"><span>33</span> / <span>33</span>人</span>
-								<span class="process-status">完了</span>
-								<span class="process-error">エラーあり</span>
+								<span class="process-count"><span data-bind="text: dailyCreateCount">0</span> / <span data-bind="text: dailyCreateTotal">0</span>人</span>
+								<span class="process-status" data-bind="text: dailyCreateStatus"></span>
+								<span class="process-error" data-bind="text: dailyCreateHasError"></span>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_10')}</span>
-								<span class="process-count"><span>33</span> / <span>33</span>人</span>
-								<span class="process-status">完了</span>
-								<span class="process-error">エラーあり</span>
+								<span class="process-count"><span>0</span> / <span>0</span>人</span>
+								<span class="process-status"></span>
+								<span class="process-error"></span>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_11')}</span>
-								<span class="process-count"><span>33</span> / <span>33</span>人</span>
-								<span class="process-status">完了</span>
-								<span class="process-error">エラーあり</span>
+								<span class="process-count"><span>0</span> / <span>0</span>人</span>
+								<span class="process-status"></span>
+								<span class="process-error"></span>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_12')}</span>
-								<span class="process-count"><span>33</span> / <span>33</span>人</span>
-								<span class="process-status">処理中</span>
-								<span class="process-error">エラーあり</span>
+								<span class="process-count"><span>0</span> / <span>0</span>人</span>
+								<span class="process-status"></span>
+								<span class="process-error"></span>
 							</td>
 						</tr>
 					</table>
@@ -75,18 +75,19 @@
 				<label class="setting-info">#{i18n.getText('KDW001_29')}</label>
 					<table class="info-table">
 						<tr>
-							<td class="fix-width">#{i18n.getText('KDW001_15')}</td>
-							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+							<td class="fix-width">#{i18n.getText('KDW001_15')}</td>　
+							<td><span data-bind="text: startPeriod"></span> ～ <span data-bind="text: endPeriod"></span></td>
 						</tr>
 					</table>
 				</div>
 				
 				<div class="log-selection control-group valign-center">
-					<label>#{i18n.getText('KDW001_30')}</label>
-					<div tabindex="1" id="combo-box"
-						data-bind="ntsComboBox: {
+					<label class="disappear" data-bind="css: {disappear: !isComplete()}">#{i18n.getText('KDW001_30')}</label>
+					<div class="disappear" tabindex="1" id="combo-box"
+						data-bind="css: {disappear: !isComplete()},
+						ntsComboBox: {
 						options: executionContents,
-						optionsValue: 'value',
+						optionsValue: 'value',　
 						visibleItemsCount: 5,
 						value: selectedExeContent,
 						optionsText: 'localizedName',
@@ -94,11 +95,12 @@
 						columns: [
 							{ prop: 'localizedName', length: 4 }
 						]}"></div>
-					<button class="pull-right" tabindex="2">#{i18n.getText('KDW001_31')}</button>
+					<button class="pull-right disappear" tabindex="2" data-bind="css: {disappear: !isComplete()}, click: exportLog">#{i18n.getText('KDW001_31')}</button>
 				</div>
 				<div class="place-holder">
-					<table id="single-list"
-						data-bind="ntsGridList: {
+					<table id="single-list" class="disappear"
+						data-bind="css: {disappear: !isComplete()},
+						ntsGridList: {
 							dataSource: errorMessageInfo,
 							primaryKey: 'code',
 							columns: columns,
@@ -110,8 +112,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" data-bind="click: executeTask">#{i18n.getText('KDW001_39')}</button>
-				<button tabindex="4">#{i18n.getText('KDW001_38')}</button>
+				<button tabindex="3" class="disable-button" data-bind="click: cancelTask">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

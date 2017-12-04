@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
-import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingSetMemento;
 
 /**
  * The Class FlowRestSettingDto.
  */
 @Getter
-@Setter
-public class FlowRestSettingDto {
+public class FlowRestSettingDto implements FlowRestSettingSetMemento {
 
 	/** The flow rest time. */
 	private Integer flowRestTime;
@@ -20,17 +20,26 @@ public class FlowRestSettingDto {
 	/** The flow passage time. */
 	private Integer flowPassageTime;
 
-	/**
-	 * Instantiates a new flow rest setting dto.
-	 *
-	 * @param flowRestTime the flow rest time
-	 * @param flowPassageTime the flow passage time
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingSetMemento#
+	 * setFlowRestTime(nts.uk.ctx.at.shared.dom.common.time.AttendanceTime)
 	 */
-	public FlowRestSettingDto(Integer flowRestTime, Integer flowPassageTime) {
-		super();
-		this.flowRestTime = flowRestTime;
-		this.flowPassageTime = flowPassageTime;
+	@Override
+	public void setFlowRestTime(AttendanceTime time) {
+		this.flowRestTime = time.v();
 	}
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingSetMemento#
+	 * setFlowPassageTime(nts.uk.ctx.at.shared.dom.common.time.AttendanceTime)
+	 */
+	@Override
+	public void setFlowPassageTime(AttendanceTime time) {
+		this.flowPassageTime = time.v();
+	}
+
 }

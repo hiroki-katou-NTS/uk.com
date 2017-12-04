@@ -16,11 +16,11 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkTimezoneSet;
 public interface FlexHalfDayWorkTimeSetMemento {
 
 	/**
-	 * Sets the rest timezone.
+	 * Sets the lst rest timezone.
 	 *
-	 * @param restTimezone the new rest timezone
+	 * @param lstRestTimezone the new lst rest timezone
 	 */
-	void setRestTimezone(List<FlowWorkRestTimezone> restTimezone);
+	void setLstRestTimezone(List<FlowWorkRestTimezone> lstRestTimezone);
 	
 	
 	/**

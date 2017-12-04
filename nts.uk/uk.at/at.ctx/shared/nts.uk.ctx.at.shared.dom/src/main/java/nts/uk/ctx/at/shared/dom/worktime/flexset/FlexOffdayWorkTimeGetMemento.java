@@ -15,11 +15,11 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSetting;
 public interface FlexOffdayWorkTimeGetMemento {
 
 	/**
-	 * Gets the work timezone.
+	 * Gets the lst work timezone.
 	 *
-	 * @return the work timezone
+	 * @return the lst work timezone
 	 */
-	List<HDWorkTimeSheetSetting> getWorkTimezone();
+	List<HDWorkTimeSheetSetting> getLstWorkTimezone();
 	
 	
 	/**

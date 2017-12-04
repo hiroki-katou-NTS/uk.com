@@ -18,8 +18,14 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcdtErrMessageInfoPK;
 public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMessageInfoRepository {
 
 	private final String SELECT_FROM_ERR_MESSAGE = "SELECT c FROM KrcdtErrMessageInfo c ";
+	
 	private final String SELECT_ERR_MESSAGE_BY_EMPID = SELECT_FROM_ERR_MESSAGE
 			+ " WHERE c.krcdtErrMessageInfoPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+	
+	private final String SELECT_ERR_MESSAGE_BY_EXECONTEXT = SELECT_FROM_ERR_MESSAGE
+			+ " WHERE c.krcdtErrMessageInfoPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
+			+ " AND c.krcdtErrMessageInfoPK.executionContent = :executionContent";
+	
 	private final String SELECT_ERR_MESSAGE_BYID = SELECT_ERR_MESSAGE_BY_EMPID
 			+ " AND c.krcdtErrMessageInfoPK.executionContent = :executionContent ";
 	
@@ -67,6 +73,15 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 		return data;
 	}
 
+	@Override
+	public List<ErrMessageInfo> getErrMessageInfoByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
+		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BY_EXECONTEXT , KrcdtErrMessageInfo.class)
+				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
+				.setParameter("executionContent", executionContent)
+				.getList(c -> toDomain(c));
+		return data;
+	}
+	
 	@Override
 	public void add(ErrMessageInfo errMessageInfo) {
 		this.commandProxy().insert(toEntity(errMessageInfo));

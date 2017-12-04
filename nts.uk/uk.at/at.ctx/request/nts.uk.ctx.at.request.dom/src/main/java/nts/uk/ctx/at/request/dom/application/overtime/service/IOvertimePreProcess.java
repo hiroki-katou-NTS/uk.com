@@ -118,7 +118,14 @@ public interface IOvertimePreProcess {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public void getResultContentActual(int prePostAtr,String siftCode,String companyID);
+	public void getResultContentActual(int prePostAtr,String siftCode,String companyID,String appDate);
 	
+	/**
+	 * @param employeeID
+	 * @param siftCode
+	 * @param companyID
+	 * @param sWkpHistImport
+	 * @return
+	 */
 	public Optional<BonusPaySetting> getBonusPaySetting(String employeeID,String siftCode,String companyID,SWkpHistImport sWkpHistImport);
 }

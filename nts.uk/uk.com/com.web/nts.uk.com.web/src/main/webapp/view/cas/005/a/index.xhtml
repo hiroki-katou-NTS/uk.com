@@ -40,21 +40,9 @@
 			<div id="contents-area" style="margin-top: 30px; margin-left: 30px">
 				<div style="margin-bottom: 20px;">#{i18n.getText('CAS005_20')}</div>
 				<!-- body right -->
-				<div style="width: 340px; float: left;">
+				<div style="width: 340px; float: left;" data-bind="with: component">
 					<div id="pannel-top" data-bind="ntsPanel:{width: '340px', height: '530px', direction: '', showIcon: true, visible: true}">
-						<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'value', comId: 'multi-list', 
-						items: listEnumRoleType,  selectedKey: 'value', fields: ['name', 'value'], mode: 'igGrid'}" />
-						<table id="multi-list"
-							data-bind="ntsGridList: {
-								height: 320,
-								options: listEnumRoleType,
-								optionsValue: 'value',
-								columns: columnRoleType,
-								multiple: false,
-								value: roleType,
-								rows : 15
-							}">
-						</table>
+						<ui:include src="../../../ccg/025/component/index.xhtml" />
 					</div>
 				</div>
 				<!-- body left -->
@@ -83,7 +71,7 @@
 												options: categoryAssign,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: selectCategoryAssign,
+												value: assignAtr,
 												enable: true }">
 								</div>
 							</td>
@@ -99,7 +87,7 @@
 									data-bind="ntsComboBox: {
 												options: listEmployeeReferenceRange,
 												optionsValue: 'value',
-												value: selectedEmployeeReferenceRange,
+												value: employeeReferenceRange,
 												optionsText: 'name',
 												editable: false,
 												enable: isEnable,

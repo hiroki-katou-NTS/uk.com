@@ -6,13 +6,15 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSetSetMemento;
 
 /**
  * The Class GoOutTypeRoundingSetDto.
  */
 @Getter
 @Setter
-public class GoOutTypeRoundingSetDto {
+public class GoOutTypeRoundingSetDto implements GoOutTypeRoundingSetSetMemento{
 	
 	/** The offical use compen go out. */
 	private DeductGoOutRoundingSetDto officalUseCompenGoOut;
@@ -20,19 +22,30 @@ public class GoOutTypeRoundingSetDto {
 	/** The private union go out. */
 	private DeductGoOutRoundingSetDto privateUnionGoOut;
 
-	/**
-	 * Instantiates a new go out type rounding set dto.
-	 *
-	 * @param officalUseCompenGoOut the offical use compen go out
-	 * @param privateUnionGoOut the private union go out
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSetSetMemento#
+	 * setOfficalUseCompenGoOut(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * DeductGoOutRoundingSet)
 	 */
-	public GoOutTypeRoundingSetDto(DeductGoOutRoundingSetDto officalUseCompenGoOut,
-			DeductGoOutRoundingSetDto privateUnionGoOut) {
-		super();
-		this.officalUseCompenGoOut = officalUseCompenGoOut;
-		this.privateUnionGoOut = privateUnionGoOut;
+	@Override
+	public void setOfficalUseCompenGoOut(DeductGoOutRoundingSet officalUseCompenGoOut) {
+		officalUseCompenGoOut.saveToMemento(this.officalUseCompenGoOut);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSetSetMemento#
+	 * setPrivateUnionGoOut(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * DeductGoOutRoundingSet)
+	 */
+	@Override
+	public void setPrivateUnionGoOut(DeductGoOutRoundingSet privateUnionGoOut) {
+		privateUnionGoOut.saveToMemento(this.privateUnionGoOut);
 	}
 	
-	
-
 }
