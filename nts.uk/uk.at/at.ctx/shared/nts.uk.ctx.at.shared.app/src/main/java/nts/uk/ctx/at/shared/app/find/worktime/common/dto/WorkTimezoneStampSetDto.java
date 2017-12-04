@@ -5,16 +5,20 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento;
 
 /**
  * The Class WorkTimezoneStampSetDto.
  */
 @Getter
 @Setter
-public class WorkTimezoneStampSetDto {
+public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetSetMemento{
 	
 	/** The rounding set. */
 	private List<RoundingSetDto> roundingSet;
@@ -22,17 +26,38 @@ public class WorkTimezoneStampSetDto {
 	/** The priority set. */
 	private List<PrioritySettingDto> prioritySet;
 
-	/**
-	 * Instantiates a new work timezone stamp set dto.
-	 *
-	 * @param roundingSet the rounding set
-	 * @param prioritySet the priority set
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento#
+	 * setRoundingSet(java.util.List)
 	 */
-	public WorkTimezoneStampSetDto(List<RoundingSetDto> roundingSet, List<PrioritySettingDto> prioritySet) {
-		super();
-		this.roundingSet = roundingSet;
-		this.prioritySet = prioritySet;
+	@Override
+	public void setRoundingSet(List<RoundingSet> rdSet) {
+		this.roundingSet = rdSet.stream().map(domain->{
+			RoundingSetDto dto = new RoundingSetDto();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento#
+	 * setPrioritySet(java.util.List)
+	 */
+	@Override
+	public void setPrioritySet(List<PrioritySetting> prSet) {
+		this.prioritySet = prSet.stream().map(domain->{
+			PrioritySettingDto dto = new PrioritySettingDto();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+	}
+
 	
 	
 

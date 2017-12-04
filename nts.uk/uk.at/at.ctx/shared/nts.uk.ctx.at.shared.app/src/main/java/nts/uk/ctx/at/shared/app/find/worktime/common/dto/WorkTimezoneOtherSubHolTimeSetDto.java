@@ -6,13 +6,17 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.OriginAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetSetMemento;
 
 /**
  * The Class WorkTimezoneOtherSubHolTimeSetDto.
  */
 @Getter
 @Setter
-public class WorkTimezoneOtherSubHolTimeSetDto {
+public class WorkTimezoneOtherSubHolTimeSetDto implements WorkTimezoneOtherSubHolTimeSetSetMemento{
 	
 	/** The sub hol time set. */
 	private SubHolTransferSetDto subHolTimeSet;
@@ -23,21 +27,34 @@ public class WorkTimezoneOtherSubHolTimeSetDto {
 	/** The origin atr. */
 	private Integer originAtr;
 
-	/**
-	 * Instantiates a new work timezone other sub hol time set dto.
-	 *
-	 * @param subHolTimeSet the sub hol time set
-	 * @param workTimeCode the work time code
-	 * @param originAtr the origin atr
-	 */
-	public WorkTimezoneOtherSubHolTimeSetDto(SubHolTransferSetDto subHolTimeSet, String workTimeCode,
-			Integer originAtr) {
-		super();
-		this.subHolTimeSet = subHolTimeSet;
-		this.workTimeCode = workTimeCode;
-		this.originAtr = originAtr;
+	@Override
+	public void setSubHolTimeSet(SubHolTransferSet set) {
+		set.saveToMemento(this.subHolTimeSet);
 	}
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * WorkTimezoneOtherSubHolTimeSetSetMemento#setWorkTimeCode(nts.uk.ctx.at.
+	 * shared.dom.worktime.common.WorkTimeCode)
+	 */
+	@Override
+	public void setWorkTimeCode(WorkTimeCode cd) {
+		this.workTimeCode = cd.v();
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * WorkTimezoneOtherSubHolTimeSetSetMemento#setOriginAtr(nts.uk.ctx.at.
+	 * shared.dom.worktime.common.OriginAtr)
+	 */
+	@Override
+	public void setOriginAtr(OriginAtr atr) {
+		this.originAtr = atr.value;
+	}
 
 }

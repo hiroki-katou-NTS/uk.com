@@ -6,13 +6,15 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSetSetMemento;
 
 /**
  * The Class TotalRoundingSetDto.
  */
 @Getter
 @Setter
-public class TotalRoundingSetDto {
+public class TotalRoundingSetDto implements TotalRoundingSetSetMemento{
 	
 	/** The set same frame rounding. */
 	private Integer setSameFrameRounding;
@@ -20,17 +22,30 @@ public class TotalRoundingSetDto {
 	/** The frame stradd rounding set. */
 	private Integer frameStraddRoundingSet;
 
-	/**
-	 * Instantiates a new total rounding set dto.
-	 *
-	 * @param setSameFrameRounding the set same frame rounding
-	 * @param frameStraddRoundingSet the frame stradd rounding set
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSetSetMemento#
+	 * setSetSameFrameRounding(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimeRoundingMethod)
 	 */
-	public TotalRoundingSetDto(Integer setSameFrameRounding, Integer frameStraddRoundingSet) {
-		super();
-		this.setSameFrameRounding = setSameFrameRounding;
-		this.frameStraddRoundingSet = frameStraddRoundingSet;
+	@Override
+	public void setSetSameFrameRounding(GoOutTimeRoundingMethod method) {
+		this.setSameFrameRounding = method.value;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSetSetMemento#
+	 * setFrameStraddRoundingSet(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimeRoundingMethod)
+	 */
+	@Override
+	public void setFrameStraddRoundingSet(GoOutTimeRoundingMethod method) {
+		this.frameStraddRoundingSet = method.value;
+	}
+
 	
 	
 
