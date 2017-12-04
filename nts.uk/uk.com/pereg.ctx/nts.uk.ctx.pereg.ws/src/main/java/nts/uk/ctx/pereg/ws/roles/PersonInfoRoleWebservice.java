@@ -12,7 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pereg.app.find.roles.PersonInforRoleDto;
 import nts.uk.ctx.pereg.app.find.roles.PersonInforRoleFinder;
 
-@Path("ctx/pereg/roles/roles")
+@Path("ctx/pereg/roles")
 @Produces("application/json")
 public class PersonInfoRoleWebservice extends WebService {
 	@Inject
