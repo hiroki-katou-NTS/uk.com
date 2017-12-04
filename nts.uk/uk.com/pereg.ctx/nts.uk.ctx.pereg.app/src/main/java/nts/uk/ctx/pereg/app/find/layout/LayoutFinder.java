@@ -5,7 +5,9 @@ package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,6 +18,7 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
@@ -31,6 +34,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
+import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
+import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
@@ -78,6 +83,28 @@ public class LayoutFinder {
 
 	@Inject
 	private EmpInfoItemDataRepository empInItemDataRepo;
+	
+	@Inject
+	private IMaintenanceLayoutRepository layoutRepo;
+	
+	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
+		String loginEmpId = AppContexts.user().employeeId();
+		String companyId = AppContexts.user().companyId();
+		// String roleId = AppContexts.user().roles().forPersonnel();
+		String roleId = "99900000-0000-0000-0000-000000000001";
+		boolean selfBrowsing = loginEmpId.equals(browsingEmpId);
+
+		List<MaintenanceLayout> simpleLayouts = layoutRepo.getAllMaintenanceLayout(companyId);
+		Map<String, PersonInfoCategoryAuth> mapCategoryAuth = perInfoCtgAuthRepo.getAllCategoryAuthByRoleId(roleId)
+				.stream().collect(Collectors.toMap(e -> e.getPersonInfoCategoryAuthId(), e -> e));
+		List<SimpleEmpMainLayoutDto> acceptSplLayouts = new ArrayList<>();
+		for (MaintenanceLayout simpleLayout : simpleLayouts) {
+			if (haveAnItemAuth(simpleLayout.getMaintenanceLayoutID(), mapCategoryAuth, selfBrowsing)) {
+				acceptSplLayouts.add(SimpleEmpMainLayoutDto.fromDomain(simpleLayout));
+			}
+		}
+		return acceptSplLayouts;
+	}
 
 	/**
 	 * @param layoutQuery
@@ -86,7 +113,7 @@ public class LayoutFinder {
 	public EmpMaintLayoutDto getLayout(LayoutQuery layoutQuery) {
 		EmpMaintLayoutDto result = new EmpMaintLayoutDto();
 		// query properties
-		GeneralDate stardardDate = layoutQuery.getStandardDate();
+		GeneralDate stardardDate = GeneralDate.legacyDate(layoutQuery.getStandardDate());
 		String browsingEmpId = layoutQuery.getBrowsingEmpId();
 
 		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), browsingEmpId).get();
@@ -98,7 +125,8 @@ public class LayoutFinder {
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
 		List<LayoutPersonInfoClsDto> authItemClasList = new ArrayList<>();
-		String roleId = AppContexts.user().roles().forPersonnel();
+		//String roleId = AppContexts.user().roles().forPersonnel();
+		String roleId = "99900000-0000-0000-0000-000000000001";
 
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
 			// if item is separator line, do not check
@@ -127,7 +155,7 @@ public class LayoutFinder {
 							authClassItem.getPersonInfoCategoryID(), AppContexts.user().contractCode()).get();
 
 					PeregQuery query = new PeregQuery(perInfoCategory.getCategoryCode().v(),
-							layoutQuery.getBrowsingEmpId(), browsingPeronId, layoutQuery.getStandardDate());
+							layoutQuery.getBrowsingEmpId(), browsingPeronId, stardardDate);
 
 					// get data
 					if (authClassItem.getLayoutItemType() == LayoutItemType.ITEM) {
@@ -156,6 +184,27 @@ public class LayoutFinder {
 		result.setClassificationItems(authItemClasList1);
 		return result;
 
+	}
+	
+	private boolean haveAnItemAuth(String layoutId, Map<String, PersonInfoCategoryAuth> mapCategoryAuth,
+			boolean selfBrowsing) {
+		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutId);
+		for (LayoutPersonInfoClsDto itemClass : itemClassList) {
+			if (itemClass.getLayoutItemType() == LayoutItemType.SeparatorLine) {
+				continue;
+			}
+			PersonInfoCategoryAuth categoryAuth = mapCategoryAuth.get(itemClass.getPersonInfoCategoryID());
+			if (categoryAuth == null) {
+				continue;
+			}
+			if (selfBrowsing && categoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES) {
+				return true;
+			}
+			if (!selfBrowsing && categoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.pereg.app.find.layout.LayoutQuery;
@@ -99,7 +100,7 @@ public class PeregProcessor {
 			PersonInfoCategory perInfoCtg = perInfoCtgRepositoty
 					.getPerInfoCategory(item.getPersonInfoCategoryID(), AppContexts.user().contractCode()).get();
 			PeregQuery query = new PeregQuery(item.getPersonInfoCategoryID(), perInfoCtg.getCategoryCode().v(),
-					layoutQuery.getBrowsingEmpId(), employee.getPId(), layoutQuery.getStandardDate(), null);
+					layoutQuery.getBrowsingEmpId(), employee.getPId(), GeneralDate.legacyDate(layoutQuery.getStandardDate()), null);
 			if (item.getLayoutItemType() == LayoutItemType.LIST) {
 				// //get data
 				List<PeregDto> lstPeregDtos = layoutingProcessor.findList(query);
