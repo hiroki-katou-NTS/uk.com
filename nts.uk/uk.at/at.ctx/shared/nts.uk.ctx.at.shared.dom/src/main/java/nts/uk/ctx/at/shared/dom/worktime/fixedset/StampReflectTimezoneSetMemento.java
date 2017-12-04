@@ -17,7 +17,7 @@ public interface StampReflectTimezoneSetMemento {
 	 * @param workNo the work no
 	 * @return the work no
 	 */
-	void getWorkNo(WorkNo workNo);
+	void setWorkNo(WorkNo workNo);
 
 	/**
 	 * Gets the classification.
@@ -25,7 +25,7 @@ public interface StampReflectTimezoneSetMemento {
 	 * @param classification the classification
 	 * @return the classification
 	 */
-	void getClassification(GoLeavingWorkAtr classification);
+	void setClassification(GoLeavingWorkAtr classification);
 
 	/**
 	 * Gets the end time.
@@ -33,7 +33,7 @@ public interface StampReflectTimezoneSetMemento {
 	 * @param endTime the end time
 	 * @return the end time
 	 */
-	void getEndTime(TimeWithDayAttr endTime);
+	void setEndTime(TimeWithDayAttr endTime);
 
 	/**
 	 * Gets the start time.
@@ -41,6 +41,6 @@ public interface StampReflectTimezoneSetMemento {
 	 * @param startTime the start time
 	 * @return the start time
 	 */
-	void getStartTime(TimeWithDayAttr startTime);
+	void setStartTime(TimeWithDayAttr startTime);
 	
 }
