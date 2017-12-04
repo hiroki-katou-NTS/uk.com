@@ -20,12 +20,13 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author danpv
+ * @author hop.nt
  *
  */
 @Stateless
 public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHistoryRepository_ver1 {
 
-	private static String GET_BY_EID = "select h from KmnmtAffClassHistory_Ver1 h where h.sid = :sid";
+	private static String GET_BY_EID = "select h from KmnmtAffClassHistory_Ver1 h where h.sid = :sid ORDER BY h.startDate";
 
 	@Override
 	public Optional<AffClassHistory_ver1> getByHistoryId(String historyId) {
@@ -72,21 +73,14 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 	}
 
 	@Override
-	public void add(AffClassHistory_ver1 history) {
-		if (history.getPeriods().isEmpty()) {
-			return;
-		}
-		List<DateHistoryItem> periods = history.getPeriods();
-		DateHistoryItem historyItem = periods.get(periods.size() - 1);
-		KmnmtAffClassHistory_Ver1 entity = new KmnmtAffClassHistory_Ver1(historyItem.identifier(),
-				history.getEmployeeId(), historyItem.start(), historyItem.end());
+	public void add(String sid, DateHistoryItem itemToBeAdded) {
+		KmnmtAffClassHistory_Ver1 entity = new KmnmtAffClassHistory_Ver1(itemToBeAdded.identifier(),
+				sid, itemToBeAdded.start(), itemToBeAdded.end());
 		this.commandProxy().insert(entity);
-
-		updateItemBefore(history, historyItem);
 	}
 
 	@Override
-	public void update(AffClassHistory_ver1 history, DateHistoryItem item) {
+	public void update(DateHistoryItem item) {
 		Optional<KmnmtAffClassHistory_Ver1> historyItemOpt = this.queryProxy().find(item.identifier(),
 				KmnmtAffClassHistory_Ver1.class);
 		if (!historyItemOpt.isPresent()) {
@@ -97,69 +91,15 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 		entity.endDate = item.end();
 		this.commandProxy().update(entity);
 
-		updateItemBefore(history, item);
-		updateItemAfter(history, item);
-
 	}
 
 	@Override
-	public void delete(AffClassHistory_ver1 history, DateHistoryItem item) {
-		this.commandProxy().remove(KmnmtAffClassHistory_Ver1.class, item.identifier());
-		if (!history.getPeriods().isEmpty()) {
-			DateHistoryItem lastItem = history.getPeriods().get(history.getPeriods().size() - 1);
-			Optional<KmnmtAffClassHistory_Ver1> lastItemEntityOpt = this.queryProxy().find(lastItem.identifier(),
-					KmnmtAffClassHistory_Ver1.class);
-			if (!lastItemEntityOpt.isPresent()) {
-				throw new RuntimeException("Invalid KmnmtAffClassHistory_Ver1");
-			}
-			KmnmtAffClassHistory_Ver1 entity = lastItemEntityOpt.get();
-			entity.endDate = lastItem.end();
-
-			this.commandProxy().update(entity);
+	public void delete(String histId) {
+		Optional<KmnmtAffClassHistory_Ver1> existItem = this.queryProxy().find(histId, KmnmtAffClassHistory_Ver1.class);
+		if (!existItem.isPresent()) {
+			throw new RuntimeException("Invalid KmnmtAffClassHistory_Ver1");
 		}
-
-	}
-
-	private void updateItemBefore(AffClassHistory_ver1 history, DateHistoryItem item) {
-		// Update item before
-		Optional<DateHistoryItem> beforeItemOpt = history.immediatelyBefore(item);
-
-		if (beforeItemOpt.isPresent()) {
-
-			Optional<KmnmtAffClassHistory_Ver1> beforeEntOpt = this.queryProxy().find(beforeItemOpt.get().identifier(),
-					KmnmtAffClassHistory_Ver1.class);
-
-			if (beforeEntOpt.isPresent()) {
-
-				KmnmtAffClassHistory_Ver1 beforeEnt = beforeEntOpt.get();
-				beforeEnt.endDate = beforeItemOpt.get().end();
-
-				this.commandProxy().update(beforeEnt);
-			}
-
-		}
-
-	}
-
-	private void updateItemAfter(AffClassHistory_ver1 history, DateHistoryItem item) {
-		// Update item before
-		Optional<DateHistoryItem> afterItemOpt = history.immediatelyAfter(item);
-
-		if (afterItemOpt.isPresent()) {
-
-			Optional<KmnmtAffClassHistory_Ver1> afterEntOpt = this.queryProxy().find(afterItemOpt.get().identifier(),
-					KmnmtAffClassHistory_Ver1.class);
-
-			if (afterEntOpt.isPresent()) {
-
-				KmnmtAffClassHistory_Ver1 afterEnt = afterEntOpt.get();
-				afterEnt.startDate = afterItemOpt.get().start();
-
-				this.commandProxy().update(afterEnt);
-			}
-
-		}
-
+		this.commandProxy().remove(KmnmtAffClassHistory_Ver1.class, histId);
 	}
 
 }

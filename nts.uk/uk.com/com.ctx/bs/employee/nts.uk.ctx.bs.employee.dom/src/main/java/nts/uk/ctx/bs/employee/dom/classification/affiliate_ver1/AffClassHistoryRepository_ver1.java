@@ -9,6 +9,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * @author danpv
+ * @author hop.nt
  *
  */
 public interface AffClassHistoryRepository_ver1 {
@@ -29,24 +30,23 @@ public interface AffClassHistoryRepository_ver1 {
 	
 	/**
 	 * add domain history
-	 * add last item and update before items
 	 * @param history
+	 * @author hop.nt
 	 */
-	void add(AffClassHistory_ver1 history);
+	void add(String sid, DateHistoryItem itemToBeAdded);
 	
 	/**
 	 * update domain history
-	 * update item and nearly item
 	 * @param history
+	 * @author hop.nt
 	 */
-	void update(AffClassHistory_ver1 history, DateHistoryItem item);
+	void update(DateHistoryItem item);
 	
 	/**
 	 * delete domain history
-	 * delete last item and update nearly item
-	 * @param history
-	 * @param item
+	 * @param histId
+	 * @author hop.nt
 	 */
-	void delete(AffClassHistory_ver1 history, DateHistoryItem item);
+	void delete(String histId);
 
 }

@@ -14,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -23,6 +24,7 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 /**
  * @author danpv
+ * @author hop.nt
  *
  */
 @Stateless
@@ -35,6 +37,9 @@ public class AddAffClassCommandHandler
 
 	@Inject
 	private AffClassHistItemRepository_ver1 affClassHistItemRepo;
+	
+	@Inject
+	private AffClassHistoryRepositoryService affClassHistoryRepositoryService;
 
 	@Override
 	public String targetCategoryCd() {
@@ -62,7 +67,7 @@ public class AddAffClassCommandHandler
 			history = new AffClassHistory_ver1(command.getEmployeeId(), new ArrayList<>());
 		}
 		history.add(dateItem);
-		affClassHistoryRepo.add(history);
+		affClassHistoryRepositoryService.add(history);
 		// add history item
 		AffClassHistItem_ver1 histItem = AffClassHistItem_ver1.createFromJavaType(command.getEmployeeId(), newHistoryId,
 				command.getClassificationCode());

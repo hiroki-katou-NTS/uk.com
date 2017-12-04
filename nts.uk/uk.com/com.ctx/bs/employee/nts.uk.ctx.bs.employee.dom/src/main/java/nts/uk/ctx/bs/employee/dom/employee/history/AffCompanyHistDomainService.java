@@ -5,8 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.shr.com.history.DateHistoryItem;
-
 @Stateless
 public class AffCompanyHistDomainService {
 	@Inject

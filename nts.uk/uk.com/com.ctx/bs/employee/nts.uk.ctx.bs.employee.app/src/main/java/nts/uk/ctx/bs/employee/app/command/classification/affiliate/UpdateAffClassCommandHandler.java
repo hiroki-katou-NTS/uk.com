@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -20,6 +21,7 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 /**
  * @author danpv
+ * @author hop.nt
  *
  */
 @Stateless
@@ -31,6 +33,9 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 
 	@Inject
 	private AffClassHistItemRepository_ver1 affClassHistItemRepo;
+	
+	@Inject
+	private AffClassHistoryRepositoryService affClassHistoryRepositoryService;
 
 	@Override
 	public String targetCategoryCd() {
@@ -60,7 +65,7 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 
 		historyOption.get().changeSpan(itemToBeUpdateOpt.get(),
 				new DatePeriod(command.getStartDate(), command.getEndDate()));
-		affClassHistoryRepo.update(historyOption.get(), itemToBeUpdateOpt.get());
+		affClassHistoryRepositoryService.update(historyOption.get(), itemToBeUpdateOpt.get());
 
 		// update history item
 		AffClassHistItem_ver1 historyItem = AffClassHistItem_ver1.createFromJavaType(command.getEmployeeId(),
