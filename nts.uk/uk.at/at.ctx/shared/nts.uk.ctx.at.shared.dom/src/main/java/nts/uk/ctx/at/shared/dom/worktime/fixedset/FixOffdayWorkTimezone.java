@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Builder;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
@@ -19,7 +18,6 @@ import nts.arc.layer.dom.DomainObject;
  * The Class FixOffdayWorkTimezone.
  */
 @Getter
-@Builder
 // 固定勤務の休日出勤用勤務時間帯
 public class FixOffdayWorkTimezone extends DomainObject {
 
