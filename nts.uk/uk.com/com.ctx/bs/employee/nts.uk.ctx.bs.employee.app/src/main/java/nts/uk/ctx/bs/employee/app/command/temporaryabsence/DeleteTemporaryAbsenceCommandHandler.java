@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryDomainService;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -27,7 +27,7 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 	private TempAbsHistRepository temporaryAbsenceHistRepository;
 	
 	@Inject
-	private TempAbsHistoryDomainService tempAbsHistoryDomainService;
+	private TempAbsHistoryService tempAbsHistoryService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -56,7 +56,7 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 			throw new RuntimeException("invalid TempAbsenceHistory");
 		}
 		existHist.get().remove(itemToBeDelete.get());
-		tempAbsHistoryDomainService.delete(existHist.get(),itemToBeDelete.get());
+		tempAbsHistoryService.delete(existHist.get(),itemToBeDelete.get());
 		
 		temporaryAbsenceRepository.delete(command.getHistoyId());
 	}

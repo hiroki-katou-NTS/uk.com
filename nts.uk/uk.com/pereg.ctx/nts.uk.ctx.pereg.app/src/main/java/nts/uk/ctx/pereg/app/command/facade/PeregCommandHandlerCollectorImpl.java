@@ -9,25 +9,21 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
-import command.person.currentaddress.AddCurrentAddressCommand;
-import command.person.family.AddFamilyCommand;
 import command.person.info.UpdatePersonCommand;
+import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
+import nts.uk.ctx.bs.employee.app.command.classification.affiliate.DeleteAffClassificationCommand;
+import nts.uk.ctx.bs.employee.app.command.classification.affiliate.UpdateAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.department.AddAffiliationDepartmentCommand;
-import nts.uk.ctx.bs.employee.app.command.department.AddCurrentAffiDeptCommand;
 import nts.uk.ctx.bs.employee.app.command.department.DeleteAffiliationDepartmentCommand;
-import nts.uk.ctx.bs.employee.app.command.department.DeleteCurrentAffiDeptCommand;
 import nts.uk.ctx.bs.employee.app.command.department.UpdateAffiliationDepartmentCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.UpdateAffCompanyHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.mngdata.UpdateEmployeeDataMngInfoCommand;
+import nts.uk.ctx.bs.employee.app.command.employment.history.AddEmploymentHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.employment.history.DeleteEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.history.UpdateEmploymentHistoryCommand;
-import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.care.DeleteFamilyCareCommand;
-import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.incometax.DeleteIncomeTaxCommand;
-import nts.uk.ctx.bs.employee.app.command.familyrelatedinformation.socialinsurance.DeleteFamilySocialInsuranceCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.AddAffJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.DeleteJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.UpdateJobTitleMainCommand;
-import nts.uk.ctx.bs.employee.app.command.position.jobposition.AddSubJobPositionCommand;
-import nts.uk.ctx.bs.employee.app.command.position.jobposition.DeleteSubJobPositionCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.DeleteTemporaryAbsenceCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.UpdateTemporaryAbsenceCommand;
@@ -38,9 +34,6 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.classification.affiliate.*;
-import nts.uk.ctx.bs.employee.app.command.employee.history.*;
-import  nts.uk.ctx.bs.employee.app.command.employment.history.*;
 
 @Stateless
 @SuppressWarnings("serial")
