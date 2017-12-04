@@ -1,6 +1,6 @@
 /**
  * 
- *//*
+ */
 package nts.uk.ctx.pereg.app.find.common;
 
 import java.util.HashMap;
@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import find.layout.classification.LayoutPersonInfoClsDto;
-import find.layout.classification.LayoutPersonInfoValueDto;
-import find.person.info.item.PerInfoItemDefDto;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregRecordId;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -21,10 +21,10 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
-*//**
+/**
  * @author danpv
  *
- *//*
+ */
 public class MappingFactory {
 
 	public static void map(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
@@ -47,13 +47,13 @@ public class MappingFactory {
 
 	}
 
-	*//**
+	/**
 	 * match domain DTO with item-definition to create data object
 	 * 
 	 * @param domainDto
 	 * @param classItem
 	 * @param dtoClass
-	 *//*
+	 */
 	public static void mapFixDto(PeregDomainDto domainDto, LayoutPersonInfoClsDto classItem, Class<?> dtoClass) {
 		// Map<itemcode, Object: value of field>
 		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
@@ -73,11 +73,11 @@ public class MappingFactory {
 
 	}
 
-	*//**
+	/**
 	 * 
 	 * @param empOptionalData
 	 * @param classItem
-	 *//*
+	 */
 	public static void mapEmployeeOptionData(List<EmpOptionalDto> empOptionalData, LayoutPersonInfoClsDto classItem) {
 		for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
 			Optional<EmpOptionalDto> data = empOptionalData.stream()
@@ -88,10 +88,10 @@ public class MappingFactory {
 		}
 	}
 
-	*//**
+	/**
 	 * @param perOptionalData
 	 * @param classItem
-	 *//*
+	 */
 	public static void mapPersonOptionData(List<PersonOptionalDto> perOptionalData, LayoutPersonInfoClsDto classItem) {
 		for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
 			Optional<PersonOptionalDto> data = perOptionalData.stream()
@@ -103,4 +103,3 @@ public class MappingFactory {
 	}
 
 }
-*/

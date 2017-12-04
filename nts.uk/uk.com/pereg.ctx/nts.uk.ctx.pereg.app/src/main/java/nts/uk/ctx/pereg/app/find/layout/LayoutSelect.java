@@ -1,6 +1,6 @@
 /**
  * 
- *//*
+ */
 package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
@@ -10,39 +10,32 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import com.aspose.cells.CategoryType;
-
-import find.layout.classification.LayoutPersonInfoClsDto;
-import find.layout.classification.LayoutPersonInfoClsFinder;
-import find.layout.classification.LayoutPersonInfoValueDto;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.employee.item.PerInfoItemDefDto;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
-import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutItemType;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
@@ -74,7 +67,23 @@ public class LayoutSelect {
 
 	@Inject
 	private LayoutingProcessor layoutingProcessor;
+	
+	@Inject
+	private PerInfoCtgDataRepository perInCtgDataRepo;
 
+	@Inject
+	private PerInfoItemDataRepository perInItemDataRepo;
+
+	@Inject
+	private EmInfoCtgDataRepository empInCtgDataRepo;
+
+	@Inject
+	private EmpInfoItemDataRepository empInItemDataRepo;
+
+	/**
+	 * @param layoutQuery
+	 * @return
+	 */
 	public EmpMaintLayoutDto getLayout(PeregMaintLayoutQuery layoutQuery) {
 		EmpMaintLayoutDto result = new EmpMaintLayoutDto();
 		// query properties
@@ -150,6 +159,11 @@ public class LayoutSelect {
 
 	}
 
+	/**
+	 * @param stardardDate
+	 * @param employee
+	 * @param result
+	 */
 	private void validateStandardDate(GeneralDate stardardDate, Employee employee, EmpMaintLayoutDto result) {
 		if (employee.getHistoryWithReferDate(stardardDate).isPresent()) {
 			result.setStardandDate(stardardDate);
@@ -166,13 +180,13 @@ public class LayoutSelect {
 		}
 	}
 
-	*//**
+	/**
 	 * @param roleId
 	 * @param item
 	 * @param selfBrowsing
 	 *            Target: check author of person who login with class-item
 	 * @return
-	 *//*
+	 */
 	private boolean validateAuthClassItem(Optional<PersonInfoCategoryAuth> personCategoryAuthOpt,
 			boolean selfBrowsing) {
 		if (!personCategoryAuthOpt.isPresent()) {
@@ -187,13 +201,13 @@ public class LayoutSelect {
 		return false;
 	}
 
-	*//**
+	/**
 	 * @param authItems
 	 * @param listItemDef
 	 * @param selfBrowsing
 	 * @return Target: check author of person who login with each
 	 *         definition-items in class-item
-	 *//*
+	 */
 	private List<PerInfoItemDefDto> validateAuthItem(List<PersonInfoItemAuth> authItems,
 			List<PerInfoItemDefDto> listItemDef, boolean selfBrowsing) {
 		List<PerInfoItemDefDto> dataInfoItems = new ArrayList<>();
@@ -212,6 +226,14 @@ public class LayoutSelect {
 
 	}
 
+	/**
+	 * @param perInfoCategory
+	 * @param authClassItem
+	 * @param stardardDate
+	 * @param personId
+	 * @param employeeId
+	 * @param query
+	 */
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
 			GeneralDate stardardDate, String personId, String employeeId, PeregQuery query) {
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
@@ -255,12 +277,12 @@ public class LayoutSelect {
 
 	}
 
-	*//**
+	/**
 	 * @param categoryCode
 	 * @param authClassItem
 	 * @param dataItems
 	 *            Target: map optional data with definition item. Person case
-	 *//*
+	 */
 	private void matchPersDataForSingleClsItem(String categoryCode, LayoutPersonInfoClsDto authClassItem,
 			List<PersonInfoItemData> dataItems) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
@@ -286,13 +308,13 @@ public class LayoutSelect {
 		}
 
 	}
-
-	*//**
+	
+	/**
 	 * @param categoryCode
 	 * @param authClassItem
 	 * @param dataItems
 	 *            Target: map optional data with definition item. employee case
-	 *//*
+	 */
 	private void matchEmpDataForDefItems(String categoryCode, LayoutPersonInfoClsDto authClassItem,
 			List<EmpInfoItemData> dataItems) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
@@ -319,14 +341,14 @@ public class LayoutSelect {
 
 	}
 
-	*//**
+	/**
 	 * @param categoryCode
 	 * @param perInfoCategoryId
 	 * @param authClassItem
 	 * @param personId
 	 * @param stardardDate
 	 *            Target: get data with history case. Person case
-	 *//*
+	 */
 	private void getPersDataHistoryType(String categoryCode, String perInfoCategoryId,
 			LayoutPersonInfoClsDto authClassItem, String personId, GeneralDate stardardDate) {
 		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
@@ -358,14 +380,14 @@ public class LayoutSelect {
 		}
 	}
 	
-	*//**
+	/**
 	 * @param categoryCode
 	 * @param perInfoCategoryId
 	 * @param authClassItem
 	 * @param personId
 	 * @param stardardDate
 	 *            Target: get data with history case. Employee case
-	 *//*
+	 */
 	private void getEmpDataHistoryType(String categoryCode, String perInfoCategoryId,
 			LayoutPersonInfoClsDto authClassItem, String personId, GeneralDate stardardDate) {
 		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
@@ -393,4 +415,3 @@ public class LayoutSelect {
 	}
 
 }
-*/
