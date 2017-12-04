@@ -35,16 +35,45 @@ public class MappingFactory {
 			classItem.setRecordId(recordId);
 		});
 
+		//get dto value
+		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getClass());
+		
 		// map fix value
-		mapFixDto(peregDto.getDomainDto(), classItem, peregDto.getClass());
+		mapFixDto(dtoValue, classItem);
 
 		// map option value
+		setOptionData(peregDto, classItem);
+
+	}
+	
+	/**
+	 *  get dto value
+	 * @param domainDto
+	 * @param dtoClass
+	 * @return Map<itemCode, value>
+	 */
+	private static Map<String, Object> getDtoValue(PeregDomainDto domainDto, Class<?> dtoClass){
+		// Map<itemcode, Object: value of field>
+		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
+		AnnotationUtil.getStreamOfFieldsAnnotated(dtoClass, PeregItem.class).forEach(field -> {
+			String itemCode = field.getAnnotation(PeregItem.class).value();
+			Object obj = ReflectionUtil.getFieldValue(field, domainDto);
+			itemCodeValueMap.put(itemCode, obj);
+		});
+		return itemCodeValueMap;
+	}
+	
+	/**
+	 * set optional data
+	 * @param peregDto
+	 * @param classItem
+	 */
+	private static void setOptionData(PeregDto peregDto, LayoutPersonInfoClsDto classItem){
 		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
 			mapEmployeeOptionData(peregDto.getEmpOptionalData(), classItem);
 		} else {
 			mapPersonOptionData(peregDto.getPerOptionalData(), classItem);
 		}
-
 	}
 
 	/**
@@ -54,15 +83,7 @@ public class MappingFactory {
 	 * @param classItem
 	 * @param dtoClass
 	 */
-	public static void mapFixDto(PeregDomainDto domainDto, LayoutPersonInfoClsDto classItem, Class<?> dtoClass) {
-		// Map<itemcode, Object: value of field>
-		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
-		AnnotationUtil.getStreamOfFieldsAnnotated(dtoClass, PeregItem.class).forEach(field -> {
-			String itemCode = field.getAnnotation(PeregItem.class).value();
-			Object obj = ReflectionUtil.getFieldValue(field, domainDto);
-			itemCodeValueMap.put(itemCode, obj);
-		});
-
+	public static void mapFixDto(Map<String, Object> itemCodeValueMap, LayoutPersonInfoClsDto classItem) {
 		// add to value-list
 		classItem.getListItemDf().forEach(itemDef -> {
 			LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef,
