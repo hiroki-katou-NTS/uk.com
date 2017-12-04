@@ -160,7 +160,7 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 		} else {
 			this.lstStampReflectTimezone = lstStampReflectTimezone.stream().map(domain -> {
 				StampReflectTimezoneDto dto = new StampReflectTimezoneDto();
-				domain.saveToMemento(dto);
+				//domain.saveToMemento(dto);
 				return dto;
 			}).collect(Collectors.toList());
 		}
