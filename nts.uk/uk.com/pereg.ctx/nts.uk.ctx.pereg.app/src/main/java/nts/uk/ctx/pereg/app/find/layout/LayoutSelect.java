@@ -14,15 +14,28 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
@@ -54,38 +67,39 @@ public class LayoutSelect {
 
 	@Inject
 	private LayoutingProcessor layoutingProcessor;
+	
+	@Inject
+	private PerInfoCtgDataRepository perInCtgDataRepo;
 
+	@Inject
+	private PerInfoItemDataRepository perInItemDataRepo;
+
+	@Inject
+	private EmInfoCtgDataRepository empInCtgDataRepo;
+
+	@Inject
+	private EmpInfoItemDataRepository empInItemDataRepo;
+
+	/**
+	 * @param layoutQuery
+	 * @return
+	 */
 	public EmpMaintLayoutDto getLayout(PeregMaintLayoutQuery layoutQuery) {
 		EmpMaintLayoutDto result = new EmpMaintLayoutDto();
 		// query properties
 		GeneralDate stardardDate = layoutQuery.getStandardDate();
-		String mainteLayoutId = layoutQuery.getLayoutId();
 		String browsingEmpId = layoutQuery.getBrowsingEmpId();
 
-		// login information
-		String contractCode = AppContexts.user().contractCode();
-		String companyId = AppContexts.user().companyId();
-		String loginEmployeeId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forPersonnel();
-		Employee employee = employeeRepository.findBySid(companyId, browsingEmpId).get();
+		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), browsingEmpId).get();
+		String browsingPeronId = employee.getPId();
+		// validate standard date
+		validateStandardDate(stardardDate, employee, result);
 
-		if (employee.getHistoryWithReferDate(stardardDate).isPresent()) {
-			result.setStardandDate(stardardDate);
-		} else {
-			Optional<JobEntryHistory> hitoryOption = employee.getHistoryBeforeReferDate(stardardDate);
-			if (hitoryOption.isPresent()) {
-				stardardDate = hitoryOption.get().getRetirementDate();
-			} else {
-				hitoryOption = employee.getHistoryAfterReferDate(stardardDate);
-				if (hitoryOption.isPresent()) {
-					stardardDate = hitoryOption.get().getJoinDate();
-				}
-			}
-		}
 		// check authority & get data
-		boolean selfBrowsing = browsingEmpId.equals(loginEmployeeId);
-		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(mainteLayoutId);
+		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
+		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
 		List<LayoutPersonInfoClsDto> authItemClasList = new ArrayList<>();
+		String roleId = AppContexts.user().roles().forPersonnel();
 
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
 			// if item is separator line, do not check
@@ -110,30 +124,18 @@ public class LayoutSelect {
 
 					authClassItem.setListItemDf(dataInfoItems);
 
-					PersonInfoCategory perInfoCategory = perInfoCateRepo
-							.getPerInfoCategory(authClassItem.getPersonInfoCategoryID(), contractCode).get();
+					PersonInfoCategory perInfoCategory = perInfoCateRepo.getPerInfoCategory(
+							authClassItem.getPersonInfoCategoryID(), AppContexts.user().contractCode()).get();
 
 					PeregQuery query = new PeregQuery(perInfoCategory.getCategoryCode().v(),
-							layoutQuery.getBrowsingEmpId(), employee.getPId(), layoutQuery.getStandardDate());
+							layoutQuery.getBrowsingEmpId(), browsingPeronId, layoutQuery.getStandardDate());
 
 					// get data
 					if (authClassItem.getLayoutItemType() == LayoutItemType.ITEM) {
-
-						if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
-							// get domain data
-							PeregDto queryResult = layoutingProcessor.findSingle(query);
-						} else {
-
-						}
+						getDataforSingleItem(perInfoCategory, authClassItem, stardardDate, browsingPeronId,
+								browsingEmpId, query);
 					} else if (authClassItem.getLayoutItemType() == LayoutItemType.LIST) {
-						/*
-						 * getDataforListItem(perInfoCategory,
-						 * personCategoryAuthOpt.get(), inforAuthItems,
-						 * authClassItem, stardardDate, employee.getPId(),
-						 * employee.getSId(), selfBrowsing);
-						 */
 					}
-
 					authItemClasList.add(authClassItem);
 				}
 			}
@@ -155,6 +157,27 @@ public class LayoutSelect {
 		result.setClassificationItems(authItemClasList1);
 		return result;
 
+	}
+
+	/**
+	 * @param stardardDate
+	 * @param employee
+	 * @param result
+	 */
+	private void validateStandardDate(GeneralDate stardardDate, Employee employee, EmpMaintLayoutDto result) {
+		if (employee.getHistoryWithReferDate(stardardDate).isPresent()) {
+			result.setStardandDate(stardardDate);
+		} else {
+			Optional<JobEntryHistory> hitoryOption = employee.getHistoryBeforeReferDate(stardardDate);
+			if (hitoryOption.isPresent()) {
+				stardardDate = hitoryOption.get().getRetirementDate();
+			} else {
+				hitoryOption = employee.getHistoryAfterReferDate(stardardDate);
+				if (hitoryOption.isPresent()) {
+					stardardDate = hitoryOption.get().getJoinDate();
+				}
+			}
+		}
 	}
 
 	/**
@@ -202,7 +225,193 @@ public class LayoutSelect {
 		return dataInfoItems;
 
 	}
+
+	/**
+	 * @param perInfoCategory
+	 * @param authClassItem
+	 * @param stardardDate
+	 * @param personId
+	 * @param employeeId
+	 * @param query
+	 */
+	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
+			GeneralDate stardardDate, String personId, String employeeId, PeregQuery query) {
+		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
+			// get domain data
+			PeregDto queryResult = layoutingProcessor.findSingle(query);
+			MappingFactory.map(queryResult, authClassItem);
+		} else {
+			if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
+				getSingleInforData(perInfoCategory, authClassItem, personId, employeeId);
+			} else if (perInfoCategory.getCategoryType() == CategoryType.CONTINUOUSHISTORY
+					|| perInfoCategory.getCategoryType() == CategoryType.NODUPLICATEHISTORY) {
+				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
+					// person history
+					getPersDataHistoryType(perInfoCategory.getCategoryCode().v(),
+							perInfoCategory.getPersonInfoCategoryId(), authClassItem, personId, stardardDate);
+				} else {
+					// employee history
+					getEmpDataHistoryType(perInfoCategory.getCategoryCode().v(),
+							perInfoCategory.getPersonInfoCategoryId(), authClassItem, personId, stardardDate);
+				}
+
+			}
+
+		}
+	}
+
+	private void getSingleInforData(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
+			String personId, String employeeId) {
+		if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
+			PerInfoCtgData perInfoCtgData = perInCtgDataRepo
+					.getByPerIdAndCtgId(personId, perInfoCategory.getPersonInfoCategoryId()).get(0);
+			List<PersonInfoItemData> dataItems = perInItemDataRepo
+					.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+			matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem, dataItems);
+		} else {
+			EmpInfoCtgData perInfoCtgData = empInCtgDataRepo
+					.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId()).get();
+			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+			matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem, dataItems);
+		}
+
+	}
+
+	/**
+	 * @param categoryCode
+	 * @param authClassItem
+	 * @param dataItems
+	 *            Target: map optional data with definition item. Person case
+	 */
+	private void matchPersDataForSingleClsItem(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			List<PersonInfoItemData> dataItems) {
+		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
+			for (PersonInfoItemData dataItem : dataItems) {
+				if (itemDef.getId() == dataItem.getPerInfoItemDefId()) {
+					Object data = null;
+					switch (dataItem.getDataState().getDataStateType()) {
+					case String:
+						data = dataItem.getDataState().getStringValue();
+						break;
+					case Numeric:
+						data = dataItem.getDataState().getNumberValue().intValue();
+						break;
+					case Date:
+						data = dataItem.getDataState().getDateValue();
+						break;
+					}
+					if (data != null) {
+						authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+					}
+				}
+			}
+		}
+
+	}
 	
+	/**
+	 * @param categoryCode
+	 * @param authClassItem
+	 * @param dataItems
+	 *            Target: map optional data with definition item. employee case
+	 */
+	private void matchEmpDataForDefItems(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			List<EmpInfoItemData> dataItems) {
+		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
+			for (EmpInfoItemData dataItem : dataItems) {
+				if (itemDef.getId() == dataItem.getPerInfoDefId()) {
+					Object data = null;
+					switch (dataItem.getDataState().getDataStateType()) {
+					case String:
+						data = dataItem.getDataState().getStringValue();
+						break;
+					case Numeric:
+						data = dataItem.getDataState().getNumberValue().intValue();
+						break;
+					case Date:
+						data = dataItem.getDataState().getDateValue();
+						break;
+					}
+					if (data != null) {
+						authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+					}
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * @param categoryCode
+	 * @param perInfoCategoryId
+	 * @param authClassItem
+	 * @param personId
+	 * @param stardardDate
+	 *            Target: get data with history case. Person case
+	 */
+	private void getPersDataHistoryType(String categoryCode, String perInfoCategoryId,
+			LayoutPersonInfoClsDto authClassItem, String personId, GeneralDate stardardDate) {
+		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
+		List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId, perInfoCategoryId);
+		String startDateId = dateRangeItem.getStartDateItemId();
+		String endDateId = dateRangeItem.getEndDateItemId();
+		for (PerInfoCtgData perInfoCtgData : perInfoCtgDatas) {
+			List<PersonInfoItemData> dataItems = perInItemDataRepo
+					.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+			GeneralDate startDate = null;
+			GeneralDate endDate = null;
+			for (PersonInfoItemData dataItem : dataItems) {
+				if (dataItem.getPerInfoItemDefId() == startDateId) {
+					startDate = dataItem.getDataState().getDateValue();
+				} else if (dataItem.getPerInfoItemDefId() == endDateId) {
+					endDate = dataItem.getDataState().getDateValue();
+				}
+			}
+
+			if (startDate == null || endDate == null) {
+				continue;
+			}
+
+			if (startDate.before(stardardDate) && endDate.after(stardardDate)) {
+				matchPersDataForSingleClsItem(categoryCode, authClassItem, dataItems);
+				break;
+			}
+
+		}
+	}
 	
+	/**
+	 * @param categoryCode
+	 * @param perInfoCategoryId
+	 * @param authClassItem
+	 * @param personId
+	 * @param stardardDate
+	 *            Target: get data with history case. Employee case
+	 */
+	private void getEmpDataHistoryType(String categoryCode, String perInfoCategoryId,
+			LayoutPersonInfoClsDto authClassItem, String personId, GeneralDate stardardDate) {
+		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
+		List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(personId, perInfoCategoryId);
+		String startDateId = dateRangeItem.getStartDateItemId();
+		String endDateId = dateRangeItem.getEndDateItemId();
+
+		for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
+			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
+
+			Optional<EmpInfoItemData> startDateOpt = dataItems.stream()
+					.filter(column -> column.getPerInfoDefId().equals(startDateId)).findFirst();
+			Optional<EmpInfoItemData> endDateOpt = dataItems.stream()
+					.filter(column -> column.getPerInfoDefId().equals(endDateId)).findFirst();
+
+			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
+				if (stardardDate.after(startDateOpt.get().getDataState().getDateValue())
+						&& stardardDate.before(endDateOpt.get().getDataState().getDateValue())) {
+					matchEmpDataForDefItems(categoryCode, authClassItem, dataItems);
+					break;
+				}
+			}
+
+		}
+	}
 
 }
