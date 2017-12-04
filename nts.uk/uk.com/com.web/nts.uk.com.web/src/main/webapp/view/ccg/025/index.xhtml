@@ -42,7 +42,9 @@
 <com:scriptfile path="view/ccg/025/component/component.vm.js" />
 
 // Use in HTML
-<ui:include src="view/ccg/025/component/index.xhtml" />]]></pre>
+<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '370px', direction: '', showIcon: true, visible: true}">
+	<ui:include src="component/index.xhtml" />
+</div>]]></pre>
 								<h2>TypeScript</h2>
 <pre><![CDATA[module nts.uk.com.view.cdl025.a {
     import getText = nts.uk.resource.getText;
