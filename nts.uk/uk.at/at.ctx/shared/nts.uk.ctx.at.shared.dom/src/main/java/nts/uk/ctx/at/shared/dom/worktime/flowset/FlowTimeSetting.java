@@ -23,4 +23,24 @@ public class FlowTimeSetting extends DomainObject {
 	/** The passage time. */
 	// 経過時間
 	private AttendanceTime passageTime;
+
+	/**
+	 * Instantiates a new flow time setting.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowTimeSetting(FlowTimeSettingGetMemento memento) {
+		this.rouding = memento.getRouding();
+		this.passageTime = memento.getPassageTime();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowTimeSettingSetMemento memento) {
+		memento.setRouding(this.rouding);
+		memento.setPassageTime(this.passageTime);
+	}
 }

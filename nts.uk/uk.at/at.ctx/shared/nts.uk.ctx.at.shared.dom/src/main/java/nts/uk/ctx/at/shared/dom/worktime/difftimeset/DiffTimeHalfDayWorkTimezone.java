@@ -11,19 +11,42 @@ import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 /**
  * The Class TimeDiffHalfDayWorkTimezone.
  */
-//時差勤務の平日出勤用勤務時間帯
+// 時差勤務の平日出勤用勤務時間帯
 @Getter
-public class DiffTimeHalfDayWorkTimezone extends DomainObject{
+public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 
 	/** The rest timezone. */
-	//休憩時間帯
+	// 休憩時間帯
 	private DiffTimeRestTimezone restTimezone;
-	
+
 	/** The work timezone. */
-	//勤務時間帯
-	private DiffTimezoneSet workTimezone;
-	
+	// 勤務時間帯
+	private DiffTimezoneSetting workTimezone;
+
 	/** The Am pm cls. */
-	//午前午後区分
+	// 午前午後区分
 	private AmPmClassification AmPmCls;
+
+	/**
+	 * Instantiates a new diff time half day work timezone.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public DiffTimeHalfDayWorkTimezone(DiffTimeHalfDayGetMemento memento) {
+		this.restTimezone = memento.getRestTimezone();
+		this.workTimezone = memento.getWorkTimezone();
+		this.AmPmCls = memento.getAmPmCls();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(DiffTimeHalfDaySetMemento memento) {
+		memento.setRestTimezone(this.restTimezone);
+		memento.setWorkTimezone(this.workTimezone);
+		memento.setAmPmCls(this.AmPmCls);
+	}
 }

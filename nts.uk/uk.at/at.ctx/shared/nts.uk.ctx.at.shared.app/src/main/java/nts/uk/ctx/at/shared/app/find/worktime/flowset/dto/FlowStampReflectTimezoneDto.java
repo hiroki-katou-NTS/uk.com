@@ -8,17 +8,47 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
 
 /**
  * The Class FlowStampReflectTimezoneDto.
  */
 @Getter
 @Setter
-public class FlowStampReflectTimezoneDto {
+public class FlowStampReflectTimezoneDto implements FlowStampReflectTimezoneSetMemento {
 
 	/** The two times work reflect basic time. */
 	private Integer twoTimesWorkReflectBasicTime;
 
 	/** The stamp reflect timezone. */
-	private List<StampReflectTimezoneDto> stampReflectTimezone;
+	//private List<StampReflectTimezoneDto> stampReflectTimezone;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowStampReflectTimezoneSetMemento#setTwoTimesWorkReflectBasicTime(nts.uk
+	 * .ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime)
+	 */
+	@Override
+	public void setTwoTimesWorkReflectBasicTime(ReflectReferenceTwoWorkTime rtwt) {
+		this.twoTimesWorkReflectBasicTime = rtwt.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowStampReflectTimezoneSetMemento#setStampReflectTimezone(java.util.
+	 * List)
+	 */
+	@Override
+	public void setStampReflectTimezone(List<StampReflectTimezone> lstRtz) {
+//		this.stampReflectTimezone = lstRtz.stream().map(item -> {
+//			StampReflectTimezoneDto dto = new StampReflectTimezoneDto();
+//			return dto;
+//		}).collect(Collectors.toList());
+	}
 }

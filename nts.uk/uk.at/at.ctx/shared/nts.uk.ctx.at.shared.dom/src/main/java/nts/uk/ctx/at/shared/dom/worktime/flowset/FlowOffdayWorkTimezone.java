@@ -24,4 +24,24 @@ public class FlowOffdayWorkTimezone extends DomainObject {
 	/** The work timezone. */
 	// 勤務時間帯
 	private List<FlowWorkHolidayTimeZone> lstWorkTimezone;
+
+	/**
+	 * Instantiates a new flow offday work timezone.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowOffdayWorkTimezone(FlowOffdayWorkTimezoneGetMemento memento) {
+		this.restTimeZone = memento.getRestTimeZone();
+		this.lstWorkTimezone = memento.getLstWorkTimezone();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowOffdayWorkTimezoneSetMemento memento) {
+		memento.setRestTimeZone(this.restTimeZone);
+		memento.setLstWorkTimezone(this.lstWorkTimezone);
+	}
 }

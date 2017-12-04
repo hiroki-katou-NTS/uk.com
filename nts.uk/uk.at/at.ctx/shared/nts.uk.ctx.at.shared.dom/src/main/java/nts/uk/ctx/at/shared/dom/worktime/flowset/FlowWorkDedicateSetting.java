@@ -21,5 +21,25 @@ public class FlowWorkDedicateSetting extends DomainObject {
 	/** The calculate setting. */
 	//計算設定
 	private FlowCalculateSet calculateSetting;
-	
+
+	/**
+	 * Instantiates a new flow work dedicate setting.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowWorkDedicateSetting(FlowWorkDedicateSettingGetMemento memento) {
+		this.overtimeSetting = memento.getOvertimeSetting();
+		this.calculateSetting = memento.getCalculateSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowWorkDedicateSettingSetMemento memento) {
+		memento.setOvertimeSetting(this.overtimeSetting);
+		memento.setCalculateSetting(this.calculateSetting);
+	}
+
 }

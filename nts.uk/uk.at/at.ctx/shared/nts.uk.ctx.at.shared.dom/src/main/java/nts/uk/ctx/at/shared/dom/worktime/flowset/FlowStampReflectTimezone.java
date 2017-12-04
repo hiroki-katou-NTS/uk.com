@@ -24,4 +24,24 @@ public class FlowStampReflectTimezone extends DomainObject {
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯
 	private List<StampReflectTimezone> stampReflectTimezone;
+
+	/**
+	 * Instantiates a new flow stamp reflect timezone.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowStampReflectTimezone(FlowStampReflectTimezoneGetMemento memento) {
+		this.twoTimesWorkReflectBasicTime = memento.getTwoTimesWorkReflectBasicTime();
+		this.stampReflectTimezone = memento.getStampReflectTimezone();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowStampReflectTimezoneSetMemento memento) {
+		memento.setTwoTimesWorkReflectBasicTime(this.twoTimesWorkReflectBasicTime);
+		memento.setStampReflectTimezone(this.stampReflectTimezone);
+	}
 }

@@ -18,15 +18,15 @@ public class EmTimezoneChangeExtent extends DomainObject {
 
 	/** The ahead change. */
 	// 前に変動
-	AttendanceTime aheadChange;
+	private AttendanceTime aheadChange;
 
 	/** The unit. */
 	// 単位
-	InstantRounding unit;
+	private InstantRounding unit;
 
 	/** The behind change. */
 	// 後に変動
-	AttendanceTime behindChange;
+	private AttendanceTime behindChange;
 
 	/**
 	 * Instantiates a new em timezone change extent.

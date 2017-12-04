@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Builder;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
@@ -18,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
  */
 // 固定勤務の平日出勤用勤務時間帯
 @Getter
-@Builder
 public class FixHalfDayWorkTimezone extends DomainObject {
 	
 	/** The rest time zone. */

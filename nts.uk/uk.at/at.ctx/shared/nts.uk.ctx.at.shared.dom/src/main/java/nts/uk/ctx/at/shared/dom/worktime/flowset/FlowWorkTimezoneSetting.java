@@ -24,4 +24,24 @@ public class FlowWorkTimezoneSetting extends DomainObject {
 	/** The OT timezone. */
 	//残業時間帯
 	private List<FlowOTTimezone> lstOTTimezone;
+
+	/**
+	 * Instantiates a new flow work timezone setting.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowWorkTimezoneSetting(FlowWorkTimezoneSettingGetMemento memento) {
+		this.workTimeRounding = memento.getWorkTimeRounding();
+		this.lstOTTimezone = memento.getLstOTTimezone();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowWorkTimezoneSettingSetMemento memento) {
+		memento.setWorkTimeRounding(this.workTimeRounding);
+		memento.setLstOTTimezone(this.lstOTTimezone);
+	}
 }

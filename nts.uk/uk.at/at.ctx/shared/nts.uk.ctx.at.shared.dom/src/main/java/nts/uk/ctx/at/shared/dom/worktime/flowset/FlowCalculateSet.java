@@ -17,4 +17,22 @@ public class FlowCalculateSet extends DomainObject {
 	/** The calc start time set. */
 	// 計算開始時刻を決める設定
 	private PrePlanWorkTimeCalcMethod calcStartTimeSet;
+
+	/**
+	 * Instantiates a new flow calculate set.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowCalculateSet(FlowCalculateSetGetMemento memento) {
+		this.calcStartTimeSet = memento.getCalcStartTimeSet();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowCalculateSetSetMemento memento) {
+		memento.setCalcStartTimeSet(this.calcStartTimeSet);
+	}
 }
