@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.role;
+package nts.uk.ctx.pereg.dom.roles;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

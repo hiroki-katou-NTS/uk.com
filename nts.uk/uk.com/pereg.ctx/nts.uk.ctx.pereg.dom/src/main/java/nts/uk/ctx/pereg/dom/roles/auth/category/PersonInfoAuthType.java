@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.role.auth.category;
+package nts.uk.ctx.pereg.dom.roles.auth.category;
 
 import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.StringMaxLength;
