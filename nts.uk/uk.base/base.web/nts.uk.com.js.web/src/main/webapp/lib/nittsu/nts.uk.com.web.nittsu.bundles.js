@@ -10639,6 +10639,7 @@ var nts;
                                     }
                                 }
                                 else {
+                                    $headerScroll.width(0);
                                     $bodyContainer.css("padding-right", "0px");
                                 }
                                 setTimeout(resizeEvent, 20);
