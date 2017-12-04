@@ -8,15 +8,15 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezoneSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSetting;
 
 /**
  * The Class FlowHalfDayWorkTimezoneDto.
  */
 @Getter
 @Setter
-public class FlowHalfDayWorkTimezoneDto implements FlowHalfDayWorkTimezoneSetMemento {
+public class FlowHalfDayWorkTimezoneDto implements FlHalfDayWtzSetMemento {
 
 	/** The rest timezone. */
 	private FlowWorkRestTimezoneDto restTimezone;
@@ -44,7 +44,7 @@ public class FlowHalfDayWorkTimezoneDto implements FlowHalfDayWorkTimezoneSetMem
 	 * dom.worktime.flowset.FlowWorkTimezoneSetting)
 	 */
 	@Override
-	public void setWorkTimeZone(FlowWorkTimezoneSetting tzone) {
+	public void setWorkTimeZone(FlWtzSetting tzone) {
 		tzone.saveToMemento(this.workTimeZone);
 	}
 }

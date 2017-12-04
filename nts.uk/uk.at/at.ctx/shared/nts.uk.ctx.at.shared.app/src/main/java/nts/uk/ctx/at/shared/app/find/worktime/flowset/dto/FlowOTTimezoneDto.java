@@ -10,15 +10,15 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
 
 /**
  * The Class FlowOTTimezoneDto.
  */
 @Getter
 @Setter
-public class FlowOTTimezoneDto implements FlowOTTimezoneSetMemento {
+public class FlowOTTimezoneDto implements FlOTTimezoneSetMemento {
 
 	/** The worktime no. */
 	private Integer worktimeNo;
@@ -68,7 +68,7 @@ public class FlowOTTimezoneDto implements FlowOTTimezoneSetMemento {
 	 * FlowTimeSetting)
 	 */
 	@Override
-	public void setFlowTimeSetting(FlowTimeSetting ftSet) {
+	public void setFlowTimeSetting(FlTimeSetting ftSet) {
 		ftSet.saveToMemento(this.flowTimeSetting);
 	}
 

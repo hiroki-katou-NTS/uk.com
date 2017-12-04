@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTzSetMemento;
 
 /**
  * The Class FlowWorkHolidayTimeZoneDto.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZoneSetMemen
 
 @Getter
 @Setter
-public class FlowWorkHolidayTimeZoneDto implements FlowWorkHolidayTimeZoneSetMemento {
+public class FlowWorkHolidayTimeZoneDto implements FlWorkHdTzSetMemento {
 
 	/** The worktime no. */
 	private Integer worktimeNo;
@@ -88,7 +88,7 @@ public class FlowWorkHolidayTimeZoneDto implements FlowWorkHolidayTimeZoneSetMem
 	 * .dom.worktime.flowset.FlowTimeSetting)
 	 */
 	@Override
-	public void setFlowTimeSetting(FlowTimeSetting ftSet) {
+	public void setFlowTimeSetting(FlTimeSetting ftSet) {
 		ftSet.saveToMemento(this.flowTimeSetting);
 	}
 }
