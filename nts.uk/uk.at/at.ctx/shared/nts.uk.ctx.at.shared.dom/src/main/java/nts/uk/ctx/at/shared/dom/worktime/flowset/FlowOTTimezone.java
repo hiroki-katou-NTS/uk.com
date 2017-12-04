@@ -39,4 +39,32 @@ public class FlowOTTimezone extends DomainObject {
 	/** The settlement order. */
 	// 精算順序
 	private SettlementOrder settlementOrder;
+
+	/**
+	 * Instantiates a new flow OT timezone.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowOTTimezone(FlowOTTimezoneGetMemento memento) {
+		this.worktimeNo = memento.getWorktimeNo();
+		this.restrictTime = memento.getRestrictTime();
+		this.OTFrameNo = memento.getOTFrameNo();
+		this.flowTimeSetting = memento.getFlowTimeSetting();
+		this.inLegalOTFrameNo = memento.getInLegalOTFrameNo();
+		this.settlementOrder = memento.getSettlementOrder();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowOTTimezoneSetMemento memento) {
+		memento.setWorktimeNo(this.worktimeNo);
+		memento.setRestrictTime(this.restrictTime);
+		memento.setOTFrameNo(this.OTFrameNo);
+		memento.setFlowTimeSetting(this.flowTimeSetting);
+		memento.setInLegalOTFrameNo(this.inLegalOTFrameNo);
+		memento.setSettlementOrder(this.settlementOrder);
+	}
 }

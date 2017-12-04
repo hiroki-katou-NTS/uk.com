@@ -17,4 +17,22 @@ public class FlowOTSet extends DomainObject {
 	/** The fixed change atr. */
 	//所定変動区分
 	private FixedChangeAtr fixedChangeAtr;
+
+	/**
+	 * Instantiates a new flow OT set.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowOTSet(FlowOTSetGetMemento memento) {
+		this.fixedChangeAtr = memento.getFixedChangeAtr();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowOTSetSetMemento memento) {
+		memento.setFixedChangeAtr(this.fixedChangeAtr);
+	}
 }

@@ -45,4 +45,36 @@ public class FlowWorkHolidayTimeZone extends DomainObject {
 	
 	//流動時間設定
 	private FlowTimeSetting flowTimeSetting;
+
+	/**
+	 * Instantiates a new flow work holiday time zone.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowWorkHolidayTimeZone(FlowWorkHolidayTimeZoneGetMemento memento) {
+		this.worktimeNo = memento.getWorktimeNo();
+		this.useInLegalBreakRestrictTime = memento.getUseInLegalBreakRestrictTime();
+		this.inLegalBreakFrameNo = memento.getInLegalBreakFrameNo();
+		this.useOutLegalBreakRestrictTime = memento.getUseOutLegalBreakRestrictTime();
+		this.outLegalBreakFrameNo = memento.getOutLegalBreakFrameNo();
+		this.useOutLegalPubHolRestrictTime = memento.getUseOutLegalPubHolRestrictTime();
+		this.outLegalPubHolFrameNo = memento.getOutLegalPubHolFrameNo();
+		this.flowTimeSetting = memento.getFlowTimeSetting();
+	}
+
+	/**
+	 * Save to mement.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMement (FlowWorkHolidayTimeZoneSetMemento memento) {
+		memento.setWorktimeNo(this.worktimeNo);
+		memento.setUseInLegalBreakRestrictTime(this.useInLegalBreakRestrictTime);
+		memento.setInLegalBreakFrameNo(this.inLegalBreakFrameNo);
+		memento.setUseOutLegalBreakRestrictTime(this.useOutLegalBreakRestrictTime);
+		memento.setOutLegalBreakFrameNo(this.outLegalBreakFrameNo);
+		memento.setUseOutLegalPubHolRestrictTime(this.useOutLegalPubHolRestrictTime);
+		memento.setOutLegalPubHolFrameNo(this.outLegalPubHolFrameNo);
+		memento.setFlowTimeSetting(this.flowTimeSetting);
+	}
 }

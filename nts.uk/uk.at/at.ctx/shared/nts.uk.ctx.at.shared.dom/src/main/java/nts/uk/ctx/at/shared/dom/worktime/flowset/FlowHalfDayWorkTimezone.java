@@ -22,4 +22,24 @@ public class FlowHalfDayWorkTimezone extends DomainObject{
 	/** The work time zone. */
 	//勤務時間帯
 	private FlowWorkTimezoneSetting workTimeZone;
+
+	/**
+	 * Instantiates a new flow half day work timezone.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowHalfDayWorkTimezone(FlowHalfDayWorkTimezoneGetMemento memento) {
+		this.restTimezone = memento.getRestTimezone();
+		this.workTimeZone = memento.getWorkTimeZone();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowHalfDayWorkTimezoneSetMemento memento) {
+		memento.setRestTimezone(this.restTimezone);
+		memento.setWorkTimeZone(this.workTimeZone);
+	}
 }
