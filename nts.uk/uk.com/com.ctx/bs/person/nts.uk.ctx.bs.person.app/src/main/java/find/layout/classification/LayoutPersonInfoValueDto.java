@@ -56,10 +56,27 @@ public class LayoutPersonInfoValueDto {
 
 	}
 
-	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object data) {
+	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object value) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(categoryCode);
+		dataObject.setItemDefId(itemDef.getId());
+		dataObject.setItemName(itemDef.getItemName());
+		dataObject.setItemCode(itemDef.getItemCode());
+		dataObject.setRow(0);
+		dataObject.setValue(value);
+		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+		dataObject.setItem(sigleItem.getDataTypeState());
+		return dataObject;
+	}
+	
+	/**
+	 * for test
+	 */
+	public static LayoutPersonInfoValueDto initData(PerInfoItemDefDto itemDef, Object data) {
+		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
+		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setItemDefId(itemDef.getId());
 		dataObject.setItemName(itemDef.getItemName());
 		dataObject.setItemCode(itemDef.getItemCode());
@@ -70,7 +87,9 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItem(sigleItem.getDataTypeState());
 		return dataObject;
 	}
-	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object data, ActionRole actionRole) {
+
+	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object data,
+			ActionRole actionRole) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(categoryCode);
@@ -85,8 +104,8 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setActionRole(actionRole);
 		return dataObject;
 	}
-	
-	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object data){
+
+	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object value) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(itemDef.getPerInfoCtgCd());
@@ -94,7 +113,7 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemName(itemDef.getItemName());
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setRow(itemDef.getRow());
-		dataObject.setValue(data);
+		dataObject.setValue(value);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
 		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 		dataObject.setItem(sigleItem.getDataTypeState());
