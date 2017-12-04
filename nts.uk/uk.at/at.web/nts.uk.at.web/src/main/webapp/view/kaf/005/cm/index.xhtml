@@ -443,9 +443,9 @@
 			<label>#{i18n.getText('KAF005_120')}</label>
 			 <BR /> <BR /> 
 			<!--A12_3-->
-			<div data-bind = "if: preAppPanelFlg()">
-				<label data-bind =" if: !(referencePanelFlg())" style ="margin-left: 7px">#{i18n.getText('KAF005_121')}</label>
-				<div data-bind =" if: referencePanelFlg()">
+			<div data-bind = "if: referencePanelFlg()">
+				<label data-bind =" if: !(preAppPanelFlg())" style ="margin-left: 7px">#{i18n.getText('KAF005_121')}</label>
+				<div data-bind =" if: preAppPanelFlg()">
 					<div class="control-group" >
 					<!--A12_4 申請者-->
 					<label>#{i18n.getText('KAF005_122')} :</label>
