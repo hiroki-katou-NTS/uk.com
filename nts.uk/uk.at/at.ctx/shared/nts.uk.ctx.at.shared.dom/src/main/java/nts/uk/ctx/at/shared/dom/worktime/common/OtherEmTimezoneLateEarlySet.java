@@ -12,12 +12,6 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
  * The Class OtherEmTimezoneLateEarlySet.
  */
 //就業時間帯の遅刻・早退別設定
-
-/**
- * Gets the late early atr.
- *
- * @return the late early atr
- */
 @Getter
 public class OtherEmTimezoneLateEarlySet extends DomainObject {
 
@@ -31,7 +25,7 @@ public class OtherEmTimezoneLateEarlySet extends DomainObject {
 	
 	/** The grace time set. */
 	//猶予時間設定
-	private GraceTimeSet graceTimeSet;
+	private GraceTimeSetting graceTimeSet;
 	
 	/** The record time rounding set. */
 	//計上時間丸め設定
@@ -40,4 +34,30 @@ public class OtherEmTimezoneLateEarlySet extends DomainObject {
 	/** The late early atr. */
 	//遅刻早退区分
 	private LateEarlyAtr lateEarlyAtr;
+	
+	/**
+	 * Instantiates a new other em timezone late early set.
+	 *
+	 * @param memento the memento
+	 */
+	public OtherEmTimezoneLateEarlySet(OtherEmTimezoneLateEarlySetGetMemento memento) {
+		this.delTimeRoundingSet = memento.getDelTimeRoundingSet();
+		this.stampExactlyTimeIsLateEarly = memento.getStampExactlyTimeIsLateEarly();
+		this.graceTimeSet = memento.getGraceTimeSet();
+		this.recordTimeRoundingSet = memento.getRecordTimeRoundingSet();
+		this.lateEarlyAtr =memento.getLateEarlyAtr();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(OtherEmTimezoneLateEarlySetSetMemento memento){
+		memento.setDelTimeRoundingSet(this.delTimeRoundingSet);
+		memento.setStampExactlyTimeIsLateEarly(this.stampExactlyTimeIsLateEarly);
+		memento.setGraceTimeSet(this.graceTimeSet);
+		memento.setRecordTimeRoundingSet(this.recordTimeRoundingSet);
+		memento.setLateEarlyAtr(this.lateEarlyAtr);
+	}
 }

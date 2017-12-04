@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The Interface WorkTimeSettingRepository.
@@ -23,10 +22,10 @@ public interface WorkTimeSettingRepository {
 	/**
 	 * Find all.
 	 *
-	 * @param companyID the company ID
+	 * @param companyId the company id
 	 * @return the list
 	 */
-	public List<WorkTimeSetting> findAll(String companyID);
+	public List<WorkTimeSetting> findAll(String companyId);
 
 	/**
 	 * Find by codes.
@@ -41,10 +40,10 @@ public interface WorkTimeSettingRepository {
 	 * Find by code.
 	 *
 	 * @param companyID the company ID
-	 * @param siftCD the sift CD
-	 * @return the optional
+	 * @param workTimeCode the work time code
+	 * @return the work time setting
 	 */
-	public Optional<WorkTimeSetting> findByCode(String companyID, String siftCD);
+	public WorkTimeSetting findByCode(String companyID, String workTimeCode);
 
 	/**
 	 * Find by code list.

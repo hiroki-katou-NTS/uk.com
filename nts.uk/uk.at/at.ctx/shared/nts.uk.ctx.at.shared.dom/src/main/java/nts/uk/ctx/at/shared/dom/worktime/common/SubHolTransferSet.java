@@ -29,4 +29,28 @@ public class SubHolTransferSet extends DomainObject{
 	/** The Sub hol transfer set atr. */
 	//振替区分
 	private SubHolTransferSetAtr SubHolTransferSetAtr;
+
+	/**
+	 * Instantiates a new sub hol transfer set.
+	 *
+	 * @param memento the memento
+	 */
+	public SubHolTransferSet(SubHolTransferSetGetMemento memento) {
+		this.certainTime = memento.getCertainTime();
+		this.useDivision = memento.getUseDivision();
+		this.designatedTime = memento.getDesignatedTime();
+		this.SubHolTransferSetAtr = memento.getSubHolTransferSetAtr();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(SubHolTransferSetSetMemento memento) {
+		memento.setCertainTime(this.certainTime);
+		memento.setUseDivision(this.useDivision);
+		memento.setDesignatedTime(this.designatedTime);
+		memento.setSubHolTransferSetAtr(this.SubHolTransferSetAtr);
+	}
 }

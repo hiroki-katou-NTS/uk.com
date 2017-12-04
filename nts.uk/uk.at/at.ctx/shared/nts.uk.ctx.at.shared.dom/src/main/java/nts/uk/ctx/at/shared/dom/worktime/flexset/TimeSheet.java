@@ -22,4 +22,25 @@ public class TimeSheet extends DomainObject {
 	/** The end time. */
 	// 終了時刻
 	private TimeWithDayAttr endTime;
+	
+	
+	/**
+	 * Instantiates a new time sheet.
+	 *
+	 * @param memento the memento
+	 */
+	public TimeSheet(TimeSheetGetMemento memento) {
+		this.startTime = memento.getStartTime();
+		this.endTime = memento.getEndTime();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(TimeSheetSetMemento memento){
+		memento.setStartTime(this.startTime);
+		memento.setEndTime(this.endTime);
+	}
 }

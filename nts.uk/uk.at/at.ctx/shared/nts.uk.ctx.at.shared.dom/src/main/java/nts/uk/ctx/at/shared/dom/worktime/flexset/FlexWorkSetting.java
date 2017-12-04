@@ -59,4 +59,40 @@ public class FlexWorkSetting extends AggregateRoot {
 	/** The calculate setting. */
 	// 計算設定
 	private FlexCalcSetting calculateSetting;
+	
+	/**
+	 * Instantiates a new flex work setting.
+	 *
+	 * @param memento the memento
+	 */
+	public FlexWorkSetting(FlexWorkSettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.workTimeCode = memento.getWorkTimeCode();
+		this.coreTimeSetting = memento.getCoreTimeSetting();
+		this.restSetting = memento.getRestSetting();
+		this.offdayWorkTime = memento.getOffdayWorkTime();
+		this.commonSetting = memento.getCommonSetting();
+		this.useHalfDayShift = memento.getUseHalfDayShift();
+		this.halfDayWorkTimezone = memento.getHalfDayWorkTimezone();
+		this.stampReflectTimezone = memento.getStampReflectTimezone();
+		this.calculateSetting = memento.getCalculateSetting();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlexWorkSettingSetMemento memento){
+		memento.setcompanyId(this.companyId);
+		memento.setWorkTimeCode(this.workTimeCode);
+		memento.setCoreTimeSetting(this.coreTimeSetting);
+		memento.setRestSetting(this.restSetting);
+		memento.setOffdayWorkTime(this.offdayWorkTime);
+		memento.setCommonSetting(this.commonSetting);
+		memento.setUseHalfDayShift(this.useHalfDayShift);
+		memento.setHalfDayWorkTimezone(this.halfDayWorkTimezone);
+		memento.setStampReflectTimezone(this.stampReflectTimezone);
+		memento.setCalculateSetting(this.calculateSetting);
+	}
 }

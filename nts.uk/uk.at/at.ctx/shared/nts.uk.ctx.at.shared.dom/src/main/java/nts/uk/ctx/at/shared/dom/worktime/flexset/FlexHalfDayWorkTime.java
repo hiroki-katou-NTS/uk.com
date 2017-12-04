@@ -8,9 +8,9 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 
 /**
  * The Class FlexHalfDayWorkTime.
@@ -27,7 +27,29 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	// 勤務時間帯
 	private FixedWorkTimezoneSet workTimezone;
 	
-	/** The Am pm classification. */
+	/** The am pm atr. */
 	// 午前午後区分
-	private AmPmClassification AmPmClassification;
+	private AmPmAtr amPmAtr;
+
+	/**
+	 * Instantiates a new flex half day work time.
+	 *
+	 * @param memento the memento
+	 */
+	public FlexHalfDayWorkTime(FlexHalfDayWorkTimeGetMemento memento) {
+		this.restTimezone = memento.getRestTimezone();
+		this.workTimezone = memento.getWorkTimezone();
+		this.amPmAtr = memento.getAmPmAtr();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlexHalfDayWorkTimeSetMemento memento){
+		memento.setRestTimezone(this.restTimezone);
+		memento.setWorkTimezone(this.workTimezone);
+		memento.setAmPmAtr(this.amPmAtr);
+	}
 }

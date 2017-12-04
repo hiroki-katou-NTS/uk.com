@@ -19,14 +19,14 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiApproval a ");
+		builderString.append("FROM KrcdtDaiApprovalStatus a ");
 		builderString.append("WHERE a.krcdtDaiApprovalPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiApprovalPK.ymd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiApproval a ");
+		builderString.append("FROM KrcdtDaiApprovalStatus a ");
 		builderString.append("WHERE WHERE a.krcdtDaiApprovalPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiApprovalPK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();

@@ -11,7 +11,6 @@ import javax.enterprise.util.TypeLiteral;
 
 import nts.uk.ctx.bs.employee.app.find.person.PersonLayoutDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
-import nts.uk.shr.pereg.app.find.PeregFinderProcessorCollector;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 

@@ -25,4 +25,26 @@ public class FlowWorkRestSettingDetail extends DomainObject {
 	/** The use plural work rest time. */
 	// 複数回勤務の間を休憩時間として扱う
 	private boolean usePluralWorkRestTime;
+
+	/**
+	 * Instantiates a new flow work rest setting detail.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowWorkRestSettingDetail(FlowWorkRestSettingDetailGetMemento memento) {
+		this.flowRestSetting = memento.getFlowRestSetting();
+		this.flowFixedRestSetting = memento.getFlowFixedRestSetting();
+		this.usePluralWorkRestTime = memento.getUsePluralWorkRestTime();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowWorkRestSettingDetailSetMemento memento) {
+		memento.setFlowRestSetting(this.flowRestSetting);
+		memento.setFlowFixedRestSetting(this.flowFixedRestSetting);
+		memento.setUsePluralWorkRestTime(this.usePluralWorkRestTime);
+	}
 }

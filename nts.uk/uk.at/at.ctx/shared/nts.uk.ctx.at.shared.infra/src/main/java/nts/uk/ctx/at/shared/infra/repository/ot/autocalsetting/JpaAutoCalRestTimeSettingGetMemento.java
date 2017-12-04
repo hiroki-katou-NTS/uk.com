@@ -34,7 +34,7 @@ public class JpaAutoCalRestTimeSettingGetMemento implements AutoCalRestTimeSetti
 	@Override
 	public AutoCalSetting getRestTime() {
 		return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(this.entity.getRestTimeLimit()),
-				AutoCalAtrOvertime.valueOf(this.entity.getLegalMidOtTimeAtr()));
+				AutoCalAtrOvertime.valueOf(this.entity.getRestTimeAtr()));
 	}
 
 	/* (non-Javadoc)

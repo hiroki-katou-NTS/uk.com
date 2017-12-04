@@ -14,11 +14,31 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class InstantRounding extends DomainObject {
 
-	/** The Font rear section. */
+	/** The font rear section. */
 	// 前後区分
-	private FontRearSection FontRearSection;
+	private FontRearSection fontRearSection;
 
 	/** The rounding time unit. */
 	// 時刻丸め単位
 	private RoundingTimeUnit roundingTimeUnit;
+	
+	/**
+	 * Instantiates a new instant rounding.
+	 *
+	 * @param memento the memento
+	 */
+	public InstantRounding(InstantRoundingGetMemento memento) {
+		this.fontRearSection = memento.getFontRearSection();
+		this.roundingTimeUnit = memento.getRoundingTimeUnit();
+	}
+	
+	/**
+	 * Save to mememto.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMememto(InstantRoundingSetMemento memento){
+		memento.setFontRearSection(this.fontRearSection);
+		memento.setRoundingTimeUnit(this.roundingTimeUnit);
+	}
 }

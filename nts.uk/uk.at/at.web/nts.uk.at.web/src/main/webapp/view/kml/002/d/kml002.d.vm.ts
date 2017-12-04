@@ -205,6 +205,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
          * event when click add button 
          */
         add(){
+              var t0 = performance.now();
             let self = this;
             console.log(self.rightItems());
             if((self.rightItems().length + self.currentCodeList().length) > 100){
@@ -228,6 +229,8 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 self.rightItems(righItems);
                 console.log(self.rightItems());
             }
+             var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         
         /**

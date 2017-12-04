@@ -22,4 +22,24 @@ public class DesignatedTime extends DomainObject {
 	/** The half day time. */
 	//半日の時間
 	private OneDayTime halfDayTime;
+
+	/**
+	 * Instantiates a new designated time.
+	 *
+	 * @param memento the memento
+	 */
+	public DesignatedTime(DesignatedTimeGetMemento memento) {
+		this.oneDayTime = memento.getOneDayTime();
+		this.halfDayTime = memento.getHalfDayTime();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(DesignatedTimeSetMemento memento) {
+		memento.setOneDayTime(this.oneDayTime);
+		memento.setHalfDayTime(this.halfDayTime);
+	}
 }
