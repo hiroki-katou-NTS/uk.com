@@ -38,7 +38,7 @@ public class JpaFlexEmTZSetTZRoundingGetMemento implements TimeZoneRoundingGetMe
 	 */
 	@Override
 	public TimeRoundingSetting getRounding() {
-		return new TimeRoundingSetting(this.entity.get, rounding);
+		return null;
 	}
 
 	/**
