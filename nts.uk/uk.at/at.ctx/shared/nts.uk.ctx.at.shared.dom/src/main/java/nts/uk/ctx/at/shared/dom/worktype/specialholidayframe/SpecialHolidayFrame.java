@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktype.specialholidayframe;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
  *
  */
 @Getter
+@NoArgsConstructor
 public class SpecialHolidayFrame {
 	
 	/**

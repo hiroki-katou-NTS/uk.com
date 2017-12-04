@@ -180,7 +180,7 @@ public class WorkTypeExportImpl implements MasterListData {
 					}
 					if (c.getOneDayCls() == WorkTypeClassification.Absence) {
 						AbsenceFrame absenceFrameOneDay = datasAbsenceFrameMap.get(c.getOneDaySumAbsenseNo());
-						data.put("1日の欠勤の集計枠", absenceFrameOneDay.getAbsenceFrameName());
+						data.put("1日の欠勤の集計枠", absenceFrameOneDay != null ? absenceFrameOneDay.getAbsenceFrameName() : "");
 					} else {
 						data.put("1日の欠勤の集計枠", "");
 					}
@@ -188,7 +188,7 @@ public class WorkTypeExportImpl implements MasterListData {
 					if (c.getOneDayCls() == WorkTypeClassification.SpecialHoliday) {
 						SpecialHolidayFrame specialHlFrameOneDay = datasSpecialHlFrameMap
 								.get(c.getOneDaySumSpHodidayNo());
-						data.put("1日の特別休暇の集計枠", specialHlFrameOneDay.getSpecialHdFrameName());
+						data.put("1日の特別休暇の集計枠", specialHlFrameOneDay != null ? specialHlFrameOneDay.getSpecialHdFrameName() : "");
 					} else {
 						data.put("1日の特別休暇の集計枠", "");
 					}
@@ -204,28 +204,28 @@ public class WorkTypeExportImpl implements MasterListData {
 					data.put("午前", TextResource.localize(c.getMorningCls().nameId));
 					data.put("午後", TextResource.localize(c.getAfternoonCls().nameId));
 					if (c.getMorningCls() == WorkTypeClassification.Absence) {
-						AbsenceFrame absenceFrameMorning = datasAbsenceFrameMap.get(c.getMorningSumAbsenseNo());
+						AbsenceFrame absenceFrameMorning = c.getMorningSumAbsenseNo() != null ? datasAbsenceFrameMap.get(c.getMorningSumAbsenseNo()) : new AbsenceFrame();
 						data.put("午前の欠勤の集計枠", absenceFrameMorning.getAbsenceFrameName());
 					} else {
 						data.put("午前の欠勤の集計枠", "");
 					}
 
 					if (c.getMorningCls() == WorkTypeClassification.SpecialHoliday) {
-						SpecialHolidayFrame specialHlFrameMorning = datasSpecialHlFrameMap
-								.get(c.getMorningSumSpHodidayNo());
+						SpecialHolidayFrame specialHlFrameMorning = c.getMorningSumSpHodidayNo() != null ? datasSpecialHlFrameMap
+								.get(c.getMorningSumSpHodidayNo()) : new SpecialHolidayFrame();
 						data.put("午前の特別休暇の集計枠", specialHlFrameMorning.getSpecialHdFrameName());
 					} else {
 						data.put("午前の特別休暇の集計枠", "");
 					}
 					if (c.getAfternoonCls() == WorkTypeClassification.Absence) {
-						AbsenceFrame absenceFrameAfternoon = datasAbsenceFrameMap.get(c.getAfternoonSumAbsenseNo());
+						AbsenceFrame absenceFrameAfternoon = c.getAfternoonSumAbsenseNo() != null ? datasAbsenceFrameMap.get(c.getAfternoonSumAbsenseNo()) : new AbsenceFrame();
 						data.put("午後の欠勤の集計枠", absenceFrameAfternoon.getAbsenceFrameName());
 					} else {
 						data.put("午後の欠勤の集計枠", "");
 					}
 					if (c.getAfternoonCls() == WorkTypeClassification.SpecialHoliday) {
-						SpecialHolidayFrame specialHlFrameAfternoon = datasSpecialHlFrameMap
-								.get(c.getAfternoonSumSpHodidayNo());
+						SpecialHolidayFrame specialHlFrameAfternoon = c.getAfternoonSumSpHodidayNo() != null ? datasSpecialHlFrameMap
+								.get(c.getAfternoonSumSpHodidayNo()) : new SpecialHolidayFrame();
 						data.put("午後の特別休暇の集計枠", specialHlFrameAfternoon.getSpecialHdFrameName());
 					} else {
 						data.put("午後の特別休暇の集計枠", "");
@@ -246,12 +246,15 @@ public class WorkTypeExportImpl implements MasterListData {
 	 * @param check
 	 * @return
 	 */
-	private static String checkButtonCheck(int check) {
+	private static String checkButtonCheck(Integer check) {
+		if (check == null) {
+			return "";
+		}
+		
 		if (check == 1) {
 			return "○";
-		} else {
-			return "ー";
 		}
+		return "ー";	
 	}
 
 	/**
