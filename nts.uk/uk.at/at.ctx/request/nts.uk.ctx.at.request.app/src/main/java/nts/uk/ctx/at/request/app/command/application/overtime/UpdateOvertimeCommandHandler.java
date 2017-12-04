@@ -52,8 +52,9 @@ public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeC
 		overTimeInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		overTimeInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		overTimeInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		
-		appOverTime.setDivergenceReason(command.getDivergenceReasonContent());
+		String divergenceReason = command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator());
+		String applicationReason = command.getApplicationReason().replaceFirst(":", System.lineSeparator());
+		appOverTime.setDivergenceReason(divergenceReason);
 		appOverTime.setFlexExessTime(command.getFlexExessTime());
 		appOverTime.setOverTimeAtr(EnumAdaptor.valueOf(command.getOvertimeAtr(), OverTimeAtr.class));
 		appOverTime.setOverTimeInput(overTimeInputs);
@@ -64,7 +65,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeC
 		appOverTime.setWorkClockTo1(command.getWorkClockTo1());
 		appOverTime.setWorkClockTo2(command.getWorkClockTo2());
 		appOverTime.setWorkTypeCode(new WorkTypeCode(command.getWorkTypeCode()));
-		appOverTime.getApplication().setApplicationReason(new AppReason(command.getApplicationReason()));
+		appOverTime.getApplication().setApplicationReason(new AppReason(applicationReason));
 		appOverTime.setVersion(command.getVersion());
 		appOverTime.getApplication().setVersion(appOverTime.getVersion());
 		

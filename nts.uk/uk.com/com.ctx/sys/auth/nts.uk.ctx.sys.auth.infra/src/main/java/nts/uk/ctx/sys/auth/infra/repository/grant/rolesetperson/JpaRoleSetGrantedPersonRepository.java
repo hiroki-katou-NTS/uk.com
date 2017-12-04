@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.auth.infra.repository.grant.rolesetperson;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
@@ -66,6 +67,11 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 	@Override
 	public void delete(String employeeId) {
 		this.commandProxy().remove(SacmtRoleSetGrantedPerson.class, employeeId);
+	}
+
+	@Override
+	public Optional<RoleSetGrantedPerson> getByEmployeeId(String employeeId) {
+		return this.queryProxy().find(employeeId, SacmtRoleSetGrantedPerson.class).map(r -> toDomain(r));
 	}
 
 }

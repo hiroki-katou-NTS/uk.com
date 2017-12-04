@@ -21,10 +21,10 @@ public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetM
 	private int scheduleCnt;
 
 	/** The schedule start clock. */
-	private int scheduleStartClock;
+	private Integer scheduleStartClock;
 
 	/** The schedule end clock. */
-	private int scheduleEndClock;
+	private Integer scheduleEndClock;
 
 	/** The bounce atr. */
 	private int bounceAtr;

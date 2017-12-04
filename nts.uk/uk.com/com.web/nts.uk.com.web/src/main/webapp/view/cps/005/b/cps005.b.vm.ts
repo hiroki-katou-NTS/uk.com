@@ -78,7 +78,6 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     newItemDef;
                 block.invisible();
-                debugger;
 
                 newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
 
@@ -281,7 +280,6 @@ module nts.uk.com.view.cps005.b {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     nts.uk.ui.errors.clearAll();
                     new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
-                        debugger;
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
@@ -290,7 +288,13 @@ module nts.uk.com.view.cps005.b {
                             self.isEnableButtonProceed(false);
                             self.isEnableButtonDelete(false);
                         }
-                        self.currentItemSelected().selectionItem().selectionItemId(data.itemTypeState.dataTypeState.typeCode || undefined);
+                        
+                        if (data.itemTypeState.dataTypeState !== undefined 
+                                    && data.itemTypeState.dataTypeState.dataTypeValue === 6 
+                                    && data.itemTypeState.dataTypeState.referenceType === "CODE_NAME") {
+                            self.currentItemSelected().selectionItem().selectionItemId(data.itemTypeState.dataTypeState.typeCode || undefined);
+                        }
+                        
                         self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
@@ -662,20 +666,9 @@ module nts.uk.com.view.cps005.b {
                     self.decimalPart = data.numericItem().decimalPart();
                 }
 
-                if (self.decimalPart === 0) {
-                    
-                    self.numericItemMin = 0;
+                self.numericItemMin = data.numericItem().numericItemMin();
 
-                    self.numericItemMax = Math.pow(10, self.integerPart)  - 1;
-                    
-                } else {
-                    
-                    self.numericItemMin = data.numericItem().numericItemMin();
-
-                    self.numericItemMax = data.numericItem().numericItemMax();
-                }
-
-
+                self.numericItemMax = data.numericItem().numericItemMax();
 
             }
             if (data.dateItem()) {

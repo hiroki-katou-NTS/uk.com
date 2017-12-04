@@ -3986,10 +3986,23 @@ div .ex-area-line.x-stay {
   float: left;
   border: 1px solid #CCC;
   border-top: 0px;
+border-left: 0px;
+}
+/* line 30, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-header {
+  display: inline-block;
+}
+/* line 30, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .scroll-header{
+	background-color: #EDE9ED;
 }
 /* line 30, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-wrapper {
   margin: -1px 0 0 -1px;
+border-left: 1px solid #CCC;
+}
+.nts-fixed-table .body-no-record{
+	margin-left: 0px;
 }
 
 /* line 2, ../sass/components/_fileupload.scss */

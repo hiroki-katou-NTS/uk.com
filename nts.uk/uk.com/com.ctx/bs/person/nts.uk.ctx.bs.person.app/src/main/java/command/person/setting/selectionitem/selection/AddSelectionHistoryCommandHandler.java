@@ -94,7 +94,7 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 
 			// Tao do main: 選択肢
 			Selection domainSelection = Selection.createFromSelection(newSelectionId, newHistId,
-					selection.getExternalCD().v(), selection.getSelectionName().v(), selection.getExternalCD().v(),
+					selection.getSelectionCD().v(), selection.getSelectionName().v(), selection.getExternalCD().v(),
 					selection.getMemoSelection().v());
 
 			// ドメインモデル「選択肢」をコピーする

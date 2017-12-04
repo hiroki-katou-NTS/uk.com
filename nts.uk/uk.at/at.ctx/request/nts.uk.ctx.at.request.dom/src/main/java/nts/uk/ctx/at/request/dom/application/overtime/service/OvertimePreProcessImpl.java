@@ -394,7 +394,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public void getResultContentActual(int prePostAtr,String siftCode,String companyID) {
+	public void getResultContentActual(int prePostAtr,String siftCode,String companyID,String appDate) {
 		// TODO Auto-generated method stub
 		if(PrePostAtr.POSTERIOR.value == prePostAtr){
 			Optional<WorkTimeSet> workTimeSet = workTimeSetRepository.findByCode(companyID, siftCode);

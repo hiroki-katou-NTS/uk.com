@@ -1,0 +1,20 @@
+#left-content {
+	margin-left: 20px;
+	margin-top: 12px;
+	padding: 20px 5px 10px 20px;
+	float: left;
+	width: 340px;
+	height: 480px;
+}
+
+#right-content {
+	margin-left: 50px;
+	float: left;
+	margin-top: 32px;
+	width: calc(100% - 550px);
+}
+
+.control-group td {
+	padding-bottom: 10px;
+	padding-left: 10px;
+}
