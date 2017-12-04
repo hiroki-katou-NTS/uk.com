@@ -32,4 +32,15 @@ public class TimeRoundingSetting extends DomainObject{
 		this.roundingTime = roundingTime;
 		this.rounding = rounding;
 	}
+	
+	/**
+	 * Instantiates a new time rounding setting.
+	 *
+	 * @param roundingTime the rounding time
+	 * @param rounding the rounding
+	 */
+	public TimeRoundingSetting(int roundingTime, int rounding) {
+		this.roundingTime = Unit.valueOf(roundingTime);
+		this.rounding = Rounding.valueOf(rounding);
+	}
 }
