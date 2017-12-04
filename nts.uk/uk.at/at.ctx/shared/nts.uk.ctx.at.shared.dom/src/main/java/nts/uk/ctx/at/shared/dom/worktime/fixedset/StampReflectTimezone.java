@@ -34,8 +34,7 @@ public class StampReflectTimezone extends DomainObject {
 	/**
 	 * Instantiates a new stamp reflect timezone.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public StampReflectTimezone(StampReflectTimezoneGetMemento memento) {
 		this.workNo = memento.getWorkNo();
@@ -47,8 +46,7 @@ public class StampReflectTimezone extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(StampReflectTimezoneSetMemento memento) {
 		memento.setWorkNo(this.workNo);
@@ -67,30 +65,6 @@ public class StampReflectTimezone extends DomainObject {
 		super.validate();
 
 		// TODO: Validate message 516
-	}
-
-	/**
-	 * Instantiates a new stamp reflect timezone.
-	 *
-	 * @param memento the memento
-	 */
-	public StampReflectTimezone(StampReflectTimezoneGetMemento memento) {
-		this.workNo = memento.getWorkNo();
-		this.classification = memento.getClassification();
-		this.endTime = memento.getEndTime();
-		this.startTime = memento.getStartTime();
-	}
-		
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(StampReflectTimezoneSetMemento memento) {
-		memento.setWorkNo(this.workNo);
-		memento.setClassification(this.classification);
-		memento.setEndTime(this.endTime);
-		memento.setStartTime(this.startTime);
 	}
 	
 }
