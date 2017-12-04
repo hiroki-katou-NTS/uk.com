@@ -20,12 +20,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @Setter
 public class StampReflectTimezoneDto implements StampReflectTimezoneSetMemento{
-	
+
 	/** The work no. */
 	private BigDecimal workNo;
 
 	/** The classification. */
-	 private Integer classification;
+	private Integer classification;
 
 	/** The end time. */
 	private Integer endTime;
