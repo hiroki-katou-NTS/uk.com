@@ -1,4 +1,4 @@
-package companyinfor;
+package nts.uk.screen.com.app.command.company;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

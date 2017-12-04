@@ -30,7 +30,6 @@
 
 #companyCode {
 	width: 50px;
-	text-align: center;
 }
 
 #combo-box {
@@ -209,22 +208,22 @@ button.search-btn {
 }
 
 #LBLAddress1 {
-	margin-left: 24px;
-	display: inline-block;
+	/* margin-left: 24px;
+	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
 
 #LBLAddress2 {
-	margin-left: 24px;
-	display: inline-block;
+	/* margin-left: 24px;
+	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
 
 #LBLAddressKana1 {
-	margin-left: 24px;
-	display: inline-block;
+	/* margin-left: 24px;
+	display: inline-block; */
 	line-height: 30px;
 	height: 40px;
 }
