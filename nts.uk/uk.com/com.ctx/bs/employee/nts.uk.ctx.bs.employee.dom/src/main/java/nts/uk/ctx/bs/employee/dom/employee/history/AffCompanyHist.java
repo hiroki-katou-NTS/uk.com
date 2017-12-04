@@ -40,7 +40,8 @@ public class AffCompanyHist extends AggregateRoot {
 		if (lstAffCompanyHistByEmployee == null) {
 			lstAffCompanyHistByEmployee = new ArrayList<AffCompanyHistByEmployee>();
 		}
-
+		
 		lstAffCompanyHistByEmployee.add(domain);
+		domain.toBePublished();
 	}
 }

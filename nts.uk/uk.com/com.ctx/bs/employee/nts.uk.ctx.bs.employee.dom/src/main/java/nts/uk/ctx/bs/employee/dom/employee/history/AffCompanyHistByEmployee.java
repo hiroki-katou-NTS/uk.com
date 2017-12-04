@@ -47,6 +47,7 @@ public class AffCompanyHistByEmployee extends DomainEvent
 		}
 
 		lstAffCompanyHistoryItem.add(domain);
+		this.toBePublished();
 	}
 
 	@Override

@@ -1219,7 +1219,6 @@ module nts.custombinding {
                 });
 
                 opts.sortable.isEditable.valueHasMutated();
-
                 _.each(data, (x, i) => {
                     // define common function for init new item value
                     let modifitem = (def: any, item: any) => {
@@ -1264,7 +1263,7 @@ module nts.custombinding {
                                             itemCode: item.itemCode,
                                             itemName: item.itemName,
                                             itemDefId: item.id,
-                                            value: ko.observable()
+                                            value: undefined
                                         };
                                         x.items.push(def);
                                     }
@@ -1296,7 +1295,7 @@ module nts.custombinding {
                                                 itemCode: item.itemCode,
                                                 itemName: item.itemName,
                                                 itemDefId: item.id,
-                                                value: ko.observable()
+                                                value: undefined
                                             };
                                             row.push(def);
                                         }
@@ -1308,6 +1307,38 @@ module nts.custombinding {
                                 x.items = undefined;
                                 break;
                         }
+                    }
+                    switch (x.layoutItemType) {
+                        case IT_CLA_TYPE.ITEM:
+                            _.each((x.items()), (def, i) => {
+                                $.extend(def, {
+                                    value: ko.isObservable(def.value) ? def.value : ko.observable(def.value)
+                                });
+                            });
+                            break;
+                        case IT_CLA_TYPE.LIST:
+                            // define row number
+                            let rn = _.map(ko.toJS(x.items), x => x).length;
+
+                            _.each(_.range(rn), i => {
+                                let row = x.items()[i];
+
+                                if (!row || !_.isArray(row)) {
+                                    row = [];
+                                }
+
+                                x.items()[i] = row;
+
+                                _.each((x.items()), (def, j) => {
+                                    $.extend(def, {
+                                        value: ko.isObservable(def.value) ? def.value : ko.observable(def.value)
+                                    });
+                                });
+                            });
+                            break;
+                        case IT_CLA_TYPE.SPER:
+                            x.items = undefined;
+                            break;
                     }
                 });
                 // write primitive constraints to viewContext

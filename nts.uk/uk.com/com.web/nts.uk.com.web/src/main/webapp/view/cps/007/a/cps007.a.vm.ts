@@ -94,8 +94,9 @@ module cps007.a.vm {
                 });
             }).fail((mes) => {
                 unblock();
-                console.log(mes);
                 error({ messageId: mes.messageId, messageParams: mes.parameterIds });
+            }).done(x => {
+                unblock();
             });
         }
     }
