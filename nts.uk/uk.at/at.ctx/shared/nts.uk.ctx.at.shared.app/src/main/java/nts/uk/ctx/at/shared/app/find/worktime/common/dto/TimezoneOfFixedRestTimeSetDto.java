@@ -14,6 +14,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
 
+/**
+ * The Class TimezoneOfFixedRestTimeSetDto.
+ */
 @Getter
 @Setter
 public class TimezoneOfFixedRestTimeSetDto implements TimezoneOfFixedRestTimeSetSetMemento {
@@ -21,6 +24,12 @@ public class TimezoneOfFixedRestTimeSetDto implements TimezoneOfFixedRestTimeSet
 	/** The timezones. */
 	private List<DeductionTimeDto> timezones;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * TimezoneOfFixedRestTimeSetSetMemento#setTimezones(java.util.List)
+	 */
 	@Override
 	public void setTimezones(List<DeductionTime> timzones) {
 		if(CollectionUtil.isEmpty(timzones)){

@@ -15,6 +15,11 @@ import nts.arc.primitive.constraint.IntegerRange;
 public class EmTimezoneNo extends IntegerPrimitiveValue<EmTimezoneNo> {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new em timezone no.
+	 *
+	 * @param rawValue the raw value
+	 */
 	public EmTimezoneNo(Integer rawValue) {
 		super(rawValue);
 	}
