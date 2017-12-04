@@ -369,7 +369,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 
                 devChange = false;
             });
-            
+            self.bindingComboBoxEvent();
             $("#fixed-table").ntsFixedTable({ height: 300, width: 700 });
         }
 
@@ -398,6 +398,82 @@ module nts.uk.at.view.kml002.a.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+        /**
+         * subcriber combobox change
+         */
+        private bindingComboBoxEvent(): void {
+            let self = this;
+            $(document).delegate(".attributes.reset-element", "igcomboselectionchanging", function(evt, ui) {
+                //use to obtain reference to the event browser
+                evt.originalEvent;
+                //use to obtain reference to igCombo
+                ui.owner;
+                //use to obtain reference to array of new selected items. That can be null.
+                ui.items;
+                //use to obtain reference to array of old selected items. That can be null.
+                ui.currentItems;
+                if (ui.items.length > 0) {
+                    let indexAtr = parseInt($($(ui.owner.element).parent().parent()[0]).find(".indexAtr").html())-1;
+                    let calculatorItem = self.calculatorItems()[indexAtr];
+                    //if (!nts.uk.ui._viewModel.content.viewmodelA.isparentCall()) {
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_192" }).ifYes(() => {
+                        calculatorItem.attribute(ui.items[0].data.attrCode);
+                        calculatorItem.formula('');
+                        calculatorItem.itemName('');
+                        calculatorItem.displayAtr(0);
+                        calculatorItem.total(0);
+                        calculatorItem.rounding(0);
+                        calculatorItem.fraction(0);
+                        if (ui.items[0].data == 0) {
+                            calculatorItem.roundingItems([
+                                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
+                                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
+                                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
+                                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
+                                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
+                                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
+                                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
+                                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
+                            ]);
+
+                            calculatorItem.fractionItems([
+                                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
+                                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
+                                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
+                            ]);
+                        } else {
+                            calculatorItem.roundingItems([
+                                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_Unit_NONE") },
+                                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_Unit_Int_1_Digits") },
+                                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_Unit_Int_2_Digits") },
+                                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_Unit_Int_3_Digits") },
+                                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_Unit_Int_4_Digits") },
+                                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_Unit_Int_5_Digits") },
+                                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_Unit_Int_6_Digits") },
+                                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_Unit_Int_7_Digits") },
+                                { roundingCode: 8, roundingName: nts.uk.resource.getText("Enum_Unit_Int_8_Digits") },
+                                { roundingCode: 9, roundingName: nts.uk.resource.getText("Enum_Unit_Int_9_Digits") },
+                                { roundingCode: 10, roundingName: nts.uk.resource.getText("Enum_Unit_Int_10_Digits") },
+                                { roundingCode: 11, roundingName: nts.uk.resource.getText("Enum_Unit_Int_11_Digits") },
+                                { roundingCode: 12, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_1st") },
+                                { roundingCode: 13, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_2nd") },
+                                { roundingCode: 14, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_3rd") }
+                            ]);
+
+                            calculatorItem.fractionItems([
+                                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Truncation") },
+                                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Round_Up") },
+                                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_4_Up_5") }
+                            ]);
+                        }
+                    }).ifNo(() => {
+                        calculatorItem.attribute(ui.currentItems[0].data.attrCode);
+                    });
+                }
+                    //nts.uk.ui._viewModel.content.viewmodelA.isparentCall(false);
+                //}
+            });
+        } 
 
         /**
          * Get C screen data.
@@ -1689,7 +1765,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             self.isChecked = ko.observable(param.isChecked);
             self.itemCd = ko.observable(param.itemCd);
-            self.attribute = ko.observable(0);
+            self.attribute = ko.observable(param.attribute);
             self.itemName = ko.observable(param.itemName);
             self.settingMethod = ko.observable(param.settingMethod);
             self.formula = ko.observable(param.formula);
@@ -1740,62 +1816,62 @@ module nts.uk.at.view.kml002.a.viewmodel {
 //                nts.uk.ui._viewModel.content.viewmodelA.isparentCall(false);
 //            });
 
-            self.attribute.subscribe(function(value) {
-//                if (!nts.uk.ui._viewModel.content.viewmodelA.isparentCall()) {
-//                    nts.uk.ui.dialog.confirm({ messageId: "Msg_192" }).ifYes(() => {
-//                        nts.uk.ui._viewModel.content.viewmodelA.calculatorItems([]);
-//                        nts.uk.ui._viewModel.content.viewmodelA.bindCalculatorItems();
-                        if (value == 0) {
-                            self.roundingItems([
-                                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
-                                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
-                                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
-                                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
-                                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
-                                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
-                                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
-                                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
-                            ]);
-        
-                            self.fractionItems([
-                                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
-                                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
-                                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
-                            ]);
-                        } else {
-                            self.roundingItems([
-                                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_Unit_NONE") },
-                                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_Unit_Int_1_Digits") },
-                                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_Unit_Int_2_Digits") },
-                                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_Unit_Int_3_Digits") },
-                                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_Unit_Int_4_Digits") },
-                                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_Unit_Int_5_Digits") },
-                                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_Unit_Int_6_Digits") },
-                                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_Unit_Int_7_Digits") },
-                                { roundingCode: 8, roundingName: nts.uk.resource.getText("Enum_Unit_Int_8_Digits") },
-                                { roundingCode: 9, roundingName: nts.uk.resource.getText("Enum_Unit_Int_9_Digits") },
-                                { roundingCode: 10, roundingName: nts.uk.resource.getText("Enum_Unit_Int_10_Digits") },
-                                { roundingCode: 11, roundingName: nts.uk.resource.getText("Enum_Unit_Int_11_Digits") },
-                                { roundingCode: 12, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_1st") },
-                                { roundingCode: 13, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_2nd") },
-                                { roundingCode: 14, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_3rd") }
-                            ]);
-        
-                            self.fractionItems([
-                                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Truncation") },
-                                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Round_Up") },
-                                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_4_Up_5") }
-                            ]);
-                        }
-//                    }).ifNo(() => {
-//                        
-//                    }) 
-//                }
-//                
-//                nts.uk.ui._viewModel.content.viewmodelA.isparentCall(false);
-            });
+//            self.attribute.subscribe(function(value) {
+////                if (!nts.uk.ui._viewModel.content.viewmodelA.isparentCall()) {
+////                    nts.uk.ui.dialog.confirm({ messageId: "Msg_192" }).ifYes(() => {
+////                        nts.uk.ui._viewModel.content.viewmodelA.calculatorItems([]);
+////                        nts.uk.ui._viewModel.content.viewmodelA.bindCalculatorItems();
+//                        if (value == 0) {
+//                            self.roundingItems([
+//                                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
+//                                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
+//                                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
+//                                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
+//                                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
+//                                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
+//                                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
+//                                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
+//                            ]);
+//        
+//                            self.fractionItems([
+//                                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
+//                                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
+//                                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
+//                            ]);
+//                        } else {
+//                            self.roundingItems([
+//                                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_Unit_NONE") },
+//                                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_Unit_Int_1_Digits") },
+//                                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_Unit_Int_2_Digits") },
+//                                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_Unit_Int_3_Digits") },
+//                                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_Unit_Int_4_Digits") },
+//                                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_Unit_Int_5_Digits") },
+//                                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_Unit_Int_6_Digits") },
+//                                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_Unit_Int_7_Digits") },
+//                                { roundingCode: 8, roundingName: nts.uk.resource.getText("Enum_Unit_Int_8_Digits") },
+//                                { roundingCode: 9, roundingName: nts.uk.resource.getText("Enum_Unit_Int_9_Digits") },
+//                                { roundingCode: 10, roundingName: nts.uk.resource.getText("Enum_Unit_Int_10_Digits") },
+//                                { roundingCode: 11, roundingName: nts.uk.resource.getText("Enum_Unit_Int_11_Digits") },
+//                                { roundingCode: 12, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_1st") },
+//                                { roundingCode: 13, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_2nd") },
+//                                { roundingCode: 14, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_3rd") }
+//                            ]);
+//        
+//                            self.fractionItems([
+//                                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Truncation") },
+//                                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Round_Up") },
+//                                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_4_Up_5") }
+//                            ]);
+//                        }
+////                    }).ifNo(() => {
+////                        
+////                    }) 
+////                }
+////                
+////                nts.uk.ui._viewModel.content.viewmodelA.isparentCall(false);
+//            });
 
-            self.attribute(param.attribute);
+//            self.attribute(param.attribute);
             self.formBuilt = param.formBuilt;
             self.formTime = param.formTime;
             self.formPeople = param.formPeople;
