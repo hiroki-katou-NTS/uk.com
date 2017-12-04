@@ -1,4 +1,4 @@
-package nts.uk.ctx.command;
+package nts.uk.ctx.bs.company.app.command.company;
 
 import lombok.Data;
 

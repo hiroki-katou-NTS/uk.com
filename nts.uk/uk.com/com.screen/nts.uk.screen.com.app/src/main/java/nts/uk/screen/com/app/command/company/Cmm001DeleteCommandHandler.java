@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.company.app.command.company.DeleteCompanyInforCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.workplacedifferinfor.DeleteDivWorkPlaceDifferInforCommandHandler;
-import nts.uk.ctx.command.DeleteCompanyInforCommandHandler;
 import nts.uk.ctx.sys.env.app.command.sysusagesetfinder.DeleteSysUsageSetCommandHandler;
 @Stateless
 public class Cmm001DeleteCommandHandler extends CommandHandler<Cmm001DeleteCommand>{

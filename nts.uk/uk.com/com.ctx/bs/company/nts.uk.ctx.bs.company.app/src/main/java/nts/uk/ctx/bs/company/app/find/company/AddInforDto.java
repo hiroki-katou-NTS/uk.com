@@ -1,9 +1,8 @@
-package nts.uk.ctx.command;
+package nts.uk.ctx.bs.company.app.find.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.bs.company.dom.company.AddInfor;
-
+import lombok.NoArgsConstructor;
 /**
  * 
  * @author yennth
@@ -11,9 +10,17 @@ import nts.uk.ctx.bs.company.dom.company.AddInfor;
  */
 @Data
 @AllArgsConstructor
-public class AddInforCommand {
-	/** 会社ID **/
+@NoArgsConstructor
+public class AddInforDto {
+	/**会社ID**/
 	private String companyId;
+	
+	// 会社コード
+	private String companyCode;
+	
+	/** 契約コード */
+	private String contractCd;
+	
 	/** FAX番号 **/
 	private String faxNum;
 	/** 住所１ **/
@@ -28,10 +35,4 @@ public class AddInforCommand {
 	private String postCd;
 	/** 電話番号 **/
 	private String phoneNum;
-	
-	public AddInfor toDomainAdd(String companyId){
-		return AddInfor.createFromJavaType( companyId,
-											faxNum, add_1, add_2, 
-											addKana_1, addKana_2, postCd, phoneNum);
-	}
 }
