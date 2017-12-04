@@ -99,8 +99,8 @@ public class CompanyInforNew extends AggregateRoot {
 		}
 	}
 	/** check number company discarded, can't discard all list company */
-	public void checkAbolition(Boolean check){
-		if(check){ 
+	public void checkAbolition(Boolean isChecked){
+		if(isChecked){ 
 			throw new BusinessException("Msg_810");
 		}		
 	}

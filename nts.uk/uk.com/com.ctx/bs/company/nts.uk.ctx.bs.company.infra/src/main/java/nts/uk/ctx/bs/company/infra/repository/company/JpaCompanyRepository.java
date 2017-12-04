@@ -6,7 +6,6 @@ package nts.uk.ctx.bs.company.infra.repository.company;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -44,13 +43,10 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * Bcmmt Company Infor author: Hoang Yen
 	 */
 	private final String SELECT_NO_WHERE = "SELECT c FROM BcmmtCompanyInfor c ";
-	private final String SELECT_COM = SELECT_NO_WHERE + "WHERE c.bcmmtCompanyInforPK.contractCd = :contractCd";
-	private final String SELECT_COM_CD = SELECT_COM + " AND c.bcmmtCompanyInforPK.companyCode = :companyCode AND c.bcmmtCompanyInforPK.companyId = :companyId";
-	private final String SELECT_COM_ABOLI = SELECT_NO_WHERE + " WHERE c.bcmmtCompanyInforPK.companyId != :companyId AND c.isAbolition = 1";
 	// bcmmt add infor
-	private final String SELECT_ADD_NO_WHERE = "SELECT  c FROM BcmmtAddInfor c ";
-	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
-
+	private final String COUNT_ALL = "SELECT COUNT(c.bcmmtCompanyInforPK.companyId) FROM BcmmtCompanyInfor c ";
+	private final String COUNT_ABOLISH = "SELECT COUNT(c.bcmmtCompanyInforPK.companyId) FROM BcmmtCompanyInfor c WHERE c.isAbolition = 1 AND c.bcmmtCompanyInforPK.companyId != :companyId ";
+	
 	/**
 	 * @param entity
 	 * @return new Company(companyCode,companyName,companyId,isAboltiton)
@@ -264,12 +260,10 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	@Override
 	public boolean checkAbolish(String currentCompanyId) {
 		// get all company
-		List<BcmmtCompanyInfor> listCompany = this.queryProxy().query(SELECT_NO_WHERE, BcmmtCompanyInfor.class).getList();
-		long totalCompany = listCompany.size();
+		long totalCompany = this.queryProxy().query(COUNT_ALL, Long.class).getSingle().get();
 		// filter by current company and abolish=true -> size 
-		List<BcmmtCompanyInfor> listTrue = listCompany.stream().filter(x -> x.isAbolition == 1 && !(x.bcmmtCompanyInforPK.companyId.equals(currentCompanyId)))
-				.collect(Collectors.toList());
-		long totalCompanyBy = listTrue.size();
-		return totalCompanyBy == totalCompany - 1;
+		long listTrueSize = this.queryProxy().query(COUNT_ABOLISH, Long.class)
+				.setParameter("companyId", currentCompanyId).getSingle().get();
+		return listTrueSize == totalCompany - 1;
 	}
 }
