@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author lanlt
  *
  */
-@Path("ctx/bs/person/info/ctg")
+@Path("ctx/pereg/person/info/ctg")
 @Produces("application/json")
 public class PerInfoCategoryWebservice extends WebService {
 	@Inject

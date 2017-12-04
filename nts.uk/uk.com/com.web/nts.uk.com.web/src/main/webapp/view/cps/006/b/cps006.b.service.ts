@@ -2,11 +2,11 @@ module nts.uk.com.view.cps006.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getItemInfoDefList: "ctx/bs/person/info/ctgItem/findby/categoryId/{0}/{1}",
-        getPerInfoItemDefById: "ctx/bs/person/info/ctgItem/findby/itemIdOfOtherCompany/{0}/{1}",
-        updateItemChange: "ctx/bs/person/info/ctgItem/updateItemChange",
-        setOrder: "ctx/bs/person/info/ctgItem/SetOrder",
-        filterHisSel: "ctx/bs/person/info/setting/selection/find/{0}/{1}/{2}"
+        getItemInfoDefList: "ctx/pereg/person/info/ctgItem/findby/categoryId/{0}/{1}",
+        getPerInfoItemDefById: "ctx/pereg/person/info/ctgItem/findby/itemIdOfOtherCompany/{0}/{1}",
+        updateItemChange: "ctx/pereg/person/info/ctgItem/updateItemChange",
+        setOrder: "ctx/pereg/person/info/ctgItem/SetOrder",
+        filterHisSel: "ctx/pereg/person/info/setting/selection/find/{0}/{1}/{2}"
     }
 
     export function getItemInfoDefList(categoryId, isAbolition): JQueryPromise<any> {
