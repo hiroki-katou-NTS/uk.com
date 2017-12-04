@@ -8,14 +8,17 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 
 /**
  * The Class FlowOTTimezoneDto.
  */
 @Getter
 @Setter
-public class FlowOTTimezoneDto extends DomainObject {
+public class FlowOTTimezoneDto implements FlowOTTimezoneSetMemento {
 
 	/** The worktime no. */
 	private Integer worktimeNo;
@@ -34,4 +37,62 @@ public class FlowOTTimezoneDto extends DomainObject {
 
 	/** The settlement order. */
 	private Integer settlementOrder;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento#
+	 * setRestrictTime(boolean)
+	 */
+	@Override
+	public void setRestrictTime(boolean val) {
+		this.restrictTime = val;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento#
+	 * setOTFrameNo(nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo)
+	 */
+	@Override
+	public void setOTFrameNo(OvertimeWorkFrameNo no) {
+		this.OTFrameNo = no.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento#
+	 * setFlowTimeSetting(nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowTimeSetting)
+	 */
+	@Override
+	public void setFlowTimeSetting(FlowTimeSetting ftSet) {
+		ftSet.saveToMemento(this.flowTimeSetting);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento#
+	 * setInLegalOTFrameNo(nts.uk.ctx.at.shared.dom.ot.frame.
+	 * OvertimeWorkFrameNo)
+	 */
+	@Override
+	public void setInLegalOTFrameNo(OvertimeWorkFrameNo no) {
+		this.inLegalOTFrameNo = no.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento#
+	 * setSettlementOrder(nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * SettlementOrder)
+	 */
+	@Override
+	public void setSettlementOrder(SettlementOrder od) {
+		this.settlementOrder = od.v();
+	}
 }

@@ -7,17 +7,44 @@ package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestTimezoneDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 
 /**
  * The Class FlowHalfDayWorkTimezoneDto.
  */
 @Getter
 @Setter
-public class FlowHalfDayWorkTimezoneDto {
+public class FlowHalfDayWorkTimezoneDto implements FlowHalfDayWorkTimezoneSetMemento {
 
 	/** The rest timezone. */
 	private FlowWorkRestTimezoneDto restTimezone;
 
 	/** The work time zone. */
 	private FlowWorkTimezoneSettingDto workTimeZone;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowHalfDayWorkTimezoneSetMemento#setRestTimezone(nts.uk.ctx.at.shared.
+	 * dom.worktime.common.FlowWorkRestTimezone)
+	 */
+	@Override
+	public void setRestTimezone(FlowWorkRestTimezone tzone) {
+		tzone.saveToMemento(this.restTimezone);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowHalfDayWorkTimezoneSetMemento#setWorkTimeZone(nts.uk.ctx.at.shared.
+	 * dom.worktime.flowset.FlowWorkTimezoneSetting)
+	 */
+	@Override
+	public void setWorkTimeZone(FlowWorkTimezoneSetting tzone) {
+		tzone.saveToMemento(this.workTimeZone);
+	}
 }

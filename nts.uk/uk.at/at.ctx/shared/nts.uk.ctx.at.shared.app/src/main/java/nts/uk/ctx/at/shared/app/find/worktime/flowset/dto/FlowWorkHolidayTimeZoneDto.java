@@ -8,13 +8,17 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZoneSetMemento;
 
 /**
  * The Class FlowWorkHolidayTimeZoneDto.
  */
+
 @Getter
 @Setter
-public class FlowWorkHolidayTimeZoneDto {
+public class FlowWorkHolidayTimeZoneDto implements FlowWorkHolidayTimeZoneSetMemento {
 
 	/** The worktime no. */
 	private Integer worktimeNo;
@@ -39,4 +43,52 @@ public class FlowWorkHolidayTimeZoneDto {
 
 	/** The flow time setting. */
 	private FlowTimeSettingDto flowTimeSetting;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowWorkHolidayTimeZoneSetMemento#setInLegalBreakFrameNo(nts.uk.ctx.at.
+	 * shared.dom.worktime.fixedset.BreakFrameNo)
+	 */
+	@Override
+	public void setInLegalBreakFrameNo(BreakFrameNo brNo) {
+		this.inLegalBreakFrameNo = brNo.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowWorkHolidayTimeZoneSetMemento#setOutLegalBreakFrameNo(nts.uk.ctx.at.
+	 * shared.dom.worktime.fixedset.BreakFrameNo)
+	 */
+	@Override
+	public void setOutLegalBreakFrameNo(BreakFrameNo brNo) {
+		this.outLegalBreakFrameNo = brNo.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowWorkHolidayTimeZoneSetMemento#setOutLegalPubHolFrameNo(nts.uk.ctx.at.
+	 * shared.dom.worktime.fixedset.BreakFrameNo)
+	 */
+	@Override
+	public void setOutLegalPubHolFrameNo(BreakFrameNo no) {
+		this.outLegalPubHolFrameNo = no.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowWorkHolidayTimeZoneSetMemento#setFlowTimeSetting(nts.uk.ctx.at.shared
+	 * .dom.worktime.flowset.FlowTimeSetting)
+	 */
+	@Override
+	public void setFlowTimeSetting(FlowTimeSetting ftSet) {
+		ftSet.saveToMemento(this.flowTimeSetting);
+	}
 }

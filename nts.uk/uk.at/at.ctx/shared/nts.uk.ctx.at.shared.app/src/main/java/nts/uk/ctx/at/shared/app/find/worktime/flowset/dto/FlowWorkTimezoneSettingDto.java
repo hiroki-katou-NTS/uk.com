@@ -5,22 +5,52 @@
 package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSettingSetMemento;
 
 /**
  * The Class FlowWorkTimezoneSettingDto.
  */
 @Getter
 @Setter
-public class FlowWorkTimezoneSettingDto extends DomainObject {
+public class FlowWorkTimezoneSettingDto implements FlowWorkTimezoneSettingSetMemento {
 
 	/** The work time rounding. */
 	private TimeRoundingSettingDto workTimeRounding;
-	
+
 	/** The lst OT timezone. */
 	private List<FlowOTTimezoneDto> lstOTTimezone;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowWorkTimezoneSettingSetMemento#setWorkTimeRounding(nts.uk.ctx.at.
+	 * shared.dom.common.timerounding.TimeRoundingSetting)
+	 */
+	@Override
+	public void setWorkTimeRounding(TimeRoundingSetting trSet) {
+		this.workTimeRounding = new TimeRoundingSettingDto(trSet.getRoundingTime().value, trSet.getRounding().value);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowWorkTimezoneSettingSetMemento#setLstOTTimezone(java.util.List)
+	 */
+	@Override
+	public void setLstOTTimezone(List<FlowOTTimezone> lstTzone) {
+		this.lstOTTimezone = lstTzone.stream().map(item -> {
+			FlowOTTimezoneDto dto = new FlowOTTimezoneDto();
+			item.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+	}
 }
