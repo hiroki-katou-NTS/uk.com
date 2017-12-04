@@ -3,7 +3,7 @@ package nts.uk.ctx.pereg.app.command.optional;
 import java.math.BigDecimal;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataState;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataState;
 import nts.uk.shr.pereg.app.ItemValue;
 
 public class OptionalUtil {

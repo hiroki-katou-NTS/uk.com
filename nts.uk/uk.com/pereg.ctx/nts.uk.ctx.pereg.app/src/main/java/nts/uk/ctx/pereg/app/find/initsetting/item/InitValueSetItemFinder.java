@@ -21,10 +21,10 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
-import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

@@ -9,14 +9,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import find.layout.NewLayoutDto;
-import find.person.info.category.PerInfoCtgFullDto;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
-import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.app.find.layout.GetLayoutByCeateTypeDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**
