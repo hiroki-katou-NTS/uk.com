@@ -116,5 +116,18 @@ public class Role extends AggregateRoot {
 		if(this.roleType == RoleType.SYSTEM_MANAGER) throw new BusinessException("MSG_503");
 		return true;
 	}
+
+	public Role(String roleId, RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
+			RoleName name, ContractCode contractCode, RoleAtr assignAtr, String companyId) {
+		super();
+		this.roleId = roleId;
+		this.roleCode = roleCode;
+		this.roleType = roleType;
+		this.employeeReferenceRange = employeeReferenceRange;
+		this.name = name;
+		this.contractCode = contractCode;
+		this.assignAtr = assignAtr;
+		this.companyId = companyId;
+	}
 	
 }
