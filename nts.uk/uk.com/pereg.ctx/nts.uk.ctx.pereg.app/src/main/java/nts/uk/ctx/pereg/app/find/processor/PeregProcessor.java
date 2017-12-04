@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.pereg.app.find.layout.LayoutQuery;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
@@ -27,7 +28,6 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.find.PeregMaintLayoutQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
@@ -89,7 +89,7 @@ public class PeregProcessor {
 	 * @param query
 	 * @return
 	 */
-	public EmpMaintLayoutDto getLayout(PeregMaintLayoutQuery layoutQuery) {
+	public EmpMaintLayoutDto getLayout(LayoutQuery layoutQuery) {
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
 		// get Employee
