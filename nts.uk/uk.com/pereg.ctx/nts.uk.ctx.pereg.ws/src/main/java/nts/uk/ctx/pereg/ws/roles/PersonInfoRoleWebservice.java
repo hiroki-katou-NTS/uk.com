@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.ws.roles;
+package nts.uk.ctx.pereg.ws.roles;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import find.roles.PersonInforRoleDto;
 import find.roles.PersonInforRoleFinder;
 import nts.arc.layer.ws.WebService;
 
-@Path("ctx/bs/person/roles")
+@Path("ctx/pereg/roles/roles")
 @Produces("application/json")
 public class PersonInfoRoleWebservice extends WebService {
 	@Inject
