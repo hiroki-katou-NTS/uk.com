@@ -1,22 +1,41 @@
 package nts.uk.shr.pereg.app.find;
 
-public interface PeregFinder <R, Q> {
+import java.util.List;
+
+import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
+
+public interface PeregFinder<T> {
 	/**
 	 * Returns ID of category that this handler can handle
+	 * 
 	 * @return category ID
 	 */
 	String targetCategoryCode();
-	
+
 	/**
 	 * Returns class of command that is handled by this handler
+	 * 
 	 * @return class of command
 	 */
-	Class<?> finderClass();
-	
-	R getData(Q query);
-	
-	@SuppressWarnings("unchecked")
-	default R handleProcessor(Object query) {
-		return this.getData((Q) query);
+	Class<T> dtoClass();
+
+	/**
+	 * PERSON - EMPLOYEE
+	 * @return
+	 */
+	DataClassification dataType();
+
+	PeregDomainDto getSingleData(PeregQuery query);
+
+	List<PeregDomainDto> getListData(PeregQuery query);
+
+	default PeregDomainDto findSingle(PeregQuery query) {
+		return this.getSingleData(query);
 	}
+
+	default List<PeregDomainDto> findList(PeregQuery query) {
+		return this.getListData(query);
+	}
+
 }

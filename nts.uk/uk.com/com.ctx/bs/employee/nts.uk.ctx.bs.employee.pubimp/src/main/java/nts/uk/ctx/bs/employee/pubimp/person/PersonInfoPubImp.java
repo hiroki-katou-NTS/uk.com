@@ -50,7 +50,7 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 				if (person.getPersonNameGroup().getBusinessName() != null) {
 					businessName = person.getPersonNameGroup().getBusinessName().v();
 				} else if (person.getPersonNameGroup().getPersonName() != null) {
-					businessName = person.getPersonNameGroup().getPersonName().v();
+					businessName = person.getPersonNameGroup().getPersonName().getFullName().v();
 				}
 			}
 			perResult.setEmployeeName(businessName);

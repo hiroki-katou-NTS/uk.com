@@ -92,5 +92,9 @@ public interface CompanyRepository {
 	Optional<Company> getComanyInfoByCid(String cid);
 	
 	boolean checkAbolish(String currentCompanyId);
+	
+	// request list No.125
+	Optional<CompanyInforNew> getComanyByCid(String cid);
+	
 }
 

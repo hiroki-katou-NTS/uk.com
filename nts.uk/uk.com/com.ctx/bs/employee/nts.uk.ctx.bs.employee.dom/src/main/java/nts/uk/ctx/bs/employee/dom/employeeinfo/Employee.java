@@ -2,6 +2,8 @@ package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 
 @Getter
 @Setter
@@ -42,7 +44,7 @@ public class Employee extends AggregateRoot {
 	/** The List JobEntryHistory 入社履歴 */
 	private List<JobEntryHistory> listEntryJobHist;
 
-	private List<TempAbsenceHisItem> listTemporaryAbsence;
+	private TempAbsenceHistory temporaryAbsenceHistory;
 
 	public static Employee createFromJavaType(String companyId, String pId, String sId, String sCd, String companyMail,
 			String mobileMail, String companyMobile) {
@@ -70,6 +72,41 @@ public class Employee extends AggregateRoot {
 		return retirementDate;
 	}
 
+	public Optional<JobEntryHistory> getHistoryWithReferDate(GeneralDate referenceDate) {
+		return this.listEntryJobHist.stream().filter(history -> history.getJoinDate().before(referenceDate)
+				&& history.getRetirementDate().after(referenceDate)).findFirst();
+	}
+
+	public Optional<JobEntryHistory> getHistoryBeforeReferDate(GeneralDate referenceDate) {
+		List<JobEntryHistory> matchedListEntryJobHist = this.listEntryJobHist.stream()
+				.filter(history -> history.getRetirementDate().before(referenceDate)).collect(Collectors.toList());
+		if (matchedListEntryJobHist.isEmpty()) {
+			return Optional.empty();
+		}
+		JobEntryHistory lastJobEntryHistory = matchedListEntryJobHist.get(0);
+		for (JobEntryHistory jobEntryHistory : matchedListEntryJobHist) {
+			if (jobEntryHistory.getRetirementDate().after(lastJobEntryHistory.getRetirementDate())) {
+				lastJobEntryHistory = jobEntryHistory;
+			}
+		}
+		return Optional.of(lastJobEntryHistory);
+	}
+	
+	public Optional<JobEntryHistory> getHistoryAfterReferDate(GeneralDate referenceDate) {
+		List<JobEntryHistory> matchedListEntryJobHist = this.listEntryJobHist.stream()
+				.filter(history -> history.getJoinDate().after(referenceDate)).collect(Collectors.toList());
+		if (matchedListEntryJobHist.isEmpty()) {
+			return Optional.empty();
+		}
+		JobEntryHistory firstJobEntryHistory = matchedListEntryJobHist.get(0);
+		for (JobEntryHistory jobEntryHistory : matchedListEntryJobHist) {
+			if (jobEntryHistory.getJoinDate().before(firstJobEntryHistory.getRetirementDate())) {
+				firstJobEntryHistory = jobEntryHistory;
+			}
+		}
+		return Optional.of(firstJobEntryHistory);
+	}
+
 	// calculate year of entire in current company
 	public int getDaysOfEntire() {
 		if (listEntryJobHist == null || listEntryJobHist.isEmpty()) {
@@ -82,14 +119,12 @@ public class Employee extends AggregateRoot {
 	}
 
 	public int getDaysOfTemporaryAbsence() {
-		if (listTemporaryAbsence == null || listTemporaryAbsence.isEmpty()) {
+		if (temporaryAbsenceHistory == null || temporaryAbsenceHistory.getDateHistoryItems().isEmpty()) {
 			return 0;
 		}
 
-		/*return listTemporaryAbsence.stream().map(m -> ChronoUnit.DAYS
-				.between(m.getDateHistoryItem().start().localDate(), m.getDateHistoryItem().end().localDate()))
-				.mapToInt(m -> Math.abs(m.intValue())).sum();*/
-		return 0;
-		// TODO
+		return temporaryAbsenceHistory.items().stream()
+				.map(m -> ChronoUnit.DAYS.between(m.start().localDate(), m.end().localDate()))
+				.mapToInt(m -> Math.abs(m.intValue())).sum();
 	}
 }

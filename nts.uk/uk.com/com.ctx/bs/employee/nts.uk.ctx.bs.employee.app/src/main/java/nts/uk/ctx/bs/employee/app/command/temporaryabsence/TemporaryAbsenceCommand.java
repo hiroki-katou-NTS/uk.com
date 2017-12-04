@@ -16,33 +16,46 @@ public class TemporaryAbsenceCommand {
 	
 	/**休職休業ID*/
 	@PeregRecordId
-	private String tempAbsenceId;
+	private String histoyId;
 	
-	/**temporary absence state*/
-	@PeregItem("")
-	private int tempAbsenceType;
+	@PeregItem("IS00090")
+	private int leaveHolidayAtr;
 	
-	private String histID;
+	/** 備考 */
+	@PeregItem("IS00099")
+	private String remarks;
 	
-	@PeregItem("")
-	private GeneralDate startDate;
+	@PeregItem("IS00098")
+	private int soInsPayCategory;
 	
-	@PeregItem("")
-	private GeneralDate endDate;
-	
-	/**理由 reason*/
-	@PeregItem("")
-	private String tempAbsenceReason;
-	
-	/**家族メンバーId Family member id*/
+	// -------------- extend object ----------------------
+	/**
+	 * 出産種別 （産前休業の場合）
+	 */
+	@PeregItem("IS00093")
+	private boolean multiple;
+
 	@PeregItem("")
 	private String familyMemberId;
 	
-	/**出産日 birth date*/
-	@PeregItem("")
-	private GeneralDate birthDate;
+	@PeregItem("IS00091")
+	private boolean sameFamily;
 	
-	/**多胎妊娠区分 Multiple pregnancy segment*/
-	@PeregItem("")
-	private int mulPregnancySegment;
+	@PeregItem("IS00094")
+	private int childType;
+
+	@PeregItem("IS00095")
+	private GeneralDate createDate;
+
+	@PeregItem("IS00097")
+	private boolean spouseIsLeave;
+	
+	@PeregItem("IS00092")
+	private int sameFamilyDays;
+	
+	@PeregItem("IS00088")
+	private GeneralDate startDate;
+	
+	@PeregItem("IS00089")
+	private GeneralDate endDate;
 }

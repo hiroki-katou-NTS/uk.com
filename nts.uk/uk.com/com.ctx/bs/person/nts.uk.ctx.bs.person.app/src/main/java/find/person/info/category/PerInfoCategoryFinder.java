@@ -47,41 +47,6 @@ public class PerInfoCategoryFinder {
 	};
 
 	// vinhpx: start
-	public List<PerInfoCtgMapDto> getAllPerInfoCategoryWithCondition(String ctgName) {
-		// get all perinforcategory by company id
-		String companyId = AppContexts.user().companyId();
-		String contractCode = AppContexts.user().contractCode();
-		List<PersonInfoCategory> lstPerInfoCtg = null;
-		if (ctgName.equals(""))
-			lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode);
-		else {
-			lstPerInfoCtg = perInfoCtgRepositoty.getPerInfoCategoryByName(companyId, contractCode, ctgName);
-		}
-		List<PersonInfoCategory> lstFilter = new ArrayList<PersonInfoCategory>();
-
-		// get all PersonInfoItemDefinition
-		for (PersonInfoCategory obj : lstPerInfoCtg) {
-			// check whether category has already copied or not
-			// filter: category has items
-			if (pernfoItemDefRep.countPerInfoItemDefInCategory(obj.getPersonInfoCategoryId(), companyId) > 0) {
-				lstFilter.add(obj);
-			}
-		}
-		List<PerInfoCtgMapDto> lstReturn = null;
-		if (lstFilter.size() != 0) {
-			lstReturn = PersonInfoCategory.getAllPerInfoCategoryWithCondition(lstFilter).stream().map(p -> {
-				 boolean alreadyCopy =
-				 perInfoCtgRepositoty.checkPerInfoCtgAlreadyCopy(p.getPersonInfoCategoryId(),
-				 companyId);
-				//boolean alreadyCopy = true;
-				return new PerInfoCtgMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
-						p.getCategoryName().v(), alreadyCopy);
-			}).collect(Collectors.toList());
-		}
-		if (lstFilter.size() == 0 || lstReturn.size() == 0)
-			throw new BusinessException("Msg_352");
-		return lstReturn;
-	}
 
 	// get per info ctg list: contains ctg and children
 	// isParent, 1 - parent; 0 - is not

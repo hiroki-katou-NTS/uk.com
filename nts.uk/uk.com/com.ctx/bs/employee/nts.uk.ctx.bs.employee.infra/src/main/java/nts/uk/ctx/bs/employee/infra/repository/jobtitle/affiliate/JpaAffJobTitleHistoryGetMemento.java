@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryGetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.PositionId;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryGetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.PositionId;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.KmnmtAffiliJobTitleHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.KmnmtAffiliJobTitleHistPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;

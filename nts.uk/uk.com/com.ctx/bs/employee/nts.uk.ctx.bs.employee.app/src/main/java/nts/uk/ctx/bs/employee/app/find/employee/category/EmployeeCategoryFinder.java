@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.employee.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
+import find.person.info.category.PerInfoCtgFullDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import find.person.info.item.SetItemDto;
@@ -24,9 +26,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
@@ -46,7 +47,10 @@ import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoPermissionType;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoAuthType;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -61,7 +65,7 @@ public class EmployeeCategoryFinder {
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepo;
+	private TempAbsItemRepository temporaryAbsenceRepo;
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
@@ -98,32 +102,29 @@ public class EmployeeCategoryFinder {
 
 	@Inject
 	private PersonEmergencyCtRepository personEmergencyCtRepository;
+	
+	@Inject
+	private PersonInfoCategoryAuthRepository personInfoCategoryAuthRepository;
 
-	public List<CategoryPersonInfoClsDto> getAllPerInfoCtg(String companyId, String employeeIdSelected) {
+	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String employeeIdSelected) {
+		String companyId = AppContexts.user().companyId();
 		String empIdCurrentLogin = AppContexts.user().employeeId();
 		// get roleIdOfLogin from app context;
-		// String roleIdOfLogin = "99900000-0000-0000-0000-000000000001";
-		String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
+		 String roleIdOfLogin = "99900000-0000-0000-0000-000000000001";
+		//String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
 
 		// get list Category
-		List<CategoryPersonInfoClsDto> listCategory = employeeRepository.getAllPerInfoCtg(companyId).stream().map(p -> {
-			return new CategoryPersonInfoClsDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
-					p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
-					p.getCategoryType().value, p.getIsFixed().value);
+		 List<PersonInfoCategory> listCategory = employeeRepository.getAllPerInfoCtg(companyId);
+		
+		boolean isSelf = employeeIdSelected.equals(empIdCurrentLogin);
+		List<PersonInfoCategory> returnList = listCategory.stream().filter(x -> {
+			Optional<PersonInfoCategoryAuth> perInfoCtgAuth = personInfoCategoryAuthRepository.getDetailPersonCategoryAuthByPId(roleIdOfLogin, x.getPersonInfoCategoryId());
+			if(!perInfoCtgAuth.isPresent()) return false;
+			return isSelf ? perInfoCtgAuth.get().getAllowPersonRef() == PersonInfoPermissionType.YES
+				:perInfoCtgAuth.get().getAllowOtherRef() == PersonInfoPermissionType.YES;
 		}).collect(Collectors.toList());
-
-		if (employeeIdSelected == empIdCurrentLogin) {
-			// get List Ctg theo quyền
-			// todo
-		} else {
-			// get List Ctg theo quyền
-			// todo
-		}
-
-		for (int i = 0; i < listCategory.size(); i++) {
-
-		}
-		return listCategory;
+		return returnList.stream().map(x -> new PerInfoCtgFullDto(x.getPersonInfoCategoryId(), x.getCategoryCode().v(), x.getCategoryName().v(), 
+				x.getPersonEmployeeType().value, x.getIsAbolition().value, x.getCategoryType().value, x.getIsFixed().value) ).collect(Collectors.toList());
 	};
 
 	// Get List Infomation Of Category
@@ -322,7 +323,7 @@ public class EmployeeCategoryFinder {
 		switch (perInfoCtg.getCategoryCode().v()) {
 		case "CS00008":
 			// Case Ctg == TemporaryAbsence
-			List<TempAbsenceHisItem> listTemporaryAbsence = temporaryAbsenceRepo.getListBySid(employee.getSId());
+			List<TempAbsenceHisItem> listTemporaryAbsence = temporaryAbsenceRepo.getListItemByEmpId(employee.getSId());
 			// get Action Role
 			ActionRole actionRole = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(),
 					lstPerInfoItemDef.get(lstPerInfoItemDef.size() - 1).getId());

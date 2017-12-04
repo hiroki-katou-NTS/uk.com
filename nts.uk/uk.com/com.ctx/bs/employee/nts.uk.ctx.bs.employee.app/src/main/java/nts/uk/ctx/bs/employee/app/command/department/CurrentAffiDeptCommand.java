@@ -4,7 +4,6 @@ package nts.uk.ctx.bs.employee.app.command.department;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
-import nts.uk.shr.pereg.app.PeregHistoryId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
@@ -23,7 +22,6 @@ public class CurrentAffiDeptCommand {
 	private String departmentId;
 	
 	/** The DateHistoryItem. */
-	@PeregHistoryId
 	private String historyId;
 	
 	@PeregItem("")

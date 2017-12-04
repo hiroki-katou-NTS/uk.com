@@ -43,6 +43,11 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 		return new PpemtEmpInfoCtgData(key, domain.getPersonInfoCtgId(), domain.getEmployeeId());
 	}
 
+	private void updateEntity(EmpInfoCtgData domain,PpemtEmpInfoCtgData entity) {
+		entity.personInfoCtgId = domain.getPersonInfoCtgId();
+		entity.employeeId = domain.getEmployeeId();
+	}
+
 	@Override
 	public void addCategoryData(EmpInfoCtgData domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -53,14 +58,19 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public void updateEmpInfoCtgData(EmpInfoCtgData domain) {
-		// TODO Auto-generated method stub
-
+		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(domain.getRecordId(), PpemtEmpInfoCtgData.class);
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid EmpInfoCtgData");
+		}
+		updateEntity(domain, existItem.get());
+		
+		this.commandProxy().update(existItem.get());
 	}
 
 	@Override
-	public void deleteEmpInfoCtgData(EmpInfoCtgData domain) {
-		// TODO Auto-generated method stub
-
+	public void deleteEmpInfoCtgData(String recordId) {
+		PpemtEmpInfoCtgDataPk key = new PpemtEmpInfoCtgDataPk(recordId);
+		this.commandProxy().remove(PpemtEmpInfoCtgData.class,key);
 	}
 
 

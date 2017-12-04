@@ -27,13 +27,11 @@ module cps002.a.vm {
 
         createTypeId: KnockoutObservable<number> = ko.observable(1);
 
-        enable: KnockoutObservable<boolean> = ko.observable(true);
-
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
         categorySelectedCode: KnockoutObservable<string> = ko.observable('');
 
-        empRegHistory: KnockoutObservable<EmpRegHistory> = ko.observable(new EmpRegHistory(null));
+        empRegHistory: KnockoutObservable<EmpRegHistory> = ko.observable(null);
 
         currentStep: KnockoutObservable<number> = ko.observable(0);
 
@@ -44,6 +42,8 @@ module cps002.a.vm {
         copyEmployee: KnockoutObservable<EmployeeCopy> = ko.observable(new EmployeeCopy(null));
 
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
+
+        isAllowAvatarUpload: KnockoutObservable<boolean> = ko.observable(false);
 
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
@@ -179,6 +179,7 @@ module cps002.a.vm {
 
                             });
                         }
+
                         self.getLastRegHistory(result);
 
                     });
@@ -192,12 +193,18 @@ module cps002.a.vm {
 
         getLastRegHistory(userSetting: IUserSetting) {
             let self = this,
-                showHistory = !userSetting ? true : userSetting.employeeCodeType === 1 ? true : false;
+                showHistory = !userSetting ? true : userSetting.recentRegistrationType === 1 ? true : false;
 
-            if (showHistory)
+            if (showHistory) {
                 service.getLastRegHistory().done((result: IEmpRegHistory) => {
-                    self.empRegHistory(new EmpRegHistory(result));
+                    if (result) {
+                        self.empRegHistory(new EmpRegHistory(result));
+                    }
                 });
+            } else {
+                self.empRegHistory(null);
+
+            }
 
         }
 
@@ -246,17 +253,7 @@ module cps002.a.vm {
 
         }
 
-        validEmployeeInfo(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                employee = self.currentEmployee();
-            service.validateEmpInfo(employee.employeeCode(), employee.cardNo()).done((result) => {
-                dfd.resolve(result);
-            })
-            return dfd.promise();
-        }
-
-        validateStep1() {
+        checkErrorStep1() {
             $(".form_step1").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return false;
@@ -265,22 +262,28 @@ module cps002.a.vm {
         }
 
         completeStep1() {
-            let self = this;
-            if (self.validateStep1()) {
-                self.validEmployeeInfo().done((result) => {
-                    if (result.isError) {
-                        dialog({ messageId: result.messageId });
+            let self = this,
+                employee = self.currentEmployee(),
+                command = {
+                    employeeCode: employee.employeeCode(),
+                    cardNo: employee.cardNo(),
+                    LoginId: employee.loginId()
+                };
+            if (self.checkErrorStep1()) {
+                service.validateEmpInfo(command).done(() => {
 
-                    } else {
+                    if (self.createTypeId() === 3) {
 
-                        if (self.createTypeId() === 3) {
-
-                            self.gotoStep3();
-                            return;
-                        }
-
-                        self.gotoStep2();
+                        self.gotoStep3();
+                        return;
                     }
+
+                    self.gotoStep2();
+
+                }).fail((error) => {
+
+                    dialog({ messageId: error.message });
+
                 });
             }
 
@@ -289,7 +292,7 @@ module cps002.a.vm {
         }
 
 
-        gotoStep1() {
+        backtoStep1() {
 
             let self = this;
 
@@ -343,7 +346,8 @@ module cps002.a.vm {
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
                 if (result.allowAvatarUpload) {
-                    //if allowAvatarUpload
+
+                    self.isAllowAvatarUpload(result ? result.allowAvatarUpload == 0 ? false : true : false);
                 }
 
             });
@@ -381,17 +385,19 @@ module cps002.a.vm {
 
                 //start Screen C
 
-                $('#search_panel').show();
-
+                $('#initSettingPanel').show();
                 self.loadInitSettingData();
+
 
             } else {
 
                 //start Screen B
 
-                $('#search_panel').hide();
+                $('#initSettingPanel').hide();
 
                 self.loadCopySettingCtgData();
+
+                $('#hor-scroll-button-show').trigger('click');
 
             }
 
@@ -416,7 +422,7 @@ module cps002.a.vm {
 
                 dialog({ messageId: error.message }).then(() => {
 
-                    self.gotoStep1();
+                    self.currentStep(0);
 
                 });
 
@@ -435,19 +441,14 @@ module cps002.a.vm {
                         return new InitSetting(item);
                     }));
 
-                    let lastValueItem = _.find(result, (item) => {
-
-                        return item.settingCode == self.currentEmployee().initvalueCode;
-                    });
-
-
-                    self.initSettingSelectedCode(lastValueItem ? lastValueItem.settingCode : result[0].settingCode);
-
+                    if (self.initSettingSelectedCode() == '') {
+                        self.initSettingSelectedCode(result[0].settingCode);
+                    }
 
                 }
             }).fail((error) => {
                 dialog({ messageId: error.message }).then(() => {
-                    //   self.gotoStep1();
+                    self.currentStep(0);
                 });
 
             });
@@ -476,18 +477,18 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
             command.itemDataList = itemDataList;
 
-            //            service.addNewEmployee(command).done(() => {
-            //                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
-            //                    if (getShared('isContinue')) {
-            //
-            //                        self.gotoStep1();
-            //
-            //                    } else {
-            //                        jump('/view/cps/001/a/index.xhtml');
-            //                    }
-            //                });
-            //
-            //            })
+            service.addNewEmployee(command).done(() => {
+                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                    if (getShared('isContinue')) {
+
+                        self.backtoStep1();
+
+                    } else {
+                        jump('/view/cps/001/a/index.xhtml');
+                    }
+                });
+
+            })
 
         }
 
@@ -533,24 +534,29 @@ module cps002.a.vm {
 
         openIModal() {
             let self = this;
-            setShared("imageId", self.currentEmployee().avatarId());
+            if (true) {
+                setShared("imageId", self.currentEmployee().avatarId());
 
-            subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
+                subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
-                let imageResult = getShared("imageId");
+                    let imageResult = getShared("imageId");
 
-                if (imageResult) {
-                    self.currentEmployee().avatarId(imageResult);
-                }
+                    if (imageResult) {
+                        self.currentEmployee().avatarId(imageResult);
+                    }
 
-            });
+                });
+            }
 
         }
 
 
-        JumpToInitValueSettingPage() {
+        openInitModal() {
 
-            jump('/view/cps/009/a/index.xhtml');
+            setShared("isDialog", true);
+            subModal('/view/cps/009/a/index.xhtml', { title: '' }).onClosed(() => {
+
+            });
         }
 
 
@@ -571,13 +577,10 @@ module cps002.a.vm {
         employeeCode: KnockoutObservable<string> = ko.observable("");
         hireDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
         cardNo: KnockoutObservable<string> = ko.observable("");
-        initvalueCode: string;
         avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
 
-        constructor(param?) {
-        }
     }
 
 
@@ -609,7 +612,7 @@ module cps002.a.vm {
 
     interface IEmpRegHistory {
 
-        registeredEmployeeID: string;
+        lastRegEmployeeOfCompanyID: string;
 
         lastRegEmployeeID: string;
 
@@ -728,13 +731,13 @@ module cps002.a.vm {
 
     class EmpRegHistory {
 
-        registeredEmployeeID: string;
+        lastRegEmployeeOfCompanyID: string;
 
         lastRegEmployeeID: string;
 
 
         constructor(param: IEmpRegHistory) {
-            this.registeredEmployeeID = param ? param.registeredEmployeeID : '';
+            this.lastRegEmployeeOfCompanyID = param ? param.lastRegEmployeeOfCompanyID : '';
 
             this.lastRegEmployeeID = param ? param.lastRegEmployeeID : '';
 

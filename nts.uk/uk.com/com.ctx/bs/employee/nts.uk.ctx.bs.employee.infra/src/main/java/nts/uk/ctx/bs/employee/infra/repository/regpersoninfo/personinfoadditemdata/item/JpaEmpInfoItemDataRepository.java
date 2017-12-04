@@ -17,22 +17,20 @@ import nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.i
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
 
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.personInfoCtgId,pc.categoryCd FROM PpemtEmpInfoItemData id"
+	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,pc.ppemtPerInfoCtgPK.perInfoCtgId,pc.categoryCd FROM PpemtEmpInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtEmpInfoCtgData ic"
-			+ " ON id.ppemtEmpInfoItemDataPk.recordId = ic.ppemtEmpInfoCtgDataPk.recordId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.personInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
+			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON id.ppemtEmpInfoItemDataPk.recordId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
 	public final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd AND pc.cid = :companyId AND ic.employeeId= :employeeId";
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
-			+ " WHERE ic.ppemtEmpInfoCtgDataPk.recordId = :recordId";
+			+ " WHERE id.ppemtEmpInfoItemDataPk.recordId = :recordId";
 	
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.personInfoCtgId = :ctgid AND ic.employeeId = :sid";
-
+	private static final String DELETE_ITEM_DATA = "DELETE FROM PpemtEmpInfoItemData p WHERE ppemtEmpInfoItemDataPk.recordId = :recordId";
 	@Override
 	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING, Object[].class)
@@ -103,9 +101,11 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 
 	@Override
-	public void deleteEmployInfoItemData(EmpInfoItemData domain) {
-		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(), domain.getRecordId());
-		this.commandProxy().remove(PpemtEmpInfoItemData.class, key);
+	public void deleteEmployInfoItemData(String recordId) {
+		this.getEntityManager().createQuery(DELETE_ITEM_DATA)
+		.setParameter("recordId", recordId)
+		.executeUpdate();
+		this.getEntityManager().flush();
 
 	}
 

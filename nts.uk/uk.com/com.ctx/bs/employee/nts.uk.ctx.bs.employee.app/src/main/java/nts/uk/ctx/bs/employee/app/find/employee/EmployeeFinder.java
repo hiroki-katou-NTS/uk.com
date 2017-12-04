@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TemporaryAbsenceFinder;
+import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisFinder;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmployeeBusiness;
@@ -31,9 +31,6 @@ public class EmployeeFinder {
 
 	@Inject
 	private EmployeeBusiness employeeBusiness;
-
-	@Inject
-	private TemporaryAbsenceFinder tAbsFinder;
 
 	/**
 	 * Gets the person id by employee code.
@@ -114,25 +111,6 @@ public class EmployeeFinder {
 	 * @param startLetter
 	 * @return
 	 */
-	// sonnlb
-
-	public String getGenerateEmplCodeAndComId(String startLetters) {
-		String ComId = AppContexts.user().companyId();
-		String EmpCode = employeeBusiness.generateEmplCode(startLetters);
-		return EmpCode == "" ? "" : ComId + EmpCode;
-	}
-
-	public validateEmpInfoResultDto validateEmpInfo(EmpInfoDto empInfo) {
-
-		Boolean isDuplicateEmpCode = this.employeeRepository.isDuplicateEmpCode(AppContexts.user().companyId(),
-				empInfo.getEmployeeCode());
-		Boolean isDuplicateCardNo = this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
-				empInfo.getCardNo());
-
-		return new validateEmpInfoResultDto(isDuplicateEmpCode || isDuplicateCardNo,
-				isDuplicateEmpCode ? "Msg_345" : "Msg_346");
-
-	}
 
 	// laitv
 	/**
@@ -176,14 +154,14 @@ public class EmployeeFinder {
 	public Optional<EmployeeDto> getInfoById(String employeeId) {
 		Optional<Employee> emp = employeeRepository.getBySid(employeeId);
 
-		if (emp.isPresent()) {
+		/*if (emp.isPresent()) {
 			return emp.map(m -> {
 				// set list temporary absence to employee domain
 				m.setListTemporaryAbsence(tAbsFinder.getListBySid(employeeId));
 
 				return EmployeeDto.fromDomain(m);
 			});
-		}
+		}*/
 
 		return Optional.empty();
 	}

@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import find.layout.NewLayoutDto;
+import find.person.info.category.PerInfoCtgFullDto;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
@@ -39,6 +40,16 @@ public class LayoutWebService extends WebService {
 	}
 	
 	/**
+	 * 
+	 */
+	
+	@Path("find/getCtgTab/{categoryId}")
+	@POST
+	public List<PerInfoCtgFullDto> getCtgTab(@PathParam("categoryId")String ctgId){
+		return this.layoutProcessor.getCtgTab(ctgId);
+	}
+	
+	/**
 	 * @author xuan vinh
 	 * @param query
 	 * @return
@@ -51,13 +62,16 @@ public class LayoutWebService extends WebService {
 	}
 	
 	/**
-	 * 
+	 * @author xuan vinh
+	 * @param query
+	 * @return
 	 */
 	
-	@Path("find/getCtgTab/{categoryId}")
+	@Path("find/getTabSubDetail")
 	@POST
-	public List<PersonInfoCategory> getTabDetail(@PathParam("resourceId")String ctgId){
-		return this.layoutProcessor.getCtgTab(ctgId);
+	public EmpMaintLayoutDto getTabSubDetail(PeregQuery query){
+		return this.layoutProcessor.getSubDetailInCtgChild(query);
 	}
-
+	
+	
 }

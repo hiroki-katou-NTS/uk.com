@@ -18,7 +18,7 @@ public class UpdateWidowHistoryCommandHandler extends CommandHandler<UpdateWidow
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00014";
+		return null;
 	}
 
 	@Override

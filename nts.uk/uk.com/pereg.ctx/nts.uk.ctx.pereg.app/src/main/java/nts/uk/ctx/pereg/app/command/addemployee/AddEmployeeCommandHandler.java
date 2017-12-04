@@ -12,18 +12,24 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
-import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;
-import nts.uk.ctx.bs.person.dom.person.setting.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
+import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
@@ -48,6 +54,9 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 	@Inject
 	private EmpRegHistoryRepository empHisRepo;
+
+	@Inject
+	private AffCompanyHistRepository companyHistRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddEmployeeCommand> context) {
@@ -93,11 +102,27 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		this.commandFacade.add(inputContainer);
 		// add new user
-		User newUser = User.createFromJavaType(userId, command.getPassword(), command.getLoginId(), null,
-				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false, null, command.getEmployeeName(),
-				employeeId);
+		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
+		User newUser = User.createFromJavaType(userId, passwordHash, command.getLoginId(),
+				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false,
+				null, command.getEmployeeName(), employeeId);
 
 		this.userRepository.addNewUser(newUser);
+		// add AffCompanyHist
+
+		List<AffCompanyHistByEmployee> comHistList = new ArrayList<AffCompanyHistByEmployee>();
+
+		List<AffCompanyHistItem> comHistItemList = new ArrayList<AffCompanyHistItem>();
+
+		comHistItemList.add(new AffCompanyHistItem(IdentifierUtil.randomUniqueId(), false,
+				new DatePeriod(command.getHireDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"))));
+
+		comHistList.add(new AffCompanyHistByEmployee(employeeId, comHistItemList));
+
+		AffCompanyHist newComHist = new AffCompanyHist(personId, comHistList);
+
+		this.companyHistRepo.add(newComHist);
+
 		// register avatar
 		PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, command.getAvatarId(),
 				TypeFile.AVATAR_FILE.value, null, null);
@@ -110,6 +135,8 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		String currentEmpId = AppContexts.user().employeeId();
 
+		String employeeCd = command.getEmployeeCode();
+
 		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getLastRegHistory(currentEmpId);
 
 		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(employeeId, companyId, GeneralDate.today(),
@@ -120,10 +147,17 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 			this.empHisRepo.update(newEmpRegHistory);
 
 		} else {
-			
+
 			this.empHisRepo.add(newEmpRegHistory);
 
 		}
+
+		// add EmployeeDataMngInfo
+
+		// EmployeeDataMngInfo newDataMng = new EmployeeDataMngInfo(companyId,
+		// personId, employeeId, employeeCd,
+		// EmployeeDeletionAttr.NOTDELETED, deleteDateTemporary, removeReason,
+		// externalCode);
 
 	}
 
@@ -162,7 +196,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 					item.getSaveData().getSaveDataType().value));
 		});
 
-		return new ItemsByCategory(categoryCd, null, null, items);
+		return new ItemsByCategory(categoryCd, null, items);
 
 	}
 

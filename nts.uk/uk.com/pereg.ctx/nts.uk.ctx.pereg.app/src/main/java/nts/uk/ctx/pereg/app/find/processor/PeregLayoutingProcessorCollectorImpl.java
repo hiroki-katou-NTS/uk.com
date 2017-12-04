@@ -9,26 +9,32 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
-import nts.uk.ctx.bs.employee.app.find.person.PersonLayoutDto;
+import find.person.info.PersonDto;
+import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
+import nts.uk.ctx.bs.employee.app.find.department.AffiliationDepartmentDto;
+import nts.uk.ctx.bs.employee.app.find.department.affiliate.AffDeptHistDto;
+import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
-import nts.uk.shr.pereg.app.find.PeregQuery;
-
 
 @Stateless
 @SuppressWarnings("serial")
-public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcessorCollector{
+public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcessorCollector {
 
-	/** finder */
-	private static final List<TypeLiteral<?>> FINDER_HANDLER_CLASSES = Arrays.asList(
-			new TypeLiteral<PeregFinder<PersonLayoutDto, PeregQuery>>(){}
+	/** ctg single finder */
+	private static final List<TypeLiteral<?>> FINDER_CTG_SINGLE_HANDLER_CLASSES = Arrays.asList(
+			new TypeLiteral<PeregFinder<AffiliationDepartmentDto>>(){},
+			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>(){},
+			new TypeLiteral<PeregFinder<AffClassificationDto>>(){},
+			new TypeLiteral<PeregFinder<AffWorlplaceHistItemDto>>(){},
+			new TypeLiteral<PeregFinder<PersonDto>>(){},
+			new TypeLiteral<PeregFinder<AffDeptHistDto>>(){}
 			);
-	
+
 	@Override
-	public Set<PeregFinder<?, ?>> peregFinderCollect() {
-		return FINDER_HANDLER_CLASSES.stream()
-				.map(type -> CDI.current().select(type).get())
-				.map(obj -> (PeregFinder<?, ?>)obj)
-				.collect(Collectors.toSet());
+	public Set<PeregFinder<?>> peregFinderCollect() {
+		return FINDER_CTG_SINGLE_HANDLER_CLASSES.stream().map(type -> CDI.current().select(type).get())
+				.map(obj -> (PeregFinder<?>) obj).collect(Collectors.toSet());
 	}
 
 }

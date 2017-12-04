@@ -63,8 +63,8 @@ public class JpaFamilySocialInsurance extends JpaRepository implements FamilySoc
 	 * @param domain
 	 */
 	@Override
-	public void deleteFamilySocialInsurance(FamilySocialInsurance domain){
-		BsymtFamilySocialInsurancePK key = new BsymtFamilySocialInsurancePK(domain.getSocailInsuaranceId());
+	public void deleteFamilySocialInsurance(String familySocialInsuranceId){
+		BsymtFamilySocialInsurancePK key = new BsymtFamilySocialInsurancePK(familySocialInsuranceId);
 		this.commandProxy().remove(BsymtFamilySocialInsurancePK.class,key);
 	}
 }

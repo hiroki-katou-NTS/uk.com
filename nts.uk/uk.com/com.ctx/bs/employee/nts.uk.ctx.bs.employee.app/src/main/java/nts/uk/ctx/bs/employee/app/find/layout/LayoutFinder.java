@@ -34,8 +34,8 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.E
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
@@ -103,7 +103,7 @@ public class LayoutFinder {
 	private WidowHistoryRepository widowHistoryRepo;
 
 	@Inject
-	private TemporaryAbsenceRepository tempAbsenceRepo;
+	private TempAbsItemRepository tempAbsenceRepo;
 
 	@Inject
 	private JobTitleMainRepository jobTitMainRepo;
@@ -391,7 +391,7 @@ public class LayoutFinder {
 							empInItemDataRepo.getAllInfoItemByRecordId(employeeId));
 					break;
 				case "CS00008":
-					Optional<TempAbsenceHisItem> tempAbsc = tempAbsenceRepo.getBySidAndReferDate(employeeId,
+					Optional<TempAbsenceHisItem> tempAbsc = tempAbsenceRepo.getItemByEmpIdAndReferDate(employeeId,
 							standandDate);
 					if (tempAbsc.isPresent()) {
 						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,

@@ -12,10 +12,14 @@ import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData
 @Setter
 @NoArgsConstructor
 public class PersonLayoutDto {
-	public PersonPeregDto dto;
+	
+	public PeregPersonDto dto;
+	
 	public List<PersonInfoItemData> perOptionalData;
+	
 	public List<EmpInfoItemData> empOptionalData;
-	public PersonLayoutDto(PersonPeregDto dto, List<PersonInfoItemData> perOptionalData){
+	
+	public PersonLayoutDto(PeregPersonDto dto, List<PersonInfoItemData> perOptionalData){
 		this.dto = dto;
 		this.perOptionalData = perOptionalData;
 	

@@ -13,7 +13,6 @@ import find.person.info.category.PerInfoCtgFullDto;
 import find.person.setting.init.item.SelectionInitDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
-import find.person.setting.selectionitem.selection.SelectionFinder;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
@@ -54,7 +53,7 @@ public class PerInfoItemDefFinder {
 
 	@Inject
 	private PerInfoSelectionItemFinder selectionItemFinder;
-
+	
 	@Inject
 	private SelectionRepository selectionRepo;
 
@@ -229,20 +228,6 @@ public class PerInfoItemDefFinder {
 
 	// mapping data from domain to DTO
 
-	// vinhpx: start
-	public List<PerInfoItemDefMapDto> getPerInfoDefById(String perInfoCategoryId) {
-		String companyId = AppContexts.user().companyId();
-		String contractId = AppContexts.user().contractCode();
-		return pernfoItemDefRep.getPerInfoItemByCtgId(perInfoCategoryId, companyId, contractId).stream().map(item -> {
-			String itemId = item.getPerInfoItemDefId();
-			boolean alreadyCopy = pernfoItemDefRep.countPerInfoItemDefInCopySetting(itemId, companyId) > 0 ? true
-					: false;
-			// boolean alreadyCopy = false;
-			return new PerInfoItemDefMapDto(itemId, item.getPerInfoCategoryId(), item.getItemName().v(), alreadyCopy);
-		}).collect(Collectors.toList());
-	}
-	// vinhpx: end
-
 	private List<PerInfoItemDefDto> mappingItemAndOrder(List<PersonInfoItemDefinition> itemDefs,
 			List<PerInfoItemDefOrder> itemOrders) {
 		return itemDefs.stream().map(i -> {
@@ -293,7 +278,7 @@ public class PerInfoItemDefFinder {
 				// sua loi them sel item lst
 				selectionLst);
 	}
-
+	
 	private ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
 		ItemType itemType = itemTypeState.getItemType();
 		if (itemType == ItemType.SINGLE_ITEM) {

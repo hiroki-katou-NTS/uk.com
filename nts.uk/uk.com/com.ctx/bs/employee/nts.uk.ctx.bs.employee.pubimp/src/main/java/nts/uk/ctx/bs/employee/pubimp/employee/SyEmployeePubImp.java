@@ -19,8 +19,8 @@ import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeMail;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
@@ -148,16 +148,15 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 		// Get Person
 		Person person = personOpt.get();
-		PersonName pname = person.getPersonNameGroup().getPersonName();
+		String pname = person.getPersonNameGroup().getPersonName().getFullName().v();
 		EmployeeMail comMailAddr = emp.getCompanyMail();
 
 		EmployeeBasicInfoExport empBasicInfo = EmployeeBasicInfoExport.builder()
 				.pId(person.getPersonId()).employeeId(emp.getSId() == null ? null : emp.getSId())
-				.pName((pname == null ? null : pname.v()))
+				.pName((pname == null ? null : pname))
 				.gender(person.getGender().value)
 				.birthDay(person.getBirthDate() == null ? null : person.getBirthDate())
-				.pMailAddr(person.getMailAddress() == null ? null
-						: new MailAddress(person.getMailAddress().v()))
+				.pMailAddr(null)
 				.employeeCode(emp.getSCd() == null ? null : emp.getSCd().v())
 				.entryDate(emp.getListEntryJobHist().get(0).getJoinDate())
 				.retiredDate(emp.getListEntryJobHist().get(0).getRetirementDate())
@@ -192,16 +191,15 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			// Get Person
 			Person person = mapPersons.get(employee.getPId());
 
-			PersonName pname = person.getPersonNameGroup().getPersonName();
+			String pname = person.getPersonNameGroup().getPersonName().getFullName().v();
 
 			EmployeeBasicInfoExport empBasicInfo = EmployeeBasicInfoExport.builder()
 					.pId(person.getPersonId())
 					.employeeId(employee.getSId() == null ? null : employee.getSId())
-					.pName((pname == null ? null : pname.v()))
+					.pName((pname == null ? null : pname))
 					.gender(person.getGender().value)
 					.birthDay(person.getBirthDate() == null ? null : person.getBirthDate())
-					.pMailAddr(person.getMailAddress() == null ? null
-							: new MailAddress(person.getMailAddress().v()))
+					.pMailAddr(null)
 					.employeeCode(employee.getSCd() == null ? null : employee.getSCd().v())
 					.entryDate(employee.getListEntryJobHist().get(0).getJoinDate())
 					.retiredDate(employee.getListEntryJobHist().get(0).getRetirementDate())

@@ -34,38 +34,22 @@ public class BpsmtPerson extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "GENDER")
 	public int gender;
-
-	@Basic(optional = false)
-	@Column(name = "PERSON_MOBILE")
-	public String personMobile;
-
-	@Basic(optional = false)
-	@Column(name = "PERSON_MAIL_ADDERSS")
-	public String personMailAddress;
-
-	@Basic(optional = true)
-	@Column(name = "HOBBY")
-	public String hobby;
-
-	@Basic(optional = true)
-	@Column(name = "TASTE")
-	public String taste;
-
-	@Basic(optional = true)
-	@Column(name = "NATIONALITY")
-	public String nationality;
-
+	
 	@Basic(optional = false)
 	@Column(name = "PERSON_NAME")
 	public String personName;
 
-	@Basic(optional = true)
+	@Basic(optional = false)
 	@Column(name = "PERSON_NAME_KANA")
 	public String personNameKana;
 
 	@Basic(optional = false)
 	@Column(name = "BUSINESS_NAME")
 	public String businessName;
+	
+	@Basic(optional = true)
+	@Column(name = "BUSINESS_NAME_KANA")
+	public String businessNameKana;
 
 	@Basic(optional = true)
 	@Column(name = "BUSINESS_ENGLISH_NAME")
@@ -76,21 +60,36 @@ public class BpsmtPerson extends UkJpaEntity implements Serializable {
 	public String businessOtherName;
 
 	@Basic(optional = true)
-	@Column(name = "PERSON_ROMANJI")
+	@Column(name = "P_ROMANJI_FNAME")
 	public String personRomanji;
+	
+	@Basic(optional = true)
+	@Column(name = "P_ROMANJI_FNAME_KANA")
+	public String personRomanjiKana;
 
 	@Basic(optional = true)
-	@Column(name = "OLD_NAME")
-	public String oldName;
-
-	@Basic(optional = true)
-	@Column(name = "TODOKEDE_FULL_NAME")
+	@Column(name = "TODOKEDE_FNAME")
 	public String todokedeFullName;
 
 	@Basic(optional = true)
-	@Column(name = "TODOKEDE_OLD_FULLNAME")
-	public String todokedeOldFullName;
+	@Column(name = "TODOKEDE_FNAME_KANA")
+	public String todokedeFullNameKana;
+	
+	@Basic(optional = true)
+	@Column(name = "OLDNAME_FNAME")
+	public String oldName;
+	
+	@Basic(optional = true)
+	@Column(name = "OLDNAME_FNAME_KANA")
+	public String oldNameKana;
 
+	@Basic(optional = true)
+	@Column(name = "PERSON_NAME_MULTIL_LANG")
+	public String perNameMultilLang;
+
+	@Basic(optional = true)
+	@Column(name = "PERSON_NAME_MULTIL_LANG_KANA")
+	public String perNameMultilLangKana;
 	@Override
 	protected Object getKey() {
 		return this.bpsmtPersonPk;

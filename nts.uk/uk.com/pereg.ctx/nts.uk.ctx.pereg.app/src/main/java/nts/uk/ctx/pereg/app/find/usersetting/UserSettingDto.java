@@ -1,7 +1,7 @@
 package nts.uk.ctx.pereg.app.find.usersetting;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSetting;
+import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
 
 @Value
 public class UserSettingDto {
@@ -15,7 +15,7 @@ public class UserSettingDto {
 	public static UserSettingDto fromDomain(UserSetting domain) {
 
 		return new UserSettingDto(domain.getEmpCodeValType().value, domain.getRecentRegType().value,
-				domain.getCardNoValType().value, domain.getEmpCodeLetter(), domain.getCardNoLetter());
+				domain.getCardNoValType().value, domain.getEmpCodeLetter().v(), domain.getCardNoLetter().v());
 
 	}
 }

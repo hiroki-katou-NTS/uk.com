@@ -32,15 +32,12 @@ public interface PerInfoCategoryRepositoty {
 	// vinhpx: start
 	DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId);
 	
-	List<PersonInfoCategory> getPerInfoCtgByParentCode(String parentCtgId, String contractCd);
+	List<PersonInfoCategory> getPerInfoCtgByParentCode(String parentCtgCd, String contractCd);
 	
-	List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgId, String contractCd, boolean isASC);
+	List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgCd, String contractCd, String companyId, boolean isASC);
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
-
-	boolean checkPerInfoCtgAlreadyCopy(String perInfoCtgId, String companyId);
-
-	void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId);
+	
 	// vinhpx: end
 	
 	//laitv

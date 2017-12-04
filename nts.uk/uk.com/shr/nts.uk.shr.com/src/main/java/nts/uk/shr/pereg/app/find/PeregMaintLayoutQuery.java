@@ -1,11 +1,15 @@
 package nts.uk.shr.pereg.app.find;
 
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
-
-@Value
+@Getter
 public class PeregMaintLayoutQuery {
+	
 	private String layoutId;
-	private String empId;
+	
+	private String browsingEmpId;
+	
 	private GeneralDate standardDate;
+
+	
 }

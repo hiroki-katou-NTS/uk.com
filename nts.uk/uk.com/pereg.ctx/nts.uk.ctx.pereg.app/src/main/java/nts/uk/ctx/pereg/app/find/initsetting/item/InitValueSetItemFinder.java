@@ -15,7 +15,8 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -49,7 +50,7 @@ public class InitValueSetItemFinder {
 	private AffWorkplaceHistoryRepository affWorkRepo;
 
 	@Inject
-	private TemporaryAbsenceRepository tempAbsenceRepo;
+	private TempAbsItemRepository tempAbsItemRepo;
 
 	// sonnlb
 	public List<SettingItemDto> getAllInitItemByCtgCode(String settingId, String categoryCd, GeneralDate baseDate) {
@@ -125,7 +126,7 @@ public class InitValueSetItemFinder {
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
-		Optional<TempAbsenceHisItem> opttemAbsence = this.tempAbsenceRepo.getBySidAndReferDate(employeeId, baseDate);
+		Optional<TempAbsenceHisItem> opttemAbsence = this.tempAbsItemRepo.getItemByEmpIdAndReferDate(employeeId, baseDate);
 		if (opttemAbsence.isPresent()) {
 
 			returnList = mergeTemporaryAbsenceInfoAndItemDefListToListDto(opttemAbsence.get(), initItemList);

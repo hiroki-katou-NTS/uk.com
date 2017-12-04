@@ -34,9 +34,7 @@ public class UpdateAssignedWorkplaceCommandHandler extends CommandHandler<Update
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAssignedWorkplaceCommand> context) {
 		val command = context.getCommand();
-//		List<DateHistoryItem> dateHistoryItem = new ArrayList<>();
 		DateHistoryItem dateItem = new DateHistoryItem(command.getHistoryId(),new DatePeriod(command.getStartDate(), command.getEndDate()));
-//		dateHistoryItem.add(dateItem);
 		AssignedWorkplace domain = new AssignedWorkplace(command.getEmployeeId(), command.getAssignedWorkplaceId(), command.getWorkplaceId(),
 				new ArrayList<>());
 		domain.add(dateItem);

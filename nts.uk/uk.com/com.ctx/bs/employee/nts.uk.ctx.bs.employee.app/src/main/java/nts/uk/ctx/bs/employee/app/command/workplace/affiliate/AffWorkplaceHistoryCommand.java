@@ -9,19 +9,31 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 @Getter
 public class AffWorkplaceHistoryCommand {
 
-	
-	/** 期間 */
-	@PeregItem("")
-	private GeneralDate startDate;
-	
-	@PeregItem("")
-	private GeneralDate endDate;
-
 	/** 社員ID */
 	@PeregEmployeeId
 	private String employeeId;
 
-	/** 職場ID */
+	/** The history Id. */
+	// 履歴ID
 	@PeregRecordId
-	private String workplaceId;
+	private String historyId;
+	
+	/** The workplaceCode. */
+	// 職場コード
+	@PeregItem("IS00084")
+	private String  workplaceId;
+	
+	/** The normalWorkplaceCode. */
+	// 通常職場コード
+	@PeregItem("IS00086")
+	private String  normalWorkplaceId;
+	
+	/** 期間 */
+	/** 開始日 */
+	@PeregItem("IS00082")
+	private GeneralDate startDate;
+	
+	@PeregItem("IS00083")
+	/** 終了日 */
+	private GeneralDate endDate;
 }

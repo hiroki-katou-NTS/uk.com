@@ -99,8 +99,8 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 	 * @param domain
 	 */
 	@Override
-	public void deleteSubJobPosition(SubJobPosition domain){
-		this.commandProxy().remove(BsymtSubJobPosition.class,domain.getSubJobPosId());
+	public void deleteSubJobPosition(String subJobPosId){
+		this.commandProxy().remove(BsymtSubJobPosition.class,subJobPosId);
 	}
 
 	@Override

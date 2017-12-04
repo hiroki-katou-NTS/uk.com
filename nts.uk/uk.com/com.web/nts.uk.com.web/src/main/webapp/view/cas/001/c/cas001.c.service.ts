@@ -2,8 +2,8 @@ module nts.uk.com.view.cas001.c.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getAllPersonRole: "ctx/bs/person/roles/findAll",
-        update: "ctx/bs/person/roles/auth/update"
+        getAllPersonRole: "ctx/pereg/roles/findAll",
+        update: "ctx/pereg/roles/auth/update"
     }
     /**
      * Get All Person Role

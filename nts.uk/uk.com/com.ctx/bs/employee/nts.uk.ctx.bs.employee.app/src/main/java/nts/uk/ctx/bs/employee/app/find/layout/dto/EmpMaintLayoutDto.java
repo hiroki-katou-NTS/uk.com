@@ -8,6 +8,7 @@ import java.util.List;
 
 import find.layout.classification.LayoutPersonInfoClsDto;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
 
 /**
@@ -25,6 +26,8 @@ public class EmpMaintLayoutDto {
 	private String layoutCode;
 
 	private String layoutName;
+	
+	private GeneralDate stardandDate;
 
 	private List<LayoutPersonInfoClsDto> classificationItems;
 	public EmpMaintLayoutDto(){

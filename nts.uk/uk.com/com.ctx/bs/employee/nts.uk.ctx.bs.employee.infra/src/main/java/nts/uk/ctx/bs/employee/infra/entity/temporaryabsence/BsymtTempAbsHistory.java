@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -27,11 +28,11 @@ public class BsymtTempAbsHistory extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "START_DATE")
-	public String startDate;
+	public GeneralDate startDate;
 	
 	@Basic(optional = false)
 	@Column(name = "END_DATE")
-	public String endDate;
+	public GeneralDate endDate;
 	
 	@Override
 	protected Object getKey() {
@@ -40,6 +41,14 @@ public class BsymtTempAbsHistory extends UkJpaEntity implements Serializable {
 
 	public BsymtTempAbsHistory() {
 		super();
+	}
+
+	public BsymtTempAbsHistory(String histId, String sid, GeneralDate startDate, GeneralDate endDate) {
+		super();
+		this.histId = histId;
+		this.sid = sid;
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
 
 }

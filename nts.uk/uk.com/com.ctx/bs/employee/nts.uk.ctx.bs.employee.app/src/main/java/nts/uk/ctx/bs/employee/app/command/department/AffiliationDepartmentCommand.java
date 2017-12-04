@@ -9,22 +9,34 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 @Getter
 public class AffiliationDepartmentCommand {
 
-	/** The id. */
+	/** The history Id. */
+	// 履歴ID
 	@PeregRecordId
-	private String id;
+	private String historyId;
 
-	/** The period. */
-	@PeregItem("")
-	private GeneralDate startDate;
-	
-	@PeregItem("")
-	private GeneralDate endDate;
-
-	/** The employee id. */
+	/** The Employee Id. */
+	// 社員ID
 	@PeregEmployeeId
 	private String employeeId;
 
-	/** The department id. */
-	@PeregItem("")
+	/** The department code. */
+	/* 部門コード */
+	@PeregItem("IS00073")
 	private String departmentId;
+
+	/** The Affiliation History Transfer type. */
+	// 所属履歴異動種類
+	@PeregItem("IS00074")
+	private String affHistoryTranfsType;
+
+	// 分配率
+	@PeregItem("IS00075")
+	private String distributionRatio;
+	
+	/** The period. */
+	@PeregItem("IS00071")
+	private GeneralDate startDate;
+	
+	@PeregItem("IS00072")
+	private GeneralDate endDate;
 }

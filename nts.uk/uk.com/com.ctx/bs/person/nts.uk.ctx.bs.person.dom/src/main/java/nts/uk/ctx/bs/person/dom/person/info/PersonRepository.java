@@ -30,8 +30,12 @@ public interface PersonRepository {
 	Optional<Person> getByPersonId(String personId);
 	
 	String getLastCardNo(String companyId, String startCardNoLetters);
-	
-	void updatePerson(Person person);
+	/**
+	 * Update person 取得した「個人」を更新する
+	 * 
+	 * @param person
+	 */
+	void update(Person person);
 
 
 	void addNewPerson(Person newPerson);

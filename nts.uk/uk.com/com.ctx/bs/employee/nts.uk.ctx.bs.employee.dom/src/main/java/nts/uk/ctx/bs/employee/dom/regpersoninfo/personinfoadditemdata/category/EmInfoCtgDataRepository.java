@@ -13,7 +13,7 @@ public interface EmInfoCtgDataRepository {
 	
 	void updateEmpInfoCtgData(EmpInfoCtgData domain);
 	
-	void deleteEmpInfoCtgData(EmpInfoCtgData domain);
+	void deleteEmpInfoCtgData(String recordId);
 	
 	
 }
