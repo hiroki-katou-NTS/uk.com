@@ -6042,24 +6042,6 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        $input.on("keyup", function (e) {
-                            var code = e.keyCode || e.which;
-                            if (!readonly && code.toString() !== '9') {
-                                var validator = self.getValidator(data);
-                                var newText = $input.val();
-                                var result = validator.validate(newText, { isCheckExpression: true });
-                                $input.data("inputting", true);
-                                $input.ntsError('clear');
-                                if (!result.isValid) {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode);
-                                }
-                                setTimeout(function () {
-                                    $input.val(newText);
-                                    $input.focus();
-                                    $input.data("inputting", false);
-                                }, 10);
-                            }
-                        });
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
                                 var validator = self.getValidator(data);
@@ -6073,23 +6055,21 @@ var nts;
                         });
                         $input.on("change", function (e) {
                             if (!$input.attr('readonly')) {
-                                if (!$input.data("inputting")) {
-                                    var validator = self.getValidator(data);
-                                    var newText = $input.val();
-                                    var result = validator.validate(newText, { isCheckExpression: true });
-                                    $input.ntsError('clear');
-                                    if (result.isValid) {
-                                        if (value() === result.parsedValue) {
-                                            $input.val(result.parsedValue);
-                                        }
-                                        else {
-                                            value(result.parsedValue);
-                                        }
+                                var validator = self.getValidator(data);
+                                var newText = $input.val();
+                                var result = validator.validate(newText, { isCheckExpression: true });
+                                $input.ntsError('clear');
+                                if (result.isValid) {
+                                    if (value() === result.parsedValue) {
+                                        $input.val(result.parsedValue);
                                     }
                                     else {
-                                        $input.ntsError('set', result.errorMessage, result.errorCode);
-                                        value(newText);
+                                        value(result.parsedValue);
                                     }
+                                }
+                                else {
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    value(newText);
                                 }
                             }
                         });
@@ -10627,6 +10607,7 @@ var nts;
                                 bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
                             }
                             var resizeEvent = function () {
+                                $header.height($headerContainer.height());
                                 if (bodyHeight < $originTable.height()) {
                                     if (/Edge/.test(navigator.userAgent)) {
                                         $headerScroll.width(12);
@@ -10638,21 +10619,6 @@ var nts;
                                     }
                                 }
                                 else {
-                                    if ($originTable.height() !== 0) {
-                                        if (/Edge/.test(navigator.userAgent)) {
-                                            $bodyWrapper.height($originTable.height());
-                                            $bodyContainer.height($originTable.height() + 12);
-                                        }
-                                        else {
-                                            $bodyWrapper.height($originTable.height());
-                                            $bodyContainer.height($originTable.height() + 17);
-                                        }
-                                        $headerScroll.width(0);
-                                        $bodyWrapper.removeClass("body-no-record");
-                                    }
-                                    else {
-                                        $bodyWrapper.addClass("body-no-record");
-                                    }
                                     $bodyContainer.css("padding-right", "0px");
                                 }
                                 setTimeout(resizeEvent, 20);
@@ -23147,4 +23113,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

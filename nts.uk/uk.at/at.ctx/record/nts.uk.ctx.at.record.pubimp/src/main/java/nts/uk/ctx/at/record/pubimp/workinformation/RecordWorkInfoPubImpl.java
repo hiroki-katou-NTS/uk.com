@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -28,24 +27,41 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	 */
 	@Override
 	public RecordWorkInfoPubExport getRecordWorkInfo(String employeeId, GeneralDate ymd) {
-		Optional<WorkInfoOfDailyPerformance> otpWorkInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, ymd);
-		if(!otpWorkInfoOfDailyPerformance.isPresent()) {
+		Optional<WorkInfoOfDailyPerformance> opWorkInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, ymd);
+		if(!opWorkInfoOfDailyPerformance.isPresent()) {
 			return new RecordWorkInfoPubExport("", "", -1, -1, -1, -1, -1, -1, -1, -1, -1);
 		}
 		
 		// 日別実績の勤務情報
-		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = otpWorkInfoOfDailyPerformance.get();
+		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = opWorkInfoOfDailyPerformance.get();
 		
 		//日別実績の出退勤
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, ymd).get();
+		Optional<TimeLeavingOfDailyPerformance> opTimeLeavingOfDailyPerformance = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, ymd);
+		if(!opTimeLeavingOfDailyPerformance.isPresent()) {
+			return new RecordWorkInfoPubExport("", "", -1, -1, -1, -1, -1, -1, -1, -1, -1);
+		}
+		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = opTimeLeavingOfDailyPerformance.get();
+		
+		Integer attendanceStampTimeFirst = -1;
+		Integer leaveStampTimeFirst = -1;
+		Integer attendanceStampTimeSecond = -1;
+		Integer leaveStampTimeSecond = -1; 
+		if(timeLeavingOfDailyPerformance.getTimeLeavingWorks().size()>1){
+			attendanceStampTimeSecond = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().getStamp().getTimeWithDay().v();
+			leaveStampTimeSecond = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().getStamp().getTimeWithDay().v();
+		}
+		if(timeLeavingOfDailyPerformance.getTimeLeavingWorks().size()>0){
+			attendanceStampTimeFirst = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().getStamp().getTimeWithDay().v();
+			leaveStampTimeFirst = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().getStamp().getTimeWithDay().v();
+		}
 		
 		RecordWorkInfoPubExport recordWorkInfoPubExport = new RecordWorkInfoPubExport(
 				workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v(),
 				workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode().v(),
-				timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().getStamp().getTimeWithDay().v(),
-				timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().getStamp().getTimeWithDay().v(),
-				timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().getStamp().getTimeWithDay().v(),
-				timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().getStamp().getTimeWithDay().v(),
+				attendanceStampTimeFirst,
+				leaveStampTimeFirst,
+				attendanceStampTimeSecond,
+				leaveStampTimeSecond,
 				-1, -1, -1, -1, -1);
 		return recordWorkInfoPubExport;
 	}

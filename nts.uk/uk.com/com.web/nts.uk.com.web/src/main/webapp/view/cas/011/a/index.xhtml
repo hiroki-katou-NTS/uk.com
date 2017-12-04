@@ -20,13 +20,13 @@
         </ui:define>
         <ui:define name="content">
             <div id="functions-area">
-                <button id="A1_001" data-bind="click: settingCreateMode,
+                <button id="A1_001" class="large" data-bind="click: settingCreateMode,
                         enable: !isNewMode()" >#{i18n.getText('CAS011_4')}</button>
-                <button id="A1_002" class="proceed" data-bind="click: saveRoleSet, enable: $root.errors.isEmpty">#{i18n.getText('CAS011_5')}</button>
-                <button id="A1_003" class="danger" data-bind="click: deleteRoleSet,
+                <button id="A1_002" class="proceed large" data-bind="click: saveRoleSet, enable: $root.errors.isEmpty">#{i18n.getText('CAS011_5')}</button>
+                <button id="A1_003" class="danger large" data-bind="click: deleteRoleSet,
                         enable: !isNewMode()" >#{i18n.getText('CAS011_6')}</button>
 
-                <button id="A1_004" data-bind="click: openDialogSettingC,
+                <button id="A1_004" class="large" data-bind="click: openDialogSettingC,
                          enable: roleSetCount() > 0">#{i18n.getText('CPS016_7')}</button>
             </div>
  
@@ -163,7 +163,7 @@
 
                                     <!-- A3_015: Person Info Role - reference button -->
                                     <button id="A3_015" class="large" 
-                                        data-bind="click: function() {$parent.openDialogCLD025.bind(8)}, enable: true">#{i18n.getText('CAS011_15')}</button>
+                                        data-bind="click: function() {$parent.openDialogCLD025(8)}, enable: true">#{i18n.getText('CAS011_15')}</button>
                                 </div>
                                 
                             </td>
@@ -227,25 +227,26 @@
                             </td>
                         </tr>
                     </table>
-                    <table>
-                        <colgroup>
-                            <col width="400px" />
-                            <col width="*" />
-                        </colgroup>
-                        <tr>
-                            <td class = "pad_left_10px">
-                                <!-- A3_26:  list of menus that can selection -->
-                                <div>#{i18n.getText('CAS011_24')}</div>
-                            </td>
-                            
-                            <td  class = "pad_left_5px">
-                                <!-- A3_26:  list of selected menus -->
-                                <div>#{i18n.getText('CAS011_25')}</div>
-                            </td>
-                        </tr>
-                        
-                    </table>
-
+                    <div class ="pad_top_12px">
+	                    <table>
+	                        <colgroup>
+	                            <col width="400px" />
+	                            <col width="*" />
+	                        </colgroup>
+	                        <tr>
+	                            <td class = "pad_left_10px">
+	                                <!-- A3_26:  list of menus that can selection -->
+	                                <div>#{i18n.getText('CAS011_24')}</div>
+	                            </td>
+	                            
+	                            <td  class = "pad_left_5px">
+	                                <!-- A3_26:  list of selected menus -->
+	                                <div>#{i18n.getText('CAS011_25')}</div>
+	                            </td>
+	                        </tr>
+	                        
+	                    </table>
+                    </div>
                     <div id="swap-list" class = "pad_left_5px" 
                         data-bind="ntsSwapList: {
                             name: '#[CAS011_24]',

@@ -27,4 +27,26 @@ public class WorkTimezoneMedicalSet extends DomainObject {
 	// 申送時間
 	private OneDayTime applicationTime;
 
+	/**
+	 * Instantiates a new work timezone medical set.
+	 *
+	 * @param memento the memento
+	 */
+	public WorkTimezoneMedicalSet(WorkTimezoneMedicalSetGetMemento memento) {
+		this.roundingSet = memento.getRoundingSet();
+		this.workSystemAtr = memento.getWorkSystemAtr();
+		this.applicationTime = memento.getApplicationTime();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkTimezoneMedicalSetSetMemento memento) {
+		memento.setRoundingSet(this.roundingSet);
+		memento.setWorkSystemAtr(this.workSystemAtr);
+		memento.setApplicationTime(this.applicationTime);
+	}
+
 }

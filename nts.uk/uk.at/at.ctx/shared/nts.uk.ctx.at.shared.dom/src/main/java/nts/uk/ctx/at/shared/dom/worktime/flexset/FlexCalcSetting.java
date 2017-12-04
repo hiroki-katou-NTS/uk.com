@@ -22,4 +22,24 @@ public class FlexCalcSetting extends DomainObject {
 	/** The calculate sharing. */
 	// コアタイム内外の外出を分けて計算する
 	private UseAtr calculateSharing;
+
+	/**
+	 * Instantiates a new flex calc setting.
+	 *
+	 * @param memento the memento
+	 */
+	public FlexCalcSetting(FlexCalcSettingGetMemento memento) {
+		this.removeFromWorkTime = memento.getRemoveFromWorkTime();
+		this.calculateSharing = memento.getCalculateSharing();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlexCalcSettingSetMemento memento){
+		memento.setRemoveFromWorkTime(this.removeFromWorkTime);
+		memento.setCalculateSharing(this.calculateSharing);
+	}
 }

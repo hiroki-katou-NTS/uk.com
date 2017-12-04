@@ -22,4 +22,24 @@ public class EmTimeZoneSet {
 	/** The timezone. */
 	//時間帯
 	private TimeZoneRounding timezone;
+
+	/**
+	 * Instantiates a new em time zone set.
+	 *
+	 * @param memento the memento
+	 */
+	public EmTimeZoneSet(EmTimeZoneSetGetMemento memento) {
+		this.EmploymentTimeFrameNo = memento.getEmploymentTimeFrameNo();
+		this.timezone = memento.getTimezone();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EmTimeZoneSetSetMemento memento) {
+		memento.setEmploymentTimeFrameNo(this.EmploymentTimeFrameNo);
+		memento.setTimezone(this.timezone);
+	}
 }

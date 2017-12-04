@@ -27,4 +27,26 @@ public class FlowRestTimezone extends DomainObject {
 	/** The here after rest set. */
 	// 設定以降の休憩設定
 	private FlowRestSetting hereAfterRestSet;
+
+	/**
+	 * Instantiates a new flow rest timezone.
+	 *
+	 * @param memento the memento
+	 */
+	public FlowRestTimezone(FlowRestTimezoneGetMemento memento) {
+		this.flowRestSet = memento.getFlowRestSet();
+		this.useHereAfterRestSet = memento.getUseHereAfterRestSet();
+		this.hereAfterRestSet = memento.getHereAfterRestSet();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FlowRestTimezoneSetMemento memento) {
+		memento.setFlowRestSet(this.flowRestSet);
+		memento.setUseHereAfterRestSet(this.useHereAfterRestSet);
+		memento.setHereAfterRestSet(this.hereAfterRestSet);
+	}
 }

@@ -42,11 +42,14 @@ public class SequenceMasterFinder {
 			exceptions.throwExceptions();
 		}
 		
-		return result.stream().map(sequence -> {
-			SequenceMasterFindDto memento = new SequenceMasterFindDto();
-			sequence.saveToMemento(memento);
-			return memento;
-		}).collect(Collectors.toList());
+		return result.stream()
+				.map(sequence -> {
+					SequenceMasterFindDto memento = new SequenceMasterFindDto();
+					sequence.saveToMemento(memento);
+					return memento;
+				})
+				.sorted((seq1, seq2) -> seq1.getSequenceCode().compareTo(seq2.getSequenceCode()))
+				.collect(Collectors.toList());
 	}
 
 	/**

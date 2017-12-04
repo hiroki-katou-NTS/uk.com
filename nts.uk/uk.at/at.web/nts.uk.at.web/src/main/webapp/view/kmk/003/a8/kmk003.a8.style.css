@@ -1,0 +1,44 @@
+.labelSetting {
+	margin-top: 20px;
+}
+
+.roundSetting {
+	width: 300px;
+}
+
+.timeoutSetting {
+	width: 610px;
+}
+
+.deductionTimeSetting {
+	width: 500px;
+	margin-left: 20px;
+}
+
+.radioSetting {
+	margin-top: 10px;
+}
+
+.roundingSet {
+	display: inline-flex;
+}
+
+.settingArrangement {
+	display: inline-flex;
+}
+
+.tabArrangement-1 {
+	width: 1100px;
+}
+
+.radioBreakTime {
+	width: 135px;
+}
+
+.roundingCombox {
+	width: 60px;
+}
+
+.groubSetting {
+	margin-top: 20px;
+}

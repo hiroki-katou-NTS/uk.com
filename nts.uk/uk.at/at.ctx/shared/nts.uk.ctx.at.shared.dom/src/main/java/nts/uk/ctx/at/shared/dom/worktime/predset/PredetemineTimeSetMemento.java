@@ -4,6 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+
 /**
  * The Interface PredetemineTimeSetMemento.
  */
@@ -21,21 +25,21 @@ public interface PredetemineTimeSetMemento {
 	 *
 	 * @param rangeTimeDay the new range time day
 	 */
-	public void setRangeTimeDay(int rangeTimeDay);
+	public void setRangeTimeDay(AttendanceTime rangeTimeDay);
 
 	/**
-	 * Sets the sift CD.
+	 * Sets the work time code.
 	 *
-	 * @param siftCD the new sift CD
+	 * @param workTimeCode the new work time code
 	 */
-	public void setSiftCD(String siftCD);
+	public void setWorkTimeCode(WorkTimeCode workTimeCode);
 
 	/**
-	 * Sets the addition set ID.
+	 * Sets the pred time.
 	 *
-	 * @param additionSetID the new addition set ID
+	 * @param predTime the new pred time
 	 */
-	public void setAdditionSetID(String additionSetID);
+	public void setPredTime(PredetermineTime predTime);
 
 	/**
 	 * Sets the night shift.
@@ -56,7 +60,7 @@ public interface PredetemineTimeSetMemento {
 	 *
 	 * @param startDateClock the new start date clock
 	 */
-	public void setStartDateClock(int startDateClock);
+	public void setStartDateClock(TimeWithDayAttr startDateClock);
 
 	/**
 	 * Sets the predetermine.

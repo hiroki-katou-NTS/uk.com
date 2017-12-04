@@ -27,4 +27,26 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 	/** The settlement order. */
 	// 精算順序
 	private SettlementOrder settlementOrder;
+
+	/**
+	 * Instantiates a new extraord work OT frame set.
+	 *
+	 * @param memento the memento
+	 */
+	public ExtraordWorkOTFrameSet (ExtraordWorkOTFrameSetGetMemento memento) {
+		this.OTFrameNo = memento.getOTFrameNo();
+		this.inLegalWorkFrameNo = memento.getInLegalWorkFrameNo();
+		this.settlementOrder = memento.getSettlementOrder();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ExtraordWorkOTFrameSetSetMemento memento) {
+		memento.setOTFrameNo(this.OTFrameNo);
+		memento.setInLegalWorkFrameNo(this.inLegalWorkFrameNo);
+		memento.setSettlementOrder(this.settlementOrder);
+	}
 }

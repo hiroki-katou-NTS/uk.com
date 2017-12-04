@@ -8,7 +8,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         teamName: KnockoutObservable<any> = ko.observable();
         columnsTeam: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1110"), key: 'code', width: 60 },
-            { headerText: nts.uk.resource.getText("KSU001_1111"), key: 'name', width: 120 },
+            { headerText: nts.uk.resource.getText("KSU001_1111"), key: 'name', width: 120, formatter: _.escape },
             { headerText: nts.uk.resource.getText("KSU001_1112"), key: 'amountOfPeople', width: 60 },
         ]);
         workPlaceId: string;
@@ -21,11 +21,11 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
             { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
-            { headerText: nts.uk.resource.getText("KSU001_1121"), key: 'teamName', width: 100 },
+            { headerText: nts.uk.resource.getText("KSU001_1121"), key: 'teamName', width: 100, formatter: _.escape },
         ]);
         columnsRightSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
-            { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
+            { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120, formatter: _.escape },
         ]);
         onlyEmpNotTeam : KnockoutObservable<boolean> =  ko.observable(false);
         

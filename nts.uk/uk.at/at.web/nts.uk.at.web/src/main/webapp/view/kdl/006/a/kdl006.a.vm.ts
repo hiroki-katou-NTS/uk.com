@@ -387,9 +387,10 @@ module nts.uk.at.view.kdl006.a {
                     _self.listSaveWorkFixed.push(item);
                 }
 
-                let htmlParse: string = '<div class="table-cell"><div data-bind="ntsCheckBox: { checked: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].checked }"></div>';
+                let htmlParse: string = '<div class="header-closure" style="display: inline-flex;"><div data-bind="ntsCheckBox: { checked: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].checked }"></div>';
                 htmlParse += '<span class="limited-label" data-bind="visible: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].checked,';
                 htmlParse += ' text: listWorkplace[' + rowIndex + '].listWorkFixed[' + columnIndex + '].text"></span></div>';
+                
                 return htmlParse;
             }
 

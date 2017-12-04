@@ -34,7 +34,7 @@ public class RoleSetCommandBase {
     private String myNumberRoleId;
 
     /** ロールID: 人事ロール */
-    private String hRRoleId;
+    private String humanResourceRoleId;
 
     /** ロールID: 個人情報ロール */
     private String personInfRoleId;

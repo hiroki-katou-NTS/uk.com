@@ -94,7 +94,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             });
             return dfd.promise();
         }   //end start
-        // check display start 表示するか非表示するか
+        // check display start 表示するか非表示するか  ※5 
         checkDisplayStart() {
             let self = this;
             if (self.outputDetailCheck() != null) {
@@ -241,7 +241,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }   
         }
 
-        //check checkDisplayAction　活性するか非活性するか
+        //check checkDisplayAction　活性するか非活性するか ※7   
         checkDisplayAction() {
             let self = this;
             let Status = {NOTREFLECTED: 0, // 未反映

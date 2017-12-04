@@ -23,7 +23,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 			+" WHERE s.ksmstSpecificDateItemPK.companyId = :companyId"
 			+" AND s.useAtr = :useAtr";
 	private static final String GET_BY_LIST_CODE = GET_ALL 
-			+" AND s.itemNo IN :lstSpecificDateItem";
+			+" AND s.ksmstSpecificDateItemPK.itemNo IN :lstSpecificDateItem";
 	/**
 	 * Entity to Domain
 	 * 

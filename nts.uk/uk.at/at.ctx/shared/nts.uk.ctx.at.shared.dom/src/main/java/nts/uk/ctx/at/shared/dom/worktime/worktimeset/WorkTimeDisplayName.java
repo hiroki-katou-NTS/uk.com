@@ -4,14 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
+import lombok.Builder;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class WorkTimeDisplayName.
  */
 //就業時間帯の表示名
 @Getter
-public class WorkTimeDisplayName {
+@Builder
+public class WorkTimeDisplayName extends DomainObject {
 	
 	/** The work time name. */
 	//名称
@@ -24,27 +27,4 @@ public class WorkTimeDisplayName {
 	/** The work time symbol. */
 	//記号
 	private WorkTimeSymbol workTimeSymbol;
-
-	/**
-	 * Instantiates a new work time display name.
-	 *
-	 * @param memento the memento
-	 */
-	public WorkTimeDisplayName(WorkTimeDisplayNameGetMemento memento) {
-		this.workTimeName = memento.getWorkTimeName();
-		this.workTimeAbName = memento.getWorkTimeAbName();
-		this.workTimeSymbol = memento.getWorkTimeSymbol();
-	}
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(WorkTimeDisplayNameSetMemento memento)
-	{
-		memento.setWorkTimeName(this.workTimeName);
-		memento.setWorkTimeAbName(this.workTimeAbName);
-		memento.setWorkTimeSymbol(this.workTimeSymbol);
-	}
 }

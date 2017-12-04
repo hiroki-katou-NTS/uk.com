@@ -12,12 +12,6 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
  * The Class GoOutTimeRoundingSetting.
  */
 //外出時間の丸め設定
-
-/**
- * Gets the rounding setting.
- *
- * @return the rounding setting
- */
 @Getter
 public class GoOutTimeRoundingSetting extends DomainObject {
 
@@ -28,4 +22,25 @@ public class GoOutTimeRoundingSetting extends DomainObject {
 	/** The rounding setting. */
 	//丸め設定
 	private TimeRoundingSetting roundingSetting;
+	
+	
+	/**
+	 * Instantiates a new go out time rounding setting.
+	 *
+	 * @param memento the memento
+	 */
+	public GoOutTimeRoundingSetting(GoOutTimeRoundingSettingGetMemento memento) {
+		this.roundingMethod = memento.getRoundingMethod();
+		this.roundingSetting = memento.getRoundingSetting();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(GoOutTimeRoundingSettingSetMemento memento){
+		memento.setRoundingMethod(this.roundingMethod);
+		memento.setRoundingSetting(this.roundingSetting);
+	}
 }
