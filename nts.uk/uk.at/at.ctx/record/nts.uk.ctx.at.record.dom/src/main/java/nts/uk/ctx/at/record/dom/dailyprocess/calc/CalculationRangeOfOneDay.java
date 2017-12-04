@@ -24,6 +24,10 @@ import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
@@ -35,6 +39,7 @@ import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverDayEnd.SplitOverTimeWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
@@ -44,8 +49,10 @@ import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodOfHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
@@ -81,7 +88,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-@Getterpublic class CalculationRangeOfOneDay {
+@Getter
+public class CalculationRangeOfOneDay {
 	
 	private Finally<WithinWorkTimeSheet> withinWorkingTimeSheet = Finally.empty();
 	
@@ -400,6 +408,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 	
 	/**
 	 * 流動勤務の時間帯作成
+	 * @author ken_takasu
 	 */
 	public void createFluidWork(
 			int workNo,
@@ -441,6 +450,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 	
 	/**
 	 * 事前に遅刻早退、控除時間帯を取得する
+	 * @author ken_takasu
 	 * @param workNo
 	 * @param attendanceLeavingWork 出退勤
 	 * @return
@@ -470,6 +480,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 	
 	/**
 	 * 計算用所定時間設定を作成する（流動用）
+	 * @author ken_takasu
 	 * @return
 	 */
 	public void createPredetermineTimeSheetForFluid(
@@ -512,6 +523,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 	
 	/**
 	 * 控除時間帯の仮確定
+	 * @author ken_takasu
 	 */
 	public void provisionalDeterminationOfDeductionTimeSheet(DeductionTimeSheet deductionTimeSheet) {
 		//控除用
@@ -519,6 +531,44 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 		//計上用
 		deductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(fluidWorkSetting);
 	}
+	
+	
+	
+	/**
+	 * 遅刻時間の計算
+	 * @author ken_takasu
+	 * 
+	 * @return
+	 */
+	public LateTimeOfDaily getLateTimeOfDaily(DailyWork dailyWork,
+			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
+			WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday,//休暇の就業時間計算方法詳細
+			WorkNo workNo
+			) {
+		if(dailyWork.isHolidayWork()) {
+			return this.outsideWorkTimeSheet.getHolidayWorkTimeSheet().get().calcLateTime(autoCalcOfLeaveEarlySetting.isLate(), workTimeCalcMethodDetailOfHoliday, workNo);
+		}
+		return this.withinWorkingTimeSheet.calcLateTime(autoCalcOfLeaveEarlySetting.isLate(),workTimeCalcMethodDetailOfHoliday, workNo);
+	}
+	
+	
+	/**
+	 * 早退時間の計算
+	 * @author ken_takasu
+	 * 
+	 * @return
+	 */
+	public LeaveEarlyTimeOfDaily getLeaveEarlyTimeOfDaily(DailyWork dailyWork,
+			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
+			WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday,//休暇の就業時間計算方法詳細
+			WorkNo workNo
+			) {
+		if(dailyWork.isHolidayWork()) {
+			return this.outsideWorkTimeSheet.getHolidayWorkTimeSheet().get().calcLeaveEarlyTime(autoCalcOfLeaveEarlySetting.isLeaveEarly(), workTimeCalcMethodDetailOfHoliday, workNo);
+		}
+		return this.withinWorkingTimeSheet.calcLeaveEarlyTime(autoCalcOfLeaveEarlySetting.isLeaveEarly(), workTimeCalcMethodDetailOfHoliday, workNo);
+	}
+	
 	
 	
 }

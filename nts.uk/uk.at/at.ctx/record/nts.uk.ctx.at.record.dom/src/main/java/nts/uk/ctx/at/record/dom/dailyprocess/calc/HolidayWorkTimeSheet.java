@@ -29,16 +29,17 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-public class HolidayWorkTimeSheet{
-	@Getter
-	private HolidayWorkTimeOfDaily workHolidayTime;
+public class HolidayWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 	
-	/**
-	 * Constructor
-	 */
-	public HolidayWorkTimeSheet(HolidayWorkTimeOfDaily holidayWorkOfDaily) {
-		this.workHolidayTime = holidayWorkOfDaily;
-	}
+	@Getter
+	 private HolidayWorkTimeOfDaily workHolidayTime;
+	 
+	 /**
+	  * Constructor
+	  */
+	 public HolidayWorkTimeSheet(HolidayWorkTimeOfDaily holidayWorkOfDaily) {
+	  this.workHolidayTime = holidayWorkOfDaily;
+	 }
 	
 	
 	/**

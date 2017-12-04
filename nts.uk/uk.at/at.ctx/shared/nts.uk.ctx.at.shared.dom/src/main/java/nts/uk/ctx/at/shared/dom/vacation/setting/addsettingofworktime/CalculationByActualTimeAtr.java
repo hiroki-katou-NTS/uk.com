@@ -16,4 +16,17 @@ public enum CalculationByActualTimeAtr {
 	public boolean isCalclationByActualTime() {
 		return CalculationByActualTime.equals(this);
 	}
+	
+	
+	/**
+	 * 実働時間以外も含めて計算するか判定する
+	 * @author ken_takasu
+	 * @return　実働時間以外も含めて計算する場合→true
+	 */
+	public boolean isCalculationOtherThanActualTime() {
+		return CalculationOtherThanActualTime.equals(this);
+	}
+	
+	
+	
 }

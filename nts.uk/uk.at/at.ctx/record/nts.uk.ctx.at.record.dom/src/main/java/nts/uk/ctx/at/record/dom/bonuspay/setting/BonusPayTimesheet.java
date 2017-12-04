@@ -3,18 +3,27 @@
  */
 package nts.uk.ctx.at.record.dom.bonuspay.setting;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.bonuspay.primitives.BonusPayTime;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.RoundingAtr;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.RoundingAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UnitAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
@@ -176,5 +185,28 @@ public class BonusPayTimesheet extends CalculationTimeSheet{
 	}
 	
 
+	
+	
+	/**
+	 * 再帰的に加給時間帯を取得する
+	 * @author ken_takasu
+	 * @return
+	 */
+	public List<BonusPayTimesheet> collectBonusPayTimeSheet() {
 
+		// 末端の（＝子を持たない）加給時間帯だけを収集する
+		if (this.bonusPayTimeSheet.isEmpty()) {
+			return Arrays.asList(this);
+		}
+		
+		List<BonusPayTimesheet> results = new ArrayList<>();
+		this.bonusPayTimeSheet.forEach(ts -> {
+			results.addAll(ts.collectBonusPayTimeSheet());
+		});
+		
+		return results;
+	}
+	
+		
+	
 }

@@ -84,6 +84,34 @@ public enum WorkTypeClassification {
 	}
 	
 	/**
+	 * 年休であるか判定する
+	 * @author ken_takasu
+	 * @return
+	 */
+	public boolean isAnnualLeave() {
+		return AnnualHoliday.equals(this);
+	}
+	
+	/**
+	 * 積立年休であるか判定する
+	 * @author ken_takasu
+	 * @return
+	 */
+	public boolean isYearlyReserved() {
+		return YearlyReserved.equals(this);
+	}
+	
+	/**
+	 * 特別休暇であるか判定する
+	 * @author ken_takasu
+	 * @return
+	 */
+	public boolean isSpecialHoliday() {
+		return SpecialHoliday.equals(this);
+	}
+	
+	
+	/**
 	 * 休日系か判定する
 	 * @return　休日系である
 	 */

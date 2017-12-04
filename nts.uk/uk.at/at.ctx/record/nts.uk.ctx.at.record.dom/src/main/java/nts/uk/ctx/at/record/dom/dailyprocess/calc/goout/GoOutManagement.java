@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeOfDaily;
 
 /**
  * 外出管理

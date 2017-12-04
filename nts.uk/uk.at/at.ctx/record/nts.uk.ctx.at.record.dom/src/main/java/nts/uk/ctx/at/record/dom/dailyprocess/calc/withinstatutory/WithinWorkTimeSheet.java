@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
@@ -28,13 +29,23 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheetList;
+import nts.uk.ctx.at.shared.dom.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationAddTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinStatutoryAtr;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
@@ -55,7 +66,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @AllArgsConstructor
-public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
+public class WithinWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 
 	//必要になったら追加
 	//private WorkingHours
@@ -114,10 +125,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 
 		PredetermineTimeSetForCalc predetermineTimeForSet = PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predetermineTimeSet);
 
-//		//遅刻猶予時間の取得
-//		val lateGraceTime = workTimeCommonSet.getLateSetting().getGraceTimeSetting();//引数でworkTimeCommonSet毎渡すように修正予定
-//		//早退猶予時間の取得
-//		val leaveEarlyGraceTime = workTimeCommonSet.getLeaveEarlySetting().getGraceTimeSetting();
+		//遅刻猶予時間の取得
+		val lateGraceTime = workTimeCommonSet.getLeaveEarlySetting().getLateSet().getGraceTimeSetting();
+		//早退猶予時間の取得
+		val leaveEarlyGraceTime = workTimeCommonSet.getLeaveEarlySetting().getLeaveEarlySet().getGraceTimeSetting();
 						
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
 		WithinWorkTimeFrame timeFrame;
@@ -142,10 +153,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		/*所定内割増時間の時間帯作成*/
 		
-		return timeFrames;
-//				,
-//				LeaveEarlyDecisionClock.createListOfAllWorks(predetermineTimeSet, deductionTimeSheet, leaveEarlyGraceTime),
-//				LateDecisionClock.createListOfAllWorks(predetermineTimeSet, deductionTimeSheet, lateGraceTime));
+		return new WithinWorkTimeSheet(
+				timeFrames
+				,
+				LeaveEarlyDecisionClock.createListOfAllWorks(predetermineTimeSet, deductionTimeSheet, leaveEarlyGraceTime),
+				LateDecisionClock.createListOfAllWorks(predetermineTimeSet, deductionTimeSheet, lateGraceTime));
 	}
 	
 	/**
@@ -203,31 +215,33 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 	}
 	
-//	/**
-//	 * 引数のNoと一致する遅刻判断時刻を取得する
-//	 * @param workNo
-//	 * @return　遅刻判断時刻
-//	 */
-//	public LateDecisionClock getlateDecisionClock(int workNo) {
-//		List<LateDecisionClock> clockList = this.lateDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
-//		if(clockList.size()>1) {
-//			throw new RuntimeException("Exist duplicate workNo : " + workNo);
-//		}
-//		return clockList.get(0);
-//	}
-//	
-//	/**
-//	 * 引数のNoと一致する早退判断時刻を取得する
-//	 * @param workNo
-//	 * @return　早退判断時刻
-//	 */
-//	public LeaveEarlyDecisionClock getleaveEarlyDecisionClock(int workNo) {
-//		List<LeaveEarlyDecisionClock> clockList = this.leaveEarlyDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
-//		if(clockList.size()>1) {
-//			throw new RuntimeException("Exist duplicate workNo : " + workNo);
-//		}
-//		return clockList.get(0);
-//	}
+	/**
+	 * 引数のNoと一致する遅刻判断時刻を取得する
+	 * @author ken_takasu 
+	 * @param workNo
+	 * @return　遅刻判断時刻
+	 */
+	public LateDecisionClock getlateDecisionClock(WorkNo workNo) {
+		List<LateDecisionClock> clockList = this.lateDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
+		if(clockList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
+		}
+		return clockList.get(0);
+	}
+	
+	/**
+	 * 引数のNoと一致する早退判断時刻を取得する
+	 * @author ken_takasu
+	 * @param workNo
+	 * @return　早退判断時刻
+	 */
+	public LeaveEarlyDecisionClock getleaveEarlyDecisionClock(workNo workNo) {
+		List<LeaveEarlyDecisionClock> clockList = this.leaveEarlyDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
+		if(clockList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
+		}
+		return clockList.get(0);
+	}
 	
 //	/**
 //	 * コアタイムのセット
@@ -262,32 +276,48 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 就業時間の計算(控除時間差し引いた後) →　ループ処理　
 	 * @return 就業時間
 	 */
-	public AttendanceTime calcWorkTime(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
+	public AttendanceTime calcWorkTime(CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily) {
 		
-		AttendanceTime workTime = calcWorkTimeBeforeDeductPremium(holidayAdditionAtr ,dedTimeSheet);
-		if(holidayAdditionAtr.isHolidayAddition()) {
-			/*休暇加算時間を計算*/
-			/*休暇加算時間を加算*/
-//			if(/*時間休暇加算時間*/) {
+		HolidayAdditionAtr holidayAddition = HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime);
+		
+		AttendanceTime workTime = calcWorkTimeBeforeDeductPremium(holidayAddition ,dedTimeSheet,timevacationUseTimeOfDaily);
+		
+		if(holidayAddition.isHolidayAddition()) {
+			//休暇加算時間を計算
+			VacationAddTime vacationAddTime = vacationClass.calcVacationAddTime(statutoryDivision,
+																				workingSystem, 
+																				addSettingOfRegularWork, 
+																				vacationAddTimeSet, 
+																				workType, 
+																				predetermineTimeSet, 
+																				siftCode, 
+																				personalCondition, 
+																				addSettingOfIrregularWork, 
+																				addSettingOfFlexWork);
+			//休暇加算時間を加算
+			workTime += vacationAddTime.calcTotaladdVacationAddTime();
+			
+//			if(時間休暇加算方法) {
+//				workTime += timevacationUseTimeOfDaily.getTotalTimeVacationUseTime();
 //			}
 		}
 		return workTime;
 	}
 	
-	/**
-	 * 就業時間内時間枠の全枠分の就業時間を算出する
-	 * (所定内割増時間を差し引く前)
-	 * @return 就業時間
-	 */
-	public AttendanceTime calcWorkTimeBeforeDeductPremium(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
-		AttendanceTime workTime = new AttendanceTime(0);
-		for(WithinWorkTimeFrame copyItem: withinWorkTimeFrame) {
-			workTime.addMinutes(copyItem.calcActualWorkTimeAndWorkTime(holidayAdditionAtr,dedTimeSheet).valueAsMinutes());
-		}
-		return workTime;
-	}
-	
-	
+	 /**
+	  * 就業時間内時間枠の全枠分の就業時間を算出する
+	  * (所定内割増時間を差し引く前)
+	  * @return 就業時間
+	  */
+	 public AttendanceTime calcWorkTimeBeforeDeductPremium(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily) {
+	  AttendanceTime workTime = new AttendanceTime(0);
+	  for(WithinWorkTimeFrame copyItem: withinWorkTimeFrame) {
+	   workTime.addMinutes(copyItem.calcActualWorkTimeAndWorkTime(holidayAdditionAtr,dedTimeSheet,timevacationUseTimeOfDaily).valueAsMinutes());
+	  }
+	  return workTime;
+	 }
+
+	 
 //	/**
 //	 * 日別計算の遅刻早退時間の計算
 //	 * @return
@@ -375,223 +405,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 //		
 //	}
 //	
-//	
-//	/**
-//	 * 遅刻時間の計算　（遅刻時間帯の作成）
-//	 * 呼び出す時に勤務No分ループする前提で記載
-//	 * @return 日別実績の遅刻時間
-//	 */
-//	public LateTimeOfDaily calcLateTime(
-//			boolean clacification,/*遅刻早退の自動計算設定.遅刻　←　どこが持ってるか不明*/
-//			boolean deducttionClacification,/*控除設定　←　何を参照すればよいのか不明*/
-//			int workNo) {
-//		
-//		//勤務Noに一致する遅刻時間をListで取得する
-//		List<LateTimeSheet> lateTimeSheetList = getMatchWorkNoLateTimeSheetList(workNo).orElse(null);
-//		
-//		LateTimeSheet lateTimeSheet;
-//		//遅刻時間帯を１つの時間帯にする。
-//		if(lateTimeSheetList!=null) {
-//			//ここの処理で保科君が考えてくれた処理を組み込む
-//			lateTimeSheet = createBondLateTimeSheet(workNo,lateTimeSheetList);
-//		}
-//
-//		//遅刻計上時間の計算  ←　1つのメソッドとして出すこと
-//		int calcTime = lateTimeSheet.getForRecordTimeSheet().get().calcTotalTime();
-//		TimeWithCalculation lateTime = calcClacificationjudge(clacification, calcTime);
-//		
-//		//遅刻控除時間の計算 ←　1つのメソッドとして出すこと
-//		TimeWithCalculation lateDeductionTime;
-//		if(deducttionClacification) {//控除する場合
-//			int calcTime2 = lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime();
-//			lateDeductionTime =  calcClacificationjudge(clacification, calcTime2);
-//		}else {//控除しない場合
-//			lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-//		}
-//		
-//		//相殺時間の計算
-//		
-//		//計上用時間帯から相殺時間を控除する
-//		
-//		LateTimeOfDaily lateTimeOfDaily = new LateTimeOfDaily();
-//		return lateTimeOfDaily;
-//	}
-//	
-//	/***
-//	 * 勤務Noに一致する遅刻時間をListで取得する
-//	 * @return
-//	 */
-//	public Optional<List<LateTimeSheet>> getMatchWorkNoLateTimeSheetList(int workNo){
-//		//<<interface>>遅刻早退管理時間帯が持っているはずの遅刻時間帯<List>
-//		List<LateTimeSheet> oldlateTimeSheetList;
-//		//遅刻時間帯を１つの時間帯にする。
-//		List<LateTimeSheet> lateTimeSheetList = oldlateTimeSheetList.stream().filter(ts -> ts.getWorkNo()==workNo).collect(Collectors.toList());
-//		if(lateTimeSheetList==null) {
-//			return Optional.empty();
-//		}
-//		return Optional.of(lateTimeSheetList);
-//	}
-//	
-//	/**
-//	 * 遅刻時間帯を１つの時間帯にする。
-//	 * @param workNo
-//	 * @return
-//	 */
-//	public LateTimeSheet createBondLateTimeSheet(
-//			int workNo,
-//			List<LateTimeSheet> lateTimeSheetList) {
-//		//計上用時間帯のみのリストを作成
-//		List<TimeSpanForCalc> forRecordTimeSheetList = 
-//				lateTimeSheetList.stream().map(ts -> ts.getForRecordTimeSheet().get()).collect(Collectors.toList());
-//		//1つの時間帯に結合
-//		TimeSpanForCalc forRecordTimeSheet = bondTimeSpan(forRecordTimeSheetList);
-//		
-//		//控除用時間帯のみのリストを作成
-//		List<TimeSpanForCalc> forDeductionTimeSheetList = 
-//				lateTimeSheetList.stream().map(ts -> ts.getForDeducationTimeSheet().get()).collect(Collectors.toList());
-//		//1つの時間帯に結合
-//		TimeSpanForCalc forDeductionTimeSheet = bondTimeSpan(forRecordTimeSheetList);
-//		
-//		return LateTimeSheet.createAsLate(
-//				forRecordTimeSheet,
-//				forDeductionTimeSheet,
-//				workNo,
-//				Optional.empty(),
-//				Optional.empty());
-//	}
-//	
-	/**
-	 * 渡した時間帯(List)を1つの時間帯に結合する
-	 * @param list
-	 * @return
-	 */
-	public TimeSpanForCalc bondTimeSpan(List<TimeSpanForCalc> list) {
-		TimeWithDayAttr start = list.stream().map(ts -> ts.getStart()).min(Comparator.naturalOrder()).get();
-		TimeWithDayAttr end =  list.stream().map(ts -> ts.getEnd()).max(Comparator.naturalOrder()).get();
-		TimeSpanForCalc bondTimeSpan = new TimeSpanForCalc(start, end);
-		return bondTimeSpan;
-	}
-
-
-	/**
-	 * 指定された計算区分を基に計算付き時間帯を作成する
-	 * @return
-	 */
-	public TimeWithCalculation calcClacificationjudge(boolean clacification , int calcTime) {
-		if(clacification) {
-			return TimeWithCalculation.sameTime(new AttendanceTime(calcTime));
-		}else {
-			return TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(calcTime));
-		}
-	}
-	
-//	//遅刻早退時間帯（List）を1つの遅刻早退時間帯に結合する
-//	public LateLeaveEarlyTimeSheet connect(List<LateLeaveEarlyTimeSheet> timeSheetList){
-//		 return new LeaveEarlyTimeSheet(createMinStartMaxEndSpanForTimeSheet(timeSheetList),
-//		 								createMinStartMaxEndSpanForCalcRange(timeSheetList),
-//		 								extract(List<LeaveEarlyTimeSheet> timeSheetList),
-//		 								Optional.empty(),
-//		 								Optional.empty(),
-//		 								Optional.empty());
-//	}
-//	//遅刻早退時間帯（List）の時間帯（丸め付）を1つの時間帯（丸め付）にする
-//	public TimeSpanWithRounding createMinStartMaxEndSpanForTimeSheet(List<LateLeaveEarlyTimeSheet> timeSheetList){
-//		TimeWithDayAttr start = timeSheetList.stream().map(ts -> ts.getTimeSheet().getStart()).min(Comparator.naturalOrder()).get();
-//		TimeWithDayAttr end =  timeSheetList.stream().map(ts -> ts.getTimeSheet().getEnd()).max(Comparator.naturalOrder()).get();
-//		return new TimeSpanWithRounding(start, end, rounding);//丸めはどうする？
-//	}
-//	//遅刻早退時間帯（List）の計算範囲を1つの計算範囲にする
-//	public TimeSpanForCalc createMinStartMaxEndSpanForCalcRange(List<LateLeaveEarlyTimeSheet> timeSheetList){
-//		TimeWithDayAttr start = timeSheetList.stream().map(ts -> ts.getCalcrange().getStart()).min(Comparator.naturalOrder()).get();
-//		TimeWithDayAttr end =  timeSheetList.stream().map(ts -> ts.getCalcrange().getEnd()).max(Comparator.naturalOrder()).get();
-//		return new TimeSpanForCalc(start,end);
-//	}
-//	//遅刻早退時間帯（List）の控除項目の時間帯（List）を1つの控除項目の時間帯（List）にする
-//	public List<TimeSheetOfDeductionItem> extract(List<LateLeaveEarlyTimeSheet> timeSheetList){
-//		return timeSheetList.stream().map(tc -> tc.getDeductionTimeSheets()).collect(Collectors.toList());
-//	}
-	
-	
-//	/**
-//	 * 遅刻時間の休暇時間相殺
-//	 * @return
-//	 */
-//	public DeductionOffSetTime calcDeductionOffSetTime(
-//			TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime,//時間休暇使用残時間を取得する
-//			LateTimeSheet lateTimeSheet,
-//			DeductionAtr deductionAtr) {
-//		TimeSpanForCalc calcRange;
-//		//計算範囲の取得
-//		if(deductionAtr.isDeduction()) {//パラメータが控除の場合
-//			calcRange = lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getSpan();
-//		}else {//パラメータが計上の場合
-//			calcRange = lateTimeSheet.getForRecordTimeSheet().get().getTimeSheet().getSpan();
-//		}
-//		//遅刻時間を求める
-//		int lateRemainingTime = calcRange.lengthAsMinutes();
-//		//時間休暇相殺を利用して相殺した各時間を求める
-//		DeductionOffSetTime deductionOffSetTime = createDeductionOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime);
-//		
-//		return 	deductionOffSetTime;
-//	}
-	
-	
-	/**
-	 * 時間休暇相殺を利用して相殺した各時間を求める  （一時的に作成）
-	 * @return
-	 */
-	public DeductionOffSetTime createDeductionOffSetTime(int lateRemainingTime,TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime) {
-		
-		AttendanceTime timeAnnualLeaveUseTime = calcOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime.getTimeAnnualLeaveUseTime());
-		lateRemainingTime -= timeAnnualLeaveUseTime.valueAsMinutes();
-
-		AttendanceTime timeCompensatoryLeaveUseTime = new AttendanceTime(0);
-		AttendanceTime sixtyHourExcessHolidayUseTime = new AttendanceTime(0);
-		AttendanceTime timeSpecialHolidayUseTime = new AttendanceTime(0);
-		
-		if(lateRemainingTime > 0) {
-			timeCompensatoryLeaveUseTime = calcOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime.getTimeCompensatoryLeaveUseTime());
-			lateRemainingTime -= timeCompensatoryLeaveUseTime.valueAsMinutes();
-		}
-		
-		if(lateRemainingTime > 0) {
-			sixtyHourExcessHolidayUseTime = calcOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime.getSixtyHourExcessHolidayUseTime());
-			lateRemainingTime -= sixtyHourExcessHolidayUseTime.valueAsMinutes();
-		}
-		
-		if(lateRemainingTime > 0) {
-			timeSpecialHolidayUseTime = calcOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime.getTimeSpecialHolidayUseTime());
-			lateRemainingTime -= timeSpecialHolidayUseTime.valueAsMinutes();
-		}
-				
-		return new DeductionOffSetTime(
-				timeAnnualLeaveUseTime,
-				timeCompensatoryLeaveUseTime,
-				sixtyHourExcessHolidayUseTime,
-				timeSpecialHolidayUseTime);
-	}
-
-	
-	/**
-	 * 
-	 * @param lateRemainingTime 遅刻残数
-	 * @param timeVacationUseTime　時間休暇使用時間
-	 * @return
-	 */
-	public AttendanceTime calcOffSetTime(int lateRemainingTime,AttendanceTime timeVacationUseTime) {
-		int offSetTime;
-		//相殺する時間を計算（比較）する
-		if(timeVacationUseTime.lessThanOrEqualTo(lateRemainingTime)) {
-			offSetTime = timeVacationUseTime.valueAsMinutes();
-		}else {
-			offSetTime = lateRemainingTime;
-		}
-		return new AttendanceTime(offSetTime);
-	}
-
-		
-	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
-	
 	/**
 	 * 就業時間内時間帯に入っている加給時間の計算
 	 */
