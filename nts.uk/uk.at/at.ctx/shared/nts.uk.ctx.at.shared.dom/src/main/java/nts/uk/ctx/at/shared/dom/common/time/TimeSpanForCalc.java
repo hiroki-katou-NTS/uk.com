@@ -271,4 +271,6 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 		val end = sources.stream().map(s -> s.getEnd()).max(Comparator.naturalOrder()).get();
 		return Optional.of(new TimeSpanForCalc(start, end));
 	}
+
+	
 }

@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheetWORK;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverDayEnd.SplitHolidayWorkTime;
@@ -74,7 +74,7 @@ public class OutsideWorkTimeSheet {
 	 * @return
 	 */
 	public static OutsideWorkTimeSheet createOutsideWorkTimeSheet(List<OverTimeHourSet> overTimeHourSetList ,FixOffdayWorkTime fixOff, TimeLeavingWork attendanceLeave,int workNo,
-											OverDayEndCalcSet dayEndSet,WorkTimeCommonSet overDayEndSet ,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,
+											OverDayEndCalcSet dayEndSet,WorkTimeCommonSet overDayEndSet ,List<HolidayWorkFrameTimeSheetWORK> holidayTimeWorkItem,
 											WorkType beforeDay,WorkType toDay,WorkType afterDay,WorkTime workTime,WorkingSystem workingSystem,BreakdownTimeDay breakdownTimeDay,DailyTime dailyTime,
 											AutoCalculationOfOverTimeWork autoCalculationSet,StatutoryOverTimeWorkSet statutorySet,StatutoryPrioritySet prioritySet ) {
 		Optional<OverTimeSheet> overTimeWorkSheet;
@@ -114,7 +114,7 @@ public class OutsideWorkTimeSheet {
 		}
 		else {
 			/*休日出勤*/
-			List<HolidayWorkFrameTimeSheet> outsideWorkTimeSheet = HolidayWorkFrameTimeSheet.getHolidayWorkTimeOfDaily(
+			List<HolidayWorkFrameTimeSheetWORK> outsideWorkTimeSheet = HolidayWorkFrameTimeSheetWORK.getHolidayWorkTimeOfDaily(
 																								fixOff.getWorkTimezone(), 
 																								attendanceLeave,
 																								dayEndSet,

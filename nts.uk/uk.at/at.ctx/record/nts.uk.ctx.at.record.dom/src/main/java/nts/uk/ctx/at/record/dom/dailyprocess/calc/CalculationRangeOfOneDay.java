@@ -31,7 +31,7 @@ import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheetWORK;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
@@ -163,7 +163,7 @@ public class CalculationRangeOfOneDay {
 			,FixRestCalcMethod fixedCalc,WorkTimeDivision workTimeDivision, FlowRestCalcMethod fluidSet, BreakTimeManagement breakmanage
 			,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidPrefixBreakTimeSet,WorkTimeSet predetermineTimeSet,
 			  FixedWorkSetting fixedWorkSetting,WorkTimeCommonSet workTimeCommonSet,BonusPaySetting bonusPaySetting,List<OverTimeHourSet> overTimeHourSetList ,FixOffdayWorkTime fixOff,
-  			  OverDayEndCalcSet dayEndSet,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,WorkType beforeDay,WorkType toDay,WorkType afterDay,
+  			  OverDayEndCalcSet dayEndSet,List<HolidayWorkFrameTimeSheetWORK> holidayTimeWorkItem,WorkType beforeDay,WorkType toDay,WorkType afterDay,
   			  BreakdownTimeDay breakdownTimeDay,DailyTime dailyTime,AutoCalculationOfOverTimeWork autoCalculationSet,StatutoryOverTimeWorkSet statutorySet,StatutoryPrioritySet prioritySet
   			  ,WorkTime workTime) {
 		/*固定控除時間帯の作成*/
@@ -224,7 +224,7 @@ public class CalculationRangeOfOneDay {
 									  List<OverTimeHourSet> overTimeHourSetList ,
 									  FixOffdayWorkTime fixOff, 
 									  OverDayEndCalcSet dayEndSet,
-									  List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,
+									  List<HolidayWorkFrameTimeSheetWORK> holidayTimeWorkItem,
 									  WorkType beforeDay,
 									  WorkType toDay,
 									  WorkType afterDay,
@@ -339,7 +339,7 @@ public class CalculationRangeOfOneDay {
 										   BreakTimeManagement breakmanage,Optional<FluRestTime>  fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet,
 										   WorkTimeSet predetermineTimeSet,FixedWorkSetting fixedWorkSetting,WorkTimeCommonSet workTimeCommonSet,
 										   BonusPaySetting bonusPaySetting,List<OverTimeHourSet> overTimeHourSetList ,FixOffdayWorkTime fixOff,
-										   OverDayEndCalcSet dayEndSet,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,
+										   OverDayEndCalcSet dayEndSet,List<HolidayWorkFrameTimeSheetWORK> holidayTimeWorkItem,
 										   WorkType beforeDay,WorkType toDay,WorkType afterDay,BreakdownTimeDay breakdownTimeDay,DailyTime dailyTime,
 										   AutoCalculationOfOverTimeWork autoCalculationSet,StatutoryOverTimeWorkSet statutorySet,StatutoryPrioritySet prioritySet
 										   ,WorkTime workTime) {
