@@ -1,7 +1,7 @@
 package nts.uk.ctx.pereg.app.find.roles.auth.category;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
 
 @Value
 public class PersonInfoCategoryDetailDto {

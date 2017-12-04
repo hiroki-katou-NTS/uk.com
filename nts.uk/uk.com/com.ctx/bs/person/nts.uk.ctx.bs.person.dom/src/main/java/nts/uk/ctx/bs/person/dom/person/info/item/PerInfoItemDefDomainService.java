@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;

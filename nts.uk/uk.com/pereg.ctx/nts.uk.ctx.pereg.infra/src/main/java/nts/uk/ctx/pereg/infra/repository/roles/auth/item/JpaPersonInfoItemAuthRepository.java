@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.repository.role;
+package nts.uk.ctx.pereg.infra.repository.roles.auth.item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuth;
-import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
-import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemDetail;
-import nts.uk.ctx.bs.person.infra.entity.roles.auth.item.PpemtPersonItemAuth;
-import nts.uk.ctx.bs.person.infra.entity.roles.auth.item.PpemtPersonItemAuthPk;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemDetail;
+import nts.uk.ctx.pereg.infra.entity.roles.auth.item.PpemtPersonItemAuth;
+import nts.uk.ctx.pereg.infra.entity.roles.auth.item.PpemtPersonItemAuthPk;
 
 @Stateless
 public class JpaPersonInfoItemAuthRepository extends JpaRepository implements PersonInfoItemAuthRepository {

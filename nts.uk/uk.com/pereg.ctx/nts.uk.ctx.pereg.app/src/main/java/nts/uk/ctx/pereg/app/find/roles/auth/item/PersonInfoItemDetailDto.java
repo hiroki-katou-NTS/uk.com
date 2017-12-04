@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemDetail;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemDetail;
 
 @Value
 public class PersonInfoItemDetailDto {

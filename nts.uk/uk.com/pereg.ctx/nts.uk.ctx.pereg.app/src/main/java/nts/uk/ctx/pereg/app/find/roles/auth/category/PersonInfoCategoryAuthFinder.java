@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

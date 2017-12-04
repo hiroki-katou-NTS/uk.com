@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.repository.role;
+package nts.uk.ctx.pereg.infra.repository.roles.auth;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuth;
-import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
-import nts.uk.ctx.bs.person.infra.entity.roles.auth.PpemtPersonRoleAuth;
-import nts.uk.ctx.bs.person.infra.entity.roles.auth.PpemtPersonRoleAuthPk;
+import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoRoleAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoRoleAuthRepository;
+import nts.uk.ctx.pereg.infra.entity.roles.auth.PpemtPersonRoleAuth;
+import nts.uk.ctx.pereg.infra.entity.roles.auth.PpemtPersonRoleAuthPk;
 
 @Stateless
 public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements PersonInfoRoleAuthRepository {

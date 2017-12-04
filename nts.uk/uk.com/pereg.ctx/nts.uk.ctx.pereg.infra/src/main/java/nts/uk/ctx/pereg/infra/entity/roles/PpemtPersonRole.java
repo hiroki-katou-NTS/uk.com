@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.entity.roles;
+package nts.uk.ctx.pereg.infra.entity.roles;
 
 import java.io.Serializable;
 

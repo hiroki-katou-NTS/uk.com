@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.repository.role;
+package nts.uk.ctx.pereg.infra.repository.roles;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.role.PersonInforRole;
-import nts.uk.ctx.bs.person.dom.person.role.PersonInforRoleRepository;
-import nts.uk.ctx.bs.person.infra.entity.roles.PpemtPersonRole;
-import nts.uk.ctx.bs.person.infra.entity.roles.PpemtPersonRolePk;
+import nts.uk.ctx.pereg.dom.roles.PersonInforRole;
+import nts.uk.ctx.pereg.dom.roles.PersonInforRoleRepository;
+import nts.uk.ctx.pereg.infra.entity.roles.PpemtPersonRole;
+import nts.uk.ctx.pereg.infra.entity.roles.PpemtPersonRolePk;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

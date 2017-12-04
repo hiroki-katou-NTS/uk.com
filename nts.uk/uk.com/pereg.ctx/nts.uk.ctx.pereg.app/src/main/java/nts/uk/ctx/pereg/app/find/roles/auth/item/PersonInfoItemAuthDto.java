@@ -1,7 +1,7 @@
 package nts.uk.ctx.pereg.app.find.roles.auth.item;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 
 @Value
 public class PersonInfoItemAuthDto {

@@ -5,7 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoPermissionType;
+import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 
 @Getter
 public class PersonInfoCategoryAuth extends AggregateRoot {

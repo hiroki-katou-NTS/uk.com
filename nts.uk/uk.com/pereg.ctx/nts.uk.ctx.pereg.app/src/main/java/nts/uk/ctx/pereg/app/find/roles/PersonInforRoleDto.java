@@ -1,6 +1,6 @@
 package nts.uk.ctx.pereg.app.find.roles;
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.role.PersonInforRole;
+import nts.uk.ctx.pereg.dom.roles.PersonInforRole;
 /**
  * The Class PersonInforRoleDto
  * @author lanlt

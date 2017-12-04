@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.entity.roles.auth;
+package nts.uk.ctx.pereg.infra.entity.roles;
 
 import java.io.Serializable;
 
@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class PpemtPersonRoleAuthPk implements Serializable{
+public class PpemtPersonRolePk implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Basic(optional = false)
     @Column(name = "ROLE_ID")
 	public String roleId;
+
 }

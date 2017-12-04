@@ -3,7 +3,7 @@ package nts.uk.ctx.pereg.dom.roles.auth.item;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoAuthType;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 
 @Getter
 public class PersonInfoItemAuth extends AggregateRoot {

@@ -14,9 +14,9 @@ import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySetting;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

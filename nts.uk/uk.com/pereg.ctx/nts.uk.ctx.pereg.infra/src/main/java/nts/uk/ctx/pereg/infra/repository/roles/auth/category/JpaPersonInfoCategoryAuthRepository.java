@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.repository.role;
+package nts.uk.ctx.pereg.infra.repository.roles.auth.category;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,11 +7,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
-import nts.uk.ctx.bs.person.infra.entity.roles.auth.category.PpemtPersonCategoryAuth;
-import nts.uk.ctx.bs.person.infra.entity.roles.auth.category.PpemtPersonCategoryAuthPk;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
+import nts.uk.ctx.pereg.infra.entity.roles.auth.category.PpemtPersonCategoryAuth;
+import nts.uk.ctx.pereg.infra.entity.roles.auth.category.PpemtPersonCategoryAuthPk;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

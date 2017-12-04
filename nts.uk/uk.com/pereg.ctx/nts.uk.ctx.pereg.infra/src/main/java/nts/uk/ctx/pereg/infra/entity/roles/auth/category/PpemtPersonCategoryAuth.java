@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.infra.entity.roles.auth.category;
+package nts.uk.ctx.pereg.infra.entity.roles.auth.category;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
