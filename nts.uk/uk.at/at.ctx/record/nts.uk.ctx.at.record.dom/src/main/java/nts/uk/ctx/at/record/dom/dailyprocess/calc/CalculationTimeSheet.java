@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
@@ -469,7 +470,7 @@ public abstract class CalculationTimeSheet {
 	}
 	
 //	/**
-//	 * 計算時間帯Listを結合し、計算時間帯を返す
+//	 * 計算時間帯Listを結合し、計算時間帯を返す         2017/11/29 高須　多分不要
 //	 * @author ken_takasu
 //	 * @param source
 //	 * @return
@@ -482,7 +483,7 @@ public abstract class CalculationTimeSheet {
 //		val calcRanges = source.stream().map(s -> s.getCalcrange()).collect(Collectors.toList());
 //		val joinedCalcRange = TimeSpanForCalc.join(calcRanges);
 //		//控除時間帯Listを1つに結合
-//		val deductionTimeList = collectDeductionTimeSheet();
+//		val deductionTimeList =  source.stream().map(s -> s.getDeductionTimeSheet().collectDeductionTimeSheet()).collect(Collectors.toList());
 //		//加給時間帯Listを1つに結合
 //		val bonusPayTimesheetList = joinedBonusPayTimeSheet();
 //		//深夜時間帯Listを1つに結合

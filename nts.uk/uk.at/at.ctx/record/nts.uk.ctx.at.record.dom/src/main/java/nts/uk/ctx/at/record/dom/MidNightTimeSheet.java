@@ -72,7 +72,7 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 	
 	
 	/**
-	 * 深夜時間帯Listを結合し、深夜時間帯を返す
+	 * 深夜時間帯Listを結合し、深夜時間帯を返す　　　　　2017/11/29　高須　LateLeaveEarlyTimeSheetクラスのメソッドjoinedLateLeaveEarlyTimeSheetを参考に修正が必要
 	 * @author ken_takasu
 	 * @param source
 	 * @return

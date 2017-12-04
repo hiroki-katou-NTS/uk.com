@@ -199,7 +199,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isBreak()){
 			if(!fluidFixedAtr.isFluidWork()) {
 				TimeSpanForCalc duplicationSpan = compareTimeSheet.getCalcrange().getDuplicatedWith(this.getCalcrange()).get();
-				map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+				map.add(compareTimeSheet);
 				this.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty())
 																		, duplicationSpan
 																		, Collections.emptyList()
@@ -222,6 +222,38 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				}
 			}
 			map.add(this.replaceTimeSpan(this.calcrange.getNotDuplicationWith(compareTimeSheet.calcrange).get()));
+			map.add(compareTimeSheet);
+			return map;
+		}
+		/*前半育児と後半休憩*/     //高須作成
+		else if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isBreak()) {
+			TimeSpanForCalc duplicationSpan = compareTimeSheet.getCalcrange().getDuplicatedWith(this.getCalcrange()).get();
+			this.getDeductionTimeSheet().add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty())
+					, duplicationSpan
+					, Collections.emptyList()
+					, Collections.emptyList()
+					, Collections.emptyList()
+					, Optional.empty()
+					, this.getGoOutReason()
+					, this.getBreakAtr()
+					, this.getDeductionAtr()));
+			map.add(this);
+			map.add(compareTimeSheet);
+			return map;
+		}
+		/*前半休憩と後半育児*/    //高須作成
+		else if(this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isChildCare()) {
+			TimeSpanForCalc duplicationSpan = compareTimeSheet.getCalcrange().getDuplicatedWith(this.getCalcrange()).get();
+			compareTimeSheet.getDeductionTimeSheet().add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty())
+					, duplicationSpan
+					, Collections.emptyList()
+					, Collections.emptyList()
+					, Collections.emptyList()
+					, Optional.empty()
+					, this.getGoOutReason()
+					, this.getBreakAtr()
+					, this.getDeductionAtr()));
+			map.add(this);
 			map.add(compareTimeSheet);
 			return map;
 		}

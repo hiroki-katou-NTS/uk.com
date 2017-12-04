@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
-import lombok.Getter;
+//import lombok.Getter;
+import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -9,7 +10,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * 日別実績の勤務予定時間
  *
  */
-@Getter
+@Value
+//@Getter
 public class WorkScheduleTimeOfDaily {
 	
 	//勤務予定時間
@@ -20,5 +22,5 @@ public class WorkScheduleTimeOfDaily {
 	
 	//実績所定労働時間
 	private AttendanceTime recordPrescribedLaborTime;
-
+	
 }

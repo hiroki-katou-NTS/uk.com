@@ -11,6 +11,7 @@ import lombok.Value;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
@@ -56,7 +57,7 @@ public class OverDayEnd {
 		public List<OverTimeFrameTimeSheet> dedList;
 		
 		@Getter
-		public List<HolidayWorkFrameTimeSheet> holList; 
+		public List<HolidayWorkFrameTimeSheetWORK> holList; 
 		/**
 		 * メインの流れを司るメソッド
 		 * @return 時間帯
@@ -117,7 +118,7 @@ public class OverDayEnd {
 																		  Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 																		  Finally.of(new AttendanceTime(0)));
 				/*開始時間が早い方の時間帯を休日出勤時間帯へ変更*/
-				HolidayWorkFrameTimeSheet holidaybeforeitem = new HolidayWorkFrameTimeSheet(
+				HolidayWorkFrameTimeSheetWORK holidaybeforeitem = new HolidayWorkFrameTimeSheetWORK(
 																beforeitem.getTimeSheet(),
 																beforeitem.calcrange,
 																beforeitem.getDeductionTimeSheet(),
@@ -153,7 +154,7 @@ public class OverDayEnd {
 		 * @param timeSpan 時間帯
 		 * @return　休出時間帯
 		 */
-		private HolidayWorkFrameTimeSheet convertHolidayWorkTimeSheet(OverDayEndSetOfWeekDayHoliday weekDaySet,TimeSpanForCalc timeSpan,OverTimeFrameTimeSheet overTimeSheet
+		private HolidayWorkFrameTimeSheetWORK convertHolidayWorkTimeSheet(OverDayEndSetOfWeekDayHoliday weekDaySet,TimeSpanForCalc timeSpan,OverTimeFrameTimeSheet overTimeSheet
 																	  ,WorkType notTargetDay) {
 			HolidayWorkFrameNo no = weekDaySet.getHolidayWorkNo(notTargetDay.getWorkTypeSetList().get(0).getHolidayAtr())/*0時跨ぎ計算設定に対して休日区分を投げ、休出NOをここで取得する*/;
 			TimeWithCalculation time = TimeWithCalculation.sameTime(new AttendanceTime(0));
@@ -162,7 +163,7 @@ public class OverDayEnd {
 					  							Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 					  							Finally.of(new AttendanceTime(0)));
 			//return new HolidayWorkFrameTimeSheet(timeSpan , HolidayWorkFrameTime(no,time,time,new AttendanceTime(0)),false);
-			return new HolidayWorkFrameTimeSheet(
+			return new HolidayWorkFrameTimeSheetWORK(
 					overTimeSheet.getTimeSheet(),
 					overTimeSheet.getCalcrange(),
 					overTimeSheet.getDeductionTimeSheet(),
@@ -185,15 +186,15 @@ public class OverDayEnd {
 		@Getter
 		private List<OverTimeFrameTimeSheet> dedList;
 		@Getter
-		private List<HolidayWorkFrameTimeSheet> holList; 
+		private List<HolidayWorkFrameTimeSheetWORK> holList; 
 		/**:
 		 * メインの流れを司るメソッド
 		 * @return 時間帯
 		 */
-		public SplitHolidayWorkTime(OverDayEndCalcSet dayEndSet,WorkTimeCommonSet overDayEndSet ,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItems,
+		public SplitHolidayWorkTime(OverDayEndCalcSet dayEndSet,WorkTimeCommonSet overDayEndSet ,List<HolidayWorkFrameTimeSheetWORK> holidayTimeWorkItems,
 														WorkType beforeDay,WorkType toDay,WorkType afterDay) {
 			if(judge(dayEndSet,overDayEndSet)) {
-				for(HolidayWorkFrameTimeSheet holidayTimeWorkItem : holidayTimeWorkItems) {
+				for(HolidayWorkFrameTimeSheetWORK holidayTimeWorkItem : holidayTimeWorkItems) {
 					if(isSplit(holidayTimeWorkItem.calcrange,0,beforeDay.getDailyWork().isHolidayWork() , beforeDay.getDailyWork(),toDay.getDailyWork(),dayEndSet)) {
 						daySplit(new TimeWithDayAttr(0),
 								dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayAttendance().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
@@ -229,7 +230,7 @@ public class OverDayEnd {
 		 * @param holidayFrameSet 休日枠の設定
 		 * @param holidayWorkTimeSheet 休出時間帯
 		 */
-		private void daySplit(TimeWithDayAttr baseTime,OverDayEndSetOfHolidayAttendance holidayFrameSet,HolidayWorkFrameTimeSheet holidayWorkTimeSheet
+		private void daySplit(TimeWithDayAttr baseTime,OverDayEndSetOfHolidayAttendance holidayFrameSet,HolidayWorkFrameTimeSheetWORK holidayWorkTimeSheet
 							  ,WorkType toDay,WorkType notToDay,OverDayEndSetOfHolidayHoliday holidayholidayFrameSet) {
 //			//baseTimeを含んでいない
 			if(!holidayWorkTimeSheet.calcrange.contains(baseTime)) {
@@ -287,7 +288,7 @@ public class OverDayEnd {
 		 * @param holidayWorkTimeSheet
 		 * @return　残業時間帯
 		 */
-		public OverTimeFrameTimeSheet convertOverTimeWork(HolidayWorkFrameTimeSheet holidayWorkTimeSheet,OverTimeFrameNo frameNo) {
+		public OverTimeFrameTimeSheet convertOverTimeWork(HolidayWorkFrameTimeSheetWORK holidayWorkTimeSheet,OverTimeFrameNo frameNo) {
 			OverTimeFrameTime frameTime = new OverTimeFrameTime(frameNo,
 																	TimeWithCalculation.sameTime(new AttendanceTime(0)),
 																	TimeWithCalculation.sameTime(new AttendanceTime(0)),
@@ -310,14 +311,14 @@ public class OverDayEnd {
 		 * @param holidayWorkTimeSheet
 		 * @return　休出時間帯
 		 */
-		public HolidayWorkFrameTimeSheet convertDifferenceHolidayWork(HolidayAtr holidayAtr, HolidayWorkFrameTimeSheet holidayWorkTimeSheet,OverDayEndSetOfHolidayHoliday endSet) {//, /*休日出勤の0時跨ぎ設定*/) {
+		public HolidayWorkFrameTimeSheetWORK convertDifferenceHolidayWork(HolidayAtr holidayAtr, HolidayWorkFrameTimeSheetWORK holidayWorkTimeSheet,OverDayEndSetOfHolidayHoliday endSet) {//, /*休日出勤の0時跨ぎ設定*/) {
 			
 			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(endSet.getFrameNoByHolidayAtr(holidayAtr),
 					  Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 					  Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 					  Finally.of(new AttendanceTime(0)));
 			
-			return new HolidayWorkFrameTimeSheet(holidayWorkTimeSheet.getTimeSheet(),holidayWorkTimeSheet.calcrange,holidayWorkTimeSheet.getDeductionTimeSheet(),
+			return new HolidayWorkFrameTimeSheetWORK(holidayWorkTimeSheet.getTimeSheet(),holidayWorkTimeSheet.calcrange,holidayWorkTimeSheet.getDeductionTimeSheet(),
 												 holidayWorkTimeSheet.getBonusPayTimeSheet(),holidayWorkTimeSheet.getSpecBonusPayTimesheet(),
 												 holidayWorkTimeSheet.getMidNightTimeSheet(),frameTime,false,new WorkTimeNo(0));
 		}

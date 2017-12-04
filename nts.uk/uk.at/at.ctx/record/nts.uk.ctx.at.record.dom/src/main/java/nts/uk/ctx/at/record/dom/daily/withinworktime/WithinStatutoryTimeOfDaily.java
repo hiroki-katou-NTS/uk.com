@@ -40,4 +40,29 @@ public class WithinStatutoryTimeOfDaily {
 		//AttendanceTime workTime =  oneDay.getWithinWorkingTimeSheet().calcWorkTimeForStatutory(calcActualTime, dedTimeSheet);
 		return new WithinStatutoryTimeOfDaily(workTime);
 	}
+	
+	/**
+	 * 指定した引数で日別実績の法定内時間を作成する
+	 * @author ken_takasu
+	 * @param workTime
+	 * @param workTimeIncludeVacationTime
+	 * @param withinPrescribedPremiumTime
+	 * @param withinStatutoryMidNightTime
+	 * @param vacationAddTime
+	 * @return
+	 */
+	public static WithinStatutoryTimeOfDaily createWithinStatutoryTimeOfDaily(AttendanceTime workTime,
+																	   AttendanceTime workTimeIncludeVacationTime,
+																	   AttendanceTime withinPrescribedPremiumTime,
+																	   WithinStatutoryMidNightTime withinStatutoryMidNightTime,
+																	   AttendanceTime vacationAddTime) {
+		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(workTime);
+		withinStatutoryTimeOfDaily.workTimeIncludeVacationTime = workTimeIncludeVacationTime;
+		withinStatutoryTimeOfDaily.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
+		withinStatutoryTimeOfDaily.withinStatutoryMidNightTime = withinStatutoryMidNightTime;
+		withinStatutoryTimeOfDaily.vacationAddTime = vacationAddTime;
+		return withinStatutoryTimeOfDaily;
+	}
+	
+	
 }
