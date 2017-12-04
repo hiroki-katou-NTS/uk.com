@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;

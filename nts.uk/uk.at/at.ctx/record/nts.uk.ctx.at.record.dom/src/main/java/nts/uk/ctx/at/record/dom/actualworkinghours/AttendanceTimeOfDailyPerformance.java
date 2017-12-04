@@ -35,6 +35,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	//日別実績の勤怠時間
 	private AttendanceTimeOfDailyPerformance attendanceTimeOfDaily;
 	
+//	public AttendanceTimeOfDailyPerformance createFromJavaType() {
+//		
+//	}
+	
 	/**
 	 * Constructor
 	 * @param actualWorkingTimeOfDaily

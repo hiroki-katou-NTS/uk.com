@@ -321,6 +321,7 @@ public class CalculateDailyRecord {
 //		boolean justEarlyLeave  = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
 //		/*日別実績の出退勤時刻セット*/
 		//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
+		//一時的に日別実績の出退勤クラスを作成
 		WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(480),new TimeWithDayAttr(480), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
 		WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(960),new TimeWithDayAttr(960), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
 		TimeActualStamp stamp = new TimeActualStamp(attendance,leaving,1);
@@ -343,6 +344,7 @@ public class CalculateDailyRecord {
 	 * @return 日別計算用の個人情報
 	 */
 	private DailyCalculationPersonalInformation getPersonInfomation(String companyId,String placeId,String employmentCd,String employeeId,GeneralDate targetDate) {
+		//法定労働時間の取得
 		Optional<EmploymentContractHistory> employmentContractHistory = this.employmentContractHistoryAdopter.findByEmployeeIdAndBaseDate(employeeId, targetDate);
 		if(employmentContractHistory.isPresent()) {
 			throw new RuntimeException("Can't get WorkingSystem");

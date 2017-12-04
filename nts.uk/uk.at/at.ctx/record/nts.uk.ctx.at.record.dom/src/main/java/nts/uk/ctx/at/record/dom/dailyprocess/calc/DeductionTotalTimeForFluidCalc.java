@@ -41,73 +41,76 @@ public class DeductionTotalTimeForFluidCalc {
 	private AttendanceTime goOutTimeOffsetRemainingTime;
 	
 	
-//	/**
-//	 * 流動休憩時間帯の作成
-//	 * @param fluRestTimeSetting　流動休憩設定
-//	 * @param getGoOutStartClock 外出取得開始時刻
-//	 * @param roopNo ループ回数
-//	 * @param fluidWorkSetting 流動勤務設定
-//	 * @param deductionTimeSheet 控除時間帯(親ロジックで取得した控除時間帯)
-//	 * @return
-//	 */
-//	public TimeSheetOfDeductionItem createDeductionFluidRestTime(
-//			FluRestTimeSetting fluRestTimeSetting,
-//			AttendanceTime getGoOutStartClock,/*intで渡せばよくね？*/
-//			int roopNo,
-//			FluidWorkSetting fluidWorkSetting,
-//			DeductionTimeSheet deductionTimeSheet,
-//			RelationSetOfGoOutAndFluBreakTime relation,
-//			FlowRestClockCalcMethod clockCalcMethod,
-//			TimeLeavingWork time,
-//			CalcMethodIfLeaveWorkDuringBreakTime calcMethod) {
-//
-//		// 流動休憩開始までの間にある外出分、休憩をズラす
-//		//外出のみの控除時間帯リストを作成する
-//		List<TimeSheetOfDeductionItem> goOutDeductionTimelist = 
-//				this.forDeductionTimeZoneList.stream().filter(ts -> ts.getGoOutReason().isPresent()).collect(Collectors.toList());
-//		if(restTimeSheetList.size()>0) {
-//			goOutDeductionTimelist.addAll(restTimeSheetList);
-//			goOutDeductionTimelist.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart())).collect(Collectors.toList());
-//		}
-//		
-//		collectDeductionTotalTime(
-//				goOutDeductionTimelist,
-//				getGoOutStartClock,
-//				fluidWorkSetting,
-//				roopNo,
-//				relation);
-//		//休憩時間帯クラスを作成  
-//		TimeSheetOfDeductionItem breakTimeSheet = ;
-//		//休憩と外出の重複処理
-//		duplicationProcessingOfFluidBreakTime(breakTimeSheet,goOutDeductionTimelist);
-//		
-//		//流動休憩設定を取得する
-//		if(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().isConbineStamp()) {//併用する場合 
-//			//外出と休憩の合計時間相殺処理
-//			subtractionGoOutTimeOffsetRemainingTime(
-//					breakTimeSheet,
-//					this.goOutTimeOffsetRemainingTime,
-//					clockCalcMethod);		
-//		}else {//併用しない場合
-//	
-//		}
-//		//退勤が含まれている場合の補正
-//		//deductionTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, oneDayRange);
-//		Optional<TimeSpanForCalc> newTimeSpan = breakTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, breakTimeSheet.calcrange);
-//		if(newTimeSpan.isPresent()) {
-//			breakTimeSheet = TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanWithRounding(newTimeSpan.get().getStart(), newTimeSpan.get().getEnd(), breakTimeSheet.timeSheet.getRounding()),
-//																							newTimeSpan.get(),
-//																							deductionTimeSheets,
-//																							bonusPayTimeSheet,
-//																							specifiedBonusPayTimeSheet,
-//																							midNighttimeSheet,
-//																							breakTimeSheet.getGoOutReason(),
-//																							breakTimeSheet.getBreakAtr(),
-//																							breakTimeSheet.getDeductionAtr());
-//		}
-//		//休憩時間帯を返す
-//		return breakTimeSheet;		
-//	}
+	/**
+	 * 流動休憩時間帯の作成
+	 * @param fluRestTimeSetting　流動休憩設定
+	 * @param getGoOutStartClock 外出取得開始時刻
+	 * @param roopNo ループ回数
+	 * @param fluidWorkSetting 流動勤務設定
+	 * @param deductionTimeSheet 控除時間帯(親ロジックで取得した控除時間帯)
+	 * @return
+	 */
+	public TimeSheetOfDeductionItem createDeductionFluidRestTime(
+			FluRestTimeSetting fluRestTimeSetting,
+			AttendanceTime getGoOutStartClock,/*intで渡せばよくね？*/
+			int roopNo,
+			FluidWorkSetting fluidWorkSetting,
+			DeductionTimeSheet deductionTimeSheet,
+			RelationSetOfGoOutAndFluBreakTime relation,
+			FlowRestClockCalcMethod clockCalcMethod,
+			TimeLeavingWork time,
+			CalcMethodIfLeaveWorkDuringBreakTime calcMethod) {
+
+		// 流動休憩開始までの間にある外出分、休憩をズラす
+		//外出のみの控除時間帯リストを作成する
+		List<TimeSheetOfDeductionItem> goOutDeductionTimelist = 
+				deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(ts -> ts.getGoOutReason().isPresent()).collect(Collectors.toList());
+		List<TimeSheetOfDeductionItem> restTimeSheetList = this.deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(ts -> ts);
+		//勤務間かつ控除種別 = 休憩　を入れる
+		if(restTimeSheetList.size()>0) {
+			goOutDeductionTimelist.addAll(restTimeSheetList);
+			goOutDeductionTimelist.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart())).collect(Collectors.toList());
+		}
+		
+		collectDeductionTotalTime(
+				goOutDeductionTimelist,
+				getGoOutStartClock,
+				fluidWorkSetting,
+				roopNo,
+				relation);
+		//休憩時間帯クラスを作成  
+		TimeSheetOfDeductionItem breakTimeSheet = ;
+		//休憩と外出の重複処理
+		deductionTimeSheet  = duplicationProcessingOfFluidBreakTime(breakTimeSheet,goOutDeductionTimelist);
+		
+		//流動休憩設定を取得する
+		if(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().isConbineStamp()) {//併用する場合 
+			//外出と休憩の合計時間相殺処理
+			subtractionGoOutTimeOffsetRemainingTime(
+					breakTimeSheet,
+					goOutDeductionTimelist,
+					this.goOutTimeOffsetRemainingTime,
+					clockCalcMethod);		
+		}else {//併用しない場合
+	
+		}
+		//退勤が含まれている場合の補正
+		//deductionTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, oneDayRange);
+		Optional<TimeSpanForCalc> newTimeSpan = breakTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, breakTimeSheet.calcrange);
+		if(newTimeSpan.isPresent()) {
+			breakTimeSheet = TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanWithRounding(newTimeSpan.get().getStart(), newTimeSpan.get().getEnd(), breakTimeSheet.timeSheet.getRounding()),
+																							newTimeSpan.get(),
+																							deductionTimeSheets,
+																							bonusPayTimeSheet,
+																							specifiedBonusPayTimeSheet,
+																							midNighttimeSheet,
+																							breakTimeSheet.getGoOutReason(),
+																							breakTimeSheet.getBreakAtr(),
+																							breakTimeSheet.getDeductionAtr());
+		}
+		//休憩時間帯を返す
+		return breakTimeSheet;		
+	}
 	
 	/**
 	 * 流動休憩開始までの間にある外出分、休憩をズラす (この処理は合計時間をズラすだけ)
@@ -176,11 +179,7 @@ public class DeductionTotalTimeForFluidCalc {
 			}
 		}
 		//休憩時間を取得
-		//AttendanceTime restTime = fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getMatchElapsedTime(elpsedTime).getFluidRestTime();
-		//経過時間を取得
-		AttendanceTime fluidElapsedTime = fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getMatchElapsedTime(elpsedTime).getFluidRestTime();
-		//休憩時間を控除合計時間．合計時間に加算
-		this.totalTime.addMinutes(fluidElapsedTime.valueAsMinutes());		
+		//AttendanceTime restTime = fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getMatchElapsedTime(elpsedTime).getFluidRestTime();		
 	}
 	
 	
@@ -217,16 +216,23 @@ public class DeductionTotalTimeForFluidCalc {
 											boolean useFixedRestTime,
 											FluidFixedAtr fluidFixedAtr,	
 											WorkTimeDailyAtr workTimeDailyAtr){
-		//休憩時間帯と重複している控除時間帯を取得
-		List<TimeSheetOfDeductionItem> duplicateList = deductionTimeList.stream().filter(ts -> timeSheetOfDeductionItem.getTimeSheet().getSpan().checkDuplication(ts.calcrange) != TimeSpanDuplication.NOT_DUPLICATE ).collect(Collectors.toList());
-		while(true) {
+		boolean loopEnd = false;
+		while(!loopEnd) {
 			//控除時間帯分ループ
-			for(int itemNumber = 0 ; itemNumber < duplicateList.size();itemNumber++) { //TimeSheetOfDeductionItem goOutTime : duplicateList) {
-				timeSheetOfDeductionItem.DeplicateBreakGoOut(compareTimeSheet,setMethod,clockManage
-															,useFixedRestTime,fluidFixedAtr,workTimeDailyAtr);
+			for(int itemNumber = 0 ; itemNumber < deductionTimeList.size();itemNumber++) { //TimeSheetOfDeductionItem goOutTime : duplicateList) {
+				if(timeSheetOfDeductionItem.getTimeSheet().getSpan().checkDuplication(deductionTimeList.get(itemNumber).calcrange) != TimeSpanDuplication.NOT_DUPLICATE) {
+					List<TimeSheetOfDeductionItem> splitList = timeSheetOfDeductionItem.DeplicateBreakGoOut(compareTimeSheet,setMethod,clockManage,useFixedRestTime,fluidFixedAtr,workTimeDailyAtr);
+					if(splitList.size() > 0) {
+						deductionTimeList.remove(itemNumber);
+						deductionTimeList.addAll(splitList);
+						deductionTimeList.sort((first,second)-> first.calcrange.getStart().compareTo(second.calcrange.getStart())); 
+					}
+				}
+				if(itemNumber == deductionTimeList.size() - 1)
+					break;
 			}
 		}
-	//	return duplicateList;
+		return deductionTimeList;
 	}
 	
 
@@ -234,10 +240,12 @@ public class DeductionTotalTimeForFluidCalc {
 	 *  外出と休憩の相殺処理　　（外出相殺残時間）
 	 *  外出相殺残時間がメンバーになっているため、ここはvoidでOK
 	 * @param ｔimeSheetOfDeductionItem
+	 * @param 外出時間帯たち
 	 * @param restTime 親ロジックで作成した休憩時間
 	 */
 	public void subtractionGoOutTimeOffsetRemainingTime(
 			TimeSheetOfDeductionItem ｔimeSheetOfDeductionItem,
+			List<TimeSheetOfDeductionItem> goOutDeductionTimelist,
 			AttendanceTime restTime,
 			FlowRestClockCalcMethod clockCalcMethod) {
 		//休憩時間から相殺できる時間を計算　　　(ValueObject相殺時間の作成)
@@ -258,9 +266,9 @@ public class DeductionTotalTimeForFluidCalc {
 			if(afterShrinkingTimeSheet.isPresent())
 				this.goOutTimeOffsetRemainingTime.minusHours(afterShrinkingTimeSheet.get().lengthAsMinutes());
 		}
-		//外出と休憩の相殺処理設定を取得
+		//外出と休憩の相殺処理設定を取得(休憩として扱う外出を休憩時間として計算する)
 		if(clockCalcMethod.isRestTimeToCalculate()) {
-			
+			OffsetTimeToBreak(goOutDeductionTimelist,offsetTime);
 		}
 	}
 	

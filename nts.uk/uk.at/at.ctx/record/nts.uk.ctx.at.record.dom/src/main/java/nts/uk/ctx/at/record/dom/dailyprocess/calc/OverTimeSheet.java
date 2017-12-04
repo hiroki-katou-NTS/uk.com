@@ -13,7 +13,7 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;

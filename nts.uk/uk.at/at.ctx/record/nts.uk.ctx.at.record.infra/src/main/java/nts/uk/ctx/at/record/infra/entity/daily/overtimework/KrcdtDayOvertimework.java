@@ -5,11 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -281,7 +285,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 		
 		return entity;
 	}
-	
+
 //	public OverTimeWork toDomain() {
 //		return OverTimeWork.createFromJavaType(
 //				this.krcdtDayOvertimeworkPK.employeeID,

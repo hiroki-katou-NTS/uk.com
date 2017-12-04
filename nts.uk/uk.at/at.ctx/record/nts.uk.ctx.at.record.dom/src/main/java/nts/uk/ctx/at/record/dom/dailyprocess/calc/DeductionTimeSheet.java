@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -137,20 +138,6 @@ public class DeductionTimeSheet {
 		sheetList.addAll(breakManagement.getBreakTimeSheet(workTimeDivision, fixedCalc, noStampSet, fluidSet));
 		/*外出時間帯取得*/
 		sheetList.addAll(dailyGoOutSheet.removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet));
-		
-//								.forEach(tc ->{
-//									sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(withRounding,
-//																												timeSpan,
-//																												deductionTimeSheets,
-//																												bonusPayTimeSheet,
-//																												specifiedBonusPayTimeSheet,
-//																												midNighttimeSheet,
-//																												Finally.of(tc.getGoOutReason()),
-//																												Optional.empty(),
-//																												DeductionClassification.GO_OUT,
-//											.createBreakTimeSheetAsFixed(new TimeSpanForCalc(tc.getGoOut().getEngrave().getTimesOfDay(),tc.getComeBack().getEngrave().getTimesOfDay())
-																									
-//								});
 		/*育児時間帯を取得*/
 		
 		
@@ -369,94 +356,114 @@ public class DeductionTimeSheet {
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 	
-//	/**
-//	 * 控除時間帯の仮確定(流動用) 
-//	 */
-//	public void provisionalDecisionOfDeductionTimeSheet(FluidWorkSetting fluidWorkSetting) {
-//		//固定休憩か流動休憩か確認する
-//		if(fluidWorkSetting.getWeekdayWorkTime().getRestTime().getUseFixedRestTime()) {//固定休憩の場合
-//			switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidPrefixBreakTimeSet().getCalcMethod()) {
-//				//マスタを参照する
-//				case ReferToMaster:
-//				this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet);
-//				//予定を参照する
-//				case ReferToSchedule:
-//				this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet);
-//				//参照せずに打刻する
-//				case StampWithoutReference:
-//				this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet);
-//			}
-//		}else{//流動休憩の場合
-//			switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().getCalcMethod()) {
-//				//マスタを参照する
-//				case ReferToMaster:
-//				
-//				//マスタと打刻を併用する	
-//				case ConbineMasterWithStamp:
-//				
-//				//参照せずに打刻する	
-//				//case StampWithoutReference:
-//			
-//			}
-//		}
-//		
-//	}
-//	
+	/**
+	 * 控除時間帯の仮確定(流動用) 
+	 */
+	public List<TimeSheetOfDeductionItem> provisionalDecisionOfDeductionTimeSheet(FluidWorkSetting fluidWorkSetting,DeductionClassification deductionClassification,
+			WithinWorkTimeFrame withinWorkTimeFrame,
+			CalculationRangeOfOneDay oneDayRange,
+			CalcSetOfDailyPerformance calcSet,
+			TimeLeavingWork timeLeavingWork,
+			FlowRestClockCalcMethod flowRestCalcMethod,
+			CalcMethodIfLeaveWorkDuringBreakTime duringBreakTime,
+			AcquisitionConditionsAtr acqAtr,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,
+			OutingTimeOfDailyPerformance dailyGoOutSheet,BreakSetOfCommon CommonSet, TimeLeavingOfDailyPerformance attendanceLeaveWork
+								,FixRestCalcMethod fixedCalc,WorkTimeDivision workTimeDivision,FluidPrefixBreakTimeSet noStampSet, FlowRestCalcMethod fluidSet, BreakTimeManagement breakmanage
+								, WorkTimeMethodSet workTimeMethodSet,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet) {
+		List<TimeSheetOfDeductionItem> deductionList = new ArrayList();
+		//固定休憩か流動休憩か確認する
+		if(fluidWorkSetting.getWeekdayWorkTime().getRestTime().getUseFixedRestTime()) {//固定休憩の場合
+			switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidPrefixBreakTimeSet().getCalcMethod()) {
+				//マスタを参照する
+				case ReferToMaster:
+					this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange.getOneDayOfRange(), CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet,breakmanage,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
+				//予定を参照する
+				case ReferToSchedule:
+					this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange.getOneDayOfRange(), CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet,breakmanage,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
+				//参照せずに打刻する
+				case StampWithoutReference:
+					this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange.getOneDayOfRange(), CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet,breakmanage,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
+			}
+		}else{//流動休憩の場合
+			switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().getCalcMethod()) {
+				//マスタを参照する
+				case ReferToMaster:
+					return createLateTimeSHeetForFluid(withinWorkTimeFrame,fluidWorkSetting,oneDayRange,calcSet,timeLeavingWork,flowRestCalcMethod,duringBreakTime);
+				//マスタと打刻を併用する	
+				case ConbineMasterWithStamp:
+				
+				//参照せずに打刻する	
+				//case StampWithoutReference:
+			
+			}
+		}
+		
+	}
 	
-//	/**
-//	 * 控除時間帯の作成   流動勤務で固定休憩の場合にシフトから計算する場合の処理の事
-//	 */
-//	public void createLateTimeSheetForFluid(
-//			WithinWorkTimeFrame withinWorkTimeFrame,
-//			FluidWorkSetting fluidWorkSetting,
-//			CalculationRangeOfOneDay oneDayRange) {
-//		
-//		//計算範囲の取得
-//		AttendanceTime calcRange= oneDayRange.getPredetermineTimeSetForCalc().getOneDayRange();
-//		//控除時間帯の取得　・・・保科君が作成済みの処理を呼ぶ
-//		List<TimeSheetOfDeductionItem> deductionTimeSheet = this.collectDeductionTimes(
-//				dailyGoOutSheet, 
-//				oneDayRange, 
-//				CommonSet, 
-//				attendanceLeaveWork, 
-//				fixedCalc, 
-//				workTimeDivision, 
-//				noStampSet, 
-//				fluidSet, 
-//				acqAtr);
-//		//控除時間帯同士の重複部分を補正
-//		deductionTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet)
-//									.reCreate(WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr);
-//		//控除合計時間クラスを作成　　不要な可能性あり
-//		//→合計時間を保持しておくためにこのインスタンスは必要(2017.11.27 by hoshina)
-//		DeductionTotalTimeForFluidCalc deductionTotalTime = new DeductionTotalTimeForFluidCalc(new AttendanceTime(0),new AttendanceTime(0));
-//		//流動休憩時間帯を取得する
-//		List<FluRestTimeSetting> fluRestTimeSheetList = 
-//				fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getFluidRestTimes();
-//		//外出取得開始時刻を作成する
-//		AttendanceTime getGoOutStartClock = new AttendanceTime(withinWorkTimeFrame.getCalcrange().getStart().valueAsMinutes());
-//		//一時的に作成(最後に控除時間帯へ追加する休憩時間帯リスト)
-//		List<TimeSheetOfDeductionItem> restTimeSheetListForAddToDeductionList = new ArrayList<>();
-//		
-//		//流動休憩時間帯分ループ
-//		for(int nowLoop = 0 ; nowLoop <fluRestTimeSheetList.size(); nowLoop++) {		
-//
-//			//流動休憩時間帯の作成（引数にgetGoOutStartClockを渡す
-//			TimeSheetOfDeductionItem restTimeSheet = deductionTotalTime.createDeductionFluidRestTime(
-//					fluRestTimeSheetList.get(nowLoop), 
-//					getGoOutStartClock, 
-//					nowLoop, 
-//					fluidWorkSetting, 
-//					deductionTimeSheet
-//					/*外出と流動休憩の関係設定*/);
-//			//作成した時間帯を休憩時間帯リストに格納
-//			restTimeSheetListForAddToDeductionList.add(restTimeSheet);
-//			getGoOutStartClock = new AttendanceTime(restTimeSheet.calcrange.getStart().valueAsMinutes());
-//		}
-//		//退勤時刻までの外出の処理
-//		deductionTotalTime.collectDeductionTotalTime(list, getGoOutStartClock, fluidWorkSetting, roopNo);
-//		//控除時間帯をソート
-//		
-//	}
+	
+	/**
+	 * 控除時間帯の作成   流動勤務で固定休憩の場合にシフトから計算する場合の処理の事
+	 */
+	public List<TimeSheetOfDeductionItem> createLateTimeSheetForFluid(
+			WithinWorkTimeFrame withinWorkTimeFrame,
+			FluidWorkSetting fluidWorkSetting,
+			CalculationRangeOfOneDay oneDayRange,
+			CalcSetOfDailyPerformance calcSet,
+			TimeLeavingWork timeLeavingWork,
+			FlowRestClockCalcMethod flowRestCalcMethod,
+			CalcMethodIfLeaveWorkDuringBreakTime duringBreakTime
+			) {
+		
+		//計算範囲の取得
+		AttendanceTime calcRange= oneDayRange.getPredetermineTimeSetForCalc().getOneDayRange();
+		//控除時間帯の取得　・・・保科君が作成済みの処理を呼ぶ
+		List<TimeSheetOfDeductionItem> deductionTimeSheet = this.collectDeductionTimes(
+				dailyGoOutSheet, 
+				oneDayRange, 
+				CommonSet, 
+				attendanceLeaveWork, 
+				fixedCalc, 
+				workTimeDivision, 
+				noStampSet, 
+				fluidSet, 
+				acqAtr);
+		//控除時間帯同士の重複部分を補正
+		deductionTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet)
+									.reCreate(WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr);
+		//控除合計時間クラスを作成　　不要な可能性あり
+		//→合計時間を保持しておくためにこのインスタンスは必要(2017.11.27 by hoshina)
+		DeductionTotalTimeForFluidCalc deductionTotalTime = new DeductionTotalTimeForFluidCalc(new AttendanceTime(0),new AttendanceTime(0));
+		//流動休憩時間帯を取得する
+		List<FluRestTimeSetting> fluRestTimeSheetList = 
+				fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getFluidRestTimes();
+		//外出取得開始時刻を作成する
+		AttendanceTime getGoOutStartClock = new AttendanceTime(withinWorkTimeFrame.getCalcrange().getStart().valueAsMinutes());
+		//一時的に作成(最後に控除時間帯へ追加する休憩時間帯リスト)
+		List<TimeSheetOfDeductionItem> restTimeSheetListForAddToDeductionList = new ArrayList<>();
+		
+		//流動休憩時間帯分ループ
+		for(int nowLoop = 0 ; nowLoop <fluRestTimeSheetList.size(); nowLoop++) {		
+
+			//流動休憩時間帯の作成（引数にgetGoOutStartClockを渡す
+			TimeSheetOfDeductionItem restTimeSheet = deductionTotalTime.createDeductionFluidRestTime(
+					fluRestTimeSheetList.get(nowLoop), 
+					getGoOutStartClock, 
+					nowLoop, 
+					fluidWorkSetting, 
+					deductionTimeSheet,
+					calcSet/*外出と流動休憩の関係設定*/,
+					flowRestCalcMethod,
+					timeLeavingWork,
+					duringBreakTime/*外出と流動休憩の関係設定*/);
+			//作成した時間帯を休憩時間帯リストに格納
+			restTimeSheetListForAddToDeductionList.add(restTimeSheet);
+			getGoOutStartClock = new AttendanceTime(restTimeSheet.calcrange.getStart().valueAsMinutes());
+		}
+		//退勤時刻までの外出の処理
+		//deductionTotalTime.collectDeductionTotalTime(list, getGoOutStartClock, fluidWorkSetting, roopNo);
+		//控除時間帯をソート
+		deductionTimeSheet.sort((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart()));
+		return deductionTimeSheet;
+	}
 	
 }
