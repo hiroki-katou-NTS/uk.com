@@ -159,17 +159,10 @@ module nts.uk.ui.koExtentions {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
-                    $input.data("inputting", true);
                     $input.ntsError('clear');
                     if (!result.isValid) {
                         $input.ntsError('set', result.errorMessage, result.errorCode);
                     } 
-                    
-                    setTimeout(function(){
-                        $input.val(newText);
-                        $input.focus(); 
-                        $input.data("inputting", false);
-                    }, 10);
                 }
             });
             
@@ -188,22 +181,20 @@ module nts.uk.ui.koExtentions {
 
             $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
-                    if (!$input.data("inputting")) {
-                        let validator = self.getValidator(data);
-                        var newText = $input.val();
-                        var result = validator.validate(newText, { isCheckExpression: true });
-                        $input.ntsError('clear');
-                        if (result.isValid) {
-                            if (value() === result.parsedValue) {
-                                $input.val(result.parsedValue);
-                            } else {
-                                value(result.parsedValue);
-                            }
+                    let validator = self.getValidator(data);
+                    var newText = $input.val();
+                    var result = validator.validate(newText, { isCheckExpression: true });
+                    $input.ntsError('clear');
+                    if (result.isValid) {
+                        if (value() === result.parsedValue) {
+                            $input.val(result.parsedValue);
                         } else {
-                            $input.ntsError('set', result.errorMessage, result.errorCode);
-                            value(newText);
-                        }   
-                    }
+                            value(result.parsedValue);
+                        }
+                    } else {
+                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                        value(newText);
+                    } 
                 }
             });
 
