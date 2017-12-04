@@ -44,7 +44,7 @@
 
 #ntsleft {
 	float: left;
-	width: 440px;
+	width: 370px;
 	height: 500px;
 	margin-top: 2px;
 }
@@ -60,7 +60,7 @@
 }
 
 .ntsCheckbox-left {
-	margin-left: 325px;
+	margin-left: 237px;
 	margin-top: 10px;
 }
 
@@ -131,12 +131,12 @@ ui-widget-header {
 }
 
 input.ntsSearchBox {
-	width: 200px;
+	width: 165px;
 }
 
-button.search-btn {
+/* button.search-btn {
 	width: 90px;
-}
+} */
 
 .flex-box {
 	display: flex;
@@ -229,7 +229,7 @@ button.search-btn {
 }
 
 #LBLAddressKana2 {
-	margin-left: 24px;
+	margin-left: 30px;
 	display: inline-block;
 	height: 40px;
 	line-height: 30px;

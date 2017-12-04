@@ -118,7 +118,7 @@
 									<th colspan="1" class="th-col1">
 										<!-- ,constraint: 'CompanyName'}" -->
 										<div class="form-label" style="margin-top: 5px;"
-											data-bind="ntsFormLabel:{required: true, constraint: 'Name'}">
+											data-bind="ntsFormLabel:{required: true}">
 											<!-- A3_5 -->
 											<label>#{i18n.getText('CMM001_11')} </label>
 										</div>
@@ -136,7 +136,7 @@
 								<tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
 										<div class="left20 border_none"
-											data-bind="ntsFormLabel:{required: true, constraint: 'KNName'}">
+											data-bind="ntsFormLabel:{required: true}">
 											<!-- A3_7 -->
 											<label id="LBLCompanyNameKana">#{i18n.getText('CMM001_12')}</label>
 										</div>
@@ -154,7 +154,7 @@
 									<th colspan="1" class="th-col1">
 										<!-- data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameAbb'}" -->
 										<div class="left20 border_none"
-											data-bind="ntsFormLabel: {constraint: 'ABName', required: true}">
+											data-bind="ntsFormLabel: {required: true}">
 											<!-- A3_9 -->
 											<label id="LBLCompanyNameAbb">#{i18n.getText('CMM001_14')}</label>
 										</div>
@@ -191,7 +191,7 @@
 												<th colspan="1" class="th-col1" style="width: 150px">
 													<!-- , constraint: 'CorporateMyNumber'}" -->
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'TaxNo'}"
+														data-bind="ntsFormLabel:{required: true}"
 														style="margin-top: 5px;">
 														<!-- B1_1 -->
 														<label>#{i18n.getText('CMM001_19')} </label>
@@ -214,7 +214,7 @@
 												<th colspan="1" class="th-col1">
 													<!-- , constraint: 'PresidentName'}" -->
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'RepName'}">
+														data-bind="ntsFormLabel:{required: true}">
 														<!-- B1_3 -->
 														<label>#{i18n.getText('CMM001_20')}</label>
 													</div>
@@ -234,7 +234,7 @@
 												<th colspan="1" class="th-col1">
 													<!-- , constraint: 'PresidentJobTitle'}" -->
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'RepJob'}">
+														data-bind="ntsFormLabel:{required: true}">
 														<!-- B1_5 -->
 														<label>#{i18n.getText('CMM001_21')}</label>
 													</div>
@@ -265,7 +265,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'PostCd'}">
+														data-bind="ntsFormLabel:{required: true}">
 														<!-- C1_1 -->
 														<label>#{i18n.getText('CMM001_22')}</label>
 													</div>
@@ -306,15 +306,12 @@
 												<!-- C1_5 -->
 												<th colspan="1" class="th-col1"><div
 														class="left20 border_none"
-														data-bind="ntsFormLabel:{required: true, constraint: 'Add_1'}">
+														data-bind="ntsFormLabel:{required: true}">
 														<label id="LBLAddress1">#{i18n.getText('CMM001_25')}</label>
 													</div></th>
 
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
-														<!-- 
-															 immediate: true,
-															 }" -->
 														<!-- C1_6 -->
 														<input id="address1" tabindex="3" class="save-error"
 															type="text" placeholder=""
@@ -332,7 +329,7 @@
 												<th colspan="1" class="th-col1">
 												<div
 														class="left20 border_none"
-														data-bind="ntsFormLabel:{required: true, constraint: 'Add_2'}">
+														data-bind="ntsFormLabel:{required: true}">
 												<label id="LBLAddress2">#{i18n.getText('CMM001_26')}</label>
 												</div>
 												</th>
@@ -359,11 +356,9 @@
 											<tr style="margin-top: 5px;">
 												<!-- C1_10 -->
 												<th colspan="1" class="th-col1">
-												<div
-														class="left20 border_none"
-														data-bind="ntsFormLabel:{required: true, constraint: 'Add_Kana_1'}">
-												<label
-													id="LBLAddressKana1">#{i18n.getText('CMM001_25')}</label>
+												<div class="left20 border_none"
+														data-bind="ntsFormLabel:{required: true}">
+												<label id="LBLAddressKana1">#{i18n.getText('CMM001_25')}</label>
 												</div>
 												</th>
 
@@ -382,11 +377,7 @@
 											<tr style="margin-top: 5px;">
 												<!-- C1_12 -->
 												<th colspan="1" class="th-col1">
-												<div
-														class="left20 border_none"
-														data-bind="ntsFormLabel:{required: true, constraint: 'Add_Kana_2'}">
 												<label id="LBLAddressKana2">#{i18n.getText('CMM001_26')}</label>
-												</div>
 												</th>
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
@@ -401,8 +392,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
 													<!-- C1_14 --> <!--  constraint:'TelephoneNo'}" -->
-													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'PhoneNum'}">
+													<div class="form-label" data-bind="ntsFormLabel:{required: true}">
 														#{i18n.getText('CMM001_28')}</div>
 												</th>
 
@@ -421,7 +411,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
 													<!-- " -->
-													<div class=" border_none left20" data-bind="ntsFormLabel:{required: true, constraint:'FaxNum'}">
+													<div class=" border_none left20" data-bind="ntsFormLabel:{required: true}">
 														<!-- C1_16 -->
 														<label style="margin-left: 5px;">#{i18n.getText('CMM001_29')}</label>
 													</div>
@@ -558,6 +548,7 @@
 																			 optionsText: 'name',
 																			 editable: true,
 																			 enable: true,
+																			 dropDownAttachedToBody: true,
 																			 columns: [{ prop: 'name' }]}">
 															</div>
 														</div>
