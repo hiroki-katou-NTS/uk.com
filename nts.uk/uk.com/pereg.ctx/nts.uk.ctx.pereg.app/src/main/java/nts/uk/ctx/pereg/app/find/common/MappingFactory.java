@@ -27,23 +27,27 @@ import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
  */
 public class MappingFactory {
 
-	public static void map(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
-
+	public static void mapSingleClsDto(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 		// map record ID
 		AnnotationUtil.getFieldAnnotated(peregDto.getClass(), PeregRecordId.class).ifPresent(field -> {
 			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
 			classItem.setRecordId(recordId);
 		});
 
-		//get dto value
+		// get dto value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getClass());
 		
 		// map fix value
 		mapFixDto(dtoValue, classItem);
 
-		// map option value
+		// set option value
 		setOptionData(peregDto, classItem);
 
+	}
+	
+	public static void mapListClsDto(PeregDto peregDto, List<LayoutPersonInfoClsDto> lstClsItem){
+		// get dto value
+		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getClass());
 	}
 	
 	/**

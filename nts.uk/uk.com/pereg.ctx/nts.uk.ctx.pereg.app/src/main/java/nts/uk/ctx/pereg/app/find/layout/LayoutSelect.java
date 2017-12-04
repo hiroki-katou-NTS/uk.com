@@ -239,7 +239,7 @@ public class LayoutSelect {
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
-			MappingFactory.map(peregDto, authClassItem);
+			MappingFactory.mapSingleClsDto(peregDto, authClassItem);
 		} else {
 			if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
 				getSingleInforData(perInfoCategory, authClassItem, personId, employeeId);
