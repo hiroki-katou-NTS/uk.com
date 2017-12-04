@@ -70,34 +70,34 @@ module cmm001.a {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
                     });
-                    self.checkInsert(false);
-                    self.currentCompany(new CompanyModel(foundItem));
-                    console.log(self.currentCompany());
-                    let param = {
-                        companyId: self.currentCompany().companyId() 
-                    }
-                    var divEmpty = {
-                        regWorkDiv: 0,
-                    }
-                    service.getDiv(param).done((div) => {
-                        console.log(div);
-                        div == null? div = divEmpty: div;
-                        self.currentCompany().regWorkDiv(div.regWorkDiv); 
+                    service.findComId(foundItem.companyId).done((id) => {
+                        console.log(id);
+                        self.currentCompany(new CompanyModel(id));
+                        self.checkInsert(false);
+                        let param = {
+                            companyId: self.currentCompany().companyId() 
+                        }
+                        var divEmpty = {
+                            regWorkDiv: 0,
+                        }
+                        service.getDiv(param).done((div) => {
+                            div == null? div = divEmpty: div;
+                            self.currentCompany().regWorkDiv(div.regWorkDiv); 
+                        });
+                        var sysEmpty = {
+                            jinji: 0,
+                            kyuyo: 0,
+                            shugyo: 0,
+                        }
+                        service.getSys(param).done((sys) => {
+                            sys == null? sys=sysEmpty : sys;
+                            self.currentCompany().jinji(sys.jinji);
+                            self.currentCompany().kyuyo(sys.kyuyo);
+                            self.currentCompany().shugyo(sys.shugyo);   
+                        });
+                        self.currentCompany().isAbolition() == 1 ? true : false;
+                        $("#companyName").focus();
                     });
-                    var sysEmpty = {
-                        jinji: 0,
-                        kyuyo: 0,
-                        shugyo: 0,
-                    }
-                    service.getSys(param).done((sys) => {
-                        console.log(sys); 
-                        sys == null? sys=sysEmpty : sys;
-                        self.currentCompany().jinji(sys.jinji);
-                        self.currentCompany().kyuyo(sys.kyuyo);
-                        self.currentCompany().shugyo(sys.shugyo);   
-                    });
-                    self.currentCompany().isAbolition() == 1 ? true : false;
-                    $("#companyName").focus();
                 }
             });
             // subscribe when check A2_2

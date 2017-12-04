@@ -1,6 +1,7 @@
 package nts.uk.ctx.find;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -58,5 +59,16 @@ public class CompanyInforFinder {
 															x.getShortComName().v(), contractCd, 
 															x.getTaxNo().v(), fromDomainAdd(x.getAddInfor()));
 							}).collect(Collectors.toList());
+	}
+	
+	public Optional<CompanyInforDto> findId(String companyId){
+		return this.comRep.findComByCode(companyId).map(x -> {
+			return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),
+					x.getCompanyId(), x.getStartMonth().value,
+					x.getIsAbolition().value, x.getRepname().v(),
+					x.getRepjob().v(), x.getComNameKana().v(),
+					x.getShortComName().v(), x.getContractCd().v(), 
+					x.getTaxNo().v(), fromDomainAdd(x.getAddInfor()));
+		});
 	}
 }

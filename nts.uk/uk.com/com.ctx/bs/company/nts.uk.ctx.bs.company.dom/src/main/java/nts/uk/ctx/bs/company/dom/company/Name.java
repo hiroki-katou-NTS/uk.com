@@ -8,12 +8,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * Name of Company
  */
-@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(40)
 public class Name extends StringPrimitiveValue<Name>{
-	/**	 * serialVersionUID	 */
+	/** serialVersionUID	 */
 	private static final long serialVersionUID = 1L;
-
+	/** 会社名 */
 	public Name(String rawValue) {
 		super(rawValue);
 	}

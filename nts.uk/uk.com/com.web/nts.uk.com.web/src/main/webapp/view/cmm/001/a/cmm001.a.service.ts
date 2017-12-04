@@ -1,6 +1,7 @@
 module cmm001.a.service {
     var paths = {
-        getAll: "bs/company/findCom",
+        getAll: "screen/com/cmm001/findAll",
+        getComId: "bs/company/findComId",
         findDiv: "bs/employee/workplacedifferinfor/findDiv",
         findSys: "sys/env/usatr/findSys",
         findPost: "contact/postalcode/findAll",
@@ -25,6 +26,10 @@ module cmm001.a.service {
     
     export function findPost(){
         return nts.uk.request.ajax(paths.findPost);    
+    }
+    
+     export function findComId(id: String): JQueryPromise<void>{
+        return nts.uk.request.ajax("com", paths.getComId + "/" + id);     
     }
     
     export function findPostId(vari: String): JQueryPromise<void>{

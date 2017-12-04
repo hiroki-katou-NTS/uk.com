@@ -1,4 +1,4 @@
-package companyinfor;
+package nts.uk.screen.com.app.command.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
