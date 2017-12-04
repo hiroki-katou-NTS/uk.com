@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime.flexset;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import lombok.Setter;
 /**
  * The Class KshmtFlexStampReflectPK.
  */
+
 @Getter
 @Setter
 @Embeddable
@@ -37,7 +39,7 @@ public class KshmtFlexStampReflectPK implements Serializable {
     /** The work no. */
     @Basic(optional = false)
     @Column(name = "WORK_NO")
-    private short workNo;
+    private BigDecimal workNo;
 
     /**
      * Instantiates a new kshmt flex stamp reflect PK.
@@ -52,47 +54,14 @@ public class KshmtFlexStampReflectPK implements Serializable {
      * @param worktimeCd the worktime cd
      * @param workNo the work no
      */
-    public KshmtFlexStampReflectPK(String cid, String worktimeCd, short workNo) {
+    public KshmtFlexStampReflectPK(String cid, String worktimeCd, BigDecimal workNo) {
         this.cid = cid;
         this.worktimeCd = worktimeCd;
         this.workNo = workNo;
     }
 
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-        hash += (int) workNo;
-        return hash;
-    }
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFlexStampReflectPK)) {
-			return false;
-		}
-		KshmtFlexStampReflectPK other = (KshmtFlexStampReflectPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-			return false;
-		}
-		if ((this.worktimeCd == null && other.worktimeCd != null)
-				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
-			return false;
-		}
-		if (this.workNo != other.workNo) {
-			return false;
-		}
-		return true;
-	}
-
+   
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -100,6 +69,49 @@ public class KshmtFlexStampReflectPK implements Serializable {
 	public String toString() {
 		return "entity.KshmtFlexStampReflectPK[ cid=" + cid + ", worktimeCd=" + worktimeCd + ", workNo=" + workNo
 				+ " ]";
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + ((workNo == null) ? 0 : workNo.hashCode());
+		result = prime * result + ((worktimeCd == null) ? 0 : worktimeCd.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KshmtFlexStampReflectPK other = (KshmtFlexStampReflectPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (workNo == null) {
+			if (other.workNo != null)
+				return false;
+		} else if (!workNo.equals(other.workNo))
+			return false;
+		if (worktimeCd == null) {
+			if (other.worktimeCd != null)
+				return false;
+		} else if (!worktimeCd.equals(other.worktimeCd))
+			return false;
+		return true;
 	}
 	
     

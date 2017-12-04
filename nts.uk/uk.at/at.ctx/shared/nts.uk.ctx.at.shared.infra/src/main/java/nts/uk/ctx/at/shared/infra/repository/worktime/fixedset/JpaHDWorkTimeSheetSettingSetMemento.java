@@ -4,61 +4,126 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSetPK;
 
 /**
  * The Class JpaHDWorkTimeSheetSettingSetMemento.
  */
 public class JpaHDWorkTimeSheetSettingSetMemento implements HDWorkTimeSheetSettingSetMemento {
+	
+	/** The entity. */
+	private KshmtFlexHolSet entity;
 
+	/**
+	 * Instantiates a new jpa HD work time sheet setting set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaHDWorkTimeSheetSettingSetMemento(KshmtFlexHolSet entity) {
+		super();
+		if(entity.getKshmtFlexHolSetPK() == null){
+			entity.setKshmtFlexHolSetPK(new KshmtFlexHolSetPK());
+		}
+		this.entity = entity;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * HDWorkTimeSheetSettingSetMemento#setWorkTimeNo(java.lang.Integer)
+	 */
 	@Override
 	public void setWorkTimeNo(Integer workTimeNo) {
-		// TODO Auto-generated method stub
-		
+		this.entity.getKshmtFlexHolSetPK().setWorktimeNo(workTimeNo);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * HDWorkTimeSheetSettingSetMemento#setTimezone(nts.uk.ctx.at.shared.dom.
+	 * worktime.fixedset.TimeZoneRounding)
+	 */
 	@Override
 	public void setTimezone(TimeZoneRounding timezone) {
-		// TODO Auto-generated method stub
-		
+		timezone.saveToMemento(new JpaHDWTSheetTimeZoneRoundingSetMemento(this.entity));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * HDWorkTimeSheetSettingSetMemento#setIsLegalHolidayConstraintTime(boolean)
+	 */
 	@Override
 	public void setIsLegalHolidayConstraintTime(boolean isLegalHolidayConstraintTime) {
-		// TODO Auto-generated method stub
-		
+		this.entity.setHolTime(BooleanGetAtr.getAtrByBoolean(isLegalHolidayConstraintTime));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * HDWorkTimeSheetSettingSetMemento#setInLegalBreakFrameNo(nts.uk.ctx.at.
+	 * shared.dom.worktime.fixedset.BreakFrameNo)
+	 */
 	@Override
 	public void setInLegalBreakFrameNo(BreakFrameNo inLegalBreakFrameNo) {
-		// TODO Auto-generated method stub
-		
+		this.entity.setHolFrameNo(inLegalBreakFrameNo.v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * HDWorkTimeSheetSettingSetMemento#setIsNonStatutoryDayoffConstraintTime(
+	 * boolean)
+	 */
 	@Override
 	public void setIsNonStatutoryDayoffConstraintTime(boolean isNonStatutoryDayoffConstraintTime) {
-		// TODO Auto-generated method stub
-		
+		this.entity.setOutHolTime(BooleanGetAtr.getAtrByBoolean(isNonStatutoryDayoffConstraintTime));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * HDWorkTimeSheetSettingSetMemento#setOutLegalBreakFrameNo(nts.uk.ctx.at.
+	 * shared.dom.worktime.fixedset.BreakFrameNo)
+	 */
 	@Override
 	public void setOutLegalBreakFrameNo(BreakFrameNo outLegalBreakFrameNo) {
-		// TODO Auto-generated method stub
-		
+		this.entity.setOutHolFrameNo(outLegalBreakFrameNo.v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * HDWorkTimeSheetSettingSetMemento#setIsNonStatutoryHolidayConstraintTime(
+	 * boolean)
+	 */
 	@Override
 	public void setIsNonStatutoryHolidayConstraintTime(boolean isNonStatutoryHolidayConstraintTime) {
-		// TODO Auto-generated method stub
-		
+		this.entity.setOutHolTime(BooleanGetAtr.getAtrByBoolean(isNonStatutoryHolidayConstraintTime));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * HDWorkTimeSheetSettingSetMemento#setOutLegalPubHDFrameNo(nts.uk.ctx.at.
+	 * shared.dom.worktime.fixedset.BreakFrameNo)
+	 */
 	@Override
 	public void setOutLegalPubHDFrameNo(BreakFrameNo outLegalPubHDFrameNo) {
-		// TODO Auto-generated method stub
-		
+		this.entity.setPubHolFrameNo(outLegalPubHDFrameNo.v());
 	}
 
 }

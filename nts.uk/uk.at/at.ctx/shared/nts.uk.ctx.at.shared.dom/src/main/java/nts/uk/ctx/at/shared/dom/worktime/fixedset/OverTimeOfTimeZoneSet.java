@@ -10,6 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class OverTimeOfTimeZoneSet.
  */
+// 残業時間の時間帯設定
 @Getter
 public class OverTimeOfTimeZoneSet extends DomainObject {
 

@@ -34,8 +34,7 @@ public class StampReflectTimezone extends DomainObject {
 	/**
 	 * Instantiates a new stamp reflect timezone.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public StampReflectTimezone(StampReflectTimezoneGetMemento memento) {
 		this.workNo = memento.getWorkNo();
@@ -47,8 +46,7 @@ public class StampReflectTimezone extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(StampReflectTimezoneSetMemento memento) {
 		memento.setWorkNo(this.workNo);
