@@ -41,7 +41,6 @@ module nts.uk.at.view.kml002.d.viewmodel {
             self.currentRightCodeList = ko.observableArray([]);
             self.listBudget = ko.observableArray([]);
             self.checked.subscribe((value) => {
-                var t0 = performance.now();
                 if(self.rightItems().length > 0){
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_194" }).ifYes(() => {
                         self.rightItems([]);
@@ -78,8 +77,6 @@ module nts.uk.at.view.kml002.d.viewmodel {
                         self.items(self.listBudget());
                     }
                 }
-                var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
             })
         }
 
