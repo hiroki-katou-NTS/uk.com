@@ -19,18 +19,6 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
 public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemento{
 	
 	/** The kshst overtime frame. */
-	
-	/**
-	 * Sets the kscst plan year hd frame.
-	 *
-	 * @param kscstPlanYearHdFrame the new kscst plan year hd frame
-	 */
-	
-	/**
-	 * Sets the kshst overtime frame.
-	 *
-	 * @param kshstOvertimeFrame the new kshst overtime frame
-	 */
 	@Setter
 	private KshstOvertimeFrame kshstOvertimeFrame;
 	

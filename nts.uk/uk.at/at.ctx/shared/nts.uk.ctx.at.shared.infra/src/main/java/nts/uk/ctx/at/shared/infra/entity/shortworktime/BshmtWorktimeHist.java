@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.entity.shortworktime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
@@ -36,13 +35,11 @@ public class BshmtWorktimeHist extends UkJpaEntity implements Serializable {
 	protected BshmtWorktimeHistPK bshmtWorktimeHistPK;
 
 	/** The str ymd. */
-	@Basic(optional = false)
 	@Column(name = "STR_YMD")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate strYmd;
 
 	/** The end ymd. */
-	@Basic(optional = false)
 	@Column(name = "END_YMD")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endYmd;
@@ -51,6 +48,7 @@ public class BshmtWorktimeHist extends UkJpaEntity implements Serializable {
 	 * Instantiates a new bshmt worktime hist.
 	 */
 	public BshmtWorktimeHist() {
+		super();
 	}
 
 	/**
