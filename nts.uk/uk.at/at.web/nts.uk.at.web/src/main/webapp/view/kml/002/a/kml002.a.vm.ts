@@ -746,6 +746,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             $(".input-name").trigger("validate");
 
             if (nts.uk.ui.errors.hasError()) {
+                blockUI.clear();
                 return;
             }
 
@@ -754,6 +755,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                 if(filter.length > 0) {
                     $('#input-code').ntsError('set', { messageId: "Msg_3" });
+                    blockUI.clear();
                     return;
                 }
             }
@@ -1200,11 +1202,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
         openDialog(itemCd: number, settingMethod: number, attribute: number, itemName: string) {
             var self = this;
 
-            if (itemName === "") {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-
+            
             if (settingMethod == 1) {
                 self.passDataToDialogs(itemCd, settingMethod, attribute, itemName);
                 nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {
@@ -1411,12 +1412,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 1) {
                             if(data.timeUnit != null) {
-                                if (data.timeUnit.lstTimeUnitFuncs.length <=0) {
-                                formulaResult = "";
-                            }}
-                                if(data.moneyFunc.lstMoney.length <=0 ){
-                                formulaResult = "";
-                            } else if (data.moneyFunc.lstMoney.length > 0) {
+                                if (data.timeUnit.lstTimeUnitFuncs.length <=0 && data.moneyFunc.lstMoney.length <=0) {
+                                    formulaResult = "";
+                                }
+                            } 
+
+                            if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
                                     var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                     var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
@@ -1515,12 +1516,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             }
                         } else if (attribute == 1) {
                             if(data.timeUnit != null) {
-                                if (data.timeUnit.lstTimeUnitFuncs.length <=0) {
-                                formulaResult = "";
-                            }}
-                                if(data.moneyFunc.lstMoney.length <=0 ){
-                                formulaResult = "";
-                            } else if (data.moneyFunc.lstMoney.length > 0) {
+                                if (data.timeUnit.lstTimeUnitFuncs.length <=0 && data.moneyFunc.lstMoney.length <=0) {
+                                    formulaResult = "";
+                                }
+                            }
+
+                            if (data.moneyFunc.lstMoney.length > 0) {
                                 for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
                                     var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                     var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
