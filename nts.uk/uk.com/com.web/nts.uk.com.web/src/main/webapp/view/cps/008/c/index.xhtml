@@ -14,8 +14,8 @@
 				};
 			</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.layout.LayoutCode
-					nts.uk.ctx.bs.person.dom.person.layout.LayoutName
+					nts.uk.ctx.pereg.dom.person.layout.LayoutCode
+					nts.uk.ctx.pereg.dom.person.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps008.c.style.css" />
@@ -79,8 +79,9 @@
 						data-bind="ntsCheckBox: { checked: overrideMode, enable: true, text: '#{i18n.getText('CPS008_43')}' }"></div>
 				</div>
 				<div id="functions-area-bottom">
-					<button class="x-large proceed" id="BTN_DECIDE" data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
-					<button  id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button>
+					<button class="x-large proceed" id="BTN_DECIDE"
+						data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
+					<button id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button>
 				</div>
 			</div>
 		</ui:define>

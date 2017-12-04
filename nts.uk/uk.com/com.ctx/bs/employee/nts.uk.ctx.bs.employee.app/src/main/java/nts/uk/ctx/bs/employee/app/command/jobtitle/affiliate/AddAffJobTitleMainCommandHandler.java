@@ -18,7 +18,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryDomainService;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryService;
 
 @Stateless
 public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<AddAffJobTitleMainCommand, PeregAddCommandResult>
@@ -31,7 +31,7 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 	private AffJobTitleHistoryItemRepository_v1 affJobTitleHistoryItemRepository_v1;
 	
 	@Inject 
-	private AffJobTitleHistoryDomainService affJobTitleHistoryDomainService;
+	private AffJobTitleHistoryService affJobTitleHistoryService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -63,7 +63,7 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 		}
 		itemtoBeAdded.add(dateItem);
 		
-		affJobTitleHistoryDomainService.add(itemtoBeAdded);
+		affJobTitleHistoryService.add(itemtoBeAdded);
 		
 		AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(histId, command.getSid(), command.getJobTitleId(), command.getNote());
 		affJobTitleHistoryItemRepository_v1.add(histItem);

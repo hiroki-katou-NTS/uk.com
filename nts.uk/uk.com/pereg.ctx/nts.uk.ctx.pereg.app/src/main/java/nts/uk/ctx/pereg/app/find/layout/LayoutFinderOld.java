@@ -188,7 +188,7 @@ public class LayoutFinderOld {
 	 */
 	public EmpMaintLayoutDto getLayout(LayoutQuery query) {
 		// query properties
-		GeneralDate standardDate = query.getStandardDate();
+		GeneralDate standardDate = GeneralDate.legacyDate(query.getStandardDate());
 		String mainteLayoutId = query.getLayoutId();
 		String browsingEmpId = query.getBrowsingEmpId();
 		// login information

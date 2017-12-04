@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryDomainService;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryService;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository_ver1;
@@ -27,7 +27,7 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 	private AffJobTitleHistoryItemRepository_v1 affJobTitleHistoryItemRepository_v1;
 	
 	@Inject 
-	private AffJobTitleHistoryDomainService affJobTitleHistoryDomainService;
+	private AffJobTitleHistoryService affJobTitleHistoryService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -57,7 +57,7 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		affJobTitleHistoryDomainService.update(existHist.get(), itemToBeUpdate.get());
+		affJobTitleHistoryService.update(existHist.get(), itemToBeUpdate.get());
 	
 		AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(command.getHistoryId(), command.getSid(), command.getJobTitleId(), command.getNote());
 		affJobTitleHistoryItemRepository_v1.update(histItem);

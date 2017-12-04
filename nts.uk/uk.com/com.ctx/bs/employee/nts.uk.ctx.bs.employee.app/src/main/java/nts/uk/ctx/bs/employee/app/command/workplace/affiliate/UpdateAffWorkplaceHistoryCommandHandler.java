@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryDomainService;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryService;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
@@ -28,7 +28,7 @@ public class UpdateAffWorkplaceHistoryCommandHandler extends CommandHandler<Upda
 	private AffWorkplaceHistoryItemRepository_v1 affWorkplaceHistoryItemRepository;
 	
 	@Inject 
-	private AffWorkplaceHistoryDomainService affWorkplaceHistoryDomainService;
+	private AffWorkplaceHistoryService affWorkplaceHistoryService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -59,7 +59,7 @@ public class UpdateAffWorkplaceHistoryCommandHandler extends CommandHandler<Upda
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		affWorkplaceHistoryDomainService.update(existHist.get(), itemToBeUpdate.get());
+		affWorkplaceHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		
 		AffWorkplaceHistoryItem histItem = AffWorkplaceHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getWorkplaceId(), command.getNormalWorkplaceId());
 		affWorkplaceHistoryItemRepository.update(histItem);

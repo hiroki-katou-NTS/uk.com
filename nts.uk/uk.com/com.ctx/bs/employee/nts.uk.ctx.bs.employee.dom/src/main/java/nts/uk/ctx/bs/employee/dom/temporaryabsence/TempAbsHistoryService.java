@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
-public class TempAbsHistoryDomainService {
+public class TempAbsHistoryService {
 	@Inject
 	private TempAbsHistRepository temporaryAbsenceHistRepository;
 	

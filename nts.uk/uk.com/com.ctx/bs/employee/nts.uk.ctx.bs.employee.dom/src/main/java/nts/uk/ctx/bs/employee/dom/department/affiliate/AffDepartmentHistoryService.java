@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
-public class AffDepartmentHistoryDomainService {
+public class AffDepartmentHistoryService {
 	@Inject
 	private AffDepartmentHistoryRepository affDepartmentHistoryRepository;
 	

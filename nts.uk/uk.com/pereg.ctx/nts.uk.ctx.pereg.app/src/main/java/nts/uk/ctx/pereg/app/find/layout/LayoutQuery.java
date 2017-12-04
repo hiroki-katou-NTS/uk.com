@@ -3,8 +3,10 @@
  */
 package nts.uk.ctx.pereg.app.find.layout;
 
+
+import java.util.Date;
+
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
 
 /**
  * @author danpv
@@ -17,6 +19,6 @@ public class LayoutQuery {
 	
 	private String browsingEmpId;
 	
-	private GeneralDate standardDate;
+	private Date standardDate;
 
 }
