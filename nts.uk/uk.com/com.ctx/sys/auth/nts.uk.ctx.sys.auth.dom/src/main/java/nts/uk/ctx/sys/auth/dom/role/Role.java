@@ -54,7 +54,7 @@ public class Role extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public Role(RoleGetMemento memento) {
-		if(memento.getRoleId() == null ){
+		if(memento.getRoleId() == null || memento.getRoleId().equals("")){
 			this.roleId = IdentifierUtil.randomUniqueId();
 		} else{
 			this.roleId = memento.getRoleId();
