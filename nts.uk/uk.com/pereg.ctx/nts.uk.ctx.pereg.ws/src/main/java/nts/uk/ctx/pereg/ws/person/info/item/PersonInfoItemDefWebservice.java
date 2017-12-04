@@ -16,7 +16,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PersonInfoItemDefFinder;
  * @author lanlt 
  *
  */
-@Path("ctx/bs/person/info/item")
+@Path("ctx/pereg/person/info/item")
 @Produces("application/json")
 public class PersonInfoItemDefWebservice extends WebService{
 

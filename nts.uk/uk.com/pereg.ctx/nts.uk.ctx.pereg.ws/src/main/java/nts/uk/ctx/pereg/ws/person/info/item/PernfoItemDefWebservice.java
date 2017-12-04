@@ -25,7 +25,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFullEnumDto;
 
-@Path("ctx/bs/person/info/ctgItem")
+@Path("ctx/pereg/person/info/ctgItem")
 @Produces("application/json")
 public class PernfoItemDefWebservice extends WebService {
 
