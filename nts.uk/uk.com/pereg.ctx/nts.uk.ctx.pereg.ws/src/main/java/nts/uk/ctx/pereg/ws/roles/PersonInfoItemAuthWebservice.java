@@ -12,7 +12,7 @@ import find.roles.auth.item.PersonInfoItemAuthFinder;
 import find.roles.auth.item.PersonInfoItemDetailDto;
 import nts.arc.layer.ws.WebService;
 
-@Path("ctx/bs/person/roles/auth/item")
+@Path("ctx/pereg/roles/auth/item")
 @Produces("application/json")
 public class PersonInfoItemAuthWebservice extends WebService {
 	@Inject
