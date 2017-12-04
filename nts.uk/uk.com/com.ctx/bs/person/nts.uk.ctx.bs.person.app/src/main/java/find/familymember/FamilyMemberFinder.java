@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -42,6 +43,12 @@ public class FamilyMemberFinder implements PeregFinder<FamilyMemberDto>{
 	 */
 	@Override
 	public DataClassification dataType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

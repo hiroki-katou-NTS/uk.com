@@ -11,6 +11,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -68,5 +69,11 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
 		}
 		return new PeregDomainDto();
+	}
+
+	@Override
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

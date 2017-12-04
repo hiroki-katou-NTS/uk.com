@@ -10,6 +10,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -73,6 +74,12 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 	 */
 	@Override
 	public List<PeregDomainDto> getListData(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

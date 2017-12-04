@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory_ver1;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -67,6 +68,12 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 	 */
 	@Override
 	public List<PeregDomainDto> getListData(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

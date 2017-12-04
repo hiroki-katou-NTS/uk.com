@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -44,6 +45,12 @@ public class PeregPersonFinder implements PeregFinder<PersonDto>{
 
 	@Override
 	public List<PeregDomainDto> getListData(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

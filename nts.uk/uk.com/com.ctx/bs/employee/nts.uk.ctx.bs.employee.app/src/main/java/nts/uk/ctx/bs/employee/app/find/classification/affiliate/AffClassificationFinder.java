@@ -3,8 +3,10 @@
  */
 package nts.uk.ctx.bs.employee.app.find.classification.affiliate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +15,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -78,6 +81,16 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 	public List<PeregDomainDto> getListData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
+		Optional<AffClassHistory_ver1> affClassHistory = affClassHistRepo.getByEmployeeId(query.getEmployeeId());
+		if (affClassHistory.isPresent())
+			return affClassHistory.get().getPeriods().stream()
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.collect(Collectors.toList());
+		return new ArrayList<>();
 	}
 
 }

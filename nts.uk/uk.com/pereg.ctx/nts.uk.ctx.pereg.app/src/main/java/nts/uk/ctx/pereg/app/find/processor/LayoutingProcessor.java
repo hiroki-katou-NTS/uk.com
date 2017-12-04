@@ -11,6 +11,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregEmpOptRepository;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregPerOptRepository;
@@ -82,6 +83,11 @@ public class LayoutingProcessor {
 		});
 		
 		return peregDtos;
+	}
+	
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query){
+		val finderClass = this.finders.get(query.getCategoryCode());
+		return finderClass.getListFirstItems(query);
 	}
 	
 	private void setUserDefData(PeregDto peregDto){

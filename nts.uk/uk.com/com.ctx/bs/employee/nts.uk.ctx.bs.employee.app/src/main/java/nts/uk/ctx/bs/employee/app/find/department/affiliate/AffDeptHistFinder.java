@@ -11,6 +11,7 @@ import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -68,5 +69,11 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 			return AffDeptHistDto.getFirstFromDomain(affDeptHist.get(), affDeptHistItem.get());
 		}
 		return new PeregDomainDto();
+	}
+
+	@Override
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
+		// TODO Auto-generated method stub
+		return null;
 	} 
 }

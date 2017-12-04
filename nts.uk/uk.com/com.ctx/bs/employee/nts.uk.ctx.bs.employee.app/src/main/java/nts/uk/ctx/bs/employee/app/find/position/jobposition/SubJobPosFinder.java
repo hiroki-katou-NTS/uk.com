@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.position.jobposition;
 
 import java.util.List;
 
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -39,6 +40,12 @@ public class SubJobPosFinder implements PeregFinder<SubJobPositionDto>{
 	 */
 	@Override
 	public DataClassification dataType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
