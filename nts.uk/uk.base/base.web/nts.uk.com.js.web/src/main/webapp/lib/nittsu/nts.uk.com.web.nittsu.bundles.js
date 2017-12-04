@@ -2673,6 +2673,8 @@ var nts;
                     else {
                         dfd.resolve(res);
                     }
+                }).fail(function () {
+                    specials.errorPages.systemError();
                 });
                 return dfd.promise();
             }
@@ -2712,8 +2714,7 @@ var nts;
                         }
                     },
                     error: function (xhr, status, error) {
-                        alert(error);
-                        dfd.reject();
+                        specials.errorPages.systemError();
                     }
                 });
                 return dfd.promise();
@@ -2814,6 +2815,17 @@ var nts;
                     return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
                 }
                 specials.isFileExist = isFileExist;
+                var errorPages;
+                (function (errorPages) {
+                    function systemError() {
+                        jump('com', '/view/common/error/system/index.xhtml');
+                    }
+                    errorPages.systemError = systemError;
+                    function sessionTimeout() {
+                        jump('com', '/view/common/error/sessiontimeout/index.xhtml');
+                    }
+                    errorPages.sessionTimeout = sessionTimeout;
+                })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jump(webAppId, path, data) {
                 if (typeof arguments[1] !== 'string') {
@@ -2842,7 +2854,7 @@ var nts;
                     uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
                         window.location.href = path;
                     }).ifEmpty(function () {
-                        request.jump('/ccg007/a/index.xhtml');
+                        request.jump('/view/ccg007/a/index.xhtml');
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;

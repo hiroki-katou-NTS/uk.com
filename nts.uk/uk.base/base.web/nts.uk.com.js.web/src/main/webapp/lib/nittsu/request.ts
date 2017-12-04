@@ -189,6 +189,8 @@ module nts.uk.request {
             } else {
                 dfd.resolve(res);
             }
+        }).fail(function () {
+            specials.errorPages.systemError();
         });
 
         return dfd.promise();
@@ -232,8 +234,7 @@ module nts.uk.request {
                 }
             },
             error: function(xhr,status, error) {
-                alert(error);
-                dfd.reject(); 
+                specials.errorPages.systemError();
             }
         });
 
@@ -336,6 +337,17 @@ module nts.uk.request {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
         }
         
+        export module errorPages {
+            
+            export function systemError() {
+                jump('com', '/view/common/error/system/index.xhtml');
+            }
+            
+            export function sessionTimeout() {
+                jump('com', '/view/common/error/sessiontimeout/index.xhtml');
+            }
+            
+        }
     }
 
 
@@ -368,7 +380,7 @@ module nts.uk.request {
             uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
                 window.location.href = path;
             }).ifEmpty(() => {
-                request.jump('/ccg007/a/index.xhtml');
+                request.jump('/view/ccg007/a/index.xhtml');
             });
         }
     }
