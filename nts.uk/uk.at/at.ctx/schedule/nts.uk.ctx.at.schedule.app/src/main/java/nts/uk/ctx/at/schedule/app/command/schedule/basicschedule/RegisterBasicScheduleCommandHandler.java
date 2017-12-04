@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * 
@@ -36,6 +37,8 @@ import nts.uk.shr.com.context.AppContexts;
 @RequestScoped
 public class RegisterBasicScheduleCommandHandler
 		extends CommandHandlerWithResult<List<RegisterBasicScheduleCommand>, List<String>> {
+	@Inject
+	private I18NResourcesForUK internationalization;
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -125,18 +128,30 @@ public class RegisterBasicScheduleCommandHandler
 				addMessage(errList, businessException.getMessageId());
 				continue;
 			}
-			List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheduleObj.getWorkScheduleTimeZones();
-			for (int i = 0; i < workScheduleTimeZones.size(); i++) {
-				if (basicScheduleService.isReverseStartAndEndTime(workScheduleTimeZones.get(i).getScheduleStartClock(),
-						workScheduleTimeZones.get(i).getScheduleEndClock())) {
-					throw new BusinessException("Msg_441", "KSU001_73", "KSU001_74");
-				}
-			}
+
 			// Check exist of basicSchedule
 			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(bSchedule.getEmployeeId(),
 					bSchedule.getDate());
 			// Insert/Update
 			if (basicSchedule.isPresent()) {
+				List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheduleObj.getWorkScheduleTimeZones();
+				for (int i = 0; i < workScheduleTimeZones.size(); i++) {
+					workScheduleTimeZones.get(i).validate();
+					try {
+						workScheduleTimeZones.get(i).validateTime();
+					} catch (BusinessException ex) {
+						addMessage(errList, ex.getMessageId());
+						continue;
+					}
+
+					if (basicScheduleService.isReverseStartAndEndTime(
+							workScheduleTimeZones.get(i).getScheduleStartClock(),
+							workScheduleTimeZones.get(i).getScheduleEndClock())) {
+						addMessage(errList,
+								this.internationalization.localize("Msg_441", "KSU001_73", "KSU001_74").get());
+					}
+				}
+
 				basicScheduleRepo.update(basicScheduleObj);
 			} else {
 				basicScheduleRepo.insert(basicScheduleObj);
