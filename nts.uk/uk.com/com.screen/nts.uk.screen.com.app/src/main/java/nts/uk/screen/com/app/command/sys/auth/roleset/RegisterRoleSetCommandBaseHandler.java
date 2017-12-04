@@ -19,6 +19,7 @@ import nts.uk.ctx.sys.auth.app.command.roleset.RoleSetCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.AddRoleSetLinkWebMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.RoleSetLinkWebMenuCommand;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
 * The Class RegisterRoleSetCommandBaseHandler.
@@ -41,10 +42,12 @@ public class RegisterRoleSetCommandBaseHandler extends CommandHandlerWithResult<
     protected String handle(CommandHandlerContext<RoleSetCommandBase> context) {
         RoleSetCommandBase command = context.getCommand();
 
+        //get companyid
+        String companyId = AppContexts.user().companyId();
         //build Role Set
         RoleSetCommand roleSetCommand = new RoleSetCommand(
                 command.getRoleSetCd()
-                , command.getCompanyId()
+                , companyId
                 , command.getRoleSetName()
                 , command.isApprovalAuthority()
                 , command.getOfficeHelperRoleId()
@@ -63,7 +66,7 @@ public class RegisterRoleSetCommandBaseHandler extends CommandHandlerWithResult<
                 : new ArrayList<String>();
         RoleSetLinkWebMenuCommand roleSetLinkWebMenuCommand = new RoleSetLinkWebMenuCommand(
                 command.getRoleSetCd()
-                , command.getCompanyId()
+                , companyId
                 , listWebMenuCds);
         // register Role Set Link Web Menu
         this.addRoleSetLinkWebMenuCommandHandler.handle(roleSetLinkWebMenuCommand);
