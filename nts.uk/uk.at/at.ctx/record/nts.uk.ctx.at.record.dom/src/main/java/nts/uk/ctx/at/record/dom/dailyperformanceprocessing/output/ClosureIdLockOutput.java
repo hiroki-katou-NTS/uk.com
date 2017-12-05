@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
+package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output;
 
 import lombok.Value;
 
