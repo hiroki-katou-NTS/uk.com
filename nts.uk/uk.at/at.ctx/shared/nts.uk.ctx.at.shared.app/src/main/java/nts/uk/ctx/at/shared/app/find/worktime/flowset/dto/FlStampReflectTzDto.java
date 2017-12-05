@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.StampReflectTimezoneDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectRefTwoWT;

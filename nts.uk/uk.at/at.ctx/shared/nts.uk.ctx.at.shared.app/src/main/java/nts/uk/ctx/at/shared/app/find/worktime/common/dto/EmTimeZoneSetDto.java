@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.TimeZoneRoundingDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
