@@ -5882,9 +5882,10 @@ var nts;
                                 $dialog.dialog("option", "height", maxrowsHeight);
                             });
                             $dialog.dialog("open");
+                            $dialog.closest("[role='dialog']").show();
                         }
                         else {
-                            $dialog.dialog("close");
+                            $dialog.closest("[role='dialog']").hide();
                         }
                     };
                     return NtsErrorDialogBindingHandler;
@@ -6042,6 +6043,18 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+                        $input.on("keyup", function (e) {
+                            var code = e.keyCode || e.which;
+                            if (!readonly && code.toString() !== '9') {
+                                var validator = self.getValidator(data);
+                                var newText = $input.val();
+                                var result = validator.validate(newText, { isCheckExpression: true });
+                                $input.ntsError('clear');
+                                if (!result.isValid) {
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                }
+                            }
+                        });
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
                                 var validator = self.getValidator(data);
@@ -10619,6 +10632,7 @@ var nts;
                                     }
                                 }
                                 else {
+                                    $headerScroll.width(0);
                                     $bodyContainer.css("padding-right", "0px");
                                 }
                                 setTimeout(resizeEvent, 20);
@@ -23113,3 +23127,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

@@ -36,7 +36,7 @@ module nts.uk.com.view.ccg025.a.component {
                     self.columns = ko.observableArray([
                         { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden : true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
-                        { headerText: getText("CCG025_4"), prop: 'name',  width: 200 }
+                        { headerText: getText("CCG025_4"), prop: 'name',  width: 233 }
                     ]);    
                 }
                 

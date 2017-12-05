@@ -56,8 +56,8 @@ public class WorkPlaceAuthotityPubImpl implements WorkPlaceAuthorityPub  {
 	}
 
 	@Override
-	public void deleteWorkPlaceAuthority(String companyId, String roleId, int functionNo) {
-		repo.deleteWorkPlaceAuthority(companyId, roleId, functionNo);
+	public void deleteWorkPlaceAuthority(String companyId, String roleId) {
+		repo.deleteWorkPlaceAuthority(companyId, roleId);
 		
 	}
 	

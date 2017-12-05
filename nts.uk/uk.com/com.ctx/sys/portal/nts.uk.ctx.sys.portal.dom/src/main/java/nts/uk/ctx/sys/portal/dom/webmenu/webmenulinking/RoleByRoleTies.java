@@ -3,7 +3,11 @@ package nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
-
+/**
+ * 担当ロール別紐付け
+ * @author tutk
+ *
+ */
 @Getter
 public class RoleByRoleTies extends AggregateRoot  {
 	/** メニューコードリスト */
