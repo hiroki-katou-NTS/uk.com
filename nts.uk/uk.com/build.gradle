@@ -610,8 +610,8 @@ project (':com.screen:nts.uk.screen.com.app') {
 	 	compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
 		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 		
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.1'
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.1'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.2'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.2'
 	}
 }
 
@@ -827,12 +827,12 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.infra')
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.ws')
 		
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: '0.2.1'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.1'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.1'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2.1'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: '0.2.1'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: '0.2.1'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: '0.2.2'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.2'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.2'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2.2'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: '0.2.2'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: '0.2.2'
 		
 		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.ac', version: '0.2'
 		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: '0.2'
