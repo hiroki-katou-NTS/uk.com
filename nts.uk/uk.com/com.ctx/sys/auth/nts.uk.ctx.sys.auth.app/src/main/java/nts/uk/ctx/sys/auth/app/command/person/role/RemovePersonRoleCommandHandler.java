@@ -32,10 +32,10 @@ public class RemovePersonRoleCommandHandler extends CommandHandler<RemovePersonR
 	protected void handle(CommandHandlerContext<RemovePersonRoleCommand> context) {
 		final RemovePersonRoleCommand command = context.getCommand();		
 		
-		roleService.removeRole(command.getRoleId(), RoleAtr.valueOf(command.getAssignAtr()));
+		roleService.removeRole(command.getRoleId());
 		personRoleRepo.remove(command.getRoleId());
 		if(command.getAssignAtr()==RoleAtr.GENERAL.value){
-			List<RoleSet> roleSets = roleSetRepo.findByCompanyIdAndPersonRole(AppContexts.programId(), command.getRoleId());
+			List<RoleSet> roleSets = roleSetRepo.findByCompanyIdAndPersonRole(AppContexts.user().companyId(), command.getRoleId());
 			if(!roleSets.isEmpty()){
 				roleSets.forEach(rs ->{
 					rs.removePersonInfRole();
