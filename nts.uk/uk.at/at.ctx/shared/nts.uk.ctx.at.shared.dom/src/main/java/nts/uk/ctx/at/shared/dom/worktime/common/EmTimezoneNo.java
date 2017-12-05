@@ -2,27 +2,25 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.fixedset;
+package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * The Class SettlementOrder.
+ * The Class EmTimezoneNo.
  */
-//精算順序
+// 就業時間帯NO
 @IntegerRange(min = 1, max = 10)
-public class SettlementOrder extends IntegerPrimitiveValue<SettlementOrder> {
-
-	/** The Constant serialVersionUID. */
+public class EmTimezoneNo extends IntegerPrimitiveValue<EmTimezoneNo> {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new settlement order.
+	 * Instantiates a new em timezone no.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public SettlementOrder(Integer rawValue) {
+	public EmTimezoneNo(Integer rawValue) {
 		super(rawValue);
 	}
 

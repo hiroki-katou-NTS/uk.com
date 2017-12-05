@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento;
 
 /**
  * The Interface DayOffTimezoneSettingSetMemento.

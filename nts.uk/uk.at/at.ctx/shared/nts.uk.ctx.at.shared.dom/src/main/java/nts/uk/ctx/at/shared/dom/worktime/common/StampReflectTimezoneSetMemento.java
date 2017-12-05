@@ -2,41 +2,45 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.fixedset;
+package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Interface StampReflectTimezoneGetMemento.
+ * The Interface StampReflectTimezoneSetMemento.
  */
-public interface StampReflectTimezoneGetMemento {
-	
+public interface StampReflectTimezoneSetMemento {
+
 	/**
 	 * Gets the work no.
 	 *
+	 * @param workNo the work no
 	 * @return the work no
 	 */
-	WorkNo getWorkNo();
+	void setWorkNo(WorkNo workNo);
 
 	/**
 	 * Gets the classification.
 	 *
+	 * @param classification the classification
 	 * @return the classification
 	 */
-	GoLeavingWorkAtr getClassification();
+	void setClassification(GoLeavingWorkAtr classification);
 
 	/**
 	 * Gets the end time.
 	 *
+	 * @param endTime the end time
 	 * @return the end time
 	 */
-	TimeWithDayAttr getEndTime();
+	void setEndTime(TimeWithDayAttr endTime);
 
 	/**
 	 * Gets the start time.
 	 *
+	 * @param startTime the start time
 	 * @return the start time
 	 */
-	TimeWithDayAttr getStartTime();
+	void setStartTime(TimeWithDayAttr startTime);
 	
 }

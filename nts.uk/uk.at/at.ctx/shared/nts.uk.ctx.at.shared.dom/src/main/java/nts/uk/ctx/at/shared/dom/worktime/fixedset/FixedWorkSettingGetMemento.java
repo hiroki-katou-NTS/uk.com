@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 

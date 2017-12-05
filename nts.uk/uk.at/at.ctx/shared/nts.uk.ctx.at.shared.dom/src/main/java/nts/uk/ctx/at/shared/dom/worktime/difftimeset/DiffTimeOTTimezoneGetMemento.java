@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeOfTimeZoneSetGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
 
 /**
  * The Interface DiffTimeOTTimezoneGetMemento.

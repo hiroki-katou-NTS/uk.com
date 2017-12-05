@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 
 /**
  * The Class FlowWorkHolidayTimeZone.

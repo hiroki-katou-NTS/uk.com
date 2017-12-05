@@ -7,9 +7,9 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.LegalOTSetting;
 
 /**
  * The Interface DiffTimeWorkSettingGetMemento.

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
 

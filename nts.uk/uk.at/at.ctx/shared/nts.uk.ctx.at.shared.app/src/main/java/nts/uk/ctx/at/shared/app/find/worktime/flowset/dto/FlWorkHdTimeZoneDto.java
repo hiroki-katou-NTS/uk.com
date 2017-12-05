@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTzSetMemento;
 

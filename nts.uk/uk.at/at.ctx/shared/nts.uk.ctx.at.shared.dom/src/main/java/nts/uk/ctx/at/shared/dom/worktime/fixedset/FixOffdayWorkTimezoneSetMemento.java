@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+
 /**
  * The Interface FixOffdayWorkTimezoneSetMemento.
  */

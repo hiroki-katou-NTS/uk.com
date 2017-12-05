@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 
 /**
  * The Interface FlowWorkHolidayTimeZoneGetMemento.

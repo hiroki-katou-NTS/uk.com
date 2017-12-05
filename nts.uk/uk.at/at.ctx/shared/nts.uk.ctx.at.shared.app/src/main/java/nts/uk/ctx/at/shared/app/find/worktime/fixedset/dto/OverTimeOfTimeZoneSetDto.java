@@ -8,11 +8,11 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.EmTimezoneNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OTFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeOfTimeZoneSetSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 
 /**
  * The Class OverTimeOfTimeZoneSetDto.

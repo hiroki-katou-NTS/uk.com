@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 
 @Getter
 // 時差勤務休出時間の時間帯設定

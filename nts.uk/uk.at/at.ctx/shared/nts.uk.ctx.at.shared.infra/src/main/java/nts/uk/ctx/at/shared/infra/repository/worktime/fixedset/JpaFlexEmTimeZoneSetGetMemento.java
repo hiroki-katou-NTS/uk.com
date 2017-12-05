@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.EmTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSet;
 
 /**

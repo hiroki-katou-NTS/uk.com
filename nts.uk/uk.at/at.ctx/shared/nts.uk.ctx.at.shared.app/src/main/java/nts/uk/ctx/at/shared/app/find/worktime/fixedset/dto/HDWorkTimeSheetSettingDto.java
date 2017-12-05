@@ -8,9 +8,9 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 
 /**
  * The Class HDWorkTimeSheetSettingDto.

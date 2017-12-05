@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 
 /**
  * The Class DiffTimeWorkStampReflectTimezone.

@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
 
 /**
  * The Class DayOffTimezoneSettingDto.

@@ -14,13 +14,13 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkRestSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.LegalOTSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
 
 /**
  * The Class FixedWorkSettingDto.

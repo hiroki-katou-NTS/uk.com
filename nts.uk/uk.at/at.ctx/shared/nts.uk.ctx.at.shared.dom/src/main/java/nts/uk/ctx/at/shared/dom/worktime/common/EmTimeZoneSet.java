@@ -5,8 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.EmTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
 
 /**
  * The Class EmTimeZoneSet.

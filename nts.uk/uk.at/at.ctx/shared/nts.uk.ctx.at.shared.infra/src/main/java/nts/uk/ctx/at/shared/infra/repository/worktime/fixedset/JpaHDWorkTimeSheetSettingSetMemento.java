@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSetPK;
 

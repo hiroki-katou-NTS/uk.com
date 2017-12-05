@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 
 /**
  * The Class FlowOTTimezone.

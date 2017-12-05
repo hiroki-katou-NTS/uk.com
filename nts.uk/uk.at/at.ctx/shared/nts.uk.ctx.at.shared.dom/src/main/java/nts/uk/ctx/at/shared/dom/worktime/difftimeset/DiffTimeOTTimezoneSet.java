@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeOfTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 
 /**
  * The Class DiffTimeOTTimezoneSet.

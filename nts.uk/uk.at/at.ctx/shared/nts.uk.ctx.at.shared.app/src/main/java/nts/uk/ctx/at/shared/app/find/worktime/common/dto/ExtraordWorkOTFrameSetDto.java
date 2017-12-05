@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordWorkOTFrameSetSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OTFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 
 /**
  * The Class ExtraordWorkOTFrameSetDto.

@@ -10,10 +10,10 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkRestSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.LegalOTSetting;
 
 /**
  * The Class TimeDiffWorkSetting.

@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 
 /**
  * The Interface FlowStampReflectTimezoneSetMemento.

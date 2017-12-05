@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;

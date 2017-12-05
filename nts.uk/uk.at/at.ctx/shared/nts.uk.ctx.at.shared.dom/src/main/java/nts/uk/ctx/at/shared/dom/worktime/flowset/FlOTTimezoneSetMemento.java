@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 
 /**
  * The Interface FlowOTTimezoneSetMemento.

@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 
 /**
  * The Class FlexOffdayWorkTime.

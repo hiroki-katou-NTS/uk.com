@@ -5,11 +5,11 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.EmTimezoneNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OTFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeOfTimeZoneSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
 

@@ -2,34 +2,34 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.fixedset;
+package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Interface TimeZoneRoundingGetMemento.
+ * The Interface TimeZoneRoundingSetMemento.
  */
-public interface TimeZoneRoundingGetMemento {
+public interface TimeZoneRoundingSetMemento {
 
 	/**
- 	 * Gets the rounding.
- 	 *
- 	 * @return the rounding
- 	 */
- 	TimeRoundingSetting getRounding();
-
-	/**
-	 * Gets the start.
+	 * Sets the rounding.
 	 *
-	 * @return the start
+	 * @param rdSet the new rounding
 	 */
-	 TimeWithDayAttr getStart();
+ 	void setRounding(TimeRoundingSetting rdSet);
 
 	/**
-	 * Gets the end.
+	 * Sets the start.
 	 *
-	 * @return the end
+	 * @param start the new start
 	 */
-	 TimeWithDayAttr getEnd();
+	 void setStart(TimeWithDayAttr start);
+
+	/**
+	 * Sets the end.
+	 *
+	 * @param end the new end
+	 */
+	 void setEnd(TimeWithDayAttr end);
 }
