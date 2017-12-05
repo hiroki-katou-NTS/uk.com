@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
  */
 @Getter
 @Setter
-public class FlowOTTimezoneDto implements FlOTTimezoneSetMemento {
+public class FlOTTimezoneDto implements FlOTTimezoneSetMemento {
 
 	/** The worktime no. */
 	private Integer worktimeNo;
@@ -30,7 +30,7 @@ public class FlowOTTimezoneDto implements FlOTTimezoneSetMemento {
 	private BigDecimal OTFrameNo;
 
 	/** The flow time setting. */
-	private FlowTimeSettingDto flowTimeSetting;
+	private FlTimeSettingDto flowTimeSetting;
 
 	/** The in legal OT frame no. */
 	private BigDecimal inLegalOTFrameNo;

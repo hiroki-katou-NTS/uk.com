@@ -15,13 +15,13 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedSetMemento;
  */
 @Getter
 @Setter
-public class FlowWorkDedicateSettingDto implements FlWorkDedSetMemento {
+public class FlWorkDedSettingDto implements FlWorkDedSetMemento {
 
 	/** The overtime setting. */
-	private FlowOTSetDto overtimeSetting;
+	private FlOTSetDto overtimeSetting;
 
 	/** The calculate setting. */
-	private FlowCalculateSetDto calculateSetting;
+	private FlCalcSetDto calculateSetting;
 
 	/*
 	 * (non-Javadoc)

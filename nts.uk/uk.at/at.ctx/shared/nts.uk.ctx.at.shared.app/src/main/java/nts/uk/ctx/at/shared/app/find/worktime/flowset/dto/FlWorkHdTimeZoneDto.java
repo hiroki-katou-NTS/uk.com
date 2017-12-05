@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTzSetMemento;
 
 @Getter
 @Setter
-public class FlowWorkHolidayTimeZoneDto implements FlWorkHdTzSetMemento {
+public class FlWorkHdTimeZoneDto implements FlWorkHdTzSetMemento {
 
 	/** The worktime no. */
 	private Integer worktimeNo;
@@ -42,7 +42,7 @@ public class FlowWorkHolidayTimeZoneDto implements FlWorkHdTzSetMemento {
 	private BigDecimal outLegalPubHolFrameNo;
 
 	/** The flow time setting. */
-	private FlowTimeSettingDto flowTimeSetting;
+	private FlTimeSettingDto flowTimeSetting;
 
 	/*
 	 * (non-Javadoc)

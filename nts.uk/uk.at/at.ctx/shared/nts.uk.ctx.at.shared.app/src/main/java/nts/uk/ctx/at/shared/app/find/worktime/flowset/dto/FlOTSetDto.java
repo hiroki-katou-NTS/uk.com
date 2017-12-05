@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTSetMemento;
  */
 @Getter
 @Setter
-public class FlowOTSetDto implements FlOTSetMemento {
+public class FlOTSetDto implements FlOTSetMemento {
 
 	/** The fixed change atr. */
 	private Integer fixedChangeAtr;

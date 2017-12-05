@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectRefTwoWT;
  */
 @Getter
 @Setter
-public class FlowStampReflectTimezoneDto implements FlStampReflectTzSetMemento {
+public class FlStampReflectTzDto implements FlStampReflectTzSetMemento {
 
 	/** The two times work reflect basic time. */
 	private Integer twoTimesWorkReflectBasicTime;

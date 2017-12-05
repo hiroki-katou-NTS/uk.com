@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetMemento;
 
 @Getter
 @Setter
-public class FlowTimeSettingDto implements FlTimeSetMemento {
+public class FlTimeSettingDto implements FlTimeSetMemento {
 
 	/** The rounding. */
 	private TimeRoundingSettingDto rounding;

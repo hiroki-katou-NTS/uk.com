@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWTCalcMethod;
  */
 @Getter
 @Setter
-public class FlowCalculateSetDto implements FlCalcSetMemento {
+public class FlCalcSetDto implements FlCalcSetMemento {
 
 	/** The calc start time set. */
 	private Integer calcStartTimeSet;

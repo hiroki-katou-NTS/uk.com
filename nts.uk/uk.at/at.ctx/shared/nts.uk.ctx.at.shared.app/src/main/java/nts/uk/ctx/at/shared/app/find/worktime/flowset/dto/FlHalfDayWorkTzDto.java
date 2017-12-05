@@ -16,13 +16,13 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSetting;
  */
 @Getter
 @Setter
-public class FlowHalfDayWorkTimezoneDto implements FlHalfDayWtzSetMemento {
+public class FlHalfDayWorkTzDto implements FlHalfDayWtzSetMemento {
 
 	/** The rest timezone. */
 	private FlowWorkRestTimezoneDto restTimezone;
 
 	/** The work time zone. */
-	private FlowWorkTimezoneSettingDto workTimeZone;
+	private FlWorkTzSettingDto workTimeZone;
 
 	/*
 	 * (non-Javadoc)

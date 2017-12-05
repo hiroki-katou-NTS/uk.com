@@ -19,13 +19,13 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingSetMemento;
  */
 @Getter
 @Setter
-public class FlowWorkTimezoneSettingDto implements FlWtzSettingSetMemento {
+public class FlWorkTzSettingDto implements FlWtzSettingSetMemento {
 
 	/** The work time rounding. */
 	private TimeRoundingSettingDto workTimeRounding;
 
 	/** The lst OT timezone. */
-	private List<FlowOTTimezoneDto> lstOTTimezone;
+	private List<FlOTTimezoneDto> lstOTTimezone;
 
 	/*
 	 * (non-Javadoc)
@@ -48,7 +48,7 @@ public class FlowWorkTimezoneSettingDto implements FlWtzSettingSetMemento {
 	@Override
 	public void setLstOTTimezone(List<FlOTTimezone> lstTzone) {
 		this.lstOTTimezone = lstTzone.stream().map(item -> {
-			FlowOTTimezoneDto dto = new FlowOTTimezoneDto();
+			FlOTTimezoneDto dto = new FlOTTimezoneDto();
 			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());

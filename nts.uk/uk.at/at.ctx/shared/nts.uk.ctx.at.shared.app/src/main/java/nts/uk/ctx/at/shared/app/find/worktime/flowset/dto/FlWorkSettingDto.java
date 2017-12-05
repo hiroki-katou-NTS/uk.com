@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingSetMemento;
  */
 @Getter
 @Setter
-public class FlowWorkSettingDto implements FlWorkSettingSetMemento {
+public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 
 	/** The working code. */
 	private String workingCode;
@@ -32,22 +32,22 @@ public class FlowWorkSettingDto implements FlWorkSettingSetMemento {
 	private FlowWorkRestSettingDto restSetting;
 
 	/** The offday work timezone. */
-	private FlowOffdayWorkTimezoneDto offdayWorkTimezone;
+	private FlOffdayWorkTzDto offdayWorkTimezone;
 
 	/** The common setting. */
 	private WorkTimezoneCommonSetDto commonSetting;
 
 	/** The half day work timezone. */
-	private FlowHalfDayWorkTimezoneDto halfDayWorkTimezone;
+	private FlHalfDayWorkTzDto halfDayWorkTimezone;
 
 	/** The stamp reflect timezone. */
-	private FlowStampReflectTimezoneDto stampReflectTimezone;
+	private FlStampReflectTzDto stampReflectTimezone;
 
 	/** The designated setting. */
 	private Integer designatedSetting;
 
 	/** The flow setting. */
-	private FlowWorkDedicateSettingDto flowSetting;
+	private FlWorkDedSettingDto flowSetting;
 
 	/*
 	 * (non-Javadoc)

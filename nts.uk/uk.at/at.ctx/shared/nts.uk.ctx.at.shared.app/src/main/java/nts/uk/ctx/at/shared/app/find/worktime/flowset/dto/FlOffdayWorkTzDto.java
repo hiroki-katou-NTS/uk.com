@@ -19,13 +19,13 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTimeZone;
  */
 @Getter
 @Setter
-public class FlowOffdayWorkTimezoneDto implements FlOffdayWtzSetMemento {
+public class FlOffdayWorkTzDto implements FlOffdayWtzSetMemento {
 
 	/** The rest time zone. */
 	private FlowWorkRestTimezoneDto restTimeZone;
 
 	/** The lst work timezone. */
-	private List<FlowWorkHolidayTimeZoneDto> lstWorkTimezone;
+	private List<FlWorkHdTimeZoneDto> lstWorkTimezone;
 
 	/*
 	 * (non-Javadoc)
@@ -48,7 +48,7 @@ public class FlowOffdayWorkTimezoneDto implements FlOffdayWtzSetMemento {
 	@Override
 	public void setLstWorkTimezone(List<FlWorkHdTimeZone> listHdtz) {
 		this.lstWorkTimezone = listHdtz.stream().map(item -> {
-			FlowWorkHolidayTimeZoneDto dto = new FlowWorkHolidayTimeZoneDto();
+			FlWorkHdTimeZoneDto dto = new FlWorkHdTimeZoneDto();
 			item.saveToMement(dto);
 			return dto;
 		}).collect(Collectors.toList());
