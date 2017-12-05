@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -65,16 +66,26 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
 
-		// ドメインモデル「就業時間帯の設定」を取得
-		WorkTimeSetting workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
 
-		if (!workTimeSetting.equals(null)) {
+		// ドメインモデル「就業時間帯の設定」を取得
+		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
+
+		if (workTimeSetting.isPresent()) {
 			// 打刻反映時間帯を取得する - TODO
 			// this step is common of domain from New Wave's team
 			// fake data
 			List<StampReflectTimezone> stampReflectTimezones = new ArrayList<>();
 			if (!stampReflectTimezones.isEmpty()) {
 				stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectTimezones);
+				// new list for copy data
+				List<StampReflectTimezone> stampReflectTimezoneList = new ArrayList<>();
+				stampReflectTimezones.forEach(stamp -> {
+//					StampReflectTimezone stampReflectTimezone = new StampReflectTimezone();
+					// TODO - not setter? - add setter or create new class
+					
+					
+					stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectTimezoneList);
+				});
 			}
 		}
 

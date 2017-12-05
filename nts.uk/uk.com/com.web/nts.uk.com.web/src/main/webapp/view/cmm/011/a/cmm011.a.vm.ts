@@ -567,13 +567,18 @@ module nts.uk.com.view.cmm011.a {
                 let index: number = 3;
                 let wkpFullName: string = "";
                 
+                let isCreateWkpChild: boolean = self.parentModel.creationType == CreationType.CREATE_TO_CHILD;
+                
                 // check null empty or it is workplace parent 
-                if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd) || self.selectedHierarchyCd.length <= 3) {
+                if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd)
+                        || (!isCreateWkpChild && self.selectedHierarchyCd.length <= 3)) {
                     return null;
                 }
                 
+                let maxLength: number = self.selectedHierarchyCd.length;
+                
                 // find path name parent workplace
-                while (index < self.selectedHierarchyCd.length) {
+                while ((!isCreateWkpChild && index < maxLength) || (isCreateWkpChild && index <= maxLength)) {
                     let parentHierarchyCd: string = self.selectedHierarchyCd.substr(0, index);
                     wkpFullName += " " + self.mapHierarchy[parentHierarchyCd];
                     index += 3;
