@@ -419,9 +419,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
                     return false;
                 };
-                if ( !self.validateTime( self.timeEnd1(), self.timeStart2(), '#inpEndTime1' ) ) {
-                    return false;
-                };
             }
             //休憩時間
             for (let i = 0; i < self.restTime().length; i++) {
