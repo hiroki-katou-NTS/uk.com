@@ -82,38 +82,6 @@ table.input-form-a tr {
 	padding-left: 8px;
 }
 
-table.calculator-items {
-	float: left;
-	width: 152%;
-}
-
-table.calculator-items thead {
-	background-color: #c7f391;
-}
-
-table.calculator-items tr {
-	height: 32px;
-}
-
-table.calculator-items td {
-}
-
-table.calculator-items tbody {
-	height: auto;
-}
-
-table.calculator-items thead td:nth-child(1), table.calculator-items thead td:nth-child(2)
-{
-	text-align: center;
-}
-
-table.calculator-items tbody td:nth-child(1), table.calculator-items tbody td:nth-child(2), 
-table.calculator-items tbody td:nth-child(4), table.calculator-items tbody td:nth-child(5),
-table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nth-child(7)
-{
-	text-align: center;
-}
-
 #table-wrapper {
 	position:relative;
     width: 780px;
