@@ -231,7 +231,7 @@
 					<tbody data-bind="foreach: overtimeHours">
 						<tr>
 							<!--A6_7 残業時間名称--> 						
-							<td class="header" data-bind="text: frameName"></td>
+							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
 							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15" class="right-content"
 								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
