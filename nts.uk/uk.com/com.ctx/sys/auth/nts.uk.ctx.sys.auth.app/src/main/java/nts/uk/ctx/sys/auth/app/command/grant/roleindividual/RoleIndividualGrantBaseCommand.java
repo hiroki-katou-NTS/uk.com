@@ -10,15 +10,15 @@ import nts.uk.ctx.sys.auth.dom.role.RoleType;
 public class RoleIndividualGrantBaseCommand {
 	/** The user id. */
 	// ユーザID
-	private String userId;
+	private String userID;
 
 	/** The role id. */
 	// ロールID
-	private String roleId;
+	private String roleID;
 
 	/** The company id. */
 	// 会社ID
-	private String companyId;
+	private String companyID;
 
 	/** The role type. */
 	// ロール種類
@@ -26,9 +26,9 @@ public class RoleIndividualGrantBaseCommand {
 
 	/** The valid period. */
 	// 有効期間
-	private GeneralDate startDate;
+	private GeneralDate startValidPeriod;
 	
-	private GeneralDate endDate;
+	private GeneralDate endValidPeriod;
 	//Screen C setting
 	private boolean setRoleAdminFlag;
 	
@@ -36,12 +36,12 @@ public class RoleIndividualGrantBaseCommand {
 
 	public RoleIndividualGrant toDomain(){
 		return RoleIndividualGrant.createFromJavaType(
-				userId,
-				roleId,
-				companyId,
+				userID,
+				roleID,
+				companyID,
 				roleType.value,
-				startDate,
-				endDate);
+				startValidPeriod,
+				endValidPeriod);
 	}
 
 

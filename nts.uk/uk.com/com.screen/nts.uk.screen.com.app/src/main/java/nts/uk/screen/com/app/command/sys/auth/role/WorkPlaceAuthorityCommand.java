@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.auth.pub.wplmanagementauthority;
+package nts.uk.screen.com.app.command.sys.auth.role;
 
 import lombok.Value;
 
 @Value
-public class WorkPlaceAuthorityExport {
+public class WorkPlaceAuthorityCommand {
 	/**
 	 * ロールID
 	 */
@@ -20,5 +20,4 @@ public class WorkPlaceAuthorityExport {
 	 * 利用できる
 	 */
 	private boolean availability;
-	
 }

@@ -19,7 +19,10 @@
 			<com:EnumScript>
 				nts.uk.ctx.sys.auth.dom.role.RoleType
 				nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange
+				<!-- nts.uk.ctx.at.auth.dom.employmentrole.EmployeeRefRange
+				nts.uk.ctx.at.auth.dom.employmentrole.ScheduleEmployeeRef -->
 			</com:EnumScript>
+			<!--EmployeeReferenceRange 6,EmployeeRefRange 2 8,ScheduleEmployeeRef 4 -->
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -165,7 +168,7 @@
 							<td>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-												options: listEmployeeReferenceRange,
+												options: listEmployeeReferenceRange ,
 												optionsValue: 'value',
 												value: scheduleScreen,
 												optionsText: 'name',
@@ -232,7 +235,7 @@
 								<table id="multi-list"
 									data-bind="ntsGridList: {
 										height: 320,
-										options: items ,
+										options: listWorkPlaceFunction ,
 										optionsValue: 'functionNo',
 										columns: columns,
 										multiple: true,

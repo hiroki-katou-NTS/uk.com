@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.auth.app.command.wplmanagementauthority;
 
-import java.util.Optional;
-
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -19,10 +18,10 @@ public class DeleteWorkPlaceAuthorityCmdHandler extends CommandHandler<DeleteWor
 	@Override
 	protected void handle(CommandHandlerContext<DeleteWorkPlaceAuthorityCmd> context) {
 		DeleteWorkPlaceAuthorityCmd input = context.getCommand();
-		Optional<WorkPlaceAuthority> checkData = repo.getWorkPlaceAuthorityById(
-				input.getCompanyId(), input.getRoleId(), input.getFunctionNo());
-		if(checkData.isPresent()) {
-			repo.deleteWorkPlaceAuthority(input.getCompanyId(), input.getRoleId(), input.getFunctionNo());
+		List<WorkPlaceAuthority> checkData = repo.getAllWorkPlaceAuthorityByRoleId(
+				input.getCompanyId(), input.getRoleId());
+		if(!checkData.isEmpty()) {
+			repo.deleteWorkPlaceAuthority(input.getCompanyId(), input.getRoleId());
 		}
 		
 		

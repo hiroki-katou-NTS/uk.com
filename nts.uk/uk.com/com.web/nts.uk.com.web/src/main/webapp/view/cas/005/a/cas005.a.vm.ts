@@ -22,14 +22,18 @@ module nts.uk.com.view.cas005.a {
             //table
             currentCodeList: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
-            items: KnockoutObservableArray<model.WorkPlaceFunction>;
+            listWorkPlaceFunction: KnockoutObservableArray<model.WorkPlaceFunction>;
+            listWorkPlaceAuthority : KnockoutObservableArray<any>; 
             //table-right
             component: ccg.component.viewmodel.ComponentModel;
             
             //table-left
             //enum
             listEnumRoleType  :KnockoutObservableArray<any>;
-            listEmployeeReferenceRange  :KnockoutObservableArray<any>;
+            listEmployeeReferenceRange  :KnockoutObservableArray<any>; //row 6
+            listEmployeeRefRange  :KnockoutObservableArray<any>; //row 2 8
+            listScheduleEmployeeRef :KnockoutObservableArray<any>; //row 4
+            
             selectedEmployeeReferenceRange: KnockoutObservable<string>;
             bookingScreen :  KnockoutObservable<string>;
             scheduleScreen :  KnockoutObservable<string>;
@@ -48,6 +52,8 @@ module nts.uk.com.view.cas005.a {
                 //table enum RoleType,EmployeeReferenceRange
                 self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
                 self.listEmployeeReferenceRange = ko.observableArray(__viewContext.enums.EmployeeReferenceRange);
+//                self.listEmployeeRefRange = ko.observableArray(__viewContext.enums.EmployeeRefRange);
+//                self.listScheduleEmployeeRef = ko.observableArray(__viewContext.enums.EmployeeRefRange);
                 self.selectedEmployeeReferenceRange = ko.observable("");
                 self.bookingScreen = ko.observable("");
                 self.scheduleScreen = ko.observable("");
@@ -77,7 +83,8 @@ module nts.uk.com.view.cas005.a {
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
                 //table
-                self.items = ko.observableArray([]);
+                self.listWorkPlaceFunction = ko.observableArray([]);
+                self.listWorkPlaceAuthority =  ko.observableArray([]);
                 
                 self.columns = ko.observableArray([
                     { headerText: 'Name', key: 'functionNo', width: 100, hidden: true },
@@ -147,6 +154,7 @@ module nts.uk.com.view.cas005.a {
                 self.isRegister(true);
                 self.isDelete(true);
                 self.getAllWorkPlaceFunction();
+                self.getAllWorkPlaceAuthority();
                 self.component.startPage().done(function(){
                     self.selectRoleCodeByIndex(0);  
                     self.listRole(self.component.listRole());
@@ -163,7 +171,23 @@ module nts.uk.com.view.cas005.a {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getAllWorkPlaceFunction().done(function(data){
-                    self.items(data);
+                    self.listWorkPlaceFunction(data);
+                    dfd.resolve(data);  
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                dfd.resolve(); 
+            }
+            
+            /**
+             * function  get AllWorkPlace Authority
+             */
+            getAllWorkPlaceAuthority(){
+                let self = this;
+                let dfd = $.Deferred();
+                service.getAllWorkPlaceAuthority().done(function(data){
+                    self.listWorkPlaceAuthority(data);
                     dfd.resolve(data);  
                 }).fail(function(res: any) {
                     dfd.reject();
