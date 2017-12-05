@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.StampReflectTimezoneDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectSetMemento;
 
