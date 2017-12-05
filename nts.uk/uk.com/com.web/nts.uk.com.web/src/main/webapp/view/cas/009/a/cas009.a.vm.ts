@@ -17,6 +17,7 @@ module cas009.a.viewmodel {
         enumRangeChange:  KnockoutObservableArray<EnumConstantDto>;
         component: ccg.component.viewmodel.ComponentModel;
         isSelected: KnockoutObservable<boolean>;
+        enableDetail: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
                 self.listRole = ko.observableArray([]);
@@ -28,6 +29,7 @@ module cas009.a.viewmodel {
                 self.referFutureDate = ko.observable(true);
                 self.createMode = ko.observable(true);
                 self.isSelected =  ko.observable(true);
+                self.enableDetail =  ko.observable(true);
                 self.enumAuthen = ko.observableArray([
                          { code: '0', name: nts.uk.resource.getText("CAS009_14") }, 
                          { code: '1', name: nts.uk.resource.getText("CAS009_15") },
@@ -48,30 +50,29 @@ module cas009.a.viewmodel {
                     roleType: 8,
                     multiple: false  
                 });
-            
-                self.component.currentCode.subscribe((newValue) => {
-                        if(newValue !=""){
-                            self.roleId(newValue);
-                            let current = _.find(self.listRole(), function(o){return o.roleId == newValue});
-                            self.roleCode(current.roleCode)
-                            self.createMode(false);
-                            self.name(current.name);
-                            self.assignAtr(current.assignAtr);
-                            self.employeeReferenceRange(current.employeeReferenceRange);
-                            self.referFutureDate(current.referFutureDate );       
-                             $(".nts-input").ntsError("clear");                    
-                        }else{
-                                    self.roleCode("");
-                                    self.roleId("");
-                                    self.employeeReferenceRange(0);
-                                    self.name("");
-                                    self.assignAtr(0);
-                                    self.referFutureDate(false);
-                                    self.createMode(true);
-                        
-                        }
-    
-                });            
+                  self.component.currentCode.subscribe((newValue) => {
+                            if(newValue !="" && self.listRole().length>0){                            
+                                let current = _.find(self.listRole(), function(o){return o.roleId == newValue});
+                                self.roleCode(current.roleCode)
+                                self.roleId(newValue);
+                                self.createMode(false);
+                                self.name(current.name);
+                                self.assignAtr(current.assignAtr);
+                                self.employeeReferenceRange(current.employeeReferenceRange);
+                                self.referFutureDate(current.referFutureDate );       
+                                 $(".nts-input").ntsError("clear");                    
+                            }else{
+                                self.roleCode("");
+                                self.roleId("");
+                                self.employeeReferenceRange(0);
+                                self.name("");
+                                self.assignAtr(0);
+                                self.referFutureDate(false);
+                                self.createMode(true);
+                            
+                            }
+       
+                    });                        
         }
 
         /** Start Page */
@@ -82,9 +83,14 @@ module cas009.a.viewmodel {
                 if(self.assignAtr() ==0)     self.enumRangeChange(self.enumRange().slice(0,1));
                 else  self.enumRangeChange(self.enumRange().slice(1,4));
             });
-            self.getListRole();
-            self.isSelected(true);
-            self.createNew();
+            self.getListRole().done(()=>{
+                if(self.listRole().length==0) 
+                {
+                    self.createNew();
+                }  
+            });
+            self.userHasRole();
+
         }
         
         
@@ -98,13 +104,22 @@ module cas009.a.viewmodel {
                 if(roleIds.length>0){
                     service.getPersonInfoRole(roleIds).done((res) => {
                         
+                      //  self.component.listRole(_.sortBy(self.component.listRole(), o=>o.roleCode));
                         self.listRole(_.map(self.component.listRole(), function(x){
                             let personInfo : any = _.find(res, function(o){ return o.roleId == x.roleId  });
                             
                             return new model.Role(true, x.roleId, x.roleCode, x.employeeReferenceRange, x.name, x.assignAtr, personInfo.referFutureDate );                            
-                        }));
-                        self.listRole(_.sortBy(self.listRole(), o=>o.roleCode));
-                        
+                        }));                                                                                                 
+                        self.component.currentCode(self.component.listRole()[0].roleId)
+                        let current = _.find(self.listRole(), function(o){return o.roleId == self.component.currentCode()});
+                                self.roleCode(current.roleCode)
+                                self.roleId(self.component.currentCode());
+                                self.createMode(false);
+                                self.name(current.name);
+                                self.assignAtr(current.assignAtr);
+                                self.employeeReferenceRange(current.employeeReferenceRange);
+                                self.referFutureDate(current.referFutureDate );       
+                                 $(".nts-input").ntsError("clear");      
                         dfd.resolve();                                                                                                
                     });
                 }else{
@@ -114,6 +129,18 @@ module cas009.a.viewmodel {
             return dfd.promise();
                 
         } 
+        public userHasRole():JQueryPromise<any>{
+            let  self = this;
+            let dfd = $.Deferred();
+            service.userHasRole().done(function(res){
+                   self.enableDetail(res);
+            }).fail((error) => {
+                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
+            });
+            return dfd.promise();
+                
+        }        
+        
         
         
 
@@ -135,6 +162,7 @@ module cas009.a.viewmodel {
             let self = this;
             $(".nts-input").trigger("validate");
             if($(".nts-input").ntsError("hasError")) return ;
+             $('#roleName').focus();
             let role = new model.Role(self.createMode(), self.roleId(), self.roleCode(), self.employeeReferenceRange(), self.name(), self.assignAtr(), self.referFutureDate());
             service.saveRole(role).done(function(){
                  nts.uk.ui.dialog.alert({ messageId: "Msg_15" });  

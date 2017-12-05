@@ -3,7 +3,9 @@ module cas009.a.service {
         getPersonInfoRole: "ctx/sys/auth/role/find/person/role",
         deletePersonInfoRole: "ctx/sys/auth/role/remove/person/infor",
         savePersonInfoRole: "ctx/sys/auth/role/save/person/infor",
-        getOptItemEnum: 'ctx/sys/auth/role/get/enum/reference/range'
+        getOptItemEnum: 'ctx/sys/auth/role/get/enum/reference/range',
+        userHasRole : 'ctx/sys/auth/role/user/has/role'
+        
     }
     
     /** Get Role */
@@ -25,6 +27,10 @@ module cas009.a.service {
      */
     export function getOptItemEnum(): JQueryPromise<model.EnumConstantDto> {
         return nts.uk.request.ajax(paths.getOptItemEnum);
+    }
+    
+    export function userHasRole(): JQueryPromise<boolean> {
+        return nts.uk.request.ajax("com", paths.userHasRole +"/8");
     }
     
     export module model {
