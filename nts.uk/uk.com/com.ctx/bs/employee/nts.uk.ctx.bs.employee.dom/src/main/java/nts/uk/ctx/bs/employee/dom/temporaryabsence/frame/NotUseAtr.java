@@ -7,7 +7,7 @@ package nts.uk.ctx.bs.employee.dom.temporaryabsence.frame;
 /**
  * UseClassification
  */
-//使用区分
+//するしない区分
 public enum NotUseAtr {
 
 	/** The not use. */

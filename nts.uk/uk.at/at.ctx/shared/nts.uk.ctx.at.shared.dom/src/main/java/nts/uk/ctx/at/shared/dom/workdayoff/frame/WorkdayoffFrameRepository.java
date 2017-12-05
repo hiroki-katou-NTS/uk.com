@@ -24,13 +24,6 @@ public interface WorkdayoffFrameRepository {
 	Optional<WorkdayoffFrame> findWorkdayoffFrame(CompanyId companyId, int workdayoffFrNo);
 	
 	/**
-	 * Add.
-	 *
-	 * @param workdayoffFrame the workdayoff frame
-	 */
-	void add(WorkdayoffFrame workdayoffFrame);
-	
-	/**
 	 * Update.
 	 *
 	 * @param workdayoffFrame the workdayoff frame

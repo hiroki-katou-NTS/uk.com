@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.ot.frame;
 /**
  * UseClassification
  */
-//使用区分
+//するしない区分
 public enum NotUseAtr {
 
 	/** The not use. */
