@@ -110,8 +110,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             ]);
 
             self.cbxDisplayAtr = ko.observableArray([
-                { displayAttrCode: 0, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_NonDisplay") },
-                { displayAttrCode: 1, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_Display") }
+                { displayAttrCode: 0, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_Display") },
+                { displayAttrCode: 1, displayAttrName: nts.uk.resource.getText("Enum_DisplayArt_NonDisplay") }
             ]);
 
             self.cbxTotal = ko.observableArray([
