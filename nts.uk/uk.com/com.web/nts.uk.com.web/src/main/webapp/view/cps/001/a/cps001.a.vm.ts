@@ -74,7 +74,6 @@ module cps001.a.vm {
         person: KnockoutComputed<PersonInfo> = ko.computed(() => {
             let self = this,
                 employee = self.employee();
-
             return employee.personInfo();
         });
 
@@ -429,11 +428,19 @@ module cps001.a.vm {
 
                     // get employee && employment info
                     service.getEmpInfo(id).done((data: IEmployeeInfo) => {
-                        self.employeeCode(data.employeeCode);
+                        if (data) {
+                            self.employeeCode(data.employeeCode);
 
-                        // set entire days with data receive
-                        self.daysOfEntire(data.daysOfEntire);
-                        self.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                            // set entire days with data receive
+                            self.daysOfEntire(data.daysOfEntire);
+                            self.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                        } else {
+                            self.employeeCode(undefined);
+
+                            // set entire days is zero
+                            self.daysOfEntire(0);
+                            self.daysOfTemporaryAbsence(0);
+                        }
                     }).fail(() => {
                         self.employeeCode(undefined);
 
