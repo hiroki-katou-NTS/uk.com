@@ -4,15 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flowset.dto;
 
+import lombok.Value;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeGetMemento;
 
 /**
- * The Class FlowTimeSettingDto.
+ * The Class FlTimeSettingDto.
  */
-
+@Value
 public class FlTimeSettingDto implements FlTimeGetMemento {
 
 	/** The rounding. */
@@ -21,15 +22,26 @@ public class FlTimeSettingDto implements FlTimeGetMemento {
 	/** The passage time. */
 	private Integer passageTime;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeGetMemento#getRouding()
+	 */
 	@Override
 	public TimeRoundingSetting getRouding() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TimeRoundingSetting(this.rounding.getRoundingTime(), this.rounding.getRounding());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeGetMemento#getPassageTime
+	 * ()
+	 */
 	@Override
 	public AttendanceTime getPassageTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return new AttendanceTime(this.passageTime);
 	}
 }
