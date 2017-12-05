@@ -88,7 +88,11 @@
 												constraint:'EmployeeCode' ,
 												name: '#{i18n.getText('CPS002_104')}',
 												value: employeeCode,
-												required:true}" />
+												required:true,
+												option: {
+												 width: '160' 
+												 }
+												}" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
 										</div>
@@ -106,7 +110,7 @@
 											required:true,
 											name: '#{i18n.getText('CPS002_105')}',
 											option: {
-												 width: '300' 
+												 width: '295' 
 												 }}" />
 										</div>
 									</div>
@@ -119,7 +123,10 @@
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {value: cardNo,
 												constraint:'CardNumber',
-												name: '#{i18n.getText('CPS002_18')}'
+												name: '#{i18n.getText('CPS002_18')}',
+												option: {
+												 	width: '160' 
+												 }
 												 }" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
@@ -137,7 +144,7 @@
 											name: '#{i18n.getText('CPS002_108')}',
 											required:true,
 											option: {
-												 width: '163' 
+												 width: '160' 
 												 }}" />
 										</div>
 									</div>
@@ -153,7 +160,7 @@
 											value: password ,
 											required:true,
 											option: {
-												 width: '163',
+												 width: '160',
 												 textmode:'password' 
 												 }}" />
 										</div>
