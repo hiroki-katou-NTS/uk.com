@@ -13,6 +13,11 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
+/**
+ * 所属部門（兼務）
+ * @author xuan vinh
+ *
+ */
 
 @Getter
 @Setter
