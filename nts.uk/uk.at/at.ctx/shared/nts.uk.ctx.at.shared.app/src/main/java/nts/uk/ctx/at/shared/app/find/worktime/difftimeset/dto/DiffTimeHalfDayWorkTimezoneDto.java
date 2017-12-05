@@ -5,10 +5,10 @@
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDaySetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 
 /**
  * The Class TimeDiffHalfDayWorkTimezone.
@@ -23,7 +23,7 @@ public class DiffTimeHalfDayWorkTimezoneDto implements DiffTimeHalfDaySetMemento
 	private DiffTimezoneSettingDto workTimezone;
 
 	/** The Am pm cls. */
-	private Integer AmPmCls;
+	private Integer AmPmAtr;
 
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
@@ -38,9 +38,8 @@ public class DiffTimeHalfDayWorkTimezoneDto implements DiffTimeHalfDaySetMemento
 	}
 
 	@Override
-	public void setAmPmCls(AmPmClassification AmPmCls) {
+	public void setAmPmAtr(AmPmAtr AmPmAtr) {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
