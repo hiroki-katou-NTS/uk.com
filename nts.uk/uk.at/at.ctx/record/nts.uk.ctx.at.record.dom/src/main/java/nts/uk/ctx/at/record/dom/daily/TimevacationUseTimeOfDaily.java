@@ -24,7 +24,6 @@ public class TimevacationUseTimeOfDaily {
 	private AttendanceTime sixtyHourExcessHolidayUseTime;
 	//特別休暇使用時間
 	private AttendanceTime TimeSpecialHolidayUseTime;
-	
 	/**
 	 * 各使用時間から相殺時間を控除する
 	 * 

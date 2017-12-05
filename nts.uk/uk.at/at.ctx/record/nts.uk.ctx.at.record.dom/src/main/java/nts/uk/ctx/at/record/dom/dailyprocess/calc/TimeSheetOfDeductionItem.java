@@ -38,6 +38,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	private Optional<GoingOutReason> goOutReason;
 	private Optional<BreakClassification> breakAtr;
 	private final DeductionClassification deductionAtr;
+	private BetweenDutiesBreakTimeAtr betweenDutiesBreakTimeAtr;
 	
 //	private final DedcutionClassification deductionClassification;
 //	private final BreakClassification breakClassification;
@@ -140,10 +141,50 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	public List<TimeSheetOfDeductionItem> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage
 															,boolean useFixedRestTime,FluidFixedAtr fluidFixedAtr,WorkTimeDailyAtr workTimeDailyAtr) {
 		List<TimeSheetOfDeductionItem> map = new ArrayList<TimeSheetOfDeductionItem>();
-	
+		/*勤務間の時間帯が含まれている場合　*/   //高須作成
+		if(this.getBetweenDutiesBreakTimeAtr().isBetweenDuties()||compareTimeSheet.getBetweenDutiesBreakTimeAtr().isBetweenDuties()) {
+			/*前半勤務間　　後半勤務間*/
+			if(this.getBetweenDutiesBreakTimeAtr().isBetweenDuties() && compareTimeSheet.getBetweenDutiesBreakTimeAtr().isBetweenDuties()) {
+				//どのように処理する？
+			}
+			/*前半育児　　後半勤務間*/
+			else if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getBetweenDutiesBreakTimeAtr().isBetweenDuties()) {
+				map.add(this.replaceTimeSpan(this.calcrange.getNotDuplicationWith(compareTimeSheet.calcrange).get()));
+				map.add(compareTimeSheet);
+				return map;
+			}
+			/*前半勤務間　　後半育児*/
+			else if(this.getBetweenDutiesBreakTimeAtr().isBetweenDuties() && compareTimeSheet.getDeductionAtr().isChildCare()) {
+				map.add(this);
+				map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+				return map;
+			}
+			/*前半外出　　後半勤務間*/
+			else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getBetweenDutiesBreakTimeAtr().isBetweenDuties()) {
+				map.add(this.replaceTimeSpan(this.calcrange.getNotDuplicationWith(compareTimeSheet.calcrange).get()));
+				map.add(compareTimeSheet);
+				return map;
+			}
+			/*前半勤務間　　後半育児*/
+			else if(this.getBetweenDutiesBreakTimeAtr().isBetweenDuties() && compareTimeSheet.getDeductionAtr().isGoOut()) {
+				map.add(this);
+				map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+				return map;
+			}
+			/*前半休憩　　後半勤務間*/
+			else if(this.getDeductionAtr().isBreak() &&  compareTimeSheet.getBetweenDutiesBreakTimeAtr().isBetweenDuties()) {
+				map.add(this.replaceTimeSpan(this.calcrange.getNotDuplicationWith(compareTimeSheet.calcrange).get()));
+				map.add(compareTimeSheet);
+				return map;
+			}
+			/*前半勤務間　　後半休憩*/
+			map.add(this);
+			map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+			return map;
+		}
 		/*両方とも育児　*/
 		/*if文の中身を別メソッドに実装する*/
-		if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isChildCare()) {
+		else if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isChildCare()) {
 			map.add(this);
 			map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
 			return map;

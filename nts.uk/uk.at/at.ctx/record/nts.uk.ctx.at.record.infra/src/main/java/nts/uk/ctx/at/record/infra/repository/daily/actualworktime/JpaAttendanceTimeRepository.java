@@ -12,12 +12,18 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
+import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
+import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWork;
+import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTs;
+import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
+import nts.uk.ctx.at.record.infra.entity.daily.legalworktime.KrcdtDayPrsIncldTime;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -40,15 +46,17 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		}
 		
 		/*予定時間*/
-		this.commandProxy().insert(KrcdtDayAttendanceTime.create(attendanceTime));
+		this.commandProxy().insert(KrcdtDayWorkScheTime.create(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),attendanceTime.getWorkScheduleTimeOfDaily()));
 		/*休出時間*/
-		this.commandProxy().insert(KrcdtDayAttendanceTime.create(attendanceTime));
+		this.commandProxy().insert(KrcdtDayHolidyWork.create(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayWorkTimeOfDaily()));
 		/*休出時間帯*/
-		this.commandProxy().insert(KrcdtDayAttendanceTime.create(attendanceTime));
-		/*遅刻時間*/
-		this.commandProxy().insert(KrcdtDayAttendanceTime.create(attendanceTime));
+		this.commandProxy().insert(KrcdtDayHolidyWorkTs.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayWorkTimeOfDaily()));
+		for(LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily()) {
+			/*遅刻時間*/
+			this.commandProxy().insert(KrcdtDayLateTime.create(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),lateTime));
+		}
 		/*所定時間内時間*/
-		this.commandProxy().insert(KrcdtDayAttendanceTime.create(attendanceTime));
+		this.commandProxy().insert(KrcdtDayPrsIncldTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily()));
 		
 	}
 
@@ -66,15 +74,17 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		}
 		
 		/*予定時間*/
-		this.commandProxy().update( .create(attendanceTime));
+		this.commandProxy().update(KrcdtDayWorkScheTime.create(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),attendanceTime.getWorkScheduleTimeOfDaily()));
 		/*休出時間*/
-		this.commandProxy().update( .create(attendanceTime));
+		this.commandProxy().update(KrcdtDayHolidyWork.create(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayWorkTimeOfDaily()));
 		/*休出時間帯*/
-		this.commandProxy().update( .create(attendanceTime));
-		/*遅刻時間*/
-		this.commandProxy().update( .create(attendanceTime));
+		this.commandProxy().update(KrcdtDayHolidyWorkTs.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayWorkTimeOfDaily()));
+		for(LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily()) {
+			/*遅刻時間*/
+			this.commandProxy().update(KrcdtDayLateTime.create(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),lateTime));
+		}
 		/*所定時間内時間*/
-		this.commandProxy().update( .create(attendanceTime));
+		this.commandProxy().update(KrcdtDayPrsIncldTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily()));
 		
 	}
 
