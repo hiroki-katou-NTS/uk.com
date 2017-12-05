@@ -81,8 +81,8 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public void update(UpdateOvertimeCommand command) {
-		this.updateOvertimeCommandHandler.handle(command);
+	public List<String> update(UpdateOvertimeCommand command) {
+		return this.updateOvertimeCommandHandler.handle(command);
 	}
 	
 	@POST
