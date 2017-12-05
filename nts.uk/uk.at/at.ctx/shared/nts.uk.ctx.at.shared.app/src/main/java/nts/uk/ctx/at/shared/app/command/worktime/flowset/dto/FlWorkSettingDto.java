@@ -132,7 +132,7 @@ public class FlWorkSettingDto implements FlWorkSettingGetMemento {
 	 * getDesignatedSetting()
 	 */
 	@Override
-	public LegalOTSetting getDesignatedSetting() {
+	public LegalOTSetting getLegalOTSetting() {
 		return LegalOTSetting.valueOf(this.designatedSetting);
 	}
 

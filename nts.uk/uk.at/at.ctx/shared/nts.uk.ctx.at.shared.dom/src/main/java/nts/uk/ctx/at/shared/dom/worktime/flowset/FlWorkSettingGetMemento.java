@@ -68,7 +68,7 @@ public interface FlWorkSettingGetMemento {
 	 *
 	 * @return the designated setting
 	 */
-	LegalOTSetting getDesignatedSetting();
+	LegalOTSetting getLegalOTSetting();
 
 	/**
 	 * Gets the flow setting.
