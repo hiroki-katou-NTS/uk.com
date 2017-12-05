@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
+import nts.uk.shr.pereg.app.command.PeregDeleteCommand;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
 @Path("/facade/pereg")
@@ -26,5 +27,11 @@ public class FacadePeregWebService extends WebService {
 	@Path("update")
 	public void update(PeregInputContainer inputContainer) {
 		this.commandFacade.update(inputContainer);
+	}
+	
+	@POST
+	@Path("delete")
+	public void delete(PeregDeleteCommand deleteCommand) {
+		this.commandFacade.delete(deleteCommand);
 	}
 }
