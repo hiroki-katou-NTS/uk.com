@@ -153,25 +153,18 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
-//            $input.on("keyup", (e) => {
-//                var code = e.keyCode || e.which;
-//                if (!readonly && code.toString() !== '9') {
-//                    let validator = self.getValidator(data);
-//                    var newText = $input.val();
-//                    var result = validator.validate(newText,{ isCheckExpression: true });
-//                    $input.data("inputting", true);
-//                    $input.ntsError('clear');
-//                    if (!result.isValid) {
-//                        $input.ntsError('set', result.errorMessage, result.errorCode);
-//                    } 
-//                    
-//                    setTimeout(function(){
-//                        $input.val(newText);
-//                        $input.focus(); 
-//                        $input.data("inputting", false);
-//                    }, 10);
-//                }
-//            });
+            $input.on("keyup", (e) => {
+                var code = e.keyCode || e.which;
+                if (!readonly && code.toString() !== '9') {
+                    let validator = self.getValidator(data);
+                    var newText = $input.val();
+                    var result = validator.validate(newText,{ isCheckExpression: true });
+                    $input.ntsError('clear');
+                    if (!result.isValid) {
+                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                    } 
+                } 
+            });
             
             // Format on blur
             $input.blur(() => {
@@ -188,22 +181,20 @@ module nts.uk.ui.koExtentions {
 
             $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
-//                    if (!$input.data("inputting")) {
-                        let validator = self.getValidator(data);
-                        var newText = $input.val();
-                        var result = validator.validate(newText, { isCheckExpression: true });
-                        $input.ntsError('clear');
-                        if (result.isValid) {
-                            if (value() === result.parsedValue) {
-                                $input.val(result.parsedValue);
-                            } else {
-                                value(result.parsedValue);
-                            }
+                    let validator = self.getValidator(data);
+                    var newText = $input.val();
+                    var result = validator.validate(newText, { isCheckExpression: true });
+                    $input.ntsError('clear');
+                    if (result.isValid) {
+                        if (value() === result.parsedValue) {
+                            $input.val(result.parsedValue);
                         } else {
-                            $input.ntsError('set', result.errorMessage, result.errorCode);
-                            value(newText);
-                        }   
-//                    }
+                            value(result.parsedValue);
+                        }
+                    } else {
+                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                        value(newText);
+                    } 
                 }
             });
 

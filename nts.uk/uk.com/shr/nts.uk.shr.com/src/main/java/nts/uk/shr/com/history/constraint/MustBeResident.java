@@ -23,7 +23,7 @@ public class MustBeResident<H extends HistoryItem<S, D>, S extends GeneralPeriod
 	public void validateIfCanRemove(History<H, S, D> history, HistoryItem<S, D> itemToBeRemoved) {
 		
 		if (history.items().isEmpty()) {
-			throw new BusinessException("");
+			throw new BusinessException("Msg_57");
 		}
 	}
 
