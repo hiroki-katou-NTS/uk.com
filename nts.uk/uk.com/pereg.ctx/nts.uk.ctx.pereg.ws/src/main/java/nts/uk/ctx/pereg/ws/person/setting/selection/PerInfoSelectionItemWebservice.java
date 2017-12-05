@@ -40,7 +40,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionIt
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionItemOrderDto;
 
-@Path("ctx/bs/person/info/setting/selection")
+@Path("ctx/pereg/person/info/setting/selection")
 @Produces("application/json")
 public class PerInfoSelectionItemWebservice extends WebService {
 	@Inject
