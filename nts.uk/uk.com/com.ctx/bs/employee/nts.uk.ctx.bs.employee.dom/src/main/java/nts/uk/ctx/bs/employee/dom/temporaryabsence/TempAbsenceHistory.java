@@ -26,6 +26,11 @@ public class TempAbsenceHistory extends AggregateRoot
 		implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 
 	/**
+	 * 会社ID
+	 */
+	private String companyId;
+	
+	/**
 	 * 社員ID
 	 */
 	private String employeeId;
