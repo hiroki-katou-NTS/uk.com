@@ -35,7 +35,7 @@ public class WorkTimezoneCommonSet extends DomainObject {
 
 	/** The medical set. */
 	// 医療設定
-	private List<WorkTimezoneMedicalSet> medicalSet;
+	private List<WorkTimezoneMedicalSet> medicalSets;
 
 	/** The go out set. */
 	// 外出設定
@@ -71,7 +71,7 @@ public class WorkTimezoneCommonSet extends DomainObject {
 		this.intervalSet = memento.getIntervalSet();
 		this.subHolTimeSet = memento.getSubHolTimeSet();
 		this.raisingSalarySet = memento.getRaisingSalarySet();
-		this.medicalSet = memento.getMedicalSet();
+		this.medicalSets = memento.getMedicalSet();
 		this.goOutSet = memento.getGoOutSet();
 		this.stampSet = memento.getStampSet();
 		this.lateNightTimeSet = memento.getLateNightTimeSet();
@@ -90,7 +90,7 @@ public class WorkTimezoneCommonSet extends DomainObject {
 		memento.setIntervalSet(this.intervalSet);
 		memento.setSubHolTimeSet(this.subHolTimeSet);
 		memento.setRaisingSalarySet(this.raisingSalarySet);
-		memento.setMedicalSet(this.medicalSet);
+		memento.setMedicalSet(this.medicalSets);
 		memento.setGoOutSet(this.goOutSet);
 		memento.setStampSet(this.stampSet);
 		memento.setLateNightTimeSet(this.lateNightTimeSet);

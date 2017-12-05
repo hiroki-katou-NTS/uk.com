@@ -23,7 +23,7 @@ public class FlStampReflectTz extends DomainObject {
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯
-	private List<StampReflectTimezone> stampReflectTimezone;
+	private List<StampReflectTimezone> stampReflectTimezones;
 
 	/**
 	 * Instantiates a new flow stamp reflect timezone.
@@ -32,7 +32,7 @@ public class FlStampReflectTz extends DomainObject {
 	 */
 	public FlStampReflectTz(FlStampReflectTzGetMemento memento) {
 		this.twoTimesWorkReflectBasicTime = memento.getTwoTimesWorkReflectBasicTime();
-		this.stampReflectTimezone = memento.getStampReflectTimezone();
+		this.stampReflectTimezones = memento.getStampReflectTimezone();
 	}
 
 	/**
@@ -42,6 +42,6 @@ public class FlStampReflectTz extends DomainObject {
 	 */
 	public void saveToMemento(FlStampReflectTzSetMemento memento) {
 		memento.setTwoTimesWorkReflectBasicTime(this.twoTimesWorkReflectBasicTime);
-		memento.setStampReflectTimezone(this.stampReflectTimezone);
+		memento.setStampReflectTimezone(this.stampReflectTimezones);
 	}
 }

@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 @Getter
 public class FlTimeSetting extends DomainObject {
 
-	/** The rouding. */
+	/** The rounding. */
 	// 丸め
-	private TimeRoundingSetting rouding;
+	private TimeRoundingSetting rounding;
 
 	/** The passage time. */
 	// 経過時間
@@ -30,7 +30,7 @@ public class FlTimeSetting extends DomainObject {
 	 * @param memento the memento
 	 */
 	public FlTimeSetting(FlTimeGetMemento memento) {
-		this.rouding = memento.getRouding();
+		this.rounding = memento.getRouding();
 		this.passageTime = memento.getPassageTime();
 	}
 
@@ -40,7 +40,7 @@ public class FlTimeSetting extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(FlTimeSetMemento memento) {
-		memento.setRouding(this.rouding);
+		memento.setRouding(this.rounding);
 		memento.setPassageTime(this.passageTime);
 	}
 }

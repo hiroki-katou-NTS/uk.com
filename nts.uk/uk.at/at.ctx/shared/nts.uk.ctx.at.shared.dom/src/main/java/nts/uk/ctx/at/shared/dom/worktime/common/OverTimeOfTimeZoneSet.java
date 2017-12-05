@@ -31,7 +31,7 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 
 	/** The OT frame no. */
 	// 残業枠NO
-	private OTFrameNo OTFrameNo;
+	private OTFrameNo oTFrameNo;
 
 	/** The legal O tframe no. */
 	// 法定内残業枠NO
@@ -52,7 +52,7 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 		this.restraintTimeUse = memento.getRestraintTimeUse();
 		this.earlyOTUse = memento.getEarlyOTUse();
 		this.timezone = memento.getTimezone();
-		this.OTFrameNo = memento.getOTFrameNo();
+		this.oTFrameNo = memento.getOTFrameNo();
 		this.legalOTframeNo = memento.getLegalOTframeNo();
 		this.settlementOrder = memento.getSettlementOrder();
 	}
@@ -67,7 +67,7 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 		memento.setRestraintTimeUse(this.restraintTimeUse);
 		memento.setEarlyOTUse(this.earlyOTUse);
 		memento.setTimezone(this.timezone);
-		memento.setOTFrameNo(this.OTFrameNo);
+		memento.setOTFrameNo(this.oTFrameNo);
 		memento.setLegalOTframeNo(this.legalOTframeNo);
 		memento.setSettlementOrder(this.settlementOrder);
 	}

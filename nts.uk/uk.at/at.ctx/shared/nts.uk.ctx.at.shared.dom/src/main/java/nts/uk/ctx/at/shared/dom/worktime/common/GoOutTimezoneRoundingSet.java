@@ -24,7 +24,7 @@ public class GoOutTimezoneRoundingSet extends DomainObject {
 	
 	/** The OT timezone. */
 	//残業時間帯
-	private GoOutTypeRoundingSet OTTimezone;
+	private GoOutTypeRoundingSet oTTimezone;
 	
 	/**
 	 * Instantiates a new go out timezone rounding set.
@@ -34,7 +34,7 @@ public class GoOutTimezoneRoundingSet extends DomainObject {
 	public GoOutTimezoneRoundingSet(GoOutTimezoneRoundingSetGetMemento memento) {
 		this.pubHolWorkTimezone = memento.getPubHolWorkTimezone();
 		this.workTimezone = memento.getWorkTimezone();
-		this.OTTimezone = memento.getOTTimezone();
+		this.oTTimezone = memento.getOTTimezone();
 	}
 	
 	/**
@@ -45,6 +45,6 @@ public class GoOutTimezoneRoundingSet extends DomainObject {
 	public void saveToMememto(GoOutTimezoneRoundingSetSetMemento memento){
 		memento.setPubHolWorkTimezone(this.pubHolWorkTimezone);
 		memento.setWorkTimezone(this.workTimezone);
-		memento.setOTTimezone(this.OTTimezone);
+		memento.setOTTimezone(this.oTTimezone);
 	}
 }

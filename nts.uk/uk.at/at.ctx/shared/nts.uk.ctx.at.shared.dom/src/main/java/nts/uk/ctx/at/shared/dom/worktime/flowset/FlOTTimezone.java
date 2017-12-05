@@ -26,7 +26,7 @@ public class FlOTTimezone extends DomainObject {
 
 	/** The OT frame no. */
 	// 残業枠NO
-	private OvertimeWorkFrameNo OTFrameNo;
+	private OvertimeWorkFrameNo oTFrameNo;
 
 	/** The flow time setting. */
 	// 流動時間設定
@@ -48,7 +48,7 @@ public class FlOTTimezone extends DomainObject {
 	public FlOTTimezone(FlOTTimezoneGetMemento memento) {
 		this.worktimeNo = memento.getWorktimeNo();
 		this.restrictTime = memento.getRestrictTime();
-		this.OTFrameNo = memento.getOTFrameNo();
+		this.oTFrameNo = memento.getOTFrameNo();
 		this.flowTimeSetting = memento.getFlowTimeSetting();
 		this.inLegalOTFrameNo = memento.getInLegalOTFrameNo();
 		this.settlementOrder = memento.getSettlementOrder();
@@ -62,7 +62,7 @@ public class FlOTTimezone extends DomainObject {
 	public void saveToMemento(FlOTTimezoneSetMemento memento) {
 		memento.setWorktimeNo(this.worktimeNo);
 		memento.setRestrictTime(this.restrictTime);
-		memento.setOTFrameNo(this.OTFrameNo);
+		memento.setOTFrameNo(this.oTFrameNo);
 		memento.setFlowTimeSetting(this.flowTimeSetting);
 		memento.setInLegalOTFrameNo(this.inLegalOTFrameNo);
 		memento.setSettlementOrder(this.settlementOrder);

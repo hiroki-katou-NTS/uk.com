@@ -22,7 +22,7 @@ public class WorkTimezoneLateEarlySet extends DomainObject{
 	
 	/** The other class set. */
 	//区分別設定
-	private List<OtherEmTimezoneLateEarlySet> otherClassSet;
+	private List<OtherEmTimezoneLateEarlySet> otherClassSets;
 
 	/**
 	 * Instantiates a new work timezone late early set.
@@ -31,7 +31,7 @@ public class WorkTimezoneLateEarlySet extends DomainObject{
 	 */
 	public WorkTimezoneLateEarlySet(WorkTimezoneLateEarlySetGetMemento memento) {
 		this.commonSet = memento.getCommonSet();
-		this.otherClassSet = memento.getOtherClassSet();
+		this.otherClassSets = memento.getOtherClassSet();
 	}
 
 	/**
@@ -41,6 +41,6 @@ public class WorkTimezoneLateEarlySet extends DomainObject{
 	 */
 	public void saveToMemento(WorkTimezoneLateEarlySetSetMemento memento) {
 		memento.setCommonSet(this.commonSet);
-		memento.setOtherClassSet(this.otherClassSet);
+		memento.setOtherClassSet(this.otherClassSets);
 	}
 }
