@@ -5,44 +5,39 @@
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.TimeZoneRoundingDto;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 
 /**
  * The Class EmTimeZoneSetDto.
  */
-
 @Getter
-public class EmTimeZoneSetDto implements EmTimeZoneSetSetMemento {
+@Setter
+public class EmTimeZoneSetDto implements EmTimeZoneSetGetMemento {
 
-	/** The Employment time frame no. */
+	/** The employment time frame no. */
 	private Integer employmentTimeFrameNo;
 
 	/** The timezone. */
 	private TimeZoneRoundingDto timezone;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetSetMemento#
-	 * setEmploymentTimeFrameNo(nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * EmTimeFrameNo)
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetGetMemento#getEmploymentTimeFrameNo()
 	 */
 	@Override
-	public void setEmploymentTimeFrameNo(EmTimeFrameNo no) {
-		this.employmentTimeFrameNo = no.v();
+	public EmTimeFrameNo getEmploymentTimeFrameNo() {
+		return new EmTimeFrameNo(this.employmentTimeFrameNo);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetSetMemento#
-	 * setTimezone(nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetGetMemento#getTimezone()
 	 */
 	@Override
-	public void setTimezone(TimeZoneRounding rounding) {
-		rounding.saveToMemento(this.timezone);
+	public TimeZoneRounding getTimezone() {
+		return new TimeZoneRounding(this.timezone);
 	}
+	
 }

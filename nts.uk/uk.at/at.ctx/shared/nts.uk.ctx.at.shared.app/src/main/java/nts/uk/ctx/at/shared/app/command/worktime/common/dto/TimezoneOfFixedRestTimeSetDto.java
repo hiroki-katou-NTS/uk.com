@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetGetMemento;
@@ -15,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetGetMem
 /**
  * The Class TimezoneOfFixedRestTimeSetDto.
  */
+@Getter
+@Setter
 public class TimezoneOfFixedRestTimeSetDto implements TimezoneOfFixedRestTimeSetGetMemento {
 	
 	/** The timezones. */
