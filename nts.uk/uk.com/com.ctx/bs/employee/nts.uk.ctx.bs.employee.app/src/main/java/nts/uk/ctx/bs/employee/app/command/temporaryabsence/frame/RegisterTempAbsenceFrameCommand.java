@@ -10,6 +10,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.bs.employee.app.command.temporaryabsence.dto.TempAbsenceFrameDto;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrame;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameGetMemento;
@@ -25,7 +26,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 public class RegisterTempAbsenceFrameCommand {
 	
 	/** The dto. */
-	private List<Dto> dto;
+	private List<TempAbsenceFrameDto> dto;
 	
 	/**
 	 * To domain.
@@ -34,13 +35,10 @@ public class RegisterTempAbsenceFrameCommand {
 	 */
 	public List<TempAbsenceFrame> toDomain() {
 		List<TempAbsenceFrame> lstFrame = new ArrayList<>();
-		for (Dto dto: dto) {
+		for (TempAbsenceFrameDto dto: dto) {
 			lstFrame.add(new TempAbsenceFrame(new TempAbsenceFrameGetMementoImpl(dto)));
 		}
-		if (!lstFrame.isEmpty() && lstFrame != null) {
-			return lstFrame;
-		}
-		return null;
+		return lstFrame;
 	}
 
 	/**
@@ -49,14 +47,14 @@ public class RegisterTempAbsenceFrameCommand {
 	public class TempAbsenceFrameGetMementoImpl implements TempAbsenceFrameGetMemento {
 
 		/** The temp absence frame command. */
-		private RegisterTempAbsenceFrameCommand.Dto tempAbsenceFrameCommand;
+		private TempAbsenceFrameDto tempAbsenceFrameCommand;
 		
 		/**
 		 * Instantiates a new temp absence frame get memento impl.
 		 *
 		 * @param tempAbsenceFrameCommand the temp absence frame command
 		 */
-		public TempAbsenceFrameGetMementoImpl(RegisterTempAbsenceFrameCommand.Dto tempAbsenceFrameCommand) {
+		public TempAbsenceFrameGetMementoImpl(TempAbsenceFrameDto tempAbsenceFrameCommand) {
 			super();
 			this.tempAbsenceFrameCommand = tempAbsenceFrameCommand;
 		}
@@ -92,28 +90,5 @@ public class RegisterTempAbsenceFrameCommand {
 		public TempAbsenceFrameName getTempAbsenceFrameName() {
 			return new TempAbsenceFrameName(this.tempAbsenceFrameCommand.getTempAbsenceFrName());
 		}
-		
-	}
-	
-	@Getter
-	@Setter
-	public static class Dto {
-		
-		/** The company id. */
-		// 会社ID
-		private String companyId;
-		
-		/** The temp absence fr no. */
-		//休職休業枠NO
-		private short tempAbsenceFrNo;
-		
-		/** The use classification. */
-		//使用区分
-		private short useClassification;
-		
-		/** The temp absence fr name. */
-		//休職休業枠名称
-		private String tempAbsenceFrName;
-
-	}
+	}	
 }

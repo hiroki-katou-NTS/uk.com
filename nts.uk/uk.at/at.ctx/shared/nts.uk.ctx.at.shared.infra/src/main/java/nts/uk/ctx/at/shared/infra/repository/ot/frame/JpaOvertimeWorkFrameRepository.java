@@ -42,15 +42,6 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 				.find(new KshstOvertimeFramePK(companyId.v(), (short) planYearHdFrNo), KshstOvertimeFrame.class)
 				.map(e -> this.toDomain(e));
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameRepository#add(nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrame)
-	 */
-	@Override
-	public void add(OvertimeWorkFrame planYearHolidayFrame) {
-		this.commandProxy().insert(this.toEntity(planYearHolidayFrame));
-	}
 
 	/*
 	 * (non-Javadoc)

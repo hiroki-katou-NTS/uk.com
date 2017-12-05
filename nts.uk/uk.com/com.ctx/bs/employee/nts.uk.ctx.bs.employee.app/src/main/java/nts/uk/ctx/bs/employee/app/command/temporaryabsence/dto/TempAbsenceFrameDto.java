@@ -4,19 +4,26 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.temporaryabsence.dto;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.app.command.temporaryabsence.frame.RegisterTempAbsenceFrameCommand;
 
-/**
- * The Class RegisterTempAbsenceFrameDto.
- */
 @Getter
 @Setter
-public class RegisterTempAbsenceFrameDto {
+public class TempAbsenceFrameDto {
 	
-	/** The lst temp absence frame command. */
-	private List<RegisterTempAbsenceFrameCommand> lstTempAbsenceFrameCommand;
+	/** The company id. */
+	// 会社ID
+	private String companyId;
+	
+	/** The temp absence fr no. */
+	//休職休業枠NO
+	private int tempAbsenceFrNo;
+	
+	/** The use classification. */
+	//使用区分
+	private short useClassification;
+	
+	/** The temp absence fr name. */
+	//休職休業枠名称
+	private String tempAbsenceFrName;
 }

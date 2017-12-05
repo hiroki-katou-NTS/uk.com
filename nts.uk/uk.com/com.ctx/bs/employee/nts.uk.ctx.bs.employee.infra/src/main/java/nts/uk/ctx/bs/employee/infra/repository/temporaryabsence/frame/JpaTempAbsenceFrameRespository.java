@@ -31,14 +31,6 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.frame.BsystTempAbsen
 public class JpaTempAbsenceFrameRespository extends JpaRepository implements TempAbsenceRepositoryFrame{
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame#add(nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrame)
-	 */
-	@Override
-	public void add(TempAbsenceFrame tempAbsenceFrame) {
-		this.commandProxy().insert(this.toEntity(tempAbsenceFrame));
-	}
-
-	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame#udpate(nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrame)
 	 */
 	@Override
@@ -55,7 +47,7 @@ public class JpaTempAbsenceFrameRespository extends JpaRepository implements Tem
 	private BsystTempAbsenceFrame toEntity(TempAbsenceFrame tempAbsenceFrame) {
 		Optional<BsystTempAbsenceFrame> optional = this.queryProxy()
 				.find(new BsystTempAbsenceFramePK(tempAbsenceFrame.getCompanyId(), 
-													tempAbsenceFrame.getTempAbsenceFrNo().v().shortValue()), 
+													tempAbsenceFrame.getTempAbsenceFrNo().v().intValue()), 
 						BsystTempAbsenceFrame.class);
 		BsystTempAbsenceFrame entity = new BsystTempAbsenceFrame();
 		if (optional.isPresent()) {
@@ -70,7 +62,7 @@ public class JpaTempAbsenceFrameRespository extends JpaRepository implements Tem
 	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame#findByTAFPk(java.lang.String, short)
 	 */
 	@Override
-	public TempAbsenceFrame findByTAFPk(String cId, short tempAbsenceFrameNo) {
+	public TempAbsenceFrame findByTempAbsenceFramePk(String cId, int tempAbsenceFrameNo) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

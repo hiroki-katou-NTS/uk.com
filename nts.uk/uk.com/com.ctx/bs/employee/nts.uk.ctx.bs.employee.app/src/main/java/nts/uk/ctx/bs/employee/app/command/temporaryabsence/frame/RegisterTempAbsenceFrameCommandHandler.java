@@ -14,7 +14,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrame;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
 
 /**
@@ -36,16 +35,18 @@ public class RegisterTempAbsenceFrameCommandHandler extends CommandHandler<Regis
 		List<TempAbsenceFrame> absenceFrame = command.toDomain();
 		
 		// update
-		for (TempAbsenceFrame tempAbsenceFrame: absenceFrame) {
-			TempAbsenceFrame temp = tempAbsenceFrameRepository.findByTAFPk(tempAbsenceFrame.getCompanyId(), tempAbsenceFrame.getTempAbsenceFrNo().v().shortValue());
-			if (tempAbsenceFrame.getUseClassification().value == 0) {
-				temp.setUseClassification(NotUseAtr.NOT_USE);
-				tempAbsenceFrameRepository.udpate(temp);
+		for (TempAbsenceFrame tempAbsenceFrameClient: absenceFrame) {
+			TempAbsenceFrame tempFromDB = tempAbsenceFrameRepository.findByTempAbsenceFramePk( tempAbsenceFrameClient.getCompanyId(), 
+																				tempAbsenceFrameClient.getTempAbsenceFrNo().v().intValue());
+			/* 
+			 * 	update object get from DB when == 0 or object get from Client when == 1\
+			 */
+			if (tempAbsenceFrameClient.getUseClassification().value == 0) {
+				tempFromDB.setUseClassification(NotUseAtr.NOT_USE);
+				tempAbsenceFrameRepository.udpate(tempFromDB);
 			} else {
-				tempAbsenceFrameRepository.udpate(tempAbsenceFrame);
-			}
-			
+				tempAbsenceFrameRepository.udpate(tempAbsenceFrameClient);
+			}	
 		}
 	}
-
 }

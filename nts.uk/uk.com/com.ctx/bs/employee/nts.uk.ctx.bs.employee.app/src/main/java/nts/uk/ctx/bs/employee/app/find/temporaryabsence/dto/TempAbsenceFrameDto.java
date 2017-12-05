@@ -20,7 +20,7 @@ public class TempAbsenceFrameDto implements TempAbsenceFrameSetMemento{
 	
 	/** The temp absence fr no. */
 	//休職休業枠NO
-	public short tempAbsenceFrNo;
+	public int tempAbsenceFrNo;
 	
 	/** The use classification. */
 	//使用区分
@@ -37,7 +37,7 @@ public class TempAbsenceFrameDto implements TempAbsenceFrameSetMemento{
 
 	@Override
 	public void setTempAbsenceFrameNo(TempAbsenceFrameNo tempAbsenceFrNo) {
-		this.tempAbsenceFrNo = tempAbsenceFrNo.v().shortValue();
+		this.tempAbsenceFrNo = tempAbsenceFrNo.v().intValue();
 	}
 
 	@Override

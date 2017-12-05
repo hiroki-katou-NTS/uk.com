@@ -24,13 +24,6 @@ public interface OvertimeWorkFrameRepository {
 	Optional<OvertimeWorkFrame> findOvertimeWorkFrame(CompanyId companyId, int overtimeWorkFrNo);
 	
 	/**
-	 * Add.
-	 *
-	 * @param overtimeWorkFrame the overtime work frame
-	 */
-	void add(OvertimeWorkFrame overtimeWorkFrame);
-	
-	/**
 	 * Update.
 	 *
 	 * @param overtimeWorkFrame the overtime work frame
