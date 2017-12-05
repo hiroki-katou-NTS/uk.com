@@ -24,6 +24,8 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiv
 public class JpaRoleIndividualGrantRepository extends JpaRepository implements RoleIndividualGrantRepository {
 	
 	private final String SELECT_BY_ROLE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrantPK.roleType = roleType";
+	
+	private final String SELECT_BY_KEY = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.userId = :userId AND c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrantPK.roleId = :roleId";
 
 	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrant.      ";
 	
@@ -113,6 +115,19 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	public Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, RoleType roleType) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public RoleIndividualGrant findByKey(String userId, String companyId, String roleId) {
+		RoleIndividualGrant  result = new RoleIndividualGrant();		
+		SacmtRoleIndiviGrant entities =  this.queryProxy().query(SELECT_BY_KEY, SacmtRoleIndiviGrant.class)
+			.setParameter("userId", userId)
+			.setParameter("cid", companyId)
+			.setParameter("roleId", roleId).getSingleOrNull();
+		if(entities != null){
+			result = this.toDomain(entities);
+		}
+		return result;
 	}
 
 

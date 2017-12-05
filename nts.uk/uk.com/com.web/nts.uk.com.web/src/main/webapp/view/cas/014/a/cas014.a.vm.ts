@@ -35,15 +35,16 @@ module nts.uk.com.view.cas014.a {
                 let self = this,
                     dfd = $.Deferred();
                 block.invisible();
+                self.roleSetList.removeAll();
+                self.jobTitleList.removeAll();
+                
                 new service.Service().getAllData(self.date()).done(function(data: any) {
                     if (data) {
-                        self.roleSetList.removeAll();
                         let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, (rs: any) => {
                             return new RoleSet(rs.code, rs.name);
                         });
                         _.each(_rsList, rs => self.roleSetList.push(rs));
 
-                        self.jobTitleList.removeAll();
                         let _jtList: Array<JobTitle> = _.map(data.listJobTitleDto, (jt: any) => {
                             return new JobTitle(jt.id, jt.code, jt.name);
                         });
