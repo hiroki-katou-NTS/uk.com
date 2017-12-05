@@ -896,7 +896,7 @@ public class AppOvertimeFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD){
+	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr){
 		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = -1; 
 		Integer endTime1 = -1;
@@ -915,6 +915,8 @@ public class AppOvertimeFinder {
 			startTime2 = recordWorkOutput.getStartTime2();
 			endTime2 = recordWorkOutput.getEndTime2();
 		}
+		// 01-18_実績の内容を表示し直す
+		iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID, appDate);
 		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2);
 	} 
 }

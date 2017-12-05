@@ -1736,6 +1736,7 @@ module nts.uk.com.view.cmm018.a {
                 let param: vmbase.ParamDto = new vmbase.ParamDto(2,'',self.employeeId());
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
+                    self.employeeId(data.employeeId);
                     if(data == null || data === undefined || data.lstPersonRoot.length == 0){
                         self.singleSelectedCode('');
                         self.historyStr('');
@@ -2085,7 +2086,7 @@ module nts.uk.com.view.cmm018.a {
                     if(self.singleSelectedCode() == -1){
                         endDate = self.ENDDATE_LATEST;
                         startDate = history.startDate;
-                        listType.push(new vmbase.ApplicationType(history.lstAppType[0],'',history.employRootAtr));
+                        listType.push(new vmbase.ApplicationType(history.lstAppType[0].value,'',history.lstAppType[0].employRootAtr));
                     }else{
                         endDate = history.workplace.endDate;
                         startDate = history.workplace.startDate;
@@ -2095,7 +2096,7 @@ module nts.uk.com.view.cmm018.a {
                     if(self.singleSelectedCode() == -1){
                         endDate = self.ENDDATE_LATEST;
                         startDate = history.startDate;
-                        listType.push(new vmbase.ApplicationType(history.lstAppType[0],'',history.employRootAtr));
+                        listType.push(new vmbase.ApplicationType(history.lstAppType[0].value,'',history.lstAppType[0].employRootAtr));
                     }else{
                         endDate = history.person.endDate;
                         startDate = history.person.startDate;

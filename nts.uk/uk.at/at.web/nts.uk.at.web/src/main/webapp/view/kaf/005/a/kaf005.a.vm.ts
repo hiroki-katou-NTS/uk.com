@@ -98,6 +98,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         workClockFrom1To1Pre: KnockoutObservable<string> = ko.observable(null);
         //TIME LINE 2
         workClockFrom2To2Pre: KnockoutObservable<string> = ko.observable(null);
+        displayWorkClockFrom2To2Pre: KnockoutObservable <boolean> = ko.observable(true);
         overtimeHoursPre: KnockoutObservableArray<common.AppOvertimePre> = ko.observableArray([]);
         overTimeShiftNightPre: KnockoutObservable<string> = ko.observable(null);
         flexExessTimePre: KnockoutObservable<string> = ko.observable(null);
@@ -545,7 +546,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         {
                             employeeID: self.employeeID(), 
                             appDate: moment(self.appDate()).format(self.DATEFORMART),
-                            siftCD: self.siftCD()
+                            siftCD: self.siftCD(),
+                            prePostAtr: self.prePostSelected()
                         }
                     ).done(data => {
                         self.timeStart1(data.startTime1 == -1 ? null : data.startTime1);
@@ -648,7 +650,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(data.preAppOvertimeDto.workClockFrom2Pre != -1 || data.preAppOvertimeDto.workClockTo2Pre!= -1){
                 self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
             }
-            
+            if(self.workClockFrom2To2Pre () == null){
+                self.displayWorkClockFrom2To2Pre(false);
+            }
             self.overtimeHoursPre.removeAll();
             if(data.preAppOvertimeDto.overTimeInputsPre != null){
                 for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
