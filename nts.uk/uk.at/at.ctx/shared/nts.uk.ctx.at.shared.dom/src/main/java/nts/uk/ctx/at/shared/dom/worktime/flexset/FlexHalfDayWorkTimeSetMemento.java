@@ -32,9 +32,9 @@ public interface FlexHalfDayWorkTimeSetMemento {
 	
 	
 	/**
-	 * Sets the am pm atr.
+	 * Sets the ampm atr.
 	 *
-	 * @param amPmAtr the new am pm atr
+	 * @param ampmAtr the new ampm atr
 	 */
-	void setAmPmAtr(AmPmAtr amPmAtr);
+	void setAmpmAtr(AmPmAtr ampmAtr);
 }
