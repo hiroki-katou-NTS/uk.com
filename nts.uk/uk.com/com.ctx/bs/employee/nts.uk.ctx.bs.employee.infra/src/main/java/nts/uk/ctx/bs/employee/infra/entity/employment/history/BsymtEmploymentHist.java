@@ -33,25 +33,27 @@ public class BsymtEmploymentHist extends UkJpaEntity implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The historyid -  PK. */
+	/** The historyid - PK. */
 	@Id
 	@Column(name = "HISTORY_ID")
 	private String hisId;
+
+	@Column(name = "CID")
+	public String companyId;
 
 	/** The employeeId. */
 	@Basic(optional = false)
 	@Column(name = "SID")
 	private String sid;
-	
+
 	@Basic(optional = true)
 	@Column(name = "STR_DATE")
 	private GeneralDate strDate;
-	
+
 	@Basic(optional = true)
 	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
 	private GeneralDate endDate;
-	
 
 	/**
 	 * Instantiates a new cempt employment.
@@ -69,8 +71,5 @@ public class BsymtEmploymentHist extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.hisId;
 	}
-
-	
-
 
 }
