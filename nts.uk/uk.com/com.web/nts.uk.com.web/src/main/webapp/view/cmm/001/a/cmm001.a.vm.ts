@@ -21,7 +21,7 @@ module cmm001.a {
         constructor() {  
             let self = this;
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: nts.uk.resource.getText("CMM001_16"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-1', title: nts.uk.resource.getText("CMM001_16"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
                 { id: 'tab-2', title: nts.uk.resource.getText("CMM001_17"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-3', title: nts.uk.resource.getText("CMM001_18"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
@@ -41,18 +41,18 @@ module cmm001.a {
             ];
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CMM001_7"), key: 'companyCode', width: 80 },
-                { headerText: nts.uk.resource.getText("CMM001_8"), key: 'companyName', width: 220 },
-                { headerText: nts.uk.resource.getText("CMM001_9"), key: 'isAbolition', width: 75,
+                { headerText: nts.uk.resource.getText("CMM001_7"), key: 'companyCode', width: 70 },
+                { headerText: nts.uk.resource.getText("CMM001_8"), key: 'companyName', width: 180 },
+                { headerText: nts.uk.resource.getText("CMM001_9"), key: 'isAbolition', width: 60,
                     template:  '{{if ${isAbolition} == 1}} <img src="../images/78.png" style="margin-left: 20px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'}
             ]);
             self.sel001Data = ko.observableArray([]);
             self.listCom = ko.observableArray([]);
             self.itemList = ko.observableArray(itemArray);
-            self.currentCompany = ko.observable(null);
-            self.currentCompanyCode = ko.observable('');
+            self.currentCompany = ko.observable(null);   
+            self.currentCompanyCode = ko.observable('');  
             self.sel001Data = ko.observableArray([]);
-            self.display = ko.observable(false);
+            self.display = ko.observable(true);
             self.checkInsert = ko.observable(false);
             
             self.roundingRules = ko.observableArray([
@@ -65,7 +65,7 @@ module cmm001.a {
             ]);
             // subscribe each company
             self.currentCompanyCode.subscribe((value) => {
-                nts.uk.ui.errors.clearAll();
+                nts.uk.ui.errors.clearAll();   
                 if (value) {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
@@ -99,15 +99,15 @@ module cmm001.a {
                         $("#companyName").focus();
                     });
                 }
-            });
+            });  
             // subscribe when check A2_2
             self.display.subscribe((item) => {
                 if(item){
-                    self.sel001Data(_.filter(self.listCom(), function(obj) {
+                    self.sel001Data(self.listCom());
+                }else{
+                         self.sel001Data(_.filter(self.listCom(), function(obj) {
                         return obj.isAbolition == 1;
                     }));
-                }else{
-                    self.sel001Data(self.listCom());    
                 }
             });
         }

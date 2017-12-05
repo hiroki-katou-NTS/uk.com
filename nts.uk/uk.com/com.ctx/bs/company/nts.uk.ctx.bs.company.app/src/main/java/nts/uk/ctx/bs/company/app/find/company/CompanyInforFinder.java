@@ -1,7 +1,6 @@
-package nts.uk.ctx.find;
+package nts.uk.ctx.bs.company.app.find.company;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,6 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class CompanyInforFinder {
 	@Inject 
 	private CompanyRepository comRep;
+	
 	/**
 	 * convert from address domain to dto
 	 * @param add
@@ -47,7 +47,7 @@ public class CompanyInforFinder {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	public List<CompanyInforDto> finder(){
+	public List<CompanyInforDto> findAll(){
 		String contractCd = AppContexts.user().contractCode();
 		return this.comRep.findAll()
 							.stream()
@@ -61,14 +61,19 @@ public class CompanyInforFinder {
 							}).collect(Collectors.toList());
 	}
 	
-	public Optional<CompanyInforDto> findId(String companyId){
-		return this.comRep.findComByCode(companyId).map(x -> {
+	/**
+	 * Find company information by company id
+	 * @param companyId company id
+	 * @return company information
+	 */
+	public CompanyInforDto find(String companyId){
+		return this.comRep.find(companyId).map(x -> {
 			return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),
 					x.getCompanyId(), x.getStartMonth().value,
 					x.getIsAbolition().value, x.getRepname().v(),
 					x.getRepjob().v(), x.getComNameKana().v(),
 					x.getShortComName().v(), x.getContractCd().v(), 
 					x.getTaxNo().v(), fromDomainAdd(x.getAddInfor()));
-		});
+		}).orElse(null);
 	}
 }

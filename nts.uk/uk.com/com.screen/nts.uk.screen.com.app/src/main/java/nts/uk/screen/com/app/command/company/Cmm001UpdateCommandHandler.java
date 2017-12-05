@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.company.app.command.company.UpdateCompanyInforCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.workplacedifferinfor.UpdateDivWorkPlaceDifferInforCommandHandler;
-import nts.uk.ctx.command.UpdateCompanyInforCommandHandler;
 import nts.uk.ctx.sys.env.app.command.sysusagesetfinder.UpdateSysUsageSetCommandHandler;
 
 @Stateless

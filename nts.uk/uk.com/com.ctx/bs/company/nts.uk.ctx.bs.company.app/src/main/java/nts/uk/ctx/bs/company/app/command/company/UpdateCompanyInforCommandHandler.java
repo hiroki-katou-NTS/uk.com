@@ -1,4 +1,4 @@
-package nts.uk.ctx.command;
+package nts.uk.ctx.bs.company.app.command.company;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,11 +24,6 @@ public class UpdateCompanyInforCommandHandler extends CommandHandler<UpdateCompa
 		UpdateCompanyInforCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
 		AddInfor add = null; 
-		// company code: 0000
-		if(data.getCcd() == "0000"){
-			throw new BusinessException("Msg_809");
-		}
-
 		if(data.getAddinfor() != null){
 			add = data.getAddinfor().toDomainAdd(CompanyInforNew.createCompanyId(data.getCcd(), data.getContractCd()));
 		}

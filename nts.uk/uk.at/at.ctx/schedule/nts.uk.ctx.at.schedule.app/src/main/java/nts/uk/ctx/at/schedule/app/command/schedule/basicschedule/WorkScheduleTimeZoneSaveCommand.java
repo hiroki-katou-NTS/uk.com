@@ -15,8 +15,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @Setter
-public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetMemento{
-	
+public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetMemento {
+
 	/** The schedule cnt. */
 	private int scheduleCnt;
 
@@ -50,7 +50,7 @@ public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetM
 	 */
 	@Override
 	public TimeWithDayAttr getScheduleStartClock() {
-		return new TimeWithDayAttr(scheduleStartClock);
+		return scheduleStartClock != null ? new TimeWithDayAttr(scheduleStartClock) : null;
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetM
 	 */
 	@Override
 	public TimeWithDayAttr getScheduleEndClock() {
-		return new TimeWithDayAttr(scheduleEndClock);
+		return scheduleEndClock != null ? new TimeWithDayAttr(scheduleEndClock) : null;
 	}
 
 }

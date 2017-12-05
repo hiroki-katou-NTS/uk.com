@@ -75,6 +75,14 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 		List<EmpBasicInfoImport> data = employeeInfoPub
 				.getListEmpBasicInfo(listSid).stream().map(c ->  this.coverEmpBasicInfoImport(c))
 				.collect(Collectors.toList());
+		List<String> listPid = data.stream().map(c->c.getPId()).collect(Collectors.toList());
+		List<PersonInfoImport> listPerson = this.getByListId(listPid);
+		for(EmpBasicInfoImport empBasicInfoImport:data) {
+			for(PersonInfoImport personInfoImport :listPerson) {
+				if(empBasicInfoImport.getPId().equals(personInfoImport.getPersonId()))
+					empBasicInfoImport.setNamePerson(personInfoImport.getPersonName());
+			}
+		}
 		return data;
 	}
 	
@@ -88,6 +96,7 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 		EmpBasicInfoImport empBasicInfoImport = new EmpBasicInfoImport(
 				empBasicInfoExport.getEmployeeId(),
 				empBasicInfoExport.getPId(),
+				null,
 				empBasicInfoExport.getEmployeeCode(),
 				empBasicInfoExport.getPersonName(),
 				empBasicInfoExport.getPersonMailAddress(),

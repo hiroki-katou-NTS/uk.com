@@ -6,10 +6,10 @@ package nts.uk.ctx.bs.company.infra.repository.company;
 
 import nts.uk.ctx.bs.company.dom.company.CCD;
 import nts.uk.ctx.bs.company.dom.company.CompanyId;
-import nts.uk.ctx.bs.company.dom.company.Name;
 import nts.uk.ctx.bs.company.dom.company.CompanySetMemento;
+import nts.uk.ctx.bs.company.dom.company.Name;
 import nts.uk.ctx.bs.company.dom.company.StartMonth;
-import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
+import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompanyInfor;
 
 /**
  * The Class JpaCompanySetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
 public class JpaCompanySetMemento implements CompanySetMemento{
 	
 	/** The company. */
-	private BcmmtCompany company;
+	private BcmmtCompanyInfor company;
 	
 	
 	/**
@@ -25,7 +25,7 @@ public class JpaCompanySetMemento implements CompanySetMemento{
 	 *
 	 * @param company the company
 	 */
-	public JpaCompanySetMemento(BcmmtCompany company) {
+	public JpaCompanySetMemento(BcmmtCompanyInfor company) {
 		this.company = company;
 	}
 
@@ -36,7 +36,7 @@ public class JpaCompanySetMemento implements CompanySetMemento{
 	 */
 	@Override
 	public void setCompanyCode(CCD companyCode) {
-		this.company.setCcd(companyCode.v());
+		this.company.companyCode = companyCode.v();
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class JpaCompanySetMemento implements CompanySetMemento{
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.company.setCid(companyId.v());
+		this.company.bcmmtCompanyInforPK.companyId = companyId.v();
 	}
 
 	/**
@@ -56,12 +56,12 @@ public class JpaCompanySetMemento implements CompanySetMemento{
 	 */
 	@Override
 	public void setStartMonth(StartMonth startMonth) {
-		this.company.setStrM(startMonth.v());
+		this.company.startMonth = startMonth.v();
 	}
 
 	@Override
 	public void setCompanyName(Name companyName) {
-		this.company.setCompanyName(companyName.v());
+		this.company.companyName = companyName.v();
 	}
 
 }

@@ -20,7 +20,6 @@ public class UpdateDivWorkPlaceDifferInforCommandHandler extends CommandHandler<
 	@Override
 	protected void handle(CommandHandlerContext<UpdateDivWorkPlaceDifferInforCommand> context) {
 		UpdateDivWorkPlaceDifferInforCommand data = context.getCommand();
-//		String contractCd = AppContexts.user().contractCode();
 		DivWorkDifferInfor div = DivWorkDifferInfor.createFromJavaType( data.getCompanyId(),
 																		data.getRegWorkDiv());
 		divRep.updateDivWork(div);
