@@ -2,11 +2,11 @@ module nts.uk.com.view.cps016.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getAllSelectionItems: "ctx/bs/person/info/setting/selection/findAll",
-        getPerInfoSelectionItem: "ctx/bs/person/info/setting/selection/findItem/{0}",
-        saveDataSelectionItem: "ctx/bs/person/info/setting/selection/addSelectionItem",
-        updateDataSelectionItem: "ctx/bs/person/info/setting/selection/updateSelectionItem",
-        removeDataSelectionItem: "ctx/bs/person/info/setting/selection/removeSelectionItem"
+        getAllSelectionItems: "ctx/pereg/person/info/setting/selection/findAll",
+        getPerInfoSelectionItem: "ctx/pereg/person/info/setting/selection/findItem/{0}",
+        saveDataSelectionItem: "ctx/pereg/person/info/setting/selection/addSelectionItem",
+        updateDataSelectionItem: "ctx/pereg/person/info/setting/selection/updateSelectionItem",
+        removeDataSelectionItem: "ctx/pereg/person/info/setting/selection/removeSelectionItem"
         
     }
 
