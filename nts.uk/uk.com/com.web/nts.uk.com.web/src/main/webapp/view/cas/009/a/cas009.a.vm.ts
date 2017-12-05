@@ -89,7 +89,7 @@ module cas009.a.viewmodel {
                     self.createNew();
                 }  
             });
-            self.userHasRole();
+           // self.userHasRole();
 
         }
         
