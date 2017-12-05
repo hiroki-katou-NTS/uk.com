@@ -122,16 +122,13 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 listRoleSets = self.listRoleSets,
                 currentRoleSet: RoleSet = self.currentRoleSet();
 
-            listRoleSets.removeAll();
-            errors.clearAll();
-
             /**
              *実行時情報をチェックする- check runtime
              */
             service.getCompanyIdOfLoginUser().done((companyId: any) => {
                 if (!companyId) {
                     self.backToTopPage();
-                    dfd.reject();
+                    dfd.resolve();
                  } else {
                      // initial screen
                      self.initialScreen(dfd, '');
@@ -325,12 +322,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
             windows.setShared('paramCdl025', param);
             windows.sub.modal('/view/cdl/025/index.xhtml', { title: '' }).onClosed(function(): any {
               //get data from share window
-                var data = windows.getShared('dataCdl025');
-                var roleId = '';
-                if (data) {
-                    roleId = data.currentCode;
-                }
-
+                var roleId = windows.getShared('dataCdl025');
                 self.setRoleId(roleType, roleId);
                 self.setFocusAfterSelectRole(roleType);
                 block.clear();
