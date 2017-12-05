@@ -28,7 +28,7 @@ module cps002.a.service {
         ;
 
     export function getLayout() {
-        return ajax('ctx/bs/person/' + basicpaths.getLayout);
+        return ajax(basicpath + basicpaths.getLayout);
     }
 
     export function getUserSetting() {
