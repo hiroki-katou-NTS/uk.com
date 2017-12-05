@@ -2014,11 +2014,11 @@ module nts.uk.com.view.cmm018.a {
                     let approver: Array<vmbase.ApproverDto> = [];
                     let approvalAtr;
                     let length = data.approverInfor.length;
-                    _.each(data.approverInfor, function(item){
+                    _.each(data.approverInfor, function(item, index){
                         approvalAtr = item.approvalAtr;
                         let confirmedPerson = (data.formSetting == 2)&&(item.id == data.confirmedPerson) ? 1 : 0;
                         let confirmName = confirmedPerson == 1 ? '(確定)' : '';
-                        approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,1,approvalAtr,confirmedPerson,confirmName));
+                        approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,index,approvalAtr,confirmedPerson,confirmName));
                     });
                    let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'','',length == 0 ? 0 : data.formSetting,length == 0 ? '' : data.approvalFormName,0,int);
                     let color: boolean = length > 0 ? true : tmp.color;
