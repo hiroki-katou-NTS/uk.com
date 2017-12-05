@@ -6,5 +6,5 @@ public interface RoleService {
 	List<Role> getAllByType(RoleType roleType);
 	void insertRole(Role role);
 	void updateRole(Role role);
-	void removeRole (String roleId, RoleAtr roleAtr);
+	void removeRole (String roleId);
 }
