@@ -45,9 +45,8 @@ public class PersonInfoRoleAuthWebservice extends WebService {
 	}
 
 	@POST
-	@Path("getSelfAuth")
+	@Path("get-self-auth")
 	public PersonInfoRoleAuthDto getSelfAuth() {
-
 		String roleId = AppContexts.user().roles().forCompanyAdmin();
 		return personInfoRoleAuthFinder.getDetailPersonRoleAuth(roleId)
 				.orElse(new PersonInfoRoleAuthDto("", 0, 0, 0, 0, 0, 0));
