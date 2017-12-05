@@ -66,11 +66,11 @@ public interface DiffTimeWorkSettingSetMemento {
     public void setChangeExtent(EmTimezoneChangeExtent changeExtent);
 
     /**
-     * Sets the half day work timezone.
+     * Sets the half day work timezones.
      *
-     * @param halfDayWorkTimezone the new half day work timezone
+     * @param halfDayWorkTimezone the new half day work timezones
      */
-    public void setHalfDayWorkTimezone(List<DiffTimeHalfDayWorkTimezone> halfDayWorkTimezone);
+    public void setHalfDayWorkTimezones(List<DiffTimeHalfDayWorkTimezone> halfDayWorkTimezone);
 
     /**
      * Sets the stamp reflect timezone.

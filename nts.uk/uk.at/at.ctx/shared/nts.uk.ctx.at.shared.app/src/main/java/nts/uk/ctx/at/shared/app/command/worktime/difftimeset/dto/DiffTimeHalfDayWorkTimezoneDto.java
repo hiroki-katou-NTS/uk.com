@@ -19,7 +19,7 @@ public class DiffTimeHalfDayWorkTimezoneDto {
 	private DiffTimezoneSettingDto workTimezone;
 
 	/** The Am pm cls. */
-	private Integer AmPmAtr;
+	private Integer amPmAtr;
 	
 	
 	public DiffTimeHalfDayWorkTimezone toDomain() {

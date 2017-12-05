@@ -19,9 +19,9 @@ public interface DiffTimeDayOffWorkTimezoneSetMemento {
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone);
 
 	/**
-	 * Sets the work timezone.
+	 * Sets the work timezones.
 	 *
-	 * @param workTimezone the new work timezone
+	 * @param workTimezone the new work timezones
 	 */
-	public void setWorkTimezone(List<DayOffTimezoneSetting> workTimezone);
+	public void setWorkTimezones(List<DayOffTimezoneSetting> workTimezone);
 }

@@ -18,11 +18,11 @@ public class DiffTimezoneSetting {
 
 	/** The employment timezone. */
 	// 就業時間帯
-	private List<EmTimeZoneSet> employmentTimezone;
+	private List<EmTimeZoneSet> employmentTimezones;
 
 	/** The OT timezone. */
 	// 残業時間帯
-	private List<DiffTimeOTTimezoneSet> OTTimezone;
+	private List<DiffTimeOTTimezoneSet> OTTimezones;
 
 	/**
 	 * Instantiates a new diff timezone setting.
@@ -30,8 +30,8 @@ public class DiffTimezoneSetting {
 	 * @param memento the memento
 	 */
 	public DiffTimezoneSetting(DiffTimezoneSettingGetMemento memento) {
-		this.employmentTimezone = memento.getEmploymentTimezone();
-		this.OTTimezone = memento.getOTTimezone();
+		this.employmentTimezones = memento.getEmploymentTimezones();
+		this.OTTimezones = memento.getOTTimezones();
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class DiffTimezoneSetting {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(DiffTimezoneSettingSetMemento memento) {
-		memento.setEmploymentTimezone(this.employmentTimezone);
-		memento.setOTTimezone(this.OTTimezone);
+		memento.setEmploymentTimezones(this.employmentTimezones);
+		memento.setOTTimezones(this.OTTimezones);
 	}
 }

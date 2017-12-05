@@ -20,9 +20,9 @@ public class DiffTimeDayOffWorkTimezone extends DomainObject {
 	// 休憩時間帯
 	private DiffTimeRestTimezone restTimezone;
 
-	/** The work timezone. */
+	/** The work timezones. */
 	// 勤務時間帯
-	private List<DayOffTimezoneSetting> workTimezone;
+	private List<DayOffTimezoneSetting> workTimezones;
 
 	/**
 	 * Instantiates a new diff time day off work timezone.
@@ -32,7 +32,7 @@ public class DiffTimeDayOffWorkTimezone extends DomainObject {
 	 */
 	public DiffTimeDayOffWorkTimezone(DiffTimeDayOffWorkTimezoneGetMemento memento) {
 		this.restTimezone = memento.getRestTimezone();
-		this.workTimezone = memento.getWorkTimezone();
+		this.workTimezones = memento.getWorkTimezones();
 	}
 
 	/**
@@ -43,6 +43,6 @@ public class DiffTimeDayOffWorkTimezone extends DomainObject {
 	 */
 	public void saveToMemento(DiffTimeDayOffWorkTimezoneSetMemento memento) {
 		memento.setRestTimezone(this.restTimezone);
-		memento.setWorkTimezone(this.workTimezone);
+		memento.setWorkTimezones(this.workTimezones);
 	}
 }

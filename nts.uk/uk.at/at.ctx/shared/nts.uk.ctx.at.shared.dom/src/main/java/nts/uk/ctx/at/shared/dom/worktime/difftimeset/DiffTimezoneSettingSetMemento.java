@@ -14,17 +14,17 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 public interface DiffTimezoneSettingSetMemento {
 
 	/**
-	 * Sets the employment timezone.
+	 * Sets the employment timezones.
 	 *
-	 * @param employmentTimezone the new employment timezone
+	 * @param employmentTimezone the new employment timezones
 	 */
-	public void setEmploymentTimezone(List<EmTimeZoneSet> employmentTimezone);
+	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezone);
 
 	/**
-	 * Sets the OT timezone.
+	 * Sets the OT timezones.
 	 *
-	 * @param OTTimezone the new OT timezone
+	 * @param OTTimezone the new OT timezones
 	 */
-	public void setOTTimezone(List<DiffTimeOTTimezoneSet> OTTimezone);
+	public void setOTTimezones(List<DiffTimeOTTimezoneSet> OTTimezone);
 
 }

@@ -43,7 +43,7 @@ public class DiffTimeCommand {
 	private EmTimezoneChangeExtentDto changeExtent;
 
 	/** The half day work timezone. */
-	private List<DiffTimeHalfDayWorkTimezoneDto> halfDayWorkTimezone;
+	private List<DiffTimeHalfDayWorkTimezoneDto> halfDayWorkTimezones;
 
 	/** The stamp reflect timezone. */
 	private DiffTimeWorkStampReflectTimezoneDto stampReflectTimezone;
@@ -110,8 +110,8 @@ public class DiffTimeCommand {
 		}
 
 		@Override
-		public List<DiffTimeHalfDayWorkTimezone> getHalfDayWorkTimezone() {
-			return this.command.halfDayWorkTimezone.stream().map(item -> {
+		public List<DiffTimeHalfDayWorkTimezone> getHalfDayWorkTimezones() {
+			return this.command.halfDayWorkTimezones.stream().map(item -> {
 				return item.toDomain();
 			}).collect(Collectors.toList());
 		}

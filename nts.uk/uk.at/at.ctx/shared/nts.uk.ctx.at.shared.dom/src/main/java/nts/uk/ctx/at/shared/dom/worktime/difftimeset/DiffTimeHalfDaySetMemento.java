@@ -28,7 +28,7 @@ public interface DiffTimeHalfDaySetMemento {
 	/**
 	 * Sets the am pm atr.
 	 *
-	 * @param AmPmAtr the new am pm atr
+	 * @param amPmAtr the new am pm atr
 	 */
-	public void setAmPmAtr(AmPmAtr AmPmAtr);
+	public void setAmPmAtr(AmPmAtr amPmAtr);
 }

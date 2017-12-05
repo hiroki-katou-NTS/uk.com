@@ -25,7 +25,7 @@ public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 
 	/** The Am pm cls. */
 	// 午前午後区分
-	private AmPmAtr AmPmAtr;
+	private AmPmAtr amPmAtr;
 
 	/**
 	 * Instantiates a new diff time half day work timezone.
@@ -36,7 +36,7 @@ public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 	public DiffTimeHalfDayWorkTimezone(DiffTimeHalfDayGetMemento memento) {
 		this.restTimezone = memento.getRestTimezone();
 		this.workTimezone = memento.getWorkTimezone();
-		this.AmPmAtr = memento.getAmPmAtr();
+		this.amPmAtr = memento.getAmPmAtr();
 	}
 
 	/**
@@ -47,6 +47,6 @@ public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 	public void saveToMemento(DiffTimeHalfDaySetMemento memento) {
 		memento.setRestTimezone(this.restTimezone);
 		memento.setWorkTimezone(this.workTimezone);
-		memento.setAmPmAtr(this.AmPmAtr);
+		memento.setAmPmAtr(this.amPmAtr);
 	}
 }

@@ -14,10 +14,10 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSettingGetMemen
 public class DiffTimezoneSettingDto {
 
 	/** The employment timezone. */
-	private List<EmTimeZoneSet> employmentTimezone;
+	private List<EmTimeZoneSet> employmentTimezones;
 
 	/** The OT timezone. */
-	private List<DiffTimeOTTimezoneSetDto> OTTimezone;
+	private List<DiffTimeOTTimezoneSetDto> OTTimezones;
 
 	public DiffTimezoneSetting toDomain() {
 		return new DiffTimezoneSetting(new DiffTimezoneSettingImpl(this));
@@ -33,13 +33,13 @@ public class DiffTimezoneSettingDto {
 		}
 
 		@Override
-		public List<EmTimeZoneSet> getEmploymentTimezone() {
+		public List<EmTimeZoneSet> getEmploymentTimezones() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public List<DiffTimeOTTimezoneSet> getOTTimezone() {
+		public List<DiffTimeOTTimezoneSet> getOTTimezones() {
 			// TODO Auto-generated method stub
 			return null;
 		}

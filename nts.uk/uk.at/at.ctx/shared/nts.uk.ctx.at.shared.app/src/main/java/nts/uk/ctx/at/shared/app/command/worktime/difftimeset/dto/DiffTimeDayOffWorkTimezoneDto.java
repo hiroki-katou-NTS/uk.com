@@ -18,7 +18,7 @@ public class DiffTimeDayOffWorkTimezoneDto {
 	private DiffTimeRestTimezoneDto restTimezone;
 
 	/** The work timezone. */
-	private List<DayOffTimezoneSettingDto> workTimezone;
+	private List<DayOffTimezoneSettingDto> workTimezones;
 
 	public DiffTimeDayOffWorkTimezone toDomain() {
 		return new DiffTimeDayOffWorkTimezone(new DiffTimeDayOffWorkTimezoneImpl(this));
@@ -38,8 +38,8 @@ public class DiffTimeDayOffWorkTimezoneDto {
 		}
 
 		@Override
-		public List<DayOffTimezoneSetting> getWorkTimezone() {
-			return this.dto.workTimezone.stream().map(item -> {
+		public List<DayOffTimezoneSetting> getWorkTimezones() {
+			return this.dto.workTimezones.stream().map(item -> {
 				return item.toDomain();
 			}).collect(Collectors.toList());
 		}

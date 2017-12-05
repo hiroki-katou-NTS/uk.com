@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezoneGetMeme
 public class DiffTimeRestTimezoneDto {
 
 	/** The rest timezone. */
-	private List<DiffTimeDeductTimezoneDto> restTimezone;
+	private List<DiffTimeDeductTimezoneDto> restTimezones;
 
 	public DiffTimeRestTimezone toDomain() {
 		return new DiffTimeRestTimezone(new DiffTimeRestTimezoneImpl(this));
@@ -29,8 +29,8 @@ public class DiffTimeRestTimezoneDto {
 		}
 
 		@Override
-		public List<DiffTimeDeductTimezone> getRestTimezone() {
-			return this.dto.restTimezone.stream().map(item -> {
+		public List<DiffTimeDeductTimezone> getRestTimezones() {
+			return this.dto.restTimezones.stream().map(item -> {
 				return item.toDomain();
 			}).collect(Collectors.toList());
 		}

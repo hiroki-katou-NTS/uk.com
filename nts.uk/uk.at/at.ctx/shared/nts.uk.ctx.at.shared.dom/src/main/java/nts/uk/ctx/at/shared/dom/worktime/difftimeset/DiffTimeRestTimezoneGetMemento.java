@@ -12,9 +12,9 @@ import java.util.List;
 public interface DiffTimeRestTimezoneGetMemento {
 	
 	/**
-	 * Gets the rest timezone.
+	 * Gets the rest timezones.
 	 *
-	 * @return the rest timezone
+	 * @return the rest timezones
 	 */
-	public List<DiffTimeDeductTimezone> getRestTimezone();
+	public List<DiffTimeDeductTimezone> getRestTimezones();
 }
