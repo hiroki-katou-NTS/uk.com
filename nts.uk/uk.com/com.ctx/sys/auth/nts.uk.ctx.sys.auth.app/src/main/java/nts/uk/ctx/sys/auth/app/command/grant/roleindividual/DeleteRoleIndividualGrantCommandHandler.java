@@ -26,12 +26,12 @@ public class DeleteRoleIndividualGrantCommandHandler extends CommandHandler<Dele
 		DeleteRoleIndividualGrantCommand command = context.getCommand();
         
 		if(command.getRoleType() == RoleType.SYSTEM_MANAGER){
-			DatePeriod insertPeriod = new DatePeriod(command.getStartDate(),command.getEndDate());
-			boolean isValid = roleIndividualService.checkSysAdmin(command.getUserId(), insertPeriod);
+			DatePeriod insertPeriod = new DatePeriod(command.getStartValidPeriod(),command.getEndValidPeriod());
+			boolean isValid = roleIndividualService.checkSysAdmin(command.getUserID(), insertPeriod);
 		    if(isValid == true)
 			throw new BusinessException("Msg_331");
 		}
-		roleIndividualGrantRepo.remove(command.getUserId(), command.getCompanyId(), command.getRoleType());
+		roleIndividualGrantRepo.remove(command.getUserID(), command.getCompanyID(), command.getRoleType());
 	}
 	
 

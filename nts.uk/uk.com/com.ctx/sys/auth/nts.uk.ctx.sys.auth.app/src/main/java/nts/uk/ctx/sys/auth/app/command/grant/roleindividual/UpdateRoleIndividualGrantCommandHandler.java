@@ -26,20 +26,16 @@ public class UpdateRoleIndividualGrantCommandHandler extends CommandHandler<Upda
 	protected void handle(CommandHandlerContext<UpdateRoleIndividualGrantCommand> context) {
 		UpdateRoleIndividualGrantCommand command = context.getCommand();
 
-		if (command.getUserId().isEmpty()) {
+		if (command.getUserID().isEmpty()) {
 			throw new BusinessException("Msg_218");
 		}
 		
-		DatePeriod insertPeriod = new DatePeriod(command.getStartDate(),command.getEndDate());
-		boolean isValid = roleIndividualService.checkSysAdmin(command.getUserId(), insertPeriod);
+		DatePeriod insertPeriod = new DatePeriod(command.getStartValidPeriod(),command.getEndValidPeriod());
+		boolean isValid = roleIndividualService.checkSysAdmin(command.getUserID(), insertPeriod);
 		if (isValid == false){
 			throw new BusinessException("Msg_330");
 		}
 		roleIndividualGrantRepo.update(context.getCommand().toDomain());
-		
-		
-		
-		
 
 	}
 

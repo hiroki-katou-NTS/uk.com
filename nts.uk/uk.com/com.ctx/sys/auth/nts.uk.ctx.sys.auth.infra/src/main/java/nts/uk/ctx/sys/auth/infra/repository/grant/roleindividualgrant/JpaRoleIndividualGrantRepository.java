@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.infra.repository.grant.roleindividualgrant;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,23 +22,29 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiv
 @Stateless
 public class JpaRoleIndividualGrantRepository extends JpaRepository implements RoleIndividualGrantRepository {
 	
-	private final String SELECT_BY_ROLE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrantPK.roleType = roleType";
-	
-	private final String SELECT_BY_KEY = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.userId = :userId AND c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrantPK.roleId = :roleId";
+	private final String SELECT_ROLE_GRANT = "SELECT c FROM SacmtRoleIndiviGrant c"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.companyID = :companyID "
+			+ " AND c.sacmtRoleIndiviGrantPK.userID = :userID"
+			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
+			
 
-	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrant.      ";
+	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrant.      ";
 	
 	private final String SELECT_BY_ROLE_ID ="SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId ";
+	
+	private final String SELECT_BY_COMPANYID_AND_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.companyID = :companyID"
+			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
 	
 
 	@Override
 	public Optional<RoleIndividualGrant> findByUser(String userId, GeneralDate date) {
 		// TODO Auto-generated method stub
 		return this.queryProxy()
-				.query(SELECT_BY_DATE, RoleIndividualGrant.class)
+				.query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class)
 				.setParameter("userId", userId)
 				.setParameter("date", date)
-				.getSingle();
+				.getSingle(c -> toDomain(c));
 	}
 
 	public void add(RoleIndividualGrant roleIndividualGrant) {
@@ -75,9 +80,9 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	
 	private RoleIndividualGrant toDomain(SacmtRoleIndiviGrant entity){
 		return RoleIndividualGrant.createFromJavaType(	
-				entity.sacmtRoleIndiviGrantPK.userId,
+				entity.sacmtRoleIndiviGrantPK.userID,
 				entity.roleId,
-				entity.sacmtRoleIndiviGrantPK.cid,
+				entity.sacmtRoleIndiviGrantPK.companyID,
 				entity.sacmtRoleIndiviGrantPK.roleType.intValue(),
 				entity.strD, 
 				entity.endD);
@@ -113,21 +118,22 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 
 	@Override
 	public Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, RoleType roleType) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy()
+				.query(SELECT_ROLE_GRANT, SacmtRoleIndiviGrant.class)
+				.setParameter("userID", userID)
+				.setParameter("companyID", companyID)
+				.setParameter("roleType", roleType)
+				.getSingle(c -> toDomain(c))
+				;
 	}
 
 	@Override
-	public RoleIndividualGrant findByKey(String userId, String companyId, String roleId) {
-		RoleIndividualGrant  result = new RoleIndividualGrant();		
-		SacmtRoleIndiviGrant entities =  this.queryProxy().query(SELECT_BY_KEY, SacmtRoleIndiviGrant.class)
-			.setParameter("userId", userId)
-			.setParameter("cid", companyId)
-			.setParameter("roleId", roleId).getSingleOrNull();
-		if(entities != null){
-			result = this.toDomain(entities);
-		}
-		return result;
+	public List<RoleIndividualGrant> findByCompanyIdAndRoleType(String companyID, int roleType) {
+		return this.queryProxy()
+				.query(SELECT_BY_COMPANYID_AND_ROLETYPE,SacmtRoleIndiviGrant.class)
+				.setParameter("companyID", companyID)
+				.setParameter("roleType", roleType)
+				.getList(c -> toDomain(c));
 	}
 
 

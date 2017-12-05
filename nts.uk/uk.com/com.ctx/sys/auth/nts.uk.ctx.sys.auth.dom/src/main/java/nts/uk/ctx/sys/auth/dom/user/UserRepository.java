@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.auth.dom.user;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface UserRepository {
 	/**
 	 * Gets the by login id.
@@ -21,6 +23,8 @@ public interface UserRepository {
 	Optional<User> getByAssociatedPersonId(String associatedPersonId); 
 	
 	Optional<User> getByUserID(String userID);
+	
+	List<User> searchUser(String userIDName , GeneralDate date);
 	
 	List<User> getByListUser(List<String> userID);
 	

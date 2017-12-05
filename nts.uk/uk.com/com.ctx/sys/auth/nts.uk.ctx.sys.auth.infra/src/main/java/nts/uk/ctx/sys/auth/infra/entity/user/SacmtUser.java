@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Getter
@@ -57,7 +58,7 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     /** 有効期限 */
     @Column(name = "EXPIRATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    public Date expirationDate;
+    public GeneralDate expirationDate;
     
     /** The special user. */
     /** 特別利用者 */

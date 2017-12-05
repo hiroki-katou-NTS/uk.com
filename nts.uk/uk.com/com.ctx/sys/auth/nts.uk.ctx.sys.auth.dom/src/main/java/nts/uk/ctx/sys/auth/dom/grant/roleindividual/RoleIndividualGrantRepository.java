@@ -71,13 +71,7 @@ public interface RoleIndividualGrantRepository {
 	RoleIndividualGrant findByKey(String userId, String companyId, String roleId);
 
 	Optional<RoleIndividualGrant> findByUser(String userId, GeneralDate today);
-
-
-	/**
-	 * find by role id
-	 * 
-	 * @param roleId
-	 * @return
-	 */
+    
+	List<RoleIndividualGrant> findByCompanyIdAndRoleType(String companyID, int roleType);
 
 }
