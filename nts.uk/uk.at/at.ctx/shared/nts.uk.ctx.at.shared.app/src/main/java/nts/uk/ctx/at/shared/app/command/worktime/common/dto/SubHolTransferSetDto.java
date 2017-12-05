@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DesignatedTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;

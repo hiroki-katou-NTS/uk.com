@@ -50,6 +50,4 @@ public class FlowWorkRestTimezoneDto implements FlowWorkRestTimezoneGetMemento{
 		return new FlowRestTimezone(this.flowRestTimezone);
 	}
 	
-
-	
 }
