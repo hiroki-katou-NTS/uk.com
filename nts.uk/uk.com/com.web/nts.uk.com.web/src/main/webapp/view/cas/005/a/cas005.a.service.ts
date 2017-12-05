@@ -2,11 +2,12 @@ module nts.uk.com.view.cas005.a {
     export module service {
         var paths = {
             getListWebMenu : "ctx/sys/auth/webmenu/getlistwebmenu",
-            getAllWorkPlaceFunction :"at/auth/workplace/wplmanagementauthority/WorkPlaceFunction/getlistworkplacefunction",
-            getAllWorkPlaceAuthority : "at/auth/workplace/wplmanagementauthority/WorkPlaceAuthority/getallWorkplaceauthority",
+            getAllWorkPlaceFunction :"at/auth/workplace/wplmanagementauthority/workplacefunction/getlistworkplacefunction",
+            getAllWorkPlaceAuthority : "at/auth/workplace/wplmanagementauthority/workplaceauthority/getallWorkplaceauthority",
             addRoleCas005 :"screen/sys/auth/cas005/addrolecas005",
             updateRoleCas005 :"screen/sys/auth/cas005/updaterolecas005",
             deleteRoleCas005 :"screen/sys/auth/cas005/deleterolecas005",
+            getRoleByRoleTiesById :"sys/portal/webmenu/webmenulinking/getrolebyroletiesbyid"
             
         }
         
@@ -35,6 +36,10 @@ module nts.uk.com.view.cas005.a {
         //delete role cas005
         export function deleteRoleCas005(command : any) : JQueryPromise<any>{
             return nts.uk.request.ajax("com",paths.deleteRoleCas005,command);
+        }
+        //getRoleByRoleTiesById
+        export function getRoleByRoleTiesById(roleId : string) : JQueryPromise<any>{
+            return nts.uk.request.ajax("com",paths.getRoleByRoleTiesById+"/"+roleId);    
         }
         
         

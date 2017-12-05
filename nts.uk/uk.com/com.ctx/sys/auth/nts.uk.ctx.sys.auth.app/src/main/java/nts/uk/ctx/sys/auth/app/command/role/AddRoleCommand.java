@@ -12,6 +12,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.auth.dom.role.RoleCode;
 import nts.uk.ctx.sys.auth.dom.role.RoleName;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
@@ -65,14 +66,13 @@ public class AddRoleCommand {
 	public Role toDomain() {
 		
 		return new Role(
-				this.roleId,
 				new RoleCode(this.roleCode),
 				EnumAdaptor.valueOf(this.roleType,RoleType.class),
 				EnumAdaptor.valueOf(this.employeeReferenceRange,EmployeeReferenceRange.class),
 				new RoleName(this.name),
-				new ContractCode(this.contractCode),
+				new ContractCode(AppContexts.user().contractCode()),
 				EnumAdaptor.valueOf(this.assignAtr,RoleAtr.class),
-				this.companyId
+				AppContexts.user().companyId()
 				);
 	}
 
