@@ -394,15 +394,17 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public void getResultContentActual(int prePostAtr,String siftCode,String companyID,String appDate) {
+	public AppOverTime getResultContentActual(int prePostAtr,String siftCode,String companyID,String appDate) {
 		// TODO Auto-generated method stub
 		if(PrePostAtr.POSTERIOR.value == prePostAtr){
-			Optional<WorkTimeSet> workTimeSet = workTimeSetRepository.findByCode(companyID, siftCode);
-			if(workTimeSet.isPresent()){
+			Optional<WorkTimeSet> workTimeSetOtp = workTimeSetRepository.findByCode(companyID, siftCode);
+			if(workTimeSetOtp.isPresent()){
+				WorkTimeSet workTimeSet = workTimeSetOtp.get();
 				
 				
 			}
 		}
+		return null;
 	}
 	private String convert(int minute){
 		String hourminute ="";

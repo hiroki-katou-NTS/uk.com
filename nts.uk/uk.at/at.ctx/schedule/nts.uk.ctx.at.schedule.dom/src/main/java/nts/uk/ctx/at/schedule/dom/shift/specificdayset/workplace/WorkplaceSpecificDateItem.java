@@ -1,30 +1,24 @@
 package nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace;
 
-import java.math.BigDecimal;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDate;
 
 @Getter
+@AllArgsConstructor
 public class WorkplaceSpecificDateItem extends AggregateRoot {
 	private String workplaceId;
-	private SpecificDate specificDate;
+	private GeneralDate specificDate;
 	private SpecificDateItemNo specificDateItemNo;
 	private SpecificName specificDateItemName;
 
-	public WorkplaceSpecificDateItem(String workplaceId, SpecificDate specificDate, SpecificDateItemNo specificDateItemNo,SpecificName specificDateItemName) {
-		this.workplaceId = workplaceId;
-		this.specificDate = specificDate;
-		this.specificDateItemNo = specificDateItemNo;
-		this.specificDateItemName = specificDateItemName;
-	}
-
-	public static WorkplaceSpecificDateItem createFromJavaType(String workplaceId, BigDecimal specificDate,
-			BigDecimal specificDateItemNo,String specificDateItemName) {
-		return new WorkplaceSpecificDateItem(workplaceId, new SpecificDate(specificDate),
+	public static WorkplaceSpecificDateItem createFromJavaType(String workplaceId, GeneralDate specificDate, Integer specificDateItemNo, String specificDateItemName) {
+		return new WorkplaceSpecificDateItem(
+				workplaceId, 
+				specificDate,
 				new SpecificDateItemNo(specificDateItemNo),
 				new SpecificName(specificDateItemName));
 	}

@@ -211,6 +211,10 @@ public class AppOvertimeFinder {
 					}
 				}
 			}
+		}else{
+			for(CaculationTime caculationTimeOld : overtimeHours){
+				caculationTimeOld.setPreAppTime(null);
+			}
 		}
 		
 		// 06-03_加給時間を取得
@@ -222,6 +226,10 @@ public class AppOvertimeFinder {
 						caculationTimeOld.setPreAppTime(caculationTime.getPreAppTime());
 					}
 				}
+			}
+		}else{
+			for(CaculationTime caculationTimeOld : bonusTimes){
+				caculationTimeOld.setPreAppTime(null);
 			}
 		}
 		for(CaculationTime overtimeHour : overtimeHours){
@@ -888,7 +896,7 @@ public class AppOvertimeFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD){
+	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr){
 		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = -1; 
 		Integer endTime1 = -1;
@@ -900,13 +908,15 @@ public class AppOvertimeFinder {
 		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
 		if(requestAppDetailSettings != null){
 			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
-			// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
+			// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
 			RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting.get(0),siftCD);
 			startTime1 = recordWorkOutput.getStartTime1();
 			endTime1 = recordWorkOutput.getEndTime1();
 			startTime2 = recordWorkOutput.getStartTime2();
 			endTime2 = recordWorkOutput.getEndTime2();
 		}
+		// 01-18_実績の内容を表示し直す
+		iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID, appDate);
 		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2);
 	} 
 }
