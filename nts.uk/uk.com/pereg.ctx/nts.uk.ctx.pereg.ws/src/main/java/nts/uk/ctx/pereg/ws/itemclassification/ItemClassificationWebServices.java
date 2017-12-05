@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 
-@Path("ctx/bs/person/itemcls")
+@Path("ctx/pereg/person/itemcls")
 @Produces("application/json")
 public class ItemClassificationWebServices {
 	

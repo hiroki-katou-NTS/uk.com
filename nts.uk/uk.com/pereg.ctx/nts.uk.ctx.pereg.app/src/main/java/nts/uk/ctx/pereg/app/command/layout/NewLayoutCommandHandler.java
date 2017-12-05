@@ -16,8 +16,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
-import nts.uk.ctx.pereg.dom.person.layout.LayoutCode;
-import nts.uk.ctx.pereg.dom.person.layout.LayoutName;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassification;

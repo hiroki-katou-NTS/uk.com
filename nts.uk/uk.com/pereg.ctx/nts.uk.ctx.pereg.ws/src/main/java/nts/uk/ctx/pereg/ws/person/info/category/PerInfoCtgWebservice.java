@@ -19,7 +19,7 @@ import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgWithItemsNameDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgWithParentMapDto;
 
-@Path("ctx/bs/person/info/category")
+@Path("ctx/pereg/person/info/category")
 @Produces("application/json")
 public class PerInfoCtgWebservice extends WebService {
 	@Inject

@@ -11,7 +11,7 @@ import nts.uk.ctx.pereg.app.command.layout.NewLayoutCommandHandler;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutFinder;
 
-@Path("ctx/bs/person/newlayout")
+@Path("ctx/pereg/person/newlayout")
 @Produces("application/json")
 public class NewLayoutWebservices extends WebService {
 

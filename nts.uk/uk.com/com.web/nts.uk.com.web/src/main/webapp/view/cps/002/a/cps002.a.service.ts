@@ -4,7 +4,7 @@ module cps002.a.service {
 
     let
         regpath = "ctx/pereg/",
-        basicpath = "ctx/bs/person/"
+        basicpath = "ctx/pereg/person/"
         , otherpath: any = {
             getEmployeeCode: 'basic/organization/employee/getGenerateEmplCode',
             getCardNumber: 'basic/organization/employee/getGenerateCardNo'
@@ -28,7 +28,7 @@ module cps002.a.service {
         ;
 
     export function getLayout() {
-        return ajax(basicpath + basicpaths.getLayout);
+        return ajax('ctx/bs/person/' + basicpaths.getLayout);
     }
 
     export function getUserSetting() {

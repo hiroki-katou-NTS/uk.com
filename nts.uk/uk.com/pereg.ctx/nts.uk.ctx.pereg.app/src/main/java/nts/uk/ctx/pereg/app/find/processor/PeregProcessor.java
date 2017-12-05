@@ -182,7 +182,7 @@ public class PeregProcessor {
 		// get item def
 		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
 				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
-						companyId, contractCode, loginEmpId.equals(query.getEmployeeId())));
+													companyId, contractCode, loginEmpId.equals(query.getEmployeeId())));
 		if (lstItemDef.size() == 0)
 			return new EmpMaintLayoutDto();
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef = new ArrayList<>();
@@ -191,9 +191,13 @@ public class PeregProcessor {
 					lstItemDef.get(i), query.getCategoryCode(), i));
 
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
+		
+		//set fix data
 		setEmpMaintLayoutDto(empMaintLayoutDto, query, perInfoCtg, lstPerInfoItemDef);
-
+		
 		// set optional data
+		setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
+		
 		return empMaintLayoutDto;
 	}
 	
@@ -221,10 +225,9 @@ public class PeregProcessor {
 	private void matching(EmpMaintLayoutDto empMaintLayoutDto, PersonInfoCategory perInfoCtg, Object dto, Class<?> finderClass, 
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, List<EmpOptionalDto> empOptionalData, List<PersonOptionalDto> perOptionalData ){
 		LayoutMapping.mapFixDto(empMaintLayoutDto, dto, finderClass, lstPerInfoItemDef);
-		int startOptionDtoPos = lstPerInfoItemDef.size();
 		if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
-				LayoutMapping.mapEmpOptionalDto(empMaintLayoutDto, empOptionalData, lstPerInfoItemDef, startOptionDtoPos);
-		else LayoutMapping.mapPerOptionalDto(empMaintLayoutDto, perOptionalData, lstPerInfoItemDef, startOptionDtoPos);
+				LayoutMapping.mapEmpOptionalDto(empMaintLayoutDto, empOptionalData, lstPerInfoItemDef);
+		else LayoutMapping.mapPerOptionalDto(empMaintLayoutDto, perOptionalData, lstPerInfoItemDef);
 	}
 	
 	/**
@@ -253,7 +256,7 @@ public class PeregProcessor {
 		List<EmpOptionalDto> lstCtgItemOptionalDto = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
 		if(lstCtgItemOptionalDto.size() > 0)
-			LayoutMapping.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef, 0);
+			LayoutMapping.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 	
 	/**
@@ -268,7 +271,7 @@ public class PeregProcessor {
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
 		
 		if(lstCtgItemOptionalDto.size() > 0)
-			LayoutMapping.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef, 0);
+			LayoutMapping.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 
 }

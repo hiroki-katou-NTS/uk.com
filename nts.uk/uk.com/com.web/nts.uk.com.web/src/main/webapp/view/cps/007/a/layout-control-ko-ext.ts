@@ -639,13 +639,13 @@ module nts.custombinding {
                 </script>`;
 
         private api = {
-            getCat: 'ctx/bs/person/info/category/find/companyby/{0}',
-            getCats: "ctx/bs/person/info/category/findby/company",
-            getGroups: 'ctx/bs/person/groupitem/getAll',
-            getItemCats: 'ctx/bs/person/info/ctgItem/layout/findby/categoryId/{0}',
-            getItemGroups: 'ctx/bs/person/groupitem/getAllItemDf/{0}',
-            getItemsById: 'ctx/bs/person/info/ctgItem/layout/findby/itemId/{0}',
-            getItemsByIds: 'ctx/bs/person/info/ctgItem/layout/findby/listItemId',
+            getCat: 'ctx/pereg/person/info/category/find/companyby/{0}',
+            getCats: "ctx/pereg/person/info/category/findby/company",
+            getGroups: 'ctx/pereg/person/groupitem/getAll',
+            getItemCats: 'ctx/pereg/person/info/ctgItem/layout/findby/categoryId/{0}',
+            getItemGroups: 'ctx/pereg/person/groupitem/getAllItemDf/{0}',
+            getItemsById: 'ctx/pereg/person/info/ctgItem/layout/findby/itemId/{0}',
+            getItemsByIds: 'ctx/pereg/person/info/ctgItem/layout/findby/listItemId',
         };
 
         private services = {

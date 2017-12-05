@@ -3,7 +3,7 @@ module cps008.c.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getDetails: "ctx/bs/person/maintenance/findOne/{0}"
+        getDetails: "ctx/pereg/person/maintenance/findOne/{0}"
     };
 
     export function getDetails(lid) {
