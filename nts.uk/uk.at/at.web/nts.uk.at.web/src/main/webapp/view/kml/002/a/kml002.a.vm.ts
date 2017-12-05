@@ -415,7 +415,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 if (ui.items.length > 0) {
                     let indexAtr = parseInt($($(ui.owner.element).parent().parent()[0]).find(".indexAtr").html())-1;
                     let calculatorItem = self.calculatorItems()[indexAtr];
-                    //if (!nts.uk.ui._viewModel.content.viewmodelA.isparentCall()) {
+                    if (!self.isparentCall()) {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_192" }).ifYes(() => {
                         calculatorItem.attribute(ui.items[0].data.attrCode);
                         calculatorItem.formula('');
@@ -424,7 +424,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         calculatorItem.total(0);
                         calculatorItem.rounding(0);
                         calculatorItem.fraction(0);
-                        if (ui.items[0].data == 0) {
+                        if (ui.items[0].data.attrCode == 0) {
                             calculatorItem.roundingItems([
                                 { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
                                 { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
@@ -470,8 +470,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         calculatorItem.attribute(ui.currentItems[0].data.attrCode);
                     });
                 }
-                    //nts.uk.ui._viewModel.content.viewmodelA.isparentCall(false);
-                //}
+                    self.isparentCall(false);
+                }
             });
         } 
 
@@ -992,7 +992,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 numerical: null,
                 unitPrice: null
             };
-
+            self.isparentCall(false);
             self.calculatorItems.push(new CalculatorItem(item));
 
             if (self.calculatorItems().length < 50) {
