@@ -3,8 +3,6 @@ module nts.uk.at.view.kmk003.sample {
         var screenModel = new viewModel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            
-            $('#nts-fix-table').ntsFixTableCustom(screenModel.fixTableOption);
         });
     });
 }

@@ -32,9 +32,9 @@ public interface FlexHalfDayWorkTimeGetMemento {
 	
 	
 	/**
-	 * Gets the am pm atr.
+	 * Gets the ampm atr.
 	 *
-	 * @return the am pm atr
+	 * @return the ampm atr
 	 */
-	AmPmAtr getAmPmAtr();
+	AmPmAtr getAmpmAtr();
 }

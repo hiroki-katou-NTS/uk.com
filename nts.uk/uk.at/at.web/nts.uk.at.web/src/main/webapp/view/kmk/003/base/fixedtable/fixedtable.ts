@@ -1,4 +1,4 @@
-module kmk003.base.fixtable {
+module kmk003.base.fixedtable {
 
     /************************************************ PARAMETERS INITIAL FIXTABLE **********************************
     ***************************************************************************************************************/
@@ -49,6 +49,27 @@ module kmk003.base.fixtable {
         columns: Array<FixColumn>;
     }
 
+    /**
+     * IControl
+     */
+    interface IControl {
+        
+        /**
+         * control type kiban team
+         */
+        controlType: string;
+        
+        /**
+         * key value of control
+         */
+        keyValue: string;
+        
+        /**
+         * needed when control has option.Ex: comboBox, ...
+         */
+        keyOptionValue?: string;
+    }
+    
     /**
      * FixColumn
      */
@@ -130,44 +151,17 @@ module kmk003.base.fixtable {
         maxRowDisplay: number;
         tableStyle: TableStyle;
         
+        $element: any;
         $tableSelector: any;
         mapControl: Array<IControl>;
         tabindex: number;
         
         tableId: string;
         
-        constructor() {
+        constructor($element: any, data: FixTableOption, dataSource: any) {
             let self = this;
             
-            self.itemList = ko.observableArray([]);
-            self.isSelectAll = ko.observable(false);
-            
-            self.isEnaleAddButton = ko.observable(false);
-            self.isEnaleRemoveButton = ko.observable(false);
-            
-            self.tableStyle = {
-                height: 0,
-                width: 0
-            };
-            self.lstDataSource = {};
-            self.mapControl = self.createMapControl();
-            
-            self.tableId = "nts-fixed-table-custom-" + nts.uk.util.randomId();
-            
-            // subscribe
-            self.isSelectAll.subscribe(newValue => {
-                self.computedChange(newValue);
-            });
-        }
-
-        /**
-         * init
-         */
-        public init($input: JQuery, data: FixTableOption): JQueryPromise<void> {
-            let self = this;
-            let dfd = $.Deferred<void>();
-            
-            ko.cleanNode($input[0]);
+            self.$element = $element;
             
             // set data parameter
             self.isMultiple = data.isMultipleSelect;
@@ -183,21 +177,30 @@ module kmk003.base.fixtable {
             if (!self.tabindex) {
                 self.tabindex = -1;
             }
-            self.itemList = data.dataSource;
+            self.itemList = dataSource;
+            
+            self.isSelectAll = ko.observable(false);
             
             self.isVisibleSelectAll = ko.computed(() => {
                 return self.isMultiple && self.minRow < 1;
             });
             
-            // update status button
-            self.isEnaleAddButton(self.itemList().length < self.maxRow);
-            self.isEnaleRemoveButton(self.itemList().length > self.minRow);
+            self.isEnaleAddButton = ko.observable(false);
+            self.isEnaleRemoveButton = ko.observable(false);
             
-            // add properties isChecked when multiple select
-            if (self.isMultiple) {
-                self.addCheckBoxItemAtr();
-            }
-
+            self.tableStyle = {
+                height: 0,
+                width: 0
+            };
+            self.lstDataSource = {};
+            self.mapControl = self.createMapControl();
+            
+            self.tableId = "fixed-table-custom-" + nts.uk.util.randomId();
+            
+            // subscribe isSelectAll
+            self.isSelectAll.subscribe(newValue => {
+                self.computedChange(newValue);
+            });
             // subscribe itemList
             self.itemList.subscribe((newList) => {
                 if (!newList) {
@@ -219,13 +222,24 @@ module kmk003.base.fixtable {
                 }
                  self.subscribeChangeCheckbox();
             });
+        }
 
-            // render table
-            self.loadTable($input).done(() => {
-                dfd.resolve();
-            });
+        /**
+         * Initial screen
+         */
+        public initialScreen() {
+            let self = this;
             
-            return dfd.promise();
+            // update table id
+            $('#fixed-table-custom').attr('id', self.tableId);
+            
+            self.$tableSelector = $('#' + self.tableId);
+            
+            // update status button
+            self.isEnaleAddButton(self.itemList().length < self.maxRow);
+            self.isEnaleRemoveButton(self.itemList().length > self.minRow);
+            
+            self.renderTable();
         }
         
         /**
@@ -252,42 +266,6 @@ module kmk003.base.fixtable {
                 return;
             }
             self.itemList(self.itemList().filter(item => item.isChecked() == false));
-        }
-        
-        /**
-         * loadTable
-         */
-        private loadTable($input: JQuery): JQueryPromise<void> {
-            let self = this;
-            let dfd = $.Deferred<void>();
-            
-            let webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/base/fixtable/fixtable.xhtml').serialize();
-            $input.load(webserviceLocator, function() {
-                self.$tableSelector = $('#fixed-table-custom');
-                ko.cleanNode(self.$tableSelector[0]);
-                
-                // calculate height table
-                self.calStyleTable();
-                
-                nts.uk.ui.block.invisible();
-                
-                // render table
-                self.renderTable().done(() => {
-                    ko.cleanNode($input[0]);
-                    
-                    // update table id
-                    $('#fixed-table-custom').attr('id', self.tableId);
-                    
-                    ko.applyBindings(self, $input[0]);
-                    
-                    nts.uk.ui.block.clear();
-                    
-                    dfd.resolve();
-                });
-            });
-            return dfd.promise();
         }
         
         /**
@@ -336,7 +314,7 @@ module kmk003.base.fixtable {
         /**
          * renderTable
          */
-        private renderTable():JQueryPromise<void> {
+        private renderTable(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
             
@@ -541,47 +519,52 @@ module kmk003.base.fixtable {
     }
     
     /**
-     * IControl
+     * FixTableBindingHandler
      */
-    interface IControl {
+    class FixTableBindingHandler implements KnockoutBindingHandler {
         
         /**
-         * control type kiban team
+         * Constructor.
          */
-        controlType: string;
-        
+        constructor() {
+        }
+
         /**
-         * key value of control
+         * Init.
          */
-        keyValue: string;
-        
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+            bindingContext: KnockoutBindingContext): void {
+            
+        }
+
+        private getData() {
+            let self = this;
+        }
+
         /**
-         * needed when control has option.Ex: comboBox, ...
+         * Update
          */
-        keyOptionValue?: string;
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+            bindingContext: KnockoutBindingContext): void {
+            
+            let webserviceLocator: any = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
+                .mergeRelativePath('/view/kmk/003/base/fixtable/fixtable.xhtml').serialize();
+            
+            //get data
+            let input: any = valueAccessor();
+            let data: FixTableOption = input.option;
+            let dataSource: any = input.dataSource;
+
+            let screenModel = new FixTableScreenModel($(element), data, dataSource);
+            $(element).load(webserviceLocator, function() {
+                ko.cleanNode($(element)[0]);
+                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                screenModel.initialScreen();
+            });
+        }
+
     }
+    
+    ko.bindingHandlers['ntsFixTableCustom'] = new FixTableBindingHandler();
 }
-
-/**
- * Defined Jquery interface.
- */
-interface JQuery {
-
-    /**
-     * Nts fix table component.
-     */
-    ntsFixTableCustom(option: kmk003.base.fixtable.FixTableOption): JQueryPromise<void>;
-
-    /**
-     * Focus component.
-     */
-    focusFixTable(): void;
-}
-
-(function($: any) {
-    $.fn.ntsFixTableCustom = function(option: kmk003.base.fixtable.FixTableOption): JQueryPromise<void> {
-
-        // Return.
-        return new kmk003.base.fixtable.FixTableScreenModel().init(this, option);
-    }
-} (jQuery));

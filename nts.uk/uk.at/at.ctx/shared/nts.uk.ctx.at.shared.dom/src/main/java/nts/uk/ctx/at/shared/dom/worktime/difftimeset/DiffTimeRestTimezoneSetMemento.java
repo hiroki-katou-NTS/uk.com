@@ -12,9 +12,9 @@ import java.util.List;
 public interface DiffTimeRestTimezoneSetMemento {
 	
 	/**
-	 * Sets the rest timezone.
+	 * Sets the rest timezones.
 	 *
-	 * @param restTimezone the new rest timezone
+	 * @param restTimezone the new rest timezones
 	 */
-	public void setRestTimezone(List<DiffTimeDeductTimezone> restTimezone);
+	public void setRestTimezones(List<DiffTimeDeductTimezone> restTimezone);
 }

@@ -23,7 +23,7 @@ public class GoOutTimezoneRoundingSetDto implements GoOutTimezoneRoundingSetGetM
 	private GoOutTypeRoundingSetDto workTimezone;
 	
 	/** The OT timezone. */
-	private GoOutTypeRoundingSetDto OTTimezone;
+	private GoOutTypeRoundingSetDto oTTimezone;
 
 
 	/* (non-Javadoc)
@@ -47,7 +47,7 @@ public class GoOutTimezoneRoundingSetDto implements GoOutTimezoneRoundingSetGetM
 	 */
 	@Override
 	public GoOutTypeRoundingSet getOTTimezone() {
-		return new GoOutTypeRoundingSet(this.OTTimezone);
+		return new GoOutTypeRoundingSet(this.oTTimezone);
 	}
 
 	

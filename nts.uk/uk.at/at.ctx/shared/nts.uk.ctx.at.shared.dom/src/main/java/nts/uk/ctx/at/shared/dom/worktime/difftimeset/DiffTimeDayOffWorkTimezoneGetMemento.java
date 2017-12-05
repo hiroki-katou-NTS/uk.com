@@ -19,9 +19,9 @@ public interface DiffTimeDayOffWorkTimezoneGetMemento {
 	public DiffTimeRestTimezone getRestTimezone() ;
 
 	/**
-	 * Gets the work timezone.
+	 * Gets the work timezones.
 	 *
-	 * @return the work timezone
+	 * @return the work timezones
 	 */
-	public List<DayOffTimezoneSetting> getWorkTimezone();
+	public List<DayOffTimezoneSetting> getWorkTimezones();
 }

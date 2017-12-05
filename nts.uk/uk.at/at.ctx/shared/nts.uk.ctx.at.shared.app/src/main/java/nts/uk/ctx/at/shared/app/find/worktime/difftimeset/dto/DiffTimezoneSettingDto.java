@@ -19,19 +19,19 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSettingSetMemen
 public class DiffTimezoneSettingDto implements DiffTimezoneSettingSetMemento{
 
 	/** The employment timezone. */
-	private List<EmTimeZoneSetDto> employmentTimezone;
+	private List<EmTimeZoneSetDto> employmentTimezones;
 
 	/** The OT timezone. */
-	private List<DiffTimeOTTimezoneSetDto> OTTimezone;
+	private List<DiffTimeOTTimezoneSetDto> OTTimezones;
 
 	@Override
-	public void setEmploymentTimezone(List<EmTimeZoneSet> employmentTimezone) {
+	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezones) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setOTTimezone(List<DiffTimeOTTimezoneSet> OTTimezone) {
+	public void setOTTimezones(List<DiffTimeOTTimezoneSet> OTTimezones) {
 		// TODO Auto-generated method stub
 		
 	}

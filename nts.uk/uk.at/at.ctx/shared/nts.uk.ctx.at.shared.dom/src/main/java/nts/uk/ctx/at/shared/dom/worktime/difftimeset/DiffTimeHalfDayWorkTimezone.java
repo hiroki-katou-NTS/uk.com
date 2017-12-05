@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 
 /**
  * The Class TimeDiffHalfDayWorkTimezone.
@@ -25,7 +25,7 @@ public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 
 	/** The Am pm cls. */
 	// 午前午後区分
-	private AmPmClassification AmPmCls;
+	private AmPmAtr amPmAtr;
 
 	/**
 	 * Instantiates a new diff time half day work timezone.
@@ -36,7 +36,7 @@ public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 	public DiffTimeHalfDayWorkTimezone(DiffTimeHalfDayGetMemento memento) {
 		this.restTimezone = memento.getRestTimezone();
 		this.workTimezone = memento.getWorkTimezone();
-		this.AmPmCls = memento.getAmPmCls();
+		this.amPmAtr = memento.getAmPmAtr();
 	}
 
 	/**
@@ -47,6 +47,6 @@ public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 	public void saveToMemento(DiffTimeHalfDaySetMemento memento) {
 		memento.setRestTimezone(this.restTimezone);
 		memento.setWorkTimezone(this.workTimezone);
-		memento.setAmPmCls(this.AmPmCls);
+		memento.setAmPmAtr(this.amPmAtr);
 	}
 }

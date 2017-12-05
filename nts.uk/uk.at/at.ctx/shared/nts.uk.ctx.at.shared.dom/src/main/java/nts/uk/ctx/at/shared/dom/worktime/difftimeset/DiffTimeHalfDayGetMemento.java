@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 
 /**
  * The Interface DiffTimeHalfDayGetMemento.
@@ -26,9 +26,9 @@ public interface DiffTimeHalfDayGetMemento {
 	public DiffTimezoneSetting getWorkTimezone();
 
 	/**
-	 * Gets the am pm cls.
+	 * Gets the am pm atr.
 	 *
-	 * @return the am pm cls
+	 * @return the am pm atr
 	 */
-	public AmPmClassification getAmPmCls();
+	public AmPmAtr getAmPmAtr();
 }

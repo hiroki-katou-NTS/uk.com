@@ -16,7 +16,7 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 
 	/** The OT frame no. */
 	// 残業枠NO
-	private OTFrameNo OTFrameNo;
+	private OTFrameNo oTFrameNo;
 
 	/** The in legal work frame no. */
 	// 法内残業枠NO
@@ -32,7 +32,7 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 	 * @param memento the memento
 	 */
 	public ExtraordWorkOTFrameSet (ExtraordWorkOTFrameSetGetMemento memento) {
-		this.OTFrameNo = memento.getOTFrameNo();
+		this.oTFrameNo = memento.getOTFrameNo();
 		this.inLegalWorkFrameNo = memento.getInLegalWorkFrameNo();
 		this.settlementOrder = memento.getSettlementOrder();
 	}
@@ -43,7 +43,7 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(ExtraordWorkOTFrameSetSetMemento memento) {
-		memento.setOTFrameNo(this.OTFrameNo);
+		memento.setOTFrameNo(this.oTFrameNo);
 		memento.setInLegalWorkFrameNo(this.inLegalWorkFrameNo);
 		memento.setSettlementOrder(this.settlementOrder);
 	}

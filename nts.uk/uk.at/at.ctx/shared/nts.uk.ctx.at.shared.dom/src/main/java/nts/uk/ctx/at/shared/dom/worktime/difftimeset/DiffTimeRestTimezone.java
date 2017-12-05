@@ -17,7 +17,7 @@ public class DiffTimeRestTimezone {
 	
 	/** The rest timezone. */
 	// 休憩時間帯
-	private List<DiffTimeDeductTimezone> restTimezone;
+	private List<DiffTimeDeductTimezone> restTimezones;
 	
 	/**
 	 * Instantiates a new diff time rest timezone.
@@ -26,7 +26,7 @@ public class DiffTimeRestTimezone {
 	 */
 	public DiffTimeRestTimezone(DiffTimeRestTimezoneGetMemento memento)
 	{
-		this.restTimezone = memento.getRestTimezone();
+		this.restTimezones = memento.getRestTimezones();
 	}
 	
 	/**
@@ -36,6 +36,6 @@ public class DiffTimeRestTimezone {
 	 */
 	public void saveToMemento(DiffTimeRestTimezoneSetMemento memento)
 	{
-		memento.setRestTimezone(this.restTimezone);
+		memento.setRestTimezones(this.restTimezones);
 	}
 }

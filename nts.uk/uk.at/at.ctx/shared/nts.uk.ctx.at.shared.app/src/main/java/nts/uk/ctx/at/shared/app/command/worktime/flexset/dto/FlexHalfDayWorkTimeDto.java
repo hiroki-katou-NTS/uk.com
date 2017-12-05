@@ -31,7 +31,7 @@ public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeGetMemento{
 	private FixedWorkTimezoneSetDto workTimezone;
 	
 	/** The Am pm atr. */
-	private Integer AmPmAtr;
+	private Integer ampmAtr;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento#getLstRestTimezone()
@@ -57,8 +57,8 @@ public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeGetMemento{
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento#getAmPmAtr()
 	 */
 	@Override
-	public AmPmAtr getAmPmAtr() {
-		return AmPmAtr.valueOf(this.AmPmAtr);
+	public AmPmAtr getAmpmAtr() {
+		return AmPmAtr.valueOf(this.ampmAtr);
 	}
 	
 

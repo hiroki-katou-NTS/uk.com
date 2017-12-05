@@ -51,7 +51,7 @@ public class DiffTimeWorkSetting extends AggregateRoot {
 
 	/** The half day work timezone. */
 	// 平日勤務時間帯
-	private List<DiffTimeHalfDayWorkTimezone> halfDayWorkTimezone;
+	private List<DiffTimeHalfDayWorkTimezone> halfDayWorkTimezones;
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯
@@ -74,7 +74,7 @@ public class DiffTimeWorkSetting extends AggregateRoot {
 		this.commonSet = memento.getCommonSet();
 		this.isUseHalfDayShift = memento.isIsUseHalfDayShift();
 		this.changeExtent = memento.getChangeExtent();
-		this.halfDayWorkTimezone = memento.getHalfDayWorkTimezone();
+		this.halfDayWorkTimezones = memento.getHalfDayWorkTimezones();
 		this.stampReflectTimezone = memento.getStampReflectTimezone();
 		this.overtimeSetting = memento.getOvertimeSetting();
 	}
@@ -92,7 +92,7 @@ public class DiffTimeWorkSetting extends AggregateRoot {
 		memento.setCommonSet(this.commonSet);
 		memento.setIsUseHalfDayShift(this.isUseHalfDayShift);
 		memento.setChangeExtent(this.changeExtent);
-		memento.setHalfDayWorkTimezone(this.halfDayWorkTimezone);
+		memento.setHalfDayWorkTimezones(this.halfDayWorkTimezones);
 		memento.setStampReflectTimezone(this.stampReflectTimezone);
 		memento.setOvertimeSetting(this.overtimeSetting);
 	}

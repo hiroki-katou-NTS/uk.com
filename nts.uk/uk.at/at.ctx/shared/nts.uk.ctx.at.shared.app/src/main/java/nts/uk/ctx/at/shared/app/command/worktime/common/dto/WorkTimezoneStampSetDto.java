@@ -19,10 +19,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
 public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetGetMemento {
 
 	/** The rounding set. */
-	private List<RoundingSetDto> roundingSet;
+	private List<RoundingSetDto> roundingSets;
 
 	/** The priority set. */
-	private List<PrioritySettingDto> prioritySet;
+	private List<PrioritySettingDto> prioritySets;
 
 	/*
 	 * (non-Javadoc)
@@ -33,7 +33,7 @@ public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetGetMemento {
 	 */
 	@Override
 	public List<RoundingSet> getRoundingSet() {
-		return this.roundingSet.stream().map(item -> new RoundingSet(item)).collect(Collectors.toList());
+		return this.roundingSets.stream().map(item -> new RoundingSet(item)).collect(Collectors.toList());
 	}
 
 	/*
@@ -45,7 +45,7 @@ public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetGetMemento {
 	 */
 	@Override
 	public List<PrioritySetting> getPrioritySet() {
-		return this.prioritySet.stream().map(item -> new PrioritySetting(item)).collect(Collectors.toList());
+		return this.prioritySets.stream().map(item -> new PrioritySetting(item)).collect(Collectors.toList());
 	}
 
 }

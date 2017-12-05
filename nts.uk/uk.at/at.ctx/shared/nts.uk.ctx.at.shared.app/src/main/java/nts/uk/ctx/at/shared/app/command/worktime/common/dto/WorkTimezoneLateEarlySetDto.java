@@ -22,7 +22,7 @@ public class WorkTimezoneLateEarlySetDto implements WorkTimezoneLateEarlySetGetM
 	private EmTimezoneLateEarlyCommonSetDto commonSet;
 
 	/** The other class set. */
-	private List<OtherEmTimezoneLateEarlySetDto> otherClassSet;
+	private List<OtherEmTimezoneLateEarlySetDto> otherClassSets;
 
 	/*
 	 * (non-Javadoc)
@@ -43,7 +43,7 @@ public class WorkTimezoneLateEarlySetDto implements WorkTimezoneLateEarlySetGetM
 	 */
 	@Override
 	public List<OtherEmTimezoneLateEarlySet> getOtherClassSet() {
-		return this.otherClassSet.stream().map(item -> new OtherEmTimezoneLateEarlySet(item))
+		return this.otherClassSets.stream().map(item -> new OtherEmTimezoneLateEarlySet(item))
 				.collect(Collectors.toList());
 	}
 }

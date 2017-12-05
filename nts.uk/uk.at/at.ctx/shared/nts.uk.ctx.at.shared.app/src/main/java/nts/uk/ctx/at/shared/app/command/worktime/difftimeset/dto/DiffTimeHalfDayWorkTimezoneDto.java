@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 
 public class DiffTimeHalfDayWorkTimezoneDto {
 	
@@ -19,7 +19,7 @@ public class DiffTimeHalfDayWorkTimezoneDto {
 	private DiffTimezoneSettingDto workTimezone;
 
 	/** The Am pm cls. */
-	private Integer AmPmCls;
+	private Integer amPmAtr;
 	
 	
 	public DiffTimeHalfDayWorkTimezone toDomain() {
@@ -45,7 +45,7 @@ public class DiffTimeHalfDayWorkTimezoneDto {
 		}
 
 		@Override
-		public AmPmClassification getAmPmCls() {
+		public AmPmAtr getAmPmAtr() {
 			// TODO Auto-generated method stub
 			return null;
 		}

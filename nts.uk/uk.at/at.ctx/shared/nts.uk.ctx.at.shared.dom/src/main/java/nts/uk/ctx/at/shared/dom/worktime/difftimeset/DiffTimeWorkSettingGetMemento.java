@@ -66,11 +66,11 @@ public interface DiffTimeWorkSettingGetMemento {
 	public EmTimezoneChangeExtent getChangeExtent();
 
 	/**
-	 * Gets the half day work timezone.
+	 * Gets the half day work timezones.
 	 *
-	 * @return the half day work timezone
+	 * @return the half day work timezones
 	 */
-	public List<DiffTimeHalfDayWorkTimezone> getHalfDayWorkTimezone();
+	public List<DiffTimeHalfDayWorkTimezone> getHalfDayWorkTimezones();
 
 	/**
 	 * Gets the stamp reflect timezone.

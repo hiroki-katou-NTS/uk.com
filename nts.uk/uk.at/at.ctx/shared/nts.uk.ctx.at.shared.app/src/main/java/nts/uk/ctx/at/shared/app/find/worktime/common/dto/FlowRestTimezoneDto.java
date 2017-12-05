@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
 public class FlowRestTimezoneDto implements FlowRestTimezoneSetMemento {
 
 	/** The flow rest set. */
-	private List<FlowRestSettingDto> flowRestSet;
+	private List<FlowRestSettingDto> flowRestSets;
 
 	/** The use here after rest set. */
 	private boolean useHereAfterRestSet;
@@ -40,7 +40,7 @@ public class FlowRestTimezoneDto implements FlowRestTimezoneSetMemento {
 	 */
 	@Override
 	public void setFlowRestSet(List<FlowRestSetting> set) {
-		this.flowRestSet = set.stream().map(item -> {
+		this.flowRestSets = set.stream().map(item -> {
 			FlowRestSettingDto dto = new FlowRestSettingDto();
 			item.saveToMemento(dto);
 			return dto;

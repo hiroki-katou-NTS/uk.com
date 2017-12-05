@@ -21,7 +21,7 @@ public class DiffTimeDayOffWorkTimezoneDto implements DiffTimeDayOffWorkTimezone
 	private DiffTimeRestTimezoneDto restTimezone;
 
 	/** The work timezone. */
-	private List<DayOffTimezoneSettingDto> workTimezone;
+	private List<DayOffTimezoneSettingDto> workTimezones;
 
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
@@ -30,7 +30,7 @@ public class DiffTimeDayOffWorkTimezoneDto implements DiffTimeDayOffWorkTimezone
 	}
 
 	@Override
-	public void setWorkTimezone(List<DayOffTimezoneSetting> workTimezone) {
+	public void setWorkTimezones(List<DayOffTimezoneSetting> workTimezone) {
 		// TODO Auto-generated method stub
 		
 	}

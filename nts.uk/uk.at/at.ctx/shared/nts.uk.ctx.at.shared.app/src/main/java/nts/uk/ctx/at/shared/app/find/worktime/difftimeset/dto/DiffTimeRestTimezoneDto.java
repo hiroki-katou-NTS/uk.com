@@ -17,10 +17,10 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezoneSetMeme
 public class DiffTimeRestTimezoneDto implements DiffTimeRestTimezoneSetMemento {
 	
 	/** The rest timezone. */
-	private List<DiffTimeDeductTimezoneDto> restTimezone;
+	private List<DiffTimeDeductTimezoneDto> restTimezones;
 
 	@Override
-	public void setRestTimezone(List<DiffTimeDeductTimezone> restTimezone) {
+	public void setRestTimezones(List<DiffTimeDeductTimezone> restTimezones) {
 		// TODO Auto-generated method stub
 		
 	}

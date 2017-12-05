@@ -41,7 +41,7 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingSetMemento {
 	private EmTimezoneChangeExtentDto changeExtent;
 
 	/** The half day work timezone. */
-	private List<DiffTimeHalfDayWorkTimezoneDto> halfDayWorkTimezone;
+	private List<DiffTimeHalfDayWorkTimezoneDto> halfDayWorkTimezones;
 
 	/** The stamp reflect timezone. */
 	private DiffTimeWorkStampReflectTimezoneDto stampReflectTimezone;
@@ -92,8 +92,8 @@ this.isUseHalfDayShift =true;
 	}
 
 	@Override
-	public void setHalfDayWorkTimezone(
-			List<nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone> halfDayWorkTimezone) {
+	public void setHalfDayWorkTimezones(
+			List<nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone> halfDayWorkTimezones) {
 		// TODO Auto-generated method stub
 
 	}
