@@ -9,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthority;
-import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthorityPK;
 
 @Stateless
 public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements WorkPlaceAuthorityRepository {
