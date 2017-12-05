@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.auth.app.find.grant.rolesetperson;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 
 /**
  * 
@@ -30,10 +29,5 @@ public class RoleSetGrantedPersonDto {
 		this.endDate = endDate;
 		this.employeeId = employeeId;
 	}
-
-//	public static RoleSetGrantedPersonDto fromDomain(RoleSetGrantedPerson domain) {
-//		return new RoleSetGrantedPersonDto(domain.getRoleSetCd().v(), domain.getCompanyId(),
-//				domain.getValidPeriod().start(), domain.getValidPeriod().end(), domain.getEmployeeID());
-//	}
 
 }

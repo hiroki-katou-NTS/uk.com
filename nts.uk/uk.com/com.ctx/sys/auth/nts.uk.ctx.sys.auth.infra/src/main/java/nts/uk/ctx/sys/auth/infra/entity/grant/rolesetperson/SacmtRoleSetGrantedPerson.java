@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -56,4 +57,13 @@ public class SacmtRoleSetGrantedPerson extends UkJpaEntity implements Serializab
 		return this.employeeId;
 	}
 	
+	public static RoleSetGrantedPerson toDomain(SacmtRoleSetGrantedPerson entity) {
+		return new RoleSetGrantedPerson(entity.roleSetCd, entity.companyId, entity.startDate, entity.endDate,
+				entity.employeeId);
+	}
+
+	public static SacmtRoleSetGrantedPerson toEntity(RoleSetGrantedPerson domain) {
+		return new SacmtRoleSetGrantedPerson(domain.getEmployeeID(), domain.getRoleSetCd().v(), domain.getCompanyId(),
+				domain.getValidPeriod().start(), domain.getValidPeriod().end());
+	}
 }

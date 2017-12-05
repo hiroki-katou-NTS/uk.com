@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -12,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetail;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -48,6 +51,19 @@ public class SacmtRoleSetGrantedJobTitle extends UkJpaEntity implements Serializ
 		this.companyId = companyId;
 		this.applyToConcurrentPerson = applyToConcurrentPerson;
 		this.details = details;
+	}
+	
+	public static RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitle entity) {
+		return new RoleSetGrantedJobTitle(entity.companyId, entity.applyToConcurrentPerson, entity.details.stream()
+				.map(item -> new RoleSetGrantedJobTitleDetail(item.roleSetGrantedJobTitleDetailPK.roleSetCd,
+						item.roleSetGrantedJobTitleDetailPK.jobTitleId, item.roleSetGrantedJobTitleDetailPK.companyId))
+				.collect(Collectors.toList()));
+	}
+
+	public static SacmtRoleSetGrantedJobTitle toEntity(RoleSetGrantedJobTitle domain) {
+		return new SacmtRoleSetGrantedJobTitle(domain.getCompanyId(), domain.isApplyToConcurrentPerson(),
+				domain.getDetails().stream().map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(),
+						item.getJobTitleId(), item.getCompanyId())).collect(Collectors.toList()));
 	}
 
 }
