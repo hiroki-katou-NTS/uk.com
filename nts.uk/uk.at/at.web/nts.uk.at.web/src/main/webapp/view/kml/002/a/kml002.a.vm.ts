@@ -1778,21 +1778,48 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.rounding = ko.observable(param.rounding);
             self.fraction = ko.observable(param.fraction);
             self.order = ko.observable(param.order);
-            self.roundingItems = ko.observableArray([
-                { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
-                { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
-                { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
-                { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
-                { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
-                { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
-                { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
-                { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
-            ]);
-            self.fractionItems = ko.observableArray([
-                { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
-                { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
-                { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
-            ]);
+            if (param.attribute == 0) {
+                self.roundingItems = ko.observableArray([
+                    { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
+                    { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
+                    { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
+                    { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
+                    { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
+                    { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
+                    { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
+                    { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
+                ]);
+
+                self.fractionItems = ko.observableArray([
+                    { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
+                    { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
+                    { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_Over") }
+                ]);
+            } else {
+                self.roundingItems = ko.observableArray([
+                    { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_Unit_NONE") },
+                    { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_Unit_Int_1_Digits") },
+                    { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_Unit_Int_2_Digits") },
+                    { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_Unit_Int_3_Digits") },
+                    { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_Unit_Int_4_Digits") },
+                    { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_Unit_Int_5_Digits") },
+                    { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_Unit_Int_6_Digits") },
+                    { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_Unit_Int_7_Digits") },
+                    { roundingCode: 8, roundingName: nts.uk.resource.getText("Enum_Unit_Int_8_Digits") },
+                    { roundingCode: 9, roundingName: nts.uk.resource.getText("Enum_Unit_Int_9_Digits") },
+                    { roundingCode: 10, roundingName: nts.uk.resource.getText("Enum_Unit_Int_10_Digits") },
+                    { roundingCode: 11, roundingName: nts.uk.resource.getText("Enum_Unit_Int_11_Digits") },
+                    { roundingCode: 12, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_1st") },
+                    { roundingCode: 13, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_2nd") },
+                    { roundingCode: 14, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_3rd") }
+                ]);
+
+                self.fractionItems = ko.observableArray([
+                    { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Truncation") },
+                    { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Round_Up") },
+                    { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_4_Up_5") }
+                ]);
+            }
 
             self.attrEnable = ko.observable(param.attrEnable);
             self.settingMethodEnable = ko.observable(param.settingMethodEnable);
