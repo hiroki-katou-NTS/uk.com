@@ -10,37 +10,31 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
  * @author danpv
  *
  */
 @Entity
-@Table(name = "KMNMT_AFF_CLASS_HISTORY")
+@Table(name = "BSYMT_AFF_CLASS_HIS_ITEM")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KmnmtAffClassHistory_Ver1 extends UkJpaEntity{
+public class BsymtAffClassHistItem_Ver1 extends JpaEntity {
 
 	@Id
 	@Column(name = "HISTORY_ID")
 	public String historyId;
-	
+
 	@Column(name = "SID")
 	public String sid;
-	
-	@Column(name = "START_DATE")
-	public GeneralDate startDate;
-	
-	@Column(name = "END_DATE")
-	public GeneralDate endDate;
-	
+
+	@Column(name = "CLASSIFICATION_CODE")
+	public String classificationCode;
+
 	@Override
 	protected Object getKey() {
 		return historyId;
 	}
-	
-	
 
 }

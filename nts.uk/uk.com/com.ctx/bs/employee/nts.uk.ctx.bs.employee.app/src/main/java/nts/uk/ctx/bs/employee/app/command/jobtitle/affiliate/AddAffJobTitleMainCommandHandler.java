@@ -14,6 +14,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory_ver1;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -46,20 +47,21 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddAffJobTitleMainCommand> context) {
 		val command = context.getCommand();
-		
+		String companyId = AppContexts.user().companyId();
 		String histId = IdentifierUtil.randomUniqueId();
 		DateHistoryItem dateItem = new DateHistoryItem(histId, new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
 		AffJobTitleHistory_ver1 itemtoBeAdded = null;
 		
-		Optional<AffJobTitleHistory_ver1> existHist = affJobTitleHistoryRepository_ver1.getListBySid(command.getSid());
+		Optional<AffJobTitleHistory_ver1> existHist = affJobTitleHistoryRepository_ver1.getListBySid(companyId, command.getSid());
 		
 		// In case of exist history of this employee
 		if (existHist.isPresent()){
 			itemtoBeAdded = existHist.get();
 		} else {
 			// In case of non - exist history of this employee
-			itemtoBeAdded = new AffJobTitleHistory_ver1(command.getSid(),new ArrayList<>());
+			
+			itemtoBeAdded = new AffJobTitleHistory_ver1(companyId, command.getSid(),new ArrayList<>());
 		}
 		itemtoBeAdded.add(dateItem);
 		

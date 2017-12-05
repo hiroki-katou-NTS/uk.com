@@ -84,7 +84,7 @@ public class PerInfoCtgDomainService {
 	 */
 	private List<PersonInfoItemDefinition> getPerInfoItemDefWithHis(ParamForGetPerItem paramObject){
 		DateRangeItem dateRangeItem = this.perInfoCategoryRepositoty
-				.getDateRangeItemByCtgId(paramObject.getParentInfoId());
+				.getDateRangeItemByCtgId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId());
 		return perInfoItemDefRepositoty
 				.getPerInfoItemByCtgId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getCompanyId(),
 						paramObject.getContractCode())
