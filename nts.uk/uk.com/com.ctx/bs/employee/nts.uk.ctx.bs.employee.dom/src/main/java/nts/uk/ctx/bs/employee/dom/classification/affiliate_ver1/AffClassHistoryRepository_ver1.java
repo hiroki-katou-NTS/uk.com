@@ -33,7 +33,7 @@ public interface AffClassHistoryRepository_ver1 {
 	 * @param history
 	 * @author hop.nt
 	 */
-	void add(String sid, DateHistoryItem itemToBeAdded);
+	void add(String cid, String sid, DateHistoryItem itemToBeAdded);
 	
 	/**
 	 * update domain history
