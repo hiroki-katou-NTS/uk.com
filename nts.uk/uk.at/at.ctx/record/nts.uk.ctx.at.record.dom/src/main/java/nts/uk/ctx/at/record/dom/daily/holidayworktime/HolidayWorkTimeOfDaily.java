@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
@@ -43,6 +43,7 @@ public class HolidayWorkTimeOfDaily {
 		this.holidayTimeSpentAtWork.addMinutes(holidayTimeSpentAtWork.valueAsMinutes());
 	}
 	
+
 	/**
 	 * 休出時間枠時間帯をループさせ時間を計算する
 	 */
@@ -68,7 +69,7 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(HolidayWorkFrameTimeSheetWORK frameTimeSheet: holidayWorkFrameTimeSheet) {
+		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
 			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
 		}
 		return bonusPayList;
@@ -80,7 +81,7 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(HolidayWorkFrameTimeSheetWORK frameTimeSheet: holidayWorkFrameTimeSheet) {
+		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
 			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
 		}
 		return bonusPayList;
@@ -91,7 +92,7 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
-		for(HolidayWorkFrameTimeSheetWORK  frameTime : holidayWorkFrameTimeSheet) {
+		for(HolidayWorkFrameTimeSheet  frameTime : holidayWorkFrameTimeSheet) {
 			eachTime.addTime(frameTime.getStatutoryAtr(), frameTime.calcMidNight(autoCalcSet.getLateNightTime().getCalculationClassification()));
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();

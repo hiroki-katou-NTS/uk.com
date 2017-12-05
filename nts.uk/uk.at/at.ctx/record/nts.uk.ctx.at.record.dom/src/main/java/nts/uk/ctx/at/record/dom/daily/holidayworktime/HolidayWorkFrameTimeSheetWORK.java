@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -110,7 +110,7 @@ public class HolidayWorkFrameTimeSheetWORK extends CalculationTimeSheet{
 		List<HolidayWorkFrameTimeSheetWORK> holidayWorkTimeSheetList = new ArrayList<HolidayWorkFrameTimeSheetWORK>();
 		List<HolidayWorkFrameTime> holidayWorkFrameTimeList = new ArrayList<HolidayWorkFrameTime>();
 		Optional<TimeSpanForCalc> timeSpan;
-		TimeSpanForCalc attendanceLeaveSheet = new TimeSpanForCalc(attendanceLeave.getAttendanceStamp().getStamp().getTimeWithDay(),attendanceLeave.getLeaveStamp().getStamp().getTimeWithDay());
+		TimeSpanForCalc attendanceLeaveSheet = new TimeSpanForCalc(attendanceLeave.getAttendanceStamp().getStamp().get().getTimeWithDay(),attendanceLeave.getLeaveStamp().getStamp().get().getTimeWithDay());
 		for(HolidayWorkTimeSheetSet holidayTimeSheet : fixTimeSet) {
 			/*計算範囲の判断*/
 			timeSpan = attendanceLeaveSheet.getDuplicatedWith(holidayTimeSheet.getHours().getSpan());

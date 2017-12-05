@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -72,35 +72,35 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 	
 	
 	/**
-	 * 深夜時間帯Listを結合し、深夜時間帯を返す　　　　　2017/11/29　高須　LateLeaveEarlyTimeSheetクラスのメソッドjoinedLateLeaveEarlyTimeSheetを参考に修正が必要
-	 * @author ken_takasu
-	 * @param source
-	 * @return
-	 */
-	public static Optional<MidNightTimeSheet> joinedMidNightTimeSheet(Collection<MidNightTimeSheet> source) {
-		//時間帯（丸め付）Listを1つに結合
-		List<TimeSpanWithRounding> timeSheets = source.stream().map(s -> s.getTimeSheet()).collect(Collectors.toList());
-		val joinedTimeSheet = TimeSpanWithRounding.joinedTimeSpanWithRounding(timeSheets);
-		//計算用時間帯Listを1つに結合
-		val calcRanges = source.stream().map(s -> s.getCalcrange()).collect(Collectors.toList());
-		val joinedCalcRange = TimeSpanForCalc.join(calcRanges);
-		//控除時間帯Listを1つに結合
-		val deductionTimeList = this.collectDeductionTimeSheet();
-		//加給時間帯Listを1つに結合
-		val bonusPayTimesheetList = this.joinedBonusPayTimeSheet();
-		//深夜時間帯Listを1つに結合
-		val joinedMidNightTimeSheet = joinedMidNightTimeSheet(source);
-		//特定日加給時間帯Listを1つに結合
-		val specifiedbonusPayTimeSheetList = this.collectSpecifiedbonusPayTimeSheet();
-		
-		MidNightTimeSheet midNightTimeSheet = new MidNightTimeSheet(joinedTimeSheet,
-																	joinedCalcRange,
-																	deductionTimeList,
-																	bonusPayTimesheetList,
-																	specifiedbonusPayTimeSheetList,
-																	joinedMidNightTimeSheet);
-		return midNightTimeSheet;
-	}
+//	 * 深夜時間帯Listを結合し、深夜時間帯を返す　　　　　2017/11/29　高須　LateLeaveEarlyTimeSheetクラスのメソッドjoinedLateLeaveEarlyTimeSheetを参考に修正が必要
+//	 * @author ken_takasu
+//	 * @param source
+//	 * @return
+//	 */
+//	public static Optional<MidNightTimeSheet> joinedMidNightTimeSheet(Collection<MidNightTimeSheet> source) {
+//		//時間帯（丸め付）Listを1つに結合
+//		List<TimeSpanWithRounding> timeSheets = source.stream().map(s -> s.getTimeSheet()).collect(Collectors.toList());
+//		val joinedTimeSheet = TimeSpanWithRounding.joinedTimeSpanWithRounding(timeSheets);
+//		//計算用時間帯Listを1つに結合
+//		val calcRanges = source.stream().map(s -> s.getCalcrange()).collect(Collectors.toList());
+//		val joinedCalcRange = TimeSpanForCalc.join(calcRanges);
+//		//控除時間帯Listを1つに結合
+//		val deductionTimeList = this.collectDeductionTimeSheet();
+//		//加給時間帯Listを1つに結合
+//		val bonusPayTimesheetList = this.joinedBonusPayTimeSheet();
+//		//深夜時間帯Listを1つに結合
+//		val joinedMidNightTimeSheet = joinedMidNightTimeSheet(source);
+//		//特定日加給時間帯Listを1つに結合
+//		val specifiedbonusPayTimeSheetList = this.collectSpecifiedbonusPayTimeSheet();
+//		
+//		MidNightTimeSheet midNightTimeSheet = new MidNightTimeSheet(joinedTimeSheet,
+//																	joinedCalcRange,
+//																	deductionTimeList,
+//																	bonusPayTimesheetList,
+//																	specifiedbonusPayTimeSheetList,
+//																	joinedMidNightTimeSheet);
+//		return midNightTimeSheet;
+//	}
 	
 	
 	

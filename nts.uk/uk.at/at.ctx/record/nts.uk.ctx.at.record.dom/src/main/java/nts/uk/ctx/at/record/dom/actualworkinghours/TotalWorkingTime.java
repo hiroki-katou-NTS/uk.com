@@ -3,7 +3,9 @@ package nts.uk.ctx.at.record.dom.actualworkinghours;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  *
  */
 @Getter
+@AllArgsConstructor
 public class TotalWorkingTime {
 	
 	//総労働時間
@@ -37,10 +40,10 @@ public class TotalWorkingTime {
 	private AttendanceTime actualTime;
 	
 	//日別実績の残業時間
-	private OverTimeOfDaily overTimeWorkOfDaily;
+	//private OverTimeOfDaily overTimeWorkOfDaily;
 	
 	//日別実績の休出時間
-	private HolidayWorkTimeOfDaily holidayWorkTimeOfDaily;
+	//private HolidayWorkTimeOfDaily holidayWorkTimeOfDaily;
 	
 	//日別実績の法定内時間
 	private WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily;
@@ -66,6 +69,8 @@ public class TotalWorkingTime {
 	
 	//勤務回数
 	private WorkTimes workTimes;
+	
+	
 	
 	/**
 	 * 
@@ -107,4 +112,8 @@ public class TotalWorkingTime {
 		/*日別実績の総労働時間*/
 		//-------完全未着手--------//
 	}
+
+
+
+
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
@@ -36,7 +37,7 @@ public class LateDecisionClock {
 	 * @return
 	 */
 	public static LateDecisionClock create(WorkNo workNo, 
-										   PredetermineTimeSet predetermineTimeSet,
+										   PredetermineTimeSetForCalc predetermineTimeSet,
 										   DeductionTimeSheet deductionTimeSheet,
 										   GraceTimeSetting lateGraceTime) {
 

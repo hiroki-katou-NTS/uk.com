@@ -11,8 +11,6 @@ import nts.uk.ctx.at.record.dom.bonuspay.primitives.TimeItemId;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.TimeItemTypeAtr;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.record.dom.bonuspay.primitives.TimeItemName;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

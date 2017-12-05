@@ -81,7 +81,7 @@ public class OutsideWorkTimeSheet {
 		Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 		if(toDay.isWeekDayAttendance()) {
 			/*就業時間外時間帯の平日出勤の処理*/
-			List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheet.createOverWorkFrame(overTimeHourSetList,workingSystem,
+			List<OverTimeFrameTimeSheetWork> overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheetWork.createOverWorkFrame(overTimeHourSetList,workingSystem,
 																									attendanceLeave,workNo,
 																									breakdownTimeDay,dailyTime,autoCalculationSet,
 																									statutorySet,

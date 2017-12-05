@@ -1,10 +1,15 @@
 package nts.uk.ctx.at.record.dom.daily.breaktimegoout;
 
+import java.util.Collections;
+import java.util.List;
+
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 日別実績の休憩時間
@@ -13,9 +18,17 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
  */
 @Getter
 public class BreakTimeOfDaily {
-	private DeductionTotalTime toRecordTotalTime;
-	private DeductionTotalTime deductionTotalTime;
 	
+	//補正後時間帯
+	private List<BreakTimeSheet> correctedTimeSheet = Collections.emptyList();
+	//計上用合計時間
+	private DeductionTotalTime toRecordTotalTime;
+	//控除用合計時間
+	private DeductionTotalTime deductionTotalTime;
+	//休憩回数
+	private int breakTimes = 0;
+	//勤務間時間
+	private AttendanceTime duringWork = new AttendanceTime(0);
 	/**
 	 * Constructor
 	 * @param record 計上用

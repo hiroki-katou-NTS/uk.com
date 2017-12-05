@@ -16,6 +16,15 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @AllArgsConstructor
 public class TimevacationUseTimeOfDaily {
 	
+	//時間年休使用時間
+	private AttendanceTime TimeAnnualLeaveUseTime;
+	//時間代休使用時間
+	private AttendanceTime TimeCompensatoryLeaveUseTime;
+	//超過有休使用時間
+	private AttendanceTime sixtyHourExcessHolidayUseTime;
+	//特別休暇使用時間
+	private AttendanceTime TimeSpecialHolidayUseTime;
+	
 	/**
 	 * 各使用時間から相殺時間を控除する
 	 * 

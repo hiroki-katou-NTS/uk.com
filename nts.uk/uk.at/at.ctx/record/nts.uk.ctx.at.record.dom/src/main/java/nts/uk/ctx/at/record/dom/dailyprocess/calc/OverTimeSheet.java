@@ -54,7 +54,7 @@ public class OverTimeSheet {
 	 * @param originList　補正する前の時間帯
 	 * @return　
 	 */
-	public static List<OverTimeFrameTimeSheet> correctTimeSpan(List<OverTimeFrameTimeSheet> insertList,List<OverTimeFrameTimeSheet> originList,int nowNumber){
+	public static List<OverTimeFrameTimeSheetWork> correctTimeSpan(List<OverTimeFrameTimeSheetWork> insertList,List<OverTimeFrameTimeSheetWork> originList,int nowNumber){
 		originList.remove(nowNumber);
 		originList.addAll(insertList);
 		return originList;

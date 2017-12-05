@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -32,7 +34,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
 public class OverTimeOfDaily {
 	//残業枠時間帯
 	private List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheet;
@@ -53,6 +55,20 @@ public class OverTimeOfDaily {
 		this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
 		this.overTimeWorkFrameTime = frameTimeList;
 		this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
+	}
+	
+	public OverTimeOfDaily(List<OverTimeFrameTimeSheet> frameTimeSheetList, 
+			List<OverTimeFrameTime> frameTimeList,
+			Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime,
+			AttendanceTime irregularTime,
+			FlexTime flexTime,
+			AttendanceTime bindTime) {
+			this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
+			this.overTimeWorkFrameTime = frameTimeList;
+			this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
+			this.irregularWithinPrescribedOverTimeWork = irregularTime;
+			this.flexTime = flexTime;
+			this.overTimeWorkSpentAtWork = bindTime;
 	}
 	
 	/**
@@ -77,7 +93,7 @@ public class OverTimeOfDaily {
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
-		for(OverTimeFrameTimeSheet overTimeWorkFrameTime : overTimeWorkFrameTimeSheet) {
+		for(OverTimeFrameTimeSheetWork overTimeWorkFrameTime : overTimeWorkFrameTimeSheet) {
 			calcOverTimeWorkTimeList.add(overTimeWorkFrameTime.calcOverTimeWorkTime(autoCalcSet));
 			//calcOverTimeWorkTimeList.add();
 		}
@@ -98,7 +114,7 @@ public class OverTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(OverTimeFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
+		for(OverTimeFrameTimeSheetWork frameTimeSheet : overTimeWorkFrameTimeSheet) {
 			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
 		}
 		return bonusPayList;
@@ -110,7 +126,7 @@ public class OverTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(OverTimeFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
+		for(OverTimeFrameTimeSheetWork frameTimeSheet : overTimeWorkFrameTimeSheet) {
 			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
 		}
 		return bonusPayList;
@@ -121,7 +137,7 @@ public class OverTimeOfDaily {
 	 */
 	public ExcessOverTimeWorkMidNightTime calcMidNightTimeIncludeOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
 		int totalTime = 0;
-		for(OverTimeFrameTimeSheet frameTime : overTimeWorkFrameTimeSheet) {
+		for(OverTimeFrameTimeSheetWork frameTime : overTimeWorkFrameTimeSheet) {
 			/*↓分岐の条件が明確になったら記述*/
 			AutoCalcSet setting;
 			if(frameTime.getWithinStatutoryAtr().isStatutory()) {
@@ -156,8 +172,8 @@ public class OverTimeOfDaily {
 	 * @param prioritySet
 	 * @return
 	 */
-	public static List<OverTimeFrameTimeSheet> sortedByPriority(List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheetList,StatutoryPrioritySet prioritySet){
-		List<OverTimeFrameTimeSheet> copyList = new ArrayList<>();
+	public static List<OverTimeFrameTimeSheetWork> sortedByPriority(List<OverTimeFrameTimeSheetWork> overTimeWorkFrameTimeSheetList,StatutoryPrioritySet prioritySet){
+		List<OverTimeFrameTimeSheetWork> copyList = new ArrayList<>();
 		if(prioritySet.isPriorityNormal()) {
 			/*普通を優先*/
 			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
@@ -177,9 +193,9 @@ public class OverTimeOfDaily {
 	 * @param prioritySet 振替可能時間
 	 */
 	public void hurikakesyori(AttendanceTime hurikaeAbleTime,StatutoryPrioritySet prioritySet) {
-		List<OverTimeFrameTimeSheet> hurikae = sortedByPriority(overTimeWorkFrameTimeSheet,prioritySet);
+		List<OverTimeFrameTimeSheetWork> hurikae = sortedByPriority(overTimeWorkFrameTimeSheet,prioritySet);
 		AttendanceTime ableTransTime = new AttendanceTime(0);
-		for(OverTimeFrameTimeSheet overTimeFrameTimeSheet : hurikae) {
+		for(OverTimeFrameTimeSheetWork overTimeFrameTimeSheet : hurikae) {
 //			if(/*Not 振替大将*/) {
 //				continue;
 //			}
