@@ -16,7 +16,6 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**
  * 
- * @author xuan vinh
  *
  */
 
@@ -36,7 +35,6 @@ public class PeregEmpCtgWebService {
 	@POST
 	@Path("getListInfoCategory")
 	public List<ComboBoxObject> getListInfoCategory(PeregQuery query) {
-		empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
-		return null;
+		return empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
 	}
 }
