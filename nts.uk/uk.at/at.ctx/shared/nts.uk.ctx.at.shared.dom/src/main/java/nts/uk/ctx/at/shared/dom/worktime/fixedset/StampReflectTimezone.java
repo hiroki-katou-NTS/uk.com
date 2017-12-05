@@ -21,7 +21,7 @@ public class StampReflectTimezone extends DomainObject {
 
 	/** The classification. */
 	// 出退勤区分
-	 private GoLeavingWorkAtr classification;
+	private GoLeavingWorkAtr classification;
 
 	/** The end time. */
 	// 終了時刻
@@ -31,15 +31,40 @@ public class StampReflectTimezone extends DomainObject {
 	// 開始時刻
 	private TimeWithDayAttr startTime;
 
-	/* (non-Javadoc)
+	/**
+	 * Instantiates a new stamp reflect timezone.
+	 *
+	 * @param memento the memento
+	 */
+	public StampReflectTimezone(StampReflectTimezoneGetMemento memento) {
+		this.workNo = memento.getWorkNo();
+		this.classification = memento.getClassification();
+		this.endTime = memento.getEndTime();
+		this.startTime = memento.getStartTime();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(StampReflectTimezoneSetMemento memento) {
+		memento.setWorkNo(this.workNo);
+		memento.setClassification(this.classification);
+		memento.setEndTime(this.endTime);
+		memento.setStartTime(this.startTime);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
 	public void validate() {
 		super.validate();
-		
+
 		// TODO: Validate message 516
 	}
-	
 	
 }

@@ -11,15 +11,15 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezoneSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTimeZone;
 
 /**
  * The Class FlowOffdayWorkTimezoneDto.
  */
 @Getter
 @Setter
-public class FlowOffdayWorkTimezoneDto implements FlowOffdayWorkTimezoneSetMemento {
+public class FlowOffdayWorkTimezoneDto implements FlOffdayWtzSetMemento {
 
 	/** The rest time zone. */
 	private FlowWorkRestTimezoneDto restTimeZone;
@@ -46,7 +46,7 @@ public class FlowOffdayWorkTimezoneDto implements FlowOffdayWorkTimezoneSetMemen
 	 * FlowOffdayWorkTimezoneSetMemento#setLstWorkTimezone(java.util.List)
 	 */
 	@Override
-	public void setLstWorkTimezone(List<FlowWorkHolidayTimeZone> listHdtz) {
+	public void setLstWorkTimezone(List<FlWorkHdTimeZone> listHdtz) {
 		this.lstWorkTimezone = listHdtz.stream().map(item -> {
 			FlowWorkHolidayTimeZoneDto dto = new FlowWorkHolidayTimeZoneDto();
 			item.saveToMement(dto);

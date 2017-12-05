@@ -7,29 +7,29 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 
 /**
- * The Interface FixHalfDayWorkTimezoneGetMemento.
+ * The Interface FixHalfDayWorkTimezoneSetMemento.
  */
 public interface FixHalfDayWorkTimezoneGetMemento {
 	
 	/**
-	 * Sets the rest time zone.
+	 * Gets the rest time zone.
 	 *
-	 * @param restTimeZone the new rest time zone
+	 * @return the rest time zone
 	 */
-	void setRestTimeZone(FixRestTimezoneSet restTimeZone);
-
+	FixRestTimezoneSet getRestTimezone();
+	
 	/**
-	 * Sets the work timezone.
+	 * Gets the work timezone.
 	 *
-	 * @param workTimezone the new work timezone
+	 * @return the work timezone
 	 */
-	void setWorkTimezone(FixedWorkTimezoneSet workTimezone);
-
+	FixedWorkTimezoneSet getWorkTimezone();
+	
 	/**
-	 * Sets the day atr.
+	 * Gets the day atr.
 	 *
-	 * @param dayAtr the new day atr
+	 * @return the day atr
 	 */
-	void setDayAtr(AmPmClassification dayAtr);
+	AmPmClassification getDayAtr();
 	
 }

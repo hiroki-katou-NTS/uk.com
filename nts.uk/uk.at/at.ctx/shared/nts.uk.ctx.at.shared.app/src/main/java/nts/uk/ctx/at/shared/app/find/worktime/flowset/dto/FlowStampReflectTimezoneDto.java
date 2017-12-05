@@ -9,15 +9,15 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezoneSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectRefTwoWT;
 
 /**
  * The Class FlowStampReflectTimezoneDto.
  */
 @Getter
 @Setter
-public class FlowStampReflectTimezoneDto implements FlowStampReflectTimezoneSetMemento {
+public class FlowStampReflectTimezoneDto implements FlStampReflectTzSetMemento {
 
 	/** The two times work reflect basic time. */
 	private Integer twoTimesWorkReflectBasicTime;
@@ -33,7 +33,7 @@ public class FlowStampReflectTimezoneDto implements FlowStampReflectTimezoneSetM
 	 * .ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime)
 	 */
 	@Override
-	public void setTwoTimesWorkReflectBasicTime(ReflectReferenceTwoWorkTime rtwt) {
+	public void setTwoTimesWorkReflectBasicTime(ReflectRefTwoWT rtwt) {
 		this.twoTimesWorkReflectBasicTime = rtwt.v();
 	}
 

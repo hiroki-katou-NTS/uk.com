@@ -6,16 +6,16 @@ package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlCalcSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedSetMemento;
 
 /**
  * The Class FlowWorkDedicateSettingDto.
  */
 @Getter
 @Setter
-public class FlowWorkDedicateSettingDto implements FlowWorkDedicateSettingSetMemento {
+public class FlowWorkDedicateSettingDto implements FlWorkDedSetMemento {
 
 	/** The overtime setting. */
 	private FlowOTSetDto overtimeSetting;
@@ -31,7 +31,7 @@ public class FlowWorkDedicateSettingDto implements FlowWorkDedicateSettingSetMem
 	 * .dom.worktime.flowset.FlowOTSet)
 	 */
 	@Override
-	public void setOvertimeSetting(FlowOTSet otSet) {
+	public void setOvertimeSetting(FlOTSet otSet) {
 		otSet.saveToMemento(this.overtimeSetting);
 	}
 
@@ -43,7 +43,7 @@ public class FlowWorkDedicateSettingDto implements FlowWorkDedicateSettingSetMem
 	 * shared.dom.worktime.flowset.FlowCalculateSet)
 	 */
 	@Override
-	public void setCalculateSetting(FlowCalculateSet fcSet) {
+	public void setCalculateSetting(FlCalcSet fcSet) {
 		fcSet.saveToMemento(this.calculateSetting);
 	}
 }

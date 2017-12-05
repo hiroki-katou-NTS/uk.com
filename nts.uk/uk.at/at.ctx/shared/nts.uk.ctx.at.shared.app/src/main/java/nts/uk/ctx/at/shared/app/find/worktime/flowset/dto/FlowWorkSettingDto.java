@@ -12,18 +12,18 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.LegalOTSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtz;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtz;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTz;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingSetMemento;
 
 /**
  * The Class FlowWorkSettingDto.
  */
 @Getter
 @Setter
-public class FlowWorkSettingDto implements FlowWorkSettingSetMemento {
+public class FlowWorkSettingDto implements FlWorkSettingSetMemento {
 
 	/** The working code. */
 	private String workingCode;
@@ -91,7 +91,7 @@ public class FlowWorkSettingDto implements FlowWorkSettingSetMemento {
 	 * FlowOffdayWorkTimezone)
 	 */
 	@Override
-	public void setOffdayWorkTimezone(FlowOffdayWorkTimezone offDayWtz) {
+	public void setOffdayWorkTimezone(FlOffdayWtz offDayWtz) {
 		offDayWtz.saveToMemento(this.offdayWorkTimezone);
 	}
 
@@ -115,7 +115,7 @@ public class FlowWorkSettingDto implements FlowWorkSettingSetMemento {
 	 * FlowHalfDayWorkTimezone)
 	 */
 	@Override
-	public void setHalfDayWorkTimezone(FlowHalfDayWorkTimezone halfDayWtz) {
+	public void setHalfDayWorkTimezone(FlHalfDayWtz halfDayWtz) {
 		halfDayWtz.saveToMemento(this.halfDayWorkTimezone);
 	}
 
@@ -127,7 +127,7 @@ public class FlowWorkSettingDto implements FlowWorkSettingSetMemento {
 	 * FlowStampReflectTimezone)
 	 */
 	@Override
-	public void setStampReflectTimezone(FlowStampReflectTimezone stampRefTz) {
+	public void setStampReflectTimezone(FlStampReflectTz stampRefTz) {
 		stampRefTz.saveToMemento(this.stampReflectTimezone);
 	}
 
@@ -151,7 +151,7 @@ public class FlowWorkSettingDto implements FlowWorkSettingSetMemento {
 	 * FlowWorkDedicateSetting)
 	 */
 	@Override
-	public void setFlowSetting(FlowWorkDedicateSetting flowSet) {
+	public void setFlowSetting(FlWorkDedSetting flowSet) {
 		flowSet.saveToMemento(this.flowSetting);
 	}
 }

@@ -4,26 +4,82 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class StampReflectTimezoneDto.
  */
+
 @Getter
 @Setter
-public class StampReflectTimezoneDto {
-	
+public class StampReflectTimezoneDto implements StampReflectTimezoneSetMemento{
+
 	/** The work no. */
-	private Integer workNo;
+	private BigDecimal workNo;
 
 	/** The classification. */
-	 private Integer classification;
+	private Integer classification;
 
 	/** The end time. */
 	private Integer endTime;
 
 	/** The start time. */
 	private Integer startTime;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezoneSetMemento
+	 * #getWorkNo(nts.uk.ctx.at.shared.dom.worktime.fixedset.WorkNo)
+	 */
+	@Override
+	public void setWorkNo(WorkNo workNo) {
+		this.workNo = workNo.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezoneSetMemento
+	 * #getClassification(nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * GoLeavingWorkAtr)
+	 */
+	@Override
+	public void setClassification(GoLeavingWorkAtr classification) {
+		this.classification = classification.value;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezoneSetMemento
+	 * #getEndTime(nts.uk.shr.com.time.TimeWithDayAttr)
+	 */
+	@Override
+	public void setEndTime(TimeWithDayAttr endTime) {
+		this.endTime = endTime.valueAsMinutes();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezoneSetMemento
+	 * #getStartTime(nts.uk.shr.com.time.TimeWithDayAttr)
+	 */
+	@Override
+	public void setStartTime(TimeWithDayAttr startTime) {
+		this.startTime = startTime.valueAsMinutes();
+	}
 
 }

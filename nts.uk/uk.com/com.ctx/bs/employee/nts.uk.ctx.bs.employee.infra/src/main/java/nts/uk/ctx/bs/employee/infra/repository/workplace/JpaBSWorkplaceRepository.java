@@ -33,6 +33,9 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist_;
 @Stateless
 public class JpaBSWorkplaceRepository extends JpaRepository implements WorkplaceRepository {
 
+	/** The Constant MAX_ELEMENTS. */
+	private static final Integer MAX_ELEMENTS = 1000;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -118,20 +121,25 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 		// select root
 		cq.select(root);
 
-		// add where
-		List<Predicate> predicateList = new ArrayList<>();
+		List<BsymtWorkplaceHist> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(workplaceIds, MAX_ELEMENTS, (subList) -> {
 
-		Expression<String> exp = root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK)
-				.get(BsymtWorkplaceHistPK_.wkpid);
-		predicateList.add(exp.in(workplaceIds));
+			// add where
+			List<Predicate> predicateList = new ArrayList<>();
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
+			Expression<String> exp = root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK)
+					.get(BsymtWorkplaceHistPK_.wkpid);
+			predicateList.add(exp.in(subList));
 
-		List<BsymtWorkplaceHist> lstBsymtWorkplaceHist = em.createQuery(cq).getResultList();
+			cq.where(predicateList.toArray(new Predicate[] {}));
+			cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
+
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 		
 		return workplaceIds.stream().map(wkpId -> {
-			List<BsymtWorkplaceHist> subListEntity = lstBsymtWorkplaceHist.stream()
+			List<BsymtWorkplaceHist> subListEntity = resultList.stream()
 					.filter(entity -> entity.getBsymtWorkplaceHistPK().getWkpid().equals(wkpId))
 					.collect(Collectors.toList());
 			return new Workplace(new JpaWorkplaceGetMemento(subListEntity));

@@ -11,15 +11,15 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingSetMemento;
 
 /**
  * The Class FlowWorkTimezoneSettingDto.
  */
 @Getter
 @Setter
-public class FlowWorkTimezoneSettingDto implements FlowWorkTimezoneSettingSetMemento {
+public class FlowWorkTimezoneSettingDto implements FlWtzSettingSetMemento {
 
 	/** The work time rounding. */
 	private TimeRoundingSettingDto workTimeRounding;
@@ -46,7 +46,7 @@ public class FlowWorkTimezoneSettingDto implements FlowWorkTimezoneSettingSetMem
 	 * FlowWorkTimezoneSettingSetMemento#setLstOTTimezone(java.util.List)
 	 */
 	@Override
-	public void setLstOTTimezone(List<FlowOTTimezone> lstTzone) {
+	public void setLstOTTimezone(List<FlOTTimezone> lstTzone) {
 		this.lstOTTimezone = lstTzone.stream().map(item -> {
 			FlowOTTimezoneDto dto = new FlowOTTimezoneDto();
 			item.saveToMemento(dto);

@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.entity.shortworktime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -36,12 +35,10 @@ public class BshmtSchildCareFrame extends UkJpaEntity implements Serializable {
 	protected BshmtSchildCareFramePK bshmtSchildCareFramePK;
 
 	/** The time no. */
-	@Basic(optional = false)
 	@Column(name = "CNT")
 	private Integer timeNo;
 
 	/** The end clock. */
-	@Basic(optional = false)
 	@Column(name = "END_CLOCK")
 	private Integer endClock;
 
@@ -58,6 +55,7 @@ public class BshmtSchildCareFrame extends UkJpaEntity implements Serializable {
 	 * Instantiates a new bshmt schild care frame.
 	 */
 	public BshmtSchildCareFrame() {
+		super();
 	}
 
 	/**

@@ -9,7 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetMemento;
 
 /**
  * The Class FlowTimeSettingDto.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSettingSetMemento;
 
 @Getter
 @Setter
-public class FlowTimeSettingDto implements FlowTimeSettingSetMemento {
+public class FlowTimeSettingDto implements FlTimeSetMemento {
 
 	/** The rounding. */
 	private TimeRoundingSettingDto rounding;
