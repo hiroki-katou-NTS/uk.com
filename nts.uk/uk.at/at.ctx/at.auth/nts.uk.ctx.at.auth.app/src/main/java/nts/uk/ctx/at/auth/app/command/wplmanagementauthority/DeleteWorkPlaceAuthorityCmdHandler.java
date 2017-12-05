@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.auth.app.command.wplmanagementauthority;
 
 import java.util.List;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 

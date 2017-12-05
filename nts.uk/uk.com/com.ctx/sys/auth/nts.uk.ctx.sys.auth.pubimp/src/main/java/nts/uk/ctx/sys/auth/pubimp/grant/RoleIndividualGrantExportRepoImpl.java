@@ -27,9 +27,6 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 	@Inject
 	private RoleIndividualGrantRepository roleIndividualGrantRepository;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUserAndRoleType(java.lang.String, java.lang.Integer)
-	 */
 	@Override
 	public RoleIndividualGrantExport getByUserAndRoleType(String userId, Integer roleType) {
 		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository
@@ -48,9 +45,4 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUser(java.lang.String)
-	 */
-
 }

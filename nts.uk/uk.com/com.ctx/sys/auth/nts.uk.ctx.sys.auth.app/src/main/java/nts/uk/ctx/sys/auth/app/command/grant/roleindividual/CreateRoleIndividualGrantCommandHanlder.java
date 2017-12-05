@@ -27,12 +27,12 @@ public class CreateRoleIndividualGrantCommandHanlder extends CommandHandler<Crea
 	@Override
 	protected void handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {
 		CreateRoleIndividualGrantCommand command = context.getCommand();
-		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepo.findRoleIndividualGrant(command.getUserId(), command.getCompanyId(),command.getRoleType());
+		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepo.findRoleIndividualGrant(command.getUserID(), command.getCompanyID(),command.getRoleType());
 		/////////////
 		if (roleIndividualGrant.isPresent()){
 			throw new BusinessException("Msg_3");
 		}     
-        if(command.getUserId()==null){
+        if(command.getUserID()==null){
         	throw new BusinessException("Msg_218");
         }
         //ドメインモデル「ロール個人別付与」を新規登録する
@@ -42,19 +42,19 @@ public class CreateRoleIndividualGrantCommandHanlder extends CommandHandler<Crea
         if(command.isSetRoleAdminFlag()==true){
         	
         	RoleIndividualGrant roleIndiGrantSys =new RoleIndividualGrant(
-        			command.getUserId(),
-        			command.getRoleId(),
+        			command.getUserID(),
+        			command.getRoleID(),
         			command.getDecisionCompanyID(),
         			//roleType
         			command.getRoleType(),
-        			new DatePeriod(command.getStartDate(), command.getEndDate()));
+        			new DatePeriod(command.getStartValidPeriod(), command.getEndValidPeriod()));
         	//ドメインモデル「ロール個人別付与」を新規登録する
         	//Register a domain model "Role individual grant"
         	// param companyID = decisionCompanyID() 
         	
         	 roleIndividualGrantRepo.add(roleIndiGrantSys);
         }
-       Optional<User> user 	= userRepo.getByLoginId(command.getUserId());
+       Optional<User> user 	= userRepo.getByLoginId(command.getUserID());
        /////////////////////TODO /////////////////////////////////////////////////////////////////
         
 }

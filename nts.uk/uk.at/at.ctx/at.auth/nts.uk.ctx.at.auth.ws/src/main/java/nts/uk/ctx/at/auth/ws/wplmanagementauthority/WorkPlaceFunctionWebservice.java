@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import nts.uk.ctx.at.auth.app.find.wplmanagementauthority.WorkPlaceFunctionFinder;
 import nts.uk.ctx.at.auth.app.find.wplmanagementauthority.dto.WorkPlaceFunctionDto;
 
-@Path("at/auth/workplace/wplmanagementauthority/WorkPlaceFunction")
+@Path("at/auth/workplace/wplmanagementauthority/workplacefunction")
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkPlaceFunctionWebservice {
 	
