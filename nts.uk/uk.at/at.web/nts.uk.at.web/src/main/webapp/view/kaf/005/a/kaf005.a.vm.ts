@@ -102,6 +102,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         overtimeHoursPre: KnockoutObservableArray<common.AppOvertimePre> = ko.observableArray([]);
         overTimeShiftNightPre: KnockoutObservable<string> = ko.observable(null);
         flexExessTimePre: KnockoutObservable<string> = ko.observable(null);
+        
+        // AppOvertimeReference
+        appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATEFORMART));
+        workTypeCodeReference:  KnockoutObservable<string> = ko.observable("");
+        workTypeNameReference:  KnockoutObservable<string> = ko.observable("");
+        siftCodeReference:  KnockoutObservable<string> = ko.observable("");
+        siftNameReference:  KnockoutObservable<string> = ko.observable("");
+        //TIME LINE 1
+        workClockFrom1To1Reference: KnockoutObservable<string> = ko.observable(null);
+        //TIME LINE 2
+        workClockFrom2To2Reference: KnockoutObservable<string> = ko.observable(null);
+        displayWorkClockFrom2To2Reference: KnockoutObservable <boolean> = ko.observable(true);
+        overtimeHoursReference: KnockoutObservableArray<common.AppOvertimePre> = ko.observableArray([]);
+        overTimeShiftNightRefer: KnockoutObservable<string> = ko.observable(null);
+        flexExessTimeRefer: KnockoutObservable<string> = ko.observable(null);
         //　初期起動時、計算フラグ=1とする。
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
         constructor() {
@@ -164,6 +179,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         self.convertpreAppOvertimeDto(data);
                         self.referencePanelFlg(data.referencePanelFlg);
                         self.preAppPanelFlg(data.preAppPanelFlg);
+                        self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
+                        self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
                     }).fail((res) =>{
                         dfd.reject(res);    
                     });

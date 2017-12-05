@@ -84,7 +84,6 @@ module nts.uk.at.view.kaf005.b {
             overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
             indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
             
-    
             // preAppOvertime
             appDatePre: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
             workTypeCodePre:  KnockoutObservable<string> = ko.observable("");
@@ -99,6 +98,21 @@ module nts.uk.at.view.kaf005.b {
             overtimeHoursPre: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
             overTimeShiftNightPre: KnockoutObservable<number> = ko.observable(null);
             flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
+            
+            // AppOvertimeReference
+            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATEFORMART));
+            workTypeCodeReference:  KnockoutObservable<string> = ko.observable("");
+            workTypeNameReference:  KnockoutObservable<string> = ko.observable("");
+            siftCodeReference:  KnockoutObservable<string> = ko.observable("");
+            siftNameReference:  KnockoutObservable<string> = ko.observable("");
+            //TIME LINE 1
+            workClockFrom1To1Reference: KnockoutObservable<string> = ko.observable(null);
+            //TIME LINE 2
+            workClockFrom2To2Reference: KnockoutObservable<string> = ko.observable(null);
+            displayWorkClockFrom2To2Reference: KnockoutObservable <boolean> = ko.observable(true);
+            overtimeHoursReference: KnockoutObservableArray<common.AppOvertimePre> = ko.observableArray([]);
+            overTimeShiftNightRefer: KnockoutObservable<string> = ko.observable(null);
+            flexExessTimeRefer: KnockoutObservable<string> = ko.observable(null);
             //　初期起動時、計算フラグ=1とする。
             //calculateFlag: KnockoutObservable<number> = ko.observable(1);
             //TODO: test-setting calculateFlag = 0
