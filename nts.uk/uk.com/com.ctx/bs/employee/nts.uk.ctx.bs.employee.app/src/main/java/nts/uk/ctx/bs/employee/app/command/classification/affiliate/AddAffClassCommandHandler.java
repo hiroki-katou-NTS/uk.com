@@ -17,6 +17,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -37,7 +38,7 @@ public class AddAffClassCommandHandler
 
 	@Inject
 	private AffClassHistItemRepository_ver1 affClassHistItemRepo;
-	
+
 	@Inject
 	private AffClassHistoryRepositoryService affClassHistoryRepositoryService;
 
@@ -54,7 +55,7 @@ public class AddAffClassCommandHandler
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddAffClassificationCommand> context) {
 		AddAffClassificationCommand command = context.getCommand();
-
+		String companyId = AppContexts.user().companyId();
 		// add history
 		String newHistoryId = IdentifierUtil.randomUniqueId();
 		DateHistoryItem dateItem = new DateHistoryItem(newHistoryId,
@@ -64,7 +65,7 @@ public class AddAffClassCommandHandler
 		if (historyOption.isPresent()) {
 			history = historyOption.get();
 		} else {
-			history = new AffClassHistory_ver1(command.getEmployeeId(), new ArrayList<>());
+			history = new AffClassHistory_ver1(companyId, command.getEmployeeId(), new ArrayList<>());
 		}
 		history.add(dateItem);
 		affClassHistoryRepositoryService.add(history);

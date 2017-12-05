@@ -30,6 +30,9 @@ public class BsymtAffCompanyHist extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public BsymtAffCompanyHistPk bsymtAffCompanyHistPk;
 
+	@Column(name = "CID")
+	public String companyId;
+
 	@Column(name = "DESTINATION_DATA")
 	public int destinationData;
 
