@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
@@ -50,7 +51,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		TaskDataSetter dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("dailyCreateCount", 0);
 		dataSetter.setData("dailyCreateStatus", ExecutionStatus.PROCESSING.nameId);
-		dataSetter.setData("dailyCreateHasError", "");
+		dataSetter.setData("dailyCreateHasError", " ");
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
+package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Setter
 @Getter
 @NoArgsConstructor
-public class EmployeeAndClosure {
+public class EmployeeAndClosureOutput {
 
 	private String employeeId;
 	private int closureId;

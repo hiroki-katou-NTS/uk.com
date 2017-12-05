@@ -1,7 +1,7 @@
 <div>
 	<div>
 		<div class="cf valign-center control-group" data-bind="if: indicationOvertimeFlg" 
-			style = "margin-left: 40px; background: #f8efd4; padding: 15px 10px 15px 10px; width: 820px;">
+			style = "margin-left: 40px; background: #f8efd4; padding: 15px 10px 15px 10px; width: 780px;">
 			<!--A2_7 時間外労働ラベル--> 			
 			<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
 			<div class="pull-left">
@@ -443,9 +443,9 @@
 			<label>#{i18n.getText('KAF005_120')}</label>
 			 <BR /> <BR /> 
 			<!--A12_3-->
-			<div data-bind = "if: preAppPanelFlg()">
-				<label data-bind =" if: !(referencePanelFlg())" style ="margin-left: 7px">#{i18n.getText('KAF005_121')}</label>
-				<div data-bind =" if: referencePanelFlg()">
+			<div data-bind = "if: referencePanelFlg()">
+				<label data-bind =" if: !(preAppPanelFlg())" style ="margin-left: 7px">#{i18n.getText('KAF005_121')}</label>
+				<div data-bind =" if: preAppPanelFlg()">
 					<div class="control-group" >
 					<!--A12_4 申請者-->
 					<label>#{i18n.getText('KAF005_122')} :</label>

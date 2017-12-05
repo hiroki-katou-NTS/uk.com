@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.shared.dom.worktimeset.fluid.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 

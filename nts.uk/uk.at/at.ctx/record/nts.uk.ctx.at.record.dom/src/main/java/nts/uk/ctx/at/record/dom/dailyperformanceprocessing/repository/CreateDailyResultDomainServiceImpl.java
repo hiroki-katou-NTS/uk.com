@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;

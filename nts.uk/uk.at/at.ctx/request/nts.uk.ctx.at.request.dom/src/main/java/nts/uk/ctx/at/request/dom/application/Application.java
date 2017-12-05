@@ -46,6 +46,7 @@ public class Application extends AggregateRoot{
 	/**
 	 * 差戻し理由
 	 */
+	@Setter
 	private AppReason reversionReason;
 	/**
 	 * 申請日
