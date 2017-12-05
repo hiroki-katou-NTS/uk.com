@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
+import static java.util.stream.Collectors.groupingBy;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.*;
-
-import java.util.ArrayList;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,11 +23,10 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
