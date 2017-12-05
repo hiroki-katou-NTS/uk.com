@@ -7,19 +7,20 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 /**
  * The Enum WorkTimeMethodSet.
  */
+// 就業時間帯の設定方法
 public enum WorkTimeMethodSet {
 
 	/** The fixed work. */
 	// 固定勤務
-	FIXED_WORK(0, "Enum_Fixed_Work", "固定勤務"),
+	FIXED_WORK(0, "Enum_WorkTimeMethodSet_Fixed_Work", "固定勤務"),
 
 	/** The difftime work. */
 	// 時差勤務
-	DIFFTIME_WORK(1, "Enum_DiffTime_Work", "時差勤務"),
+	DIFFTIME_WORK(1, "Enum_WorkTimeMethodSet_DiffTime_Work", "時差勤務"),
 
 	/** The flow work. */
 	// 流動勤務
-	FLOW_WORK(2, "Enum_Flow_Work", "流動勤務");
+	FLOW_WORK(2, "Enum_WorkTimeMethodSet_Flow_Work", "流動勤務");
 
 	/** The value. */
 	public final int value;
