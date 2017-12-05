@@ -340,7 +340,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                         }
                         block.clear();
-                        close();
                     });
                 });
             }).ifNo(() => {
