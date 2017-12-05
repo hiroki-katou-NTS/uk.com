@@ -385,7 +385,7 @@ module kmk003.base.fixtable {
                     row.isChecked = ko.observable(false);
                     
                     // subscribe
-                    row.isChecked.subscribe((newList) => {
+                    row.isChecked.subscribe(() => {
                         self.subscribeChangeCheckbox();
                     });
                 }
