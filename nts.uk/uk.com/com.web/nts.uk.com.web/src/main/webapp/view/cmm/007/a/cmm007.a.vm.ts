@@ -21,7 +21,7 @@ module nts.uk.com.view.cmm007.a {
             public onSelectTabB(): void {
                 $('#com_person').focus();
                 $("#sidebar").ntsSideBar("init", {
-                    active: 0,
+                    active: SideBarTabIndex.FIRST,
                     activate: (event, info) => {
                        $('#com_person').focus();
                     }
@@ -33,7 +33,7 @@ module nts.uk.com.view.cmm007.a {
              */
             public onSelectTabC(): void {
                 $("#sidebar").ntsSideBar("init", {
-                    active: 1,
+                    active: SideBarTabIndex.SECOND,
                     activate: (event, info) => {
                        $('#c3_15').focus();
                     }
@@ -45,7 +45,7 @@ module nts.uk.com.view.cmm007.a {
              */
             public onSelectTabD(): void {
                  $("#sidebar").ntsSideBar("init", {
-                    active: 2,
+                    active: SideBarTabIndex.THIRD,
                     activate: (event, info) => {
                        $('#plan_year_hd_frame1').focus();
                     }
@@ -57,7 +57,7 @@ module nts.uk.com.view.cmm007.a {
              */
             public onSelectTabE(): void {
                  $("#sidebar").ntsSideBar("init", {
-                    active: 3,
+                    active: SideBarTabIndex.FOURTH,
                     activate: (event, info) => {
                       $('#overtime_work_name1').focus();
                     }
@@ -69,12 +69,20 @@ module nts.uk.com.view.cmm007.a {
              */
             public onSelectTabG(): void {
                  $("#sidebar").ntsSideBar("init", {
-                    active: 4,
+                    active: SideBarTabIndex.FIFTH,
                     activate: (event, info) => {
                       $('#work_day_off_name1').focus();
                     }
                 });
             }
-       }      
+       }    
+    }
+    
+    module SideBarTabIndex {
+        export const FIRST = 0;                        
+        export const SECOND = 1;
+        export const THIRD = 2;
+        export const FOURTH = 3;
+        export const FIFTH = 4;
     }
 }

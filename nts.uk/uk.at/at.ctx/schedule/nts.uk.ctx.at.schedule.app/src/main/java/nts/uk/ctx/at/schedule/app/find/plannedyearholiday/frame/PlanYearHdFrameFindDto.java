@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.plannedyearholiday.frame.find;
+package nts.uk.ctx.at.schedule.app.find.plannedyearholiday.frame;
 
 import lombok.Data;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;

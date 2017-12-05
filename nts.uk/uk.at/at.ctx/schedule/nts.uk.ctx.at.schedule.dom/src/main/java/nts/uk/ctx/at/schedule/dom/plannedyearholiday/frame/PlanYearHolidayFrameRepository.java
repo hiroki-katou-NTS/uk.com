@@ -24,13 +24,6 @@ public interface PlanYearHolidayFrameRepository {
 	Optional<PlanYearHolidayFrame> findPlanYearHolidayFrame(CompanyId companyId, int planYearHdFrNo);
 	
 	/**
-	 * add.
-	 *
-	 * @param planYearHolidayFrame the plan year holiday frame
-	 */
-	void add(PlanYearHolidayFrame planYearHolidayFrame);
-	
-	/**
 	 * Update.
 	 *
 	 * @param planYearHolidayFrame the plan year holiday frame

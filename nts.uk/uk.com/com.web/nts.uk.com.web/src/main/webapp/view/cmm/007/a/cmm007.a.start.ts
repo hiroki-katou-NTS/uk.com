@@ -15,7 +15,7 @@ module nts.uk.com.view.cmm007.a {
         let tabE = new viewModelTabE.ScreenModel();
         let tabG = new viewModelTabG.ScreenModel();
         
-        blockUI.grayout();
+        blockUI.invisible();
         
         $.when(mainTab.start_page(), tabB.start_page(), tabC.start_page(), tabD.start_page(), tabE.start_page(), tabG.start_page()).done(function(){
             let screenModel =  {

@@ -42,15 +42,6 @@ public class JpaPlanYearHolidayFrameRepository extends JpaRepository
 				.find(new KscstPlanYearHdFramePK(companyId.v(), (short) planYearHdFrNo), KscstPlanYearHdFrame.class)
 				.map(e -> this.toDomain(e));
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameRepository#add(nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrame)
-	 */
-	@Override
-	public void add(PlanYearHolidayFrame planYearHolidayFrame) {
-		this.commandProxy().insert(this.toEntity(planYearHolidayFrame));
-	}
 
 	/*
 	 * (non-Javadoc)

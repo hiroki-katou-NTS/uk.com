@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.ws.temporaryabsence.frame;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
