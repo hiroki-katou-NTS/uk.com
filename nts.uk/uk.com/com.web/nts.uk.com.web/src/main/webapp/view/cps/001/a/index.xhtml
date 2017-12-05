@@ -110,7 +110,7 @@
 										visibleItemsCount: 5,
 										value: cat.id,
 										optionsText: 'categoryName',
-										optionsValue: 'personInfoCategoryID',
+										optionsValue: 'id',
 										editable: false,
 										enable: true,
 										columns: [{ prop: 'categoryName', length: 10 }]}"></div>
@@ -202,7 +202,7 @@
 									data-bind="ntsDatePicker: {
 								value: ko.observable(''), 
 								dateFormat: 'YYYY/MM/DD'}"></div>
-								<button>#{i18n.getText('CPS001_37')}</button>
+								<button data-bind="click: filterData">#{i18n.getText('CPS001_37')}</button>
 							</div>
 							<div
 								data-bind="template: { 
