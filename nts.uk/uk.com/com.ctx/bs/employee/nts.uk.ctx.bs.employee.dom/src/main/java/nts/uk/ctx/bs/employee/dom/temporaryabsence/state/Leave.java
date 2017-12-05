@@ -17,12 +17,14 @@ public class Leave extends TempAbsenceHisItem {
 	 * @param remarks
 	 * @param soInsPayCategory
 	 */
-	private Leave(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory) {
-		super(LeaveHolidayType.LEAVE_OF_ABSENCE, historyId, employeeId, remarks, soInsPayCategory);
+	private Leave(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
+			String familyMemberId) {
+		super(LeaveHolidayType.LEAVE_OF_ABSENCE, historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 	}
 
-	public static Leave init(String historyId, String employeeId, String remarks, Integer soInsPayCategory) {
-		return new Leave(historyId, employeeId, new GenericString(remarks), soInsPayCategory);
+	public static Leave init(String historyId, String employeeId, String remarks, Integer soInsPayCategory,
+			String familyMemberId) {
+		return new Leave(historyId, employeeId, new GenericString(remarks), soInsPayCategory, familyMemberId);
 	}
 
 }

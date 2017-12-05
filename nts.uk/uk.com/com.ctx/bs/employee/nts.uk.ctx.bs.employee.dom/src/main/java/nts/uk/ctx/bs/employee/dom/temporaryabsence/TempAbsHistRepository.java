@@ -28,7 +28,7 @@ public interface TempAbsHistRepository {
 	 * @param item
 	 * @param sid
 	 */
-	void add(String sid, DateHistoryItem item);
+	void add(String cid, String sid, DateHistoryItem item);
 	/**
 	 * 取得した「休職休業」を更新する
 	 * @param domain

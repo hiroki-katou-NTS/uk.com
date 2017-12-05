@@ -22,7 +22,7 @@ public class TempAbsHistoryService {
 		}
 		// Insert last element
 		DateHistoryItem lastItem = domain.getDateHistoryItems().get(domain.getDateHistoryItems().size() - 1);
-		temporaryAbsenceHistRepository.add(domain.getEmployeeId(), lastItem);
+		temporaryAbsenceHistRepository.add(domain.getCompanyId(), domain.getEmployeeId(), lastItem);
 		
 		// Update item before and after
 		updateItemBefore(domain, lastItem);
