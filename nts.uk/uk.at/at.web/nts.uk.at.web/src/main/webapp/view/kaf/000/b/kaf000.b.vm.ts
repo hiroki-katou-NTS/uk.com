@@ -51,7 +51,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.appType = ko.observable(currentApp.appType);
             self.appID = ko.observable(currentApp.appID);
             self.inputCommandEvent = ko.observable(new model.InputCommandEvent(0, self.appID(), self.appReasonEvent()));
-            self.inputCommonData
             //application
             self.inputDetail = ko.observable(new model.InputGetDetailCheck(self.appID(), "2022/01/01"));
 
@@ -579,7 +578,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_248' }).ifYes(function() {
                 service.releaseApp(self.inputCommonData()).done(function() {
-                    location.reload();
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_221'}).then(()=>{
+                        location.reload();    
+                    });
                 }).fail(function(res: any) {
                     if(res.optimisticLock == true){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
@@ -589,6 +590,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
                     }
                 }); 
+            }).ifNo(()=>{
+                nts.uk.ui.block.clear();        
             });
         }
 
@@ -626,9 +629,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     nts.uk.ui.dialog.alert({ messageId: 'Msg_16' }).then(function() {
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
                         if (!nts.uk.util.isNullOrUndefined(data)) {
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(function(){
-                                    self.setScreenAfterDelete();    
-                                });
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(function(){
+                                self.setScreenAfterDelete();    
+                            });
                         }else{
                             self.setScreenAfterDelete();
                         }

@@ -343,6 +343,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             self.registerData(overtime);
                         }).ifNo(() => {
                             //終了状態：処理をキャンセル
+                            nts.uk.ui.block.clear();
                             return;
                         });
                     } else {

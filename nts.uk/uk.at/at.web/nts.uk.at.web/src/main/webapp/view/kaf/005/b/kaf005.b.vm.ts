@@ -151,6 +151,7 @@ module nts.uk.at.view.kaf005.b {
                 self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
                 self.displayBonusTime(data.displayBonusTime);
                 self.restTimeDisFlg(data.displayRestTime);
+                self.appDate(data.application.applicationDate);
                 self.employeeName(data.employeeName);
                 self.employeeID(data.employeeID);
                 if (data.siftType != null) {
@@ -331,6 +332,15 @@ module nts.uk.at.view.kaf005.b {
                     self.displayDivergenceReasonInput(),
                     self.multilContent2()
                 );
+                let overTimeShiftNightTmp: number = 0;
+                let flexExessTimeTmp: number = 0;
+                for (let i = 0; i < self.overtimeHours().length; i++) {
+                    if(self.overtimeHours()[i].frameNo() == 11){
+                        overTimeShiftNightTmp = self.overtimeHours()[i].applicationTime;                    
+                    }else if(self.overtimeHours()[i].frameNo() == 12){
+                        flexExessTimeTmp = self.overtimeHours()[i].applicationTime;  
+                    }
+                }
                 let command = {
                     version: self.version,
                     appID: self.appID(),
@@ -349,8 +359,8 @@ module nts.uk.at.view.kaf005.b {
                     overtimeHours: ko.mapping.toJS(_.map(self.overtimeHours(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
                     restTime: ko.mapping.toJS(self.restTime()),
                     bonusTimes: ko.mapping.toJS(_.map(self.bonusTimes(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
-                    overTimeShiftNight: 100,
-                    flexExessTime: 100,
+                    overTimeShiftNight: ko.toJS(overTimeShiftNightTmp),
+                    flexExessTime: ko.toJS(flexExessTimeTmp),
                     overtimeAtr: 0,
                     divergenceReasonContent: divergenceReason,
                     sendMail: self.manualSendMailAtr(),
@@ -363,42 +373,15 @@ module nts.uk.at.view.kaf005.b {
                             //メッセージNO：829
                             dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {
                                 //登録処理を実行
-                                service.updateOvertime(command)
-                                .done(() => {
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                                        location.reload();
-                                    });     
-                                })
-                                .fail(function(res) { 
-                                    if(res.optimisticLock == true){
-                                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                                            location.reload();
-                                        });    
-                                    } else {
-                                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                                    }
-                                });
+                                self.updateOvertime(command);
                             }).ifNo(() => {
                                 //終了状態：処理をキャンセル
+                                nts.uk.ui.block.clear();
                                 return;
                             });
                         } else {
                             //登録処理を実行
-                            service.updateOvertime(command)
-                            .done(() => {
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                                    location.reload();
-                                });     
-                            })
-                            .fail(function(res) { 
-                                if(res.optimisticLock == true){
-                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                                        location.reload();
-                                    });    
-                                } else {
-                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                                }
-                            });
+                            self.updateOvertime(command);
                         }
                     } else if (data.errorCode == 1){
                         if(data.frameNo == -1){
@@ -406,16 +389,41 @@ module nts.uk.at.view.kaf005.b {
                             for (let i = 0; i < self.overtimeHours().length; i++) {
                                 self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
                             }
+                            dialog.alertError({messageId:"Msg_424"}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }else{
                           //Change background color
                             self.changeColor( data.attendanceId, data.frameNo);
+                            dialog.alertError({messageId:"Msg_424"}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }
-                        
                     }
                 }).fail((res) => {
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                     .then(function() { nts.uk.ui.block.clear(); });
                 });
+            }
+            
+            updateOvertime(command: any){
+                service.updateOvertime(command)
+                .done((data) => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        if (!nts.uk.util.isNullOrUndefined(data)) {
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
+                                location.reload();    
+                            });
+                        } else {
+                            location.reload();        
+                        }
+                    });     
+                })
+                .fail(function(res) { 
+                    if(res.optimisticLock == true){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                            location.reload();
+                        });    
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                    }
+                });           
             }
             
             convertOvertimeCaculationToOverTimeInput(param: common.OverTimeInput): common.OverTimeInput{
