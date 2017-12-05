@@ -1122,7 +1122,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     curDataItem = temp[i].formPeople
                 } else if (temp[i].formulaAmount != null) {
                     curDataItem = temp[i].formulaAmount
-                } else if (temp[i].numerical.length > 0) {
+                } else if (temp[i].numerical != null) {
                     curDataItem = temp[i].numerical
                 } else if (temp[i].unitPrice != null) {
                     curDataItem = temp[i].unitPrice
@@ -1443,235 +1443,239 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     formulaResult = "";
                 }
             } else { // 項目選択
-                // 平均単価
-                if (attribute == 4) {
-                    // If is first item
-                    var unitPrices = [
-                        { uPCd: 0, uPName: nts.uk.resource.getText("KML002_53") },
-                        { uPCd: 1, uPName: nts.uk.resource.getText("KML002_54") },
-                        { uPCd: 2, uPName: nts.uk.resource.getText("KML002_55") },
-                        { uPCd: 3, uPName: nts.uk.resource.getText("KML002_56") },
-                        { uPCd: 4, uPName: nts.uk.resource.getText("KML002_57") }
-                    ];
-                    var unit = _.find(unitPrices, function(o) { return o.uPCd == data.unitPrice; });
-
-                    if (index == 0) {
-                        formulaResult = data.unitName != null ? data.unitName : unit.uPName;
-                    } else {
-                        formulaResult = (beforeFormula != "" ? beforeFormula : self.allItemsData[index - 1].formula()) + " " + nts.uk.resource.getText("KML002_37")
-                            + " " + (data.unitName != null ? data.unitName : unit.uPName);
-                    }
-                } else { // Other attributes
-                    // If is first item
-                    if (index == 0) {
-                        if (attribute == 0) {
-                            if (data.lstFormTimeFunc.length <= 0) {
-                                formulaResult = "";
-                            } else {
-                                for (var i = 0; i < data.lstFormTimeFunc.length; i++) {
-                                    var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var itemName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
-                                    var attendanceItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].attendanceItemId; });
-                                    var presetItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].presetItemId; });
-                                    var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
-                         
-                                    if(itemName != "") {
-                                        formulaResult += operator + " " + itemName + " ";
-                                    } else if(attendanceItem != null) {
-                                        formulaResult += operator + " " + attendanceItem.name + " ";
-                                    } else if(presetItem != null) {
-                                        formulaResult += operator + " " + presetItem.name + " ";
-                                    } else if(externalItem != null) {
-                                        formulaResult += operator + " " + externalItem.name + " ";
-                                    }
-                                }
-                            }
-                        } else if (attribute == 1) {
-                            if(data.timeUnit != null) {
-                                if (data.timeUnit.lstTimeUnitFuncs.length <=0 && data.moneyFunc.lstMoney.length <=0) {
-                                    formulaResult = "";
-                                }
-                            } 
-
-                            if (data.moneyFunc.lstMoney.length > 0) {
-                                for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
-                                    var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
-                                    var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
-                                    var itemTime = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
-                                    var attendanceTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemIdTime && o.itemType == 0; });
-                                    var presetTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemIdTime; });
-                                    if (name != "") {
-                                        formulaResult += operatorAtr + " " + name + " ";
-                                    } else if (item != null) {
-                                        formulaResult += operatorAtr + " " + item.externalBudgetName + " ";
-                                    } else if (itemTime != null){
-                                        formulaResult += operatorAtr + " " + itemTime.name + " ";
-                                    } else if (attendanceTime != null){
-                                        formulaResult += operatorAtr + " " + attendanceTime.name + " ";
-                                    } else if (presetTime != null){
-                                        formulaResult += operatorAtr + " " + presetTime.name + " ";
-                                    } 
-                                }
-                            } else if (data.timeUnit.lstTimeUnitFuncs.length > 0) {
-                                for (var i = 0; i < data.timeUnit.lstTimeUnitFuncs.length; i++) {
-                                    var operator = data.timeUnit.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.timeUnit.lstTimeUnitFuncs[i].name != null ? data.timeUnit.lstTimeUnitFuncs[i].name : "";
-                                    var itemAttendance = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].attendanceItemId && o.itemType == 0; });
-                                    var itemPreset = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].presetItemId; });
-
-                                    if (name != "") {
-                                        formulaResult += operator + " " + name + " ";
-                                    } else if (itemAttendance != null) {
-                                        formulaResult += operator + " " + itemAttendance.name + " ";
-                                    }else if (itemPreset != null) {
-                                        formulaResult += operator + " " + itemPreset.name + " ";
-                                    }
-                                }
-                            }
-                        } else if (attribute == 2) {
-                            if (data.lstPeopleFunc.length <= 0) {
-                                formulaResult = "";
-                            } else {
-                                for (var i = 0; i < data.lstPeopleFunc.length; i++) {
-                                    var operator = data.lstPeopleFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.lstPeopleFunc[i].name != null ? data.lstPeopleFunc[i].name : "";
-                                    var item = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data.lstPeopleFunc[i].externalBudgetCd; });
-
-                                    if (name != "") {
-                                        formulaResult += operator + " " + name + " ";
-                                    } else if (item != null) {
-                                        formulaResult += operator + " " + item.externalBudgetName + " ";
-                                    }
-                                }
-                            }
-                        } else if (attribute == 3) {
-                            if(data == null || data.length <= 0) {
-                                formulaResult = "";
-                            } else {
-                                for (var i = 0; i < data.length; i++) {
-                                    var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data[i].name != null ? data[i].name : "";
-                                    var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
-                                    var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
-
-                                    if (name != "") {
-                                        formulaResult += operator + " " + name + " ";
-                                    } else if (item1 != null) {
-                                        formulaResult += operator + " " + item1.externalBudgetName + " ";
-                                    } else if (item2 != null) {
-                                        formulaResult += operator + " " + item2.externalBudgetName + " ";
-                                    }
-                                }
-                            }
+                if (data != null) {
+                    // 平均単価
+                    if (attribute == 4) {
+                        // If is first item
+                        var unitPrices = [
+                            { uPCd: 0, uPName: nts.uk.resource.getText("KML002_53") },
+                            { uPCd: 1, uPName: nts.uk.resource.getText("KML002_54") },
+                            { uPCd: 2, uPName: nts.uk.resource.getText("KML002_55") },
+                            { uPCd: 3, uPName: nts.uk.resource.getText("KML002_56") },
+                            { uPCd: 4, uPName: nts.uk.resource.getText("KML002_57") }
+                        ];
+                        var unit = _.find(unitPrices, function(o) { return o.uPCd == data.unitPrice; });
+    
+                        if (index == 0) {
+                            formulaResult = data.unitName != null ? data.unitName : unit.uPName;
+                        } else {
+                            formulaResult = (beforeFormula != "" ? beforeFormula : self.allItemsData[index - 1].formula()) + " " + nts.uk.resource.getText("KML002_37")
+                                + " " + (data.unitName != null ? data.unitName : unit.uPName);
                         }
-                    } else {
-                        var before = "";
-
-                        if (attribute == 0) {
-                            if (data.lstFormTimeFunc.length <= 0) {
-                                formulaResult = "";
-                            } else {
-                                for (var i = 0; i < data.lstFormTimeFunc.length; i++) {
-                                    var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var itemName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
-                                    var attendanceItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].attendanceItemId; });
-                                    var presetItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].presetItemId; });
-                                    var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
-                         
-                                    if(itemName != "") {
-                                        formulaResult += operator + " " + itemName + " ";
-                                    } else if(attendanceItem != null) {
-                                        formulaResult += operator + " " + attendanceItem.name + " ";
-                                    } else if(presetItem != null) {
-                                        formulaResult += operator + " " + presetItem.name + " ";
-                                    } else if(externalItem != null) {
-                                        formulaResult += operator + " " + externalItem.name + " ";
-                                    }
-                                }
-                            }
-                        } else if (attribute == 1) {
-                            if(data.timeUnit != null) {
-                                if (data.timeUnit.lstTimeUnitFuncs.length <=0 && data.moneyFunc.lstMoney.length <=0) {
+                    } else { // Other attributes
+                        // If is first item
+                        if (index == 0) {
+                            if (attribute == 0) {
+                                if (data.lstFormTimeFunc.length <= 0) {
                                     formulaResult = "";
+                                } else {
+                                    for (var i = 0; i < data.lstFormTimeFunc.length; i++) {
+                                        var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var itemName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
+                                        var attendanceItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].attendanceItemId; });
+                                        var presetItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].presetItemId; });
+                                        var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
+                             
+                                        if(itemName != "") {
+                                            formulaResult += operator + " " + itemName + " ";
+                                        } else if(attendanceItem != null) {
+                                            formulaResult += operator + " " + attendanceItem.name + " ";
+                                        } else if(presetItem != null) {
+                                            formulaResult += operator + " " + presetItem.name + " ";
+                                        } else if(externalItem != null) {
+                                            formulaResult += operator + " " + externalItem.name + " ";
+                                        }
+                                    }
                                 }
-                            }
-
-                            if (data.moneyFunc.lstMoney.length > 0) {
-                                for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
-                                    var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
-                                    var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
-                                    var itemTime = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
-                                    var attendanceTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemIdTime && o.itemType == 0; });
-                                    var presetTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemIdTime; });
-                                    if (name != "") {
-                                        formulaResult += operatorAtr + " " + name + " ";
-                                    } else if (item != null) {
-                                        formulaResult += operatorAtr + " " + item.externalBudgetName + " ";
-                                    } else if (itemTime != null){
-                                        formulaResult += operatorAtr + " " + itemTime.name + " ";
-                                    } else if (attendanceTime != null){
-                                        formulaResult += operatorAtr + " " + attendanceTime.name + " ";
-                                    } else if (presetTime != null){
-                                        formulaResult += operatorAtr + " " + presetTime.name + " ";
-                                    } 
+                            } else if (attribute == 1) {
+                                if(data.timeUnit != null) {
+                                    if (data.timeUnit.lstTimeUnitFuncs.length <=0 && data.moneyFunc.lstMoney.length <=0) {
+                                        formulaResult = "";
+                                    }
+                                } 
+    
+                                if (data.moneyFunc.lstMoney.length > 0) {
+                                    for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
+                                        var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
+                                        var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
+                                        var itemTime = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
+                                        var attendanceTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemIdTime && o.itemType == 0; });
+                                        var presetTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemIdTime; });
+                                        if (name != "") {
+                                            formulaResult += operatorAtr + " " + name + " ";
+                                        } else if (item != null) {
+                                            formulaResult += operatorAtr + " " + item.externalBudgetName + " ";
+                                        } else if (itemTime != null){
+                                            formulaResult += operatorAtr + " " + itemTime.name + " ";
+                                        } else if (attendanceTime != null){
+                                            formulaResult += operatorAtr + " " + attendanceTime.name + " ";
+                                        } else if (presetTime != null){
+                                            formulaResult += operatorAtr + " " + presetTime.name + " ";
+                                        } 
+                                    }
+                                } else if (data.timeUnit.lstTimeUnitFuncs.length > 0) {
+                                    for (var i = 0; i < data.timeUnit.lstTimeUnitFuncs.length; i++) {
+                                        var operator = data.timeUnit.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var name = data.timeUnit.lstTimeUnitFuncs[i].name != null ? data.timeUnit.lstTimeUnitFuncs[i].name : "";
+                                        var itemAttendance = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].attendanceItemId && o.itemType == 0; });
+                                        var itemPreset = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].presetItemId; });
+    
+                                        if (name != "") {
+                                            formulaResult += operator + " " + name + " ";
+                                        } else if (itemAttendance != null) {
+                                            formulaResult += operator + " " + itemAttendance.name + " ";
+                                        }else if (itemPreset != null) {
+                                            formulaResult += operator + " " + itemPreset.name + " ";
+                                        }
+                                    }
                                 }
-                            } else if (data.timeUnit.lstTimeUnitFuncs.length > 0) {
-                                for (var i = 0; i < data.timeUnit.lstTimeUnitFuncs.length; i++) {
-                                    var operator = data.timeUnit.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.timeUnit.lstTimeUnitFuncs[i].name != null ? data.timeUnit.lstTimeUnitFuncs[i].name : "";
-                                    var itemAttendance = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].attendanceItemId && o.itemType == 0; });
-                                    var itemPreset = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].presetItemId; });
-
-                                    if (name != "") {
-                                        formulaResult += operator + " " + name + " ";
-                                    } else if (itemAttendance != null) {
-                                        formulaResult += operator + " " + itemAttendance.name + " ";
-                                    }else if (itemPreset != null) {
-                                        formulaResult += operator + " " + itemPreset.name + " ";
+                            } else if (attribute == 2) {
+                                if (data.lstPeopleFunc.length <= 0) {
+                                    formulaResult = "";
+                                } else {
+                                    for (var i = 0; i < data.lstPeopleFunc.length; i++) {
+                                        var operator = data.lstPeopleFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var name = data.lstPeopleFunc[i].name != null ? data.lstPeopleFunc[i].name : "";
+                                        var item = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data.lstPeopleFunc[i].externalBudgetCd; });
+    
+                                        if (name != "") {
+                                            formulaResult += operator + " " + name + " ";
+                                        } else if (item != null) {
+                                            formulaResult += operator + " " + item.externalBudgetName + " ";
+                                        }
+                                    }
+                                }
+                            } else if (attribute == 3) {
+                                if(data == null || data.length <= 0) {
+                                    formulaResult = "";
+                                } else {
+                                    for (var i = 0; i < data.length; i++) {
+                                        var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var name = data[i].name != null ? data[i].name : "";
+                                        var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                        var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+    
+                                        if (name != "") {
+                                            formulaResult += operator + " " + name + " ";
+                                        } else if (item1 != null) {
+                                            formulaResult += operator + " " + item1.externalBudgetName + " ";
+                                        } else if (item2 != null) {
+                                            formulaResult += operator + " " + item2.externalBudgetName + " ";
+                                        }
                                     }
                                 }
                             }
-                        } else if (attribute == 2) {
-                            if (data.lstPeopleFunc.length <= 0) {
-                                formulaResult = "";
-                            } else {
-                                for (var i = 0; i < data.lstPeopleFunc.length; i++) {
-                                    var operator = data.lstPeopleFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data.lstPeopleFunc[i].name != null ? data.lstPeopleFunc[i].name : "";
-                                    var item = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data.lstPeopleFunc[i].externalBudgetCd; });
-
-                                    if (name != "") {
-                                        formulaResult += operator + " " + name + " ";
-                                    } else if (item != null) {
-                                        formulaResult += operator + " " + item.externalBudgetName + " ";
+                        } else {
+                            var before = "";
+    
+                            if (attribute == 0) {
+                                if (data.lstFormTimeFunc.length <= 0) {
+                                    formulaResult = "";
+                                } else {
+                                    for (var i = 0; i < data.lstFormTimeFunc.length; i++) {
+                                        var operator = data.lstFormTimeFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var itemName = data.lstFormTimeFunc[i].name != null ? data.lstFormTimeFunc[i].name : "";
+                                        var attendanceItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].attendanceItemId; });
+                                        var presetItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].presetItemId; });
+                                        var externalItem = _.find(self.dailyItems, function(o) { return o.id.slice(0, -1) == data.lstFormTimeFunc[i].externalBudgetCd; });
+                             
+                                        if(itemName != "") {
+                                            formulaResult += operator + " " + itemName + " ";
+                                        } else if(attendanceItem != null) {
+                                            formulaResult += operator + " " + attendanceItem.name + " ";
+                                        } else if(presetItem != null) {
+                                            formulaResult += operator + " " + presetItem.name + " ";
+                                        } else if(externalItem != null) {
+                                            formulaResult += operator + " " + externalItem.name + " ";
+                                        }
+                                    }
+                                }
+                            } else if (attribute == 1) {
+                                if(data.timeUnit != null) {
+                                    if (data.timeUnit.lstTimeUnitFuncs.length <=0 && data.moneyFunc.lstMoney.length <=0) {
+                                        formulaResult = "";
+                                    }
+                                }
+    
+                                if (data.moneyFunc.lstMoney.length > 0) {
+                                    for (var i = 0; i < data.moneyFunc.lstMoney.length; i++) {
+                                        var operatorAtr = data.moneyFunc.lstMoney[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
+                                        var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
+                                        var itemTime = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
+                                        var attendanceTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemIdTime && o.itemType == 0; });
+                                        var presetTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemIdTime; });
+                                        if (name != "") {
+                                            formulaResult += operatorAtr + " " + name + " ";
+                                        } else if (item != null) {
+                                            formulaResult += operatorAtr + " " + item.externalBudgetName + " ";
+                                        } else if (itemTime != null){
+                                            formulaResult += operatorAtr + " " + itemTime.name + " ";
+                                        } else if (attendanceTime != null){
+                                            formulaResult += operatorAtr + " " + attendanceTime.name + " ";
+                                        } else if (presetTime != null){
+                                            formulaResult += operatorAtr + " " + presetTime.name + " ";
+                                        } 
+                                    }
+                                } else if (data.timeUnit.lstTimeUnitFuncs.length > 0) {
+                                    for (var i = 0; i < data.timeUnit.lstTimeUnitFuncs.length; i++) {
+                                        var operator = data.timeUnit.lstTimeUnitFuncs[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var name = data.timeUnit.lstTimeUnitFuncs[i].name != null ? data.timeUnit.lstTimeUnitFuncs[i].name : "";
+                                        var itemAttendance = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].attendanceItemId && o.itemType == 0; });
+                                        var itemPreset = _.find(self.unitItems, function(o) { return o.id.slice(0, -1) == data.timeUnit.lstTimeUnitFuncs[i].presetItemId; });
+    
+                                        if (name != "") {
+                                            formulaResult += operator + " " + name + " ";
+                                        } else if (itemAttendance != null) {
+                                            formulaResult += operator + " " + itemAttendance.name + " ";
+                                        }else if (itemPreset != null) {
+                                            formulaResult += operator + " " + itemPreset.name + " ";
+                                        }
+                                    }
+                                }
+                            } else if (attribute == 2) {
+                                if (data.lstPeopleFunc.length <= 0) {
+                                    formulaResult = "";
+                                } else {
+                                    for (var i = 0; i < data.lstPeopleFunc.length; i++) {
+                                        var operator = data.lstPeopleFunc[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var name = data.lstPeopleFunc[i].name != null ? data.lstPeopleFunc[i].name : "";
+                                        var item = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data.lstPeopleFunc[i].externalBudgetCd; });
+    
+                                        if (name != "") {
+                                            formulaResult += operator + " " + name + " ";
+                                        } else if (item != null) {
+                                            formulaResult += operator + " " + item.externalBudgetName + " ";
+                                        }
+                                    }
+                                }
+                            } else if (attribute == 3) {
+                                if(data == null || data.length <= 0) {
+                                    formulaResult = "";
+                                } else {
+                                    for (var i = 0; i < data.length; i++) {
+                                        var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
+                                        var name = data[i].name != null ? data[i].name : "";
+                                        var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                        var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+    
+                                        if (name != "") {
+                                            formulaResult += operator + " " + name + " ";
+                                        } else if (item1 != null) {
+                                            formulaResult += operator + " " + item1.externalBudgetName + " ";
+                                        } else if (item2 != null) {
+                                            formulaResult += operator + " " + item2.externalBudgetName + " ";
+                                        }
                                     }
                                 }
                             }
-                        } else if (attribute == 3) {
-                            if(data == null || data.length <= 0) {
-                                formulaResult = "";
-                            } else {
-                                for (var i = 0; i < data.length; i++) {
-                                    var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
-                                    var name = data[i].name != null ? data[i].name : "";
-                                    var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
-                                    var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
-
-                                    if (name != "") {
-                                        formulaResult += operator + " " + name + " ";
-                                    } else if (item1 != null) {
-                                        formulaResult += operator + " " + item1.externalBudgetName + " ";
-                                    } else if (item2 != null) {
-                                        formulaResult += operator + " " + item2.externalBudgetName + " ";
-                                    }
-                                }
-                            }
+    
+                            formulaResult = before + " " + formulaResult;
                         }
-
-                        formulaResult = before + " " + formulaResult;
                     }
+                } else {
+                    formulaResult = "";
                 }
             }
 
