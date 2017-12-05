@@ -230,8 +230,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				this.errMessageInfoRepository.add(action);
 			});
 		}
-
-//		this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeId, day);
 	}
 
 	private void workschedule(String companyId, String employeeID, GeneralDate day, String empCalAndSumExecLogID,
@@ -748,6 +746,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 
 		this.errMessageInfoRepository.addList(errMesInfos);
+
+//		this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day, workInfoOfDailyPerformanceUpdate);
 
 		if (errMesInfos.isEmpty()) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
  * 
@@ -14,6 +15,6 @@ import nts.arc.time.GeneralDate;
  */
 public interface ReflectStampDomainService {
 	
-	void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate);
+	void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate, WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 
 }
