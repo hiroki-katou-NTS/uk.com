@@ -42,6 +42,11 @@ public class BsymtAffJobTitleHist extends UkJpaEntity implements Serializable {
 	@Column(name = "SID")
 	private String sid;
 	
+	/** The company id */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	private String cid;
+	
 	@Basic(optional = true)
 	@Column(name = "STR_DATE")
 	private GeneralDate strDate;

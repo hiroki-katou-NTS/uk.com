@@ -33,8 +33,9 @@ public interface AffWorkplaceHistoryRepository_v1 {
 	 * ドメインモデル「所属職場」を新規登録する
 	 * @param item
 	 * @param sid
+	 * @param cid
 	 */
-	void add(String sid, DateHistoryItem item);
+	void add(String cid, String sid, DateHistoryItem item);
 	/**
 	 * ドメインモデル「所属職場」を削除する
 	 * @param histId
