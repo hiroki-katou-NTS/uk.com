@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
@@ -61,6 +62,7 @@ public class EmpCtgFinder {
 	public List<ComboBoxObject> getListInfoCtgByCtgIdAndSid(PeregQuery query){
 		String contractCode = AppContexts.user().contractCode();
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode).get();
+		if(perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) return new ArrayList<>();
 		if(perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO) return new ArrayList<>();
 		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
 		return layoutingProcessor.getListFirstItems(query);

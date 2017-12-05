@@ -43,6 +43,11 @@ public class TempAbsenceHisItem extends AggregateRoot {
 	private Integer soInsPayCategory;
 
 	/**
+	 * Optional 家族メンバーId Family member id
+	 */
+	private String familyMemberId;
+
+	/**
 	 * NoConstructor
 	 */
 	public TempAbsenceHisItem() {
@@ -56,12 +61,13 @@ public class TempAbsenceHisItem extends AggregateRoot {
 	 * @param soInsPayCategory2
 	 */
 	public TempAbsenceHisItem(LeaveHolidayType leaveHolidayType, String historyId, String employeeId,
-			GenericString remarks, Integer soInsPayCategory) {
+			GenericString remarks, Integer soInsPayCategory, String familyMemberId) {
 		this.leaveHolidayType = leaveHolidayType;
 		this.historyId = historyId;
 		this.employeeId = employeeId;
 		this.remarks = remarks;
 		this.soInsPayCategory = soInsPayCategory;
+		this.familyMemberId = familyMemberId;
 	}
 
 	public static TempAbsenceHisItem createTempAbsenceHisItem(int leaveHolidayType, String historyId, String employeeId,
@@ -70,9 +76,9 @@ public class TempAbsenceHisItem extends AggregateRoot {
 		LeaveHolidayType leaveType = EnumAdaptor.valueOf(leaveHolidayType, LeaveHolidayType.class);
 		switch (leaveType) {
 		case LEAVE_OF_ABSENCE:
-			return Leave.init(historyId, employeeId, remarks, soInsPayCategory);
+			return Leave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 		case MIDWEEK_CLOSURE:
-			return MidweekClosure.init(historyId, employeeId, remarks, soInsPayCategory, multiple);
+			return MidweekClosure.init(historyId, employeeId, remarks, soInsPayCategory, multiple, familyMemberId);
 		case AFTER_CHILDBIRTH:
 			return AfterChildbirth.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 		case CHILD_CARE_NURSING:
@@ -82,9 +88,9 @@ public class TempAbsenceHisItem extends AggregateRoot {
 			return CareHoliday.init(historyId, employeeId, remarks, soInsPayCategory, sameFamily, sameFamilyDays,
 					familyMemberId);
 		case SICK_LEAVE:
-			return SickLeave.init(historyId, employeeId, remarks, soInsPayCategory);
+			return SickLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 		case ANY_LEAVE:
-			return AnyLeave.init(historyId, employeeId, remarks, soInsPayCategory);
+			return AnyLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 		default:
 			return null;
 		}
@@ -92,13 +98,13 @@ public class TempAbsenceHisItem extends AggregateRoot {
 	}
 
 	public static TempAbsenceHisItem createLeave(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory) {
-		return Leave.init(historyId, employeeId, remarks, soInsPayCategory);
+			Integer soInsPayCategory, String familyMemberId) {
+		return Leave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 	}
 
 	public static TempAbsenceHisItem createMidweekClosure(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, Boolean multiple) {
-		return MidweekClosure.init(historyId, employeeId, remarks, soInsPayCategory, multiple);
+			Integer soInsPayCategory, Boolean multiple, String familyMemberId) {
+		return MidweekClosure.init(historyId, employeeId, remarks, soInsPayCategory, multiple, familyMemberId);
 	}
 
 	public static TempAbsenceHisItem createAfterChildbirth(String historyId, String employeeId, String remarks,
@@ -120,13 +126,13 @@ public class TempAbsenceHisItem extends AggregateRoot {
 	}
 
 	public static TempAbsenceHisItem createSickLeave(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory) {
-		return SickLeave.init(historyId, employeeId, remarks, soInsPayCategory);
+			Integer soInsPayCategory, String familyMemberId) {
+		return SickLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 	}
 
 	public static TempAbsenceHisItem createAnyLeave(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory) {
-		return AnyLeave.init(historyId, employeeId, remarks, soInsPayCategory);
+			Integer soInsPayCategory, String familyMemberId) {
+		return AnyLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 	}
 
 }

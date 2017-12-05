@@ -90,10 +90,8 @@ public class LayoutingProcessor {
 		return finderClass.getListFirstItems(query);
 	}
 	
-	private void setUserDefData(PeregDto peregDto){
-		
-		if( peregDto.getDataType() == DataClassification.PERSON)
-			
+	private void setUserDefData(PeregDto peregDto){		
+		if( peregDto.getDataType() == DataClassification.PERSON)			
 			peregDto.setPerOptionalData(perOptRepo.getData(peregDto.getDomainDto().getRecordId()));
 		else 
 			peregDto.setEmpOptionalData(empOptRepo.getData(peregDto.getDomainDto().getRecordId()));
