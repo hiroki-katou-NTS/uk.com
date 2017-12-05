@@ -60,6 +60,15 @@ module cas009.a.viewmodel {
                             self.employeeReferenceRange(current.employeeReferenceRange);
                             self.referFutureDate(current.referFutureDate );       
                              $(".nts-input").ntsError("clear");                    
+                        }else{
+                                    self.roleCode("");
+                                    self.roleId("");
+                                    self.employeeReferenceRange(0);
+                                    self.name("");
+                                    self.assignAtr(0);
+                                    self.referFutureDate(false);
+                                    self.createMode(true);
+                        
                         }
     
                 });            
