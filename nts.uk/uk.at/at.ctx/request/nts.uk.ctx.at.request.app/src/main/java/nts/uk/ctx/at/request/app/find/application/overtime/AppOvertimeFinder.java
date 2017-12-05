@@ -211,6 +211,10 @@ public class AppOvertimeFinder {
 					}
 				}
 			}
+		}else{
+			for(CaculationTime caculationTimeOld : overtimeHours){
+				caculationTimeOld.setPreAppTime(null);
+			}
 		}
 		
 		// 06-03_加給時間を取得
@@ -222,6 +226,10 @@ public class AppOvertimeFinder {
 						caculationTimeOld.setPreAppTime(caculationTime.getPreAppTime());
 					}
 				}
+			}
+		}else{
+			for(CaculationTime caculationTimeOld : bonusTimes){
+				caculationTimeOld.setPreAppTime(null);
 			}
 		}
 		for(CaculationTime overtimeHour : overtimeHours){
