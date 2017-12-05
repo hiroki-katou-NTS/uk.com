@@ -26,7 +26,7 @@ public class WorkTimezoneExtraordTimeSetDto implements WorkTimezoneExtraordTimeS
 	private TimeRoundingSettingDto timeRoundingSet;
 
 	/** The OT frame set. */
-	private ExtraordWorkOTFrameSetDto OTFrameSet;
+	private ExtraordWorkOTFrameSetDto oTFrameSet;
 
 	/** The calculate method. */
 	private Integer calculateMethod;
@@ -65,7 +65,7 @@ public class WorkTimezoneExtraordTimeSetDto implements WorkTimezoneExtraordTimeS
 	 */
 	@Override
 	public void setOTFrameSet(ExtraordWorkOTFrameSet set) {
-		set.saveToMemento(this.OTFrameSet);
+		set.saveToMemento(this.oTFrameSet);
 	}
 
 	/*

@@ -34,7 +34,7 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetSetMemento
 	private TimeZoneRoundingDto timezone;
 
 	/** The OT frame no. */
-	private BigDecimal OTFrameNo;
+	private BigDecimal oTFrameNo;
 
 	/** The legal O tframe no. */
 	private BigDecimal legalOTframeNo;
@@ -97,7 +97,7 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetSetMemento
 	 */
 	@Override
 	public void setOTFrameNo(OTFrameNo OTFrameNo) {
-		this.OTFrameNo = OTFrameNo.v();
+		this.oTFrameNo = OTFrameNo.v();
 	}
 
 	/*

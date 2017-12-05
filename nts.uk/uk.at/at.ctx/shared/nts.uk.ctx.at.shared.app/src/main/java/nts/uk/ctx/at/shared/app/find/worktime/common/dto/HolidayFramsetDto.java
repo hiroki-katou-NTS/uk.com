@@ -4,13 +4,26 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayFramsetSetMemento;
 
 /**
  * The Class HolidayFramsetDto.
  */
+@Getter
+@Setter
 public class HolidayFramsetDto implements HolidayFramsetSetMemento {
+
+	/** The in legal breakout frame no. */
+	private Integer inLegalBreakoutFrameNo;
+
+	/** The out legal breakout frame no. */
+	private Integer outLegalBreakoutFrameNo;
+
+	/** The out legal pub hol frame no. */
+	private Integer outLegalPubHolFrameNo;
 
 	/*
 	 * (non-Javadoc)
@@ -21,8 +34,7 @@ public class HolidayFramsetDto implements HolidayFramsetSetMemento {
 	 */
 	@Override
 	public void setInLegalBreakoutFrameNo(BreakoutFrameNo inLegalBreakoutFrameNo) {
-		// TODO Auto-generated method stub
-
+		this.inLegalBreakoutFrameNo = inLegalBreakoutFrameNo.v();
 	}
 
 	/*
@@ -34,8 +46,7 @@ public class HolidayFramsetDto implements HolidayFramsetSetMemento {
 	 */
 	@Override
 	public void setOutLegalBreakoutFrameNo(BreakoutFrameNo outLegalBreakoutFrameNo) {
-		// TODO Auto-generated method stub
-
+		this.outLegalBreakoutFrameNo = outLegalBreakoutFrameNo.v();
 	}
 
 	/*
@@ -47,8 +58,7 @@ public class HolidayFramsetDto implements HolidayFramsetSetMemento {
 	 */
 	@Override
 	public void setOutLegalPubHolFrameNo(BreakoutFrameNo outLegalPubHolFrameNo) {
-		// TODO Auto-generated method stub
-
+		this.outLegalPubHolFrameNo = outLegalPubHolFrameNo.v();
 	}
 
 }

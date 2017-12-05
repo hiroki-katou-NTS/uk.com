@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento{
 	
 	/** The Zero H stradd calculate set. */
-	private boolean ZeroHStraddCalculateSet;
+	private boolean zeroHStraddCalculateSet;
 
 	/** The interval set. */
 	private IntervalTimeSettingDto intervalSet;

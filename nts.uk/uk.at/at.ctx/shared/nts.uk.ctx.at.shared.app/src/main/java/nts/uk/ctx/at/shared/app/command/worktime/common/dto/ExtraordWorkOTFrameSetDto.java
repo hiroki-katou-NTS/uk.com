@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 public class ExtraordWorkOTFrameSetDto implements ExtraordWorkOTFrameSetGetMemento {
 
 	/** The OT frame no. */
-	private BigDecimal OTFrameNo;
+	private BigDecimal oTFrameNo;
 
 	/** The in legal work frame no. */
 	private BigDecimal inLegalWorkFrameNo;
@@ -33,7 +33,7 @@ public class ExtraordWorkOTFrameSetDto implements ExtraordWorkOTFrameSetGetMemen
 	 */
 	@Override
 	public OTFrameNo getOTFrameNo() {
-		return new OTFrameNo(this.OTFrameNo);
+		return new OTFrameNo(this.oTFrameNo);
 	}
 
 	/* (non-Javadoc)

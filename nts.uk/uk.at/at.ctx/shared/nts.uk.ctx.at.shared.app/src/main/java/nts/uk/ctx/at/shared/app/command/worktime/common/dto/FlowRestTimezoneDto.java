@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneGetMemento;
 public class FlowRestTimezoneDto implements FlowRestTimezoneGetMemento {
 
 	/** The flow rest set. */
-	private List<FlowRestSettingDto> flowRestSet;
+	private List<FlowRestSettingDto> flowRestSets;
 
 	/** The use here after rest set. */
 	private boolean useHereAfterRestSet;
@@ -32,10 +32,10 @@ public class FlowRestTimezoneDto implements FlowRestTimezoneGetMemento {
 	 */
 	@Override
 	public List<FlowRestSetting> getFlowRestSet() {
-		if (CollectionUtil.isEmpty(this.flowRestSet)) {
+		if (CollectionUtil.isEmpty(this.flowRestSets)) {
 			return new ArrayList<>();
 		}
-		return this.flowRestSet.stream().map(dto -> new FlowRestSetting(dto)).collect(Collectors.toList());
+		return this.flowRestSets.stream().map(dto -> new FlowRestSetting(dto)).collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)

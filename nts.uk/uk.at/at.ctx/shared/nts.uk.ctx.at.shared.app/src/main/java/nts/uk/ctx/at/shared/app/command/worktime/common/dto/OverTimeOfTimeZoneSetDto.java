@@ -6,7 +6,9 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import java.math.BigDecimal;
 
+import lombok.Value;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 /**
  * The Class OverTimeOfTimeZoneSetDto.
  */
+@Value
 public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento {
 
 	/** The work timezone no. */
@@ -28,8 +31,8 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento
 	/** The timezone. */
 	private TimeZoneRoundingDto timezone;
 
-	/** The OT frame no. */
-	private BigDecimal OTFrameNo;
+	/** The o T frame no. */
+	private BigDecimal oTFrameNo;
 
 	/** The legal O tframe no. */
 	private BigDecimal legalOTframeNo;
@@ -90,11 +93,23 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento#
+	 * getSettlementOrder()
+	 */
+	@Override
+	public SettlementOrder getSettlementOrder() {
+		return new SettlementOrder(this.settlementOrder);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento#
 	 * getOTFrameNo()
 	 */
 	@Override
-	public nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo getOTFrameNo() {
-		return null;
+	public OTFrameNo getOTFrameNo() {
+		return new OTFrameNo(this.oTFrameNo);
 	}
 
 	/*
@@ -105,20 +120,7 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento
 	 * getLegalOTframeNo()
 	 */
 	@Override
-	public nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo getLegalOTframeNo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento#
-	 * getSettlementOrder()
-	 */
-	@Override
-	public SettlementOrder getSettlementOrder() {
-		return new SettlementOrder(this.settlementOrder);
+	public OTFrameNo getLegalOTframeNo() {
+		return new OTFrameNo(this.legalOTframeNo);
 	}
 }
