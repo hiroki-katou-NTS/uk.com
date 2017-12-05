@@ -233,11 +233,15 @@ module nts.uk.ui.koExtentions {
                     $dialog.dialog("option", "height", maxrowsHeight);
                 });
                 
-                $dialog.dialog("open");
+//                if($dialog.dialog("isOpen")){
+                    $dialog.dialog("open");    
+//                } else {
+                    $dialog.closest("[role='dialog']").show();
+//                }
             }
             else {
-                $dialog.dialog("close");
-
+                $dialog.closest("[role='dialog']").hide();
+//                $dialog.dialog("close");
             }
         }
     }
