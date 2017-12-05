@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset;
 
+/**
+ * The Class DiffTimeCommandHandler.
+ */
 public class DiffTimeCommandHandler {
 
 }

@@ -10,26 +10,37 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
 
+/**
+ * The Class DiffTimeHalfDayWorkTimezoneDto.
+ */
 public class DiffTimeHalfDayWorkTimezoneDto {
-	
+
 	/** The rest timezone. */
 	private DiffTimeRestTimezoneDto restTimezone;
 
 	/** The work timezone. */
 	private DiffTimezoneSettingDto workTimezone;
 
-	/** The Am pm cls. */
+	/** The am pm atr. */
 	private Integer amPmAtr;
-	
-	
+
+	/**
+	 * To domain.
+	 *
+	 * @return the diff time half day work timezone
+	 */
 	public DiffTimeHalfDayWorkTimezone toDomain() {
 		return new DiffTimeHalfDayWorkTimezone(new DiffTimeHalfDayWorkTimezoneImpl(this));
 	}
+
+	/**
+	 * The Class DiffTimeHalfDayWorkTimezoneImpl.
+	 */
 	public class DiffTimeHalfDayWorkTimezoneImpl implements DiffTimeHalfDayGetMemento {
 
 		/** The dto. */
 		private DiffTimeHalfDayWorkTimezoneDto dto;
-		
+
 		public DiffTimeHalfDayWorkTimezoneImpl(DiffTimeHalfDayWorkTimezoneDto diffTimeHalfDayWorkTimezoneDto) {
 			this.dto = diffTimeHalfDayWorkTimezoneDto;
 		}
@@ -46,8 +57,7 @@ public class DiffTimeHalfDayWorkTimezoneDto {
 
 		@Override
 		public AmPmAtr getAmPmAtr() {
-			// TODO Auto-generated method stub
-			return null;
+			return AmPmAtr.valueOf(this.dto.amPmAtr);
 		}
 
 	}

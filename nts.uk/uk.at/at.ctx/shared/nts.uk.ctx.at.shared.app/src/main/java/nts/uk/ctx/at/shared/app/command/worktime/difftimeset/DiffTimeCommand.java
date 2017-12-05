@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.app.command.worktime.difftimeset;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FixedWorkRestSetDto;
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.WorkTimezoneCommonSetDto;
 import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto.DiffTimeDayOffWorkTimezoneDto;
 import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto.DiffTimeHalfDayWorkTimezoneDto;
 import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto.DiffTimeWorkStampReflectTimezoneDto;
@@ -22,19 +24,22 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingGetMemen
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
 
+/**
+ * The Class DiffTimeCommand.
+ */
 public class DiffTimeCommand {
 
 	/** The work time code. */
 	private String workTimeCode;
 
 	/** The rest set. */
-	// private FixedWorkRestSetDto restSet;
+	private FixedWorkRestSetDto restSet;
 
 	/** The dayoff work timezone. */
 	private DiffTimeDayOffWorkTimezoneDto dayoffWorkTimezone;
 
 	/** The common set. */
-	// private WorkTimezoneCommonSetDto commonSet;
+	private WorkTimezoneCommonSetDto commonSet;
 
 	/** The is use half day shift. */
 	private boolean isUseHalfDayShift;
@@ -51,10 +56,20 @@ public class DiffTimeCommand {
 	/** The overtime setting. */
 	private Integer overtimeSetting;
 
+	/**
+	 * To domain.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the diff time work setting
+	 */
 	public DiffTimeWorkSetting toDomain(String companyId) {
 		return new DiffTimeWorkSetting(new DiffTimeWorkSettingImpl(companyId, this));
 	}
 
+	/**
+	 * The Class DiffTimeWorkSettingImpl.
+	 */
 	public class DiffTimeWorkSettingImpl implements DiffTimeWorkSettingGetMemento {
 
 		/** The company id. */
@@ -84,8 +99,7 @@ public class DiffTimeCommand {
 
 		@Override
 		public FixedWorkRestSet getRestSet() {
-			// return this.command.restSet.toDomain();
-			return null;
+			return new FixedWorkRestSet(this.command.restSet);
 		}
 
 		@Override
@@ -95,8 +109,7 @@ public class DiffTimeCommand {
 
 		@Override
 		public WorkTimezoneCommonSet getCommonSet() {
-			// TODO Auto-generated method stub
-			return null;
+			return new WorkTimezoneCommonSet(this.command.commonSet);
 		}
 
 		@Override
