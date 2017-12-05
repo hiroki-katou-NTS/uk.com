@@ -1,12 +1,15 @@
 package nts.uk.ctx.bs.employee.app.find.department.affiliate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
@@ -73,7 +76,11 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getAffDepartmentHistorytByEmployeeId(query.getEmployeeId());
+		if (affDeptHist.isPresent())
+			return affDeptHist.get().getHistoryItems().stream()
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.collect(Collectors.toList());
+		return new ArrayList<>();
 	} 
 }

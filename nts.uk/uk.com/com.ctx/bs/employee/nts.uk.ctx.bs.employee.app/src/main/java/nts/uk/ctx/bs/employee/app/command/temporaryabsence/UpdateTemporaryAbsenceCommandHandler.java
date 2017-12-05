@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryDomainService;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -28,7 +28,7 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 	private TempAbsHistRepository temporaryAbsenceHistRepository;
 	
 	@Inject
-	private TempAbsHistoryDomainService tempAbsHistoryDomainService;
+	private TempAbsHistoryService tempAbsHistoryService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -57,7 +57,7 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 			throw new RuntimeException("invalid TempAbsenceHistory");
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
-		tempAbsHistoryDomainService.update(existHist.get(), itemToBeUpdate.get());
+		tempAbsHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		
 		// Update detail table
 		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr(), command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory(), command.isMultiple(),

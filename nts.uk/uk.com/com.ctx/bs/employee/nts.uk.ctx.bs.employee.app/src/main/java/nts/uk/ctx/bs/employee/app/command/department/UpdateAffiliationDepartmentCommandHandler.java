@@ -9,7 +9,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
-import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryDomainService;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryService;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
@@ -28,7 +28,7 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 	private AffDepartmentHistoryItemRepository affDepartmentHistoryItemRepository;
 	
 	@Inject
-	private AffDepartmentHistoryDomainService affDepartmentHistoryDomainService;
+	private AffDepartmentHistoryService affDepartmentHistoryService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -57,7 +57,7 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 		
 		itemHist.get().changeSpan(itemToBeChanged.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		affDepartmentHistoryDomainService.update(itemHist.get(), itemToBeChanged.get());
+		affDepartmentHistoryService.update(itemHist.get(), itemToBeChanged.get());
 		
 		
 		AffDepartmentHistoryItem histItem = AffDepartmentHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getDepartmentId(), command.getAffHistoryTranfsType(), command.getDistributionRatio());

@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
-public class AffCompanyHistDomainService {
+public class AffCompanyHistService {
 	@Inject
 	private AffCompanyHistRepository affCompanyHistRepository;
 	

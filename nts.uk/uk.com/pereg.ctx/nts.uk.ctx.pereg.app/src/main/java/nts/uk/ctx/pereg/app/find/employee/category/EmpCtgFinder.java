@@ -30,6 +30,9 @@ public class EmpCtgFinder {
 	@Inject
 	private LayoutingProcessor layoutingProcessor;
 	
+	@Inject
+	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
+	
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String employeeIdSelected) {
 		String companyId = AppContexts.user().companyId();
@@ -54,6 +57,9 @@ public class EmpCtgFinder {
 	
 	
 	public List<ComboBoxObject> getListInfoCtgByCtgIdAndSid(PeregQuery query){
+		String contractCode = AppContexts.user().contractCode();
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode).get();
+		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
 		return layoutingProcessor.getListFirstItems(query);
 	}
 

@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryDomainService;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryService;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
@@ -30,7 +30,7 @@ implements PeregAddCommandHandler<AddEmploymentHistoryCommand> {
 	private EmploymentHistoryItemRepository employmentHistoryItemRepository;
 	
 	@Inject
-	private EmploymentHistoryDomainService employmentHistoryDomainService;
+	private EmploymentHistoryService employmentHistoryService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -58,7 +58,7 @@ implements PeregAddCommandHandler<AddEmploymentHistoryCommand> {
 		}
 		itemtoBeAdded.add(dateItem);
 		
-		employmentHistoryDomainService.add(itemtoBeAdded);
+		employmentHistoryService.add(itemtoBeAdded);
 		
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getSalarySegment(), command.getEmploymentCode());
 		employmentHistoryItemRepository.adḍ̣̣̣(histItem);
