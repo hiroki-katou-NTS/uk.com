@@ -206,9 +206,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
             $('.nts-input').trigger("validate");
             if (errors.hasError() === false) {
                 block.invisible();
-                currentRoleSet.roleSetName($('#inpRoleSetName').val()); //for edge browser
                 if (self.isNewMode()) {
-                    currentRoleSet.roleSetCd($('#inpRoleSetCd').val()); //for edge browser
                     // create new role set
                     service.addRoleSet(ko.toJS(currentRoleSet)).done((roleSetCd) => {
                         dialog.info({ messageId: "Msg_15" });
