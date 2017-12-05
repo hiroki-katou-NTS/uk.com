@@ -13,7 +13,7 @@ import nts.uk.ctx.pereg.app.find.layout.groupitem.PersonInfoItemGroupDto;
 import nts.uk.ctx.pereg.app.find.layout.groupitem.PersonInfoItemGroupFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 
-@Path("ctx/bs/person/groupitem")
+@Path("ctx/pereg/person/groupitem")
 @Produces("application/json")
 
 public class GroupItemWebServices extends WebService {

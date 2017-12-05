@@ -16,7 +16,6 @@ import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**

@@ -8,7 +8,7 @@ module cps001.f.service {
         'updateCtgdata': 'basic/organization/empfilemanagement/updatectgdocfile',
         'updatedata': 'basic/organization/empfilemanagement/updatedata',
         'deletedata': 'basic/organization/empfilemanagement/deletedata/{0}',
-        'getInfoCatagory': 'ctx/bs/person/info/ctg/findAll',
+        'getInfoCatagory': 'ctx/pereg/person/info/ctg/findAll',
     };
 
     export function getData(employeeId: any) {

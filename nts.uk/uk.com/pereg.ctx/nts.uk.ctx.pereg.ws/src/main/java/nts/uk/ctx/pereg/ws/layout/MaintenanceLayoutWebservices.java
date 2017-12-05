@@ -21,7 +21,7 @@ import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.MaintenanceLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.MaintenanceLayoutFinder;
 
-@Path("ctx/bs/person/maintenance")
+@Path("ctx/pereg/person/maintenance")
 @Produces("application/json")
 public class MaintenanceLayoutWebservices extends WebService {
 
