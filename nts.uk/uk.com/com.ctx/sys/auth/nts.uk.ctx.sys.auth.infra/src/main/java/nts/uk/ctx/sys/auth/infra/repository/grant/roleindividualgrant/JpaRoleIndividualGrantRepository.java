@@ -31,6 +31,8 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	
 	private final String SELECT_BY_ROLE_ID ="SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId ";
 	
+	private final String SELECT_BY_ROLE_USER = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.SacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrantPK.roleType = :roleType AND c.SacmtRoleIndiviGrantPK.userID = :userID";
+	
 
 	@Override
 	public Optional<RoleIndividualGrant> findByUser(String userId, GeneralDate date) {
@@ -113,8 +115,10 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 
 	@Override
 	public Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, RoleType roleType) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<SacmtRoleIndiviGrant> entityOpt =  this.queryProxy().query(SELECT_BY_ROLE_USER, SacmtRoleIndiviGrant.class).setParameter("cid", companyID)
+				.setParameter("roleType", roleType).setParameter("userID", userID).getSingle();
+		if(entityOpt.isPresent()) return Optional.of(toDomain(entityOpt.get()));
+		return Optional.ofNullable(null);
 	}
 
 	@Override
