@@ -12,7 +12,7 @@ import nts.uk.ctx.pereg.app.command.person.setting.init.UpdateInitValueSettingHa
 import nts.uk.ctx.pereg.app.find.person.setting.init.PerInfoInitValueSettingFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.init.PerInitValueSettingDto;
 
-@Path("ctx/bs/person/info/setting/init/ctg")
+@Path("ctx/pereg/person/info/setting/init/ctg")
 @Produces("application/json")
 public class PerInfoInitValueSettingCtgWebservice extends WebService {
 

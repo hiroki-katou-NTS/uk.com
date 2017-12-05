@@ -14,7 +14,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.init.item.PerInfoInitValueSettin
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.ReferenceHistoryDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.ReferenceHistoryFinder;
 
-@Path("ctx/bs/person/info/setting/init/item")
+@Path("ctx/pereg/person/info/setting/init/item")
 @Produces("application/json")
 public class PerInfoInitValueSettingItemWebservice extends WebService {
 	@Inject

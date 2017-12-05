@@ -18,7 +18,7 @@ import nts.uk.ctx.pereg.app.command.person.setting.init.InsertInitValueSettingHa
 import nts.uk.ctx.pereg.app.find.person.setting.init.PerInfoInitValueSettingDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.PerInfoInitValueSettingFinder;
 
-@Path("ctx/bs/person/info/setting/init")
+@Path("ctx/pereg/person/info/setting/init")
 @Produces("application/json")
 public class PerInfoInitValueSettingWebservice extends WebService {
 	@Inject
