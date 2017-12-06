@@ -44,6 +44,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_BY_PRIMARY_KEY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.pId = :pId", "AND c.bsymtAffCompanyHistPk.sId = :sId",
 			"AND c.bsymtAffCompanyHistPk.historyId = :histId");
+
 	private static final String SELECT_BY_HISTORY_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.historyId = :histId");
 
@@ -206,6 +207,14 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		}
 		updateEntity(itemToBeUpdated, existItem.get());
 		this.commandProxy().update(existItem.get());
+	}
+
+	@Override
+	public AffCompanyHist getAffCompanyHistoryOfHistInfo(String histId) {
+		List<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID, BsymtAffCompanyHist.class)
+				.setParameter("histId", histId).getList();
+
+		return toDomain(existItem);
 	}
 
 }
