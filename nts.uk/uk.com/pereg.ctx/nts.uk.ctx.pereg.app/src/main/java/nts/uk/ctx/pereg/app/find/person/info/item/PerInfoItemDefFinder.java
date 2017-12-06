@@ -240,7 +240,7 @@ public class PerInfoItemDefFinder {
 		}).collect(Collectors.toList());
 	}
 
-	private PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
+	public PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,

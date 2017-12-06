@@ -45,36 +45,34 @@ public class LayoutMapping {
 	
 	public static void mapPerOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<PersonOptionalDto> lstCtgItemOptionalDto, 
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
-		if(lstCtgItemOptionalDto.size() > 0){
-			for(PersonOptionalDto data : lstCtgItemOptionalDto) {
-				Optional<PerInfoItemDefForLayoutDto> item = lstPerInfoItemDef.stream().filter(x -> {
-					return x.getItemCode().equals(data.getItemCode());
-					}).findFirst();
-				if(item.isPresent()){
-					LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-					layoutPerInfoClsDto.setDispOrder(item.get().getDispOrder());
-					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item.get(), data.getValue()));
-					empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
-				}
+		lstPerInfoItemDef.forEach(item -> {
+			if(item.getItemCode().charAt(1) == 'O'){
+				Optional<PersonOptionalDto> empOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> { 
+					return  data.getItemCode().equals(item.getItemCode());
+				}).findFirst();
+				Object value = empOptionalDto.isPresent()?empOptionalDto.get().getValue(): null;
+				LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+				layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
+				layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
+				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 			}
-		}
+		});
 	}
 	
 	public static void mapEmpOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<EmpOptionalDto> lstCtgItemOptionalDto, 
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
-		if(lstCtgItemOptionalDto.size() > 0){
-			for(EmpOptionalDto data : lstCtgItemOptionalDto) {
-				Optional<PerInfoItemDefForLayoutDto> item = lstPerInfoItemDef.stream().filter(x -> {
-					return x.getItemCode().equals(data.getItemCode());
-					}).findFirst();
-				if(item.isPresent()){
-					LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-					layoutPerInfoClsDto.setDispOrder(item.get().getDispOrder());
-					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item.get(), data.getValue()));
-					empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
-				}
+		lstPerInfoItemDef.forEach(item -> {
+			if(item.getItemCode().charAt(1) == 'O'){
+				Optional<EmpOptionalDto> empOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> { 
+					return  data.getItemCode().equals(item.getItemCode());
+				}).findFirst();
+				Object value = empOptionalDto.isPresent()?empOptionalDto.get().getValue(): null;
+				LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+				layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
+				layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
+				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 			}
-		}
+		});
 	}
 	
 	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto ,
