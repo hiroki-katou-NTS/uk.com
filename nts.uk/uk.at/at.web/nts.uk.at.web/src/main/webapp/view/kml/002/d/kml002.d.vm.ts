@@ -96,7 +96,6 @@ module nts.uk.at.view.kml002.d.viewmodel {
             }
             
             service.getByAtr(param).done((lst) => {  
-                console.log(lst);
                 let sortedData= _.orderBy(lst, ['externalBudgetCode'], ['asc']);
                 _.map(sortedData, function(item){
                     array.push({
@@ -127,7 +126,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 if(data.formPeople != null) {
                     if(data.formPeople.lstPeopleFunc.length > 0) {
                         let dataItems = [];
-                        
+                        self.checked(data.formPeople.actualDisplayAtr == 1? true: false);
                         _.forEach(data.formPeople.lstPeopleFunc, function(item){
                             let curItem = _.find(self.items(), function(o) { return o.code == item.externalBudgetCd; });
                             

@@ -124,7 +124,7 @@
 								{ prop: 'attrName', length: 10 }
 							]}"></div>
 					</td>
-					<td class=""><input tabindex="15" class="item-name" data-bind="ntsTextEditor: { value: itemName, required: true, name:'#[KML002_19]', constraint:['ItemName'] }" /></td>
+					<td class=""><input id="itemName" tabindex="15" class="item-name" data-bind="ntsTextEditor: { value: itemName, required: true, name:'#[KML002_19]', constraint:['ItemName'] }" /></td>
 					<td class="">
 						<div tabindex="16" class="cf"
 							data-bind="ntsSwitchButton: {
@@ -137,7 +137,7 @@
 					<td class="">
 						<button tabindex="17" class="formula-setting-btn" data-bind="click: $parent.openDialog.bind($parent, itemCd(), settingMethod(), attribute(), itemName())"></button>
 					</td>
-					<td class=""><p class="formula-text" data-bind="text: formula"></p></td>
+					<td class=""><input class="formula-text" data-bind="ntsTextEditor: { value: formula, readonly: true }" /></td>
 					<td class="">
 						<div tabindex="18" class="display-atr" data-bind="ntsComboBox: {
 							options: $parent.cbxDisplayAtr,
