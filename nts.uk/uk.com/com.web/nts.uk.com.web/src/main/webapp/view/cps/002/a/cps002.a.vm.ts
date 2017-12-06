@@ -255,12 +255,12 @@ module cps002.a.vm {
 
         }
 
-        checkErrorStep1() {
+        isError() {
             $(".form_step1").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         completeStep1() {
@@ -271,7 +271,7 @@ module cps002.a.vm {
                     cardNo: employee.cardNo(),
                     LoginId: employee.loginId()
                 };
-            if (self.checkErrorStep1()) {
+            if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
 
                     if (self.createTypeId() === 3) {
@@ -484,20 +484,20 @@ module cps002.a.vm {
             command.initSettingId = self.currentInitSetting().itemId;
             command.createType = self.createTypeId();
             command.itemDataList = itemDataList;
+            if (!self.isError()) {
+                service.addNewEmployee(command).done(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                        if (getShared('isContinue')) {
 
-            service.addNewEmployee(command).done(() => {
-                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
-                    if (getShared('isContinue')) {
+                            self.backtoStep1();
 
-                        self.backtoStep1();
+                        } else {
+                            jump('/view/cps/001/a/index.xhtml');
+                        }
+                    });
 
-                    } else {
-                        jump('/view/cps/001/a/index.xhtml');
-                    }
                 });
-
-            })
-
+            }
         }
 
         openEModal(param, data) {
@@ -620,11 +620,20 @@ module cps002.a.vm {
 
     interface IEmpRegHistory {
 
-        lastRegEmployeeOfCompanyID: string;
+        lastRegEmployee: IRegEmployee;
 
-        lastRegEmployeeID: string;
+        lastRegEmployeeOfCompany: IRegEmployee;
 
     }
+
+    interface IRegEmployee {
+
+        employeeID: string;
+
+        employeeName: string;
+
+    }
+
 
 
     interface IInitValueSetting {
@@ -739,17 +748,24 @@ module cps002.a.vm {
 
     class EmpRegHistory {
 
-        lastRegEmployeeOfCompanyID: string;
+        lastRegEmployee: KnockoutObservable<RegEmployee> = ko.observable(null);
 
-        lastRegEmployeeID: string;
+        lastRegEmployeeOfCompany: KnockoutObservable<RegEmployee> = ko.observable(null);
 
 
         constructor(param: IEmpRegHistory) {
-            this.lastRegEmployeeOfCompanyID = param ? param.lastRegEmployeeOfCompanyID : '';
+            this.lastRegEmployee(param ? param.lastRegEmployee : null);
 
-            this.lastRegEmployeeID = param ? param.lastRegEmployeeID : '';
+            this.lastRegEmployee(param ? param.lastRegEmployeeOfCompany : null);
 
         }
+    }
+
+    class RegEmployee {
+
+        employeeID: string;
+
+        employeeName: string;
     }
 
     interface IRoleAuth {

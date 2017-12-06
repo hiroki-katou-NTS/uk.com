@@ -28,6 +28,23 @@ public class DataState extends AggregateRoot {
 		NumberValue numberValue = (NumberValue) this;
 		return numberValue.value;
 	}
+	
+	public Object getValue() {
+		switch (dataStateType) {
+		case String:
+			StringValue sValue = (StringValue) this;
+			return sValue.value;
+
+		case Numeric:
+			NumberValue numberValue = (NumberValue) this;
+			return numberValue.value;
+		case Date:
+			DateValue dateValue = (DateValue) this;
+			return dateValue.value;
+		default:
+			return null;
+		}
+	}
 
 	public static DataState createFromStringValue(String value) {
 
