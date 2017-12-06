@@ -1,32 +1,17 @@
 package nts.uk.ctx.bs.employee.app.find.employee.mngdata;
 
-import lombok.Data;
-import nts.arc.time.GeneralDate;
+import lombok.Setter;
+import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
-@Data
-public class EmployeeDataMngInfoDto {
-
-	/** 会社ID */
-	private String companyId;
-
-	/** 個人ID */
-	private String personId;
-
-	/** 社員ID */
-	private String employeeId;
-
+@Setter
+public class EmployeeDataMngInfoDto extends PeregDomainDto {
 	/** 社員コード */
+
+	@PeregItem("IS00001")
 	private String employeeCode;
 
-	/** 削除状況 */
-	private int deletedStatus;
-
-	/** 一時削除日時 */
-	private GeneralDate deleteDateTemporary;
-
-	/** 削除理由 */
-	private String removeReason;
-
 	/** 外部コード */
+	@PeregItem("IS00002")
 	private String externalCode;
 }
