@@ -337,18 +337,18 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		// select root
 		cq.select(root);
 
-		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		
+		// Pass limited condition IN
 		CollectionUtil.split(wkpIds, MAX_ELEMENTS, (subList) -> {
 			// add where
-			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
 					.get(BsymtWorkplaceInfoPK_.wkpid).in(subList));
-
-			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		
+		cq.where(criteriaBuilder.or(lstpredicateWhere.toArray(new Predicate[] {})));
+		
+		List<BsymtWorkplaceInfo> resultList = em.createQuery(cq).getResultList();
 		
 		return resultList.stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
