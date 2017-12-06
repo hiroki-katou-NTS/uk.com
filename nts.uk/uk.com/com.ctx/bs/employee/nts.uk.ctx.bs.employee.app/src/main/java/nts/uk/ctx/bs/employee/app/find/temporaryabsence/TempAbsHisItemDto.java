@@ -33,73 +33,73 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 	/**
 	 * 休業開始日
 	 */
-	@PeregItem("IS00088")
+	@PeregItem("IS00087")
 	private GeneralDate startDate;
 
 	/**
 	 * 休業復職日
 	 */
-	@PeregItem("IS00089")
+	@PeregItem("IS00088")
 	private GeneralDate endDate;
 
 	/**
 	 * 休業区分
 	 */
-	@PeregItem("IS00090")
+	@PeregItem("IS00089")
 	private LeaveHolidayType leaveHolidayType;
 
 	/**
 	 * 家族の同一の要介護状態について介護休業したことがあるか （介護休業の場合）
 	 */
-	@PeregItem("IS00091")
+	@PeregItem("IS00090")
 	private boolean careSameFamily;
 
 	/**
 	 * 対象の家族についてのこれまでの介護休業および介護短時間勤務の日数 （介護休業の場合）
 	 */
-	@PeregItem("IS00092")
+	@PeregItem("IS00091")
 	private Integer sameFamilyDays;
 
 	/**
 	 * 出産種別 （産前休業の場合）
 	 */
-	@PeregItem("IS00093")
+	@PeregItem("IS00092")
 	private boolean multiple;
 
 	/**
 	 * 子の区分 （育児休業の場合）
 	 */
-	@PeregItem("IS00094")
+	@PeregItem("IS00093")
 	private int childType;
 
 	/**
 	 * 縁組成立の年月日 （育児休業で子が養子の場合）
 	 */
-	@PeregItem("IS00095")
+	@PeregItem("IS00094")
 	private GeneralDate createDate;
 
 	/**
 	 * 同じ子について育児休業をしたことがあるか （育児休業の場合）
 	 */
-	@PeregItem("IS00096")
+	@PeregItem("IS00095")
 	private Boolean childCareSameFamily;
 
 	/**
 	 * １歳を超えての休業の申出の場合で申出者が育児休業中でない場合、配偶者が休業しているか （育児休業の場合）
 	 */
-	@PeregItem("IS00097")
+	@PeregItem("IS00096")
 	private Boolean spouseIsLeave;
 
 	/**
 	 * 社会保険支給対象区分
 	 */
-	@PeregItem("IS00098")
+	@PeregItem("IS00097")
 	private String remarks;
 
 	/**
 	 * 備考
 	 */
-	@PeregItem("IS00099")
+	@PeregItem("IS00098")
 	private Integer soInsPayCategory;
 
 	public TempAbsHisItemDto() {
