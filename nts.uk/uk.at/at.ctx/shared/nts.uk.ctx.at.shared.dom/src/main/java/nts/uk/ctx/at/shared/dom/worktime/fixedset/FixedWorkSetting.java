@@ -9,6 +9,8 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 
@@ -54,4 +56,40 @@ public class FixedWorkSetting extends AggregateRoot {
 	/** The legal OT setting. */
 	// 法定内残業設定
     private LegalOTSetting legalOTSetting;
+    
+    /**
+     * Instantiates a new fixed work setting.
+     *
+     * @param memento the memento
+     */
+    public FixedWorkSetting(FixedWorkSettingGetMemento memento) {
+    	this.companyId = memento.getCompanyId();
+    	this.workTimeCode = memento.getWorkTimeCode();
+    	this.offdayWorkTimezone = memento.getOffdayWorkTimezone();
+    	this.commonSetting = memento.getCommonSetting();
+    	this.useHalfDayShift = memento.getUseHalfDayShift();
+    	this.fixedWorkRestSetting = memento.getFixedWorkRestSetting();
+    	this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
+    	this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
+        this.legalOTSetting = memento.getLegalOTSetting();
+    }
+    
+    /**
+     * Save to memento.
+     *
+     * @param memento the memento
+     */
+    public void saveToMemento(FixedWorkSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setWorkTimeCode(this.workTimeCode);
+		memento.setOffdayWorkTimezone(this.offdayWorkTimezone);
+		memento.setCommonSetting(this.commonSetting);
+		memento.setUseHalfDayShift(this.useHalfDayShift);
+		memento.setFixedWorkRestSetting(this.fixedWorkRestSetting);
+		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
+		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
+		memento.setLegalOTSetting(this.legalOTSetting);
+	}
+
+    //TODO: hash code + equal
 }

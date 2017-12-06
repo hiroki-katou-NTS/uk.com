@@ -5,32 +5,43 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
-import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTimeSetMemento;
 
 /**
  * The Class DesignatedTimeDto.
  */
 @Getter
-@Setter
-public class DesignatedTimeDto {
+public class DesignatedTimeDto implements DesignatedTimeSetMemento {
 
 	/** The one day time. */
 	private Integer oneDayTime;
-	
+
 	/** The half day time. */
 	private Integer halfDayTime;
 
-	/**
-	 * Instantiates a new designated time dto.
-	 *
-	 * @param oneDayTime the one day time
-	 * @param halfDayTime the half day time
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTimeSetMemento#
+	 * setOneDayTime(nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave
+	 * .OneDayTime)
 	 */
-	public DesignatedTimeDto(Integer oneDayTime, Integer halfDayTime) {
-		super();
-		this.oneDayTime = oneDayTime;
-		this.halfDayTime = halfDayTime;
+	@Override
+	public void setOneDayTime(OneDayTime time) {
+		this.oneDayTime = time.v();
 	}
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTimeSetMemento#
+	 * setHalfDayTime(nts.uk.ctx.at.shared.dom.vacation.setting.
+	 * compensatoryleave.OneDayTime)
+	 */
+	@Override
+	public void setHalfDayTime(OneDayTime time) {
+		this.halfDayTime = time.v();
+	}
+
 }

@@ -33,6 +33,9 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo_;
 @Stateless
 public class JpaWorkplaceInfoRepository extends JpaRepository implements WorkplaceInfoRepository {
 
+	/** The Constant MAX_ELEMENTS. */
+	private static final Integer MAX_ELEMENTS = 1000;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -334,14 +337,20 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		// select root
 		cq.select(root);
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
-				.get(BsymtWorkplaceInfoPK_.wkpid).in(wkpIds));
+		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(wkpIds, MAX_ELEMENTS, (subList) -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
+					.get(BsymtWorkplaceInfoPK_.wkpid).in(subList));
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		return em.createQuery(cq).getResultList().stream()
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		
+		return resultList.stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}

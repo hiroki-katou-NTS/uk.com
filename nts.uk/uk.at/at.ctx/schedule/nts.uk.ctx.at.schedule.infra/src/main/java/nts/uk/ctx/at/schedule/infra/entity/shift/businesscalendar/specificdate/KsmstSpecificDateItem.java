@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -25,7 +24,7 @@ public class KsmstSpecificDateItem extends UkJpaEntity implements Serializable {
 	public KsmstSpecificDateItemPK ksmstSpecificDateItemPK;
 
 	@Column(name = "USE_ATR")
-	public BigDecimal useAtr;
+	public Integer useAtr;
 
 	@Column(name = "NAME")
 	public String name;

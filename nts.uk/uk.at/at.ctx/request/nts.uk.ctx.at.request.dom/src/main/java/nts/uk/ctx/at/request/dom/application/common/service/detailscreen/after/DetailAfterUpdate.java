@@ -16,7 +16,7 @@ public interface DetailAfterUpdate {
 	 * @param companyID 会社ID
 	 * @param appID 申請ID
 	 */
-	public void processAfterDetailScreenRegistration(Application application);
+	public List<String> processAfterDetailScreenRegistration(Application application);
 	
 	/**
 	 * 1.承認を行った承認者を取得する

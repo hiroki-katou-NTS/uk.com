@@ -42,7 +42,7 @@ public class FlowWorkRestTimezone extends DomainObject{
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(FlowWorkRestTimezoneSetMemeto memento){
+	public void saveToMemento(FlowWorkRestTimezoneSetMemento memento){
 		memento.setFixRestTime(this.fixRestTime);
 		memento.setFixedRestTimezone(this.fixedRestTimezone);
 		memento.setFlowRestTimezone(this.flowRestTimezone);

@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.service;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
@@ -25,14 +25,14 @@ public class DefaultPublicHolidayService implements PublicHolidayService {
 	
 
 	@Override
-	public boolean isExist(String companyID, BigDecimal date) {
+	public boolean isExist(String companyID, GeneralDate date) {
 		Optional<PublicHoliday> publicHoliday = publicHolidayRepository.getHolidaysByDate(companyID, date);
 		return publicHoliday.isPresent();
 
 	}
 
 	@Override
-	public void deleteHolidayInfo(String companyID, BigDecimal date) {
+	public void deleteHolidayInfo(String companyID, GeneralDate date) {
 		if (isExist(companyID , date)){
 			publicHolidayRepository.remove(companyID, date);
 		}

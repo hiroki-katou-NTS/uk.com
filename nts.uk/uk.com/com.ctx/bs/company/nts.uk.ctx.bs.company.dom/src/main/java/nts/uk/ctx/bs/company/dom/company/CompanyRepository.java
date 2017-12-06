@@ -12,16 +12,12 @@ import java.util.Optional;
  */
 
 public interface CompanyRepository {
-	
+		
 	/**
-	 * Gets the comany id.
-	 *
-	 * @param companyId the company id
-	 * @return the comany id
+	 * Find all company with isAbolition=0
+	 * @return
 	 */
-	Optional<Company> getComanyById(String companyId);
-	
-	List<Company>  getAllCompany();
+	List<CompanyInforNew>  getAllCompany();
 	
 	/** 
 	 * get all company from database
@@ -38,7 +34,7 @@ public interface CompanyRepository {
 	 * @return
 	 * 
 	 */
-	Optional<CompanyInforNew> findComByCode(String companyId);
+	Optional<CompanyInforNew> find(String companyId);
 	
 	/**
 	 * get address
@@ -89,7 +85,7 @@ public interface CompanyRepository {
 	 * @param companyId the company id
 	 * @return the comany
 	 */
-	Optional<Company> getComanyInfoByCid(String cid);
+	Optional<CompanyInforNew> getComanyInfoByCid(String cid);
 	
 	boolean checkAbolish(String currentCompanyId);
 }

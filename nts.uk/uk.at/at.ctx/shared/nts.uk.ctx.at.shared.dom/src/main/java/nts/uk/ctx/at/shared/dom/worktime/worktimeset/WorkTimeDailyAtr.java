@@ -4,19 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
-//勤務形態区分
 /**
  * The Enum WorkTimeDailyAtr.
  */
+
+// 勤務形態区分
 public enum WorkTimeDailyAtr {
 
 	/** The regular work. */
 	// 通常勤務・変形労働用
-	REGULAR_WORK(0, "Enum_Regular_Work", "通常勤務・変形労働用"),
+	REGULAR_WORK(0, "Enum_WorkTimeDailyAtr_Regular_Work", "通常勤務・変形労働用"),
 
 	/** The flex work. */
 	// フレックス勤務用
-	FLEX_WORK(1, "Enum_Flex_Work", "フレックス勤務用");
+	FLEX_WORK(1, "Enum_WorkTimeDailyAtr_Flex_Work", "フレックス勤務用");
 
 	/** The value. */
 	public final int value;
@@ -31,14 +32,11 @@ public enum WorkTimeDailyAtr {
 	private final static WorkTimeDailyAtr[] values = WorkTimeDailyAtr.values();
 
 	/**
-	 * Time day atr.
+	 * Instantiates a new work time daily atr.
 	 *
-	 * @param value
-	 *            the value
-	 * @param nameId
-	 *            the name id
-	 * @param description
-	 *            the description
+	 * @param value the value
+	 * @param nameId the name id
+	 * @param description the description
 	 */
 	private WorkTimeDailyAtr(int value, String nameId, String description) {
 		this.value = value;

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.holiday;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 
 /**
@@ -17,12 +18,12 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 @Data
 public class PublicHolidayDto {
 
-	private int date;
+	private GeneralDate date;
 
 	private String holidayName;
 
 	public static PublicHolidayDto fromDomain(PublicHoliday domain) {
-		return new PublicHolidayDto(domain.getDate().intValue(), domain.getHolidayName().v());
+		return new PublicHolidayDto(domain.getDate(), domain.getHolidayName().v());
 	}
 
 }

@@ -17,7 +17,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class BsystTempAbsenceFramePK_ { 
 
     /** The temp absence fr no. */
-    public static volatile SingularAttribute<BsystTempAbsenceFramePK, Short> tempAbsenceFrNo;
+    public static volatile SingularAttribute<BsystTempAbsenceFramePK, Integer> tempAbsenceFrNo;
     
     /** The cid. */
     public static volatile SingularAttribute<BsystTempAbsenceFramePK, String> cid;
