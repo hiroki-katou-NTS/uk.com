@@ -9,9 +9,9 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
 
 /**
  * The Class FlexWorkSetting.
@@ -48,13 +48,13 @@ public class FlexWorkSetting extends AggregateRoot {
 	// 半日用シフトを使用する
 	private boolean useHalfDayShift;
 
-	/** The half day work timezone. */
+	/** The lst half day work timezone. */
 	// 平日勤務時間帯
-	private List<FlexHalfDayWorkTime> halfDayWorkTimezone;
+	private List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone;
 
-	/** The stamp reflect timezone. */
+	/** The lst stamp reflect timezone. */
 	// 打刻反映時間帯
-	private List<StampReflectTimezone> stampReflectTimezone;
+	private List<StampReflectTimezone> lstStampReflectTimezone;
 
 	/** The calculate setting. */
 	// 計算設定
@@ -73,8 +73,8 @@ public class FlexWorkSetting extends AggregateRoot {
 		this.offdayWorkTime = memento.getOffdayWorkTime();
 		this.commonSetting = memento.getCommonSetting();
 		this.useHalfDayShift = memento.getUseHalfDayShift();
-		this.halfDayWorkTimezone = memento.getHalfDayWorkTimezone();
-		this.stampReflectTimezone = memento.getStampReflectTimezone();
+		this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
+		this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
 		this.calculateSetting = memento.getCalculateSetting();
 	}
 	
@@ -91,8 +91,8 @@ public class FlexWorkSetting extends AggregateRoot {
 		memento.setOffdayWorkTime(this.offdayWorkTime);
 		memento.setCommonSetting(this.commonSetting);
 		memento.setUseHalfDayShift(this.useHalfDayShift);
-		memento.setHalfDayWorkTimezone(this.halfDayWorkTimezone);
-		memento.setStampReflectTimezone(this.stampReflectTimezone);
+		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
+		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
 		memento.setCalculateSetting(this.calculateSetting);
 	}
 }

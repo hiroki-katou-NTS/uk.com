@@ -32,7 +32,7 @@ public class JpaEmploymentRoleRepository extends JpaRepository implements Employ
 	public List<EmploymentRole> getListEmploymentRole(String companyId) {
 		return this.queryProxy().query(GET_ALL_BY_COMPANY_ID, KacmtEmploymentRole.class)
 				.setParameter("companyID", companyId)
-				.getList(c -> c.toDomainFull());
+				.getList(c -> c.toDomain());
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class JpaEmploymentRoleRepository extends JpaRepository implements Employ
 		return this.queryProxy().query(GET_EMPLOYMENT_BY_ID, KacmtEmploymentRole.class)
 				.setParameter("companyID", companyId)
 				.setParameter("roleId", roleId)
-				.getSingle(c -> c.toDomainFull());
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -66,7 +66,5 @@ public class JpaEmploymentRoleRepository extends JpaRepository implements Employ
 		KacmtEmploymentRolePK kacmtEmploymentRolePK = new  KacmtEmploymentRolePK(companyId,roleId);
 		this.commandProxy().remove(KacmtEmploymentRole.class,kacmtEmploymentRolePK);
 	}
-
-
 
 }

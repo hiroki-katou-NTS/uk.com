@@ -1034,6 +1034,55 @@ public class ProgramsManager {
 	public static final Program CPS017D = new Program(WebAppId.COM, ProgramIdConsts.CPS017D, "CPS017_54",
 			"/view/cps/017/d/index.xhtml");
 
+	public static final Program CAS005A = new Program(WebAppId.COM, ProgramIdConsts.CAS005A, "CAS005_1",
+			"/view/cas/005/a/index.xhtml");
+	
+	public static final Program CAS005B = new Program(WebAppId.COM, ProgramIdConsts.CAS005B, "CAS005_2",
+			"/view/cas/005/b/index.xhtml");
+	
+	public static final Program CAS005C = new Program(WebAppId.COM, ProgramIdConsts.CAS005C, "CAS005_3",
+			"/view/cas/005/c/index.xhtml");
+	
+	public static final Program CAS009A = new Program(WebAppId.COM, ProgramIdConsts.CAS009A, "CAS009_1",
+			"/view/cas/009/a/index.xhtml");
+	
+	public static final Program CAS009B = new Program(WebAppId.COM, ProgramIdConsts.CAS009B, "CAS009_2",
+			"/view/cas/009/b/index.xhtml");
+	
+	public static final Program CAS011A = new Program(WebAppId.COM, ProgramIdConsts.CAS011A, "CAS011_1",
+			"/view/cas/011/a/index.xhtml");
+	
+	public static final Program CAS011C = new Program(WebAppId.COM, ProgramIdConsts.CAS011C, "CAS011_3",
+			"/view/cas/011/b/index.xhtml");
+	
+	public static final Program CAS012A = new Program(WebAppId.COM, ProgramIdConsts.CAS012A, "CAS012_1",
+			"/view/cas/012/a/index.xhtml");
+	
+	public static final Program CAS012B = new Program(WebAppId.COM, ProgramIdConsts.CAS012B, "CAS012_2",
+			"/view/cas/012/b/index.xhtml");
+	
+	public static final Program CAS012C = new Program(WebAppId.COM, ProgramIdConsts.CAS012C, "CAS012_3",
+			"/view/cas/012/c/index.xhtml");
+
+	public static final Program CAS013A = new Program(WebAppId.COM, ProgramIdConsts.CAS013A, "CAS012_1",
+			"/view/cas/013/a/index.xhtml");
+	
+	public static final Program CAS013B = new Program(WebAppId.COM, ProgramIdConsts.CAS013B, "CAS012_2",
+			"/view/cas/013/b/index.xhtml");
+
+	public static final Program CAS014A = new Program(WebAppId.COM, ProgramIdConsts.CAS014A, "CAS014_2",
+			"/view/cas/014/a/index.xhtml");
+	
+	public static final Program CAS014B = new Program(WebAppId.COM, ProgramIdConsts.CAS014B, "CAS014_3",
+			"/view/cas/014/b/index.xhtml");
+
+	public static final Program CCG025 = new Program(WebAppId.COM, ProgramIdConsts.CCG025, "CCG025_1",
+			"/view/ccg/025/component/index.xhtml");
+	
+	public static final Program CDL025 = new Program(WebAppId.COM, ProgramIdConsts.CDL025, "CCG025_1",
+			"/view/cdl/025/a/index.xhtml");
+
+	
 	// TODO: Define new programs here.
 
 	/**

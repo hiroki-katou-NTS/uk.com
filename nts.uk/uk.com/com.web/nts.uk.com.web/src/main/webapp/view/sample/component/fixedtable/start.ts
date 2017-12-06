@@ -12,6 +12,11 @@ __viewContext.ready(function () {
             var self = this;
             self.itemList.push(new ScreenItem());    
         }
+        
+        removeItem(){
+            var self = this;
+            self.itemList.pop();    
+        }
     }
     
     class ScreenItem {

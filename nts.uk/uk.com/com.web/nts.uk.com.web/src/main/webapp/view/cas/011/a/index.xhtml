@@ -27,7 +27,7 @@
                         enable: !isNewMode()" >#{i18n.getText('CAS011_6')}</button>
 
                 <button id="A1_004" class="large" data-bind="click: openDialogSettingC,
-                         enable: roleSetCount() > 0">#{i18n.getText('CPS016_7')}</button>
+                         enable: roleSetCount() > 0">#{i18n.getText('CAS011_7')}</button>
             </div>
  
             <div id="contents-area" class="cf">
@@ -52,7 +52,7 @@
                         </div>
                     </div>
             
-                <div id="right-content" data-bind="with: currentRoleSet">
+                <div id="right-content">
 
                     <table >
                         <colgroup>
@@ -65,24 +65,24 @@
                                 <div data-bind="ntsFormLabel: {required: true,constraint: ['RoleSetCode', 'RoleSetName'] }">#{i18n.getText('CAS011_11')}</div>
                             </td>
                             <td class = "pad_left_5px">
-                                <div>
+                                <div data-bind="with: currentRoleSet">
                                     <!-- A3_002: Rose Set Code -->
                                      <input class="nts-input" id="inpRoleSetCd" 
                                         data-bind="ntsTextEditor:{
                                             name: '#[CAS011_12]',
-                                             value: roleSetCd,
-                                             required: true,
-                                             constraint: 'RoleSetCode',
-                                             enable: $parent.isNewMode()}" />
-                                       <!-- A3_003: Rose Set Name -->
-                                        <input class="nts-input pad_left_5px" id="inpRoleSetName"
-                                            data-bind="ntsTextEditor:{
-                                                name: '#[CAS011_13]',
-                                                 value: roleSetName,
-                                                 required: true,
-                                                 constraint: 'RoleSetName',
-                                                 enable: true}" />
-                                   </div>
+                                            value: roleSetCd,
+                                            required: true,
+                                            constraint: 'RoleSetCode',
+                                            enable: $parent.isNewMode()}" />
+                                     <!-- A3_003: Rose Set Name -->
+                                     <input class="nts-input pad_left_5px" id="inpRoleSetName"
+                                          data-bind="ntsTextEditor:{
+                                               name: '#[CAS011_13]',
+                                               value: roleSetName,
+                                               required: true,
+                                               constraint: 'RoleSetName',
+                                               enable: true}" />
+                               </div>
                             </td>
                         </tr>
                         <tr class="row">
@@ -96,13 +96,13 @@
                                     <!-- A3_005 Employment Role Name -->
                                    <input class="nts-input lab_txt_width" id="disEmploytRoleName"
                                         data-bind="ntsTextEditor:{
-                                                 value: $parent.employmentRoleName,
+                                                 value: employmentRoleName,
                                                  required: false,
                                                  enable: false
                                                  }"/>
                                     <!-- A3_006: Employment Role - reference button -->
                                     <button id="A3_006" class="large" 
-                                        data-bind="click: function() {$parent.openDialogCLD025(3)}, enable: true">#{i18n.getText('CAS011_15')}</button>
+                                        data-bind="click: function() {openDialogCLD025(3)}, enable: true">#{i18n.getText('CAS011_15')}</button>
                                </div>
                                  
                             </td>
@@ -117,13 +117,13 @@
                                     <!-- A3_008 HR Role Name -->
                                    <input class="nts-input lab_txt_width" id="disHRRoleName"
                                         data-bind="ntsTextEditor:{
-                                                 value: $parent.hRRoleName,
+                                                 value: hRRoleName,
                                                  required: false,
                                                  enable: false}"/>
 
                                     <!-- A3_009: HR Role - reference button -->
                                     <button id="A3_009" class="large" 
-                                        data-bind="click: function() {$parent.openDialogCLD025(5)},    enable: true">#{i18n.getText('CAS011_15')}</button>                                
+                                        data-bind="click: function() {openDialogCLD025(5)},    enable: true">#{i18n.getText('CAS011_15')}</button>                                
                                </div>
                             </td>
                         </tr>
@@ -137,13 +137,13 @@
                                 <div>
                                    <input class="nts-input lab_txt_width" id="disSalaryRoleName"
                                         data-bind="ntsTextEditor:{
-                                                 value: $parent.salaryRoleName,
+                                                 value: salaryRoleName,
                                                  required: false,
                                                  enable: false}"/>
 
                                     <!-- A3_012: Salary Role - reference button -->
                                     <button id="A3_012" class="large" 
-                                        data-bind="click: function() {$parent.openDialogCLD025(4)}, enable: true">#{i18n.getText('CAS011_15')}</button>
+                                        data-bind="click: function() {openDialogCLD025(4)}, enable: true">#{i18n.getText('CAS011_15')}</button>
                                 </div>                                    
                             </td>
                         </tr>
@@ -157,13 +157,13 @@
                                     <!-- A3_014 Personal Info Role Name -->
                                    <input class="nts-input lab_txt_width" id="disPersonInfName"
                                         data-bind="ntsTextEditor:{
-                                                 value: $parent.personInfRoleName,
+                                                 value: personInfRoleName,
                                                  required: false,
                                                  enable: false}"/>
 
                                     <!-- A3_015: Person Info Role - reference button -->
                                     <button id="A3_015" class="large" 
-                                        data-bind="click: function() {$parent.openDialogCLD025(8)}, enable: true">#{i18n.getText('CAS011_15')}</button>
+                                        data-bind="click: function() {openDialogCLD025(8)}, enable: true">#{i18n.getText('CAS011_15')}</button>
                                 </div>
                                 
                             </td>
@@ -178,13 +178,13 @@
                                 <div>
                                    <input class="nts-input lab_txt_width" id="disMyNumberName"
                                         data-bind="ntsTextEditor:{
-                                                 value: $parent.myNumberRoleName,
+                                                 value: myNumberRoleName,
                                                  required: false,
                                                  enable: false}"/>
                                    
                                     <!-- A3_018: My Number  Role - reference button -->
                                     <button id="A3_018" class="large" 
-                                        data-bind="click: function() {$parent.openDialogCLD025(7)},    enable: true">#{i18n.getText('CAS011_15')}</button>
+                                        data-bind="click: function() {openDialogCLD025(7)},    enable: true">#{i18n.getText('CAS011_15')}</button>
                                </div>                                    
                             </td>
                         </tr>
@@ -198,12 +198,12 @@
                                 <div>
                                    <input class="nts-input lab_txt_width" id="disOfficeHelperName"
                                         data-bind="ntsTextEditor:{
-                                                 value: $parent.officeHelperRoleName,
+                                                 value: officeHelperRoleName,
                                                  required: false,
                                                  enable: false}"/>                                   
                                     <!-- A3_021: Office Helper Role - reference button -->
                                     <button id="A3_021" class="large" 
-                                        data-bind="click: function() {$parent.openDialogCLD025(6)},    enable: true">#{i18n.getText('CAS011_15')}</button>
+                                        data-bind="click: function() {openDialogCLD025(6)},    enable: true">#{i18n.getText('CAS011_15')}</button>
                                </div>
 
                             </td>
@@ -218,10 +218,10 @@
                                 <div class = "pad_left_5px" id = "swApprovalAuthority"
                                     data-bind="ntsSwitchButton: {
                                     name: '#[CAS011_21]',
-                                    options: $parent.swApprovalAuthority,
+                                    options: swApprovalAuthority,
                                     optionsValue: 'code',
                                     optionsText: 'name',
-                                    value: approvalAuthority,
+                                    value: currentRoleSet().approvalAuthority,
                                     enable: true}">
                                 </div>
                             </td>
@@ -252,11 +252,11 @@
                             name: '#[CAS011_24]',
                             height: 250,
                             width: 280,
-                            dataSource: $parent.listWebMenus,
+                            dataSource: listWebMenus,
                             disableMoveButton: false,
                             primaryKey: 'webMenuCode',
-                            value: webMenus,
-                            columns: $parent.swapColumns,
+                            value: currentRoleSet().webMenus,
+                            columns: swapColumns,
                             draggable: true,
                             multipleDrag: { left: true, right: false },
                             innerDrag: { left: false, right: true },

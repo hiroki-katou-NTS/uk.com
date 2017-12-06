@@ -61,7 +61,7 @@ public class DeductionTime extends DomainObject {
 	 */
 	@Override
 	public String toString() {
-		return start + "," + end;
+		return this.start.v() + "," + this.end.v();
 	}
 	
 }

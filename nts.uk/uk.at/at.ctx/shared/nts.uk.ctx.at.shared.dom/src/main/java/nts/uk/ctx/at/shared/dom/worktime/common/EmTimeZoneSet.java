@@ -5,8 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.EmTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRounding;
 
 /**
  * The Class EmTimeZoneSet.
@@ -17,7 +15,7 @@ public class EmTimeZoneSet {
 
 	/** The Employment time frame no. */
 	//就業時間枠NO
-	private EmTimeFrameNo EmploymentTimeFrameNo;
+	private EmTimeFrameNo employmentTimeFrameNo;
 	
 	/** The timezone. */
 	//時間帯
@@ -29,7 +27,7 @@ public class EmTimeZoneSet {
 	 * @param memento the memento
 	 */
 	public EmTimeZoneSet(EmTimeZoneSetGetMemento memento) {
-		this.EmploymentTimeFrameNo = memento.getEmploymentTimeFrameNo();
+		this.employmentTimeFrameNo = memento.getEmploymentTimeFrameNo();
 		this.timezone = memento.getTimezone();
 	}
 
@@ -39,7 +37,7 @@ public class EmTimeZoneSet {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(EmTimeZoneSetSetMemento memento) {
-		memento.setEmploymentTimeFrameNo(this.EmploymentTimeFrameNo);
+		memento.setEmploymentTimeFrameNo(this.employmentTimeFrameNo);
 		memento.setTimezone(this.timezone);
 	}
 }

@@ -15,6 +15,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
@@ -22,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
@@ -40,6 +43,8 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	private OvertimeRepository overtimeRepository;
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
+	@Inject
+	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	
 	/* 
 	 * 06-01_色表示チェック
@@ -193,5 +198,16 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			caculations.add(caculationTime);
 		}
 		return caculations;
+	}
+	/* 06-04-2_当日以外の場合 */
+	@Override
+	public OvertimeCheckResult checkThanTheDay(String companyID, String employeeID, String appDate,
+			RequestAppDetailSetting requestAppDetailSetting, String siftCD) {
+		// TODO
+		// Imported(申請承認)「計算残業時間」を取得する :TODO
+		
+		//Imported(申請承認)「勤務実績」を取得する
+		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
+		return null;
 	}
 }

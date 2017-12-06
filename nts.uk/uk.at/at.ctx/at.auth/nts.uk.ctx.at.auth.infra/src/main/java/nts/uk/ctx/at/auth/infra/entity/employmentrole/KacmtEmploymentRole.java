@@ -50,8 +50,15 @@ public class KacmtEmploymentRole extends UkJpaEntity implements Serializable {
 	
 
 	public EmploymentRole toDomain() {
-		return EmploymentRole.createFromJavaType(this.kacmtEmploymentRolePK.companyID,
-				this.kacmtEmploymentRolePK.roleID);
+		return new EmploymentRole(
+			this.kacmtEmploymentRolePK.companyID,
+			this.kacmtEmploymentRolePK.roleID,
+			EnumAdaptor.valueOf(this.scheduleEmployeeRef, ScheduleEmployeeRef.class),
+			EnumAdaptor.valueOf(this.bookEmployeeRef,EmployeeRefRange.class),
+			EnumAdaptor.valueOf(this.employeeRefSpecAgent,EmployeeRefRange.class),
+			EnumAdaptor.valueOf(this.presentInqEmployeeRef,EmployeeReferenceRange.class),
+			EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class)
+		);
 	}
 
 	public KacmtEmploymentRole(KacmtEmploymentRolePK kacmtEmploymentRolePK) {
@@ -80,19 +87,6 @@ public class KacmtEmploymentRole extends UkJpaEntity implements Serializable {
 				domain.getPresentInqEmployeeRef().value,
 				domain.getFutureDateRefPermit().value
 				);
-	}
-	
-	public EmploymentRole toDomainFull() {
-		return new EmploymentRole(
-			this.kacmtEmploymentRolePK.companyID,
-			this.kacmtEmploymentRolePK.roleID,
-			EnumAdaptor.valueOf(this.scheduleEmployeeRef, ScheduleEmployeeRef.class),
-			EnumAdaptor.valueOf(this.bookEmployeeRef,EmployeeRefRange.class),
-			EnumAdaptor.valueOf(this.employeeRefSpecAgent,EmployeeRefRange.class),
-			EnumAdaptor.valueOf(this.presentInqEmployeeRef,EmployeeReferenceRange.class),
-			EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class)
-				);
-		
 	}
 
 }

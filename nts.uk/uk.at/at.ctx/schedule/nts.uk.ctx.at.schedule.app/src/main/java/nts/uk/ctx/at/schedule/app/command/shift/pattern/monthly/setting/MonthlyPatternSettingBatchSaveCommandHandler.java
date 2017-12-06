@@ -124,9 +124,16 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 			// get ymd to day
 			int ymdk = this.getYearMonthDate(toStartDate);
 			
+			int year = ymdk/10000;
+			
+			int month = (ymdk - year*10000)/100;
+			
+			int day = (ymdk - year*10000 - month*100);
+			
+			GeneralDate date = GeneralDate.ymd(year, month, day);
+			
 			// check public holiday by base date
-			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository
-					.getHolidaysByDate(companyId, new BigDecimal(ymdk));
+			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository.getHolidaysByDate(companyId, date);
 
 			// find by id
 			Optional<WorkMonthlySetting> workMonthlySetting = this.workMonthlySettingRepository

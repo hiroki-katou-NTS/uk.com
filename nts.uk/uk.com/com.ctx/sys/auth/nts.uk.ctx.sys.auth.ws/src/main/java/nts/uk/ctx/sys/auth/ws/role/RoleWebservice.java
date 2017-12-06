@@ -74,4 +74,10 @@ public class RoleWebservice extends WebService {
 	public List<PersonRole> find(List<String> roleIds){
 		return personInforRoleFinder.findByListRoleIds(roleIds);
 	}
+	
+	@POST
+	@Path("user/has/role/{roleType}")
+	public Boolean userHasRoleType( @PathParam("roleType") int roleType){
+		return 	personInforRoleFinder.userHasRoleType(roleType);
+	}
 }
