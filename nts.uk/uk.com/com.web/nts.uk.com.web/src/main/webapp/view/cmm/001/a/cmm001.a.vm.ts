@@ -104,10 +104,15 @@ module cmm001.a {
             self.display.subscribe((item) => {
                 if(item){
                     self.sel001Data(self.listCom());
+                    self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 }else{
-                         self.sel001Data(_.filter(self.listCom(), function(obj) {
+                    self.sel001Data(_.filter(self.listCom(), function(obj) {
                         return obj.isAbolition == 1;
                     }));
+                    if(self.sel001Data().length == 0){
+                        self.innit();
+                    }
+                    self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 }
             });
         }
@@ -123,8 +128,9 @@ module cmm001.a {
                     self.listCom([]);
                     self.innit();
                 }else{
-                    self.sel001Data(lst); 
-                    self.listCom(lst); 
+                    let listOrder = _.orderBy(lst, ["companyCode"], ["asc"]);
+                    self.sel001Data(listOrder); 
+                    self.listCom(listOrder); 
                     self.currentCompanyCode(self.sel001Data()[0].companyCode);
                     self.checkInsert(false);
                 }
@@ -239,6 +245,9 @@ module cmm001.a {
                 sysCm: any = dataSys,
                 divCm: any = dataDiv,
            } 
+           if(self.currentCompany().isAbolition() == false){
+                $('#checked2').ntsError('clear');    
+           }
             if (nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
                 return;
@@ -291,7 +300,7 @@ module cmm001.a {
             let self = this;
             // if don't have post code to find
             if(self.currentCompany().addinfor().postCd()==""){
-                $('#postal').ntsError('set', {messageId:"Msg_438", messageParams:nts.uk.resource.getText("CMM001_22")});
+                $('#postal').ntsError('set', {messageId:"Msg_438", messageParams:[nts.uk.resource.getText("CMM001_22")]});
                 nts.uk.ui.block.clear();
                 return;
             }

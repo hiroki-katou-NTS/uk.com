@@ -87,7 +87,6 @@
 				<!-- ======================= Chi tiet man hinh ben phai của màn hình A ========================== -->
 				<div class="nts-right-content" data-bind="with: currentCompany">
 					<div class="line-height flex">
-						<!--  , constraint: 'CompanyCode'}" -->
 						<div style="width: 176px;">
 							<!-- A3_1 -->
 							<div id="LBLCompanyCode"
@@ -189,7 +188,6 @@
 											<!-- 1 -->
 											<tr style="margin-top: 10px;">
 												<th colspan="1" class="th-col1" style="width: 150px">
-													<!-- , constraint: 'CorporateMyNumber'}" -->
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: true}"
 														style="margin-top: 5px;">
@@ -199,11 +197,8 @@
 												</th>
 												<th colspan="2" class="th-col2">
 													<div>
-														<!-- 
-															 immediate: true,
-															 }" -->
 														<!-- B1_2 -->
-														<input id="corporateMyNumber" tabindex="1"
+														<input id="corporateMyNumber" tabindex="17"
 															class="save-error"
 															data-bind="ntsNumberEditor: {value: taxNum, constraint: 'TaxNo', required: true, name: '#[CMM001_19]'}" />
 													</div>
@@ -223,7 +218,7 @@
 												<th colspan="2" class="th-col2">
 													<div>
 														<!-- B1_4 -->
-														<input id="presidentName" tabindex="2" class="save-error"
+														<input id="presidentName" tabindex="18" class="save-error"
 															data-bind="ntsTextEditor: {value: repname, constraint: 'RepName', required: true, name: '#[CMM001_20]'}" />
 													</div>
 												</th>
@@ -246,7 +241,7 @@
 															 immediate: true,
 															 }" -->
 														<!-- B1_6 -->
-														<input id="presidentJobTitle" tabindex="3"
+														<input id="presidentJobTitle" tabindex="19"
 															class="save-error"
 															data-bind="ntsTextEditor: {value: repJob, name: '#[CMM001_21]',
 																										constraint: 'RepJob', required: true}" />
@@ -278,15 +273,14 @@
 															 immediate: true,
 															 }" -->
 														<!-- C1_2 -->
-														<input id="postal" tabindex="1" class="save-error"
+														<input id="postal" tabindex="17" class="save-error"
 															data-bind="ntsTextEditor: {value: addinfor().postCd, name: '#[CMM001_22]',
 																								constraint: 'PostCd', required: true}"></input>
 													</div>
 												</th>
 
 												<th colspan="1">
-													<!-- data-bind="click: searchZipCode" -->
-													<button id="searchZipCode" tabindex="2"
+													<button id="searchZipCode" tabindex="18"
 														data-bind="click: $parent.search.bind($parent)">
 														<!-- C1_3 -->
 														<span class="labelRed">〒</span>#{i18n.getText('CMM001_23')}
@@ -313,7 +307,7 @@
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
 														<!-- C1_6 -->
-														<input id="address1" tabindex="3" class="save-error"
+														<input id="address1" tabindex="19" class="save-error"
 															type="text" placeholder=""
 															style="width: 200px; text-align: left; margin-bottom: 10px;"
 															data-bind="ntsTextEditor: {value: addinfor().add_1, constraint: 'Add_1',
@@ -336,7 +330,7 @@
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
 														<!-- C1_8 -->
-														<input id="address2" tabindex="4" class="save-error"
+														<input id="address2" tabindex="20" class="save-error"
 															data-name="#{i18n.getText('CMM001_26')}"
 															data-bind="ntsTextEditor: {value: addinfor().add_2, constraint: 'Add_2',
 																				required: true, name: '#[CMM001_26]'}" />
@@ -346,7 +340,7 @@
 											<!-- 6 -->
 											<tr style="margin-top: 5px;">
 												<th colspan="2" class="th-col1">
-													<!-- C1_9 --> <!--  constraint: ['AddressKana1', 'AddressKana2']}" -->
+													<!-- C1_9 --> 
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: true,}">
 														#{i18n.getText('CMM001_27')}</div>
@@ -367,7 +361,7 @@
 														<!-- 
 															 immediate: true}" -->
 														<!-- C1_11 -->
-														<input id="addressKana1" tabindex="5" class="save-error"
+														<input id="addressKana1" tabindex="20" class="save-error"
 															data-bind="ntsTextEditor: {value: addinfor().addKana_1, constraint: 'Add_Kana_1',
 															 required: true, name: '#[CMM001_25]'}" />
 													</div>
@@ -382,7 +376,7 @@
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
 														<!-- c1_13 -->
-														<input id="addressKana2" tabindex="6" class="save-error"
+														<input id="addressKana2" tabindex="21" class="save-error"
 															data-bind="ntsTextEditor: {value: addinfor().addKana_2, constraint: 'Add_Kana_2',
 																													required: true, name: '#[CMM001_26]'}" />
 													</div>
@@ -391,7 +385,7 @@
 											<!-- 9 -->
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
-													<!-- C1_14 --> <!--  constraint:'TelephoneNo'}" -->
+													<!-- C1_14 --> 
 													<div class="form-label" data-bind="ntsFormLabel:{required: true}">
 														#{i18n.getText('CMM001_28')}</div>
 												</th>
@@ -401,7 +395,7 @@
 														<!-- 
 																						immediate: true}" -->
 														<!-- C1_15 -->
-														<input id="telephoneNo" tabindex="7" class="save-error"
+														<input id="telephoneNo" tabindex="22" class="save-error"
 															data-bind="ntsTextEditor: {value: addinfor().phoneNum, constraint: 'PhoneNum',
 																			required: true, name: '#[CMM001_28]'}" />
 													</div>
@@ -419,7 +413,7 @@
 
 												<th colspan="2" class="th-col2">
 												 <input
-													id="faxNo" tabindex="8" class="save-error"
+													id="faxNo" tabindex="23" class="save-error"
 													data-bind="ntsTextEditor: {value: addinfor().faxNum, constraint: 'FaxNum',
 																required: true, name: '#[CMM001_29]'}" />
 												</th>
@@ -448,7 +442,7 @@
 														<div>
 															<!-- D1_2 -->
 															<!--  -->
-															<div class="cf1"
+															<div class="cf1" tabindex="17"
 																data-bind="ntsSwitchButton: {
 																			options: $parent.roundingRules,
 																			optionsValue: 'code',
@@ -471,7 +465,7 @@
 													<th colspan="2" class="th-col2">
 														<div>
 															<!-- D1_4 -->
-															<div class="cf1"
+															<div class="cf1" tabindex="18"
 																data-bind="ntsSwitchButton: {
 																			options: $parent.roundingRules,
 																			optionsValue: 'code',
@@ -494,7 +488,7 @@
 													<th colspan="2" class="th-col2">
 														<!-- D1_6 -->
 														<div>
-															<div class="cf1"
+															<div class="cf1" tabindex="19"
 																data-bind="ntsSwitchButton: {
 																			options: $parent.roundingRules,
 																			optionsValue: 'code',
@@ -516,7 +510,7 @@
 													<th colspan="2" class="th-col2">
 														<div class="flex">
 															<!-- D1_8 -->
-															<div class="cf1"
+															<div class="cf1" tabindex="20"
 																data-bind="ntsSwitchButton: {
 																			options: $parent.roundingRules3,
 																			optionsValue: 'code',
@@ -540,7 +534,7 @@
 													<th colspan="2" class="th-col2">
 														<div class="control-group valign-center">
 															<!-- D1_11 -->
-															<div id="termBeginMon"
+															<div id="termBeginMon" tabindex="21"
 																data-bind="ntsComboBox: {
 																			 options: $parent.itemList,
 																			 optionsValue: 'code',
