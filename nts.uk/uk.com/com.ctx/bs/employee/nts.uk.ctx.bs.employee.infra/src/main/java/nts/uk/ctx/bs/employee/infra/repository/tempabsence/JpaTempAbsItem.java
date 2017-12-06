@@ -24,7 +24,7 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 public class JpaTempAbsItem extends JpaRepository implements TempAbsItemRepository {
 	
 	private final String GET_BY_SID_DATE = "select hi from BsymtTempAbsHisItem hi"
-			+ " join in BsymtTempAbsHistory h on hi.histId = h.histId"
+			+ " inner join BsymtTempAbsHistory h on hi.histId = h.histId"
 			+ " where hi.sid = :sid and h.startDate <= :referDate and h.endDate >= :referDate";
 	
 	private final String GET_BY_HID = "select hi from BsymtTempAbsHisItem hi where hi.histId = :histId";

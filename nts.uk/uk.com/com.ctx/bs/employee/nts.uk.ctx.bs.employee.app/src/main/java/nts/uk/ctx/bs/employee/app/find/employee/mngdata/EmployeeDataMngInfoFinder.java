@@ -37,9 +37,13 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 
 	@Override
 	public EmployeeDataMngInfoDto getSingleData(PeregQuery query) {
-		EmployeeDataMngInfo domain = edMngFinder.findById(query.getPersonId(), query.getEmployeeId());
-
-		return EmployeeDataMngInfoDto.fromDomain(domain);
+		List<EmployeeDataMngInfo> domain = edMngFinder.findByEmployeeId(query.getEmployeeId());
+		
+		if (domain.isEmpty()) {
+			return null;
+		}
+		
+		return EmployeeDataMngInfoDto.fromDomain(domain.get(0));
 	}
 
 	@Override

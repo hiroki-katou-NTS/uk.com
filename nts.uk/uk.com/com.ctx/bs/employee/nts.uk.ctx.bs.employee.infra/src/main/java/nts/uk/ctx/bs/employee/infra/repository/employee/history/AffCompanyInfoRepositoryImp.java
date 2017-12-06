@@ -14,7 +14,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_NO_PARAM = String.join(" ", "SELECT c FROM BsymtAffCompanyInfo c");
 
 	private static final String SELECT_BY_HISTID = String.join(" ", SELECT_NO_PARAM,
-			"WHERE c.bsymtAffCompanyHistPk.historyId = : histId");
+			"WHERE c.bsymtAffCompanyInfoPk.historyId = :histId");
 
 	@Override
 	public void add(AffCompanyInfo domain) {

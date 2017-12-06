@@ -36,7 +36,6 @@ public class LayoutPersonInfoValueDto {
 	// index of item in list (multiple, history)
 	private Integer row;
 
-	@NonNull
 	// value of item definition
 	private Object value;
 
@@ -52,8 +51,33 @@ public class LayoutPersonInfoValueDto {
 	// contains some information of item for render control
 	private DataTypeStateDto item;
 
+	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
+			String itemCode, Integer row, Object value) {
+		this.categoryId = categoryId;
+		this.categoryCode = categoryCode;
+		this.itemDefId = itemDefId;
+		this.itemName = itemName;
+		this.itemCode = itemCode;
+		this.row = row;
+		this.value = value;
+	}
+
 	public LayoutPersonInfoValueDto() {
 
+	}
+	
+	public static LayoutPersonInfoValueDto cloneFromItemDef(String categoryCode, PerInfoItemDefDto itemDef) {
+		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
+		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+		dataObject.setCategoryCode(categoryCode);
+		dataObject.setItemDefId(itemDef.getId());
+		dataObject.setItemName(itemDef.getItemName());
+		dataObject.setItemCode(itemDef.getItemCode());
+		dataObject.setRow(0);
+		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+		dataObject.setItem(sigleItem.getDataTypeState());
+		return dataObject;
 	}
 
 	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object value) {
@@ -70,7 +94,7 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItem(sigleItem.getDataTypeState());
 		return dataObject;
 	}
-	
+
 	/**
 	 * for test
 	 */

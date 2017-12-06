@@ -158,8 +158,8 @@
 								<thead>
 										<tr>
 											<!-- A3_017: header 項目名 -->
-											<td id="COL_1" colspan="2">#{i18n.getText('CPS009_21')}</td>
-											<td id="COL_2" colspan="2">
+											<td id="COL_1">#{i18n.getText('CPS009_21')}</td>
+											<td id="COL_2">
 												<!-- A3_018: button 一括設定ボタン -->
 												<button id="A2_012" class = "small" data-bind=" click: openBDialog" tabindex="15">#{i18n.getText('CPS009_22')} </button>
 												<!-- A3_019: help button -->
@@ -260,7 +260,7 @@
 											 	<!--  date thuộc kiểu ngày tháng năm   -->
 											 	<com:ko-if bind="(dateType === 1)">
 											 		<com:ko-if bind="(isRequired() === 1)">
-														<div id="date" class="sub-input-units save-error input-units-3 " 
+														<div id="date" class="sub-input-units save-error" 
 															 data-bind="ntsDatePicker: {
 															 name:  itemName,
 															 value: dateValue, 
@@ -272,7 +272,7 @@
 													 </com:ko-if> 
 													 
 											 		<com:ko-if bind="(isRequired() === 0)">
-														<div id="date" class="sub-input-units save-error input-units-3 " 
+														<div id="date" class="sub-input-units save-error" 
 															 data-bind="ntsDatePicker: {
 															 name:  itemName,
 															 value: dateValue, 
@@ -287,7 +287,7 @@
 											 	<com:ko-if bind="(dateType === 2)">
                    									
                    									<com:ko-if bind="(isRequired() === 1)">
-	                   									<div id="date" class="sub-input-units save-error input-units-3 " 
+	                   									<div id="date" class="sub-input-units save-error" 
 	                   										data-bind="ntsDatePicker: {
 		                   									name:  itemName,
 		                   									value: dateValue, 
@@ -299,7 +299,7 @@
 	                   								 </com:ko-if> 	
 	                   								 
                    									<com:ko-if bind="(isRequired() === 0)">
-	                   									<div id="date" class="sub-input-units save-error input-units-3 " 
+	                   									<div id="date" class="sub-input-units save-error" 
 	                   										data-bind="ntsDatePicker: {
 		                   									name:  itemName,
 		                   									value: dateValue, 
@@ -314,7 +314,7 @@
 												<!-- date thuộc kiểu  năm  	 -->		
 											 	<com:ko-if bind="(dateType === 3)">
 													<com:ko-if bind="(isRequired() === 1)">
-														<div id="date" class="sub-input-units save-error input-units-3 " 
+														<div id="date" class="sub-input-units save-error" 
 															data-bind="ntsDatePicker: {
 															name:  itemName,
 															value: dateValue, 
@@ -326,7 +326,7 @@
 													</com:ko-if> 	
 																										
 													<com:ko-if bind="(isRequired() === 0)">
-														<div id="date" class="sub-input-units save-error input-units-3 " 
+														<div id="date" class="sub-input-units save-error" 
 															data-bind="ntsDatePicker: {
 															name:  itemName,
 															value: dateValue, 
@@ -342,7 +342,7 @@
 											<!-- timeitem   -->
 											<com:ko-if bind="(dataType() === 4)">
 												<com:ko-if bind="(isRequired() === 1)">
-													<input id="timeItem" class="sub-input-units save-error input-units-3 "
+													<input id="timeItem" class="sub-input-units save-error "
 														data-bind="ntsTimeWithDayEditor: {
 														name: itemName, 
 														constraint: itemCode, 
@@ -354,7 +354,7 @@
 												</com:ko-if> 	
 																							
 												<com:ko-if bind="(isRequired() === 0)">
-													<input id="timeItem" class="sub-input-units save-error input-units-3 "
+													<input id="timeItem" class="sub-input-units save-error"
 														data-bind="ntsTimeWithDayEditor: {
 														name: itemName, 
 														constraint: itemCode, 
@@ -368,7 +368,7 @@
 										<!-- 	 timepoint   -->
 											 <com:ko-if bind="(dataType() === 5)">
 											 	<com:ko-if bind="(isRequired() === 1)">
-													<input id="timePoint" class="sub-input-units save-error input-units-3 "
+													<input id="timePoint" class="sub-input-units save-error"
 															data-bind="ntsTimeWithDayEditor: { 
 															name: 'Time With Day', 
 															constraint: itemCode, 
@@ -380,7 +380,7 @@
 												</com:ko-if>
 																							 
 											 	<com:ko-if bind="(isRequired() === 0)">
-													<input id="timePoint" class="sub-input-units save-error input-units-3 "
+													<input id="timePoint" class="sub-input-units save-error"
 															data-bind="ntsTimeWithDayEditor: { 
 															name: 'Time With Day', 
 															constraint: itemCode, 
@@ -414,7 +414,7 @@
 												<com:ko-if bind="(isRequired() === 1)">
 												<div data-bind="with: numbereditor">
 									
-	 												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
+	 												<input class="sub-input-units save-error" id="number" data-bind="ntsNumberEditor: { 
 	 												 		value: value,
 															constraint: constraint,
 															option: option,
@@ -428,7 +428,7 @@
 												<com:ko-if bind="(isRequired() === 0)">
 												<div data-bind="with: numbereditor">
 									
-	 												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
+	 												<input class="sub-input-units save-error" id="number" data-bind="ntsNumberEditor: { 
 	 												 		value: value,
 															constraint: constraint,
 															option: option,
@@ -444,7 +444,7 @@
 												<com:ko-if bind="(isRequired() === 1)">
 												<div data-bind="with: numbereditor">
 													
-		 												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
+		 												<input class="sub-input-units save-error  " id="number" data-bind="ntsNumberEditor: { 
 		 														value: value,
 																constraint: constraint,
 																option: option,
@@ -458,7 +458,7 @@
 												<com:ko-if bind="(isRequired() === 0)">
 												<div data-bind="with: numbereditor">
 													
-		 												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
+		 												<input class="sub-input-units save-error " id="number" data-bind="ntsNumberEditor: { 
 		 														value: value,
 																constraint: constraint,
 																option: option,

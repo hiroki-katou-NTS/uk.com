@@ -17,11 +17,11 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
-import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
@@ -63,7 +63,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		AddEmployeeCommand command = context.getCommand();
 
-		List<SettingItemDto> dataList = this.layoutFinder.loadAllItemByCreateType(command.getCreateType(),
+		List<SettingItemDto> dataList = this.layoutFinder.itemListByCreateType(command.getCreateType(),
 				command.getInitSettingId(), command.getHireDate(), command.getEmployeeCopyId());
 
 		// merge data from client with dataList
@@ -88,7 +88,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		categoryCodeList.forEach(categoryCd -> {
 
-			inputs.add(createNewItemsByCategoryByCtgCode(dataList, categoryCd));
+			inputs.add(createNewItemsByCategoryCode(dataList, categoryCd));
 
 		});
 
@@ -135,8 +135,6 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		String currentEmpId = AppContexts.user().employeeId();
 
-		String employeeCd = command.getEmployeeCode();
-
 		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getLastRegHistory(currentEmpId);
 
 		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(employeeId, companyId, GeneralDate.today(),
@@ -166,17 +164,17 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		dataList.forEach(x -> {
 
 			x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
-					getItemValueById(inputs, x.getItemDefId())));
+					getItemValueById(inputs, x.getItemCode())));
 		});
 
 	}
 
-	private Object getItemValueById(List<ItemsByCategory> inputs, String itemDefId) {
+	private Object getItemValueById(List<ItemsByCategory> inputs, String itemCode) {
 		Object returnString = null;
 
 		for (ItemsByCategory ctg : inputs) {
 
-			Optional<ItemValue> optItem = ctg.getItems().stream().filter(x -> x.definitionId().equals(itemDefId))
+			Optional<ItemValue> optItem = ctg.getItems().stream().filter(x -> x.itemCode().equals(itemCode))
 					.findFirst();
 			if (optItem.isPresent()) {
 				returnString = optItem.get().value();
@@ -188,7 +186,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 	}
 
-	private ItemsByCategory createNewItemsByCategoryByCtgCode(List<SettingItemDto> dataList, String categoryCd) {
+	private ItemsByCategory createNewItemsByCategoryCode(List<SettingItemDto> dataList, String categoryCd) {
 
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {

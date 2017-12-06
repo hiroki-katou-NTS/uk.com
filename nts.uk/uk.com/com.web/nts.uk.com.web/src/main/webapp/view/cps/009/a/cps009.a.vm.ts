@@ -784,6 +784,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     }
                 }
 
+                self.dateValue.subscribe(x => {
+                    if (!nts.uk.ui.errors.hasError()) {
+                        $('.bundled-errors-alert .ntsClose').trigger('click');
+                    }
+                });
             }
 
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
@@ -866,6 +871,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
 
+            self.stringValue.subscribe(x => {
+                if (!nts.uk.ui.errors.hasError()) {
+                    $('.bundled-errors-alert .ntsClose').trigger('click');
+                }
+            });
 
         }
     }
