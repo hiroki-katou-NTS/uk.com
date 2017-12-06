@@ -89,7 +89,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 				if (employeeAndClosure.getLock() == 0) {
 					this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-							empCalAndSumExecLogID, reCreateAttr);	
+							empCalAndSumExecLogID, reCreateAttr);
 				} 
 				if (asyncContext.hasBeenRequestedToCancel()) {
 					asyncContext.finishedAsCancelled();

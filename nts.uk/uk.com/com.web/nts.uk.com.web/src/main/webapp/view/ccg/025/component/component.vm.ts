@@ -28,13 +28,13 @@ module nts.uk.com.view.ccg025.a.component {
                     self.currentCode = ko.observable("");
                 if(self.setting.multiple){
                     self.columns = ko.observableArray([
-                        { headerText: getText("CCG025_3"), prop: 'roleId', width: 1,hirren : true },
+                        { headerText: getText("CCG025_3"), prop: 'roleId', width: 100,hidden : true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
                         { headerText: getText("CCG025_4"), prop: 'name',  width: 180 }
                     ]);
                 }else{
                     self.columns = ko.observableArray([
-                        { headerText: getText("CCG025_3"), prop: 'roleId', width: 100,hirren : true },
+                        { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden : true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
                         { headerText: getText("CCG025_4"), prop: 'name',  width: 200 }
                     ]);    

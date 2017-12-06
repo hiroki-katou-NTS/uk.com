@@ -553,57 +553,74 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
 						// 所定時間帯を取得する - TODO
 						// waiting newwave
-						// PredetemineTimeSet predetemineTimeSet = null;
-						// 所定時間設定を自動打刻セット詳細に入れる
-						// 所定時間帯．時間帯を順次確認する
-						// predetemineTimeSet.getPrescribedTimezoneSetting().getTimezone().forEach(timezone
-						// -> {
-						// if (timezone.getUseAtr() == UseSetting.USE) {
-						// TimeLeavingWork timeLeavingWorkTemp = new
-						// TimeLeavingWork();
-						// TimeActualStamp attendanceStampTemp = new
-						// TimeActualStamp();
-						// TimeActualStamp leaveStampTemp = new
-						// TimeActualStamp();
-						//
-						// // param : int workTimeMethodSet, String
-						// // companyId, String siftCode, int
-						// // superitory
-						// // param : 0, companyId,
-						// //
-						// workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
-						// // superitory
-						// // TODO - requetsList newwave
-						// InstantRounding instantRounding = new
-						// InstantRounding();
-						// // 出勤系時刻を丸める (làm tròn thời gian 出勤)
-						// int attendanceTimeAfterRouding =
-						// this.roudingTime(timezone.getStart().v(),
-						// instantRounding.getFontRearSection().value,
-						// instantRounding.getRoundingTimeUnit().value);
-						// int leaveTimeAfterRounding =
-						// this.roudingTime(timezone.getEnd().v(),
-						// instantRounding.getFontRearSection().value,
-						// instantRounding.getRoundingTimeUnit().value);
-						//
-						// timeLeavingWorkTemp.setWorkNo(new WorkNo(new
-						// BigDecimal(timezone.getWorkNo())));
-						// attendanceStampTemp.setStamp(
-						// new WorkStamp(new
-						// TimeWithDayAttr(attendanceTimeAfterRouding),
-						// timezone.getStart(),
-						// new
-						// WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
-						// automaticStampSetDetailDto.getAttendanceStamp()));
-						// leaveStampTemp.setStamp(new WorkStamp(new
-						// TimeWithDayAttr(leaveTimeAfterRounding),
-						// timezone.getEnd(), new
-						// WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
-						// automaticStampSetDetailDto.getLeavingStamp()));
-						//
-						// timeLeavingWorks.add(timeLeavingWorkTemp);
-						// }
-						// });
+						
+						// TODO - Fake Data
+						TimeLeavingWork timeLeavingWorkTemp = new TimeLeavingWork();
+						TimeActualStamp attendanceStamp = new TimeActualStamp();
+						TimeActualStamp leaveStamp = new TimeActualStamp();
+						
+						attendanceStamp.setStamp(
+								new WorkStamp(new TimeWithDayAttr(100), new TimeWithDayAttr(100),
+										new WorkLocationCD("0001"), automaticStampSetDetailDto.getAttendanceStamp()));
+						leaveStamp.setStamp(
+								new WorkStamp(new TimeWithDayAttr(100), new TimeWithDayAttr(100),
+										new WorkLocationCD("0001"), automaticStampSetDetailDto.getLeavingStamp()));
+
+						timeLeavingWorkTemp.setAttendanceStamp(attendanceStamp);
+						timeLeavingWorkTemp.setLeaveStamp(leaveStamp);
+						timeLeavingWorks.add(timeLeavingWorkTemp);
+						
+//						 PredetemineTimeSet predetemineTimeSet = null;
+//						 所定時間設定を自動打刻セット詳細に入れる
+//						 所定時間帯．時間帯を順次確認する
+//						 predetemineTimeSet.getPrescribedTimezoneSetting().getTimezone().forEach(timezone
+//						 -> {
+//						 if (timezone.getUseAtr() == UseSetting.USE) {
+//						 TimeLeavingWork timeLeavingWorkTemp = new
+//						 TimeLeavingWork();
+//						 TimeActualStamp attendanceStampTemp = new
+//						 TimeActualStamp();
+//						 TimeActualStamp leaveStampTemp = new
+//						 TimeActualStamp();
+						
+						 // param : int workTimeMethodSet, String
+						 // companyId, String siftCode, int
+						 // superitory
+						 // param : 0, companyId,
+						 //
+//						 workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
+						 // superitory
+						 // TODO - requetsList newwave
+//						 InstantRounding instantRounding = new
+//						 InstantRounding();
+						 // 出勤系時刻を丸める (làm tròn thời gian 出勤)
+//						 int attendanceTimeAfterRouding =
+//						 this.roudingTime(timezone.getStart().v(),
+//						 instantRounding.getFontRearSection().value,
+//						 instantRounding.getRoundingTimeUnit().value);
+//						 int leaveTimeAfterRounding =
+//						 this.roudingTime(timezone.getEnd().v(),
+//						 instantRounding.getFontRearSection().value,
+//						 instantRounding.getRoundingTimeUnit().value);
+						
+//						 timeLeavingWorkTemp.setWorkNo(new WorkNo(new
+//						 BigDecimal(timezone.getWorkNo())));
+//						 attendanceStampTemp.setStamp(
+//						 new WorkStamp(new
+//						 TimeWithDayAttr(attendanceTimeAfterRouding),
+//						 timezone.getStart(),
+//						 new
+//						 WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
+//						 automaticStampSetDetailDto.getAttendanceStamp()));
+//						 leaveStampTemp.setStamp(new WorkStamp(new
+//						 TimeWithDayAttr(leaveTimeAfterRounding),
+//						 timezone.getEnd(), new
+//						 WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
+//						 automaticStampSetDetailDto.getLeavingStamp()));
+//						
+//						 timeLeavingWorks.add(timeLeavingWorkTemp);
+//						 }
+//						 });
 					}
 				}
 			}

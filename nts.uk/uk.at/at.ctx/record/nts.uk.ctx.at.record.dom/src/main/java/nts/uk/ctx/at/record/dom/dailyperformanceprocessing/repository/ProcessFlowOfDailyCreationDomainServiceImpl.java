@@ -50,7 +50,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		TaskDataSetter dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("dailyCreateCount", 0);
 		dataSetter.setData("dailyCreateStatus", ExecutionStatus.PROCESSING.nameId);
-		dataSetter.setData("dailyCreateHasError", "");
+		dataSetter.setData("dailyCreateHasError", " ");
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
