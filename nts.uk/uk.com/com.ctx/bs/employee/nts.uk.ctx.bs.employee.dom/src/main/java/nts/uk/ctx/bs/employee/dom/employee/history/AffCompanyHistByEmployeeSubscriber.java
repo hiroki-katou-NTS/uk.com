@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.employee.history;
+/*package nts.uk.ctx.bs.employee.dom.employee.history;
 
 import lombok.val;
 import nts.arc.layer.dom.event.DomainEventSubscriber;
@@ -16,4 +16,4 @@ public class AffCompanyHistByEmployeeSubscriber implements DomainEventSubscriber
 			//item.changeSpan(newSpan);
 		}
 	}
-}
+}*/
