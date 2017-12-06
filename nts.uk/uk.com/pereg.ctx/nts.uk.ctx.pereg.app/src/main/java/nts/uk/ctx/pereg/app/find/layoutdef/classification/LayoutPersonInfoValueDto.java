@@ -139,8 +139,10 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setRow(itemDef.getRow());
 		dataObject.setValue(value);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
-		dataObject.setItem(sigleItem.getDataTypeState());
+		if(itemDef.getItemDefType() == 2){
+			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+			dataObject.setItem(sigleItem.getDataTypeState());
+		}
 		dataObject.setActionRole(itemDef.getActionRole());
 		return dataObject;
 	}

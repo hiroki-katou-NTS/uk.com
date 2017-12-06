@@ -56,21 +56,33 @@ public class MappingFactory {
 
 	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, Map<String, Object> dtoFieldValue,
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
-
+		
 		lstPerInfoItemDef.forEach(item -> {
-			setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);	
+			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+			if(item.getItemDefType() == 2)
+				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+			else{
+				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+				item.getLstChildItemDef().forEach(x -> setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoFieldValue));
+			}
+			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		});
-
+		
 	}
 
-	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item,
-			Map<String, Object> dtoFieldValue) {
-		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+	private static void setLayoutPersonInfoClsDto(LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue){
 		Object value = dtoFieldValue.get(item.getItemCode());		
 		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
-		empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 	}
+//	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item,
+//			Map<String, Object> dtoFieldValue) {
+//		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+//		Object value = dtoFieldValue.get(item.getItemCode());		
+//		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
+//		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
+//		empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+//	}
 
 	/**
 	 * get dto value

@@ -258,8 +258,7 @@ public class PeregProcessor {
 	private void setEmpInfoItemData(EmpMaintLayoutDto empMaintLayoutDto, String recordId, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		List<EmpOptionalDto> lstCtgItemOptionalDto = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-		if(lstCtgItemOptionalDto.size() > 0)
-			LayoutMapping.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
+		LayoutMapping.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 	
 	/**
