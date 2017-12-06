@@ -46,7 +46,6 @@ public class PerInfoItemDefForLayoutDto {
 	
 	private int itemDefType;
 	
-	private List<PerInfoItemDefForLayoutDto> lstChildItemDef;
 
 	private int isRequired;
 

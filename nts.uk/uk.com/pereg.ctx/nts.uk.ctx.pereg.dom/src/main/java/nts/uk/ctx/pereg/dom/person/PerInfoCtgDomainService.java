@@ -84,15 +84,8 @@ public class PerInfoCtgDomainService {
 	 * @return List<PersonInfoItemDefinition>
 	 */
 	private List<PersonInfoItemDefinition> getPerInfoItemDefWithHis(ParamForGetPerItem paramObject){	
-		List<PersonInfoItemDefinition> lstPersonInfoItemDefinition = perInfoItemDefRepositoty
+		return perInfoItemDefRepositoty
 				.getAllPerInfoItemDefByCategoryId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getContractCode());
-		if(paramObject.getPersonInfoCategory().getIsFixed() == IsFixed.NOT_FIXED) return lstPersonInfoItemDefinition;
-		DateRangeItem dateRangeItem = this.perInfoCategoryRepositoty
-				.getDateRangeItemByCtgId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId());
-		return lstPersonInfoItemDefinition
-				.stream().filter(x -> {
-					return x.getPerInfoItemDefId() == dateRangeItem.getDateRangeItemId();
-				}).collect(Collectors.toList());
 	}
 
 }
