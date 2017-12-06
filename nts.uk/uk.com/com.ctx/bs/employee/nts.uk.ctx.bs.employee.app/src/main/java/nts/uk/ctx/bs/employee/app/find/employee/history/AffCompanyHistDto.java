@@ -1,15 +1,15 @@
 package nts.uk.ctx.bs.employee.app.find.employee.history;
 
-import lombok.Data;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
-@Data
-public class AffCompanyHistDto {
-	private String personId;
-	private String employeeId;
-	private String historyId;
+@Setter
+public class AffCompanyHistDto extends PeregDomainDto {
+	@PeregItem("IS00020")
+	private GeneralDate jobEntryDate;
 
-	private boolean destinationData;
-	private GeneralDate startDate;
-	private GeneralDate endDate;
+	@PeregItem("IS00021")
+	private GeneralDate retirementDate;
 }
