@@ -44,7 +44,7 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 	protected void handle(CommandHandlerContext<UpdateAffiliationDepartmentCommand> context) {
 		val command = context.getCommand();
 		
-		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getAffDepartmentHistorytByEmployeeId(command.getEmployeeId());
+		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
 		if (!itemHist.isPresent()){
 			throw new RuntimeException("Invalid AffDepartmentHistory");
 		}

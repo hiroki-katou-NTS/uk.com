@@ -76,7 +76,7 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getAffDepartmentHistorytByEmployeeId(query.getEmployeeId());
+		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getByEmployeeId(query.getEmployeeId());
 		if (affDeptHist.isPresent())
 			return affDeptHist.get().getHistoryItems().stream()
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))

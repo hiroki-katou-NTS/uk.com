@@ -16,8 +16,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements AffDepartmentHistoryRepository{
-	private final String QUERY_GET_AFFDEPARTMENT_BYSID = "SELECT ad FROM BsymtAffiDepartmentHist ad "
-			+ "WHERE ad.sid = :sid ORDER BY ad.strDate";
+	private final String QUERY_GET_AFFDEPARTMENT_BYSID = "SELECT ad FROM BsymtAffiDepartmentHist ad"
+			+ " WHERE ad.sid = :sid ORDER BY ad.strDate";
 	
 	private static final String SELECT_BY_EMPID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate <= ad.endDate";
@@ -36,7 +36,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	}
 	
 	@Override
-	public Optional<AffDepartmentHistory> getAffDepartmentHistorytByEmployeeId(String employeeId) {
+	public Optional<AffDepartmentHistory> getByEmployeeId(String employeeId) {
 		
 		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(QUERY_GET_AFFDEPARTMENT_BYSID,BsymtAffiDepartmentHist.class)
 				.setParameter("sid", employeeId).getList();

@@ -58,17 +58,17 @@ public class AddAffClassCommandHandler
 		String companyId = AppContexts.user().companyId();
 		// add history
 		String newHistoryId = IdentifierUtil.randomUniqueId();
-		DateHistoryItem dateItem = new DateHistoryItem(newHistoryId,
-				new DatePeriod(command.getStartDate(), command.getEndDate()));
+		
 		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(command.getEmployeeId());
-		AffClassHistory_ver1 history = null;
+		
+		AffClassHistory_ver1 history = new AffClassHistory_ver1(companyId, command.getEmployeeId(), new ArrayList<>());
 		if (historyOption.isPresent()) {
 			history = historyOption.get();
-		} else {
-			history = new AffClassHistory_ver1(companyId, command.getEmployeeId(), new ArrayList<>());
 		}
+		DateHistoryItem dateItem = new DateHistoryItem(newHistoryId, new DatePeriod(command.getStartDate(), command.getEndDate()));
 		history.add(dateItem);
 		affClassHistoryRepositoryService.add(history);
+		
 		// add history item
 		AffClassHistItem_ver1 histItem = AffClassHistItem_ver1.createFromJavaType(command.getEmployeeId(), newHistoryId,
 				command.getClassificationCode());

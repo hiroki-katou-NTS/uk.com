@@ -51,16 +51,13 @@ public class AddAffiliationDepartmentCommandHandler extends CommandHandlerWithRe
 		
 		String newHistId = IdentifierUtil.randomUniqueId();
 		
-		DateHistoryItem dateItem = new DateHistoryItem(newHistId, new DatePeriod(command.getStartDate(), command.getEndDate()));
+		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
 		
-		AffDepartmentHistory itemToBeAdded = null;
-		
-		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getAffDepartmentHistorytByEmployeeId(command.getEmployeeId());
+		AffDepartmentHistory itemToBeAdded = new AffDepartmentHistory(companyId, command.getEmployeeId(),new ArrayList<>());
 		if (itemHist.isPresent()){
 			itemToBeAdded = itemHist.get();
-		} else {
-			itemToBeAdded = new AffDepartmentHistory(companyId, command.getEmployeeId(),new ArrayList<>());
 		}
+		DateHistoryItem dateItem = new DateHistoryItem(newHistId, new DatePeriod(command.getStartDate(), command.getEndDate()));
 		itemToBeAdded.add(dateItem);
 		
 		affDepartmentHistoryService.add(itemToBeAdded);
