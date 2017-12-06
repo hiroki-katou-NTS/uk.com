@@ -15,7 +15,7 @@ public class FamilyMemberFinder implements PeregFinder<FamilyMemberDto>{
 
 	@Override
 	public String targetCategoryCode() {
-		return "CS00004";
+		return "";
 	}
 
 	@Override
