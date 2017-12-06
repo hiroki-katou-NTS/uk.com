@@ -3,11 +3,7 @@
  */
 package nts.uk.ctx.at.auth.dom.wplmanagementauthority;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 
 /**

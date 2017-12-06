@@ -5,14 +5,15 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
-import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetailSetMemento;
 
 /**
  * The Class FlowWorkRestSettingDetailDto.
  */
 @Getter
-@Setter
-public class FlowWorkRestSettingDetailDto {
+public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSetMemento {
 
 	/** The flow rest setting. */
 	private FlowRestSetDto flowRestSetting;
@@ -21,6 +22,41 @@ public class FlowWorkRestSettingDetailDto {
 	private FlowFixedRestSetDto flowFixedRestSetting;
 
 	/** The use plural work rest time. */
-	private boolean usePluralWorkRestTime;	
-	
+	private boolean usePluralWorkRestTime;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * FlowWorkRestSettingDetailSetMemento#setFlowRestSetting(nts.uk.ctx.at.
+	 * shared.dom.worktime.common.FlowRestSet)
+	 */
+	@Override
+	public void setFlowRestSetting(FlowRestSet set) {
+		set.saveToMemento(this.flowRestSetting);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * FlowWorkRestSettingDetailSetMemento#setFlowFixedRestSetting(nts.uk.ctx.at
+	 * .shared.dom.worktime.common.FlowFixedRestSet)
+	 */
+	@Override
+	public void setFlowFixedRestSetting(FlowFixedRestSet set) {
+		set.saveToMemento(this.flowFixedRestSetting);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * FlowWorkRestSettingDetailSetMemento#setUsePluralWorkRestTime(boolean)
+	 */
+	@Override
+	public void setUsePluralWorkRestTime(boolean val) {
+		this.usePluralWorkRestTime = val;
+	}
+
 }

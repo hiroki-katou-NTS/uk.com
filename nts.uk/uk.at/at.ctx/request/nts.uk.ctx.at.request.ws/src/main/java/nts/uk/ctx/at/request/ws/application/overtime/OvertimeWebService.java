@@ -81,14 +81,14 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public void update(UpdateOvertimeCommand command) {
-		this.updateOvertimeCommandHandler.handle(command);
+	public List<String> update(UpdateOvertimeCommand command) {
+		return this.updateOvertimeCommandHandler.handle(command);
 	}
 	
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParam param) {
-		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD);
+		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr);
 	}
 }
 
@@ -103,4 +103,5 @@ class RecordWorkParam {
 	public String employeeID; 
 	public String appDate;
 	public String siftCD;
+	public int prePostAtr;
 }

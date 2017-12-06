@@ -54,6 +54,9 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private ApproveAcceptedRepository approveAcceptedRepository;
 	
 	@Inject
+	private ApplicationRepository applicationRepository;
+	
+	@Inject
 	private MailSender mailsender;
 	
 	@Override
@@ -223,6 +226,27 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		}
 		
 		
+	}
+	@Override
+	public List<String> getListApprover(String companyID, String appID) {
+		List<String> listApprover = new ArrayList<String>();
+		Optional<Application> opApplication = applicationRepository.getAppById(companyID, appID);
+		if(!opApplication.isPresent()){
+			return listApprover;
+		}
+		Application application = opApplication.get();
+		application.getListPhase().stream().forEach(phase ->{
+			phase.getListFrame().stream().forEach(frame -> {
+				frame.getListApproveAccepted().stream().forEach(accepted -> {
+					if(Strings.isNotBlank(accepted.getRepresenterSID())){
+						listApprover.add(accepted.getRepresenterSID());
+					} else {
+						listApprover.add(accepted.getApproverSID());
+					}
+				});
+			});
+		});
+		return listApprover;
 	}
 
 }

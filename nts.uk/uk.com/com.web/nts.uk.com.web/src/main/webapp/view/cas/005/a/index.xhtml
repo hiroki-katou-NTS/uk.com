@@ -16,10 +16,17 @@
 			<com:scriptfile path="cas005.a.start.js" />
 			<com:scriptfile path="cas005.a.vm.js" />
 			<com:scriptfile path="cas005.a.service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.auth.dom.role.RoleCode
+				nts.uk.ctx.sys.auth.dom.role.RoleName
+			</com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.ctx.sys.auth.dom.role.RoleType
 				nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange
+				<!-- nts.uk.ctx.at.auth.dom.employmentrole.EmployeeRefRange
+				nts.uk.ctx.at.auth.dom.employmentrole.ScheduleEmployeeRef -->
 			</com:EnumScript>
+			<!--EmployeeReferenceRange 6,EmployeeRefRange 2 8,ScheduleEmployeeRef 4 -->
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -52,12 +59,12 @@
 						<tr>
 							<td>
 								<div style="padding-right: 20px; padding-bottom: 5px;"
-									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_30')}</div>
+									data-bind="ntsFormLabel: {required: true,constraint:['RoleCode', 'RoleName'] }">#{i18n.getText('CAS005_30')}</div>
 							</td>
 							<td><input id="roleTypeCd" style="width: 70px;"
-								data-bind="ntsTextEditor: {value: roleCode}" /><input
+								data-bind="ntsTextEditor: {value: roleCode, constraint: 'RoleCode',required: true}" /><input
 								style="margin-left: 11px;"
-								data-bind="ntsTextEditor:  {value: roleName}" /></td>
+								data-bind="ntsTextEditor:  {value: roleName, constraint: 'RoleName',required: true}" /></td>
 						</tr>
 						<!-- row 2 -->
 						<tr>
@@ -165,7 +172,7 @@
 							<td>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-												options: listEmployeeReferenceRange,
+												options: listEmployeeReferenceRange ,
 												optionsValue: 'value',
 												value: scheduleScreen,
 												optionsText: 'name',
@@ -229,17 +236,36 @@
 						<!-- row 11 -->
 						<tr>
 							<td colspan="2">
-								<table id="multi-list"
+								<table id="table-infor">
+									<thead>
+										<tr class="bg-green">
+											<!-- I2_2 3 4 5 6 7 8 9 -->
+											<th style="width: 290px;">#{i18n.getText('KDW001_79')}</th>
+											<th style="width: 70px;">#{i18n.getText('KDW001_20')}</th>
+											<th style="width: 70px;">#{i18n.getText('KDW001_49')}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<com:ko-foreach bind="listWorkPlaceFunction">
+											<tr>
+												<td>1</td>
+												<td>2</td>
+												<td>3</td>
+											</tr>
+										</com:ko-foreach>
+									</tbody>
+								</table>
+								<!-- <table id="multi-list"
 									data-bind="ntsGridList: {
 										height: 320,
-										options: items ,
+										options: listWorkPlaceFunction ,
 										optionsValue: 'functionNo',
 										columns: columns,
 										multiple: true,
 										value: currentCodeList,
 										rows : 3
 									}">
-								</table>
+								</table> -->
 							</td>
 						</tr>
 

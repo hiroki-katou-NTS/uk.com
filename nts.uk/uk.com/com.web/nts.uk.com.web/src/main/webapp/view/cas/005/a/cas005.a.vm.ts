@@ -22,14 +22,19 @@ module nts.uk.com.view.cas005.a {
             //table
             currentCodeList: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
-            items: KnockoutObservableArray<model.WorkPlaceFunction>;
+            listWorkPlaceFunction: KnockoutObservableArray<model.WorkPlaceFunction>;
+            listWorkPlaceAuthority : KnockoutObservableArray<any>; 
+            listWpkAuthoritySelect : KnockoutObservableArray<any>;
             //table-right
             component: ccg.component.viewmodel.ComponentModel;
             
             //table-left
             //enum
             listEnumRoleType  :KnockoutObservableArray<any>;
-            listEmployeeReferenceRange  :KnockoutObservableArray<any>;
+            listEmployeeReferenceRange  :KnockoutObservableArray<any>; //row 6
+            listEmployeeRefRange  :KnockoutObservableArray<any>; //row 2 8
+            listScheduleEmployeeRef :KnockoutObservableArray<any>; //row 4
+            
             selectedEmployeeReferenceRange: KnockoutObservable<string>;
             bookingScreen :  KnockoutObservable<string>;
             scheduleScreen :  KnockoutObservable<string>;
@@ -48,6 +53,8 @@ module nts.uk.com.view.cas005.a {
                 //table enum RoleType,EmployeeReferenceRange
                 self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
                 self.listEmployeeReferenceRange = ko.observableArray(__viewContext.enums.EmployeeReferenceRange);
+//                self.listEmployeeRefRange = ko.observableArray(__viewContext.enums.EmployeeRefRange);
+//                self.listScheduleEmployeeRef = ko.observableArray(__viewContext.enums.EmployeeRefRange);
                 self.selectedEmployeeReferenceRange = ko.observable("");
                 self.bookingScreen = ko.observable("");
                 self.scheduleScreen = ko.observable("");
@@ -77,7 +84,9 @@ module nts.uk.com.view.cas005.a {
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
                 //table
-                self.items = ko.observableArray([]);
+                self.listWorkPlaceFunction = ko.observableArray([]);
+                self.listWorkPlaceAuthority =  ko.observableArray([]);
+                self.listWpkAuthoritySelect = ko.observableArray([]);
                 
                 self.columns = ko.observableArray([
                     { headerText: 'Name', key: 'functionNo', width: 100, hidden: true },
@@ -106,6 +115,14 @@ module nts.uk.com.view.cas005.a {
                         self.assignAtr(item.assignAtr);   
                         self.employeeReferenceRange(item.employeeReferenceRange);  
                         self.roleCode(item.roleCode); 
+                        self.listWpkAuthoritySelect([]);
+                        for(let i = 0;i< self.listWorkPlaceAuthority().length;i++){
+                            if(self.listWorkPlaceAuthority()[i].roleId ==  value)
+                                self.listWpkAuthoritySelect.push(self.listWorkPlaceAuthority()[i]); 
+                        }
+                        //web menu
+                        self.getRoleByRoleTiesById(value);
+                        
                     }else{
                         self.roleName('');
                         self.assignAtr(1);
@@ -125,6 +142,12 @@ module nts.uk.com.view.cas005.a {
                     self.roleName(selectRoleCodeByIndex.name);
                     self.assignAtr(selectRoleCodeByIndex.assignAtr);
                     self.employeeReferenceRange(selectRoleCodeByIndex.employeeReferenceRange);
+                    self.listWpkAuthoritySelect([]);
+                    for(let i = 0;i< self.listWorkPlaceAuthority().length;i++){
+                            if(self.listWorkPlaceAuthority()[i].roleId ==  selectRoleCodeByIndex.roleId)
+                                self.listWpkAuthoritySelect.push(self.listWorkPlaceAuthority()[i]); 
+                        }
+                    self.getRoleByRoleTiesById(selectRoleCodeByIndex.roleId);
                 }
                 else{
                     self.roleCode(null);
@@ -147,8 +170,8 @@ module nts.uk.com.view.cas005.a {
                 self.isRegister(true);
                 self.isDelete(true);
                 self.getAllWorkPlaceFunction();
+                self.getAllWorkPlaceAuthority();
                 self.component.startPage().done(function(){
-                    self.selectRoleCodeByIndex(0);  
                     self.listRole(self.component.listRole());
                     self.getListWebMenu();
                     dfd.resolve();    
@@ -163,7 +186,39 @@ module nts.uk.com.view.cas005.a {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getAllWorkPlaceFunction().done(function(data){
-                    self.items(data);
+                    self.listWorkPlaceFunction(data);
+                    dfd.resolve(data);  
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                dfd.resolve(); 
+            }
+            /**
+             * function getRoleByRoleTiesById
+             */
+            getRoleByRoleTiesById(roleId : string){
+                let self = this;
+                let dfd = $.Deferred();            
+                service.getRoleByRoleTiesById(roleId).done(function(data){
+                    self.selectWebMenu(data.webMenuCd);   
+                    dfd.resolve(data);    
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                dfd.resolve(); 
+            }
+            
+            /**
+             * function  get AllWorkPlace Authority
+             */
+            getAllWorkPlaceAuthority(){
+                let self = this;
+                let dfd = $.Deferred();
+                service.getAllWorkPlaceAuthority().done(function(data){
+                    self.listWorkPlaceAuthority(data);
+                    self.selectRoleCodeByIndex(0);
                     dfd.resolve(data);  
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -191,7 +246,10 @@ module nts.uk.com.view.cas005.a {
                 let self =this;
                 self.isRegister(true);
                 self.isDelete(true);
-                self.selectRoleCodeByIndex(0);    
+                if (!$(".nts-input").ntsError("hasError")){
+                    self.selectRoleCodeByIndex(0);    
+                }
+                    
             }
             /**
              * btn delete
@@ -235,6 +293,7 @@ module nts.uk.com.view.cas005.a {
 
     //module model
     export module model {
+        //class WorkPlaceFunction
         export class WorkPlaceFunction {
             functionNo: number;
             displayName: string;
@@ -248,9 +307,79 @@ module nts.uk.com.view.cas005.a {
                 this.description = description;
                 this.initialValue = initialValue;
             }
-        }
-
-
+                
+        }//end class WorkPlaceFunction
+                
+        //class RoleCas005Command
+        export class RoleCas005Command{
+            roleId : string;
+            roleCode : string;
+            roleType : number;
+            employeeReferenceRange : number;
+            name : string;
+            contractCode : string;
+            assignAtr :number;
+            companyId: string;
+            //RoleByRoleTies
+            webMenuCd : string;
+            // class :就業ロール
+            scheduleEmployeeRef : number;
+            bookEmployeeRef : number;
+            employeeRefSpecAgent : number;
+            presentInqEmployeeRef : number;
+            futureDateRefPermit : number;
+            //WorkPlaceAuthority
+            listWorkPlaceAuthority : Array<WorkPlaceAuthorityCommand>;
+            constructor(
+                roleCode : string,
+                roleType : number,
+                employeeReferenceRange : number,
+                name : string,
+                assignAtr :number,
+                //RoleByRoleTies
+                webMenuCd : string,
+                // class :就業ロール
+                scheduleEmployeeRef : number,
+                bookEmployeeRef : number,
+                employeeRefSpecAgent : number,
+                presentInqEmployeeRef : number,
+                futureDateRefPermit : number,
+                //WorkPlaceAuthority
+                listWorkPlaceAuthority : Array<WorkPlaceAuthorityCommand>){
+                    this.roleCode = roleCode;
+                    this.roleType = roleType;
+                    this.employeeReferenceRange = employeeReferenceRange;
+                    this.name = name;
+                    this.assignAtr = assignAtr;
+                    this.webMenuCd = webMenuCd;
+                    this.scheduleEmployeeRef = scheduleEmployeeRef;
+                    this.bookEmployeeRef = bookEmployeeRef;
+                    this.employeeRefSpecAgent = employeeRefSpecAgent;
+                    this.presentInqEmployeeRef = presentInqEmployeeRef;
+                    this.futureDateRefPermit = futureDateRefPermit;
+                    this.listWorkPlaceAuthority = listWorkPlaceAuthority;
+            }
+            
+        }//end class RoleCas005Command      
+        
+                
+        //class WorkPlaceAuthorityCommand
+        export class WorkPlaceAuthorityCommand{
+            roleId : string;
+            companyId : string;
+            functionNo : number;
+            availability : boolean; 
+            constructor(roleId : string,
+                companyId : string,
+                functionNo : number,
+                availability : boolean){
+                    this.roleId = roleId;
+                    this.companyId = companyId;
+                    this.functionNo = functionNo;
+                    this.availability = availability;
+            }
+        }//end class WorkPlaceAuthorityCommand        
+        
     }//end module model
 
 }//end module

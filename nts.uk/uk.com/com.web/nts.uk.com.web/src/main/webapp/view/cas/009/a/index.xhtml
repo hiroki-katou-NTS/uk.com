@@ -24,16 +24,17 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="new"  tabindex="1">#{i18n.getText('CAS009_3')}</button>
-					<button id="registration" class="proceed" tabindex="2">#{i18n.getText('CAS009_4')}</button>
-					<button id="delete"  class="danger" tabindex="3">#{i18n.getText('CAS009_5')}</button>
-					<button id="reference" tabindex="4">#{i18n.getText('CAS009_6')}</button>
+					<button id="new" data-bind="click: createNew" tabindex="1">#{i18n.getText('CAS009_3')}</button>
+					<button id="registration" data-bind ="click: save" class="proceed" tabindex="2">#{i18n.getText('CAS009_4')}</button>
+					<button id="delete" data-bind ="click: remove, disable: component.currentCode()==''" class="danger" tabindex="3">#{i18n.getText('CAS009_5')}</button>
+					<button id="reference" data-bind="enable: enableDetail" tabindex="4">#{i18n.getText('CAS009_6')}</button>
 				</div>
 			</div>
 			<div id="contents-area" >
 				<div class="container">
-					<div id="left-content">
-						<ui:include src="../../../ccg/025/component/index.xhtml" />
+					<div id="left-content" data-bind="with : component ">
+						<div id='text_list' >#{i18n.getText('CAS009_7')}</div>
+						<div id='list_role'><ui:include src="../../../ccg/025/component/index.xhtml" /> </div>						
 					</div>
 					
 					<div id="right-content" >
@@ -48,7 +49,7 @@
 			                                 name: '#[CAS009_11]',
 			                                 constraint: 'RoleCode',
 			                                 value: roleCode,
-			                                 required: true}"/>
+			                                 required: true}, hasFocus: isSelected, disable: roleId()!=''"/>
 										<input tabindex="6" id="roleName"
 			                                 data-bind="ntsTextEditor: {
 			                                 name: '#[CAS009_12]',
@@ -75,7 +76,7 @@
 									</td>
 									<td>
 										<div id="combo-box" data-bind="ntsComboBox: {
-											options: enumRange,
+											options: enumRangeChange,
 											optionsValue: 'value',
 											visibleItemsCount: 20,
 											value: employeeReferenceRange,
@@ -97,7 +98,7 @@
 																	options: enumAllow,
 																	optionsValue: 'code',
 																	optionsText: 'name',
-																	value: employeeReferenceRange }"></div>
+																	value: referFutureDate }"></div>
 									</td>
 								</tr>						
 						

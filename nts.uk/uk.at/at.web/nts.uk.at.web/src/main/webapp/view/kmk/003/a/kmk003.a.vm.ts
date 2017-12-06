@@ -175,7 +175,7 @@ module nts.uk.at.view.kmk003.a {
                 let listData:any = [];
                 data.forEach(function(item: any, index: any) {
                     listData.push(new WorkTimeItem(item.worktimeCode
-                        , item.workTimeDisplayName.workTimeName));
+                        , item.workTimeName));
                 });
                 self.workTimezoneItems(listData);
             }

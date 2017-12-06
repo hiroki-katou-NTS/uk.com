@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.EmployeeAndClosureOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
@@ -75,7 +76,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 					&& day.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
 				status = ProcessState.SUCCESS;
 			} else {
-				EmployeeAndClosure employeeAndClosureDto = new EmployeeAndClosure();
+				EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
 				if (employmentHisOptional.get().getEmploymentCode().equals(closureEmploymentOptional.get()
 						.getEmploymentCD())) {
 					employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
@@ -84,7 +85,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 				}
 
 				// アルゴリズム「実績ロックされているか判定する」を実行する
-				EmployeeAndClosure employeeAndClosure = this.determineActualLocked(companyId, employeeAndClosureDto,
+				EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId, employeeAndClosureDto,
 						day);
 
 				if (employeeAndClosure.getLock() == 0) {
@@ -112,7 +113,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	 * @param closureId
 	 * @return
 	 */
-	private EmployeeAndClosure determineActualLocked(String companyId, EmployeeAndClosure employeeAndClosure,
+	private EmployeeAndClosureOutput determineActualLocked(String companyId, EmployeeAndClosureOutput employeeAndClosure,
 			GeneralDate day) {
 
 		/**

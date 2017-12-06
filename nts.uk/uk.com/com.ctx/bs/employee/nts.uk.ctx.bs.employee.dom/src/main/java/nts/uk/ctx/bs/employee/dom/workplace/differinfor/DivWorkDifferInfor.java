@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
- * 
+ * 部門職場区別情報
  * @author yennth
  *
  */

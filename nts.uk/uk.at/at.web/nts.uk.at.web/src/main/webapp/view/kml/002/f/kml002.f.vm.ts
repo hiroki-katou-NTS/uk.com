@@ -155,7 +155,7 @@ module nts.uk.at.view.kml002.f.viewmodel {
             let array = [];
             let i = 2;
             let param = {
-                budgetAtr: 1,
+                budgetAtr: 3,
                 unitAtr: self.unitSelect()
             }
             service.getByAtr(param).done((lst) => {

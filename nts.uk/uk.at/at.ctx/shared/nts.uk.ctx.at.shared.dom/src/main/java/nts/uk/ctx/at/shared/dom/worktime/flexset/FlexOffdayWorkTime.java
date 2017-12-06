@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 
 /**
  * The Class FlexOffdayWorkTime.
@@ -17,9 +17,9 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSetting;
 // フレックス勤務の休日出勤用勤務時間帯
 public class FlexOffdayWorkTime {
 
-	/** The work timezone. */
+	/** The lst work timezone. */
 	// 勤務時間帯
-	private List<HDWorkTimeSheetSetting> workTimezone;
+	private List<HDWorkTimeSheetSetting> lstWorkTimezone;
 
 	/** The rest timezone. */
 	// 休憩時間帯
@@ -31,7 +31,7 @@ public class FlexOffdayWorkTime {
 	 * @param memento the memento
 	 */
 	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento) {
-		this.workTimezone = memento.getWorkTimezone();
+		this.lstWorkTimezone = memento.getLstWorkTimezone();
 		this.restTimezone = memento.getRestTimezone();
 	}
 	
@@ -41,7 +41,7 @@ public class FlexOffdayWorkTime {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(FlexOffdayWorkTimeSetMemento memento){
-		memento.setWorkTimezone(this.workTimezone);
+		memento.setLstWorkTimezone(this.lstWorkTimezone);
 		memento.setRestTimezone(this.restTimezone);
 	}
 	

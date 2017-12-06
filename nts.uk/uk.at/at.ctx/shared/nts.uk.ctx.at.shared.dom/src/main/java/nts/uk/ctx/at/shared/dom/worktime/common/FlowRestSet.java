@@ -10,13 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class FlowRestSet.
  */
-//流動休憩設定
-
-/**
- * Gets the calculate method.
- *
- * @return the calculate method
- */
+// 流動休憩設定
 @Getter
 public class FlowRestSet extends DomainObject {
 

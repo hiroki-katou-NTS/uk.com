@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
 
 /**
  * The Class TimezoneOfFixedRestTimeSet.
@@ -19,7 +18,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 
 	/** The timezone. */
 	//時間帯
-	private List<DeductionTime> timezone;
+	private List<DeductionTime> timezones;
 
 	/**
 	 * Instantiates a new timezone of fixed rest time set.
@@ -27,7 +26,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	 * @param memento the memento
 	 */
 	public TimezoneOfFixedRestTimeSet(TimezoneOfFixedRestTimeSetGetMemento memento) {
-		this.timezone = memento.getTimezone();
+		this.timezones = memento.getTimezones();
 	}
 
 	/**
@@ -36,7 +35,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(TimezoneOfFixedRestTimeSetSetMemento memento) {
-		memento.setTimezone(this.timezone);
+		memento.setTimezones(this.timezones);
 	}
 	
 }

@@ -453,7 +453,6 @@ module nts.uk.com.view.cmm007.g {
                                break;
                         }
                     });
-                    $('#work_day_off_name1').focus();
                     dfd.resolve();
                 });
 

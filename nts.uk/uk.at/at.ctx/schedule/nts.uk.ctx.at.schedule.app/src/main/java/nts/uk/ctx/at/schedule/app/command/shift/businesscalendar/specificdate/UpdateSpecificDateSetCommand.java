@@ -6,11 +6,11 @@ import lombok.Value;
 
 @Value
 public class UpdateSpecificDateSetCommand {
-	private int util;
-	private int strDate;
-	private int endDate;
+	private Integer util;
+	private String strDate;
+	private String endDate;
 	private List<Integer> dayofWeek;
 	private List<Integer> lstTimeItemId;
-	private int setUpdate;
+	private Integer setUpdate;
 	private String workplaceId;
 }

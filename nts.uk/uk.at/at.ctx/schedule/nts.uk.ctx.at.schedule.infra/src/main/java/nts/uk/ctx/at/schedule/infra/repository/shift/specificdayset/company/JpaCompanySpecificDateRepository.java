@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSet;
@@ -33,7 +34,8 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KsmmtComSpecDateSet s"
 			+ " INNER JOIN KsmstSpecificDateItem p ON p.ksmstSpecificDateItemPK.itemNo = s.ksmmtComSpecDateSetPK.specificDateItemNo"
 			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
-			+ " AND CAST(s.ksmmtComSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')";
+			+ " AND s.ksmmtComSpecDateSetPK.specificDate >= :startYm"
+			+ " AND s.ksmmtComSpecDateSetPK.specificDate <= :endYm";
 	
 	/**
 	 *Delete by Month 
@@ -42,6 +44,7 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
 			+ " AND c.ksmmtComSpecDateSetPK.specificDate >= :startYm"
 			+ " AND c.ksmmtComSpecDateSetPK.specificDate <= :endYm";
+	
 	private final String DELETE_BY_DATE = "DELETE FROM KsmmtComSpecDateSet c"
 			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
 			+ " AND c.ksmmtComSpecDateSetPK.specificDate = :specificDate";
@@ -51,7 +54,7 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 * Get list Company Specific Date NO with name
 	 */
 	@Override
-	public List<CompanySpecificDateItem> getComSpecByDate(String companyId, int specificDate) {
+	public List<CompanySpecificDateItem> getComSpecByDate(String companyId, GeneralDate specificDate) {
 		return this.queryProxy().query(GET_BY_DATE, KsmmtComSpecDateSet.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specificDate", specificDate).getList(x -> toDomain(x));
@@ -61,10 +64,11 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 * Get list Company Specific Date  WITH name
 	 */
 	@Override
-	public List<CompanySpecificDateItem> getComSpecByDateWithName(String companyId, String specificDate) {
+	public List<CompanySpecificDateItem> getComSpecByDateWithName(String companyId, GeneralDate startDate, GeneralDate endDate) {
 		return this.queryProxy().query(GET_BY_USE_WITH_NAME, Object[].class)
 				.setParameter("companyId", companyId)
-				.setParameter("specificDate", specificDate)
+				.setParameter("startYm", startDate)
+				.setParameter("endYm", endDate)
 				.getList(x -> toDomainWithName(x));
 	}
 
@@ -103,7 +107,7 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 		val entity = new KsmmtComSpecDateSet();
 		entity.ksmmtComSpecDateSetPK = new KsmmtComSpecDateSetPK(
 				domain.getCompanyId(),
-				domain.getSpecificDate().v(),
+				domain.getSpecificDate(),
 				domain.getSpecificDateItemNo().v());
 		return entity;
 	}
@@ -122,11 +126,11 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 * DELETE process
 	 */
 	@Override
-	public void DeleteComSpecDate(String companyId, String processMonth) {
+	public void DeleteComSpecDate(String companyId, GeneralDate startDate, GeneralDate endDate) {
 		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
 			.setParameter("companyId", companyId)
-			.setParameter("startYm", Integer.valueOf(processMonth+"01"))
-			.setParameter("endYm", Integer.valueOf(processMonth+"31"))
+			.setParameter("startYm", startDate)
+			.setParameter("endYm", endDate)
 			.executeUpdate();
 	}
 	/**
@@ -147,7 +151,7 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 * @param specificDate
 	 */
 	@Override
-	public void deleteComSpecByDate(String companyId, int specificDate) {
+	public void deleteComSpecByDate(String companyId, GeneralDate specificDate) {
 		this.getEntityManager().createQuery(DELETE_BY_DATE)
 		.setParameter("companyId", companyId)
 		.setParameter("specificDate", specificDate)

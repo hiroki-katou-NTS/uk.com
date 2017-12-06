@@ -1,13 +1,16 @@
 package nts.uk.ctx.bs.employee.dom.workplace.info;
 
-import nts.arc.primitive.constraint.StringRegEx;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * 
- *職場コード
+ * The Class WorkplaceCode.
  */
-@StringRegEx("^[a-zA-Z0-9_-]{1,10}$")
+// 職場コード
+@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(10)
 public class WorkplaceCode extends CodePrimitiveValue<WorkplaceCode>{
 
 	/**

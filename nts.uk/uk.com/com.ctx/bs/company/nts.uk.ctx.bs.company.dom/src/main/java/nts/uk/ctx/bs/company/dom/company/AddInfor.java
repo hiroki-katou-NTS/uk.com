@@ -11,14 +11,17 @@ import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
 import nts.uk.ctx.bs.company.dom.company.primitive.FaxNum;
 import nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum;
 import nts.uk.ctx.bs.company.dom.company.primitive.PostCd;
-
+/**
+ * 住所情報
+ * @author yennth
+ *
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddInfor {
 	/**会社ID**/
 	private String companyId;
-	
 	/** FAX番号 **/
 	private FaxNum faxNum;
 	/** 住所１ **/
