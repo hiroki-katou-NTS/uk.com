@@ -171,24 +171,31 @@
 
 								</div>
 								<com:ko-if bind="empRegHistory">
-									<div id="step1_content_top_right"
-										data-bind="with:empRegHistory">
+									<div id="step1_content_top_right" data-bind="empRegHistory">
 										<div class="div_line">
 											<label>#{i18n.getText('CPS002_19')}</label>
 										</div>
 										<hr id="top_right_hr" />
-										<div class="div_line">
-											<div class="last_reg_title">
-												<b>#{i18n.getText('CPS002_20')}</b>
+										<com:ko-if bind="lastRegEmployee">
+											<div class="div_line" data-bind="lastRegEmployee">
+												<div class="last_reg_title">
+													<b>#{i18n.getText('CPS002_20')}</b>
+												</div>
+												<label><b>#{i18n.getText('CPS002_21')}</b> </label> <label><b
+													data-bind="text:employeeID"></b> </label> &#09; <label><b
+													data-bind="text:employeeName"></b> </label>
 											</div>
-											<label><b>#{i18n.getText('CPS002_21')}</b> </label>
-										</div>
-										<div class="div_line">
-											<div class="last_reg_title">
-												<b>#{i18n.getText('CPS002_22')} </b>
+										</com:ko-if>
+										<com:ko-if bind="lastRegEmployeeOfCompany">
+											<div class="div_line" data-bind="lastRegEmployeeOfCompany">
+												<div class="last_reg_title">
+													<b>#{i18n.getText('CPS002_22')} </b>
+												</div>
+												<label><b>#{i18n.getText('CPS002_21')}</b></label> <label><b
+													data-bind="text:employeeID"></b> </label> &#09; <label><b
+													data-bind="text:employeeName"></b> </label>
 											</div>
-											<label><b>#{i18n.getText('CPS002_21')}</b></label>
-										</div>
+										</com:ko-if>
 									</div>
 								</com:ko-if>
 							</div>

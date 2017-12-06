@@ -1,17 +1,25 @@
 package nts.uk.ctx.pereg.app.find.reghistory;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.pereg.dom.reghistory.LastEmRegHistory;
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmpRegHistoryDto {
 
-	String lastRegEmployeeID;
+	RegEmployeeDto lastRegEmployee;
 
-	String lastRegEmployeeOfCompanyID;
+	RegEmployeeDto lastRegEmployeeOfCompany;
 
-	public static EmpRegHistoryDto fromDomain(LastEmRegHistory domain) {
-		return new EmpRegHistoryDto(domain.getLastRegEmployeeID(), domain.getLastRegEmployeeOfCompanyID());
+	public EmpRegHistoryDto fromDomain(LastEmRegHistory domain) {
+
+		this.lastRegEmployee.employeeID = domain.getLastRegEmployeeID();
+
+		this.lastRegEmployeeOfCompany.employeeID = domain.getLastRegEmployeeOfCompanyID();
+		return this;
 	}
 
 }
