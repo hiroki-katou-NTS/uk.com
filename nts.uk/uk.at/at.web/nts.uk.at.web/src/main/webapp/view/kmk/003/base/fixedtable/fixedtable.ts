@@ -158,10 +158,8 @@ module kmk003.base.fixedtable {
         
         tableId: string;
         
-        constructor($element: any, data: FixTableOption, dataSource: any) {
+        constructor(data: FixTableOption) {
             let self = this;
-            
-            self.$element = $element;
             
             // set data parameter
             self.isMultiple = data.isMultipleSelect;
@@ -177,7 +175,7 @@ module kmk003.base.fixedtable {
             if (!self.tabindex) {
                 self.tabindex = -1;
             }
-            self.itemList = dataSource;
+            self.itemList = data.dataSource;
             
             self.isSelectAll = ko.observable(false);
             
@@ -227,8 +225,9 @@ module kmk003.base.fixedtable {
         /**
          * Initial screen
          */
-        public initialScreen() {
+        public initialScreen(): JQueryPromise<void> {
             let self = this;
+            let dfd: any = $.Deferred<void>();
             
             // update table id
             $('#fixed-table-custom').attr('id', self.tableId);
@@ -239,7 +238,11 @@ module kmk003.base.fixedtable {
             self.isEnaleAddButton(self.itemList().length < self.maxRow);
             self.isEnaleRemoveButton(self.itemList().length > self.minRow);
             
-            self.renderTable();
+            // calculate height table
+            self.calStyleTable();
+            
+            // render html table
+            return self.renderTable();
         }
         
         /**
@@ -271,7 +274,7 @@ module kmk003.base.fixedtable {
         /**
          * calStyleTable
          */
-        private calStyleTable() {
+        public calStyleTable() {
             let self = this;
             let heigthCell = 32;
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
@@ -549,18 +552,21 @@ module kmk003.base.fixedtable {
             
             let webserviceLocator: any = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/base/fixtable/fixtable.xhtml').serialize();
+                .mergeRelativePath('/view/kmk/003/base/fixedtable/fixedtable.xhtml').serialize();
             
             //get data
             let input: any = valueAccessor();
             let data: FixTableOption = input.option;
-            let dataSource: any = input.dataSource;
 
-            let screenModel = new FixTableScreenModel($(element), data, dataSource);
+            let screenModel = new FixTableScreenModel(data);
             $(element).load(webserviceLocator, function() {
-                ko.cleanNode($(element)[0]);
-                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.initialScreen();
+                screenModel.initialScreen().done(() => {
+                    ko.cleanNode($(element)[0]);
+                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                    
+                    // calculate height table
+                    screenModel.$tableSelector.height(screenModel.tableStyle.height);
+                });
             });
         }
 
