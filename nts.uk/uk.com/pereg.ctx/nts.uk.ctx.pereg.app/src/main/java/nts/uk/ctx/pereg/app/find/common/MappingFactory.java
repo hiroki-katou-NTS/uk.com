@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.FieldsWorkerStream;
@@ -133,16 +132,16 @@ public class MappingFactory {
 	 * @param dtoClass
 	 */
 	public static void mapFixDto(Map<String, Object> itemCodeValueMap, LayoutPersonInfoClsDto classItem) {
-		
+
 		List<Object> itemValues = new ArrayList<>();
-		
+
 		// add to value-list
 		classItem.getListItemDf().forEach(itemDef -> {
 			LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef,
 					itemCodeValueMap.get(itemDef.getItemCode()));
 			itemValues.add(valueItem);
 		});
-		
+
 		classItem.setItems(itemValues);
 
 	}
@@ -154,11 +153,13 @@ public class MappingFactory {
 	 */
 	public static void mapEmployeeOptionData(List<EmpOptionalDto> empOptionalData, LayoutPersonInfoClsDto classItem) {
 		for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
-			Optional<EmpOptionalDto> data = empOptionalData.stream()
-					.filter(optionData -> optionData.getItemCode().equals(itemDef.getItemCode())).findFirst();
-			Object value = data.isPresent() ? data.get().getValue() : null;
-			LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef, value);
-			classItem.getItems().add(valueItem);
+			for (EmpOptionalDto data : empOptionalData) {
+				if (data.getItemCode().equals(itemDef.getItemCode())) {
+					LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef, data.getValue());
+					classItem.getItems().add(valueItem);
+				}
+			}
+
 		}
 	}
 
@@ -168,11 +169,14 @@ public class MappingFactory {
 	 */
 	public static void mapPersonOptionData(List<PersonOptionalDto> perOptionalData, LayoutPersonInfoClsDto classItem) {
 		for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
-			Optional<PersonOptionalDto> data = perOptionalData.stream()
-					.filter(optionData -> optionData.getItemCode().equals(itemDef.getItemCode())).findFirst();
-			Object value = data.isPresent() ? data.get().getValue() : null;
-			LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef, value);
-			classItem.getItems().add(valueItem);
+			for (PersonOptionalDto data : perOptionalData) {
+				if (data.getItemCode().equals(itemDef.getItemCode())) {
+					LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef, data.getValue());
+					classItem.getItems().add(valueItem);
+				}
+
+			}
+
 		}
 	}
 
