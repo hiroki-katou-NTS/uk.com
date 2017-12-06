@@ -18,7 +18,7 @@ public class AffDepartmentHistoryService {
 	 */
 	public void add(AffDepartmentHistory domain){
 		DateHistoryItem itemToBeAdded = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-		affDepartmentHistoryRepository.add(domain.getEmployeeId(), itemToBeAdded);
+		affDepartmentHistoryRepository.add(domain.getCompanyId(), domain.getEmployeeId(), itemToBeAdded);
 		// Update item before
 		updateItemBefore(domain,itemToBeAdded);
 	}

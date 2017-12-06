@@ -22,7 +22,7 @@ public class AffJobTitleHistoryService {
 			return;
 		}
 		DateHistoryItem itemToBeAdded = domain.getHistoryItems().get(domain.getHistoryItems().size() - 1);
-		affJobTitleHistoryRepository_ver1.add(domain.getEmployeeId(), itemToBeAdded);
+		affJobTitleHistoryRepository_ver1.add(domain.getCompanyId(), domain.getEmployeeId(), itemToBeAdded);
 		// Update item before
 		updateItemBefore(domain, itemToBeAdded);
 	}

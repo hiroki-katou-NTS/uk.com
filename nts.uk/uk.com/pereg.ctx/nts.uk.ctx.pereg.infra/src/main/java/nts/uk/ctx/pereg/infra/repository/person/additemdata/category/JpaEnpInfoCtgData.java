@@ -58,7 +58,8 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public void updateEmpInfoCtgData(EmpInfoCtgData domain) {
-		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(domain.getRecordId(), PpemtEmpInfoCtgData.class);
+		PpemtEmpInfoCtgDataPk key = new PpemtEmpInfoCtgDataPk(domain.getRecordId());
+		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(key, PpemtEmpInfoCtgData.class);
 		if (!existItem.isPresent()){
 			throw new RuntimeException("invalid EmpInfoCtgData");
 		}
@@ -70,6 +71,10 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	@Override
 	public void deleteEmpInfoCtgData(String recordId) {
 		PpemtEmpInfoCtgDataPk key = new PpemtEmpInfoCtgDataPk(recordId);
+		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(key, PpemtEmpInfoCtgData.class);
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid EmpInfoCtgData");
+		}
 		this.commandProxy().remove(PpemtEmpInfoCtgData.class,key);
 	}
 

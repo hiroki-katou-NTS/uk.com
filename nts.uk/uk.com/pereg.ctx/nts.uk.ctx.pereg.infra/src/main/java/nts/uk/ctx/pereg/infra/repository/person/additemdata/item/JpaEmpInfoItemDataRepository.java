@@ -47,7 +47,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.personInfoCtgId = :ctgid AND ic.employeeId = :sid";
-	private static final String DELETE_ITEM_DATA = "DELETE FROM PpemtEmpInfoItemData p WHERE ppemtEmpInfoItemDataPk.recordId = :recordId";
+	private static final String DELETE_ITEM_DATA = "DELETE FROM PpemtEmpInfoItemData WHERE ppemtEmpInfoItemDataPk.recordId = :recordId";
 	@Override
 	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING, Object[].class)

@@ -4,7 +4,7 @@ module cps001.a.service {
 
     let paths: any = {
         layout: {
-            getAll: "ctx/pereg/person/maintenance/findAll",
+            getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
             getDetails: "ctx/pereg/person/maintenance/findOne/{0}"
         },
         category: {
@@ -43,8 +43,8 @@ module cps001.a.service {
         return ajax(paths.emp.permision);
     }
 
-    export function getAllLayout() {
-        return ajax(paths.layout.getAll);
+    export function getAllLayout(empId: string) {
+        return ajax(format(paths.layout.getAll, empId));
     };
 
     export function getCurrentLayout(id: string) {

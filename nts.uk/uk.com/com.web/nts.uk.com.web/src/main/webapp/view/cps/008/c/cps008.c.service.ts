@@ -9,11 +9,4 @@ module cps008.c.service {
     export function getDetails(lid) {
         return ajax(format(paths.getDetails, lid));
     }
-
-
-
-
-
-
-
 }

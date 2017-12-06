@@ -28,8 +28,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	 * @param listHist
 	 * @return
 	 */
-	private EmploymentHistory toEmploymentHistory(String sid, List<BsymtEmploymentHist> listHist) {
-		EmploymentHistory empment = new EmploymentHistory(sid, new ArrayList<>());
+	private EmploymentHistory toEmploymentHistory(List<BsymtEmploymentHist> listHist) {
+		EmploymentHistory empment = new EmploymentHistory(listHist.get(0).getSid(), new ArrayList<>());
 		DateHistoryItem dateItem = null;
 		for (BsymtEmploymentHist item : listHist) {
 			dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
@@ -43,7 +43,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		List<BsymtEmploymentHist> listHist = this.queryProxy().query(QUERY_BYEMPLOYEEID, BsymtEmploymentHist.class)
 				.setParameter("sid", sid).getList();
 		if (!listHist.isEmpty()) {
-			return Optional.of(toEmploymentHistory(sid, listHist));
+			return Optional.of(toEmploymentHistory(listHist));
 		}
 		return Optional.empty();
 	}

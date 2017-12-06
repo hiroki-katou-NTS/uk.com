@@ -25,6 +25,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class AffDepartmentHistory extends AggregateRoot
 implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 
+	/** 会社ID */
+	private String companyId;
+	
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;

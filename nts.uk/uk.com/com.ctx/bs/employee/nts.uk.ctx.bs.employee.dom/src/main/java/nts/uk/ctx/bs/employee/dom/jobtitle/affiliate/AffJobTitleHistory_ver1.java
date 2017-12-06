@@ -22,7 +22,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Setter
 public class AffJobTitleHistory_ver1 extends AggregateRoot
 		implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
-
+	/** 会社ID */
+	private String companyId;
+	
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;

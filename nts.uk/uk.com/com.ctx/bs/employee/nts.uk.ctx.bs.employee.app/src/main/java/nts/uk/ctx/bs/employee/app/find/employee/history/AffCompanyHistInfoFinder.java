@@ -1,11 +1,12 @@
-package nts.uk.ctx.bs.employee.app.find.employee.mngdata;
+package nts.uk.ctx.bs.employee.app.find.employee.history;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -13,19 +14,21 @@ import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
-public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInfoDto> {
+public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoDto> {
 	@Inject
-	EmployeeDataMngInfoRepository edMngFinder;
+	AffCompanyHistRepository achFinder;
+	
+	@Inject
+	AffCompanyInfoRepository aciFinder;
 
 	@Override
 	public String targetCategoryCode() {
-		return "CS00001";
+		return "CS00003";
 	}
 
 	@Override
-	public Class<EmployeeDataMngInfoDto> dtoClass() {
-		// TODO Auto-generated method stub
-		return EmployeeDataMngInfoDto.class;
+	public Class<AffCompanyHistInfoDto> dtoClass() {
+		return AffCompanyHistInfoDto.class;
 	}
 
 	@Override
@@ -47,4 +50,5 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		return null;
 	}
+
 }

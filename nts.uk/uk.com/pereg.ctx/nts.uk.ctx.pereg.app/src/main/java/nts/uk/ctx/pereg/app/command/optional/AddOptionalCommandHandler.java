@@ -61,7 +61,7 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 		String recordId = command.getRecordId();
 		
 		// In case of optional category
-		if (StringUtils.isNotEmpty(recordId)){
+		if (StringUtils.isEmpty(recordId)){
 			recordId = IdentifierUtil.randomUniqueId();
 		}
 		// In case of person
