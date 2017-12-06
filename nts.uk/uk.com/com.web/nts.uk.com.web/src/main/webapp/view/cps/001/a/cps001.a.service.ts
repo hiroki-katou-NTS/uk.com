@@ -8,8 +8,9 @@ module cps001.a.service {
             getDetails: "ctx/pereg/person/maintenance/findLayoutData",
         },
         category: {
-            'getData': 'ctx/pereg/employee/category/getall/{0}',
-            'getTabInfo': 'ctx/pereg/employee/category/getlistinfocategory',
+            'getCats': 'ctx/pereg/employee/category/getall/{0}',
+            'getDetails': 'ctx/pereg/layout/find/gettabdetail',
+            'getTabsInfo': 'ctx/pereg/layout/find/getctgtab/{0}' //categoryId
         },
         person: {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
@@ -28,8 +29,12 @@ module cps001.a.service {
     }
 
     export function getCats(id: string) {
-        return ajax(format(paths.category.getData, id));
+        return ajax(format(paths.category.getCats, id));
     };
+
+    export function getCatData(query: any) {
+        return ajax(paths.category.getDetails, query);
+    }
 
     export function getAvatar(id: string) {
         return ajax(format(paths.emp.getFile, id, 0));
@@ -61,9 +66,5 @@ module cps001.a.service {
 
     export function getFileInfo(id: string) {
         return ajax(paths.file, id);
-    }
-
-    export function getTabInfo(data: any) {
-        return ajax(paths.category.getTabInfo, data);
     }
 }

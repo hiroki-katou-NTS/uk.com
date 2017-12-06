@@ -150,44 +150,21 @@ module cps001.a.vm {
                 if (id) {
                     // clear all error message
                     clearError();
+                    let query: ILayoutQuery = {
+                        layoutId: id,
+                        browsingEmpId: employee.employeeId(),
+                        standardDate: moment.utc(layout.standardDate()).toDate()
+                    };
 
-                    service.getCurrentLayout(id).done((data: ILayout) => {
+                    service.getCurrentLayout(query).done((data: ILayout) => {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');
-
-                        // lấy list item definition trong db
-                        // duyệt
-                        _.each(data.listItemClsDto, x => {
-                            // khởi tạo giá trị items
-                            x.items = ko.observableArray([]);
-
-                            // kiểm tra kiểu item
-                            /*if (x.layoutItemType == 'ITEM') {
-                                if (x.listItemDf && x.listItemDf[0]) {
-                                    _.each(x.listItemDf, m => {
-                                        x.items.push({
-                                            itemDefId: m.id,
-                                            itemCode: m.itemCode,
-                                            value: ko.observable('xxxx')
-                                        });
-                                    });
-                                }
-                            } else {
-                                _.each(Array(3), (_x, i) => {
-                                    let rows = [];
-                                    _.each(x.listItemDf, (m, j) => {
-                                        rows.push({
-                                            itemDefId: m.id,
-                                            itemCode: m.itemCode,
-                                            value: ko.observable('xxxx')
-                                        });
-                                    });
-                                    x.items.push(rows);
-                                });
-                            }*/
-                        });
-
-                        layout.listItemClsDto(data.listItemClsDto || []);
+                        
+                        if (data.standardDate) {
+                            layout.standardDate(data.standardDate);
+                        }
+                        
+                        layout.listItemClsDto(data.classificationItems || []);
                     });
 
                 }
@@ -204,7 +181,7 @@ module cps001.a.vm {
                         infoId: undefined
                     };
 
-                    service.getTabInfo(query).done(data => {
+                    service.getCatData(query).done(data => {
                         debugger;
                     });
                 }
@@ -281,11 +258,6 @@ module cps001.a.vm {
             });
         }
 
-        filterData() {
-            let self = this;
-
-        }
-
         saveData() {
             let self = this;
 
@@ -308,6 +280,8 @@ module cps001.a.vm {
         layoutName?: string;
         maintenanceLayoutID: string;
         listItemClsDto?: Array<any>;
+        classificationItems?: Array<any>;
+        standardDate?: string;
     }
 
     class Layout {
@@ -315,6 +289,7 @@ module cps001.a.vm {
         layoutName: KnockoutObservable<string> = ko.observable('');
         maintenanceLayoutID: KnockoutObservable<string> = ko.observable('');
         listItemClsDto: KnockoutObservableArray<any> = ko.observableArray([]);
+        standardDate: KnockoutObservable<string> = ko.observable(undefined);
 
         constructor(param?: ILayout) {
             let self = this;
@@ -322,9 +297,16 @@ module cps001.a.vm {
                 self.layoutCode(param.layoutCode || '');
                 self.layoutName(param.layoutName || '');
                 self.maintenanceLayoutID(param.maintenanceLayoutID || '');
+                self.standardDate(param.standardDate)
 
                 self.listItemClsDto(param.listItemClsDto || []);
             }
+        }
+
+        // recall selected layout event
+        filterData() {
+            let self = this;
+            self.maintenanceLayoutID.valueHasMutated();
         }
     }
 
@@ -572,5 +554,11 @@ module cps001.a.vm {
         empId: string;
         standardDate: Date;
         infoId?: string;
+    }
+
+    interface ILayoutQuery {
+        layoutId: string;
+        browsingEmpId: string;
+        standardDate: Date;
     }
 }
