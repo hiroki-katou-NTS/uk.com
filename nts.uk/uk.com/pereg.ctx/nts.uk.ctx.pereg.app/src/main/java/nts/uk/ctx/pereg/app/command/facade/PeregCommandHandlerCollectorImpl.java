@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
+import command.person.info.AddPersonCommand;
 import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.DeleteAffClassificationCommand;
@@ -16,7 +17,9 @@ import nts.uk.ctx.bs.employee.app.command.classification.affiliate.UpdateAffClas
 import nts.uk.ctx.bs.employee.app.command.department.AddAffiliationDepartmentCommand;
 import nts.uk.ctx.bs.employee.app.command.department.DeleteAffiliationDepartmentCommand;
 import nts.uk.ctx.bs.employee.app.command.department.UpdateAffiliationDepartmentCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.history.AddAffCompanyHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.UpdateAffCompanyHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.mngdata.AddEmployeeDataMngInfoCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.mngdata.UpdateEmployeeDataMngInfoCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.history.AddEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.history.DeleteEmploymentHistoryCommand;
@@ -35,6 +38,7 @@ import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
+
 @Stateless
 @SuppressWarnings("serial")
 public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerCollector {
@@ -46,6 +50,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffJobTitleMainCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddEmploymentHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffCompanyHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddPersonCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddEmployeeDataMngInfoCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){}
 			);
 	

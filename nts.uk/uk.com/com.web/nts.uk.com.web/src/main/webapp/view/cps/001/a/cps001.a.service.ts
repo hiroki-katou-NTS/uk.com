@@ -4,11 +4,11 @@ module cps001.a.service {
 
     let paths: any = {
         layout: {
-            getAll: "ctx/pereg/person/maintenance/findAll",
+            getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
             getDetails: "ctx/pereg/person/maintenance/findOne/{0}"
         },
         category: {
-            'getData': 'bs/employee/category/getAll/{0}',
+            'getData': 'ctx/pereg/employee/category/getAll/{0}',
             'getTabInfo': 'ctx/pereg/layout/find/getTabDetail',
         },
         person: {
@@ -17,7 +17,7 @@ module cps001.a.service {
         emp: {
             getInfo: 'basic/organization/employee/get-info/{0}',
             getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
-            permision: 'ctx/pereg/person/roles/auth/getSelfAuth',
+            permision: 'ctx/pereg/roles/auth/get-self-auth',
         },
         file: '/shr/infra/file/storage/infor/{0}',
         saveData: ''
@@ -43,8 +43,8 @@ module cps001.a.service {
         return ajax(paths.emp.permision);
     }
 
-    export function getAllLayout() {
-        return ajax(paths.layout.getAll);
+    export function getAllLayout(empId: string) {
+        return ajax(format(paths.layout.getAll, empId));
     };
 
     export function getCurrentLayout(id: string) {

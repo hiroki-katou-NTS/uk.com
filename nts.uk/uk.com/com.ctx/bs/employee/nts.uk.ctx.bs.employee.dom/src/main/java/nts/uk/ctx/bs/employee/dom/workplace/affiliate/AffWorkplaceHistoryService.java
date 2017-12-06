@@ -23,7 +23,7 @@ public class AffWorkplaceHistoryService {
 		}
 		// Insert last element
 		DateHistoryItem lastItem = domain.getHistoryItems().get(domain.getHistoryItems().size()-1);
-		affWorkplaceHistoryRepository.add(domain.getEmployeeId(), lastItem);
+		affWorkplaceHistoryRepository.add(domain.getCompanyId(), domain.getEmployeeId(), lastItem);
 		
 		// Update item before
 		updateItemBefore(domain,lastItem);

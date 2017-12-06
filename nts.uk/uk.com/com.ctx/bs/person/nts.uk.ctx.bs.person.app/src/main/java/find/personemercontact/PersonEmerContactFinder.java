@@ -22,7 +22,7 @@ public class PersonEmerContactFinder implements PeregFinder<PersonEmerContactDto
 
 	@Override
 	public String targetCategoryCode() {
-		return "CS00015";
+		return "";
 	}
 
 	@Override

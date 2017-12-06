@@ -25,6 +25,11 @@ public class AffClassHistory_ver1 extends AggregateRoot
 		implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 	
 	/**
+	 * 会社ID
+	 */
+	private String companyId;
+	
+	/**
 	 * 社員ID
 	 */
 	private String employeeId;

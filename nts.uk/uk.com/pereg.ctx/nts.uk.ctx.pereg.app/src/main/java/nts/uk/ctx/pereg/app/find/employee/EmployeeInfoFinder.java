@@ -36,12 +36,13 @@ public class EmployeeInfoFinder {
 		if (isDuplicateEmpCode) {
 			throw new BusinessException(new RawErrorMessage("Msg_345"));
 		}
-		Boolean isDuplicateCardNo = this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
-				empInfo.getCardNo());
-
-		if (isDuplicateCardNo) {
-			throw new BusinessException(new RawErrorMessage("Msg_346"));
-		}
+		// Boolean isDuplicateCardNo =
+		// this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
+		// empInfo.getCardNo());
+		//
+		// if (isDuplicateCardNo) {
+		// throw new BusinessException(new RawErrorMessage("Msg_346"));
+		// }
 		Boolean isDuplicateLoginId = this.userRepo.getByLoginId(empInfo.getLoginId()).isPresent();
 
 		if (isDuplicateLoginId) {

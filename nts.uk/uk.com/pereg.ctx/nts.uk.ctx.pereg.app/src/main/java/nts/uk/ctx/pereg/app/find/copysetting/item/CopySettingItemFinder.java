@@ -1,6 +1,9 @@
 package nts.uk.ctx.pereg.app.find.copysetting.item;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,10 +12,14 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
+import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItemRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
 public class CopySettingItemFinder {
@@ -21,19 +28,19 @@ public class CopySettingItemFinder {
 	private EmpCopySettingItemRepository empCopyItemRepo;
 
 	@Inject
-	private InitValueSetItemFinder initItemFinder;
+	private LayoutingProcessor layoutProc;
 
 	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String employeeId, GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
 
+		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+
 		// check empployeeId
 		boolean isSelf = employeeId == AppContexts.user().employeeId() ? true : false;
 
-		List<SettingItemDto> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId, isSelf)
-				.stream().map(x -> SettingItemDto.createFromJavaType(x.getPerInfoCtgId(), x.getCategoryCode(),
-						x.getItemDefId(), x.getItemCode(), x.getItemName(), x.getIsRequired().value, ""))
-				.collect(Collectors.toList());
+		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
+				isSelf);
 
 		if (itemList.isEmpty()) {
 			boolean isPersonnelRepresentative = true;
@@ -45,7 +52,26 @@ public class CopySettingItemFinder {
 			}
 		}
 
-		return this.initItemFinder.loadSettingItems(itemList, categoryCd, companyId, employeeId, baseDate);
+		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
+
+		PeregDto dto = this.layoutProc.findSingle(query);
+
+		Map<String, Object> dataMap = MappingFactory.getAllItem(dto);
+
+		dataMap.forEach((k, v) -> {
+
+			Optional<EmpCopySettingItem> itemInfoOpt = itemList.stream().filter(x -> x.getItemCode() == k).findFirst();
+
+			if (itemInfoOpt.isPresent()) {
+				EmpCopySettingItem itemInfo = itemInfoOpt.get();
+
+				result.add(SettingItemDto.createFromJavaType(itemInfo.getCategoryCode(), itemInfo.getItemDefId(), k,
+						itemInfo.getItemName(), itemInfo.getIsRequired().value, v.toString()));
+			}
+
+		});
+
+		return result;
 
 	}
 

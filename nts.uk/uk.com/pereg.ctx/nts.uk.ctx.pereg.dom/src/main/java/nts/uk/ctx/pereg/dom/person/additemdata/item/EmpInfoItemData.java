@@ -39,11 +39,13 @@ public class EmpInfoItemData extends AggregateRoot {
 	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
 			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState) {
 		super();
+		this.itemCode = itemCode;
 		this.perInfoDefId = perInfoDefId;
 		this.recordId = recordId;
 		this.perInfoCtgId = perInfoCtgId;
 		this.perInfoCtgCd = perInfoCtgCd;
 		this.itemName = itemName;
+		this.isRequired = isRequired;
 		this.dataState = dataState;
 	}
 

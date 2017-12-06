@@ -23,7 +23,7 @@ public class PpestEmployeeCopySettingItem extends UkJpaEntity implements Seriali
 	public PpestEmployeeCopySettingItemPk ppestEmployeeCopySettingItemPk;
 
 	@Basic(optional = false)
-	@Column(name = "EMP_COPY_CTG_ID")
+	@Column(name = "PER_INFO_CTG_ID")
 	public String categoryId;
 
 	@Override

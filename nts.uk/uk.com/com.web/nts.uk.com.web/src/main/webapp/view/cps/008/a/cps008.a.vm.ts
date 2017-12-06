@@ -178,7 +178,7 @@ module cps008.a.viewmodel {
                             return {
                                 dispOrder: i + 1,
                                 personInfoCategoryID: item.personInfoCategoryID,
-                                layoutItemType: item.layoutItemType,
+                                layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
                                 listItemClsDf: (item.listItemDf || []).map((def, j) => {
                                     return {
                                         dispOrder: j + 1,

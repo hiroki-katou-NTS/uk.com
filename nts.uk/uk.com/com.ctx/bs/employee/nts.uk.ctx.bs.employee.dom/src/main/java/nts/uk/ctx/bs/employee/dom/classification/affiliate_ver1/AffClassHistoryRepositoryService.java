@@ -30,7 +30,7 @@ public class AffClassHistoryRepositoryService {
 		}
 		List<DateHistoryItem> periods = history.getPeriods();
 		DateHistoryItem historyItem = periods.get(periods.size() - 1);
-		affClassHistoryRepo.add(history.getEmployeeId(), historyItem);
+		affClassHistoryRepo.add(history.getCompanyId(), history.getEmployeeId(), historyItem);
 
 		updateItemBefore(history, historyItem);
 	}

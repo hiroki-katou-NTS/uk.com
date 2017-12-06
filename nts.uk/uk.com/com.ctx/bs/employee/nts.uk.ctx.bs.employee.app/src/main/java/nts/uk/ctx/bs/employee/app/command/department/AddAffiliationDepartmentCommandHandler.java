@@ -15,6 +15,7 @@ import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryServi
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -46,6 +47,7 @@ public class AddAffiliationDepartmentCommandHandler extends CommandHandlerWithRe
 	@Override
 	protected PeregAddCommandResult  handle(CommandHandlerContext<AddAffiliationDepartmentCommand> context) {
 		val command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		
 		String newHistId = IdentifierUtil.randomUniqueId();
 		
@@ -57,7 +59,7 @@ public class AddAffiliationDepartmentCommandHandler extends CommandHandlerWithRe
 		if (itemHist.isPresent()){
 			itemToBeAdded = itemHist.get();
 		} else {
-			itemToBeAdded = new AffDepartmentHistory(command.getEmployeeId(),new ArrayList<>());
+			itemToBeAdded = new AffDepartmentHistory(companyId, command.getEmployeeId(),new ArrayList<>());
 		}
 		itemToBeAdded.add(dateItem);
 		

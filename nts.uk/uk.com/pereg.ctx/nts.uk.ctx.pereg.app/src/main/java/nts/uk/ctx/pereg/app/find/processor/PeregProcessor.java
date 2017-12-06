@@ -167,6 +167,10 @@ public class PeregProcessor {
 		// String roleId = AppContexts.user().roles().forPersonalInfo();
 		String roleId = "99900000-0000-0000-0000-000000000001";
 
+		// get Employee
+		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), query.getEmployeeId()).get();
+		query.setPersonId(employee.getPId());
+		
 		// get ctgCd
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
 				.get();
@@ -194,10 +198,6 @@ public class PeregProcessor {
 		
 		//set fix data
 		setEmpMaintLayoutDto(empMaintLayoutDto, query, perInfoCtg, lstPerInfoItemDef);
-		
-		// set optional data
-		setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
-		
 		return empMaintLayoutDto;
 	}
 	
@@ -217,6 +217,9 @@ public class PeregProcessor {
 
 			//set fixed data	
 			MappingFactory.mapListClsDto(empMaintLayoutDto, queryResult, lstPerInfoItemDef);
+			
+			// set optional data
+			setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
 		}else{
 			setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
 		}

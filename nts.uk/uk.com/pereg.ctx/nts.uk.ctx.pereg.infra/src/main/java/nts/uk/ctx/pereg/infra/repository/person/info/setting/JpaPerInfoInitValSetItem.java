@@ -309,13 +309,13 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		String dateValue;
 
 		if (saveDataType == "1") {
-			dateValue = "9999-12-21";
+			dateValue = "9999/12/21";
 
 		} else {
-			dateValue = entity[9] == null ? "9999-12-21" : entity[9].toString();
+			dateValue = entity[9] == null ? "9999/12/21" : entity[9].toString();
 		}
 
-		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
+		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy/MM/dd"));
 
 		domain.setItemCode(entity[10] == null ? "" : entity[10].toString());
 

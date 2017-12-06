@@ -36,7 +36,6 @@ public class LayoutPersonInfoValueDto {
 	// index of item in list (multiple, history)
 	private Integer row;
 
-	@NonNull
 	// value of item definition
 	private Object value;
 
@@ -51,6 +50,17 @@ public class LayoutPersonInfoValueDto {
 
 	// contains some information of item for render control
 	private DataTypeStateDto item;
+
+	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
+			String itemCode, Integer row, Object value) {
+		this.categoryId = categoryId;
+		this.categoryCode = categoryCode;
+		this.itemDefId = itemDefId;
+		this.itemName = itemName;
+		this.itemCode = itemCode;
+		this.row = row;
+		this.value = value;
+	}
 
 	public LayoutPersonInfoValueDto() {
 
@@ -70,7 +80,7 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItem(sigleItem.getDataTypeState());
 		return dataObject;
 	}
-	
+
 	/**
 	 * for test
 	 */

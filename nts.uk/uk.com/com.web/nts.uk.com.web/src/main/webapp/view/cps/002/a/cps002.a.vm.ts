@@ -147,10 +147,12 @@ module cps002.a.vm {
         loadCopySettingItemData() {
 
             let self = this,
-                currentCopyEmployeeId = self.copyEmployee().employeeId;
+                currentCopyEmployeeId = self.copyEmployee().employeeId,
+                categorySelectedCode = self.categorySelectedCode(),
+                baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
 
-            if (currentCopyEmployeeId != "") {
-                service.getAllCopySettingItem(currentCopyEmployeeId, self.categorySelectedCode(), nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd')).done((result: Array<SettingItem>) => {
+            if (currentCopyEmployeeId != "" && categorySelectedCode != "") {
+                service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
                     if (result.length) {
                         self.itemSettingList(_.map(result, item => {
                             return new SettingItem(item);
@@ -457,11 +459,17 @@ module cps002.a.vm {
 
         prev() {
             let self = this;
+            if (self.currentStep() === 2) {
+                //self.layout(new Layout({ id: '', code: '', name: '' }));
+                nts.uk.ui.errors.clearAll();
+            }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
                 return;
             }
             $('#emp_reg_info_wizard').ntsWizard("prev");
+
+
         }
 
 

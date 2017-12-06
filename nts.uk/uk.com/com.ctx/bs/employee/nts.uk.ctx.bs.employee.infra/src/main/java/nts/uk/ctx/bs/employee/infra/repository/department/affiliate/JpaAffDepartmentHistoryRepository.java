@@ -25,8 +25,8 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	private static final String SELECT_BY_HISTID = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.hisId = :historyId";
 	
-	private AffDepartmentHistory toAffDepartment(String sId, List<BsymtAffiDepartmentHist> listHist){
-		AffDepartmentHistory affDepart = new AffDepartmentHistory(sId, new ArrayList<>());
+	private AffDepartmentHistory toAffDepartment(List<BsymtAffiDepartmentHist> listHist){
+		AffDepartmentHistory affDepart = new AffDepartmentHistory(listHist.get(0).getCid(), listHist.get(0).getSid(), new ArrayList<>());
 		DateHistoryItem dateItem = null;
 		for (BsymtAffiDepartmentHist item : listHist){
 			dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
@@ -41,14 +41,14 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(QUERY_GET_AFFDEPARTMENT_BYSID,BsymtAffiDepartmentHist.class)
 				.setParameter("sid", employeeId).getList();
 		if (!listHist.isEmpty()){
-			return Optional.of(toAffDepartment(employeeId,listHist));
+			return Optional.of(toAffDepartment(listHist));
 		}
 		return Optional.empty();
 	}
 
 	@Override
-	public void add(String sid, DateHistoryItem domain) {
-		this.commandProxy().insert(toEntity(sid, domain));
+	public void add(String cid, String sid, DateHistoryItem domain) {
+		this.commandProxy().insert(toEntity(cid, sid, domain));
 	}
 
 	@Override
@@ -71,8 +71,8 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		
 	}
 	
-	private BsymtAffiDepartmentHist toEntity(String employeeId, DateHistoryItem item){
-		return new BsymtAffiDepartmentHist(item.identifier(), employeeId, item.start(), item.end());
+	private BsymtAffiDepartmentHist toEntity(String cid, String employeeId, DateHistoryItem item){
+		return new BsymtAffiDepartmentHist(item.identifier(), employeeId,cid, item.start(), item.end());
 	}
 	/**
 	 * Update entity from domain
@@ -91,7 +91,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 				.setParameter("employeeId", employeeId)
 				.setParameter("standardDate", standardDate).getList();
 		if (!listHist.isEmpty()){
-			return Optional.of(toAffDepartment(employeeId,listHist));
+			return Optional.of(toAffDepartment(listHist));
 		}
 		return Optional.empty();
 	}
@@ -101,7 +101,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(SELECT_BY_HISTID,BsymtAffiDepartmentHist.class)
 				.setParameter("historyId", historyId).getList();
 		if (!listHist.isEmpty()){
-			return Optional.of(toAffDepartment(listHist.get(0).getSid(),listHist));
+			return Optional.of(toAffDepartment(listHist));
 		}
 		return Optional.empty();
 	}

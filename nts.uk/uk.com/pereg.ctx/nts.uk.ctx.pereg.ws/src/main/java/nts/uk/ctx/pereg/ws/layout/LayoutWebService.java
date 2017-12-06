@@ -42,7 +42,7 @@ public class LayoutWebService extends WebService {
 	 * 
 	 */
 	
-	@Path("find/getCtgTab/{categoryId}")
+	@Path("find/getctgtab/{categoryId}")
 	@POST
 	public List<PerInfoCtgFullDto> getCtgTab(@PathParam("categoryId")String ctgId){
 		return this.layoutProcessor.getCtgTab(ctgId);
@@ -54,7 +54,7 @@ public class LayoutWebService extends WebService {
 	 * @return
 	 */
 	
-	@Path("find/getTabDetail")
+	@Path("find/gettabdetail")
 	@POST
 	public EmpMaintLayoutDto getTabDetail(PeregQuery query){
 		return this.layoutProcessor.getCategoryChild(query);
@@ -66,7 +66,7 @@ public class LayoutWebService extends WebService {
 	 * @return
 	 */
 	
-	@Path("find/getTabSubDetail")
+	@Path("find/gettabsubdetail")
 	@POST
 	public EmpMaintLayoutDto getTabSubDetail(PeregQuery query){
 		return this.layoutProcessor.getSubDetailInCtgChild(query);

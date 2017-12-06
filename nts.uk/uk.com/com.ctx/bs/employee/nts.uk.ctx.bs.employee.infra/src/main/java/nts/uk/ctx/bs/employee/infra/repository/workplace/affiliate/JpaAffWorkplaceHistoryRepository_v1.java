@@ -37,8 +37,8 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	 * @param item
 	 * @return
 	 */
-	private BsymtAffiWorkplaceHist toEntity(String employeeID, DateHistoryItem item){
-		return new BsymtAffiWorkplaceHist(item.identifier(),employeeID,item.start(),item.end());
+	private BsymtAffiWorkplaceHist toEntity(String cid, String employeeID, DateHistoryItem item){
+		return new BsymtAffiWorkplaceHist(cid,item.identifier(),employeeID,item.start(),item.end());
 	}
 	
 	/**
@@ -56,8 +56,8 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	 * @param entity
 	 * @return
 	 */
-	private AffWorkplaceHistory_ver1 toDomainTemp(String employeeId, List<BsymtAffiWorkplaceHist> listHist){
-		AffWorkplaceHistory_ver1 domain = new AffWorkplaceHistory_ver1(employeeId, new ArrayList<DateHistoryItem>());
+	private AffWorkplaceHistory_ver1 toDomainTemp(List<BsymtAffiWorkplaceHist> listHist){
+		AffWorkplaceHistory_ver1 domain = new AffWorkplaceHistory_ver1(listHist.get(0).getCid(), listHist.get(0).getSid(), new ArrayList<DateHistoryItem>());
 		for (BsymtAffiWorkplaceHist item : listHist){
 			DateHistoryItem dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
 			domain.add(dateItem);
@@ -69,14 +69,14 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(QUERY_GET_AFFWORKPLACEHIST_BYSID,BsymtAffiWorkplaceHist.class)
 				.setParameter("sid", employeeId).getList();
 		if (!listHist.isEmpty()){
-			return Optional.of(toDomainTemp(employeeId, listHist));
+			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
 	}
 
 	@Override
-	public void add(String sid, DateHistoryItem item) {
-		this.commandProxy().insert(toEntity(sid,item));
+	public void add(String cid, String sid, DateHistoryItem item) {
+		this.commandProxy().insert(toEntity(cid, sid,item));
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 				.setParameter("employeeId", employeeId)
 				.setParameter("standDate", standDate).getList();
 		if (!listHist.isEmpty()){
-			return Optional.of(toDomainTemp(employeeId, listHist));
+			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
 	}
@@ -114,7 +114,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_HISTID,BsymtAffiWorkplaceHist.class)
 				.setParameter("histId", histId).getList();
 		if (!listHist.isEmpty()){
-			return Optional.of(toDomainTemp(listHist.get(0).getSid(), listHist));
+			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
 	}

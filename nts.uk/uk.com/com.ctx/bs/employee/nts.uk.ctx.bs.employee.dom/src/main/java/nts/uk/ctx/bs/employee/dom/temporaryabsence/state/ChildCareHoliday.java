@@ -24,11 +24,6 @@ public class ChildCareHoliday extends TempAbsenceHisItem {
 	private Integer childType;
 
 	/**
-	 * Optional 家族メンバーId Family member id
-	 */
-	private String familyMemberId;
-
-	/**
 	 * Optional 縁組成立の年月日
 	 */
 	private GeneralDate createDate;
@@ -48,17 +43,16 @@ public class ChildCareHoliday extends TempAbsenceHisItem {
 	private ChildCareHoliday(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
 			Boolean sameFamily, Integer childType, String familyMemberId, GeneralDate createDate,
 			Boolean spouseIsLeave) {
-		super(LeaveHolidayType.CHILD_CARE_NURSING, historyId, employeeId, remarks, soInsPayCategory);
+		super(LeaveHolidayType.CHILD_CARE_NURSING, historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 		this.sameFamily = sameFamily;
 		this.childType = childType;
-		this.familyMemberId = familyMemberId;
 		this.createDate = createDate;
 		this.spouseIsLeave = spouseIsLeave;
 	}
 
-	public static ChildCareHoliday init(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, Boolean sameFamily, Integer childType, String familyMemberId,
-			GeneralDate createDate, Boolean spouseIsLeave) {
+	public static ChildCareHoliday init(String historyId, String employeeId, String remarks, Integer soInsPayCategory,
+			Boolean sameFamily, Integer childType, String familyMemberId, GeneralDate createDate,
+			Boolean spouseIsLeave) {
 		return new ChildCareHoliday(historyId, employeeId, new GenericString(remarks), soInsPayCategory, sameFamily,
 				childType, familyMemberId, createDate, spouseIsLeave);
 

@@ -15,8 +15,8 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 		implements AffJobTitleHistoryItemRepository_v1 {
 
 	private final String GET_BY_SID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
-			+ " join in BsymtAffJobTitleHist h on hi.hisId = h.hisId"
-			+ " where hi.sid = :sid and h.strDate <= :referDate and h.endDate >= referDate";
+			+ " inner join BsymtAffJobTitleHist h on hi.hisId = h.hisId"
+			+ " where hi.sid = :sid and h.strDate <= :referDate and h.endDate >= :referDate";
 
 	/**
 	 * Convert from domain to entity

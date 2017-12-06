@@ -185,11 +185,14 @@ public class PerInfoItemDefForLayoutFinder {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();
 		if (item.getItemType().value == 1) {
+			String contractCode = AppContexts.user().contractCode();
+			//String contractCode = "000000000001";
+			
 			// get itemId list of children
 			SetItem setItem = (SetItem) item;
 			// get children by itemId list
 			List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty
-					.getPerInfoItemDefByListId(setItem.getItems(), AppContexts.user().contractCode());
+					.getPerInfoItemDefByListId(setItem.getItems(), contractCode);
 			for (int i = 0; i < lstDomain.size(); i++)
 				lstResult.add(createFromDomain(empId, lstDomain.get(i), perInfoCd, dispOrder));
 		}

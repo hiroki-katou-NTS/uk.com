@@ -25,8 +25,8 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	 * @param listHist
 	 * @return
 	 */
-	private AffJobTitleHistory_ver1 toAffJobTitleHist(String employeeId, List<BsymtAffJobTitleHist> listHist) {
-		AffJobTitleHistory_ver1 domain = new AffJobTitleHistory_ver1(employeeId, new ArrayList<>());
+	private AffJobTitleHistory_ver1 toAffJobTitleHist(List<BsymtAffJobTitleHist> listHist) {
+		AffJobTitleHistory_ver1 domain = new AffJobTitleHistory_ver1(listHist.get(0).getCid(), listHist.get(0).getSid(), new ArrayList<>());
 		DateHistoryItem dateItem = null;
 		for (BsymtAffJobTitleHist item : listHist) {
 			dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
@@ -41,23 +41,23 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	 * @param domain
 	 * @return
 	 */
-	private BsymtAffJobTitleHist toEntity(String sId, DateHistoryItem domain) {
-		return new BsymtAffJobTitleHist(domain.identifier(), sId, domain.start(), domain.end());
+	private BsymtAffJobTitleHist toEntity(String cid, String sId, DateHistoryItem domain) {
+		return new BsymtAffJobTitleHist(domain.identifier(), sId, cid, domain.start(), domain.end());
 	}
 
 	@Override
-	public Optional<AffJobTitleHistory_ver1> getListBySid(String sid) {
+	public Optional<AffJobTitleHistory_ver1> getListBySid(String cid, String sid) {
 		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
 				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID, BsymtAffJobTitleHist.class).setParameter("sid", sid).getList();
 		if (!listHist.isEmpty()) {
-			return Optional.of(toAffJobTitleHist(sid, listHist));
+			return Optional.of(toAffJobTitleHist(listHist));
 		}
 		return Optional.empty();
 	}
 
 	@Override
-	public void add(String sid, DateHistoryItem item) {
-		this.commandProxy().insert(toEntity(sid, item));
+	public void add(String cid, String sid, DateHistoryItem item) {
+		this.commandProxy().insert(toEntity(cid, sid, item));
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	}
 
 	private AffJobTitleHistory_ver1 toDomain(BsymtAffJobTitleHist ent) {
-		AffJobTitleHistory_ver1 domain = new AffJobTitleHistory_ver1(ent.getSid(), new ArrayList<>());
+		AffJobTitleHistory_ver1 domain = new AffJobTitleHistory_ver1(ent.getCid(), ent.getSid(), new ArrayList<>());
 		DateHistoryItem dateItem = new DateHistoryItem(ent.getHisId(),
 				new DatePeriod(ent.getStrDate(), ent.getEndDate()));
 

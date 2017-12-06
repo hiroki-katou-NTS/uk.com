@@ -23,11 +23,6 @@ public class CareHoliday extends TempAbsenceHisItem {
 	 */
 	private Integer sameFamilyDays;
 
-	/**
-	 * 家族メンバーId Family member id
-	 */
-	private String familyMemberId;
-
 	public CareHoliday() {
 
 	}
@@ -39,14 +34,13 @@ public class CareHoliday extends TempAbsenceHisItem {
 	 */
 	private CareHoliday(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
 			Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
-		super(LeaveHolidayType.NURSING_CARE_LEAVE, historyId, employeeId, remarks, soInsPayCategory);
+		super(LeaveHolidayType.NURSING_CARE_LEAVE, historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 		this.sameFamily = sameFamily;
 		this.sameFamilyDays = sameFamilyDays;
-		this.familyMemberId = familyMemberId;
 	}
 
-	public static CareHoliday init(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
+	public static CareHoliday init(String historyId, String employeeId, String remarks, Integer soInsPayCategory,
+			Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
 		return new CareHoliday(historyId, employeeId, new GenericString(remarks), soInsPayCategory, sameFamily,
 				sameFamilyDays, familyMemberId);
 	}

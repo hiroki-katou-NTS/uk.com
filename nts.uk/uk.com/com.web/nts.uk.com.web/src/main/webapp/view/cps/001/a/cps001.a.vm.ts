@@ -74,7 +74,6 @@ module cps001.a.vm {
         person: KnockoutComputed<PersonInfo> = ko.computed(() => {
             let self = this,
                 employee = self.employee();
-
             return employee.personInfo();
         });
 
@@ -110,7 +109,7 @@ module cps001.a.vm {
             });
 
             self.tabActive.subscribe(tab => {
-                let employeeId = employee.employeeId();
+                let employeeId: string = employee.employeeId();
                 if (!!employeeId) {
                     // clear all error message
                     clearError();
@@ -118,7 +117,7 @@ module cps001.a.vm {
                         default:
                         case TABS.LAYOUT: // layout mode
                             self.listLayout.removeAll();
-                            service.getAllLayout().done((data: Array<ILayout>) => {
+                            service.getAllLayout(employeeId).done((data: Array<ILayout>) => {
                                 if (data && data.length) {
                                     self.listLayout(data);
                                     layout.maintenanceLayoutID(data[0].maintenanceLayoutID);
@@ -197,9 +196,12 @@ module cps001.a.vm {
             category.id.subscribe(id => {
                 if (id) {
                     let query = {
-                        ctgId: id,
-                        empId: employee.employeeId(),
-                        standardDate: moment.utc()
+                        categoryId: id,
+                        employeeId: employee.employeeId(),
+                        standardDate: moment.utc(),
+                        categoryCode: undefined,
+                        personId: undefined,
+                        infoId: undefined
                     };
 
                     service.getTabInfo(query).done(data => {
@@ -279,6 +281,11 @@ module cps001.a.vm {
             });
         }
 
+        filterData() {
+            let self = this;
+
+        }
+
         saveData() {
             let self = this;
 
@@ -325,7 +332,7 @@ module cps001.a.vm {
         id: string;
         categoryCode?: string;
         categoryName?: string;
-        categoryType?: number;
+        categoryType?: IT_CAT_TYPE;
         isFixed?: number;
     }
 
@@ -333,7 +340,7 @@ module cps001.a.vm {
         id: KnockoutObservable<string> = ko.observable('');
         categoryCode: KnockoutObservable<string> = ko.observable('');
         categoryName: KnockoutObservable<string> = ko.observable('');
-        categoryType: KnockoutObservable<number> = ko.observable(0);
+        categoryType: KnockoutObservable<IT_CAT_TYPE> = ko.observable(0);
         isFixed: KnockoutObservable<number> = ko.observable(0);
 
         constructor(param: ICategory) {
@@ -429,11 +436,19 @@ module cps001.a.vm {
 
                     // get employee && employment info
                     service.getEmpInfo(id).done((data: IEmployeeInfo) => {
-                        self.employeeCode(data.employeeCode);
+                        if (data) {
+                            self.employeeCode(data.employeeCode);
 
-                        // set entire days with data receive
-                        self.daysOfEntire(data.daysOfEntire);
-                        self.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                            // set entire days with data receive
+                            self.daysOfEntire(data.daysOfEntire);
+                            self.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                        } else {
+                            self.employeeCode(undefined);
+
+                            // set entire days is zero
+                            self.daysOfEntire(0);
+                            self.daysOfTemporaryAbsence(0);
+                        }
                     }).fail(() => {
                         self.employeeCode(undefined);
 
@@ -542,7 +557,14 @@ module cps001.a.vm {
         CATEGORY = <any>"category"
     }
 
-
+    // define ITEM_CATEGORY_TYPE
+    enum IT_CAT_TYPE {
+        SINGLE = 1, // Single info
+        MULTI = 2, // Multi info
+        CONTINU = 3, // Continuos history
+        NODUPLICATE = 4, //No duplicate history
+        DUPLICATE = 5 // Duplicate history
+    }
 
     interface IPeregQuery {
         ctgId: string;

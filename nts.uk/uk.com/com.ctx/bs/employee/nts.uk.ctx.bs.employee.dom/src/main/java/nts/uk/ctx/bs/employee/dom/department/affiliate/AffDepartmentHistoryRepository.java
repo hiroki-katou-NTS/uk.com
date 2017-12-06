@@ -34,7 +34,7 @@ public interface AffDepartmentHistoryRepository {
 	 * @param sid
 	 * @param domain
 	 */
-	void add(String sid, DateHistoryItem domain);
+	void add(String cid, String sid, DateHistoryItem domain);
 	/**
 	 * 取得した「所属部門」を更新する
 	 * @param domain

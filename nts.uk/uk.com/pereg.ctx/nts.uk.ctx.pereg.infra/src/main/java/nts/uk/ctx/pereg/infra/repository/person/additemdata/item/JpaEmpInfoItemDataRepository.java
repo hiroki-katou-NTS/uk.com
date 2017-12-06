@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.infra.repository.person.additemdata.item;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,22 @@ import nts.uk.ctx.pereg.infra.entity.person.additemdata.item.PpemtEmpInfoItemDat
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
 
+	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE_NEW = "SELECT id.ppemtEmpInfoItemDataPk.perInfoDefId, "
+			+ "id.ppemtEmpInfoItemDataPk.recordId, "
+			+ "pi.requiredAtr, "
+			+ "id.saveDataType, "
+			+ "id.stringValue, "
+			+ "id.intValue, "
+			+ "id.dateValue, "
+			+ "pi.itemName,"
+			+ "pi.itemCd,"
+			+ "pc.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ "pc.categoryCd "
+			+ "FROM PpemtEmpInfoItemData id"
+			+ " INNER JOIN PpemtPerInfoItem pi"
+			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON id.ppemtEmpInfoItemDataPk.recordId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
+	
 	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,pc.ppemtPerInfoCtgPK.perInfoCtgId,pc.categoryCd FROM PpemtEmpInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
@@ -25,17 +42,32 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	public final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd AND pc.cid = :companyId AND ic.employeeId= :employeeId";
 
-	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
+	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE_NEW
 			+ " WHERE id.ppemtEmpInfoItemDataPk.recordId = :recordId";
 	
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.personInfoCtgId = :ctgid AND ic.employeeId = :sid";
-	private static final String DELETE_ITEM_DATA = "DELETE FROM PpemtEmpInfoItemData p WHERE ppemtEmpInfoItemDataPk.recordId = :recordId";
+	private static final String DELETE_ITEM_DATA = "DELETE FROM PpemtEmpInfoItemData WHERE ppemtEmpInfoItemDataPk.recordId = :recordId";
 	@Override
 	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING, Object[].class)
 				.setParameter("categoryCd", categoryCd).setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId).getList(c -> toDomain(c));
+	}
+	
+	private EmpInfoItemData toDomainNew(Object[] entity) {
+
+		int dataStateType = entity[3] != null ? Integer.valueOf(entity[3].toString()) : 0;
+
+		BigDecimal intValue = new BigDecimal(entity[5] != null ? Integer.valueOf(entity[5].toString()) : 0);
+
+		GeneralDate dateValue = entity[6] != null ? GeneralDate.fromString(String.valueOf(entity[6].toString()), "yyyy-MM-dd") : GeneralDate.legacyDate(new Date());
+		String stringValue = entity[4] != null ? entity[4].toString() : "";
+
+		int isRequired = Integer.parseInt(entity[2] != null ? entity[2].toString() : "0");
+		
+		return EmpInfoItemData.createFromJavaType(entity[8].toString(), entity[0].toString(), entity[1].toString(), entity[9].toString(), entity[10].toString(), 
+				entity[7].toString(), isRequired, dataStateType, stringValue, intValue, dateValue);
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {
@@ -52,11 +84,13 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 				entity[11].toString(), entity[12].toString(), entity[9].toString(), isRequired, dataStateType,
 				entity[5].toString(), intValue, dateValue);
 	}
+	
+	
 
 	@Override
 	public List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId) {
 		List<EmpInfoItemData> lstObj =  this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
-				.setParameter("recordId", recordId).getList(c -> toDomain(c));
+				.setParameter("recordId", recordId).getList(c -> toDomainNew(c));
 		return lstObj == null ? new ArrayList<>() : lstObj;
 	}
 

@@ -54,6 +54,10 @@ public class LayoutingProcessor {
 		val finderClass = this.finders.get(query.getCategoryCode());
 		PeregDomainDto domainDto = finderClass.findSingle(query);
 		
+		if ( domainDto == null ) {
+			return null;
+		}
+		
 		PeregDto peregDto = new PeregDto(domainDto, finderClass.dtoClass(), finderClass.dataType());
 		// get optional data
 		setUserDefData(peregDto);
@@ -90,10 +94,8 @@ public class LayoutingProcessor {
 		return finderClass.getListFirstItems(query);
 	}
 	
-	private void setUserDefData(PeregDto peregDto){
-		
-		if( peregDto.getDataType() == DataClassification.PERSON)
-			
+	private void setUserDefData(PeregDto peregDto){		
+		if( peregDto.getDataType() == DataClassification.PERSON)			
 			peregDto.setPerOptionalData(perOptRepo.getData(peregDto.getDomainDto().getRecordId()));
 		else 
 			peregDto.setEmpOptionalData(empOptRepo.getData(peregDto.getDomainDto().getRecordId()));

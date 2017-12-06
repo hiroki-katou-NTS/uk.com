@@ -15,6 +15,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -43,8 +44,10 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_BY_PRIMARY_KEY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.pId = :pId", "AND c.bsymtAffCompanyHistPk.sId = :sId",
 			"AND c.bsymtAffCompanyHistPk.historyId = :histId");
+
 	private static final String SELECT_BY_HISTORY_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.historyId = :histId");
+
 	@Override
 	public void add(AffCompanyHist domain) {
 		this.commandProxy().insertAll(toEntities(domain));
@@ -109,7 +112,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 
 	private AffCompanyHist toDomain(List<BsymtAffCompanyHist> entities) {
-		if (entities.isEmpty()){
+		if (entities.isEmpty()) {
 			return null;
 		}
 		AffCompanyHist domain = new AffCompanyHist();
@@ -145,12 +148,13 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 
 	private List<BsymtAffCompanyHist> toEntities(AffCompanyHist domain) {
+		String companyId = AppContexts.user().companyId();
 		List<BsymtAffCompanyHist> entities = new ArrayList<BsymtAffCompanyHist>();
 		for (AffCompanyHistByEmployee hist : domain.getLstAffCompanyHistByEmployee()) {
 			for (AffCompanyHistItem item : hist.getLstAffCompanyHistoryItem()) {
 				BsymtAffCompanyHistPk entityPk = new BsymtAffCompanyHistPk(domain.getPId(), hist.getSId(),
 						item.getHistoryId());
-				BsymtAffCompanyHist entity = new BsymtAffCompanyHist(entityPk,
+				BsymtAffCompanyHist entity = new BsymtAffCompanyHist(entityPk, companyId,
 						BooleanUtils.toInteger(item.isDestinationData()), item.getDatePeriod().start(),
 						item.getDatePeriod().end(), null);
 
@@ -160,45 +164,57 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 		return entities;
 	}
-	
 
 	/**
 	 * Update entity from domain
+	 * 
 	 * @param item
 	 * @param entity
 	 */
-	private void updateEntity(AffCompanyHistItem item,BsymtAffCompanyHist entity){	
+	private void updateEntity(AffCompanyHistItem item, BsymtAffCompanyHist entity) {
 		entity.startDate = item.start();
 		entity.endDate = item.end();
 	}
 
 	/**
 	 * Convert to entity
+	 * 
 	 * @param histItem
 	 * @param pId
 	 * @param sid
 	 * @return BsymtAffCompanyHist
 	 */
-	private BsymtAffCompanyHist toEntity(AffCompanyHistItem histItem, String pId, String sid){
+	private BsymtAffCompanyHist toEntity(AffCompanyHistItem histItem, String pId, String sid) {
+		String companyId = AppContexts.user().companyId();
 		BsymtAffCompanyHistPk bsymtAffCompanyHistPk = new BsymtAffCompanyHistPk(pId, sid, histItem.getHistoryId());
-		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, 0, histItem.start(), histItem.end(), null);
+		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, companyId, 0, histItem.start(), histItem.end(), null);
 	}
+
 	@Override
 	public void add(String sid, String pId, AffCompanyHistItem item) {
 		this.commandProxy().insert(toEntity(item, pId, sid));
 	}
-	
+
 	@Override
 	public void update(AffCompanyHistItem itemToBeUpdated) {
-		
-		Optional<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID,BsymtAffCompanyHist.class)
+
+		Optional<BsymtAffCompanyHist> existItem = this.queryProxy()
+				.query(SELECT_BY_HISTORY_ID, BsymtAffCompanyHist.class)
 				.setParameter("histId", itemToBeUpdated.getHistoryId()).getSingle();
-		
-		if (!existItem.isPresent()){
+
+		if (!existItem.isPresent()) {
 			throw new RuntimeException("Invalid AffCompanyHistItem");
 		}
 		updateEntity(itemToBeUpdated, existItem.get());
 		this.commandProxy().update(existItem.get());
+	}
+
+	@Override
+	public AffCompanyHist getAffCompanyHistoryOfHistInfo(String histId) {
+		List<BsymtAffCompanyHist> existItem = this.queryProxy().query(SELECT_BY_HISTORY_ID, BsymtAffCompanyHist.class)
+				.setParameter("histId", histId).getList();
+
+		return toDomain(existItem);
 	}
 
 }

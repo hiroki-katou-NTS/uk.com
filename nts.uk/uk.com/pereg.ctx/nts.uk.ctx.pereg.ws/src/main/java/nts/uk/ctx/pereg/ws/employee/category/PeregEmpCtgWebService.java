@@ -26,14 +26,14 @@ public class PeregEmpCtgWebService {
 	private EmpCtgFinder empCtgFinder;;
 
 	@POST
-	@Path("getAll/{employeeId}")
+	@Path("getall/{employeeId}")
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(@PathParam("employeeId") String employeeIdSelected) {
 		return empCtgFinder.getAllPerInfoCtg(employeeIdSelected);
 	}
 
 	//
 	@POST
-	@Path("getListInfoCategory")
+	@Path("getlistinfocategory")
 	public List<ComboBoxObject> getListInfoCategory(PeregQuery query) {
 		return empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
 	}
