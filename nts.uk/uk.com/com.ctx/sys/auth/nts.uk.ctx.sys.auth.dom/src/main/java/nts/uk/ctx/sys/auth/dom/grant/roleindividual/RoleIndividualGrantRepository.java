@@ -62,16 +62,17 @@ public interface RoleIndividualGrantRepository {
 	 * @param companyId
 	 * @param roleType
 	 */
-	void remove(String userId, String companyId, RoleType roleType);
+	void remove(String userId, String companyId, int roleType);
 
 	List<RoleIndividualGrant> findByRoleId(String roleId);
 
-	Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, RoleType roleType);
+	Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, int roleType);
 	
 	RoleIndividualGrant findByKey(String userId, String companyId, String roleId);
 
 	Optional<RoleIndividualGrant> findByUser(String userId, GeneralDate today);
     
 	List<RoleIndividualGrant> findByCompanyIdAndRoleType(String companyID, int roleType);
+
 
 }

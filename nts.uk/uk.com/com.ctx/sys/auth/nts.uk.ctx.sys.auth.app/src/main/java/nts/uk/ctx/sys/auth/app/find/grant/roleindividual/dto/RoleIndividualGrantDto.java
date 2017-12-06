@@ -7,15 +7,28 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 @Value
 public class RoleIndividualGrantDto {
 
+	 private String companyID;
+	
+	 private int roleType;
+	 
+	 private String loginID;
+	 
 	 private String userID;
+	 
+	 private String userName;
 	 
 	 private GeneralDate startValidPeriod;
 	 
 	 private GeneralDate endValidPeriod;
 	 
-	 public static RoleIndividualGrantDto fromDomain(RoleIndividualGrant domain){
+	 public static RoleIndividualGrantDto fromDomain(RoleIndividualGrant domain, String userName , String loginID) {
 		 return new RoleIndividualGrantDto(
+				 domain.getCompanyId(),
+				 domain.getRoleType().value,
 				 domain.getUserId(),
-				 domain.getValidPeriod().start(), domain.getValidPeriod().end());
+				 userName,
+				 loginID,
+				 domain.getValidPeriod().start(),
+				 domain.getValidPeriod().end());
 	 }
 }

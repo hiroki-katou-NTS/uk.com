@@ -10,7 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
+			</com:ValidatorScript>
 			<com:stylefile path="cas012.a.style.css" />
 			<com:scriptfile path="cas012.a.vm.js" />
 			<com:scriptfile path="cas012.a.service.js" />
@@ -20,9 +20,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button tabindex="1" data-bind="click :createBtn">#{i18n.getText('CAS0012_4')}</button>
-				<button class="proceed" tabindex="2"
-					data-bind="click : openCAS012_C">#{i18n.getText('CAS0012_5')}</button>
-				<button class="danger" tabindex="3">#{i18n.getText('CAS0012_6')}</button>
+				<button class="proceed" tabindex="2" data-bind="click : openCAS012_C">#{i18n.getText('CAS0012_5')}</button>
+				<button class="danger" tabindex="3" data-bind="click: deleteBtn">#{i18n.getText('CAS0012_6')}</button>
 				<button data-bind="click : registryBtn">Save</button>
 			</div>
 			<div class="container">
@@ -61,10 +60,9 @@
 							data-bind="ntsGridList: {								
 							height: 350,
 							dataSource: listRoleIndividual,
-							primaryKey: 'codeRoleIndividual',
+							primaryKey: 'GUID',
 							columns: columns,
-							value: currentCode
-					}"></table>
+							value: currentCode}"></table>
 					</div>
 					<div class="right-content">
 						<button style="margin: 0px, 30px, 30px, 20px" id="SlectUser"
