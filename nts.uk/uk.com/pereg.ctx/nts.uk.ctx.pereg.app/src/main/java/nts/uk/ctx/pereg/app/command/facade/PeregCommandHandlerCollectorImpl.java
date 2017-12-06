@@ -50,9 +50,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffJobTitleMainCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddEmploymentHistoryCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<AddAffCompanyHistoryCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<AddPersonCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<AddEmployeeDataMngInfoCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffCompanyHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddPersonCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddEmployeeDataMngInfoCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){}
 			);
 	
