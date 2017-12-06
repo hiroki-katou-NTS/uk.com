@@ -5,7 +5,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -17,7 +19,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoDto> {
 	@Inject
 	AffCompanyHistRepository achFinder;
-	
+
 	@Inject
 	AffCompanyInfoRepository aciFinder;
 
@@ -37,8 +39,12 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 	}
 
 	@Override
-	public PeregDomainDto getSingleData(PeregQuery query) {
-		return null;
+	public AffCompanyHistInfoDto getSingleData(PeregQuery query) {
+		AffCompanyInfo info = aciFinder.getAffCompanyInfoByHistId(query.getInfoId());
+
+		AffCompanyHist domain = achFinder.getAffCompanyHistoryOfHistInfo(query.getInfoId());
+
+		return AffCompanyHistInfoDto.fromDomain(domain, info);
 	}
 
 	@Override
