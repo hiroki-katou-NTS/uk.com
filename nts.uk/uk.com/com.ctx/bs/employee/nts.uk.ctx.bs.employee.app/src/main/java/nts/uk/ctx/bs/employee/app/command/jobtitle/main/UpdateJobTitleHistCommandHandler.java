@@ -16,7 +16,7 @@ public class UpdateJobTitleHistCommandHandler extends CommandHandler<UpdateJobTi
 	@Inject
 	private JobTitleMainRepository jobTitleMainRepository;
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00009";
 	}
 

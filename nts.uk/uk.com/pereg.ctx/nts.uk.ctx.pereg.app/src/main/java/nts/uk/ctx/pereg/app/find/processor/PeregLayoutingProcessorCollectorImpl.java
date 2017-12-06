@@ -9,9 +9,9 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
-import nts.uk.shr.pereg.app.find.PeregFinderProcessorCollector;
-import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.ctx.bs.employee.app.find.person.PersonLayoutDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
+import nts.uk.shr.pereg.app.find.PeregQuery;
 
 
 @Stateless
@@ -20,7 +20,7 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 
 	/** finder */
 	private static final List<TypeLiteral<?>> FINDER_HANDLER_CLASSES = Arrays.asList(
-			new TypeLiteral<PeregFinder<Object, PeregQuery>>(){}
+			new TypeLiteral<PeregFinder<PersonLayoutDto, PeregQuery>>(){}
 			);
 	
 	@Override

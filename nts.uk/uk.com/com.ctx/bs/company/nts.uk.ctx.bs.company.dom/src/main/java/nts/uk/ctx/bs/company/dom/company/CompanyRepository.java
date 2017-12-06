@@ -27,7 +27,7 @@ public interface CompanyRepository {
 	 * get all company from database
 	 * @author: Hoang Yen
 	 */
-	List<CompanyInforNew> findAll(String contractCd);
+	List<CompanyInforNew> findAll();
 	
 	/**
 	 * find a company infor item by code 
@@ -38,7 +38,7 @@ public interface CompanyRepository {
 	 * @return
 	 * 
 	 */
-	Optional<CompanyInforNew> findComByCode(String contractCd, String companyId, String companyCd);
+	Optional<CompanyInforNew> findComByCode(String companyId);
 	
 	/**
 	 * get address
@@ -46,7 +46,7 @@ public interface CompanyRepository {
 	 * @return
 	 * @author Hoang Yen
 	 */
-	Optional<AddInfor> findAdd(String companyId, String companyCode, String contractCd);
+	Optional<AddInfor> findAdd(String companyId);
 	
 	/** 
 	 * update a company
@@ -91,5 +91,6 @@ public interface CompanyRepository {
 	 */
 	Optional<Company> getComanyInfoByCid(String cid);
 	
+	boolean checkAbolish(String currentCompanyId);
 }
 

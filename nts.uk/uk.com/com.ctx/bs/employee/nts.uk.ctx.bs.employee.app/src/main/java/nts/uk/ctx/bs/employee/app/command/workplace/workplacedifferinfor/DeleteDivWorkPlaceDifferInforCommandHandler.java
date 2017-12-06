@@ -26,13 +26,10 @@ public class DeleteDivWorkPlaceDifferInforCommandHandler extends CommandHandler<
 	protected void handle(CommandHandlerContext<DeleteDivWorkPlaceDifferInforCommand> context) {
 		DeleteDivWorkPlaceDifferInforCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
-		Optional<DivWorkDifferInfor> div = divRep.findDivWork(data.getCompanyId(), data.getCompanyCode(), 
-																data.getContractCd());
+		Optional<DivWorkDifferInfor> div = divRep.findDivWork(data.getCompanyId());
 		if(!div.isPresent()){
 			throw new BusinessException("対象データがありません。");
 		}
 		divRep.deleteDivWork(data.getCompanyId(), data.getCompanyCode(), contractCd);
 	}
-	
-	
 }

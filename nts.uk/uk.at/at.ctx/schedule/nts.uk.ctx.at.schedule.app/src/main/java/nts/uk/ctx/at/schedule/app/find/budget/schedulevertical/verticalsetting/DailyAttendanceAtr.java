@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * TanLV
+ *
+ */
 @AllArgsConstructor
 public enum DailyAttendanceAtr {
 	/** コード */

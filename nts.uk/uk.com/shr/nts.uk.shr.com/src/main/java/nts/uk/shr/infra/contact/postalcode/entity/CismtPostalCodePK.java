@@ -16,4 +16,8 @@ public class CismtPostalCodePK implements Serializable{
 	/** 郵便番号ID **/
 	@Column(name = "POSTAL_ID")
 	public String postalId;
+	
+	/** 契約コード **/
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 }

@@ -15,6 +15,7 @@ import command.person.setting.init.InsertInitValueSettingCommand;
 import command.person.setting.init.InsertInitValueSettingHandler;
 import find.person.setting.init.PerInfoInitValueSettingDto;
 import find.person.setting.init.PerInfoInitValueSettingFinder;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/setting/init")
@@ -40,8 +41,8 @@ public class PerInfoInitValueSettingWebservice extends WebService {
 
 	@POST
 	@Path("add")
-	public void add(InsertInitValueSettingCommand command) {
-		this.add.handle(command);
+	public JavaTypeResult<String> add(InsertInitValueSettingCommand command) {
+		return new JavaTypeResult<String>(this.add.handle(command));
 	}
 
 	@POST
@@ -63,7 +64,7 @@ public class PerInfoInitValueSettingWebservice extends WebService {
 	// hoatt
 	@POST
 	@Path("copyInitValue")
-	public void copyInitValueCtg(CopyInitValueSetCommand command) {
-		this.copyInitValue.handle(command);
+	public JavaTypeResult<String> copyInitValueCtg(CopyInitValueSetCommand command) {
+		return new JavaTypeResult<String>(this.copyInitValue.handle(command));
 	}
 }

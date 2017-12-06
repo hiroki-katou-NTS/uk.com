@@ -42,7 +42,7 @@ module nts.uk.at.view.ksu001.c {
                 $('#error-status').css('display', '');
                 $('#error-output').css('display', '');
                 $('#stop').css('display', 'none');
-                nts.uk.ui.windows.getSelf().setHeight(420);
+                nts.uk.ui.windows.getSelf().setHeight(730);
                 nts.uk.ui.windows.getSelf().setWidth(910);
             }
             /**
@@ -96,6 +96,7 @@ module nts.uk.at.view.ksu001.c {
                             }
                             if (res.succeeded) {
                                 $('.countdown').stopCount();
+                                let arrayItems = [];
                                 _.forEach(res.taskDatas, item => {
                                     if (item.key == 'IS_ERROR') {
                                         if (item.valueAsBoolean == false) {
@@ -110,21 +111,26 @@ module nts.uk.at.view.ksu001.c {
                                             $('#state').css({ 'color': 'red' });
                                             $('#number-error').css({ 'color': 'red' });
                                             self.isError(true);
-                                            nts.uk.ui.windows.getSelf().setHeight(420);
+                                            nts.uk.ui.windows.getSelf().setHeight(730);
                                             nts.uk.ui.windows.getSelf().setWidth(910);
                                         }
                                     } else {
                                         if (item.valueAsString) {
-                                            self.inforError.push(new InforError(JSON.parse(item.valueAsString)));
-                                            self.numberError(self.inforError().length + '件');
+                                            arrayItems.push(item);
                                         }
                                     }
                                 });
+                                let sortList = _.sortBy(arrayItems, o => { return parseInt(o.key.slice(4)); });
+                                let listInforErrors = _.map(sortList,obj2=>{
+                                    return new InforError(JSON.parse(obj2.valueAsString));    
+                                });
+                                self.inforError(listInforErrors);
+                                 self.numberError(self.inforError().length + '件');
                             }
                             if (res.cancelled || res.failed) {
                                 $('.countdown').stopCount();
                                 self.processingState(nts.uk.resource.getText('KSU001_215'));
-                                self.state('KSU001_213');
+                                self.state(nts.uk.resource.getText('KSU001_213'));
                             }
                         });
                     })

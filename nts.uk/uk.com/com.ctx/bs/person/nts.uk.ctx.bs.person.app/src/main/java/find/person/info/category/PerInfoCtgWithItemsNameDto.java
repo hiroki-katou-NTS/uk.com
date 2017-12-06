@@ -10,5 +10,6 @@ public class PerInfoCtgWithItemsNameDto {
 	private String categoryName;
 	private int categoryType;
 	private int isFixed;
+	private int personEmployeeType;
 	private List<String> itemNameList;
 }

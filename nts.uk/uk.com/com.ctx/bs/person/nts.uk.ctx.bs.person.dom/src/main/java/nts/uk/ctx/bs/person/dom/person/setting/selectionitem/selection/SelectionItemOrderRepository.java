@@ -11,7 +11,7 @@ import java.util.List;
 public interface SelectionItemOrderRepository {
 	void add(SelectionItemOrder selectionItemOrder);
 
-	void remove(String selectionItemOrder);
+	void remove(String selectionId);
 	
 	List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId);
 	

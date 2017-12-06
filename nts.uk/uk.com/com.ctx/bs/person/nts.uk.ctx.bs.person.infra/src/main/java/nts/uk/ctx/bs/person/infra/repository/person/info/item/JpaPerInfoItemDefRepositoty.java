@@ -693,4 +693,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					return createDomainFromEntity(i, items);
 				});
 	}
+
+	@Override
+	public boolean checkExistedSelectionItemId(String ctgId, String itemId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

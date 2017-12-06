@@ -4,10 +4,11 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSetting;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSettingRepository;
@@ -20,24 +21,28 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class InsertInitValueSettingHandler extends CommandHandler<InsertInitValueSettingCommand> {
+@Transactional
+public class InsertInitValueSettingHandler extends CommandHandlerWithResult<InsertInitValueSettingCommand, String> {
 
 	@Inject
 	private PerInfoInitValueSettingRepository settingRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<InsertInitValueSettingCommand> context) {
+	protected String handle(CommandHandlerContext<InsertInitValueSettingCommand> context) {
 		InsertInitValueSettingCommand insert = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		String initSettingId = 	IdentifierUtil.randomUniqueId();
 		Optional<PerInfoInitValueSetting> setting = this.settingRepo.getDetailInitValSetting(companyId,
 				insert.getItemCode());
 		if (setting.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
 			PerInfoInitValueSetting initSetting = PerInfoInitValueSetting.createFromJavaType(
-					IdentifierUtil.randomUniqueId(), companyId, insert.getItemCode(), insert.getItemName());
+					initSettingId, companyId, insert.getItemCode(), insert.getItemName());
 			this.settingRepo.insert(initSetting);
 		}
+		
+		return initSettingId;
 
 	}
 

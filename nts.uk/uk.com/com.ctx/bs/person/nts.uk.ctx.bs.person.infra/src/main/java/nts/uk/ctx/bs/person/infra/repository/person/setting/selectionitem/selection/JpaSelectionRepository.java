@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelection;
 import nts.uk.ctx.bs.person.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 
@@ -28,20 +29,26 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	private static final String SELECT_ALL_SELECTION_BY_SELECTIONID = SELECT_ALL
 			+ " WHERE si.selectionId = :selectionId";
 
-	//Lanlt
+	// Lanlt
+	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE = " SELECT se , item.selectionItemName FROM PpemtSelectionItem  item"
+			+ " INNER JOIN PpemtHistorySelection his "
+			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelection se"
+			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelItemOrder order"
+			+ " ON his.histidPK.histId = order.histId "
+			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
+			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
+			+ " AND item.selectionItemClsAtr =:selectionItemClsAtr "
+			+ " ORDER BY order.dispOrder";
+	
 	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem  item"
 			+ " INNER JOIN PpemtHistorySelection his "
-			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId"
-			+ " INNER JOIN PpemtSelection se"
-			+ " ON his.histidPK.histId = se.histId"
-			+ " INNER JOIN PpemtSelItemOrder order"
+			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelection se"
+			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelItemOrder order"
 			+ " ON his.histidPK.histId = order.histId "
-			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId "
-			+ " WHERE his.startDate <= :baseDate"
-			+ " AND his.endDate >= :baseDate "
-			+ " AND item.selectionItemPk.selectionItemId =:selectionItemId"
+			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
+			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
 			+ " ORDER BY order.dispOrder";
-	//Lanlt
+	// Lanlt
 
 	@Override
 	public void add(Selection selection) {
@@ -51,8 +58,14 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	@Override
 	public void update(Selection selection) {
-		this.commandProxy().update(toEntity(selection));
-
+		PpemtSelection newEntity = toEntity(selection);
+		PpemtSelection updateEntity = this.queryProxy().find(newEntity.selectionId, PpemtSelection.class).get();
+		updateEntity.selectionName = newEntity.selectionName;
+		updateEntity.externalCd = newEntity.externalCd;
+		updateEntity.histId = newEntity.histId;
+		updateEntity.selectionCd = newEntity.selectionCd;
+		updateEntity.memo = newEntity.memo;
+		this.commandProxy().update(updateEntity);
 	}
 
 	@Override
@@ -66,6 +79,15 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	private Selection toDomain(PpemtSelection entity) {
 		return Selection.createFromSelection(entity.selectionId.selectionId, entity.histId, entity.selectionCd,
 				entity.selectionName, entity.externalCd, entity.memo);
+
+	}
+	
+	// Domain:
+	private Selection toDomain(Object[] entity) {
+		PpemtSelection sel =  (PpemtSelection) entity[0];
+		Selection sel1 = Selection.createFromSelection(sel.selectionId.selectionId, sel.histId, sel.selectionCd,
+				sel.selectionName, sel.externalCd, sel.memo, entity[1].toString());
+		return sel1;
 
 	}
 
@@ -110,21 +132,29 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	}
 
-	//Lanlt
+	// Lanlt
 	@Override
-	public List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate) {
-		List<Selection>  selectionLst = this.queryProxy().query(SEL_ALL_BY_SEL_ID, PpemtSelection.class)
+	public List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate, int selectionItemClsAtr) {
+		List<Selection> selectionLst = this.queryProxy().query(SEL_ALL_BY_SEL_ID_PERSON_TYPE, Object[].class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("baseDate", baseDate)
+				.setParameter("selectionItemClsAtr", selectionItemClsAtr)
 				.getList(c -> toDomain(c));
 		return selectionLst;
 	}
-	//Lanlt
-	
+	// Lanlt
+
 	@Override
 	public List<Selection> getAllSelectionBySelectionID(String selectionId) {
 		return this.queryProxy().query(SELECT_ALL_SELECTION_BY_SELECTIONID, PpemtSelection.class)
 				.setParameter("selectionId", selectionId).getList(c -> toDomain(c));
 	}
 
-	
+	@Override
+	public List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate) {
+		List<Selection> selectionLst = this.queryProxy().query(SEL_ALL_BY_SEL_ID, PpemtSelection.class)
+				.setParameter("selectionItemId", selectionItemId).setParameter("baseDate", baseDate)
+				.getList(c -> toDomain(c));
+		return selectionLst;
+	}
+
 }

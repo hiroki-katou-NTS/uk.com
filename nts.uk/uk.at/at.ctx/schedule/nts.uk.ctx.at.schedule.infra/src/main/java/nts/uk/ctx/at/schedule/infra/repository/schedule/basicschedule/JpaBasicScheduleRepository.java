@@ -128,7 +128,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	@Override
 	public Optional<BasicSchedule> find(String sId, GeneralDate date) {
-		return this.findById(sId, date).map(x -> toDomain(x));
+		Optional<KscdtBasicSchedule> optionalEntity = this.findById(sId, date);
+		if (optionalEntity.isPresent()) {
+			return Optional.of(this.toDomain(optionalEntity.get(), this.findAllWorkScheduleTimeZone(sId, date)));
+		}
+		return Optional.empty();
 	}
 	
 	/**
@@ -314,10 +318,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * To domain.
 	 *
 	 * @param entity the entity
+	 * @param entityTimeZones the entity time zones
 	 * @return the basic schedule
 	 */
-	private BasicSchedule toDomain(KscdtBasicSchedule entity) {
-		return new BasicSchedule(new JpaBasicScheduleGetMemento(entity));
+	private BasicSchedule toDomain(KscdtBasicSchedule entity, List<KscdtWorkScheduleTimeZone> entityTimeZones) {
+		return new BasicSchedule(new JpaBasicScheduleGetMemento(entity, entityTimeZones));
 
 	}
 
@@ -429,5 +434,49 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			int scheduleCnt) {
 		return this.queryProxy().find(new KscdtWorkScheduleTimeZonePK(employeeId, date, scheduleCnt),
 				KscdtWorkScheduleTimeZone.class);
+	}
+	
+	/**
+	 * Find all work schedule time zone.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	private List<KscdtWorkScheduleTimeZone> findAllWorkScheduleTimeZone(String employeeId, GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KSCDT_WORK_SCH_TIMEZONE (KscdtWorkScheduleTimeZone SQL)
+		CriteriaQuery<KscdtWorkScheduleTimeZone> cq = criteriaBuilder.createQuery(KscdtWorkScheduleTimeZone.class);
+
+		// root data
+		Root<KscdtWorkScheduleTimeZone> root = cq.from(KscdtWorkScheduleTimeZone.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal employee id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtWorkScheduleTimeZone_.kscdtWorkScheduleTimeZonePk).get(KscdtWorkScheduleTimeZonePK_.sId),
+				employeeId));
+
+		// equal year month date base date
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtWorkScheduleTimeZone_.kscdtWorkScheduleTimeZonePk).get(KscdtWorkScheduleTimeZonePK_.date),
+				baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+
+		// create query
+		TypedQuery<KscdtWorkScheduleTimeZone> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList();
 	}
 }

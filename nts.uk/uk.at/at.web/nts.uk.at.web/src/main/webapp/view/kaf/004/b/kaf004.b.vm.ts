@@ -62,7 +62,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             self.date.subscribe(value => {
                 self.kaf000_a2.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
                 self.kaf000_a2.getAllApprovalRoot();
-                self.kaf000_a.getMessageDeadline(9, value);
+                self.kaf000_a2.getMessageDeadline(9, value);
             });
         }
 

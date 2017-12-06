@@ -48,7 +48,7 @@ public class PasswordPolicy extends AggregateRoot {
 				new PasswordValidityPeriod(new BigDecimal(validityPeriod)),
 				new NumberOfDigits(new BigDecimal(numberOfDigits)),
 				new SymbolCharacters(new BigDecimal(symbolCharacters)),
-				new AlphabetDigit(new BigDecimal(symbolCharacters)));
+				new AlphabetDigit(new BigDecimal(alphabetDigit)));
 
 	}
 

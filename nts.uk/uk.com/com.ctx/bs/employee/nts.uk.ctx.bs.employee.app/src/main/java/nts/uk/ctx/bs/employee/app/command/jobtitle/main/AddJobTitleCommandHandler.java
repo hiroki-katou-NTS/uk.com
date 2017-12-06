@@ -19,7 +19,7 @@ public class AddJobTitleCommandHandler extends CommandHandlerWithResult<AddJobTi
 	private JobTitleMainRepository jobTitleMainRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00009";
 	}
 

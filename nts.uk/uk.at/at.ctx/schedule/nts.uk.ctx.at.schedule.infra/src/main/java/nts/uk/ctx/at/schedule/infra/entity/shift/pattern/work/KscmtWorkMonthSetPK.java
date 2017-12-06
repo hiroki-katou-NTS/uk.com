@@ -7,10 +7,8 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +16,6 @@ import lombok.Setter;
 /**
  * The Class KscmtWorkMonthSetPK.
  */
-
 @Getter
 @Setter
 @Embeddable
@@ -28,20 +25,14 @@ public class KscmtWorkMonthSetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The cid. */
-	@Basic(optional = false)
-    @NotNull
     @Column(name = "CID")
     private String cid;
     
     /** The m pattern cd. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "M_PATTERN_CD")
     private String mPatternCd;
     
     /** The ymd K. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "YMD_K")
     private BigDecimal ymdK;
 
@@ -49,6 +40,7 @@ public class KscmtWorkMonthSetPK implements Serializable {
      * Instantiates a new kwmmt work month set PK.
      */
     public KscmtWorkMonthSetPK() {
+    	super();
     }
 
 	/**

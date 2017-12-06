@@ -13,7 +13,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 /**
  * The Class SequenceCode.
  */
-@StringCharType(CharType.NUMERIC)
+@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(2)
 @ZeroPaddedCode
 // 序列コード

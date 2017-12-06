@@ -76,7 +76,7 @@ public class DPControlDisplayItem {
 						s.addColumn("Code"+f.getAttendanceItemId());
 						s.addColumn("Name"+f.getAttendanceItemId());
 					}else{
-						s.addColumn(String.valueOf(f.getAttendanceItemId()));
+						s.addColumn("_"+String.valueOf(f.getAttendanceItemId()));
 					}
 				}
 			});
@@ -86,7 +86,7 @@ public class DPControlDisplayItem {
 	public void setHeaderText(List<DPAttendanceItem> lstAttendanceItem) {
 		lstAttendanceItem.stream().forEach(i -> {
 			Optional<DPHeaderDto> header = this.getLstHeader().stream()
-					.filter(h -> h.getKey().equals(String.valueOf(i.getId()))).findFirst();
+					.filter(h -> h.getKey().equals("_"+String.valueOf(i.getId()))).findFirst();
 			if (header.isPresent()) {
 				header.get().setHeaderText(i);
 			}
@@ -110,7 +110,7 @@ public class DPControlDisplayItem {
 	public void setColumnsAccessModifier(List<DPBusinessTypeControl> lstDPBusinessTypeControl) {
 		lstDPBusinessTypeControl.stream().forEach(i -> {
 			Optional<DPHeaderDto> header = this.getLstHeader().stream()
-					.filter(h -> h.getKey().equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
+					.filter(h -> h.getKey().substring(1, h.getKey().length()).equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
 			if (header.isPresent()) {
 				header.get().setChangedByOther(i.isChangedByOther());
 				header.get().setChangedByYou(i.isChangedByYou());

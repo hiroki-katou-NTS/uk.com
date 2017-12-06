@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * TanLV
+ * 応援勤務集計区分
+ */
 @AllArgsConstructor
 public enum AssistanceTabulationAtr {
 	/** 0- 含める **/

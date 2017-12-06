@@ -9,9 +9,19 @@ module kmk003.base.fixtable {
     export interface FixTableOption {
 
         /**
-         * height table
+         * total row maximum table
          */
-        maxRows: number;
+        maxRow: number;
+        
+        /**
+         * total row minimum table
+         */
+        minRow: number;
+        
+        /**
+         * total row display
+         */
+        maxRowDisplay: number;
         
         /**
          * data source table
@@ -22,6 +32,11 @@ module kmk003.base.fixtable {
          * is Multiple select.
          */
         isMultipleSelect: boolean;
+        
+        /**
+         * Show/hide addItem and removeItem button
+         */
+        isShowButton: boolean;
         
         /**
          * set tabIndex
@@ -48,6 +63,11 @@ module kmk003.base.fixtable {
          * Primary key column
          */
         key: string;
+        
+        /**
+         * Default value column
+         */
+        defaultValue: any;
 
         /**
          * width column
@@ -95,18 +115,26 @@ module kmk003.base.fixtable {
         
         // needed when model multiple select
         isSelectAll: KnockoutObservable<boolean>;
+        isVisibleSelectAll: KnockoutObservable<boolean>;
         
+        isEnaleAddButton: KnockoutObservable<boolean>;
+        isEnaleRemoveButton: KnockoutObservable<boolean>;
         // needed when has comboBox, ...
         lstDataSource: any;
         
         isMultiple: boolean;
+        isShowButton: boolean;
         columns: Array<FixColumn>;
-        maxRows: number;
+        maxRow: number;
+        minRow: number;
+        maxRowDisplay: number;
         tableStyle: TableStyle;
         
         $tableSelector: any;
         mapControl: Array<IControl>;
         tabindex: number;
+        
+        tableId: string;
         
         constructor() {
             let self = this;
@@ -114,12 +142,17 @@ module kmk003.base.fixtable {
             self.itemList = ko.observableArray([]);
             self.isSelectAll = ko.observable(false);
             
+            self.isEnaleAddButton = ko.observable(false);
+            self.isEnaleRemoveButton = ko.observable(false);
+            
             self.tableStyle = {
                 height: 0,
                 width: 0
             };
             self.lstDataSource = {};
             self.mapControl = self.createMapControl();
+            
+            self.tableId = "nts-fixed-table-custom-" + nts.uk.util.randomId();
             
             // subscribe
             self.isSelectAll.subscribe(newValue => {
@@ -138,16 +171,27 @@ module kmk003.base.fixtable {
             
             // set data parameter
             self.isMultiple = data.isMultipleSelect;
+            self.isShowButton = data.isShowButton;
             self.columns = data.columns;
-            self.maxRows = data.maxRows;
-            if (!self.maxRows) {
-                self.maxRows = 10;
+            self.maxRow = data.maxRow;
+            self.minRow = data.minRow;
+            self.maxRowDisplay = data.maxRowDisplay;
+            if (!self.maxRowDisplay) {
+                self.maxRowDisplay = 10;
             }
             self.tabindex = data.tabindex;
             if (!self.tabindex) {
                 self.tabindex = -1;
             }
             self.itemList = data.dataSource;
+            
+            self.isVisibleSelectAll = ko.computed(() => {
+                return self.isMultiple && self.minRow < 1;
+            });
+            
+            // update status button
+            self.isEnaleAddButton(self.itemList().length < self.maxRow);
+            self.isEnaleRemoveButton(self.itemList().length > self.minRow);
             
             // add properties isChecked when multiple select
             if (self.isMultiple) {
@@ -156,7 +200,16 @@ module kmk003.base.fixtable {
 
             // subscribe itemList
             self.itemList.subscribe((newList) => {
-                if (!newList || newList.length <= 0) {
+                if (!newList) {
+                     self.isSelectAll(false);
+                    return;
+                }
+                
+                // update status button
+                self.isEnaleAddButton(newList.length < self.maxRow);
+                self.isEnaleRemoveButton(newList.length > self.minRow);
+                
+                if (newList.length <= 0) {
                     self.isSelectAll(false);
                     return;
                 }
@@ -164,9 +217,7 @@ module kmk003.base.fixtable {
                 if (self.isMultiple) {
                     self.addCheckBoxItemAtr();
                 }
-                
-                // re-load table
-                self.loadTable($input);
+                 self.subscribeChangeCheckbox();
             });
 
             // render table
@@ -175,6 +226,32 @@ module kmk003.base.fixtable {
             });
             
             return dfd.promise();
+        }
+        
+        /**
+         * Add a row table
+         */
+        public addRowItem() {
+            let self = this;
+            let row: any = {};
+            _.forEach(self.columns, (column: FixColumn) => {
+                row[column.key] = ko.observable(ko.utils.unwrapObservable(column.defaultValue));
+            });
+            self.itemList.push(row);
+        }
+        
+        /**
+         * Remove row table
+         */
+        public removeItem() {
+            let self = this;
+            
+            // find item is checked
+            let lstItemChecked: Array<any> = self.itemList().filter(item => item.isChecked() == true);
+            if (lstItemChecked.length <= 0) {
+                return;
+            }
+            self.itemList(self.itemList().filter(item => item.isChecked() == false));
         }
         
         /**
@@ -199,10 +276,11 @@ module kmk003.base.fixtable {
                 // render table
                 self.renderTable().done(() => {
                     ko.cleanNode($input[0]);
-                    ko.applyBindings(self, $input[0]);
                     
-                    // override width control
-                    self.overrideWidthControl();
+                    // update table id
+                    $('#fixed-table-custom').attr('id', self.tableId);
+                    
+                    ko.applyBindings(self, $input[0]);
                     
                     nts.uk.ui.block.clear();
                     
@@ -213,29 +291,12 @@ module kmk003.base.fixtable {
         }
         
         /**
-         * Override width control
-         */
-        private overrideWidthControl() {
-            let self = this;
-            
-            // control ntsTimeEditor
-            let timeColumn: FixColumn = self.columns.filter(column => column.template.indexOf('TimeEditor') > -1)[0]; 
-            $('.' + timeColumn.cssClassName).find("span input").width(timeColumn.width - 27);
-            
-            // control ntsComboBox
-            let comboBoxColumn: FixColumn = self.columns.filter(column => column.template.indexOf('ComboBox') > -1)[0]; 
-            $('.' + comboBoxColumn.cssClassName).each(function() {
-                $(this).find("div").first().width(comboBoxColumn.width - 5);
-            });
-        }
-        
-        /**
          * calStyleTable
          */
         private calStyleTable() {
             let self = this;
-            let heigthCell = 36;
-            self.tableStyle.height = heigthCell * self.maxRows + 1;
+            let heigthCell = 32;
+            self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
         }
@@ -324,7 +385,7 @@ module kmk003.base.fixtable {
                     row.isChecked = ko.observable(false);
                     
                     // subscribe
-                    row.isChecked.subscribe((newList) => {
+                    row.isChecked.subscribe(() => {
                         self.subscribeChangeCheckbox();
                     });
                 }
@@ -343,7 +404,7 @@ module kmk003.base.fixtable {
                 {controlType: 'ntsCheckBox', keyValue: 'checked:'},
                 {controlType: 'ntsTimeEditor', keyValue: 'value:'},
                 {controlType: 'ntsComboBox', keyValue: 'value:', keyOptionValue: 'options:'},
-                {controlType: 'ntsDateRangePicker', keyValue: 'value:'}
+                {controlType: 'ntsTimeRangeEditor', keyValue: 'value:'}
             ];
             return mapControl;
         }
@@ -366,7 +427,7 @@ module kmk003.base.fixtable {
             if (!keyValue) {
                 return;
             }
-            let oldProperties: string = template.substring(template.indexOf("{") + 1, template.indexOf("}"));
+            let oldProperties: string = template.substring(template.indexOf("{") + 1, template.lastIndexOf("}"));
             
             // remove spaces
             let newProperties: string = oldProperties.replace(/\s/g, '');
@@ -384,10 +445,54 @@ module kmk003.base.fixtable {
                 newProperties = self.updateElement(newProperties, keyOptionValue,
                     "$parent.lstDataSource." + columnSetting.key);
             }
-            
+
             template = template.replace(oldProperties, newProperties.replace(/"/g, "'"));
             
+            // update width control
+            template = self.updateWidthControl(template, newProperties, columnSetting.width);
+            
             return "<td style='text-align: center;' class='" + columnSetting.cssClassName + "'>" + template + "</td>";
+        }
+        
+        /**
+         * Add/update width control
+         */
+        private updateWidthControl(template: string, properties: string, width: number): string {
+            let self = this;
+            
+            // ======================================== ntsComboBox ===================================
+            if (template.indexOf('ntsComboBox') > -1) {
+                let idx: number = template.indexOf('data-bind');
+                return template.substring(0, idx-1) + " style='width: " + (width - 5) + "px;' "
+                    + template.substring(idx, template.length);
+            }
+
+            // ======================================== ntsTimeEditor ===================================
+            if (template.indexOf('ntsTimeEditor') == -1) {
+                return template;
+            }
+            
+            width = width - 27;
+            
+            // find index
+            let idx: number = properties.indexOf('option');
+
+            // no option
+            if (idx == -1) {
+                return template.replace(properties, properties + ",option:{width:'" + width + "'}");
+            }
+            // has option 
+            let oldOption: string = properties.substring(properties.indexOf("{") + 1, properties.lastIndexOf("}"));
+            let newOption: string = oldOption;
+
+            // check has option width
+            let idxKey: number = newOption.indexOf('width');
+            if (idxKey == -1) {
+                newOption = newOption.replace(self.subString(newOption, idxKey), "width:" + width);
+            } else {
+                newOption += ",width:'" + width + "'";
+            }
+            return template.replace(properties, properties.replace(oldOption, newOption));
         }
         
         /**

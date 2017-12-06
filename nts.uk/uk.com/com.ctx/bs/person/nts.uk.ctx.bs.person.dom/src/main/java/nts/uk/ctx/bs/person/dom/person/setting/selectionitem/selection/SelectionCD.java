@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(10)
-@StringCharType(CharType.ALPHABET)
+@StringCharType(CharType.ALPHA_NUMERIC)
 public class SelectionCD extends StringPrimitiveValue<SelectionCD>{
 
 	/**

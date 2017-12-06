@@ -27,7 +27,7 @@ public class AccountLockPolicy extends AggregateRoot {
 	public static AccountLockPolicy createFromJavaType(String contractCode, int errorCount, int lockInterval,
 			String lockOutMessage, boolean isUse) {
 		return new AccountLockPolicy(new ContractCode(contractCode), new ErrorCount(new BigDecimal(errorCount)),
-				new LockInterval(new BigDecimal(lockInterval)), new LockOutMessage(lockOutMessage), isUse);
+				new LockInterval(lockInterval), new LockOutMessage(lockOutMessage), isUse);
 	}
 
 }

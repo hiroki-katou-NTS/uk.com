@@ -13,7 +13,7 @@ module nts.uk.com.view.cps017.b.viewmodel {
         start(): JQueryPromise<any> {
             block.invisible();
             let self = this,
-            selectedHisId = getShared('selectedHisId');//get histId ben screen A
+            selectedHisId = getShared('selectedHisId');
             let dfd = $.Deferred();
             nts.uk.ui.errors.clearAll();
             
@@ -24,6 +24,7 @@ module nts.uk.com.view.cps017.b.viewmodel {
                     $('#item_register_grid2').igGrid("dataBind");    
                 }
             });
+            
             service.getAllOrderSetting(selectedHisId).done((itemList: Array<ISelection>) => {
                 if (itemList && itemList.length > 0) {
                     let i = 1;

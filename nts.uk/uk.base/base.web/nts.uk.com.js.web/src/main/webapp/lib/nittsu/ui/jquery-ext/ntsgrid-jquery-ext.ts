@@ -189,6 +189,8 @@ module nts.uk.ui.jqueryExtentions {
                     var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
                     isEnable = isEnable !== undefined ? isEnable : controlDef.enable === undefined ? true : controlDef.enable;
                     var data = {
+                        rowId: rowId,
+                        columnKey: column.key,
                         controlDef: controlDef,
                         update: update,
                         deleteRow: deleteRow,
@@ -1877,7 +1879,8 @@ module nts.uk.ui.jqueryExtentions {
                 draw(data: any): JQuery {
                     return $('<div/>').addClass(this.containerClass()).append($("<a/>")
                                         .addClass("link-button").css({ backgroundColor: "inherit", color: "deepskyblue" })
-                                        .text(data.initValue).on("click", data.controlDef.click)).data("click", data.controlDef.click);
+                                        .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey))
+                                        .data("click", data.controlDef.click);
                 }
                 
                 enable($container: JQuery): void {

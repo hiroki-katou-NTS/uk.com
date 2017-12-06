@@ -9,7 +9,7 @@ public interface DivWorkDifferInforRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<DivWorkDifferInfor> findDivWork(String companyId, String companyCode, String contractCd);
+	Optional<DivWorkDifferInfor> findDivWork(String companyId);
 	/**
 	 * update DivWork
 	 * @param SysUsageSet

@@ -21,19 +21,24 @@ module nts.uk.com.view.cps009.d.viewmodel {
         newInitValue() {
 
             let self = this,
-                copyObj = {
+                newInit = {
                     itemCode: self.currentInitVal().itemCode(),
                     itemName: self.currentInitVal().itemName()
                 };
+
             $('.nts-input').trigger("validate");
-            if (!nts.uk.ui.errors.hasError()){
-                service.add(copyObj).done(function(data) {
-                    dialog.info({ messageId: "Msg_20" }).then(function() {
+            if (!nts.uk.ui.errors.hasError()) {
+                service.add(newInit).done(function(initSettingId) {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('CPS009D_PARAMS', initSettingId);
                         close();
                     });
-                }).fail(function(){
+                }).fail(function(res) {
                     //display message error.
-                    $('#roleCode').ntsError('set', {messageId:"Msg_3"});
+                    dialog.alertError({ messageId: res.messageId }).then(() => {
+                        $('#roleCode').focus();
+                    });
+
                 });
             }
         }

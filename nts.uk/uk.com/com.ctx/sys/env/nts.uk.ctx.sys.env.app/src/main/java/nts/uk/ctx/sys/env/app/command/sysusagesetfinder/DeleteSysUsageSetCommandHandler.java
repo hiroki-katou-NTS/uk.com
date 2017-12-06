@@ -25,8 +25,7 @@ public class DeleteSysUsageSetCommandHandler extends CommandHandler<DeleteSysUsa
 	protected void handle(CommandHandlerContext<DeleteSysUsageSetCommand> context) {
 		DeleteSysUsageSetCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
-		Optional<SysUsageSet> sys = sysRep.findUsageSet(data.getCompanyId(), 
-														data.getCompanyCode(), contractCd);
+		Optional<SysUsageSet> sys = sysRep.findUsageSet(data.getCompanyId());
 		
 		if(!sys.isPresent()){
 			throw new BusinessException("対象データがありません。");

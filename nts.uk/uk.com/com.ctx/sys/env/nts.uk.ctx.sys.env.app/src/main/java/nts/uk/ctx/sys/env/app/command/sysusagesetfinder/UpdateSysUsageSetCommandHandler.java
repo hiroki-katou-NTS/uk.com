@@ -25,8 +25,7 @@ public class UpdateSysUsageSetCommandHandler extends CommandHandler<UpdateSysUsa
 		UpdateSysUsageSetCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
 		
-		SysUsageSet sysDom = SysUsageSet.createFromJavaType(data.getCompanyCode(), 
-															contractCd, data.getJinji(), 
+		SysUsageSet sysDom = SysUsageSet.createFromJavaType(data.getCompanyId(), data.getJinji(), 
 															data.getShugyo(), data.getKyuyo());
 //		sysDom.createCompanyId(sysDom.getCompanyCode().v(), sysDom.getContractCd().v());
 		sysRep.updateUsageSet(sysDom);

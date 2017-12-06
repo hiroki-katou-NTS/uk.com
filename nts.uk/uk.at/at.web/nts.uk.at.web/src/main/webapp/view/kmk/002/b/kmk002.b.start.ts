@@ -7,6 +7,7 @@ module nts.uk.at.view.kmk002.b {
             screenModel.empCondition.initNtsGrid();
             // initial focus.
             $('#func-apply-all').focus();
+            $('[tabindex="0"]').removeAttr('tabindex');
         });
     });
 }

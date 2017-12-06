@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist_;
@@ -294,5 +295,66 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		} 
 		
 		return Optional.of(new JobTitleInfo(new JpaJobTitleInfoGetMemento(result.get(0))));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#find(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<JobTitleInfo> find(String jobTitleId, GeneralDate baseDate) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
+		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+
+		// Build query
+		cq.select(root);
+
+		// add where
+		List<Predicate> listPredicate = new ArrayList<>();
+		listPredicate.add(criteriaBuilder.equal(
+				root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.jobId), jobTitleId));
+		listPredicate.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.startDate), baseDate));
+		listPredicate.add(criteriaBuilder.greaterThanOrEqualTo(
+				root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), baseDate));
+
+		cq.where(listPredicate.toArray(new Predicate[] {}));
+
+		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} 
+		
+		return Optional.of(new JobTitleInfo(new JpaJobTitleInfoGetMemento(result.get(0))));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#find(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<JobTitleCode> findJobTitleCode(String companyId, String jobTitleId) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
+		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+
+		// Build query
+		cq.select(root);
+
+		// add where
+		List<Predicate> listPredicate = new ArrayList<>();
+		listPredicate.add(criteriaBuilder
+				.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
+		listPredicate.add(criteriaBuilder.equal(
+				root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.jobId), jobTitleId));
+
+		cq.where(listPredicate.toArray(new Predicate[] {}));
+
+		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
+
+		return Optional.of(new JobTitleInfo(new JpaJobTitleInfoGetMemento(result.get(0))).getJobTitleCode());
 	}
 }

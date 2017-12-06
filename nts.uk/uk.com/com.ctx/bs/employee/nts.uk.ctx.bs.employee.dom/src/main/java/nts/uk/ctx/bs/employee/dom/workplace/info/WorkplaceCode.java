@@ -6,9 +6,9 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * 
- *職場コード
+ * The Class WorkplaceCode.
  */
+// 職場コード
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(10)
 public class WorkplaceCode extends CodePrimitiveValue<WorkplaceCode>{

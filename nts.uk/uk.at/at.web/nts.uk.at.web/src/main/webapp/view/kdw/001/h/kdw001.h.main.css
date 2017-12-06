@@ -11,3 +11,6 @@
     margin-bottom: 14px;
     height: 27px;
 }
+#single-list_horizontalScrollContainer{
+	    overflow: hidden !important;
+}

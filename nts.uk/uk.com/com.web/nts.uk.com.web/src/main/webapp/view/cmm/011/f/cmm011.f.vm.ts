@@ -87,7 +87,17 @@ module nts.uk.com.view.cmm011.f {
              * showMessageError
              */
             public showMessageError(res: any) {
-                if (res.businessException) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 }
             }

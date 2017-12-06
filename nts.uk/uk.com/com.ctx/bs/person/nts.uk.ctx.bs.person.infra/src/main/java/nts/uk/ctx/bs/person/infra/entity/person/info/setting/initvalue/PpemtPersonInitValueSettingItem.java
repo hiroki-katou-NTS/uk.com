@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -42,7 +43,7 @@ public class PpemtPersonInitValueSettingItem extends UkJpaEntity implements Seri
 
 	@Basic(optional = true)
 	@Column(name = "DATE_VAL")
-	public String dateValue;
+	public GeneralDate dateValue;
 
 	@Override
 	protected Object getKey() {
@@ -64,7 +65,7 @@ public class PpemtPersonInitValueSettingItem extends UkJpaEntity implements Seri
 			} else if (domain.getSaveDataType().value == 3) {
 
 				if (domain.getDateValue() != null) {
-					this.dateValue = domain.getDateValue().toString();
+					this.dateValue = domain.getDateValue();
 				}
 
 			}

@@ -1,12 +1,13 @@
 #grid-list {
 	border-spacing: 0;
-	padding-right: 17px;
+	padding-right: 20px;
 }
 
 #grid-list tbody {
-	display: block;
-	height: 324px;   
-	overflow-y: auto;
+	display: block; 
+	height: 322px;
+	overflow-y: scroll;
+	border-bottom: solid 1px #AAB7B8;
 }
 	
 #grid-list thead, #grid-list thead tr, #grid-list tbody tr {
@@ -42,10 +43,20 @@
 }
 
 .header-closure {
-	width: 130px;
+	width: 160px;
+}
+
+.inside-table {
+	width: 100%;
+	display: table;
 }
 
 .inside-table tbody {
 	height: auto !important;
 	overflow-y: hidden !important;
+	border-bottom: none !important;
+}
+
+.limited-label {
+	padding-top: 4px;
 }

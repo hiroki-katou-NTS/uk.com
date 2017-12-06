@@ -3,22 +3,12 @@ package nts.uk.ctx.bs.employee.dom.workplace.differinfor;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
-/**
- * The Class CompanyId.
- */
 @StringMaxLength(17)
 public class CompanyId extends CodePrimitiveValue<CompanyId>{
-	
 	/** serialVersionUID */
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Instantiates a new company id.
-	 *
-	 * @param rawValue the raw value
-	 */
-	public CompanyId(String rawValue) {
+    private static final long serialVersionUID = 1L;
+    
+    public CompanyId(String rawValue) {
 		super(rawValue);
 	}
-
 }

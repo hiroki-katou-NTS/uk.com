@@ -18,7 +18,7 @@ implements PeregUpdateCommandHandler<UpdateCurrentAddressCommand>{
 	private CurrentAddressRepository currentAddressRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00003";
 	}
 

@@ -18,7 +18,7 @@ public class UpdatePerEmergencyContactCommandHandler extends CommandHandler<Upda
 	private PersonEmergencyCtRepository perEmergencyContact;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00015";
 	}
 

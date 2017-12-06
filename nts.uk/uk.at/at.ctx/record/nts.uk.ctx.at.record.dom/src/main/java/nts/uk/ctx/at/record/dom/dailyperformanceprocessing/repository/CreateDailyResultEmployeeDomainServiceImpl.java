@@ -1,32 +1,28 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.EmployeeAndClosureOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -51,64 +47,61 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	private ReflectWorkInforDomainService reflectWorkInforDomainService;
 
 	@Override
-	public List<ClosureIdLockOutput> createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTime,
-			String companyId, String empCalAndSumExecLogID, int reCreateAttr) {
+	public ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
+			DatePeriod periodTime, String companyId, String empCalAndSumExecLogID, ExecutionType reCreateAttr) {
+				
+		// 正常終了 : 0
+		// 中断 : 1
+		ProcessState status = ProcessState.SUCCESS;
 
-		// int days = endDate.day() - startDate.day();
-		// GeneralDate processingDate = startDate;
+		GeneralDate processingDate = periodTime.start();
+
+		// lits day between startDate and endDate
+		List<GeneralDate> listDayBetween = this.getDaysBetween(periodTime.start(), periodTime.end());
 
 		// Imported（就業）「所属雇用履歴」を取得する
-		// TODO - waiting request list
-		// param : List employeeIds, startDate, endDate
-		// List<EmploymentHistoryImported> employmentHis =
-		// this.employmentAdapter.getEmpHistBySid(companyId,
-		// employeeIds, processingDate);
+		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, employeeId, processingDate);
+//		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, "90000000-0000-0000-0000-000000000001", processingDate);
+		String employmentCode = employmentHisOptional.get().getEmploymentCode();
 
-		List<EmploymentHistoryImported> employmentHis = new ArrayList<>();
-		// Map<String, String> employmentCodeMaps =
-		// employmentHis.stream().collect(Collectors.toMap(EmploymentHistoryImported::getEmployeeId,
-		// EmploymentHistoryImported::getEmploymentCode));
-		List<String> emloymentCodes = employmentHis.stream().map(f -> {
-			return f.getEmploymentCode();
-		}).collect(Collectors.toList());
+		for (GeneralDate day : listDayBetween) {
+			
+//			employeeId = "90000000-0000-0000-0000-000000000001";
+			
+			// 締めIDを取得する
+			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
+					.findByEmploymentCD(companyId, employmentCode);
 
-		// 締めIDを取得する
-		Map<String, Integer> closureEmployments = this.closureEmploymentRepository
-				.findListEmployment(companyId, emloymentCodes).stream()
-				.collect(Collectors.toMap(ClosureEmployment::getEmploymentCD, x -> x.getClosureId()));
-
-		// employeeID map with employmentCode and date period
-		List<EmployeeAndClosure> employeeAndClosures = new ArrayList<>();
-		Map<String, List<EmploymentHistoryImported>> employmentCodeMaps = employmentHis.stream()
-				.collect(Collectors.groupingBy(item -> item.getEmployeeId()));
-		employmentCodeMaps.forEach((key, values) -> {
-			values.forEach(items -> {
-				if (closureEmployments.containsKey(items.getEmploymentCode())) {
-					EmployeeAndClosure employeeAndClosure = new EmployeeAndClosure(key,
-							closureEmployments.get(items.getEmploymentCode()), items.getPeriod());
-					employeeAndClosures.add(employeeAndClosure);
+			if (day.afterOrEquals(employmentHisOptional.get().getPeriod().end())
+					&& day.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
+				status = ProcessState.SUCCESS;
+			} else {
+				EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
+				if (employmentHisOptional.get().getEmploymentCode().equals(closureEmploymentOptional.get()
+						.getEmploymentCD())) {
+					employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
+					employeeAndClosureDto.setEmployeeId(employeeId);
+					employeeAndClosureDto.setPeriod(employmentHisOptional.get().getPeriod());
 				}
-			});
-		});
 
-		// アルゴリズム「実績ロックされているか判定する」を実行する
-		List<ClosureIdLockOutput> closureIdLockDtos = this.determineActualLocked(companyId, employeeAndClosures,
-				periodTime);
+				// アルゴリズム「実績ロックされているか判定する」を実行する
+				EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId, employeeAndClosureDto,
+						day);
 
-		List<Integer> closureIdLock = closureIdLockDtos.stream().map(lock -> {
-			return lock.getClosureId();
-		}).collect(Collectors.toList());
+				if (employeeAndClosure.getLock() == 0) {
+					this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
+							empCalAndSumExecLogID, reCreateAttr);
+				} 
+				if (asyncContext.hasBeenRequestedToCancel()) {
+					asyncContext.finishedAsCancelled();
+					status = ProcessState.INTERRUPTION;
+					break;
+				}
+			}
+//			processingDate = day;
+		};
 
-		List<EmployeeAndClosure> listEmployeeIDhasClosureIDlock = employeeAndClosures.stream()
-				.filter(item -> closureIdLock.contains(item.getClosureId())).collect(Collectors.toList());
-
-		List<String> employeeIdLocks = listEmployeeIDhasClosureIDlock.stream().map(ite -> ite.getEmployeeId())
-				.collect(Collectors.toList());
-
-		this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeIdLocks, periodTime,
-				empCalAndSumExecLogID, reCreateAttr);
-
-		return closureIdLockDtos;
+		return status;
 	}
 
 	/**
@@ -116,77 +109,68 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	 * 
 	 * @param companyId
 	 * @param employeeId
-	 * @param periodTime
-	 * @param closureIds
+	 * @param processingDate
+	 * @param closureId
 	 * @return
 	 */
-	private List<ClosureIdLockOutput> determineActualLocked(String companyId, List<EmployeeAndClosure> employeeAndClosures,
-			DatePeriod periodTime) {
+	private EmployeeAndClosureOutput determineActualLocked(String companyId, EmployeeAndClosureOutput employeeAndClosure,
+			GeneralDate day) {
 
 		/**
-		 * ロック : 0 , アンロック : 1
+		 * ロック : 1 , アンロック : 0
 		 */
-		List<ClosureIdLockOutput> locks = new ArrayList<>();
 
-		// lits day between startDate and endDate
-		List<GeneralDate> listDay = this.getDaysBetween(periodTime.start(), periodTime.end());
+//		EmployeeAndClosure employeeAndClosureDto = new EmployeeAndClosure();
+
+		// // lits day between startDate and endDate
+		// List<GeneralDate> listDay = this.getDaysBetween(periodTime.start(),
+		// periodTime.end());
 
 		// アルゴリズム「当月の期間を算出する」を実行する
 
 		/**
 		 * アルゴリズム「当月の実績ロックの取得」を実行する
 		 */
-		List<Integer> closureIds = employeeAndClosures.stream().map(f -> {
-			return f.getClosureId();
-		}).collect(Collectors.toList());
+
+		Integer closureId = employeeAndClosure.getClosureId();
 		// 全てのドメインモデル「当月の実績ロック」を取得する
-		List<ActualLock> actualLockLists = this.actualLockRepository.findByListId(companyId, closureIds);
+		// List<ActualLock> actualLockLists =
+		// this.actualLockRepository.findByListId(companyId, closureIds);
 
-		List<ActualLock> closureIdUnLockMaps = actualLockLists.stream()
-				.filter(item -> item.getDailyLockState().value == 0).collect(Collectors.toList());
+		Optional<ActualLock> actualLock = this.actualLockRepository.findById(companyId, closureId);
 
-		closureIdUnLockMaps.forEach(f -> {
-			ClosureIdLockOutput lockDto = new ClosureIdLockOutput(f.getClosureId().value, 0);
-			locks.add(lockDto);
-		});
+		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.min());
+		if (actualLock.get().getDailyLockState().value == 0) {
+			employeeAndClosure.setLock(0);
+		} else {
+			Optional<Closure> closure = this.closureRepository.findById(companyId, closureId);
+			
+			List<ClosureHistory> closureHistories = this.closureRepository.findByClosureId(companyId,
+					closureId);
+			
+			// exist data
+			if (closure.isPresent()) {
+				
+				// to data
+				closure.get().setClosureHistories(closureHistories);
+				
+				Optional<ClosureHistory> closureHisory = this.closureRepository.findBySelectedYearMonth(
+						companyId, closureId, closure.get().getClosureMonth().getProcessingYm().v());
+				
+				ClosureGetMonthDay closureGetMonthDay = new ClosureGetMonthDay();
+				period = closureGetMonthDay.getDayMonth(closureHisory.get().getClosureDate(),
+						closure.get().getClosureMonth().getProcessingYm().v());
+			}
+			if (day.afterOrEquals(period.start())
+					&& day.beforeOrEquals(period.end())) {
+				employeeAndClosure.setLock(1);
+			} else {
+				employeeAndClosure.setLock(0);
+			}
+		}
 
-		// 実績ロックされているかチェックする
-		List<ActualLock> closureIdLockMaps = actualLockLists.stream()
-				.filter(item -> item.getDailyLockState().value == 1).collect(Collectors.toList());
-
-		List<Integer> closureIdLocks = closureIdLockMaps.stream().map(f -> {
-			return f.getClosureId().value;
-		}).collect(Collectors.toList());
-
-		// ドメインモデル「締め」を取得する
-		List<Closure> listClosures = this.closureRepository.findByListId(companyId, closureIdLocks);
-
-		// アルゴリズム「当月の期間を算出する」を実行する
-		// closureId map with DatePeriod
-		Map<Integer, DatePeriod> DatePeriodMap = new HashMap<>();
-		// closureId map with current month
-		Map<Integer, YearMonth> currentMonthMap = listClosures.stream()
-				.collect(Collectors.toMap(Closure::getClosureId, x -> x.getClosureMonth().getProcessingYm()));
-		currentMonthMap.forEach((key, value) -> {
-			DatePeriod closurePeriod = this.closureService.getClosurePeriod(key, value);
-			DatePeriodMap.put(key, closurePeriod);
-		});
-
-		// 基準日が当月かチェックする
-		DatePeriodMap.forEach((key, value) -> {
-			listDay.forEach(f -> {
-				if (f.afterOrEquals(value.start()) && f.beforeOrEquals(value.end())) {
-					ClosureIdLockOutput lockDto = new ClosureIdLockOutput(key, 1);
-					locks.add(lockDto);
-				} else {
-					ClosureIdLockOutput lockDto = new ClosureIdLockOutput(key, 0);
-					locks.add(lockDto);
-				}
-				;
-			});
-		});
-
-		return locks;
+//		employeeAndClosureDto.setLock(0);
+		return employeeAndClosure;
 	}
 
 	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {

@@ -14,8 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
- * Class build key of table SacmtRoleSetWebMenu
- * @author Hieu.NV
+ * Class SacmtRoleSetWebMenu - Contain keys of the table.
+ * @author HieuNV
  *
  */
 @AllArgsConstructor
@@ -23,22 +23,20 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class SptmtRoleSetWebMenuPK implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/** �?社ID */
+    /** �?社ID */
     @Basic(optional = false)
     @Column(name = "CID")
-	public String companyId;
+    public String companyId;
 
-	/**メニューコードリスト */
+    /**メニューコードリスト */
     @Basic(optional = false)
     @Column(name = "WEB_MENU_CD")
     public String webMenuCd;
 
-	/**コード */
+    /**コード */
     @Basic(optional = false)
     @Column(name = "ROLE_SET_CD")
     public String roleSetCd;
-
-
 }

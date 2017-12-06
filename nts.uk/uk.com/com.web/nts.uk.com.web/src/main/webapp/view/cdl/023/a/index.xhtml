@@ -31,8 +31,8 @@
 					<!-- BEGIN A1_1 ~ A1_3 -->
 					<tr>
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CDL023_2')}</div></td>
-						<td><span data-bind="text: code"></span></td>
-						<td><span data-bind="text: name"></span></td>
+						<td><div style="width: 120px;word-wrap: break-word;"><span data-bind="text: code"></span></div></td>
+						<td><div style="width: 150px;word-wrap: break-word;margin-left: 10px;"><span data-bind="text: name"></span></div></td>
 					</tr><!-- END A1_1 ~ A1_3 -->
 					
 					<!-- BEGIN A1_4 -->
@@ -50,7 +50,7 @@
 						<td><button id="btn-config" style="width: 70px;" data-bind="click: openDialog">
 							#{i18n.getText('CDL023_4')}</button>
 						</td>
-						<td><span data-bind="text: totalSelectionDisp"></span></td>
+						<td><span style="margin-left: 10px;" data-bind="text: totalSelectionDisp"></span></td>
 					</tr><!-- END A2_1 ~ A2_3 -->
 					
 					<!-- BEGIN A2_4 -->

@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
-
+@Getter
 public class DataTypeStateDto {
-	@Getter
+
 	protected int dataTypeValue;
 
 	public static DataTypeStateDto createTimeItemDto(long max, long min) {

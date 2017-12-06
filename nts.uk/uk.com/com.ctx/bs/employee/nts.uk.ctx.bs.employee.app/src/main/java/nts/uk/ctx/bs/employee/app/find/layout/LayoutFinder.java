@@ -34,7 +34,7 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.E
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
@@ -42,8 +42,8 @@ import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
-import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
@@ -121,7 +121,7 @@ public class LayoutFinder {
 	private PersonEmergencyCtRepository perEmerContRepo;
 
 	@Inject
-	private FamilyRepository familyRepo;
+	private FamilyMemberRepository familyRepo;
 
 	// inject category-data-repo
 	@Inject
@@ -391,13 +391,13 @@ public class LayoutFinder {
 							empInItemDataRepo.getAllInfoItemByRecordId(employeeId));
 					break;
 				case "CS00008":
-					Optional<TemporaryAbsence> tempAbsc = tempAbsenceRepo.getBySidAndReferDate(employeeId,
+					Optional<TempAbsenceHisItem> tempAbsc = tempAbsenceRepo.getBySidAndReferDate(employeeId,
 							standandDate);
 					if (tempAbsc.isPresent()) {
 						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
 								tempAbsc.get(), null);
 						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-								empInItemDataRepo.getAllInfoItemByRecordId(tempAbsc.get().getTempAbsenceId()));
+								empInItemDataRepo.getAllInfoItemByRecordId(tempAbsc.get().getHistoryId()));
 					}
 					break;
 				case "CS00009":
@@ -490,7 +490,7 @@ public class LayoutFinder {
 					break;
 				case "CS00004":
 					// Family
-					List<Family> families = familyRepo.getListByPid(personId);
+					List<FamilyMember> families = familyRepo.getListByPid(personId);
 					Map<String, List<LayoutPersonInfoValueDto>> fMapFixedData = ItemDefinitionFactory
 							.matchFamilies(authClassItem, families);
 					Map<String, List<LayoutPersonInfoValueDto>> fMapOptionData = getPersDataOptionalForListClsItem(

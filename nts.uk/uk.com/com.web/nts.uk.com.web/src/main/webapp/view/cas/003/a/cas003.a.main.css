@@ -1,7 +1,11 @@
+html{
+	overflow: hidden;
+}
 #contents-area {
 	margin-left: 8px;
 	width: 100%;
 	box-sizing: border-box;
+	overflow: hidden;
 }
 
 #functions-area {

@@ -3,27 +3,52 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 
 /**
- * @author danpv
+ * @author danpv Domain Name : 介護休業
  *
  */
-@AllArgsConstructor
-public class CareHoliday extends LeaveHolidayState{
-	
+@Getter
+public class CareHoliday extends TempAbsenceHisItem {
+
+	/**
+	 * 同一家族の休業有無
+	 */
+	private Boolean sameFamily;
+
+	/**
+	 * 同一家族の短時間勤務日数
+	 */
+	private Integer sameFamilyDays;
+
 	/**
 	 * 家族メンバーId Family member id
 	 */
 	private String familyMemberId;
-	
 
-	public String getFamilyMemberId() {
-		return familyMemberId;
+	public CareHoliday() {
+
 	}
 
-	public void setFamilyMemberId(String familyMemberId) {
+	/**
+	 * @param sameFamily
+	 * @param sameFamilyDays
+	 * @param familyMemberId
+	 */
+	private CareHoliday(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
+			Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
+		super(LeaveHolidayType.NURSING_CARE_LEAVE, historyId, employeeId, remarks, soInsPayCategory);
+		this.sameFamily = sameFamily;
+		this.sameFamilyDays = sameFamilyDays;
 		this.familyMemberId = familyMemberId;
+	}
+
+	public static CareHoliday init(String historyId, String employeeId, String remarks,
+			Integer soInsPayCategory, Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
+		return new CareHoliday(historyId, employeeId, new GenericString(remarks), soInsPayCategory, sameFamily,
+				sameFamilyDays, familyMemberId);
 	}
 
 }

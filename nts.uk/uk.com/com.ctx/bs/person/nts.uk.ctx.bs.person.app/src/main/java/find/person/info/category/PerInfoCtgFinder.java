@@ -46,6 +46,7 @@ public class PerInfoCtgFinder {
 			detailCtgInfo.setCategoryName(perInfoCtg.getCategoryName().toString());
 			detailCtgInfo.setCategoryType(perInfoCtg.getCategoryType().value);
 			detailCtgInfo.setAbolition(perInfoCtg.getIsAbolition().value == 1 ? true : false);
+			detailCtgInfo.setPersonEmployeeType(perInfoCtg.getPersonEmployeeType().value);
 			if (!categoryNameDefault.equals("null")) {
 				detailCtgInfo.setCategoryNameDefault(categoryNameDefault);
 			}

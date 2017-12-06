@@ -36,7 +36,7 @@ public class BsystTempAbsenceFramePK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "TEMP_ABSENCE_FR_NO")
-    private short tempAbsenceFrNo;
+    private int tempAbsenceFrNo;
 
     /**
      * Instantiates a new bsyst temp absence frame PK.
@@ -44,7 +44,7 @@ public class BsystTempAbsenceFramePK implements Serializable {
     public BsystTempAbsenceFramePK() {
     	super();
     }
-
+    
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -52,7 +52,7 @@ public class BsystTempAbsenceFramePK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
-        hash += (int) tempAbsenceFrNo;
+        hash += tempAbsenceFrNo;
         return hash;
     }
 
@@ -73,5 +73,17 @@ public class BsystTempAbsenceFramePK implements Serializable {
         }
         return true;
     }
+
+	/**
+	 * Instantiates a new bsyst temp absence frame PK.
+	 *
+	 * @param cid the cid
+	 * @param tempAbsenceFrNo the temp absence fr no
+	 */
+	public BsystTempAbsenceFramePK(String cid, int tempAbsenceFrNo) {
+		super();
+		this.cid = cid;
+		this.tempAbsenceFrNo = tempAbsenceFrNo;
+	}
     
 }

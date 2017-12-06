@@ -13,11 +13,12 @@ import nts.uk.shr.infra.contact.postalcode.entity.CismtPostalCodePK;
 @Stateless
 public class PostalCodeRepositoryImpl extends JpaRepository implements PostalCodeRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM CismtPostalCode c ";
-	private final String SELECT_BY_CD = SELECT_NO_WHERE + "WHERE c.postCode = :postCode";
+	private final String SELECT_BY_CD = SELECT_NO_WHERE + "WHERE c.postCode = :postCode AND c.cismtPostalCodePK.contractCd = :contractCd";
 
 	@Override
-	public Optional<PostalCodeDto> find(String postalId) {
-		return this.queryProxy().find(new CismtPostalCodePK(postalId), CismtPostalCode.class).map(c -> toDomainPos(c));
+	public Optional<PostalCodeDto> find(String postalId, String contractCode) {
+		return this.queryProxy().find(new CismtPostalCodePK(postalId, contractCode), CismtPostalCode.class)
+				.map(c -> toDomainPos(c));
 	}
 
 	/**
@@ -36,10 +37,9 @@ public class PostalCodeRepositoryImpl extends JpaRepository implements PostalCod
 	 * @author yennth
 	 */
 	@Override
-	public List<PostalCodeDto> findByCode(String postalCode) {
-		return this.queryProxy().query(SELECT_BY_CD, CismtPostalCode.class)
-				.setParameter("postCode", postalCode)
-				.getList(c -> toDomainPos(c));
+	public List<PostalCodeDto> findByCode(String postalCode, String contractCode) {
+		return this.queryProxy().query(SELECT_BY_CD, CismtPostalCode.class).setParameter("postCode", postalCode)
+				.setParameter("contractCd", contractCode).getList(c -> toDomainPos(c));
 	}
 
 	/**
@@ -50,14 +50,9 @@ public class PostalCodeRepositoryImpl extends JpaRepository implements PostalCod
 	 * @author yennth
 	 */
 	private PostalCodeDto toDomainPos(CismtPostalCode entity) {
-		PostalCodeDto domain = PostalCodeDto.builder()
-				.city(entity.city)
-				.cityKanaName(entity.cityKanaName)
-				.townArea(entity.townArea)
-				.townAreaKana(entity.townAreaKana)
-				.postCode(entity.postCode)
-				.postId(entity.cismtPostalCodePK.postalId)
-				.build();
+		PostalCodeDto domain = PostalCodeDto.builder().contractCd(entity.cismtPostalCodePK.contractCd).city(entity.city)
+				.cityKanaName(entity.cityKanaName).townArea(entity.townArea).townAreaKana(entity.townAreaKana)
+				.postCode(entity.postCode).postId(entity.cismtPostalCodePK.postalId).build();
 		return domain;
 	}
 }

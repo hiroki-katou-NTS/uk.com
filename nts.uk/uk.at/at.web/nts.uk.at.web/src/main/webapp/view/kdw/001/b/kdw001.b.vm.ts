@@ -103,10 +103,10 @@ module nts.uk.at.view.kdw001.b {
                 // self.selectedValue2 = ko.observable(false);
                 //   self.selectedValue3 = ko.observable(true);
                 self.itemRecreateDevision = ko.observableArray([
-                    new RecreateDevisionModel(1, getText('KDW001_56')),
-                    new RecreateDevisionModel(2, getText('KDW001_57'))
+                    new RecreateDevisionModel(0, getText('KDW001_56')),
+                    new RecreateDevisionModel(1, getText('KDW001_57'))
                 ]);
-                self.selectedRecreateDevision = ko.observable(2);
+                self.selectedRecreateDevision = ko.observable(1);
 
 
 
@@ -118,47 +118,47 @@ module nts.uk.at.view.kdw001.b {
 
                 //Init for switch button
                 self.roundingRules5 = ko.observableArray([
-                    { code: '1', name: getText('KDW001_69') },
-                    { code: '2', name: getText('KDW001_70') }
+                    { code: '0', name: getText('KDW001_69') },
+                    { code: '1', name: getText('KDW001_70') }
                 ]);
                 self.roundingRules4 = ko.observableArray([
-                    { code: '1', name: getText('KDW001_66') },
-                    { code: '2', name: getText('KDW001_67') }
+                    { code: '0', name: getText('KDW001_66') },
+                    { code: '1', name: getText('KDW001_67') }
                 ]);
                 self.roundingRules3 = ko.observableArray([
-                    { code: '1', name: getText('KDW001_64') },
-                    { code: '2', name: getText('KDW001_65') }
+                    { code: '0', name: getText('KDW001_64') },
+                    { code: '1', name: getText('KDW001_65') }
                 ]);
                 self.roundingRules1 = ko.observableArray([
-                    { code: '1', name: getText('KDW001_54') },
-                    { code: '2', name: getText('KDW001_55') }
+                    { code: '0', name: getText('KDW001_54') },
+                    { code: '1', name: getText('KDW001_55') }
                 ]);
-                self.selectedRuleCode = ko.observable(1);
-                self.selectedCreatDivisionCode = ko.observable(1);
-                self.selectedCalDivisionCode = ko.observable(1);
-                self.selectedReflectClassCode = ko.observable(1);
-                self.selectedAggregateClassCode = ko.observable(1);
+                self.selectedRuleCode = ko.observable(0);
+                self.selectedCreatDivisionCode = ko.observable(0);
+                self.selectedCalDivisionCode = ko.observable(0);
+                self.selectedReflectClassCode = ko.observable(0);
+                self.selectedAggregateClassCode = ko.observable(0);
                 // Init enable check box for area
                 self.enableAll = ko.observable(false);
 
                 //  *3 
                 self.dailyCreatedCheck.subscribe((x) => {
                     //*2
-                    if (x == true && self.selectedCreatDivisionCode() == 2) {
+                    if (x == true && self.selectedCreatDivisionCode() == 1) {
                         self.recreateEnable(true);
                     } else {
                         self.recreateEnable(false);
                     }
 
 
-                    if (x == true && self.selectedCreatDivisionCode() == 2 && self.selectedRecreateDevision() == 2) {
+                    if (x == true && self.selectedCreatDivisionCode() == 1 && self.selectedRecreateDevision() == 1) {
                         self.enableAll(true);
                     } else {
                         self.enableAll(false);
                     }
                 });
                 self.selectedRecreateDevision.subscribe((x) => {
-                    if (x == 2 && self.selectedCreatDivisionCode() == 2 && self.dailyCreatedCheck() == true) {
+                    if (x == 1 && self.selectedCreatDivisionCode() == 1 && self.dailyCreatedCheck() == true) {
                         self.enableAll(true);
                     } else {
                         self.enableAll(false);
@@ -166,13 +166,13 @@ module nts.uk.at.view.kdw001.b {
                 });
 
                 self.selectedCreatDivisionCode.subscribe((x) => {
-                    if (self.dailyCreatedCheck() == true == true && x == 2) {
+                    if (self.dailyCreatedCheck() == true == true && x == 1) {
                         self.recreateEnable(true);
                     } else {
                         self.recreateEnable(false);
                     }
 
-                    if (x == 2 && self.selectedRecreateDevision() == 2 && self.dailyCreatedCheck() == true) {
+                    if (x == 1 && self.selectedRecreateDevision() == 1 && self.dailyCreatedCheck() == true) {
                         self.enableAll(true);
                     } else {
                         self.enableAll(false);
@@ -183,7 +183,7 @@ module nts.uk.at.view.kdw001.b {
                 //*7
 
                 self.approvalResultCheck.subscribe((x) => {
-                    if (x == true && self.selectedReflectClassCode() == 2) {
+                    if (x == true && self.selectedReflectClassCode() == 1) {
                         self.forciblyEnable(true);
                     } else {
                         self.forciblyEnable(false);
@@ -191,7 +191,7 @@ module nts.uk.at.view.kdw001.b {
                 });
 
                 self.selectedReflectClassCode.subscribe((x) => {
-                    if (x == 2 && self.approvalResultCheck() == true) {
+                    if (x == 1 && self.approvalResultCheck() == true) {
                         self.forciblyEnable(true);
                     } else {
                         self.forciblyEnable(false);
@@ -220,7 +220,7 @@ module nts.uk.at.view.kdw001.b {
                     return;
                 }
 
-                if (self.dailyCreatedCheck() == true && self.selectedRecreateDevision() == 2 && self.selectedCreatDivisionCode() == 2 && self.calDivisionCheck() == false &&
+                if (self.dailyCreatedCheck() == true && self.selectedRecreateDevision() == 1 && self.selectedCreatDivisionCode() == 1 && self.calDivisionCheck() == false &&
                     self.dateDivisionCheck() == false &&
                     self.reflectEmbossingCheck() == false &&
                     self.masterInforCheck() == false &&
@@ -232,7 +232,7 @@ module nts.uk.at.view.kdw001.b {
                     return;
                 }
 
-                if (self.selectedCreatDivisionCode() == 2 || self.selectedCalDivisionCode() == 2 || self.selectedAggregateClassCode() == 2) {
+                if (self.selectedCreatDivisionCode() == 1 || self.selectedCalDivisionCode() == 1 || self.selectedAggregateClassCode() == 1) {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_575" }).ifYes(() => {
                         self.params.setParamsScreenB({
                             dailyCreation: self.dailyCreatedCheck(),
@@ -263,7 +263,7 @@ module nts.uk.at.view.kdw001.b {
                             var dailyCreatedText = getText('KDW001_9');
                             self.dScreenmodel.dailyCreated(dailyCreatedText);
                             self.dScreenmodel.dailyCreatedVisible(true);
-                            if (self.selectedCreatDivisionCode() == 2) {
+                            if (self.selectedCreatDivisionCode() == 1) {
                                 self.dScreenmodel.dailyCreated(dailyCreatedText += '(' + getText('KDW001_55') + ')');
                                 if (self.enableAll()) {
                                     if (self.calDivisionCheck()) {
@@ -301,7 +301,7 @@ module nts.uk.at.view.kdw001.b {
                             var dailyCalText = getText('KDW001_10');
                             self.dScreenmodel.dailyCal(dailyCalText);
                             self.dScreenmodel.dailyCalVisible(true);
-                            if (self.selectedCalDivisionCode() == 2) {
+                            if (self.selectedCalDivisionCode() == 1) {
                                 self.dScreenmodel.dailyCal(dailyCalText += '(' + getText('KDW001_65') + ')');
                             }
                         } else {
@@ -313,7 +313,7 @@ module nts.uk.at.view.kdw001.b {
                             var approvalResultText = getText('KDW001_11');
                             self.dScreenmodel.approvalResult(approvalResultText);
                             self.dScreenmodel.approvalVisible(true);
-                            if (self.selectedReflectClassCode() == 2) {
+                            if (self.selectedReflectClassCode() == 1) {
                                 self.dScreenmodel.approvalResult(approvalResultText += '(' + getText('KDW001_67') + ')');
                             }
                         } else {
@@ -325,7 +325,7 @@ module nts.uk.at.view.kdw001.b {
                             var monthCountText = getText('KDW001_12');
                             self.dScreenmodel.monthCount(monthCountText);
                             self.dScreenmodel.monthCountVisible(true);
-                            if (self.selectedAggregateClassCode() == 2) {
+                            if (self.selectedAggregateClassCode() == 1) {
                                 self.dScreenmodel.monthCount(monthCountText += '(' + getText('KDW001_70') + ')');
                             }
 
@@ -366,7 +366,7 @@ module nts.uk.at.view.kdw001.b {
                         var dailyCreatedText = getText('KDW001_9');
                         self.dScreenmodel.dailyCreated(dailyCreatedText);
                         self.dScreenmodel.dailyCreatedVisible(true);
-                        if (self.selectedCreatDivisionCode() == 2) {
+                        if (self.selectedCreatDivisionCode() == 1) {
                             self.dScreenmodel.dailyCreated(dailyCreatedText += '(' + getText('KDW001_55') + ')');
                             if (self.enableAll()) {
                                 if (self.calDivisionCheck()) {
@@ -404,7 +404,7 @@ module nts.uk.at.view.kdw001.b {
                         var dailyCalText = getText('KDW001_10');
                         self.dScreenmodel.dailyCal(dailyCalText);
                         self.dScreenmodel.dailyCalVisible(true);
-                        if (self.selectedCalDivisionCode() == 2) {
+                        if (self.selectedCalDivisionCode() == 1) {
                             self.dScreenmodel.dailyCal(dailyCalText += '(' + getText('KDW001_65') + ')');
                         }
                     } else {
@@ -416,7 +416,7 @@ module nts.uk.at.view.kdw001.b {
                         var approvalResultText = getText('KDW001_11');
                         self.dScreenmodel.approvalResult(approvalResultText);
                         self.dScreenmodel.approvalVisible(true);
-                        if (self.selectedReflectClassCode() == 2) {
+                        if (self.selectedReflectClassCode() == 1) {
                             self.dScreenmodel.approvalResult(approvalResultText += '(' + getText('KDW001_67') + ')');
                         }
                     } else {
@@ -428,7 +428,7 @@ module nts.uk.at.view.kdw001.b {
                         var monthCountText = getText('KDW001_12');
                         self.dScreenmodel.monthCount(monthCountText);
                         self.dScreenmodel.monthCountVisible(true);
-                        if (self.selectedAggregateClassCode() == 2) {
+                        if (self.selectedAggregateClassCode() == 1) {
                             self.dScreenmodel.monthCount(monthCountText += '(' + getText('KDW001_70') + ')');
                         }
 

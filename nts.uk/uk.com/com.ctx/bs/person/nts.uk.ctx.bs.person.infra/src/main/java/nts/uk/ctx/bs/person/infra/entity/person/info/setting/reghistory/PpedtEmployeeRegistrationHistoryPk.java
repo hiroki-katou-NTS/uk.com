@@ -14,6 +14,10 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class PpedtEmployeeRegistrationHistoryPk implements Serializable {
 
+
+	/**
+	 * 登録者社員ID
+	 */
 	@Basic(optional = false)
 	@Column(name = "REG_SID")
 	public String registeredEmployeeID;

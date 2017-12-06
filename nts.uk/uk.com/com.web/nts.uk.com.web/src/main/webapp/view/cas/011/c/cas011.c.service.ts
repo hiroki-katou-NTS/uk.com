@@ -3,9 +3,9 @@ module nts.uk.com.view.cas011.c.service {
     import format = nts.uk.text.format;
 
     var paths = {
-            getAllRoleSet:             "ctx/sys/auth/roleset/findAllRoleSet",
-            getCurrentDefaultRoleSet:  "ctx/sys/auth/roleset/findDefaultRoleSet",
-            addDefaultRoleSet:         "ctx/sys/auth/roleset/addRoleSet"
+            getAllRoleSet:             "ctx/sys/auth/roleset/findallroleset",
+            getCurrentDefaultRoleSet:  "ctx/sys/auth/roleset/finddefaultroleset",
+            addDefaultRoleSet:         "ctx/sys/auth/roleset/adddefaultroleset"
     }
 
     export function getAllRoleSet() : JQueryPromise<any> {

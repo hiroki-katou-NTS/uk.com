@@ -5,6 +5,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
 
         itemInfoDefList: KnockoutObservableArray<ItemInfoDef> = ko.observableArray([]);
@@ -47,7 +48,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return;
                 }
 
-                service.getPerInfoItemDefById(newValue).done(function(data: IItemInfoDef) {
+                service.getPerInfoItemDefById(newValue, self.currentCategory.personEmployeeType).done(function(data: IItemInfoDef) {
 
                     self.currentItem(new ItemInfoDef(data));
 
@@ -96,7 +97,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 dfd = $.Deferred(),
                 lastSelectedIndex = self.itemInfoDefList().indexOf(_.find(self.itemInfoDefList(), function(i) { return i.id == self.currentSelectId() })),
                 selectedId;
-
+            block.invisible();
             self.loadItemInfoDefList().done(function() {
 
                 //set selected item for gridlist
@@ -135,9 +136,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     }
                 }
                 self.currentSelectId(selectedId);
-
                 dfd.resolve();
 
+            }).always(() => {
+                block.clear();
             });
             return dfd.promise();
         }
@@ -146,6 +148,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 dfd = $.Deferred(),
                 categoryId = self.currentCategory.id;
+            block.invisible();
             service.getItemInfoDefList(categoryId, self.ckbDisplayAbolition()).done(function(itemInfoDefList: Array<IItemInfoDef>) {
 
                 self.itemInfoDefList([]);
@@ -166,6 +169,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 dfd.resolve();
 
+            }).always(() => {
+                block.clear();
             });
             return dfd.promise();
         }
@@ -178,8 +183,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     id: self.currentItem().id,
                     itemName: self.itemNameText(),
                     isAbolition: self.ckbIsAbolition() === true ? 1 : 0,
-                    isRequired: self.isRequired()
-                }
+                    isRequired: self.isRequired(),
+                    dataType: self.dataType(),
+                    selectionItemId: self.currentItem().itemTypeState.dataTypeState.typeCode,
+                    personEmployeeType: self.currentCategory.personEmployeeType
+                },
+                baseDate = moment(new Date()).format('YYYY-MM-DD');
 
             block.invisible();
 
@@ -189,6 +198,15 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     dialog({ messageId: "Msg_15" }).then(function() {
 
                         self.loadDataForGrid().done(function() {
+                            self.currentItem().selectionLst([]);
+                            if (command.dataType === 6) {
+                                service.getAllSelByHistory(command.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
+                                    self.currentItem().selectionLst.removeAll();
+                                    self.currentItem().selectionLst(data);
+                                    self.currentItem().selectionLst.valueHasMutated();
+
+                                });
+                            }
 
                             block.clear();
 
@@ -197,6 +215,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 }).fail(function() {
 
                     dialog({ messageId: "Msg_233" });
+                    block.clear();
 
                 });
 
@@ -356,12 +375,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             return disPlayOrderArray;
         }
-        
-        genTime(time){
-            
+
+        genTime(time) {
+
             return nts.uk.time.parseTime(time, false).format();
-            
-        
+
+
         }
 
         OpenCDL022Modal() {
@@ -407,6 +426,26 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         }
 
+        settingSelection() {
+            let self = this,
+                params = {
+                    selectionItemId: self.currentItem().itemTypeState.dataTypeState.typeCode,
+                    isDialog: true
+                },
+                baseDate = moment(new Date()).format('YYYY-MM-DD');
+            setShared('CPS017_PARAMS', params);
+
+            modal('/view/cps/017/a/index.xhtml', { title: '', height: 800, width: 1500 }).onClosed(function(): any {
+                debugger;
+                self.currentItem().selectionLst([]);
+                service.getAllSelByHistory(params.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
+                    self.currentItem().selectionLst(data);
+                    self.currentItem().selectionLst.valueHasMutated();
+
+                });
+            });
+        }
+
 
     }
 
@@ -429,7 +468,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
         requireChangable: number;
         dispOrder: number;
         itemTypeState: any;
-        selectionItemRefType : any;
+        selectionItemRefType: any;
+        selectionItemName: string;
+        selectionLst: Array<any>;
     }
 
     export class ItemInfoDef {
@@ -445,7 +486,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
         requireChangable: number;
         dispOrder: number;
         itemTypeState: any;
-        selectionItemRefType : any;
+        selectionItemRefType: any;
+        selectionItemName: string;
+        selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor(data: IItemInfoDef) {
 
@@ -461,7 +504,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
             this.requireChangable = data ? data.requireChangable : 0;
             this.dispOrder = data ? data.dispOrder : 0;
             this.itemTypeState = data ? data.itemTypeState : null;
-            this.selectionItemRefType = data ? data.selectionItemRefType  : null;
+            this.selectionItemRefType = data ? data.selectionItemRefType : null;
+            this.selectionItemName = data ? data.selectionItemName : null;
+            this.selectionLst(data ? data.selectionLst : []);
 
         }
 
@@ -470,9 +515,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
     export class PerInfoCategory {
 
         id: string;
-
+        personEmployeeType: number;
         constructor(param) {
             this.id = param.id();
+            this.personEmployeeType = param.personEmployeeType;
         }
 
     }

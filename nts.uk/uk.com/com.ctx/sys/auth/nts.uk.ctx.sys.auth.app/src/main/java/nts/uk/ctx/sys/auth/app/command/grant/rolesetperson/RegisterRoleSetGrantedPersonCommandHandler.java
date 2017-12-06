@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
@@ -20,27 +21,15 @@ public class RegisterRoleSetGrantedPersonCommandHandler extends CommandHandler<R
 	protected void handle(CommandHandlerContext<RoleSetGrantedPersonCommand> context) {
 		RoleSetGrantedPersonCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		System.out.println("screen mode: " + command.getMode());
 		if (command.getMode() == 0) {
+			if (roleSetPersonRepo.getByEmployeeId(command.getEmployeeId()).isPresent()) {
+				throw new BusinessException("Msg_716");
+			}
 			roleSetPersonRepo.insert(new RoleSetGrantedPerson(command.getRoleSetCd(), companyId, command.getStartDate(),
 					command.getEndDate(), command.getEmployeeId()));
-
-			// dummy code
-			// System.out.println("Adding new RoleSetGrantedPerson: EmpId = " +
-			// command.getEmployeeId() + " - RoleSetCode = "
-			// + command.getRoleSetCd() + " - period= " + command.getStartDate()
-			// + " ~ " + command.getEndDate());
-			// System.out.println("Register done!");
 		} else {
 			roleSetPersonRepo.update(new RoleSetGrantedPerson(command.getRoleSetCd(), companyId, command.getStartDate(),
 					command.getEndDate(), command.getEmployeeId()));
-
-			// dummy code
-			// System.out.println("Updating RoleSetGrantedPerson: EmpId = " +
-			// command.getEmployeeId() + " - RoleSetCode = "
-			// + command.getRoleSetCd() + " - period= " + command.getStartDate()
-			// + " ~ " + command.getEndDate());
-			// System.out.println("Register done!");
 		}
 	}
 }

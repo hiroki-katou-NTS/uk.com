@@ -43,15 +43,24 @@ module nts.uk.ui.jqueryExtentions {
                 
                 let $container = $("<div class='nts-fixed-table cf'/>");
                 $originTable.after($container);
-
-                let $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").css({"max-width": viewWidth});
+                
+                
+                let $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid nts-fixed-header'/>").css({"max-width": viewWidth});
                 let $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(width);
                 let $headerTable = $("<table class='fixed-table'></table>");
+                
+                
                 $headerTable.append($colgroup.clone()).append($thead);
                 $headerTable.appendTo($headerWrapper);
                 $headerContainer.append($headerWrapper);
-                $headerContainer.appendTo($container);
-
+                
+                let $header = $("<div>");
+                $headerContainer.appendTo($header);
+                $header.appendTo($container);
+                $header.height($headerContainer.height());
+                let $headerScroll = $("<div>", {"class": "scroll-header nts-fixed-header", width: 17, height: $headerContainer.height()}); 
+                $headerScroll.appendTo($header);
+                
                 $originTable.addClass("nts-fixed-body-table");
                 let $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
                 let $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
@@ -62,13 +71,30 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 let resizeEvent = function () {
+                    $header.height($headerContainer.height());
                     if(bodyHeight < $originTable.height()){
                         if(/Edge/.test(navigator.userAgent)){
+                            $headerScroll.width(12);
                             $bodyContainer.css("padding-right", "12px");
                         }else {
+                            $headerScroll.width(17);
                             $bodyContainer.css("padding-right", "17px");
                         }        
                     } else {
+//                        if($originTable.height() !== 0){
+//                            if(/Edge/.test(navigator.userAgent)){
+//                                $bodyWrapper.height($originTable.height());
+//                                $bodyContainer.height($originTable.height() + 12);
+//                            }else {
+//                                $bodyWrapper.height($originTable.height());
+//                                $bodyContainer.height($originTable.height() + 17);
+//                            } 
+//                            $headerScroll.width(0);   
+//                            $bodyWrapper.removeClass("body-no-record");   
+//                        } else {
+//                            $bodyWrapper.addClass("body-no-record");    
+//                        } 
+                        $headerScroll.width(0);
                         $bodyContainer.css("padding-right", "0px");
                     }
                 
@@ -80,7 +106,7 @@ module nts.uk.ui.jqueryExtentions {
                 $bodyContainer.scroll(function(evt, ui) {
                     let bodyScroll = $bodyContainer.scrollLeft();
                     if(bodyScroll > 0){
-                        bodyScroll = bodyScroll + 1.5;
+                        bodyScroll = bodyScroll + 1.25;
                         $headerContainer.css({"border-left": "1px solid #CCC"});
                     }else {
                         $headerContainer.css({"border-left": "0px solid #CCC"});    

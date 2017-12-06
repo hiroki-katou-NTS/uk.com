@@ -18,7 +18,7 @@ public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonComma
 	private PersonRepository personRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00001";
 	}
 

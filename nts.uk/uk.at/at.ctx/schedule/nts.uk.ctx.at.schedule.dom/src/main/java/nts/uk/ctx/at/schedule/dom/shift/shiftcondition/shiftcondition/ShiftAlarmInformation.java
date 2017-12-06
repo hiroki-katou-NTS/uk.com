@@ -30,4 +30,8 @@ public class ShiftAlarmInformation {
 	 * アラーム
 	 */
 	private Optional<List<ShiftAlarm>> alarm;
+
+	public boolean isError() {
+		return (errorState == ErrorState.ERROR);
+	}
 }

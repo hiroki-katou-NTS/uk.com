@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
-import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedImport;
+import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImport;
 
 /**
  * The Class PersonInfoWorkFixedFinder.
@@ -27,9 +27,9 @@ public class PersonInfoWorkFixedFinder {
 	 * @return the person info
 	 */
 	public PersonInfoWorkFixedDto getPersonInfo(String employeeId) {
-		PersonInfoImportedImport personImportDto = personInfoAdapter.getPersonInfo(employeeId);
+		PersonInfoImport personImportDto = personInfoAdapter.getPersonInfo(employeeId);
 		PersonInfoWorkFixedDto personInfoWorkFixedDto = PersonInfoWorkFixedDto.builder()
-				.employeeId(personImportDto.getEmployeeId()).employeeName(personImportDto.getEmployeeName()).build();
+				.employeeId(personImportDto.getPersonId()).employeeName(personImportDto.getPersonName()).build();
 
 		return personInfoWorkFixedDto;
 

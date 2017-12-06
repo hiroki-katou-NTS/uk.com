@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaUnitprice;
 
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -24,6 +28,11 @@ public class FormulaUnitpriceDto {
 	/**単価**/
 	private int unitPrice;
 	
+	/**
+	 * fromDomain
+	 * @param unitprice
+	 * @return
+	 */
 	public static FormulaUnitpriceDto fromDomain (FormulaUnitprice unitprice){
 		return new FormulaUnitpriceDto(
 				unitprice.getCompanyId(),

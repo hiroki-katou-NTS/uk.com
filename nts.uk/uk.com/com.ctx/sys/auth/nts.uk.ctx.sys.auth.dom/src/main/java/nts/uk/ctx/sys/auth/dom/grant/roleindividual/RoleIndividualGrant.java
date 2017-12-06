@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.dom.grant.roleindividual;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -19,6 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class RoleIndividualGrant extends AggregateRoot {
 
 	/** The user id. */

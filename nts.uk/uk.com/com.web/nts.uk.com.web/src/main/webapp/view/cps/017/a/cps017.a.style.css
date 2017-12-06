@@ -2,11 +2,6 @@
 	width: 266px;
 }
 
-#history_lst {
-	width: 266px;
-	height: 140px;
-}
-
 #content-left {
 	margin-top: 10px;
 	margin-left: 10px !important;
@@ -53,11 +48,6 @@
 	margin-bottom: 10px;
 }
 
-#history_lst_grid_container {
-	width: 266px !important;
-	height: 140px !important;
-}
-
 .col1 {
 	width: 150px;
 }
@@ -77,10 +67,11 @@
 
 #code {
 	width: 90px;
+	margin-left: 40px;
 }
 
 #name {
-	width: 170px;
+	width: 170px !important;
 }
 
 #externalCode {
@@ -94,7 +85,7 @@
 
 .distance {
 	margin-top: 25px;
-/* 	margin-left: 10px; */
+	/* 	margin-left: 10px; */
 }
 
 .formlabel {
@@ -189,7 +180,8 @@ button.search-btn {
 }
 
 .clear-btn {
-/* 	visibility: hidden; */
+	/* 	visibility: hidden; */
+	
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {
@@ -205,7 +197,8 @@ i.icon.icon-searchbox {
 }
 
 #contents-area {
-	
+	width: 1380px;
+	height: 800px;
 }
 
 #contents-area-left {
@@ -241,4 +234,33 @@ i.icon.icon-searchbox {
 
 #coll {
 	width: 150px;
+}
+
+#history_lst_grid_displayContainer {
+	height: 142px !important;
+	width: 250px !important;
+	max-width: 250px !important;
+}
+
+#history_lst_grid_scrollContainer {
+	height: 142px !important;
+}
+
+#history_lst_grid_container {
+	width: 267px !important;
+	height: 142px !important;
+}
+
+#history_lst {
+	width: 267px;
+	height: 142px;
+}
+
+.ui-iggrid table tr .ui-state-active {
+	width: 267px !important;
+}
+
+.ui-widget-content.ui-iggrid-tablebody.ui-ig-record.ui-iggrid-record th {
+	background-color: #CFF1A5;
+	color: #000;
 }

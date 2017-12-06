@@ -38,6 +38,4 @@ public class PerInfoItemDefDto {
 	private ItemTypeStateDto itemTypeState;
 
 	private List<EnumConstant> selectionItemRefTypes;
-
-
 }

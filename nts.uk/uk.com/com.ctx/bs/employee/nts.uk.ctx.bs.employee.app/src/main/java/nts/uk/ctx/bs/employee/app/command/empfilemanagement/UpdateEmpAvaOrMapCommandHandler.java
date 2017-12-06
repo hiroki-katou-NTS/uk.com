@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
+import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 
 @Stateless
 public class UpdateEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapCommand>{
@@ -17,7 +17,7 @@ public class UpdateEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapC
 	@Override
 	protected void handle(CommandHandlerContext<EmpAvaOrMapCommand> context) {
 		EmpAvaOrMapCommand command = context.getCommand();
-		this.empFileManagementRepository.update(EmployeeFileManagement.createFromJavaType(command.getEmployeeId(),
+		this.empFileManagementRepository.update(PersonFileManagement.createFromJavaType(command.getEmployeeId(),
 				command.getFileId(), command.getFileType(), null, null));
 	}
 

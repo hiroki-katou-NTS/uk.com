@@ -10,11 +10,11 @@ import java.util.List;
  * The Interface WebMenu.
  */
 public interface WebMenuPub {
-	
-	/**
-	 * Get list of web menu by company id
-	 * @param companyId
-	 * @return
-	 */
-	List<WebMenuExport> findByCompanyId(String companyId);
+
+    /**
+     * Get list of web menu by company id
+     * @param companyId
+     * @return
+     */
+    List<WebMenuExport> findByCompanyId(String companyId);
 }

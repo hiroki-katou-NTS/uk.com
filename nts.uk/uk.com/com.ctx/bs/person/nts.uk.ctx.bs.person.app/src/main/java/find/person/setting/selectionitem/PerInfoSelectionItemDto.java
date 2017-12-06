@@ -13,16 +13,11 @@ public class PerInfoSelectionItemDto {
 	private String integrationCode;
 	private FormatSelectionDto formatSelection;
 
-	
 	public static PerInfoSelectionItemDto fromDomain(PerInfoSelectionItem domain) {
-		
-		return new PerInfoSelectionItemDto(domain.getSelectionItemId(),
-				domain.getSelectionItemName().v(),
-				domain.getMemo().v(),
-				domain.getSelectionItemClassification().value,
-				domain.getContractCode(),
-				domain.getIntegrationCode().v(),
-				FormatSelectionDto.fromDomain(domain.getFormatSelection()));
-		
+
+		return new PerInfoSelectionItemDto(domain.getSelectionItemId(), domain.getSelectionItemName().v(),
+				domain.getMemo().v(), domain.getSelectionItemClassification().value, domain.getContractCode(),
+				domain.getIntegrationCode().v(), FormatSelectionDto.fromDomain(domain.getFormatSelection()));
+
 	}
 }

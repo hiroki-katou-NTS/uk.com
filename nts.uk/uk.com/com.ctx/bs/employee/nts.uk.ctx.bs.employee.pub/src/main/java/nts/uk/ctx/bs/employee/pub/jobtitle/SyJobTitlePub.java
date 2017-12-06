@@ -53,5 +53,15 @@ public interface SyJobTitlePub {
 	 */
 	// RequestList #74
 	List<JobTitleExport> findAll(String companyId, GeneralDate baseDate);
+	
+	/**
+	 * Find S job hist by S id.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList #??? -> NamPT pls add on
+	Optional<EmployeeJobHistExport> findSJobHistBySId(String employeeId, GeneralDate baseDate);
 
 }

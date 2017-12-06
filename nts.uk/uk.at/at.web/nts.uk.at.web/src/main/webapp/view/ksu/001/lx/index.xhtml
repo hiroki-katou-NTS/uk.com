@@ -41,9 +41,9 @@
 							}"></table>
 				</div>
 				<div id="content-right">
-					<div data-bind="ntsFormLabel: {constraint:['TeamCode','TeamName'],required: true}">#{i18n.getText('KSU001_1137')}</div>
-					<input id="input-teamCode" data-bind="ntsTextEditor: {value: teamCode, enable: enableCode, constraint:'TeamCode',required: true}" />
-					<input id="input-teamName" data-bind="ntsTextEditor: {value: teamName, constraint:'TeamName',required: true}" />
+					<div data-bind="ntsFormLabel: {constraint:['TeamCode','TeamName'],required: true, immediate: true, option: {autofill:true, filldirection:'left'}}">#{i18n.getText('KSU001_1137')}</div>
+					<input id="input-teamCode" data-bind="ntsTextEditor: {value: teamCode, enable: enableCode, constraint:'TeamCode',required: true, name: '#[KSU001_1138]'}" />
+					<input id="input-teamName" data-bind="ntsTextEditor: {value: teamName, constraint:'TeamName',required: true, name: '#[KSU001_1139]'}" />
 				</div>
 			</div>
 		</ui:define>

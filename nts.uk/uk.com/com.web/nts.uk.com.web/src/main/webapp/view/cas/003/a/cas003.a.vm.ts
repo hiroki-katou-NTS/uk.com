@@ -19,7 +19,7 @@ module nts.uk.com.view.cas003.a {
             notificationPasswordChange: KnockoutObservable<number>;
             lockInterval: KnockoutObservable<number>;
             errorCount: KnockoutObservable<number>;
-            lockOutMessage: KnockoutObservable<String>;
+            lockOutMessage: KnockoutObservable<string>;
 
 
             constructor() {
@@ -36,8 +36,8 @@ module nts.uk.com.view.cas003.a {
                 self.errorCount = ko.observable(null);
                 self.lockOutMessage = ko.observable("");
                 self.passPolicyCheck = ko.observable(true);
-                self.violationPassCheck = ko.observable(true);
-                self.firstTimeCheck = ko.observable(true);
+                self.violationPassCheck = ko.observable(false);
+                self.firstTimeCheck = ko.observable(false);
                 self.accLockCheck = ko.observable(true);
             }
 
@@ -106,7 +106,21 @@ module nts.uk.com.view.cas003.a {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                service.updateAccountPolicy(new AccountPolicy({ errorCount: self.errorCount(), lockInterval: self.lockInterval(), lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() })).done(()=>{
+                var accountPolicy = null;
+                if (!self.passPolicyCheck() && self.accLockCheck()) {
+
+                    accountPolicy = new AccountPolicy({ errorCount: self.errorCount(), lockInterval: self.lockInterval(), lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: 0, loginCheck: false, initialPasswordChange: false, isPasswordUse: self.passPolicyCheck(), historyCount: 0, lowestDigits: 1, validityPeriod: 0, numberOfDigits: 0, symbolCharacters: 0, alphabetDigit: 0 });
+
+                } else if (self.passPolicyCheck() && !self.accLockCheck()) {
+                    accountPolicy = new AccountPolicy({ errorCount: 1, lockInterval: 0, lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() });
+                } else if (!self.passPolicyCheck() && !self.accLockCheck()) {
+                    accountPolicy = new AccountPolicy({ errorCount: 1, lockInterval: 0, lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: 0, loginCheck: false, initialPasswordChange: false, isPasswordUse: self.passPolicyCheck(), historyCount: 0, lowestDigits: 1, validityPeriod: 0, numberOfDigits: 0, symbolCharacters: 0, alphabetDigit: 0 });
+                }
+                else {
+                  accountPolicy =   new AccountPolicy({ errorCount: self.errorCount(), lockInterval: self.lockInterval(), lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() });
+                }
+
+                service.updateAccountPolicy(accountPolicy).done(() => {
                     infor(nts.uk.resource.getMessage("Msg_15", []));
                 });
 

@@ -8,6 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.MoneyFunc;
+
+/**
+ * TanLV
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +33,13 @@ public class FormulaMoneyCommand {
     
     private List<MoneyFuncCommand> lstMoney;
     
-
+    /**
+     * toDomainFormMoney
+     * @param companyId
+     * @param verticalCalCd
+     * @param verticalCalItemId
+     * @return
+     */
 	public FormulaMoney toDomainFormMoney(String companyId, String verticalCalCd, String verticalCalItemId){
 		 List<MoneyFunc> formPeopleLst = this.lstMoney != null
 	    			? this.lstMoney.stream().map(c -> c.toDomainMoney(companyId, 

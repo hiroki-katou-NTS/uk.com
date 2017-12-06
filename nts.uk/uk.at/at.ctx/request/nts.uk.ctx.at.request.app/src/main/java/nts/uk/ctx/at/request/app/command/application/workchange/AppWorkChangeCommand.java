@@ -85,4 +85,6 @@ public class AppWorkChangeCommand
     * 勤務直帰2
     */
     private int backHomeAtr2;
+    
+    private Long version;
 }

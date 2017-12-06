@@ -61,25 +61,31 @@ public class SelectionFinder {
 			return orderList;
 		}
 
-		// Optional<Selection> optHist =
-		// this.selectionRepo.getHistSelection(histId);
-		// if (optHist == null) {
-		// // 選択している「個人情報の選択項目」の「選択肢履歴」の件数をチェックする
-		//
-		// } else {
-		// // ドメインモデル「選択肢の並び順」を取得する(Lấy Domain Model 「選択肢の並び順」)
-		//
-		//
-		// }
-
-		// return SelectionDto.fromDomainSelection(optHist.get());
 	}
 
 	// Lanlt
 	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate) {
-        GeneralDate  baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
+		GeneralDate baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
 		return this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert).stream()
 				.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+
+	}
+
+	// ham nay su dung chu y selectionItemClsAtr co gia tri la 0 vs 1 
+	// con bang itemCommon thi co gia tri la 1 vs 2 ko map vs nhau
+	// do do ma ham nay phai chuyen doi de co du lieu chinh xac
+	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate,
+			int selectionItemClsAtr) {
+		GeneralDate baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
+		List<SelectionInitDto> selectionLst = new ArrayList<>();
+		if (selectionItemClsAtr == 1) {
+			selectionLst = this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert, 0).stream()
+					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+		} else if (selectionItemClsAtr == 2) {
+			selectionLst = this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert, 1).stream()
+					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+		}
+		return selectionLst;
 
 	}
 

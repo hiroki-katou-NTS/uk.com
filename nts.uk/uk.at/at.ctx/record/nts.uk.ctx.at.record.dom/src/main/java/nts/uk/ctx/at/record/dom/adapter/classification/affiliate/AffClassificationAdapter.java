@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.dom.adapter.classification.affiliate;
 
-import java.util.List;
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 public interface AffClassificationAdapter {
 	
-	List<AffClassificationSidImport> findByListEmployeeId();
+	Optional<AffClassificationSidImport> findByEmployeeId(String companyId, String employeeId, GeneralDate baseDate);
 
 }

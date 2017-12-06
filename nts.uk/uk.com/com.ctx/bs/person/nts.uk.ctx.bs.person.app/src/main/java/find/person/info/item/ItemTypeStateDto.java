@@ -4,9 +4,9 @@ import java.util.List;
 
 import lombok.Getter;
 
-
+@Getter
 public class ItemTypeStateDto {
-	@Getter
+
 	protected int itemType;
 	
 	public static ItemTypeStateDto createSetItemDto(List<String> items) {

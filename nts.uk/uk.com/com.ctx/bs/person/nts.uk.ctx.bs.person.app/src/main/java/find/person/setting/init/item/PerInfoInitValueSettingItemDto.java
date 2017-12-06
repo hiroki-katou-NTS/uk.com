@@ -84,6 +84,14 @@ public class PerInfoInitValueSettingItemDto {
 	private BigDecimal numericItemMin;
 	
 	private BigDecimal numericItemMax;
+	
+	private Integer stringItemType;
+	
+	private Integer stringItemLength;
+	
+	private Integer stringItemDataType;
+	
+	private boolean isFixedItem;
 
 	public static PerInfoInitValueSettingItemDto fromDomain(PerInfoInitValueSetItem domain) {
 		
@@ -106,7 +114,9 @@ public class PerInfoInitValueSettingItemDto {
 			    new ArrayList<>(),
 				domain.getDateType(), 
 				domain.getTimepointItemMin(), domain.getTimepointItemMax(),
-				domain.getNumericItemMin(), domain.getNumericItemMax());
+				domain.getNumericItemMin(), domain.getNumericItemMax(),
+				domain.getStringItemType(), domain.getStringItemLength(),
+				domain.getStringItemDataType(), domain.isFixedItem());
 
 	}
 

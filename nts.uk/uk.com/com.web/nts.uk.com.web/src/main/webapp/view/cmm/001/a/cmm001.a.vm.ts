@@ -4,30 +4,26 @@ module cmm001.a {
 
         gridColumns: KnockoutObservableArray<any>;
         currentCompany: KnockoutObservable<CompanyModel>;
-        company: service.model.CompanyDto = null;
         currentCompanyCode: KnockoutObservable<string>;
+        // list company A2_4
         sel001Data: KnockoutObservableArray<ICompany>;
+        // list company copy
         listCom: KnockoutObservableArray<ICompany>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        displayAttribute: KnockoutObservable<boolean>;
-        previousDisplayAttribute: boolean = true; //lưu giá trị của displayAttribute trước khi nó bị thay đổi
-        isUpdate: KnockoutObservable<boolean> = ko.observable(null);
-        dirtyObject: nts.uk.ui.DirtyChecker;
-        previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
         itemList: KnockoutObservable<any>;
-        hasFocus: KnockoutObservable<boolean> = ko.observable(true);
-        roundingRules:  KnockoutObservableArray<RoundingRule>;
+        roundingRules:  KnockoutObservableArray<RoundingRule>;  
         roundingRules3: KnockoutObservableArray<RoundingRule>;
+        // check true false A2_2
         display: KnockoutObservable<boolean>;
+        checkInsert: KnockoutObservable<boolean>;
         
-        
-        constructor() {
+        constructor() {  
             let self = this;
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: '会社基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: '会社所在地・連絡先', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
+                { id: 'tab-1', title: nts.uk.resource.getText("CMM001_16"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: nts.uk.resource.getText("CMM001_17"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-3', title: nts.uk.resource.getText("CMM001_18"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             let itemArray = [
                 { code: 1, name: '1月' },
@@ -45,19 +41,19 @@ module cmm001.a {
             ];
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
-                { headerText: '会社コード', prop: 'companyCode', width: 80 },
-                { headerText: '名称', prop: 'companyName', width: 220 },
-                { headerText: '廃止', prop: 'isAbolition', width: 75,
+                { headerText: nts.uk.resource.getText("CMM001_7"), key: 'companyCode', width: 80 },
+                { headerText: nts.uk.resource.getText("CMM001_8"), key: 'companyName', width: 220 },
+                { headerText: nts.uk.resource.getText("CMM001_9"), key: 'isAbolition', width: 75,
                     template:  '{{if ${isAbolition} == 1}} <img src="../images/78.png" style="margin-left: 20px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'}
             ]);
             self.sel001Data = ko.observableArray([]);
             self.listCom = ko.observableArray([]);
             self.itemList = ko.observableArray(itemArray);
-            self.displayAttribute = ko.observable(true);
             self.currentCompany = ko.observable(null);
             self.currentCompanyCode = ko.observable('');
             self.sel001Data = ko.observableArray([]);
             self.display = ko.observable(false);
+            self.checkInsert = ko.observable(false);
             
             self.roundingRules = ko.observableArray([
                 new RoundingRule(1, nts.uk.resource.getText("CMM001_31")),
@@ -67,30 +63,31 @@ module cmm001.a {
                 new RoundingRule(1, nts.uk.resource.getText("CMM001_36")),
                 new RoundingRule(0, nts.uk.resource.getText("CMM001_37"))
             ]);
-            
+            // subscribe each company
             self.currentCompanyCode.subscribe((value) => {
+                nts.uk.ui.errors.clearAll();
                 if (value) {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
                     });
+                    self.checkInsert(false);
                     self.currentCompany(new CompanyModel(foundItem));
                     console.log(self.currentCompany());
                     let param = {
-                        companyId: self.currentCompany().companyId(),
-                        companyCode: self.currentCompany().companyCode()    
+                        companyId: self.currentCompany().companyId() 
                     }
                     var divEmpty = {
-                        regWorkDiv: 1,
+                        regWorkDiv: 0,
                     }
                     service.getDiv(param).done((div) => {
                         console.log(div);
                         div == null? div = divEmpty: div;
                         self.currentCompany().regWorkDiv(div.regWorkDiv); 
-                    })
+                    });
                     var sysEmpty = {
-                        jinji: 1,
-                        kyuyo: 1,
-                        shugyo: 1,
+                        jinji: 0,
+                        kyuyo: 0,
+                        shugyo: 0,
                     }
                     service.getSys(param).done((sys) => {
                         console.log(sys); 
@@ -98,10 +95,12 @@ module cmm001.a {
                         self.currentCompany().jinji(sys.jinji);
                         self.currentCompany().kyuyo(sys.kyuyo);
                         self.currentCompany().shugyo(sys.shugyo);   
-                    })
+                    });
                     self.currentCompany().isAbolition() == 1 ? true : false;
+                    $("#companyName").focus();
                 }
             });
+            // subscribe when check A2_2
             self.display.subscribe((item) => {
                 if(item){
                     self.sel001Data(_.filter(self.listCom(), function(obj) {
@@ -113,7 +112,9 @@ module cmm001.a {
             });
         }
 
+        /** start page */
         start() {
+            nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAll().done((lst) => {
@@ -125,65 +126,22 @@ module cmm001.a {
                     self.sel001Data(lst); 
                     self.listCom(lst); 
                     self.currentCompanyCode(self.sel001Data()[0].companyCode);
+                    self.checkInsert(false);
                 }
                 dfd.resolve(); 
             }).fail(function(error){
                     dfd.reject();
                     alert(error.message);
-                }) 
-//            service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
-//                if (data.length > 0) {
-//                    self.isUpdate(true);
-//                    _.each(data, function(obj: service.model.CompanyDto) {
-//                        let companyModel: CompanyModel;
-//                        companyModel = ko.mapping.fromJS(obj);
-//                        if (obj.displayAttribute === 1) {
-//                            companyModel.displayAttribute('');
-//                        } else {
-//                            companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
-//                        }
-//                        self.sel001Data.push(ko.toJS(companyModel));
-//                    });
-//                    if (currentCode === undefined) {
-//                        self.currentCompany = ko.observable(new CompanyModel({
-//                            companyCode: ko.toJS(self.sel001Data()[0].companyCode),
-//                            address1: '',
-//                            companyName: '',
-//                            companyNameGlobal: '',
-//                            corporateMyNumber: '',
-//                            depWorkPlaceSet: 0,
-//                            displayAttribute: '',
-//                            termBeginMon: 0,
-//                            companyUseSet: null
-//                        }));
-//                        self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
-//                        self.currentCompanyCode(self.currentCompany().companyCode());
-//                    } else {
-//                        self.currentCompanyCode(currentCode);
-//                    }
-//                } else {
-//                    self.currentCompany = ko.observable(new CompanyModel({
-//                        companyCode: '',
-//                        address1: '',
-//                        companyName: '',
-//                        companyNameGlobal: '',
-//                        corporateMyNumber: '',
-//                        depWorkPlaceSet: 0,
-//                        displayAttribute: '',
-//                        termBeginMon: 0,
-//                        companyUseSet: null
-//                    }));
-//                    self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
-//                    self.currentCompanyCode(self.currentCompany().companyCode());
-//                    self.resetData();
-//                }
-//                dfd.resolve();
-//            });
+                }).always(()=> {
+                nts.uk.ui.block.clear();
+            }); 
             return dfd.promise();
         }
         
+        /** new mode */
         innit(){
             let self = this;
+            nts.uk.ui.errors.clearAll();
             var addEmpty = {
                             addKana_1: "",
                             addKana_2: "",
@@ -209,34 +167,34 @@ module cmm001.a {
                 startMonth: 1,
                 taxNum: "",
                 addinfor:  addEmpty,
-                regWorkDiv: 1,
-                jinji: 1,
-                kyuyo: 1,
-                shugyo: 1,    
+                regWorkDiv: 0,
+                jinji: 0,
+                kyuyo: 0,
+                shugyo: 0,    
             } 
-//            self.currentCompanyCode("");
-//            self.currentCompany(null);
-//            self.currentCompany().comNameKana("");
-//            self.currentCompany().companyId("");
-//            self.currentCompany().companyName("")
-//            self.currentCompany().contractCd("");
-//            self.currentCompany().isAbolition(0);
-//            self.currentCompany().repJob("");
-//            self.currentCompany().repname("");
-//            self.currentCompany().shortComName("");
-//            self.currentCompany().startMonth(1);
-//            self.currentCompany().taxNum(null);
-//            self.currentCompany().addinfor(addEmpty);
-//            self.currentCompany().regWorkDiv(1);
-//            self.currentCompany().jinji(1);
-//            self.currentCompany().kyuyo(1);
-//            self.currentCompany().shugyo(1);
             self.currentCompany(new CompanyModel(param));   
             self.currentCompanyCode("");
+            self.checkInsert(true);
+            $("#companyCode").focus();
         }
         
-        
+        /** event when click register */
        register(){
+           nts.uk.ui.block.invisible();
+           $("#companyCode").trigger("validate");
+           $("#companyName").trigger("validate");
+           $("#companyNameKana").trigger("validate");
+           $("#companyNameAbb").trigger("validate");
+           $("#corporateMyNumber").trigger("validate");
+           $("#presidentName").trigger("validate");
+           $("#presidentJobTitle").trigger("validate");
+           $("#postal").trigger("validate");
+           $("#address1").trigger("validate");
+           $("#address2").trigger("validate");
+           $("#addressKana1").trigger("validate");
+           $("#addressKana2").trigger("validate");
+           $("#telephoneNo").trigger("validate");
+           $("#faxNo").trigger("validate");
            let self = this;
            let dataAdd: IAddInfor ={
                companyCode: self.currentCompany().companyCode(),
@@ -263,6 +221,7 @@ module cmm001.a {
                addinfor: IAddInfor =  dataAdd,
            }
            let dataSys = {
+                companyId: string = self.currentCompany().companyId(),
                 companyCode: string = self.currentCompany().companyCode(),
                 contractCd: string = self.currentCompany().contractCd(),
                 jinji: number = self.currentCompany().jinji(),
@@ -270,6 +229,7 @@ module cmm001.a {
                 kyuyo: number = self.currentCompany().kyuyo(),    
            }
            let dataDiv = {
+               companyId: string = self.currentCompany().companyId(),
                 companyCode: string = self.currentCompany().companyCode(),
                 contractCd: string = self.currentCompany().contractCd(),
                 regWorkDiv: number = self.currentCompany().regWorkDiv(),
@@ -279,69 +239,84 @@ module cmm001.a {
                 sysCm: any = dataSys,
                 divCm: any = dataDiv,
            } 
+            if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
+                return;
+            }
            let code = self.currentCompany().companyCode();
-           service.update(dataTransfer).done(function(){
-               nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-               self.start().then(function(){
-                   self.currentCompanyCode(code);
-               });
-           });
-//           service.add(dataTransfer).done(function(){
-//               nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-//               self.start().then(function(){
-//                   self.currentCompanyCode(code);
-//               });
-//               
-//           })
+           if(self.checkInsert() == false){
+                    // update a company
+                    service.update(dataTransfer).done(function(){
+                       nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                            $('#companyName').focus();    
+                       });
+                       self.start().then(function(){
+                           self.currentCompanyCode(code);
+                       });
+                   }).fail(function(error){
+                       if(error.messageId == 'Msg_810'){
+                           $('#checked2').addClass("error");
+                           $('#checked2').ntsError('set', {messageId:"Msg_810"});
+//                           $('#checked2').focus();
+                        }
+                    }).always(()=>{
+                        nts.uk.ui.block.clear();    
+                    });
+           }else{
+               // insert a company
+               service.add(dataTransfer).done(function(){
+                   nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                       $('#companyName').focus(); 
+                   });
+                   self.start().then(function(){
+                       self.currentCompanyCode(code);
+                       $('#companyName').focus();
+                   });
+               }).fail(function(error){
+                        if(error.messageId == 'Msg_809'){
+                            $('#companyCode').ntsError('set', {messageId:"Msg_809"});
+                        }
+                       if(error.messageId == 'Msg_3'){
+                           $('#companyCode').ntsError('set', {messageId:"Msg_3"});
+                        }
+                    }).always(()=>{
+                        nts.uk.ui.block.clear();    
+                    });
+           }
        }
 
-       search(){
+        /** search post code */
+        search(){  
+            nts.uk.ui.block.invisible();
             let self = this;
+            // if don't have post code to find
+            if(self.currentCompany().addinfor().postCd()==""){
+                $('#postal').ntsError('set', {messageId:"Msg_438", messageParams:nts.uk.resource.getText("CMM001_22")});
+                nts.uk.ui.block.clear();
+                return;
+            }
+            // search by post code 
             service.findPostCd(self.currentCompany().addinfor().postCd()).done((item) => {
-                console.log(item);
-                item[0].stateProvince = item[0].stateProvince == null ? "":item[0].stateProvince;
-                item[0].city = item[0].city == null ? "":item[0].city;
-                item[0].townArea = item[0].townArea == null ? "":item[0].townArea;
-                
-                item[0].townAreaKana = item[0].townAreaKana == null ? "":item[0].townAreaKana;
-                item[0].cityKanaName = item[0].cityKanaName == null ? "":item[0].cityKanaName;
-                item[0].townAreaKana = item[0].townAreaKana == null ? "":item[0].townAreaKana;
-                self.currentCompany().addinfor().add_1(item[0].stateProvince + item[0].city + item[0].townArea);
-                self.currentCompany().addinfor().addKana_1(item[0].townAreaKana + item[0].cityKanaName + item[0].townAreaKana);
-            })
+                if(item.length == 0){
+                    $('#postal').ntsError('set', {messageId:"Msg_818"});
+                    return;
+                }
+                // address_1 after finded
+//                item[0].stateProvince = item[0].stateProvince;
+                item[0].city = item[0].city;
+                item[0].townArea = item[0].townArea;
+                // address kana 1 after finded
+                item[0].townAreaKana = item[0].townAreaKana;
+                item[0].cityKanaName = item[0].cityKanaName;
+//                item[0].townAreaKana = item[0].townAreaKana;
+                self.currentCompany().addinfor().add_1(item[0].city + item[0].townArea);
+                self.currentCompany().addinfor().addKana_1(item[0].cityKanaName + item[0].townAreaKana);
+            }).always(()=>{
+                        nts.uk.ui.block.clear();    
+                    });
         }
     }
     class CompanyModel {
-//        companyCode: KnockoutObservable<string>;
-//        isEnableCompanyCode: KnockoutObservable<boolean> = ko.observable(true);
-//        address1: KnockoutObservable<string>;
-//        address2: KnockoutObservable<string>;
-//        addressKana1: KnockoutObservable<string>;
-//        addressKana2: KnockoutObservable<string>;
-//        companyName: KnockoutObservable<string>;
-//        companyNameGlobal: KnockoutObservable<string>;
-//        companyNameAbb: KnockoutObservable<string>;
-//        companyNameKana: KnockoutObservable<string>;
-//        corporateMyNumber: KnockoutObservable<string>;
-//        depWorkPlaceSet: KnockoutObservable<number>;
-//        displayAttribute: KnockoutObservable<string>;
-//        faxNo: KnockoutObservable<string>;
-//        postal: KnockoutObservable<string>;
-//        presidentName: KnockoutObservable<string>;
-//        presidentJobTitle: KnockoutObservable<string>;
-//        telephoneNo: KnockoutObservable<string>;
-//        termBeginMon: KnockoutObservable<number>;
-//        companyUseSet: KnockoutObservable<CompanyUseSet>;
-//        isDelete: KnockoutObservable<boolean>;
-//        //switch
-//        roundingRules: KnockoutObservableArray<RoundingRule>;
-//        selectedRuleCode: KnockoutObservable<string>;
-//        selectedRuleCode1: KnockoutObservable<string>;
-//        selectedRuleCode2: KnockoutObservable<string>;
-//        roundingRules3: KnockoutObservableArray<RoundingRule>;
-//        selectedRuleCode3: KnockoutObservable<string>;
-//        editMode: boolean = true;// mode reset or not reset
-        // yen
         companyCode: KnockoutObservable<string>;
         comNameKana: KnockoutObservable<string>;
         companyId: KnockoutObservable<string>;
@@ -391,26 +366,6 @@ module cmm001.a {
     }
 
     interface ICompany {
-//        companyCode: string;
-//        address1: string;
-//        address2?: string;
-//        addressKana1?: string;
-//        addressKana2?: string;
-//        companyName: string;
-//        companyNameGlobal: string;
-//        companyNameAbb?: string;
-//        companyNameKana?: string;
-//        corporateMyNumber: string;
-//        depWorkPlaceSet: number;
-//        displayAttribute: string;
-//        faxNo?: string;
-//        postal?: string;
-//        presidentName?: string;
-//        presidentJobTitle?: string;
-//        telephoneNo?: string;
-//        termBeginMon: number;
-//        companyUseSet: CompanyUseSet;
-//        isDelete?: boolean;
         companyCode: string;
         comNameKana?: string;
         companyId: string;
@@ -468,12 +423,6 @@ module cmm001.a {
         }
     }
       
-//    export class CompanyUseSet {
-//       
-//        constructor(useKtSet: number, useQySet: number, useJjSet: number) {
-//        }
-//    }
-    
     class RoundingRule {
         code: number;
         name: string;

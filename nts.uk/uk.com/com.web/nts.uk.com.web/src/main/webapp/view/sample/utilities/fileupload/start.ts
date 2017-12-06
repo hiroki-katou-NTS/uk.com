@@ -47,7 +47,7 @@ __viewContext.ready(function() {
         }
 
         download() {
-            if (!_.isEmpty(this.zipEntry()) 
+            if (!_.isEmpty(this.zipEntry())) 
                 nts.uk.request.specials.donwloadFile(this.fileId() + "/" + this.zipEntry());
             else nts.uk.request.specials.donwloadFile(this.fileId());
         }

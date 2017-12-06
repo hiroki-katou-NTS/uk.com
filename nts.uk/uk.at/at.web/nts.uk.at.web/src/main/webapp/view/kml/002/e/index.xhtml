@@ -216,18 +216,6 @@
 				<div class="method-c">
 					<div class="grid-area-e"
 						data-bind="ntsPanel:{width: '310px', height: '440px', direction: 'right', showIcon: false, visible: true}">
-						<div class="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_28')}</div>
-						<div class="categories" data-bind="ntsComboBox: {
-								options: categoryItems,
-								optionsValue: 'catCode',
-								value: catCode,
-								optionsText: 'catName',
-								enable: true,
-								columns: [
-									{ prop: 'catName', length: 10 }
-								]}"></div>
-						<div class="cbx-checked-e" data-bind="ntsCheckBox: { checked: checkedAmount , enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
-						
 						<div class="search-box"
 							data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
 							items: itemsAmount, selected: currentCodeListAmount, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />

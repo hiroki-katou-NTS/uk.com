@@ -24,7 +24,7 @@ public class DeleteCompanyInforCommandHandler extends CommandHandler<DeleteCompa
 	protected void handle(CommandHandlerContext<DeleteCompanyInforCommand> context) {
 		DeleteCompanyInforCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
-		Optional<CompanyInforNew> com = comRep.findComByCode(contractCd, data.getCompanyId(), data.getCompanyCode());
+		Optional<CompanyInforNew> com = comRep.findComByCode(data.getCompanyId());
 		if(!com.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}

@@ -21,9 +21,35 @@ module CPS009Constraint {
                     constraint.valueType = "String";
                     constraint.maxLength = dts.stringItemLength || undefined;
                     constraint.stringExpression = '';
+                    switch (dts.stringItemType) {
+                        default:
+                        case ITEM_STRING_TYPE.ANY:
+                            constraint.charType = 'Alphabet';
+                            break;
+                        case ITEM_STRING_TYPE.ANYHALFWIDTH:
+                            constraint.charType = 'AnyHalfWidth';
+                            break;
+                        case ITEM_STRING_TYPE.ALPHANUMERIC:
+                            constraint.charType = 'AlphaNumeric';
+                            break;
+                        case ITEM_STRING_TYPE.NUMERIC:
+                            constraint.charType = 'Numeric';
+                            if (dts.numberDecimalPart > 0) {
+                                constraint.valueType = "Decimal";
+                                constraint.mantissaMaxLength = dts.numberDecimalPart;
+                            } else {
+                                constraint.valueType = "Integer";
+                            }
+                            constraint.max = dts.numericItemMax || undefined;
+                            constraint.min = dts.numericItemMin || 0;
+                            break;
+                        case ITEM_STRING_TYPE.KANA:
+                            constraint.charType = 'Kana';
+                            break;
+                    }
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
-                    if (dts.decimalPart == 0) {
+                    if (dts.numberDecimalPart == 0) {
                         constraint.valueType = "Integer";
                     } else {
                         constraint.valueType = "Decimal";

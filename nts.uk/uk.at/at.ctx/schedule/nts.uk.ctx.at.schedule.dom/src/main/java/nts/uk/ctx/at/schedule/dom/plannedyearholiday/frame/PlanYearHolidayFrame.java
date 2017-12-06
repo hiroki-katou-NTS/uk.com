@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 @Getter
 @Setter
@@ -38,7 +39,7 @@ public class PlanYearHolidayFrame extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public PlanYearHolidayFrame(PlanYearHolidayFrameGetMemento memento) {
-		this.companyId = memento.getCompanyId();
+		this.companyId = memento.getCompanyId().v();
 		this.planYearHolidayFrNo = memento.getPlanYearHolidayFrameNo();
 		this.useClassification = memento.getUseClassification();
 		this.planYearHolidayFrName = memento.getPlanYearHolidayFrameName();
@@ -50,7 +51,7 @@ public class PlanYearHolidayFrame extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(PlanYearHolidayFrameSetMemento memento) {
-		memento.setCompanyId(this.companyId);
+		memento.setCompanyId(new CompanyId(this.companyId));
 		memento.setPlanYearHolidayFrameNo(this.planYearHolidayFrNo);
 		memento.setUseClassification(this.useClassification);
 		memento.setPlanYearHolidayFrameName(this.planYearHolidayFrName);

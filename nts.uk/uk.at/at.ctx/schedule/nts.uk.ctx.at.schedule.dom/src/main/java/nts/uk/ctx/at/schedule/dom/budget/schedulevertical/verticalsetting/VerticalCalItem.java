@@ -1,11 +1,17 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
+/**
+ * TanLV
+ * 汎用縦計項目
+ */
 @AllArgsConstructor
 @Getter
 public class VerticalCalItem extends DomainObject {
@@ -53,7 +59,7 @@ public class VerticalCalItem extends DomainObject {
  	private FormulaAmount formulaAmount;
  	
  	// F
- 	private FormulaNumerical numerical;
+ 	private List<FormulaNumerical> numerical;
  	
  	//G
  	private FormulaUnitprice unitprice;
@@ -71,7 +77,7 @@ public class VerticalCalItem extends DomainObject {
  													FormTime formTime,
  													FormPeople formPeople,
  													FormulaAmount formulaAmount,
- 													FormulaNumerical numerical,
+ 													List<FormulaNumerical> numerical,
  													FormulaUnitprice unitprice){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
@@ -89,6 +95,10 @@ public class VerticalCalItem extends DomainObject {
  				unitprice);
  	}
  	
+ 	/**
+ 	 * Validate
+ 	 * @param index
+ 	 */
  	public void validate(int index) {
  		if(this.calculateAtr == CalculateAtr.FORMULA_SETTING) {
  			if (this.formBuilt == null) {
@@ -97,25 +107,25 @@ public class VerticalCalItem extends DomainObject {
  		} else {
  			switch (this.attributes) {
 				case TIME:
-					if (this.formTime == null) {
+					if (this.formTime.getLstFormTimeFunc().size() == 0) {
 						throw new BusinessException("Msg_111", String.valueOf(index));
 					}
 					break;
 					
 				case AMOUNT:
-					if (this.formulaAmount == null) {
+					if (this.formulaAmount.getMoneyFunc().getLstMoney().size() == 0 && this.formulaAmount.getTimeUnit().getLstTimeUnitFuncs().size() == 0) {
 						throw new BusinessException("Msg_111", String.valueOf(index));
 					}
 					break;
 					
 				case NUMBER_OF_PEOPLE:
-					if (this.formPeople == null) {
+					if (this.formPeople.getLstPeopleFunc().size() == 0) {
 						throw new BusinessException("Msg_111", String.valueOf(index));
 					}
 					break;
 					
 				case NUMBER:
-					if (this.numerical == null) {
+					if (this.numerical.size() == 0) {
 						throw new BusinessException("Msg_111", String.valueOf(index));
 					}
 					break;

@@ -170,7 +170,7 @@ public class PerInfoCategoryFinder {
 		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
 				.map(p -> {
 					return new PerInfoCtgWithItemsNameDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-							p.getCategoryType().value, p.getIsFixed().value, itemNameList);
+							p.getCategoryType().value, p.getIsFixed().value, p.getPersonEmployeeType().value, itemNameList);
 				}).orElse(null);
 	};
 }

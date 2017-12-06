@@ -40,7 +40,7 @@ import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
@@ -48,8 +48,8 @@ import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
-import nts.uk.ctx.bs.person.dom.person.family.Family;
-import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
@@ -135,7 +135,7 @@ public class EmpPerInfoCategoryFinder {
 	private CurrentAffiDeptRepository currentAffiDeptRepository;
 
 	@Inject
-	private FamilyRepository familyRepository;
+	private FamilyMemberRepository familyRepository;
 
 	@Inject
 	private WidowHistoryRepository widowHistoryRepository;
@@ -400,14 +400,14 @@ public class EmpPerInfoCategoryFinder {
 			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 			break;
 		case "CS00008":
-			Optional<TemporaryAbsence> temporaryAbsence = temporaryAbsenceRepository.getByTempAbsenceId(infoId);
+			Optional<TempAbsenceHisItem> temporaryAbsence = temporaryAbsenceRepository.getByTempAbsenceId(infoId);
 			for(PerInfoItemDefDto item : lstPerInfoItemDef){
 				List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
 				//getActionRole ActionRole
 				ActionRole  actionRole = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(), item.getId());
 				//mapping item with data
 				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(), itemSet, actionRole, 
-						temporaryAbsence.isPresent()? temporaryAbsence.get(): new TemporaryAbsence());			
+						temporaryAbsence.isPresent()? temporaryAbsence.get(): new TempAbsenceHisItem());			
 				lstLayoutPersonInfoClsDto.add(objMap);
 			}	
 			empMaintLayoutDto = new EmpMaintLayoutDto();
@@ -415,7 +415,7 @@ public class EmpPerInfoCategoryFinder {
 			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 	 		//set optional data			
 			empMaintLayoutDto = new EmpMaintLayoutDto();
-			empMaintLayoutDto.setClassificationItems(getCtgItemOptionDto(temporaryAbsence.get().getTempAbsenceId(), empId));
+			empMaintLayoutDto.setClassificationItems(getCtgItemOptionDto(temporaryAbsence.get().getHistoryId(), empId));
 			lstEmpMaintLayoutDto.add(empMaintLayoutDto);										
 			break;
 			
@@ -668,7 +668,7 @@ public class EmpPerInfoCategoryFinder {
 			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 			break;
 		case "CS00004":
-			Family family = familyRepository.getFamilyById(infoId);
+			FamilyMember family = familyRepository.getFamilyById(infoId);
 			for (PerInfoItemDefDto item : lstPerInfoItemDef) {
 				List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
 				// getActionRole ActionRole
@@ -683,7 +683,7 @@ public class EmpPerInfoCategoryFinder {
 			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 			// set optional data
 			empMaintLayoutDto = new EmpMaintLayoutDto();
-			empMaintLayoutDto.setClassificationItems(getCtgItemOptionDto(family.getFamilyId(), empId));
+			empMaintLayoutDto.setClassificationItems(getCtgItemOptionDto(family.getFamilyMemberId(), empId));
 			lstEmpMaintLayoutDto.add(empMaintLayoutDto);
 			break;
 		case "CS00014":

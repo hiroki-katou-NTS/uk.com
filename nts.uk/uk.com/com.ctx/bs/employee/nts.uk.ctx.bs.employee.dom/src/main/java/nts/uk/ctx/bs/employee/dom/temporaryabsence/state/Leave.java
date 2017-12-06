@@ -3,32 +3,26 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+
 /**
- * @author danpv
+ * @author danpv Domain Name : 休職
  *
  */
-public class Leave extends LeaveHolidayState {
+public class Leave extends TempAbsenceHisItem {
 
 	/**
-	 * 理由 reason
+	 * @param historyId
+	 * @param employeeId
+	 * @param remarks
+	 * @param soInsPayCategory
 	 */
-	private String reason;
-	
-	/**
-	 * Constructor
-	 * @param reason
-	 */
-	public Leave(String reason) {
-		super();
-		this.reason = reason;
+	private Leave(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory) {
+		super(LeaveHolidayType.LEAVE_OF_ABSENCE, historyId, employeeId, remarks, soInsPayCategory);
 	}
 
-	public String getReason() {
-		return reason;
-	}
-
-	public void setReason(String reason) {
-		this.reason = reason;
+	public static Leave init(String historyId, String employeeId, String remarks, Integer soInsPayCategory) {
+		return new Leave(historyId, employeeId, new GenericString(remarks), soInsPayCategory);
 	}
 
 }
