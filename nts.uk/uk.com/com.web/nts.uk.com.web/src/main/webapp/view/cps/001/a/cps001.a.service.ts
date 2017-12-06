@@ -5,11 +5,11 @@ module cps001.a.service {
     let paths: any = {
         layout: {
             getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
-            getDetails: "ctx/pereg/person/maintenance/findOne/{0}"
+            getDetails: "ctx/pereg/person/maintenance/findLayoutData",
         },
         category: {
-            'getData': 'ctx/pereg/employee/category/getAll/{0}',
-            'getTabInfo': 'ctx/pereg/layout/find/getTabDetail',
+            'getData': 'ctx/pereg/employee/category/getall/{0}',
+            'getTabInfo': 'ctx/pereg/employee/category/getlistinfocategory',
         },
         person: {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
@@ -47,8 +47,8 @@ module cps001.a.service {
         return ajax(format(paths.layout.getAll, empId));
     };
 
-    export function getCurrentLayout(id: string) {
-        return ajax(format(paths.layout.getDetails, id));
+    export function getCurrentLayout(query: any) {
+        return ajax(paths.layout.getDetails, query);
     }
 
     export function getData() {
