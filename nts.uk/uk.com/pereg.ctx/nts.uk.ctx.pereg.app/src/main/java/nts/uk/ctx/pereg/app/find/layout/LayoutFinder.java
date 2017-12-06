@@ -287,7 +287,9 @@ public class LayoutFinder {
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
-			MappingFactory.mapSingleClsDto(peregDto, authClassItem);
+			if ( peregDto != null ) {
+				MappingFactory.mapSingleClsDto(peregDto, authClassItem);
+			} 
 		} else {
 			if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
 				getSingleInforData(perInfoCategory, authClassItem, personId, employeeId);

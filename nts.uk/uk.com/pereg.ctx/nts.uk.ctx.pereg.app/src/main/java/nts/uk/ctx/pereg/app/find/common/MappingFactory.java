@@ -3,7 +3,7 @@
  */
 package nts.uk.ctx.pereg.app.find.common;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,14 +33,14 @@ public class MappingFactory {
 
 	public static void mapSingleClsDto(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 		// map record ID
-		AnnotationUtil.getFieldAnnotated(peregDto.getClass(), PeregRecordId.class).ifPresent(field -> {
+		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
 			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
 			classItem.setRecordId(recordId);
 		});
 
 		// get dto value
-		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getClass());
-		
+		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
+
 		// map fix value
 		mapFixDto(dtoValue, classItem);
 
@@ -48,53 +48,58 @@ public class MappingFactory {
 		setOptionData(peregDto, classItem);
 
 	}
-	
-	public static void mapListClsDto(EmpMaintLayoutDto empMaintLayoutDto, PeregDto peregDto, List<PerInfoItemDefForLayoutDto> lstClsItem){
+
+	public static void mapListClsDto(EmpMaintLayoutDto empMaintLayoutDto, PeregDto peregDto,
+			List<PerInfoItemDefForLayoutDto> lstClsItem) {
 		// get dto value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
 		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem);
 	}
-	
-	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto ,
-			Map<String, Object> dtoFieldValue, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
-		
+
+	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, Map<String, Object> dtoFieldValue,
+			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
+
 		lstPerInfoItemDef.forEach(item -> {
-			if(item.getItemDefType() == 2){
-				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);			
-			}
-			else{
-				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);	
+			if (item.getItemDefType() == 2) {
+				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);
+			} else {
+				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);
 				setEmpMaintLayoutDto(empMaintLayoutDto, dtoFieldValue, item.getLstChildItemDef());
 			}
 		});
-		
+
 	}
-		
-	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue){
+
+	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item,
+			Map<String, Object> dtoFieldValue) {
 		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 		Object value = dtoFieldValue.get(item.getItemCode());
-		if(checkHasValue(value)){		
+		if (checkHasValue(value)) {
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
 			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		}
 	}
-	
-	private static boolean checkHasValue(Object value){
-		if(value != null){
+
+	private static boolean checkHasValue(Object value) {
+		if (value != null) {
 			String strValue = value.toString();
-			if(strValue.equals("")) return false;
-			else return strValue.equals("-1") ? false : true; 
-		}else return false;
+			if (strValue.equals(""))
+				return false;
+			else
+				return strValue.equals("-1") ? false : true;
+		} else
+			return false;
 	}
-	
+
 	/**
-	 *  get dto value
+	 * get dto value
+	 * 
 	 * @param domainDto
 	 * @param dtoClass
 	 * @return Map<itemCode, value>
 	 */
-	private static Map<String, Object> getDtoValue(PeregDomainDto domainDto, Class<?> dtoClass){
+	private static Map<String, Object> getDtoValue(PeregDomainDto domainDto, Class<?> dtoClass) {
 		// Map<itemcode, Object: value of field>
 		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
 		FieldsWorkerStream lstField = AnnotationUtil.getStreamOfFieldsAnnotated(dtoClass, PeregItem.class);
@@ -105,13 +110,14 @@ public class MappingFactory {
 		});
 		return itemCodeValueMap;
 	}
-	
+
 	/**
 	 * set optional data
+	 * 
 	 * @param peregDto
 	 * @param classItem
 	 */
-	private static void setOptionData(PeregDto peregDto, LayoutPersonInfoClsDto classItem){
+	private static void setOptionData(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
 			mapEmployeeOptionData(peregDto.getEmpOptionalData(), classItem);
 		} else {
@@ -127,13 +133,17 @@ public class MappingFactory {
 	 * @param dtoClass
 	 */
 	public static void mapFixDto(Map<String, Object> itemCodeValueMap, LayoutPersonInfoClsDto classItem) {
+		
+		List<Object> itemValues = new ArrayList<>();
+		
 		// add to value-list
 		classItem.getListItemDf().forEach(itemDef -> {
 			LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef,
 					itemCodeValueMap.get(itemDef.getItemCode()));
-			classItem.getItems().add(valueItem);
-
+			itemValues.add(valueItem);
 		});
+		
+		classItem.setItems(itemValues);
 
 	}
 
@@ -165,22 +175,22 @@ public class MappingFactory {
 			classItem.getItems().add(valueItem);
 		}
 	}
-	
-	public static Map<String, Object>  getAllItem(PeregDto peregDto) {
-		
+
+	public static Map<String, Object> getAllItem(PeregDto peregDto) {
+
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getClass());
-		
+
 		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
-			peregDto.getEmpOptionalData().forEach(x->{
+			peregDto.getEmpOptionalData().forEach(x -> {
 				dtoValue.put(x.getItemCode(), x.getValue());
 			});
 		} else {
-			peregDto.getPerOptionalData().forEach(x->{
+			peregDto.getPerOptionalData().forEach(x -> {
 				dtoValue.put(x.getItemCode(), x.getValue());
 			});
 		}
 		return dtoValue;
-		
+
 	}
 
 }
