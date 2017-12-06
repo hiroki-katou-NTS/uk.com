@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
+package nts.uk.ctx.at.shared.infra.entity.worktime.flexset;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
