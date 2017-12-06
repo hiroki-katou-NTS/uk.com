@@ -5,6 +5,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmd;
+import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmdHandler;
+import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.CreateWorkPlaceAuthorityCmd;
+import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.CreateWorkPlaceAuthorityCmdHandler;
 import nts.uk.ctx.sys.auth.app.command.role.AddRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.role.AddRoleCommandHandler;
 import nts.uk.ctx.sys.auth.dom.role.Role;
@@ -20,11 +24,11 @@ public class CreateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
 	@Inject
 	private AddRoleByRoleTiesCommandHandler addRoleByRoleTiesCommandHandler;
 	
-//	@Inject
-//	private CreateEmploymentRoleCmdHandler createEmploymentRoleCmdHandler;
+	@Inject
+	private CreateEmploymentRoleCmdHandler createEmploymentRoleCmdHandler;
 	
-//	@Inject
-//	private CreateWorkPlaceAuthorityCmdHandler createWorkPlaceAuthorityCmdHandler;
+	@Inject
+	private CreateWorkPlaceAuthorityCmdHandler createWorkPlaceAuthorityCmdHandler;
 	
 	@Override
 	protected void handle(CommandHandlerContext<RoleCas005Command> context) {
@@ -40,36 +44,38 @@ public class CreateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
 				data.getAssignAtr(),
 				data.getCompanyId()
 				);		
-		addRoleCommandHandler.handle(addRoleCommand);
-		//insert  RoleByRoleTies
-		RoleByRoleTiesCommand roleByRoleTiesCommand = new RoleByRoleTiesCommand(
-				data.getWebMenuCd(),
-				data.getRoleId()
-				);
-		addRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
-		//insert EmploymentRole
-		
-//		CreateEmploymentRoleCmd createEmploymentRoleCmd  = new CreateEmploymentRoleCmd(
-//				data.getCompanyId(),
-//				data.getRoleId(),
-//				data.getScheduleEmployeeRef(),
-//				data.getBookEmployeeRef(),
-//				data.getEmployeeRefSpecAgent(),
-//				data.getPresentInqEmployeeRef(),
-//				data.getFutureDateRefPermit()
-//				);
-//		createEmploymentRoleCmdHandler.handle(createEmploymentRoleCmd);
-		
-		//insert WorkPlaceAuthority
-//		for(WorkPlaceAuthorityCommand workPlaceAuthorityCommand :data.getListWorkPlaceAuthority()) {
-//			CreateWorkPlaceAuthorityCmd createWorkPlaceAuthorityCmd = new CreateWorkPlaceAuthorityCmd(
-//					workPlaceAuthorityCommand.getRoleId(),
-//					workPlaceAuthorityCommand.getCompanyId(),
-//					workPlaceAuthorityCommand.getFunctionNo(),
-//					workPlaceAuthorityCommand.isAvailability()
-//					);
-//			createWorkPlaceAuthorityCmdHandler.handle(createWorkPlaceAuthorityCmd);
-//		}
+		data.setRoleId(addRoleCommandHandler.handle(addRoleCommand));
+		if(!data.getRoleId().isEmpty()) {
+			//insert  RoleByRoleTies
+			RoleByRoleTiesCommand roleByRoleTiesCommand = new RoleByRoleTiesCommand(
+					data.getWebMenuCd(),
+					data.getRoleId()
+					);
+			addRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
+			//insert EmploymentRole
+			
+			CreateEmploymentRoleCmd createEmploymentRoleCmd  = new CreateEmploymentRoleCmd(
+					data.getCompanyId(),
+					data.getRoleId(),
+					data.getScheduleEmployeeRef(),
+					data.getBookEmployeeRef(),
+					data.getEmployeeRefSpecAgent(),
+					data.getPresentInqEmployeeRef(),
+					data.getFutureDateRefPermit()
+					);
+			createEmploymentRoleCmdHandler.handle(createEmploymentRoleCmd);
+			
+			//insert WorkPlaceAuthority
+			for(WorkPlaceAuthorityCommand workPlaceAuthorityCommand :data.getListWorkPlaceAuthority()) {
+				CreateWorkPlaceAuthorityCmd createWorkPlaceAuthorityCmd = new CreateWorkPlaceAuthorityCmd(
+						workPlaceAuthorityCommand.getRoleId(),
+						workPlaceAuthorityCommand.getCompanyId(),
+						workPlaceAuthorityCommand.getFunctionNo(),
+						workPlaceAuthorityCommand.isAvailability()
+						);
+				createWorkPlaceAuthorityCmdHandler.handle(createWorkPlaceAuthorityCmd);
+			}
+		}
 	}
 
 }

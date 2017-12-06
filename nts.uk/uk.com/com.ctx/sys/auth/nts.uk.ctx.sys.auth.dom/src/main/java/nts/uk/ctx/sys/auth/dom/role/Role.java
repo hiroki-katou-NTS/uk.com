@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.role;
 
+import java.util.UUID;
+
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -117,10 +119,10 @@ public class Role extends AggregateRoot {
 		return true;
 	}
 
-	public Role(String roleId, RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
+	public Role(RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
 			RoleName name, ContractCode contractCode, RoleAtr assignAtr, String companyId) {
 		super();
-		this.roleId = roleId;
+		UUID.randomUUID().toString();
 		this.roleCode = roleCode;
 		this.roleType = roleType;
 		this.employeeReferenceRange = employeeReferenceRange;
