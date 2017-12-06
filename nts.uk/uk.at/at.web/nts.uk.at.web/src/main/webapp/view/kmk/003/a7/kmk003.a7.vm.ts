@@ -1,4 +1,4 @@
-module a4 {
+module a7 {
     class ScreenModel {
 
         fixTableOption: any;
