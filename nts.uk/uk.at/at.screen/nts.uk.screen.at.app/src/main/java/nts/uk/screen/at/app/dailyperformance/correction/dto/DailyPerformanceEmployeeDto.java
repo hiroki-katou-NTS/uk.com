@@ -17,6 +17,7 @@ public class DailyPerformanceEmployeeDto {
 	private String code;
 	private String businessName;
 	private String workplaceName;
+	private String workplaceId;
 	private String depName;
 	private boolean isLoginUser;
 }
