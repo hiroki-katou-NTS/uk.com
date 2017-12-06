@@ -1,24 +1,34 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
-
 
 /**
  * The Interface WorkingConditionSetMemento.
  */
 public interface WorkingConditionSetMemento {
-	
+
+	/**
+	 * Sets the company id.
+	 *
+	 * @param companyId the new company id
+	 */
+	void setCompanyId(String companyId);
+
 	/**
 	 * Sets the employee id.
 	 *
 	 * @param employeeId the new employee id
 	 */
-	public void setEmployeeId(String employeeId);
-	
+	void setEmployeeId(String employeeId);
+
 	/**
-	 * Sets the date History Item
+	 * Sets the date history item.
 	 *
 	 * @param dateHistoryItem the new date history item
 	 */
-	public void setDateHistoryItem(List<DateHistoryItem> dateHistoryItem);
+	void setDateHistoryItem(List<DateHistoryItem> dateHistoryItem);
 }
