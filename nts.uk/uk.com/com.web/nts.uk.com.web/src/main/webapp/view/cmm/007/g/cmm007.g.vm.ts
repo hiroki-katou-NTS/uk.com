@@ -298,7 +298,7 @@ module nts.uk.com.view.cmm007.g {
                 _self.transferName7 = ko.observable("");
                 _self.enabletransferName7 = ko.observable(true);
                 _self.requiredtransferName7 = ko.observable(true);
-                _self.isCheckedNo6.subscribe(function(value){
+                _self.isCheckedNo7.subscribe(function(value){
                     if(value == true){ 
                         _self.enabletransferName7(true);
                         _self.requiredtransferName7(true); 
@@ -326,7 +326,7 @@ module nts.uk.com.view.cmm007.g {
                 _self.transferName8 = ko.observable("");
                 _self.enabletransferName8 = ko.observable(true);
                 _self.requiredtransferName8 = ko.observable(true);
-                _self.isCheckedNo6.subscribe(function(value){
+                _self.isCheckedNo8.subscribe(function(value){
                     if(value == true){ 
                         _self.enabletransferName8(true);
                         _self.requiredtransferName8(true); 
@@ -354,7 +354,7 @@ module nts.uk.com.view.cmm007.g {
                 _self.transferName9 = ko.observable("");
                 _self.enabletransferName9 = ko.observable(true);
                 _self.requiredtransferName9 = ko.observable(true);
-                _self.isCheckedNo6.subscribe(function(value){
+                _self.isCheckedNo9.subscribe(function(value){
                     if(value == true){ 
                         _self.enabletransferName9(true);
                         _self.requiredtransferName9(true); 

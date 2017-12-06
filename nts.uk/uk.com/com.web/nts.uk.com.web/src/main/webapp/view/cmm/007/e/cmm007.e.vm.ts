@@ -47,6 +47,8 @@ module nts.uk.com.view.cmm007.e {
                 
                 
                 service.saveOvertimeWorkFrame(arrDto).done(() => {
+                    _self.findAll().done(() => {
+                    });
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
                         $('#overtime_work_name1').focus();
                     });
@@ -66,8 +68,14 @@ module nts.uk.com.view.cmm007.e {
                     let objTemp: model.OvertimeWorkFrameDto;
                     
                     _.forEach(data, function(value) {
-                        objTemp = new model.OvertimeWorkFrameDto(value.overtimeWorkFrNo, value.overtimeWorkFrName, value.transferFrName, value.useAtr)
-                        _self.mapObj.set(value.overtimeWorkFrNo, objTemp);  
+                        if (typeof _self.mapObj.get(value.overtimeWorkFrNo) === "undefined") {
+                            objTemp = new model.OvertimeWorkFrameDto(value.overtimeWorkFrNo, value.overtimeWorkFrName, value.transferFrName, value.useAtr);
+                            _self.mapObj.set(value.overtimeWorkFrNo, objTemp);      
+                        } else {
+                            _self.mapObj.get(value.overtimeWorkFrNo).overtimeWorkFrName(value.overtimeWorkFrName);
+                            _self.mapObj.get(value.overtimeWorkFrNo).transferFrName(value.transferFrName);
+                        }
+                        
                     });
                     
                     dfd.resolve();
@@ -98,7 +106,7 @@ module nts.uk.com.view.cmm007.e {
              /**
              * Check Errors all input.
              */
-            public hasError(): boolean {
+            private hasError(): boolean {
                 let _self = this;
                 _self.clearErrors();
                 for (let i=1; i<=10; i++) {
@@ -117,7 +125,7 @@ module nts.uk.com.view.cmm007.e {
             /**
              * Clear Errors
              */
-            public clearErrors(): void {
+            private clearErrors(): void {
                 let _self = this;
                  // Clear errors
                 for (let i=1; i<=10; i++) {

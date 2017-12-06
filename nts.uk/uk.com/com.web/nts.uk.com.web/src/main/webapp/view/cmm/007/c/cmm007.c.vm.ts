@@ -29,14 +29,20 @@ module nts.uk.com.view.cmm007.c {
                 return dfd.promise();
             }
             
+            /*
+            *   find all
+            */
             public getDataByCId(): JQueryPromise<void> {
                 let _self = this;
                 let dfd = $.Deferred<void>();
                 service.getTempAbsenceFrameByCId().done(function(data){
-                    
                     for (let i of data) {
-                        let temp = new viewmodel.moduleDto(i.companyId, i.tempAbsenceFrNo, i.useClassification, i.tempAbsenceFrName);
-                        _self.mapModel.set(i.tempAbsenceFrNo , temp);
+                        if (typeof _self.mapModel.get(i.tempAbsenceFrNo) === "undefined") {
+                            let temp = new viewmodel.moduleDto(i.companyId, i.tempAbsenceFrNo, i.useClassification, i.tempAbsenceFrName);
+                            _self.mapModel.set(i.tempAbsenceFrNo , temp);
+                        } else {
+                            _self.mapModel.get(i.tempAbsenceFrNo).tempAbsenceFrName(i.tempAbsenceFrName);
+                        }
                     }
                     
                     dfd.resolve();
@@ -47,12 +53,18 @@ module nts.uk.com.view.cmm007.c {
                 return dfd.promise();
             }
             
+            /*
+            *   status check/uncheck checkbox
+            */
             public checkStatusEnable(value): boolean {
                 let _self = this;
                 return _self.mapModel.get(value).useClassification() == 1 ? true : false;
             }
             
-            public myFunction(value): void {
+            /*
+            *   catch event click check box
+            */
+            public clickCheckbox(value): void {
                 let _self = this;
                 _self.mapModel.get(value).useClassification() == 1 ? _self.mapModel.get(value).useClassification(0) : _self.mapModel.get(value).useClassification(1);
                 if (_self.mapModel.get(value).useClassification() == 1) {
@@ -63,9 +75,9 @@ module nts.uk.com.view.cmm007.c {
             }
             
             /**
-             * Register/update data
+             * update data
              */
-            public regsiter(): void {
+            public update(): void {
                 let _self = this;
                 
                 if (_self.hasError()) {
@@ -78,6 +90,8 @@ module nts.uk.com.view.cmm007.c {
                 }
                 
                 service.updateTempAbsenceFrame(lstDto).done(function(data){
+                    _self.getDataByCId().done(() => {
+                    });
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
                         $('#tempAbsenceNo7').focus();
                     });
@@ -89,7 +103,7 @@ module nts.uk.com.view.cmm007.c {
              /**
              * Check Errors all input.
              */
-            public hasError(): boolean {
+            private hasError(): boolean {
                 let _self = this;
                 _self.clearErrors();
                 for (var i=7; i<=10; i++) {
@@ -106,7 +120,7 @@ module nts.uk.com.view.cmm007.c {
             /**
              * Clear Errors
              */
-            public clearErrors(): void {
+            private clearErrors(): void {
                 let _self = this;
                 // Clear errors
                 for (var i=7; i<=10; i++) {
