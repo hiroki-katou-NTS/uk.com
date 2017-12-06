@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -20,10 +20,12 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@EmbeddedId
-	public PpemtEmpInfoCtgDataPk ppemtEmpInfoCtgDataPk;
-
+	
+	// レコードID
+	@Id
+	@Column(name = "RECORD_ID")
+	public String recordId;
+	
 	// 個人情報カテゴリID
 	@Basic(optional = false)
 	@Column(name = "PER_INFO_CTG_ID")
@@ -36,8 +38,7 @@ public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-
-		return ppemtEmpInfoCtgDataPk;
+		return recordId;
 	}
 
 }
