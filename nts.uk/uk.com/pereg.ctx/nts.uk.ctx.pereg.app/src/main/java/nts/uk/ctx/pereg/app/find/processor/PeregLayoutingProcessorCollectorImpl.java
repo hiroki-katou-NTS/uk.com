@@ -11,7 +11,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import find.person.info.PersonDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
-import nts.uk.ctx.bs.employee.app.find.department.affiliate.AffDeptHistFinder;
+import nts.uk.ctx.bs.employee.app.find.department.affiliate.AffDeptHistDto;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate.AffJobTitleDto;
 import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
@@ -33,7 +33,7 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00014
 			new TypeLiteral<PeregFinder<EmploymentHistoryDto>>(){},
 			// CS00015		
-			new TypeLiteral<PeregFinder<AffDeptHistFinder>>(){},
+			new TypeLiteral<PeregFinder<AffDeptHistDto>>(){},
 			// CS00016
 			new TypeLiteral<PeregFinder<AffJobTitleDto>>(){},
 			// CS00017
