@@ -157,9 +157,9 @@ public class CheckConvertPrePost {
 			preAppOvertimeDto.setOverTimeInputsPre(overtimeInputDtos);
 			preAppOvertimeDto.setOverTimeShiftNightPre(appOvertime.getOverTimeShiftNight());
 			preAppOvertimeDto.setFlexExessTimePre(appOvertime.getFlexExessTime());
-			result.setPreAppOvertimeDto(preAppOvertimeDto);
+			
 		}
-
+		result.setPreAppOvertimeDto(preAppOvertimeDto);
 	}
 	
 	/**
