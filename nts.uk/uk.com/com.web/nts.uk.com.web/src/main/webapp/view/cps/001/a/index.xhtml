@@ -193,14 +193,14 @@
 							</div>
 						</div>
 					</div>
-					<div class="bottom-right-area">
+					<div class="bottom-right-area" data-bind="let: { layout: currentLayout() }">
 						<div class="layout-input"
 							data-bind="css: { 'hidden': tabActive() != 'layout'}">
 							<div class="form-group">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
 								<div
 									data-bind="ntsDatePicker: {
-								value: ko.observable(''), 
+								value: layout.standardDate, 
 								dateFormat: 'YYYY/MM/DD'}"></div>
 								<button data-bind="click: filterData">#{i18n.getText('CPS001_37')}</button>
 							</div>
@@ -208,7 +208,7 @@
 								data-bind="template: { 
 									name: 'simple-layout', 
 									data: {
-										items: currentLayout().listItemClsDto
+										items: layout.listItemClsDto
 								 	}
 								}"></div>
 						</div>

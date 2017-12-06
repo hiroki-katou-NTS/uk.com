@@ -1,10 +1,12 @@
 package nts.uk.ctx.bs.employee.app.find.employee.mngdata;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -34,17 +36,19 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 	}
 
 	@Override
-	public PeregDomainDto getSingleData(PeregQuery query) {
-		return null;
+	public EmployeeDataMngInfoDto getSingleData(PeregQuery query) {
+		EmployeeDataMngInfo domain = edMngFinder.findById(query.getPersonId(), query.getEmployeeId());
+
+		return EmployeeDataMngInfoDto.fromDomain(domain);
 	}
 
 	@Override
 	public List<PeregDomainDto> getListData(PeregQuery query) {
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		return null;
+		return new ArrayList<>();
 	}
 }
