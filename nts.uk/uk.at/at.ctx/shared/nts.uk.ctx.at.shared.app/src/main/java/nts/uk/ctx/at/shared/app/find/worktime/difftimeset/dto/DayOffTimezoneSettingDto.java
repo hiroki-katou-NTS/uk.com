@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeZoneRoundingDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSettingSetMemento;
@@ -15,60 +18,75 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSettingSetMem
 @Getter
 public class DayOffTimezoneSettingDto implements DayOffTimezoneSettingSetMemento {
 
+	/** The work time no. */
+	private Integer workTimeNo;
+
+	/** The timezone. */
+	private TimeZoneRoundingDto timezone;
+
+	/** The is legal holiday constraint time. */
+	private boolean isLegalHolidayConstraintTime;
+
+	/** The in legal break frame no. */
+	private BigDecimal inLegalBreakFrameNo;
+
+	/** The is non statutory dayoff constraint time. */
+	private boolean isNonStatutoryDayoffConstraintTime;
+
+	/** The out legal break frame no. */
+	private BigDecimal outLegalBreakFrameNo;
+
+	/** The is non statutory holiday constraint time. */
+	private boolean isNonStatutoryHolidayConstraintTime;
+
+	/** The out legal pub HD frame no. */
+	private BigDecimal outLegalPubHDFrameNo;
+
 	/** The is update start time. */
 	private boolean isUpdateStartTime;
-	
+
 	@Override
 	public void setWorkTimeNo(Integer workTimeNo) {
-		// TODO Auto-generated method stub
-		
+		this.workTimeNo = workTimeNo;
 	}
 
 	@Override
 	public void setTimezone(TimeZoneRounding timezone) {
-		// TODO Auto-generated method stub
-		
+		timezone.saveToMemento(this.timezone);
 	}
 
 	@Override
 	public void setIsLegalHolidayConstraintTime(boolean isLegalHolidayConstraintTime) {
-		// TODO Auto-generated method stub
-		
+		this.isLegalHolidayConstraintTime = isLegalHolidayConstraintTime;
 	}
 
 	@Override
 	public void setInLegalBreakFrameNo(BreakFrameNo inLegalBreakFrameNo) {
-		// TODO Auto-generated method stub
-		
+		this.inLegalBreakFrameNo = inLegalBreakFrameNo.v();
 	}
 
 	@Override
 	public void setIsNonStatutoryDayoffConstraintTime(boolean isNonStatutoryDayoffConstraintTime) {
-		// TODO Auto-generated method stub
-		
+		this.isNonStatutoryDayoffConstraintTime = isNonStatutoryDayoffConstraintTime;
 	}
 
 	@Override
 	public void setOutLegalBreakFrameNo(BreakFrameNo outLegalBreakFrameNo) {
-		// TODO Auto-generated method stub
-		
+		this.outLegalBreakFrameNo = outLegalBreakFrameNo.v();
 	}
 
 	@Override
 	public void setIsNonStatutoryHolidayConstraintTime(boolean isNonStatutoryHolidayConstraintTime) {
-		// TODO Auto-generated method stub
-		
+		this.isNonStatutoryHolidayConstraintTime = isNonStatutoryHolidayConstraintTime;
 	}
 
 	@Override
 	public void setOutLegalPubHDFrameNo(BreakFrameNo outLegalPubHDFrameNo) {
-		// TODO Auto-generated method stub
-		
+		this.outLegalPubHDFrameNo = outLegalPubHDFrameNo.v();
 	}
 
 	@Override
 	public void setIsUpdateStartTime(boolean isUpdateStartTime) {
-		// TODO Auto-generated method stub
-		
+		this.isUpdateStartTime = isUpdateStartTime;
 	}
 }
