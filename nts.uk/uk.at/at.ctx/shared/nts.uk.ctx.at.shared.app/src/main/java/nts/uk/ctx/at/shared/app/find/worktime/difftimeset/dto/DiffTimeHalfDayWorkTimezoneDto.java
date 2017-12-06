@@ -23,23 +23,21 @@ public class DiffTimeHalfDayWorkTimezoneDto implements DiffTimeHalfDaySetMemento
 	private DiffTimezoneSettingDto workTimezone;
 
 	/** The Am pm cls. */
-	private Integer AmPmAtr;
+	private Integer amPmAtr;
 
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
-		// TODO Auto-generated method stub
-		
+		restTimezone.saveToMemento(this.restTimezone);
 	}
 
 	@Override
 	public void setWorkTimezone(DiffTimezoneSetting workTimezone) {
-		// TODO Auto-generated method stub
-		
+		workTimezone.saveToMemento(this.workTimezone);
 	}
 
 	@Override
-	public void setAmPmAtr(AmPmAtr AmPmAtr) {
-		// TODO Auto-generated method stub
+	public void setAmPmAtr(AmPmAtr amPmAtr) {
+		this.amPmAtr = amPmAtr.value;
 	}
 
 }

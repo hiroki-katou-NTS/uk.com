@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeZoneRoundingDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
@@ -17,55 +20,68 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSetMement
 @Getter
 public class DiffTimeOTTimezoneSetDto implements DiffTimeOTTimezoneSetMemento {
 
+	/** The work timezone no. */
+	private Integer workTimezoneNo;
+
+	/** The restraint time use. */
+	private boolean restraintTimeUse;
+
+	/** The early OT use. */
+	private boolean earlyOTUse;
+
+	/** The timezone. */
+	private TimeZoneRoundingDto timezone;
+
+	/** The OT frame no. */
+	private BigDecimal oTFrameNo;
+
+	/** The legal O tframe no. */
+	private BigDecimal legalOTframeNo;
+
+	/** The settlement order. */
+	private Integer settlementOrder;
+
 	/** The is update start time. */
 	private boolean isUpdateStartTime;
 
 	@Override
 	public void setWorkTimezoneNo(EmTimezoneNo workTimezoneNo) {
-		// TODO Auto-generated method stub
-		
+		this.workTimezoneNo = workTimezoneNo.v();
 	}
 
 	@Override
 	public void setRestraintTimeUse(boolean restraintTimeUse) {
-		// TODO Auto-generated method stub
-		
+		this.restraintTimeUse = restraintTimeUse;
 	}
 
 	@Override
 	public void setEarlyOTUse(boolean earlyOTUse) {
-		// TODO Auto-generated method stub
-		
+		this.earlyOTUse = earlyOTUse;
 	}
 
 	@Override
 	public void setTimezone(TimeZoneRounding timezone) {
-		// TODO Auto-generated method stub
-		
+		timezone.saveToMemento(this.timezone);
 	}
 
 	@Override
-	public void setOTFrameNo(OTFrameNo OTFrameNo) {
-		// TODO Auto-generated method stub
-		
+	public void setOTFrameNo(OTFrameNo oTFrameNo) {
+		this.oTFrameNo = oTFrameNo.v();
 	}
 
 	@Override
 	public void setLegalOTframeNo(OTFrameNo legalOTframeNo) {
-		// TODO Auto-generated method stub
-		
+		this.legalOTframeNo = legalOTframeNo.v();
 	}
 
 	@Override
 	public void setSettlementOrder(SettlementOrder settlementOrder) {
-		// TODO Auto-generated method stub
-		
+		this.settlementOrder = settlementOrder.v();
 	}
 
 	@Override
 	public void setIsUpdateStartTime(boolean isUpdateStartTime) {
-		// TODO Auto-generated method stub
-		
+		this.isUpdateStartTime = isUpdateStartTime;
 	}
 
 }

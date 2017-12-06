@@ -22,7 +22,7 @@ public class DiffTimezoneSetting {
 
 	/** The OT timezone. */
 	// 残業時間帯
-	private List<DiffTimeOTTimezoneSet> OTTimezones;
+	private List<DiffTimeOTTimezoneSet> oTTimezones;
 
 	/**
 	 * Instantiates a new diff timezone setting.
@@ -31,7 +31,7 @@ public class DiffTimezoneSetting {
 	 */
 	public DiffTimezoneSetting(DiffTimezoneSettingGetMemento memento) {
 		this.employmentTimezones = memento.getEmploymentTimezones();
-		this.OTTimezones = memento.getOTTimezones();
+		this.oTTimezones = memento.getOTTimezones();
 	}
 
 	/**
@@ -41,6 +41,6 @@ public class DiffTimezoneSetting {
 	 */
 	public void saveToMemento(DiffTimezoneSettingSetMemento memento) {
 		memento.setEmploymentTimezones(this.employmentTimezones);
-		memento.setOTTimezones(this.OTTimezones);
+		memento.setOTTimezones(this.oTTimezones);
 	}
 }

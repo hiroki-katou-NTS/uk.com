@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkRestSetDto;
@@ -13,7 +14,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
 
 /**
  * The Class TimeDiffWorkSetting.
@@ -51,64 +56,56 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingSetMemento {
 
 	@Override
 	public void setCompanyId(String companyId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void setWorkTimeCode(WorkTimeCode employmentTimezoneCode) {
-		// TODO Auto-generated method stub
-
+		this.workTimeCode = employmentTimezoneCode.v();
 	}
 
 	@Override
 	public void setRestSet(FixedWorkRestSet restSet) {
-		// TODO Auto-generated method stub
-
+		restSet.saveToMemento(this.restSet);
 	}
 
 	@Override
-	public void setDayoffWorkTimezone(
-			nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezone dayoffWorkTimezone) {
-		// TODO Auto-generated method stub
-
+	public void setDayoffWorkTimezone(DiffTimeDayOffWorkTimezone dayoffWorkTimezone) {
+		dayoffWorkTimezone.saveToMemento(this.dayoffWorkTimezone);
 	}
 
 	@Override
 	public void setCommonSet(WorkTimezoneCommonSet commonSet) {
-		// TODO Auto-generated method stub
-
+		commonSet.saveToMemento(this.commonSet);
 	}
 
 	@Override
 	public void setIsUseHalfDayShift(boolean isUseHalfDayShift) {
-this.isUseHalfDayShift =true;
+		this.isUseHalfDayShift = true;
 	}
 
 	@Override
-	public void setChangeExtent(nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent changeExtent) {
-		// TODO Auto-generated method stub
-
+	public void setChangeExtent(EmTimezoneChangeExtent changeExtent) {
+		changeExtent.saveToMemento(this.changeExtent);
 	}
 
 	@Override
-	public void setHalfDayWorkTimezones(
-			List<nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone> halfDayWorkTimezones) {
-		// TODO Auto-generated method stub
-
+	public void setHalfDayWorkTimezones(List<DiffTimeHalfDayWorkTimezone> halfDayWorkTimezones) {
+		halfDayWorkTimezones.stream().map(item -> {
+			DiffTimeHalfDayWorkTimezoneDto dto = new DiffTimeHalfDayWorkTimezoneDto();
+			item.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
-	public void setStampReflectTimezone(
-			nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone stampReflectTimezone) {
-		// TODO Auto-generated method stub
-
+	public void setStampReflectTimezone(DiffTimeWorkStampReflectTimezone stampReflectTimezone) {
+		stampReflectTimezone.saveToMemento(this.stampReflectTimezone);
 	}
 
 	@Override
 	public void setOvertimeSetting(LegalOTSetting overtimeSetting) {
-		// TODO Auto-generated method stub
-
+		this.overtimeSetting = overtimeSetting.value;
 	}
 
 }
