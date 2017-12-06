@@ -58,12 +58,7 @@ public class MappingFactory {
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 
 		lstPerInfoItemDef.forEach(item -> {
-			if (item.getItemDefType() == 2) {
-				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);
-			} else {
-				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);
-				setEmpMaintLayoutDto(empMaintLayoutDto, dtoFieldValue, item.getLstChildItemDef());
-			}
+			setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);	
 		});
 
 	}
@@ -71,23 +66,10 @@ public class MappingFactory {
 	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item,
 			Map<String, Object> dtoFieldValue) {
 		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-		Object value = dtoFieldValue.get(item.getItemCode());
-		if (checkHasValue(value)) {
-			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
-			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
-			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
-		}
-	}
-
-	private static boolean checkHasValue(Object value) {
-		if (value != null) {
-			String strValue = value.toString();
-			if (strValue.equals(""))
-				return false;
-			else
-				return strValue.equals("-1") ? false : true;
-		} else
-			return false;
+		Object value = dtoFieldValue.get(item.getItemCode());		
+		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
+		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
+		empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 	}
 
 	/**

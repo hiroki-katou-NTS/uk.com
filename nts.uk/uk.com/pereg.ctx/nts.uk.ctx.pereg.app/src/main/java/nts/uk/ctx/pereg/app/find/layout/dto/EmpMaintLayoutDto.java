@@ -27,7 +27,7 @@ public class EmpMaintLayoutDto {
 
 	private String layoutName;
 	
-	private GeneralDate stardardDate;
+	private GeneralDate standardDate;
 
 	private List<LayoutPersonInfoClsDto> classificationItems;
 	public EmpMaintLayoutDto(){

@@ -61,7 +61,6 @@ public class PerInfoItemDefForLayoutFinder {
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode().v());
 		perInfoItemDefForLayoutDto.setItemName(itemDef.getItemName().v());
 		perInfoItemDefForLayoutDto.setItemDefType(itemDef.getItemTypeState().getItemType().value);
-		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired().value);
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
 		perInfoItemDefForLayoutDto.setActionRole(getActionRole(empId, itemDef.getPerInfoCategoryId(), itemDef.getPerInfoItemDefId()));
@@ -80,7 +79,6 @@ public class PerInfoItemDefForLayoutFinder {
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode());
 		perInfoItemDefForLayoutDto.setItemName(itemDef.getItemName());
 		perInfoItemDefForLayoutDto.setItemDefType(itemDef.getItemTypeState().getItemType());
-		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired());
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
 		perInfoItemDefForLayoutDto.setActionRole(getActionRole(empId, itemDef.getPerInfoCtgId(), itemDef.getId()));
