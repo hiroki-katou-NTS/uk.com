@@ -25,9 +25,9 @@ public class RoleIndividualGrantDto {
 		 return new RoleIndividualGrantDto(
 				 domain.getCompanyId(),
 				 domain.getRoleType().value,
+				 loginID,
 				 domain.getUserId(),
 				 userName,
-				 loginID,
 				 domain.getValidPeriod().start(),
 				 domain.getValidPeriod().end());
 	 }

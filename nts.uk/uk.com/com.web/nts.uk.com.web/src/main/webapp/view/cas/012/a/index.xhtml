@@ -28,17 +28,16 @@
 				<div id="contents-area">
 					<div class="left-content">
 						<div class="valign-center control-group">
-							<div
-								data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">#{i18n.getText('CAS0012_7')}</div>
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS0012_7')}</div>
 							<div id="combo-box" tabindex="4"
 								data-bind="ntsComboBox: {
-							options: listRoleType,
-							optionsValue: 'value',
-							value: selectRoleIndividual().roleType,
-							optionsText: 'localizedName',
-							columns: [
-								{ prop: 'localizedName', length: 8}
-							]}"></div>
+								options: listRoleType,
+								optionsValue: 'value',
+								value: selectRoleIndividual().roleType,
+								optionsText: 'localizedName',
+								columns: [
+									{ prop: 'localizedName', length: 8}
+								]}"></div>
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS0012_9')}</div>
@@ -52,7 +51,7 @@
 								{ prop: 'companyName', length: 8 }
 							]}"></div>
 						</div>
-						<span class="caret-bottom outline"></span>
+						<span class="caret-bottom"></span>
 						<div class="valign-center control-group">
 							<span class="text">#{i18n.getText('CAS0012_11')}</span>
 						</div>

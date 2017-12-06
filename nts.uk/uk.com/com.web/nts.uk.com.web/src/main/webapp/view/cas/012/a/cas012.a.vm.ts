@@ -3,21 +3,21 @@ module nts.uk.com.view.cas012.a.viewmodel {
         //ComboBOx RollType
         listRoleType: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedRoleType: KnockoutObservable<number> = ko.observable(null);
-        
+
         //ComboBox Company
         listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedCompany: KnockoutObservable<string> = ko.observable('');
-        
+
         //list Role Individual Grant    
-        listRoleIndividual: KnockoutObservableArray<IRoleIndividual> = ko.observableArray([]);
+        listRoleIndividual: KnockoutObservableArray<RoleIndividualDto> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
-        
+
         //Date time picker
         startDate: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('');
         userName: KnockoutObservable<string> = ko.observable('');
-        
+
         //Check Create
         isCreate: KnockoutObservable<boolean> = ko.observable(false);;
         selectRoleIndividual: KnockoutObservable<RoleIndividual>;
@@ -27,12 +27,13 @@ module nts.uk.com.view.cas012.a.viewmodel {
             var self = this;
             self.columns = ko.observableArray([
                 { headerText: 'GUID', key: 'GUID', width: 100, hidden: true },
-                { headerText: 'コード', key: 'userID', width: 100 },
+                { headerText: 'コード', key: 'loginID', width: 100 },
                 { headerText: '名称', key: 'userName', width: 150 },
-                { headerText: '説明', key: 'datePeriod', width: 150 }
+                { headerText: '説明', key: 'datePeriod', width: 230 }
             ]);
             self.selectRoleIndividual = ko.observable(new RoleIndividual({
                 GUID: "",
+                loginID: "",
                 companyID: "",
                 roleType: 0,
                 userID: "",
@@ -64,10 +65,10 @@ module nts.uk.com.view.cas012.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getAll(self.selectedRoleType(), self.selectedCompany()).done((data: any) => {
-                _.forEach(data.listGrantDto, (item: IRoleIndividual) => {
-                    item.GUID = nts.uk.util.randomId();
+                let listGrantDto = _.map(data.listGrantDto, (item: IRoleIndividual) => {
+                    return new RoleIndividualDto(item);
                 });
-                self.listRoleIndividual(data.listGrantDto);
+                self.listRoleIndividual(listGrantDto);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -119,30 +120,57 @@ module nts.uk.com.view.cas012.a.viewmodel {
         }
 
         deleteBtn() {
-            
+
         }
     }
 
-
+    //server result
     export interface IRoleIndividual {
         GUID: string;
+        loginID: string 
         companyID: string;
         roleType: number;
         userID: string;
         userName: string;
         startValidPeriod: string;
         endValidPeriod: string;
+        
+    }
+    //Grid list 
+    export class RoleIndividualDto {
+        GUID: string;
+        loginID: string
+        companyID: string;
+        roleType: number;
+        userID: string;
+        userName: string;
+        startValidPeriod: string;
+        endValidPeriod: string;
+        datePeriod: string;
+
+        constructor(param: IRoleIndividual) {
+            this.GUID = param.GUID || nts.uk.util.randomId();
+            this.loginID = (param.loginID);
+            this.userID = (param.userID);
+            this.roleType = (param.roleType);
+            this.companyID = (param.companyID);
+            this.userName = (param.userName);
+            this.startValidPeriod = (param.startValidPeriod);
+            this.endValidPeriod = (param.endValidPeriod);
+            this.datePeriod = param.startValidPeriod + " ～ " + param.endValidPeriod;
+        }
     }
 
     export class RoleIndividual {
         GUID: string;
+        loginID: KnockoutObservable<string>;
         userID: KnockoutObservable<string>;
         roleType: KnockoutObservable<number>;
         companyID: KnockoutObservable<string>;
         datePeriod: KnockoutObservable<string>;
         startValidPeriod: KnockoutObservable<string>;
         endValidPeriod: KnockoutObservable<string>;
-        
+
         constructor(param: IRoleIndividual) {
             this.GUID = param.GUID || nts.uk.util.randomId();
             this.userID = ko.observable(param.userID);
@@ -150,7 +178,6 @@ module nts.uk.com.view.cas012.a.viewmodel {
             this.companyID = ko.observable(param.companyID);
             this.startValidPeriod = ko.observable(param.startValidPeriod);
             this.endValidPeriod = ko.observable(param.endValidPeriod);
-
         }
     }
 }

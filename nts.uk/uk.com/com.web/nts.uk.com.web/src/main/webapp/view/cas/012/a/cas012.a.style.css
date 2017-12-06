@@ -1,6 +1,8 @@
-span.caret-bottom.outline{font-size: 6.2rem;margin-left: 200px;}
-div.form-label.required{ margin-right: 40px;}
-div.form-label{margin-left: 20px; margin-right: 40px;}
+.form-label{min-width: 110px; margin-right: 40px;}
+
+.caret-bottom{font-size:6.2rem; margin-left: 200px; color: #E0F59E;}
+.caret-bottom:after{border-width: 1em 2em;}
+
 span.text{margin-left: 20px; display: inline-block;}
 #contents-area{margin-left: 40px;}
 .left-content{display: inline-block;}	
