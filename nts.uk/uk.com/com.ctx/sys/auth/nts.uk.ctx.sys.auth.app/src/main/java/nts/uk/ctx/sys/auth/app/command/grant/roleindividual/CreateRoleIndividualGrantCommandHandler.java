@@ -33,7 +33,7 @@ public class CreateRoleIndividualGrantCommandHandler extends CommandHandler<Crea
 	@Override
 	protected void handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {
 		CreateRoleIndividualGrantCommand command = context.getCommand();
-		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepo.findRoleIndividualGrant(command.getUserID(), command.getCompanyID(), command.getRoleType());
+		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepo.findByUserCompanyRoleType(command.getUserID(), command.getCompanyID(), command.getRoleType());
 		/////////////
 		if (roleIndividualGrant.isPresent()) {
 			throw new BusinessException("Msg_3");

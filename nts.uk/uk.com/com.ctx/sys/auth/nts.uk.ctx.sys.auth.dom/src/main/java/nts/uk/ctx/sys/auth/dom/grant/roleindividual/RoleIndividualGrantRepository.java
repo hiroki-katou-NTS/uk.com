@@ -16,63 +16,38 @@ import nts.uk.ctx.sys.auth.dom.role.RoleType;
  */
 public interface RoleIndividualGrantRepository {
 
-	/**
-	 * Find by user and role.
-	 *
+	/** Find by userID and date in range
+	 * 
 	 * @param userId
-	 *            the user id
-	 * @param roleType
-	 *            the role type
-	 * @return the optional
+	 * @param today Date between StartDate and EndDate
 	 */
+	Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate today);
+	
+	/** Find by user and role */
 	Optional<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType);
 
-	/**
-	 * Find by user.
-	 *
-	 * @param userId
-	 *            the user id
-	 * @param date
-	 *            the date
-	 * @return the optional
-	 */
-	List<RoleIndividualGrant> findUser(String userId, GeneralDate startDate, GeneralDate endDate);
+	Optional<RoleIndividualGrant> findByUserCompanyRoleType(String userID, String companyID, int roleType);
+
+	Optional<RoleIndividualGrant> findByKey(String userId, String companyId, String roleId);
+	
+	/** Find by user */
+	List<RoleIndividualGrant> findUserInDateRange(String userId, GeneralDate startDate, GeneralDate endDate);
 
 	/** Find all by role type */
 	List<RoleIndividualGrant> findByRoleType(int roleType);
 
-	/**
-	 * Add
-	 * 
-	 * @param roleIndividualGrant
-	 */
-	void add(RoleIndividualGrant roleIndividualGrant);
-
-	/**
-	 * Update
-	 * 
-	 * @param roleIndividualGrant
-	 */
-	void update(RoleIndividualGrant roleIndividualGrant);
-
-	/**
-	 * Remove
-	 * 
-	 * @param userId
-	 * @param companyId
-	 * @param roleType
-	 */
-	void remove(String userId, String companyId, int roleType);
-
 	List<RoleIndividualGrant> findByRoleId(String roleId);
 
-	Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, int roleType);
-	
-	RoleIndividualGrant findByKey(String userId, String companyId, String roleId);
 
-	Optional<RoleIndividualGrant> findByUser(String userId, GeneralDate today);
-    
 	List<RoleIndividualGrant> findByCompanyIdAndRoleType(String companyID, int roleType);
 
+	/** Add */
+	void add(RoleIndividualGrant roleIndividualGrant);
+
+	/** Update */
+	void update(RoleIndividualGrant roleIndividualGrant);
+
+	/** Remove */
+	void remove(String userId, String companyId, int roleType);
 
 }
