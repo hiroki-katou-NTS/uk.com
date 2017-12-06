@@ -86,4 +86,11 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.getList(c -> toDomain(c));
 	}
 
+	@Override
+	public List<User> getAllUser() {
+		return this.queryProxy()
+				.query(SELECT_ALL_USER, SacmtUser.class)
+				.getList(c -> toDomain(c));
+	}
+
 }
