@@ -213,7 +213,7 @@ public class LayoutFinder {
 	 */
 	private void validateStandardDate(GeneralDate stardardDate, Employee employee, EmpMaintLayoutDto result) {
 		if (employee.getHistoryWithReferDate(stardardDate).isPresent()) {
-			result.setStardardDate(stardardDate);
+			result.setStandardDate(stardardDate);
 		} else {
 			Optional<JobEntryHistory> hitoryOption = employee.getHistoryBeforeReferDate(stardardDate);
 			if (hitoryOption.isPresent()) {
