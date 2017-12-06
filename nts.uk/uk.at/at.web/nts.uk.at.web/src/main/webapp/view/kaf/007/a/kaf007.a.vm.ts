@@ -10,11 +10,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
         //A5 勤務を変更する:表示/活性
-        //Show/Hide work change
         isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
         workChangeAtr: KnockoutObservable<boolean> = ko.observable(false);
-        workState : KnockoutObservable<boolean> = ko.observable(true);
-        typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //申請者
@@ -96,20 +93,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     }
                     //A5 勤務を変更する ※A4                    
                     if(appWorkChangeCommonSetting　!= undefined){ 
-                        //条件：勤務変更申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
-                        self.isWorkChange(true);
-                        self.workChangeAtr(true);
-                        //条件：勤務変更申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
-                        if(appWorkChangeCommonSetting.workChangeTimeAtr == 0 ){
-                            self.workChangeAtr(false);
-                        }
-                        //条件：勤務変更申請共通設定.勤務の変更　＝　変更しない
-                        else if(appWorkChangeCommonSetting.workChangeTimeAtr == 2){
-                            self.isWorkChange(false);
-                            self.workChangeAtr(false);
-                        }else{
-                            self.workState(false);
-                        }                                            
+                        //勤務変更申請設定.勤務時間を変更できる　＝　出来る
+                        self.isWorkChange(appWorkChangeCommonSetting.workChangeTimeAtr == 1? true : false);                                     
                     }
                     //定型理由
                     self.setReasonControl(settingData.listReasonDto);
