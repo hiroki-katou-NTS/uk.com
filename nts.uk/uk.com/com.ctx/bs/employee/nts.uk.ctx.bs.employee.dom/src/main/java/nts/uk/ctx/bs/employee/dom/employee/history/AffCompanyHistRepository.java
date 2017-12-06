@@ -22,13 +22,16 @@ public interface AffCompanyHistRepository {
 	AffCompanyHist getAffCompanyHistoryOfPerson(String personId);
 
 	AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId);
-	
+
+	AffCompanyHist getAffCompanyHistoryOfHistInfo(String histId);
+
 	/** Hop.NT */
-	
+
 	/** Add new affiliation history */
 	void add(String sid, String pId, AffCompanyHistItem item);
+
 	/** Update one affiliation history */
 	void update(AffCompanyHistItem item);
-	
+
 	/** End */
 }
