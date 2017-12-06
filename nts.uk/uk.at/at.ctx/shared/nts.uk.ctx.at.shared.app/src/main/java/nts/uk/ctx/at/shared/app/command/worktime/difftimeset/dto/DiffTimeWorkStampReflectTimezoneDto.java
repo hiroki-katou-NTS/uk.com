@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone;
@@ -11,20 +12,33 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTim
 public class DiffTimeWorkStampReflectTimezoneDto {
 
 	/** The stamp reflect timezone. */
-	//TODO 
-//	private StampReflectTimezoneDto stampReflectTimezone;
+	private StampReflectTimezoneDto stampReflectTimezone;
 
 	/** The is update start time. */
 	private boolean isUpdateStartTime;
 
+	/**
+	 * To domain.
+	 *
+	 * @return the diff time work stamp reflect timezone
+	 */
 	public DiffTimeWorkStampReflectTimezone toDomain() {
 		return new DiffTimeWorkStampReflectTimezone(new DiffTimeWorkStampReflectTimezoneImpl(this));
 	}
 
+	/**
+	 * The Class DiffTimeWorkStampReflectTimezoneImpl.
+	 */
 	public class DiffTimeWorkStampReflectTimezoneImpl implements DiffTimeStampReflectGetMemento {
 
+		/** The dto. */
 		private DiffTimeWorkStampReflectTimezoneDto dto;
 
+		/**
+		 * Instantiates a new diff time work stamp reflect timezone impl.
+		 *
+		 * @param diffTimeWorkStampReflectTimezoneDto the diff time work stamp reflect timezone dto
+		 */
 		public DiffTimeWorkStampReflectTimezoneImpl(
 				DiffTimeWorkStampReflectTimezoneDto diffTimeWorkStampReflectTimezoneDto) {
 			this.dto = diffTimeWorkStampReflectTimezoneDto;
@@ -32,8 +46,7 @@ public class DiffTimeWorkStampReflectTimezoneDto {
 
 		@Override
 		public StampReflectTimezone getStampReflectTimezone() {
-//			return this.dto.stampReflectTimezone.toDomain();
-			return null;
+			return new StampReflectTimezone(this.dto.stampReflectTimezone);
 		}
 
 		@Override

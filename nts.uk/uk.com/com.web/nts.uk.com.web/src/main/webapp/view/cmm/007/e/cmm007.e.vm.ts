@@ -11,7 +11,6 @@ module nts.uk.com.view.cmm007.e {
             constructor(){
                 let _self = this;
                 _self.mapObj = new Map<number, model.OvertimeWorkFrameDto>();
-                
             }
             
              /**
@@ -48,6 +47,8 @@ module nts.uk.com.view.cmm007.e {
                 
                 
                 service.saveOvertimeWorkFrame(arrDto).done(() => {
+                    _self.findAll().done(() => {
+                    });
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
                         $('#overtime_work_name1').focus();
                     });
@@ -67,15 +68,15 @@ module nts.uk.com.view.cmm007.e {
                     let objTemp: model.OvertimeWorkFrameDto;
                     
                     _.forEach(data, function(value) {
-                        objTemp = new model.OvertimeWorkFrameDto(value.overtimeWorkFrNo, value.overtimeWorkFrName, value.transferFrName, value.useAtr)
-                        _self.mapObj.set(value.overtimeWorkFrNo, objTemp);  
+                        if (typeof _self.mapObj.get(value.overtimeWorkFrNo) === "undefined") {
+                            objTemp = new model.OvertimeWorkFrameDto(value.overtimeWorkFrNo, value.overtimeWorkFrName, value.transferFrName, value.useAtr);
+                            _self.mapObj.set(value.overtimeWorkFrNo, objTemp);      
+                        } else {
+                            _self.mapObj.get(value.overtimeWorkFrNo).overtimeWorkFrName(value.overtimeWorkFrName);
+                            _self.mapObj.get(value.overtimeWorkFrNo).transferFrName(value.transferFrName);
+                        }
+                        
                     });
-                    
-                    for (let i=1; i<=10; i++) {
-                        if (_self.mapObj.get(i) == null || typeof _self.mapObj.get(i) == undefined) {
-                            _self.mapObj.set(i, new model.OvertimeWorkFrameDto());
-                        }   
-                    }
                     
                     dfd.resolve();
                     
@@ -93,6 +94,13 @@ module nts.uk.com.view.cmm007.e {
             public myFunction(value): void {
                 let _self = this;
                 _self.mapObj.get(value).useAtr() == 1 ? _self.mapObj.get(value).useAtr(0) : _self.mapObj.get(value).useAtr(1);
+                if (_self.mapObj.get(value).useAtr() == 1) {
+                    $('#overtime_work_name' + value).ntsEditor("validate");
+                    $('#tranfer_work_name' + value).ntsEditor("validate");
+                } else {
+                    $('#overtime_work_name' + value).ntsEditor("clear");
+                    $('#tranfer_work_name' + value).ntsEditor("clear");    
+                }
             }
             
              /**
@@ -102,8 +110,11 @@ module nts.uk.com.view.cmm007.e {
                 let _self = this;
                 _self.clearErrors();
                 for (let i=1; i<=10; i++) {
-                    $('#overtime_work_name' + i).ntsEditor("validate");
-                    $('#tranfer_work_name' + i).ntsEditor("validate");    
+                    if (_self.mapObj.get(i).useAtr() == 1) {
+                        $('#overtime_work_name' + i).ntsEditor("validate");
+                        $('#tranfer_work_name' + i).ntsEditor("validate");    
+                    }
+                        
                 }
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;
@@ -115,10 +126,13 @@ module nts.uk.com.view.cmm007.e {
              * Clear Errors
              */
             private clearErrors(): void {
+                let _self = this;
                  // Clear errors
                 for (let i=1; i<=10; i++) {
-                    $('#overtime_work_name' + i).ntsEditor("clear");
-                    $('#tranfer_work_name' + i).ntsEditor("clear");    
+                    if (_self.mapObj.get(i).useAtr() == 1) {
+                        $('#overtime_work_name' + i).ntsEditor("clear");
+                        $('#tranfer_work_name' + i).ntsEditor("clear");    
+                    }    
                 }
                 
                 // Clear error inputs

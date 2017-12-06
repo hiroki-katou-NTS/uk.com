@@ -13,12 +13,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class TimeSheetDto.
  */
 @Getter
-
-/**
- * Sets the end time.
- *
- * @param endTime the new end time
- */
 @Setter
 public class TimeSheetDto implements TimeSheetGetMemento{
 	

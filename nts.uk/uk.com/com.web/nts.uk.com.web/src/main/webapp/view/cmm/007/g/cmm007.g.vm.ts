@@ -137,6 +137,7 @@ module nts.uk.com.view.cmm007.g {
                         _self.enableWdoFrName1(true);
                         _self.requiredWdoFrName1(true);
                         _self.useAtrWdoFrName1(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name1, #work_day_off_trans_name1').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName1(false);
                         _self.requiredtransferName1(false);
@@ -164,6 +165,7 @@ module nts.uk.com.view.cmm007.g {
                         _self.enableWdoFrName2(true);
                         _self.requiredWdoFrName2(true);
                         _self.useAtrWdoFrName2(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name2, #work_day_off_trans_name2').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName2(false);
                         _self.requiredtransferName2(false);
@@ -191,6 +193,7 @@ module nts.uk.com.view.cmm007.g {
                         _self.enableWdoFrName3(true);
                         _self.requiredWdoFrName3(true);
                         _self.useAtrWdoFrName3(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name3, #work_day_off_trans_name3').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName3(false);
                         _self.requiredtransferName3(false);
@@ -218,6 +221,7 @@ module nts.uk.com.view.cmm007.g {
                         _self.enableWdoFrName4(true);
                         _self.requiredWdoFrName4(true);
                         _self.useAtrWdoFrName4(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name4, #work_day_off_trans_name4').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName4(false);
                         _self.requiredtransferName4(false);
@@ -245,6 +249,7 @@ module nts.uk.com.view.cmm007.g {
                         _self.enableWdoFrName5(true);
                         _self.requiredWdoFrName5(true);
                         _self.useAtrWdoFrName5(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name5, #work_day_off_trans_name5').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName5(false);
                         _self.requiredtransferName5(false); 
@@ -272,6 +277,7 @@ module nts.uk.com.view.cmm007.g {
                         _self.enableWdoFrName6(true);
                         _self.requiredWdoFrName6(true);
                         _self.useAtrWdoFrName6(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name6, #work_day_off_trans_name6').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName6(false);
                         _self.requiredtransferName6(false); 
@@ -292,13 +298,14 @@ module nts.uk.com.view.cmm007.g {
                 _self.transferName7 = ko.observable("");
                 _self.enabletransferName7 = ko.observable(true);
                 _self.requiredtransferName7 = ko.observable(true);
-                _self.isCheckedNo6.subscribe(function(value){
+                _self.isCheckedNo7.subscribe(function(value){
                     if(value == true){ 
                         _self.enabletransferName7(true);
                         _self.requiredtransferName7(true); 
                         _self.enableWdoFrName7(true);
                         _self.requiredWdoFrName7(true);
                         _self.useAtrWdoFrName7(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name7, #work_day_off_trans_name7').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName7(false);
                         _self.requiredtransferName7(false); 
@@ -319,13 +326,14 @@ module nts.uk.com.view.cmm007.g {
                 _self.transferName8 = ko.observable("");
                 _self.enabletransferName8 = ko.observable(true);
                 _self.requiredtransferName8 = ko.observable(true);
-                _self.isCheckedNo6.subscribe(function(value){
+                _self.isCheckedNo8.subscribe(function(value){
                     if(value == true){ 
                         _self.enabletransferName8(true);
                         _self.requiredtransferName8(true); 
                         _self.enableWdoFrName8(true);
                         _self.requiredWdoFrName8(true);
                         _self.useAtrWdoFrName8(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name8, #work_day_off_trans_name8').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName8(false);
                         _self.requiredtransferName8(false); 
@@ -346,13 +354,14 @@ module nts.uk.com.view.cmm007.g {
                 _self.transferName9 = ko.observable("");
                 _self.enabletransferName9 = ko.observable(true);
                 _self.requiredtransferName9 = ko.observable(true);
-                _self.isCheckedNo6.subscribe(function(value){
+                _self.isCheckedNo9.subscribe(function(value){
                     if(value == true){ 
                         _self.enabletransferName9(true);
                         _self.requiredtransferName9(true); 
                         _self.enableWdoFrName9(true);
                         _self.requiredWdoFrName9(true);
                         _self.useAtrWdoFrName9(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name9, #work_day_off_trans_name9').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName9(false);
                         _self.requiredtransferName9(false); 
@@ -380,6 +389,7 @@ module nts.uk.com.view.cmm007.g {
                         _self.enableWdoFrName10(true);
                         _self.requiredWdoFrName10(true);
                         _self.useAtrWdoFrName10(USE_CLASSIFICATION.USE);
+                        $('#work_day_off_name10, #work_day_off_trans_name10').ntsEditor("validate");
                     }else{ 
                         _self.enabletransferName10(false);
                         _self.requiredtransferName10(false); 

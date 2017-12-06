@@ -4,14 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flowset.dto;
 
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestTimezoneDto;
+import lombok.Value;
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FlowWorkRestTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSetting;
 
 /**
- * The Class FlowHalfDayWorkTimezoneDto.
+ * The Class FlHalfDayWorkTzDto.
  */
+@Value
 public class FlHalfDayWorkTzDto implements FlHalfDayWtzGetMemento {
 
 	/** The rest timezone. */
@@ -20,12 +22,23 @@ public class FlHalfDayWorkTzDto implements FlHalfDayWtzGetMemento {
 	/** The work time zone. */
 	private FlWorkTzSettingDto workTimeZone;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzGetMemento#
+	 * getRestTimezone()
+	 */
 	@Override
 	public FlowWorkRestTimezone getRestTimezone() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlowWorkRestTimezone(this.restTimezone);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzGetMemento#
+	 * getWorkTimeZone()
+	 */
 	@Override
 	public FlWtzSetting getWorkTimeZone() {
 		return new FlWtzSetting(this.workTimeZone);

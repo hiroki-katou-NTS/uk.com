@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 
@@ -22,6 +23,17 @@ public class DesignatedTime extends DomainObject {
 	/** The half day time. */
 	//半日の時間
 	private OneDayTime halfDayTime;
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.oneDayTime.greaterThan(this.halfDayTime)) {
+			throw new BusinessException("Msg_782");
+		}
+	}
 
 	/**
 	 * Instantiates a new designated time.

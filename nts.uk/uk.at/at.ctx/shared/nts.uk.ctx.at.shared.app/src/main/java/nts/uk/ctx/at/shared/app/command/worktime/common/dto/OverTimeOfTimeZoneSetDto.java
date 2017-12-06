@@ -6,7 +6,8 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import java.math.BigDecimal;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
@@ -16,7 +17,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 /**
  * The Class OverTimeOfTimeZoneSetDto.
  */
-@Value
+@Getter
+@Setter
 public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento {
 
 	/** The work timezone no. */

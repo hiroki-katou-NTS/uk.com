@@ -9,7 +9,7 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
    			<span class="title">#{i18n.getText('CMM007_73')}</span>
-			<button style="margin-left: 200px" class="proceed" tabindex="1" data-bind="click: saveWorkdayoffFrSetting">#{i18n.getText('CMM007_5')}</button>
+			<button class="proceed" tabindex="1" data-bind="click: saveWorkdayoffFrSetting">#{i18n.getText('CMM007_5')}</button>
 		</div>
 		<div class="contents-area">
 			<div class="work_day_off">
@@ -22,7 +22,7 @@
 									required: true, constraint: 'WorkdayoffFrameName', }">#{i18n.getText('CMM007_73')}</div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo1,
 									text: wdoFrCheckboxLabel1}"></div>
 							<input id="work_day_off_name1" tabindex="2"
@@ -40,7 +40,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo2,
 									text: wdoFrCheckboxLabel2}"></div>
 							<input id="work_day_off_name2" tabindex="3"
@@ -58,7 +58,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo3,
 									text: wdoFrCheckboxLabel3}"></div>
 							<input id="work_day_off_name4" tabindex="4"
@@ -76,7 +76,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo4,
 									text: wdoFrCheckboxLabel4}"></div>
 							<input id="work_day_off_name4" tabindex="5"
@@ -94,7 +94,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo5,
 									text: wdoFrCheckboxLabel5}"></div>
 							<input id="work_day_off_name5" tabindex="6"
@@ -112,7 +112,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo6,
 									text: wdoFrCheckboxLabel6}"></div>
 							<input id="work_day_off_name6" index="7"
@@ -130,7 +130,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo7,
 									text: wdoFrCheckboxLabel7}"></div>
 							<input id="work_day_off_name7" tabindex="8"
@@ -148,7 +148,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo8,
 									text: wdoFrCheckboxLabel8}"></div>
 							<input id="work_day_off_name8" tabindex="9"
@@ -166,7 +166,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class="minimalist" data-bind="ntsCheckBox: { 
+							<div class="minimalist" tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo9,
 									text: wdoFrCheckboxLabel9}"></div>
 							<input id="work_day_off_name9" tabindex="10"
@@ -184,7 +184,7 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div style="margin-left: -9px" class="minimalist" data-bind="ntsCheckBox: { 
+							<div style="margin-left: -9px" class="minimalist"  tabindex="-1" data-bind="ntsCheckBox: { 
 									checked: isCheckedNo10,
 									text: wdoFrCheckboxLabel10}"></div>
 							<input id="work_day_off_name10" tabindex="11"

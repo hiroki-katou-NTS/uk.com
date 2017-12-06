@@ -68,7 +68,7 @@ public interface FlWorkSettingSetMemento {
 	 *
 	 * @param legalOtSet the new designated setting
 	 */
-	void setDesignatedSetting(LegalOTSetting legalOtSet);
+	void setLegalOTSetting(LegalOTSetting legalOtSet);
 
 	/**
 	 * Sets the flow setting.

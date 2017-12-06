@@ -29,43 +29,55 @@ module nts.uk.com.view.cmm007.c {
                 return dfd.promise();
             }
             
+            /*
+            *   find all
+            */
             public getDataByCId(): JQueryPromise<void> {
                 let _self = this;
                 let dfd = $.Deferred<void>();
                 service.getTempAbsenceFrameByCId().done(function(data){
-                    
                     for (let i of data) {
-                        let a = new viewmodel.moduleDto(i.companyId, i.tempAbsenceFrNo, i.useClassification, i.tempAbsenceFrName);
-                        _self.mapModel.set(i.tempAbsenceFrNo , a);
+                        if (typeof _self.mapModel.get(i.tempAbsenceFrNo) === "undefined") {
+                            let temp = new viewmodel.moduleDto(i.companyId, i.tempAbsenceFrNo, i.useClassification, i.tempAbsenceFrName);
+                            _self.mapModel.set(i.tempAbsenceFrNo , temp);
+                        } else {
+                            _self.mapModel.get(i.tempAbsenceFrNo).tempAbsenceFrName(i.tempAbsenceFrName);
+                        }
                     }
                     
-                    for (let i=1; i<10; i++) {
-                        if (_self.mapModel.get(i) == null || typeof _self.mapModel.get(i) == undefined) {
-                            _self.mapModel.set(i, new viewmodel.moduleDto());    
-                        }    
-                    }
                     dfd.resolve();
                     
                 }).fail(function(data) {
-                    console.log(data);
+//                    console.log(data);
                 })
                 return dfd.promise();
             }
             
+            /*
+            *   status check/uncheck checkbox
+            */
             public checkStatusEnable(value): boolean {
                 let _self = this;
                 return _self.mapModel.get(value).useClassification() == 1 ? true : false;
             }
             
-            public myFunction(value): void {
+            /*
+            *   catch event click check box
+            */
+            public clickCheckbox(value): void {
                 let _self = this;
                 _self.mapModel.get(value).useClassification() == 1 ? _self.mapModel.get(value).useClassification(0) : _self.mapModel.get(value).useClassification(1);
+                if (_self.mapModel.get(value).useClassification() == 1) {
+                    $('#tempAbsenceNo' + value).ntsEditor("validate");    
+                } else {
+                    $('#tempAbsenceNo' + value).ntsEditor("clear");
+                }   
             }
             
             /**
-             * Register/update data
+             * update data
              */
-            public regsiter(): void {
+            public update(): void {
                 let _self = this;
                 
                 if (_self.hasError()) {
@@ -78,25 +90,27 @@ module nts.uk.com.view.cmm007.c {
                 }
                 
                 service.updateTempAbsenceFrame(lstDto).done(function(data){
+                    _self.getDataByCId().done(() => {
+                    });
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
-                        $('#c3_15').focus();
+                        $('#tempAbsenceNo7').focus();
                     });
                 }).fail(function(data) {
 //                    console.log(data);
                 })
             }
             
-              /**
+             /**
              * Check Errors all input.
              */
             private hasError(): boolean {
                 let _self = this;
                 _self.clearErrors();
-                $('#c3_15').ntsEditor("validate");
-                $('#c3_17').ntsEditor("validate");
-                $('#c3_19').ntsEditor("validate");
-                $('#c3_21').ntsEditor("validate"); 
-               
+                for (var i=7; i<=10; i++) {
+                    if (_self.mapModel.get(i).useClassification() == 1) {
+                        $('#tempAbsenceNo' + i).ntsEditor("validate");    
+                    }    
+                }
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;
                 }
@@ -107,12 +121,13 @@ module nts.uk.com.view.cmm007.c {
              * Clear Errors
              */
             private clearErrors(): void {
-    
-                 // Clear errors
-                $('#c3_15').ntsEditor("clear");
-                $('#c3_17').ntsEditor("clear");
-                $('#c3_19').ntsEditor("clear");
-                $('#c3_21').ntsEditor("clear");
+                let _self = this;
+                // Clear errors
+                for (var i=7; i<=10; i++) {
+                    if (_self.mapModel.get(i).useClassification() == 1) {
+                        $('#tempAbsenceNo' + i).ntsEditor("clear");    
+                    }    
+                }
                 
                 // Clear error inputs
                 $('.nts-input').ntsError('clear');

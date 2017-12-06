@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * The Class PrescribedTimezoneSetting.
  */
-//所定時間帯設定
+// 所定時間帯設定
 @Builder
 @Getter
 public class PrescribedTimezoneSetting extends DomainObject {

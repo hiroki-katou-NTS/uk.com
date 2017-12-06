@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 
@@ -65,9 +65,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
 
-		WorkTimeSetting workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
+		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
 
-		if (!workTimeSetting.equals(null)) {
+		if (workTimeSetting.isPresent()) {
 			// 打刻反映時間帯を取得する - TODO
 			// this step is common of domain from New Wave's team
 			// fake data
@@ -76,7 +76,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				// new list for copy data
 				List<StampReflectTimezone> stampReflectTimezoneList = new ArrayList<>();
 				stampReflectTimezones.forEach(stamp -> {
-					StampReflectTimezone stampReflectTimezone = new StampReflectTimezone();
+//					StampReflectTimezone stampReflectTimezone = new StampReflectTimezone();
 					// TODO - not setter? - add setter or create new class
 					
 					

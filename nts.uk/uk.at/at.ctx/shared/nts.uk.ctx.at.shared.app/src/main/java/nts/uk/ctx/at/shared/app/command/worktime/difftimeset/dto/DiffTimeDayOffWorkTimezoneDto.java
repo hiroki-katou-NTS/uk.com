@@ -12,6 +12,9 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 
+/**
+ * The Class DiffTimeDayOffWorkTimezoneDto.
+ */
 public class DiffTimeDayOffWorkTimezoneDto {
 
 	/** The rest timezone. */
@@ -20,14 +23,28 @@ public class DiffTimeDayOffWorkTimezoneDto {
 	/** The work timezone. */
 	private List<DayOffTimezoneSettingDto> workTimezones;
 
+	/**
+	 * To domain.
+	 *
+	 * @return the diff time day off work timezone
+	 */
 	public DiffTimeDayOffWorkTimezone toDomain() {
 		return new DiffTimeDayOffWorkTimezone(new DiffTimeDayOffWorkTimezoneImpl(this));
 	}
 
+	/**
+	 * The Class DiffTimeDayOffWorkTimezoneImpl.
+	 */
 	public class DiffTimeDayOffWorkTimezoneImpl implements DiffTimeDayOffWorkTimezoneGetMemento {
 
+		/** The dto. */
 		private DiffTimeDayOffWorkTimezoneDto dto;
 
+		/**
+		 * Instantiates a new diff time day off work timezone impl.
+		 *
+		 * @param diffTimeDayOffWorkTimezoneDto the diff time day off work timezone dto
+		 */
 		public DiffTimeDayOffWorkTimezoneImpl(DiffTimeDayOffWorkTimezoneDto diffTimeDayOffWorkTimezoneDto) {
 			this.dto = diffTimeDayOffWorkTimezoneDto;
 		}

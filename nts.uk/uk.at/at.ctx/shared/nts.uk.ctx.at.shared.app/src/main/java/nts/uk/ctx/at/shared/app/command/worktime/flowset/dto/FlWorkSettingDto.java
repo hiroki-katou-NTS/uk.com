@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flowset.dto;
 
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestSettingDto;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import lombok.Value;
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FlowWorkRestSettingDto;
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.WorkTimezoneCommonSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -19,8 +19,9 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class FlowWorkSettingDto.
+ * The Class FlWorkSettingDto.
  */
+@Value
 public class FlWorkSettingDto implements FlWorkSettingGetMemento {
 
 	/** The working code. */
@@ -47,56 +48,103 @@ public class FlWorkSettingDto implements FlWorkSettingGetMemento {
 	/** The flow setting. */
 	private FlWorkDedSettingDto flowSetting;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getCompanyId()
+	 */
 	@Override
 	public String getCompanyId() {
 		return AppContexts.user().companyId();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getWorkingCode()
+	 */
 	@Override
 	public WorkTimeCode getWorkingCode() {
 		return new WorkTimeCode(this.workingCode);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getRestSetting()
+	 */
 	@Override
 	public FlowWorkRestSetting getRestSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlowWorkRestSetting(this.restSetting);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getOffdayWorkTimezone()
+	 */
 	@Override
 	public FlOffdayWtz getOffdayWorkTimezone() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlOffdayWtz(this.offdayWorkTimezone);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getCommonSetting()
+	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimezoneCommonSet(this.commonSetting);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getHalfDayWorkTimezone()
+	 */
 	@Override
 	public FlHalfDayWtz getHalfDayWorkTimezone() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlHalfDayWtz(this.halfDayWorkTimezone);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getStampReflectTimezone()
+	 */
 	@Override
 	public FlStampReflectTz getStampReflectTimezone() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlStampReflectTz(this.stampReflectTimezone);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getDesignatedSetting()
+	 */
 	@Override
-	public LegalOTSetting getDesignatedSetting() {
-		// TODO Auto-generated method stub
-		return null;
+	public LegalOTSetting getLegalOTSetting() {
+		return LegalOTSetting.valueOf(this.designatedSetting);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento#
+	 * getFlowSetting()
+	 */
 	@Override
 	public FlWorkDedSetting getFlowSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlWorkDedSetting(this.flowSetting);
 	}
 
 }

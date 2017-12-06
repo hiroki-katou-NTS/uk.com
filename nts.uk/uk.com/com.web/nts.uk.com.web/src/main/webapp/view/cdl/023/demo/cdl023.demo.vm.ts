@@ -16,7 +16,6 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         
         // list item setting
         itemSetting: KnockoutObservable<string>;
-        itemList: KnockoutObservableArray<any>;
         selectedItems: KnockoutObservableArray<string>;
         
         constructor() {
@@ -42,14 +41,22 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             });
             
             self.itemSetting = ko.observable(null);
-            self.itemList = ko.observableArray([]);
             self.selectedItems = ko.observableArray([]);
             
             // subscribe
             self.selectedTarget.subscribe(newValue => {
-                self.itemList([]);
                 self.selectedItems([]);
             });
+            self.itemSetting.subscribe((newValue) => {
+                if (nts.uk.text.isNullOrEmpty(self.itemSetting())) {
+                    self.selectedItems([]);
+                }
+                
+                // trim space
+                self.itemSetting(self.itemSetting().replace(/\s/g, ''));
+                
+                self.selectedItems(self.itemSetting().split(','));
+            })
         }
         
         /**
@@ -61,16 +68,6 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
 
             dfd.resolve();
             return dfd.promise();
-        }
-
-        public addItem() {
-            let self = this;
-            
-            // add item
-            self.itemList.push({id: self.itemList().length, name: self.itemSetting()});
-            
-            // reset value
-            self.itemSetting(null);
         }
         
         /**

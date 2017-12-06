@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSetting;
@@ -25,13 +26,15 @@ public class DiffTimeDayOffWorkTimezoneDto implements DiffTimeDayOffWorkTimezone
 
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
-		// TODO Auto-generated method stub
-		
+		restTimezone.saveToMemento(this.restTimezone);
 	}
 
 	@Override
 	public void setWorkTimezones(List<DayOffTimezoneSetting> workTimezone) {
-		// TODO Auto-generated method stub
-		
+		workTimezone.stream().map(item -> {
+			DayOffTimezoneSettingDto dto = new DayOffTimezoneSettingDto();
+			item.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

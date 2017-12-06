@@ -4,74 +4,84 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.HDWorkTimeSheetSettingDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSettingGetMemento;
 
-public class DayOffTimezoneSettingDto {
-	
+/**
+ * The Class DayOffTimezoneSettingDto.
+ */
+public class DayOffTimezoneSettingDto extends HDWorkTimeSheetSettingDto {
+
 	/** The is update start time. */
 	private boolean isUpdateStartTime;
-	
+
+	/**
+	 * To domain.
+	 *
+	 * @return the day off timezone setting
+	 */
 	public DayOffTimezoneSetting toDomain() {
 		return new DayOffTimezoneSetting(new DayOffTimezoneSettingImpl(this));
 	}
-	
+
+	/**
+	 * The Class DayOffTimezoneSettingImpl.
+	 */
 	public class DayOffTimezoneSettingImpl implements DayOffTimezoneSettingGetMemento {
 
+		/** The dto. */
 		private DayOffTimezoneSettingDto dto;
-		
+
+		/**
+		 * Instantiates a new day off timezone setting impl.
+		 *
+		 * @param dayOffTimezoneSettingDto the day off timezone setting dto
+		 */
 		public DayOffTimezoneSettingImpl(DayOffTimezoneSettingDto dayOffTimezoneSettingDto) {
 			this.dto = dayOffTimezoneSettingDto;
 		}
 
 		@Override
 		public Integer getWorkTimeNo() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.dto.getWorkTimeNo();
 		}
 
 		@Override
 		public TimeZoneRounding getTimezone() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.dto.getTimezone();
 		}
 
 		@Override
 		public boolean getIsLegalHolidayConstraintTime() {
-			// TODO Auto-generated method stub
-			return false;
+			return this.dto.getIsLegalHolidayConstraintTime();
 		}
 
 		@Override
 		public BreakFrameNo getInLegalBreakFrameNo() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.dto.getInLegalBreakFrameNo();
 		}
 
 		@Override
 		public boolean getIsNonStatutoryDayoffConstraintTime() {
-			// TODO Auto-generated method stub
-			return false;
+			return this.dto.getIsNonStatutoryHolidayConstraintTime();
 		}
 
 		@Override
 		public BreakFrameNo getOutLegalBreakFrameNo() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.dto.getOutLegalBreakFrameNo();
 		}
 
 		@Override
 		public boolean getIsNonStatutoryHolidayConstraintTime() {
-			// TODO Auto-generated method stub
-			return false;
+			return this.dto.getIsNonStatutoryHolidayConstraintTime();
 		}
 
 		@Override
 		public BreakFrameNo getOutLegalPubHDFrameNo() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.dto.getOutLegalPubHDFrameNo();
 		}
 
 		@Override
