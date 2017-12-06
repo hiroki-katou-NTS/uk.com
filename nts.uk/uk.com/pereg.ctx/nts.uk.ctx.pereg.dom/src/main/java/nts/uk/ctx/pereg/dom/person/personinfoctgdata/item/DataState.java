@@ -10,40 +10,23 @@ import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.datastate.NumberValue;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.datastate.StringValue;
 
 public class DataState extends AggregateRoot {
-
+	
 	@Getter
 	protected DataStateType dataStateType;
-
-	public String getStringValue() {
+	
+	public String getStringValue(){
 		StringValue sValue = (StringValue) this;
 		return sValue.value;
 	}
 
-	public GeneralDate getDateValue() {
+	public GeneralDate getDateValue(){
 		DateValue dateValue = (DateValue) this;
 		return dateValue.value;
 	}
-
-	public BigDecimal getNumberValue() {
+	
+	public BigDecimal getNumberValue(){
 		NumberValue numberValue = (NumberValue) this;
 		return numberValue.value;
-	}
-
-	public Object getValue() {
-		switch (dataStateType) {
-		case String:
-			StringValue sValue = (StringValue) this;
-			return sValue.value;
-
-		case Numeric:
-			NumberValue numberValue = (NumberValue) this;
-			return numberValue.value;
-		case Date:
-			DateValue dateValue = (DateValue) this;
-			return dateValue.value;
-		default:
-			return null;
-		}
 	}
 
 	public static DataState createFromStringValue(String value) {
@@ -59,5 +42,6 @@ public class DataState extends AggregateRoot {
 	public static DataState createFromNumberValue(BigDecimal value) {
 		return NumberValue.createFromJavaType(value);
 	}
+	
 
 }
