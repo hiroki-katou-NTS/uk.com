@@ -10,7 +10,11 @@ import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.primitive.Memo;
-//就業時間帯の設定
+
+/**
+ * The Class WorkTimeSetting.
+ */
+// 就業時間帯の設定
 @Getter
 public class WorkTimeSetting extends AggregateRoot {
 
@@ -47,10 +51,9 @@ public class WorkTimeSetting extends AggregateRoot {
 	private WorkTimeNote note;
 
 	/**
-	 * Instantiates a new work time.
+	 * Instantiates a new work time setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public WorkTimeSetting(WorkTimeSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
@@ -66,8 +69,7 @@ public class WorkTimeSetting extends AggregateRoot {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(WorkTimeSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);

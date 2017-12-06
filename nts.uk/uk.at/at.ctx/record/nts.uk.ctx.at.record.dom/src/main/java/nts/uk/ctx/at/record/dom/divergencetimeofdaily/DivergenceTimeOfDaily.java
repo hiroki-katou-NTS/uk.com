@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.divergencetimeofdaily;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
-import nts.uk.ctx.at.shared.dom.worktimeset.fluid.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 

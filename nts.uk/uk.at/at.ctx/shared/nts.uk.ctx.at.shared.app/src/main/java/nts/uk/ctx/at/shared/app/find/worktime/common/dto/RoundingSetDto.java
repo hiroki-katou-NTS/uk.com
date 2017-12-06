@@ -6,32 +6,43 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSetSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
 
 /**
  * The Class RoundingSetDto.
  */
 @Getter
 @Setter
-public class RoundingSetDto {
-	
+public class RoundingSetDto implements RoundingSetSetMemento {
 
 	/** The rounding set. */
 	private InstantRoundingDto roundingSet;
-	
+
 	/** The section. */
 	private Integer section;
 
-	/**
-	 * Instantiates a new rounding set dto.
-	 *
-	 * @param roundingSet the rounding set
-	 * @param section the section
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.RoundingSetSetMemento#
+	 * setRoundingSet(nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding)
 	 */
-	public RoundingSetDto(InstantRoundingDto roundingSet, Integer section) {
-		super();
-		this.roundingSet = roundingSet;
-		this.section = section;
+	@Override
+	public void setRoundingSet(InstantRounding rounding) {
+		rounding.saveToMememto(this.roundingSet);
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.RoundingSetSetMemento#setSection
+	 * (nts.uk.ctx.at.shared.dom.worktime.common.Superiority)
+	 */
+	@Override
+	public void setSection(Superiority sec) {
+		this.section = sec.value;
+	}
 }

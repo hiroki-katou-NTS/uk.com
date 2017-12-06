@@ -56,9 +56,10 @@ public class DefaultRoleService implements RoleService{
 	}
 
 	@Override
-	public void removeRole(String roleId, RoleAtr roleAtr) {
+	public void removeRole(String roleId) {
 		String companyId = AppContexts.user().companyId();
-		if (roleAtr == RoleAtr.INCHARGE) {
+		Role role = roleRepo.findByRoleId(roleId).get();		
+		if (role.getAssignAtr() == RoleAtr.INCHARGE) {
 			List<RoleIndividualGrant> roleIndi = roleGrantRepo.findByRoleId(roleId);
 			if (!roleIndi.isEmpty())
 				throw new BusinessException("Msg_584");
@@ -71,10 +72,16 @@ public class DefaultRoleService implements RoleService{
 				DefaultRoleSet defaultRoleSet = defaultOpt.get();
 				Optional<RoleSet> roleSetOpt = roleSetRepo
 						.findByRoleSetCdAndCompanyId(defaultRoleSet.getRoleSetCd().toString(), companyId);
-				if (roleSetOpt.isPresent() && roleSetOpt.get().getPersonInfRoleId().equals(roleId))
-					throw new BusinessException("Msg_586");
-			} else
-				roleRepo.remove(roleId);				
+				if (roleSetOpt.isPresent()){
+					RoleSet rs = roleSetOpt.get();
+					if (rs.getPersonInfRoleId().equals(roleId) || rs.getSalaryRoleId().equals(roleId)
+							|| rs.getOfficeHelperRoleId().equals(roleId) || rs.getHRRoleId().equals(roleId)
+							|| rs.getEmploymentRoleId().equals(roleId) || rs.getMyNumberRoleId().equals(roleId))
+						throw new BusinessException("Msg_586");
+				} 
+			} else{
+				roleRepo.remove(roleId);									
+			}			
 		}
 		
 	}

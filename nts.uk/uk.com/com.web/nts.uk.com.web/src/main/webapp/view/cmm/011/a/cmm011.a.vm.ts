@@ -27,10 +27,13 @@ module nts.uk.com.view.cmm011.a {
             isNewMode: KnockoutObservable<boolean>;
             isWkpHistoryLatest: KnockoutObservable<boolean>;
             isWkpConfigHistLatest: KnockoutObservable<boolean>;
+            isSelectedWpkId: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
 
+                self.isNewMode = ko.observable(false);
+                
                 self.wkpConfigHistId = null;
                 self.strDWorkplace = ko.observable(null);
                 self.endDWorkplace = ko.observable(nts.uk.resource.getText("CMM011_27"));
@@ -45,12 +48,21 @@ module nts.uk.com.view.cmm011.a {
 
                 self.creationType = null;
 
-                self.isNewMode = ko.observable(false);
                 self.isWkpHistoryLatest = ko.computed(function() {
                     self.workplaceHistory().selectedHistoryId();
                     return self.workplaceHistory().isSelectedLatestHistory();
                 });
                 self.isWkpConfigHistLatest = ko.observable(false);
+                
+                self.isSelectedWpkId = ko.computed(() => {
+                    if (!nts.uk.text.isNullOrEmpty(self.treeWorkplace().selectedWpkId())) {
+                        return true;
+                    }
+                    if (self.treeWorkplace().lstWorkplace().length < 1) {
+                        return self.isNewMode();
+                    }
+                    return !self.isNewMode();
+                })
                 
                 // subscribe
                 self.strDWorkplace.subscribe((newValue) => {
@@ -196,6 +208,9 @@ module nts.uk.com.view.cmm011.a {
                 // insert or update workplace
                 service.saveWkp(command).done(function() {
                     nts.uk.ui.block.clear();
+                    
+                    // reset setting create workplace
+                    self.creationType = null;
                     
                     // notice success
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -417,7 +432,7 @@ module nts.uk.com.view.cmm011.a {
             treeColumns: Array<any>;
             lstWorkplace: KnockoutObservableArray<TreeWorkplace>;
             selectedWpkId: KnockoutObservable<string>;
-
+            
             treeArray: KnockoutObservableArray<any>;
             selectedHierarchyCd: string;
             mapHierarchy: any;
@@ -473,6 +488,17 @@ module nts.uk.com.view.cmm011.a {
 
                 //subscribe selected wkp Id
                 self.selectedWpkId.subscribe(newValue => {
+                    
+                    // validate null or empty
+                    if (nts.uk.text.isNullOrEmpty(newValue)) {
+                        
+                        self.parentModel.isNewMode(true);
+                        
+                        // reset data
+                        self.parentModel.initData(null);
+                        self.parentModel.workplaceHistory().reset();
+                        return;
+                    }
                     
                     // set update mode
                     self.parentModel.isNewMode(false);
@@ -541,13 +567,18 @@ module nts.uk.com.view.cmm011.a {
                 let index: number = 3;
                 let wkpFullName: string = "";
                 
-                // check null or empty
-                if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd)) {
+                let isCreateWkpChild: boolean = self.parentModel.creationType == CreationType.CREATE_TO_CHILD;
+                
+                // check null empty or it is workplace parent 
+                if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd)
+                        || (!isCreateWkpChild && self.selectedHierarchyCd.length <= 3)) {
                     return null;
                 }
                 
+                let maxLength: number = self.selectedHierarchyCd.length;
+                
                 // find path name parent workplace
-                while (index <= self.selectedHierarchyCd.length) {
+                while ((!isCreateWkpChild && index < maxLength) || (isCreateWkpChild && index <= maxLength)) {
                     let parentHierarchyCd: string = self.selectedHierarchyCd.substr(0, index);
                     wkpFullName += " " + self.mapHierarchy[parentHierarchyCd];
                     index += 3;
@@ -716,11 +747,24 @@ module nts.uk.com.view.cmm011.a {
 
                 // subscribe
                 self.selectedHistoryId.subscribe((newHistoryId) => {
+                    if (nts.uk.text.isNullOrEmpty(newHistoryId)) {
+                        self.parentModel.initData(null);
+                        return;
+                    }
                     // load workplace info by historyId
                     self.loadWkpHistoryInfo(self.parentModel.treeWorkplace().selectedWpkId(), newHistoryId);
                 });
             }
 
+            /**
+             * Reset data
+             */
+            public reset() {
+                let self = this;
+                self.lstWpkHistory([]);
+                self.selectedHistoryId(null);
+            }
+            
             /**
              * addWkpHistoryDialog
              */
@@ -808,9 +852,6 @@ module nts.uk.com.view.cmm011.a {
                     //update list hist
                     self.lstWpkHistory(lstWpkHistory);
 
-                    // set focus
-                    $('#wkpName').focus();
-
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((res: any) => {
@@ -847,6 +888,10 @@ module nts.uk.com.view.cmm011.a {
                     
                     // set data
                     self.parentModel.initData(data);
+                    
+                    // set focus
+                    $('#wkpName').focus();
+                    
                     dfd.resolve();
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();

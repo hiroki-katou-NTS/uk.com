@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -10,12 +9,9 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-
 
 @NoArgsConstructor
 @Entity
@@ -50,7 +46,6 @@ public class KacmtWorkPlaceAuthority extends UkJpaEntity implements Serializable
 						Integer.parseInt( domain.getFunctionNo().toString())
 							),
 					domain.isAvailability()
-					
 				);
 	}
 	

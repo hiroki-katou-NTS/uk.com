@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 
 /**
  * The Interface FlexOffdayWorkTimeSetMemento.
@@ -16,11 +16,11 @@ public interface FlexOffdayWorkTimeSetMemento {
 	
 	
 	/**
-	 * Sets the work timezone.
+	 * Sets the lst work timezone.
 	 *
-	 * @param workTimezone the new work timezone
+	 * @param lstWorkTimezone the new lst work timezone
 	 */
-	void setWorkTimezone(List<HDWorkTimeSheetSetting> workTimezone);
+	void setLstWorkTimezone(List<HDWorkTimeSheetSetting> lstWorkTimezone);
 
 	
 	/**

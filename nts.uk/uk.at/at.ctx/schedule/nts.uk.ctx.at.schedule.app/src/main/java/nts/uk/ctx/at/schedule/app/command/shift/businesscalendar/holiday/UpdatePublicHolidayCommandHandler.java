@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
@@ -27,6 +28,8 @@ public class UpdatePublicHolidayCommandHandler extends CommandHandler<UpdatePubl
 
 	@Inject
 	private PublicHolidayRepository publicHolidayRepository;
+	
+	final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePublicHolidayCommand> context) {
@@ -35,7 +38,7 @@ public class UpdatePublicHolidayCommandHandler extends CommandHandler<UpdatePubl
 
 		// Check PulbicHoliday is Existence \
 		Optional<PublicHoliday> checkPublicHoliday = publicHolidayRepository.getHolidaysByDate(companyID,
-				context.getCommand().getDate());
+				GeneralDate.fromString(context.getCommand().getDate(), DATE_FORMAT));
 		if (!checkPublicHoliday.isPresent()) {
 			throw new BusinessException("Msg_132");
 		}

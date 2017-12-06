@@ -1,16 +1,26 @@
 #left-content {
 	margin-left: 20px;
-	margin-top: 12px;
-	padding: 20px 5px 10px 20px;
+	padding: 0px 5px 10px 20px;
 	float: left;
-	width: 340px;
-	height: 480px;
+
+}
+#text_list{
+	padding-left: 4px;
+}
+#list_role{
+	background-color: #E0F59E;
+	width: 390px;
+    height: 410px;
+    margin-top: 5px;
+	border-radius: 7px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 #right-content {
 	margin-left: 50px;
 	float: left;
-	margin-top: 32px;
+	margin-top: 13px;
 	width: calc(100% - 550px);
 }
 

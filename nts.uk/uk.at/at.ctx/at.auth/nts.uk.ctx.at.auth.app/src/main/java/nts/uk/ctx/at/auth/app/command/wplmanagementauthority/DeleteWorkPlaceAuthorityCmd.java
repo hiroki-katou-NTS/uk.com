@@ -12,8 +12,4 @@ public class DeleteWorkPlaceAuthorityCmd {
 	 * 会社ID
 	 */
 	private String companyId;
-	/**
-	 * NO
-	 */
-	private int functionNo; 
 }
