@@ -108,7 +108,6 @@ public class PerInfoCategoryFinder {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
 					}
-
 					return null;
 				}).filter(m -> m != null).collect(Collectors.toList());
 

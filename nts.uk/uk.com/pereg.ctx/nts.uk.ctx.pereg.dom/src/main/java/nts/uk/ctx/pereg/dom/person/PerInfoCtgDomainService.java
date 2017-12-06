@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -82,12 +83,13 @@ public class PerInfoCtgDomainService {
 	 * @param paramObject
 	 * @return List<PersonInfoItemDefinition>
 	 */
-	private List<PersonInfoItemDefinition> getPerInfoItemDefWithHis(ParamForGetPerItem paramObject){
+	private List<PersonInfoItemDefinition> getPerInfoItemDefWithHis(ParamForGetPerItem paramObject){	
+		List<PersonInfoItemDefinition> lstPersonInfoItemDefinition = perInfoItemDefRepositoty
+				.getAllPerInfoItemDefByCategoryId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getContractCode());
+		if(paramObject.getPersonInfoCategory().getIsFixed() == IsFixed.NOT_FIXED) return lstPersonInfoItemDefinition;
 		DateRangeItem dateRangeItem = this.perInfoCategoryRepositoty
 				.getDateRangeItemByCtgId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId());
-		return perInfoItemDefRepositoty
-				.getPerInfoItemByCtgId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getCompanyId(),
-						paramObject.getContractCode())
+		return lstPersonInfoItemDefinition
 				.stream().filter(x -> {
 					return x.getPerInfoItemDefId() == dateRangeItem.getDateRangeItemId();
 				}).collect(Collectors.toList());

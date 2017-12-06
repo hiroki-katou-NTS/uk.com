@@ -3,12 +3,14 @@
  */
 package nts.uk.ctx.pereg.app.find.common;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import nts.gul.reflection.AnnotationUtil;
+import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
@@ -49,7 +51,7 @@ public class MappingFactory {
 	
 	public static void mapListClsDto(EmpMaintLayoutDto empMaintLayoutDto, PeregDto peregDto, List<PerInfoItemDefForLayoutDto> lstClsItem){
 		// get dto value
-		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getClass());
+		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
 		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem);
 	}
 	
@@ -71,11 +73,19 @@ public class MappingFactory {
 	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue){
 		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 		Object value = dtoFieldValue.get(item.getItemCode());
-		if(value != null){		
+		if(checkHasValue(value)){		
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
 			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		}
+	}
+	
+	private static boolean checkHasValue(Object value){
+		if(value != null){
+			String strValue = value.toString();
+			if(strValue.equals("")) return false;
+			else return strValue.equals("-1") ? false : true; 
+		}else return false;
 	}
 	
 	/**
@@ -87,7 +97,8 @@ public class MappingFactory {
 	private static Map<String, Object> getDtoValue(PeregDomainDto domainDto, Class<?> dtoClass){
 		// Map<itemcode, Object: value of field>
 		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
-		AnnotationUtil.getStreamOfFieldsAnnotated(dtoClass, PeregItem.class).forEach(field -> {
+		FieldsWorkerStream lstField = AnnotationUtil.getStreamOfFieldsAnnotated(dtoClass, PeregItem.class);
+		lstField.forEach(field -> {
 			String itemCode = field.getAnnotation(PeregItem.class).value();
 			Object obj = ReflectionUtil.getFieldValue(field, domainDto);
 			itemCodeValueMap.put(itemCode, obj);

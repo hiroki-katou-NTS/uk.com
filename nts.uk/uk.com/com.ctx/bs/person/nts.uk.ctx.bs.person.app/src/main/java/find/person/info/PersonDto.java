@@ -70,17 +70,25 @@ public class PersonDto extends PeregDomainDto{
 	private String PersonalNameMultilingualKana;
 	
 	public static PersonDto createFromDomain(Person person){
-		boolean hasBusinessNameKana = person.getPersonNameGroup().getBusinessNameKana().v() != null;
-		boolean hasBusinessOtherName = person.getPersonNameGroup().getBusinessOtherName().v() != null;
-		boolean hasBusinessEnglishName = person.getPersonNameGroup().getBusinessEnglishName().v() != null;
-		boolean hasPerRomanjiFullName = person.getPersonNameGroup().getPersonRomanji().getFullName().v() != null;
-		boolean hasPerRomanjiFullNameKana = person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v() != null;
-		boolean hasTodokedeFullName = person.getPersonNameGroup().getTodokedeFullName().getFullName().v() != null;
-		boolean hasTodokedeFullNameFullName = person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v() != null;
-		boolean hasOldNameFullName = person.getPersonNameGroup().getOldName().getFullName().v() != null;
-		boolean hasOldNameFullNameKana = person.getPersonNameGroup().getOldName().getFullNameKana().v() != null;
-		boolean hasPerNameMultilLang = person.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v() != null;
-		boolean hasPerNameMultilLangKana = person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v() != null;
+		boolean hasBusinessNameKana = checkExist(person.getPersonNameGroup().getBusinessNameKana());
+		boolean hasBusinessOtherName = checkExist(person.getPersonNameGroup().getBusinessOtherName());
+		boolean hasBusinessEnglishName = checkExist(person.getPersonNameGroup().getBusinessEnglishName());
+		boolean hasPerRomanjiFullName = checkExist(person.getPersonNameGroup().getPersonRomanji(), 
+				person.getPersonNameGroup().getPersonRomanji() == null ? null : person.getPersonNameGroup().getPersonRomanji().getFullName());
+		boolean hasPerRomanjiFullNameKana = checkExist(person.getPersonNameGroup().getPersonRomanji(), 
+				person.getPersonNameGroup().getPersonRomanji() == null ? null : person.getPersonNameGroup().getPersonRomanji().getFullNameKana());
+		boolean hasTodokedeFullName = checkExist(person.getPersonNameGroup().getTodokedeFullName(), 
+				person.getPersonNameGroup().getTodokedeFullName() == null ? null :person.getPersonNameGroup().getTodokedeFullName().getFullName());
+		boolean hasTodokedeFullNameFullName = checkExist(person.getPersonNameGroup().getTodokedeFullName(), 
+				person.getPersonNameGroup().getTodokedeFullName() == null ? null : person.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+		boolean hasOldNameFullName = checkExist(person.getPersonNameGroup().getOldName(), 
+				person.getPersonNameGroup().getOldName() == null ? null : person.getPersonNameGroup().getOldName().getFullName());
+		boolean hasOldNameFullNameKana = checkExist(person.getPersonNameGroup().getOldName(), 
+				person.getPersonNameGroup().getOldName() == null ? null : person.getPersonNameGroup().getOldName().getFullNameKana());
+		boolean hasPerNameMultilLang = checkExist(person.getPersonNameGroup().getPersonalNameMultilingual(), 
+				person.getPersonNameGroup().getPersonalNameMultilingual() == null ? null : person.getPersonNameGroup().getPersonalNameMultilingual().getFullName()) ;
+		boolean hasPerNameMultilLangKana = checkExist(person.getPersonNameGroup().getPersonalNameMultilingual(), 
+				person.getPersonNameGroup().getPersonalNameMultilingual() == null ? null : person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana());
 
 		return new PersonDto(person.getBirthDate(), 
 				person.getBloodType().value, 
@@ -99,6 +107,14 @@ public class PersonDto extends PeregDomainDto{
 				hasTodokedeFullNameFullName ? person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v() : "", 
 				hasPerNameMultilLang ? person.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v() : "", 
 				hasPerNameMultilLangKana ? person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v() : "");
+	}
+	
+	private static boolean checkExist(Object parent, Object obj){
+		return parent != null ? (obj != null ? true : false) : false;
+	}
+	
+	private static boolean checkExist(Object obj){
+		return obj != null;
 	}
 	
 }
