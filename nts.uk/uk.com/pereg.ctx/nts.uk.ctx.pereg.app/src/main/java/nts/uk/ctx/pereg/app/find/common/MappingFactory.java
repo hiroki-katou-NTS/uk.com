@@ -51,14 +51,15 @@ public class MappingFactory {
 			List<PerInfoItemDefForLayoutDto> lstClsItem) {
 		// get dto value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
-		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem);
+		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem, peregDto.getDomainDto().getRecordId());
 	}
 
 	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, Map<String, Object> dtoFieldValue,
-			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
+			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, String recordId) {
 		
 		lstPerInfoItemDef.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+			layoutPerInfoClsDto.setRecordId(recordId);
 			if(item.getItemDefType() == 2)
 				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
 			else{
