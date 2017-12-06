@@ -1,4 +1,4 @@
-<div>
+<div data-bind="with: appWorkChange">
 	<!--LEFT CONTENTS -->
 	<div class="left-contents">
 		<!--A2 申請者--> 		
@@ -42,15 +42,15 @@
 				<div class="cell valign-center">
 					<!--A6_1 勤務種類--> 
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF007_22')}</div>
+						data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF007_22')}</div>
 					<BR />
 					<!--A6_3 就業時間帯--> 
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF007_23')}</div>
+						data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF007_23')}</div>
 				</div>
 				<div class="cell valign-center">
 					<!--A6_5 勤務就業選択--> 
-					<button id="workSelect" data-bind="enable: $parent.workChangeAtr, click: $parent.openDialogKdl003">#{i18n.getText('KAF007_24')}</button>
+					<button id="workSelect" data-bind="enable: $parent.workChangeAtr, click: $parent.openKDL003Click">#{i18n.getText('KAF007_24')}</button>
 				</div>
 				<div class="cell valign-center">
 					<!--A6_2 勤務種類名-->
@@ -237,7 +237,7 @@
 			</div>
 		</div>
 		<!--A11 定型理由（ラベル）--> 
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind="if: $parent.typicalReasonDisplayFlg">
 			<!--A11_1 定型理由--> 
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF007_25')}</div>
 			<!--A12 申請理由（ラベル）--> 
@@ -253,7 +253,7 @@
 			</div>
 		</div>
 		<!--A12 申請理由（ラベル）-->
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind="if: $parent.displayAppReasonContentFlg">
 			<!--A12 申請理由（ラベル）-->
 			<div class="lblTitle"
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF007_27')}</div>

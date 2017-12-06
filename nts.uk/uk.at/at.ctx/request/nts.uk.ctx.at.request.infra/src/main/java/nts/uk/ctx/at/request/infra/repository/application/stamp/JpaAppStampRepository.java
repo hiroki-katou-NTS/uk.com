@@ -260,7 +260,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						appStamp.getReflectPerState().value, 
 						appStamp.getReflectPerEnforce().value,
 						null,
-						null,null,null,null,null),
+						null,null,null,null,null, null),
 				null);
 		List<KrqdtAppStampDetail> krqdtAppStampDetails = new ArrayList<KrqdtAppStampDetail>();
 		switch(appStamp.getStampRequestMode()) {

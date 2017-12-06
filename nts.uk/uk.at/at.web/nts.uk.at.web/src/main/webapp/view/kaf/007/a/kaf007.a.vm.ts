@@ -2,13 +2,15 @@ module nts.uk.at.view.kaf007.a.viewmodel {
     import common = nts.uk.at.view.kaf007.share.common;
     import service = nts.uk.at.view.kaf007.share.service;
     import dialog = nts.uk.ui.dialog;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ScreenModel {
-        appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
-        isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
+        
+        appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());        
         //A3 事前事後区分:表示/活性
         prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
         //A5 勤務を変更する:表示/活性
+        //Show/Hide work change
         isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
         workChangeAtr: KnockoutObservable<boolean> = ko.observable(false);
         workState : KnockoutObservable<boolean> = ko.observable(true);
@@ -29,6 +31,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         isMultipleTime: KnockoutObservable<boolean> = ko.observable(false);
     
         //comboBox 定型理由
+        typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
+        displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
@@ -48,9 +52,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             let self = this;
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();            
-            //startPage 009a AFTER start 000_A
+            //startPage 007a AFTER start 000_A
             self.startPage().done(function(){
-                self.kaf000_a.start(self.employeeID,1,2, moment(new Date()).format(self.dateFormat)).done(function(){
+                self.kaf000_a.start(self.employeeID, 1, 2, moment(new Date()).format(self.dateFormat)).done(function(){
                     self.appWorkChange().appApprovalPhases = self.kaf000_a.approvalList;
                     nts.uk.ui.block.clear();
                 })    
@@ -58,7 +62,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             
         }
         /**
-         * 
+         * 起動する
          */
         startPage(): JQueryPromise<any> {
             nts.uk.ui.block.invisible();
@@ -85,33 +89,27 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                             appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){                         
                         //事前事後区分 Enable ※A２
                         self.prePostEnable(appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);
+                        //「申請種類別設定．定型理由の表示」
+                        self.typicalReasonDisplayFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false );
+                        //「申請種類別設定．申請理由の表示」
+                        self.displayAppReasonContentFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false );
                     }
                     //A5 勤務を変更する ※A4                    
-                    if(appWorkChangeCommonSetting　!= undefined){
-                        /*let wcType: common.WorkChangeType = appWorkChangeCommonSetting.workChangeFlg;
-                        switch (wcType) {
-                            case WorkChangeType.NotInitSelection:
-                            case Weekday.Sunday:
-                                return false;
-                            default:
-                                return true;
-                        }*/
-                        if(appWorkChangeCommonSetting.workChangeTimeAtr == 0 
-                          || appWorkChangeCommonSetting.workChangeTimeAtr == 1){
-                            self.isWorkChange(true);
-                            if(appWorkChangeCommonSetting.workChangeTimeAtr == 0 ){
-                                self.workChangeAtr(false);
-                            }else{
-                                self.workChangeAtr(true);
-                            }                            
-                        }else if(appWorkChangeCommonSetting.workChangeTimeAtr == 2){
+                    if(appWorkChangeCommonSetting　!= undefined){ 
+                        //条件：勤務変更申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
+                        self.isWorkChange(true);
+                        self.workChangeAtr(true);
+                        //条件：勤務変更申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
+                        if(appWorkChangeCommonSetting.workChangeTimeAtr == 0 ){
+                            self.workChangeAtr(false);
+                        }
+                        //条件：勤務変更申請共通設定.勤務の変更　＝　変更しない
+                        else if(appWorkChangeCommonSetting.workChangeTimeAtr == 2){
                             self.isWorkChange(false);
                             self.workChangeAtr(false);
                         }else{
-                            self.workChangeAtr(true);
-                            self.isWorkChange(true);
                             self.workState(false);
-                        }                        
+                        }                                            
                     }
                     //定型理由
                     self.setReasonControl(settingData.listReasonDto);
@@ -130,13 +128,36 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
-        }
+        }       
         
-        //勤務変更申請の登録を実行する
+        /**
+         * 「登録」ボタンをクリックする
+         * 勤務変更申請の登録を実行する
+         */
         registerClick(){
             let self =this;
             nts.uk.ui.block.invisible();
+            let appReason: string;
+            appReason = self.getReason(
+                self.typicalReasonDisplayFlg(),
+                self.selectedReason(),
+                self.reasonCombo(),
+                self.displayAppReasonContentFlg(),
+                self.multilContent()
+            );
+            let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+            if(appReasonError){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
+                return;    
+            }
+            //申請日付
             self.appWorkChange().application().applicationDate(self.appWorkChange().application().startDate());
+            //申請理由
+            self.appWorkChange().application().applicationReason(appReason);
+            //勤務を変更する
+            self.appWorkChange().workChange().workChangeAtr(self.workChangeAtr() == true ? 1 : 0);
+            // 休日に関して
+            self.appWorkChange().workChange().excludeHolidayAtr(self.excludeHolidayAtr() == true ? 1 : 0);
             let workChange = ko.toJS(self.appWorkChange());
             service.addWorkChange(workChange).done(() => {
                 
@@ -144,9 +165,30 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     location.reload();
                 });
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                nts.uk.ui.block.clear();
             });
+        }
+        private getReason( inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string ): string {
+            let appReason = '';
+            let inputReason: string = '';
+            if ( !nts.uk.util.isNullOrEmpty( inputReasonID ) ) {
+                inputReason = _.find( inputReasonList, o => { return o.reasonId == inputReasonID; } ).reasonName;
+            }
+            if ( inputReasonDisp == true && detailReasonDisp == true ) {
+                if ( !nts.uk.util.isNullOrEmpty( inputReason ) && !nts.uk.util.isNullOrEmpty( detailReason ) ) {
+                    appReason = inputReason + ":" + detailReason;
+                } else if ( !nts.uk.util.isNullOrEmpty( inputReason ) && nts.uk.util.isNullOrEmpty( detailReason ) ) {
+                    appReason = inputReason;
+                } else if ( nts.uk.util.isNullOrEmpty( inputReason ) && !nts.uk.util.isNullOrEmpty( detailReason ) ) {
+                    appReason = detailReason;
+                }
+            } else if ( inputReasonDisp == true && detailReasonDisp == false ) {
+                appReason = inputReason;
+            } else if ( inputReasonDisp == false && detailReasonDisp == true ) {
+                appReason = detailReason;
+            }
+            return appReason;
         }
         /**
          * set reason 
@@ -164,9 +206,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
 
         
         /**
-         * KDL003
+         * 「勤務就業選択」ボタンをクリックする
+         * KDL003_勤務就業ダイアログを起動する
          */
-        openDialogKdl003() {
+        openKDL003Click() {
             let self = this,
             workTypeCodes = [],
             workChange = self.workChange(),
@@ -192,11 +235,20 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         }
         
         /**
-         * Jump to CMM018 Screen
+         * 「実績参照」ボタンをクリックする
+         * 「CMM018_承認者の登録（就業）」画面に遷移する
          */
-        openCMM018(){
+        openCMM018Click(){
             let self = this;
             nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID});  
+        }
+        /**
+         * 「承認者変更」ボタンをクリックする
+         * 「KDL004 実績参照」ダイアログを起動する
+         */
+        openKDL004Click(){
+            let self = this;
+            return;
         }
     }
     
