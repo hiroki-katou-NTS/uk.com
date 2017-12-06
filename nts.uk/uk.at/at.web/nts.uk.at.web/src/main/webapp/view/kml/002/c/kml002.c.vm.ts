@@ -53,7 +53,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
             
             self.catCode = ko.observable(0);
             
-            self.checked = ko.observable(true);
+            self.checked = ko.observable(false);
             self.enable = ko.observable(true);
             
             if(data.unit == 1) {
@@ -218,15 +218,15 @@ module nts.uk.at.view.kml002.c.viewmodel {
             };
             service.getDailyItems(param).done(function(data) {
                 let temp = [];
-                let items = _.sortBy(data, ['companyId', 'dispOrder']);
+                let items = _.orderBy(data, ['itemType'], ['desc']);
                 
                 _.forEach(items, function(item: service.BaseItemsDto) {
                     var name = "";
                     
                     if(item.itemType == 0) {
-                        name = item.itemName + nts.uk.resource.getText("KML002_42");
-                    } else if(item.itemType == 1) {
                         name = item.itemName + nts.uk.resource.getText("KML002_43");
+                    } else if(item.itemType == 1) {
+                        name = item.itemName + nts.uk.resource.getText("KML002_42");
                     } else if(item.itemType == 2) {
                         name = item.itemName + nts.uk.resource.getText("KML002_44");
                     }
