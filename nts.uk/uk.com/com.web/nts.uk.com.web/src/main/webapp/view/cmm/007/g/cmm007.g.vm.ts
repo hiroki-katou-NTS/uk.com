@@ -530,27 +530,55 @@ module nts.uk.com.view.cmm007.g {
                 let _self = this;
                 _self.clearErrors();
                 
-                $('#work_day_off_name1').ntsEditor("validate");
-                $('#work_day_off_name2').ntsEditor("validate");
-                $('#work_day_off_name3').ntsEditor("validate");
-                $('#work_day_off_name4').ntsEditor("validate");
-                $('#work_day_off_name5').ntsEditor("validate");
-                $('#work_day_off_name6').ntsEditor("validate");
-                $('#work_day_off_name7').ntsEditor("validate");
-                $('#work_day_off_name8').ntsEditor("validate");
-                $('#work_day_off_name9').ntsEditor("validate");
-                $('#work_day_off_name10').ntsEditor("validate");
+                if (_self.useAtrWdoFrName1() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name1').ntsEditor("validate");  
+                    $('#work_day_off_trans_name1').ntsEditor("validate");  
+                }
                 
-                $('#work_day_off_trans_name1').ntsEditor("validate");
-                $('#work_day_off_trans_name2').ntsEditor("validate");
-                $('#work_day_off_trans_name3').ntsEditor("validate");
-                $('#work_day_off_trans_name4').ntsEditor("validate");
-                $('#work_day_off_trans_name5').ntsEditor("validate");
-                $('#work_day_off_trans_name6').ntsEditor("validate");
-                $('#work_day_off_trans_name7').ntsEditor("validate");
-                $('#work_day_off_trans_name8').ntsEditor("validate");
-                $('#work_day_off_trans_name9').ntsEditor("validate");
-                $('#work_day_off_trans_name10').ntsEditor("validate");
+                if (_self.useAtrWdoFrName2() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name2').ntsEditor("validate");
+                    $('#work_day_off_trans_name2').ntsEditor("validate");
+                }
+                
+                if (_self.useAtrWdoFrName3() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name3').ntsEditor("validate");
+                    $('#work_day_off_trans_name3').ntsEditor("validate");
+                }
+                
+                if (_self.useAtrWdoFrName4() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name4').ntsEditor("validate");
+                    $('#work_day_off_trans_name4').ntsEditor("validate");
+                }
+                
+                if (_self.useAtrWdoFrName5() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name5').ntsEditor("validate");
+                    $('#work_day_off_trans_name5').ntsEditor("validate");
+                }
+                
+                if (_self.useAtrWdoFrName6() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name6').ntsEditor("validate");
+                    $('#work_day_off_trans_name6').ntsEditor("validate");
+                }
+                
+                if (_self.useAtrWdoFrName7() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name7').ntsEditor("validate");
+                    $('#work_day_off_trans_name7').ntsEditor("validate");
+                }
+                
+                if (_self.useAtrWdoFrName8() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name8').ntsEditor("validate");
+                    $('#work_day_off_trans_name8').ntsEditor("validate");
+                }
+                
+                if (_self.useAtrWdoFrName9() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name9').ntsEditor("validate");
+                    $('#work_day_off_trans_name9').ntsEditor("validate");
+                }
+                
+                if (_self.useAtrWdoFrName10() == USE_CLASSIFICATION.USE) {
+                    $('#work_day_off_name10').ntsEditor("validate");
+                    $('#work_day_off_trans_name10').ntsEditor("validate");
+                }
                
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;

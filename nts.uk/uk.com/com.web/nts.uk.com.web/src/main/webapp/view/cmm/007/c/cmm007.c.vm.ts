@@ -58,7 +58,7 @@ module nts.uk.com.view.cmm007.c {
             */
             public checkStatusEnable(value): boolean {
                 let _self = this;
-                return _self.mapModel.get(value).useClassification() == 1 ? true : false;
+                return _self.mapModel.get(value).useClassification() == USE_CLASSIFICATION.USE ? true : false;
             }
             
             /*
@@ -66,8 +66,8 @@ module nts.uk.com.view.cmm007.c {
             */
             public clickCheckbox(value): void {
                 let _self = this;
-                _self.mapModel.get(value).useClassification() == 1 ? _self.mapModel.get(value).useClassification(0) : _self.mapModel.get(value).useClassification(1);
-                if (_self.mapModel.get(value).useClassification() == 1) {
+                _self.mapModel.get(value).useClassification() == USE_CLASSIFICATION.USE ? _self.mapModel.get(value).useClassification(0) : _self.mapModel.get(value).useClassification(1);
+                if (_self.mapModel.get(value).useClassification() == USE_CLASSIFICATION.USE) {
                     $('#tempAbsenceNo' + value).ntsEditor("validate");    
                 } else {
                     $('#tempAbsenceNo' + value).ntsEditor("clear");
@@ -107,7 +107,7 @@ module nts.uk.com.view.cmm007.c {
                 let _self = this;
                 _self.clearErrors();
                 for (var i=7; i<=10; i++) {
-                    if (_self.mapModel.get(i).useClassification() == 1) {
+                    if (_self.mapModel.get(i).useClassification() == USE_CLASSIFICATION.USE) {
                         $('#tempAbsenceNo' + i).ntsEditor("validate");    
                     }    
                 }
@@ -124,7 +124,7 @@ module nts.uk.com.view.cmm007.c {
                 let _self = this;
                 // Clear errors
                 for (var i=7; i<=10; i++) {
-                    if (_self.mapModel.get(i).useClassification() == 1) {
+                    if (_self.mapModel.get(i).useClassification() == USE_CLASSIFICATION.USE) {
                         $('#tempAbsenceNo' + i).ntsEditor("clear");    
                     }    
                 }
@@ -148,5 +148,10 @@ module nts.uk.com.view.cmm007.c {
                 _self.tempAbsenceFrName = ko.observable(tempAbsenceFrName);
             }
         }
+    }
+    
+    module USE_CLASSIFICATION {
+        export const NOT_USE: number = 0;                        
+        export const USE: number = 1;                           
     }
 }

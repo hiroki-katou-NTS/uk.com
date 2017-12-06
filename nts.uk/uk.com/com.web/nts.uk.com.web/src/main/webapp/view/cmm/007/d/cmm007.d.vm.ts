@@ -248,11 +248,21 @@ module nts.uk.com.view.cmm007.d {
             private hasError(): boolean {
                 let _self = this;
                 _self.clearErrors();
-                $('#plan_year_hd_frame1').ntsEditor("validate");
-                $('#plan_year_hd_frame2').ntsEditor("validate");
-                $('#plan_year_hd_frame3').ntsEditor("validate");
-                $('#plan_year_hd_frame4').ntsEditor("validate");
-                $('#plan_year_hd_frame5').ntsEditor("validate"); 
+                if (_self.useAtrPlanYearHdFrName1() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame1').ntsEditor("validate");    
+                }
+                if (_self.useAtrPlanYearHdFrName2() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame2').ntsEditor("validate");    
+                }
+                if (_self.useAtrPlanYearHdFrName3() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame3').ntsEditor("validate");    
+                }
+                if (_self.useAtrPlanYearHdFrName4() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame4').ntsEditor("validate");    
+                }
+                if (_self.useAtrPlanYearHdFrName5() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame5').ntsEditor("validate");    
+                } 
                
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;

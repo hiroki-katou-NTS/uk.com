@@ -88,13 +88,13 @@ module nts.uk.com.view.cmm007.e {
         
             public checkStatusEnable(value): boolean {
                 let _self = this;
-                return _self.mapObj.get(value).useAtr() == 1 ? true : false;
+                return _self.mapObj.get(value).useAtr() == USE_CLASSIFICATION.USE ? true : false;
             }
         
             public myFunction(value): void {
                 let _self = this;
-                _self.mapObj.get(value).useAtr() == 1 ? _self.mapObj.get(value).useAtr(0) : _self.mapObj.get(value).useAtr(1);
-                if (_self.mapObj.get(value).useAtr() == 1) {
+                _self.mapObj.get(value).useAtr() == USE_CLASSIFICATION.USE ? _self.mapObj.get(value).useAtr(0) : _self.mapObj.get(value).useAtr(1);
+                if (_self.mapObj.get(value).useAtr() == USE_CLASSIFICATION.USE) {
                     $('#overtime_work_name' + value).ntsEditor("validate");
                     $('#tranfer_work_name' + value).ntsEditor("validate");
                 } else {
@@ -110,7 +110,7 @@ module nts.uk.com.view.cmm007.e {
                 let _self = this;
                 _self.clearErrors();
                 for (let i=1; i<=10; i++) {
-                    if (_self.mapObj.get(i).useAtr() == 1) {
+                    if (_self.mapObj.get(i).useAtr() == USE_CLASSIFICATION.USE) {
                         $('#overtime_work_name' + i).ntsEditor("validate");
                         $('#tranfer_work_name' + i).ntsEditor("validate");    
                     }
@@ -129,7 +129,7 @@ module nts.uk.com.view.cmm007.e {
                 let _self = this;
                  // Clear errors
                 for (let i=1; i<=10; i++) {
-                    if (_self.mapObj.get(i).useAtr() == 1) {
+                    if (_self.mapObj.get(i).useAtr() == USE_CLASSIFICATION.USE) {
                         $('#overtime_work_name' + i).ntsEditor("clear");
                         $('#tranfer_work_name' + i).ntsEditor("clear");    
                     }    
