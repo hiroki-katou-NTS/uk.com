@@ -19,19 +19,19 @@ module nts.uk.com.view.cas012.a.service {
         return nts.uk.request.ajax("com", paths.getAll, data);
     }
 
-    export function create(roleIndividual: viewmodel.RoleIndividual): JQueryPromise<void> {
+    export function create(roleIndividual: viewmodel.RoleIndividualGrantBaseCommand): JQueryPromise<void> {
         return nts.uk.request.ajax("com", paths.createRoleIndividual, roleIndividual);
     }
     
-    export function update(roleIndividual: viewmodel.RoleIndividual): JQueryPromise<void> {
+    export function update(roleIndividual: viewmodel.RoleIndividualGrantBaseCommand): JQueryPromise<void> {
         return nts.uk.request.ajax("com", paths.updateRoleIndividual, roleIndividual);
     }
 
-    export function deleteRoleIndividual(userID: string, companyID: string, selectedRoleType: number): JQueryPromise<any> {
+    export function deleteRoleIndividual(userID: string, companyID: string, roleType: number): JQueryPromise<any> {
         var data = {
             userID: userID,
             companyID: companyID,
-            selectedRoleType: selectedRoleType
+            selectedRoleType: roleType
         };
         return nts.uk.request.ajax("com", paths.deleteRoleIndividual, data);
     }
