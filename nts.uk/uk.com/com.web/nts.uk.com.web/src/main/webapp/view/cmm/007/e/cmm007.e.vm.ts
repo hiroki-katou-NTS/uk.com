@@ -11,7 +11,6 @@ module nts.uk.com.view.cmm007.e {
             constructor(){
                 let _self = this;
                 _self.mapObj = new Map<number, model.OvertimeWorkFrameDto>();
-                
             }
             
              /**
@@ -71,12 +70,6 @@ module nts.uk.com.view.cmm007.e {
                         _self.mapObj.set(value.overtimeWorkFrNo, objTemp);  
                     });
                     
-                    for (let i=1; i<=10; i++) {
-                        if (_self.mapObj.get(i) == null || typeof _self.mapObj.get(i) == undefined) {
-                            _self.mapObj.set(i, new model.OvertimeWorkFrameDto());
-                        }   
-                    }
-                    
                     dfd.resolve();
                     
                 }).fail(function(data) {
@@ -93,17 +86,27 @@ module nts.uk.com.view.cmm007.e {
             public myFunction(value): void {
                 let _self = this;
                 _self.mapObj.get(value).useAtr() == 1 ? _self.mapObj.get(value).useAtr(0) : _self.mapObj.get(value).useAtr(1);
+                if (_self.mapObj.get(value).useAtr() == 1) {
+                    $('#overtime_work_name' + value).ntsEditor("validate");
+                    $('#tranfer_work_name' + value).ntsEditor("validate");
+                } else {
+                    $('#overtime_work_name' + value).ntsEditor("clear");
+                    $('#tranfer_work_name' + value).ntsEditor("clear");    
+                }
             }
             
              /**
              * Check Errors all input.
              */
-            private hasError(): boolean {
+            public hasError(): boolean {
                 let _self = this;
                 _self.clearErrors();
                 for (let i=1; i<=10; i++) {
-                    $('#overtime_work_name' + i).ntsEditor("validate");
-                    $('#tranfer_work_name' + i).ntsEditor("validate");    
+                    if (_self.mapObj.get(i).useAtr() == 1) {
+                        $('#overtime_work_name' + i).ntsEditor("validate");
+                        $('#tranfer_work_name' + i).ntsEditor("validate");    
+                    }
+                        
                 }
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;
@@ -114,11 +117,14 @@ module nts.uk.com.view.cmm007.e {
             /**
              * Clear Errors
              */
-            private clearErrors(): void {
+            public clearErrors(): void {
+                let _self = this;
                  // Clear errors
                 for (let i=1; i<=10; i++) {
-                    $('#overtime_work_name' + i).ntsEditor("clear");
-                    $('#tranfer_work_name' + i).ntsEditor("clear");    
+                    if (_self.mapObj.get(i).useAtr() == 1) {
+                        $('#overtime_work_name' + i).ntsEditor("clear");
+                        $('#tranfer_work_name' + i).ntsEditor("clear");    
+                    }    
                 }
                 
                 // Clear error inputs

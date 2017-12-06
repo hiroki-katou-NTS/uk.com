@@ -9,7 +9,7 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
    			<span class="title">#{i18n.getText('CMM007_4')}</span>
-			<button tabindex="1" style="margin-left: 200px" class="proceed" data-bind="click: savePlanYearHdFrSetting">#{i18n.getText('CMM007_5')}</button>
+			<button tabindex="1" class="proceed" data-bind="click: savePlanYearHdFrSetting">#{i18n.getText('CMM007_5')}</button>
 		</div>
 		<div class="contents-area">
 			<div class="plan_year_holiday">
@@ -77,8 +77,8 @@
 						</td>
 						<td class="pl">
 							<div class="minimalist" data-bind="ntsCheckBox: { 
-									checked: isCheckedNo4,
-									text: planYearHdFrCheckboxLabel4}"></div>
+										checked: isCheckedNo4,
+										text: planYearHdFrCheckboxLabel4}"></div>
 							<input id="plan_year_hd_frame4" tabindex="5"
 								data-bind="ntsTextEditor: {
 									name: '#[CMM007_47]',

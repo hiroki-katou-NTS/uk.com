@@ -15,7 +15,7 @@
 		<div class="contents-area main-content">
 			<div>
 				<!-- C2_1 -->
-				<div><span class="label">#{i18n.getText('CMM007_38')}</span></div>
+				<div><pre class="label">#{i18n.getText('CMM007_38')}</pre></div>
 			</div>
 			<div>
 				<table>
@@ -34,7 +34,7 @@
 						</td>
 						<td>
 							<!-- C3_3 -->
-							<span data-bind="text: mapModel.get(1).tempAbsenceFrName"></span>
+							<span data-bind="text: mapModel.get(1).tempAbsenceFrName, enable: false"></span>
 						</td>
 					</tr>
 					<tr>
@@ -136,13 +136,13 @@
 						</td>
 						<td>
 							<!-- C3_15 -->
-							<input id="c3_15"  type="text" data-bind="ntsTextEditor: { 
-																		name: '#[CMM007_39]',
-																		value: mapModel.get(7).tempAbsenceFrName ,
-																		enable: checkStatusEnable(mapModel.get(7).tempAbsenceFrNo()),
-																		constraint: 'TempAbsenceFrameName',
-																		required: true,
-																	}" tabindex="2"></input>
+							<input id="tempAbsenceNo7"  type="text" tabindex="2" data-bind="ntsTextEditor: { 
+																					name: '#[CMM007_39]',
+																					value: mapModel.get(7).tempAbsenceFrName ,
+																					enable: checkStatusEnable(mapModel.get(7).tempAbsenceFrNo()),
+																					constraint: 'TempAbsenceFrameName',
+																					required: true,
+																					option: {width: '130px'}}" ></input>
 						</td>
 					</tr>
 					<tr>
@@ -159,16 +159,15 @@
 						</td>
 						<td>
 							<!-- C3_17 -->
-							<input id="c3_17" type="text" data-bind="ntsTextEditor: { 
-																		name: '#[CMM007_40]',
-																		value: mapModel.get(8).tempAbsenceFrName,
-																		enable: checkStatusEnable(mapModel.get(8).tempAbsenceFrNo()),
-																		constraint: 'TempAbsenceFrameName',
-																		required: true, 
-																	}" tabindex="3"></input>
+							<input id="tempAbsenceNo8" type="text" tabindex="3" data-bind="ntsTextEditor: { 
+																					name: '#[CMM007_40]',
+																					value: mapModel.get(8).tempAbsenceFrName,
+																					enable: checkStatusEnable(mapModel.get(8).tempAbsenceFrNo()),
+																					constraint: 'TempAbsenceFrameName',
+																					required: true, 
+																					option: {width: '130px'}}"></input>
 						</td>
 					</tr>
-					<br></br>
 					<tr>
 						<td></td>
 						<td>
@@ -183,16 +182,15 @@
 						</td>
 						<td>
 							<!-- C3_19 -->
-							<input id="c3_19" type="text" data-bind="ntsTextEditor: { 
-																		name: '#[CMM007_41]',
-																		value: mapModel.get(9).tempAbsenceFrName,
-																		enable: checkStatusEnable(mapModel.get(9).tempAbsenceFrNo()),
-																		constraint: 'TempAbsenceFrameName',
-																		required: true, 
-																	}" tabindex="4"></input>
+							<input id="tempAbsenceNo9" type="text" tabindex="4" data-bind="ntsTextEditor: { 
+																					name: '#[CMM007_41]',
+																					value: mapModel.get(9).tempAbsenceFrName,
+																					enable: checkStatusEnable(mapModel.get(9).tempAbsenceFrNo()),
+																					constraint: 'TempAbsenceFrameName',
+																					required: true,
+																					option: {width: '130px'}}"></input>
 						</td>
 					</tr>
-					<br></br>
 					<tr>
 						<td></td>
 						<td>
@@ -207,13 +205,13 @@
 						</td>
 						<td>
 							<!-- C3_21 -->
-							<input id="c3_21" type="text" data-bind="ntsTextEditor: { 
-																		name: '#[CMM007_42]',
-																		value: mapModel.get(10).tempAbsenceFrName ,
-																		enable: checkStatusEnable(mapModel.get(10).tempAbsenceFrNo()),
-																		constraint: 'TempAbsenceFrameName',
-																		required: true,
-																	}" tabindex="5"></input>
+							<input id="tempAbsenceNo10" type="text" tabindex="5" data-bind="ntsTextEditor: { 
+																					name: '#[CMM007_42]',
+																					value: mapModel.get(10).tempAbsenceFrName ,
+																					enable: checkStatusEnable(mapModel.get(10).tempAbsenceFrNo()),
+																					constraint: 'TempAbsenceFrameName',
+																					required: true,
+																					option: {width: '130px'}}" ></input>
 						</td>
 					</tr>
 				</table>
