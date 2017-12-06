@@ -6,38 +6,32 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class JpaHDWTSheetTimeZoneRoundingSetMemento.
+ * The Class JpaFlexOffdayTZRoundSetMemento.
  */
-public class JpaHDWTSheetTimeZoneRoundingSetMemento implements TimeZoneRoundingSetMemento{
-
+public class JpaFlexOffdayTZRoundSetMemento implements TimeZoneRoundingSetMemento{
+	
 	/** The entity. */
 	private KshmtFlexHolSet entity;
-	
+
 	/**
-	 * Instantiates a new jpa HDWT sheet time zone rounding set memento.
+	 * Instantiates a new jpa flex offday TZ round set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaHDWTSheetTimeZoneRoundingSetMemento(KshmtFlexHolSet entity) {
+	public JpaFlexOffdayTZRoundSetMemento(KshmtFlexHolSet entity) {
 		super();
-		if(entity.getKshmtFlexHolSetPK() == null){
-			entity.setKshmtFlexHolSetPK(new KshmtFlexHolSetPK());
-		}
 		this.entity = entity;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingSetMemento#
-	 * setRounding(nts.uk.ctx.at.shared.dom.common.timerounding.
-	 * TimeRoundingSetting)
+
+	/**
+	 * Sets the rounding.
+	 *
+	 * @param rdSet the new rounding
 	 */
 	@Override
 	public void setRounding(TimeRoundingSetting rdSet) {
@@ -45,24 +39,20 @@ public class JpaHDWTSheetTimeZoneRoundingSetMemento implements TimeZoneRoundingS
 		this.entity.setRounding(rdSet.getRounding().value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingSetMemento#
-	 * setStart(nts.uk.shr.com.time.TimeWithDayAttr)
+	/**
+	 * Sets the start.
+	 *
+	 * @param start the new start
 	 */
 	@Override
 	public void setStart(TimeWithDayAttr start) {
 		this.entity.setTimeStr(start.valueAsMinutes());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingSetMemento#
-	 * setEnd(nts.uk.shr.com.time.TimeWithDayAttr)
+	/**
+	 * Sets the end.
+	 *
+	 * @param end the new end
 	 */
 	@Override
 	public void setEnd(TimeWithDayAttr end) {

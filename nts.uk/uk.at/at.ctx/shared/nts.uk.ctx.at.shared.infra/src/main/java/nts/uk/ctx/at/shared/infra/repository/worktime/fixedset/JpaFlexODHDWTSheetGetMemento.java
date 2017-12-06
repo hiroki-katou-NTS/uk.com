@@ -8,35 +8,32 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
 
 /**
- * The Class JpaHDWorkTimeSheetSettingGetMemento.
+ * The Class JpaFlexODHDWTSheetGetMemento.
  */
-public class JpaHDWorkTimeSheetSettingGetMemento implements HDWorkTimeSheetSettingGetMemento{
+public class JpaFlexODHDWTSheetGetMemento implements HDWorkTimeSheetSettingGetMemento{
 	
 	/** The entity. */
 	private KshmtFlexHolSet entity;
-	
+
 	/**
-	 * Instantiates a new jpa HD work time sheet setting get memento.
+	 * Instantiates a new jpa flex offday HDWT sheet get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaHDWorkTimeSheetSettingGetMemento(KshmtFlexHolSet entity) {
+	public JpaFlexODHDWTSheetGetMemento(KshmtFlexHolSet entity) {
 		super();
-		if(entity.getKshmtFlexHolSetPK() == null){
-			entity.setKshmtFlexHolSetPK(new KshmtFlexHolSetPK());
-		}
 		this.entity = entity;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * HDWorkTimeSheetSettingGetMemento#getWorkTimeNo()
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento
+	 * #getWorkTimeNo()
 	 */
 	@Override
 	public Integer getWorkTimeNo() {
@@ -46,19 +43,21 @@ public class JpaHDWorkTimeSheetSettingGetMemento implements HDWorkTimeSheetSetti
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * HDWorkTimeSheetSettingGetMemento#getTimezone()
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento
+	 * #getTimezone()
 	 */
 	@Override
 	public TimeZoneRounding getTimezone() {
-		return new TimeZoneRounding(new JpaHDWTSheetTimeZoneRoundingGetMemento(this.entity));
+		return new TimeZoneRounding(new JpaFlexOffdayTZRoundGetMemento(this.entity));
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * HDWorkTimeSheetSettingGetMemento#getIsLegalHolidayConstraintTime()
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento
+	 * #getIsLegalHolidayConstraintTime()
 	 */
 	@Override
 	public boolean getIsLegalHolidayConstraintTime() {
@@ -68,8 +67,9 @@ public class JpaHDWorkTimeSheetSettingGetMemento implements HDWorkTimeSheetSetti
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * HDWorkTimeSheetSettingGetMemento#getInLegalBreakFrameNo()
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento
+	 * #getInLegalBreakFrameNo()
 	 */
 	@Override
 	public BreakFrameNo getInLegalBreakFrameNo() {
@@ -79,8 +79,9 @@ public class JpaHDWorkTimeSheetSettingGetMemento implements HDWorkTimeSheetSetti
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * HDWorkTimeSheetSettingGetMemento#getIsNonStatutoryDayoffConstraintTime()
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento
+	 * #getIsNonStatutoryDayoffConstraintTime()
 	 */
 	@Override
 	public boolean getIsNonStatutoryDayoffConstraintTime() {
@@ -90,8 +91,9 @@ public class JpaHDWorkTimeSheetSettingGetMemento implements HDWorkTimeSheetSetti
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * HDWorkTimeSheetSettingGetMemento#getOutLegalBreakFrameNo()
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento
+	 * #getOutLegalBreakFrameNo()
 	 */
 	@Override
 	public BreakFrameNo getOutLegalBreakFrameNo() {
@@ -101,8 +103,9 @@ public class JpaHDWorkTimeSheetSettingGetMemento implements HDWorkTimeSheetSetti
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * HDWorkTimeSheetSettingGetMemento#getIsNonStatutoryHolidayConstraintTime()
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento
+	 * #getIsNonStatutoryHolidayConstraintTime()
 	 */
 	@Override
 	public boolean getIsNonStatutoryHolidayConstraintTime() {
@@ -112,8 +115,9 @@ public class JpaHDWorkTimeSheetSettingGetMemento implements HDWorkTimeSheetSetti
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
-	 * HDWorkTimeSheetSettingGetMemento#getOutLegalPubHDFrameNo()
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento
+	 * #getOutLegalPubHDFrameNo()
 	 */
 	@Override
 	public BreakFrameNo getOutLegalPubHDFrameNo() {

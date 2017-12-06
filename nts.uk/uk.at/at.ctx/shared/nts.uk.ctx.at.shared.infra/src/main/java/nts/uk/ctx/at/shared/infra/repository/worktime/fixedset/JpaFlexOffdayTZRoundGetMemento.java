@@ -6,33 +6,29 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFlexHolSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class JpaHDWTSheetTimeZoneRoundingGetMemento.
+ * The Class JpaFlexOffdayTZRoundGetMemento.
  */
-public class JpaHDWTSheetTimeZoneRoundingGetMemento implements TimeZoneRoundingGetMemento{
-
+public class JpaFlexOffdayTZRoundGetMemento implements TimeZoneRoundingGetMemento{
+	
 	/** The entity. */
 	private KshmtFlexHolSet entity;
-	
+
 	/**
-	 * Instantiates a new jpa HDWT sheet time zone rounding get memento.
+	 * Instantiates a new jpa flex offday TZ round get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaHDWTSheetTimeZoneRoundingGetMemento(KshmtFlexHolSet entity) {
+	public JpaFlexOffdayTZRoundGetMemento(KshmtFlexHolSet entity) {
 		super();
-		if(entity.getKshmtFlexHolSetPK() == null){
-			entity.setKshmtFlexHolSetPK(new KshmtFlexHolSetPK());
-		}
 		this.entity = entity;
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingGetMemento#getRounding()
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento#getRounding()
 	 */
 	@Override
 	public TimeRoundingSetting getRounding() {
@@ -40,7 +36,7 @@ public class JpaHDWTSheetTimeZoneRoundingGetMemento implements TimeZoneRoundingG
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingGetMemento#getStart()
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento#getStart()
 	 */
 	@Override
 	public TimeWithDayAttr getStart() {
@@ -48,7 +44,7 @@ public class JpaHDWTSheetTimeZoneRoundingGetMemento implements TimeZoneRoundingG
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingGetMemento#getEnd()
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento#getEnd()
 	 */
 	@Override
 	public TimeWithDayAttr getEnd() {
