@@ -202,7 +202,7 @@
 									data-bind="ntsDatePicker: {
 								value: layout.standardDate, 
 								dateFormat: 'YYYY/MM/DD'}"></div>
-								<button data-bind="click: filterData">#{i18n.getText('CPS001_37')}</button>
+								<button data-bind="click: layout.filterData.bind(layout)">#{i18n.getText('CPS001_37')}</button>
 							</div>
 							<div
 								data-bind="template: { 
