@@ -495,6 +495,7 @@ module nts.uk.com.view.cmm011.a {
                         self.parentModel.isNewMode(true);
                         
                         // reset data
+                        self.selectedHierarchyCd = null;
                         self.parentModel.initData(null);
                         self.parentModel.workplaceHistory().reset();
                         return;
@@ -543,6 +544,8 @@ module nts.uk.com.view.cmm011.a {
                     if (res.messageId == 'Msg_373') {
                         nts.uk.ui.dialog.info({messageId: res.messageId}).then(() => {
                             self.lstWorkplace([]);
+                            // reset selected workplace when list empty
+                            self.parentModel.treeWorkplace().selectedWpkId(null);
                         });
                     } else {
                         self.parentModel.showMessageError(res);
