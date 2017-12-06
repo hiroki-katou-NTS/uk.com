@@ -33,6 +33,10 @@ public class BshmtWorktimeHist extends UkJpaEntity implements Serializable {
 	/** The bshmt worktime hist PK. */
 	@EmbeddedId
 	protected BshmtWorktimeHistPK bshmtWorktimeHistPK;
+	
+	/** The c id. */
+	@Column(name = "CID")
+	private String cId;
 
 	/** The str ymd. */
 	@Column(name = "STR_YMD")
