@@ -80,31 +80,6 @@
 }]]></pre>
 							</div>
 							<div id="tabs-api" class="cf">
-								<h2>ComponentModel Class</h2>
-								<table class="table">
-									<colgroup>
-										<col width="200px" />
-									</colgroup>
-									<thead>
-										<tr>
-											<th><h4>Name</h4></th>
-											<th><h4>Description</h4></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>listRole</td>
-											<td><b>Type:</b> KnockoutObservableArray&lt;model.Role&gt;<br/>
-												List Role find by roleType
-											</td>
-										</tr>
-										<tr>
-											<td>currentCode</td>
-											<td><b>Type:</b> KnockoutObservable&lt;string&gt; | KnockoutObservableArray&lt;string&gt;<br/>
-											Current selected code or list current selected code</td>
-										</tr>
-									</tbody>
-								</table>
 								<h2>ComponentModel Constructor</h2>
 								<table class="table">
 									<colgroup>
@@ -129,6 +104,39 @@
 										</tr>
 									</tbody>
 								</table>
+<pre><![CDATA[// Demo
+self.component = new ccg.component.viewmodel.ComponentModel({ 
+    roleType: 1,
+    multiple: true
+});]]></pre>
+								<h2>ComponentModel Properties</h2>
+								<table class="table">
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>Name</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>listRole</td>
+											<td><b>Type:</b> KnockoutObservableArray&lt;model.Role&gt;<br/>
+												List Role find by roleType
+											</td>
+										</tr>
+										<tr>
+											<td>currentCode</td>
+											<td><b>Type:</b> KnockoutObservable&lt;string&gt; | KnockoutObservableArray&lt;string&gt;<br/>
+											Current selected code or list current selected code</td>
+										</tr>
+									</tbody>
+								</table>
+<pre><![CDATA[// Demo
+self.component.listRole(); // Get list Role
+self.component.currentCode(); // Get single/list selected Role]]></pre>
 							</div>
 						</div>
 					</article>

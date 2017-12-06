@@ -1,7 +1,3 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.sys.auth.infra.repository.grant.roleindividualgrant;
 
 import java.util.ArrayList;
@@ -27,6 +23,9 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 			+ " AND c.sacmtRoleIndiviGrantPK.companyID = :companyID "
 			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
 			
+	private final String SELECT_BY_ROLE_USER = "";
+	
+	private final String SELECT_BY_KEY = "";
 
 	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.cid = :cid AND c.SacmtRoleIndiviGrant.      ";
 	
@@ -118,13 +117,19 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 
 	@Override
 	public Optional<RoleIndividualGrant> findRoleIndividualGrant(String userID, String companyID, int roleType) {
-		return this.queryProxy()
-				.query(SELECT_ROLE_GRANT, SacmtRoleIndiviGrant.class)
-				.setParameter("userID", userID)
-				.setParameter("companyID", companyID)
-				.setParameter("roleType", roleType)
-				.getSingle(c -> toDomain(c));
-				
+		Optional<SacmtRoleIndiviGrant> entityOpt =  this.queryProxy().query(SELECT_BY_ROLE_USER, SacmtRoleIndiviGrant.class).setParameter("cid", companyID)
+				.setParameter("roleType", roleType).setParameter("userID", userID).getSingle();
+		if(entityOpt.isPresent()) return Optional.of(toDomain(entityOpt.get()));
+		return Optional.ofNullable(null);
+	}
+
+	@Override
+	public RoleIndividualGrant findByKey(String userId, String companyId, String roleId) {
+		SacmtRoleIndiviGrant entities =  this.queryProxy().query(SELECT_BY_KEY, SacmtRoleIndiviGrant.class)
+			.setParameter("userId", userId)
+			.setParameter("cid", companyId)
+			.setParameter("roleId", roleId).getSingleOrNull();
+		return this.toDomain(entities);
 	}
 
 	@Override
@@ -135,12 +140,5 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 				.setParameter("roleType", roleType)
 				.getList(c -> toDomain(c));
 	}
-
-	@Override
-	public RoleIndividualGrant findByKey(String userId, String companyId, String roleId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

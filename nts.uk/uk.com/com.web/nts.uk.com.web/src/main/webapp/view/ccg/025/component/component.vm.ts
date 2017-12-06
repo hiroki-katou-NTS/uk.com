@@ -1,14 +1,14 @@
 module nts.uk.com.view.ccg025.a.component {
     import getText = nts.uk.resource.getText;
-    
+
     export interface Option {
         roleType?: number;
         multiple?: boolean;
     }
-    
+
     export module viewmodel {
-        export class ComponentModel { 
-            listRole : KnockoutObservableArray<model.Role>;
+        export class ComponentModel {
+            listRole: KnockoutObservableArray<model.Role>;
             currentCode: any;
             private columns: KnockoutObservableArray<any>;
             private defaultOption: Option = {
@@ -16,7 +16,7 @@ module nts.uk.com.view.ccg025.a.component {
             }
             private setting: Option;
             private searchMode: string;
-            
+
             constructor(option: Option) {
                 let self = this;
                 self.setting = $.extend({}, self.defaultOption, option);
@@ -26,20 +26,20 @@ module nts.uk.com.view.ccg025.a.component {
                     self.currentCode = ko.observableArray([]);
                 else
                     self.currentCode = ko.observable("");
-                if(self.setting.multiple){
+                if (self.setting.multiple) {
                     self.columns = ko.observableArray([
-                        { headerText: getText("CCG025_3"), prop: 'roleId', width: 100,hidden : true },
+                        { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden: true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
-                        { headerText: getText("CCG025_4"), prop: 'name',  width: 180 }
+                        { headerText: getText("CCG025_4"), prop: 'name', width: 180 }
                     ]);
-                }else{
+                } else {
                     self.columns = ko.observableArray([
-                        { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden : true },
+                        { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden: true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
-                        { headerText: getText("CCG025_4"), prop: 'name',  width: 233 }
-                    ]);    
+                        { headerText: getText("CCG025_4"), prop: 'name', width: 233 }
+                    ]);
                 }
-                
+
             }
 
             /** functiton start page */
@@ -47,14 +47,15 @@ module nts.uk.com.view.ccg025.a.component {
                 let self = this;
                 return self.getListRoleByRoleType(self.setting.roleType);
             }//end start page
-            
+
             /** Get list Role by Type */
-            private getListRoleByRoleType(roleType :number): JQueryPromise<Array<model.Role>>{
+            private getListRoleByRoleType(roleType: number): JQueryPromise<Array<model.Role>> {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getListRoleByRoleType(roleType).done((data: Array<model.Role>) => {
                     data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
                     self.listRole(data);
+                    self.selectItem();
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -62,28 +63,36 @@ module nts.uk.com.view.ccg025.a.component {
                 });
                 return dfd.promise();
             }
-            
+
+            /** Select first item */
+            private selectItem(): void {
+                var self = this;
+                if (self.listRole().length > 0 && !self.setting.multiple) {
+                    self.currentCode(self.listRole()[0].roleId);
+                }
+            }
+
         }//end screenModel
     }//end viewmodel
 
     //module model
     export module model {
-        
+
         /**
          * class Role
          */
         export class Role {
-            roleId : string;
-            roleCode : string;
-            roleType : number;
+            roleId: string;
+            roleCode: string;
+            roleType: number;
             employeeReferenceRange: number;
             name: string;
-            contractCode : string;
-            assignAtr :number;
-            companyId : string;
-            constructor(roleId : string,roleCode : string,
-            roleType : number,employeeReferenceRange: number,name: string,
-            contractCode : string,assignAtr :number,companyId : string) {
+            contractCode: string;
+            assignAtr: number;
+            companyId: string;
+            constructor(roleId: string, roleCode: string,
+                roleType: number, employeeReferenceRange: number, name: string,
+                contractCode: string, assignAtr: number, companyId: string) {
                 this.roleId = roleId;
                 this.roleCode = roleCode;
                 this.roleType = roleType;
@@ -92,11 +101,11 @@ module nts.uk.com.view.ccg025.a.component {
                 this.contractCode = contractCode;
                 this.assignAtr = assignAtr;
                 this.companyId = companyId;
-                
-                       
+
+
             }
         }//end class Role
-        
+
 
     }//end module model
 

@@ -9,12 +9,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthority;
-import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthorityPK;
 
 @Stateless
 public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements WorkPlaceAuthorityRepository {
 
-	private static final String  GET_ALL_WRK_AUTHORITY = "SELECT c FROM KacmtWorkPlaceAuthority "
+	private static final String  GET_ALL_WRK_AUTHORITY = "SELECT c FROM KacmtWorkPlaceAuthority c "
 			+ " WHERE c.kacmtWorkPlaceAuthorityPK.companyId  = :companyId ";
 	private static final String  GET_ALL_WRK_AUTHORITY_BY_ROLE_ID = GET_ALL_WRK_AUTHORITY
 			+ " AND c.kacmtWorkPlaceAuthorityPK.roleId  = :roleId ";
