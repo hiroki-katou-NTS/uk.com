@@ -60,7 +60,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		AffWorkplaceHistory_ver1 domain = new AffWorkplaceHistory_ver1(listHist.get(0).getCid(), listHist.get(0).getSid(), new ArrayList<DateHistoryItem>());
 		for (BsymtAffiWorkplaceHist item : listHist){
 			DateHistoryItem dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
-			domain.add(dateItem);
+			domain.getHistoryItems().add(dateItem);
 		}
 		return domain;
 	}

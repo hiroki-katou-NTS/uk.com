@@ -27,8 +27,8 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 	/**
 	 * 休職期間
 	 */
-	@PeregItem("IS00087")
-	private DateHistoryItem dateHistoryItem;
+	//@PeregItem("IS00087")
+	//private DateHistoryItem dateHistoryItem;
 
 	/**
 	 * 休業開始日
@@ -114,7 +114,7 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 		TempAbsHisItemDto dto = new TempAbsHisItemDto(histItem.getHistoryId(), histItem.getEmployeeId());
 		dto.setRemarks(histItem.getRemarks().v());
 		dto.setSoInsPayCategory(histItem.getSoInsPayCategory());
-		dto.setDateHistoryItem(history.getDateHistoryItems().get(0));
+		//dto.setDateHistoryItem(history.getDateHistoryItems().get(0));
 		dto.setStartDate(history.getDateHistoryItems().get(0).start());
 		dto.setEndDate(history.getDateHistoryItems().get(0).end());
 		dto.setLeaveHolidayType(histItem.getLeaveHolidayType());

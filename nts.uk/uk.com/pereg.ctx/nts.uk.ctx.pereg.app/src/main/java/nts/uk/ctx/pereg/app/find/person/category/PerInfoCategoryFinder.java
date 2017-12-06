@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.person.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -79,8 +80,10 @@ public class PerInfoCategoryFinder {
 		String roleId ="99900000-0000-0000-0000-000000000001";
 		boolean isSelfAuth = empId.equals(loginEmpId);
 		// get perInfoCtgAuth
-		PersonInfoCategoryAuth personInfoCategoryAuth = personInfoCategoryAuthRepository
-				.getDetailPersonCategoryAuthByPId(roleId, ctgId).get();
+		Optional<PersonInfoCategoryAuth> perInfoCtgAuth = personInfoCategoryAuthRepository
+				.getDetailPersonCategoryAuthByPId(roleId, ctgId);
+		if(!perInfoCtgAuth.isPresent()) return false;
+		PersonInfoCategoryAuth personInfoCategoryAuth = perInfoCtgAuth.get();
 		if (isSelfAuth) {
 			return personInfoCategoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES;
 		} else

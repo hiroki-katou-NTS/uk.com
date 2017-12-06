@@ -81,13 +81,7 @@ public class LayoutMapping {
 			Map<String, Object> dtoFieldValue, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		
 		lstPerInfoItemDef.forEach(item -> {
-			if(item.getItemDefType() == 2){
-				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);			
-			}
-			else{
-				setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);	
-				setEmpMaintLayoutDto(empMaintLayoutDto, dtoFieldValue, item.getLstChildItemDef());
-			}
+			setLayoutPersonInfoClsDto(empMaintLayoutDto, item, dtoFieldValue);
 		});
 		
 	}
