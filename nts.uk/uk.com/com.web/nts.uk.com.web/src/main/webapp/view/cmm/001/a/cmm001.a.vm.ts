@@ -37,17 +37,17 @@ module cmm001.a {
                 { code: 9, name: '9月' },
                 { code: 10, name: '10月' },
                 { code: 11, name: '11月' },
-                { code: 12, name: '12月' }
+                { code: 12, name: '12月' }  
             ];
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CMM001_7"), key: 'companyCode', width: 70 },
-                { headerText: nts.uk.resource.getText("CMM001_8"), key: 'companyName', width: 180 },
+                { headerText: nts.uk.resource.getText("CMM001_8"), key: 'companyName', width: 180, formatter: _.escape},
                 { headerText: nts.uk.resource.getText("CMM001_9"), key: 'isAbolition', width: 60,
                     template:  '{{if ${isAbolition} == 1}} <img src="../images/78.png" style="margin-left: 20px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'}
             ]);
             self.sel001Data = ko.observableArray([]);
-            self.listCom = ko.observableArray([]);
+            self.listCom = ko.observableArray([]);  
             self.itemList = ko.observableArray(itemArray);
             self.currentCompany = ko.observable(null);   
             self.currentCompanyCode = ko.observable('');  
