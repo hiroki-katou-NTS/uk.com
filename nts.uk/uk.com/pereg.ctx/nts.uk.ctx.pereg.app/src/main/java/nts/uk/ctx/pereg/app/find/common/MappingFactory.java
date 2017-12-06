@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.pereg.app.find.common;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -132,17 +131,11 @@ public class MappingFactory {
 	 * @param dtoClass
 	 */
 	public static void mapFixDto(Map<String, Object> itemCodeValueMap, LayoutPersonInfoClsDto classItem) {
-
-		List<Object> itemValues = new ArrayList<>();
-
-		// add to value-list
-		classItem.getListItemDf().forEach(itemDef -> {
-			LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef,
-					itemCodeValueMap.get(itemDef.getItemCode()));
-			itemValues.add(valueItem);
-		});
-
-		classItem.setItems(itemValues);
+		
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+			valueItem.setValue(itemCodeValueMap.get(valueItem.getItemCode()));
+		}
 
 	}
 

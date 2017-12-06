@@ -71,7 +71,7 @@ public class LayoutFinder {
 
 	@Inject
 	private LayoutingProcessor layoutingProcessor;
-	
+
 	@Inject
 	private PerInfoCtgDataRepository perInCtgDataRepo;
 
@@ -83,10 +83,10 @@ public class LayoutFinder {
 
 	@Inject
 	private EmpInfoItemDataRepository empInItemDataRepo;
-	
+
 	@Inject
 	private IMaintenanceLayoutRepository layoutRepo;
-	
+
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 		String loginEmpId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
@@ -125,7 +125,7 @@ public class LayoutFinder {
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
 		List<LayoutPersonInfoClsDto> authItemClasList = new ArrayList<>();
-		//String roleId = AppContexts.user().roles().forPersonnel();
+		// String roleId = AppContexts.user().roles().forPersonnel();
 		String roleId = "99900000-0000-0000-0000-000000000001";
 
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
@@ -185,7 +185,7 @@ public class LayoutFinder {
 		return result;
 
 	}
-	
+
 	private boolean haveAnItemAuth(String layoutId, Map<String, PersonInfoCategoryAuth> mapCategoryAuth,
 			boolean selfBrowsing) {
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutId);
@@ -284,12 +284,15 @@ public class LayoutFinder {
 	 */
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
 			GeneralDate stardardDate, String personId, String employeeId, PeregQuery query) {
+		// CLONE
+		cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
+		
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
-			if ( peregDto != null ) {
+			if (peregDto != null) {
 				MappingFactory.mapSingleClsDto(peregDto, authClassItem);
-			} 
+			}
 		} else {
 			if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
 				getSingleInforData(perInfoCategory, authClassItem, personId, employeeId);
@@ -358,7 +361,7 @@ public class LayoutFinder {
 		}
 
 	}
-	
+
 	/**
 	 * @param categoryCode
 	 * @param authClassItem
@@ -429,7 +432,7 @@ public class LayoutFinder {
 
 		}
 	}
-	
+
 	/**
 	 * @param categoryCode
 	 * @param perInfoCategoryId
@@ -462,6 +465,14 @@ public class LayoutFinder {
 			}
 
 		}
+	}
+
+	private void cloneDefItemToValueItem(String categoryCode, LayoutPersonInfoClsDto classItem) {
+		List<Object> items = new ArrayList<>();
+		for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
+			items.add(LayoutPersonInfoValueDto.cloneFromItemDef(categoryCode, itemDef));
+		}
+		classItem.setItems(items);
 	}
 
 }

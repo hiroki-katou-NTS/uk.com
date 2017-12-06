@@ -65,6 +65,20 @@ public class LayoutPersonInfoValueDto {
 	public LayoutPersonInfoValueDto() {
 
 	}
+	
+	public static LayoutPersonInfoValueDto cloneFromItemDef(String categoryCode, PerInfoItemDefDto itemDef) {
+		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
+		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+		dataObject.setCategoryCode(categoryCode);
+		dataObject.setItemDefId(itemDef.getId());
+		dataObject.setItemName(itemDef.getItemName());
+		dataObject.setItemCode(itemDef.getItemCode());
+		dataObject.setRow(0);
+		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+		dataObject.setItem(sigleItem.getDataTypeState());
+		return dataObject;
+	}
 
 	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object value) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
