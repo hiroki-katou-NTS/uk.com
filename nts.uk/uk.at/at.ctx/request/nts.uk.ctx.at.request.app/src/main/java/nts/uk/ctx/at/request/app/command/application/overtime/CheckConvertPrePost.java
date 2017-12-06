@@ -7,10 +7,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -19,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
@@ -64,8 +67,21 @@ public class CheckConvertPrePost {
 						result.setPreAppPanelFlg(false);
 					}
 				}
+				// chi du bao them.EA khong co(ngay 05/12/2017)
+				if(overtimeRestAppCommonSet.isPresent()){
+					//01-08_乖離定型理由を取得
+					if(overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+						result.setDisplayDivergenceReasonForm(true);
+						List<DivergenceReason> divergenceReasons = iOvertimePreProcess.getDivergenceReasonForm(companyID,ApplicationType.OVER_TIME_APPLICATION.value,overtimeRestAppCommonSet);
+						convertToDivergenceReasonDto(divergenceReasons,result);
+					}else{
+						result.setDisplayDivergenceReasonForm(false);
+					}
+					//01-07_乖離理由を取得
+					result.setDisplayDivergenceReasonInput(iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
+				}
 			}
-		}else if(prePostAtr ==0){
+		}else if(prePostAtr == 0){
 			if(overtimeRestAppCommonSet.isPresent()){
 				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
 					result.setReferencePanelFlg(false);
@@ -75,6 +91,9 @@ public class CheckConvertPrePost {
 					result.setPreAppPanelFlg(false);
 					//to do....
 				}
+				// chi du bao them.EA khong co(ngay 05/12/2017)
+				result.setDisplayDivergenceReasonForm(false);
+				result.setDisplayDivergenceReasonInput(false);
 			}
 		}
 		return result;
@@ -141,6 +160,23 @@ public class CheckConvertPrePost {
 			result.setPreAppOvertimeDto(preAppOvertimeDto);
 		}
 
+	}
+	
+	/**
+	 * @param divergenceReasons
+	 * @param result
+	 */
+	private void convertToDivergenceReasonDto(List<DivergenceReason> divergenceReasons, OverTimeDto result){
+		List<DivergenceReasonDto> divergenceReasonDtos = new ArrayList<>();
+		for(DivergenceReason divergenceReason : divergenceReasons){
+			DivergenceReasonDto divergenceReasonDto = new DivergenceReasonDto();
+			divergenceReasonDto.setDivergenceReasonID(divergenceReason.getReasonTypeItem().getReasonID());
+			divergenceReasonDto.setReasonTemp(divergenceReason.getReasonTypeItem().getReasonTemp().toString());
+			divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getDefaultFlg().value);
+			
+			divergenceReasonDtos.add(divergenceReasonDto);
+		}
+		result.setDivergenceReasonDtos(divergenceReasonDtos);
 	}
 	
 }
