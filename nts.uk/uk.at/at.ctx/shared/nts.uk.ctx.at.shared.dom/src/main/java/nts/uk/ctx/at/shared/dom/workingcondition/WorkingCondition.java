@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
@@ -12,14 +16,13 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * The Class WorkingCondition.
  */
+@Getter
 public class WorkingCondition extends AggregateRoot implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 	
-	/**
-	 * Gets the employee id.
-	 *
-	 * @return the employee id
-	 */
-	@Getter
+	/** The company id. */
+	private String companyId;
+	
+	/** The employee id. */
 	private String employeeId;
 	
 	/** The date history item. */
@@ -31,6 +34,7 @@ public class WorkingCondition extends AggregateRoot implements PersistentResiden
 	 * @param memento the memento
 	 */
 	public WorkingCondition(WorkingConditionGetMemento memento){
+		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.dateHistoryItem = memento.getDateHistoryItem();
 	}
@@ -42,6 +46,7 @@ public class WorkingCondition extends AggregateRoot implements PersistentResiden
 	 *            the memento
 	 */
 	public void saveToMemento(WorkingConditionSetMemento memento) {
+		memento.setCompanyId(this.companyId);
 		memento.setEmployeeId(this.employeeId);
 		memento.setDateHistoryItem(this.dateHistoryItem);
 	}
