@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="ksu007.a.main.css" />
+				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
+				<com:scriptfile path="ksu007.a.start.js" />
+				<com:scriptfile path="ksu007.a.service.js" />
+				<com:scriptfile path="ksu007.a.vm.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area" tabindex="-1">
+					<button tabindex="1" class="proceed" data-bind="click: saveScheduleBatchCorrectSettingProcess">#{i18n.getText('KSU007_1')}</button>
+				</div>
+				
+				<div tabindex="-1" id="contents-area">
+					<div id="ccgcomponent"></div>
+					<div class="employeeInfoSearch">
+						<div class="selectionEmployee" tabindex="-1">
+							<div id="employeeSearch" tabindex="-1"></div>
+						</div>
+						<div class="employeeAction">
+							<div class="periodCovered" tabindex="-1">
+								<div class="labelRangeDate" tabindex="-1" 
+									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU007_2')}
+								</div>
+								<div tabindex="2" id="dateRangePickerPeriod" 
+									data-bind="ntsDateRangePicker: { required: true, showNextPrevious: false, 
+									name:'#[KSU007_3]', value: periodDate, maxRange: 'oneMonth'}">
+								</div>
+							</div>
+							<div class="employeeWorkSetting">
+								<div class="labelWork" tabindex="-1" 
+									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU007_6')}
+								</div>
+								<div class="infoButtonSetting" tabindex="-1" >
+									<button class="buttonWorkSetting" tabindex="4" data-bind="click: openDialogKDL003">#{i18n.getText('KSU007_7')}</button>
+									<div class="infoKDL003" tabindex="-1" >
+										<div class="lableInfo" tabindex="-1" data-bind="text: workTypeInfo"><label></label></div>
+										<div class="lableInfo" tabindex="-1" data-bind="text: workTimeInfo"><label></label></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

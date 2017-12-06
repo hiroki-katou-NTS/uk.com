@@ -20,7 +20,7 @@ public class SampleUpdatePersonBaseCommandHandler extends CommandHandler<SampleU
 	}
 
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00001";
 	}
 

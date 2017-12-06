@@ -36,9 +36,6 @@ public class SaveComAutoCalSetCommandHandler extends CommandHandler<ComAutoCalSe
 		// Get context info
         String companyId = AppContexts.user().companyId();
 
-        // Get command
-        ComAutoCalSetCommand command = this.getCommandBySaveCondition(context.getCommand());
-            
         // Find details
         Optional<ComAutoCalSetting> result = this.comAutoCalSettingRepo.getAllComAutoCalSetting(companyId);
 
@@ -46,6 +43,9 @@ public class SaveComAutoCalSetCommandHandler extends CommandHandler<ComAutoCalSe
         if (!result.isPresent()) {
             throw new BusinessException("Msg_3");
         }
+        
+        // Get command
+        ComAutoCalSetCommand command = this.getCommandBySaveCondition(result.get(), context.getCommand());            
         
         // Convert to domain
         ComAutoCalSetting comAutoCalSetting = command.toDomain(companyId);
@@ -60,38 +60,38 @@ public class SaveComAutoCalSetCommandHandler extends CommandHandler<ComAutoCalSe
 	 * @param command the command
 	 * @return the command by save condition
 	 */
-	public ComAutoCalSetCommand getCommandBySaveCondition(ComAutoCalSetCommand command) {		
+	public ComAutoCalSetCommand getCommandBySaveCondition(ComAutoCalSetting oldValue, ComAutoCalSetCommand command) {		
 		// Check normal OT time
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getEarlyOtTime().getCalAtr()) {
-			command.getNormalOTTime().getEarlyOtTime().setUpLimitOtSet(null);
+			command.getNormalOTTime().getEarlyOtTime().setUpLimitOtSet(oldValue.getNormalOTTime().getEarlyOtTime().getUpLimitOtSet().value);
 		}
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getEarlyMidOtTime().getCalAtr()) {
-			command.getNormalOTTime().getEarlyMidOtTime().setUpLimitOtSet(null);
+			command.getNormalOTTime().getEarlyMidOtTime().setUpLimitOtSet(oldValue.getNormalOTTime().getEarlyMidOtTime().getUpLimitOtSet().value);
 		}
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getNormalOtTime().getCalAtr()) {
-			command.getNormalOTTime().getNormalOtTime().setUpLimitOtSet(null);
+			command.getNormalOTTime().getNormalOtTime().setUpLimitOtSet(oldValue.getNormalOTTime().getNormalOtTime().getUpLimitOtSet().value);
 		}
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getNormalMidOtTime().getCalAtr()) {
-			command.getNormalOTTime().getNormalMidOtTime().setUpLimitOtSet(null);
+			command.getNormalOTTime().getNormalMidOtTime().setUpLimitOtSet(oldValue.getNormalOTTime().getNormalMidOtTime().getUpLimitOtSet().value);
 		}
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getLegalOtTime().getCalAtr()) {
-			command.getNormalOTTime().getLegalOtTime().setUpLimitOtSet(null);
+			command.getNormalOTTime().getLegalOtTime().setUpLimitOtSet(oldValue.getNormalOTTime().getLegalOtTime().getUpLimitOtSet().value);
 		}
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getLegalMidOtTime().getCalAtr()) {
-			command.getNormalOTTime().getLegalMidOtTime().setUpLimitOtSet(null);
+			command.getNormalOTTime().getLegalMidOtTime().setUpLimitOtSet(oldValue.getNormalOTTime().getLegalMidOtTime().getUpLimitOtSet().value);
 		}
 		
 		// Check flex OT time	
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getFlexOTTime().getFlexOtTime().getCalAtr()) {
-			command.getFlexOTTime().getFlexOtTime().setUpLimitOtSet(null);
+			command.getFlexOTTime().getFlexOtTime().setUpLimitOtSet(oldValue.getFlexOTTime().getFlexOtTime().getUpLimitOtSet().value);
 		}
 		
 		// Check rest time
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getRestTime().getRestTime().getCalAtr()) {
-			command.getRestTime().getRestTime().setUpLimitOtSet(null);
+			command.getRestTime().getRestTime().setUpLimitOtSet(oldValue.getRestTime().getRestTime().getUpLimitOtSet().value);
 		}
 		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getRestTime().getLateNightTime().getCalAtr()) {
-			command.getRestTime().getLateNightTime().setUpLimitOtSet(null);
+			command.getRestTime().getLateNightTime().setUpLimitOtSet(oldValue.getRestTime().getLateNightTime().getUpLimitOtSet().value);
 		}
 		return command;
 	}

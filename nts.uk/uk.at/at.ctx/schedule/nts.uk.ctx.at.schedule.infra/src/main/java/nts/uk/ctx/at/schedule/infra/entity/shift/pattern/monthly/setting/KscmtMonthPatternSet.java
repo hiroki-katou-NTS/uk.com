@@ -6,16 +6,14 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscmtMonthPatternSet.
@@ -24,28 +22,25 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_MONTH_PATTERN_SET")
-public class KscmtMonthPatternSet extends JpaEntity implements Serializable {
+public class KscmtMonthPatternSet extends UkJpaEntity implements Serializable {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
     /** The sid. */
     @Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "SID")
     private String sid;
     
     /** The m pattern cd. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "M_PATTERN_CD")
     private String mPatternCd;
 
+    /**
+     * Instantiates a new kscmt month pattern set.
+     */
     public KscmtMonthPatternSet() {
-    }
-
-    public KscmtMonthPatternSet(String sid) {
-        this.sid = sid;
+    	super();
     }
 
 	/* (non-Javadoc)
@@ -68,6 +63,9 @@ public class KscmtMonthPatternSet extends JpaEntity implements Serializable {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaNumerical;
 
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -27,6 +31,11 @@ public class FormulaNumericalDto {
     /* 順番 */
     private int dispOrder;
 
+    /**
+     * FormulaNumericalDto
+     * @param domain
+     * @return
+     */
 	public static FormulaNumericalDto fromDomain(FormulaNumerical domain) {
 		return new FormulaNumericalDto(
 				domain.getCompanyId(),

@@ -18,7 +18,6 @@
 			
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="../_base/cmm011.base.js" />
-			<com:scriptfile path="cmm011.f.service.js" />
 			<com:scriptfile path="cmm011.f.vm.js" />
 			<com:scriptfile path="cmm011.f.start.js" />
 		</ui:define>
@@ -27,7 +26,7 @@
 		<ui:define name="content">
 			<div style="padding: 25px;">
 				<div style="margin-right: 30px;"
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_31',
+					data-bind="ntsFormLabel: {}">#{i18n.getText('CMM011_31',
 					['Com_Workplace'])}</div>
 				<span>#{i18n.getText('CMM011_32')}</span> <span
 					style="margin-right: 10px;" data-bind="text: workplaceCode"></span>

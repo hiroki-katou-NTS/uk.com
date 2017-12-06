@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -18,7 +18,7 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
 	
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00008";
 	}
 
@@ -29,12 +29,13 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateTemporaryAbsenceCommand> context) {
-		val command = context.getCommand();
+		/*val command = context.getCommand();
 		
-		TemporaryAbsence temporaryAbsence = TemporaryAbsence.createSimpleFromJavaType(command.getEmployeeId(), command.getTempAbsenceId(), command.getTempAbsenceType(), 
+		TempAbsenceHistory temporaryAbsence = TempAbsenceHistory.createSimpleFromJavaType(command.getEmployeeId(), command.getTempAbsenceId(), command.getTempAbsenceType(), 
 				command.getHistID(), command.getStartDate(), command.getEndDate(), command.getTempAbsenceReason(), command.getFamilyMemberId(), command.getBirthDate(), command.getMulPregnancySegment());
 		
-		temporaryAbsenceRepository.updateTemporaryAbsence(temporaryAbsence);
+		temporaryAbsenceRepository.updateTemporaryAbsence(temporaryAbsence);*/
+		// TODO 
 	}
 
 }

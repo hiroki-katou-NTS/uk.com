@@ -29,38 +29,38 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KMNMT_AFFI_EMP_HIST")
 public class KmnmtAffiliEmploymentHist extends UkJpaEntity implements Serializable {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 1L;
-    
-    /** The kmnmt employment hist PK. */
-    @EmbeddedId
-    protected KmnmtAffiliEmploymentHistPK kmnmtEmploymentHistPK;
-    
- 
-    
-    /** The end D. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "END_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate endD;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Instantiates a new kmnmt employment hist.
-     */
-    public KmnmtAffiliEmploymentHist() {
-    }
+	/** The kmnmt employment hist PK. */
+	@EmbeddedId
+	protected KmnmtAffiliEmploymentHistPK kmnmtEmploymentHistPK;
 
-    /**
-     * Instantiates a new kmnmt employment hist.
-     *
-     * @param kmnmtEmploymentHistPK the kmnmt employment hist PK
-     */
-    public KmnmtAffiliEmploymentHist(KmnmtAffiliEmploymentHistPK kmnmtEmploymentHistPK) {
-        this.kmnmtEmploymentHistPK = kmnmtEmploymentHistPK;
-    }
+	/** The end D. */
+	@Column(name = "END_D")
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate endD;
 
-	/* (non-Javadoc)
+	/**
+	 * Instantiates a new kmnmt employment hist.
+	 */
+	public KmnmtAffiliEmploymentHist() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new kmnmt employment hist.
+	 *
+	 * @param kmnmtEmploymentHistPK
+	 *            the kmnmt employment hist PK
+	 */
+	public KmnmtAffiliEmploymentHist(KmnmtAffiliEmploymentHistPK kmnmtEmploymentHistPK) {
+		this.kmnmtEmploymentHistPK = kmnmtEmploymentHistPK;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
@@ -68,5 +68,4 @@ public class KmnmtAffiliEmploymentHist extends UkJpaEntity implements Serializab
 		return this.getKmnmtEmploymentHistPK();
 	}
 
-    
 }

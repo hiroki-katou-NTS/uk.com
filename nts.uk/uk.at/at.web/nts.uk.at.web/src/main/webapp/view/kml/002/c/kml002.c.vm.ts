@@ -15,6 +15,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
         itemNameLabel: KnockoutObservable<String>;
         enableReturn: KnockoutObservable<boolean>;
         currentData: any;
+        tblHeigh: KnockoutObservable<number>;
         
         constructor() {
             var self = this;
@@ -55,6 +56,17 @@ module nts.uk.at.view.kml002.c.viewmodel {
             self.checked = ko.observable(true);
             self.enable = ko.observable(true);
             
+            if(data.unit == 1) {
+                self.catCode(1);
+                $('.cat-lbl').hide();
+                $('.categories').hide();
+                $('.cbx-checked').hide();
+            } else {
+                $('.cat-lbl').show();
+                $('.categories').show();
+                $('.cbx-checked').show();
+            }
+            
             var devChange = false;
             
             // Bind data to display on Dialog
@@ -68,23 +80,31 @@ module nts.uk.at.view.kml002.c.viewmodel {
             
             self.checked.subscribe(function(value) {
                 if(!devChange){
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_194" }).ifYes(() => { 
+                    if(self.rightItems().length > 0) {
+                        nts.uk.ui.dialog.confirm({ messageId: "Msg_194" }).ifYes(() => { 
+                            devChange = false;
+                            
+                            self.displayItemsRule(self.allItem(), self.catCode(), value);
+                            self.rightItems.removeAll();
+                            $("#treegridItems").ntsGridList('deselectAll');
+                        }).ifNo(() => { 
+                            devChange = true;
+                            
+                            if(value) {
+                                self.checked(false);
+                                return;
+                            } else {
+                                self.checked(true);
+                                return;
+                            }
+                        });
+                    } else {
                         devChange = false;
-                        
+                            
                         self.displayItemsRule(self.allItem(), self.catCode(), value);
                         self.rightItems.removeAll();
                         $("#treegridItems").ntsGridList('deselectAll');
-                    }).ifNo(() => { 
-                        devChange = true;
-                        
-                        if(value) {
-                            self.checked(false);
-                            return;
-                        } else {
-                            self.checked(true);
-                            return;
-                        }
-                    })
+                    }                              
                 }
                 
                 devChange = false;
@@ -92,9 +112,36 @@ module nts.uk.at.view.kml002.c.viewmodel {
             
             self.catCode.subscribe(function(value) {
                 if(!devChange){
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_193" }).ifYes(() => { 
+                    if(self.rightItems().length > 0) {
+                        nts.uk.ui.dialog.confirm({ messageId: "Msg_193" }).ifYes(() => { 
+                            devChange = false;
+                            
+                            if(value == 0) {
+                                self.enable(true);
+                                self.displayItemsRule(self.allItem(), value, self.checked());
+                                self.rightItems.removeAll();
+                            } else {
+                                self.enable(false);
+                                self.items(_.filter(self.allItem(), ['itemType', GrantPeriodicMethod.EXTERNAL]));
+                                self.rightItems.removeAll();
+                            }
+                            
+                            $("#treegridItems").ntsGridList('deselectAll');
+                        }).ifNo(() => { 
+                            devChange = true;
+                            
+                            if(value == 0) {
+                                self.catCode(1);
+                                self.enable(false);
+                                return;
+                            } else {
+                                self.catCode(0);
+                                return;
+                            }
+                        });
+                    } else {
                         devChange = false;
-                        
+                            
                         if(value == 0) {
                             self.enable(true);
                             self.displayItemsRule(self.allItem(), value, self.checked());
@@ -106,18 +153,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
                         }
                         
                         $("#treegridItems").ntsGridList('deselectAll');
-                    }).ifNo(() => { 
-                        devChange = true;
-                        
-                        if(value == 0) {
-                            self.catCode(1);
-                            self.enable(false);
-                            return;
-                        } else {
-                            self.catCode(0);
-                            return;
-                        }
-                    })
+                    }                    
                 }
                 
                 devChange = false;
@@ -185,7 +221,16 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 let items = _.sortBy(data, ['companyId', 'dispOrder']);
                 
                 _.forEach(items, function(item: service.BaseItemsDto) {
-                    var name = item.itemName + nts.uk.resource.getText("KML002_43");
+                    var name = "";
+                    
+                    if(item.itemType == 0) {
+                        name = item.itemName + nts.uk.resource.getText("KML002_42");
+                    } else if(item.itemType == 1) {
+                        name = item.itemName + nts.uk.resource.getText("KML002_43");
+                    } else if(item.itemType == 2) {
+                        name = item.itemName + nts.uk.resource.getText("KML002_44");
+                    }
+                    
                     temp.push(new ItemModel(item.id, name, item.itemType));
                 });
                 

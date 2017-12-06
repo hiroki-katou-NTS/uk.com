@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRoleRepository;
 import nts.uk.ctx.at.auth.pub.employmentrole.EmploymentRolePub;
 import nts.uk.ctx.at.auth.pub.employmentrole.EmploymentRolePubDto;
@@ -22,5 +21,4 @@ public class EmploymentRolePubImpl implements EmploymentRolePub {
 			return new EmploymentRolePubDto(item.getCompanyId(), item.getRoleId());
 		}).collect(Collectors.toList());
 	}
-
 }

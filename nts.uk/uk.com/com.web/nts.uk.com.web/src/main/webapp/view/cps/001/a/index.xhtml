@@ -136,7 +136,7 @@
 					<div class="top-right-area cf">
 						<div class="avatar-group">
 							<div class="active-panel" data-bind="click: chooseAvatar">
-								<img data-bind="attr: { src: _pers.avatar}" class="avatar" />
+								<img data-bind="attr: { src: _emp.avatar}" class="avatar" />
 							</div>
 						</div>
 						<div class="person-group">
@@ -213,8 +213,9 @@
 								}"></div>
 						</div>
 						<div class="category-input"
-							data-bind="css: { 'hidden': tabActive() != 'category'}">
-							<div class="title">category</div>
+							data-bind="let: { resource: titleResource() },
+									   css: { 'hidden': tabActive() != 'category'}">
+							<div class="title" data-bind="text: text(resource)"></div>
 							<div
 								data-bind="template: { 
 									name: 'cat-with-child', 

@@ -49,6 +49,7 @@ public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 	/** The working day atr. */
 	@Column(name = "WORKING_DAY_ATR")
 	public int workingDayAtr;
+	
 
 	@Override
 	protected Object getKey() {

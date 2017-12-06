@@ -238,7 +238,8 @@ module nts.uk.at.view.kdw001.f {
                 let self = this;
                 var param = {
                     nameClosure : _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }).closureName,
-                    empCalAndSumExecLogID : self.currentSelectedRow()
+                    empCalAndSumExecLogID : self.currentSelectedRow(),
+                    executedMenuName :  _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }).executedMenuName
                     
                 };
                 nts.uk.ui.windows.setShared("openI", param);
@@ -321,11 +322,7 @@ module nts.uk.at.view.kdw001.f {
                     this.executedMenuName = "詳細実行";
                 }
 
-                if (data.executedMenu == 0) {
-                    this.executedMenuJapan = "選択して実行";
-                } else {
-                    this.executedMenuJapan = "ケース別実行";
-                }
+                this.executedMenuJapan = data.executedMenuJapan;
                 this.executionDate = data.executionDate;
                 this.executionStatus = data.executionStatus;
                 this.executionStatusName = data.executionStatusName;

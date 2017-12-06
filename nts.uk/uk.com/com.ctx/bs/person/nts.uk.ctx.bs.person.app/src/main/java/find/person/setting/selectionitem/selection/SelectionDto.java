@@ -17,7 +17,6 @@ public class SelectionDto {
 	private String selectionName;
 	private String externalCD;
 	private String memoSelection;
-
 	public static SelectionDto fromDomainSelection(Selection domain) {
 		return new SelectionDto(domain.getSelectionID(), domain.getHistId(), domain.getExternalCD().v(),
 				domain.getSelectionName().v(), domain.getExternalCD().v(), domain.getMemoSelection().v());

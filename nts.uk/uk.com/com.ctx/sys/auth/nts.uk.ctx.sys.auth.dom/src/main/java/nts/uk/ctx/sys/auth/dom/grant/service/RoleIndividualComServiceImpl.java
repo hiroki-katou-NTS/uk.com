@@ -34,65 +34,13 @@ public class RoleIndividualComServiceImpl implements RoleIndividualComService {
 	private PersonAdapter personAdapter;
 
 	@Override
-	public boolean isExist(String userID, String companyID, RoleType roleType) {
-		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepo.findRoleIndividualGrant(userID, companyID, roleType);
-		return roleIndividualGrant.isPresent();
+	public List<RoleIndividualGrant> selectByRoleType(int roleType) {
+		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByRoleType(roleType);
+		List<String> listUserID = listRoleIndividualGrant.stream().map(c-> c.getUserId()).collect(Collectors.toList());
+		List<User> listUser = userRepo.getByListUser(listUserID);
+		
+		//List<PersonImport> listPerson = personAdapter.findByPersonIds(listAssPersonID);
+		return listRoleIndividualGrant;
 	}
-
-	@Override
-	public void create(RoleIndividualGrant roleIndividualGrant) {
-		// Check exist UserID
-		if (roleIndividualGrant.getUserId() == null) {
-			throw new BusinessException("Msg_218");
-		}
-		// check Exist roleIndividualGrant
-		if (!isExist(roleIndividualGrant.getUserId(), roleIndividualGrant.getCompanyId(), roleIndividualGrant.getRoleType())) {
-			throw new BusinessException("Msg_716");
-		}
-		// Create RoleIndividualGrant
-		roleIndividualGrantRepo.add(roleIndividualGrant);
-	}
-
-	@Override
-	public void update(RoleIndividualGrant roleIndividualGrant) {
-		if (roleIndividualGrant.getUserId() == null) {
-			throw new BusinessException("Msg_218");
-		}
-		// Update RoleIndividualGrant
-		roleIndividualGrantRepo.update(roleIndividualGrant);
-	}
-
-	@Override
-	public void remove(String userID, String companyID, RoleType roleType) {
-		// Remove RoleIndividualGrant
-		roleIndividualGrantRepo.remove(userID, companyID, roleType);
-	}
-
-	/*
-	 * @Override public searchRoleIndividualGrant(String companyID, int
-	 * roleType) { //Get ListRole List<Role> listRole =
-	 * roleRepo.findByType(companyID, roleType); List<String> listRoleID =
-	 * listRole.stream().map(c -> c.getRoleId()).collect(Collectors.toList());
-	 * // Get RoleIndividualGrant by roleID companyID List<RoleIndividualGrant>
-	 * listRoleIndividualGrant =
-	 * roleIndividualGrantRepo.findBycomIDandRoldID(companyID, listRoleID);
-	 * List<String> listUserId = listRoleIndividualGrant.stream().map(c ->
-	 * c.getUserId()).collect(Collectors.toList()); // Get User by userID
-	 * 
-	 * List<User> listUser = userRepo.getByListUser(listUserId); List<String>
-	 * listAssPersonID =listUser.stream().map(c
-	 * ->c.getAssociatedPersonID()).collect(Collectors.toList());
-	 * 
-	 * if(listAssPersonID!= null){ //listAssPersonID = personIds
-	 * List<PersonImport> listPerson =
-	 * personAdapter.findByPersonIds(listUserId); if(listPerson!=null){
-	 * //ドメインモデル「ロール個人別付与」を取得する //Acquire domain model "Role individual grant"
-	 * // List <RoleIndividualGrant> 1listRoleIndividualGrant =
-	 * roleIndividualGrantRepo.find(listUserId, listRoleID, companyID); } }
-	 * 
-	 * 
-	 * 
-	 * }
-	 */
 
 }

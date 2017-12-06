@@ -10,8 +10,22 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../a1/kmk003.a1.vm.js" />
 			<com:stylefile path="../a1/kmk003.a1.style.css" />
+			<com:scriptfile path="../a2/kmk003.a2.vm.js" />
+			<com:stylefile path="../a2/kmk003.a2.style.css" />
+			<com:scriptfile path="../a3/kmk003.a3.vm.js" />
+			<com:stylefile path="../a3/kmk003.a3.style.css" />
 			<com:scriptfile path="../a4/kmk003.a4.vm.js" />
 			<com:stylefile path="../a4/kmk003.a4.style.css" />
+			<com:scriptfile path="../a5/kmk003.a5.vm.js" />
+			<com:stylefile path="../a5/kmk003.a5.style.css" />
+			<com:scriptfile path="../a6/kmk003.a6.vm.js" />
+			<com:stylefile path="../a6/kmk003.a6.style.css" />
+			<com:scriptfile path="../a7/kmk003.a7.vm.js" />
+			<com:stylefile path="../a7/kmk003.a7.style.css" />
+			<com:scriptfile path="../a8/kmk003.a8.vm.js" />
+			<com:stylefile path="../a8/kmk003.a8.style.css" />
+			<com:scriptfile path="/view/kmk/003/base/fixtable/fixtable.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
 			
 			<com:stylefile path="kmk003.a.style.css" />
 			<com:scriptfile path="kmk003.a.start.js" />
@@ -29,96 +43,119 @@
 				data-bind="visible: true">
 				<table>
 					<tr>
-						<td class="screen-content-left"><div
-								class="caret-left-width caret-right caret-background bg-green">
+						<td class="screen-content-left">
+							<div class="caret-left-width caret-right caret-background bg-green">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-							options: workFormOptions,
-							optionsValue: 'code',
-							visibleItemsCount: 3,
-							value: selectedWorkForm,
-							optionsText: 'name',
-							editable: false,
-							enable: true,
-							columns: [
-								{ prop: 'name', length: 10 },
-							]}"></div>
+									options: workFormOptions,
+									optionsValue: 'code',
+									visibleItemsCount: 3,
+									value: selectedWorkForm,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+									{ prop: 'name', length: 10 },]}">
+								</div>
 								<br />
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
-								<div id="combo-box"
+								<div id="combo-box" 
 									data-bind="ntsComboBox: {
-							options: settingMethodOptions,
-							optionsValue: 'code',
-							visibleItemsCount: 3,
-							value: selectedSettingMethod,
-							optionsText: 'name',
-							editable: false,
-							enable: true,
-							columns: [
-								{ prop: 'name', length: 6 },
-							]}"></div>
+									options: settingMethodOptions,
+									optionsValue: 'code',
+									visibleItemsCount: 3,
+									value: selectedSettingMethod,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+									{ prop: 'name', length: 6 },]}">
+								</div>
 								<br />
 								<div class="checkbox_display"
-									data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMK003_9')}</div>
+									data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMK003_9')}
+								</div>
 								<div style="width: 300px"
-									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
-									items: workTimezoneItems,  selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', 
+									comId: 'single-list', items: workTimezoneItems,  selectedKey: 'code', 
+									fields: ['name', 'code'], mode: 'igGrid'}">
+								</div>
 								<table id="single-list"
 									data-bind="ntsGridList: {
-										height: 320,
-										options: workTimezoneItems,
-										optionsValue: 'code',
-										columns: columns,
-										multiple: false,
-										value: selectedWorkTimezone
-									}"></table>
-							</div></td>
+									height: 320,
+									options: workTimezoneItems,
+									optionsValue: 'code',
+									columns: columns,
+									multiple: false,
+									value: selectedWorkTimezone
+									}">
+								</table>
+							</div>
+						</td>
 						<td class="screen-content-right">
 							<table>
 								<tr>
-									<td class="td-cell" colspan="2"><div style="width: 100px;"
-											data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KMK003_13')}</div></td>
-									<td class="td-cell"><input
-										data-bind="ntsTextEditor: {
-										value: siftCode,
-										constraint: '',
-										option: siftCodeOption,
-										required: true,
-										enable: isUpdateMode
-										}" /></td>
-									<td class="td-cell"><input
-										data-bind="ntsTextEditor: {
-										value: siftName,
-										constraint: '',
-										option: siftNameOption,
-										required: true,
-										enable: true
-										}" /></td>
+									<td class="td-cell" colspan="2">
+										<div style="width: 100px;"
+											data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KMK003_13')}
+										</div>
+									</td>
+									<td class="td-cell">
+										<input data-bind="ntsTextEditor: {
+											value: siftCode,
+											constraint: '',
+											option: siftCodeOption,
+											required: true,
+											enable: isUpdateMode}">
+										</input>
+									</td>
+									<td class="td-cell">
+										<input data-bind="ntsTextEditor: {
+											value: siftName,
+											constraint: '',
+											option: siftNameOption,
+											required: true,
+											enable: true
+											}">
+										</input>
+									</td>
 									<td></td>
 									<td class="td-cell">
-										<div style="width: 100px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_14')}</div>
+										<div style="width: 100px;" 
+											data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_14')}
+										</div>
 									</td>
-									<td class="td-cell"><input
-										data-bind="ntsTextEditor: {
-										value: siftShortName,
-										constraint: '',
-										option: siftShortNameOption,
-										required: true,
-										enable: true
-										}" /></td>
-									<td class="td-cell"><div style="width: 100px;"
-											data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_15')}</div></td>
-									<td class="td-cell"><input
-										data-bind="ntsTextEditor: {
-										value: siftSymbolName,
-										constraint: '',
-										option: siftSymbolNameOption,
-										required: true,
-										enable: true
-										}" /></td>
-									<td class="td-cell"><div style="width: 100px;"
-											data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMK003_16')}</div></td>
+									<td class="td-cell">
+										<input
+											data-bind="ntsTextEditor: {
+											value: siftShortName,
+											constraint: '',
+											option: siftShortNameOption,
+											required: true,
+											enable: true
+											}" />
+									</td>
+									<td class="td-cell">
+										<div style="width: 100px;"
+											data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_15')}
+										</div>
+									</td>
+									<td class="td-cell">
+										<input
+											data-bind="ntsTextEditor: {
+											value: siftSymbolName,
+											constraint: '',
+											option: siftSymbolNameOption,
+											required: true,
+											enable: true
+											}" />
+									</td>
+									<td class="td-cell">
+										<div style="width: 100px;"
+											data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMK003_16')}
+										</div>
+									</td>
 									<td class="td-cell">
 										<div id="colorpicker"
 											data-bind="ntsColorPicker: {value: pickColor, enable: true, width: 50}" />
@@ -130,106 +167,141 @@
 									<td colspan="2" class="td-cell">
 										<div id="combo-box"
 											data-bind="ntsComboBox: {
-												options: workFormOptions,
-												optionsValue: 'code',
-												visibleItemsCount: 3,
-												value: selectedWorkForm,
-												optionsText: 'name',
-												editable: false,
-												enable: true,
-												columns: [
-													{ prop: 'name', length: 10 },
-												]}"></div>
+											options: workFormOptions,
+											optionsValue: 'code',
+											visibleItemsCount: 3,
+											value: selectedWorkForm,
+											optionsText: 'name',
+											editable: false,
+											enable: true,
+											columns: [
+											{ prop: 'name', length: 10 },]}">
+										</div>
 									</td>
-									<td class="td-cell"><div style="width: 100px;"
-											data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div></td>
+									<td class="td-cell">
+										<div style="width: 100px;"
+											data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}
+										</div>
+									</td>
 									<td class="td-cell">
 										<div id="combo-box"
 											data-bind="ntsComboBox: {
-												options: settingMethodOptions,
-												optionsValue: 'code',
-												visibleItemsCount: 3,
-												value: selectedSettingMethod,
-												optionsText: 'name',
-												editable: false,
-												enable: true,
-												columns: [
-													{ prop: 'name', length: 6 },
-												]}"></div>
+											options: settingMethodOptions,
+											optionsValue: 'code',
+											visibleItemsCount: 3,
+											value: selectedSettingMethod,
+											optionsText: 'name',
+											editable: false,
+											enable: true,
+											columns: [{ prop: 'name', length: 6 },]}">
+										</div>
 									</td>
 								</tr>
 								<tr>
-									<td colspan="2" class="td-cell"><div style="width: 100px;"
-											data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_162')}</div></td>
-									<td class="td-cell"><input class="memo-field"
-										data-bind="ntsTextEditor: {
-										value: siftRemark,
-										constraint: '',
-										option: siftRemarkOption,
-										required: false,
-										enable: true
-										}" /></td>
-									<td class="td-cell"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_183')}</div></td>
-									<td class="td-cell"><input class="memo-field"
-										data-bind="ntsTextEditor: {
-										value: memo,
-										constraint: '',
-										option: memoOption,
-										required: false,
-										enable: true
-										}" /></td>
+									<td colspan="2" class="td-cell">
+										<div style="width: 100px;"
+											data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_162')}
+										</div>
+									</td>
+									<td class="td-cell">
+										<input class="memo-field"
+											data-bind="ntsTextEditor: {
+											value: siftRemark,
+											constraint: '',
+											option: siftRemarkOption,
+											required: false,
+											enable: true
+											}" />
+									</td>
+									<td class="td-cell">
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_183')}
+										</div>
+									</td>
+									<td class="td-cell">
+										<input class="memo-field"
+											data-bind="ntsTextEditor: {
+											value: memo,
+											constraint: '',
+											option: memoOption,
+											required: false,
+											enable: true
+											}" />
+									</td>
 									<td></td>
 									<td></td>
 								</tr>
 								<tr>
-									<td colspan="2" class="td-cell"><div class="cf"
+									<td colspan="2" class="td-cell">
+										<div class="cf"
 											data-bind="ntsSwitchButton: {
-												options: tabModeOptions,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: tabMode,
-												enable: true }"></div>
+											options: tabModeOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: tabMode,
+											enable: true }">
+										</div>
 									</td>
-									<td class="td-cell"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div></td>
-									<td colspan="2" class="td-cell"><div class="cf"
+									<td class="td-cell">
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
+									</td>
+									<td colspan="2" class="td-cell">
+										<div class="cf"
 											data-bind="ntsSwitchButton: {
-												options: useHalfDayOptions,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: useHalfDay,
-												enable: true }"></div>
+											options: useHalfDayOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: useHalfDay,
+											enable: true }">
+										</div>
 									</td>
 								</tr>
 								<!-- panels -->
 								<tr>
 									<td colspan="10" class="td-cell">
 										<div id="tab-panel"
-											data-bind="ntsTabPanel: {width:300, dataSource: tabs, active: selectedTab,direction: 'vertical' }">
+											data-bind="ntsTabPanel: {width:300, dataSource: tabs, 
+											active: selectedTab,direction: 'vertical' }">
 											<div class="tab-a1">
-												<div
-													data-bind="ntsKMK003A1: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod, workTimeCode: siftCode, saveAction: isClickSave}"></div>
+												<div data-bind="ntsKMK003A1: {data: data, screenMode:tabMode, 
+													settingMethod:selectedSettingMethod, workTimeCode: siftCode, 
+													saveAction: isClickSave}">
+												</div>
 											</div>
 											<div class="tab-a2">
-												<span>Tab Content 2</span><br />
+												<div data-bind="ntsKMK003A2: {data: data, settingMethod: selectedSettingMethod,
+													 settingTab: selectedTab}">
+												</div>
 											</div>
 											<div class="tab-a3">
-												<span>Tab Content 1</span><br />
+												<div data-bind="ntsKMK003A3: {data: data, settingMethod: selectedSettingMethod,
+													 settingTab: selectedTab, settingWorkFrom: selectedWorkForm}">
+												</div>
 											</div>
 											<div class="tab-a4">
-												<div
-													data-bind="ntsKMK003A4: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod,workTimeCode: siftCode}"></div>
+												<div data-bind="ntsKMK003A4: {data: data, screenMode:tabMode, 
+													settingMethod:selectedSettingMethod, workTimeCode: siftCode}">
+												</div>
 											</div>
 											<div class="tab-a5">
-												<span>Tab Content 1</span><br />
+												<div data-bind="ntsKMK003A5: {data: data, screenMode: tabMode(), 
+													settingMethod: selectedSettingMethod,
+													settingWorkFrom: selectedWorkForm }">
+												</div>
 											</div>
 											<div class="tab-a6">
-												<span>Tab Content 2</span><br />
+												<div data-bind="ntsKMK003A6: {data: data, settingMethod: selectedSettingMethod,
+													 settingTab: selectedTab}">
+												</div>
 											</div>
 											<div class="tab-a7">
-												<span>Tab Content 1</span><br />
+												<div data-bind="ntsKMK003A7: {data: data, screenMode:tabMode, 
+													settingMethod:selectedSettingMethod, workTimeCode: siftCode, 
+													saveAction: isClickSave}">
+												</div>
 											</div>
 											<div class="tab-a8">
-												<span>Tab Content 2</span><br />
+												<div data-bind="ntsKMK003A8: {data: data}">
+												</div>
 											</div>
 											<div class="tab-a9">
 												<span>Tab Content 1</span><br />

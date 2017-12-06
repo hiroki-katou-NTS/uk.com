@@ -88,6 +88,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkI
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInformationDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 /**
  * @author hungnm
  *
@@ -124,7 +125,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshstControlOfAttendanceItems c WHERE c.kshstControlOfAttendanceItemsPK.attandanceTimeId IN :lstItem";
 
 	private final static String SEL_DP_ERROR_EMPLOYEE;
-	
+
 	private final static String SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS;
 
 	private final static String SEL_ERROR_SETTING;
@@ -134,17 +135,17 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_EMPLOYMENT_HISTORY;
 
 	private final static String SEL_DAILY_REC_EDIT_SET;
-	
+
 	private final static String SEL_FIND_WORK_FIXED;
-	
+
 	private final static String SEL_AUTHOR_DAILY_ITEM;
-	
+
 	private final static String SEL_DAILY_PERFORMACE_DISPLAY;
-	
+
 	private final static String SEL_AUTHOR_FORM_SHEET;
-	
+
 	private final static String SEL_DIVERGENCE_REASON;
-	
+
 	private final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
 
 	static {
@@ -247,14 +248,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE e.krcdtSyainDpErListPK.processingDate IN :lstDate ");
 		builderString.append("AND e.krcdtSyainDpErListPK.employeeId IN :lstEmployee");
 		SEL_DP_ERROR_EMPLOYEE = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
 		builderString.append("WHERE e.krcdtSyainDpErListPK.processingDate IN :lstDate ");
 		builderString.append("AND e.krcdtSyainDpErListPK.employeeId IN :lstEmployee ");
 		builderString.append("AND e.krcdtSyainDpErListPK.errorCode IN :errorCodes");
 		SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT s FROM KwrmtErAlWorkRecord s");
 		builderString.append(" WHERE s.kwrmtErAlWorkRecordPK.companyId = :companyId ");
@@ -280,7 +281,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd IN :ymds ");
 		SEL_DAILY_REC_EDIT_SET = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcstWorkFixed a ");
@@ -288,14 +289,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("AND a.krcstWorkFixedPK.cid = :cid ");
 		builderString.append("AND a.processYm = :yearMonth ");
 		SEL_FIND_WORK_FIXED = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KfnmtAuthorityDailyItem a ");
 		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
-		builderString.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode IN :dailyPerformanceFormatCodes ");
+		builderString
+				.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode IN :dailyPerformanceFormatCodes ");
 		SEL_AUTHOR_DAILY_ITEM = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KfnmtDailyPerformanceDisplay a ");
@@ -306,11 +308,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("SELECT a ");
 		builderString.append("FROM KfnmtAuthorityFormSheet a ");
 		builderString.append("WHERE a.kfnmtAuthorityFormSheetPK.companyId = :companyId ");
-		builderString.append("AND a.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode IN :dailyPerformanceFormatCode ");
+		builderString
+				.append("AND a.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode IN :dailyPerformanceFormatCode ");
 		builderString.append("AND a.kfnmtAuthorityFormSheetPK.sheetNo IN :sheetNo ");
 		builderString.append("ORDER BY a.kfnmtAuthorityFormSheetPK.sheetNo ASC");
 		SEL_AUTHOR_FORM_SHEET = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KmkmtDivergenceReason a ");
@@ -499,7 +502,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
 				.setParameter("lstItem", lstAttendanceItem).getList().stream().map(c -> {
 					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.attandanceTimeId.intValue(),
-							c.inputUnitOfTimeItem.intValue(), c.headerBackgroundColorOfDailyPerformance,
+							c.inputUnitOfTimeItem != null ? c.inputUnitOfTimeItem.intValue() : null,
+							c.headerBackgroundColorOfDailyPerformance != null
+									? c.headerBackgroundColorOfDailyPerformance : "",
 							c.nameLineFeedPosition.intValue());
 				}).collect(Collectors.toList());
 	}
@@ -514,14 +519,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 							e.errorCancelable.intValue() == 1 ? true : false);
 				}).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String> errorCodes) {
 		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee)
-				.setParameter("errorCodes", errorCodes)
-				.getList()
-				.stream().map(e -> {
+				.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
 					return new DPErrorDto(e.krcdtSyainDpErListPK.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
 							e.krcdtSyainDpErListPK.processingDate, e.attendanceItemId.intValue(),
 							e.errorCancelable.intValue() == 1 ? true : false);
@@ -599,8 +602,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 						EnumAdaptor.valueOf(c.goStraightAttribute, NotUseAttributeDto.class),
 						EnumAdaptor.valueOf(c.backStraightAttribute, NotUseAttributeDto.class),
 						c.krcdtDaiPerWorkInfoPK.ymd,
-						c.scheduleTimes.isEmpty() ? null : c.scheduleTimes.stream().map(s -> new ScheduleTimeSheetDto(s.krcdtWorkScheduleTimePK.workNo,
-								s.attendance, s.leaveWork)).collect(Collectors.toList())));
+						c.scheduleTimes.isEmpty() ? null
+								: c.scheduleTimes.stream()
+										.map(s -> new ScheduleTimeSheetDto(s.krcdtWorkScheduleTimePK.workNo,
+												s.attendance, s.leaveWork))
+										.collect(Collectors.toList())));
 	}
 
 	@Override
@@ -616,7 +622,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.setParameter("yearMonth", yearMonth)
 				.getSingle(w -> new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
 						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid()));
-		return workOp.isPresent() ? workOp : Optional.empty() ;
+		return workOp.isPresent() ? workOp : Optional.empty();
 	}
 
 	@Override
@@ -643,18 +649,20 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_AUTHOR_DAILY_ITEM, KfnmtAuthorityDailyItem.class)
 				.setParameter("companyId", companyId).setParameter("dailyPerformanceFormatCodes", formatCodes)
 				.getList(f -> new AuthorityFomatDailyDto(f.kfnmtAuthorityDailyItemPK.companyId,
-														f.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode,
-														f.kfnmtAuthorityDailyItemPK.attendanceItemId, f.kfnmtAuthorityDailyItemPK.sheetNo,
-														f.displayOrder, f.columnWidth));
+						f.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode,
+						f.kfnmtAuthorityDailyItemPK.attendanceItemId, f.kfnmtAuthorityDailyItemPK.sheetNo,
+						f.displayOrder, f.columnWidth));
 	}
 
 	@Override
-	public List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode, List<BigDecimal>sheetNo) {
-		return this.queryProxy().query(SEL_AUTHOR_FORM_SHEET, KfnmtAuthorityFormSheet.class).setParameter("companyId", companyId)
-				.setParameter("dailyPerformanceFormatCode",formatCode).setParameter("sheetNo", sheetNo)
+	public List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,
+			List<BigDecimal> sheetNo) {
+		return this.queryProxy().query(SEL_AUTHOR_FORM_SHEET, KfnmtAuthorityFormSheet.class)
+				.setParameter("companyId", companyId).setParameter("dailyPerformanceFormatCode", formatCode)
+				.setParameter("sheetNo", sheetNo)
 				.getList(f -> new AuthorityFormatSheetDto(f.kfnmtAuthorityFormSheetPK.companyId,
-						f.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode,
-						f.kfnmtAuthorityFormSheetPK.sheetNo, f.sheetName));
+						f.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode, f.kfnmtAuthorityFormSheetPK.sheetNo,
+						f.sheetName));
 	}
 
 	@Override
@@ -672,9 +680,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId) {
 		return this.queryProxy().query(SEL_DIVERGENCE_REASON, KmkmtDivergenceReason.class)
-				                .setParameter("companyId", companyId)
-				                .setParameter("divTimeId", divTimeId)
-				                .getList(x -> new ReasonCodeName(x.kmkmtDivergenceReasonPK.divReasonCode, x.divReason));
+				.setParameter("companyId", companyId).setParameter("divTimeId", divTimeId)
+				.getList(x -> new ReasonCodeName(x.kmkmtDivergenceReasonPK.divReasonCode, x.divReason));
 	}
 
 	@Override

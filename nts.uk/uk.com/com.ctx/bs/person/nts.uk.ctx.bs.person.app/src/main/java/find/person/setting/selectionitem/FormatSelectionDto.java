@@ -9,12 +9,9 @@ public class FormatSelectionDto {
 	private int selectionCodeCharacter;
 	private int selectionName;
 	private int selectionExternalCode;
-	
+
 	public static FormatSelectionDto fromDomain(FormatSelection domain) {
-		return new FormatSelectionDto(
-				domain.getSelectionCode().v(),
-				domain.getSelectionCodeCharacter().value,
-				domain.getSelectionName().v(),
-				domain.getSelectionExternalCode().v());
+		return new FormatSelectionDto(domain.getSelectionCode().v(), domain.getSelectionCodeCharacter().value,
+				domain.getSelectionName().v(), domain.getSelectionExternalCode().v());
 	}
 }

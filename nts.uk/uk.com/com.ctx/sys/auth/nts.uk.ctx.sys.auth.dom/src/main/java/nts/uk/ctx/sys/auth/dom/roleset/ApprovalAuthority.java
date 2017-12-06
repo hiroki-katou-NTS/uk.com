@@ -9,13 +9,12 @@ import nts.arc.primitive.constraint.IntegerRange;
 /**
  * 承認権限 - Enum ApprovalAuthority
  * @author HieuNV
- *
  */
 @AllArgsConstructor
 @IntegerRange(max = 1, min = 0)
 public enum ApprovalAuthority {
-	HasRight(1),
-	HasntRight(0);
-	
-	public final int value;
+    HasRight(1),
+    HasntRight(0);
+
+    public final int value;
 }

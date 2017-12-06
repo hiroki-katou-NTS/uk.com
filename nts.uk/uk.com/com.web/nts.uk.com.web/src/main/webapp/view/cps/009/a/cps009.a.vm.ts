@@ -17,7 +17,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         initValSettingLst: KnockoutObservableArray<any> = ko.observableArray([]);
         initValueList: KnockoutObservableArray<any> = ko.observableArray([]);
         initSettingId: KnockoutObservable<string> = ko.observable('');
-        ctgColums: KnockoutObservableArray<any>;
+        settingColums: KnockoutObservableArray<any>;
         itemValueLst: KnockoutObservableArray<any>;
         selectionColumns: any;
         currentCategory: KnockoutObservable<InitValueSettingDetail>;
@@ -27,6 +27,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         //History reference date
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
         lstItemFilter: Array<any> = [];
+        ctgIdUpdate: KnockoutObservable<boolean> = ko.observable(false);
+        currentItemId: KnockoutObservable<string> = ko.observable('');
         constructor() {
 
             let self = this;
@@ -34,8 +36,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.initValue();
             self.start(undefined);
             self.initSettingId.subscribe(function(value: string) {
-                $('#ctgName').focus();
+
                 nts.uk.ui.errors.clearAll();
+                self.currentCategory().ctgList.removeAll();
                 if (value) {
                     service.getAllCtg(value).done((data: any) => {
                         self.currentCategory().setData({
@@ -43,26 +46,43 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             settingName: data.settingName,
                             ctgList: data.ctgList
                         });
-                        self.currentCategory.valueHasMutated();
-                    });
-                    if (self.currentCategory().currentItemId() === undefined || self.currentCategory().currentItemId() === "") {
-                        return;
-                    } else {
-                        self.getItemList(value, self.currentCategory().currentItemId());
-                    }
+                        if (!self.ctgIdUpdate()) {
+                            //perInfoCtgId
+                            if (data.ctgList.length > 0) {
+                                self.currentItemId(data.ctgList[0].perInfoCtgId);
+                            } else {
+                                self.currentItemId(undefined);
+                            }
+                        }
+                        else {
+                            self.ctgIdUpdate(false);
+                        }
+
+                        self.getItemList(value, self.currentItemId());
+                    })
+
+
                 } else {
 
                     return;
                 }
+
+                $('#ctgName').focus();
+
             });
 
-            self.currentCategory().currentItemId.subscribe(function(value: string) {
+            self.currentItemId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
+
                 if (value) {
+
                     self.getItemList(self.initSettingId(), value);
+
+
                 } else {
                     return;
                 }
+
             });
 
 
@@ -77,6 +97,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
                         primitiveConst(obj);
                         return new PerInfoInitValueSettingItemDto({
+                            fixedItem: obj.fixedItem,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             settingId: obj.settingId,
                             perInfoCtgId: obj.perInfoCtgId,
@@ -104,28 +125,29 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timepointItemMax: obj.timepointItemMax,
                             dateWithDay: obj.intValue,
                             numericItemMin: obj.numericItemMin,
-                            numericItemMax: obj.numericItemMax
+                            numericItemMax: obj.numericItemMax,
+                            stringItemType: obj.stringItemType,
+                            stringItemLength: obj.stringItemLength,
+                            stringItemDataType: obj.stringItemDataType
                         });
                     });
 
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
-                    self.currentCategory().itemList.valueHasMutated();
                     self.lstItemFilter = itemConvert;
                 } else {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList([]);
-                    self.currentCategory().itemList.valueHasMutated();
 
                 }
-            });
-            self.currentCategory().itemList.valueHasMutated();
+            })
         }
 
         start(id: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             service.getAll().done((data: Array<IPerInfoInitValueSettingDto>) => {
+                self.ctgIdUpdate(false);
                 if (data.length > 0) {
                     self.isUpdate = true;
                     self.initValSettingLst.removeAll();
@@ -143,21 +165,25 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 } else {
                     self.isUpdate = false;
                     self.openDDialog();
-                    self.refresh();
+                    self.refresh(undefined);
 
                 }
             });
             return dfd.promise();
         }
 
-        refresh() {
+        refresh(id: string) {
             let self = this;
 
             service.getAll().done((data: Array<any>) => {
                 self.initValSettingLst.removeAll();
                 self.initValSettingLst(data);
                 if (self.initValSettingLst().length > 0) {
-                    self.initSettingId(self.initValSettingLst()[0].settingId);
+                    if (id === undefined) {
+                        self.initSettingId(self.initValSettingLst()[0].settingId);
+                    } else {
+                        self.initSettingId(id);
+                    }
                 } else {
                     self.initSettingId("");
 
@@ -169,10 +195,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
         initValue() {
             let self = this;
 
-            self.ctgColums = ko.observableArray([
+            self.settingColums = ko.observableArray([
                 { headerText: 'settingId', key: 'settingId', width: 100, hidden: true },
                 { headerText: text('CPS009_10'), key: 'settingCode', width: 80 },
-                { headerText: text('CPS006_11'), key: 'settingName', width: 160 }
+                { headerText: text('CPS009_11'), key: 'settingName', width: 160 }
             ]);
 
             self.itemValueLst = ko.observableArray([
@@ -198,14 +224,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // thiet lap item hang loat
         openBDialog() {
-            let self = this;
-            let ctgCurrent = self.findCtg(self.currentCategory().ctgList(), self.currentCategory().currentItemId());
-            let params = {
-                settingId: self.initSettingId(),
-                ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
-                categoryId: self.currentCategory().currentItemId()
-            };
-
+            let self = this,
+                ctgCurrent = self.findCtg(self.currentCategory().ctgList(), self.currentItemId()),
+                params = {
+                    settingId: self.initSettingId(),
+                    ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
+                    categoryId: self.currentItemId()
+                };
+            self.ctgIdUpdate(false);
             setShared('CPS009B_PARAMS', params);
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
@@ -244,14 +270,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     settingCode: ko.toJS(self.currentCategory().settingCode),
                     settingName: ko.toJS(self.currentCategory().settingName)
                 };
-
+            self.ctgIdUpdate(false);
             setShared('CPS009C_PARAMS', params);
 
             block.invisible();
 
             modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
-               $('#ctgName').focus();
-                self.start(params.settingId);
+                $('#ctgName').focus();
+                let initSetId: string = getShared('CPS009C_COPY');
+                self.refresh(initSetId);
                 block.clear();
             });
 
@@ -261,14 +288,20 @@ module nts.uk.com.view.cps009.a.viewmodel {
         openDDialog() {
 
             let self = this;
-
-            //setShared('categoryInfo', self.currentCategory());
-
+            self.ctgIdUpdate(false);
+            self.currentCategory().setData({
+                settingCode: "",
+                settingName: "",
+                ctgList: []
+            });
+            self.currentCategory().itemList.removeAll();
+            self.currentCategory().itemList([]);
+            self.currentCategory.valueHasMutated();
             block.invisible();
 
             modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
-                $('#ctgName').focus();
-                self.start(undefined);
+                let id: string = getShared('CPS009D_PARAMS');
+                self.refresh(id);
                 block.clear();
             });
 
@@ -283,6 +316,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     settingId: self.initSettingId(),
                     settingCode: self.currentCategory().settingCode()
                 };
+            self.ctgIdUpdate(false);
             block.invisible();
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.deleteInitVal(objDelete).done(function(data) {
@@ -319,11 +353,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // cap nhat init value
         update() {
             let self = this,
-                currentCtg = self.findCtg(self.currentCategory().ctgList(), self.currentCategory().currentItemId()),
+                currentCtg = self.findCtg(self.currentCategory().ctgList(), self.currentItemId()),
                 updateObj = {
                     settingId: self.initSettingId(),
                     settingName: self.currentCategory().settingName(),
-                    perInfoCtgId: self.currentCategory().currentItemId(),
+                    perInfoCtgId: self.currentItemId(),
                     isSetting: currentCtg.setting,
                     itemLst: _.map(ko.toJS(self.currentCategory().itemList()), function(obj: PerInfoInitValueSettingItemDto) {
                         return {
@@ -344,20 +378,19 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             selectionId: obj.selectedCode,
                             numberValue: obj.numbereditor.value,
                             dateType: obj.dateType,
-                            time: obj.dateWithDay,
-                            isRequired : obj.isRequired
+                            time: obj.dateWithDay
 
                         };
                     })
                 },
-                dateInputList = $(".contents-data").find('tbody').find('tr').find('#date'),
+                dateInputList = $(".table-container").find('tbody').find('tr').find('#date'),
                 itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item: PerInfoInitValueSettingItemDto) {
                     return item.dataType === 3 && item.selectedRuleCode === 2;
                 });
             if (dateInputList.length > 0) {
                 let i: number = 0;
                 _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
-                    let $input1 = $(".contents-data").find('tbody').find('tr').find('#date')[i];
+                    let $input1 = $(".table-container").find('tbody').find('tr').find('#date')[i];
                     $input1.setAttribute("nameid", item.itemName);
                     i++;
                 });
@@ -366,16 +399,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
             service.update(updateObj).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                     $('#ctgName').focus();
+                    $('#ctgName').focus();
+
                     self.initSettingId("");
                     self.initSettingId(updateObj.settingId);
-                    self.initSettingId.valueHasMutated();
-                    self.currentCategory().currentItemId("");
-                    self.currentCategory().currentItemId(updateObj.perInfoCtgId);
-                    self.currentCategory().currentItemId.valueHasMutated();
-                    self.getItemList(updateObj.settingId, updateObj.perInfoCtgId);
+                    self.currentItemId("");
+                    self.currentItemId(updateObj.perInfoCtgId);
+                    self.ctgIdUpdate(true);
                 });
-
+                self.currentItemId(updateObj.perInfoCtgId);
                 block.clear();
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.bundledErrors(res);
@@ -494,11 +526,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.settingCode(params.settingCode);
             self.settingName(params.settingName);
             self.ctgList(params.ctgList);
-            if (self.ctgList().length > 0) {
-                self.currentItemId(params.ctgList[0].perInfoCtgId);
-            } else {
-                self.currentItemId('');
-            }
+
         }
     }
 
@@ -635,9 +663,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
         numericItemMin?: number;
 
         numericItemMax?: number;
+
+        stringItemType?: number;
+
+        stringItemLength?: number;
+
+        stringItemDataType?: number;
+        fixedItem: boolean;
     }
 
     export class PerInfoInitValueSettingItemDto {
+        fixedItem: boolean;
         perInfoItemDefId: KnockoutObservable<string>;
         settingId: KnockoutObservable<string>;
         perInfoCtgId: KnockoutObservable<string>;
@@ -693,8 +729,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         numericItemMax: number;
 
+        stringItemType: number;
+
+        stringItemLength: number;
+
+        stringItemDataType: number;
+
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
+            self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
             self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
@@ -728,10 +771,18 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
                     self.dateValue = ko.observable(params.dateValue || undefined);
-                } else if (params.dateType == 2) {
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM") || undefined);
-                } else if (params.dateType == 3) {
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
+                } else if (params.dateType === 2) {
+                    if (params.dateValue === null) {
+                        self.dateValue = ko.observable(undefined);
+                    } else {
+                        self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM"));
+                    }
+                } else if (params.dateType === 3) {
+                    if (params.dateValue === null) {
+                        self.dateValue = ko.observable(undefined);
+                    } else {
+                        self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
+                    }
                 }
 
             }
@@ -769,13 +820,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.constraint = ko.observable(params.constraint || "");
 
 
-
             self.numbericItem = new NumbericItem(params.dataType,
                 {
                     numberDecimalPart: params.numberDecimalPart,
                     numberIntegerPart: params.numberIntegerPart
                 }) || null;
-            if (params.numberDecimalPart === 0 && params.numberIntegerPart === 0) {
+
+            if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
                 self.numbereditor = {
                     value: ko.observable(params.intValue || 0),
                     constraint: params.itemCode,
@@ -806,6 +857,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 };
             }
 
+            if (params.dataType === 1) {
+                self.stringItemType = params.stringItemType || undefined;
+                self.stringItemLength = params.stringItemLength || undefined;
+                self.stringItemDataType = params.stringItemDataType || undefined;
+                self.numericItemMin = params.numericItemMin || undefined;
+                self.numericItemMax = params.numericItemMax || undefined;
+
+            }
 
 
 

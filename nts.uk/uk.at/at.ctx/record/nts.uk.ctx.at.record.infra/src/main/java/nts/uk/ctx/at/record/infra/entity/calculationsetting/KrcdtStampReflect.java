@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.calculationsetting;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -29,31 +30,31 @@ public class KrcdtStampReflect extends UkJpaEntity implements Serializable {
 
 	// 休出切替区分
 	@Column(name = "BREAK_SWITCH_ATR")
-	public String breakSwitchClass;
+	public BigDecimal breakSwitchClass;
 
 	// 自動打刻反映区分
 	@Column(name = "AUTO_STAMP_REFLECT_ATR")
-	public String autoStampReflectionClass;
+	public BigDecimal autoStampReflectionClass;
 
 	// 実打刻と申請の優先区分
 	@Column(name = "ACTUAL_STAMP_PRIORITY_ATR")
-	public String actualStampOfPriorityClass;
+	public BigDecimal actualStampOfPriorityClass;
 
 	// 就業時間帯打刻反映区分
 	@Column(name = "REFLECT_WORKING_TIME_ATR")
-	public String reflectWorkingTimeClass;
+	public BigDecimal reflectWorkingTimeClass;
 
 	// 直行直帰外出補正区分
 	@Column(name = "GO_BACK_OUT_CORRECTION_ATR")
-	public String goBackOutCorrectionClass;
+	public BigDecimal goBackOutCorrectionClass;
 
 	// 入退門の管理をする
 	@Column(name = "MANAGEMENT_OF_ENTRANCE")
-	public String managementOfEntrance;
+	public BigDecimal managementOfEntrance;
 	
 	// 未来日の自動打刻セット区分
 	@Column(name = "AUTO_STAMP_FUTURE_DAY_ATR")
-	public String autoStampForFutureDayClass;
+	public BigDecimal autoStampForFutureDayClass;
 
 	@Override
 	protected Object getKey() {

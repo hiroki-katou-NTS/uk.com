@@ -29,8 +29,6 @@
 }
 .nts-fixed-table {
 	margin-left: 10px;
-	overflow-x: auto;
-	max-width: 1232px;
 }
 .nts-switch-button {
 	min-width: 85px;

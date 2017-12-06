@@ -1,5 +1,12 @@
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.frame;
 
-public interface TempAbsenceRepositoryFrame {
+import java.util.List;
 
+public interface TempAbsenceRepositoryFrame {
+	
+	void udpate(TempAbsenceFrame tempAbsenceFrame);
+	
+	TempAbsenceFrame findByTempAbsenceFramePk (String cId, int tempAbsenceFrameNo);
+	
+	List<TempAbsenceFrame> findByCid(String cId);
 }

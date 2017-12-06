@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk003.a {
             settingMethodOptions: KnockoutObservableArray<ItemSettingMethod>;
             selectedSettingMethod: KnockoutObservable<string>;
 
-            workTimezoneItems: KnockoutObservableArray<any>;
+            workTimezoneItems: KnockoutObservableArray<WorkTimeItem>;
             columns: KnockoutObservable<any>;
             selectedWorkTimezone: KnockoutObservable<string>;
 
@@ -56,18 +56,17 @@ module nts.uk.at.view.kmk003.a {
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
-                    new ItemWorkForm('1', '基本給'),
-                    new ItemWorkForm('2', '役職手当'),
-                    new ItemWorkForm('3', '基本給')
+                    new ItemWorkForm('1', '通常勤務・変形労働用'),
+                    new ItemWorkForm('2', 'フレックス勤務用')
                 ]);
                 self.selectedWorkForm = ko.observable('1');
                 self.settingMethodOptions = ko.observableArray([
-                    new ItemSettingMethod('1', '基本給'),
-                    new ItemSettingMethod('2', '役職手当'),
-                    new ItemSettingMethod('3', '基本給')
+                    new ItemSettingMethod('1', "固定勤務"),
+                    new ItemSettingMethod('2', "時差勤務"),
+                    new ItemSettingMethod('3', "流動勤務")
                 ]);
                 self.selectedSettingMethod = ko.observable('1');
-
+                
                 self.workTimezoneItems = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'code', width: 100 },
@@ -159,14 +158,28 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                service.findWorkTimeSetByCode("AAC").done(function(data: any) {
+                service.findAllWorkTimeSet().done(function(data: any) {
+                    self.pushDataWorkTime(data);
                     self.data(data);
+                });
+                service.getPredByWorkTimeCode("AAA").done(function(data: any) {
+                    alert();
                 });
                 // set ntsFixedTable style
                 dfd.resolve();
                 return dfd.promise();
             }
-
+            
+            private pushDataWorkTime(data: any) {
+                let self = this;
+                let listData:any = [];
+                data.forEach(function(item: any, index: any) {
+                    listData.push(new WorkTimeItem(item.worktimeCode
+                        , item.workTimeName));
+                });
+                self.workTimezoneItems(listData);
+            }
+            
             private save() {
                 let self = this;
                 let data = self.data();
@@ -176,8 +189,26 @@ module nts.uk.at.view.kmk003.a {
                     self.isClickSave(false);
                 });
             }
+            
+            /**
+             * function get flow mode by selection ui
+             */
+            private getFlowModeBySelected(selectedSettingMethod: string): boolean {
+                return (selectedSettingMethod === '3');
+            }
+          
         }
+        
+         export class WorkTimeItem {
+            code: string;
+            name: string;
 
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+        
         export class ItemWorkForm {
             code: string;
             name: string;

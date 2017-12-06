@@ -155,7 +155,9 @@ __viewContext.ready(function () {
         else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green"));
         if (i % 7 === 0) {
             detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 0));
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 0));
             detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 1));
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 1));
             detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 0));
             detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 1));
         }

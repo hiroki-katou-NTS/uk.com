@@ -5,7 +5,9 @@ module nts.uk.at.view.ksm001.f {
     export module service {
         var paths = {
             findCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/find",
-            saveCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/save"
+            saveCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/save",
+            findEstimateComparison: "ctx/at/schedule/shift/estimate/estcomparison/find",
+//            saveEstimateComparison: "ctx/at/schedule/shift/estimate/estcomparison/save"
         }
 
         /**
@@ -17,6 +19,10 @@ module nts.uk.at.view.ksm001.f {
 
         export function saveCommonGuidelineSetting(command: model.CommonGuidelineSettingDto): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.saveCommonGuidelineSetting, command);
+        }
+        
+        export function findEstimateComparison(): JQueryPromise<model.EstimateComparisonFindDto> {
+            return nts.uk.request.ajax('at', paths.findEstimateComparison);
         }
         
 
@@ -48,6 +54,10 @@ module nts.uk.at.view.ksm001.f {
 
                 /** The estimate number of days. */
                 estimateNumberOfDays: ReferenceConditionDto;
+            }
+            
+            export interface EstimateComparisonFindDto {
+                comparisonAtr: number;
             }
             
             

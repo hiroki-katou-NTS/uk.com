@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -13,6 +15,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface ProcessFlowOfDailyCreationDomainService {
 	
 	//日別作成の処理の流れ
-	boolean processFlowOfDailyCreation(int executionAttr, DatePeriod periodTime, String empCalAndSumExecLogID, int reCreateAttr);
+	<C> void processFlowOfDailyCreation(AsyncCommandHandlerContext<C> asyncContext, ExecutionAttr executionAttr, DatePeriod periodTime, String empCalAndSumExecLogID);
 
 }

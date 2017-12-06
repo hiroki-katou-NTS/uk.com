@@ -5,11 +5,9 @@
 package nts.uk.ctx.at.shared.dom.statutory.worktime.company;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.DeformationLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.FlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.NormalSetting;
@@ -20,17 +18,17 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.NormalSetting;
 @Getter
 public class CompanyWtSetting extends AggregateRoot {
 
+	/** 会社ID. */
+	private CompanyId companyId;
+	
+	/** 年. */
+	private Year year;
+	
 	/** フレックス勤務労働時間設定. */
 	private FlexSetting flexSetting;
 
 	/** 変形労働労働時間設定. */
 	private DeformationLaborSetting deformationLaborSetting;
-
-	/** 年. */
-	private Year year;
-
-	/** 会社ID. */
-	private CompanyId companyId;
 
 	/** 通常勤務労働時間設定. */
 	private NormalSetting normalSetting;

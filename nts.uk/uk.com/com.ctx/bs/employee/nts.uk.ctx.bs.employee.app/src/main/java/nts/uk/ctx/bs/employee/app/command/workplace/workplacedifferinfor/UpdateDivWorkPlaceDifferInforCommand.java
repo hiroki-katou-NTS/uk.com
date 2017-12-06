@@ -11,11 +11,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class UpdateDivWorkPlaceDifferInforCommand {
 	
-	// 会社コード
-	private String companyCode;
-	
-	/** 契約コード */
-	private String contractCd;
+	/**会社ID**/
+	private String companyId;
 	
 	/** 職場登録区分 **/
 	private int regWorkDiv;

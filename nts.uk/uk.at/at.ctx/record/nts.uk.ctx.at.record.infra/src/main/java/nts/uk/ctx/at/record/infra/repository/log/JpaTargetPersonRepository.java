@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExeTarget;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExeTargetStt;
 
 @Stateless
 public class JpaTargetPersonRepository extends JpaRepository implements TargetPersonRepository {
@@ -63,6 +64,17 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 	public void addAll(List<TargetPerson> lstTargetPerson) {
 		this.commandProxy().insertAll(
 				lstTargetPerson.stream().map(c -> KrcdtEmpExeTarget.toEntity(c)).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void update(String employeeID, String empCalAndSumExecLogId, int state) {
+		KrcdtEmpExeTarget krcdtEmpExeTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtEmpExeTarget.class)
+				.setParameter("employeeId", employeeID).setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId).getSingle().get();
+		
+		KrcdtEmpExeTargetStt target = krcdtEmpExeTarget.lstEmpExeTargetStt.stream().filter(item -> item.KrcdtEmpExeTargetSttPK.executionContent == 0).findFirst().get();
+		target.executionState = state;
+		
+		this.commandProxy().update(krcdtEmpExeTarget);
 	}
 
 }

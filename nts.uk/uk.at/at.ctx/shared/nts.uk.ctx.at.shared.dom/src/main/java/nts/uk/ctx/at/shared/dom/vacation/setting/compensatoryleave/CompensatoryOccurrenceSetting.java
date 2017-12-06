@@ -12,6 +12,7 @@ import nts.arc.layer.dom.DomainObject;
  *
  * @return the transfer setting
  */
+// 会社別代休時間設定
 @Getter
 public class CompensatoryOccurrenceSetting extends DomainObject {
     

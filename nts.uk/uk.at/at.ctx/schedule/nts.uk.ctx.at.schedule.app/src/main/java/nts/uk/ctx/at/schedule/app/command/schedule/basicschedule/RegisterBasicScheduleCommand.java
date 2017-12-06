@@ -56,10 +56,12 @@ public class RegisterBasicScheduleCommand {
 			@Override
 			public List<WorkScheduleTimeZone> getWorkScheduleTimeZones() {
 				List<WorkScheduleTimeZone> timeZones = new ArrayList<WorkScheduleTimeZone>();
-				workScheduleTimeZoneSaveCommands.stream().forEach(command -> {
-					WorkScheduleTimeZone scheduleTimeZone = new WorkScheduleTimeZone(command);
-					timeZones.add(scheduleTimeZone);
-				});
+				if (workScheduleTimeZoneSaveCommands != null) {
+					workScheduleTimeZoneSaveCommands.stream().forEach(command -> {
+						WorkScheduleTimeZone scheduleTimeZone = new WorkScheduleTimeZone(command);
+						timeZones.add(scheduleTimeZone);
+					});
+				}
 				return timeZones;
 			}
 

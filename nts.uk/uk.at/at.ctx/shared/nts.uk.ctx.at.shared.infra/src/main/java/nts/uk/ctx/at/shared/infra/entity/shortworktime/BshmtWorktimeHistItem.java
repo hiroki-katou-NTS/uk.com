@@ -7,14 +7,12 @@ package nts.uk.ctx.at.shared.infra.entity.shortworktime;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,8 +35,6 @@ public class BshmtWorktimeHistItem extends UkJpaEntity implements Serializable {
 	protected BshmtWorktimeHistItemPK bshmtWorktimeHistItemPK;
 
 	/** The child care atr. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "CHILD_CARE_ATR")
 	private Integer childCareAtr;
 	
@@ -50,6 +46,7 @@ public class BshmtWorktimeHistItem extends UkJpaEntity implements Serializable {
 	 * Instantiates a new bshmt worktime hist item.
 	 */
 	public BshmtWorktimeHistItem() {
+		super();
 	}
 
 	/**

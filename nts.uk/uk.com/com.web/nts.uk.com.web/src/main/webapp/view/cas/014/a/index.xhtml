@@ -21,8 +21,8 @@
 		
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('CAS014_2')}</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('CAS014_3')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="click: nts.uk.ui.errors.clearAll()">#{i18n.getText('CAS014_2')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="click: nts.uk.ui.errors.clearAll()">#{i18n.getText('CAS014_3')}</a></li>
 			</ul>
 		</ui:define>
 
@@ -33,56 +33,59 @@
 					<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
 				</div>
 				<div class="contents-area-a">
-					<div class="valign-center control-group" data-bind="with: roleSetJobTitle">
-						<div tabindex="3" data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
+					<div class="container cf">
+						<div class="valign-center control-group" data-bind="with: roleSetJobTitle">
+							<div tabindex="3" data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
+						</div>
+						<div class="valign-center control-group" style="padding-left: 32px">
+							<label>#{i18n.getText('CAS014_21')}</label>
+						</div>
+						<br />
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
+							<div tabindex="4"
+								data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
+							<button tabindex="5" class="caret-bottom" data-bind="click : startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
+						</div>
+						<br />
+						<table class="fixed-table" tabindex="6" data-bind="with: roleSetJobTitle" id="A4">
+							<colgroup>
+								<col width="100px" />
+								<col width="150px" />
+								<col width="250px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CAS014_26')}</th>
+								</tr>
+							</thead>
+							<tbody data-bind = "foreach: details">
+								<tr>
+									<td><div data-bind = "text: jobTitle.code" style="display: inline-block;"></div></td>
+									<td><div data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
+									<td>
+										<div class="combo-box" tabindex="7"
+											data-bind="ntsComboBox: {
+											name: '#[CAS014_26]',
+											options: roleSetList,
+											optionsValue: 'code',
+											visibleItemsCount: 10,
+											value: roleSetCd,
+											optionsText: 'name',
+											editable: false,
+											enable: true,
+											columns: [
+												{ prop: 'code', length: 2 },
+												{ prop: 'name', length: 8 },
+											]}">
+										</div>
+									</td>
+								</tr>							
+							</tbody>
+						</table>
 					</div>
-					<div class="valign-center control-group" style="padding-left: 32px">
-						<label>#{i18n.getText('CAS014_21')}</label>
-					</div>
-					<br />
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
-						<div tabindex="4"
-							data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
-						<button tabindex="5" class="caret-bottom" data-bind="click : startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
-					</div>
-					<br />
-					<table class="fixed-table" tabindex="6" data-bind="with: roleSetJobTitle">
-						<colgroup>
-							<col width="100px" />
-							<col width="150px" />
-							<col width="250px" />
-						</colgroup>
-						<thead>
-							<tr>
-								<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
-								<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
-								<th class="ui-widget-header">#{i18n.getText('CAS014_26')}</th>
-							</tr>
-						</thead>
-						<tbody data-bind = "foreach: details">
-							<tr>
-								<td><div data-bind = "text: jobTitle.code" style="display: inline-block;"></div></td>
-								<td><div data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
-								<td>
-									<div class="combo-box" tabindex="7"
-										data-bind="ntsComboBox: {
-										options: roleSetList,
-										optionsValue: 'code',
-										visibleItemsCount: 10,
-										value: roleSetCd,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'code', length: 2 },
-											{ prop: 'name', length: 8 },
-										]}">
-									</div>
-								</td>
-							</tr>							
-						</tbody>
-					</table>
 				</div>
 			</div>
 			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB">

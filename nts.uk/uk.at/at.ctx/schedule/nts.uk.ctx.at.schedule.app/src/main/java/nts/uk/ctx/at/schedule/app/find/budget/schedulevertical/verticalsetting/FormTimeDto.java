@@ -8,6 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTime;
 
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -29,6 +33,11 @@ public class FormTimeDto {
     
     private List<FormTimeFuncDto> lstFormTimeFunc;
 
+    /**
+     * FormTimeDto
+     * @param domain
+     * @return
+     */
 	public static FormTimeDto fromDomain(FormTime domain) {
 		List<FormTimeFuncDto> items = domain.getLstFormTimeFunc().stream()
 				.map(x-> FormTimeFuncDto.fromDomain(x))

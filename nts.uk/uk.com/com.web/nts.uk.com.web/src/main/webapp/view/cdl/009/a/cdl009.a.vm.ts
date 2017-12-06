@@ -52,6 +52,7 @@ module nts.uk.com.view.cdl009.a {
                     selectType: SelectType.NO_SELECT,
                     selectedCode: ko.observable(),
                     isDialog: true,
+//                    isShowSelectAllButton: false,
                     employeeInputList: self.employeeList,
                     maxRows: 12,
                     tabindex: 3,
@@ -59,6 +60,7 @@ module nts.uk.com.view.cdl009.a {
                 // Set SelectedCode to listComponentOpt (Depend on isMultiSelect)
                 if (self.isMultiSelect()) {
                     self.listComponentOpt.selectedCode = self.selectedEmps;
+                    self.listComponentOpt.isShowSelectAllButton = true;
                 } else {
                     self.listComponentOpt.selectedCode = self.selectedEmployeeId;
                 }

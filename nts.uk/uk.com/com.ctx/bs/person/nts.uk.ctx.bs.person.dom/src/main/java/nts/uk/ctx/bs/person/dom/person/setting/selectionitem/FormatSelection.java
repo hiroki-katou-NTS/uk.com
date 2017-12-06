@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
+/**
+ * 
+ * @author tuannv
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class FormatSelection {

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.affiliationinformation;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  *
  */
 @Getter
+@NoArgsConstructor
 public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 	
 	private EmploymentCode employmentCode;

@@ -172,6 +172,30 @@ module nts.uk.ui.koExtentions {
                     let $row = $("<tr></tr>");
                     $row.click(function(){
                         error.$control[0].focus();    
+                        let $dialogContainer = $dialog.closest("[role='dialog']");
+                        let $self = nts.uk.ui.windows.getSelf();
+                        let additonalTop = 0;
+                        let additonalLeft = 0;
+                        if(!$self.isRoot) {
+                            let $currentDialog = $self.$dialog.closest("[role='dialog']");
+                            let $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                            let currentDialogOffset = $currentDialog.offset();
+                            additonalTop = currentDialogOffset.top+ $currentHeadBar.height();
+                            additonalLeft = currentDialogOffset.left;
+                        }
+                        
+                        let currentControlOffset = error.$control.offset();
+                        let top = additonalTop + currentControlOffset.top  + error.$control.outerHeight() - window.scrollY;
+                        let left = additonalLeft + currentControlOffset.left - window.scrollX;
+                        let $errorDialogOffset = $dialogContainer.offset();
+                        let maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                        let maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                        if($errorDialogOffset.top < top && top < maxTop){
+                            $dialogContainer.css("top", top + 15);
+                        }
+                        if (($errorDialogOffset.left < left && left < maxLeft) ){
+                            $dialogContainer.css("left", left);
+                        }
                     });
                     $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
                     headers.forEach(function(header) {
@@ -209,11 +233,15 @@ module nts.uk.ui.koExtentions {
                     $dialog.dialog("option", "height", maxrowsHeight);
                 });
                 
-                $dialog.dialog("open");
+//                if($dialog.dialog("isOpen")){
+                    $dialog.dialog("open");    
+//                } else {
+                    $dialog.closest("[role='dialog']").show();
+//                }
             }
             else {
-                $dialog.dialog("close");
-
+                $dialog.closest("[role='dialog']").hide();
+//                $dialog.dialog("close");
             }
         }
     }

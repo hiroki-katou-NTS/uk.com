@@ -8,6 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -32,6 +36,11 @@ public class VerticalSettingDto {
     
     private List<VerticalCalItemDto> verticalCalItems;
 
+    /**
+     * fromDomain
+     * @param domain
+     * @return
+     */
     public static VerticalSettingDto fromDomain(VerticalCalSet domain){
     	List<VerticalCalItemDto> items = domain.getVerticalCalItems().stream()
 				.map(x-> VerticalCalItemDto.fromDomain(x))

@@ -803,7 +803,6 @@ module nts.uk.ui.exTable {
                             }
                         });
                     } else if (!util.isNullOrUndefined(bodyCellStyleFt)) {
-                        let count = 0;
                         _.forEach(bodyCellStyleFt.decorator, function(colorDef: any) {
                             if (key === colorDef.columnKey && data[self.options.primaryKey] === colorDef.rowId) {
                                 let $childCells = $cell.find("." + CHILD_CELL_CLS);
@@ -814,7 +813,6 @@ module nts.uk.ui.exTable {
                                         $child.data("hide", $child.text());
                                         $child.text("");
                                     }
-                                    if (++count >= 2) return false;
                                 } else {
                                     $cell.addClass(colorDef.clazz);
                                     if (colorDef.clazz == style.HIDDEN_CLS) {
@@ -4919,6 +4917,12 @@ module nts.uk.ui.exTable {
                 case "clearHistories":
                     clearHistories(self, params[0]);
                     break;
+                case "lockCell":
+                    lockCell(self, params[0], params[1]);
+                    break;
+                case "unlockCell":
+                    unlockCell(self, params[0], params[1]);
+                    break;
                 case "popupValue":
                     returnPopupValue(self, params[0]);
                     break;
@@ -5297,6 +5301,79 @@ module nts.uk.ui.exTable {
                     break;
             }
             $grid.data(histType, null);
+        }
+        
+        /**
+         * Lock cell.
+         */
+        function lockCell($container: JQuery, rowId: any, columnKey: any) {
+            let $table = helper.getMainTable($container);
+            let ds = helper.getDataSource($table);
+            let pk = helper.getPrimaryKey($table);
+            let i = -1;
+            _.forEach(ds, function(r, j) {
+                if (r[pk] === rowId) {
+                    i = j;
+                    return false;
+                }
+            });
+            if (i === -1) return;
+            let locks = $table.data(internal.DET);
+            let found = -1;
+            if (locks && locks[i] && locks[i].length > 0) { 
+                _.forEach(locks[i], function(c, j) {
+                    if (c === columnKey) {
+                        found = j;
+                        return false;
+                    }
+                });
+            }
+            
+            if (found === -1) {
+                let $cell = selection.cellAt($table, i, columnKey);
+                if (!locks) {
+                    locks = {};
+                    locks[i] = [ columnKey ];
+                    $table.data(internal.DET, locks);
+                } else if (locks && !locks[i]) {
+                    locks[i] = [ columnKey ];
+                } else locks[i].push(columnKey);
+                helper.markCellWith(style.DET_CLS, $cell);
+            }
+        }
+        
+        /**
+         * Unlock cell.
+         */
+        function unlockCell($container: JQuery, rowId: any, columnKey: any) {
+            let $table = helper.getMainTable($container);
+            let ds = helper.getDataSource($table);
+            let pk = helper.getPrimaryKey($table);
+            let i = -1;
+            _.forEach(ds, function(r, j) {
+                if (r[pk] === rowId) {
+                    i = j;
+                    return false;
+                }
+            });
+            if (i === -1) return;
+            let locks = $table.data(internal.DET);
+            let found = -1;
+            if (locks && locks[i] && locks[i].length > 0) {
+                _.forEach(locks[i], function(c, j) {
+                    if (c === columnKey) {
+                        found = j;
+                        return false;
+                    }
+                });
+            }
+            
+            if (found > -1) {
+                let $cell = selection.cellAt($table, i, columnKey);
+                locks[i].splice(found, 1);
+                if (locks[i].length === 0) delete locks[i];
+                helper.stripCellWith(style.DET_CLS, $cell);
+            }
         }
         
         /**

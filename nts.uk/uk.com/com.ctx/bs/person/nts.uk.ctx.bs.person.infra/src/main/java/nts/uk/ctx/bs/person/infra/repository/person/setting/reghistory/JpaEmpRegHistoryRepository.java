@@ -13,13 +13,10 @@ import nts.uk.ctx.bs.person.infra.entity.person.info.setting.reghistory.PpedtEmp
 @Stateless
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {
 
-	private static final String SELECT_LAST_REG_HISTORY_QUERY_STRING = "SELECT  er FROM PpedtEmployeeRegistrationHistory er ORDER BY er.registeredDate DESC";
-
 	@Override
-	public Optional<EmpRegHistory> getLastRegHistory() {
-
-		return this.queryProxy().query(SELECT_LAST_REG_HISTORY_QUERY_STRING, PpedtEmployeeRegistrationHistory.class)
-				.getSingle().map(x -> toDomain(x));
+	public Optional<EmpRegHistory> getLastRegHistory(String registeredEmployeeID) {
+		return this.queryProxy().find(new PpedtEmployeeRegistrationHistoryPk(registeredEmployeeID),
+				PpedtEmployeeRegistrationHistory.class).map(x -> toDomain(x));
 	}
 
 	private EmpRegHistory toDomain(PpedtEmployeeRegistrationHistory entity) {
@@ -38,6 +35,19 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 	@Override
 	public void add(EmpRegHistory domain) {
 		this.commandProxy().insert(toEntity(domain));
+
+	}
+
+	@Override
+	public void update(EmpRegHistory newEmpRegHistory) {
+
+		Optional<PpedtEmployeeRegistrationHistory> optRegHist = this.queryProxy().find(
+				new PpedtEmployeeRegistrationHistoryPk(newEmpRegHistory.getRegisteredEmployeeID()),
+				PpedtEmployeeRegistrationHistory.class);
+
+		if (optRegHist.isPresent()) {
+			this.commandProxy().update(optRegHist.get().updateFromDomain(newEmpRegHistory));
+		}
 
 	}
 

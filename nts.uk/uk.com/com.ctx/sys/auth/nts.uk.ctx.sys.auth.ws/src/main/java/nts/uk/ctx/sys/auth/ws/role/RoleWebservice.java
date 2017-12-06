@@ -41,6 +41,12 @@ public class RoleWebservice extends WebService {
 	}
 
 	@POST
+	@Path("getrolebyroleid/{roleid}")
+	public RoleDto getRoleByRoleId(@PathParam("roleid") String roleId) {
+		return this.personInforRoleFinder.getRoleByRoleId(roleId);
+	}
+	
+	@POST
 	@Path("save/person/infor")
 	public void savePersonInfo(SavePersonRoleCommand command){
 		savePersonRoleHandler.handle(command);
@@ -67,5 +73,11 @@ public class RoleWebservice extends WebService {
 	@Path("find/person/role")
 	public List<PersonRole> find(List<String> roleIds){
 		return personInforRoleFinder.findByListRoleIds(roleIds);
+	}
+	
+	@POST
+	@Path("user/has/role/{roleType}")
+	public Boolean userHasRoleType( @PathParam("roleType") int roleType){
+		return 	personInforRoleFinder.userHasRoleType(roleType);
 	}
 }

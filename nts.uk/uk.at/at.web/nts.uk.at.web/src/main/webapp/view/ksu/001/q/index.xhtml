@@ -11,11 +11,21 @@
 					<a class="hyperlink" href="#">グループ8</a> <a class="hyperlink"
 						href="#">グループ9</a> <a class="hyperlink" href="#">グループ10</a>
 				</div>
-				<div data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KSU001_1601')}' }"></div>
+				<div
+					data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KSU001_1601')}' }"></div>
 				<button data-bind="click: openDialogJA">#{i18n.getText('KSU001_1602')}</button>
 			</div>
 			<div id="test2"></div>
 		</div>
 		<div class="tab-content-2"></div>
+	</div>
+
+	<div id="popup-area" class="popup-area popup-panel">
+		<span>#{i18n.getText('KSU001_1701')}</span>
+		<div>
+			<input data-bind="ntsTextEditor: {value: textName, enable: true}" />
+			<button class="proceed">#{i18n.getText('KSU001_1703')}</button>
+			<button data-bind="click: closePopup">#{i18n.getText('KSU001_1704')}</button>
+		</div>
 	</div>
 </div>

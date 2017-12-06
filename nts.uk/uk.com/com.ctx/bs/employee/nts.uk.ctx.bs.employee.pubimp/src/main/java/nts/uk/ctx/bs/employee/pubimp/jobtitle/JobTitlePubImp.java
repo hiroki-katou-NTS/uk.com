@@ -25,6 +25,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 
@@ -172,6 +173,40 @@ public class JobTitlePubImp implements SyJobTitlePub {
 					.endDate(jobTitleHistory.span().end())
 					.build();
 		}).collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub#findSJobHistBySId(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<EmployeeJobHistExport> findSJobHistBySId(String employeeId, GeneralDate baseDate) {
+		// Query 
+		Optional<AffJobTitleHistory> optAffJobTitleHistory = jobTitleHistoryRepository.findBySid(employeeId, baseDate);
+		
+		// Check exist
+		if(!optAffJobTitleHistory.isPresent()) {
+			return Optional.empty();
+		}
+		
+		AffJobTitleHistory affJobTitleHist =  optAffJobTitleHistory.get();
+		
+		// Query 
+		Optional<JobTitleInfo>  optJobTitleInfo = this.jobTitleInfoRepository.find(affJobTitleHist.getJobTitleId().v(), baseDate);
+
+		// Check exist		
+		if(!optJobTitleInfo.isPresent()) {
+			return Optional.empty();
+		}
+
+		JobTitleInfo jobTitleInfo = optJobTitleInfo.get();
+		
+		// Return
+		return Optional.of(EmployeeJobHistExport.builder().
+				employeeId(affJobTitleHist.getEmployeeId())
+				.jobTitleCode(jobTitleInfo.getJobTitleCode().v())
+				.jobTitleName(jobTitleInfo.getJobTitleName().v())
+				.startDate(affJobTitleHist.getPeriod().start())
+				.endDate(affJobTitleHist.getPeriod().end()).build());
 	}
 
 }

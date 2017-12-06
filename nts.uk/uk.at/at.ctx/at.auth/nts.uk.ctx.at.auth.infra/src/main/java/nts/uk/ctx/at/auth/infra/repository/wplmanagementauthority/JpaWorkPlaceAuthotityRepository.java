@@ -9,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthority;
-import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthorityPK;
 
 @Stateless
 public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements WorkPlaceAuthorityRepository {
@@ -20,6 +19,10 @@ public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements W
 			+ " AND c.kacmtWorkPlaceAuthorityPK.roleId  = :roleId ";
 	private static final String  GET_WRK_AUTHORITY_BY_ID = GET_ALL_WRK_AUTHORITY_BY_ROLE_ID
 			+ " AND c.kacmtWorkPlaceAuthorityPK.functionNo = :functionNo ";
+	private static final String DELETE_FROM_AUTHORITY = "DELETE FROM KacmtWorkPlaceAuthority c "
+			+ " WHERE c.kacmtWorkPlaceAuthorityPK.roleId  = :roleId"
+			+ " AND c.kacmtWorkPlaceAuthorityPK.companyId  = :companyId  ";
+	
 
 	@Override
 	public List<WorkPlaceAuthority> getAllWorkPlaceAuthority(String companyId) {
@@ -62,11 +65,10 @@ public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements W
 	}
 
 	@Override
-	public void deleteWorkPlaceAuthority(String companyId, String roleId, int functionNo) {
-		KacmtWorkPlaceAuthorityPK kacmtWorkPlaceAuthorityPK = new KacmtWorkPlaceAuthorityPK(
-				roleId,companyId,functionNo
-				);
-		this.commandProxy().remove(KacmtWorkPlaceAuthority.class,kacmtWorkPlaceAuthorityPK);
+	public void deleteWorkPlaceAuthority(String companyId, String roleId) {
+		this.queryProxy().query(DELETE_FROM_AUTHORITY,KacmtWorkPlaceAuthority.class)
+		.setParameter("roleId", roleId)
+		.setParameter("companyId", companyId);
 		
 	}
 	

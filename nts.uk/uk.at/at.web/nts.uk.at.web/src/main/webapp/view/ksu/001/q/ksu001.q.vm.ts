@@ -15,21 +15,35 @@ module ksu001.q.viewmodel {
         ]);
 
         checked: KnockoutObservable<boolean> = ko.observable(true);
-        
+        textName: KnockoutObservable<string> = ko.observable('aaaaa');
+
         constructor() {
             let self = this;
 
             self.contextMenu = [
-                { id: "cut", text: "切り取り", action: self.openDialogJA, style: "icon icon-dot" },
-                { id: "copy", text: "名前を変更", action: self.openDialogJA, style: "icon icon-dot" },
-                { id: "delete", text: "削除", action: self.remove, style: "icon icon-close" }
+                { id: "cut", text: "切り取り", action: self.openDialogJA },
+                { id: "copy", text: "名前を変更", action: self.openPopup },
+                { id: "delete", text: "削除", action: self.remove }
             ];
             $("#test2").ntsButtonTable("init", { row: 3, column: 10, source: self.source(), contextMenu: self.contextMenu, disableMenuOnDataNotSet: [1, 2], mode: "normal" });
         }
 
-        openDialogJA(): void {
-            let self = this;
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/ja/index.xhtml").onClosed(() => { });
+        openPopup() {
+            let dfd = $.Deferred();
+            $("#popup-area").css('visibility', 'visible');
+            return dfd.promise();
+        }
+
+        closePopup() {
+            $("#popup-area").css('visibility', 'hidden');
+        }
+
+        openDialogJA() {
+            let self = this, dfd = $.Deferred();
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/ja/index.xhtml").onClosed(() => {
+                dfd.resolve(undefined);
+            });
+            return dfd.promise();
         }
 
         remove() {

@@ -6,10 +6,8 @@ package nts.uk.ctx.at.shared.infra.entity.workrule.closure;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,27 +24,21 @@ public class KclmtClosureHistPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "CID")
 	private String cid;
 	
 	/** The closure id. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "CLOSURE_ID")
 	private Integer closureId;
 	
-	
 	/** The str YM. */
-	@Basic(optional = false)
 	@Column(name = "STR_YM")
-	@NotNull
 	private Integer strYM;
 	/**
 	 * Instantiates a new kclmt closure hist PK.
 	 */
 	public KclmtClosureHistPK() {
+		super();
 	}
 
 	/**

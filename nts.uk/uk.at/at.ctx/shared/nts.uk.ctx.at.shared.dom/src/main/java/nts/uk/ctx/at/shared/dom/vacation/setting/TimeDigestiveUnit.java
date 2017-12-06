@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting;
 /**
  * The Enum YearVacationTimeUnit.
  */
+// 時間休暇消化単位
 public enum TimeDigestiveUnit {
 
 	/** The One minute. */

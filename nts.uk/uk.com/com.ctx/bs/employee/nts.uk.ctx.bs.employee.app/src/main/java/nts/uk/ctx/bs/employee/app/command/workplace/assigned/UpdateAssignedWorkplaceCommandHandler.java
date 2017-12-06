@@ -21,7 +21,7 @@ public class UpdateAssignedWorkplaceCommandHandler extends CommandHandler<Update
 	@Inject
 	private AssignedWrkplcRepository assignedWrkplcRepository;
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00010";
 	}
 

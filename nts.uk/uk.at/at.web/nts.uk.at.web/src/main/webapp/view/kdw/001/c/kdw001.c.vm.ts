@@ -143,7 +143,7 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
-                        
+
                         //Fix bug 42, bug 43
                         let selectList = _.map(dataList, item => {
                             return item.employeeCode;
@@ -155,13 +155,13 @@ module nts.uk.at.view.kdw001.c {
                         var dataEmployee: EmployeeSearchDto[] = [];
                         dataEmployee.push(data);
                         self.selectedEmployee(dataEmployee);
-                        
+
                         //Bug self fix
                         let unitModel = new UnitModel(data);
                         let listUnitModel: UnitModel[] = [];
                         listUnitModel.push(unitModel);
                         self.employeeList(listUnitModel);
-                        
+
                         //Fix bug 42, bug 43
                         let selectList: any = [];
                         selectList.push(data.employeeCode);
@@ -176,7 +176,7 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
-                        
+
                         //Fix bug 42, bug 43
                         let selectList = _.map(dataList, item => {
                             return item.employeeCode;
@@ -192,7 +192,7 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
-                        
+
                         //Fix bug 42, bug 43
                         let selectList = _.map(dataList, item => {
                             return item.employeeCode;
@@ -208,7 +208,7 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
-                        
+
                         //Fix bug 42, bug 43
                         let selectList = _.map(dataEmployee, item => {
                             return item.employeeCode;
@@ -255,8 +255,19 @@ module nts.uk.at.view.kdw001.c {
                                     return;
                                 }
 
+                           
+                                let listEmpSelectedId = [];
+                                _.forEach(self.selectedEmployee(), function(value) {
+                                    if( _.includes(listEmpSelected,value.employeeCode)){
+                                        listEmpSelectedId.push(value.employeeId);
+                                    }
+                                });
+
+
+
+
                                 __viewContext["viewmodel"].params.setParamsScreenC({
-                                    lstEmployeeID: listEmpSelected,
+                                    lstEmployeeID: listEmpSelectedId,
                                     periodStartDate: self.dateValue().startDate,
                                     periodEndDate: self.dateValue().endDate
                                 });
@@ -273,8 +284,16 @@ module nts.uk.at.view.kdw001.c {
                                 nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                 return;
                             }
+
+                             let listEmpSelectedId = [];
+                                _.forEach(self.selectedEmployee(), function(value) {
+                                    if( _.includes(listEmpSelected,value.employeeCode)){
+                                        listEmpSelectedId.push(value.employeeId);
+                                    }
+                                });
+
                             __viewContext["viewmodel"].params.setParamsScreenC({
-                                lstEmployeeID: listEmpSelected,
+                                lstEmployeeID: listEmpSelectedId,
                                 periodStartDate: self.dateValue().startDate,
                                 periodEndDate: self.dateValue().endDate
                             });

@@ -59,7 +59,7 @@ public class HistoryPolicy {
         boolean isHasError = false;
         BundledBusinessException exceptions = BundledBusinessException.newInstance();
         
-        if (newPeriod.start().before(prevPeriod.start())) {
+        if (newPeriod.start().beforeOrEquals(prevPeriod.start())) {
             exceptions.addMessage("Msg_127");
             isHasError = true;
         }

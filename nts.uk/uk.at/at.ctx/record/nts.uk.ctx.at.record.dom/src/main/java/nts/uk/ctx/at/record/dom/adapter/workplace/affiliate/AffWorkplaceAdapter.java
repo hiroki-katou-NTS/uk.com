@@ -21,4 +21,12 @@ public interface AffWorkplaceAdapter {
 	 * @return the aff workplace dto
 	 */
 	Optional<AffWorkplaceDto> findBySid(String employeeId, GeneralDate baseDate);
+	
+	/**
+	 * KIF 001
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	Optional<AffWorkPlaceSidImport> findBySidAndDate(String employeeId, GeneralDate baseDate);
 }

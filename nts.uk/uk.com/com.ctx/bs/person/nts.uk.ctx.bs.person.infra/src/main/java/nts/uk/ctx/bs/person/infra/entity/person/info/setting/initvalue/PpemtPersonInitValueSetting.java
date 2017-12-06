@@ -27,7 +27,7 @@ public class PpemtPersonInitValueSetting extends UkJpaEntity implements Serializ
 	public String companyId;
 
 	@Basic(optional = false)
-	@Column(name = "PER_INIT_SET_CODE")
+	@Column(name = "PER_INIT_SET_CD")
 	public String settingCode;
 
 	@Basic(optional = false)

@@ -3,9 +3,9 @@ package find.person.info.item;
 import lombok.Getter;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
 
-
+@Getter
 public class SingleItemDto extends ItemTypeStateDto {
-	@Getter
+
 	protected DataTypeStateDto dataTypeState;
 
 	private SingleItemDto(DataTypeStateDto dataTypeState) {

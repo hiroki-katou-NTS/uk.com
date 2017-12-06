@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +14,10 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Formul
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaUnitprice;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 
+/**
+ * TanLV
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -54,10 +61,17 @@ public class VerticalCalItemCommand {
  	
  	private FormulaAmountCommand formulaAmount;
  	
- 	private FormulaNumericalCommand formulaNumerical;
+ 	private List<FormulaNumericalCommand> numerical;
  	
  	private FormulaUnitPriceCommand unitPrice;
  	
+ 	/**
+ 	 * toDomainCalItem
+ 	 * @param companyId
+ 	 * @param verticalCalCd
+ 	 * @param itemId
+ 	 * @return
+ 	 */
  	public VerticalCalItem toDomainCalItem(String companyId, String verticalCalCd, String itemId){
  		FormBuilt built = this.formBuilt != null
  				? this.formBuilt.toDomainFormBuilt(companyId, verticalCalCd, itemId)
@@ -71,9 +85,9 @@ public class VerticalCalItemCommand {
  		FormPeople formPeople1 = this.formPeople != null
  				? this.formPeople.toDomainFormPeople(companyId, verticalCalCd, itemId)
 				: null;
- 		FormulaNumerical numerical = this.formulaNumerical != null
- 				? this.formulaNumerical.toDomainNumerical(companyId, verticalCalCd, itemId)
- 						: null;
+		List<FormulaNumerical> numerical = this.numerical != null
+    			? this.numerical.stream().map(c -> c.toDomainNumerical(companyId)).collect(Collectors.toList())
+				: null;
  		FormulaUnitprice unitprice = this.unitPrice != null
  				? this.unitPrice.toDomainUnitPrice(companyId, verticalCalCd, itemId)
  						: null;		

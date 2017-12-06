@@ -21,15 +21,13 @@ public class AddSysUsageSetCommandHandler extends CommandHandler<AddSysUsageSetC
 	protected void handle(CommandHandlerContext<AddSysUsageSetCommand> context) {
 		AddSysUsageSetCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
-		Optional<SysUsageSet> sys = sysRep.findUsageSet(data.getCompanyId(), 
-														data.getCompanyCode(), contractCd);
+		Optional<SysUsageSet> sys = sysRep.findUsageSet(data.getCompanyId());
 		
 		if(sys.isPresent()){
 			throw new BusinessException("Msg_3");
 		}
 		
-		SysUsageSet sysDom = SysUsageSet.createFromJavaType(data.getCompanyCode(), 
-															contractCd, data.getJinji(), 
+		SysUsageSet sysDom = SysUsageSet.createFromJavaType(data.getCompanyId(),data.getJinji(), 
 															data.getShugyo(), data.getKyuyo());
 //		sysDom.createCompanyId(sysDom.getCompanyCode().v(), sysDom.getContractCd().v());
 		

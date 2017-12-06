@@ -8,7 +8,7 @@ module nts.uk.at.view.ksu001.c {
             return nts.uk.request.ajax(paths.executionAlarmChecked, command);
         }
         export function saveAsExcel(data): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "ShiftAlarm", domainType: "エラー出力", languageId: "ja", reportType: 0, data: data });
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "ShiftAlarm", domainType: "KSU001_alarm", languageId: "ja", reportType: 3, data: data });
         }
     }
 }

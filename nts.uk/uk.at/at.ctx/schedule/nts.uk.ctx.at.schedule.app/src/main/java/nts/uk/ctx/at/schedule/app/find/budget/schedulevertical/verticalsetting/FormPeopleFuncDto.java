@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeopleFunc;
 
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -30,6 +34,11 @@ public class FormPeopleFuncDto {
     /* 順番 */
     private int dispOrder;
 
+    /**
+     * FormPeopleFuncDto
+     * @param domain
+     * @return
+     */
 	public static FormPeopleFuncDto fromDomain(FormPeopleFunc domain) {
 		return new FormPeopleFuncDto(
 				domain.getCompanyId(),

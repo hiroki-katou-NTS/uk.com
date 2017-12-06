@@ -38,14 +38,15 @@ module ksu001.o.viewmodel {
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
                 let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
+                let startTime, endTime: any;
                 if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
                     let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
                     if (d) {
                         workTypeName = d.abbreviationName;
                         workTypeCode = d.workTypeCode;
                     } else {
-                        workTypeName = '';
-                        workTypeCode = '';
+                        workTypeName = null;
+                        workTypeCode = null;
                     }
 
                     let siftCode: string = null;
@@ -59,9 +60,13 @@ module ksu001.o.viewmodel {
                     if (c) {
                         workTimeName = c.abName;
                         workTimeCode = c.siftCd;
+                        startTime = c.start;
+                        endTime = c.end;
                     } else {
-                        workTimeName = '';
-                        workTimeCode = '';
+                        workTimeName = null;
+                        workTimeCode = null;
+                        startTime = null;
+                        endTime = null;
                     }
                 }
                 return new ExCell({
@@ -70,8 +75,8 @@ module ksu001.o.viewmodel {
                     workTimeCode: workTimeCode,
                     workTimeName: workTimeName,
                     symbol: null,
-                    startTime: null,
-                    endTime: null
+                    startTime: startTime,
+                    endTime: endTime
                 });
             });
 
@@ -85,6 +90,7 @@ module ksu001.o.viewmodel {
             let self = this;
 
             $('#contain-view').hide();
+            //            $("#extable").exTable("viewMode", "shortName", { y: 115 }); 
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
 
@@ -92,6 +98,7 @@ module ksu001.o.viewmodel {
             self.currentScreen.onClosed(() => {
                 self.currentScreen = null;
                 if (__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {
+                    //                    $("#extable").exTable("viewMode", "shortName", { y: 100 }); 
                     $('#contain-view').show();
                     //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
                     $("#extable").exTable("stickData", self.nameWorkTimeType());

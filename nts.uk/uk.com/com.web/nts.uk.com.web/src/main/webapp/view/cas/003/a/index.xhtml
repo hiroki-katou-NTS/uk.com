@@ -169,9 +169,11 @@
 								#{i18n.getText('CAS003_28')}</div>
 							<div class="contentPassComplex">
 								<label>#{i18n.getText('CAS003_29')}</label> <input tabindex="13" id="txtLockInterval"
-									data-bind="ntsNumberEditor: {
+									data-bind="ntsTimeEditor: {
 														name: '#[CAS003_28]',
-														value: lockInterval, 
+														value: lockInterval,
+														inputFormat: 'time',
+														mode: 'time', 
 														constraint: 'LockInterval', 
 														option: { width: '60px' },
 														required: true, 

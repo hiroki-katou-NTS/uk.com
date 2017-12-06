@@ -20,14 +20,16 @@ module nts.uk.at.view.kml002.f.viewmodel {
             var self = this;
 
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
             self.currentData = data.numerical;
             self.attrLabel = ko.observable(data.attribute);
             self.itemNameLabel = ko.observable(data.itemName);
             self.unitSelect = ko.observable(data.unit);
             self.items = ko.observableArray([]);
             self.allItem = ko.observableArray([]);
+            
             self.rightItems = ko.observableArray([]);
-
+            
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML002_7"), prop: 'code', width: 50, hidden: true },
                 { headerText: nts.uk.resource.getText("KML002_7"), prop: 'name', width: 200, formatter: _.escape }
@@ -108,6 +110,28 @@ module nts.uk.at.view.kml002.f.viewmodel {
                 if (self.allItem().length > 0) {
                     self.items(self.allItem());
                 }
+                
+                var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+                
+                if(data.numerical.length > 0) {
+                    _.forEach(data.numerical, function(item, index){
+                        var currentItem = _.find(self.items(), function(o) { return o.code == item.externalBudgetCd; });
+                        
+                        self.rightItems.push({
+                            code: index.toString(),
+                            realCode: item.externalBudgetCd,
+                            operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
+                            name: currentItem.name,
+                            order: item.dispOrder
+                        });
+                    });                
+                }
+                
+                if (self.rightItems().length >= 1) {
+                    self.enableReturn(true);
+                } else {
+                    self.enableReturn(false);
+                }
 
                 dfd.resolve();
             }).fail(function(res) {
@@ -170,6 +194,7 @@ module nts.uk.at.view.kml002.f.viewmodel {
 
                     self.rightItems.push({
                         code: i.toString(),
+                        realCode: items.code,
                         operatorAtr: nts.uk.resource.getText("KML002_37"),
                         name: items.name,
                         order: self.rightItems().length + 1
@@ -202,6 +227,7 @@ module nts.uk.at.view.kml002.f.viewmodel {
 
                     self.rightItems.push({
                         code: i.toString(),
+                        realCode: items.code,
                         operatorAtr: nts.uk.resource.getText("KML002_38"),
                         name: items.name,
                         order: self.rightItems().length + 1
@@ -254,20 +280,15 @@ module nts.uk.at.view.kml002.f.viewmodel {
                 var formNumerical = {
                     verticalCalCd: data.verticalCalCd,
                     verticalCalItemId: data.itemId,
-                    externalBudgetCd: item.code,
+                    externalBudgetCd: item.realCode,
                     operatorAtr: item.operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
-                    dispOrder: index
+                    dispOrder: index,
+                    name: item.name
                 }
                 formNumer.push(formNumerical);
              });
-            
-            var tranferData = {
-                verticalCalCd: data.verticalCalCd,
-                verticalCalItemId: data.itemId,
-                lstFormNumerical: formNumer
-            };
-            
-            nts.uk.ui.windows.setShared("KML002_F_DATA", tranferData);
+
+            nts.uk.ui.windows.setShared("KML002_F_DATA", formNumer);
             nts.uk.ui.windows.close();
         }
 
@@ -292,11 +313,13 @@ module nts.uk.at.view.kml002.f.viewmodel {
 
     class NewItemModel {
         code: string;
+        realCode: string;
         operatorAtr: string;
         name: string;
         order: number;
-        constructor(code: string, operatorAtr: string, name: string, order: number) {
+        constructor(code: string, realCode: string, operatorAtr: string, name: string, order: number) {
             this.code = code;
+            this.realCode = realCode;
             this.operatorAtr = operatorAtr;
             this.name = name;
             this.order = order;

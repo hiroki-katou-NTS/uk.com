@@ -9,7 +9,7 @@ public interface SysUsageRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<SysUsageSet> findUsageSet(String companyId, String companyCode, String contractCd);
+	Optional<SysUsageSet> findUsageSet(String companyId);
 	/**
 	 * update SysUsageSet
 	 * @param SysUsageSet

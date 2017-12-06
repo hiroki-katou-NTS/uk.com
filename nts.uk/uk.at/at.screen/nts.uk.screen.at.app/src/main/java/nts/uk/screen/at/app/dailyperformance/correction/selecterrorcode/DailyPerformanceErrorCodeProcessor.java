@@ -18,7 +18,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
@@ -45,7 +44,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerf
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -142,7 +140,7 @@ public class DailyPerformanceErrorCodeProcessor {
 						cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()), "Link Name"+ item.getId(),
 								String.valueOf(item.getAttendanceAtr()), "Link2"));
 					} else {
-						cellDatas.add(new DPCellDataDto(String.valueOf(item.getId()), String.valueOf(a),
+						cellDatas.add(new DPCellDataDto("_"+String.valueOf(item.getId()), String.valueOf(a),
 								String.valueOf(item.getAttendanceAtr()), "label"));
 					}
 				});
@@ -249,7 +247,7 @@ public class DailyPerformanceErrorCodeProcessor {
     				List<DPHeaderDto> lstHeader = new ArrayList<>();
     				for(FormatDPCorrectionDto dto : lstFormat){
     					// chia cot con code name cua AttendanceItemId chinh va set 
-    					lstHeader.add(DPHeaderDto.createSimpleHeader(String.valueOf(dto.getAttendanceItemId()),
+    					lstHeader.add(DPHeaderDto.createSimpleHeader("_"+String.valueOf(dto.getAttendanceItemId()),
     							String.valueOf(dto.getColumnWidth()) + "px", mapDP));
     				}
     				result.setLstHeader(lstHeader);
@@ -278,7 +276,7 @@ public class DailyPerformanceErrorCodeProcessor {
         				result.addColumnsToSheet(lstFormat, mapDP);
         				List<DPHeaderDto> lstHeader = new ArrayList<>();
         				for(FormatDPCorrectionDto dto : lstFormat){
-        					lstHeader.add(DPHeaderDto.createSimpleHeader(String.valueOf(dto.getAttendanceItemId()),
+        					lstHeader.add(DPHeaderDto.createSimpleHeader("_"+String.valueOf(dto.getAttendanceItemId()),
         							String.valueOf(dto.getColumnWidth()) + "px", mapDP));
         				}
         				result.setLstHeader(lstHeader);

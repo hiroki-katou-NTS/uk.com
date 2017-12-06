@@ -24,8 +24,7 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 * author: Hoang Yen
 	 */
 	private static SysUsageSet toDomainSys(SacmtSysUsageSet entity){
-		SysUsageSet domain = SysUsageSet.createFromJavaType(entity.sacmtSysUsageSetPK.companyCode,
-															entity.sacmtSysUsageSetPK.contractCd,
+		SysUsageSet domain = SysUsageSet.createFromJavaType(entity.sacmtSysUsageSetPK.companyId,
 															entity.jinji,
 															entity.shugyo, entity.kyuyo);
 		return domain;
@@ -39,8 +38,7 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 */
 	private static SacmtSysUsageSet toEntitySys(SysUsageSet domain){
 		val entity = new SacmtSysUsageSet();
-		entity.sacmtSysUsageSetPK = new SacmtSysUsageSetPK(domain.getCompanyId(), domain.getCompanyCode().v(), 
-															domain.getContractCd().v());
+		entity.sacmtSysUsageSetPK = new SacmtSysUsageSetPK(domain.getCompanyId());
 		entity.jinji = domain.getJinji().value;
 		entity.shugyo = domain.getShugyo().value;
 		entity.kyuyo = domain.getKyuyo().value;
@@ -54,8 +52,8 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 * author: Hoang Yen
 	 */
 	@Override
-	public Optional<SysUsageSet> findUsageSet(String companyId, String companyCode, String contractCd) {
-		val pk = new SacmtSysUsageSetPK(companyId, companyCode, contractCd);
+	public Optional<SysUsageSet> findUsageSet(String companyId) {
+		val pk = new SacmtSysUsageSetPK(companyId);
 		return this.queryProxy().find(pk, SacmtSysUsageSet.class).map(c -> toDomainSys(c));
 	}
 
@@ -91,7 +89,7 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 */
 	@Override
 	public void deleteUsageSet(String companyId, String companyCode, String contractCd) {
-		SacmtSysUsageSetPK sacmtSysUsageSetPK = new SacmtSysUsageSetPK(companyId, companyCode, contractCd);
+		SacmtSysUsageSetPK sacmtSysUsageSetPK = new SacmtSysUsageSetPK(companyId);
 		this.commandProxy().remove(SacmtSysUsageSet.class, sacmtSysUsageSetPK);
 	}
 	

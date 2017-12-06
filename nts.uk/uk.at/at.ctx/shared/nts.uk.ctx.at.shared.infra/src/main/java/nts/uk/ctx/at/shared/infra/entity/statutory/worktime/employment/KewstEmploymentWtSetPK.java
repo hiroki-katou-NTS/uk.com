@@ -25,33 +25,22 @@ public class KewstEmploymentWtSetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
-	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 17)
 	@Column(name = "CID")
 	private String cid;
 
 	/** The y K. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "Y_K")
 	private int yK;
 
 	/** The ctg. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "WT_CTG")
 	private int ctg;
 
 	/** The type. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "WT_TYPE")
 	private int type;
 
 	/** The empt cd. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "EMPCD")
 	private String emptCd;
 

@@ -11,13 +11,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UpdateSysUsageSetCommand {
-	
 	// 会社コード
-	private String companyCode;
-	
-	/** 契約コード */
-	private String contractCd;
-	
+	private String companyId;
 	/** 人事システム **/
 	private int jinji;
 	/** 就業システム **/

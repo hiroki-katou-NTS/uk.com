@@ -63,13 +63,23 @@ public interface PerInfoInitValueSetItemRepository {
 	void delete(String perInfoItemDefId, String perInfoCtgId, String settingId);
 
 	/**
-	 * check category have item list ?
+	 * check category have item init list ?
 	 * 
 	 * @param perInfoCtgId
 	 * @param settingId
 	 * @return
 	 */
 	boolean isExist(String settingId, String perInfoCtgId);
+	
+	
+	/**
+	 * check category have item init list ?
+	 * 
+	 * @param perInfoCtgId
+	 * @param settingId
+	 * @return
+	 */
+	List<String> isExistItem( List<String> perInfoCtgId);
 
 	/**
 	 * delete all item by settingId

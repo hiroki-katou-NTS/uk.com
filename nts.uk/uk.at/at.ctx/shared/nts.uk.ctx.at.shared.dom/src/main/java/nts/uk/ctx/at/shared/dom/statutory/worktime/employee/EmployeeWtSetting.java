@@ -16,15 +16,15 @@ public class EmployeeWtSetting extends AggregateRoot {
 
 	/** 会社ID. */
 	private CompanyId companyId;
-
-	/** 労働時間設定. */
-	private WorkingTimeSetting workingTimeSetting;
-
+	
+	/** 社員ID. */
+	private String employeeId;
+	
 	/** 年月. */
 	private YearMonth yearMonth;
 
-	/** 社員ID. */
-	private String employeeId;
+	/** 労働時間設定. */
+	private WorkingTimeSetting workingTimeSetting;
 
 	/**
 	 * Instantiates a new employee setting.

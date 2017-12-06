@@ -11,7 +11,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -26,6 +29,9 @@ public class PersonInformationRoleFinder {
 
 	@Inject
 	private PersonRoleRepository personRoleRepo;
+	
+	@Inject
+	private RoleIndividualGrantRepository roleIndRepo;
 
 	public List<PersonInformationRole> find() {
 		List<PersonInformationRole> result = new ArrayList<PersonInformationRole>();
@@ -67,5 +73,25 @@ public class PersonInformationRoleFinder {
 	
 	public List<PersonRole> findByListRoleIds(List<String> roleIds){
 		return personRoleRepo.find(roleIds);
+	}
+	
+	/**
+	 * Get Role by role Id
+	 * @param roleId
+	 * @return
+	 */
+	public RoleDto getRoleByRoleId(String roleId ){
+
+		Optional<Role> optRole = roleRepo.findByRoleId(roleId);
+		if (optRole.isPresent()) {
+		 return RoleDto.fromDomain(optRole.get());
+		}
+		return null;
+	}
+	
+	public boolean userHasRoleType (int roleType){
+		Optional<RoleIndividualGrant> roleIndOpt = roleIndRepo.findRoleIndividualGrant(AppContexts.user().userId(), AppContexts.user().companyId(), RoleType.valueOf(roleType));
+		GeneralDate now =  GeneralDate.today();
+		return roleIndOpt.isPresent() && roleIndOpt.get().getValidPeriod().contains(now);
 	}
 }

@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.util.List;
-
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
 /**
  * 
@@ -16,5 +15,5 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface ReflectWorkInforDomainService {
 
-	void reflectWorkInformation(String companyID, List<String> employeeID, DatePeriod periodTimes, String empCalAndSumExecLogID, int reCreateAttr);
+	void reflectWorkInformation(String companyID, String employeeID, GeneralDate processingDate, String empCalAndSumExecLogID, ExecutionType reCreateAttr);
 }

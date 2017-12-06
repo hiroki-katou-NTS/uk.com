@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.portal.infra.repository.webmenu.webmenulinking;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -17,104 +18,119 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleSetWeb
 
 /**
  * Class JpaRoleSetAndWebMenuRepository implement of RoleSetAndWebMenuRepository
- * @author Hieu.NV
+ * @author HieuNV
  *
  */
 @Stateless
 public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements RoleSetLinkWebMenuRepository {
 
-	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID = "SELECT rw FROM SacmtRoleSetWebMenu rw"
-			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId ";
+    private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID = "SELECT rw FROM SptmtRoleSetWebMenu rw"
+            + " WHERE rw.roleSetWebMenuPK.companyId = :companyId ";
 
-	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD = "SELECT rw FROM SacmtRoleSetWebMenu rw"
-			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId"
-			+ " rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
-	
-	private static final String DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD = "DELETE FROM SacmtRoleSetWebMenu rw"
-			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId "
-			+ " WHERE rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
-	
-	private nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu toDomain(SptmtRoleSetWebMenu entity) {
-		return new RoleSetLinkWebMenu(entity.roleSetWebMenuPK.companyId
-				, entity.roleSetWebMenuPK.roleSetCd
-				, entity.roleSetWebMenuPK.webMenuCd
-				);
-	}
+    private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD = "SELECT rw FROM SptmtRoleSetWebMenu rw"
+            + " WHERE rw.roleSetWebMenuPK.companyId = :companyId"
+            + "     AND rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
+    
+    private static final String DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD = "DELETE FROM SptmtRoleSetWebMenu rw"
+            + " WHERE rw.roleSetWebMenuPK.companyId = :companyId "
+            + " AND rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
 
-	private SptmtRoleSetWebMenu toEntity(RoleSetLinkWebMenu domain) {
-		SptmtRoleSetWebMenuPK key = new SptmtRoleSetWebMenuPK(domain.getCompanyId()
-				, domain.getWebMenuCd().v()
-				, domain.getRoleSetCd().v());
-		return new SptmtRoleSetWebMenu(key);
+    /**
+     * Build Domain from Entity
+     * @param entity
+     * @return
+     */
+    private RoleSetLinkWebMenu toDomain(SptmtRoleSetWebMenu entity) {
+        return new RoleSetLinkWebMenu(entity.roleSetWebMenuPK.companyId
+                , entity.roleSetWebMenuPK.roleSetCd
+                , entity.roleSetWebMenuPK.webMenuCd
+                );
+    }
 
-	}
-	
-	private SptmtRoleSetWebMenu toEntityForUpdate(RoleSetLinkWebMenu domain, SptmtRoleSetWebMenu upEntity) {
-		upEntity.buildEntity(new SptmtRoleSetWebMenuPK(domain.getCompanyId()
-				, domain.getWebMenuCd().v()
-				, domain.getRoleSetCd().v()));
-		return upEntity;
-	}
+    /**
+     * Build Entity from Domain
+     * @param domain
+     * @return
+     */
+    private SptmtRoleSetWebMenu toEntity(RoleSetLinkWebMenu domain) {
+        SptmtRoleSetWebMenuPK key = new SptmtRoleSetWebMenuPK(domain.getCompanyId()
+                , domain.getWebMenuCd().v()
+                , domain.getRoleSetCd().v());
+        return new SptmtRoleSetWebMenu(key);
+    }
 
-	@Override
-	public List<RoleSetLinkWebMenu> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID, SptmtRoleSetWebMenu.class)
-				.setParameter("companyId", companyId)
-				.getList(c -> toDomain(c));
-	}
+    /**
+     * Build Entity from Domain for updating
+     * @param domain
+     * @param upEntity
+     * @return
+     */
+    private SptmtRoleSetWebMenu toEntityForUpdate(RoleSetLinkWebMenu domain, SptmtRoleSetWebMenu upEntity) {
+        upEntity.buildEntity(new SptmtRoleSetWebMenuPK(domain.getCompanyId()
+                , domain.getWebMenuCd().v()
+                , domain.getRoleSetCd().v()));
+        return upEntity;
+    }
 
-	@Override
-	public List<RoleSetLinkWebMenu> findByRoleSetCd(String companyId, String roleSetCd) {
-		return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD, SptmtRoleSetWebMenu.class)
-				.setParameter("companyId", companyId)
-				.setParameter("roleSetCd", roleSetCd)
-				.getList(c -> toDomain(c));
-	}
+    @Override
+    public List<RoleSetLinkWebMenu> findByCompanyId(String companyId) {
+        return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID
+                , SptmtRoleSetWebMenu.class)
+                .setParameter("companyId", companyId)
+                .getList(c -> toDomain(c));
+    }
 
-	@Override
-	public Optional<RoleSetLinkWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd) {
-		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, webMenuCd, roleSetCd);
-		return this.queryProxy().find(pk, SptmtRoleSetWebMenu.class).map(c -> toDomain(c));
-	}
-	
-	@Override
-	public void insert(RoleSetLinkWebMenu domain) {
-		this.commandProxy().insert(toEntity(domain));
-	}
+    @Override
+    public List<RoleSetLinkWebMenu> findByRoleSetCd(String companyId, String roleSetCd) {
+        return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD
+                , SptmtRoleSetWebMenu.class)
+                .setParameter("companyId", companyId)
+                .setParameter("roleSetCd", roleSetCd)
+                .getList(c -> toDomain(c));
+    }
 
-	
-	
-	@Override
-	public void update(RoleSetLinkWebMenu domain) {
-		 Optional<SptmtRoleSetWebMenu> upEntity = this.queryProxy().find(
-				 new SptmtRoleSetWebMenuPK(domain.getCompanyId()
-					, domain.getWebMenuCd().v()
-					, domain.getRoleSetCd().v()),
-				 SptmtRoleSetWebMenu.class);
-		if (upEntity.isPresent()) {
-			this.commandProxy().update(toEntityForUpdate(domain, upEntity.get()));
-		}
-	}
+    @Override
+    public Optional<RoleSetLinkWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd) {
+        SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, webMenuCd, roleSetCd);
+        return this.queryProxy().find(pk, SptmtRoleSetWebMenu.class).map(c -> toDomain(c));
+    }
 
-	@Override
-	public void deleteAllByRoleCd(String companyId, String roleSetCd) {
-		this.getEntityManager().createQuery(DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD)
-		.setParameter("companyId", companyId)
-		.setParameter("roleSetCd", roleSetCd)
-		.executeUpdate();
-	}
+    @Override
+    public void insert(RoleSetLinkWebMenu domain) {
+        this.commandProxy().insert(toEntity(domain));
+    }
 
-	@Override
-	public void deleteAllByRoleCd(String companyId, String roleSetCd, String webMenuCode) {
-		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, roleSetCd, webMenuCode);
-		this.commandProxy().remove(SptmtRoleSetWebMenu.class, pk);
-		
-	}
+    @Override
+    public void update(RoleSetLinkWebMenu domain) {
+         Optional<SptmtRoleSetWebMenu> upEntity = this.queryProxy().find(
+                 new SptmtRoleSetWebMenuPK(domain.getCompanyId()
+                    , domain.getWebMenuCd().v()
+                    , domain.getRoleSetCd().v()),
+                 SptmtRoleSetWebMenu.class);
+        if (upEntity.isPresent()) {
+            this.commandProxy().update(toEntityForUpdate(domain, upEntity.get()));
+        }
+    }
 
-	@Override
-	public void insert(List<RoleSetLinkWebMenu> listDomain) {
-		this.commandProxy().insertAll(listDomain);
-	}
+    @Override
+    public void deleteAllByRoleCd(String companyId, String roleSetCd) {
+        this.getEntityManager().createQuery(DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD)
+        .setParameter("companyId", companyId)
+        .setParameter("roleSetCd", roleSetCd)
+        .executeUpdate();
+    }
 
+    @Override
+    public void deleteAllByRoleCd(String companyId, String roleSetCd, String webMenuCode) {
+        SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, roleSetCd, webMenuCode);
+        this.commandProxy().remove(SptmtRoleSetWebMenu.class, pk);
+        
+    }
 
+    @Override
+    public void insert(List<RoleSetLinkWebMenu> listDomain) {
+        List<SptmtRoleSetWebMenu> lstSptmtRoleSetWebMenu = listDomain.stream()
+                .map(domain -> toEntity(domain)).collect(Collectors.toList());
+        this.commandProxy().insertAll(lstSptmtRoleSetWebMenu);
+    }
 }

@@ -33,5 +33,7 @@ public class SingleItemCommand {
 
 	// SelectionItem property
 	private Integer referenceType;
-	private String referenceCode;
+	// selectionItemId
+	private String referenceCode; 
+	private String selectionItemId;
 }

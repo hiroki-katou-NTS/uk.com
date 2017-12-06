@@ -26,6 +26,7 @@ module nts.uk.at.view.kdw001.j {
             stepList: Array<NtsWizardStep>;
             stepSelected: KnockoutObservable<NtsWizardStep>;
             activeStep: KnockoutObservable<number>;
+            warnVisible: KnockoutObservable<boolean>;
 
 
 
@@ -34,6 +35,7 @@ module nts.uk.at.view.kdw001.j {
                 self.params.setParamsScreenA({ closure: 1 });
 
                 self.currentItem = ko.observable();
+                self.warnVisible = ko.observable(false);
 
                 //Init for grid list
                 self.items = ko.observableArray([]);
@@ -66,6 +68,12 @@ module nts.uk.at.view.kdw001.j {
 
                     //Set data cho view model data-binding: with
                     self.currentItem(itemSelection);
+                        //*2j
+                    if ((!nts.uk.util.isNullOrUndefined(itemSelection.dailyCreationSetInfo()) && itemSelection.dailyCreationSetInfo().executionType == 1)||(!nts.uk.util.isNullOrUndefined(itemSelection.dailyCalSetInfo()) && itemSelection.dailyCalSetInfo().executionType == 1)||(!nts.uk.util.isNullOrUndefined(itemSelection.monlyAggregationSetInfo()) && itemSelection.monlyAggregationSetInfo().executionType == 1)) {
+                        self.warnVisible(true);
+                    }else{
+                        self.warnVisible(false);
+                    }
 
                 });
             }
