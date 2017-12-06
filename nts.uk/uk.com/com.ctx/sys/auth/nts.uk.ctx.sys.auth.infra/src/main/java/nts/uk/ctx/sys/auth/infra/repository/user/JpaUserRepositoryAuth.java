@@ -17,7 +17,7 @@ import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
 @Stateless
 public class JpaUserRepositoryAuth extends JpaRepository implements UserRepository {
 	private final String SELECT_ALL_USER = "SELECT c FROM SacmtUser c ";
-	private final String SELECT_BY_USER = "SELECT c FROM SacmtUser c"
+	private final String SELECT_BY_USER = "SELECT c FROM SacmtUser c" 
 			+ " WHERE c.sacmtUserPK.userID = :userID";
 	private final String SELECT_BY_ID_OR_NAME  ="SELECT c From SacmtUser c"
 			+ " WHERE (c.sacmtUserPK.userID LIKE CONCAT('%', :userIDName, '%')"
@@ -38,8 +38,10 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 
 	@Override
 	public Optional<User> getByUserID(String userID) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy()
+				.query(SELECT_BY_USER,SacmtUser.class)
+				.setParameter("userID", userID)
+				.getSingle(c -> toDomain(c));
 	}
 
 	@Override

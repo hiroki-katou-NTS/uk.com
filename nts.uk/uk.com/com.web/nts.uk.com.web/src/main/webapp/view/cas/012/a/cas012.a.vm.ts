@@ -1,61 +1,79 @@
 module nts.uk.com.view.cas012.a.viewmodel {
     export class ScreenModel {
         //ComboBOx RollType
-        listRoleType: KnockoutObservableArray<any>;
-        selectedRoleType: KnockoutObservable<string>;
+        listRoleType: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedRoleType: KnockoutObservable<number> = ko.observable(null);
+
         //ComboBox Company
-        listCompany: KnockoutObservableArray<any>;
-        selectedCompany: KnockoutObservable<string>;
+        listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedCompany: KnockoutObservable<string> = ko.observable('');
+
         //list Role Individual Grant    
-        listRoleIndividual: KnockoutObservableArray<RoleIndividual>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        currentCode: KnockoutObservable<any>;
+        listRoleIndividual: KnockoutObservableArray<RoleIndividualDto> = ko.observableArray([]);
+        columns: KnockoutObservableArray<any>;
+        currentCode: KnockoutObservable<any> = ko.observable();
+
         //Date time picker
-        startDate: KnockoutObservable<string>;
-        endDate: KnockoutObservable<string>;
-        userName: KnockoutObservable<string>;
+        startDate: KnockoutObservable<string> = ko.observable('');
+        endDate: KnockoutObservable<string> = ko.observable('');
+        userName: KnockoutObservable<string> = ko.observable('');
+
         //Check Create
-        isCreate: KnockoutObservable<boolean>;
+        isCreate: KnockoutObservable<boolean> = ko.observable(false);;
         selectRoleIndividual: KnockoutObservable<RoleIndividual>;
-        userID : KnockoutObservable<string>; 
+        userID: KnockoutObservable<string> = ko.observable('');
+
         constructor() {
             var self = this;
-            self.listRoleType = ko.observableArray([]);
-            self.listCompany = ko.observableArray([]);
-            self.selectedRoleType = ko.observable('1');
-            self.selectedCompany = ko.observable('1');
-            this.listRoleIndividual = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'userID', width: 100 },
+                { headerText: 'GUID', key: 'GUID', width: 100, hidden: true },
+                { headerText: 'コード', key: 'loginID', width: 100 },
                 { headerText: '名称', key: 'userName', width: 150 },
-                { headerText: '説明', key: 'datePeriod', width: 150 }
+                { headerText: '説明', key: 'datePeriod', width: 230 }
             ]);
-            self.currentCode = ko.observable();
-            //Date time picker
-            self.startDate = ko.observable('');
-            self.endDate = ko.observable('');
-            self.userName = ko.observable('');
-            //check Create
-            self.userID = ko.observable('');
-            self.selectRoleIndividual = ko.observable(new RoleIndividual('', 0, '', '', ''));
-
-
+            self.selectRoleIndividual = ko.observable(new RoleIndividual({
+                GUID: "",
+                loginID: "",
+                companyID: "",
+                roleType: 0,
+                userID: "",
+                userName: "",
+                startValidPeriod: "",
+                endValidPeriod: "",
+            }));
 
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            service.getAll(self.selectedCompany(), self.selectedRoleType()).done(function(data) {
-                console.log(data);
+            service.getMetadata().done((data) => {
                 self.listRoleType(data.enumRoleType);
                 self.listCompany(data.listCompany);
-                self.listRoleIndividual(data.listGrantDto);
-                dfd.resolve();
-            });
+                // Select first item
+                self.selectedRoleType(data.enumRoleType[0].value);
+                self.selectedCompany(data.listCompany[0].companyId);
 
+                self.getData().done(() => {
+                    dfd.resolve();
+                });
+            });
             return dfd.promise();
         }
+
+        private getData(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getAll(self.selectedRoleType(), self.selectedCompany()).done((data: any) => {
+                let listGrantDto = _.map(data.listGrantDto, (item: IRoleIndividual) => {
+                    return new RoleIndividualDto(item);
+                });
+                self.listRoleIndividual(listGrantDto);
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
         openCAS012_B() {
             let self = this
             nts.uk.ui.windows.sub.modal("/view/cas/012/b/index.xhtml").onClosed(() => {
@@ -71,14 +89,15 @@ module nts.uk.com.view.cas012.a.viewmodel {
                 }
             });
         }
+
         openCAS012_C() {
             let self = this
             nts.uk.ui.windows.sub.modal("/view/cas/012/c/index.xhtml").onClosed(() => {
                 let returnDataScreenC = nts.uk.ui.windows.getShared("ReturnData");
                 self.selectedCompany(returnDataScreenC.decisionCompanyID);
-
             });
         }
+
         createBtn() {
             let self = this;
             self.isCreate(true);
@@ -87,6 +106,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
             self.endDate('');
             nts.uk.ui.errors.clearAll();
         }
+
         registryBtn() {
             let self = this;
             $(".nts-input").trigger("validate");
@@ -98,13 +118,52 @@ module nts.uk.com.view.cas012.a.viewmodel {
                 });
             }
         }
-        delete() {
+
+        deleteBtn() {
 
         }
     }
 
+    //server result
+    export interface IRoleIndividual {
+        GUID: string;
+        loginID: string 
+        companyID: string;
+        roleType: number;
+        userID: string;
+        userName: string;
+        startValidPeriod: string;
+        endValidPeriod: string;
+        
+    }
+    //Grid list 
+    export class RoleIndividualDto {
+        GUID: string;
+        loginID: string
+        companyID: string;
+        roleType: number;
+        userID: string;
+        userName: string;
+        startValidPeriod: string;
+        endValidPeriod: string;
+        datePeriod: string;
+
+        constructor(param: IRoleIndividual) {
+            this.GUID = param.GUID || nts.uk.util.randomId();
+            this.loginID = (param.loginID);
+            this.userID = (param.userID);
+            this.roleType = (param.roleType);
+            this.companyID = (param.companyID);
+            this.userName = (param.userName);
+            this.startValidPeriod = (param.startValidPeriod);
+            this.endValidPeriod = (param.endValidPeriod);
+            this.datePeriod = param.startValidPeriod + " ～ " + param.endValidPeriod;
+        }
+    }
 
     export class RoleIndividual {
+        GUID: string;
+        loginID: KnockoutObservable<string>;
         userID: KnockoutObservable<string>;
         roleType: KnockoutObservable<number>;
         companyID: KnockoutObservable<string>;
@@ -112,21 +171,14 @@ module nts.uk.com.view.cas012.a.viewmodel {
         startValidPeriod: KnockoutObservable<string>;
         endValidPeriod: KnockoutObservable<string>;
 
-        constructor(userID: string, roleType: number, companyID: string, startValidPeriod: string, endValidPeriod: string) {
-            this.userID = ko.observable(userID);
-            this.roleType = ko.observable(roleType);
-            this.companyID = ko.observable(companyID);
-            this.startValidPeriod = ko.observable(startValidPeriod);
-            this.endValidPeriod = ko.observable(endValidPeriod);
-
+        constructor(param: IRoleIndividual) {
+            this.GUID = param.GUID || nts.uk.util.randomId();
+            this.userID = ko.observable(param.userID);
+            this.roleType = ko.observable(param.roleType);
+            this.companyID = ko.observable(param.companyID);
+            this.startValidPeriod = ko.observable(param.startValidPeriod);
+            this.endValidPeriod = ko.observable(param.endValidPeriod);
         }
     }
-    export interface Screen {
-
-        roleType: number;
-        companyID: string;
-        userID: string;
-    }
-
 }
 

@@ -29,6 +29,6 @@ public class SacmtRoleIndiviGrantPK implements Serializable {
 	
 	@NotNull
 	@Column(name = "ROLE_TYPE")
-    public Integer roleType;
+    public int roleType;
 
 }

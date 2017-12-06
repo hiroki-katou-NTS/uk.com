@@ -1,11 +1,17 @@
 module nts.uk.com.view.cas012.a.service {
     var paths: any = {
+        getMetadata: "ctx/sys/auth/grant/roleindividual/getmetadata",
         getAll: "ctx/sys/auth/grant/roleindividual/findall",
-        create: "ctx/sys/auth/grant/roleindividual/create",
+        createRoleIndividual: "ctx/sys/auth/grant/roleindividual/create",
+        updateRoleIndividual: "ctx/sys/auth/grant/roleindividual/update",
         deleteRoleIndividual: "ctx/sys/auth/grant/roleindividual/delete"
     }
 
-    export function getAll(selectedCompany: string, selectedRoleType: number): JQueryPromise<any> {
+    export function getMetadata(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.getMetadata);
+    }
+    
+    export function getAll(selectedRoleType: number, selectedCompany: string): JQueryPromise<any> {
         var data = {
             selectedCompany: selectedCompany,
             selectedRoleType: selectedRoleType
@@ -14,7 +20,11 @@ module nts.uk.com.view.cas012.a.service {
     }
 
     export function create(roleIndividual: viewmodel.RoleIndividual): JQueryPromise<void> {
-        return nts.uk.request.ajax("com", paths.create, roleIndividual);
+        return nts.uk.request.ajax("com", paths.createRoleIndividual, roleIndividual);
+    }
+    
+    export function update(roleIndividual: viewmodel.RoleIndividual): JQueryPromise<void> {
+        return nts.uk.request.ajax("com", paths.updateRoleIndividual, roleIndividual);
     }
 
     export function deleteRoleIndividual(userID: string, companyID: string, selectedRoleType: number): JQueryPromise<any> {
