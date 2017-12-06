@@ -50,9 +50,9 @@ module nts.uk.ui.jqueryExtentions {
                 } 
                 case "cellAt": {
                     builder = $element.data("builder");
-                    let tbody: JQuery = this.container.find("tbody");
+                    let tbody: JQuery = builder.container.find("tbody");
                     let rowAt = tbody.find("tr:nth-child("+ option + ")");
-                    let cellAt = tbody.find("td:nth-child("+ option2 + ")");
+                    let cellAt = rowAt.find("td:nth-child("+ option2 + ")");
                     return {
                         element: cellAt,
                         data: cellAt.data("cell-data"),
@@ -62,19 +62,20 @@ module nts.uk.ui.jqueryExtentions {
                 } 
                 case "setCellValue": {
                     builder = $element.data("builder");
-                    let tbody: JQuery = this.container.find("tbody");
+                    let tbody: JQuery = builder.container.find("tbody");
                     let rowAt = tbody.find("tr:nth-child("+ option + ")");
-                    let cellAt = tbody.find("td:nth-child("+ option2 + ")");
+                    let cellAt = rowAt.find("td:nth-child("+ option2 + ")");
                     builder.setCellValue(cellAt.find("button"), option3);
+                    break;
                 } 
                 case "getSelectedCells": {
                     builder = $element.data("builder");
-                    let selectedButton = builder.find(".ntsButtonCellSelected");
+                    let selectedButton = builder.container.find(".ntsButtonCellSelected");
                     return _.map(selectedButton, function(c){
                         let button = $(c);
                         let cell = button.parent();
                         let rowIdx = parseInt(cell.parent().attr("data-idx"));
-                        let columnIdx = parseInt(cell.parent().attr("column-idx"));
+                        let columnIdx = parseInt(cell.attr("column-idx"));
                         return {
                             element: cell,
                             data: cell.data("cell-data"),
@@ -85,9 +86,9 @@ module nts.uk.ui.jqueryExtentions {
                 } 
                 case "setSelectedCell": {
                     builder = $element.data("builder");
-                    let tbody: JQuery = this.container.find("tbody");
+                    let tbody: JQuery = builder.container.find("tbody");
                     let rowAt = tbody.find("tr:nth-child("+ option + ")");
-                    let cellAt = tbody.find("td:nth-child("+ option2 + ")");
+                    let cellAt = rowAt.find("td:nth-child("+ option2 + ")");
                     if(!cellAt.hasClass("ntsButtonCellSelected")){
                         cellAt.addClass("ntsButtonCellSelected");
                     }
@@ -95,9 +96,9 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 case "clearSelectedCellAt": {
                     builder = $element.data("builder");
-                    let tbody: JQuery = this.container.find("tbody");
+                    let tbody: JQuery = builder.container.find("tbody");
                     let rowAt = tbody.find("tr:nth-child("+ option + ")");
-                    let cellAt = tbody.find("td:nth-child("+ option2 + ")");
+                    let cellAt = rowAt.find("td:nth-child("+ option2 + ")");
                     if(cellAt.hasClass("ntsButtonCellSelected")){
                         cellAt.removeClass("ntsButtonCellSelected");
                     }
@@ -110,12 +111,12 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 case "getDataCells": {
                     builder = $element.data("builder");
-                    let dataButton = builder.find(".ntsButtonCellData");
+                    let dataButton = builder.container.find(".ntsButtonCellData");
                     return _.map(dataButton, function(c){
                         let button = $(c);
                         let cell = button.parent();
                         let rowIdx = parseInt(cell.parent().attr("data-idx"));
-                        let columnIdx = parseInt(cell.parent().attr("column-idx"));
+                        let columnIdx = parseInt(cell.attr("column-idx"));
                         return {
                             element: cell,
                             data: cell.data("cell-data"),
@@ -237,6 +238,7 @@ module nts.uk.ui.jqueryExtentions {
                     button.addClass("ntsButtonCellData");   
                     button.attr("title", data.tooltip);
                     button.data("empty-cell", false);
+                    cell.data("cell-data", _.cloneDeep(data));
                 } else {
                     button.data("empty-cell", true);
                 }
@@ -286,23 +288,23 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             setCellValue(button: JQuery, data: any){
-                if(!isNull(data)){
-                    button.data("cell-data", _.cloneDeep(data));
+                let cell = button.parent(); 
+                if(!isNull(data) && !isEmpty(data.text)){
+                    cell.data("cell-data", _.cloneDeep(data));
                     button.text(data.text);
                     button.attr("title", data.tooltip);
                     button.addClass("ntsButtonCellData"); 
                     button.data("empty-cell", false);
                 } else {
-                    button.data("cell-data", null);
+                    cell.data("cell-data", null);
                     button.text("+");
                     button.removeAttr("title");
                     button.removeClass("ntsButtonCellData");
                     button.data("empty-cell", true);
                     data = {};
                 }
-                let cell = button.parent();
                 let rowIdx = parseInt(cell.parent().attr("data-idx"));
-                let columnIdx = parseInt(cell.parent().attr("column-idx"));
+                let columnIdx = parseInt(cell.attr("column-idx"));
                 this.source[rowIdx][columnIdx] = data;
             }
         }

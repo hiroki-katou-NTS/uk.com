@@ -15435,9 +15435,9 @@ var nts;
                             }
                             case "cellAt": {
                                 builder = $element.data("builder");
-                                var tbody = this.container.find("tbody");
+                                var tbody = builder.container.find("tbody");
                                 var rowAt = tbody.find("tr:nth-child(" + option + ")");
-                                var cellAt = tbody.find("td:nth-child(" + option2 + ")");
+                                var cellAt = rowAt.find("td:nth-child(" + option2 + ")");
                                 return {
                                     element: cellAt,
                                     data: cellAt.data("cell-data"),
@@ -15447,19 +15447,20 @@ var nts;
                             }
                             case "setCellValue": {
                                 builder = $element.data("builder");
-                                var tbody = this.container.find("tbody");
+                                var tbody = builder.container.find("tbody");
                                 var rowAt = tbody.find("tr:nth-child(" + option + ")");
-                                var cellAt = tbody.find("td:nth-child(" + option2 + ")");
+                                var cellAt = rowAt.find("td:nth-child(" + option2 + ")");
                                 builder.setCellValue(cellAt.find("button"), option3);
+                                break;
                             }
                             case "getSelectedCells": {
                                 builder = $element.data("builder");
-                                var selectedButton = builder.find(".ntsButtonCellSelected");
+                                var selectedButton = builder.container.find(".ntsButtonCellSelected");
                                 return _.map(selectedButton, function (c) {
                                     var button = $(c);
                                     var cell = button.parent();
                                     var rowIdx = parseInt(cell.parent().attr("data-idx"));
-                                    var columnIdx = parseInt(cell.parent().attr("column-idx"));
+                                    var columnIdx = parseInt(cell.attr("column-idx"));
                                     return {
                                         element: cell,
                                         data: cell.data("cell-data"),
@@ -15470,9 +15471,9 @@ var nts;
                             }
                             case "setSelectedCell": {
                                 builder = $element.data("builder");
-                                var tbody = this.container.find("tbody");
+                                var tbody = builder.container.find("tbody");
                                 var rowAt = tbody.find("tr:nth-child(" + option + ")");
-                                var cellAt = tbody.find("td:nth-child(" + option2 + ")");
+                                var cellAt = rowAt.find("td:nth-child(" + option2 + ")");
                                 if (!cellAt.hasClass("ntsButtonCellSelected")) {
                                     cellAt.addClass("ntsButtonCellSelected");
                                 }
@@ -15480,9 +15481,9 @@ var nts;
                             }
                             case "clearSelectedCellAt": {
                                 builder = $element.data("builder");
-                                var tbody = this.container.find("tbody");
+                                var tbody = builder.container.find("tbody");
                                 var rowAt = tbody.find("tr:nth-child(" + option + ")");
-                                var cellAt = tbody.find("td:nth-child(" + option2 + ")");
+                                var cellAt = rowAt.find("td:nth-child(" + option2 + ")");
                                 if (cellAt.hasClass("ntsButtonCellSelected")) {
                                     cellAt.removeClass("ntsButtonCellSelected");
                                 }
@@ -15495,12 +15496,12 @@ var nts;
                             }
                             case "getDataCells": {
                                 builder = $element.data("builder");
-                                var dataButton = builder.find(".ntsButtonCellData");
+                                var dataButton = builder.container.find(".ntsButtonCellData");
                                 return _.map(dataButton, function (c) {
                                     var button = $(c);
                                     var cell = button.parent();
                                     var rowIdx = parseInt(cell.parent().attr("data-idx"));
-                                    var columnIdx = parseInt(cell.parent().attr("column-idx"));
+                                    var columnIdx = parseInt(cell.attr("column-idx"));
                                     return {
                                         element: cell,
                                         data: cell.data("cell-data"),
@@ -15594,6 +15595,7 @@ var nts;
                                 button.addClass("ntsButtonCellData");
                                 button.attr("title", data.tooltip);
                                 button.data("empty-cell", false);
+                                cell.data("cell-data", _.cloneDeep(data));
                             }
                             else {
                                 button.data("empty-cell", true);
@@ -15644,24 +15646,24 @@ var nts;
                             cell.appendTo(container);
                         };
                         TableBuildingConstructor.prototype.setCellValue = function (button, data) {
-                            if (!isNull(data)) {
-                                button.data("cell-data", _.cloneDeep(data));
+                            var cell = button.parent();
+                            if (!isNull(data) && !isEmpty(data.text)) {
+                                cell.data("cell-data", _.cloneDeep(data));
                                 button.text(data.text);
                                 button.attr("title", data.tooltip);
                                 button.addClass("ntsButtonCellData");
                                 button.data("empty-cell", false);
                             }
                             else {
-                                button.data("cell-data", null);
+                                cell.data("cell-data", null);
                                 button.text("+");
                                 button.removeAttr("title");
                                 button.removeClass("ntsButtonCellData");
                                 button.data("empty-cell", true);
                                 data = {};
                             }
-                            var cell = button.parent();
                             var rowIdx = parseInt(cell.parent().attr("data-idx"));
-                            var columnIdx = parseInt(cell.parent().attr("column-idx"));
+                            var columnIdx = parseInt(cell.attr("column-idx"));
                             this.source[rowIdx][columnIdx] = data;
                         };
                         return TableBuildingConstructor;
