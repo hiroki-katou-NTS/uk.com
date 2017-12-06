@@ -48,9 +48,6 @@ module nts.uk.at.view.kml002.d.viewmodel {
                             let foundItem = _.find(self.listBudget(), (item: ItemModel) => {
                                 return item.name ==  nts.uk.resource.getText("KML002_109");
                             });
-                            let search = _.find(self.listBudget(), (item: ItemModel) => {
-                                return item.name ==  nts.uk.resource.getText("KML002_110");
-                            });
                             self.items([]);
                             self.rightItems([]);
                             self.currentCodeList.removeAll();
@@ -64,9 +61,6 @@ module nts.uk.at.view.kml002.d.viewmodel {
                     if(value){
                         let foundItem = _.find(self.listBudget(), (item: ItemModel) => {
                             return item.name ==  nts.uk.resource.getText("KML002_109");
-                        });
-                        let search = _.find(self.listBudget(), (item: ItemModel) => {
-                            return item.name ==  nts.uk.resource.getText("KML002_110");
                         });
                         self.items([]);
                         self.rightItems([]);
