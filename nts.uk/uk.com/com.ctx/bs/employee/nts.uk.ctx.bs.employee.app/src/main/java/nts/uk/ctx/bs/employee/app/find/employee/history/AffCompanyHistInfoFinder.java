@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -13,9 +14,12 @@ import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
-public class AffCompanyHistFinder implements PeregFinder<AffCompanyHistDto> {
+public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoDto> {
 	@Inject
 	AffCompanyHistRepository achFinder;
+	
+	@Inject
+	AffCompanyInfoRepository aciFinder;
 
 	@Override
 	public String targetCategoryCode() {
@@ -23,8 +27,8 @@ public class AffCompanyHistFinder implements PeregFinder<AffCompanyHistDto> {
 	}
 
 	@Override
-	public Class<AffCompanyHistDto> dtoClass() {
-		return AffCompanyHistDto.class;
+	public Class<AffCompanyHistInfoDto> dtoClass() {
+		return AffCompanyHistInfoDto.class;
 	}
 
 	@Override
