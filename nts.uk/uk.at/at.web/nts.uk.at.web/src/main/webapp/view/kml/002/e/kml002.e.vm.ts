@@ -407,7 +407,10 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         roundingAtr: self.selectedProcessing(),
                         unitPrice: self.uPCd(),
                         actualDisplayAtr: self.checked() ? 1 : 0,
-                        lstTimeUnitFuncs: formAmount
+                        lstTimeUnitFuncs: formAmount,
+                        roundingCd: self.roundingCd(),
+                        selectedProcessing: self.selectedProcessing(),
+                        uPCd: self.uPCd()
                     }
                 }
 
@@ -851,6 +854,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 };
 
                 self.rightItems.push(itemData);
+                self.roundingCd(self.currentData.timeUnit.roundingCd),
+                self.selectedProcessing(self.currentData.timeUnit.selectedProcessing),
+                self.uPCd(self.currentData.timeUnit.uPCd)
             });
         }
         bindDataMoney(lstMoney: any) {
