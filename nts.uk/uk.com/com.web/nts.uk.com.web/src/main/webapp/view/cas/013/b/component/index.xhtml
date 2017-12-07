@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+			<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'userID', comId: 'multi-list', 
+				items: listUser,  selectedKey: 'loginID', fields: ['userName', 'loginID'], mode: 'igGrid'}" />
+			<div class="valign-center control-group">
+				<div data-bind="ntsCheckBox: { checked: enable1 }">#{i18n.getText('CAS013_26')}</div>
+			</div>
+			<div class="valign-center control-group">
+				<div data-bind="ntsCheckBox: { checked: enable2 }">#{i18n.getText('CAS013_27')}</div>
+			</div>																																														
+			<table id="multi-list" data-bind="ntsGridList: {
+					height: 320,
+					options: listUser ,
+					optionsValue: 'userID',
+					columns: columns,
+					multiple: setting.multiple,
+					value: currentCode
+				}">
+			</table>
+	</ui:composition>
+</body>
+</html>

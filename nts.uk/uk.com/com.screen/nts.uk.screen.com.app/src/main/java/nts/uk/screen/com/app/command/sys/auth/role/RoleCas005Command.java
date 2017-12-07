@@ -2,15 +2,21 @@ package nts.uk.screen.com.app.command.sys.auth.role;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.shr.com.context.AppContexts;
 
-@Value
+@Getter
+@Setter
+@NoArgsConstructor
 public class RoleCas005Command {
 	/**
 	 * class Role : ロール
 	 */
 	
 	// Id
+	
 	private String roleId;
 
 	// コード RoleCode
@@ -57,4 +63,27 @@ public class RoleCas005Command {
 	 * class WorkPlaceAuthority : 所属職場権限
 	 */
 	private List<WorkPlaceAuthorityCommand> listWorkPlaceAuthority;
+	
+	public RoleCas005Command(String roleId, String roleCode, int roleType, int employeeReferenceRange, String name,
+			String contractCode, int assignAtr, String companyId, String webMenuCd, int scheduleEmployeeRef,
+			int bookEmployeeRef, int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit,
+			List<WorkPlaceAuthorityCommand> listWorkPlaceAuthority) {
+		super();
+		this.roleId = roleId;
+		this.roleCode = roleCode;
+		this.roleType = roleType;
+		this.employeeReferenceRange = employeeReferenceRange;
+		this.name = name;
+		this.contractCode = AppContexts.user().contractCode();
+		this.assignAtr = assignAtr;
+		this.companyId = AppContexts.user().companyId();
+		this.webMenuCd = webMenuCd;
+		this.scheduleEmployeeRef = scheduleEmployeeRef;
+		this.bookEmployeeRef = bookEmployeeRef;
+		this.employeeRefSpecAgent = employeeRefSpecAgent;
+		this.presentInqEmployeeRef = presentInqEmployeeRef;
+		this.futureDateRefPermit = futureDateRefPermit;
+		this.listWorkPlaceAuthority = listWorkPlaceAuthority;
+	}
+	
 }

@@ -5,6 +5,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.auth.app.command.employmentrole.DeleteEmploymentRoleCmd;
+import nts.uk.ctx.at.auth.app.command.employmentrole.DeleteEmploymentRoleCmdHandler;
+import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.DeleteWorkPlaceAuthorityCmd;
+import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.DeleteWorkPlaceAuthorityCmdHandler;
 import nts.uk.ctx.sys.auth.app.command.role.DeleteRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.role.DeleteRoleCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.DeleteRoleByRoleTiesCommand;
@@ -20,11 +24,11 @@ public class DeleteRoleCas005CommandHandler extends CommandHandler<DeleteRoleCas
 	@Inject
 	private DeleteRoleByRoleTiesCommandHanndler deleteRoleByRoleTiesCommandHanndler;
 	
-//	@Inject
-//	private DeleteEmploymentRoleCmdHandler deleteEmploymentRoleCmdHandler;
+	@Inject
+	private DeleteEmploymentRoleCmdHandler deleteEmploymentRoleCmdHandler;
 	
-//	@Inject
-//	private DeleteWorkPlaceAuthorityCmdHandler deleteWorkPlaceAuthorityCmdHandler;
+	@Inject
+	private DeleteWorkPlaceAuthorityCmdHandler deleteWorkPlaceAuthorityCmdHandler;
 	
 	
 	@Override
@@ -43,19 +47,18 @@ public class DeleteRoleCas005CommandHandler extends CommandHandler<DeleteRoleCas
 		deleteRoleByRoleTiesCommandHanndler.handle(DeleteRoleByRoleTiesCommand);
 		
 		//delete EmploymentRole
-//		DeleteEmploymentRoleCmd deleteEmploymentRoleCmd = new  DeleteEmploymentRoleCmd(
-//				companyId,
-//				roleId
-//				);
-//		deleteEmploymentRoleCmdHandler.handle(deleteEmploymentRoleCmd);
+		DeleteEmploymentRoleCmd deleteEmploymentRoleCmd = new DeleteEmploymentRoleCmd();
+		deleteEmploymentRoleCmd.setCompanyId(companyId);
+		deleteEmploymentRoleCmd.setRoleId(roleId);
+		
+		deleteEmploymentRoleCmdHandler.handle(deleteEmploymentRoleCmd);
 		
 		//delete WorkPlaceAuthority
 		
-//		DeleteWorkPlaceAuthorityCmd deleteWorkPlaceAuthorityCmd = new DeleteWorkPlaceAuthorityCmd(
-//				workPlaceAuthorityCommand.getRoleId(),
-//				companyId
-//				);
-//		deleteWorkPlaceAuthorityCmdHandler.handle(deleteWorkPlaceAuthorityCmd);
+		DeleteWorkPlaceAuthorityCmd deleteWorkPlaceAuthorityCmd = new DeleteWorkPlaceAuthorityCmd();
+		deleteWorkPlaceAuthorityCmd.setCompanyId(companyId);
+		deleteWorkPlaceAuthorityCmd.setRoleId(roleId);
+		deleteWorkPlaceAuthorityCmdHandler.handle(deleteWorkPlaceAuthorityCmd);
 	}
 
 }

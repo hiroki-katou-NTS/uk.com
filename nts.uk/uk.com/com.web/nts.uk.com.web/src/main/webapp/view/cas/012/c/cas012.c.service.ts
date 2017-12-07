@@ -1,6 +1,6 @@
 module nts.uk.com.view.cas012.c.service {
    var paths: any = {
-        getAll: "ctx/sys/auth/grant/roleindividual/findcompany",
+        getAll: "ctx/sys/auth/grant/roleindividual/getmetadata",
     }
     
     export function getAll() :JQueryPromise<any>{

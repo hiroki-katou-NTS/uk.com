@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.env.infra.useatr.repository;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.enterprise.inject.New;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -13,10 +12,6 @@ import nts.uk.ctx.sys.env.infra.useatr.entity.SacmtSysUsageSet;
 import nts.uk.ctx.sys.env.infra.useatr.entity.SacmtSysUsageSetPK;
 @Stateless
 public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepository{
-	// system usage setting
-	private final String SELECT_NO_WHERE = "SELECT c FROM SacmtSysUsageSet c ";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.sacmtSysUsageSetPK.companyId = :companyId AND c.sacmtSysUsageSetPK.companyCode = :companyCode AND c.sacmtSysUsageSetPK.contractCd = :contractCd";
-	
 	/**
 	 * convert from SacmtSysUsageSet entity to SysUsageSet domain
 	 * @param entity

@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SacmtRoleByRole
 public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleByRoleTiesRepository {
 
 	private static final String  GET_ROLE_BY_ROLE_TIES_BY_CODE = "SELECT c FROM SacmtRoleByRoleTies c "
-			+ " WHERE c.sacmtRoleByRoleTiesPK.roleId  = :roleId ";
+			+ " WHERE c.roleId  = :roleId ";
 	
 	@Override
 	public void insertRoleByRoleTies(RoleByRoleTies roleByRoleTies) {
@@ -37,6 +37,7 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 	@Override
 	public Optional<RoleByRoleTies> getRoleByRoleTiesById(String roleId) {
 		Optional<RoleByRoleTies> data = this.queryProxy().query(GET_ROLE_BY_ROLE_TIES_BY_CODE,SacmtRoleByRoleTies.class)
+				.setParameter("roleId", roleId)
 				.getSingle(c->c.toDomain());
 		return data;
 	}

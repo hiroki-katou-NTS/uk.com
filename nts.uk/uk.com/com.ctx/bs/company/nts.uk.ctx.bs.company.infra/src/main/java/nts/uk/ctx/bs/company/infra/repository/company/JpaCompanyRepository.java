@@ -6,7 +6,6 @@ package nts.uk.ctx.bs.company.infra.repository.company;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -14,11 +13,9 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
-import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtAddInfor;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtAddInforPK;
-import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompanyInfor;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompanyInforPK;
 
@@ -30,65 +27,26 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	private static final String GETALLCOMPANY;
 
-	public final String SELECT_BY_CID = "SELECT c FROM BcmmtCompany c WHERE c.cid = :cid" + " AND c.abolitionAtr = 0 "
-			+ " AND c.employmentSystem = 1 ";
+	public final String SELECT_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid" + " AND c.isAbolition = 0 ";
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM BcmmtCompany e");
-		builderString.append(" WHERE e.abolitionAtr = 0 ");
+		builderString.append(" FROM BcmmtCompanyInfor e");
+		builderString.append(" WHERE e.isAbolition = 0 ");
 		GETALLCOMPANY = builderString.toString();
 	}
 	/**
 	 * Bcmmt Company Infor author: Hoang Yen
 	 */
 	private final String SELECT_NO_WHERE = "SELECT c FROM BcmmtCompanyInfor c ";
-	private final String SELECT_COM = SELECT_NO_WHERE + "WHERE c.bcmmtCompanyInforPK.contractCd = :contractCd";
-	private final String SELECT_COM_CD = SELECT_COM + " AND c.bcmmtCompanyInforPK.companyCode = :companyCode AND c.bcmmtCompanyInforPK.companyId = :companyId";
-	private final String SELECT_COM_ABOLI = SELECT_NO_WHERE + " WHERE c.bcmmtCompanyInforPK.companyId != :companyId AND c.isAbolition = 1";
 	// bcmmt add infor
-	private final String SELECT_ADD_NO_WHERE = "SELECT  c FROM BcmmtAddInfor c ";
-	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
-
-	/**
-	 * @param entity
-	 * @return new Company(companyCode,companyName,companyId,isAboltiton)
-	 */
-	private static Company toSimpleDomain(BcmmtCompany entity) {
-		Company domain = Company.createFromJavaType(entity.getCcd(), entity.getCompanyName(), entity.getCid(),
-				entity.getAbolitionAtr(), entity.getPersonSystem(), entity.getEmploymentSystem(),
-				entity.getPayrollSystem());
-
-		return domain;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.CompanyRepository#getComanyId(java.lang.
-	 * String)
-	 */
-	@Override
-	public Optional<Company> getComanyById(String companyId) {
-		return this.queryProxy().find(companyId, BcmmtCompany.class).map(company -> this.toDomain(company));
-	}
-
-	/**
-	 * To domain.
-	 *
-	 * @param entity
-	 *            the entity
-	 * @return the company
-	 */
-	private Company toDomain(BcmmtCompany entity) {
-		return new Company(new JpaCompanyGetMemento(entity));
-	}
-
+	private final String COUNT_ALL = "SELECT COUNT(c.bcmmtCompanyInforPK.companyId) FROM BcmmtCompanyInfor c ";
+	private final String COUNT_ABOLISH = "SELECT COUNT(c.bcmmtCompanyInforPK.companyId) FROM BcmmtCompanyInfor c WHERE c.isAbolition = 1 AND c.bcmmtCompanyInforPK.companyId != :companyId ";
+	
 	@Override
 	public List<Company> getAllCompany() {
-		return this.queryProxy().query(GETALLCOMPANY, BcmmtCompany.class).getList(c -> toSimpleDomain(c));
+		return this.queryProxy().query(GETALLCOMPANY, BcmmtCompanyInfor.class).getList(c -> toDomainCom(c));
 	}
 
 	/**
@@ -96,24 +54,24 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 */
 	@Override
 	public Optional<Company> getComanyInfoByCid(String cid) {
-		BcmmtCompany entity = this.queryProxy().query(SELECT_BY_CID, BcmmtCompany.class).setParameter("cid", cid)
+		BcmmtCompanyInfor entity = this.queryProxy().query(SELECT_BY_CID, BcmmtCompanyInfor.class).setParameter("cid", cid)
 				.getSingleOrNull();
 		Company company = new Company();
 		if (entity != null) {
-			company = toSimpleDomain(entity);
+			company = toDomainCom(entity);
 		}
 		return Optional.of(company);
 	}
 
 	/**
 	 * convert from entity to domain
-	 * 
 	 * @param entity
-	 * @return author Hoang Yen
+	 * @return 
+	 * @author yennth
 	 */
-	private CompanyInforNew toDomainCom(BcmmtCompanyInfor entity) {
+	private Company toDomainCom(BcmmtCompanyInfor entity) {
 		AddInfor add = entity.bcmmtAddInfor == null ? null : toDomainAdd(entity.bcmmtAddInfor);
-		CompanyInforNew domain = CompanyInforNew.createFromJavaType(entity.companyCode,
+		Company domain = Company.createFromJavaType(entity.companyCode,
 				entity.companyName, entity.startMonth, entity.isAbolition,
 				entity.repname, entity.repost, entity.comNameKana, entity.shortComName,
 				entity.contractCd, entity.taxNo, add);
@@ -122,9 +80,9 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	/**
 	 * convert to domain address
-	 * 
 	 * @param entity  
-	 * @return author Hoang Yen
+	 * @return
+	 * @author yennth
 	 */
 	private static AddInfor toDomainAdd(BcmmtAddInfor entity) {
 		AddInfor domain = AddInfor.createFromJavaType(entity.bcmmtAddInforPK.companyId, entity.faxNum, entity.add_1,
@@ -134,11 +92,11 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	/**
 	 * change from company domain to company entity
-	 * 
 	 * @param domain
-	 * @return author: Hoang Yen
+	 * @return
+	 * @author yennth
 	 */
-	private static BcmmtCompanyInfor toEntityCom(CompanyInforNew domain) {
+	private static BcmmtCompanyInfor toEntityCom(Company domain) {
 		val entity = new BcmmtCompanyInfor();
 		entity.bcmmtCompanyInforPK = new BcmmtCompanyInforPK(domain.getCompanyId());
 		entity.companyCode = domain.getCompanyCode().v();
@@ -156,7 +114,13 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		}
 		return entity;
 	}
-
+	
+	/**
+	 * convert from domain address to entity address
+	 * @param domain
+	 * @return
+	 * @author yennth
+	 */
 	private static BcmmtAddInfor toEntityAdd(AddInfor domain) {
 		val entity = new BcmmtAddInfor();
 		entity.bcmmtAddInforPK = new BcmmtAddInforPK(domain.getCompanyId());
@@ -172,29 +136,30 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	/**
 	 * get all company in database 
-	 * author: Hoang Yen
+	 * @author yennth
 	 */
 	@Override
-	public List<CompanyInforNew> findAll() {
+	public List<Company> findAll() {
 		return this.queryProxy().query(SELECT_NO_WHERE, BcmmtCompanyInfor.class)
 				.getList(c -> toDomainCom(c));
 	}
 
 	/**
 	 * find company information by code 
-	 * author: Hoang Yen
+	 * @author yennth
 	 */
 	@Override
-	public Optional<CompanyInforNew> findComByCode(String companyId) {
+	public Optional<Company> find(String companyId) {
 		val pk = new BcmmtCompanyInforPK(companyId);
 		return this.queryProxy().find(pk, BcmmtCompanyInfor.class).map(x -> toDomainCom(x));
 	}
 	
 	/**
-	 * update a company author: Hoang Yen
+	 * update a company 
+	 * @author yennth
 	 */
 	@Override
-	public void updateCom(CompanyInforNew company) {
+	public void updateCom(Company company) {
 		BcmmtCompanyInfor entity = toEntityCom(company);
 		BcmmtCompanyInfor oldEntity = this.queryProxy().find(entity.bcmmtCompanyInforPK, BcmmtCompanyInfor.class).get();
 		oldEntity.repname = entity.repname;
@@ -210,16 +175,18 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	}
 
 	/**
-	 * insert a company author: Hoang Yen
+	 * insert a company
+	 * @author yennth
 	 */
 	@Override
-	public void insertCom(CompanyInforNew company) {
+	public void insertCom(Company company) {
 		BcmmtCompanyInfor entity = toEntityCom(company);
 		this.commandProxy().insert(entity);
 	}
 
 	/**
-	 * delete a company item author: Hoang Yen
+	 * delete a company item 
+	 * @author yennth
 	 */
 	@Override
 	public void deleteCom(String companyId, String contractCd, String companyCode) {
@@ -228,7 +195,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	}
 
 	/**
-	 * find Address author: Hoang Yen
+	 * find Address 
+	 * @author yennth
 	 */
 	@Override
 	public Optional<AddInfor> findAdd(String companyId) {
@@ -237,7 +205,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	}
 
 	/**
-	 * update address item author: Hoang Yen
+	 * update address item 
+	 * @author yennth
 	 */
 	@Override
 	public void updateAdd(AddInfor addInfor) {
@@ -253,7 +222,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	}
 
 	/**
-	 * insert address item author: Hoang Yen
+	 * insert address item 
+	 * @author yennth
 	 */
 	@Override
 	public void insertAdd(AddInfor addInfor) {
@@ -261,15 +231,19 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		this.commandProxy().insert(entity);
 	}
 
+	/**
+	 * check list company mustn't be abolished all 
+	 * @param currentCompanyId
+	 * @return
+	 * @author yennth
+	 */
 	@Override
 	public boolean checkAbolish(String currentCompanyId) {
 		// get all company
-		List<BcmmtCompanyInfor> listCompany = this.queryProxy().query(SELECT_NO_WHERE, BcmmtCompanyInfor.class).getList();
-		long totalCompany = listCompany.size();
+		long totalCompany = this.queryProxy().query(COUNT_ALL, Long.class).getSingle().get();
 		// filter by current company and abolish=true -> size 
-		List<BcmmtCompanyInfor> listTrue = listCompany.stream().filter(x -> x.isAbolition == 1 && !(x.bcmmtCompanyInforPK.companyId.equals(currentCompanyId)))
-				.collect(Collectors.toList());
-		long totalCompanyBy = listTrue.size();
-		return totalCompanyBy == totalCompany - 1;
+		long listTrueSize = this.queryProxy().query(COUNT_ABOLISH, Long.class)
+				.setParameter("companyId", currentCompanyId).getSingle().get();
+		return listTrueSize == totalCompany - 1;
 	}
 }
