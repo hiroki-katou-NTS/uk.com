@@ -547,7 +547,7 @@ public class LayoutFinderOld {
 		case CONTINUOUSHISTORY:
 		case NODUPLICATEHISTORY:
 		case DUPLICATEHISTORY:
-		case CONTINUOUS_HISTORY:
+		case CONTINUOUS_HISTORY_FOR_ENDDATE:
 			DateRangeItem dateRangeItem = perInfoCateRepo
 					.getDateRangeItemByCtgId(perInfoCategory.getPersonInfoCategoryId());
 			String startDateId = dateRangeItem.getStartDateItemId();
