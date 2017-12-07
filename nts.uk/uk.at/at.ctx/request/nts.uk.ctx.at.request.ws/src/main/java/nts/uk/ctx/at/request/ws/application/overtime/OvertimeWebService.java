@@ -48,7 +48,7 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("findByChangeAppDate")
 	public OverTimeDto findByChangeAppDate(ParamChangeAppDate param) {
-		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr());
+		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours());
 	}
 	@POST
 	@Path("checkConvertPrePost")
