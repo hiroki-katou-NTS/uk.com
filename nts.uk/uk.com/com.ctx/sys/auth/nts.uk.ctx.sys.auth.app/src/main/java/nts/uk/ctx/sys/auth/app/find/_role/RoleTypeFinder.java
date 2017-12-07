@@ -48,7 +48,7 @@ public class RoleTypeFinder {
 		}
 		
 		if (roleDtos.size() != 0) {
-			List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepository.findByRoleId(roleDtos.get(0).getRoleId(), companyId);
+			List<RoleIndividualGrant> listRoleIndividualGrant = null;
 
 			List<String> listUserID = listRoleIndividualGrant.stream().map(c -> c.getUserId()).distinct()
 					.collect(Collectors.toList());
@@ -69,7 +69,7 @@ public class RoleTypeFinder {
 		if (companyId == null)
 			return null;
 		
-		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepository.findByRoleId(roleId, companyId);
+		List<RoleIndividualGrant> listRoleIndividualGrant = null;
 
 		List<String> listUserID = listRoleIndividualGrant.stream().map(c -> c.getUserId()).distinct()
 				.collect(Collectors.toList());
@@ -90,7 +90,7 @@ public class RoleTypeFinder {
 		if (companyId == null)
 			return null;
 		
-		RoleIndividualGrant rGrant = roleIndividualGrantRepository.findByKey(userId, companyId, roleId);
+		RoleIndividualGrant rGrant = null;
 		User user = userRepository.getByUserID(userId).get();
 
 		RoleIndividualGrantDto grantDto = RoleIndividualGrantDto.fromDomain(rGrant, user.getUserName().v());
