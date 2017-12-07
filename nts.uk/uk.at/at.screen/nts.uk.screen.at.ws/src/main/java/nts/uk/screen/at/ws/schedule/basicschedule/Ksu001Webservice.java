@@ -83,19 +83,19 @@ public class Ksu001Webservice extends WebService {
 
 	@POST
 	@Path("getDataWkpSpecificDate")
-	public List<BigDecimal> getDataWkpSpecificDate(WorkplaceSpecificDateSetScreenParams params) {
+	public List<GeneralDate> getDataWkpSpecificDate(WorkplaceSpecificDateSetScreenParams params) {
 		return this.workplaceSpecificDateSetScreenProcessor.findDataWkpSpecificDateSet(params);
 	}
 
 	@POST
 	@Path("getDataComSpecificDate")
-	public List<BigDecimal> getDataComSpecificDate(StartDateEndDateScreenParams params) {
+	public List<GeneralDate> getDataComSpecificDate(StartDateEndDateScreenParams params) {
 		return this.comSpecificDateSetScreenProcessor.findDataComSpecificDateSet(params);
 	}
 
 	@POST
 	@Path("getDataPublicHoliday")
-	public List<BigDecimal> getDataPublicHoliday(StartDateEndDateScreenParams params) {
+	public List<GeneralDate> getDataPublicHoliday(StartDateEndDateScreenParams params) {
 		return this.publicHolidayScreenProcessor.findDataPublicHoliday(params);
 	}
 
