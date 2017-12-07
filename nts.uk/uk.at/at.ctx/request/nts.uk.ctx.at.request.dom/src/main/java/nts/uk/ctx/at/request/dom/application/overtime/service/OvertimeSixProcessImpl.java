@@ -203,15 +203,13 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	
 	/* 06-04-2_当日以外の場合 */
 	@Override
-	public List<OvertimeCheckResult> checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
-			RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours ) {
+	public List<CaculationTime> checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
+			RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport) {
 		// TODO
-		List<OvertimeCheckResult> result = new ArrayList<>();
-		OvertimeCheckResult overtimeCheckResult = new OvertimeCheckResult();
+		List<CaculationTime> result = new ArrayList<>();
+		CaculationTime overtimeCheckResult = new CaculationTime();
 		// Imported(申請承認)「計算残業時間」を取得する :TODO
 		List<OvertimeInputCaculation> overtimeInputCaculations = initOvertimeInputCaculation();
-		//Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != -1 && recordWorkInfoImport.getLeaveStampTimeFirst() != -1){
 			// 打刻あり
 			if(siftCD != recordWorkInfoImport.getWorkTimeCode()){
@@ -219,12 +217,17 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 				result = printColor(overtimeHours,overtimeInputCaculations);
 			}else{
 				// Imported(申請承認)「実績内容」.就業時間帯コード = 画面上の就業時間帯
-				
+				overtimeInputCaculations = recordWorkInfoImport.getOvertimeCaculation();
+				OvertimeInputCaculation overtimeInputCaculationShiftNight = new OvertimeInputCaculation(1, 11, recordWorkInfoImport.getShiftNightCaculation());
+				OvertimeInputCaculation overtimeInputCaculationFlex = new OvertimeInputCaculation(1, 12, recordWorkInfoImport.getFlexCaculation());
+				overtimeInputCaculations.add(overtimeInputCaculationShiftNight);
+				overtimeInputCaculations.add(overtimeInputCaculationFlex);
+				result = printColor(overtimeHours,overtimeInputCaculations);
 			}
 		}else{
 			// 出勤または退勤打刻なし
 			for(CaculationTime caculationTime : overtimeHours){
-				if(caculationTime.getApplicationTime() == 0){
+				if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() < 0){
 					overtimeCheckResult.setFrameNo(caculationTime.getFrameNo());
 					overtimeCheckResult.setErrorCode(2);
 					result.add(overtimeCheckResult);
@@ -235,12 +238,10 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	}
 	/* 06-04-3_当日の場合 */
 	@Override
-	public List<OvertimeCheckResult> checkDuringTheDay(String companyID, String employeeID, String appDate,
-			RequestAppDetailSetting requestAppDetailSetting, String siftCD, List<CaculationTime> overtimeHours) {
-		List<OvertimeCheckResult> result = new ArrayList<>();
+	public List<CaculationTime> checkDuringTheDay(String companyID, String employeeID, String appDate,
+			RequestAppDetailSetting requestAppDetailSetting, String siftCD, List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport) {
+		List<CaculationTime> result = new ArrayList<>();
 		List<OvertimeInputCaculation> overtimeInputCaculations = initOvertimeInputCaculation();
-		//Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 		if(recordWorkInfoImport.getLeaveStampTimeFirst() == -1){
 			// 退勤打刻なし
 			result = printColor(overtimeHours, overtimeInputCaculations);
@@ -249,6 +250,11 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			if(siftCD != recordWorkInfoImport.getWorkTimeCode()){
 				result = printColor(overtimeHours, overtimeInputCaculations);
 			}else{
+				overtimeInputCaculations = recordWorkInfoImport.getOvertimeCaculation();
+				OvertimeInputCaculation overtimeInputCaculationShiftNight = new OvertimeInputCaculation(1, 11, recordWorkInfoImport.getShiftNightCaculation());
+				OvertimeInputCaculation overtimeInputCaculationFlex = new OvertimeInputCaculation(1, 12, recordWorkInfoImport.getFlexCaculation());
+				overtimeInputCaculations.add(overtimeInputCaculationShiftNight);
+				overtimeInputCaculations.add(overtimeInputCaculationFlex);
 				result = printColor(overtimeHours, overtimeInputCaculations);
 			}
 			
@@ -271,7 +277,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 					"",
 					null,
 					overtimeInput.getApplicationTime().v().toString(),
-					null);
+					null,0);
 			caculations.add(caculationTime);
 		}
 		return caculations;
@@ -282,28 +288,35 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	 */
 	private List<OvertimeInputCaculation> initOvertimeInputCaculation(){
 		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
-		for(int i = 0; i < 10 ;i++){
+		for(int i = 0; i < 13 ;i++){
 			OvertimeInputCaculation overtimeInputCaculation = new  OvertimeInputCaculation(1,i, 0);
 			overtimeInputCaculations.add(overtimeInputCaculation);
 		}
 		
 		return overtimeInputCaculations;
 	}
-	private List<OvertimeCheckResult> printColor(List<CaculationTime> overtimeHours,List<OvertimeInputCaculation> overtimeInputCaculations){
-		List<OvertimeCheckResult> result = new ArrayList<>();
-		OvertimeCheckResult overtimeCheckResult = new OvertimeCheckResult();
+	private List<CaculationTime> printColor(List<CaculationTime> overtimeHours,List<OvertimeInputCaculation> overtimeInputCaculations){
+		List<CaculationTime> result = new ArrayList<>();
+		CaculationTime caculation = new CaculationTime();
 		for(CaculationTime caculationTime : overtimeHours){
 			for(OvertimeInputCaculation overtimeInput :overtimeInputCaculations){
 				if(caculationTime.getFrameNo() == overtimeInput.getFrameNo()){
 					if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() > overtimeInput.getResultCaculation()){
-						overtimeCheckResult.setFrameNo(caculationTime.getFrameNo());
-						overtimeCheckResult.setErrorCode(2);
-						result.add(overtimeCheckResult);
+						caculation.setFrameNo(caculationTime.getFrameNo());
+						caculation.setErrorCode(2);
+						caculation.setCaculationTime(Integer.toString(overtimeInput.getResultCaculation()));
+						result.add(caculation);
 					}
 				}
 			}
 		}
 		return result;
+	}
+	private int convertTime(String hours){
+		String[] parts = hours.split(":");
+		String hour = parts[0]; 
+		String minute = parts[1];
+		return Integer.parseInt(hour) * 60 + Integer.parseInt(minute);
 	}
 	
 }

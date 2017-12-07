@@ -48,4 +48,9 @@ public class CaculationTime {
 	 * 申請時間
 	 */
 	private String caculationTime;
+	
+	/**
+	 * errorCode
+	 */
+	private int errorCode;
 }

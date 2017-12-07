@@ -448,69 +448,69 @@
 			<label>#{i18n.getText('KAF005_120')}</label>
 			 <BR /> <BR /> 
 			<!--A12_3-->
-			<div data-bind = "if: referencePanelFlg()">
-				<label data-bind =" if: !(preAppPanelFlg())" style ="margin-left: 7px">#{i18n.getText('KAF005_121')}</label>
-				<div data-bind =" if: preAppPanelFlg()">
-					<div class="control-group" >
-					<!--A12_4 申請者-->
-					<label>#{i18n.getText('KAF005_122')} :</label>
-					<!--A12_5 申請者表示氏名-->
-					<label data-bind="text : appDatePre"></label>
+			<div data-bind = "if: referencePanelFlg() &amp; allPreAppPanelFlg()">
+					<label data-bind =" if: !(preAppPanelFlg())" style ="margin-left: 7px">#{i18n.getText('KAF005_121')}</label>
+					<div data-bind =" if: preAppPanelFlg()">
+						<div class="control-group" >
+						<!--A12_4 申請者-->
+						<label>#{i18n.getText('KAF005_122')} :</label>
+						<!--A12_5 申請者表示氏名-->
+						<label data-bind="text : appDatePre"></label>
+						</div>
+						<div class="control-group">
+						<!--A12_6-->
+						<label>#{i18n.getText('KAF005_123')} :</label>
+						<!--A12_7 -->
+						<label data-bind="text : workTypeCodePre"></label>
+						<!--A12_8-->
+						<label data-bind="text : workTypeNamePre"></label>
+						</div>
+						<div class="control-group">
+						<!--A12_9-->
+						<label>#{i18n.getText('KAF005_124')} :</label>
+						<!--A12_10-->
+						<label data-bind="text : siftCodePre"></label>
+						<!--A12_11-->
+						<label data-bind="text : siftNamePre"></label>
+						</div>
+						<div class="control-group">
+						<!--A12_12 -->
+						<label>#{i18n.getText('KAF005_125')} :</label>
+						<!--A12_13-->
+						<label data-bind="text : workClockFrom1To1Pre"></label>
+		<!-- 				A12_14 -->
+		<!-- 				<label>#{i18n.getText('KAF005_126')}</label> -->
+		<!-- 				A12_15 -->
+		<!-- 				<label data-bind="text : workClockTo1Pre"></label> -->
+						</div>
+						<div class="control-group" data-bind ="visible: displayWorkClockFrom2To2Pre">
+						<!--A12_28 -->
+						<label style ="margin-left: 72px" data-bind="text : workClockFrom2To2Pre"></label>
+		<!-- 				A12_29 -->
+		<!-- 				<label>#{i18n.getText('KAF005_126')}</label> -->
+		<!-- 				A12_30 -->
+		<!-- 				<label data-bind="text : workClockTo2Pre"></label> -->
+						</div>
+						
+						<div class="control-group" data-bind ="foreach: overtimeHoursPre">
+						<!--A12_24-->
+						<label  data-bind="text : frameName"></label>
+						<!--A12_25-->
+						<label data-bind="text : applicationTime"></label>
+						</div>
+						<div class="control-group">
+						<!--A12_24-->
+						<label>#{i18n.getText('KAF005_131')} :</label>
+						<!--A12_25-->
+						<label data-bind="text : overTimeShiftNightPre"></label>
+						</div>
+						<div class="control-group">
+						<!--A12_26-->
+						<label>#{i18n.getText('KAF005_132')} :</label>
+						<!--A12_27-->
+						<label data-bind="text : flexExessTimePre"></label>
+						</div>
 					</div>
-					<div class="control-group">
-					<!--A12_6-->
-					<label>#{i18n.getText('KAF005_123')} :</label>
-					<!--A12_7 -->
-					<label data-bind="text : workTypeCodePre"></label>
-					<!--A12_8-->
-					<label data-bind="text : workTypeNamePre"></label>
-					</div>
-					<div class="control-group">
-					<!--A12_9-->
-					<label>#{i18n.getText('KAF005_124')} :</label>
-					<!--A12_10-->
-					<label data-bind="text : siftCodePre"></label>
-					<!--A12_11-->
-					<label data-bind="text : siftNamePre"></label>
-					</div>
-					<div class="control-group">
-					<!--A12_12 -->
-					<label>#{i18n.getText('KAF005_125')} :</label>
-					<!--A12_13-->
-					<label data-bind="text : workClockFrom1To1Pre"></label>
-	<!-- 				A12_14 -->
-	<!-- 				<label>#{i18n.getText('KAF005_126')}</label> -->
-	<!-- 				A12_15 -->
-	<!-- 				<label data-bind="text : workClockTo1Pre"></label> -->
-					</div>
-					<div class="control-group" data-bind ="visible: displayWorkClockFrom2To2Pre">
-					<!--A12_28 -->
-					<label style ="margin-left: 72px" data-bind="text : workClockFrom2To2Pre"></label>
-	<!-- 				A12_29 -->
-	<!-- 				<label>#{i18n.getText('KAF005_126')}</label> -->
-	<!-- 				A12_30 -->
-	<!-- 				<label data-bind="text : workClockTo2Pre"></label> -->
-					</div>
-					
-					<div class="control-group" data-bind ="foreach: overtimeHoursPre">
-					<!--A12_24-->
-					<label  data-bind="text : frameName"></label>
-					<!--A12_25-->
-					<label data-bind="text : applicationTime"></label>
-					</div>
-					<div class="control-group">
-					<!--A12_24-->
-					<label>#{i18n.getText('KAF005_131')} :</label>
-					<!--A12_25-->
-					<label data-bind="text : overTimeShiftNightPre"></label>
-					</div>
-					<div class="control-group">
-					<!--A12_26-->
-					<label>#{i18n.getText('KAF005_132')} :</label>
-					<!--A12_27-->
-					<label data-bind="text : flexExessTimePre"></label>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>

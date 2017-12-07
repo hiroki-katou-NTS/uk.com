@@ -173,6 +173,10 @@ public class OverTimeDto {
 	 * 事前申請ラベル
 	 */
 	private boolean preAppPanelFlg;
+	/**
+	 * allPreAppPanelFlg
+	 */
+	private boolean allPreAppPanelFlg;
 	
 	/**
 	 * manualSendMailAtr
@@ -222,7 +226,8 @@ public class OverTimeDto {
 				false, 
 				false, 
 				0, 
-				false, 
+				false,
+				false,
 				false, 
 				false, 
 				null);

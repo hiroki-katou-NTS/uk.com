@@ -88,7 +88,7 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParam param) {
-		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr);
+		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours());
 	}
 }
 
@@ -104,4 +104,5 @@ class RecordWorkParam {
 	public String appDate;
 	public String siftCD;
 	public int prePostAtr;
+	public List<CaculationTime> overtimeHours;
 }
