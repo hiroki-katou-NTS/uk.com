@@ -45,6 +45,9 @@ public class RoleIndividualFinder {
 	public RoleIndividualDto findByCompanyAndRoleType(String companyID, int roleType) {
 
 		// Get list RoleIndividualGrant
+		if (roleType != RoleType.COMPANY_MANAGER.value)
+			companyID = COMPANY_ID_SYSADMIN;
+		
 		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByCompanyIdAndRoleType(companyID, roleType);
 
 		// Get list User information

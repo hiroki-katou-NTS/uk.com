@@ -61,11 +61,11 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 			return b.getEndDate().compareTo(a.getEndDate());
 		});
 
-		GeneralDate validStartDate = Collections.min(listCheckSysAdmin, Comparator.comparing(c -> c.getStartDate())).getStartDate();
-		GeneralDate validEndDate = Collections.max(listCheckSysAdmin, Comparator.comparing(c -> c.getEndDate())).getEndDate();
+		GeneralDate validStartDate = GeneralDate.max();
+		GeneralDate validEndDate = GeneralDate.max();
 
 		for (CheckSysAdmin checkSysAdmin : listCheckSysAdmin) {
-			if (checkSysAdmin.getEndDate().afterOrEquals(validEndDate) && checkSysAdmin.getStartDate().before(validStartDate)) {
+			if (checkSysAdmin.getStartDate().before(validStartDate) && checkSysAdmin.getEndDate().afterOrEquals(validEndDate)) {
 				validStartDate = checkSysAdmin.getStartDate();
 			}
 		}

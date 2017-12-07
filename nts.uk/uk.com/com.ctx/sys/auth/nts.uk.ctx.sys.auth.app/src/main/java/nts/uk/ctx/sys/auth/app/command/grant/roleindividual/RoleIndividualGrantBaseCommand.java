@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.auth.app.command.grant.roleindividual;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 @Getter
@@ -15,6 +16,7 @@ public class RoleIndividualGrantBaseCommand {
 
 	/** The company id. */
 	// 会社ID
+	@Setter
 	protected String companyID;
 
 	/** The role type. */
