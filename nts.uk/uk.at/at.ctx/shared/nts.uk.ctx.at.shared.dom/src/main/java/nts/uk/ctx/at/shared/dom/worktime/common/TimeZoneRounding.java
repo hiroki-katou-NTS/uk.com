@@ -51,6 +51,16 @@ public class TimeZoneRounding extends DomainObject {
 		memento.setEnd(this.end);
 	}
 
+	/**
+	 * Checks if is overlap.
+	 *
+	 * @param timezone the timezone
+	 * @return true, if is overlap
+	 */
+	public boolean isOverlap(TimeZoneRounding timezone) {
+		return this.start.greaterThanOrEqualTo(timezone.getStart()) && this.start.lessThanOrEqualTo(timezone.getEnd());
+	}
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */

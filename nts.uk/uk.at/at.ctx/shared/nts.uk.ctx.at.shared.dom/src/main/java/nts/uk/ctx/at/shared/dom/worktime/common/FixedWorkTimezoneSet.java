@@ -7,7 +7,10 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.collection.CollectionUtil;
 
 /**
  * The Class FixedWorkTimezoneSet.
@@ -33,6 +36,31 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento) {
 		this.lstWorkingTimezone = memento.getLstWorkingTimezone();
 		this.lstOTTimezone = memento.getLstOTTimezone();
+	}
+
+	@Override
+	public void validate() {
+		super.validate();
+		this.checkOverlap();
+	}
+
+	/**
+	 * Check overlap.
+	 */
+	private void checkOverlap() {
+		if (CollectionUtil.isEmpty(lstWorkingTimezone)) {
+			return;
+		}
+
+		val size = this.lstWorkingTimezone.size();
+		for (int i = 0; i < size; i++) {
+			for (int j = i + 1; j < size; j++) {
+				if (this.lstWorkingTimezone.get(i).getTimezone()
+						.isOverlap(this.lstWorkingTimezone.get(j).getTimezone())) {
+					throw new BusinessException("Msg_515");
+				}
+			}
+		}
 	}
 	
 	/**
