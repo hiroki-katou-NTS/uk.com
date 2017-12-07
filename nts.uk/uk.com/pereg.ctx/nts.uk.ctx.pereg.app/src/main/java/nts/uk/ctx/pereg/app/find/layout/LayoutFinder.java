@@ -290,7 +290,7 @@ public class LayoutFinder {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
 			if (peregDto != null) {
-				MappingFactory.mapSingleClsDto(peregDto, authClassItem);
+				MappingFactory.mapItemClassDto(peregDto, authClassItem);
 			}
 		} else {
 			switch (perInfoCategory.getCategoryType()) {
