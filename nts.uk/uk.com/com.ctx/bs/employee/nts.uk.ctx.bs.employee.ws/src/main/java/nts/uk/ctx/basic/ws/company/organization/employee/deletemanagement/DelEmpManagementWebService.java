@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.RestoreDataE
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDetailDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
-import nts.uk.ctx.bs.employee.app.find.employee.delete.EmployeeDeleteFinder;
+import nts.uk.ctx.bs.employee.app.find.employee.deletemanagement.EmployeeDeleteFinder;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 
@@ -59,7 +59,7 @@ public class DelEmpManagementWebService extends WebService {
 
 	@POST
 	@Path("deleteemployee")
-	public void delereEmployee(EmployeeDeleteCommand command) {
+	public void deleteEmployee(EmployeeDeleteCommand command) {
 		this.empDeleteHandler.handle(command);
 	}
 
