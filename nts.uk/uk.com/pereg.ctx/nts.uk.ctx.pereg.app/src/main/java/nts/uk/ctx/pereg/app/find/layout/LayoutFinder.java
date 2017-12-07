@@ -296,11 +296,14 @@ public class LayoutFinder {
 			switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
 				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-					PerInfoCtgData perInfoCtgData = perInCtgDataRepo
-							.getByPerIdAndCtgId(personId, perInfoCategory.getPersonInfoCategoryId()).get(0);
-					List<PersonInfoItemData> dataItems = perInItemDataRepo
-							.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-					matchPersDataForSingleClsItem(authClassItem, dataItems);
+					List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo
+							.getByPerIdAndCtgId(personId, perInfoCategory.getPersonInfoCategoryId());
+					if (!perInfoCtgDatas.isEmpty()) {
+						PerInfoCtgData perInfoCtgData = perInfoCtgDatas.get(0);
+						List<PersonInfoItemData> dataItems = perInItemDataRepo
+								.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+						matchPersDataForSingleClsItem(authClassItem, dataItems);
+					}
 				} else {
 					EmpInfoCtgData perInfoCtgData = empInCtgDataRepo
 							.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId())
