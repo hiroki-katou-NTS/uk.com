@@ -214,7 +214,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs ,
                 scheduleAtr: data.attributeId,
                 budgetAtr: data.attributeId,
-                unitAtr: 0
+                unitAtr: data.unit
             };
             service.getDailyItems(param).done(function(data) {
                 let temp = [];

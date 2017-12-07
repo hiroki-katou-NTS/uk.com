@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,8 +31,8 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 	@Override
 	public boolean checkSysAdmin(String userID, DatePeriod validPeriod) {
 
-		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findUserInDateRange(userID, validPeriod.start(), validPeriod.end());
-		if (!listRoleIndividualGrant.isEmpty()) {
+		Optional<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByUserAndRole(userID, RoleType.SYSTEM_MANAGER.value);
+		if (!listRoleIndividualGrant.isPresent()) {
 			return false;
 		}
 
@@ -60,11 +61,11 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 			return b.getEndDate().compareTo(a.getEndDate());
 		});
 
-		GeneralDate validStartDate = Collections.min(listCheckSysAdmin, Comparator.comparing(c -> c.getStartDate())).getStartDate();
-		GeneralDate validEndDate = Collections.max(listCheckSysAdmin, Comparator.comparing(c -> c.getEndDate())).getEndDate();
+		GeneralDate validStartDate = GeneralDate.max();
+		GeneralDate validEndDate = GeneralDate.max();
 
 		for (CheckSysAdmin checkSysAdmin : listCheckSysAdmin) {
-			if (checkSysAdmin.getEndDate().afterOrEquals(validEndDate) && checkSysAdmin.getStartDate().before(validStartDate)) {
+			if (checkSysAdmin.getStartDate().before(validStartDate) && checkSysAdmin.getEndDate().afterOrEquals(validEndDate)) {
 				validStartDate = checkSysAdmin.getStartDate();
 			}
 		}

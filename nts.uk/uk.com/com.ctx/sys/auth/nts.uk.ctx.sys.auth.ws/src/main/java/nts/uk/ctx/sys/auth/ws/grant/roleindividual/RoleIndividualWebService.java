@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.auth.ws.grant.roleindividual;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -8,6 +10,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandResult;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.RoleIndividualCommand;
@@ -16,6 +19,7 @@ import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividual
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantMetaDto;
+import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
 
 @Path("ctx/sys/auth/grant/roleindividual")
 @Produces("application/json")
@@ -47,8 +51,8 @@ public class RoleIndividualWebService extends WebService {
 
 	@POST
 	@Path("create")
-	public void create(CreateRoleIndividualGrantCommand command) {
-		this.createHandler.handle(command);
+	public CreateRoleIndividualGrantCommandResult create(CreateRoleIndividualGrantCommand command) {
+		return this.createHandler.handle(command);
 	}
 	
 	@POST
@@ -63,4 +67,11 @@ public class RoleIndividualWebService extends WebService {
 		this.deleteHandler.handle(command);
 	}
 
+	@POST
+	@Path("getRoleType")
+	public List<RoleTypeDto> GetRoleType() {
+		return this.roleIndividualFinder.GetRoleType();
+	}
+	
+	
 }

@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
@@ -15,11 +15,11 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.shr.com.i18n.TextResource;
 
 
 @Stateless
-@Transactional
-public class CreateRoleIndividualGrantCommandHandler extends CommandHandler<CreateRoleIndividualGrantCommand> {
+public class CreateRoleIndividualGrantCommandHandler extends CommandHandlerWithResult<CreateRoleIndividualGrantCommand, CreateRoleIndividualGrantCommandResult> {
 
 	@Inject
 	private RoleRepository roleRepository;
@@ -30,36 +30,38 @@ public class CreateRoleIndividualGrantCommandHandler extends CommandHandler<Crea
 	@Inject
 	private UserRepository userRepo;
 
+	private final String COMPANY_ID_SYSADMIN = "00000000000000000";
+
 	@Override
-	protected void handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {
+	protected CreateRoleIndividualGrantCommandResult handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {
 		CreateRoleIndividualGrantCommand command = context.getCommand();
+				
+		if (StringUtil.isNullOrEmpty(command.getUserID(), true)) {
+			throw new BusinessException("Msg_218", "CAS012_17");
+		}
+		
+		if (command.getRoleType() != RoleType.COMPANY_MANAGER.value)
+			command.setCompanyID(COMPANY_ID_SYSADMIN);
 		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepo.findByUserCompanyRoleType(command.getUserID(), command.getCompanyID(), command.getRoleType());
-		/////////////
 		if (roleIndividualGrant.isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
-		if (command.getUserID() == null) {
-			throw new BusinessException("Msg_218");
-		}
 		
-		Role sysAdminRole = roleRepository.findByType(RoleType.SYSTEM_MANAGER.value).get(0);
+		Role uniqueRole = roleRepository.findByType(command.getRoleType()).get(0);
 		
-		// ドメインモデル「ロール個人別付与」を新規登録する
-		// Register a domain model "Role individual grant"
-		RoleIndividualGrant domain = command.toDomain(sysAdminRole.getRoleId());
+		// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
+		RoleIndividualGrant domain = command.toDomain(uniqueRole.getRoleId());
 		roleIndividualGrantRepo.add(domain);
 
 		if (command.isSetRoleAdminFlag() == true) {
 			RoleIndividualGrant roleIndiGrantSys = RoleIndividualGrant.createFromJavaType(
 					command.getUserID(),
-					sysAdminRole.getRoleId(),
+					uniqueRole.getRoleId(),
 					command.getDecisionCompanyID(),
 					command.getRoleType(),
 					command.getStartValidPeriod(),
 					command.getEndValidPeriod());
-			// ドメインモデル「ロール個人別付与」を新規登録する
-			// Register a domain model "Role individual grant"
-			// param companyID = decisionCompanyID()
+			// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
 			roleIndividualGrantRepo.add(roleIndiGrantSys);
 		}
 		
@@ -67,5 +69,7 @@ public class CreateRoleIndividualGrantCommandHandler extends CommandHandler<Crea
 		if (user.get().isDefaultUser() == true) {
 			user.get().setExpirationDate(command.getEndValidPeriod());
 		}
+		
+		return new CreateRoleIndividualGrantCommandResult(domain.getCompanyId(), domain.getUserId(), domain.getRoleType().value);
 	}
 }

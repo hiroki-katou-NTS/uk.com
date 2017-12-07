@@ -14,8 +14,11 @@ import nts.uk.ctx.bs.company.dom.company.primitive.KNName;
 import nts.uk.ctx.bs.company.dom.company.primitive.RepJob;
 import nts.uk.ctx.bs.company.dom.company.primitive.RepName;
 import nts.uk.ctx.bs.company.dom.company.primitive.TaxNo;
-
-
+/**
+ * 会社情報
+ * @author yennth
+ *
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

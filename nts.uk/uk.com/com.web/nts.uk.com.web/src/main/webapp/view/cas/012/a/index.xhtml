@@ -21,7 +21,7 @@
 			<div id="functions-area">
 				<button tabindex="1" data-bind="click: createBtn">#{i18n.getText('CAS0012_4')}</button>
 				<button class="proceed" tabindex="2" data-bind="click : registryBtn">#{i18n.getText('CAS0012_5')}</button>
-				<button class="danger" tabindex="3" data-bind="click: deleteBtn">#{i18n.getText('CAS0012_6')}</button>
+				<button class="danger" tabindex="3" data-bind="click: deleteBtn, enable: !isCreate()">#{i18n.getText('CAS0012_6')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="container">

@@ -27,13 +27,8 @@ module nts.uk.com.view.cas012.a.service {
         return nts.uk.request.ajax("com", paths.updateRoleIndividual, roleIndividual);
     }
 
-    export function deleteRoleIndividual(userID: string, companyID: string, roleType: number): JQueryPromise<any> {
-        var data = {
-            userID: userID,
-            companyID: companyID,
-            selectedRoleType: roleType
-        };
-        return nts.uk.request.ajax("com", paths.deleteRoleIndividual, data);
+    export function deleteRoleIndividual(roleIndividual: viewmodel.RoleIndividualGrantBaseCommand): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.deleteRoleIndividual, roleIndividual);
     }
 
 }

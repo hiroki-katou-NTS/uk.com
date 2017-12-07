@@ -6,10 +6,7 @@ package nts.uk.ctx.sys.auth.dom.grant.roleindividual;
 
 import java.util.List;
 import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
-
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 /**
  * The Interface RoleIndividualGrantRepository.
@@ -24,20 +21,16 @@ public interface RoleIndividualGrantRepository {
 	Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate today);
 	
 	/** Find by user and role */
-	Optional<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType);
+	Optional<RoleIndividualGrant> findByUserAndRole(String userId, int roleType);
 
 	Optional<RoleIndividualGrant> findByUserCompanyRoleType(String userID, String companyID, int roleType);
 
 	Optional<RoleIndividualGrant> findByKey(String userId, String companyId, String roleId);
-	
-	/** Find by user */
-	List<RoleIndividualGrant> findUserInDateRange(String userId, GeneralDate startDate, GeneralDate endDate);
 
 	/** Find all by role type */
 	List<RoleIndividualGrant> findByRoleType(int roleType);
 
 	List<RoleIndividualGrant> findByRoleId(String roleId);
-
 
 	List<RoleIndividualGrant> findByCompanyIdAndRoleType(String companyID, int roleType);
 

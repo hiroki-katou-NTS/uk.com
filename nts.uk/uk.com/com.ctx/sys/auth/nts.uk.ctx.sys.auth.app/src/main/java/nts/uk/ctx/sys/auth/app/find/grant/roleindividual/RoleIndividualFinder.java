@@ -11,8 +11,10 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.auth.app.find._role.RoleDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantMetaDto;
+import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
@@ -43,6 +45,9 @@ public class RoleIndividualFinder {
 	public RoleIndividualDto findByCompanyAndRoleType(String companyID, int roleType) {
 
 		// Get list RoleIndividualGrant
+		if (roleType != RoleType.COMPANY_MANAGER.value)
+			companyID = COMPANY_ID_SYSADMIN;
+		
 		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByCompanyIdAndRoleType(companyID, roleType);
 
 		// Get list User information
@@ -68,6 +73,7 @@ public class RoleIndividualFinder {
 			// Add to list
 			RoleIndividualGrantDto dto = new RoleIndividualGrantDto(
 					roleIndividualGrant.getCompanyId(),
+					roleIndividualGrant.getRoleId(),
 					roleIndividualGrant.getRoleType().value,
 					loginID,
 					roleIndividualGrant.getUserId(), 
@@ -92,4 +98,13 @@ public class RoleIndividualFinder {
 		return new RoleIndividualGrantMetaDto(enumRoleType, listCompanyImport);
 	}
 
+	public List<RoleTypeDto> GetRoleType(){
+		List<RoleTypeDto> roleTypeDtos = new ArrayList<>();
+		for (RoleType r : RoleType.values()) {
+			roleTypeDtos.add(new RoleTypeDto(r.value, r.nameId, r.description));
+		}
+		return roleTypeDtos;
+	}
+	
+	
 }
