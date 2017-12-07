@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 
 /**
  * item def dto which declare fields for displaying layout
@@ -30,6 +31,11 @@ public class PerInfoItemDefForLayoutDto {
 	private String itemName;
 	
 	private int itemDefType;
+	
+	/**
+	 * combo box value list when item type selection
+	 */
+	private List<ComboBoxObject> lstComboxBoxValue;
 	
 	private List<PerInfoItemDefForLayoutDto> lstChildItemDef;
 

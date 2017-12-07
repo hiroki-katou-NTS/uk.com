@@ -50,8 +50,8 @@ public class MappingFactory {
 	public static void mapListClsDto(EmpMaintLayoutDto empMaintLayoutDto, PeregDto peregDto,
 			List<PerInfoItemDefForLayoutDto> lstClsItem) {
 		// get dto value
-		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
-		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem, peregDto.getDomainDto().getRecordId());
+		Map<String, Object> dtoValue = peregDto == null ? new HashMap<String, Object>() : getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
+		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem, peregDto == null ? null : peregDto.getDomainDto().getRecordId());
 	}
 
 	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, Map<String, Object> dtoFieldValue,
@@ -95,6 +95,7 @@ public class MappingFactory {
 	private static Map<String, Object> getDtoValue(PeregDomainDto domainDto, Class<?> dtoClass) {
 		// Map<itemcode, Object: value of field>
 		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
+		if(domainDto == null) return itemCodeValueMap;
 		FieldsWorkerStream lstField = AnnotationUtil.getStreamOfFieldsAnnotated(dtoClass, PeregItem.class);
 		lstField.forEach(field -> {
 			String itemCode = field.getAnnotation(PeregItem.class).value();
