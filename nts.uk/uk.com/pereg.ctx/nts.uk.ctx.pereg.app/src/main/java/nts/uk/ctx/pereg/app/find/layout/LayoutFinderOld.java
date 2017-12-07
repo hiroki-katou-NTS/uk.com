@@ -15,28 +15,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
-import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
-import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
-import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
-import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
-import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
-import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
-import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
-import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
-import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
-import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
@@ -90,38 +70,6 @@ public class LayoutFinderOld {
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCateRepo;
-
-	@Inject
-	private PersonRepository personRepo;
-
-	// @Inject private PersonInfoRoleAuthRepository persInfoRoleAuthRepo;
-
-	@Inject
-	private CurrentAddressRepository currentAddressRepo;
-
-	@Inject
-	private WidowHistoryRepository widowHistoryRepo;
-
-	@Inject
-	private TempAbsItemRepository tempAbsenceRepo;
-
-	@Inject
-	private JobTitleMainRepository jobTitMainRepo;
-
-	@Inject
-	private AssignedWrkplcRepository assWorkPlaceRepo;
-
-	@Inject
-	private AffDepartmentRepository affDepartmentRepo;
-
-	@Inject
-	private SubJobPosRepository subJobPosRepo;
-
-	@Inject
-	private PersonEmergencyCtRepository perEmerContRepo;
-
-	@Inject
-	private FamilyMemberRepository familyRepo;
 
 	// inject category-data-repo
 	@Inject
@@ -331,37 +279,6 @@ public class LayoutFinderOld {
 		if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			// PERSON
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
-				// FIXED CASE
-				switch (perInfoCategory.getCategoryCode().v()) {
-				case "CS00001":
-					// Person
-					Person person = personRepo.getByPersonId(personId).get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem, person,
-							null);
-					matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
-							perInItemDataRepo.getAllInfoItemByRecordId(personId));
-					break;
-				case "CS00003":
-					// CurrentAddress
-					Optional<CurrentAddress> currentAddressOpt = currentAddressRepo.getByPerIdAndStd(personId,
-							standandDate);
-					if (currentAddressOpt.isPresent()) {
-						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-								currentAddressOpt.get(), null);
-						matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
-								perInItemDataRepo
-										.getAllInfoItemByRecordId(currentAddressOpt.get().getCurrentAddressId()));
-					}
-					break;
-				case "CS00014":
-					// WidowHistory
-					WidowHistory widowHistory = widowHistoryRepo.get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							widowHistory, null);
-					matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
-							perInItemDataRepo.getAllInfoItemByRecordId(widowHistory.getWidowHistoryId()));
-					break;
-				}
 			} else {
 				// UNFIXED CASE
 				if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
@@ -383,65 +300,7 @@ public class LayoutFinderOld {
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 				// FIXED CASE
 				switch (perInfoCategory.getCategoryCode().v()) {
-				case "CS00002":
-					Employee employee = employeeRepo.getBySid(employeeId).get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							employee, null);
-					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-							empInItemDataRepo.getAllInfoItemByRecordId(employeeId));
-					break;
-				case "CS00008":
-					Optional<TempAbsenceHisItem> tempAbsc = tempAbsenceRepo.getItemByEmpIdAndReferDate(employeeId,
-							standandDate);
-					if (tempAbsc.isPresent()) {
-						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-								tempAbsc.get(), null);
-						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-								empInItemDataRepo.getAllInfoItemByRecordId(tempAbsc.get().getHistoryId()));
-					}
-					break;
-				case "CS00009":
-					// Job Title Main
-					Optional<JobTitleMain> jobTitleMainOpt = jobTitMainRepo.getByEmpIdAndStandDate(employeeId,
-							standandDate);
-					if (jobTitleMainOpt.isPresent()) {
-						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-								jobTitleMainOpt.get(), null);
-						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-								empInItemDataRepo.getAllInfoItemByRecordId(jobTitleMainOpt.get().getJobTitleId()));
-					}
-					break;
-				case "CS00010":
-					// Assigned Work Place
-					AssignedWorkplace assignedWorkplace = assWorkPlaceRepo
-							.getByEmpIdAndStandDate(employeeId, standandDate).get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							assignedWorkplace, null);
-					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-							empInItemDataRepo.getAllInfoItemByRecordId(assignedWorkplace.getAssignedWorkplaceId()));
-					break;
-				case "CS00011":
-					// Affiliation Department
-					Optional<AffiliationDepartment> affDepartmentOpt = affDepartmentRepo
-							.getByEmpIdAndStandDate(employeeId, standandDate);
-					if (affDepartmentOpt.isPresent()) {
-						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-								affDepartmentOpt.get(), null);
-						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-								empInItemDataRepo.getAllInfoItemByRecordId(affDepartmentOpt.get().getDepartmentId()));
-					}
-					break;
-				case "CS00012":
-					// Sub Job Position
-					Optional<SubJobPosition> subJobPositionOpt = subJobPosRepo.getByEmpIdAndStandDate(employeeId,
-							standandDate);
-					if (subJobPositionOpt.isPresent()) {
-						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-								subJobPositionOpt.get(), null);
-						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-								empInItemDataRepo.getAllInfoItemByRecordId(subJobPositionOpt.get().getAffiDeptId()));
-					}
-					break;
+				
 				}
 			} else {
 				// UNFIXED CASE
@@ -478,26 +337,6 @@ public class LayoutFinderOld {
 		if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 				// FIXED
-				switch (perInfoCategory.getCategoryCode().v()) {
-				case "CS00015":
-					// Person Emergency Contact
-					List<PersonEmergencyContact> perEmerConts = perEmerContRepo.getListbyPid(personId);
-					Map<String, List<LayoutPersonInfoValueDto>> ecMapFixedData = ItemDefinitionFactory
-							.matchPersEmerConts(authClassItem, perEmerConts);
-					Map<String, List<LayoutPersonInfoValueDto>> ecMapOptionData = getPersDataOptionalForListClsItem(
-							perInfoCategory.getCategoryCode().v(), authClassItem, personId);
-					authClassItem.setItems(mapFixDataWithOptionData(ecMapFixedData, ecMapOptionData));
-					break;
-				case "CS00004":
-					// Family
-					List<FamilyMember> families = familyRepo.getListByPid(personId);
-					Map<String, List<LayoutPersonInfoValueDto>> fMapFixedData = ItemDefinitionFactory
-							.matchFamilies(authClassItem, families);
-					Map<String, List<LayoutPersonInfoValueDto>> fMapOptionData = getPersDataOptionalForListClsItem(
-							perInfoCategory.getCategoryCode().v(), authClassItem, personId);
-					authClassItem.setItems(mapFixDataWithOptionData(fMapFixedData, fMapOptionData));
-					break;
-				}
 			} else {
 				// UNFIXED
 				Map<String, List<LayoutPersonInfoValueDto>> mapOptionData = getPersDataOptionalForListClsItem(
@@ -506,17 +345,6 @@ public class LayoutFinderOld {
 			}
 		} else if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
-				switch (perInfoCategory.getCategoryCode().v()) {
-				case "CS00012":
-					// Sub Job Position
-					List<SubJobPosition> subJobPoses = subJobPosRepo.getByEmpId(employeeId);
-					Map<String, List<LayoutPersonInfoValueDto>> sjpMapFixedData = ItemDefinitionFactory
-							.matchsubJobPoses(authClassItem, subJobPoses);
-					Map<String, List<LayoutPersonInfoValueDto>> sjpMapOptionData = getPersDataOptionalForListClsItem(
-							perInfoCategory.getCategoryCode().v(), authClassItem, personId);
-					authClassItem.setItems(mapFixDataWithOptionData(sjpMapFixedData, sjpMapOptionData));
-					break;
-				}
 			} else {
 				// UNFIXED
 				Map<String, List<LayoutPersonInfoValueDto>> mapOptionData = getEmpDataForListClsItem(
@@ -547,7 +375,7 @@ public class LayoutFinderOld {
 		case CONTINUOUSHISTORY:
 		case NODUPLICATEHISTORY:
 		case DUPLICATEHISTORY:
-		case CONTINUOUS_HISTORY:
+		case CONTINUOUS_HISTORY_FOR_ENDDATE:
 			DateRangeItem dateRangeItem = perInfoCateRepo
 					.getDateRangeItemByCtgId(perInfoCategory.getPersonInfoCategoryId());
 			String startDateId = dateRangeItem.getStartDateItemId();
@@ -667,26 +495,6 @@ public class LayoutFinderOld {
 			resultMap.put(perInfoCtgData.getRecordId(), ctgDataList);
 		});
 		return resultMap;
-	}
-
-	/**
-	 * @param mapFixData
-	 * @param mapOptionData
-	 * @return Target: map data of fixed items with optional items
-	 */
-	private List<Object> mapFixDataWithOptionData(Map<String, List<LayoutPersonInfoValueDto>> mapFixData,
-			Map<String, List<LayoutPersonInfoValueDto>> mapOptionData) {
-		List<Object> resultList = new ArrayList<Object>();
-		mapFixData.forEach((domainId, fixDataList) -> {
-			List<LayoutPersonInfoValueDto> optionDataList = mapOptionData.get(domainId);
-			if (optionDataList != null) {
-				List<LayoutPersonInfoValueDto> rowList = new ArrayList<>();
-				rowList.addAll(fixDataList);
-				rowList.addAll(optionDataList);
-				resultList.add(rowList);
-			}
-		});
-		return resultList;
 	}
 
 	/**

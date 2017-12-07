@@ -170,12 +170,12 @@ module cps001.a.vm {
                         layout.listItemClsDto(data.classificationItems || []);
                     });
 
-                } else {
+                } /*else {
                     layout.layoutCode(undefined);
                     layout.layoutName(undefined);
                     layout.standardDate(undefined);
                     layout.listItemClsDto([]);
-                }
+                }*/
             });
 
             category.id.subscribe(id => {
@@ -188,11 +188,19 @@ module cps001.a.vm {
                         personId: undefined,
                         infoId: undefined
                     };
-
-                    service.getCatData(query).done(data => {
-                        layout.listItemClsDto.removeAll();
-                        layout.listItemClsDto(data.classificationItems);
-                    });
+                    let cat = _.find(self.listCategory(), x => x.id == id);
+                    if (cat) {
+                        category.categoryCode(cat.categoryCode);
+                        category.categoryName(cat.categoryName);
+                        category.categoryType(cat.categoryType);
+                        category.isFixed(cat.isFixed);
+                        debugger;
+                        service.getCatData(query).done(data => {
+                            debugger;
+                            //layout.listItemClsDto.removeAll();
+                            layout.listItemClsDto(data.classificationItems);
+                        });
+                    }
                 }
             });
 
