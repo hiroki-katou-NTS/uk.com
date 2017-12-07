@@ -12,11 +12,16 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInfor;
 import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforRepository;
+/**
+ * update DivWorkPlaceDifferInfor Command Handler
+ * @author yennth
+ */
 @Stateless
 public class UpdateDivWorkPlaceDifferInforCommandHandler extends CommandHandler<UpdateDivWorkPlaceDifferInforCommand>{
 	@Inject
 	private DivWorkDifferInforRepository divRep;
 
+	// update a item
 	@Override
 	protected void handle(CommandHandlerContext<UpdateDivWorkPlaceDifferInforCommand> context) {
 		UpdateDivWorkPlaceDifferInforCommand data = context.getCommand();

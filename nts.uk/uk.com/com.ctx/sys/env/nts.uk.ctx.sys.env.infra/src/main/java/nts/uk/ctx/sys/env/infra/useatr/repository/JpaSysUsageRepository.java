@@ -65,6 +65,7 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 		oldEntity.jinji = entity.jinji;
 		oldEntity.shugyo = entity.shugyo;
 		oldEntity.kyuyo = entity.kyuyo;
+		this.commandProxy().update(oldEntity);
 	}
 
 	/**
