@@ -26,6 +26,12 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	/** The lst OT timezone. */
 	// 残業時間帯
 	private List<OverTimeOfTimeZoneSet> lstOTTimezone;
+	
+	/** The Constant EMPLOYMENT_TIME_FRAME_NO_ONE. */
+	public static final int EMPLOYMENT_TIME_FRAME_NO_ONE = 1;
+	
+	/** The Constant WORK_TIME_ZONE_NO_ONE. */
+	public static final int WORK_TIME_ZONE_NO_ONE = 1;
 
 	/**
 	 * Instantiates a new fixed work timezone set.
@@ -37,6 +43,27 @@ public class FixedWorkTimezoneSet extends DomainObject {
 		this.lstOTTimezone = memento.getLstOTTimezone();
 	}
 
+	/**
+	 * Gets the over time of time zone set.
+	 *
+	 * @param workTimezoneNo the work timezone no
+	 * @return the over time of time zone set
+	 */
+	public OverTimeOfTimeZoneSet getOverTimeOfTimeZoneSet(int workTimezoneNo) {
+		return this.lstOTTimezone.stream().filter(overtime -> overtime.getWorkTimezoneNo().v() == workTimezoneNo)
+				.findFirst().get();
+	}
+	
+	/**
+	 * Gets the em time zone set.
+	 *
+	 * @param employmentTimeFrameNo the employment time frame no
+	 * @return the em time zone set
+	 */
+	public EmTimeZoneSet getEmTimeZoneSet(int employmentTimeFrameNo) {
+		return this.lstWorkingTimezone.stream()
+				.filter(timezone -> timezone.getEmploymentTimeFrameNo().v() == employmentTimeFrameNo).findFirst().get();
+	}
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
@@ -44,6 +71,34 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	public void validate() {
 		super.validate();
 		this.checkOverlap();
+		this.checkSetting();
+	}
+	
+	/**
+	 * Check setting.
+	 */
+	private void checkSetting() {
+		if (CollectionUtil.isEmpty(this.lstWorkingTimezone)) {
+			return;
+		}
+
+		// 開始 = 就業時間帯NO=1の場合の就業時間の時間帯設定.時間帯. 開始
+		EmTimeZoneSet enEmTimeZoneSet = this.getEmTimeZoneSet(EMPLOYMENT_TIME_FRAME_NO_ONE);
+		int startTimeZone = enEmTimeZoneSet.getTimezone().getStart().valueAsMinutes();
+		int endTimeZone = enEmTimeZoneSet.getTimezone().getEnd().valueAsMinutes();
+
+		// 開始 = 時間帯設定.時間帯. 開始
+		OverTimeOfTimeZoneSet overTimeOfTimeZoneSet = this.getOverTimeOfTimeZoneSet(WORK_TIME_ZONE_NO_ONE);
+		int startTimeOvertime = overTimeOfTimeZoneSet.getTimezone().getStart().valueAsMinutes();
+		int endTimeOvertime = overTimeOfTimeZoneSet.getTimezone().getEnd().valueAsMinutes();
+
+		if (startTimeZone < startTimeOvertime) {
+			throw new BusinessException("Msg_779");
+		}
+		if (endTimeZone >= endTimeOvertime) {
+			throw new BusinessException("Msg_780");
+		}
+		
 	}
 
 	/**
