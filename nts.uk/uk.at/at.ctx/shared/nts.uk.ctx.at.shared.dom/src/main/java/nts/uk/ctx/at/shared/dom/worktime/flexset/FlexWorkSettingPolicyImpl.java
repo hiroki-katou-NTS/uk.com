@@ -77,18 +77,17 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		
 		// 使用区分 = 使用する
 		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.USE)) {
-			this.service.validateOneDay(flexWorkSetting.getCompanyId(), predetemineTimeSet.getWorkTimeCode(),
+			this.service.validateOneDay(predetemineTimeSet,
 					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(),
 					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime());
 		}
 		// Msg_781 DesignatedTime
-		this.service.compareWithOneDayRange(flexWorkSetting.getCompanyId(), flexWorkSetting.getWorkTimeCode(),
+		this.service.compareWithOneDayRange(predetemineTimeSet,
 				flexWorkSetting.getCommonSetting().getSubHolTimeSet().getSubHolTimeSet().getDesignatedTime());
 		
 		// Msg_516
 		flexWorkSetting.getLstStampReflectTimezone().forEach(setting -> {
-			this.service.validateOneDay(flexWorkSetting.getCompanyId(), flexWorkSetting.getWorkTimeCode(),
-					setting.getStartTime(), setting.getEndTime());
+			this.service.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
 		});
 		
 	}
