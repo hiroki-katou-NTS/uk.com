@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.empfilemanagement;
+package nts.uk.ctx.bs.employee.infra.entity.perfilemanagement;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Embeddable
-public class BsymtEmpFileManagementPK {
+public class BsymtPersonFileManagementPK {
 
 	private static final long serialVersionUID = 1L;
 

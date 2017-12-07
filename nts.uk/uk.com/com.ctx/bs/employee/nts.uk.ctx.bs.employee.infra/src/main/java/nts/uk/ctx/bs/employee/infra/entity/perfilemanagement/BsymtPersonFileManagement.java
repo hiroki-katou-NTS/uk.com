@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.empfilemanagement;
+package nts.uk.ctx.bs.employee.infra.entity.perfilemanagement;
 
 import java.io.Serializable;
 
@@ -16,8 +16,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "BSYMT_EMP_FILE_MANAGEMENT")
-public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
+@Table(name = "BSYMT_PER_FILE_MANAGEMENT")
+public class BsymtPersonFileManagement extends UkJpaEntity implements Serializable{
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public BsymtEmpFileManagementPK bsymtEmpFileManagementPK;
+	public BsymtPersonFileManagementPK bsymtPerFileManagementPK;
 	
 	/** 個人ID */
 	@Basic(optional = false)
@@ -49,11 +49,11 @@ public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		return bsymtEmpFileManagementPK;
+		return bsymtPerFileManagementPK;
 	}
 
 
-	public BsymtEmpFileManagement updateFromDomain(PersonFileManagement domain) {
+	public BsymtPersonFileManagement updateFromDomain(PersonFileManagement domain) {
 		this.filetype = domain.getTypeFile().value;
 		this.disPOrder = domain.getUploadOrder();
 		this.personInfoctgId = domain.getPersonInfoCategoryId();
