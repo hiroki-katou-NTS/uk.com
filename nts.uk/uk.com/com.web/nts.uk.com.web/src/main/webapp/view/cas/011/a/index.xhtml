@@ -30,29 +30,30 @@
                          enable: roleSetCount() > 0">#{i18n.getText('CAS011_7')}</button>
             </div>
  
-            <div id="contents-area" class="cf">
-                <div id="content-left" class="pull-left">
-                        <!--A2_001 -->
-                        <div>#{i18n.getText('CAS011_8')}</div>
-                        <div style="float: left">
-                            <table id="role_set_grid"
-                                data-bind="ntsGridList: {
-                                            name:'#[CAS011_8]',
-                                            height: 425,
-                                            width: 230,
-                                            options: listRoleSets,
-                                            optionsValue: selectedRoleSetCd,
-                                            primaryKey: 'roleSetCd',
-                                            columns: gridColumns,
-                                            multiple: false,
-                                            value: selectedRoleSetCd,
-                                            showNumbering:false,
-                                            enable: true}">
-                            </table>
-                        </div>
-                    </div>
-            
-                <div id="right-content">
+            <div id="contents-area">
+	            <div class="container cf">    
+	                <div id="content-left" class="pull-left">
+	                        <!--A2_001 -->
+	                        <div>#{i18n.getText('CAS011_8')}</div>
+	                        <div style="float: left">
+	                            <table id="role_set_grid"
+	                                data-bind="ntsGridList: {
+	                                            name:'#[CAS011_8]',
+	                                            height: 425,
+	                                            width: 230,
+	                                            options: listRoleSets,
+	                                            optionsValue: selectedRoleSetCd,
+	                                            primaryKey: 'roleSetCd',
+	                                            columns: gridColumns,
+	                                            multiple: false,
+	                                            value: selectedRoleSetCd,
+	                                            showNumbering:false,
+	                                            enable: true}">
+	                            </table>
+	                        </div>
+	                    </div>
+	            
+	                <div id="right-content">
 
                     <table >
                         <colgroup>
@@ -264,7 +265,7 @@
                         }">
                     </div>
                 </div>
-                
+                </div>
             </div>
         </ui:define>
     </ui:composition>

@@ -11,6 +11,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -19,8 +20,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class RoleIndividualGrant extends AggregateRoot {
 
 	/** The user id. */
@@ -43,12 +42,22 @@ public class RoleIndividualGrant extends AggregateRoot {
 	// 有効期間
 	private DatePeriod validPeriod;
 	
+	public RoleIndividualGrant(String userId, String roleId, String companyId, RoleType roleType, DatePeriod validPeriod) {
+		super();
+		this.userId = userId;
+		this.roleId = roleId;
+		this.companyId = companyId;
+		this.roleType = roleType;
+		this.validPeriod = validPeriod;
+	}
+	
 	public static RoleIndividualGrant createFromJavaType(String userId, String roleId, String companyId,int roleType, GeneralDate validPeriodStart,GeneralDate validPeriodEnd) {
 		return new RoleIndividualGrant(userId,
-				roleId,
-				companyId,
-				EnumAdaptor.valueOf(roleType, RoleType.class),
-				new  DatePeriod(validPeriodStart, validPeriodEnd) );
+			/**roleID*/
+			roleId,
+			companyId,
+			EnumAdaptor.valueOf(roleType, RoleType.class),
+			new  DatePeriod(validPeriodStart, validPeriodEnd) );
 	}
 
 }

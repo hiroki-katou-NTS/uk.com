@@ -20,15 +20,13 @@ public class AuthCompanyInforImpl implements CompanyAdapter {
 	
 	@Override
 	public List<CompanyImport> findAllCompany() {
-		////////////////////////////////////////////Lay tam Request 51 ////////////////////////////
+		// Lay tam Request 51
 		List<CompanyExport> lstReciveCompany = iCompanyPub.getAllCompany();
-		
-		//return (CompanyImport) lstReciveCompany;
 		
 		List<CompanyImport> listCompany = new ArrayList<>();
 		
 		lstReciveCompany.stream().map(c -> {
-			return listCompany.add(new CompanyImport(c.getCompanyId(), c.getCompanyCode(), c.getCompanyName(), c.getIsAbolition()));
+			return listCompany.add(new CompanyImport(c.getCompanyCode(), c.getCompanyName(), c.getCompanyId(), c.getIsAbolition()));
 		}).collect(Collectors.toList());
 		return listCompany;
 	}
