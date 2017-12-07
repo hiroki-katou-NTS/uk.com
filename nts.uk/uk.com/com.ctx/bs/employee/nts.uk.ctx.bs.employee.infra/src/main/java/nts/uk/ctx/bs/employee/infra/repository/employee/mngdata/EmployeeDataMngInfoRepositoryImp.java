@@ -25,6 +25,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String SELECT_BY_PERSON_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.bsymtEmployeeDataMngInfoPk.pId = :pId");
 
+	private static final String SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY = String.join(" ", SELECT_NO_PARAM,
+			"WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId AND e.employeeCode= :sCd AND e.delStatus=0");
+
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
 	@Override
@@ -40,9 +43,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 		if (entity != null) {
 
-//			entity.delDateTmp = domain.getDeleteDateTemporary();
-//			entity.delStatus = domain.getDeletedStatus().value;
-//			entity.removeReason = domain.getRemoveReason().v();
+			// entity.delDateTmp = domain.getDeleteDateTemporary();
+			// entity.delStatus = domain.getDeletedStatus().value;
+			// entity.removeReason = domain.getRemoveReason().v();
 			entity.employeeCode = domain.getEmployeeCode().v();
 			entity.extCode = domain.getExternalCode().v();
 			commandProxy().update(entity);
@@ -95,7 +98,19 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				domain.getPersonId());
 
 		return new BsymtEmployeeDataMngInfo(primaryKey, domain.getCompanyId(), domain.getEmployeeCode().v(),
-				domain.getDeletedStatus().value, domain.getDeleteDateTemporary(), domain.getRemoveReason() != null? domain.getRemoveReason().v() : null,
-				domain.getExternalCode().v());
+				domain.getDeletedStatus().value, domain.getDeleteDateTemporary(),
+				domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null, domain.getExternalCode().v());
 	}
+
+	// sonnlb code start
+
+	@Override
+	public List<EmployeeDataMngInfo> getEmployeeNotDeleteInCompany(String cId, String sCd) {
+
+		return queryProxy().query(SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cid", cId).setParameter("sId", sCd).getList().stream().map(x -> toDomain(x))
+				.collect(Collectors.toList());
+	}
+
+	// sonnlb code end
 }

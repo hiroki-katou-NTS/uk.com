@@ -18,4 +18,10 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findByPersonId(String pid);
 
 	List<EmployeeDataMngInfo> findByCompanyId(String cid);
+
+	// sonnlb code start
+
+	List<EmployeeDataMngInfo> getEmployeeNotDeleteInCompany(String cId, String sCd);
+
+	// sonnlb code end
 }
