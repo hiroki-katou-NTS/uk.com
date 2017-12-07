@@ -17,6 +17,9 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
@@ -53,6 +56,9 @@ public class RegisterLayoutFinder {
 	@Inject
 
 	private InitValueSetItemFinder initItemFinder;
+
+	@Inject
+	private PerInfoCategoryFinder infoCtgFinder;
 
 	// sonnlb end
 
@@ -99,6 +105,15 @@ public class RegisterLayoutFinder {
 			});
 
 		}
+		listItemCls.forEach(x -> {
+			PerInfoCtgFullDto ctgInfo = this.infoCtgFinder.getPerInfoCtg(x.getPersonInfoCategoryID());
+			if (ctgInfo != null) {
+				x.setItems(x.getListItemDf().stream()
+						.map(itemDf -> LayoutPersonInfoValueDto.fromItemDef(ctgInfo.getCategoryCode(), itemDf, 2))
+						.collect(Collectors.toList()));
+			}
+
+		});
 
 		return NewLayoutDto.fromDomain(_layout,
 				listItemCls.stream().filter(x -> x.getListItemDf() != null ? x.getListItemDf().size() > 0 : false)
