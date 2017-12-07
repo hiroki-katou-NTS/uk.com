@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 
 @Getter
 @NoArgsConstructor
@@ -32,10 +31,5 @@ public class RoleIndividualGrantBaseCommand {
 	protected boolean setRoleAdminFlag;
 	
 	protected String decisionCompanyID;
-
-	public RoleIndividualGrant toDomain(String roleID) {
-		return RoleIndividualGrant.createFromJavaType(userID, roleID, companyID, roleType, startValidPeriod, endValidPeriod);
-	}
-
 	
 }
