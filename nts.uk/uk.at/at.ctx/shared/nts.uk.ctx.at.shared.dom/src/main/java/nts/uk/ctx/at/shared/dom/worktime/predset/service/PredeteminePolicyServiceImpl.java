@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
@@ -38,7 +39,7 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	public void validateOneDay(String companyId, WorkTimeCode worktimeCode, TimeWithDayAttr startTime,
 			TimeWithDayAttr endTime) {
 
-		PredetemineTimeSet pred = predetemineTimeSetRepository.findByWorkTimeCode(companyId, worktimeCode.v());
+		PredetemineTimeSet pred = this.getPredByWorkTimeCode(companyId, worktimeCode);
 
 		int predEndTime = pred.getStartDateClock().valueAsMinutes() + pred.getRangeTimeDay().valueAsMinutes();
 		int predStartTime = pred.getStartDateClock().valueAsMinutes();
@@ -58,7 +59,7 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	@Override
 	public void compareWithOneDayRange(String companyId, WorkTimeCode worktimeCode, DesignatedTime designatedTime) {
 
-		PredetemineTimeSet pred = predetemineTimeSetRepository.findByWorkTimeCode(companyId, worktimeCode.v());
+		PredetemineTimeSet pred = this.getPredByWorkTimeCode(companyId, worktimeCode);
 
 		AttendanceTime oneDayRange = pred.getRangeTimeDay();
 
@@ -68,6 +69,27 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 				|| designatedOneDayTime.greaterThanOrEqualTo(oneDayRange)) {
 			throw new BusinessException("Msg_781");
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.service.
+	 * PredeteminePolicyService#compareWithOneDayRange(java.lang.String,
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode,
+	 * nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime)
+	 */
+	@Override
+	public void compareWithOneDayRange(String companyId, WorkTimeCode worktimeCode,
+			LateEarlyGraceTime lateEarlyGraceTime) {
+		PredetemineTimeSet pred = this.getPredByWorkTimeCode(companyId, worktimeCode);
+		if (lateEarlyGraceTime.valueAsMinutes() > pred.getRangeTimeDay().valueAsMinutes()) {
+			throw new BusinessException("Msg_517");
+		}
+	}
+
+	private PredetemineTimeSet getPredByWorkTimeCode(String companyId, WorkTimeCode worktimeCode) {
+		return predetemineTimeSetRepository.findByWorkTimeCode(companyId, worktimeCode.v());
 	}
 
 }
