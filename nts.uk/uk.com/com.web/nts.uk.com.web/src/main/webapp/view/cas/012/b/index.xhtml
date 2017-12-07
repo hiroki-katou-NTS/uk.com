@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 400, height: 600 };</script>
+			<script>var dialogSize = { width: 450, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -25,10 +25,10 @@
 					<div style="float: left">
 						<div class="control-group">
 							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS0012_20')}</div>
-							<input data-bind="ntsTextEditor: {value: searchValue}" />
-							<button data-bind="click: search">search</button>
+							<input id="search" data-bind="ntsTextEditor: {value: searchValue}" />
+							<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS0012_23')}</button>
 						</div>
-						<table id="grid_container"
+						<table id="grid_container" style="margin: auto;"
 							data-bind="ntsGridList: {
 											height: 400,
 											options: dataSource,
@@ -40,8 +40,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind= "click :decision">#{i18n.getText('CAS0012_27')}</button>
-				<button >#{i18n.getText('CAS0012_28')}</button>
+				<button class="proceed x-large" data-bind="click :decision">#{i18n.getText('CAS0012_27')}</button>
+				<button data-bind ="click :cancel_Dialog">#{i18n.getText('CAS0012_28')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

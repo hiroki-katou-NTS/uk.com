@@ -1,7 +1,11 @@
 module nts.uk.at.view.kaf007.share {
     
     export module common {
-
+        export class CommonVM{
+            
+            constructor(){}
+        }
+        
         export class AppWorkChangeCommand{
             //勤務変更申請
             workChange: KnockoutObservable<AppWorkChange>;                
@@ -21,6 +25,7 @@ module nts.uk.at.view.kaf007.share {
         * 勤務変更申請
         */
        export class AppWorkChange {
+           version: KnockoutObservable<number>;
            cid: KnockoutObservable<string>;
            appId: KnockoutObservable<string>;
            //勤務種類コード
@@ -100,7 +105,7 @@ module nts.uk.at.view.kaf007.share {
        /**
         * 申請
         */
-       export class ApplicationCommand {
+       export class ApplicationCommand {           
            applicationID: KnockoutObservable<string>;
            appReasonID: string;
            prePostAtr: KnockoutObservable<number>;

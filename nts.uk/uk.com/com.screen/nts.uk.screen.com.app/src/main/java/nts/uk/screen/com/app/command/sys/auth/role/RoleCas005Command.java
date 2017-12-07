@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
@@ -73,9 +74,9 @@ public class RoleCas005Command {
 		this.roleType = roleType;
 		this.employeeReferenceRange = employeeReferenceRange;
 		this.name = name;
-		this.contractCode = contractCode;
+		this.contractCode = AppContexts.user().contractCode();
 		this.assignAtr = assignAtr;
-		this.companyId = companyId;
+		this.companyId = AppContexts.user().companyId();
 		this.webMenuCd = webMenuCd;
 		this.scheduleEmployeeRef = scheduleEmployeeRef;
 		this.bookEmployeeRef = bookEmployeeRef;

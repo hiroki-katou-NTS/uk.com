@@ -16,16 +16,16 @@ public class RecordWorkInfoImport {
 	// 就業時間帯コード
 	private String workTimeCode;
 	
-	// 日別実績の出退勤．出退勤．出勤．打刻 , 勤務NO＝0
+	// 開始時刻1
 	private int attendanceStampTimeFirst;
 	
-	// 日別実績の出退勤．出退勤．退勤．打刻, 勤務NO＝0
+	// 終了時刻1
 	private int leaveStampTimeFirst;
 	
-	// 日別実績の出退勤．出退勤．出勤．打刻 , 勤務NO＝1
+	// 開始時刻2
 	private int attendanceStampTimeSecond;
 	
-	// 日別実績の出退勤．出退勤．退勤．打刻, 勤務NO＝1
+	// 終了時刻2
 	private int leaveStampTimeSecond;
 	
 	// 日別実績の勤怠時間．実働時間．総労働時間．遅刻時間．遅刻時間

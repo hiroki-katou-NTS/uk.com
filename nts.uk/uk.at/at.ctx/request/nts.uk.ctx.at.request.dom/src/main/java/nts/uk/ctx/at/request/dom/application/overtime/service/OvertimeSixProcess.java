@@ -32,7 +32,11 @@ public interface OvertimeSixProcess {
 	 * @return
 	 */
 	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType);
-	
+	/**
+	 * @return
+	 * 06-02-2_申請時間を取得
+	 */
+	public List<CaculationTime> getAppOvertimeCaculation(List<CaculationTime> caculationTimes);
 	/**
 	 * 06-03_加給時間を取得
 	 * @param companyID
@@ -66,7 +70,20 @@ public interface OvertimeSixProcess {
 	 * @param appDate
 	 * @param requestAppDetailSetting
 	 * @param siftCD
+	 * @param overtimeHours
 	 * @return
 	 */
-	public OvertimeCheckResult checkThanTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD);
+	public List<OvertimeCheckResult> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours);
+	
+	/**
+	 * 06-04-3_当日の場合
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @param requestAppDetailSetting
+	 * @param siftCD
+	 * @param overtimeHours
+	 * @return
+	 */
+	public List<OvertimeCheckResult> checkDuringTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours);
 }

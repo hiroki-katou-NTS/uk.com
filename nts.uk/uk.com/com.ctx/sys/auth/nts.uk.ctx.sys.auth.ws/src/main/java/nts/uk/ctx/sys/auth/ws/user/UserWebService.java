@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.auth.ws.user;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -22,4 +23,11 @@ public class UserWebService extends WebService {
 	public List<UserDto> searchUser(String userNameID) {
 		return this.userFinder.searchUser(userNameID);
 	}
+	
+	@POST
+	@Path("getlistUser")
+	public List<UserDto> getListUser() {
+		return this.userFinder.getAllUser();
+	}
+	
 }

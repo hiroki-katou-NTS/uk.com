@@ -15,7 +15,7 @@ module ksu001.q.viewmodel {
         ]);
 
         checked: KnockoutObservable<boolean> = ko.observable(true);
-        textName: KnockoutObservable<string> = ko.observable('aaaaa');
+        textName: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -33,8 +33,13 @@ module ksu001.q.viewmodel {
             $("#popup-area").css('visibility', 'visible');
             return dfd.promise();
         }
+        
+        decision(): void {
+            let self = this;
+            
+        }
 
-        closePopup() {
+        closePopup(): void {
             $("#popup-area").css('visibility', 'hidden');
         }
 
