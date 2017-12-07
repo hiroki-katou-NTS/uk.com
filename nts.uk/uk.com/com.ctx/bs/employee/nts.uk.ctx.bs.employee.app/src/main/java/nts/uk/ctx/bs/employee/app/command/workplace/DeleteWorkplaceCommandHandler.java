@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.command.workplace.service.WorkplaceService;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
@@ -75,10 +77,15 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
 						this.wkpRepo.removeWkpHistory(companyId, wkpId, historyId);
 					});
 				}
-				int dayOfAgo = -1;
-				// update end date of workplace history latest
-				this.wkpService.updatePreviousHistory(companyId, histIdLatest,
-						command.getStartDWkpConfigInfo().addDays(dayOfAgo));
+				
+				// check remaining workplace history after remove
+				if (!CollectionUtil.isEmpty(workplace.items())) {
+
+					int dayOfAgo = -1;
+					// update end date of workplace history latest
+					this.wkpService.updatePreviousHistory(companyId, histIdLatest,
+							command.getStartDWkpConfigInfo().addDays(dayOfAgo));
+				}
 			}
 
 			// delete workplace hierarchy that workplace is selected.
