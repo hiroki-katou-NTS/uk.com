@@ -35,7 +35,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 { headerText: '名称', key: 'name', width: 160 }
             ]);
             self.columnsIndividual = ko.observableArray([
-                { headerText: 'コード', key: 'userId', width: 80 },
+                { headerText: 'コード', key: 'loginId', width: 80 },
                 { headerText: '名称', key: 'name', width: 70 },
                 { headerText: '期間', key: 'datePeriod', width: 190 },
             ]);
@@ -46,7 +46,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
 
             self.selectedRoleType.subscribe((code: string) => {
                 console.log('selected role type value ' + code);
-                self.getDataByRoleType(code.toString());
+                self.getRoles(code.toString());
             });
 
             self.selectedRole.subscribe((code: string) => {
@@ -54,8 +54,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 self.selectRole(code.toString());
             });
             self.selectedRoleIndividual.subscribe((code: string) => {
-                console.log('selected role Grant value ' + code);
-                self.selectRoleGrant(code.toString());
+            console.log('selected role Grant value ' + code);
+            self.selectRoleGrant(code.toString());
             });
 
 
@@ -66,183 +66,150 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             dfd.resolve();
-
-            new service.Service().getAllData('0').done(function(data: ObjectRole) {
-                //list role type
-                self.listRoleType(data.roleTypeDtos);
-                //list role
-                self.listRole(data.roleDtos);
-                if (data.roleDtos.length > 0) { self.selectedRole(data.roleDtos[0].roleId); }
-                //list role individual
-                var items = [];
-                for (let item of data.roleIndividualGrantDtos) { items.push(new RoleIndividual(item.userId, item.name, item.start, item.end)); }
-                self.listRoleIndividual(items);
-                if (data.roleIndividualGrantDtos.length > 0) {
-                    self.selectedRoleIndividual(data.roleIndividualGrantDtos[0].userId);
-                    self.name(data.roleIndividualGrantDtos[0].name);//role detail
-                    self.dateValue(new datePeriod(data.roleIndividualGrantDtos[0].start, data.roleIndividualGrantDtos[0].end));
-                }
+            new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
+                self.listRoleType(data);
             });
             return dfd.promise();
 
         }
 
-        private getDataByRoleType(roleType: string): void {
+        private getRoles(roleType: string): void {
             var self = this;
             if (roleType != '') {
-                new service.Service().getAllData(roleType).done(function(data: ObjectRole) {
-                    console.log(data);
-                    self.listRole(data.roleDtos);
-                    if (data.roleDtos.length > 0) { self.selectedRole(data.roleDtos[0].roleId); }
-                    //list role individual
-                    if (data.roleIndividualGrantDtos.length > 0) {
-                        let temp = [];
-                        for (let item of data.roleIndividualGrantDtos) { temp.push(new RoleIndividual(item.userId, item.name, item.start, item.end)); }
-                        self.listRoleIndividual(temp);
-                        self.selectedRoleIndividual(data.roleIndividualGrantDtos[0].userId);
-                        //role detail
-                        self.name(data.roleIndividualGrantDtos[0].name);
-                        self.dateValue(new datePeriod(data.roleIndividualGrantDtos[0].start, data.roleIndividualGrantDtos[0].end));
-                        //console.log(data);
-                    } else {
-                        self.listRoleIndividual([]);
-                        self.selectedRoleIndividual('');
-                        self.name('');
-                        self.dateValue({});
+                new service.Service().getRole(roleType).done(function(data: any) {
+                    if (data != null && data.length > 0) {
+                        console.log(data);
+                        self.listRole(data);
+                        self.selectedRole(data[0].roleId);
+                    }
+                    else {
+                        self.listRole([]);
+                        self.selectedRole('')
                     }
                 });
             } else {
                 self.listRole([]);
                 self.selectedRole('');
-                self.listRoleIndividual([]);
-                self.selectedRoleIndividual('');
-                self.name('');
-                self.dateValue({});
             }
         }
 
         private selectRole(roleId: string): void {
             var self = this;
             if (roleId != '') {
-                new service.Service().getByRoleId(roleId).done(function(data: Array<RoleIndividual>) {
-                    self.listRoleIndividual.removeAll();
-                    if (data.length > 0) {
-                        let items = []
-                        for (let item of data) { items.push(new RoleIndividual(item.userId, item.name, item.start, item.end)); }
+                  new service.Service().getRoleGrants(roleId).done(function(data: any) {      
+                    if (data != null && data.length > 0) {
+                        let items = [];
+                        for (let entry of data) {
+                            items.push(new RoleIndividual(entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod))
+                        }              
                         self.listRoleIndividual(items);
-                        self.selectedRoleIndividual(data[0].userId);
-                        self.name(data[0].name);
-                        self.dateValue(new datePeriod(data[0].start, data[0].end));
-                    } else {
+                        self.selectedRoleIndividual(items[0].loginId);
+                    }else{
+                        self.listRoleIndividual([]);
                         self.selectedRoleIndividual('');
-                        self.name('');
-                        self.dateValue({});
                     }
-
-                });
-            } else {
+                });          
+            } else {          
                 self.listRoleIndividual([]);
                 self.selectedRoleIndividual('');
-                self.name('');
-                self.dateValue({});
             }
         }
         private selectRoleGrant(UserId: string): void {
-            var self = this;
-            var roleId = self.selectedRole();
-            if (roleId != '' && UserId != '') {
-                new service.Service().getByUserIdAndRoleId(roleId, UserId).done(function(data: RoleIndividual) {
-                    if (data != null) {
-                        self.name(data.name);
-                        self.dateValue(new datePeriod(data.start, data.end));
-                    } else {
-                        self.name('');
-                        self.dateValue({});
-                    }
-
-                });
-            } else {
-                self.name('');
-                self.dateValue({});
-            }
-
-        }
-        openBModal(): void {
-            var self = this;
-            let param = {
-                roleType: 1,
-                multiple: false
-            };
-            nts.uk.ui.windows.setShared("param", param);
-            nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
-                let data = nts.uk.ui.windows.getShared("userId");
-                if (data != null) {
-                    self.selectedRoleIndividual(data);
-                    self.selectedRoleIndividual(data);
-                }
-            });
-        }
+          var self = this;
+          var roleId = self.selectedRole();
+          if (roleId != '' && UserId != '') {
+              new service.Service().getByUserIdAndRoleId(roleId, UserId).done(function(data: RoleIndividual) {
+                  if (data != null) {
+                      self.name(data.name);
+                      self.dateValue(new datePeriod(data.start, data.end));
+                  } else {
+                      self.name('');
+                      self.dateValue({});
+                  }
+    
+              });
+          } else {
+              self.name('');
+              self.dateValue({});
+          }
+    
+      }
+      openBModal(): void {
+          var self = this;
+          let param = {
+              roleType: 1,
+              multiple: false
+          };
+          nts.uk.ui.windows.setShared("param", param);
+          nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
+              let data = nts.uk.ui.windows.getShared("userId");
+              if (data != null) {
+                  self.selectedRoleIndividual(data);
+                  self.selectedRoleIndividual(data);
+              }
+          });
+      }
 
     }
 
 
 
-    class RollType {
-        value: string;
-        nameId: string;
-        description: string;
+  class RollType {
+      value: string;
+      nameId: string;
+      description: string;
 
-        constructor(value: string, nameId: string, description: string) {
-            this.value = value;
-            this.nameId = nameId;
-            this.description = description;
-        }
-    }
-    class Role {
-        roleId: string;
-        roleCode: string;
-        name: string;
+      constructor(value: string, nameId: string, description: string) {
+          this.value = value;
+          this.nameId = nameId;
+          this.description = description;
+      }
+  }
+  class Role {
+      roleId: string;
+      roleCode: string;
+      name: string;
 
-        constructor(roleId: string, roleCode: string, name: string) {
-            this.roleId = roleId;
-            this.roleCode = roleCode;
-            this.name = name;
-        }
-    }
-    class RoleIndividual {
-        userId: string;
-        name: string;
-        start: string;
-        end: string;
-        datePeriod: string;
+      constructor(roleId: string, roleCode: string, name: string) {
+          this.roleId = roleId;
+          this.roleCode = roleCode;
+          this.name = name;
+      }
+  }
+  class RoleIndividual {
+      loginId: string;
+      name: string;
+      start: string;
+      end: string;
+      datePeriod: string;
 
-        constructor(userId: string, name: string, start: string, end: string) {
-            this.userId = userId;
-            this.name = name;
-            this.start = start;
-            this.end = end;
-            this.datePeriod = start + ' ~ ' + end;
-        }
-    }
-    class ObjectRole {
-        roleDtos: Array<Role>;
-        roleIndividualGrantDtos: Array<RoleIndividual>;
-        roleTypeDtos: Array<RollType>;
-        constructor(roleDtos: Array<Role>, roleIndividualGrantDtos: Array<RoleIndividual>, roleTypeDtos: Array<RollType>) {
-            this.roleDtos = roleDtos;
-            this.roleIndividualGrantDtos = roleIndividualGrantDtos;
-            this.roleTypeDtos = roleTypeDtos;
+      constructor(loginId: string, name: string, start: string, end: string) {
+          this.loginId = loginId;
+          this.name = name;
+          this.start = start;
+          this.end = end;
+          this.datePeriod = start + ' ~ ' + end;
+      }
+  }
+  class ObjectRole {
+      roleDtos: Array<Role>;
+      roleIndividualGrantDtos: Array<RoleIndividual>;
+      roleTypeDtos: Array<RollType>;
+      constructor(roleDtos: Array<Role>, roleIndividualGrantDtos: Array<RoleIndividual>, roleTypeDtos: Array<RollType>) {
+          this.roleDtos = roleDtos;
+          this.roleIndividualGrantDtos = roleIndividualGrantDtos;
+          this.roleTypeDtos = roleTypeDtos;
 
-        }
-    }
-    class datePeriod {
-        startDate: string;
-        endDate: string;
-        constructor(startDate: string, endDate: string) {
-            this.startDate = startDate;
-            this.endDate = endDate;
-        }
-    }
+      }
+  }
+  class datePeriod {
+      startDate: string;
+      endDate: string;
+      constructor(startDate: string, endDate: string) {
+          this.startDate = startDate;
+          this.endDate = endDate;
+      }
+  }
 
 }
 

@@ -16,83 +16,86 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiv
 
 @Stateless
 public class JpaRoleIndividualGrantRepository extends JpaRepository implements RoleIndividualGrantRepository {
-	
+
 	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"
 			+ " AND c.strD => :date AND c.endD <= :date";
+
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate date) {
-		return this.queryProxy()
-				.query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class)
-				.setParameter("userId", userId)
-				.setParameter("date", date)
-				.getSingle(c -> c.toDomain());
+		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userId", userId)
+				.setParameter("date", date).getSingle(c -> c.toDomain());
 	}
-	
+
 	private final String SELECT_BY_ROLE_USER = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.companyID = :cid"
 			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType AND c.sacmtRoleIndiviGrantPK.userID = :userID";
+
 	@Override
 	public Optional<RoleIndividualGrant> findByUserCompanyRoleType(String userID, String companyID, int roleType) {
-		return this.queryProxy().query(SELECT_BY_ROLE_USER, SacmtRoleIndiviGrant.class)
-				.setParameter("cid", companyID)
-				.setParameter("roleType", roleType)
-				.setParameter("userID", userID).getSingle(c -> c.toDomain());
+		return this.queryProxy().query(SELECT_BY_ROLE_USER, SacmtRoleIndiviGrant.class).setParameter("cid", companyID)
+				.setParameter("roleType", roleType).setParameter("userID", userID).getSingle(c -> c.toDomain());
 	}
 
 	private final String SELECT_BY_KEY = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"
 			+ " AND c.sacmtRoleIndiviGrantPK.companyID = :companyID AND c.roleId = :roleId";
+
 	@Override
 	public Optional<RoleIndividualGrant> findByKey(String userId, String companyId, String roleId) {
-		return this.queryProxy().query(SELECT_BY_KEY, SacmtRoleIndiviGrant.class)
-			.setParameter("userId", userId)
-			.setParameter("cid", companyId)
-			.setParameter("roleId", roleId).getSingle(c -> c.toDomain());
+		return this.queryProxy().query(SELECT_BY_KEY, SacmtRoleIndiviGrant.class).setParameter("userId", userId)
+				.setParameter("cid", companyId).setParameter("roleId", roleId).getSingle(c -> c.toDomain());
 	}
-	
+
 	private final String SELECT_BY_USER_AND_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
 			+ " WHERE c.sacmtRoleIndiviGrantPK.userID = :userId AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
+
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, int roleType) {
 		return this.queryProxy().query(SELECT_BY_USER_AND_ROLETYPE, SacmtRoleIndiviGrant.class)
-				.setParameter("userId", userId)
-				.setParameter("roleType", roleType)
-				.getSingle(c -> c.toDomain());
+				.setParameter("userId", userId).setParameter("roleType", roleType).getSingle(c -> c.toDomain());
 	}
 
 	private final String SELECT_BY_ROLE_ID = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId ";
+
 	@Override
-	public List<RoleIndividualGrant> findByRoleId(String roleId) {		
-		List<RoleIndividualGrant>  result = new ArrayList<RoleIndividualGrant>();		
-		List<SacmtRoleIndiviGrant> entities =  this.queryProxy().query(SELECT_BY_ROLE_ID, SacmtRoleIndiviGrant.class).setParameter("roleId", roleId).getList();
-		if(entities != null && !entities.isEmpty()){
-			result = entities.stream().map( e -> e.toDomain()).collect(Collectors.toList());
+	public List<RoleIndividualGrant> findByRoleId(String roleId) {
+		List<RoleIndividualGrant> result = new ArrayList<RoleIndividualGrant>();
+		List<SacmtRoleIndiviGrant> entities = this.queryProxy().query(SELECT_BY_ROLE_ID, SacmtRoleIndiviGrant.class)
+				.setParameter("roleId", roleId).getList();
+		if (entities != null && !entities.isEmpty()) {
+			result = entities.stream().map(e -> e.toDomain()).collect(Collectors.toList());
 		}
 		return result;
 	}
 
+	private final String SELECT_BY_COMPANY_ROLE_ID = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId "
+			+ "AND c.sacmtRoleIndiviGrantPK.companyID = :companyID";
+
+	@Override
+	public List<RoleIndividualGrant> findByCompanyRole(String companyId, String roleId) {
+		return this.queryProxy().query(SELECT_BY_COMPANY_ROLE_ID, SacmtRoleIndiviGrant.class)
+				.setParameter("companyID", companyId).setParameter("roleId", roleId).getList(c -> c.toDomain());
+	}
+
 	private final String SELECT_BY_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
 			+ " WHERE c.sacmtRoleIndiviGrantPK.roleType = :roleType";
+
 	@Override
 	public List<RoleIndividualGrant> findByRoleType(int roleType) {
-		return this.queryProxy()
-				.query(SELECT_BY_ROLETYPE, SacmtRoleIndiviGrant.class)
-				.setParameter("roleType", roleType)
-				.getList(c -> c.toDomain());
+		return this.queryProxy().query(SELECT_BY_ROLETYPE, SacmtRoleIndiviGrant.class)
+				.setParameter("roleType", roleType).getList(c -> c.toDomain());
 	}
 
 	private final String SELECT_BY_COMPANYID_AND_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
 			+ " WHERE c.sacmtRoleIndiviGrantPK.companyID = :companyID"
 			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
+
 	@Override
 	public List<RoleIndividualGrant> findByCompanyIdAndRoleType(String companyID, int roleType) {
-		return this.queryProxy()
-				.query(SELECT_BY_COMPANYID_AND_ROLETYPE,SacmtRoleIndiviGrant.class)
-				.setParameter("companyID", companyID)
-				.setParameter("roleType", roleType)
-				.getList(c -> c.toDomain());
+		return this.queryProxy().query(SELECT_BY_COMPANYID_AND_ROLETYPE, SacmtRoleIndiviGrant.class)
+				.setParameter("companyID", companyID).setParameter("roleType", roleType).getList(c -> c.toDomain());
 	}
 
 	public void add(RoleIndividualGrant roleIndividualGrant) {
-		this.commandProxy().insert(SacmtRoleIndiviGrant.toEntity(roleIndividualGrant));		
+		this.commandProxy().insert(SacmtRoleIndiviGrant.toEntity(roleIndividualGrant));
 	}
 
 	@Override
@@ -102,7 +105,7 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 
 	@Override
 	public void remove(String userId, String companyId, int roleType) {
-		this.commandProxy().remove(SacmtRoleIndiviGrant.class, new SacmtRoleIndiviGrantPK(companyId , userId, roleType));
+		this.commandProxy().remove(SacmtRoleIndiviGrant.class, new SacmtRoleIndiviGrantPK(companyId, userId, roleType));
 	}
-	
+
 }

@@ -31,6 +31,8 @@ public interface RoleIndividualGrantRepository {
 	List<RoleIndividualGrant> findByRoleType(int roleType);
 
 	List<RoleIndividualGrant> findByRoleId(String roleId);
+	
+	List<RoleIndividualGrant> findByCompanyRole(String companyId, String roleId);
 
 	List<RoleIndividualGrant> findByCompanyIdAndRoleType(String companyID, int roleType);
 
