@@ -12,30 +12,31 @@ import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 @Stateless
 public class JpaStampCardRepository extends JpaRepository implements StampCardRepository {
 
-	private final String SELECT_BY_PERSON = "SELECT c FROM KwkdtStampCard c"
-			+ " WHERE c.personId = :personId";
+	private final String SELECT_BY_SID = "SELECT c FROM KwkdtStampCard c"
+			+ " WHERE c.employeeID = :employeeID";
 	
 	private final String SELECT_BY_LIST_PERSON = "SELECT c FROM KwkdtStampCard c"
-			+ " WHERE c.personId IN :listPersonId";
+			+ " WHERE c.employeeID IN :lstEmployeeId";
 
 	private static StampCardItem toDomain(KwkdtStampCard entity) {
 		StampCardItem domain = StampCardItem.createFromJavaType(
-				entity.personId, 
+				entity.employeeID, 
 				entity.kwkdtStampCardPK.cardNumber);
 		return domain;
 	}
 
 	@Override
-	public List<StampCardItem> findByPersonID(String personId) {
-		return this.queryProxy().query(SELECT_BY_PERSON, KwkdtStampCard.class)
-				.setParameter("personId", personId)
+	public List<StampCardItem> findByListPersonID(List<String> lstEmployeeId) {
+		return this.queryProxy().query(SELECT_BY_LIST_PERSON, KwkdtStampCard.class)
+				.setParameter("lstEmployeeId", lstEmployeeId)
+				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<StampCardItem> findByPersonID(String employeeID) {
+		return this.queryProxy().query(SELECT_BY_SID, KwkdtStampCard.class)
+				.setParameter("employeeID", employeeID)
 				.getList(c -> toDomain(c));
 	}
 
-	@Override
-	public List<StampCardItem> findByListPersonID(List<String> LstPID) {
-		return this.queryProxy().query(SELECT_BY_LIST_PERSON, KwkdtStampCard.class)
-				.setParameter("listPersonId", LstPID)
-				.getList(c -> toDomain(c));
-	}
 }
