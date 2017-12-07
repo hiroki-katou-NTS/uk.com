@@ -35,6 +35,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 { headerText: '名称', key: 'name', width: 160 }
             ]);
             self.columnsIndividual = ko.observableArray([
+                { headerText: '', key: 'userId', hidden: true },
                 { headerText: 'コード', key: 'loginId', width: 80 },
                 { headerText: '名称', key: 'name', width: 70 },
                 { headerText: '期間', key: 'datePeriod', width: 190 },
@@ -100,10 +101,10 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     if (data != null && data.length > 0) {
                         let items = [];
                         for (let entry of data) {
-                            items.push(new RoleIndividual(entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod))
+                            items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod))
                         }              
                         self.listRoleIndividual(items);
-                        self.selectedRoleIndividual(items[0].loginId);
+                        self.selectedRoleIndividual(items[0].userId);
                     }else{
                         self.listRoleIndividual([]);
                         self.selectedRoleIndividual('');
@@ -145,7 +146,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
               let data = nts.uk.ui.windows.getShared("userId");
               if (data != null) {
                   self.selectedRoleIndividual(data);
-                  self.selectedRoleIndividual(data);
               }
           });
       }
@@ -177,13 +177,15 @@ module nts.uk.com.view.cas013.a.viewmodel {
       }
   }
   class RoleIndividual {
+      userId: string;
       loginId: string;
       name: string;
       start: string;
       end: string;
       datePeriod: string;
 
-      constructor(loginId: string, name: string, start: string, end: string) {
+      constructor(userId: string, loginId: string, name: string, start: string, end: string) {
+          this.userId = userId;
           this.loginId = loginId;
           this.name = name;
           this.start = start;

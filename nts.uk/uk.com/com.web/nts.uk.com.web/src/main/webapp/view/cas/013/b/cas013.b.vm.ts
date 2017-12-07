@@ -1,4 +1,4 @@
-module nts.uk.com.view.cas012.b.viewmodel {
+module nts.uk.com.view.cas013.b.viewmodel {
 
 
     export class ScreenModel {
@@ -16,8 +16,8 @@ module nts.uk.com.view.cas012.b.viewmodel {
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CAS013_29"), key: 'userID', width: 100 },
-                { headerText: nts.uk.resource.getText("CAS013_30"), key: 'userName', width: 230 }
+                { headerText: nts.uk.resource.getText("CAS012_25"), key: 'userID', width: 100 },
+                { headerText: nts.uk.resource.getText("CAS012_26"), key: 'userName', width: 230 }
             ]);
             self.selectUserID = ko.observable('');
         }
