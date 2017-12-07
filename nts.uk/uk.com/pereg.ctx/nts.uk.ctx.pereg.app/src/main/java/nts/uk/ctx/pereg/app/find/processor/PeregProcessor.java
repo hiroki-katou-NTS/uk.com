@@ -13,8 +13,6 @@ import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.ParamForGetPerItem;
@@ -137,7 +135,6 @@ public class PeregProcessor {
 		if (lstItemDef.size() == 0)
 			return new EmpMaintLayoutDto();
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = new ArrayList<>();
-		List<PerInfoItemDefDto> lstPerInfoItemDef = new ArrayList<>();
 		for (int i = 0; i < lstItemDef.size(); i++){
 			lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutFinder.createFromDomain(perInfoCtg.getPersonEmployeeType().value, query.getEmployeeId(),
 					lstItemDef.get(i), query.getCategoryCode(), i));
@@ -198,7 +195,7 @@ public class PeregProcessor {
 	private void setEmpInfoItemData(EmpMaintLayoutDto empMaintLayoutDto, String recordId, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		List<EmpOptionalDto> lstCtgItemOptionalDto = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-		LayoutMapping.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
+		MappingFactory.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 	
 	/**
@@ -213,7 +210,7 @@ public class PeregProcessor {
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
 		
 		if(lstCtgItemOptionalDto.size() > 0)
-			LayoutMapping.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
+			MappingFactory.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 
 }

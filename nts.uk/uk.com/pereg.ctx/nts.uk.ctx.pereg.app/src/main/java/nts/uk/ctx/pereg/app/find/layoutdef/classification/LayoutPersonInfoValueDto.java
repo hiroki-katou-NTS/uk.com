@@ -142,7 +142,7 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(itemDef.getPerInfoCtgCd());
-		dataObject.setItemDefId(itemDef.getItemDefId());
+		dataObject.setItemDefId(itemDef.getId());
 		dataObject.setItemName(itemDef.getItemName());
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setRow(itemDef.getRow());

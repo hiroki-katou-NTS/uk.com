@@ -9,7 +9,6 @@ import java.util.List;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 
 /**

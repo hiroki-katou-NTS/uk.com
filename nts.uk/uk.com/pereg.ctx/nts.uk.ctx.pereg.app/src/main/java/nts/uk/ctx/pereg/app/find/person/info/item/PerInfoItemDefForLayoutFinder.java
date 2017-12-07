@@ -65,13 +65,12 @@ public class PerInfoItemDefForLayoutFinder {
 	public PerInfoItemDefForLayoutDto createFromDomain(int ctgPerEmpType, String empId, PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder){
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = new PerInfoItemDefForLayoutDto();
-		perInfoItemDefForLayoutDto.setItemDefId(itemDef.getPerInfoItemDefId());
+		perInfoItemDefForLayoutDto.setId(itemDef.getPerInfoItemDefId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgId(itemDef.getPerInfoCategoryId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgCd(perInfoCd);
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode().v());
 		perInfoItemDefForLayoutDto.setItemName(itemDef.getItemName().v());
 		perInfoItemDefForLayoutDto.setItemDefType(itemDef.getItemTypeState().getItemType().value);
-		perInfoItemDefForLayoutDto.setItemDefDto(perInfoItemDefFinder.mappingFromDomaintoDto(itemDef, dispOrder));
 		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(ctgPerEmpType, empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired().value);
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
@@ -91,7 +90,7 @@ public class PerInfoItemDefForLayoutFinder {
 	public PerInfoItemDefForLayoutDto createFromItemDefDto(String empId, PerInfoItemDefDto itemDef, String perInfoCd, int dispOrder){
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = new PerInfoItemDefForLayoutDto();
-		perInfoItemDefForLayoutDto.setItemDefId(itemDef.getId());
+		perInfoItemDefForLayoutDto.setId(itemDef.getId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgId(itemDef.getPerInfoCtgId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgCd(perInfoCd);
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode());
