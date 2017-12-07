@@ -12,7 +12,7 @@ public interface EmployeeDataMngInfoRepository {
 	void remove(String sid, String pId);
 
 	EmployeeDataMngInfo findById(String sid, String pId);
-
+	
 	List<EmployeeDataMngInfo> findByEmployeeId(String sid);
 
 	List<EmployeeDataMngInfo> findByPersonId(String pid);

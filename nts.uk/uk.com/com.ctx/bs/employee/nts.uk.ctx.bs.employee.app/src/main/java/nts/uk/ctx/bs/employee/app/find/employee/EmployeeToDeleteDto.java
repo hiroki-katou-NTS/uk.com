@@ -7,23 +7,32 @@ import lombok.Data;
 @AllArgsConstructor
 public class EmployeeToDeleteDto {
 
+	// employeeCode
 	private String code;
 
+	// ReasonRemove
+	private String reason;
+
+	// ReasonRemove
 	private String name;
 
-	private String id;
-
-	public static EmployeeToDeleteDto fromDomain(Object[] obj) {
-		if (obj.length == 2) {
-			return new EmployeeToDeleteDto(obj[0].toString(), obj[1].toString());
-		} else {
-			return new EmployeeToDeleteDto(obj[0].toString(), obj[1].toString(), obj[2].toString());
-		}
+	public static EmployeeToDeleteDto fromDomain(String scd, String reason) {
+		return new EmployeeToDeleteDto(scd, reason);
 	}
 
-	public EmployeeToDeleteDto(String code, String name) {
+	public static EmployeeToDeleteDto fromDomain(String name) {
+		return new EmployeeToDeleteDto(name);
+	}
+	
+
+	public EmployeeToDeleteDto(String name) {
+		super();
+		this.name = name;
+	}
+
+	public EmployeeToDeleteDto(String code, String reason) {
 		super();
 		this.code = code;
-		this.name = name;
+		this.reason = reason;
 	}
 }

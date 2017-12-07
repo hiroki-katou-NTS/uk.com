@@ -112,30 +112,17 @@ public class EmployeeFinder {
 	 * @return
 	 */
 
-	// laitv
-	/**
-	 * Gets EmployeeInfo to Delete by employeeId.
-	 *
-	 * @param employeeCode
-	 *            the employee code
-	 * @return the person id by employee code
-	 */
-	public EmployeeToDeleteDto getEmployeeInfoToDelete(String employeeId) {
-
-		return this.employeeRepository.getEmployeeInfoToDelete(employeeId)
-				.map(item -> EmployeeToDeleteDto.fromDomain(item)).get();
-	}
 
 	/**
 	 * Get All Employee temporary deletion
 	 * 
 	 * @return
 	 */
-	public List<EmployeeToDeleteDto> getAllEmployeeInfoToDelete() {
-
-		return this.employeeRepository.getAllEmployeeInfoToDelete().stream()
-				.map(item -> EmployeeToDeleteDto.fromDomain(item)).collect(Collectors.toList());
-	}
+//	public List<EmployeeToDeleteDto> getAllEmployeeInfoToDelete() {
+//
+//		return this.employeeRepository.getAllEmployeeInfoToDelete().stream()
+//				.map(item -> EmployeeToDeleteDto.fromDomain(item)).collect(Collectors.toList());
+//	}
 
 	/**
 	 * Gets EmployeeInfo to Delete by employeeId.

@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -34,5 +35,15 @@ public class PersonFinder {
 		return null;
 	}
 
-	
+	public EmployeeToDeleteDto getPersonBypId(String pid) {
+
+		Optional<Person> person = personRepo.getByPersonId(pid);
+
+		if (person.isPresent()) {
+			return EmployeeToDeleteDto.fromDomain(PersonDto.fromDomain(person.get()).getPersonNameGroup().getBusinessName());
+		} else {
+			return null;
+		}
+	}
+
 }
