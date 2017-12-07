@@ -43,6 +43,8 @@ public class DailyPerformanceCorrectionDto {
 	private List<DPDataDto> lstData;
 	
 	private List<DailyPerformanceAuthorityDto> authorityDto;
+	
+	private String employmentCode;
 
 	public DailyPerformanceCorrectionDto() {
 		super();

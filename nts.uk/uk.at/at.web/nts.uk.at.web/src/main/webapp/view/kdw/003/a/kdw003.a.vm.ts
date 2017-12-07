@@ -56,6 +56,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dateModeHeader: Array<any> = [];
         errorModeHeader: Array<any> = [];
         formatCodes: KnockoutObservableArray<any> = ko.observableArray([]);
+        lstAttendanceItem: KnockoutObservableArray<any> = ko.observableArray([]);
         employeeModeFixCol: Array<any> = [
             { columnKey: 'id', isFixed: true },
             { columnKey: 'state', isFixed: true },
@@ -85,6 +86,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showButton: KnockoutObservable<AuthorityDetailModel> = ko.observable(null);
 
         referenceVacation: KnockoutObservable<ReferenceVacation> = ko.observable(null);
+
+        employmentCode: KnockoutObservable<any> = ko.observable("");
+        
+        editValue: KnockoutObservable<InfoCellEdit> = ko.observable(null);
 
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
@@ -170,8 +175,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                     item.columns.unshift("sign");
                 });
-                self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr));
+                self.employmentCode(data.employmentCode);
+                self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                 self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto));
+                self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr, self.showButton()));
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -183,7 +190,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.selectedEmployee(self.lstEmployee()[0].id);
                 self.extractionData();
                 self.loadGrid();
-              //  self.extraction();
+                //  self.extraction();
                 self.initCcg001();
                 self.loadCcg001();
                 nts.uk.ui.block.clear();
@@ -499,14 +506,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             _.forEach(self.dailyPerfomanceData(), (data) => {
                 if (!self.isDisableRow(data.id)) {
                     data.sign = !data.sign;
-                    $("#dpGrid").ntsGrid("updateRow", "_"+data.id, {sign: data.sign});
+                    $("#dpGrid").ntsGrid("updateRow", "_" + data.id, { sign: data.sign });
                 }
             });
             self.dailyPerfomanceData.valueHasMutated();
-//            self.destroyGrid();
-//            self.loadGrid();
+            //            self.destroyGrid();
+            //            self.loadGrid();
         }
-        
+
         destroyGrid() {
             $("#dpGrid").ntsGrid("destroy");
             $("#dpGrid").remove();
@@ -625,6 +632,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             code: data.employeeCode,
                             businessName: data.employeeName,
                             workplaceName: data.workplaceName,
+                            workplaceId: data.workplaceId,
                             depName: '',
                             isLoginUser: false
                         };
@@ -641,6 +649,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         code: data.employeeCode,
                         businessName: data.employeeName,
                         workplaceName: data.workplaceName,
+                        workplaceId: data.workplaceId,
                         depName: '',
                         isLoginUser: false
                     });
@@ -656,6 +665,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             code: data.employeeCode,
                             businessName: data.employeeName,
                             workplaceName: data.workplaceName,
+                            workplaceId: data.workplaceId,
                             depName: '',
                             isLoginUser: false
                         };
@@ -672,6 +682,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             code: data.employeeCode,
                             businessName: data.employeeName,
                             workplaceName: data.workplaceName,
+                            workplaceId: data.workplaceId,
                             depName: '',
                             isLoginUser: false
                         };
@@ -747,21 +758,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' },
                     {
                         name: 'Link2',
-                                                click: function(ui, evt) {
-                                                   var rowId = $("#dpGrid").igGrid("activeCell").id;
-                                                   var key = $("#dpGrid").igGrid("activeCell").columnKey;
-                                                    alert('rowId/key:' + rowId+"/"+key);
-
-                                                },
+                        click: function() {
+                            let cell = $("#dpGrid").igGrid("activeCell");
+                            if (cell) {
+                                let rowId = cell.id;
+                                let key = cell.columnKey;
+                                let value = $("#dpGrid").igGrid("getCellValue", rowId, "Code" + key.substring(4, key.length));
+                                let dialog: TypeDialog = new TypeDialog(key.substring(4, key.length), self.lstAttendanceItem(), value, rowId);
+                                dialog.showDialog(self);
+                                nts.uk.ui.block.clear();
+                            }
+                        },
                         controlType: 'LinkLabel'
                     },
                     { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
                     { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
                     { name: 'Combobox2', options: self.comboItems(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
                 ]
+            });   
+            $(document).delegate("#dpGrid", 'iggridupdatingeditcellending', function(evt, ui) {
+                self.editValue({rowId : ui.rowID , key: ui.columnKey, value: ui.value});
             });
         }
-
         reloadGrid() {
             var self = this;
             nts.uk.ui.block.invisible();
@@ -795,18 +813,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let tempList = [];
             if (mode == 0) {
                 _.forEach(self.employeeModeHeader, (header) => {
-                     delete header.group;
+                    delete header.group;
                     tempList.push(header);
                 });
             } else if (mode == 1) {
                 self.displayProfileIcon();
                 _.forEach(self.dateModeHeader, (header) => {
-                     delete header.group;
+                    delete header.group;
                     tempList.push(header);
                 });
             } else if (mode == 2) {
                 _.forEach(self.errorModeHeader, (header) => {
-                     delete header.group;
+                    delete header.group;
                     tempList.push(header);
                 });
             }
@@ -883,18 +901,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         search(val) {
+            var self = this;
             let dfd = $.Deferred();
             let i = 0;
             let result = "Not found";
-            while (i < 500) {
-                i++;
+            let cell = $("#dpGrid").igGridUpdating("endEdit");  
+            let param = {
+                typeDialog: 1,
+                param: {
+                    workTypeCode: val,
+                    employmentCode: self.employmentCode,
+                    workplaceId: "",
+                    date: new Date(),
+                    selectCode: val
+                }
             }
-            if (val === "001") {
-                result = "結果01";
-            } else if (val === "002") {
-                result = "結果02"
-            }
-            dfd.resolve(result);
+            $.when(service.findCodeName(param)).done((data) => {
+                result = (data == undefined ? "Not found" : data.name);
+                dfd.resolve(result);
+            });
             return dfd.promise();
         }
     }
@@ -910,6 +935,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         available7: KnockoutObservable<boolean> = ko.observable(true);
         available23: KnockoutObservable<boolean> = ko.observable(true);
         available25: KnockoutObservable<boolean> = ko.observable(true);
+        available17: KnockoutObservable<boolean> = ko.observable(true);
+        available18: KnockoutObservable<boolean> = ko.observable(true);
+        available19: KnockoutObservable<boolean> = ko.observable(true);
+        available20: KnockoutObservable<boolean> = ko.observable(true);
+        available21: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: Array<DailyPerformanceAuthorityDto>) {
             var self = this;
             if (!data) return;
@@ -924,6 +954,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available7(self.checkAvailable(data, 7));
             this.available23(self.checkAvailable(data, 23));
             this.available25(self.checkAvailable(data, 25));
+            this.available17(self.checkAvailable(data, 17));
+            this.available18(self.checkAvailable(data, 18));
+            this.available19(self.checkAvailable(data, 19));
+            this.available20(self.checkAvailable(data, 20));
+            this.available21(self.checkAvailable(data, 21));
 
         }
         checkAvailable(data: Array<DailyPerformanceAuthorityDto>, value: number): boolean {
@@ -931,7 +966,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var check = _.find(data, function(o) {
                 return o.functionNo === value;
             })
-            if (check == null) return true;
+            if (check == null) return false;
             else return check.availability;
         };
     }
@@ -952,17 +987,304 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     }
 
     export class ReferenceVacation {
-        yearHoliday: KnockoutObservable<boolean> = ko.observable(true);
+        yearHoliday20: KnockoutObservable<boolean> = ko.observable(true);
+        yearHoliday19: KnockoutObservable<boolean> = ko.observable(true);
         substVacation: KnockoutObservable<boolean> = ko.observable(true);
         compensLeave: KnockoutObservable<boolean> = ko.observable(true);
         com60HVacation: KnockoutObservable<boolean> = ko.observable(true);
+        authentication: KnockoutObservable<AuthorityDetailModel> = ko.observable(null);
+        allVacation: KnockoutObservable<boolean> = ko.observable(true);
 
-        constructor(yearHoliday: any, substVacation: any, compensLeave: any, com60HVacation: any) {
+        constructor(yearHoliday: any, substVacation: any, compensLeave: any, com60HVacation: any, authentication: AuthorityDetailModel) {
             var self = this;
-            this.yearHoliday(yearHoliday);
-            this.substVacation(substVacation);
-            this.compensLeave(compensLeave);
-            this.com60HVacation(com60HVacation);
+            this.yearHoliday20(yearHoliday && authentication.available20());
+            this.substVacation(substVacation && authentication.available18());
+            this.yearHoliday19(yearHoliday && authentication.available19());
+            this.compensLeave(compensLeave && authentication.available17());
+            this.com60HVacation(com60HVacation && authentication.available21());
+            this.allVacation(yearHoliday || substVacation || yearHoliday || com60HVacation);
         }
+    }
+
+    export class TypeDialog {
+
+        attendenceId: string;
+        data: Array<DPAttendanceItem>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        selectedCode: KnockoutObservable<string>;
+        listCode: KnockoutObservableArray<any>;
+        rowId: KnockoutObservable<any>;
+        constructor(attendenceId: string, data: Array<DPAttendanceItem>, selectedCode: string, rowId: any) {
+            var self = this;
+            self.attendenceId = attendenceId;
+            self.data = data;
+            self.selectedCode = ko.observable(selectedCode);
+            self.listCode = ko.observableArray([]);
+            self.rowId = ko.observable(rowId);
+        };
+
+        showDialog(parent: any) {
+            var self = this;
+            var selfParent = parent;
+            let item: DPAttendanceItem;
+            let codeName: any;
+            let dfd = $.Deferred();
+            item = _.find(self.data, function(data) {
+                return data.id == self.attendenceId;
+            })
+            switch (item.typeGroup) {
+                case 1:
+                    // KDL002  
+                    let param1 = {
+                        typeDialog: 1,
+                        param: {
+                            workTypeCode: self.selectedCode(),
+                            employmentCode: selfParent.employmentCode(),
+                            workplaceId: "",
+                            date: new Date(),
+                            selectCode: self.selectedCode()
+                        }
+                    }
+                    service.findAllCodeName(param1).done((data) => {
+                        self.listCode([]);
+                        self.listCode(_.map(data, 'code'));
+                        nts.uk.ui.windows.setShared('KDL002_Multiple', false, true);
+                        //all possible items
+                        nts.uk.ui.windows.setShared('KDL002_AllItemObj', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode(), true);
+                        //selected items
+                        nts.uk.ui.windows.setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
+                        nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                            var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                            $.when($("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Name" + self.attendenceId, lst[0].name),
+                                $("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Code" + self.attendenceId, lst[0].code)
+                            ).done(() => {
+                                dfd.resolve();
+                            })
+                        })
+                    });
+                    dfd.promise();
+                    break;
+                case 2:
+                    //KDL001 
+                    let employeeIdSelect: any = _.find(selfParent.dailyPerfomanceData(), function(item: any) {
+                        return item.id == self.rowId().substring(1, self.rowId().length);
+                    });
+                    let employee: any = _.find(selfParent.lstEmployee(), function(item: any) {
+                        return item.id == employeeIdSelect.employeeId;
+                    });
+                    let param2 = {
+                        typeDialog: 2,
+                        param: {
+                            workplaceId: employee.workplaceId
+                        }
+                    }
+                    service.findAllCodeName(param2).done((data) => {
+                        self.listCode([]);
+                        self.listCode(_.map(data, 'code'));
+                        nts.uk.ui.windows.setShared('kml001multiSelectMode', false);
+                        nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode());
+                        nts.uk.ui.windows.setShared('kml001selectedCodeList', []);
+                        nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                            let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
+                            if (codes) {
+                                codeName = _.find(data, (item: any) => {
+                                    return item.code == codes[0];
+                                });
+                                $.when($("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Name" + self.attendenceId, codeName.name),
+                                    $("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Code" + self.attendenceId, codeName.code)
+                                ).done(() => {
+                                    dfd.resolve();
+                                })
+                            }
+                        });
+                    });
+                    dfd.promise()
+                    break;
+                case 3:
+                    //KDL010 
+                    nts.uk.ui.block.invisible();
+                    nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.selectedCode());
+                    nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                        var self = this;
+                        var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                        if (returnWorkLocationCD !== undefined) {
+                            let dataKDL: any;
+                            let param3 = {
+                                typeDialog: 3
+                            }
+                            service.findAllCodeName(param3).done((data: any) => {
+                                codeName = _.find(data, (item: any) => {
+                                    return item.code == returnWorkLocationCD;
+                                });
+                                $.when($("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Name" + self.attendenceId, codeName.name),
+                                    $("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Code" + self.attendenceId, codeName.code)
+                                ).done(() => {
+                                    dfd.resolve();
+                                })
+                            });
+                        }
+                        else {
+                            nts.uk.ui.block.clear();
+                        }
+                    });
+                    dfd.promise()
+                    break;
+                case 4:
+                    //KDL032 
+                    break;
+                case 5:
+                    //CDL008 
+                    let dateCon = _.find(selfParent.dpData, (item: any) => {
+                        return item.id == self.rowId().substring(1, self.rowId().length);
+                    });
+                    nts.uk.ui.windows.setShared('inputCDL008', {
+                        selectedCodes: "00000000000000000000000000" + self.selectedCode(),
+                        baseDate: moment(dateCon.date),
+                        isMultiple: false
+                    }, true);
+
+                    nts.uk.ui.windows.sub.modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function(): any {
+                        // Check is cancel.
+                        if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
+                            return;
+                        }
+                        //view all code of selected item 
+                        var output = nts.uk.ui.windows.getShared('outputCDL008');
+                        let param5 = {
+                            typeDialog: 5,
+                            param: {
+                                date: moment(dateCon.date)
+                            }
+                        }
+                        service.findAllCodeName(param5).done((data: any) => {
+                            codeName = _.find(data, (item: any) => {
+                                return item.code == output.substring(26, 36);
+                            });
+                            $.when($("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Name" + self.attendenceId, codeName.name),
+                                $("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Code" + self.attendenceId, codeName.code)
+                            ).done(() => {
+                                dfd.resolve();
+                            })
+                        });
+                    })
+                    break;
+                case 6:
+                    //KCP002
+                    nts.uk.ui.windows.setShared('inputCDL003', {
+                        selectedCodes: self.selectedCode(),
+                        showNoSelection: false,
+                        isMultiple: false
+                    }, true);
+
+                    nts.uk.ui.windows.sub.modal('com', '/view/cdl/003/a/index.xhtml').onClosed(function(): any {
+                        //view all code of selected item 
+                        var output = nts.uk.ui.windows.getShared('outputCDL003');
+                        if (output) {
+                            let param6 = {
+                                typeDialog: 6
+                            }
+                            service.findAllCodeName(param6).done((data: any) => {
+                                codeName = _.find(data, (item: any) => {
+                                    return item.code == output;
+                                });
+                                $.when($("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Name" + self.attendenceId, codeName.name),
+                                    $("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Code" + self.attendenceId, codeName.code)
+                                ).done(() => {
+                                    dfd.resolve();
+                                })
+                            });
+                        }
+                    })
+                    break;
+                case 7:
+                    //KCP003 
+                    let dateCon7 = _.find(selfParent.dpData, (item: any) => {
+                        return item.id == self.rowId().substring(1, self.rowId().length);
+                    });
+                    nts.uk.ui.windows.setShared('inputCDL004', {
+                        baseDate: moment(dateCon7.date),
+                        selectedCodes: [self.selectedCode()],
+                        showNoSelection: false,
+                        isMultiple: false
+                    }, true);
+
+                    nts.uk.ui.windows.sub.modal('com', '/view/cdl/004/a/index.xhtml').onClosed(function(): any {
+                        var isCancel = nts.uk.ui.windows.getShared('CDL004Cancel');
+                        if (isCancel) {
+                            return;
+                        }
+                        var output = nts.uk.ui.windows.getShared('outputCDL004');
+                        let param7 = {
+                            typeDialog: 7,
+                            param: {
+                                date: moment(dateCon7.date)
+                            }
+                        }
+                        service.findAllCodeName(param7).done((data: any) => {
+                            codeName = _.find(data, (item: any) => {
+                                return item.code == output;
+                            });
+                            $.when($("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Name" + self.attendenceId, codeName.name),
+                                $("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Code" + self.attendenceId, codeName.code)
+                            ).done(() => {
+                                dfd.resolve();
+                            })
+                        });
+                    })
+                    break;
+                case 8:
+                    nts.uk.ui.windows.setShared('CDL002Params', {
+                        isMultiple: false,
+                        selectedCodes: self.selectedCode(),
+                        showNoSelection: false
+                    }, true);
+
+                    nts.uk.ui.windows.sub.modal('com', '/view/cdl/002/a/index.xhtml').onClosed(function(): any {
+                        nts.uk.ui.block.clear();
+                        var isCancel = nts.uk.ui.windows.getShared('CDL002Cancel');
+                        if (isCancel) {
+                            return;
+                        }
+                        var output = nts.uk.ui.windows.getShared('CDL002Output');
+                        let param8 = {
+                            typeDialog: 8,
+                        }
+                        service.findAllCodeName(param8).done((data: any) => {
+                            codeName = _.find(data, (item: any) => {
+                                return item.code == output;
+                            });
+                            $.when($("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Name" + self.attendenceId, codeName.name),
+                                $("#dpGrid").igGridUpdating("setCellValue", self.rowId(), "Code" + self.attendenceId, codeName.code)
+                            ).done(() => {
+                                dfd.resolve();
+                            })
+                        });
+                    })
+                    break;
+            }
+        }
+    }
+    export interface DPAttendanceItem {
+        id: string;
+        name: string;
+        displayNumber: number;
+        userCanSet: boolean;
+        lineBreakPosition: number;
+        attendanceAtr: number;
+        /*DUTY(1, "勤務種類"),
+          WORK_HOURS(2, "就業時間帯"),   
+          SERVICE_PLACE(3, "勤務場所"),   
+          REASON(4, "乖離理由"),   
+          WORKPLACE(5, "職場"),    
+          CLASSIFICATION(6, "分類"),  
+          POSSITION(7, "職位"),   
+          EMPLOYMENT(8, "雇用区分");*/
+        typeGroup: number;
+    }
+    
+    interface InfoCellEdit {
+        rowId: any;
+        key : any;
+        value: any;
     }
 }

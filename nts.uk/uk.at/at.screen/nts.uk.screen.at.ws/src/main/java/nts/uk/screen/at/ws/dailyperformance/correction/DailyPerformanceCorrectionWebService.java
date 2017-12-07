@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -37,6 +39,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DPUpdateColWidthCommandHandler commandHandler;
+	
+	@Inject
+	private DataDialogWithTypeProcessor dialogProcessor;
 	
 	@POST
 	@Path("startScreen")
@@ -66,6 +71,18 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("updatecolumnwidth")
 	public void getError(UpdateColWidthCommand command){
 		this.commandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("findCodeName")
+	public CodeName findCodeName(DPParamDialog param){
+		return this.dialogProcessor.getTypeDialog(param.getTypeDialog(), param.getParam());
+	}
+	
+	@POST
+	@Path("findAllCodeName")
+	public List<CodeName> findAllCodeName(DPParamDialog param){
+		return this.dialogProcessor.getAllTypeDialog(param.getTypeDialog(), param.getParam());
 	}
 	
 }
