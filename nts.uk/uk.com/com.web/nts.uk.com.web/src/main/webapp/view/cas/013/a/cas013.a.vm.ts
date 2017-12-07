@@ -3,6 +3,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
     export class screenModel {
         // Metadata
         isCreateMode: KnockoutObservable<boolean> = ko.observable(false);
+        isSelectedUser: KnockoutObservable<boolean> = ko.observable(false);
+        
 
         //ComboBOx RollType
         listRoleType: KnockoutObservableArray<RollType>;
@@ -50,15 +52,18 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.selectedRoleType.subscribe((code: string) => {
                 self.getRoles(code.toString());
                 self.isCreateMode(false);
+                self.isSelectedUser(false);
             });
 
             self.selectedRole.subscribe((code: string) => {
                 self.selectRole(code.toString());
                 self.isCreateMode(false);
+                self.isSelectedUser(false);
             });
             self.selectedRoleIndividual.subscribe((code: string) => {
                 self.selectRoleGrant(code.toString());
                 self.isCreateMode(false);
+                self.isSelectedUser(false);
             });
 
 
@@ -81,7 +86,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
             if (roleType != '') {
                 new service.Service().getRole(roleType).done(function(data: any) {
                     if (data != null && data.length > 0) {
-                        console.log(data);
                         self.listRole(data);
                         self.selectedRole(data[0].roleId);
                     }
@@ -155,8 +159,22 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     self.userName(data.decisionName);
                     self.userId(data.decisionUserID);
                     self.dateValue({});
+                    self.isSelectedUser(true);
                 }
             });
+        }
+        save(): void{
+            var self = this;
+            if(self.isSelectedUser()){
+                if(!nts.uk.util.isNullOrUndefined(self.selectedRoleType()) 
+                    && !nts.uk.util.isNullOrUndefined(self.selectedRole())
+                    && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
+                    && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)){
+                    console.log('save');
+                }
+            }else{
+                console.log('update');
+            }    
         }
 
     }
