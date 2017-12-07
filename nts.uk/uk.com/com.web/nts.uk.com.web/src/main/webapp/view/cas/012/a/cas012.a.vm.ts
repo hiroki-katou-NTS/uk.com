@@ -1,4 +1,6 @@
 module nts.uk.com.view.cas012.a.viewmodel {
+    import block = nts.uk.ui.block;
+    
     export class ScreenModel {
         // Metadata
         isCreate: KnockoutObservable<boolean> = ko.observable(false);
@@ -111,16 +113,84 @@ module nts.uk.com.view.cas012.a.viewmodel {
                 if (self.isCreate()) {
                     self.createRole();
                 } else {
-                    let roleIndividual = ko.mapping.toJS(self.selectRoleIndividual());
-                    service.update(roleIndividual).done(() => {
-                        
-                    });
+                    self.updateRole();
                 }
             }
         }
         
-        deleteBtn() {
+        private createRole(): void {
+            var self = this;
+            var param: RoleIndividualGrantBaseCommand = new RoleIndividualGrantBaseCommand(self.selectRoleIndividual());
+            param.roleType = self.selectedRoleType();
+            param.companyID = self.selectedCompany();
+            param.startValidPeriod = nts.uk.time.parseMoment(self.datePeriod().startDate).format();
+            param.endValidPeriod = nts.uk.time.parseMoment(self.datePeriod().endDate).format();
             
+            block.invisible();
+            if (self.selectedRoleType() == 0) {
+                nts.uk.ui.windows.sub.modal("/view/cas/012/c/index.xhtml").onClosed(() => {
+                    let data = nts.uk.ui.windows.getShared("CAS012CResult");
+                    param.setRoleAdminFlag = data.setRoleAdminFlag;
+                    param.decisionCompanyID = data.decisionCompanyID;
+                    self.createRoleProcess(param);
+                });
+            } else {
+                self.createRoleProcess(param);
+            }
+        }
+        
+        private createRoleProcess(param: RoleIndividualGrantBaseCommand): void {
+            var self = this;
+            service.create(param).done((data: any) => {
+                self.getData().done(() => {
+                    self.selectRoleByKey(data.companyID, data.userID, data.roleType);
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                });
+            }).fail((res) => {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+            }).always(() => {
+                block.clear();
+            });
+        }
+        
+        private updateRole(): void {
+            var self = this;
+            var param: RoleIndividualGrantBaseCommand = new RoleIndividualGrantBaseCommand(self.selectRoleIndividual());
+            param.startValidPeriod = nts.uk.time.parseMoment(self.datePeriod().startDate).format();
+            param.endValidPeriod = nts.uk.time.parseMoment(self.datePeriod().endDate).format();
+            
+            block.invisible();
+            service.update(param).done(() => {
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+            }).fail((res) => {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+            }).always(() => {
+                block.clear();
+            });
+        }
+                
+        deleteBtn() {
+            var self = this;
+            if (!nts.uk.text.isNullOrEmpty(self.currentCode())) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    block.invisible();
+                    let param: RoleIndividualGrantBaseCommand = new RoleIndividualGrantBaseCommand(self.selectRoleIndividual());
+                    param.startValidPeriod = nts.uk.time.parseMoment(self.datePeriod().startDate).format();
+                    param.endValidPeriod = nts.uk.time.parseMoment(self.datePeriod().endDate).format();
+                    service.deleteRoleIndividual(param).done(() => {
+                        let index = _.findIndex(self.listRoleType(), ['GUID', self.currentCode()]);
+                        index = _.min([self.listRoleType().length - 2, index]);
+                        self.getData().done(() => {
+                            self.selectRoleByIndex(index);
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        });
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    }).always(() => {
+                        block.clear();
+                    });
+                })
+            }
         }
         
         private getData(): JQueryPromise<any> {
@@ -167,6 +237,17 @@ module nts.uk.com.view.cas012.a.viewmodel {
             }
         }
         
+        private selectRoleByKey(companyID: string, userID: string, roleType: number) {
+            var self = this;
+            nts.uk.ui.errors.clearAll();
+            var selectedRole: RoleIndividualDto = _.find(self.listRoleIndividual(), (item) => {
+                return item.companyID == companyID && item.userID == userID && item.roleType == roleType;
+            });
+            var GUID = (selectedRole) ? selectedRole.GUID : "";
+            self.currentCode(GUID);
+            self.findRoleById(GUID);
+        }
+        
         private selectRoleByIndex(index: number) {
             var self = this;
             var selectedRole: RoleIndividualDto = _.nth(self.listRoleIndividual(), index);
@@ -174,29 +255,6 @@ module nts.uk.com.view.cas012.a.viewmodel {
             self.currentCode(GUID);
             self.findRoleById(GUID);
         }
-        
-        private createRole(): void {
-            var self = this;
-            var param: RoleIndividualGrantBaseCommand = new RoleIndividualGrantBaseCommand(self.selectRoleIndividual());
-            param.startValidPeriod = self.startValidPeriod();
-            param.endValidPeriod = self.endValidPeriod();
-            
-            if (self.selectedRoleType() == 0) {
-                nts.uk.ui.windows.sub.modal("/view/cas/012/c/index.xhtml").onClosed(() => {
-                    let data = nts.uk.ui.windows.getShared("CAS012CResult");
-                    param.setRoleAdminFlag = data.setRoleAdminFlag;
-                    param.decisionCompanyID = data.decisionCompanyID;
-                    service.create(param).done(() => {
-                        
-                    });
-                });
-            } else {
-                service.create(param).done(() => {
-                    
-                });
-            }
-        }
-        
     }
 
     export interface IRoleIndividual {
