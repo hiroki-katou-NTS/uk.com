@@ -4,6 +4,7 @@ module nts.uk.com.view.ccg025.a.component {
     export interface Option {
         roleType?: number;
         multiple?: boolean;
+        currentCode?: any;
     }
 
     export module viewmodel {
@@ -55,7 +56,11 @@ module nts.uk.com.view.ccg025.a.component {
                 service.getListRoleByRoleType(roleType).done((data: Array<model.Role>) => {
                     data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
                     self.listRole(data);
-                    self.selectItem();
+                    if (nts.uk.util.isNullOrUndefined(self.setting.currentCode)) {
+                        self.selectFirstItem();
+                    } else {
+                        self.currentCode(self.setting.currentCode);
+                    }
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -65,7 +70,7 @@ module nts.uk.com.view.ccg025.a.component {
             }
 
             /** Select first item */
-            private selectItem(): void {
+            private selectFirstItem(): void {
                 var self = this;
                 if (self.listRole().length > 0 && !self.setting.multiple) {
                     self.currentCode(self.listRole()[0].roleId);

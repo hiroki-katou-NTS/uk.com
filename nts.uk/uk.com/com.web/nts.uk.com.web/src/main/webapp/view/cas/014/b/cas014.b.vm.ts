@@ -91,9 +91,10 @@ module nts.uk.com.view.cas014.b {
                 return dfd.promise();
             }
 
-            loadRoleSetHolder(rsCode: string, empId?: string) {
+            loadRoleSetHolder(rsCode: string, empId?: string): JQueryPromise<any> {
                 let self = this;
-                new service.Service().getAllRoleSetPerson(rsCode).done(function(data: Array<any>) {
+                var dfd = new service.Service().getAllRoleSetPerson(rsCode);
+                dfd.done(function(data: Array<any>) {
                     self.roleSetPersonList.removeAll();
                     if (data && data.length) {
                         let _rspList: Array<RoleSetPerson> = _.map(data, rsp => {
@@ -121,6 +122,7 @@ module nts.uk.com.view.cas014.b {
                 }).fail(function(error) {
                     alertError({ messageId: error.messageId });
                 });
+                return dfd;
             }
 
             getEmployeeInfo(empId: string) {
@@ -185,18 +187,19 @@ module nts.uk.com.view.cas014.b {
                     let indexItemDelete = _.findIndex(ko.toJS(self.roleSetPersonList), function(item: any) { return item.employeeId == data.employeeId; });
                     new service.Service().deleteData(command).done(function() {
                         //select after delete
-                        self.loadRoleSetHolder(self.selectedRoleSet());
-                        if (self.roleSetPersonList().length == 0) {
-                            self.createNewRoleSetPerson();
-                        } else {
-                            if (indexItemDelete == self.roleSetPersonList().length) {
-                                self.selectedEmployeeId(self.roleSetPersonList()[indexItemDelete - 1].employeeId);
+                        self.loadRoleSetHolder(self.selectedRoleSet()).done(() => {
+                            if (self.roleSetPersonList().length == 0) {
+                                self.createNewRoleSetPerson();
                             } else {
-                                self.selectedEmployeeId(self.roleSetPersonList()[indexItemDelete].employeeId);
+                                if (indexItemDelete == self.roleSetPersonList().length) {
+                                    self.selectedEmployeeId(self.roleSetPersonList()[indexItemDelete - 1].employeeId);
+                                } else {
+                                    self.selectedEmployeeId(self.roleSetPersonList()[indexItemDelete].employeeId);
+                                }
                             }
-                        }
-                        info({ messageId: "Msg_16" }).then(() => {
-                            block.clear();
+                            info({ messageId: "Msg_16" }).then(() => {
+                                block.clear();
+                            });
                         });
                     }).fail(error => {
                         alertError({ messageId: error.messageId });

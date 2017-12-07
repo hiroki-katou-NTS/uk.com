@@ -15,12 +15,14 @@ module nts.uk.at.view.cdl025.test.viewmodel {
             var self = this;
             let param = {
                 roleType: 1,
-                multiple: true
+                multiple: true,
+                currentCode: self.currentCodes()
             };
             nts.uk.ui.windows.setShared("paramCdl025", param);
             nts.uk.ui.windows.sub.modal("/view/cdl/025/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("dataCdl025");
-                self.currentCodes(data);
+                if (!nts.uk.util.isNullOrUndefined(data))
+                    self.currentCodes(data);
             });
         }
 
@@ -28,12 +30,14 @@ module nts.uk.at.view.cdl025.test.viewmodel {
             var self = this;
             let param = {
                 roleType: 1,
-                multiple: false
+                multiple: false,
+                currentCode: self.currentCode()
             };
             nts.uk.ui.windows.setShared("paramCdl025", param);
             nts.uk.ui.windows.sub.modal("/view/cdl/025/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("dataCdl025");
-                self.currentCode(data);
+                if (!nts.uk.util.isNullOrUndefined(data))
+                    self.currentCode(data);
             });
         }
     }

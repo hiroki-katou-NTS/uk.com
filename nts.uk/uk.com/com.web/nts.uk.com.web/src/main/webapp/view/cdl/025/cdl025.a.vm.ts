@@ -10,20 +10,23 @@ module nts.uk.com.view.cdl025.a {
             component: ccg.component.viewmodel.ComponentModel;
             roleType : number;
             multiple : boolean;
+            currentCode: any;
             
             private searchMode: string;
             
             constructor() {
                 let self = this;
                 let param = nts.uk.ui.windows.getShared("paramCdl025"); 
-                if(param !=null){
+                if(!nts.uk.util.isNullOrUndefined(param)){
                     self.roleType = param.roleType;
-                    self.multiple = param.multiple;    
+                    self.multiple = param.multiple;
+                    self.currentCode = param.currentCode;
                 }
                 
                 self.component = new ccg.component.viewmodel.ComponentModel({ 
                     roleType: self.roleType,
-                    multiple: self.multiple
+                    multiple: self.multiple,
+                    currentCode: self.currentCode                    
                 });
             }
 
