@@ -11,6 +11,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
@@ -188,6 +189,11 @@ public class OverTimeDto {
 	 */
 	private PreAppOvertimeDto preAppOvertimeDto;
 	
+	/**
+	 * appOvertimeReference
+	 */
+	private AppOvertimeReference appOvertimeReference;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -230,6 +236,7 @@ public class OverTimeDto {
 				false,
 				false, 
 				false, 
+				null,
 				null);
 	}
 	

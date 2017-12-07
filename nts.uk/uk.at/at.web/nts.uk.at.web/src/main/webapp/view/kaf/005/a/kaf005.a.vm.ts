@@ -159,12 +159,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     var dfd = $.Deferred();
                     service.findByChangeAppDate({
                         appDate: moment(value).format(self.DATEFORMART),
-                        prePostAtr: self.prePostSelected    
+                        prePostAtr: self.prePostSelected(),
+                        siftCD: self.siftCD(),
+                        overtimeHours: ko.toJS(self.overtimeHours)    
                     }).done((data) =>{
                         self.findBychangeAppDateData(data);
                         self.kaf000_a.objApprovalRootInput().standardDate = moment(new Date(value)).format(self.DATEFORMART);
                         self.kaf000_a.getAllApprovalRoot();
                         self.kaf000_a.getMessageDeadline(0, value);
+                        self.convertAppOvertimeReferDto(data);
                         dfd.resolve(data);
                     }).fail((res) =>{
                             dfd.reject(res);
@@ -178,6 +181,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     appDate: moment(self.appDate()).format(self.DATEFORMART)
                     }).done((data) =>{
                         self.convertpreAppOvertimeDto(data);
+                        self.convertAppOvertimeReferDto(data);
                         self.referencePanelFlg(data.referencePanelFlg);
                         self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                         self.preAppPanelFlg(data.preAppPanelFlg);
@@ -565,7 +569,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             appDate: moment(self.appDate()).format(self.DATEFORMART),
                             siftCD: self.siftCD(),
                             prePostAtr: self.prePostSelected(),
-                            overtimeHours: self.overtimeHours()
+                            overtimeHours: ko.toJS(self.overtimeHours)
                         }
                     ).done(data => {
                         self.timeStart1(data.startTime1 == -1 ? null : data.startTime1);
@@ -717,7 +721,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.displayWorkClockFrom2To2Reference(false);
             }
             self.overtimeHoursPre.removeAll();
-            if(data.appOvertimeReference.overTimeInputsPre != null){
+            if(data.appOvertimeReference.overTimeInputsRefer != null){
                 for (let i = 0; i < data.appOvertimeReference.overTimeInputsRefer.length; i++) {
                         if(data.appOvertimeReference.overTimeInputsRefer[i].frameNo != 11 && data.appOvertimeReference.overTimeInputsRefer[i].frameNo != 12){
                             self.overtimeHoursReference.push(new common.AppOvertimePre("", "", 
