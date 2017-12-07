@@ -1,57 +1,67 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
-
 /**
  * The Class WorkingConditionItem.
  */
 @Getter
+// 労働条件項目
 public class WorkingConditionItem extends AggregateRoot {
-	
+
+	/** The history id. */
+	// 履歴ID
+	private String historyId;
+
 	/** The schedule management atr. */
+	// 予定管理区分
 	private NotUseAtr scheduleManagementAtr;
-	
-	/** The vacation added time atr. */
-	private NotUseAtr vacationAddedTimeAtr;
-	
-	/** The labor system. */
-	private WorkingSystem laborSystem;
-	
+
+	/** The work day of week. */
+	// 曜日別勤務
+	private PersonalDayOfWeek workDayOfWeek;
+
 	/** The work category. */
+	// 区分別勤務
 	private PersonalWorkCategory workCategory;
-	
-	/** The contract time. */
-	private LaborContractTime contractTime;
-	
+
+	/** The auto stamp set atr. */
+	// 自動打刻セット区分
+	private NotUseAtr autoStampSetAtr;
+
 	/** The auto interval set atr. */
 	private NotUseAtr autoIntervalSetAtr;
-	
-	/** The history id. */
-	private String historyId;
-	
-	/** The work day of week. */
-	private PersonalDayOfWeek workDayOfWeek;
-	
+
 	/** The employee id. */
 	private String employeeId;
-	
-	/** The auto stamp set atr. */
-	private NotUseAtr autoStampSetAtr;
-	
-	/** The schedule method. */
-	private ScheduleMethod scheduleMethod;
-	
+
+	/** The vacation added time atr. */
+	private NotUseAtr vacationAddedTimeAtr;
+
+	/** The contract time. */
+	private LaborContractTime contractTime;
+
+	/** The labor system. */
+	private WorkingSystem laborSystem;
+
 	/** The holiday add time set. */
 	private BreakdownTimeDay holidayAddTimeSet;
-	
+
+	/** The schedule method. */
+	private ScheduleMethod scheduleMethod;
+
 	/**
-	 * Instantiates a new working condition.
+	 * Instantiates a new working condition item.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public WorkingConditionItem(WorkingConditionItemGetMemento memento){
+	public WorkingConditionItem(WorkingConditionItemGetMemento memento) {
 		this.scheduleManagementAtr = memento.getScheduleManagementAtr();
 		this.vacationAddedTimeAtr = memento.getVacationAddedTimeAtr();
 		this.laborSystem = memento.getLaborSystem();
@@ -65,7 +75,7 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.scheduleMethod = memento.getScheduleMethod();
 		this.holidayAddTimeSet = memento.getHolidayAddTimeSet();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
@@ -86,7 +96,7 @@ public class WorkingConditionItem extends AggregateRoot {
 		memento.setScheduleMethod(this.scheduleMethod);
 		memento.setHolidayAddTimeSet(this.holidayAddTimeSet);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -120,13 +130,13 @@ public class WorkingConditionItem extends AggregateRoot {
 				return false;
 		} else if (!employeeId.equals(other.employeeId))
 			return false;
-		
+
 		if (historyId == null) {
 			if (other.historyId != null)
 				return false;
 		} else if (!historyId.equals(other.historyId))
 			return false;
-		
+
 		return true;
 	}
 }
