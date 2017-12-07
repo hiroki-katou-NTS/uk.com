@@ -42,7 +42,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	public Optional<EmploymentHistory> getByEmployeeId(String sid) {
 		List<BsymtEmploymentHist> listHist = this.queryProxy().query(QUERY_BYEMPLOYEEID, BsymtEmploymentHist.class)
 				.setParameter("sid", sid).getList();
-		if (!listHist.isEmpty()) {
+		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toEmploymentHistory(listHist));
 		}
 		return Optional.empty();

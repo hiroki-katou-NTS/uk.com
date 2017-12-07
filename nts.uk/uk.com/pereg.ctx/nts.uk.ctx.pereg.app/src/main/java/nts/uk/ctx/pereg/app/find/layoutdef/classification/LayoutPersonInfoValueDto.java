@@ -1,5 +1,7 @@
 package nts.uk.ctx.pereg.app.find.layoutdef.classification;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Data
 @RequiredArgsConstructor
@@ -42,6 +45,11 @@ public class LayoutPersonInfoValueDto {
 	// is required?
 	// for render control label
 	private boolean required;
+	
+	/**
+	 * combo box value list when item type selection
+	 */
+	private List<ComboBoxObject> lstComboBoxValue;
 
 	/*
 	 * hidden value - view only - can edit
@@ -131,6 +139,7 @@ public class LayoutPersonInfoValueDto {
 
 	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object value) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
+		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(itemDef.getPerInfoCtgCd());
 		dataObject.setItemDefId(itemDef.getItemDefId());
