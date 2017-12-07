@@ -29,6 +29,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         lstItemFilter: Array<any> = [];
         ctgIdUpdate: KnockoutObservable<boolean> = ko.observable(false);
         currentItemId: KnockoutObservable<string> = ko.observable('');
+        errorList: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
 
             let self = this;
@@ -38,6 +39,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.initSettingId.subscribe(function(value: string) {
 
                 nts.uk.ui.errors.clearAll();
+                self.errorList([]);
                 self.currentCategory().ctgList.removeAll();
                 if (value) {
                     service.getAllCtg(value).done((data: any) => {
@@ -73,6 +75,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.currentItemId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
+                self.errorList([]);
 
                 if (value) {
 
@@ -405,11 +408,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentItemId("");
                     self.currentItemId(updateObj.perInfoCtgId);
                     self.ctgIdUpdate(true);
+
                 });
                 self.currentItemId(updateObj.perInfoCtgId);
+                $('.bundled-errors-alert .ntsClose').trigger('click');
                 block.clear();
             }).fail(function(res: any) {
-                nts.uk.ui.dialog.bundledErrors(res);
+                $('.bundled-errors-alert .ntsClose').trigger('click');
+                self.errorList(res);
+                nts.uk.ui.dialog.bundledErrors(self.errorList());
                 block.clear();
             });
 
@@ -785,8 +792,19 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 }
 
                 self.dateValue.subscribe(x => {
-                    if (!nts.uk.ui.errors.hasError()) {
-                        $('.bundled-errors-alert .ntsClose').trigger('click');
+                    let itemName: string = this.itemName();
+                    if (__viewContext["viewModel"].errorList().errors !== undefined) {
+                        if (__viewContext["viewModel"].errorList().errors.length > 0) {
+                            $('.bundled-errors-alert .ntsClose').trigger('click');
+                            let res = _.remove(__viewContext["viewModel"].errorList().errors, function(n) {
+                                return n.parameterIds[0] === itemName;
+                            });
+                            if (__viewContext["viewModel"].errorList().errors.length > 0) {
+                                nts.uk.ui.dialog.bundledErrors(__viewContext["viewModel"].errorList());
+                            } else {
+                                $('.bundled-errors-alert .ntsClose').trigger('click');
+                            }
+                        }
                     }
                 });
             }
@@ -867,15 +885,27 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.stringItemDataType = params.stringItemDataType || undefined;
                 self.numericItemMin = params.numericItemMin || undefined;
                 self.numericItemMax = params.numericItemMax || undefined;
+                self.stringValue.subscribe(x => {
+                    console.log(this.itemName());
+                    let itemName: string = this.itemName();
+                    if (__viewContext["viewModel"].errorList().errors !== undefined) {
+                        if (__viewContext["viewModel"].errorList().errors.length > 0) {
+                            $('.bundled-errors-alert .ntsClose').trigger('click');
+                            let res = _.remove(__viewContext["viewModel"].errorList().errors, function(n) {
+                                return n.parameterIds[0] === itemName;
+                            });
+                            if (__viewContext["viewModel"].errorList().errors.length > 0) {
+                                nts.uk.ui.dialog.bundledErrors(__viewContext["viewModel"].errorList());
+                            } else {
+                                $('.bundled-errors-alert .ntsClose').trigger('click');
+                            }
+                        }
+                    }
 
+                });
             }
 
 
-            self.stringValue.subscribe(x => {
-                if (!nts.uk.ui.errors.hasError()) {
-                    $('.bundled-errors-alert .ntsClose').trigger('click');
-                }
-            });
 
         }
     }

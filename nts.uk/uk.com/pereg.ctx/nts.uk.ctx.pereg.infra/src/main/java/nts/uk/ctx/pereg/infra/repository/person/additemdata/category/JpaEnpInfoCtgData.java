@@ -19,7 +19,7 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 			+ " WHERE e.employeeId = :employeeId AND e.personInfoCtgId = :personInfoCtgId";
 
 	private EmpInfoCtgData toDomain(PpemtEmpInfoCtgData entity) {
-		return new EmpInfoCtgData(entity.ppemtEmpInfoCtgDataPk.recordId, entity.personInfoCtgId, entity.employeeId);
+		return new EmpInfoCtgData(entity.recordId, entity.personInfoCtgId, entity.employeeId);
 	}
 
 	@Override
@@ -38,12 +38,10 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	// sonnlb code start
 
 	private PpemtEmpInfoCtgData toEntity(EmpInfoCtgData domain) {
-		PpemtEmpInfoCtgDataPk key = new PpemtEmpInfoCtgDataPk(domain.getRecordId());
-
-		return new PpemtEmpInfoCtgData(key, domain.getPersonInfoCtgId(), domain.getEmployeeId());
+		return new PpemtEmpInfoCtgData(domain.getRecordId(), domain.getPersonInfoCtgId(), domain.getEmployeeId());
 	}
 
-	private void updateEntity(EmpInfoCtgData domain,PpemtEmpInfoCtgData entity) {
+	private void updateEntity(EmpInfoCtgData domain, PpemtEmpInfoCtgData entity) {
 		entity.personInfoCtgId = domain.getPersonInfoCtgId();
 		entity.employeeId = domain.getEmployeeId();
 	}
@@ -60,11 +58,11 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	public void updateEmpInfoCtgData(EmpInfoCtgData domain) {
 		PpemtEmpInfoCtgDataPk key = new PpemtEmpInfoCtgDataPk(domain.getRecordId());
 		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(key, PpemtEmpInfoCtgData.class);
-		if (!existItem.isPresent()){
+		if (!existItem.isPresent()) {
 			throw new RuntimeException("invalid EmpInfoCtgData");
 		}
 		updateEntity(domain, existItem.get());
-		
+
 		this.commandProxy().update(existItem.get());
 	}
 
@@ -72,11 +70,10 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	public void deleteEmpInfoCtgData(String recordId) {
 		PpemtEmpInfoCtgDataPk key = new PpemtEmpInfoCtgDataPk(recordId);
 		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(key, PpemtEmpInfoCtgData.class);
-		if (!existItem.isPresent()){
+		if (!existItem.isPresent()) {
 			throw new RuntimeException("invalid EmpInfoCtgData");
 		}
-		this.commandProxy().remove(PpemtEmpInfoCtgData.class,key);
+		this.commandProxy().remove(PpemtEmpInfoCtgData.class, key);
 	}
-
 
 }
