@@ -16,20 +16,20 @@
 			<div class="system_define">
 				<p>#{i18n.getText('CMM007_6')}</p>
 				
-				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+				<div id="tab-panel" tabindex="2" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 					<div class="tab-content-1 set_height">
 						<table class="table_content">
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											required: true, constraint: 'LongName' }">#{i18n.getText('CMM007_97')}</div>
+											required: true, constraint: 'ShortName' }">#{i18n.getText('CMM007_97')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_company" tabindex="10"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_97]',
 											value: com_company,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>
@@ -37,14 +37,14 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											required: true, constraint: 'LongName' }">#{i18n.getText('CMM007_10')}</div>
+											required: true, constraint: 'ShortName' }">#{i18n.getText('CMM007_10')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_person" tabindex="3"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_10]',
 											value: com_person,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>
@@ -52,14 +52,14 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_11')}</div>
+											constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_11')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_employment" tabindex="4"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_11]',
 											value: com_employment,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>
@@ -67,14 +67,14 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_12')}</div>
+											constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_12')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_class" tabindex="5"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_12]',
 											value: com_class,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>
@@ -82,7 +82,7 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_13')}</div>
+											constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_13')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_jobtitle" tabindex="6"
@@ -97,14 +97,14 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_14')}</div>
+											constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_14')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_department" tabindex="7"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_14]',
 											value: com_department,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>
@@ -112,14 +112,14 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_15')}</div>
+											constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_15')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_workplace" tabindex="8"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_15]',
 											value: com_workplace,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>
@@ -127,14 +127,14 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_16')}</div>
+											constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_16')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_office" tabindex="9"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_16]',
 											value: com_office,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>
@@ -144,14 +144,14 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_98')}</div>
+											constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_98')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_contract" tabindex="11"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_98]',
 											value: com_contract,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>
@@ -159,14 +159,14 @@
 							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: {
-											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_99')}</div>
+											constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_99')}</div>
 								</td>
 								<td class="pl">
 									<input id="com_user" tabindex="12"
 										data-bind="ntsTextEditor: {
 											name: '#[CMM007_99]',
 											value: com_user,
-											constraint: 'LongName',
+											constraint: 'ShortName',
 											required: true,
 											option: {width: '130px'}}" />
 								</td>

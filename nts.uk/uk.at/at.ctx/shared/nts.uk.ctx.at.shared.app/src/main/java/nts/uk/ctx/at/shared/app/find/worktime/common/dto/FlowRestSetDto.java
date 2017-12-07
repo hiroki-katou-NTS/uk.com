@@ -5,14 +5,16 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
-import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestClockCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 
 /**
  * The Class FlowRestSetDto.
  */
 @Getter
-@Setter
-public class FlowRestSetDto {
+public class FlowRestSetDto implements FlowRestSetSetMemento {
 
 	/** The use stamp. */
 	private Boolean useStamp;
@@ -25,4 +27,51 @@ public class FlowRestSetDto {
 
 	/** The calculate method. */
 	private Integer calculateMethod;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetSetMemento#
+	 * setUseStamp(boolean)
+	 */
+	@Override
+	public void setUseStamp(boolean val) {
+		this.useStamp = val;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetSetMemento#
+	 * setUseStampCalcMethod(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * FlowRestClockCalcMethod)
+	 */
+	@Override
+	public void setUseStampCalcMethod(FlowRestClockCalcMethod method) {
+		this.useStampCalcMethod = method.value;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetSetMemento#
+	 * setTimeManagerSetAtr(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * RestClockManageAtr)
+	 */
+	@Override
+	public void setTimeManagerSetAtr(RestClockManageAtr atr) {
+		this.timeManagerSetAtr = atr.value;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetSetMemento#
+	 * setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * FlowRestCalcMethod)
+	 */
+	@Override
+	public void setCalculateMethod(FlowRestCalcMethod method) {
+		this.calculateMethod = method.value;
+	}
 }

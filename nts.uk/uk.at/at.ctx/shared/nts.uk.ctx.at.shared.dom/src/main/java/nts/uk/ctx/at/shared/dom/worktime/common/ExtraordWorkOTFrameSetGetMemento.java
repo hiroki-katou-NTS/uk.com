@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OTFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
-
 /**
  * The Interface ExtraordWorkOTFrameSetGetMemento.
  */

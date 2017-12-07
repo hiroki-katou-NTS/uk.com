@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
 
 /**
  * The Interface TimezoneOfFixedRestTimeSetSetMemento.
@@ -14,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
 public interface TimezoneOfFixedRestTimeSetSetMemento {
 
 	/**
-	 * Sets the timezone.
+	 * Sets the timezones.
 	 *
-	 * @param list the new timezone
+	 * @param timzones the new timezones
 	 */
-	void setTimezone(List<DeductionTime> list);
+	void setTimezones(List<DeductionTime> timzones);
 }

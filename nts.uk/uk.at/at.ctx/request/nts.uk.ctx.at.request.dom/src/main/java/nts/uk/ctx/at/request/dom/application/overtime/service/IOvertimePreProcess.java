@@ -118,7 +118,7 @@ public interface IOvertimePreProcess {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public void getResultContentActual(int prePostAtr,String siftCode,String companyID,String appDate);
+	public AppOverTime getResultContentActual(int prePostAtr,String siftCode,String companyID,String appDate);
 	
 	/**
 	 * @param employeeID

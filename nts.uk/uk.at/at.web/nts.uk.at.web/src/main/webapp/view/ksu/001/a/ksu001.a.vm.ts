@@ -985,7 +985,7 @@ module ksu001.a.viewmodel {
                         }
                     });
                 } else {
-
+                    
                 }
                 dfd.resolve();
             });
@@ -1304,7 +1304,7 @@ module ksu001.a.viewmodel {
         }
 
         /**
-         * Set color for cell
+         * Set background color for cell
          */
         setColorForCell(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
@@ -1333,8 +1333,7 @@ module ksu001.a.viewmodel {
                                     } else if (scheduleEditStateItem == 3) {
                                         detailContentDeco.push(new CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
                                     }
-                                }
-                                if (arr.length <= 2) {
+                                } else if (arr.length <= 2) {
                                     if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 2 })) {
                                         detailContentDeco.push(new CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
                                     } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 1 })) {
@@ -1379,6 +1378,9 @@ module ksu001.a.viewmodel {
                                 //申請反映 = bg-daily-reflect-application
                                 detailContentDeco.push(new CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application"));
                             }
+                            //                                else {
+                            //                                detailContentDeco.push(new CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-schedule-uncorrectable"));
+                            //                            }
                         });
                     }
                     dfd.resolve();
@@ -1398,6 +1400,7 @@ module ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 0, "bg-schedule-that-day "));
                     detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 1, "bg-schedule-that-day"));
                 }
+
                 $.when(self.getDataWkpSpecificDate(), self.getDataComSpecificDate(), self.getDataPublicHoliday()).done(() => {
                     _.each(self.arrDay, (date) => {
                         let dateFormat = +date.yearMonthDay;
@@ -1842,8 +1845,9 @@ module ksu001.a.viewmodel {
             this.workTypeName = params.workTypeName;
             this.workTimeCode = params.workTimeCode;
             this.workTimeName = params.workTimeName;
-            let symbolArr: string[] = ["通", "◯", "✕"];
-            this.symbol = params.symbol || symbolArr[Math.floor((Math.random() * 3))];
+            //            let symbolArr: string[] = ["通", "◯", "✕"];
+            //            this.symbol = params.symbol || symbolArr[Math.floor((Math.random() * 3))];
+            this.symbol = params.symbol;
             this.startTime = nts.uk.time.parseTime(params.startTime, true).format();
             this.endTime = nts.uk.time.parseTime(params.endTime, true).format();
         }
@@ -1894,7 +1898,7 @@ module ksu001.a.viewmodel {
                         workTypeName: workTypeName,
                         workTimeCode: workTimeCode,
                         workTimeName: workTimeName,
-                        symbol: null,
+                        symbol: obj.symbolName,
                         startTime: obj.scheduleStartClock,
                         endTime: obj.scheduleEndClock
                     });

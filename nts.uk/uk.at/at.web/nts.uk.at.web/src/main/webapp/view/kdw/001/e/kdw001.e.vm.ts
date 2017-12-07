@@ -27,8 +27,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         selectedExeContent: KnockoutObservable<string> = ko.observable('1');
 
         // GridList
-        errorMessageInfo: KnockoutObservableArray<any> = ko.observableArray([]);
-        filterErrorMessageInfo: KnockoutObservableArray<Gridlist> = ko.observableArray([]);
+        errorMessageInfo: KnockoutObservableArray<shareModel.PersonInfoErrMessageLogDto> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
 
@@ -44,7 +43,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             ]);
             
             self.selectedExeContent.subscribe((value) => {
-                self.filterErrorMessage();
+                self.getLogData();
             });
         }
 
@@ -115,7 +114,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
                             
                             // Get Log data
-                            self.getLogData(self.empCalAndSumExecLogID());
+                            self.getLogData();
                         }
                     });
                 })
@@ -131,19 +130,15 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
         }
 
-        private getLogData(empCalAndSumExecLogID: string): void {
+        private getLogData(): void {
             var self = this;
-            service.getErrorMessageInfo(empCalAndSumExecLogID).done((res) => {
-                self.errorMessageInfo(res.errMessageInfoDto);
-                self.filterErrorMessage();
+            var params = {
+                empCalAndSumExecLogID: self.empCalAndSumExecLogID(),
+                executionContent: self.selectedExeContent()
+            };
+            service.getErrorMessageInfo(params).done((res) => {
+                self.errorMessageInfo(res);
             });
-        }
-        
-        private filterErrorMessage() {
-            var self = this;
-            self.filterErrorMessageInfo(_.filter(self.errorMessageInfo(), (item) => {
-                return item.executionContent == self.selectedExeContent();
-            }));
         }
 
     }

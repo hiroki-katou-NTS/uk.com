@@ -1736,6 +1736,7 @@ module nts.uk.com.view.cmm018.a {
                 let param: vmbase.ParamDto = new vmbase.ParamDto(2,'',self.employeeId());
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
+                    self.employeeId(data.employeeId);
                     if(data == null || data === undefined || data.lstPersonRoot.length == 0){
                         self.singleSelectedCode('');
                         self.historyStr('');
@@ -2013,11 +2014,11 @@ module nts.uk.com.view.cmm018.a {
                     let approver: Array<vmbase.ApproverDto> = [];
                     let approvalAtr;
                     let length = data.approverInfor.length;
-                    _.each(data.approverInfor, function(item){
+                    _.each(data.approverInfor, function(item, index){
                         approvalAtr = item.approvalAtr;
                         let confirmedPerson = (data.formSetting == 2)&&(item.id == data.confirmedPerson) ? 1 : 0;
                         let confirmName = confirmedPerson == 1 ? '(確定)' : '';
-                        approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,1,approvalAtr,confirmedPerson,confirmName));
+                        approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,index,approvalAtr,confirmedPerson,confirmName));
                     });
                    let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'','',length == 0 ? 0 : data.formSetting,length == 0 ? '' : data.approvalFormName,0,int);
                     let color: boolean = length > 0 ? true : tmp.color;
@@ -2085,7 +2086,7 @@ module nts.uk.com.view.cmm018.a {
                     if(self.singleSelectedCode() == -1){
                         endDate = self.ENDDATE_LATEST;
                         startDate = history.startDate;
-                        listType.push(new vmbase.ApplicationType(history.lstAppType[0],'',history.employRootAtr));
+                        listType.push(new vmbase.ApplicationType(history.lstAppType[0].value,'',history.lstAppType[0].employRootAtr));
                     }else{
                         endDate = history.workplace.endDate;
                         startDate = history.workplace.startDate;
@@ -2095,7 +2096,7 @@ module nts.uk.com.view.cmm018.a {
                     if(self.singleSelectedCode() == -1){
                         endDate = self.ENDDATE_LATEST;
                         startDate = history.startDate;
-                        listType.push(new vmbase.ApplicationType(history.lstAppType[0],'',history.employRootAtr));
+                        listType.push(new vmbase.ApplicationType(history.lstAppType[0].value,'',history.lstAppType[0].employRootAtr));
                     }else{
                         endDate = history.person.endDate;
                         startDate = history.person.startDate;

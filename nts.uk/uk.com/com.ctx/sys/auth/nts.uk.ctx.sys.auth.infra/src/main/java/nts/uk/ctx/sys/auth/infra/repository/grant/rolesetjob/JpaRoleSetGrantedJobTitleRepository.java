@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
-import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetail;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobTitle;
 import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobTitleDetail;
@@ -26,23 +25,10 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 
 	private final String GET_All_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
 
-	private RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitle entity) {
-		return new RoleSetGrantedJobTitle(entity.companyId, entity.applyToConcurrentPerson, entity.details.stream()
-				.map(item -> new RoleSetGrantedJobTitleDetail(item.roleSetGrantedJobTitleDetailPK.roleSetCd,
-						item.roleSetGrantedJobTitleDetailPK.jobTitleId, item.roleSetGrantedJobTitleDetailPK.companyId))
-				.collect(Collectors.toList()));
-	}
-
-	private SacmtRoleSetGrantedJobTitle toEntity(RoleSetGrantedJobTitle domain) {
-		return new SacmtRoleSetGrantedJobTitle(domain.getCompanyId(), domain.isApplyToConcurrentPerson(),
-				domain.getDetails().stream().map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(),
-						item.getJobTitleId(), item.getCompanyId())).collect(Collectors.toList()));
-	}
-
 	@Override
 	public List<RoleSetGrantedJobTitle> getAllByCompanyId(String companyId) {
 		return this.queryProxy().query(GET_All_BY_COMPANY_ID, SacmtRoleSetGrantedJobTitle.class)
-				.setParameter("companyId", companyId).getList(d -> toDomain(d));
+				.setParameter("companyId", companyId).getList(d -> SacmtRoleSetGrantedJobTitle.toDomain(d));
 	}
 
 	@Override
@@ -53,13 +39,13 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		if (entity == null) {
 			return Optional.empty();
 		} else {
-			return Optional.of(toDomain(entity));
+			return Optional.of(SacmtRoleSetGrantedJobTitle.toDomain(entity));
 		}
 	}
 
 	@Override
 	public void insert(RoleSetGrantedJobTitle domain) {
-		this.commandProxy().insert(toEntity(domain));
+		this.commandProxy().insert(SacmtRoleSetGrantedJobTitle.toEntity(domain));
 	}
 
 	@Override
@@ -100,7 +86,7 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		if (entity == null) {
 			return false;
 		} else {
-			return toDomain(entity).isRoleSetCdExist(roleSetCd);
+			return SacmtRoleSetGrantedJobTitle.toDomain(entity).isRoleSetCdExist(roleSetCd);
 		}
 	}
 

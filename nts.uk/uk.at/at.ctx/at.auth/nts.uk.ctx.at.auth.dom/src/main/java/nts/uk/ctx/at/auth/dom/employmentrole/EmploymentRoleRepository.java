@@ -17,5 +17,4 @@ public interface EmploymentRoleRepository {
 	
 	void deleteEmploymentRole(String companyId,String roleId );
 	
-
 }

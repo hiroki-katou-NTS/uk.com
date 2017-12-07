@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.entity.shortworktime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -25,12 +24,10 @@ public class BshmtWorktimeHistItemPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The sid. */
-	@Basic(optional = false)
 	@Column(name = "SID")
 	private String sid;
 
 	/** The hist id. */
-	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	private String histId;
 
@@ -38,6 +35,7 @@ public class BshmtWorktimeHistItemPK implements Serializable {
 	 * Instantiates a new bshmt worktime hist item PK.
 	 */
 	public BshmtWorktimeHistItemPK() {
+		super();
 	}
 
 	/**

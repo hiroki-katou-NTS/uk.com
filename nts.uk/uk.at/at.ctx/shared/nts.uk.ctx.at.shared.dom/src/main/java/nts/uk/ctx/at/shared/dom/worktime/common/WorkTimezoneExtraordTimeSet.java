@@ -25,7 +25,7 @@ public class WorkTimezoneExtraordTimeSet extends DomainObject {
 
 	/** The OT frame set. */
 	// 残業枠設定
-	private ExtraordWorkOTFrameSet OTFrameSet;
+	private ExtraordWorkOTFrameSet oTFrameSet;
 
 	/** The calculate method. */
 	// 計算方法
@@ -39,7 +39,7 @@ public class WorkTimezoneExtraordTimeSet extends DomainObject {
 	public WorkTimezoneExtraordTimeSet(WorkTimezoneExtraordTimeSetGetMemento memento) {
 		this.holidayFrameSet = memento.getHolidayFrameSet();
 		this.timeRoundingSet = memento.getTimeRoundingSet();
-		this.OTFrameSet = memento.getOTFrameSet();
+		this.oTFrameSet = memento.getOTFrameSet();
 		this.calculateMethod = memento.getCalculateMethod();
 	}
 
@@ -51,7 +51,7 @@ public class WorkTimezoneExtraordTimeSet extends DomainObject {
 	public void saveToMemento(WorkTimezoneExtraordTimeSetSetMemento memento) {
 		memento.setHolidayFrameSet(this.holidayFrameSet);
 		memento.setTimeRoundingSet(this.timeRoundingSet);
-		memento.setOTFrameSet(this.OTFrameSet);
+		memento.setOTFrameSet(this.oTFrameSet);
 		memento.setCalculateMethod(this.calculateMethod);
 	}
 }

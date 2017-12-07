@@ -4,16 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.flexset.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
@@ -45,11 +49,11 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 	/** The use half day shift. */
 	private boolean useHalfDayShift;
 
-	/** The half day work timezone. */
-	private List<FlexHalfDayWorkTimeDto> halfDayWorkTimezone;
+	/** The lst half day work timezone. */
+	private List<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezone;
 
-	/** The stamp reflect timezone. */
-	private List<StampReflectTimezoneDto> stampReflectTimezone;
+	/** The lst stamp reflect timezone. */
+	private List<StampReflectTimezoneDto> lstStampReflectTimezone;
 
 	/** The calculate setting. */
 	private FlexCalcSettingDto calculateSetting;
@@ -88,39 +92,91 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 		coreTimeSetting.saveToMemento(this.coreTimeSetting);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento#
+	 * setRestSetting(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * FlowWorkRestSetting)
+	 */
 	@Override
 	public void setRestSetting(FlowWorkRestSetting restSetting) {
-		
+		restSetting.saveToMemento(this.restSetting);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento#
+	 * setOffdayWorkTime(nts.uk.ctx.at.shared.dom.worktime.flexset.
+	 * FlexOffdayWorkTime)
+	 */
 	@Override
 	public void setOffdayWorkTime(FlexOffdayWorkTime offdayWorkTime) {
-		// TODO Auto-generated method stub
-		
+		offdayWorkTime.saveToMemento(this.offdayWorkTime);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento#
+	 * setCommonSetting(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * WorkTimezoneCommonSet)
+	 */
 	@Override
 	public void setCommonSetting(WorkTimezoneCommonSet commonSetting) {
-		// TODO Auto-generated method stub
-		
+		commonSetting.saveToMemento(this.commonSetting);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento#
+	 * setLstHalfDayWorkTimezone(java.util.List)
+	 */
 	@Override
-	public void setHalfDayWorkTimezone(List<FlexHalfDayWorkTime> halfDayWorkTimezone) {
-		// TODO Auto-generated method stub
-		
+	public void setLstHalfDayWorkTimezone(List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone) {
+		if (CollectionUtil.isEmpty(lstHalfDayWorkTimezone)) {
+			this.lstHalfDayWorkTimezone = new ArrayList<>();
+		} else {
+			this.lstHalfDayWorkTimezone = lstHalfDayWorkTimezone.stream().map(domain -> {
+				FlexHalfDayWorkTimeDto dto = new FlexHalfDayWorkTimeDto();
+				domain.saveToMemento(dto);
+				return dto;
+			}).collect(Collectors.toList());
+		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento#
+	 * setLstStampReflectTimezone(java.util.List)
+	 */
 	@Override
-	public void setStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone) {
-		// TODO Auto-generated method stub
+	public void setLstStampReflectTimezone(List<StampReflectTimezone> lstStampReflectTimezone) {
+		if (CollectionUtil.isEmpty(lstStampReflectTimezone)) {
+			this.lstStampReflectTimezone = new ArrayList<>();
+		} else {
+			this.lstStampReflectTimezone = lstStampReflectTimezone.stream().map(domain -> {
+				StampReflectTimezoneDto dto = new StampReflectTimezoneDto();
+				domain.saveToMemento(dto);
+				return dto;
+			}).collect(Collectors.toList());
+		}
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento#
+	 * setCalculateSetting(nts.uk.ctx.at.shared.dom.worktime.flexset.
+	 * FlexCalcSetting)
+	 */
 	@Override
 	public void setCalculateSetting(FlexCalcSetting calculateSetting) {
-		// TODO Auto-generated method stub
-		
+		calculateSetting.saveToMemento(this.calculateSetting);
 	}
 
 	
