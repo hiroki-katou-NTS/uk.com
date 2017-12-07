@@ -51,20 +51,14 @@ public class AddTemporaryAbsenceCommandHandler
 		String companyId = AppContexts.user().companyId();
 
 		String newHistID = IdentifierUtil.randomUniqueId();
-		DateHistoryItem dateItem = new DateHistoryItem(newHistID,
-				new DatePeriod(command.getStartDate(), command.getEndDate()));
+		DateHistoryItem dateItem = new DateHistoryItem(newHistID,new DatePeriod(command.getStartDate(), command.getEndDate()));
 
-		TempAbsenceHistory itemtoBeAdded = null;
-
-		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository
-				.getByEmployeeId(command.getEmployeeId());
-
+		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(command.getEmployeeId());
+		
+		TempAbsenceHistory itemtoBeAdded = new TempAbsenceHistory(companyId, command.getEmployeeId(), new ArrayList<>());
 		// In case of exist history of this employee
 		if (existHist.isPresent()) {
 			itemtoBeAdded = existHist.get();
-		} else {
-			// In case of non - exist history of this employee
-			itemtoBeAdded = new TempAbsenceHistory(companyId, command.getEmployeeId(), new ArrayList<>());
 		}
 		itemtoBeAdded.add(dateItem);
 

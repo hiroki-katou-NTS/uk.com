@@ -1,5 +1,8 @@
 package nts.uk.ctx.pereg.ws.facade;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -7,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
+import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommand;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -33,5 +37,24 @@ public class FacadePeregWebService extends WebService {
 	@Path("delete")
 	public void delete(PeregDeleteCommand deleteCommand) {
 		this.commandFacade.delete(deleteCommand);
+	}
+	
+	@POST
+	@Path("register")
+	public void register(PeregInputContainer inputContainer) {
+		
+		PeregInputContainer registerPeregInputContainer = null;
+		
+		List<ItemsByCategory> addInputs = inputContainer.getInputs().stream().filter(p->p.getRecordId().isEmpty()).collect(Collectors.toList());
+		if (addInputs!= null && !addInputs.isEmpty()){
+			registerPeregInputContainer = new PeregInputContainer(inputContainer.getEmployeeId(), inputContainer.getPersonId(), addInputs);
+			this.commandFacade.add(registerPeregInputContainer);
+		}
+		
+		List<ItemsByCategory> updateInputs = inputContainer.getInputs().stream().filter(p->!p.getRecordId().isEmpty()).collect(Collectors.toList());
+		if (updateInputs!= null && !updateInputs.isEmpty()){
+			registerPeregInputContainer = new PeregInputContainer(inputContainer.getEmployeeId(), inputContainer.getPersonId(), updateInputs);
+			this.commandFacade.update(registerPeregInputContainer);
+		}
 	}
 }

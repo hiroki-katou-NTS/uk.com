@@ -49,7 +49,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	public Optional<AffJobTitleHistory_ver1> getListBySid(String cid, String sid) {
 		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
 				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID, BsymtAffJobTitleHist.class).setParameter("sid", sid).getList();
-		if (!listHist.isEmpty()) {
+		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toAffJobTitleHist(listHist));
 		}
 		return Optional.empty();

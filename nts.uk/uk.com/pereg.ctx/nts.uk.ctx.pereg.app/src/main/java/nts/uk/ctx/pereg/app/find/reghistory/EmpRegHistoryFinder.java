@@ -50,6 +50,9 @@ public class EmpRegHistoryFinder {
 	}
 
 	private boolean setLastRegName(RegEmployeeDto regEmpDto) {
+		if (regEmpDto == null) {
+			return false;
+		}
 		Optional<EmployeeDataMngInfo> dataOpt = this.empDataMngRepo.findByEmployeeId(regEmpDto.getEmployeeID()).stream()
 				.findFirst();
 

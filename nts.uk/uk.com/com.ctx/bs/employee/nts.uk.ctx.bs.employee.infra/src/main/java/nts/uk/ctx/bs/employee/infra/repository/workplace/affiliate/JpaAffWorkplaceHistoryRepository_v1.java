@@ -68,7 +68,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	public Optional<AffWorkplaceHistory_ver1> getAffWorkplaceHistByEmployeeId(String employeeId) {
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(QUERY_GET_AFFWORKPLACEHIST_BYSID,BsymtAffiWorkplaceHist.class)
 				.setParameter("sid", employeeId).getList();
-		if (!listHist.isEmpty()){
+		if (listHist != null && !listHist.isEmpty()){
 			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();

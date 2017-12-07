@@ -18,11 +18,11 @@ public class TemporaryAbsenceCommand {
 	@PeregRecordId
 	private String histoyId;
 	
-	@PeregItem("IS00090")
+	@PeregItem("IS00089")
 	private int leaveHolidayAtr;
 	
 	/** 備考 */
-	@PeregItem("IS00099")
+	@PeregItem("IS00097")
 	private String remarks;
 	
 	@PeregItem("IS00098")
@@ -32,30 +32,36 @@ public class TemporaryAbsenceCommand {
 	/**
 	 * 出産種別 （産前休業の場合）
 	 */
-	@PeregItem("IS00093")
+	@PeregItem("IS00092")
 	private boolean multiple;
+	
+	@PeregItem("IS00090")
+	private boolean sameFamily;
+	
+	@PeregItem("IS00093")
+	private int childType;
+
+	@PeregItem("IS00094")
+	private GeneralDate createDate;
+
+	@PeregItem("IS00096")
+	private boolean spouseIsLeave;
+	
+	@PeregItem("IS00091")
+	private int sameFamilyDays;
+	
+	@PeregItem("IS00087")
+	private GeneralDate startDate;
+	
+	@PeregItem("IS00088")
+	private GeneralDate endDate;
+	
+	
+	// TODO
+	@PeregItem("IS00095")
+	private Boolean childCareSameFamily;
+	
 
 	@PeregItem("")
 	private String familyMemberId;
-	
-	@PeregItem("IS00091")
-	private boolean sameFamily;
-	
-	@PeregItem("IS00094")
-	private int childType;
-
-	@PeregItem("IS00095")
-	private GeneralDate createDate;
-
-	@PeregItem("IS00097")
-	private boolean spouseIsLeave;
-	
-	@PeregItem("IS00092")
-	private int sameFamilyDays;
-	
-	@PeregItem("IS00088")
-	private GeneralDate startDate;
-	
-	@PeregItem("IS00089")
-	private GeneralDate endDate;
 }

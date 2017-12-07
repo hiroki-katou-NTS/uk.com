@@ -41,7 +41,7 @@ public class DeleteAffiliationDepartmentCommandHandler extends CommandHandler<De
 	@Override
 	protected void handle(CommandHandlerContext<DeleteAffiliationDepartmentCommand> context) {
 		val command = context.getCommand();
-		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getAffDepartmentHistorytByEmployeeId(command.getEmployeeId());
+		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
 		if (!itemHist.isPresent()){
 			throw new RuntimeException("Invalid AffDepartmentHistory");
 		}

@@ -57,12 +57,13 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 	}
 
 	private PeregDomainDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate){
+		if(standDate == null) return null;
 		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getAffDeptHistByEmpHistStandDate(employeeId, standDate);
 		if(affDeptHist.isPresent()){
 			Optional<AffDepartmentHistoryItem> affDeptHistItem = affDeptHistItemRepo.getByHistId(affDeptHist.get().getHistoryItems().get(0).identifier());
 			return AffDeptHistDto.getFirstFromDomain(affDeptHist.get(), affDeptHistItem.get());
 		}
-		return new PeregDomainDto();
+		return null;
 	}
 	
 	private PeregDomainDto getByHistId(String historyId){
@@ -71,12 +72,12 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 			Optional<AffDepartmentHistoryItem> affDeptHistItem = affDeptHistItemRepo.getByHistId(affDeptHist.get().getHistoryItems().get(0).identifier());
 			return AffDeptHistDto.getFirstFromDomain(affDeptHist.get(), affDeptHistItem.get());
 		}
-		return new PeregDomainDto();
+		return null;
 	}
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getAffDepartmentHistorytByEmployeeId(query.getEmployeeId());
+		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getByEmployeeId(query.getEmployeeId());
 		if (affDeptHist.isPresent())
 			return affDeptHist.get().getHistoryItems().stream()
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))

@@ -51,18 +51,14 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 		String histId = IdentifierUtil.randomUniqueId();
 		DateHistoryItem dateItem = new DateHistoryItem(histId, new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		AffJobTitleHistory_ver1 itemtoBeAdded = null;
-		
 		Optional<AffJobTitleHistory_ver1> existHist = affJobTitleHistoryRepository_ver1.getListBySid(companyId, command.getSid());
 		
+		AffJobTitleHistory_ver1 itemtoBeAdded = new AffJobTitleHistory_ver1(companyId, command.getSid(),new ArrayList<>());
 		// In case of exist history of this employee
 		if (existHist.isPresent()){
 			itemtoBeAdded = existHist.get();
-		} else {
-			// In case of non - exist history of this employee
-			
-			itemtoBeAdded = new AffJobTitleHistory_ver1(companyId, command.getSid(),new ArrayList<>());
 		}
+		
 		itemtoBeAdded.add(dateItem);
 		
 		affJobTitleHistoryService.add(itemtoBeAdded);

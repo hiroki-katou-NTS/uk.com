@@ -114,7 +114,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		List<BsymtTempAbsHistory> listHist = this.queryProxy()
 				.query(QUERY_GET_TEMPORARYABSENCE_BYSID, BsymtTempAbsHistory.class).setParameter("sid", employeeId)
 				.getList();
-		if (!listHist.isEmpty()) {
+		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();

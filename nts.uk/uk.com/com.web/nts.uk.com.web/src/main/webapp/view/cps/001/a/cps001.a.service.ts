@@ -6,6 +6,9 @@ module cps001.a.service {
         layout: {
             getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
             getDetails: "ctx/pereg/person/maintenance/findLayoutData",
+            'add': '/facade/pereg/add',
+            'update': '/facade/pereg/update',
+            'delete': '/facade/pereg/delete'
         },
         category: {
             'getCats': 'ctx/pereg/employee/category/getall/{0}',
@@ -54,6 +57,10 @@ module cps001.a.service {
 
     export function getCurrentLayout(query: any) {
         return ajax(paths.layout.getDetails, query);
+    }
+
+    export function saveCurrentLayout(command: any) {
+        return ajax(paths.layout.add, command);
     }
 
     export function getData() {
