@@ -32,6 +32,8 @@ public class PerInfoItemDefForLayoutDto {
 	
 	private int itemDefType;
 	
+	private PerInfoItemDefDto itemDefDto;
+	
 	/**
 	 * combo box value list when item type selection
 	 */

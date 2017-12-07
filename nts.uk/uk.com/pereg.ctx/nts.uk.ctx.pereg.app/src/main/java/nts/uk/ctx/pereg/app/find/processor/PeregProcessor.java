@@ -58,8 +58,6 @@ public class PeregProcessor {
 	@Inject
 	private EmployeeRepository employeeRepository;
 	
-	@Inject 
-	private PerInfoItemDefFinder perInfoItemDefFinder;
 	
 	/**
 	 * get person information category and it's children (Hiển thị category và
@@ -143,7 +141,6 @@ public class PeregProcessor {
 		for (int i = 0; i < lstItemDef.size(); i++){
 			lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutFinder.createFromDomain(perInfoCtg.getPersonEmployeeType().value, query.getEmployeeId(),
 					lstItemDef.get(i), query.getCategoryCode(), i));
-			lstPerInfoItemDef.add(perInfoItemDefFinder.mappingFromDomaintoDto(lstItemDef.get(i), i));
 		}
 
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();

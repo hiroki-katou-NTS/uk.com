@@ -29,14 +29,10 @@ public class EmpMaintLayoutDto {
 	private String layoutName;
 	
 	private GeneralDate standardDate;
-	
-
-	private List<PerInfoItemDefDto> listItemDf;
 
 	private List<LayoutPersonInfoClsDto> classificationItems;
 	public EmpMaintLayoutDto(){
 		this.classificationItems = new ArrayList<>();
-		this.listItemDf = new ArrayList<>();
 	}
 
 	public static EmpMaintLayoutDto createFromDomain(MaintenanceLayout domain) {

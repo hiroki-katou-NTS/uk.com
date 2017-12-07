@@ -49,6 +49,10 @@ public class PerInfoItemDefForLayoutFinder {
 	@Inject
 	private PerInfoSelectionItemFinder perInfoSelectionItemFinder;
 	
+
+	@Inject 
+	private PerInfoItemDefFinder perInfoItemDefFinder;
+	
 	/**
 	 * create object from domain
 	 * 
@@ -67,6 +71,7 @@ public class PerInfoItemDefForLayoutFinder {
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode().v());
 		perInfoItemDefForLayoutDto.setItemName(itemDef.getItemName().v());
 		perInfoItemDefForLayoutDto.setItemDefType(itemDef.getItemTypeState().getItemType().value);
+		perInfoItemDefForLayoutDto.setItemDefDto(perInfoItemDefFinder.mappingFromDomaintoDto(itemDef, dispOrder));
 		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(ctgPerEmpType, empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired().value);
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
