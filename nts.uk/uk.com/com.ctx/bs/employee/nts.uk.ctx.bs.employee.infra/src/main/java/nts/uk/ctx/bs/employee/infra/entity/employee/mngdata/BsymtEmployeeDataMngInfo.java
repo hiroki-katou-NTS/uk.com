@@ -35,7 +35,6 @@ public class BsymtEmployeeDataMngInfo extends UkJpaEntity implements Serializabl
 	public int delStatus;
 
 	@Column(name = "DEL_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
 	public GeneralDate delDateTmp;
 
 	@Column(name = "REMV_REASON")

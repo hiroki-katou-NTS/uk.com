@@ -30,6 +30,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
+	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
+	
+
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -68,6 +71,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return queryProxy().query(SELECT_BY_ID, BsymtEmployeeDataMngInfo.class).setParameter("sId", sId)
 				.setParameter("pid", pId).getSingle().map(m -> toDomain(m)).orElse(null);
 	}
+	
+	
 
 	@Override
 	public List<EmployeeDataMngInfo> findByEmployeeId(String sId) {
@@ -75,6 +80,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.stream().map(m -> toDomain(m)).collect(Collectors.toList());
 	}
 
+	
 	@Override
 	public List<EmployeeDataMngInfo> findByPersonId(String pId) {
 		return queryProxy().query(SELECT_BY_PERSON_ID, BsymtEmployeeDataMngInfo.class).setParameter("pId", pId)
@@ -102,6 +108,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null, domain.getExternalCode().v());
 	}
 
+
+
+
 	// sonnlb code start
 
 	@Override
@@ -113,4 +122,5 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	// sonnlb code end
+
 }

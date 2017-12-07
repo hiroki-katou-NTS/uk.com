@@ -14,18 +14,26 @@ module cps001.b.vm {
         constructor() {
             let self = this,
                 empDelete: ModelDelete = self.empDelete(),
-                employeeId: IModelDto = getShared('CPS001B_PARAM') || null;
-            var employeeIdq = "90000000-0000-0000-0000-000000000001";
-            if (employeeIdq) {
+                dataShare: IDataShare = getShared('CPS001B_PARAM') || null;
+
+            //if (dataShare) {
 
                 // Gọi service tải dữ liệu employee
-                service.getEmployee(employeeIdq).done((data: IModelDto) => {
+                service.getEmployeeInfo("90000000-0000-0000-0000-000000000001").done((data: IModelDto) => {
                     if (data) {
-                        empDelete.code(data.code);
+                        empDelete.code(data.code); // scd
+                        empDelete.reason(data.reason); // reason delete
+                    }
+                });
+
+                // Gọi service tải dữ liệu name of person
+                service.getPersonInfo("00001").done((data : IModelDto) => {
+                    if (data) {
                         empDelete.name(data.name);
                     }
                 });
-            }
+
+           // }
         }
 
         pushData() {
@@ -52,6 +60,12 @@ module cps001.b.vm {
         close() {
             close();
         }
+    }
+
+    // Object truyen tu man A sang
+    interface IDataShare {
+        sid: string;
+        pid: string;
     }
 
     interface IModelDto {

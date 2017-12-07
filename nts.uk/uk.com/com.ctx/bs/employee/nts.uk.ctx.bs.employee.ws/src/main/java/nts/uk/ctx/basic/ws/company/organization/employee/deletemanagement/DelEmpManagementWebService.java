@@ -21,6 +21,9 @@ import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.RestoreDataE
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDetailDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
+import nts.uk.ctx.bs.employee.app.find.employee.delete.EmployeeDeleteFinder;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 
 @Path("basic/organization/deleteempmanagement")
 @Produces({ "application/json", "text/plain" })
@@ -34,9 +37,13 @@ public class DelEmpManagementWebService extends WebService {
 
 	@Inject
 	private EmployeeDeleteCommandHandler empDeleteHandler;
-	
+
 	@Inject
 	private CompletelyDelEmpCommandHandler completelyDelEmpHandler;
+
+	@Inject
+	private EmployeeDeleteFinder employeeDeleteFinder;
+
 
 	/**
 	 * Get Employee Info to Display Screen Delete Emp
@@ -47,7 +54,7 @@ public class DelEmpManagementWebService extends WebService {
 	@POST
 	@Path("getemployeetodelete/{employeeId}")
 	public EmployeeToDeleteDto getEmployee(@PathParam("employeeId") String employeeId) {
-		return employeeFinder.getEmployeeInfoToDelete(employeeId);
+			return this.employeeDeleteFinder.getEmployeeInfo(employeeId);
 	}
 
 	@POST
@@ -56,11 +63,11 @@ public class DelEmpManagementWebService extends WebService {
 		this.empDeleteHandler.handle(command);
 	}
 
-	@POST
-	@Path("getallemployeetodelete")
-	public List<EmployeeToDeleteDto> getAllEmployeeDelete() {
-		return employeeFinder.getAllEmployeeInfoToDelete();
-	}
+//	@POST
+//	@Path("getallemployeetodelete")
+//	public List<EmployeeToDeleteDto> getAllEmployeeDelete() {
+//		return employeeFinder.getAllEmployeeInfoToDelete();
+//	}
 
 	@POST
 	@Path("getdetailemployeetodelete/{employeeId}")
@@ -73,7 +80,7 @@ public class DelEmpManagementWebService extends WebService {
 	public void restoreData(EmployeeDeleteToRestoreCommand command) {
 		this.restoreEmpHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("deleteemp/{employeeId}")
 	public void deleteEmp(@PathParam("employeeId") String employeeId) {

@@ -64,10 +64,10 @@ public class AddTemporaryAbsenceCommandHandler
 
 		tempAbsHistoryService.add(itemtoBeAdded);
 
-		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr(),
-				newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory(),
-				command.isMultiple(), command.getFamilyMemberId(), command.isSameFamily(), command.getChildType(),
-				command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays());
+		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr().intValue(),
+				newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory().intValue(),
+				command.isMultiple(), command.getFamilyMemberId(), command.isSameFamily(), command.getChildType().intValue(),
+				command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays().intValue());
 		temporaryAbsenceRepository.add(temporaryAbsence);
 
 		return new PeregAddCommandResult(newHistID);

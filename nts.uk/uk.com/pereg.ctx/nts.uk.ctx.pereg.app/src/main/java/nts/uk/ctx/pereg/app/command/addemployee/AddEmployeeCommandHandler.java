@@ -1,7 +1,6 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,13 +73,11 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 				command.getInitSettingId(), command.getHireDate(), command.getEmployeeCopyId());
 
 		// merge data from client with dataList
-		mergeData(dataList, command.getInputContainer().getInputs());
+		mergeData(dataList, command.getInputs());
 
 		List<ItemsByCategory> inputs = new ArrayList<ItemsByCategory>();
 
-		List<String> categoryCodeList = Arrays.asList("CS00002", "CS00003", "CS00004", "CS00014", "CS00015", "CS00016",
-				"CS00017", "CS00018");
-
+		List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
 		dataList.forEach(x -> {
 
 			if (categoryCodeList.indexOf(x.getCategoryCode()) == -1 && x.getCategoryCode().charAt(1) == 'O') {
@@ -174,16 +171,19 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 	private void setItemValue(List<ItemsByCategory> ctgList, String ctgCode, String ItemCode, String NewValue,
 			int saveType) {
-		ItemsByCategory PersonCtg = ctgList.stream().filter(x -> x.getCategoryCd().equals(ctgCode)).findFirst().get();
+		if (!CollectionUtil.isEmpty(ctgList)) {
+			ItemsByCategory PersonCtg = ctgList.stream().filter(x -> x.getCategoryCd().equals(ctgCode)).findFirst()
+					.get();
 
-		Optional<ItemValue> PersonNameItemOpt = PersonCtg.getItems().stream().filter(x -> x.itemCode().equals(ItemCode))
-				.findFirst();
+			Optional<ItemValue> PersonNameItemOpt = PersonCtg.getItems().stream()
+					.filter(x -> x.itemCode().equals(ItemCode)).findFirst();
 
-		if (PersonNameItemOpt.isPresent()) {
-			ItemValue PersonNameItem = PersonNameItemOpt.get();
-			PersonCtg.getItems().remove(PersonNameItem);
-			PersonCtg.getItems()
-					.add(new ItemValue(PersonNameItem.definitionId(), PersonNameItem.itemCode(), NewValue, saveType));
+			if (PersonNameItemOpt.isPresent()) {
+				ItemValue PersonNameItem = PersonNameItemOpt.get();
+				PersonCtg.getItems().remove(PersonNameItem);
+				PersonCtg.getItems().add(
+						new ItemValue(PersonNameItem.definitionId(), PersonNameItem.itemCode(), NewValue, saveType));
+			}
 		}
 
 	}

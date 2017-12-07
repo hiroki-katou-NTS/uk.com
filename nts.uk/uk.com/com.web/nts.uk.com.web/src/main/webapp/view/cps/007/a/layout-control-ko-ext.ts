@@ -1230,9 +1230,9 @@ module nts.custombinding {
 
                         def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
 
-                        def.hidden = _.has(def, "actionRole") ? def.actionRole == 0 : true;
-                        def.readonly = false;// _.has(def, "actionRole") ? def.actionRole == 1 : !!opts.sortable.isEnabled();
-                        def.editable = true;//_.has(def, "actionRole") ? def.actionRole == 2 : !!opts.sortable.isEditable();;
+                        def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
+                        def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
+                        def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
 
                         def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
                         def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
@@ -1308,7 +1308,7 @@ module nts.custombinding {
                                 break;
                         }
                     }
-                    
+
                     switch (x.layoutItemType) {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
@@ -1859,6 +1859,12 @@ module nts.custombinding {
         CODE_NAME = 2,
         // 3:列挙型(Enum)
         ENUM = 3
+    }
+
+    enum ACTION_ROLE {
+        HIDDEN = <any>"HIDDEN",
+        VIEW_ONLY = <any>"VIEW_ONLY",
+        EDIT = <any>"EDIT"
     }
 }
 
