@@ -17,7 +17,6 @@ import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -145,11 +144,11 @@ public class MappingFactory {
 	 * @param classItem
 	 */
 	public static void mapEmployeeOptionData(List<EmpOptionalDto> empOptionalData, LayoutPersonInfoClsDto classItem) {
-		for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 			for (EmpOptionalDto data : empOptionalData) {
-				if (data.getItemCode().equals(itemDef.getItemCode())) {
-					LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef, data.getValue());
-					classItem.getItems().add(valueItem);
+				if (data.getItemCode().equals(valueItem.getItemCode())) {
+					valueItem.setValue(data.getValue());
 				}
 			}
 
@@ -161,11 +160,11 @@ public class MappingFactory {
 	 * @param classItem
 	 */
 	public static void mapPersonOptionData(List<PersonOptionalDto> perOptionalData, LayoutPersonInfoClsDto classItem) {
-		for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 			for (PersonOptionalDto data : perOptionalData) {
-				if (data.getItemCode().equals(itemDef.getItemCode())) {
-					LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.initData(itemDef, data.getValue());
-					classItem.getItems().add(valueItem);
+				if (data.getItemCode().equals(valueItem.getItemCode())) {
+					valueItem.setValue(data.getValue());
 				}
 
 			}

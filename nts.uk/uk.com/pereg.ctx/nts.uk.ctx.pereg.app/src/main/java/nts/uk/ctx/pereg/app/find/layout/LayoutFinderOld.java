@@ -28,7 +28,6 @@ import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
@@ -191,8 +190,6 @@ public class LayoutFinderOld {
 							.getPerInfoCategory(authClassItem.getPersonInfoCategoryID(), contractCode).get();
 					// get data
 					if (authClassItem.getLayoutItemType() == LayoutItemType.ITEM) {
-						getDataforSingleItem(perInfoCategory, authClassItem, standardDate, employee.getPId(),
-								employee.getSId());
 					} else if (authClassItem.getLayoutItemType() == LayoutItemType.LIST) {
 						getDataforListItem(perInfoCategory, personCategoryAuthOpt.get(), inforAuthItems, authClassItem,
 								standardDate, employee.getPId(), employee.getSId(), selfBrowsing);
@@ -264,63 +261,6 @@ public class LayoutFinderOld {
 		}
 		return dataInfoItems;
 
-	}
-
-	/**
-	 * @param perInfoCategory
-	 * @param authClassItem
-	 * @param standandDate
-	 * @param personId
-	 * @param employeeId
-	 *            Target: get data with definition-items
-	 */
-	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
-			GeneralDate standandDate, String personId, String employeeId) {
-		if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-			// PERSON
-			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
-			} else {
-				// UNFIXED CASE
-				if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
-					// single information
-					PerInfoCtgData perInfoCtgData = perInCtgDataRepo
-							.getByPerIdAndCtgId(personId, perInfoCategory.getPersonInfoCategoryId()).get(0);
-					List<PersonInfoItemData> dataItems = perInItemDataRepo
-							.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-					matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem, dataItems);
-				} else if (perInfoCategory.getCategoryType() == CategoryType.CONTINUOUSHISTORY
-						|| perInfoCategory.getCategoryType() == CategoryType.NODUPLICATEHISTORY) {
-					// history
-					getPersDataHistoryType(perInfoCategory.getCategoryCode().v(),
-							perInfoCategory.getPersonInfoCategoryId(), authClassItem, personId, standandDate);
-				}
-			}
-		} else if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
-			// EMPLOYEE
-			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
-				// FIXED CASE
-				switch (perInfoCategory.getCategoryCode().v()) {
-				
-				}
-			} else {
-				// UNFIXED CASE
-				if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
-					// single information
-					EmpInfoCtgData perInfoCtgData = empInCtgDataRepo
-							.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId())
-							.get();
-					List<EmpInfoItemData> dataItems = empInItemDataRepo
-							.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem, dataItems);
-				} else if (perInfoCategory.getCategoryType() == CategoryType.CONTINUOUSHISTORY
-						|| perInfoCategory.getCategoryType() == CategoryType.NODUPLICATEHISTORY) {
-					// history
-					getEmpDataHistoryType(perInfoCategory.getCategoryCode().v(),
-							perInfoCategory.getPersonInfoCategoryId(), authClassItem, employeeId, standandDate);
-				}
-			}
-
-		}
 	}
 
 	/**
@@ -486,10 +426,10 @@ public class LayoutFinderOld {
 						break;
 					}
 					if (value != null) {
-						ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, value));
+						//ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, value));
 					}
 				} else {
-					ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, null));
+					//ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, null));
 				}
 			}
 			resultMap.put(perInfoCtgData.getRecordId(), ctgDataList);
@@ -529,10 +469,10 @@ public class LayoutFinderOld {
 						break;
 					}
 					if (value != null) {
-						ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, value));
+						//ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, value));
 					}
 				} else {
-					ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, null));
+					//ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, null));
 				}
 
 			});
@@ -541,141 +481,5 @@ public class LayoutFinderOld {
 		return resultMap;
 	}
 
-	/**
-	 * @param categoryCode
-	 * @param perInfoCategoryId
-	 * @param authClassItem
-	 * @param personId
-	 * @param standandDate
-	 *            Target: get data with history case. Person case
-	 */
-	private void getPersDataHistoryType(String categoryCode, String perInfoCategoryId,
-			LayoutPersonInfoClsDto authClassItem, String personId, GeneralDate standandDate) {
-		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
-		List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId, perInfoCategoryId);
-		String startDateId = dateRangeItem.getStartDateItemId();
-		String endDateId = dateRangeItem.getEndDateItemId();
-		for (PerInfoCtgData perInfoCtgData : perInfoCtgDatas) {
-			List<PersonInfoItemData> dataItems = perInItemDataRepo
-					.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-			GeneralDate startDate = null;
-			GeneralDate endDate = null;
-			for (PersonInfoItemData dataItem : dataItems) {
-				if (dataItem.getPerInfoItemDefId() == startDateId) {
-					startDate = dataItem.getDataState().getDateValue();
-				} else if (dataItem.getPerInfoItemDefId() == endDateId) {
-					endDate = dataItem.getDataState().getDateValue();
-				}
-			}
-
-			if (startDate == null || endDate == null) {
-				continue;
-			}
-
-			if (startDate.before(standandDate) && endDate.after(standandDate)) {
-				matchPersDataForSingleClsItem(categoryCode, authClassItem, dataItems);
-				break;
-			}
-
-		}
-	}
-
-	/**
-	 * @param categoryCode
-	 * @param perInfoCategoryId
-	 * @param authClassItem
-	 * @param personId
-	 * @param standandDate
-	 *            Target: get data with history case. Employee case
-	 */
-	private void getEmpDataHistoryType(String categoryCode, String perInfoCategoryId,
-			LayoutPersonInfoClsDto authClassItem, String personId, GeneralDate standandDate) {
-		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
-		List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(personId, perInfoCategoryId);
-		String startDateId = dateRangeItem.getStartDateItemId();
-		String endDateId = dateRangeItem.getEndDateItemId();
-
-		for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
-			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
-
-			Optional<EmpInfoItemData> startDateOpt = dataItems.stream()
-					.filter(column -> column.getPerInfoDefId().equals(startDateId)).findFirst();
-			Optional<EmpInfoItemData> endDateOpt = dataItems.stream()
-					.filter(column -> column.getPerInfoDefId().equals(endDateId)).findFirst();
-
-			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (standandDate.after(startDateOpt.get().getDataState().getDateValue())
-						&& standandDate.before(endDateOpt.get().getDataState().getDateValue())) {
-					matchEmpDataForDefItems(categoryCode, authClassItem, dataItems);
-					break;
-				}
-			}
-
-		}
-	}
-
-	/**
-	 * @param categoryCode
-	 * @param authClassItem
-	 * @param dataItems
-	 *            Target: map optional data with definition item. Person case
-	 */
-	private void matchPersDataForSingleClsItem(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			List<PersonInfoItemData> dataItems) {
-		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
-			for (PersonInfoItemData dataItem : dataItems) {
-				if (itemDef.getId() == dataItem.getPerInfoItemDefId()) {
-					Object data = null;
-					switch (dataItem.getDataState().getDataStateType()) {
-					case String:
-						data = dataItem.getDataState().getStringValue();
-						break;
-					case Numeric:
-						data = dataItem.getDataState().getNumberValue().intValue();
-						break;
-					case Date:
-						data = dataItem.getDataState().getDateValue();
-						break;
-					}
-					if (data != null) {
-						authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
-					}
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * @param categoryCode
-	 * @param authClassItem
-	 * @param dataItems
-	 *            Target: map optional data with definition item. employee case
-	 */
-	private void matchEmpDataForDefItems(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			List<EmpInfoItemData> dataItems) {
-		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
-			for (EmpInfoItemData dataItem : dataItems) {
-				if (itemDef.getId() == dataItem.getPerInfoDefId()) {
-					Object data = null;
-					switch (dataItem.getDataState().getDataStateType()) {
-					case String:
-						data = dataItem.getDataState().getStringValue();
-						break;
-					case Numeric:
-						data = dataItem.getDataState().getNumberValue().intValue();
-						break;
-					case Date:
-						data = dataItem.getDataState().getDateValue();
-						break;
-					}
-					if (data != null) {
-						authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
-					}
-				}
-			}
-		}
-
-	}
 
 }

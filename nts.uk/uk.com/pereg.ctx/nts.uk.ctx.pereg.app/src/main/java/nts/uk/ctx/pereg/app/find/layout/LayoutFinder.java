@@ -33,6 +33,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
@@ -283,21 +284,25 @@ public class LayoutFinder {
 	 */
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
 			GeneralDate stardardDate, String personId, String employeeId, PeregQuery query) {
-		// CLONE
-		cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
+		
+		
 
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
+			
+			cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
 			if (peregDto != null) {
 				MappingFactory.mapItemClassDto(peregDto, authClassItem);
 			}
 		} else {
 			switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
+				// CLONE
+				cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
 				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-					List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo
-							.getByPerIdAndCtgId(personId, perInfoCategory.getPersonInfoCategoryId());
+					List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
+							perInfoCategory.getPersonInfoCategoryId());
 					if (!perInfoCtgDatas.isEmpty()) {
 						PerInfoCtgData perInfoCtgData = perInfoCtgDatas.get(0);
 						List<PersonInfoItemData> dataItems = perInItemDataRepo

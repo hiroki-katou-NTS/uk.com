@@ -45,7 +45,7 @@ public class LayoutPersonInfoValueDto {
 	// is required?
 	// for render control label
 	private boolean required;
-	
+
 	/**
 	 * combo box value list when item type selection
 	 */
@@ -73,7 +73,7 @@ public class LayoutPersonInfoValueDto {
 	public LayoutPersonInfoValueDto() {
 
 	}
-	
+
 	public static LayoutPersonInfoValueDto cloneFromItemDef(String categoryCode, PerInfoItemDefDto itemDef) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
@@ -87,56 +87,8 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItem(sigleItem.getDataTypeState());
 		return dataObject;
 	}
-
-	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object value) {
-		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
-		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
-		dataObject.setCategoryCode(categoryCode);
-		dataObject.setItemDefId(itemDef.getId());
-		dataObject.setItemName(itemDef.getItemName());
-		dataObject.setItemCode(itemDef.getItemCode());
-		dataObject.setRow(0);
-		dataObject.setValue(value);
-		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
-		dataObject.setItem(sigleItem.getDataTypeState());
-		return dataObject;
-	}
-
-	/**
-	 * for test
-	 */
-	public static LayoutPersonInfoValueDto initData(PerInfoItemDefDto itemDef, Object data) {
-		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
-		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
-		dataObject.setItemDefId(itemDef.getId());
-		dataObject.setItemName(itemDef.getItemName());
-		dataObject.setItemCode(itemDef.getItemCode());
-		dataObject.setRow(0);
-		dataObject.setValue(data);
-		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
-		dataObject.setItem(sigleItem.getDataTypeState());
-		return dataObject;
-	}
-
-	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object data,
-			ActionRole actionRole) {
-		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
-		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
-		dataObject.setCategoryCode(categoryCode);
-		dataObject.setItemDefId(itemDef.getId());
-		dataObject.setItemName(itemDef.getItemName());
-		dataObject.setItemCode(itemDef.getItemCode());
-		dataObject.setRow(0);
-		dataObject.setValue(data);
-		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
-		dataObject.setItem(sigleItem.getDataTypeState());
-		dataObject.setActionRole(actionRole);
-		return dataObject;
-	}
-
+	
+	
 	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object value) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
@@ -148,7 +100,7 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setRow(itemDef.getRow());
 		dataObject.setValue(value);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		if(itemDef.getItemDefType() == 2){
+		if (itemDef.getItemDefType() == 2) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
