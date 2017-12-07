@@ -77,11 +77,5 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 	public void validate()
 	{
 		super.validate();
-		
-		if (this.timezone.getStart().v() >= this.timezone.getEnd().v()) {
-			throw new BusinessException("Msg_770");
-		}
-		//TODO
-		
 	}
 }
