@@ -43,9 +43,9 @@
 						<br />
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
-							<div tabindex="4"
+							<div tabindex="4" id="A3_4"
 								data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
-							<button tabindex="5" class="caret-bottom" data-bind="click : startPage, enable: true">#{i18n.getText('CAS014_23')}</button>
+							<button tabindex="5" class="caret-bottom" data-bind="click : startPage, enable: $root.errors.isEmpty">#{i18n.getText('CAS014_23')}</button>
 						</div>
 						<br />
 						<table class="fixed-table" tabindex="6" data-bind="with: roleSetJobTitle" id="A4">
