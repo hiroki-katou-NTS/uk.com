@@ -149,7 +149,9 @@ module ksu001.a.viewmodel {
                     $("#extable").exTable("viewMode", "symbol", { y: 235 });
                 }
 
-                self.updateExTable();
+                if (self.listSid() && self.listSid().length > 0) {
+                    self.updateExTable();
+                }
             });
 
             self.selectedModeDisplayObject.subscribe((newValue) => {
@@ -375,8 +377,8 @@ module ksu001.a.viewmodel {
                         menu: {
                             rows: [0],
                             items: [
-                                { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                             ]
                         },
                         popup: {
@@ -406,7 +408,7 @@ module ksu001.a.viewmodel {
                         case "time":
                             return [obj.startTime, obj.endTime];
                         case "symbol":
-                            return obj.symbol;
+                            return obj.symbolName;
                     }
                 },
                 upperInput: "startTime",
@@ -598,8 +600,8 @@ module ksu001.a.viewmodel {
                             menu: {
                                 rows: [0],
                                 items: [
-                                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                    { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                    { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                 ]
                             },
                             popup: {
@@ -712,8 +714,8 @@ module ksu001.a.viewmodel {
                             menu: {
                                 rows: [0],
                                 items: [
-                                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                    { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                    { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                 ]
                             },
                             popup: {
@@ -752,8 +754,8 @@ module ksu001.a.viewmodel {
                                     menu: {
                                         rows: [0],
                                         items: [
-                                            { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                            { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                            { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                            { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
                                     popup: {
@@ -813,8 +815,8 @@ module ksu001.a.viewmodel {
                                 menu: {
                                     rows: [0],
                                     items: [
-                                        { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                        { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                        { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                        { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                     ]
                                 },
                                 popup: {
@@ -883,20 +885,94 @@ module ksu001.a.viewmodel {
             return dfd.promise();
         }
 
+        //        /**
+        //         * Get data of Basic Schedule
+        //         */
+        //        getDataBasicSchedule(): JQueryPromise<any> {
+        //            let self = this,
+        //                dfd = $.Deferred(),
+        //                obj = {
+        //                    employeeId: self.listSid(),
+        //                    startDate: self.dtPrev(),
+        //                    endDate: self.dtAft()
+        //                };
+        //
+        //            service.getDataBasicSchedule(obj).done(function(data: BasicSchedule[]) {
+        //                _.each(data, (itemData: BasicSchedule) => {
+        //                    let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
+        //                    if (itemDataSource) {
+        //                        itemDataSource.workTimeCode = itemData.workTimeCode;
+        //                        itemDataSource.workTypeCode = itemData.workTypeCode;
+        //                        itemDataSource.confirmedAtr = itemData.confirmedAtr;
+        //                        itemDataSource.isIntendedData = true
+        //                    } else {
+        //                        self.dataSource.push(new BasicSchedule({
+        //                            date: itemData.date,
+        //                            employeeId: itemData.employeeId,
+        //                            workTimeCode: itemData.workTimeCode,
+        //                            workTypeCode: itemData.workTypeCode,
+        //                            confirmedAtr: itemData.confirmedAtr,
+        //                            workDayAtr: itemData.workDayAtr,
+        //                            isIntendedData: true
+        //                        }));
+        //                    }
+        //                });
+        //                dfd.resolve();
+        //            }).fail(function() {
+        //                dfd.reject();
+        //            });
+        //
+        //            return dfd.promise();
+        //        }
+        //
+        //        /**
+        //         * Get data of Work Schedule Time Zone
+        //         */
+        //        getDataWorkSchTimeZone(): JQueryPromise<any> {
+        //            let self = this,
+        //                dfd = $.Deferred(),
+        //                obj = {
+        //                    employeeId: self.listSid(),
+        //                    startDate: self.dtPrev(),
+        //                    endDate: self.dtAft()
+        //                };
+        //
+        //            service.getDataWorkSchTimeZone(obj).done(function(data: BasicSchedule[]) {
+        //                _.each(data, (itemData: BasicSchedule) => {
+        //                    let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
+        //                    if (itemDataSource) {
+        //                        itemDataSource.scheduleStartClock = itemData.scheduleStartClock;
+        //                        itemDataSource.scheduleEndClock = itemData.scheduleEndClock;
+        //                    } else {
+        //                        self.dataSource.push(new BasicSchedule({
+        //                            date: .date,
+        //                            employeeId: itemData.employeeId,
+        //                            scheduleStartClock: itemData.scheduleStartClock,
+        //                            scheduleEndClock: itemData.scheduleEndClock,
+        //                        }));
+        //                    }
+        //                });
+        //                dfd.resolve();
+        //            }).fail(function() {
+        //                dfd.reject();
+        //            });
+        //            return dfd.promise();
+        //        }
+
         /**
          * Get data of Basic Schedule
          */
         getDataBasicSchedule(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
+            let self = this, dfd = $.Deferred(),
                 obj = {
                     employeeId: self.listSid(),
                     startDate: self.dtPrev(),
                     endDate: self.dtAft()
                 };
 
-            service.getDataBasicSchedule(obj).done(function(data: BasicSchedule[]) {
-                _.each(data, (itemData: BasicSchedule) => {
+            service.getDataBasicSchedule(obj).done(function(data) {
+                //set dataSource for mode shortName
+                _.each(data.listDataShortName, (itemData: BasicSchedule) => {
                     let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
                     if (itemDataSource) {
                         itemDataSource.workTimeCode = itemData.workTimeCode;
@@ -915,28 +991,8 @@ module ksu001.a.viewmodel {
                         }));
                     }
                 });
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-
-            return dfd.promise();
-        }
-
-        /**
-         * Get data of Work Schedule Time Zone
-         */
-        getDataWorkSchTimeZone(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    employeeId: self.listSid(),
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft()
-                };
-
-            service.getDataWorkSchTimeZone(obj).done(function(data: BasicSchedule[]) {
-                _.each(data, (itemData: BasicSchedule) => {
+                //set dataSource for mode timeZone
+                _.each(data.listDataTimeZone, (itemData: BasicSchedule) => {
                     let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
                     if (itemDataSource) {
                         itemDataSource.scheduleStartClock = itemData.scheduleStartClock;
@@ -958,18 +1014,7 @@ module ksu001.a.viewmodel {
         }
 
         /**
-         * datasource = dataBasicSchedule + dataWorkSchTimezone + dataToDisplaySymbol
-         */
-        setDatasource(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            $.when(self.getDataBasicSchedule(), self.getDataWorkSchTimeZone(), self.getDataToDisplaySymbol()).done(function() {
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * 
+         * Get data to display symbol
          */
         getDataToDisplaySymbol(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
@@ -983,28 +1028,50 @@ module ksu001.a.viewmodel {
                                 });
                             });
                         }
+                        dfd.resolve();
                     });
                 } else {
-                    
+                    $.when(self.checkStateWorkTypeCode()).done(() => {
+                        _.each(self.dataSource(), (item) => {
+                            let symbolName: string = null;
+                            if (item.workTimeCode === '000' || item.workTimeCode == null) {
+                                let workTypeItem: any = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': item.workTypeCode });
+                                symbolName = workTypeItem.symbolicName;
+                            } else {
+                                let workTimeItem: any = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'siftCd': item.workTimeCode });
+                                symbolName = workTimeItem.symbolName;
+                            }
+                            //state = 0 || 3 : rest || work all day
+                            //state = 1 || 2 : work in morning || work in afternoon
+                            let tmp = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
+                            if (tmp.state == 1 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                                item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
+                            }
+
+                            if (tmp.state == 2 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                                item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
+                            }
+
+                            if (tmp.state == 0 || tmp.state == 3) {
+                                item.symbolName = symbolName;
+                            }
+                        });
+
+                        dfd.resolve();
+                    });
                 }
-                dfd.resolve();
+
             });
             return dfd.promise();
         }
 
         /**
-         * Get data of Schedule Display Control
-         */
-        checkIsInsuranceStatus(): JQueryPromise<any> {
+        * datasource = dataBasicSchedule + dataToDisplaySymbol
+        */
+        setDatasource(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            service.getDataScheduleDisplayControl().done((data) => {
-                //TO-DO
-                //                if (!!data && data.personInforAtr == 7) {
-                //                    self.isInsuranceStatus = true;
-                //                }
+            $.when(self.getDataBasicSchedule(), self.getDataToDisplaySymbol()).done(function() {
                 dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
             });
             return dfd.promise();
         }
@@ -1024,6 +1091,7 @@ module ksu001.a.viewmodel {
                     }
                 });
             }
+
             service.checkStateWorkTypeCode(lstWorkTypeCode).done((data) => {
                 self.listStateWorkTypeCode(data);
                 dfd.resolve();
@@ -1057,19 +1125,22 @@ module ksu001.a.viewmodel {
          * Get data WkpSpecificDate
          */
         getDataWkpSpecificDate(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    workplaceId: self.empItems()[0].workplaceId,
-                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
-                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
-                };
-            service.getDataWkpSpecificDate(obj).done(function(data) {
-                self.dataWkpSpecificDate(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
+            //            let self = this,
+            //                dfd = $.Deferred(),
+            //                obj = {
+            //                    workplaceId: self.empItems()[0].workplaceId,
+            //                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
+            //                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
+            //                };
+            //            service.getDataWkpSpecificDate(obj).done(function(data) {
+            //                self.dataWkpSpecificDate(data);
+            //                dfd.resolve();
+            //            }).fail(function() {
+            //                dfd.reject();
+            //            });
+            let self = this, dfd = $.Deferred();
+            self.dataWkpSpecificDate([]);
+            dfd.resolve();
             return dfd.promise();
         }
 
@@ -1077,18 +1148,22 @@ module ksu001.a.viewmodel {
          * Get data WkpSpecificDate
          */
         getDataComSpecificDate(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
-                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
-                };
-            service.getDataComSpecificDate(obj).done(function(data) {
-                self.dataComSpecificDate(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
+            //            let self = this,
+            //                dfd = $.Deferred(),
+            //                obj = {
+            //                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
+            //                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
+            //                };
+            //            service.getDataComSpecificDate(obj).done(function(data) {
+            //                self.dataComSpecificDate(data);
+            //            lve();
+            //            }).fail(function() {
+            //                dfd.reject();
+            //            });
+
+            let self = this, dfd = $.Deferred();
+            self.dataComSpecificDate([]);
+            dfd.resolve();
             return dfd.promise();
         }
 
@@ -1137,15 +1212,17 @@ module ksu001.a.viewmodel {
         }
 
         /**
-         * Get data WorkEmpCombine
+         * Get data of Schedule Display Control
          */
         getDataScheduleDisplayControl(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             service.getDataScheduleDisplayControl().done(function(data) {
-                if (data) {
-                    self.dataScheduleDisplayControl(data);
-                }
+                self.dataScheduleDisplayControl(data);
+                //TO-DO
+                //                if (!!data && data.personInforAtr == 7) {
+                //                    self.isInsuranceStatus = true;
+                //                }
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1378,9 +1455,6 @@ module ksu001.a.viewmodel {
                                 //申請反映 = bg-daily-reflect-application
                                 detailContentDeco.push(new CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application"));
                             }
-                            //                                else {
-                            //                                detailContentDeco.push(new CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-schedule-uncorrectable"));
-                            //                            }
                         });
                     }
                     dfd.resolve();
@@ -1434,7 +1508,7 @@ module ksu001.a.viewmodel {
          */
         setColorForLeftmostContent(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            $.when(self.checkIsInsuranceStatus()).done(() => {
+            $.when(self.getDataScheduleDisplayControl()).done(() => {
                 if (self.isInsuranceStatus) {
                     //TO-DO    
                 }
@@ -1589,14 +1663,14 @@ module ksu001.a.viewmodel {
     interface ICell {
         rowIndex: string,
         columnKey: string,
-        value: ExCell,
+        value: ksu001.common.viewmodel.ExCell,
         innerIdx: number
     }
 
     class Cell {
         rowIndex: string;
         columnKey: string;
-        value: ExCell;
+        value: ksu001.common.viewmodel.ExCell;
         innerIdx: number;
 
         constructor(params: ICell) {
@@ -1762,102 +1836,11 @@ module ksu001.a.viewmodel {
         }
     }
 
-    interface IWorkType {
-        workTypeCode: string,
-        sortOrder: number,
-        symbolicName: string,
-        name: string,
-        abbreviationName: string,
-        memo: string,
-        displayAtr: number
-    }
-
-    class WorkType {
-        workTypeCode: string;
-        sortOrder: number;
-        symbolicName: string;
-        name: string;
-        abbreviationName: string;
-        memo: string;
-        displayAtr: number;
-
-        constructor(params: IWorkType) {
-            this.workTypeCode = params.workTypeCode;
-            this.sortOrder = params.sortOrder;
-            this.symbolicName = params.symbolicName;
-            this.name = params.name;
-            this.abbreviationName = params.abbreviationName;
-            this.memo = params.memo;
-            this.displayAtr = params.displayAtr;
-        }
-    }
-
-    interface IWorkTime {
-        siftCd: string,
-        name: string,
-        abName: string,
-        dailyWorkAtr: number,
-        methodAtr: number,
-        displayAtr: number,
-        note: string
-    }
-
-    class WorkTime {
-        siftCd: string;
-        name: string;
-        abName: string;
-        dailyWorkAtr: number;
-        methodAtr: number;
-        displayAtr: number;
-        note: string;
-
-        constructor(params: IWorkTime) {
-            this.siftCd = params.siftCd;
-            this.name = params.name;
-            this.abName = params.abName;
-            this.dailyWorkAtr = params.dailyWorkAtr;
-            this.methodAtr = params.methodAtr;
-            this.displayAtr = params.displayAtr;
-            this.note = params.note;
-        }
-    }
-
-    interface IExCell {
-        workTypeCode: string,
-        workTypeName: string,
-        workTimeCode: string,
-        workTimeName: string,
-        symbol: string,
-        startTime: any,
-        endTime: any
-    }
-
-    class ExCell {
-        workTypeCode: string;
-        workTypeName: string;
-        workTimeCode: string;
-        workTimeName: string;
-        symbol: string;
-        startTime: any;
-        endTime: any;
-        constructor(params: IExCell) {
-            this.workTypeCode = params.workTypeCode;
-            this.workTypeName = params.workTypeName;
-            this.workTimeCode = params.workTimeCode;
-            this.workTimeName = params.workTimeName;
-            //            let symbolArr: string[] = ["通", "◯", "✕"];
-            //            this.symbol = params.symbol || symbolArr[Math.floor((Math.random() * 3))];
-            this.symbol = params.symbol;
-            this.startTime = nts.uk.time.parseTime(params.startTime, true).format();
-            this.endTime = nts.uk.time.parseTime(params.endTime, true).format();
-        }
-    }
-
     class ExItem {
         empId: string;
         empName: string;
 
-        constructor(empId: string, dsOfSid: BasicSchedule[], listWorkType: WorkType[], listWorkTime: WorkTime[], manual: boolean, arrDay: Time[]) {
+        constructor(empId: string, dsOfSid: BasicSchedule[], listWorkType: ksu001.common.viewmodel.WorkType[], listWorkTime: ksu001.common.viewmodel.WorkTime[], manual: boolean, arrDay: Time[]) {
             this.empId = empId;
             this.empName = empId;
             // create detailHeader (ex: 4/1 | 4/2)
@@ -1893,24 +1876,29 @@ module ksu001.a.viewmodel {
                         workTimeName = null;
                     }
 
-                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
+                    this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({
                         workTypeCode: workTypeCode,
                         workTypeName: workTypeName,
                         workTimeCode: workTimeCode,
                         workTimeName: workTimeName,
-                        symbol: obj.symbolName,
-                        startTime: obj.scheduleStartClock,
-                        endTime: obj.scheduleEndClock
+                        symbolName: obj.symbolName,
+                        startTime: nts.uk.time.parseTime(obj.scheduleStartClock, true).format(),
+                        endTime: nts.uk.time.parseTime(obj.scheduleEndClock, true).format()
                     });
                 } else {
-                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
+                    this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({
                         workTypeCode: null,
                         workTypeName: null,
                         workTimeCode: null,
                         workTimeName: null,
-                        symbol: null,
-                        startTime: null,
-                        endTime: null
+                        symbolName: null,
+                        //startTime/endTime để là '' chứ không phải null
+                        //do màn hình ở mode Time, click cell mà k thay đổi rồi click vào cell khác
+                        //khi đó cell bị click trả ra giá trị là ''
+                        //nếu để startTime/endTime null thì cell đó sẽ nhận thấy là đã thay đổi giá trị
+                        //điều đó là không đúng
+                        startTime: '',
+                        endTime: ''
                     });
                 }
             }
