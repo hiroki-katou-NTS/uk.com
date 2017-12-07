@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
@@ -94,19 +95,19 @@ public class Ksu001Webservice extends WebService {
 
 	@POST
 	@Path("getDataWkpSpecificDate")
-	public List<BigDecimal> getDataWkpSpecificDate(WorkplaceSpecificDateSetScreenParams params) {
+	public List<GeneralDate> getDataWkpSpecificDate(WorkplaceSpecificDateSetScreenParams params) {
 		return this.workplaceSpecificDateSetScreenProcessor.findDataWkpSpecificDateSet(params);
 	}
 
 	@POST
 	@Path("getDataComSpecificDate")
-	public List<BigDecimal> getDataComSpecificDate(StartDateEndDateScreenParams params) {
+	public List<GeneralDate> getDataComSpecificDate(StartDateEndDateScreenParams params) {
 		return this.comSpecificDateSetScreenProcessor.findDataComSpecificDateSet(params);
 	}
 
 	@POST
 	@Path("getDataPublicHoliday")
-	public List<BigDecimal> getDataPublicHoliday(StartDateEndDateScreenParams params) {
+	public List<GeneralDate> getDataPublicHoliday(StartDateEndDateScreenParams params) {
 		return this.publicHolidayScreenProcessor.findDataPublicHoliday(params);
 	}
 
