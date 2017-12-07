@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 
 /**
  * 
@@ -21,8 +20,8 @@ public class StampReflectRangeOutput {
 	// 外出
 	private TimeZoneOutput goOut;
 	
-	// 打刻反映時間帯
-	private List<StampReflectTimezone> lstStampReflectTimezone;
+	// 出退勤
+	private List<StampReflectTimezoneOutput> lstStampReflectTimezone;
 	
 	// 打刻取得範囲
 	private TimeZoneOutput stampRange;
