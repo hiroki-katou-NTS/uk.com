@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -18,8 +19,11 @@ import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividual
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
+import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantMetaDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
+import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
+import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
 
 @Path("ctx/sys/auth/grant/roleindividual")
 @Produces("application/json")
@@ -36,6 +40,9 @@ public class RoleIndividualWebService extends WebService {
 	
 	@Inject
 	private DeleteRoleIndividualGrantCommandHandler deleteHandler;
+	
+	@Inject
+	private PersonInformationRoleFinder personInforRoleFinder;
 
 	@POST
 	@Path("findall")
@@ -71,6 +78,25 @@ public class RoleIndividualWebService extends WebService {
 	@Path("getRoleType")
 	public List<RoleTypeDto> GetRoleType() {
 		return this.roleIndividualFinder.GetRoleType();
+	}
+	
+	@POST
+	@Path("getRoles/{roleType}")
+	public List<RoleDto> GetRoleByRoleType(@PathParam("roleType") int roleType){
+		return this.personInforRoleFinder.getListRoleByRoleType(roleType);
+	}
+	
+	@POST
+	@Path("getRoleGrants")
+	public List<RoleIndividualGrantDto> GetRoleGrants(String Role){
+		if(Role == "") return null;
+		return this.roleIndividualFinder.getRoleGrants(Role);
+	}
+	
+	@POST
+	@Path("getRoleGrant")
+	public RoleIndividualGrantDto GetRoleGrant(RoleIndividualGrantDto rDto){
+		return this.roleIndividualFinder.getRoleGrant(rDto.getUserID(), rDto.getRoleID());
 	}
 	
 	

@@ -23,7 +23,7 @@ module nts.uk.com.view.cas014.a {
                 self.roleSetList = ko.observableArray([]);
                 self.jobTitleList = ko.observableArray([]);
                 self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
-                $("#A4").ntsFixedTable({ height: 300 });
+                $("#A4").ntsFixedTable({ height: 287 });
                 self.date.subscribe((data) => {
                     if (!data) {
                         self.date(new Date().toISOString());
@@ -37,8 +37,8 @@ module nts.uk.com.view.cas014.a {
                 block.invisible();
                 self.roleSetList.removeAll();
                 self.jobTitleList.removeAll();
-                
-                new service.Service().getAllData(self.date()).done(function(data: any) {
+                $("#A3_4").trigger("validate");
+                service.getAllData(self.date()).done(function(data: any) {
                     if (data) {
                         let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, (rs: any) => {
                             return new RoleSet(rs.code, rs.name);
@@ -51,7 +51,7 @@ module nts.uk.com.view.cas014.a {
                         _.each(_jtList, jt => self.jobTitleList.push(jt));
 
                         self.roleSetJobTitle(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
-                        if (data.roleSetGrantedJobTitleDto){
+                        if (data.roleSetGrantedJobTitleDto) {
                             self.roleSetJobTitle().applyToConcurrentPerson(data.roleSetGrantedJobTitleDto.applyToConcurrentPerson);
                             let details = self.roleSetJobTitle().details();
                             _.each(details, (d: any) => {
@@ -77,7 +77,6 @@ module nts.uk.com.view.cas014.a {
                 }).always(() => {
                     block.clear();
                 });
-
                 return dfd.promise();
             }
 
@@ -93,7 +92,7 @@ module nts.uk.com.view.cas014.a {
 
                 block.invisible();
 
-                new service.Service().registerData(command).done(function() {
+                service.registerData(command).done(function() {
                     info({ messageId: "Msg_15" }).then(() => {
                         $("#A4").focus();
                     });

@@ -74,8 +74,6 @@ public class RoleSetGrantedPersonFinder {
 	}
 
 	public EmployeeImport getEmployeeInfo(String employeeId) {
-		// return employeeAdapter.findByEmpId(employeeId);
-		// dummy code
-		return new EmployeeImport("XXXX YYYY", employeeId, "99999999");
+		return employeeAdapter.findByEmpId(employeeId);
 	}
 }

@@ -46,7 +46,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
             // A2_003, A2_004, A2_005, A2_006 
             self.gridColumns = ko.observableArray([
-                                                {headerText: resource.getText('CAS011_09'), key: 'roleSetCd', formatter: _.escape, width: 40},
+                                                {headerText: resource.getText('CAS011_09'), key: 'roleSetCd', formatter: _.escape, width: 50},
                                                 {headerText: resource.getText('CAS011_10'), key: 'roleSetName', formatter: _.escape, width: 180}
                                            ]);
 
@@ -306,7 +306,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
         /** ダイアログ
           * Open dialog CLD025 
          */
-        openDialogCLD025(roleType: number) {
+        openDialogCLD025(roleType: number, roleId : String) {
             let self = this,
                 currentRoleSet: RoleSet = self.currentRoleSet();
             if (!roleType && roleType < 0) {
@@ -315,7 +315,8 @@ module nts.uk.com.view.cas011.a.viewmodel {
             block.invisible();
             let param = {
                     roleType : roleType,
-                    multiple :  false
+                    multiple :  false,
+                    currentCode: roleId
                 };
             windows.setShared('paramCdl025', param);
             windows.sub.modal('/view/cdl/025/index.xhtml', { title: '' }).onClosed(function(): any {
