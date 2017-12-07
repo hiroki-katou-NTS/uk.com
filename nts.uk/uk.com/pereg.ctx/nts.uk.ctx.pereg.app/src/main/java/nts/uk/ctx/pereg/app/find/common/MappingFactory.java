@@ -67,10 +67,7 @@ public class MappingFactory {
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, String recordId) {
 		
 		lstPerInfoItemDef.forEach(item -> {
-			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
-			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);		
-			layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
+			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);			
 			layoutPerInfoClsDto.setRecordId(recordId);
 			if (item.getItemDefType() == 2) {
 				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
@@ -235,13 +232,19 @@ public class MappingFactory {
 	
 	
 	private static void setOptionValueToClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item, Object value){
-		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-		layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
+		LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
 		layoutPerInfoClsDto.getListItemDf().add(item);
-		layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
-		layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
 		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
 		empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+	}
+	
+	private static LayoutPersonInfoClsDto newClsDtoInstanceForTypeItem(PerInfoItemDefForLayoutDto item){
+		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+		layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
+		layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
+		layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);		
+		layoutPerInfoClsDto.setClassName(item.getItemName());
+		return layoutPerInfoClsDto;
 	}
 }
