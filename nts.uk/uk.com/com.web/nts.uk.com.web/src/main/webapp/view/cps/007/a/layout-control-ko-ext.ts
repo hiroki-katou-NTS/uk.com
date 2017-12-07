@@ -1050,7 +1050,7 @@ module nts.custombinding {
                                         switch (dts.stringItemType) {
                                             default:
                                             case ITEM_STRING_TYPE.ANY:
-                                                constraint.charType = 'Alphabet';
+                                                constraint.charType = 'Any';
                                                 break;
                                             case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                                 constraint.charType = 'AnyHalfWidth';
@@ -1308,6 +1308,7 @@ module nts.custombinding {
                                 break;
                         }
                     }
+                    
                     switch (x.layoutItemType) {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {

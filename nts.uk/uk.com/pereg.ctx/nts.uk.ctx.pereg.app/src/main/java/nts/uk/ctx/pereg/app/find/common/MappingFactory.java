@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
@@ -16,6 +18,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregRecordId;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -30,7 +33,10 @@ import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
  */
 public class MappingFactory {
 
-	public static void mapSingleClsDto(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
+	@Inject
+	I18NResourcesForUK ukResouce;
+
+	public static void mapItemClassDto(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 		// map record ID
 		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
 			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
@@ -62,11 +68,13 @@ public class MappingFactory {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 			layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
 			layoutPerInfoClsDto.setRecordId(recordId);
-			if(item.getItemDefType() == 2)
+			if (item.getItemDefType() == 2) {
 				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
-			else{
+			} else {
 				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
-				item.getLstChildItemDef().forEach(x -> setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoFieldValue));
+				item.getLstChildItemDef().forEach(x -> {
+					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoFieldValue);
+				});
 			}
 			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		});
@@ -189,4 +197,21 @@ public class MappingFactory {
 
 	}
 
+	private static PerInfoItemDefDto mappingDto2Dto(PerInfoItemDefForLayoutDto item) {
+		PerInfoItemDefDto dto = new PerInfoItemDefDto();
+		dto.setId(item.getItemDefId());
+		dto.setPerInfoCtgId(item.getPerInfoCtgId());
+		dto.setItemCode(item.getItemCode());
+		dto.setItemName(item.getItemName());
+		//dto.setIsAbolition(item.ge);
+		//dto.setIsFixed(item.geti);
+		dto.setIsRequired(item.getIsRequired());
+		//dto.setIs
+		dto.setDispOrder(item.getDispOrder());
+		dto.setSelectionItemRefType(item.getSelectionItemRefType());
+		dto.setItemTypeState(item.getItemTypeState());
+		dto.setSelectionItemRefTypes(item.getSelectionItemRefTypes());
+
+		return dto;
+	}
 }

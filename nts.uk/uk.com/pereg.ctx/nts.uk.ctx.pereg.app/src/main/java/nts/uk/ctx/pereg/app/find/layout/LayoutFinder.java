@@ -290,7 +290,7 @@ public class LayoutFinder {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
 			if (peregDto != null) {
-				MappingFactory.mapSingleClsDto(peregDto, authClassItem);
+				MappingFactory.mapItemClassDto(peregDto, authClassItem);
 			}
 		} else {
 			switch (perInfoCategory.getCategoryType()) {
@@ -339,7 +339,7 @@ public class LayoutFinder {
 		for (Object item : authClassItem.getItems()) {
 			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 			for (PersonInfoItemData dataItem : dataItems) {
-				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+				if (valueItem.getItemCode().equals(dataItem.getItemCode().v())) {
 					valueItem.setValue(dataItem.getDataState().getValue());
 				}
 			}
@@ -355,7 +355,7 @@ public class LayoutFinder {
 		for (Object item : authClassItem.getItems()) {
 			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 			for (EmpInfoItemData dataItem : dataItems) {
-				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+				if (valueItem.getItemCode().equals(dataItem.getItemCode().v())) {
 					valueItem.setValue(dataItem.getDataState().getValue());
 				}
 			}

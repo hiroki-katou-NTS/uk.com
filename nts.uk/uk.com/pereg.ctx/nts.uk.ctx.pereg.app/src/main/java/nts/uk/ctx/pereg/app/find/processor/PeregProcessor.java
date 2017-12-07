@@ -144,7 +144,6 @@ public class PeregProcessor {
 		}
 
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
-		empMaintLayoutDto.setListItemDf(lstPerInfoItemDef);
 		//set fix data
 		setEmpMaintLayoutDto(empMaintLayoutDto, query, perInfoCtg, lstPerInfoItemDefForLayout);
 		return empMaintLayoutDto;
