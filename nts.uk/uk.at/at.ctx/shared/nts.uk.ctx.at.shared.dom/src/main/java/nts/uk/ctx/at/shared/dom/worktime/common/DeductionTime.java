@@ -63,6 +63,10 @@ public class DeductionTime extends DomainObject {
 	public String toString() {
 		return this.start.v() + "," + this.end.v();
 	}
+	
+	public boolean isOverlap(DeductionTime deduct) {
+		return !(this.end.lessThanOrEqualTo(deduct.getStart()) || this.start.greaterThanOrEqualTo(deduct.getEnd()));
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
