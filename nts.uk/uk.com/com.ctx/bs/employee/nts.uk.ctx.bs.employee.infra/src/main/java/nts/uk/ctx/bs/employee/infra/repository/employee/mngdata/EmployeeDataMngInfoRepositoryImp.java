@@ -26,7 +26,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"WHERE e.bsymtEmployeeDataMngInfoPk.pId = :pId");
 
 	private static final String SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId AND e.employeeCode= :sCd AND e.delStatus=0");
+			"WHERE e.companyId = :cId AND e.employeeCode= :sCd AND e.delStatus=0");
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
@@ -117,7 +117,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	public List<EmployeeDataMngInfo> getEmployeeNotDeleteInCompany(String cId, String sCd) {
 
 		return queryProxy().query(SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY, BsymtEmployeeDataMngInfo.class)
-				.setParameter("cid", cId).setParameter("sId", sCd).getList().stream().map(x -> toDomain(x))
+				.setParameter("cId", cId).setParameter("sCd", sCd).getList().stream().map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
 
