@@ -24,9 +24,16 @@
 				<div class="cf">
 					<div style="float: left">
 						<div class="control-group">
-							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS0012_20')}</div>
-							<input id="search" data-bind="ntsTextEditor: {value: searchValue}" />
-							<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS0012_23')}</button>
+							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_22')}</div>
+							<input id="search"
+								data-bind="ntsTextEditor: {value: searchValue}" />
+							<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS0012_25')}</button>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsCheckBox: { checked: enable1 }">#{i18n.getText('CAS013_26')}</div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsCheckBox: { checked: enable2 }">#{i18n.getText('CAS013_27')}</div>
 						</div>
 						<table id="grid_container" style="margin: auto;"
 							data-bind="ntsGridList: {
@@ -40,8 +47,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click :decision">#{i18n.getText('CAS0012_27')}</button>
-				<button data-bind ="click :cancel_Dialog">#{i18n.getText('CAS0012_28')}</button>
+				<button class="proceed x-large" data-bind="click :decision">#{i18n.getText('CAS013_31')}</button>
+				<button data-bind="click :cancel_Dialog">#{i18n.getText('CAS013_32')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

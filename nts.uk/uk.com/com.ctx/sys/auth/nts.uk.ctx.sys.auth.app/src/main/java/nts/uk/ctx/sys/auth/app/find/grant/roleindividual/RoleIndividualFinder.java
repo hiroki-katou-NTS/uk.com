@@ -127,4 +127,16 @@ public class RoleIndividualFinder {
 
 	}
 	
+	public RoleIndividualGrantDto getRoleGrant(String userId, String roleId){
+		String companyId = AppContexts.user().companyId();
+		if (companyId == null)
+			return null;
+		
+		Optional<RoleIndividualGrant> rGrant = this.roleIndividualGrantRepo.findByKey(userId, companyId, roleId);
+		
+		Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
+		
+		return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
+	}
+	
 }
