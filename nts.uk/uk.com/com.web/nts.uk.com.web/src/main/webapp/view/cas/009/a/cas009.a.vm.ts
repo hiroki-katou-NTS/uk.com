@@ -2,6 +2,8 @@ module cas009.a.viewmodel {
     import EnumConstantDto = cas009.a.service.model.EnumConstantDto;
     import service = cas009.a.service;
     import ccg = nts.uk.com.view.ccg025.a;
+    import windows = nts.uk.ui.windows;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         listRole : KnockoutObservableArray<viewmodel.model.Role>; 
         roleCode: KnockoutObservable<string>;
@@ -16,7 +18,6 @@ module cas009.a.viewmodel {
         enumRange:  KnockoutObservableArray<EnumConstantDto>;
         enumRangeChange:  KnockoutObservableArray<EnumConstantDto>;
         component: ccg.component.viewmodel.ComponentModel;
-        isSelected: KnockoutObservable<boolean>;
         enableDetail: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
@@ -28,7 +29,6 @@ module cas009.a.viewmodel {
                 self.assignAtr = ko.observable(1);
                 self.referFutureDate = ko.observable(true);
                 self.createMode = ko.observable(true);
-                self.isSelected =  ko.observable(true);
                 self.enableDetail =  ko.observable(true);
                 self.enumAuthen = ko.observableArray([
                          { code: '0', name: nts.uk.resource.getText("CAS009_14") }, 
@@ -50,29 +50,31 @@ module cas009.a.viewmodel {
                     roleType: 8,
                     multiple: false  
                 });
-                  self.component.currentCode.subscribe((newValue) => {
-                            if(newValue !="" && self.listRole().length>0){                            
-                                let current = _.find(self.listRole(), function(o){return o.roleId == newValue});
+                 self.component.currentCode.subscribe((newValue) => {
+                        if(newValue !=""){                            
+                            let current = _.find(self.listRole(), function(o){return o.roleId == newValue});
+                            if(current != undefined){
                                 self.roleCode(current.roleCode)
                                 self.roleId(newValue);
                                 self.createMode(false);
                                 self.name(current.name);
                                 self.assignAtr(current.assignAtr);
                                 self.employeeReferenceRange(current.employeeReferenceRange);
-                                self.referFutureDate(current.referFutureDate );       
-                                 $(".nts-input").ntsError("clear");                    
-                            }else{
-                                self.roleCode("");
-                                self.roleId("");
-                                self.employeeReferenceRange(0);
-                                self.name("");
-                                self.assignAtr(0);
-                                self.referFutureDate(false);
-                                self.createMode(true);
-                            
+                                self.referFutureDate(current.referFutureDate );                                      
+                                $(".nts-input").ntsError("clear");   
                             }
-       
-                    });                        
+                 
+                        }else{
+                            self.roleCode("");
+                            self.roleId("");
+                            self.employeeReferenceRange(0);
+                            self.name("");
+                            self.assignAtr(0);
+                            self.referFutureDate(false);
+                            self.createMode(true);
+                        }
+   
+                });                     
         }
 
         /** Start Page */
@@ -87,6 +89,8 @@ module cas009.a.viewmodel {
                 if(self.listRole().length==0) 
                 {
                     self.createNew();
+                }else{
+                    self.component.currentCode(self.component.listRole()[0].roleId)                  
                 }  
             });
            // self.userHasRole();
@@ -109,20 +113,13 @@ module cas009.a.viewmodel {
                             let personInfo : any = _.find(res, function(o){ return o.roleId == x.roleId  });
                             
                             return new model.Role(true, x.roleId, x.roleCode, x.employeeReferenceRange, x.name, x.assignAtr, personInfo.referFutureDate );                            
-                        }));                                                                                                 
-                        self.component.currentCode(self.component.listRole()[0].roleId)
-                        let current = _.find(self.listRole(), function(o){return o.roleId == self.component.currentCode()});
-                                self.roleCode(current.roleCode)
-                                self.roleId(self.component.currentCode());
-                                self.createMode(false);
-                                self.name(current.name);
-                                self.assignAtr(current.assignAtr);
-                                self.employeeReferenceRange(current.employeeReferenceRange);
-                                self.referFutureDate(current.referFutureDate );       
-                                 $(".nts-input").ntsError("clear");      
+                        }));
+                        self.component.currentCode("");                                                                                                                                
                         dfd.resolve();                                                                                                
                     });
                 }else{
+                    self.listRole([]);
+                    self.createNew();
                     dfd.resolve();                        
                 }
             });
@@ -146,16 +143,7 @@ module cas009.a.viewmodel {
 
         public createNew(): any{
             let self = this;
-                self.roleCode("");
-                self.roleId("");
-                self.employeeReferenceRange(0);
-                self.name("");
-                self.assignAtr(0);
-                self.referFutureDate(false);
-                self.createMode(true);
                 self.component.currentCode("");
-                $('#roleCode').focus();
-                nts.uk.ui.errors.clearAll();
         }
         
         public save(): any{
@@ -181,13 +169,30 @@ module cas009.a.viewmodel {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                         service.deleteRole({roleId: self.roleId(), assignAtr: self.assignAtr()}).done(function(){
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                            self.getListRole();
-                            self.component.currentCode(self.listRole()[0].roleId);   
+                            let index = _.findIndex(self.listRole(), ['roleId', self.roleId()]);
+                            index = _.min([self.listRole().length - 2, index]);
+                            self.getListRole().done(function(){
+                                 self.selectRoleByIndex(index);
+                            });
+                            
                         }).fail((error) => {
                                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                         });   
                    }); 
                }   
+        }
+        private selectRoleByIndex(index: number) {
+            var self = this;
+            var selectRoleByIndex = _.nth(self.listRole(), index);
+            if (selectRoleByIndex !== undefined)
+                self.component.currentCode(selectRoleByIndex.roleId);
+            else
+                self.createNew();
+        }
+        public open_Dialog(): any {
+            windows.sub.modal("/view/cas/009/b/index.xhtml").onClosed(() => {
+                
+            });
         }
         
     }
