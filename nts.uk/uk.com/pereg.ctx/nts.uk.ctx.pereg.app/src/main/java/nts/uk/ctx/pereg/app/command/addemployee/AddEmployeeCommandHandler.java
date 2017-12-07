@@ -171,16 +171,19 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 	private void setItemValue(List<ItemsByCategory> ctgList, String ctgCode, String ItemCode, String NewValue,
 			int saveType) {
-		ItemsByCategory PersonCtg = ctgList.stream().filter(x -> x.getCategoryCd().equals(ctgCode)).findFirst().get();
+		if (!CollectionUtil.isEmpty(ctgList)) {
+			ItemsByCategory PersonCtg = ctgList.stream().filter(x -> x.getCategoryCd().equals(ctgCode)).findFirst()
+					.get();
 
-		Optional<ItemValue> PersonNameItemOpt = PersonCtg.getItems().stream().filter(x -> x.itemCode().equals(ItemCode))
-				.findFirst();
+			Optional<ItemValue> PersonNameItemOpt = PersonCtg.getItems().stream()
+					.filter(x -> x.itemCode().equals(ItemCode)).findFirst();
 
-		if (PersonNameItemOpt.isPresent()) {
-			ItemValue PersonNameItem = PersonNameItemOpt.get();
-			PersonCtg.getItems().remove(PersonNameItem);
-			PersonCtg.getItems()
-					.add(new ItemValue(PersonNameItem.definitionId(), PersonNameItem.itemCode(), NewValue, saveType));
+			if (PersonNameItemOpt.isPresent()) {
+				ItemValue PersonNameItem = PersonNameItemOpt.get();
+				PersonCtg.getItems().remove(PersonNameItem);
+				PersonCtg.getItems().add(
+						new ItemValue(PersonNameItem.definitionId(), PersonNameItem.itemCode(), NewValue, saveType));
+			}
 		}
 
 	}
