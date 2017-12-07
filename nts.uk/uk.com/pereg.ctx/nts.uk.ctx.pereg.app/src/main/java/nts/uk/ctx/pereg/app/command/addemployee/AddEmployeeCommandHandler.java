@@ -1,7 +1,6 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,13 +73,11 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 				command.getInitSettingId(), command.getHireDate(), command.getEmployeeCopyId());
 
 		// merge data from client with dataList
-		mergeData(dataList, command.getInputContainer().getInputs());
+		mergeData(dataList, command.getInputs());
 
 		List<ItemsByCategory> inputs = new ArrayList<ItemsByCategory>();
 
-		List<String> categoryCodeList = Arrays.asList("CS00002", "CS00003", "CS00004", "CS00014", "CS00015", "CS00016",
-				"CS00017", "CS00018");
-
+		List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
 		dataList.forEach(x -> {
 
 			if (categoryCodeList.indexOf(x.getCategoryCode()) == -1 && x.getCategoryCode().charAt(1) == 'O') {
