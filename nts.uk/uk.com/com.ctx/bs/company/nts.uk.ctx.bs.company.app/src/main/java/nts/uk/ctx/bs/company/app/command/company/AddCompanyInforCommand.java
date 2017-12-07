@@ -5,19 +5,15 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
-import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
+import nts.uk.ctx.bs.company.dom.company.Company;
 
 /**
- * 
+ * add company Command
  * @author yennth
- *
  */
 @Data
 @AllArgsConstructor
 public class AddCompanyInforCommand {
-	/** 契約コード */
-	private String contractCd;
-	
 	// 会社コード
 	private String ccd;  
 
@@ -50,12 +46,12 @@ public class AddCompanyInforCommand {
 	
 	private AddInforCommand addinfor;
 	
-	public CompanyInforNew toDomain(String contractCode) {
+	public Company toDomain(String contractCode) {
 		AddInfor add = null; 
 		if(this.getAddinfor() != null){
-			add = this.getAddinfor().toDomainAdd(CompanyInforNew.createCompanyId(ccd, contractCode));
+			add = this.getAddinfor().toDomainAdd(Company.createCompanyId(ccd, contractCode));
 		}
-		CompanyInforNew company =  CompanyInforNew.createFromJavaType(this.ccd, this.name, 
+		Company company =  Company.createFromJavaType(this.ccd, this.name, 
 				this.getMonth(), 
 				this.getAbolition(), this.getRepname(),
 				this.getRepJob(), this.getComNameKana(), 

@@ -6,12 +6,11 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
-import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
+import nts.uk.ctx.bs.company.dom.company.Company;
 
 /**
- * 
+ * update company command
  * @author yennth
- *
  */
 @Data
 @AllArgsConstructor
@@ -52,12 +51,12 @@ public class UpdateCompanyInforCommand {
 		
 		private AddInforCommand addinfor;
 		
-		private CompanyInforNew toDomain(String contractCode) {
+		private Company toDomain(String contractCode) {
 			AddInfor add = null; 
 			if(this.getAddinfor() != null){
-				add = this.getAddinfor().toDomainAdd(CompanyInforNew.createCompanyId(ccd, contractCode));
+				add = this.getAddinfor().toDomainAdd(Company.createCompanyId(ccd, contractCode));
 			}
-			CompanyInforNew company =  CompanyInforNew.createFromJavaType(this.getCcd(), this.getName(), 
+			Company company =  Company.createFromJavaType(this.getCcd(), this.getName(), 
 					this.getMonth(), 
 					this.getAbolition(), this.getRepname(),
 					this.getRepJob(), this.getComNameKana(), 

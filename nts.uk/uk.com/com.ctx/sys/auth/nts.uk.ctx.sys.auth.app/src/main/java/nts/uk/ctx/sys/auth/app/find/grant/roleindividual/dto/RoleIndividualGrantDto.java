@@ -8,6 +8,8 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 public class RoleIndividualGrantDto {
 
 	 private String companyID;
+	 
+	 private String roleID;
 	
 	 private int roleType;
 	 
@@ -24,6 +26,7 @@ public class RoleIndividualGrantDto {
 	 public static RoleIndividualGrantDto fromDomain(RoleIndividualGrant domain, String userName , String loginID) {
 		 return new RoleIndividualGrantDto(
 				 domain.getCompanyId(),
+				 domain.getRoleId(),
 				 domain.getRoleType().value,
 				 loginID,
 				 domain.getUserId(),

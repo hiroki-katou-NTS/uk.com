@@ -26,18 +26,18 @@ module cmm001.a {
                 { id: 'tab-3', title: nts.uk.resource.getText("CMM001_18"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             let itemArray = [
-                { code: 1, name: '1月' },
-                { code: 2, name: '2月' },
-                { code: 3, name: '3月' },
-                { code: 4, name: '4月' },
-                { code: 5, name: '5月' },
-                { code: 6, name: '6月' },
-                { code: 7, name: '7月' },
-                { code: 8, name: '8月' },
-                { code: 9, name: '9月' },
-                { code: 10, name: '10月' },
-                { code: 11, name: '11月' },
-                { code: 12, name: '12月' }
+                { code: 1, name: nts.uk.resource.getText("Enum_StartingMonthType_JANUARY") },
+                { code: 2, name: nts.uk.resource.getText("Enum_StartingMonthType_FEBRUARY") },
+                { code: 3, name: nts.uk.resource.getText("Enum_StartingMonthType_MARCH") },
+                { code: 4, name: nts.uk.resource.getText("Enum_StartingMonthType_APRIL") },
+                { code: 5, name: nts.uk.resource.getText("Enum_StartingMonthType_MAY") },
+                { code: 6, name: nts.uk.resource.getText("Enum_StartingMonthType_JUNE") },
+                { code: 7, name: nts.uk.resource.getText("Enum_StartingMonthType_JULY") },
+                { code: 8, name: nts.uk.resource.getText("Enum_StartingMonthType_AUGUST") },
+                { code: 9, name: nts.uk.resource.getText("Enum_StartingMonthType_SEPTEMBER") },
+                { code: 10, name: nts.uk.resource.getText("Enum_StartingMonthType_OCTOBER") },
+                { code: 11, name: nts.uk.resource.getText("Enum_StartingMonthType_NOVEMBER") },
+                { code: 12, name: nts.uk.resource.getText("Enum_StartingMonthType_DECEMBER") }
             ];
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
@@ -249,7 +249,7 @@ module cmm001.a {
             }
             if (self.currentCompany().isAbolition() == false) {
                 $('#checked2').ntsError('clear');
-            }
+            }  
             if (nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
                 return;

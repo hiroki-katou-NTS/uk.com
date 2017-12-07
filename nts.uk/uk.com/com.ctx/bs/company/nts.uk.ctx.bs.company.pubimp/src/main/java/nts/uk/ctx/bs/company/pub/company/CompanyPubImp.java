@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
+import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 
 @Stateless
@@ -30,9 +30,9 @@ public class CompanyPubImp implements ICompanyPub {
 	public BeginOfMonthExport getBeginOfMonth(String cid) {
 
 		BeginOfMonthExport result = new BeginOfMonthExport();
-		Optional<CompanyInforNew> comOpt = repo.getComanyInfoByCid(cid);
+		Optional<Company> comOpt = repo.getComanyInfoByCid(cid);
 		if (comOpt.isPresent()) {
-			CompanyInforNew company = comOpt.get();
+			Company company = comOpt.get();
 			result.setCid(company.getCompanyId());
 			result.setStartMonth(company.getStartMonth().value);
 		}

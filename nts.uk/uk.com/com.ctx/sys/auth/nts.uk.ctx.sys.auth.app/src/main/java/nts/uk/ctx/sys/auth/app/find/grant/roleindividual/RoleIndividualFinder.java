@@ -68,6 +68,7 @@ public class RoleIndividualFinder {
 			// Add to list
 			RoleIndividualGrantDto dto = new RoleIndividualGrantDto(
 					roleIndividualGrant.getCompanyId(),
+					roleIndividualGrant.getRoleId(),
 					roleIndividualGrant.getRoleType().value,
 					loginID,
 					roleIndividualGrant.getUserId(), 

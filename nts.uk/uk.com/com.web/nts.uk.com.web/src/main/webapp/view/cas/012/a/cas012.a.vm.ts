@@ -261,6 +261,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
         GUID: string;
         loginID: string 
         companyID: string;
+        roleID: string,
         roleType: number;
         userID: string;
         userName: string;
@@ -272,6 +273,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
         GUID: string;
         loginID: string
         companyID: string;
+        roleID: string;
         roleType: number;
         userID: string;
         userName: string;
@@ -283,6 +285,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
             this.GUID = param.GUID || nts.uk.util.randomId();
             this.loginID = (param.loginID);
             this.userID = (param.userID);
+            this.roleID = param.roleID;
             this.roleType = (param.roleType);
             this.companyID = (param.companyID);
             this.userName = (param.userName);
@@ -297,6 +300,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
         loginID: KnockoutObservable<string>;
         userID: KnockoutObservable<string>;
         userName: KnockoutObservable<string>;
+        roleID: KnockoutObservable<string>;
         roleType: KnockoutObservable<number>;
         companyID: KnockoutObservable<string>;
         
@@ -305,6 +309,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
             this.GUID = param.GUID || nts.uk.util.randomId();
             this.userID = ko.observable(param.userID);
             this.userName = ko.observable(param.userName);
+            this.roleID = ko.observable(param.roleID);
             this.roleType = ko.observable(param.roleType);
             this.companyID = ko.observable(param.companyID);
         }
@@ -312,6 +317,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
     
     export class RoleIndividualGrantBaseCommand {
         userID: string;
+        roleID: string;
         roleType: number;
         companyID: string;
         startValidPeriod: string;
@@ -321,6 +327,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
         
         constructor(data: RoleIndividual) {
             this.userID = data.userID();
+            this.roleID = data.roleID();
             this.roleType = data.roleType();
             this.companyID = data.companyID();
         }

@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
-import nts.uk.ctx.bs.company.dom.company.CCD;
+import nts.uk.ctx.bs.company.dom.company.CompanyCode;
 import nts.uk.ctx.bs.company.dom.company.CompanyGetMemento;
 import nts.uk.ctx.bs.company.dom.company.CompanyId;
 import nts.uk.ctx.bs.company.dom.company.Name;
@@ -30,8 +30,8 @@ public class JpaCompanyGetMemento implements CompanyGetMemento {
 	 * @return the company code
 	 */
 	@Override
-	public CCD getCompanyCode() {
-		return new CCD(this.company.companyCode);
+	public CompanyCode getCompanyCode() {
+		return new CompanyCode(this.company.companyCode);
 	}
 
 	/**
