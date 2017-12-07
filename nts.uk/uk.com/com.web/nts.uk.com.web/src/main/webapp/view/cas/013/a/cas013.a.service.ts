@@ -4,25 +4,28 @@ module nts.uk.com.view.cas013.a {
     export module service {
         export class Service {
             paths = {
-                getAllDataRoleType: "ctx/sys/auth/roletype/getallbyroletype",
-                getByRoleId: "ctx/sys/auth/roletype/getrolebyroleId",
-                getByUserIdAndRoleId: "ctx/sys/auth/roletype/getrolegrantbyuserId",
+                getRoleType: "ctx/sys/auth/grant/roleindividual/getRoleType",
+                getRole: "ctx/sys/auth/grant/roleindividual/getRoles",
+                getRoleGrants: "ctx/sys/auth/grant/roleindividual/getRoleGrants",
             }
             constructor() {
 
             }
-            getAllData(value: any): JQueryPromise<any> {
-                return ajax("com", this.paths.getAllDataRoleType, value);
+            getRoleTypes(): JQueryPromise<any> {
+                return ajax("com", this.paths.getRoleType);
             };
-            getByRoleId(roleId: string): JQueryPromise<any> {
-                return ajax("com", this.paths.getByRoleId, roleId);
+            getRole(roleType: string): JQueryPromise<any> {
+                return ajax("com", this.paths.getRole +'/'+ roleType);
+            };
+            getRoleGrants(role: string): JQueryPromise<any> {
+                return ajax("com", this.paths.getRoleGrants, role);
             };
             getByUserIdAndRoleId(roleId: string, userId: string): JQueryPromise<any> {
                 var data = {
                     roleId: roleId,
                     userId: userId
                 };
-                return ajax("com", this.paths.getByUserIdAndRoleId, data);
+                return ajax("com", this.paths.getRoleGrants, data);
             };
             
             
