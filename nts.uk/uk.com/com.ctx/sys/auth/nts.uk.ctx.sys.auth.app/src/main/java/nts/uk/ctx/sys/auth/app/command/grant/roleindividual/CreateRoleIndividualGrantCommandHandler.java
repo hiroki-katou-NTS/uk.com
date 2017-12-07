@@ -11,7 +11,6 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 
@@ -40,24 +39,21 @@ public class CreateRoleIndividualGrantCommandHandler extends CommandHandlerWithR
 			throw new BusinessException("Msg_218");
 		}
 		
-		Role sysAdminRole = roleRepository.findByType(RoleType.SYSTEM_MANAGER.value).get(0);
+		Role uniqueRole = roleRepository.findByType(command.getRoleType()).get(0);
 		
-		// ドメインモデル「ロール個人別付与」を新規登録する
-		// Register a domain model "Role individual grant"
-		RoleIndividualGrant domain = command.toDomain(sysAdminRole.getRoleId());
+		// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
+		RoleIndividualGrant domain = command.toDomain(uniqueRole.getRoleId());
 		roleIndividualGrantRepo.add(domain);
 
 		if (command.isSetRoleAdminFlag() == true) {
 			RoleIndividualGrant roleIndiGrantSys = RoleIndividualGrant.createFromJavaType(
 					command.getUserID(),
-					sysAdminRole.getRoleId(),
+					uniqueRole.getRoleId(),
 					command.getDecisionCompanyID(),
 					command.getRoleType(),
 					command.getStartValidPeriod(),
 					command.getEndValidPeriod());
-			// ドメインモデル「ロール個人別付与」を新規登録する
-			// Register a domain model "Role individual grant"
-			// param companyID = decisionCompanyID()
+			// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
 			roleIndividualGrantRepo.add(roleIndiGrantSys);
 		}
 		
