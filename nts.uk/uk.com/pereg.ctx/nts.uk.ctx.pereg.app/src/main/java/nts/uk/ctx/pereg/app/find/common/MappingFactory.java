@@ -68,6 +68,7 @@ public class MappingFactory {
 		
 		lstPerInfoItemDef.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
 			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);		
 			layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
 			layoutPerInfoClsDto.setRecordId(recordId);
@@ -90,14 +91,6 @@ public class MappingFactory {
 		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
 		layoutPerInfoClsDto.getListItemDf().add(item);
 	}
-//	private static void setLayoutPersonInfoClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item,
-//			Map<String, Object> dtoFieldValue) {
-//		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-//		Object value = dtoFieldValue.get(item.getItemCode());		
-//		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
-//		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
-//		empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
-//	}
 
 	/**
 	 * get dto value
@@ -200,6 +193,13 @@ public class MappingFactory {
 
 	}
 	
+	/**
+	 * Mapping data between PerInfoItemDef and PerOptionalDto
+	 * 
+	 * @param empMaintLayoutDto
+	 * @param lstCtgItemOptionalDto
+	 * @param lstPerInfoItemDef
+	 */
 	public static void mapPerOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<PersonOptionalDto> lstCtgItemOptionalDto, 
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		lstPerInfoItemDef.forEach(item -> {
@@ -208,15 +208,18 @@ public class MappingFactory {
 					return  data.getItemCode().equals(item.getItemCode());
 				}).findFirst();
 				Object value = empOptionalDto.isPresent()?empOptionalDto.get().getValue(): null;
-				LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-				layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
-				layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
-				layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
-				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+				setOptionValueToClsDto(empMaintLayoutDto, item, value);
 			}
 		});
 	}
 	
+	/**
+	 * Mapping data between PerInfoItemDef and EmpOptionalDto
+	 * 
+	 * @param empMaintLayoutDto
+	 * @param lstCtgItemOptionalDto
+	 * @param lstPerInfoItemDef
+	 */
 	public static void mapEmpOptionalDto(EmpMaintLayoutDto empMaintLayoutDto, List<EmpOptionalDto> lstCtgItemOptionalDto, 
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		lstPerInfoItemDef.forEach(item -> {
@@ -225,12 +228,20 @@ public class MappingFactory {
 					return  data.getItemCode().equals(item.getItemCode());
 				}).findFirst();
 				Object value = empOptionalDto.isPresent()?empOptionalDto.get().getValue(): null;
-				LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-				layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
-				layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
-				layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
-				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+				setOptionValueToClsDto(empMaintLayoutDto, item, value);
 			}
 		});
+	}
+	
+	
+	private static void setOptionValueToClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item, Object value){
+		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+		layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
+		layoutPerInfoClsDto.getListItemDf().add(item);
+		layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
+		layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
+		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
+		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
+		empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 	}
 }
