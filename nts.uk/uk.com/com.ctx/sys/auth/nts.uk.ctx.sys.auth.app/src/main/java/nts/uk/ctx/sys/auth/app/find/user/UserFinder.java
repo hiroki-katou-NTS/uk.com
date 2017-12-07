@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.app.find.user;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,4 +29,9 @@ public class UserFinder {
 	
 		
 	}
+	public List<UserDto> getAllUser(){
+		return userRepo.getAllUser().stream().map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
+	}
+	
+ 	
 }

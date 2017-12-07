@@ -28,6 +28,6 @@ public interface UserRepository {
 	
 	List<User> getByListUser(List<String> userID);
 	
-	
+	List<User> getAllUser();
 	
 }

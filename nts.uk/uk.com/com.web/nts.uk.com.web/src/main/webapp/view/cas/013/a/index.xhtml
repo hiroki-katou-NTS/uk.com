@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<title>#{i18n.getText('CAS013_1')}</title>
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
@@ -18,55 +19,67 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-				<button tabindex="1">#{i18n.getText('CAS0012_4')}</button>
-				<button class="proceed" tabindex="2"
-					data-bind="click : openCAS012_C">#{i18n.getText('CAS0012_5')}</button>
-				<button class="danger" tabindex="3">#{i18n.getText('CAS0012_6')}</button>
-			</div>
-			<div class="container">
-				<div id="contents-area">
-					<div class="left-content">
-						<div class="valign-center control-group">
-							<div
-								data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">#{i18n.getText('CAS0012_7')}</div>
-							<div id="combo-box" tabindex="4"
-								data-bind="ntsComboBox: {
-							options: listRollType,
+			 <div id="functions-area">
+				<button tabindex="1">#{i18n.getText('CAS0013_4')}</button>
+				<button class="proceed" tabindex="2">#{i18n.getText('CAS0013_5')}</button>
+				<button class="danger" tabindex="3">#{i18n.getText('CAS0013_6')}</button>
+			</div> 
+			<div id="contents-area">
+				<div class="valign-center control-group">
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS0013_7')}</div>
+					<div id="combo-box" tabindex="4"
+						data-bind="ntsComboBox: {
+							options: listRoleType,
 							optionsValue: 'value',
-							value: selectedRollType,
-							optionsText: 'localizedName',
+							value: selectedRoleType,
+							optionsText: 'nameId',
 							columns: [
-								{ prop: 'localizedName', length: 8}
+								{ prop: 'description', length: 10 }
 							]}"></div>
-						</div>
-						
-						<span class="caret-bottom outline"></span>
+				</div>
+				<span class="caret-bottom outline"></span>
+				<div class="cf">
+					<div class="pull-left">
 						<div class="valign-center control-group">
-							<span class="text">#{i18n.getText('CAS0012_11')}</span>
+							<span class="text">#{i18n.getText('CAS0013_09')}</span>
 						</div>
-						<table tabindex="6" id="single-list"
-							data-bind="ntsGridList: {								
-							height: 350,
-							dataSource: listRoleIndividual,
-							primaryKey: 'codeRoleIndividual',
-							columns: columns,
-							value: currentCode
-					}"></table>
+						<table tabindex="5" id="single-list" data-bind="ntsGridList: {								
+									height: 150,
+									dataSource: listRole,
+									primaryKey: 'roleId',
+									columns: columns,
+									value: selectedRole
+							}"></table>
 					</div>
-					<div class="right-content">
-						<button id="SlectUser" class="x-large"
-							data-bind="click : openCAS012_B">X-large</button>
-						<label>1111111</label>
+					<div class="pull-left"><span class="caret-right outline"></span></div>
+					<div class="pull-left">
 						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS0012_18')}</div>
-							<div
-								data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
-							<span>~</span>
-							<div
-								data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div>
+							<span class="text">#{i18n.getText('CAS0013_13')}</span>
 						</div>
-
+						<table tabindex="6" id="single-list" data-bind="ntsGridList: {								
+									height: 150,
+									dataSource: listRoleIndividual,
+									primaryKey: 'userId',
+									columns: columnsIndividual,
+									value: selectedRoleIndividual
+							}"></table>
+					</div>
+					<div class="pull-left">
+						<div class="control-group button">
+							<button tabindex="7" data-bind="click: openBModal">#{i18n.getText('CAS013_18')}</button>
+							<div data-bind="text: name" class="ntsControl"></div>
+						</div>
+						 
+						<div class="control-group">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CAS0013_20')}</div>
+							<div id="daterangepicker" tabindex="8" data-bind="ntsDateRangePicker: 
+								{ required: true, 
+								enable: true, 
+								showNextPrevious: true, 
+								value: dateValue, 
+								maxRange: 'none'} 
+							" class="ntsControl"/>
+						</div>
 					</div>
 				</div>
 			</div>

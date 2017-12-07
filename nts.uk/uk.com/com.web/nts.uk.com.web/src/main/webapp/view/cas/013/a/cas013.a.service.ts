@@ -1,13 +1,32 @@
-module nts.uk.com.view.cas013.a.service {
-    var paths: any = {
-        getAllRoleIndividualCom: "ctx/sys/auth/grant/roleindividualCom/findAll",
-    }
+module nts.uk.com.view.cas013.a {
+	import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    export module service {
+        export class Service {
+            paths = {
+                getAllDataRoleType: "ctx/sys/auth/roletype/getallbyroletype",
+                getByRoleId: "ctx/sys/auth/roletype/getrolebyroleId",
+                getByUserIdAndRoleId: "ctx/sys/auth/roletype/getrolegrantbyuserId",
+            }
+            constructor() {
 
-    export function getAllRoleIndividualCom(selectedRoleType: number): JQueryPromise<any> {
-        var data = {
-            selectedRoleType: selectedRoleType
-        };
-        return nts.uk.request.ajax("com", paths.getAllRoleIndividualCom);
-    }
+            }
+            getAllData(value: any): JQueryPromise<any> {
+                return ajax("com", this.paths.getAllDataRoleType, value);
+            };
+            getByRoleId(roleId: string): JQueryPromise<any> {
+                return ajax("com", this.paths.getByRoleId, roleId);
+            };
+            getByUserIdAndRoleId(roleId: string, userId: string): JQueryPromise<any> {
+                var data = {
+                    roleId: roleId,
+                    userId: userId
+                };
+                return ajax("com", this.paths.getByUserIdAndRoleId, data);
+            };
+            
+            
 
+        }
+    }
 }
