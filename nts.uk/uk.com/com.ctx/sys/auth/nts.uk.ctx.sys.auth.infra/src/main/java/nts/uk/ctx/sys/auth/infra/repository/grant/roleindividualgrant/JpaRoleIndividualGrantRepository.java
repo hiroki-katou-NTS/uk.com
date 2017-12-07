@@ -40,8 +40,8 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 
 	@Override
 	public Optional<RoleIndividualGrant> findByKey(String userId, String companyId, String roleId) {
-		return this.queryProxy().query(SELECT_BY_KEY, SacmtRoleIndiviGrant.class).setParameter("userId", userId)
-				.setParameter("cid", companyId).setParameter("roleId", roleId).getSingle(c -> c.toDomain());
+		return this.queryProxy().query(SELECT_BY_KEY, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
+				.setParameter("companyID", companyId).setParameter("roleId", roleId).getSingle(c -> c.toDomain());
 	}
 
 	private final String SELECT_BY_USER_AND_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
