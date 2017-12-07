@@ -3,6 +3,10 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
+
+/**
+ * The Class WorkingConditionItem.
+ */
 @Getter
 public class WorkingConditionItem extends AggregateRoot {
 	
@@ -48,7 +52,18 @@ public class WorkingConditionItem extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public WorkingConditionItem(WorkingConditionItemGetMemento memento){
-		
+		this.scheduleManagementAtr = memento.getScheduleManagementAtr();
+		this.vacationAddedTimeAtr = memento.getVacationAddedTimeAtr();
+		this.laborSystem = memento.getLaborSystem();
+		this.workCategory = memento.getWorkCategory();
+		this.contractTime = memento.getContractTime();
+		this.autoIntervalSetAtr = memento.getAutoIntervalSetAtr();
+		this.historyId = memento.getHistoryId();
+		this.workDayOfWeek = memento.getWorkDayOfWeek();
+		this.employeeId = memento.getEmployeeId();
+		this.autoStampSetAtr = memento.getAutoStampSetAtr();
+		this.scheduleMethod = memento.getScheduleMethod();
+		this.holidayAddTimeSet = memento.getHolidayAddTimeSet();
 	}
 	
 	/**
@@ -58,7 +73,18 @@ public class WorkingConditionItem extends AggregateRoot {
 	 *            the memento
 	 */
 	public void saveToMemento(WorkingConditionItemSetMemento memento) {
-		
+		memento.setScheduleManagementAtr(this.scheduleManagementAtr);
+		memento.setVacationAddedTimeAtr(this.vacationAddedTimeAtr);
+		memento.setLaborSystem(this.laborSystem);
+		memento.setWorkCategory(this.workCategory);
+		memento.setContractTime(this.contractTime);
+		memento.setAutoIntervalSetAtr(this.autoIntervalSetAtr);
+		memento.setHistoryId(this.historyId);
+		memento.setWorkDayOfWeek(this.workDayOfWeek);
+		memento.setEmployeeId(this.employeeId);
+		memento.setAutoStampSetAtr(this.autoStampSetAtr);
+		memento.setScheduleMethod(this.scheduleMethod);
+		memento.setHolidayAddTimeSet(this.holidayAddTimeSet);
 	}
 	
 	/*
