@@ -37,19 +37,14 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 		// Command data
 		CreateApplicationCommand appCommand = updateCommand.getApplication();
 		AppWorkChangeCommand workChangeCommand = updateCommand.getWorkChange();
-		List<AppApprovalPhaseCmd> phaseCommand = updateCommand.getAppApprovalPhases();
-
+		List<AppApprovalPhaseCmd> approvalPhaseCommand = updateCommand.getAppApprovalPhases();
+		
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = appCommand.getApplicationID();
-		// 入力者
-		// String persionId = AppContexts.user().personId();
-		// 申請者
-		// String applicantSID = AppContexts.user().employeeId();
-
 		// Phase list
-		List<AppApprovalPhase> pharseList = ApprovalPhaseUtils.convertToDomain(phaseCommand, companyId, appID);
+		List<AppApprovalPhase> pharseList = ApprovalPhaseUtils.convertToDomain(approvalPhaseCommand, companyId, appID);
 		// 申請
 		Application updateApp = new Application(companyId,
 				// command.goBackCommand.getAppID(),
@@ -77,7 +72,10 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 				workChangeCommand.getWorkTimeStart1(), workChangeCommand.getWorkTimeEnd1(),
 				workChangeCommand.getWorkTimeStart2(), workChangeCommand.getWorkTimeEnd2(),
 				workChangeCommand.getGoWorkAtr2(), workChangeCommand.getBackHomeAtr2());
-
+		//OptimisticLock
+		workChangeDomain.setVersion(workChangeCommand.getVersion());
+		updateApp.setVersion(workChangeCommand.getVersion());
+		
 		// アルゴリズム「勤務変更申請登録（更新）」を実行する
 		updateService.UpdateWorkChange(updateApp, workChangeDomain);
 	}
