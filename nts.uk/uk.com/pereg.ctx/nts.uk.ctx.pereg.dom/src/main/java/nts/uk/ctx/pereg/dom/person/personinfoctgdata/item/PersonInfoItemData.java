@@ -37,13 +37,13 @@ public class PersonInfoItemData extends AggregateRoot {
 	public PersonInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
 			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState) {
 		super();
-		this.perInfoItemDefId = perInfoDefId;
-		this.recordId = recordId;
+		this.itemCode = itemCode;
 		this.perInfoCtgId = perInfoCtgId;
 		this.perInfoCtgCd = perInfoCtgCd;
 		this.itemName = itemName;
+		this.perInfoItemDefId = perInfoDefId;
+		this.recordId = recordId;
 		this.dataState = dataState;
-		this.itemCode = itemCode;
 		this.isRequired = isRequired;
 	}
 
@@ -64,14 +64,6 @@ public class PersonInfoItemData extends AggregateRoot {
 
 	}
 
-	public static PersonInfoItemData createFromJavaType(String perInfoItemDefId, String recordId, int dataStateType,
-			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
-
-		return new PersonInfoItemData(perInfoItemDefId, recordId, createDataState(
-				EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
-
-	}
-
 	private static DataState createDataState(DataStateType dataStateType, String stringValue, BigDecimal intValue,
 			GeneralDate dateValue) {
 
@@ -79,7 +71,7 @@ public class PersonInfoItemData extends AggregateRoot {
 
 		switch (dataStateType) {
 		case String:
-			resultState = DataState.createFromStringValue(stringValue);
+			resultState = DataState.createFromStringValue(stringValue.trim());
 			break;
 
 		case Numeric:

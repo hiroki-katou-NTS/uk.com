@@ -15,6 +15,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
+import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
 
@@ -31,13 +33,14 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			+ " INNER JOIN PpemtPerInfoCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
 			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
-	private static final String GET_BY_RID = "select idata from PpemtPerInfoItemData idata"
-			+ " where idata.primaryKey.recordId = :recordId";
+	private static final String GET_BY_RID = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerInfoItemData itemData"
+			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " where itemData.primaryKey.recordId = :recordId";
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_PID = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.pInfoCtgId = :ctgid AND ic.pId = :pid";
-	
-	
+
 	private PersonInfoItemData toDomain(Object[] entity) {
 
 		int dataStateType = entity[4] != null ? Integer.valueOf(entity[3].toString()) : 0;
@@ -67,13 +70,23 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 	@Override
 	public List<PersonInfoItemData> getAllInfoItemByRecordId(String recordId) {
-		List<PpemtPerInfoItemData> datas = this.queryProxy().query(GET_BY_RID, PpemtPerInfoItemData.class)
-				.setParameter("recordId", recordId).getList();
-		if(datas == null) return new ArrayList<>();
-		return datas.stream()
-				.map(ent -> PersonInfoItemData.createFromJavaType(ent.primaryKey.perInfoDefId, ent.primaryKey.recordId,
-						ent.saveDataAtr, ent.stringVal, BigDecimal.valueOf(ent.intVal), ent.dateVal))
-				.collect(Collectors.toList());
+
+		List<Object[]> datas = this.queryProxy().query(GET_BY_RID).setParameter("recordId", recordId).getList();
+
+		if (datas == null){
+			return new ArrayList<>();
+		}
+			
+		return datas.stream().map(data -> {
+			PpemtPerInfoItemData itemData = (PpemtPerInfoItemData) data[0];
+			PpemtPerInfoItem itemInfo = (PpemtPerInfoItem) data[1];
+			PpemtPerInfoCtg infoCtg = (PpemtPerInfoCtg) data[2];
+			return PersonInfoItemData.createFromJavaType(itemInfo.itemCd, itemInfo.ppemtPerInfoItemPK.perInfoItemDefId,
+					itemData.primaryKey.recordId, infoCtg.ppemtPerInfoCtgPK.perInfoCtgId, infoCtg.categoryCd,
+					itemInfo.itemName, itemInfo.requiredAtr, itemData.saveDataAtr, itemData.stringVal, itemData.intVal,
+					itemData.dateVal);
+		}).collect(Collectors.toList());
+		
 	}
 
 	// sonnlb code start
@@ -83,7 +96,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 		String stringValue = domain.getDataState().getStringValue();
 
-		int intValue = domain.getDataState().getNumberValue().intValue();
+		BigDecimal intValue = domain.getDataState().getNumberValue();
 
 		GeneralDate dateValue = domain.getDataState().getDateValue();
 
@@ -94,7 +107,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 	private void updateEntity(PersonInfoItemData domain, PpemtPerInfoItemData entity) {
 		entity.saveDataAtr = domain.getDataState().getDataStateType().value;
 		entity.stringVal = domain.getDataState().getStringValue();
-		entity.intVal = domain.getDataState().getNumberValue().intValue();
+		entity.intVal = domain.getDataState().getNumberValue();
 		entity.dateVal = domain.getDataState().getDateValue();
 	}
 
@@ -117,7 +130,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		if (!existItem.isPresent()) {
 			return;
 		}
-		if (!existItem.isPresent()){
+		if (!existItem.isPresent()) {
 			throw new RuntimeException("invalid PersonInfoItemData");
 		}
 		// Update entity

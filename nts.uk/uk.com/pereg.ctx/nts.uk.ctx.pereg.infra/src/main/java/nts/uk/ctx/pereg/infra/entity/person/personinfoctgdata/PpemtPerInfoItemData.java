@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -10,7 +12,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -34,7 +35,7 @@ public class PpemtPerInfoItemData extends UkJpaEntity {
 	public String stringVal;
 
 	@Column(name = "INT_VAL")
-	public int intVal;
+	public BigDecimal intVal;
 
 	@Column(name = "DATE_VAL")
 	public GeneralDate dateVal;
