@@ -1,4 +1,4 @@
-package nts.uk.shr.pereg.app;
+/*package nts.uk.shr.pereg.app;
 
 import static mockit.Deencapsulation.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -24,4 +24,4 @@ public class ItemsByCategoryTest {
 		assertThat(command.getFullNameKana(), is("ニッツウタロウ"));
 	}
 
-}
+}*/

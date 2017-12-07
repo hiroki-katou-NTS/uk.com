@@ -3,18 +3,39 @@
  */
 package nts.uk.ctx.pereg.app.find.common;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.ItemTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
+import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
+import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
+import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
+import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregRecordId;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
@@ -28,6 +49,9 @@ import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
  *
  */
 public class MappingFactory {
+
+	@Inject
+	I18NResourcesForUK ukResouce;
 
 	public static void mapSingleClsDto(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 		// map record ID
@@ -63,15 +87,14 @@ public class MappingFactory {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 			layoutPerInfoClsDto.setRecordId(recordId);
 			if (item.getItemDefType() == 2) {
-				setLayoutPersonInfoClsDto(layoutPerInfoClsDtlo, item, dtoFieldValue);
-				layoutPerInfoClsDto.getListItemDf().add(item);
+				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+				layoutPerInfoClsDto.getListItemDf().add(mappingDto2Dto(item));
 			} else {
 				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
-
-				layoutPerInfoClsDto.getListItemDf().add(item);
+				layoutPerInfoClsDto.getListItemDf().add(mappingDto2Dto(item));
 
 				item.getLstChildItemDef().forEach(x -> {
-					layoutPerInfoClsDto.getListItemDf().add(x);
+					layoutPerInfoClsDto.getListItemDf().add(mappingDto2Dto(x));
 					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoFieldValue);
 				});
 			}
@@ -200,4 +223,21 @@ public class MappingFactory {
 
 	}
 
+	private static PerInfoItemDefDto mappingDto2Dto(PerInfoItemDefForLayoutDto item) {
+		PerInfoItemDefDto dto = new PerInfoItemDefDto();
+		dto.setId(item.getItemDefId());
+		dto.setPerInfoCtgId(item.getPerInfoCtgId());
+		dto.setItemCode(item.getItemCode());
+		dto.setItemName(item.getItemName());
+		//dto.setIsAbolition(item.ge);
+		//dto.setIsFixed(item.geti);
+		dto.setIsRequired(item.getIsRequired());
+		//dto.setIs
+		dto.setDispOrder(item.getDispOrder());
+		dto.setSelectionItemRefType(item.getSelectionItemRefType());
+		dto.setItemTypeState(item.getItemTypeState());
+		dto.setSelectionItemRefTypes(item.getSelectionItemRefTypes());
+
+		return dto;
+	}
 }
