@@ -29,6 +29,8 @@
 			<com:scriptfile path="../q/ksu001.q.vm.js" />
 			<com:scriptfile path="../q/ksu001.q.service.js" />
 
+			<com:scriptfile path="../common/ksu001.js" />
+
 		</ui:define>
 		<ui:define name="content">
 			<div data-bind="with: viewA">
@@ -376,9 +378,8 @@
 					<div class="right-content">
 						<div id="top-area">
 							<div id="top-area-left">
-								<span class="set-font-size"
-									data-bind="text: workPlaceNameDisplay"></span> <span
-									class="set-font-size" data-bind="text: lengthListSid"></span>
+								<span data-bind="text: workPlaceNameDisplay"></span> <span
+									data-bind="text: lengthListSid"></span>
 							</div>
 							<div id="top-area-right">
 								<button tabindex="-1" id="prevMonth" class="size-image-button1"
