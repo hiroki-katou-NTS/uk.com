@@ -48,7 +48,7 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("findByChangeAppDate")
 	public OverTimeDto findByChangeAppDate(ParamChangeAppDate param) {
-		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr());
+		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours());
 	}
 	@POST
 	@Path("checkConvertPrePost")
@@ -88,7 +88,7 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParam param) {
-		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr);
+		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours());
 	}
 }
 
@@ -104,4 +104,5 @@ class RecordWorkParam {
 	public String appDate;
 	public String siftCD;
 	public int prePostAtr;
+	public List<CaculationTime> overtimeHours;
 }

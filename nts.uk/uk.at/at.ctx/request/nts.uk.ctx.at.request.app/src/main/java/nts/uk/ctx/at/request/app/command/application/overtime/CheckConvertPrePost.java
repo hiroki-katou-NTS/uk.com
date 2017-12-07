@@ -54,11 +54,12 @@ public class CheckConvertPrePost {
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		if(prePostAtr == 1){
 			if(overtimeRestAppCommonSet.isPresent()){
-				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
+				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
 					result.setReferencePanelFlg(true);
 					//to do....
 				}
-				if(overtimeRestAppCommonSet.get().getPreDisplayAtr() == UseAtr.USE ){
+				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value== UseAtr.USE.value){
+					result.setAllPreAppPanelFlg(true);
 					AppOverTime appOverTime = iOvertimePreProcess.getPreApplication(employeeID, overtimeRestAppCommonSet, appDate, prePostAtr);
 					if(appOverTime != null){
 						convertOverTimeDto(companyID,preAppOvertimeDto,result,appOverTime);
@@ -66,6 +67,8 @@ public class CheckConvertPrePost {
 					}else{
 						result.setPreAppPanelFlg(false);
 					}
+				}else{
+					result.setAllPreAppPanelFlg(false);
 				}
 				// chi du bao them.EA khong co(ngay 05/12/2017)
 				if(overtimeRestAppCommonSet.isPresent()){
@@ -83,12 +86,12 @@ public class CheckConvertPrePost {
 			}
 		}else if(prePostAtr == 0){
 			if(overtimeRestAppCommonSet.isPresent()){
-				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr() == UseAtr.USE){
+				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
 					result.setReferencePanelFlg(false);
 					//to do....
 				}
-				if(overtimeRestAppCommonSet.get().getPreDisplayAtr() == UseAtr.USE ){
-					result.setPreAppPanelFlg(false);
+				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
+					result.setAllPreAppPanelFlg(false);
 					//to do....
 				}
 				// chi du bao them.EA khong co(ngay 05/12/2017)

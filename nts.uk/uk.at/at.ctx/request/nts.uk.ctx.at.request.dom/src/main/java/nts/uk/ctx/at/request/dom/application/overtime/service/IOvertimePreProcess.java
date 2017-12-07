@@ -124,7 +124,7 @@ public interface IOvertimePreProcess {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public AppOverTime getResultContentActual(int prePostAtr,String siftCode,String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours);
+	public AppOvertimeReference getResultContentActual(int prePostAtr,String siftCode,String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours);
 	
 	/**
 	 * @param employeeID

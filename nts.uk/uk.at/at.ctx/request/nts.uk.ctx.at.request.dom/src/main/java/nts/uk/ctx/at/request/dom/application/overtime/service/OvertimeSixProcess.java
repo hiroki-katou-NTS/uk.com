@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
@@ -73,7 +74,7 @@ public interface OvertimeSixProcess {
 	 * @param overtimeHours
 	 * @return
 	 */
-	public List<OvertimeCheckResult> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours);
+	public List<CaculationTime> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport);
 	
 	/**
 	 * 06-04-3_当日の場合
@@ -85,5 +86,5 @@ public interface OvertimeSixProcess {
 	 * @param overtimeHours
 	 * @return
 	 */
-	public List<OvertimeCheckResult> checkDuringTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours);
+	public List<CaculationTime> checkDuringTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport);
 }

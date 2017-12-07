@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
@@ -435,7 +436,7 @@ public class AppOvertimeFinder {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public OverTimeDto findByChangeAppDate(String appDate,int prePostAtr ){
+	public OverTimeDto findByChangeAppDate(String appDate,int prePostAtr,String siftCD, List<CaculationTime> overtimeHours){
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		OverTimeDto result = new OverTimeDto();
@@ -459,13 +460,13 @@ public class AppOvertimeFinder {
 			
 			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,prePostAtr);
 			if(appOvertime != null){
+				result.setPreAppPanelFlg(true);
 				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
 			}else{
 				result.setPreAppPanelFlg(false);
 			}
 			
 		}
-		// 01-18_実績の内容を表示し直す : chưa xử lí
 		
 		// ドメインモデル「申請表示設定」．事前事後区分表示をチェックする
 //		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
@@ -476,6 +477,11 @@ public class AppOvertimeFinder {
 		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
 		if(requestAppDetailSettings != null){
 			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
+			// 01-18_実績の内容を表示し直す : chưa xử lí
+			if(requestAppDetailSetting != null){
+				AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, siftCD, companyID,employeeID, appDate,requestAppDetailSetting.get(0),overtimeHours);
+				result.setAppOvertimeReference(appOvertimeReference);
+			}
 			if(appCommonSettingOutput.applicationSetting.getBaseDateFlg().value == BaseDateFlg.APP_DATE.value){
 				if(requestAppDetailSetting != null){
 					// 時刻計算利用チェック
@@ -644,7 +650,9 @@ public class AppOvertimeFinder {
 		// xu li hien thi du lieu xin truoc
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value){
-				result.setPreAppPanelFlg(false);
+				result.setAllPreAppPanelFlg(false);
+			}else{
+				result.setAllPreAppPanelFlg(true);
 			}
 		}
 		// 01-04_加給時間を取得
@@ -701,6 +709,7 @@ public class AppOvertimeFinder {
 		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
 			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
 			if(appOvertime != null){
+				result.setPreAppPanelFlg(true);
 				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
 			}else{
 				result.setPreAppPanelFlg(false);
@@ -897,12 +906,13 @@ public class AppOvertimeFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr){
+	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours){
 		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = -1; 
 		Integer endTime1 = -1;
 		Integer startTime2 = -1;
 		Integer endTime2 = -1;
+		AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				employeeID,
 				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
@@ -916,9 +926,9 @@ public class AppOvertimeFinder {
 			startTime2 = recordWorkOutput.getStartTime2();
 			endTime2 = recordWorkOutput.getEndTime2();
 			// 01-18_実績の内容を表示し直す
-			iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,requestAppDetailSetting.get(0),null);
+			appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,requestAppDetailSetting.get(0),overtimeHours);
 		}
 		
-		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2);
+		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference);
 	} 
 }
