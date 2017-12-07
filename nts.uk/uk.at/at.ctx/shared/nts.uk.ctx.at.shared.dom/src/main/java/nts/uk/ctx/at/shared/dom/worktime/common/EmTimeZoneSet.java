@@ -11,7 +11,7 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class EmTimeZoneSet.
  */
-//就業時間の時間帯設定
+// 就業時間の時間帯設定
 @Getter
 public class EmTimeZoneSet extends DomainObject {
 
