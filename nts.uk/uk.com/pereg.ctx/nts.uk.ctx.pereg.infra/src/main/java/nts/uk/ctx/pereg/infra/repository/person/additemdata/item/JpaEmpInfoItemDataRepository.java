@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.infra.repository.person.additemdata.item;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,35 +13,23 @@ import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.infra.entity.person.additemdata.item.PpemtEmpInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.additemdata.item.PpemtEmpInfoItemDataPk;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
+import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
 
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
 
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE_NEW = "SELECT id.ppemtEmpInfoItemDataPk.perInfoDefId, "
-			+ "id.ppemtEmpInfoItemDataPk.recordId, "
-			+ "pi.requiredAtr, "
-			+ "id.saveDataType, "
-			+ "id.stringValue, "
-			+ "id.intValue, "
-			+ "id.dateValue, "
-			+ "pi.itemName,"
-			+ "pi.itemCd,"
-			+ "pc.ppemtPerInfoCtgPK.perInfoCtgId,"
-			+ "pc.categoryCd "
-			+ "FROM PpemtEmpInfoItemData id"
-			+ " INNER JOIN PpemtPerInfoItem pi"
-			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON id.ppemtEmpInfoItemDataPk.recordId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
-	
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,pc.ppemtPerInfoCtgPK.perInfoCtgId,pc.categoryCd FROM PpemtEmpInfoItemData id"
-			+ " INNER JOIN PpemtPerInfoItem pi"
-			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON id.ppemtEmpInfoItemDataPk.recordId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
+	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,pc.ppemtPerInfoCtgPK.perInfoCtgId,pc.categoryCd"
+			+ " FROM PpemtEmpInfoItemData id"
+			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc ON id.ppemtEmpInfoItemDataPk.recordId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
 	public final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd AND pc.cid = :companyId AND ic.employeeId= :employeeId";
 
-	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE_NEW
+	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = "SELECT id, pi, pc FROM PpemtEmpInfoItemData id"
+			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE id.ppemtEmpInfoItemDataPk.recordId = :recordId";
 	
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID = SELECT_ALL_INFO_ITEM_NO_WHERE
@@ -56,18 +43,15 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 	
 	private EmpInfoItemData toDomainNew(Object[] entity) {
-
-		int dataStateType = entity[3] != null ? Integer.valueOf(entity[3].toString()) : 0;
-
-		BigDecimal intValue = new BigDecimal(entity[5] != null ? Integer.valueOf(entity[5].toString()) : 0);
-
-		GeneralDate dateValue = entity[6] != null ? GeneralDate.fromString(String.valueOf(entity[6].toString()), "yyyy-MM-dd") : GeneralDate.legacyDate(new Date());
-		String stringValue = entity[4] != null ? entity[4].toString() : "";
-
-		int isRequired = Integer.parseInt(entity[2] != null ? entity[2].toString() : "0");
+		PpemtEmpInfoItemData itemData = (PpemtEmpInfoItemData) entity[0];
+		PpemtPerInfoItem personInforItem = (PpemtPerInfoItem) entity[1];
+		PpemtPerInfoCtg personInforCategory = (PpemtPerInfoCtg) entity[2];
 		
-		return EmpInfoItemData.createFromJavaType(entity[8].toString(), entity[0].toString(), entity[1].toString(), entity[9].toString(), entity[10].toString(), 
-				entity[7].toString(), isRequired, dataStateType, stringValue, intValue, dateValue);
+		return EmpInfoItemData.createFromJavaType(personInforItem.itemCd, personInforItem.ppemtPerInfoItemPK.perInfoItemDefId,
+				itemData.ppemtEmpInfoItemDataPk.recordId, personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId,
+				personInforCategory.categoryCd, personInforItem.itemName, personInforItem.requiredAtr,
+				itemData.saveDataType, itemData.stringValue, itemData.intValue, itemData.dateValue);
+		
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {
