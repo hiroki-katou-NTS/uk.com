@@ -3,23 +3,22 @@ package nts.uk.ctx.bs.company.dom.company;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.bs.company.dom.company.primitive.Add_1;
 import nts.uk.ctx.bs.company.dom.company.primitive.Add_2;
 import nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_1;
 import nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_2;
-import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
 import nts.uk.ctx.bs.company.dom.company.primitive.FaxNum;
 import nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum;
 import nts.uk.ctx.bs.company.dom.company.primitive.PostCd;
 /**
  * 住所情報
  * @author yennth
- *
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddInfor {
+public class AddInfor extends DomainObject{
 	/**会社ID**/
 	private String companyId;
 	/** FAX番号 **/
@@ -46,9 +45,4 @@ public class AddInfor {
 							new Add_Kana_2(addKana_2), new PostCd(postCd),
 							new PhoneNum(phoneNum));
 	}
-	
-	public static String createCompanyId(String companyCode, String contractCd) {
-		return contractCd + "-" + companyCode;
-	}
-
 }

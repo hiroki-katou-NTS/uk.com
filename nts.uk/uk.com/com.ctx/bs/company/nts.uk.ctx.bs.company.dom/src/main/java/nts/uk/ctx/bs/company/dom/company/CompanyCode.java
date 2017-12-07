@@ -12,12 +12,12 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(4)
 @ZeroPaddedCode
-public class CCD extends CodePrimitiveValue<CCD>{
+public class CompanyCode extends CodePrimitiveValue<CompanyCode>{
 	
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public CCD(String rawValue) {
+	public CompanyCode(String rawValue) {
 		super(rawValue);
 	}
 

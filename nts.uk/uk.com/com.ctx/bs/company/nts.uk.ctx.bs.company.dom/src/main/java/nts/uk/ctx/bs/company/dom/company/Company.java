@@ -19,13 +19,13 @@ import nts.uk.ctx.bs.company.dom.company.primitive.TaxNo;
  * @author yennth
  *
  */
-@Getter
+@Getter  
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyInforNew extends AggregateRoot {
+public class Company extends AggregateRoot {
 	/** The company code. */
 	// 会社コード
-	private CCD companyCode;
+	private CompanyCode companyCode;
 
 	/** The company code. */
 	// 会社名
@@ -63,7 +63,7 @@ public class CompanyInforNew extends AggregateRoot {
 
 	private AddInfor addInfor;
 
-	public CompanyInforNew(CCD companyCode, Name companyName, MonthStr startMonth, AbolitionAtr isAbolition,
+	public Company(CompanyCode companyCode, Name companyName, MonthStr startMonth, AbolitionAtr isAbolition,
 			RepName repname, RepJob repjob, KNName comNameKana, ABName shortComName, ContractCd contractCd, TaxNo taxNo,
 			AddInfor addInfor) {
 		super();
@@ -81,16 +81,24 @@ public class CompanyInforNew extends AggregateRoot {
 		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
 	}
 	
-	public static CompanyInforNew createFromJavaType(String companyCode, String companyName, int startMonth,
+	public static Company createFromJavaType(String companyCode, String companyName, int startMonth,
 			int isAbolition, String repname, String repjob, String comNameKana, String shortComName, String contractCd,
 			BigDecimal taxNo, AddInfor addInfor) {
-		return new CompanyInforNew(new CCD(companyCode), new Name(companyName),
+		return new Company(new CompanyCode(companyCode), new Name(companyName),
 				EnumAdaptor.valueOf(startMonth, MonthStr.class),
 				EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class), new RepName(repname), new RepJob(repjob),
 				new KNName(comNameKana), new ABName(shortComName), new ContractCd(contractCd), new TaxNo(taxNo),
 				addInfor);
 	}
 
+	/**
+	 * create companyId  with company code + "-" + contractCd
+	 * company code received from UI
+	 * contract code received when login
+	 * @param companyCode
+	 * @param contractCd
+	 * @return
+	 */
 	public static String createCompanyId(String companyCode, String contractCd) {
 		return contractCd + "-" + companyCode;
 	}

@@ -27,4 +27,6 @@ public class DPAttendanceItem {
 	/*6:  時刻*/
 	/*7:  文字 */
 	private Integer attendanceAtr;
+	
+	private Integer typeGroup;
 }
