@@ -37,9 +37,12 @@ public class ItemValue {
 		Object convertedValue;
 		switch (this.itemValueType()) {
 		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
 			convertedValue = new BigDecimal(this.value);
 			break;
 		case STRING:
+		case SELECTION:
 			convertedValue = this.value;
 			break;
 		case DATE:
@@ -55,9 +58,12 @@ public class ItemValue {
 	public void setValue(Object obj) {
 		switch (this.itemValueType()) {
 		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
 			this.value = obj.toString();
 			break;
 		case STRING:
+		case SELECTION:
 			this.value = obj.toString();
 			break;
 		case DATE:

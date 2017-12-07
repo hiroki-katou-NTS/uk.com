@@ -122,5 +122,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	// sonnlb code end
+	
+	@Override
+	public void updateRemoveReason(EmployeeDataMngInfo domain) {
+		this.commandProxy().update(toEntity(domain));
+	}
 
 }

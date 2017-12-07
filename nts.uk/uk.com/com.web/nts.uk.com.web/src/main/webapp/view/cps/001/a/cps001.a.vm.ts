@@ -123,12 +123,11 @@ module cps001.a.vm {
                         default:
                         case TABS.LAYOUT: // layout mode
                             self.listLayout.removeAll();
+                            layout.maintenanceLayoutID(undefined);
                             service.getAllLayout(employeeId).done((data: Array<ILayout>) => {
                                 if (data && data.length) {
                                     self.listLayout(data);
                                     layout.maintenanceLayoutID(data[0].maintenanceLayoutID);
-                                } else {
-                                    layout.maintenanceLayoutID(undefined);
                                 }
                             });
                             break;
@@ -176,12 +175,12 @@ module cps001.a.vm {
                         layout.listItemClsDto(data.classificationItems || []);
                     });
 
-                } /*else {
+                } else {
                     layout.layoutCode(undefined);
                     layout.layoutName(undefined);
                     layout.standardDate(undefined);
                     layout.listItemClsDto([]);
-                }*/
+                }
             });
 
             category.id.subscribe(id => {
@@ -200,9 +199,7 @@ module cps001.a.vm {
                         category.categoryName(cat.categoryName);
                         category.categoryType(cat.categoryType);
                         category.isFixed(cat.isFixed);
-                        debugger;
                         service.getCatData(query).done(data => {
-                            debugger;
                             //layout.listItemClsDto.removeAll();
                             layout.listItemClsDto(data.classificationItems);
                         });
@@ -437,7 +434,7 @@ module cps001.a.vm {
                     if (data) {
                         person.personId(data.personId);
                         person.birthDate(data.birthDate);
-                        person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
+                        person.fullName(data.personNameGroup ? data.personNameGroup.businessName : '');
                     } else {
                         person.personId('');
                         person.birthDate(undefined);
@@ -464,6 +461,7 @@ module cps001.a.vm {
             self.employeeId.subscribe(id => {
                 if (id) {
                     service.getPerson(id).done((data: IPersonInfo) => {
+                        debugger;
                         perInfo(data);
                     }).fail(() => {
                         perInfo();
@@ -547,7 +545,7 @@ module cps001.a.vm {
 
             self.personId(param.personId || '');
             self.code(param.code || '');
-            self.fullName(param.personNameGroup && param.personNameGroup.personName || '');
+            self.fullName(param.personNameGroup ? param.personNameGroup.businessName : '');
         }
 
         age: KnockoutComputed<string> = ko.computed(() => {
