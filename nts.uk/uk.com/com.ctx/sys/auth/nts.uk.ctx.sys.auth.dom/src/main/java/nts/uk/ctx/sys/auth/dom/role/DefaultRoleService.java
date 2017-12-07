@@ -69,10 +69,8 @@ public class DefaultRoleService implements RoleService{
 						 throw new BusinessException("Msg_584");
 					}
 				});							
-			}				
-			else {
-				roleRepo.remove(roleId);				
-			}
+			}					
+			roleRepo.remove(roleId);				
 		} else {
 			Optional<DefaultRoleSet> defaultOpt = defaultRoleSetRepo.findByCompanyId(companyId);
 			if (defaultOpt.isPresent()) {
@@ -81,14 +79,16 @@ public class DefaultRoleService implements RoleService{
 						.findByRoleSetCdAndCompanyId(defaultRoleSet.getRoleSetCd().toString(), companyId);
 				if (roleSetOpt.isPresent()){
 					RoleSet rs = roleSetOpt.get();
-					if (rs.getPersonInfRoleId().equals(roleId) || rs.getSalaryRoleId().equals(roleId)
-							|| rs.getOfficeHelperRoleId().equals(roleId) || rs.getHRRoleId().equals(roleId)
-							|| rs.getEmploymentRoleId().equals(roleId) || rs.getMyNumberRoleId().equals(roleId))
+					if ((rs.getPersonInfRoleId() != null && rs.getPersonInfRoleId().equals(roleId))
+							|| (rs.getSalaryRoleId() != null && rs.getSalaryRoleId().equals(roleId))
+							|| (rs.getOfficeHelperRoleId() != null && rs.getOfficeHelperRoleId().equals(roleId))
+							|| (rs.getHRRoleId() != null && rs.getHRRoleId().equals(roleId))
+							|| (rs.getEmploymentRoleId() != null && rs.getEmploymentRoleId().equals(roleId))
+							|| (rs.getMyNumberRoleId() != null && rs.getMyNumberRoleId().equals(roleId)))
 						throw new BusinessException("Msg_586");
 				} 
-			} else{
-				roleRepo.remove(roleId);									
-			}			
+			} 		
+			roleRepo.remove(roleId);											
 		}
 		
 	}
