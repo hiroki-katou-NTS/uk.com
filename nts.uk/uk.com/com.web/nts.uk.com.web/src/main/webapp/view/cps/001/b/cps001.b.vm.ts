@@ -18,22 +18,22 @@ module cps001.b.vm {
 
             //if (dataShare) {
 
-                // Gọi service tải dữ liệu employee
-                service.getEmployeeInfo("90000000-0000-0000-0000-000000000001").done((data: IModelDto) => {
-                    if (data) {
-                        empDelete.code(data.code); // scd
-                        empDelete.reason(data.reason); // reason delete
-                    }
-                });
+            // Gọi service tải dữ liệu employee
+            service.getEmployeeInfo("90000000-0000-0000-0000-000000000001").done((data: IModelDto) => {
+                if (data) {
+                    empDelete.code(data.code); // scd
+                    empDelete.reason(data.reason); // reason delete
+                }
+            });
 
-                // Gọi service tải dữ liệu name of person
-                service.getPersonInfo("00001").done((data : IModelDto) => {
-                    if (data) {
-                        empDelete.name(data.name);
-                    }
-                });
+            // Gọi service tải dữ liệu name of person
+            service.getPersonInfo("00001").done((data: IModelDto) => {
+                if (data) {
+                    empDelete.name(data.name);
+                }
+            });
 
-           // }
+            // }
         }
 
         pushData() {
@@ -41,7 +41,7 @@ module cps001.b.vm {
                 empDelete: IModelDto = ko.toJS(self.empDelete);
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this,
-                    //employeeId: any = getShared('CPS001B_PARAM') || null;
+                    dataShare: IDataShare = getShared('CPS001B_PARAM') || null,
                     employeeId = "90000000-0000-0000-0000-000000000001";
                 if (employeeId) {
                     let command = { sId: employeeId, reason: empDelete.reason };

@@ -24,4 +24,6 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> getEmployeeNotDeleteInCompany(String cId, String sCd);
 
 	// sonnlb code end
+	
+	void updateRemoveReason(EmployeeDataMngInfo domain);
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.find.employee.delete;
+package nts.uk.ctx.bs.employee.app.find.employee.deletemanagement;
 
 import java.util.List;
 
