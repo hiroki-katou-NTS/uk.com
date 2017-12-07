@@ -46,7 +46,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
             // A2_003, A2_004, A2_005, A2_006 
             self.gridColumns = ko.observableArray([
-                                                {headerText: resource.getText('CAS011_09'), key: 'roleSetCd', formatter: _.escape, width: 60},
+                                                {headerText: resource.getText('CAS011_09'), key: 'roleSetCd', formatter: _.escape, width: 50},
                                                 {headerText: resource.getText('CAS011_10'), key: 'roleSetName', formatter: _.escape, width: 180}
                                            ]);
 
