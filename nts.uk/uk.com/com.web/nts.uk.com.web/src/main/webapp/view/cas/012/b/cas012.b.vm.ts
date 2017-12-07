@@ -19,8 +19,8 @@ module nts.uk.com.view.cas012.b.viewmodel {
                 { headerText: nts.uk.resource.getText("CAS012_25"), key: 'userID', width: 100 },
                 { headerText: nts.uk.resource.getText("CAS012_26"), key: 'userName', width: 230 }
             ]);
-            self.selectUserID = ko.observable('');
-        }
+            self.selectUserID = ko.observable('');       
+        } 
 
         search() {
             let self = this;
