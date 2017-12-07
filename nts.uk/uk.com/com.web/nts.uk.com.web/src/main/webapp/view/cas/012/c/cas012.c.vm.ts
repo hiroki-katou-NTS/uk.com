@@ -19,8 +19,6 @@ module nts.uk.com.view.cas012.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getAll().done(function(data) {
-                console.log(data);
-
                 self.listCompany(data.listCompany);
                 dfd.resolve();
             });

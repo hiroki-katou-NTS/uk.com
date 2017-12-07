@@ -107,7 +107,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
         }
 
         registryBtn() {
-            let self = this;
+            let self = this;            
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 if (self.isCreate()) {
@@ -161,6 +161,9 @@ module nts.uk.com.view.cas012.a.viewmodel {
             
             block.invisible();
             service.update(param).done(() => {
+                self.getData().done(() => {
+                    self.selectRoleByKey(param.companyID, param.userID, param.roleType);
+                });
                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId });
@@ -211,6 +214,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
                 GUID: "",
                 loginID: "",
                 companyID: "",
+                roleID: "",
                 roleType: 0,
                 userID: "",
                 userName: "",

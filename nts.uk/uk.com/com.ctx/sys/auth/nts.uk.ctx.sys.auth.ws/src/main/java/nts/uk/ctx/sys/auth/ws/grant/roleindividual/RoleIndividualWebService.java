@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.auth.ws.grant.roleindividual;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,6 +19,7 @@ import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividual
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantMetaDto;
+import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
 
 @Path("ctx/sys/auth/grant/roleindividual")
 @Produces("application/json")
@@ -64,4 +67,11 @@ public class RoleIndividualWebService extends WebService {
 		this.deleteHandler.handle(command);
 	}
 
+	@POST
+	@Path("getRoleType")
+	public List<RoleTypeDto> GetRoleType() {
+		return this.roleIndividualFinder.GetRoleType();
+	}
+	
+	
 }
