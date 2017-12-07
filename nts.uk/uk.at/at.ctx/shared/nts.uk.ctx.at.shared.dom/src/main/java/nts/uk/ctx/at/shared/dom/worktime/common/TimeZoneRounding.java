@@ -58,9 +58,7 @@ public class TimeZoneRounding extends DomainObject {
 	 * @return true, if is overlap
 	 */
 	public boolean isOverlap(TimeZoneRounding timezone) {
-		return (this.start.greaterThanOrEqualTo(timezone.getStart()) && this.start.lessThanOrEqualTo(timezone.getEnd()))
-				|| (this.end.greaterThanOrEqualTo(timezone.getStart())
-						&& this.end.lessThanOrEqualTo(timezone.getEnd()));
+		return !(this.end.lessThanOrEqualTo(timezone.getStart()) || this.start.greaterThanOrEqualTo(timezone.getEnd()));
 	}
 
 	/* (non-Javadoc)
