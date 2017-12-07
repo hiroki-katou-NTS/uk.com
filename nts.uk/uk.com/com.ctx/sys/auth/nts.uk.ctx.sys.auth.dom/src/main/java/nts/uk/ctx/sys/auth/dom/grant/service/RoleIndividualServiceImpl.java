@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,8 +31,8 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 	@Override
 	public boolean checkSysAdmin(String userID, DatePeriod validPeriod) {
 
-		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findUserInDateRange(userID, validPeriod.start(), validPeriod.end());
-		if (!listRoleIndividualGrant.isEmpty()) {
+		Optional<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByUserAndRole(userID, RoleType.SYSTEM_MANAGER.value);
+		if (!listRoleIndividualGrant.isPresent()) {
 			return false;
 		}
 

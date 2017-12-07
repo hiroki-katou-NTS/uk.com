@@ -4,10 +4,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
@@ -18,8 +17,7 @@ import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 
 
 @Stateless
-@Transactional
-public class CreateRoleIndividualGrantCommandHandler extends CommandHandler<CreateRoleIndividualGrantCommand> {
+public class CreateRoleIndividualGrantCommandHandler extends CommandHandlerWithResult<CreateRoleIndividualGrantCommand, CreateRoleIndividualGrantCommandResult> {
 
 	@Inject
 	private RoleRepository roleRepository;
@@ -31,10 +29,10 @@ public class CreateRoleIndividualGrantCommandHandler extends CommandHandler<Crea
 	private UserRepository userRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {
+	protected CreateRoleIndividualGrantCommandResult handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {
 		CreateRoleIndividualGrantCommand command = context.getCommand();
+		
 		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepo.findByUserCompanyRoleType(command.getUserID(), command.getCompanyID(), command.getRoleType());
-		/////////////
 		if (roleIndividualGrant.isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
@@ -67,5 +65,7 @@ public class CreateRoleIndividualGrantCommandHandler extends CommandHandler<Crea
 		if (user.get().isDefaultUser() == true) {
 			user.get().setExpirationDate(command.getEndValidPeriod());
 		}
+		
+		return new CreateRoleIndividualGrantCommandResult(domain.getCompanyId(), domain.getUserId(), domain.getRoleType().value);
 	}
 }

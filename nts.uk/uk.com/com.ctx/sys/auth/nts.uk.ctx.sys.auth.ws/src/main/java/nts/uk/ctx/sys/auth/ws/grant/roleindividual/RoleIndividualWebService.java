@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandResult;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.RoleIndividualCommand;
@@ -47,8 +48,8 @@ public class RoleIndividualWebService extends WebService {
 
 	@POST
 	@Path("create")
-	public void create(CreateRoleIndividualGrantCommand command) {
-		this.createHandler.handle(command);
+	public CreateRoleIndividualGrantCommandResult create(CreateRoleIndividualGrantCommand command) {
+		return this.createHandler.handle(command);
 	}
 	
 	@POST

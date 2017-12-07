@@ -11,7 +11,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrantPK;
 
@@ -49,10 +48,14 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 			.setParameter("roleId", roleId).getSingle(c -> c.toDomain());
 	}
 	
+	private final String SELECT_BY_USER_AND_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.userID = :userId AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
 	@Override
-	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, int roleType) {
+		return this.queryProxy().query(SELECT_BY_USER_AND_ROLETYPE, SacmtRoleIndiviGrant.class)
+				.setParameter("userId", userId)
+				.setParameter("roleType", roleType)
+				.getSingle(c -> c.toDomain());
 	}
 
 	private final String SELECT_BY_ROLE_ID = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId ";
@@ -65,17 +68,15 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 		}
 		return result;
 	}
-	
-	@Override
-	public List<RoleIndividualGrant> findUserInDateRange(String userId, GeneralDate startDate, GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+	private final String SELECT_BY_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.roleType = :roleType";
 	@Override
 	public List<RoleIndividualGrant> findByRoleType(int roleType) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy()
+				.query(SELECT_BY_ROLETYPE, SacmtRoleIndiviGrant.class)
+				.setParameter("roleType", roleType)
+				.getList(c -> c.toDomain());
 	}
 
 	private final String SELECT_BY_COMPANYID_AND_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
