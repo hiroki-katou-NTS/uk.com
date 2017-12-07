@@ -38,7 +38,15 @@
 			</div>
 			<div id="contents-area" class="cf"
 				data-bind="let: { 
-						text: nts.uk.resource.getText
+						text: nts.uk.resource.getText,
+						/*catType: {	
+							SINGLE : 1,
+							MULTI: 2,
+							CONTI: 3, // continuos history hasn't end date
+							NODUP: 4,
+							DUPLI: 5,
+							CONTIWED: 6 // continuos history has end date
+						}*/
 					}">
 				<div id="ccgcomponent"></div>
 				<div class="left-area">
@@ -115,14 +123,16 @@
 										enable: true,
 										columns: [{ prop: 'categoryName', length: 10 }]}"></div>
 							</div>
-							<div
-								data-bind="template: { name: 'list-multiple', data: { 
+							<div data-bind="">
+								<div
+									data-bind="template: { name: 'list-multiple', data: { 
 										list: {
 										}, 
 										event: {
 										} 
 									}
 								}">
+								</div>
 							</div>
 						</div>
 					</div>
@@ -193,7 +203,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="bottom-right-area" data-bind="let: { layout: currentLayout() }">
+					<div class="bottom-right-area"
+						data-bind="let: { layout: currentLayout() }">
 						<div class="layout-input"
 							data-bind="css: { 'hidden': tabActive() != 'layout'}">
 							<div class="form-group">
@@ -221,7 +232,7 @@
 									name: 'cat-with-child', 
 									data: {
 										currentTabCategory: currentTabCategory,
-										listItemClsDto: ko.observableArray([])
+										listItemClsDto: layout.listItemClsDto
 								 	}
 								}"></div>
 						</div>
