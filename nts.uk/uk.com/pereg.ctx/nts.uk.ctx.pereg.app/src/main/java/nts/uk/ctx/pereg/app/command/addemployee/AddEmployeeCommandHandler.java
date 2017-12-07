@@ -103,7 +103,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		List<EmployeeDataMngInfo> infoList = this.empDataRepo
 				.getEmployeeNotDeleteInCompany(AppContexts.user().companyId(), command.getEmployeeCode());
 
-		if (CollectionUtil.isEmpty(infoList)) {
+		if (!CollectionUtil.isEmpty(infoList)) {
 			throw new BusinessException("Msg_345");
 		}
 
