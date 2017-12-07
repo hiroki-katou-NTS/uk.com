@@ -51,11 +51,11 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	private final String SELECT_BY_USER_AND_ROLETYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
 			+ " WHERE c.sacmtRoleIndiviGrantPK.userID = :userId AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
 	@Override
-	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, int roleType) {
+	public List<RoleIndividualGrant> findByUserAndRole(String userId, int roleType) {
 		return this.queryProxy().query(SELECT_BY_USER_AND_ROLETYPE, SacmtRoleIndiviGrant.class)
 				.setParameter("userId", userId)
 				.setParameter("roleType", roleType)
-				.getSingle(c -> c.toDomain());
+				.getList(c -> c.toDomain());
 	}
 
 	private final String SELECT_BY_ROLE_ID = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.roleId = :roleId ";
