@@ -57,8 +57,10 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 		}
 
 		if (optCompHist.isPresent()) {
-			PpedtEmployeeRegistrationHistory comHist = optCompHist.get();
-			result.setLastRegEmployeeOfCompanyID(comHist.lastRegEmployeeID);
+			if (!optCompHist.get().lastRegEmployeeID.equals(result.getLastRegEmployeeID())) {
+				PpedtEmployeeRegistrationHistory comHist = optCompHist.get();
+				result.setLastRegEmployeeOfCompanyID(comHist.lastRegEmployeeID);
+			}
 		}
 
 		return result;

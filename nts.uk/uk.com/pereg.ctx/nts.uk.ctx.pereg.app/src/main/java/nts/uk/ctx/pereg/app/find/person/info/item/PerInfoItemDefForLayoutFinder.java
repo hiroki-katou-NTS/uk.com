@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
@@ -30,6 +32,7 @@ import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Stateless
 public class PerInfoItemDefForLayoutFinder {
@@ -43,6 +46,13 @@ public class PerInfoItemDefForLayoutFinder {
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
 	
+	@Inject
+	private PerInfoSelectionItemFinder perInfoSelectionItemFinder;
+	
+
+	@Inject 
+	private PerInfoItemDefFinder perInfoItemDefFinder;
+	
 	/**
 	 * create object from domain
 	 * 
@@ -52,35 +62,41 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param dispOrder
 	 * @return
 	 */
-	public PerInfoItemDefForLayoutDto createFromDomain(String empId, PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder){
+	public PerInfoItemDefForLayoutDto createFromDomain(int ctgPerEmpType, String empId, PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder){
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = new PerInfoItemDefForLayoutDto();
-		perInfoItemDefForLayoutDto.setItemDefId(itemDef.getPerInfoItemDefId());
+		perInfoItemDefForLayoutDto.setId(itemDef.getPerInfoItemDefId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgId(itemDef.getPerInfoCategoryId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgCd(perInfoCd);
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode().v());
 		perInfoItemDefForLayoutDto.setItemName(itemDef.getItemName().v());
 		perInfoItemDefForLayoutDto.setItemDefType(itemDef.getItemTypeState().getItemType().value);
-		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
+		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(ctgPerEmpType, empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired().value);
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
 		perInfoItemDefForLayoutDto.setActionRole(getActionRole(empId, itemDef.getPerInfoCategoryId(), itemDef.getPerInfoItemDefId()));
 		perInfoItemDefForLayoutDto.setSelectionItemRefType(itemDef.getSelectionItemRefType());
 		perInfoItemDefForLayoutDto.setItemTypeState(createItemTypeStateDto(itemDef.getItemTypeState()));
 		perInfoItemDefForLayoutDto.setSelectionItemRefTypes(selectionItemRefTypes);
+		if(perInfoItemDefForLayoutDto.getItemDefType() == 2){
+			SingleItem singleItemDom = (SingleItem) itemDef.getItemTypeState();
+			int dataTypeValue = singleItemDom.getDataTypeState().getDataTypeValue().value;
+			if(dataTypeValue == 6)
+				perInfoItemDefForLayoutDto.setLstComboxBoxValue(getLstComboBoxValue(ctgPerEmpType));
+		}
 		return perInfoItemDefForLayoutDto;
 	}
 	
 	public PerInfoItemDefForLayoutDto createFromItemDefDto(String empId, PerInfoItemDefDto itemDef, String perInfoCd, int dispOrder){
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = new PerInfoItemDefForLayoutDto();
-		perInfoItemDefForLayoutDto.setItemDefId(itemDef.getId());
+		perInfoItemDefForLayoutDto.setId(itemDef.getId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgId(itemDef.getPerInfoCtgId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgCd(perInfoCd);
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode());
 		perInfoItemDefForLayoutDto.setItemName(itemDef.getItemName());
 		perInfoItemDefForLayoutDto.setItemDefType(itemDef.getItemTypeState().getItemType());
-		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
+		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(0,empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired());
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
 		perInfoItemDefForLayoutDto.setActionRole(getActionRole(empId, itemDef.getPerInfoCtgId(), itemDef.getId()));
@@ -181,7 +197,7 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param item
 	 * @return
 	 */
-	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, ItemTypeState item, String perInfoCd, int dispOrder) {
+	private List<PerInfoItemDefForLayoutDto> getPerItemSet(int ctgPerEmpType, String empId, ItemTypeState item, String perInfoCd, int dispOrder) {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();
 		if (item.getItemType().value == 1) {
@@ -194,7 +210,7 @@ public class PerInfoItemDefForLayoutFinder {
 			List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty
 					.getPerInfoItemDefByListId(setItem.getItems(), contractCode);
 			for (int i = 0; i < lstDomain.size(); i++)
-				lstResult.add(createFromDomain(empId, lstDomain.get(i), perInfoCd, dispOrder));
+				lstResult.add(createFromDomain(ctgPerEmpType, empId, lstDomain.get(i), perInfoCd, dispOrder));
 		}
 		return lstResult;
 	}
@@ -205,7 +221,7 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param item
 	 * @return
 	 */
-	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, ItemTypeStateDto item, String perInfoCd, int dispOrder) {
+	private List<PerInfoItemDefForLayoutDto> getPerItemSet(int ctgPerEmpType, String empId, ItemTypeStateDto item, String perInfoCd, int dispOrder) {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();
 		if (item.getItemType() == 1) {
@@ -215,8 +231,13 @@ public class PerInfoItemDefForLayoutFinder {
 			List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty
 					.getPerInfoItemDefByListId(setItem.getItems(), AppContexts.user().contractCode());
 			for (int i = 0; i < lstDomain.size(); i++)
-				lstResult.add(createFromDomain(empId, lstDomain.get(i), perInfoCd, dispOrder));
+				lstResult.add(createFromDomain(ctgPerEmpType, empId, lstDomain.get(i), perInfoCd, dispOrder));
 		}
 		return lstResult;
+	}
+	
+	private List<ComboBoxObject> getLstComboBoxValue(int ctgPerEmpType){
+		return perInfoSelectionItemFinder.getAllSelectionItem(ctgPerEmpType == 1 ? 0 : 1).stream()
+				.map(x -> new ComboBoxObject(x.getSelectionItemName(), x.getSelectionItemId())).collect(Collectors.toList());
 	}
 }

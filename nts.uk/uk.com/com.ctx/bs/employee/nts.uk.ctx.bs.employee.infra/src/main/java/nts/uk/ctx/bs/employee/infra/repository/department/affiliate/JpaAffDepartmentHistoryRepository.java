@@ -40,7 +40,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		
 		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(QUERY_GET_AFFDEPARTMENT_BYSID,BsymtAffiDepartmentHist.class)
 				.setParameter("sid", employeeId).getList();
-		if (!listHist.isEmpty()){
+		if (listHist != null && !listHist.isEmpty()){
 			return Optional.of(toAffDepartment(listHist));
 		}
 		return Optional.empty();

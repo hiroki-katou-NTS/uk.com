@@ -33,6 +33,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
@@ -283,24 +284,31 @@ public class LayoutFinder {
 	 */
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
 			GeneralDate stardardDate, String personId, String employeeId, PeregQuery query) {
-		// CLONE
-		cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
+		
+		
 
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
+			
+			cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
 			if (peregDto != null) {
-				MappingFactory.mapSingleClsDto(peregDto, authClassItem);
+				MappingFactory.mapItemClassDto(peregDto, authClassItem);
 			}
 		} else {
 			switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
+				// CLONE
+				cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
 				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-					PerInfoCtgData perInfoCtgData = perInCtgDataRepo
-							.getByPerIdAndCtgId(personId, perInfoCategory.getPersonInfoCategoryId()).get(0);
-					List<PersonInfoItemData> dataItems = perInItemDataRepo
-							.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-					matchPersDataForSingleClsItem(authClassItem, dataItems);
+					List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
+							perInfoCategory.getPersonInfoCategoryId());
+					if (!perInfoCtgDatas.isEmpty()) {
+						PerInfoCtgData perInfoCtgData = perInfoCtgDatas.get(0);
+						List<PersonInfoItemData> dataItems = perInItemDataRepo
+								.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+						matchPersDataForSingleClsItem(authClassItem, dataItems);
+					}
 				} else {
 					EmpInfoCtgData perInfoCtgData = empInCtgDataRepo
 							.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId())
@@ -339,7 +347,7 @@ public class LayoutFinder {
 		for (Object item : authClassItem.getItems()) {
 			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 			for (PersonInfoItemData dataItem : dataItems) {
-				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+				if (valueItem.getItemCode().equals(dataItem.getItemCode().v())) {
 					valueItem.setValue(dataItem.getDataState().getValue());
 				}
 			}
@@ -355,7 +363,7 @@ public class LayoutFinder {
 		for (Object item : authClassItem.getItems()) {
 			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 			for (EmpInfoItemData dataItem : dataItems) {
-				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+				if (valueItem.getItemCode().equals(dataItem.getItemCode().v())) {
 					valueItem.setValue(dataItem.getDataState().getValue());
 				}
 			}

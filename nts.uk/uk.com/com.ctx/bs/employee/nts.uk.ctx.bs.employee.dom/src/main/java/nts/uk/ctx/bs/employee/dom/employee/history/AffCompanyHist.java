@@ -29,7 +29,7 @@ public class AffCompanyHist extends AggregateRoot {
 
 		List<AffCompanyHistByEmployee> filter = lstAffCompanyHistByEmployee.stream().filter(m -> m.getSId().equals(sid))
 				.collect(Collectors.toList());
-		if (!filter.isEmpty()) {
+		if (filter != null && !filter.isEmpty()) {
 			return filter.get(0);
 		}
 		

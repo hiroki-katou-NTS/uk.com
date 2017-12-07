@@ -41,9 +41,11 @@ module cps002.a.vm {
 
         copyEmployee: KnockoutObservable<EmployeeCopy> = ko.observable(new EmployeeCopy(null));
 
-        layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
+        layout: KnockoutObservable<Layout> = ko.observable(new Layout());
 
         isAllowAvatarUpload: KnockoutObservable<boolean> = ko.observable(false);
+
+        currentUseSetting: KnockoutObservable<UserSetting> = ko.observable(null);
 
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
@@ -182,6 +184,8 @@ module cps002.a.vm {
                             });
                         }
 
+                        self.currentUseSetting(new UserSetting(result));
+
                         self.getLastRegHistory(result);
 
                     });
@@ -318,28 +322,15 @@ module cps002.a.vm {
             self.currentStep(2);
 
 
-            service.getLayoutByCreateType(command).done((x: ILayout) => {
-                if (x) {
-                    layout.id(x.id);
-                    layout.code(x.code);
-                    layout.name(x.name);
+            service.getLayoutByCreateType(command).done((data: ILayout) => {
+                layout.layoutCode(data.layoutCode || '');
+                layout.layoutName(data.layoutName || '');
 
-                    // remove all sibling sperators
-                    let maps = _(x.itemsClassification)
-                        .map((x, i) => (x.layoutItemType == 2) ? i : -1)
-                        .filter(x => x != -1).value();
-
-                    _.each(maps, (t, i) => {
-                        if (maps[i + 1] == t + 1) {
-                            _.remove(x.itemsClassification, (m: IItemClassification) => {
-                                let item: IItemClassification = ko.unwrap(x.itemsClassification)[maps[i + 1]];
-                                return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
-                            });
-                        }
-                    });
-
-                    layout.itemsClassification(x.itemsClassification);
+                if (data.standardDate) {
+                    layout.standardDate(data.standardDate);
                 }
+
+                layout.listItemClsDto(data.itemsClassification || []);
 
             });
 
@@ -477,13 +468,32 @@ module cps002.a.vm {
         finish() {
 
             let self = this,
-                itemDataList = _(ko.toJS(self.layout).itemsClassification).map(x => x.items).flatten().flatten().value(),
+                inputs: Array<any> = _(self.layout().listItemClsDto())
+                    .map(x => x.items())
+                    .flatten()
+                    .groupBy("categoryCode")
+                    .map(items => {
+                        return {
+                            recordId: <string>undefined,
+                            categoryCd: <string>items[0].categoryCode,
+                            items: <Array<any>>ko.toJS(items).map(m => {
+                                return {
+                                    definitionId: m.itemDefId,
+                                    itemCode: m.itemCode,
+                                    value: m.value,
+                                    'type': m.type
+                                };
+                            })
+                        };
+                    })
+                    .value(),
                 command = ko.toJS(self.currentEmployee());
             //add atr
             command.employeeCopyId = self.copyEmployee().employeeId;
             command.initSettingId = self.currentInitSetting().itemId;
+            command.inputs = inputs;
             command.createType = self.createTypeId();
-            command.itemDataList = itemDataList;
+
             if (!self.isError()) {
                 service.addNewEmployee(command).done(() => {
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
@@ -502,8 +512,14 @@ module cps002.a.vm {
 
         openEModal(param, data) {
 
-            let self = __viewContext['viewModel'];
-            setShared("cardNoMode", param === 'true' ? true : false);
+            let self: ViewModel = __viewContext['viewModel'],
+                isCardNoMode = param === 'true' ? true : false,
+                useSetting = self.currentUseSetting(),
+                employee = self.currentEmployee();
+
+            setShared("cardNoMode", isCardNoMode);
+            setShared("userValue", isCardNoMode ? useSetting.cardNumberLetter : useSetting.employeeCodeLetter);
+            setShared("value", isCardNoMode ? employee.cardNo() : employee.employeeCode());
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),
@@ -635,7 +651,6 @@ module cps002.a.vm {
     }
 
 
-
     interface IInitValueSetting {
 
         settingId: string;
@@ -686,6 +701,23 @@ module cps002.a.vm {
         }
     }
 
+
+    class UserSetting {
+        employeeCodeType: number;
+        recentRegistrationType: number;
+        cardNumberType: number;
+        employeeCodeLetter: string;
+        cardNumberLetter: string;
+        constructor(param?: IUserSetting) {
+
+            this.employeeCodeType = param ? param.employeeCodeType : 0;
+            this.recentRegistrationType = param ? param.recentRegistrationType : 0;
+            this.cardNumberType = param ? param.cardNumberType : 0;
+            this.employeeCodeLetter = param ? param.employeeCodeLetter : "";
+            this.cardNumberLetter = param ? param.cardNumberLetter : "";
+        }
+    }
+
     class SettingItem {
         itemCode: string
         itemName: string;
@@ -699,50 +731,38 @@ module cps002.a.vm {
         }
     }
 
-    interface IItemClassification {
-        layoutID?: string;
-        dispOrder?: number;
-        className?: string;
-        personInfoCategoryID?: string;
-        layoutItemType: number;
-        listItemDf: Array<IItemDefinition>;
-    }
-
-    interface IItemDefinition {
-        id: string;
-        perInfoCtgId?: string;
-        itemCode?: string;
-        itemName: string;
-    }
-
     interface ILayout {
-        id: string;
-        code: string;
-        name: string;
-        editable?: boolean;
-        itemsClassification?: Array<IItemClassification>;
+        layoutCode?: string;
+        layoutName?: string;
+        maintenanceLayoutID: string;
+        itemsClassification?: Array<any>;
+        classificationItems?: Array<any>;
+        standardDate?: string;
     }
 
     class Layout {
-        id: KnockoutObservable<string> = ko.observable('');
-        code: KnockoutObservable<string> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
-        editable: KnockoutObservable<boolean> = ko.observable(true);
-        itemsClassification: KnockoutObservableArray<IItemClassification> = ko.observableArray([]);
+        layoutCode: KnockoutObservable<string> = ko.observable('');
+        layoutName: KnockoutObservable<string> = ko.observable('');
+        maintenanceLayoutID: KnockoutObservable<string> = ko.observable('');
+        listItemClsDto: KnockoutObservableArray<any> = ko.observableArray([]);
+        standardDate: KnockoutObservable<string> = ko.observable(undefined);
 
-        constructor(param: ILayout) {
+        constructor(param?: ILayout) {
             let self = this;
+            if (param) {
+                self.layoutCode(param.layoutCode || '');
+                self.layoutName(param.layoutName || '');
+                self.maintenanceLayoutID(param.maintenanceLayoutID || '');
+                self.standardDate(param.standardDate)
 
-            self.id(param.id);
-            self.code(param.code);
-            self.name(param.name);
-
-            if (param.editable != undefined) {
-                self.editable(param.editable);
+                self.listItemClsDto(param.itemsClassification || []);
             }
+        }
 
-            // replace x by class that implement this interface
-            self.itemsClassification(param.itemsClassification || []);
+        // recall selected layout event
+        filterData() {
+            let self = this;
+            self.maintenanceLayoutID.valueHasMutated();
         }
     }
 

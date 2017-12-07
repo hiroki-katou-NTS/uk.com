@@ -121,6 +121,8 @@ module cps001.a.vm {
                                 if (data && data.length) {
                                     self.listLayout(data);
                                     layout.maintenanceLayoutID(data[0].maintenanceLayoutID);
+                                } else {
+                                    layout.maintenanceLayoutID(undefined);
                                 }
                             });
                             break;
@@ -129,6 +131,7 @@ module cps001.a.vm {
                             service.getCats(employeeId).done((data: Array<ICategory>) => {
                                 self.listCategory(data);
                             });
+                            layout.maintenanceLayoutID(undefined);
                             break;
                     }
                 }
@@ -159,15 +162,20 @@ module cps001.a.vm {
                     service.getCurrentLayout(query).done((data: ILayout) => {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');
-                        
+
                         if (data.standardDate) {
                             layout.standardDate(data.standardDate);
                         }
-                        
+
                         layout.listItemClsDto(data.classificationItems || []);
                     });
 
-                }
+                } /*else {
+                    layout.layoutCode(undefined);
+                    layout.layoutName(undefined);
+                    layout.standardDate(undefined);
+                    layout.listItemClsDto([]);
+                }*/
             });
 
             category.id.subscribe(id => {
@@ -180,10 +188,19 @@ module cps001.a.vm {
                         personId: undefined,
                         infoId: undefined
                     };
-
-                    service.getCatData(query).done(data => {
+                    let cat = _.find(self.listCategory(), x => x.id == id);
+                    if (cat) {
+                        category.categoryCode(cat.categoryCode);
+                        category.categoryName(cat.categoryName);
+                        category.categoryType(cat.categoryType);
+                        category.isFixed(cat.isFixed);
                         debugger;
-                    });
+                        service.getCatData(query).done(data => {
+                            debugger;
+                            //layout.listItemClsDto.removeAll();
+                            layout.listItemClsDto(data.classificationItems);
+                        });
+                    }
                 }
             });
 
@@ -259,11 +276,37 @@ module cps001.a.vm {
         }
 
         saveData() {
-            let self = this;
-
+            let self = this,
+                emp = self.employee(),
+                person = emp.personInfo(),
+                layout = self.currentLayout(),
+                inputs: Array<IPeregItemCommand> = _(layout.listItemClsDto())
+                    .map(x => x.items())
+                    .flatten()
+                    .groupBy("categoryCode")
+                    .map(items => {
+                        return {
+                            recordId: <string>undefined,
+                            categoryCd: <string>items[0].categoryCode,
+                            items: <Array<IPeregItemValueCommand>>ko.toJS(items).map(m => {
+                                return {
+                                    definitionId: m.itemDefId,
+                                    itemCode: m.itemCode,
+                                    value: m.value,
+                                    'type': m.type
+                                };
+                            })
+                        };
+                    })
+                    .value(),
+                command: IPeregCommand = {
+                    personId: person.personId(),
+                    employeeId: emp.employeeId(),
+                    inputs: inputs
+                };
             // push data layout to webservice
             block();
-            service.saveData({}).done(() => {
+            service.saveCurrentLayout(command).done(() => {
                 self.start();
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();
@@ -560,5 +603,27 @@ module cps001.a.vm {
         layoutId: string;
         browsingEmpId: string;
         standardDate: Date;
+    }
+
+    interface IPeregCommand {
+        personId: string;
+        employeeId: string;
+        inputs: Array<IPeregItemCommand>;
+    }
+
+    interface IPeregItemCommand {
+        /** category code */
+        categoryCd: string;
+        /** Record Id, but this is null when new record */
+        recordId: string;
+        /** input items */
+        items: Array<IPeregItemValueCommand>;
+    }
+
+    interface IPeregItemValueCommand {
+        definitionId: string;
+        itemCode: string;
+        value: string;
+        'type': number;
     }
 }

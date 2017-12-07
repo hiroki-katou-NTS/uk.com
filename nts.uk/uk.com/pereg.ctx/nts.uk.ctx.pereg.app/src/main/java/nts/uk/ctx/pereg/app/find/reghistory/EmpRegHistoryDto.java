@@ -14,12 +14,11 @@ public class EmpRegHistoryDto {
 
 	RegEmployeeDto lastRegEmployeeOfCompany;
 
-	public EmpRegHistoryDto fromDomain(LastEmRegHistory domain) {
+	public void fromDomain(LastEmRegHistory domain) {
 
 		this.lastRegEmployee.employeeID = domain.getLastRegEmployeeID();
 
 		this.lastRegEmployeeOfCompany.employeeID = domain.getLastRegEmployeeOfCompanyID();
-		return this;
 	}
 
 }

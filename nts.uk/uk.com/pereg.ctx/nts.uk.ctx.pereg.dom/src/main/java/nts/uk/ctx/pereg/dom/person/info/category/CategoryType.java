@@ -16,8 +16,16 @@ public enum CategoryType {
 	NODUPLICATEHISTORY(4),
 	// 5:重複履歴(DuplicateHistory)
 	DUPLICATEHISTORY(5),
-	//6: 連続履歴（期間指定）
-	CONTINUOUS_HISTORY(6);
+	 
+	//	連続履歴（期間指定）：６
+	//	→雇用契約履歴の場合は、契約満了日（終了日）ができる必要があるため、この区分を設けた。
+	//	※他の連続履歴は開始日だけ変更可
+	// Tạm dịch như dưới
+//	Continuous history (period designation): 6
+//	→ In the case of employment contract history, it is necessary to have the contract expiration date (end date)
+//	This category was established.
+//	※ Other continuous history can be changed only on the start date
+	CONTINUOUS_HISTORY_FOR_ENDDATE(6);
 	
 	public final int value;
 }

@@ -81,7 +81,7 @@ public class EmpInfoItemData extends AggregateRoot {
 
 		switch (dataStateType) {
 		case String:
-			resultState = DataState.createFromStringValue(stringValue);
+			resultState = DataState.createFromStringValue(stringValue.trim());
 			break;
 
 		case Numeric:

@@ -3,18 +3,18 @@ package nts.uk.shr.pereg.app;
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 
-@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class ItemValue {
 
-	private final String definitionId;
-	private final String itemCode;
+	private String definitionId;
+	private String itemCode;
 	private String value;
-	private final int type;
+	private int type;
 	
 	/**
 	 * 個人情報項目定義ID

@@ -60,8 +60,8 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 		tempAbsHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		
 		// Update detail table
-		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr(), command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory(), command.isMultiple(),
-				command.getFamilyMemberId(), command.isSameFamily(), command.getChildType(), command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays());
+		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr().intValue(), command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory().intValue(), command.isMultiple(),
+				command.getFamilyMemberId(), command.isSameFamily(), command.getChildType().intValue(), command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays().intValue());
 		temporaryAbsenceRepository.update(temporaryAbsence);
 	}
 

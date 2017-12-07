@@ -51,7 +51,7 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 	}
 
 	private Optional<AffClassHistory_ver1> toDomain(List<BsymtAffClassHistory_Ver1> entities) {
-		if (entities.isEmpty()) {
+		if (entities == null || entities.isEmpty()) {
 			return Optional.empty();
 		}
 		AffClassHistory_ver1 domain = new AffClassHistory_ver1(entities.get(0).cid, entities.get(0).sid,
