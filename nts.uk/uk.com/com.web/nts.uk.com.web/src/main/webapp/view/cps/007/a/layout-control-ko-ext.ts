@@ -128,6 +128,11 @@ module nts.custombinding {
                         display: inline-block;
                     }
 
+                    .layout-control .item-classification div.set-item-list div.set-item.set-item-sperator {
+                        width: 37px;
+                        text-align: center;
+                    }
+
                     .layout-control .item-classification .table-container {
                         max-width: calc(100% - 225px);
                         color: #000;
@@ -456,6 +461,7 @@ module nts.custombinding {
                                             constraint: _constraint.length && _constraint || undefined  }"></div>
                                         <div data-bind="if: (_item || {}).type == 1" class="set-items">
                                             <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
+                                                <div class="set-item set-item-sperator" data-bind="css: { 'hidden': $index() == 0 }">~</div>
                                                 <div data-bind="template: {
                                                         data: set,
                                                         name: 'itemtemplate'
