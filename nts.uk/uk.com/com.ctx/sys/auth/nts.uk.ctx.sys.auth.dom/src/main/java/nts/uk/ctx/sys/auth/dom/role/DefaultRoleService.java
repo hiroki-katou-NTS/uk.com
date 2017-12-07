@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
@@ -59,16 +60,22 @@ public class DefaultRoleService implements RoleService{
 	public void removeRole(String roleId) {
 		String companyId = AppContexts.user().companyId();
 		Role role = roleRepo.findByRoleId(roleId).get();		
-		if (role.getAssignAtr() == RoleAtr.INCHARGE) {
+		if (role.getAssignAtr() == RoleAtr.INCHARGE) {			
 			List<RoleIndividualGrant> roleIndi = roleGrantRepo.findByRoleId(roleId);
-			if (!roleIndi.isEmpty())
-				throw new BusinessException("Msg_584");
-			else
-				roleRepo.remove(roleId);
-
+			if (!roleIndi.isEmpty()) {
+				GeneralDate now =  GeneralDate.today();
+				roleIndi.forEach(x ->{
+					if(x.getValidPeriod().contains(now)) {
+						 throw new BusinessException("Msg_584");
+					}
+				});							
+			}				
+			else {
+				roleRepo.remove(roleId);				
+			}
 		} else {
 			Optional<DefaultRoleSet> defaultOpt = defaultRoleSetRepo.findByCompanyId(companyId);
-			if (!defaultOpt.isPresent()) {
+			if (defaultOpt.isPresent()) {
 				DefaultRoleSet defaultRoleSet = defaultOpt.get();
 				Optional<RoleSet> roleSetOpt = roleSetRepo
 						.findByRoleSetCdAndCompanyId(defaultRoleSet.getRoleSetCd().toString(), companyId);
