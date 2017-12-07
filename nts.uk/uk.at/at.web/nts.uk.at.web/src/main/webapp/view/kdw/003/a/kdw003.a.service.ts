@@ -3,7 +3,9 @@ module nts.uk.at.view.kdw003.a.service {
         startScreen: "screen/at/correctionofdailyperformance/startScreen",
         saveColumnWidth: "screen/at/correctionofdailyperformance/updatecolumnwidth",
         selectErrorCode: "screen/at/correctionofdailyperformance/errorCode",
-        selectFormatCode: "screen/at/correctionofdailyperformance/selectCode"
+        selectFormatCode: "screen/at/correctionofdailyperformance/selectCode",
+        findCodeName: "screen/at/correctionofdailyperformance/findCodeName",
+        findAllCodeName: "screen/at/correctionofdailyperformance/findAllCodeName"
     }
     
     export function startScreen(param){
@@ -20,6 +22,17 @@ module nts.uk.at.view.kdw003.a.service {
     
      export function selectFormatCode(param) {
         return nts.uk.request.ajax(paths.selectFormatCode, param);
+         
+    }
+    
+    export function findCodeName(param) {
+        return nts.uk.request.ajax(paths.findCodeName, param);
+         
+    }
+    
+     export function findAllCodeName(param) {
+        return nts.uk.request.ajax(paths.findAllCodeName, param);
+         
     }
     
 }
