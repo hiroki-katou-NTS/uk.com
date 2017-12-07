@@ -7,7 +7,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
-import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
+import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -19,15 +19,18 @@ public class UpdateCompanyInforCommandHandler extends CommandHandler<UpdateCompa
 	@Inject
 	private CompanyRepository comRep;
 
+	/**
+	 * update a company
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<UpdateCompanyInforCommand> context) {
 		UpdateCompanyInforCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
 		AddInfor add = null; 
 		if(data.getAddinfor() != null){
-			add = data.getAddinfor().toDomainAdd(CompanyInforNew.createCompanyId(data.getCcd(), data.getContractCd()));
+			add = data.getAddinfor().toDomainAdd(Company.createCompanyId(data.getCcd(), data.getContractCd()));
 		}
-		CompanyInforNew company =  CompanyInforNew.createFromJavaType(data.getCcd(), data.getName(), 
+		Company company =  Company.createFromJavaType(data.getCcd(), data.getName(), 
 																		data.getMonth(), 
 																		data.getAbolition(), data.getRepname(),
 																		data.getRepJob(), data.getComNameKana(), 
