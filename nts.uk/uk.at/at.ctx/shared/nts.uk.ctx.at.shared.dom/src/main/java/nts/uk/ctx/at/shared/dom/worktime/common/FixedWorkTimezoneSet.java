@@ -26,8 +26,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	/** The lst OT timezone. */
 	// 残業時間帯
 	private List<OverTimeOfTimeZoneSet> lstOTTimezone;
-	
-	
+
 	/**
 	 * Instantiates a new fixed work timezone set.
 	 *
@@ -38,6 +37,9 @@ public class FixedWorkTimezoneSet extends DomainObject {
 		this.lstOTTimezone = memento.getLstOTTimezone();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
 	@Override
 	public void validate() {
 		super.validate();
@@ -48,21 +50,32 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	 * Check overlap.
 	 */
 	private void checkOverlap() {
-		if (CollectionUtil.isEmpty(lstWorkingTimezone)) {
-			return;
-		}
-
-		val size = this.lstWorkingTimezone.size();
-		for (int i = 0; i < size; i++) {
-			for (int j = i + 1; j < size; j++) {
-				if (this.lstWorkingTimezone.get(i).getTimezone()
-						.isOverlap(this.lstWorkingTimezone.get(j).getTimezone())) {
-					throw new BusinessException("Msg_515");
+		if (!CollectionUtil.isEmpty(this.lstWorkingTimezone)) {
+			val size = this.lstWorkingTimezone.size();
+			for (int i = 0; i < size; i++) {
+				for (int j = i + 1; j < size; j++) {
+					if (this.lstWorkingTimezone.get(i).getTimezone()
+							.isOverlap(this.lstWorkingTimezone.get(j).getTimezone())) {
+						throw new BusinessException("Msg_515");
+					}
 				}
 			}
 		}
+
+		if (!CollectionUtil.isEmpty(this.lstOTTimezone)) {
+			val size = this.lstOTTimezone.size();
+			for (int i = 0; i < size; i++) {
+				for (int j = i + 1; j < size; j++) {
+					if (this.lstOTTimezone.get(i).getTimezone()
+							.isOverlap(this.lstOTTimezone.get(j).getTimezone())) {
+						throw new BusinessException("Msg_515");
+					}
+				}
+			}
+		}
+
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
