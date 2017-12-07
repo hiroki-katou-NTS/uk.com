@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
-
 /**
  * The Interface DesignatedTimeSetMemento.
  */

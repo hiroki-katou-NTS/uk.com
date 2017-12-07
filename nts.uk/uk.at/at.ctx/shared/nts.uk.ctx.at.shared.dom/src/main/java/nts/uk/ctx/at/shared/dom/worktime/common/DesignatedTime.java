@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 
 /**
  * The Class DesignatedTime.
