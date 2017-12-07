@@ -72,6 +72,7 @@ module cas009.a.viewmodel {
                             self.assignAtr(0);
                             self.referFutureDate(false);
                             self.createMode(true);
+                            $(".nts-input").ntsError("clear");  
                         }
    
                 });                     
@@ -144,6 +145,7 @@ module cas009.a.viewmodel {
         public createNew(): any{
             let self = this;
                 self.component.currentCode("");
+                nts.uk.ui.errors.clearAll();
         }
         
         public save(): any{
