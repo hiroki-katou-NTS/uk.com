@@ -27,8 +27,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	private static final String GETALLCOMPANY;
 
-	public final String SELECT_BY_CID = "SELECT c FROM BcmmtCompany c WHERE c.cid = :cid" + " AND c.abolitionAtr = 0 "
-			+ " AND c.employmentSystem = 1 ";
+	public final String SELECT_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid" + " AND c.isAbolition = 0 ";
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
