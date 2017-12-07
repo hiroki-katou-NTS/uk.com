@@ -208,6 +208,7 @@ public class AppOvertimeFinder {
 				for(CaculationTime caculationTimeOld : overtimeHours){
 					if(caculationTime.getFrameNo() == caculationTimeOld.getFrameNo()){
 						caculationTimeOld.setPreAppTime(caculationTime.getPreAppTime());
+						caculationTimeOld.setCaculationTime(caculationTime.getCaculationTime());
 					}
 				}
 			}
@@ -791,9 +792,9 @@ public class AppOvertimeFinder {
 			preAppOvertimeDto.setOverTimeInputsPre(overtimeInputDtos);
 			preAppOvertimeDto.setOverTimeShiftNightPre(appOvertime.getOverTimeShiftNight());
 			preAppOvertimeDto.setFlexExessTimePre(appOvertime.getFlexExessTime());
-			result.setPreAppOvertimeDto(preAppOvertimeDto);
+			
 		}
-
+		result.setPreAppOvertimeDto(preAppOvertimeDto);
 	}
 //	private List<OverTimeInput> convert(List<CaculationTime> overTimeInputDtos){
 //		List<OverTimeInput> overTimeInputs = new ArrayList<>();
@@ -914,9 +915,10 @@ public class AppOvertimeFinder {
 			endTime1 = recordWorkOutput.getEndTime1();
 			startTime2 = recordWorkOutput.getStartTime2();
 			endTime2 = recordWorkOutput.getEndTime2();
+			// 01-18_実績の内容を表示し直す
+			iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,requestAppDetailSetting.get(0),null);
 		}
-		// 01-18_実績の内容を表示し直す
-		iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID, appDate);
+		
 		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2);
 	} 
 }

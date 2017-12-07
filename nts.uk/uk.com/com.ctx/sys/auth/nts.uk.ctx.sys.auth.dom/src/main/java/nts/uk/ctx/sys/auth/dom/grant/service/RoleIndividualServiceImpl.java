@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,10 +12,6 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
-import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
-import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
-import nts.uk.ctx.sys.auth.dom.adapter.person.PersonImport;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -29,50 +26,13 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 	private RoleIndividualGrantRepository roleIndividualGrantRepo;
 
 	@Inject
-	private UserRepository userRepository;
-
-	@Inject
-	private PersonAdapter personAdapter;
-	
-	@Inject
-	private CompanyAdapter companyAdapter;
-
-	@Override
-	public List<RoleIndividualGrant> selectRoleType(String companyID, int roleType) {
-		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByCompanyIdAndRoleType(companyID, roleType);
-		//// Other than above Company ID = Max digit 0
-		List<String> listUserID = listRoleIndividualGrant.stream().map(c -> c.getUserId()).collect(Collectors.toList());
-
-		List<User> listUser = userRepository.getByListUser(listUserID);
-
-		List<String> listAssPersonID = listUser.stream().map(c -> c.getAssociatedPersonID()).collect(Collectors.toList());
-
-		if (listAssPersonID.isEmpty()) {
-			//TODO 
-		}
-		
-		List<PersonImport> listPerson = personAdapter.findByPersonIds(listAssPersonID);
-		return listRoleIndividualGrant;
-	}
-	
-	@Override
-	public List<CompanyImport> selectCompany() {
-		List<CompanyImport> listCompany = companyAdapter.findAllCompany();
-		if(listCompany.isEmpty()){
-			return null;
-		}
-		
-		return listCompany;
-		
-		
-		
-	}
+	private UserRepository userRepository;	
 
 	@Override
 	public boolean checkSysAdmin(String userID, DatePeriod validPeriod) {
 
-		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findUser(userID, validPeriod.start(), validPeriod.end());
-		if (!listRoleIndividualGrant.isEmpty()) {
+		Optional<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByUserAndRole(userID, RoleType.SYSTEM_MANAGER.value);
+		if (!listRoleIndividualGrant.isPresent()) {
 			return false;
 		}
 
@@ -101,11 +61,11 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 			return b.getEndDate().compareTo(a.getEndDate());
 		});
 
-		GeneralDate validStartDate = Collections.min(listCheckSysAdmin, Comparator.comparing(c -> c.getStartDate())).getStartDate();
-		GeneralDate validEndDate = Collections.max(listCheckSysAdmin, Comparator.comparing(c -> c.getEndDate())).getEndDate();
+		GeneralDate validStartDate = GeneralDate.max();
+		GeneralDate validEndDate = GeneralDate.max();
 
 		for (CheckSysAdmin checkSysAdmin : listCheckSysAdmin) {
-			if (checkSysAdmin.getEndDate().afterOrEquals(validEndDate) && checkSysAdmin.getStartDate().before(validStartDate)) {
+			if (checkSysAdmin.getStartDate().before(validStartDate) && checkSysAdmin.getEndDate().afterOrEquals(validEndDate)) {
 				validStartDate = checkSysAdmin.getStartDate();
 			}
 		}
@@ -125,9 +85,4 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 		private GeneralDate startDate;
 		private GeneralDate endDate;
 	}
-
-
-
-
-
 }

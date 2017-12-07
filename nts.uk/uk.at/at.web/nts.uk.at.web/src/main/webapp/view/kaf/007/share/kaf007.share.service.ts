@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf007.share {
                 checkChangeApplicationDate: "/at/request/application/workchange/checkChangeApplicationDate",
                 getWorkchangeByAppID: "/at/request/application/workchange/getWorkchangeByAppID/{0}",
                 addWorkChange: "/at/request/application/workchange/addworkchange",
+                updateWorkChange: "/at/request/application/workchange/updateworkchange",
         }
         
         /**
@@ -25,7 +26,7 @@ module nts.uk.at.view.kaf007.share {
             return ajax("at", paths.checkChangeApplicationDate, {});
         }
         /**
-         * 
+         * 勤務変更申請の登録を実行する
          */
         export function addWorkChange(workchange: common.AppWorkChangeCommand): JQueryPromise<any> {
             return ajax("at", paths.addWorkChange, workchange);
@@ -34,8 +35,13 @@ module nts.uk.at.view.kaf007.share {
          * 
          */
         export function getWorkchangeByAppID(appId: string): JQueryPromise<any> {
-            return ajax("at", nts.uk.text.format(paths.getWorkchangeByAppID, appId));
+            return ajax("at", format(paths.getWorkchangeByAppID, appId));
         }
-        
+        /**
+         * 
+         */
+        export function updateWorkChange(workchange: common.AppWorkChangeCommand): JQueryPromise<any> {
+            return ajax("at", paths.updateWorkChange, workchange);
+        }
     }
 }

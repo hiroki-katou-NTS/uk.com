@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
-import nts.uk.ctx.bs.company.dom.company.CCD;
+import nts.uk.ctx.bs.company.dom.company.CompanyCode;
 import nts.uk.ctx.bs.company.dom.company.CompanyId;
 import nts.uk.ctx.bs.company.dom.company.CompanySetMemento;
 import nts.uk.ctx.bs.company.dom.company.Name;
@@ -35,7 +35,7 @@ public class JpaCompanySetMemento implements CompanySetMemento{
 	 * @param companyCode the new company code
 	 */
 	@Override
-	public void setCompanyCode(CCD companyCode) {
+	public void setCompanyCode(CompanyCode companyCode) {
 		this.company.companyCode = companyCode.v();
 	}
 

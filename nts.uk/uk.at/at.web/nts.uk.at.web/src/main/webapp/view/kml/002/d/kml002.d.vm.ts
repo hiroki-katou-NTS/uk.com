@@ -82,11 +82,11 @@ module nts.uk.at.view.kml002.d.viewmodel {
             var dfd = $.Deferred();
             let array = [];
             let i = 2;
-            
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             let param = {
                 budgetAtr: 1,   
                 // received from mother screen 0: day or 1: time
-                unitAtr: 0
+                unitAtr: data.unit
             }
             
             service.getByAtr(param).done((lst) => {  
@@ -115,8 +115,6 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 self.items(sortedLst); 
                 self.listBudget(sortedLst);
                 
-                var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
-            
                 if(data.formPeople != null) {
                     if(data.formPeople.lstPeopleFunc.length > 0) {
                         let dataItems = [];

@@ -5,19 +5,19 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
-
 /**
+ * 会社コード
  * Code of Company
  */
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(4)
 @ZeroPaddedCode
-public class CCD extends CodePrimitiveValue<CCD>{
+public class CompanyCode extends CodePrimitiveValue<CompanyCode>{
 	
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public CCD(String rawValue) {
+	public CompanyCode(String rawValue) {
 		super(rawValue);
 	}
 

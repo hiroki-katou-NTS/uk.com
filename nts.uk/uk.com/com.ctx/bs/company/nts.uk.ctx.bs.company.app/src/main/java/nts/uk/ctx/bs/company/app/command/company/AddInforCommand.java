@@ -5,7 +5,7 @@ import lombok.Data;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 
 /**
- * 
+ * address command
  * @author yennth
  *
  */

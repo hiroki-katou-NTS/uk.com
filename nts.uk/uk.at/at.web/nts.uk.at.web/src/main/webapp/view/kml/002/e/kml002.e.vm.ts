@@ -113,14 +113,14 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 { uPCd: UnitPrice.STANDARD, uPName: nts.uk.resource.getText("KML002_57") }
             ]);
             self.roundingItems = ko.observableArray([
-                { roundingCd: RoundingTime.ONE_MINUTE, roundingName: nts.uk.resource.getText("KML002_53") },
-                { roundingCd: RoundingTime.FIVE_MINS, roundingName: nts.uk.resource.getText("KML002_54") },
-                { roundingCd: RoundingTime.SIX_MINS, roundingName: nts.uk.resource.getText("KML002_55") },
-                { roundingCd: RoundingTime.TEN_MINS, roundingName: nts.uk.resource.getText("KML002_56") },
-                { roundingCd: RoundingTime.FIFTEEN_MINS, roundingName: nts.uk.resource.getText("KML002_54") },
-                { roundingCd: RoundingTime.TWENTY_MINS, roundingName: nts.uk.resource.getText("KML002_55") },
-                { roundingCd: RoundingTime.THIRTY_MINS, roundingName: nts.uk.resource.getText("KML002_56") },
-                { roundingCd: RoundingTime.SIXTY_MINS, roundingName: nts.uk.resource.getText("KML002_57") }
+                { roundingCd: RoundingTime.ONE_MINUTE, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1Min") },
+                { roundingCd: RoundingTime.FIVE_MINS, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5Min") },
+                { roundingCd: RoundingTime.SIX_MINS, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6Min") },
+                { roundingCd: RoundingTime.TEN_MINS, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10Min") },
+                { roundingCd: RoundingTime.FIFTEEN_MINS, roundingName: nts.uk.resource.getText("Enum_RoundingTime_15Min") },
+                { roundingCd: RoundingTime.TWENTY_MINS, roundingName: nts.uk.resource.getText("Enum_RoundingTime_20Min") },
+                { roundingCd: RoundingTime.THIRTY_MINS, roundingName: nts.uk.resource.getText("Enum_RoundingTime_30Min") },
+                { roundingCd: RoundingTime.SIXTY_MINS, roundingName: nts.uk.resource.getText("Enum_RoundingTime_60Min") }
             ]);
             self.processingList = ko.observableArray([
                 { code: '0', name: nts.uk.resource.getText("Enum_Rounding_Down") },
@@ -407,7 +407,10 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         roundingAtr: self.selectedProcessing(),
                         unitPrice: self.uPCd(),
                         actualDisplayAtr: self.checked() ? 1 : 0,
-                        lstTimeUnitFuncs: formAmount
+                        lstTimeUnitFuncs: formAmount,
+                        roundingCd: self.roundingCd(),
+                        selectedProcessing: self.selectedProcessing(),
+                        uPCd: self.uPCd()
                     }
                 }
 
@@ -437,7 +440,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     moneyFunc: {
                         lstMoney: formMoney
                     }
-
                 }
                 nts.uk.ui.windows.setShared("KML002_E_DATA", moneyData);
             }
@@ -461,9 +463,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
             let i = 2;
             let param = {
                 //BUDGET_ATR
-                budgetAtr: 1,
+                budgetAtr: 2,
                 //UNIT_ATR
-                unitAtr: 0
+                unitAtr: data.unit
             }
             service.getByAtr(param).done((lst) => {
                 let sortedData = _.orderBy(lst, ['externalBudgetCode'], ['asc']);
@@ -504,7 +506,12 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 let temp = [];
                 let items = _.sortBy(data, ['companyId', 'dispOrder']);
                 _.forEach(items, function(item: service.BaseItemsDto) {
-                    var name = item.itemName + nts.uk.resource.getText("KML002_43");
+                    var name = "";
+                    if(item.itemType == 0) {
+                        name = item.itemName + nts.uk.resource.getText("KML002_43");
+                    } else if(item.itemType == 1) {
+                        name = item.itemName + nts.uk.resource.getText("KML002_42");
+                    }
                     temp.push(new ItemModel(item.id, name, item.itemType));
                 });
                 self.allItem(temp);
@@ -847,6 +854,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 };
 
                 self.rightItems.push(itemData);
+                self.roundingCd(self.currentData.timeUnit.roundingCd),
+                self.selectedProcessing(self.currentData.timeUnit.selectedProcessing),
+                self.uPCd(self.currentData.timeUnit.uPCd)
             });
         }
         bindDataMoney(lstMoney: any) {
