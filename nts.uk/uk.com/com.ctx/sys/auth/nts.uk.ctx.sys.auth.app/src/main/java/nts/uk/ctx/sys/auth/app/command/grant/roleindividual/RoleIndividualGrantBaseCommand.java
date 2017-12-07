@@ -1,48 +1,35 @@
 package nts.uk.ctx.sys.auth.app.command.grant.roleindividual;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
+
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoleIndividualGrantBaseCommand {
 	/** The user id. */
 	// ユーザID
-	private String userID;
-
-	/** The role id. */
-	// ロールID
-	private String roleID;
+	protected String userID;
 
 	/** The company id. */
 	// 会社ID
-	private String companyID;
+	protected String companyID;
 
 	/** The role type. */
 	// ロール種類
-	private RoleType roleType;
+	protected int roleType;
 
 	/** The valid period. */
 	// 有効期間
-	private GeneralDate startValidPeriod;
+	protected GeneralDate startValidPeriod;
 	
-	private GeneralDate endValidPeriod;
+	protected GeneralDate endValidPeriod;
+	
 	//Screen C setting
-	private boolean setRoleAdminFlag;
+	protected boolean setRoleAdminFlag;
 	
-	String decisionCompanyID;
-
-	public RoleIndividualGrant toDomain(){
-		return RoleIndividualGrant.createFromJavaType(
-				userID,
-				roleID,
-				companyID,
-				roleType.value,
-				startValidPeriod,
-				endValidPeriod);
-	}
-
-
+	protected String decisionCompanyID;
+	
 }

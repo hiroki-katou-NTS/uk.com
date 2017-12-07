@@ -39,7 +39,7 @@ public class JpaEmploymentRoleRepository extends JpaRepository implements Employ
 	public Optional<EmploymentRole> getEmploymentRoleById(String companyId, String roleId) {
 		return this.queryProxy().query(GET_EMPLOYMENT_BY_ID, KacmtEmploymentRole.class)
 				.setParameter("companyID", companyId)
-				.setParameter("roleId", roleId)
+				.setParameter("roleID", roleId)
 				.getSingle(c -> c.toDomain());
 	}
 

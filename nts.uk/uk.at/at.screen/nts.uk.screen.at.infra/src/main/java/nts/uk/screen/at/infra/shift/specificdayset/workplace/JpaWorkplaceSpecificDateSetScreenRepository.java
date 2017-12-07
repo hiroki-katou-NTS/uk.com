@@ -1,11 +1,11 @@
 package nts.uk.screen.at.infra.shift.specificdayset.workplace;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSet;
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenParams;
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenRepository;
@@ -24,7 +24,7 @@ public class JpaWorkplaceSpecificDateSetScreenRepository extends JpaRepository
 			+ " AND s.ksmmtWpSpecDateSetPK.specificDate >= :startDate AND s.ksmmtWpSpecDateSetPK.specificDate <= :endDate";
 
 	@Override
-	public List<BigDecimal> findDataWkpSpecificDateSet(
+	public List<GeneralDate> findDataWkpSpecificDateSet(
 			WorkplaceSpecificDateSetScreenParams params) {
 		return this.queryProxy().query(GET_BY_WORKPLACE_ID_AND_DATE, KsmmtWpSpecDateSet.class)
 				.setParameter("workplaceId", params.workplaceId).setParameter("startDate", params.startDate)

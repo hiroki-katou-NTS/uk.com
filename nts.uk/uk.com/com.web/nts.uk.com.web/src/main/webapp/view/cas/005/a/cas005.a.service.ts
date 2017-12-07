@@ -7,7 +7,8 @@ module nts.uk.com.view.cas005.a {
             addRoleCas005 :"screen/sys/auth/cas005/addrolecas005",
             updateRoleCas005 :"screen/sys/auth/cas005/updaterolecas005",
             deleteRoleCas005 :"screen/sys/auth/cas005/deleterolecas005",
-            getRoleByRoleTiesById :"sys/portal/webmenu/webmenulinking/getrolebyroletiesbyid"
+            getRoleByRoleTiesById :"sys/portal/webmenu/webmenulinking/getrolebyroletiesbyid",
+            getEmploymentRoleById : "at/auth/workplace/employmentrole/getemploymentrolebyid"
             
         }
         
@@ -40,6 +41,11 @@ module nts.uk.com.view.cas005.a {
         //getRoleByRoleTiesById
         export function getRoleByRoleTiesById(roleId : string) : JQueryPromise<any>{
             return nts.uk.request.ajax("com",paths.getRoleByRoleTiesById+"/"+roleId);    
+        }
+        
+        //get Employment Role By Id
+        export function getEmploymentRoleById(roleId : string) : JQueryPromise<any>{
+            return nts.uk.request.ajax("at",paths.getEmploymentRoleById+"/"+roleId);    
         }
         
         

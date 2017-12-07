@@ -82,20 +82,23 @@ public class CheckBeforeRegisterOvertime {
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
 		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceID.NORMALOVERTIME);
-		if (overtimeInputs == null || overtimeInputs.isEmpty()) {
-			result.setErrorCode(1);
-			result.setFrameNo(-1);
-			result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
-			return result;
+		// if (overtimeInputs == null || overtimeInputs.isEmpty()) {
+		// result.setErrorCode(1);
+		// result.setFrameNo(-1);
+		// result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
+		// return result;
+		// }
+		if (overtimeInputs != null && !overtimeInputs.isEmpty()) {
+			res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(),
+					app.getInputDate(), app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
+			if (res.getErrorCode() != 0) {
+				result.setErrorCode(res.getErrorCode());
+				result.setFrameNo(res.getFrameNo());
+				result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
+				return result;
+			}
 		}
-		res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(), app.getInputDate(),
-				app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
-		if (res.getErrorCode() != 0) {
-			result.setErrorCode(res.getErrorCode());
-			result.setFrameNo(res.getFrameNo());
-			result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
-			return result;
-		}
+		
 		// TODO: 実績超過チェック
 		beforeCheck.OvercountCheck(app.getCompanyID(), app.getApplicationDate(), app.getPrePostAtr());
 		// TODO: ３６協定時間上限チェック（月間）

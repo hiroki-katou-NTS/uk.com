@@ -14,6 +14,8 @@ __viewContext.ready(function() {
         screenModel = new nts.uk.at.view.kaf009.b.viewmodel.ScreenModel(listAppMeta, currentApp);     
     } else if (currentApp.appType == 0) {
         screenModel = new nts.uk.at.view.kaf005.b.viewmodel.ScreenModel(listAppMeta, currentApp);     
+    } else if (currentApp.appType == 2) {
+        screenModel = new nts.uk.at.view.kaf007.b.viewmodel.ScreenModel(listAppMeta, currentApp);     
     }
     
     screenModel.start(moment.utc().format("YYYY/MM/DD")).done(function() {
