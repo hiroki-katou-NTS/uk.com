@@ -494,10 +494,12 @@ module nts.uk.com.view.cmm011.a {
                         
                         self.parentModel.isNewMode(true);
                         
-                        // reset data
+                        // reset data case unselect item in grid
                         self.selectedHierarchyCd = null;
                         self.parentModel.initData(null);
-                        self.parentModel.workplaceHistory().reset();
+                        if (self.lstWorkplace().length > 0) {
+                            self.parentModel.workplaceHistory().reset();
+                        }
                         return;
                     }
                     
