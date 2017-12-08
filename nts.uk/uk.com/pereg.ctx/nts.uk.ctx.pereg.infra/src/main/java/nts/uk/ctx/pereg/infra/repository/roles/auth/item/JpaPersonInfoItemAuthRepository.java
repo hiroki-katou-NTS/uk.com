@@ -1,7 +1,9 @@
 package nts.uk.ctx.pereg.infra.repository.roles.auth.item;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,10 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	private final String SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID = " SELECT c FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId"
 			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:categoryId ";
+	
+	private final String SEL_ALL_BY_ROLE_ID_CTG_ID_LIST = " SELECT c FROM PpemtPersonItemAuth c"
+			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId"
+			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId IN :categoryIdList ";
 
 	private final String DELETE_BY_ROLE_ID = "DELETE FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId";
@@ -166,6 +172,22 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	public List<PersonInfoItemAuth> getAllItemAuth(String roleId, String categoryId) {
 		return this.queryProxy().query(SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID, PpemtPersonItemAuth.class)
 				.setParameter("roleId", roleId).setParameter("categoryId", categoryId).getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public Map<String, List<PersonInfoItemAuth>> getByRoleIdAndCategories(String roleId, List<String> categoryIdList) {
+		List<PpemtPersonItemAuth> itemAuthList = this.queryProxy().query(SEL_ALL_BY_ROLE_ID_CTG_ID_LIST, PpemtPersonItemAuth.class)
+				.setParameter("roleId", roleId).setParameter("categoryIdList", categoryIdList).getList();
+		Map<String, List<PersonInfoItemAuth>> resultMap = new HashMap<>();
+		for ( PpemtPersonItemAuth itemAuth : itemAuthList) {
+			List<PersonInfoItemAuth> resultItemAuthList = resultMap.get(itemAuth.ppemtPersonItemAuthPk.personInfoCategoryAuthId);
+			if ( resultItemAuthList == null ) {
+				resultItemAuthList = new ArrayList<>();
+				resultMap.put(itemAuth.ppemtPersonItemAuthPk.personInfoCategoryAuthId, resultItemAuthList);
+			}
+			resultItemAuthList.add(toDomain(itemAuth));
+		}
+		return resultMap;
 	}
 
 	@Override
