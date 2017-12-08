@@ -1,6 +1,5 @@
 package nts.uk.screen.at.ws.schedule.basicschedule;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,8 +19,7 @@ import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenPa
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenProcessor;
 import nts.uk.screen.at.app.shift.businesscalendar.holiday.PublicHolidayScreenProcessor;
 import nts.uk.screen.at.app.shift.specificdayset.company.ComSpecificDateSetScreenProcessor;
-import nts.uk.screen.at.app.shift.specificdayset.company.StartDateEndDateScreenParams;
-import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenParams;
+import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScreenParams;
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenProcessor;
 
 /**
@@ -54,8 +52,8 @@ public class Ksu001Webservice extends WebService {
 	 * @return List WorkType WorkTime
 	 */
 	@POST
-	public ListWorkTypeWorkTimeDto init() {
-		ListWorkTypeWorkTimeDto result = new ListWorkTypeWorkTimeDto(
+	public ListWorkTypeWorkTimeScreenDto init() {
+		ListWorkTypeWorkTimeScreenDto result = new ListWorkTypeWorkTimeScreenDto(
 				this.bScheduleScreenProces.findByCIdAndDeprecateCls(), this.bScheduleScreenProces.getListWorkTime());
 		return result;
 	}
@@ -82,21 +80,12 @@ public class Ksu001Webservice extends WebService {
 	}
 
 	@POST
-	@Path("getDataWkpSpecificDate")
-	public List<BigDecimal> getDataWkpSpecificDate(WorkplaceSpecificDateSetScreenParams params) {
-		return this.workplaceSpecificDateSetScreenProcessor.findDataWkpSpecificDateSet(params);
-	}
-
-	@POST
-	@Path("getDataComSpecificDate")
-	public List<BigDecimal> getDataComSpecificDate(StartDateEndDateScreenParams params) {
-		return this.comSpecificDateSetScreenProcessor.findDataComSpecificDateSet(params);
-	}
-
-	@POST
-	@Path("getDataPublicHoliday")
-	public List<BigDecimal> getDataPublicHoliday(StartDateEndDateScreenParams params) {
-		return this.publicHolidayScreenProcessor.findDataPublicHoliday(params);
+	@Path("getDataSpecDateAndHoliday")
+	public SpecificDateAndPublicHolidayScreenDto getDataSpecDateAndHoliday(WorkplaceIdAndDateScreenParams params) {
+		return new SpecificDateAndPublicHolidayScreenDto(
+				this.workplaceSpecificDateSetScreenProcessor.findDataWkpSpecificDateSet(params),
+				this.comSpecificDateSetScreenProcessor.findDataComSpecificDateSet(params),
+				this.publicHolidayScreenProcessor.findDataPublicHoliday(params));
 	}
 
 	@POST

@@ -21,9 +21,9 @@ module ksu001.q.viewmodel {
             let self = this;
 
             self.contextMenu = [
-                { id: "cut", text: "切り取り", action: self.openDialogJA },
-                { id: "copy", text: "名前を変更", action: self.openPopup },
-                { id: "delete", text: "削除", action: self.remove }
+                { id: "openDialog", text: nts.uk.resource.getText("KSU001_1705"), action: self.openDialogJB },
+                { id: "openPopup", text: nts.uk.resource.getText("KSU001_1706"), action: self.openPopup },
+                { id: "delete", text: nts.uk.resource.getText("KSU001_1707"), action: self.remove }
             ];
             $("#test2").ntsButtonTable("init", { row: 3, column: 10, source: self.source(), contextMenu: self.contextMenu, disableMenuOnDataNotSet: [1, 2], mode: "normal" });
         }
@@ -33,17 +33,19 @@ module ksu001.q.viewmodel {
             $("#popup-area").css('visibility', 'visible');
             return dfd.promise();
         }
-        
-        decision(): void {
-            let self = this;
-            
+
+        decision(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            dfd.resolve({ text: self.textName(), tooltip: 'ahihi' });
+            $("#popup-area").css('visibility', 'hidden');
+            return dfd.promise();
         }
 
         closePopup(): void {
             $("#popup-area").css('visibility', 'hidden');
         }
 
-        openDialogJA() {
+        openDialogJA(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             nts.uk.ui.windows.sub.modal("/view/ksu/001/ja/index.xhtml").onClosed(() => {
                 dfd.resolve(undefined);
@@ -51,7 +53,15 @@ module ksu001.q.viewmodel {
             return dfd.promise();
         }
 
-        remove() {
+        openDialogJB(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
+                dfd.resolve(undefined);
+            });
+            return dfd.promise();
+        }
+
+        remove(): JQueryPromise<any> {
             let dfd = $.Deferred();
 
             setTimeout(function() {
@@ -60,6 +70,5 @@ module ksu001.q.viewmodel {
 
             return dfd.promise();
         }
-
     }
 }
