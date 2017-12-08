@@ -35,9 +35,7 @@ public class EmpRegHistoryFinder {
 
 		} else {
 
-			EmpRegHistoryDto regHistDto = new EmpRegHistoryDto();
-
-			regHistDto.fromDomain(opt.get());
+			EmpRegHistoryDto regHistDto = EmpRegHistoryDto.createFromDomain(opt.get());
 
 			if (!setLastRegName(regHistDto.getLastRegEmployee())
 					&& !setLastRegName(regHistDto.getLastRegEmployeeOfCompany())) {
