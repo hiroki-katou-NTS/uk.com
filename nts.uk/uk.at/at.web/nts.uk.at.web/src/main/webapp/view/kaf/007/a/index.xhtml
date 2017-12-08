@@ -18,9 +18,9 @@
 			<com:scriptfile path="../../007/share/kaf007.share.vm.js" />
 			<com:scriptfile path="../../007/share/kaf007.share.service.js" />
 			<com:scriptfile path="kaf007.a.start.js" />
-			<com:scriptfile path="kaf007.a.service.js" />
 			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
 			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="kaf007.a.start.js" />
 			<com:scriptfile path="kaf007.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -31,9 +31,11 @@
 					<!--A1_2 印刷（PDF）--> 
 					<button id="btnSpecSetting" data-bind="">#{i18n.getText('KAF007_55')}</button>
 					<!--A1_3 実績参照--> 
-					<button id="btnOpenCmm018" data-bind="visible: isDisplayOpenCmm018;">#{i18n.getText('KAF007_5')}</button>					
-					<!--A1_4 登録時にメールを送信するしない区分--> 
-					<!--A1_4_1 登録時にメールを送信する--> 
+					<button  data-bind="click: openCMM018Click">#{i18n.getText('KAF007_56')}</button>		
+					<!--A1_4 承認者変更ボタン--> 				
+					<button data-bind="click: openKDL004Click">#{i18n.getText('KAF005_12')}</button>				
+					<!--A1_5 登録時にメールを送信するしない区分--> 
+					<!--A1_5_1 登録時にメールを送信する--> 
 					<div class="btnSendMail"
 						data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF007_45')}' }">
 					</div>
@@ -45,7 +47,7 @@
 						<ui:include src="../../000/a/index1.xhtml" />
 					</div>
 					<!-- Main -->
-					<div class="mainScreen cf" data-bind="with: appWorkChange">
+					<div class="mainScreen cf">
 						<ui:include src="../share/index.xhtml"></ui:include>
 					</div><br/>
 					<!-- Footer -->

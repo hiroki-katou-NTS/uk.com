@@ -85,7 +85,9 @@ public class HDWorkTimeSheetSetting extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.timezone.getStart().v() >= this.timezone.getEnd().v()) {
+		
+		// Check #Msg_770
+		if (this.getTimezone().getStart().greaterThanOrEqualTo(this.getTimezone().getEnd())) {
 			throw new BusinessException("Msg_770");
 		}
 	}

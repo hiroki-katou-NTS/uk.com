@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -28,7 +27,7 @@ public class SingleDaySchedule extends DomainObject{
 	
 	/** The work time code. */
 	// 就業時間帯コード
-	private Optional<WorkTimeCode> workTimeCode;
+	private WorkTimeCode workTimeCode;
 	
 	
 	/**

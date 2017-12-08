@@ -16,10 +16,10 @@ public class CheckChangeApplicanDateImpl implements ICheckChangeApplicanDate{
 		// TODO: 申請日を変更する 
 		//申請日付分　（開始日～終了日）
 		//ループ処理を実行する
-		while(startDate.afterOrEquals(endDate) ){
+		while(startDate.beforeOrEquals(endDate)){
 			//TODO: 共通アルゴリズム「申請日を変更する」を実行する
 			//基準日　＝　基準日　＋　１
-			startDate.addDays(1);
+			startDate = startDate.addDays(1);
 		}
 	}
 

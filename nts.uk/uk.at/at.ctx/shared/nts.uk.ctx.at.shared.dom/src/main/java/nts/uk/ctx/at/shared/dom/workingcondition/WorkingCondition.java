@@ -17,15 +17,19 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * The Class WorkingCondition.
  */
 @Getter
+// 労働条件
 public class WorkingCondition extends AggregateRoot implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 	
 	/** The company id. */
+	// 会社ID
 	private String companyId;
 	
 	/** The employee id. */
+	// 社員ID
 	private String employeeId;
 	
 	/** The date history item. */
+	// 履歴項目
 	public List<DateHistoryItem> dateHistoryItem;
 	
 	/**

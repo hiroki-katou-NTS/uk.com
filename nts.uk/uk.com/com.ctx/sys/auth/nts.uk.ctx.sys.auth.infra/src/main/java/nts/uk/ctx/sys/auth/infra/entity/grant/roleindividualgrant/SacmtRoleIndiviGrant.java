@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -40,9 +41,26 @@ public class SacmtRoleIndiviGrant extends UkJpaEntity implements Serializable {
 
 	@Override
 	public Object getKey() {
-		// TODO Auto-generated method stub
 		return sacmtRoleIndiviGrantPK;
 	}
 
-    
+	public static SacmtRoleIndiviGrant toEntity(RoleIndividualGrant domain){
+		return new SacmtRoleIndiviGrant(
+				new SacmtRoleIndiviGrantPK(domain.getCompanyId(), domain.getUserId(), domain.getRoleType().value),
+				domain.getRoleId(),
+				domain.getValidPeriod().start(),
+				domain.getValidPeriod().end()
+				);
+	}
+	
+	public RoleIndividualGrant toDomain() {
+		return RoleIndividualGrant.createFromJavaType(	
+				this.sacmtRoleIndiviGrantPK.userID,
+				this.roleId,
+				this.sacmtRoleIndiviGrantPK.companyID,
+				this.sacmtRoleIndiviGrantPK.roleType,
+				this.strD, 
+				this.endD);
+	}
+	
 }

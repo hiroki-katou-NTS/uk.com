@@ -21,14 +21,14 @@ public class SacmtRoleIndiviGrantPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@NotNull
 	@Column(name = "CID")
-    public String cid;
+    public String companyID;
 
 	@NotNull
 	@Column(name = "USER_ID")
-    public String userId;
+    public String userID;
 	
 	@NotNull
 	@Column(name = "ROLE_TYPE")
-    public Integer roleType;
+    public int roleType;
 
 }

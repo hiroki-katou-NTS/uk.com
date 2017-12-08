@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.auth.app.find.wplmanagementauthority.dto.WorkPlaceFunctionDto;
-import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceFunctionRepository;
 
 @Stateless

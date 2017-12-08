@@ -350,6 +350,11 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
 		
+		// check empty
+		if (CollectionUtil.isEmpty(resultList)) {
+			return new ArrayList<>();
+		}
+		
 		return resultList.stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());

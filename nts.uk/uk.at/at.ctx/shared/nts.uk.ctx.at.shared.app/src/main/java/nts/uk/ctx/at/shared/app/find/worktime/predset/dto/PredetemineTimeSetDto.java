@@ -9,15 +9,15 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class PredDto.
+ * The Class PredetemineTimeSetDto.
  */
-public class PredetemineTimeSetDto implements PredetemineTimeSetMemento {
+public class PredetemineTimeSetDto implements PredetemineTimeSettingSetMemento {
 
 	private static final Integer TRUE_VAL = 1;
 	/** The company id. */
@@ -48,7 +48,7 @@ public class PredetemineTimeSetDto implements PredetemineTimeSetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetMemento#setCompanyID(java.lang.String)
 	 */
 	@Override
-	public void setCompanyID(String companyID) {
+	public void setCompanyId(String companyID) {
 		this.companyId = companyID;
 	}
 

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
@@ -27,6 +28,10 @@ public class CoreTimeSetting extends DomainObject {
 	/** The min work time. */
 	// 最低勤務時間
 	private AttendanceTime minWorkTime;
+	
+	/** The Constant ZERO_MINUTES. */
+	// 00:00
+	public static final int ZERO_MINUTES = 0;
 
 	/**
 	 * Instantiates a new core time setting.
@@ -48,5 +53,18 @@ public class CoreTimeSetting extends DomainObject {
 		memento.setCoreTimeSheet(this.coreTimeSheet);
 		memento.setTimesheet(this.timesheet);
 		memento.setMinWorkTime(this.minWorkTime);
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate(){
+		
+		// 使用区分 = 使用しない AND 最低勤務時間 <= 0
+		if (this.timesheet.equals(ApplyAtr.NOT_USE) && this.minWorkTime.valueAsMinutes() <= ZERO_MINUTES) {
+			throw new BusinessException("Msg_776");
+		}
+				
 	}
 }

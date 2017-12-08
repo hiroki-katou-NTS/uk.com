@@ -4,5 +4,7 @@ import lombok.Data;
 
 @Data
 public class DeleteCompanySpecificDateCommand {
-	private String yearMonth;
+	private String startDate;
+	
+	private String endDate;
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.collection.CollectionUtil;
 
 /**
  * The Class TimeDiffDayOffWorkTimezone.
@@ -17,9 +18,6 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class DiffTimeDayOffWorkTimezone extends DomainObject {
 
-	private static final Integer MIN_WORK_NO = 2;
-
-	private static final Integer ZERO = 1;
 	/** The rest timezone. */
 	// 休憩時間帯
 	private DiffTimeRestTimezone restTimezone;
@@ -53,16 +51,18 @@ public class DiffTimeDayOffWorkTimezone extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		DayOffTimezoneSetting firstItem = this.workTimezones.get(ZERO);
-		int count = ZERO;
-		for (DayOffTimezoneSetting item : this.workTimezones) {
-			if (item.getTimezone().getStart().equals(firstItem.getTimezone().getStart())
-					&& item.getTimezone().getEnd().equals(firstItem.getTimezone().getEnd())) {
-				count++;
+		this.checkOverlap();
+	}
+
+	private void checkOverlap() {
+		if (!CollectionUtil.isEmpty(this.workTimezones)) {
+			for (int i = 0; i < this.workTimezones.size(); i++) {
+				for (int j = i + 1; j < this.workTimezones.size(); j++) {
+					if (this.workTimezones.get(i).getTimezone().isOverlap(this.workTimezones.get(j).getTimezone())) {
+						throw new BusinessException("Msg_515");
+					}
+				}
 			}
-		}
-		if (count >= MIN_WORK_NO) {
-			throw new BusinessException("Msg_515");
 		}
 	}
 }

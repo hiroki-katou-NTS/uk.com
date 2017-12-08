@@ -1,12 +1,12 @@
 package nts.uk.screen.at.app.shift.businesscalendar.holiday;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.screen.at.app.shift.specificdayset.company.StartDateEndDateScreenParams;
+import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScreenParams;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,7 +21,7 @@ public class PublicHolidayScreenProcessor {
 	@Inject
 	private PublicHolidayScreenRepository repo;
 
-	public List<BigDecimal> findDataPublicHoliday(StartDateEndDateScreenParams params) {
+	public List<GeneralDate> findDataPublicHoliday(WorkplaceIdAndDateScreenParams params) {
 		String companyId = AppContexts.user().companyId();
 		return this.repo.findDataPublicHoliday(companyId, params);
 	}

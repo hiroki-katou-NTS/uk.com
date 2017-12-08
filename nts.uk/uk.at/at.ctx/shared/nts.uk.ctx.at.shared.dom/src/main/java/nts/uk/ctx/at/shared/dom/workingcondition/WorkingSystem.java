@@ -1,12 +1,22 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+
+/**
+ * The Enum WorkingSystem.
+ */
+// 労働制
 public enum WorkingSystem {
+	
+	/** The regular work. */
 	REGULAR_WORK(0, "Enum_WorkingSystem_REGULAR_WORK"),
 
+	/** The flex time work. */
 	FLEX_TIME_WORK(1, "Enum_WorkingSystem_FLEX_TIME_WORK"),
 
+	/** The variable working time work. */
 	VARIABLE_WORKING_TIME_WORK(2, "Enum_WorkingSystem_VARIABLE_WORKING_TIME_WORK"),
 	
+	/** The excluded working calculate. */
 	EXCLUDED_WORKING_CALCULATE(3, "Enum_WorkingSystem_EXCLUDED_WORKING_CALCULATE");
 
 	/** The value. */

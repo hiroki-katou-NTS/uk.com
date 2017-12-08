@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 
 /**
  * The Class DesignatedTimeDto.

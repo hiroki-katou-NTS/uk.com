@@ -5,65 +5,38 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.find.CompanyInforDto;
-import nts.uk.ctx.find.CompanyInforFinder;
+import nts.uk.ctx.bs.company.app.find.company.CompanyInforDto;
+import nts.uk.ctx.bs.company.app.find.company.CompanyInforFinder;
 
 @Path("bs/company")
 @Produces("application/json")
-public class CompanyNewWs extends WebService{
+public class CompanyNewWs extends WebService {
 	@Inject
-	private CompanyInforFinder finderCom;
-	
-//	@Inject
-//	private UpdateCompanyInforCommandHandler updateCom;
-//	
-//	@Inject
-//	private AddCompanyInforCommandHandler addCom;
-//	
-//	@Inject
-//	private DeleteCompanyInforCommandHandler delCom;
-	
+	private CompanyInforFinder finderComFinder;
+
 	/**
-	 * find all company 
+	 * find all company
+	 * 
+	 * @return
+	 */
+	@POST 
+	@Path("findCom") 
+	public List<CompanyInforDto> findAll() {
+		return this.finderComFinder.findAll();
+	}
+
+	/**
+	 * find company by id
+	 * 
 	 * @return
 	 */
 	@POST
-	@Path("findCom")
-	public List<CompanyInforDto> finderCom(){
-		return this.finderCom.finder();
+	@Path("findComId/{companyId}")
+	public CompanyInforDto find(@PathParam("companyId") String companyId) {
+		return this.finderComFinder.find(companyId);
 	}
-	
-//	/**
-//	 * update a company
-//	 * @param com
-//	 */
-//	@POST
-//	@Path("updateCom")
-//	public void update(UpdateCompanyInforCommand com){
-//		this.updateCom.handle(com);
-//	}
-//	
-//	/**
-//	 * insert a company
-//	 * @param com
-//	 */
-//	@POST
-//	@Path("addCom")
-//	public void add(AddCompanyInforCommand com){
-//		this.addCom.handle(com);
-//	}
-//	
-//	/**
-//	 * delete a company
-//	 * @param com
-//	 */
-//	@POST
-//	@Path("deleteCom")
-//	public void delete(DeleteCompanyInforCommand com){
-//		this.delCom.handle(com);
-//	}
-	
 }
