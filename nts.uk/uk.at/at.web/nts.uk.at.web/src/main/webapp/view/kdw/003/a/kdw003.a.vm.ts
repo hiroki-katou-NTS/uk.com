@@ -948,13 +948,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (header.group != undefined) {
                     if (header.group.length > 0) {
                         delete header.group[0].group;
-                        delete header.key;
+                        //delete header.key;
                         delete header.dataType;
                         delete header.width;
                         delete header.ntsControl;
                         delete header.changedByOther;
                         delete header.changedByYou;
-                        delete header.color;
+                       // delete header.color;
                         delete header.hidden;
                         delete header.ntsType;
                         delete header.onChange;
