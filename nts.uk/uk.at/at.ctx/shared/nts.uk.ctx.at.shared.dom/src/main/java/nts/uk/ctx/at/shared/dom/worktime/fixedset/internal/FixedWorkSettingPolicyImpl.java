@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -20,6 +21,9 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 
 	@Inject
 	private PredeteminePolicyService predService;
+
+	@Inject
+	private FixHalfDayWorkTimezonePolicy fixHalfDayPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -40,6 +44,10 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		fixedWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone().forEach(setting -> {
 			this.predService.validateOneDay(predetemineTimeSet, setting.getTimezone().getStart(), setting.getTimezone().getEnd());
 		});
+
+		// validate Msg_516
+		fixedWorkSetting.getLstHalfDayWorkTimezone()
+				.forEach(halfDay -> this.fixHalfDayPolicy.validate(halfDay, predetemineTimeSet));
 
 	}
 

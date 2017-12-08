@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
@@ -23,6 +24,9 @@ public class FlexWorkSettingPolicyImpl {
 	/** The service. */
 //	@Inject
 //	private PredeteminePolicyService service;
+
+	@Inject
+	private FlexHalfDayWorkTimePolicy flexHalfDayPolicy;
 	
 	/** The work no one. */
 	public static int WORK_NO_ONE = 1;
@@ -89,6 +93,10 @@ public class FlexWorkSettingPolicyImpl {
 		flexWorkSetting.getLstStampReflectTimezone().forEach(setting -> {
 //			this.service.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
 		});
+
+		// validate Msg_516
+		flexWorkSetting.getLstHalfDayWorkTimezone()
+				.forEach(halfDay -> this.flexHalfDayPolicy.validate(halfDay, predetemineTimeSet));
 		
 	}
 	
