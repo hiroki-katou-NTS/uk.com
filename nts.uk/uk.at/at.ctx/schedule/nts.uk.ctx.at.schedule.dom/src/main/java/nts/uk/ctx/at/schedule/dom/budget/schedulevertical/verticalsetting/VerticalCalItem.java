@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.collection.CollectionUtil;
 
 /**
  * TanLV
@@ -107,25 +108,25 @@ public class VerticalCalItem extends DomainObject {
  		} else {
  			switch (this.attributes) {
 				case TIME:
-					if (this.formTime.getLstFormTimeFunc().size() == 0) {
+					if (this.formTime == null || CollectionUtil.isEmpty(this.formTime.getLstFormTimeFunc())) {
 						throw new BusinessException("Msg_418", String.valueOf(index));
 					}
 					break;
 					
 				case AMOUNT:
-					if (this.formulaAmount.getMoneyFunc().getLstMoney().size() == 0 && this.formulaAmount.getTimeUnit().getLstTimeUnitFuncs().size() == 0) {
+					if (this.formulaAmount == null || CollectionUtil.isEmpty(this.formulaAmount.getMoneyFunc().getLstMoney()) && CollectionUtil.isEmpty(this.formulaAmount.getTimeUnit().getLstTimeUnitFuncs())) {
 						throw new BusinessException("Msg_418", String.valueOf(index));
 					}
 					break;
 					
 				case NUMBER_OF_PEOPLE:
-					if (this.formPeople.getLstPeopleFunc().size() == 0) {
+					if (this.formPeople == null || CollectionUtil.isEmpty(this.formPeople.getLstPeopleFunc())) {
 						throw new BusinessException("Msg_418", String.valueOf(index));
 					}
 					break;
 					
 				case NUMBER:
-					if (this.numerical.size() == 0) {
+					if (CollectionUtil.isEmpty(this.numerical)) {
 						throw new BusinessException("Msg_418", String.valueOf(index));
 					}
 					break;

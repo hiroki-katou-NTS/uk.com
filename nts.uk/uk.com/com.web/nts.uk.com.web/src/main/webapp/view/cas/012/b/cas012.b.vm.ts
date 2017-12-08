@@ -16,8 +16,10 @@ module nts.uk.com.view.cas012.b.viewmodel {
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CAS012_25"), key: 'userID', width: 100 },
+                { headerText: 'userID', key: 'userID', width: 100, hidden: true },
+                { headerText: nts.uk.resource.getText("CAS012_25"), key: 'loginID', width: 120, columnCssClass: "colStyle" },
                 { headerText: nts.uk.resource.getText("CAS012_26"), key: 'userName', width: 230 }
+
             ]);
             self.selectUserID = ko.observable('');
         }

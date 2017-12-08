@@ -8,10 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,8 +18,6 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
-import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
@@ -47,10 +42,6 @@ public class WorkplaceConfigInfoFinder {
 	/** The wkp config info repo. */
 	@Inject
 	private WorkplaceConfigInfoRepository wkpConfigInfoRepo;
-
-	/** The wkp repo. */
-	@Inject
-	private WorkplaceRepository wkpRepo;
 
 	/** The wkp info repo. */
 	@Inject
@@ -78,14 +69,15 @@ public class WorkplaceConfigInfoFinder {
 		if (!optionalWkpConfig.isPresent()) {
 			return null;
 		}
-		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
+		WorkplaceConfig wkpConfig = optionalWkpConfig.get();
+		String historyId = wkpConfig.getWkpConfigHistoryLatest().identifier();
 		Optional<WorkplaceConfigInfo> opWkpConfigInfo = wkpConfigInfoRepo.find(companyId,
 				historyId);
 		if (!opWkpConfigInfo.isPresent()) {
 			return Collections.emptyList();
 		}
-
-		return this.initTree(opWkpConfigInfo.get());
+		GeneralDate endDateLatest = wkpConfig.getWkpConfigHistoryLatest().end();
+		return this.initTree(endDateLatest, opWkpConfigInfo.get());
 	}
 
 	/**
@@ -103,7 +95,8 @@ public class WorkplaceConfigInfoFinder {
 		if (!optionalWkpConfig.isPresent()) {
 			return null;
 		}
-		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
+		WorkplaceConfig wkpConfig = optionalWkpConfig.get();
+		String historyId = wkpConfig.getWkpConfigHistoryLatest().identifier();
 
 		Optional<WorkplaceConfigInfo> opWkpConfigInfo = wkpConfigInfoRepo.find(companyId,
 				historyId);
@@ -111,7 +104,8 @@ public class WorkplaceConfigInfoFinder {
 			throw new BusinessException("Msg_373");
 		}
 		
-		return this.initTree(opWkpConfigInfo.get());
+		GeneralDate endDateLatest = wkpConfig.getWkpConfigHistoryLatest().end();
+		return this.initTree(endDateLatest, opWkpConfigInfo.get());
 	}
 
 	/**
@@ -121,29 +115,14 @@ public class WorkplaceConfigInfoFinder {
 	 *            the history id
 	 * @return the list
 	 */
-	private List<WorkplaceHierarchyDto> initTree(WorkplaceConfigInfo wkpConfigInfo) {
+	private List<WorkplaceHierarchyDto> initTree(GeneralDate endDateLatest, WorkplaceConfigInfo wkpConfigInfo) {
 		String companyId = AppContexts.user().companyId();
 
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getLstWkpHierarchy();
 		
-		// get list workplace id
-		List<String> lstWkpId = lstHierarchy.stream()
-				.map(item -> item.getWorkplaceId())
-				.collect(Collectors.toList());
-		
-		// find list workplace infor
-		Map<String, WorkplaceInfo> mapWkpInfor = this.wkpInfoRepo.findByWkpIds(companyId, lstWkpId).stream()
-				.collect(Collectors.toMap(item -> item.getHistoryId(), Function.identity()));
-		
-		// find list workplace
-		List<Workplace> lstWorkplace = this.wkpRepo.findByWkpIds(lstWkpId);
-		
 		// filter workplace infor latest
-		List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();
-		lstWorkplace.forEach(item -> {
-			lstWkpInfo.add(mapWkpInfor.get(item.getWkpHistoryLatest().identifier()));
-		});
+		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findDetailLatestByWkpIds(companyId, endDateLatest);
 		return this.createTree(lstHierarchy.iterator(), lstWkpInfo, new ArrayList<>());
 	}
 

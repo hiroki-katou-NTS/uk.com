@@ -86,9 +86,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getAll().done((lstData) => {
-                let sortedData = _.orderBy(lstData, ['code'], ['asc']);
-                self.lstErrorAlarm(sortedData);
-                self.selectedErrorAlarmCode(sortedData[0].code);
+                if (lstData && lstData.length > 0) {
+                    let sortedData = _.orderBy(lstData, ['code'], ['asc']);
+                    self.lstErrorAlarm(sortedData);
+                    self.selectedErrorAlarmCode(sortedData[0].code);
+                    self.isNewMode(false); 
+                } else {
+                    self.isNewMode(true);    
+                }
                 dfd.resolve();
             });
             return dfd.promise();
@@ -125,7 +130,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let self = this;
             let data = self.selectedErrorAlarm().code();
             nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
-                debugger;
+                service.remove(data).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    self.startPage();
+                });
             })
         }
 

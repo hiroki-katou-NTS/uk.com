@@ -20,7 +20,7 @@ module nts.uk.com.view.cas012.c.viewmodel {
             let dfd = $.Deferred();
             service.getAll().done(function(data) {
                 self.listCompany(data.listCompany);
-                dfd.resolve();
+                dfd.resolve();    
             });
             return dfd.promise();
         }

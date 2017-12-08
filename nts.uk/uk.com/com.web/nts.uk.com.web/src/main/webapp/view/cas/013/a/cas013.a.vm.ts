@@ -2,7 +2,9 @@ module nts.uk.com.view.cas013.a.viewmodel {
 
     export class screenModel {
         // Metadata
-        isCreateMode: KnockoutObservable<boolean> = ko.observable(true);
+        isCreateMode: KnockoutObservable<boolean> = ko.observable(false);
+        isSelectedUser: KnockoutObservable<boolean> = ko.observable(false);
+        
 
         //ComboBOx RollType
         listRoleType: KnockoutObservableArray<RollType>;
@@ -17,7 +19,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
         selectedRoleIndividual: KnockoutObservable<string>;
         columnsIndividual: KnockoutObservableArray<NtsGridListColumn>;
 
-        name: KnockoutObservable<string>;
+        userName: KnockoutObservable<string>;
+        userId: KnockoutObservable<string>;
 
         //Date pick
         dateValue: KnockoutObservable<any>;
@@ -35,27 +38,29 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 { headerText: '名称', key: 'name', width: 160 }
             ]);
             self.columnsIndividual = ko.observableArray([
-                { headerText: 'コード', key: 'userId', width: 80 },
+                { headerText: '', key: 'userId', hidden: true },
+                { headerText: 'コード', key: 'loginId', width: 80 },
                 { headerText: '名称', key: 'name', width: 70 },
                 { headerText: '期間', key: 'datePeriod', width: 190 },
             ]);
             self.selectedRoleIndividual = ko.observable('');
-            self.name = ko.observable('');
+            self.userName = ko.observable('');
+            self.userId = ko.observable('');
             self.dateValue = ko.observable({});
 
 
-            self.selectedRoleType.subscribe((code: string) => {
-                console.log('selected role type value ' + code);
-                self.getDataByRoleType(code.toString());
+            self.selectedRoleType.subscribe((roleType: string) => {
+                self.getRoles(roleType.toString());
+                self.isCreateMode(false);
+                self.isSelectedUser(false);
             });
 
-            self.selectedRole.subscribe((code: string) => {
-                console.log('selected role value ' + code);
-                self.selectRole(code.toString());
+            self.selectedRole.subscribe((roleId: string) => {
+                self.selectRole(roleId.toString(),'');
+                self.isSelectedUser(false);
             });
-            self.selectedRoleIndividual.subscribe((code: string) => {
-                console.log('selected role Grant value ' + code);
-                self.selectRoleGrant(code.toString());
+            self.selectedRoleIndividual.subscribe((userId: string) => {
+                self.selectRoleGrant(userId.toString());
             });
 
 
@@ -66,84 +71,58 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             dfd.resolve();
-
-            new service.Service().getAllData('0').done(function(data: ObjectRole) {
-                //list role type
-                self.listRoleType(data.roleTypeDtos);
-                //list role
-                self.listRole(data.roleDtos);
-                if (data.roleDtos.length > 0) { self.selectedRole(data.roleDtos[0].roleId); }
-                //list role individual
-                var items = [];
-                for (let item of data.roleIndividualGrantDtos) { items.push(new RoleIndividual(item.userId, item.name, item.start, item.end)); }
-                self.listRoleIndividual(items);
-                if (data.roleIndividualGrantDtos.length > 0) {
-                    self.selectedRoleIndividual(data.roleIndividualGrantDtos[0].userId);
-                    self.name(data.roleIndividualGrantDtos[0].name);//role detail
-                    self.dateValue(new datePeriod(data.roleIndividualGrantDtos[0].start, data.roleIndividualGrantDtos[0].end));
-                }
+            new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
+                self.listRoleType(data);
             });
             return dfd.promise();
 
         }
 
-        private getDataByRoleType(roleType: string): void {
+        private getRoles(roleType: string): void {
             var self = this;
             if (roleType != '') {
-                new service.Service().getAllData(roleType).done(function(data: ObjectRole) {
-                    console.log(data);
-                    self.listRole(data.roleDtos);
-                    if (data.roleDtos.length > 0) { self.selectedRole(data.roleDtos[0].roleId); }
-                    //list role individual
-                    if (data.roleIndividualGrantDtos.length > 0) {
-                        let temp = [];
-                        for (let item of data.roleIndividualGrantDtos) { temp.push(new RoleIndividual(item.userId, item.name, item.start, item.end)); }
-                        self.listRoleIndividual(temp);
-                        self.selectedRoleIndividual(data.roleIndividualGrantDtos[0].userId);
-                        //role detail
-                        self.name(data.roleIndividualGrantDtos[0].name);
-                        self.dateValue(new datePeriod(data.roleIndividualGrantDtos[0].start, data.roleIndividualGrantDtos[0].end));
-                        //console.log(data);
-                    } else {
-                        self.listRoleIndividual([]);
-                        self.selectedRoleIndividual('');
-                        self.name('');
-                        self.dateValue({});
+                new service.Service().getRole(roleType).done(function(data: any) {
+                    if (data != null && data.length > 0) {
+                        self.listRole(data);
+                        self.selectedRole(data[0].roleId);
+                    }
+                    else {
+                        self.listRole([]);
+                        self.selectedRole('')
                     }
                 });
             } else {
                 self.listRole([]);
                 self.selectedRole('');
-                self.listRoleIndividual([]);
-                self.selectedRoleIndividual('');
-                self.name('');
-                self.dateValue({});
             }
         }
 
-        private selectRole(roleId: string): void {
+        private selectRole(roleId: string, userIdSelected: string): void {
             var self = this;
             if (roleId != '') {
-                new service.Service().getByRoleId(roleId).done(function(data: Array<RoleIndividual>) {
-                    self.listRoleIndividual.removeAll();
-                    if (data.length > 0) {
-                        let items = []
-                        for (let item of data) { items.push(new RoleIndividual(item.userId, item.name, item.start, item.end)); }
+                new service.Service().getRoleGrants(roleId).done(function(data: any) {
+                    if (data != null && data.length > 0) {
+                        let items = [];
+                        for (let entry of data) {
+                            items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod))
+                        }
                         self.listRoleIndividual(items);
-                        self.selectedRoleIndividual(data[0].userId);
-                        self.name(data[0].name);
-                        self.dateValue(new datePeriod(data[0].start, data[0].end));
+                        if(nts.uk.text.isNullOrEmpty(userIdSelected)){
+                            self.selectedRoleIndividual(items[0].userId);
+                        }else{
+                            self.selectedRoleIndividual(userIdSelected);    
+                        }
                     } else {
+                        self.listRoleIndividual([]);
                         self.selectedRoleIndividual('');
-                        self.name('');
+                        self.userName('');
                         self.dateValue({});
                     }
-
                 });
             } else {
                 self.listRoleIndividual([]);
                 self.selectedRoleIndividual('');
-                self.name('');
+                self.userName('');
                 self.dateValue({});
             }
         }
@@ -151,21 +130,26 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var self = this;
             var roleId = self.selectedRole();
             if (roleId != '' && UserId != '') {
-                new service.Service().getByUserIdAndRoleId(roleId, UserId).done(function(data: RoleIndividual) {
+                new service.Service().getRoleGrant(roleId, UserId).done(function(data: any) {
                     if (data != null) {
-                        self.name(data.name);
-                        self.dateValue(new datePeriod(data.start, data.end));
-                    } else {
-                        self.name('');
-                        self.dateValue({});
-                    }
-
+                        self.userName(data.userName);
+                        self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
+                        self.selectedRoleIndividual(UserId);
+                        if(self.isCreateMode()){
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                        }
+                        self.isCreateMode(false);
+                    } 
                 });
-            } else {
-                self.name('');
-                self.dateValue({});
-            }
-
+            } 
+        }
+        New(): void {
+            var self = this;
+            self.isCreateMode(true);
+            self.selectedRoleIndividual('');
+            self.userName('');
+            self.dateValue({});
+            nts.uk.ui.errors.clearAll();
         }
         openBModal(): void {
             var self = this;
@@ -175,10 +159,71 @@ module nts.uk.com.view.cas013.a.viewmodel {
             };
             nts.uk.ui.windows.setShared("param", param);
             nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
-                let data = nts.uk.ui.windows.getShared("userId");
+                let data = nts.uk.ui.windows.getShared("UserInfo");
                 if (data != null) {
-                    self.selectedRoleIndividual(data);
-                    self.selectedRoleIndividual(data);
+                    self.userName(data.decisionName);
+                    self.userId(data.decisionUserID);
+                    self.isSelectedUser(true);
+                    self.selectRoleGrant(data.decisionUserID);
+                }
+            });
+        }
+        save(): void{
+            var self = this;
+            if(!nts.uk.text.isNullOrEmpty(self.selectedRoleType()) 
+                    && !nts.uk.text.isNullOrEmpty(self.selectedRole())
+                    && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
+                    && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)
+                    && self.userName() != ''){
+                if(self.isSelectedUser() && self.isCreateMode()){
+                    self.insert();
+                }else{
+                    console.log('upDate');
+                }
+            }else if(nts.uk.text.isNullOrEmpty(self.selectedRole())){
+                //nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
+            }else if(nts.uk.text.isNullOrEmpty(self.userName())){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
+            }else if(nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)){
+                $(".nts-input").trigger("validate");
+            }else{
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
+            }
+                
+        }
+        private insert(): void{
+            var self = this;
+            var roleTpye = self.selectedRoleType();
+            var roleId = self.selectedRole();
+            var userId = self.userId();
+            var start = nts.uk.time.parseMoment(self.dateValue().startDate).format();
+            var end = nts.uk.time.parseMoment(self.dateValue().endDate).format();
+            new service.Service().insertRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
+                if(!nts.uk.util.isNullOrUndefined(data)){
+                    self.selectRole(roleId,data);
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
+                    self.isCreateMode(false);
+                }else{
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                    self.isCreateMode(false);
+                }
+            });
+        }
+        private upDate(): void{
+            var self = this;
+            var roleTpye = self.selectedRoleType();
+            var roleId = self.selectedRole();
+            var userId = self.userId();
+            var start = nts.uk.time.parseMoment(self.dateValue().startDate).format();
+            var end = nts.uk.time.parseMoment(self.dateValue().endDate).format();
+            new service.Service().insertRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
+                if(!nts.uk.util.isNullOrUndefined(data)){
+                    self.selectRole(roleId,data);
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
+                    self.isCreateMode(false);
+                }else{
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                    self.isCreateMode(false);
                 }
             });
         }
@@ -211,13 +256,15 @@ module nts.uk.com.view.cas013.a.viewmodel {
     }
     class RoleIndividual {
         userId: string;
+        loginId: string;
         name: string;
         start: string;
         end: string;
         datePeriod: string;
 
-        constructor(userId: string, name: string, start: string, end: string) {
+        constructor(userId: string, loginId: string, name: string, start: string, end: string) {
             this.userId = userId;
+            this.loginId = loginId;
             this.name = name;
             this.start = start;
             this.end = end;

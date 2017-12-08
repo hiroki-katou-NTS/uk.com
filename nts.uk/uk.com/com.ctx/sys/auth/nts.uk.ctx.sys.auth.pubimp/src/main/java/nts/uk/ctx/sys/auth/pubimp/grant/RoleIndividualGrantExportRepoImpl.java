@@ -28,9 +28,9 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 
 	@Override
 	public RoleIndividualGrantExport getByUserAndRoleType(String userId, Integer roleType) {
-		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository
-				.findByUserAndRole(userId, RoleType.valueOf(roleType).value);
-		return new RoleIndividualGrantExport(roleIndividualGrant.get().getRoleId());
+		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository
+				.findByUserAndRole(userId, RoleType.valueOf(roleType).value).get(0);
+		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
 	}
 
 	@Override

@@ -11,21 +11,18 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.stamp.StampDto;
 import nts.uk.ctx.at.record.app.find.stamp.StampFinder;
+import nts.uk.ctx.at.record.app.find.stamp.StampDetailParamDto;
 
 @Path("at/record/stamp")
 @Produces("application/json")
 public class StampReferenceWebService extends WebService {
 	@Inject
-	private StampFinder getStamp;
-
-	/**
-	 * get Stamp Info
-	 * 
-	 * @return
-	 */
+	private StampFinder stampDeFinder;
+	
 	@POST
-	@Path("getstampbyempcode/{startDate}/{endDate}")
-	public List<StampDto> getStampReference(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate, List<String> cardNumber) {
-		return this.getStamp.findByEmployeeCode(cardNumber, startDate, endDate);
+	@Path("getListStampDetail")
+	public List<StampDto> getListStampDetail(StampDetailParamDto stampDto){
+		List<StampDto> data = stampDeFinder.getListStampDetail(stampDto);
+		return data;
 	}
 }

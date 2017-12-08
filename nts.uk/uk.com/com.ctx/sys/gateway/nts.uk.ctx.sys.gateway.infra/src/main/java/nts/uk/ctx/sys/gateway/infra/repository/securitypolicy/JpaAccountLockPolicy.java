@@ -49,7 +49,7 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 				this.commandProxy().insert(this.toEntity(accountLockPolicy));
 			} else {
 				this.commandProxy().insert(new SgwstAccountLockPolicy(accountLockPolicy.getContractCode().v(), new BigDecimal(1),
-						new BigDecimal(0), "", new BigDecimal(0)));
+						new BigDecimal(0), "　", new BigDecimal(0)));
 			}
 		}
 	}

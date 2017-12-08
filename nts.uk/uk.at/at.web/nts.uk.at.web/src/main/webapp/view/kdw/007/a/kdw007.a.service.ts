@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw007.a.service {
     var paths: any = {
         getAll: "ctx/at/record/workrecord/erroralarm/getall",
         update: "ctx/at/record/workrecord/erroralarm/update",
+        remove: "ctx/at/record/workrecord/erroralarm/remove",
         getEmploymentByCode: "bs/employee/employment/findByCode/",
         getClassificationByCode: "bs/employee/classification/find/",
         findAllJobTitle: "bs/employee/jobtitle/findAll",
@@ -21,6 +22,10 @@ module nts.uk.at.view.kdw007.a.service {
 
     export function update(command) {
         return nts.uk.request.ajax(paths.update, command);
+    }
+    
+    export function remove(code) {
+        return nts.uk.request.ajax(paths.update, code);
     }
 
     export function getEmploymentByCode(code) {

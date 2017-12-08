@@ -3,12 +3,9 @@ package nts.uk.ctx.sys.auth.infra.repository.user;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
@@ -41,7 +38,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return this.queryProxy()
 				.query(SELECT_BY_USER,SacmtUser.class)
 				.setParameter("userID", userID)
-				.getSingle(c -> toDomain(c));
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -49,7 +46,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		
 		List<User> data =  this.queryProxy()
 				.query(SELECT_ALL_USER, SacmtUser.class)
-				.getList(c -> toDomain(c));
+				.getList(c -> c.toDomain());
 		List<User> dataSelect = new ArrayList<>();
 		for(String id :userID){
 			for (User user : data){
@@ -62,35 +59,22 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return dataSelect;
 	}
 
-	private User toDomain(SacmtUser entity) {
-		return User.createFromJavatype(
-				entity.sacmtUserPK.userID, 
-				entity.defaultUser, 
-				entity.password, 
-				entity.loginID, 
-				entity.contractCd, 
-				entity.expirationDate, 
-				entity.specialUser, 
-				entity.multiCompanyConcurrent, 
-				entity.mailAdd, 
-				entity.userName, 
-				entity.associatedPersonID);
-	}
-
 	@Override
 	public List<User> searchUser(String userIDName, GeneralDate date) {
 		return this.queryProxy().
 				query(SELECT_BY_ID_OR_NAME, SacmtUser.class)
+				
+				
 				.setParameter("userIDName", userIDName)
 				.setParameter("date", date)
-				.getList(c -> toDomain(c));
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<User> getAllUser() {
 		return this.queryProxy()
 				.query(SELECT_ALL_USER, SacmtUser.class)
-				.getList(c -> toDomain(c));
+				.getList(c -> c.toDomain());
 	}
 
 }
