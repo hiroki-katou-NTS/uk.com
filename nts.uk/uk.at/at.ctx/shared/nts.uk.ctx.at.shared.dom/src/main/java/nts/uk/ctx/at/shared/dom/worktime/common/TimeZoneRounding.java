@@ -41,26 +41,6 @@ public class TimeZoneRounding extends TimeZone {
 		memento.setEnd(this.end);
 	}
 
-	/**
-	 * Checks if is overlap.
-	 *
-	 * @param timezone the timezone
-	 * @return true, if is overlap
-	 */
-	public boolean isOverlap(TimeZoneRounding timezone) {
-		return !(this.end.lessThan(timezone.getStart()) || this.start.greaterThan(timezone.getEnd()));
-	}
-
-	/**
-	 * Checks if is between or equal.
-	 *
-	 * @param timezone the timezone
-	 * @return true, if is between or equal
-	 */
-	public boolean isBetweenOrEqual(TimeZoneRounding timezone) {
-		return this.start.greaterThanOrEqualTo(timezone.start) && this.end.lessThanOrEqualTo(timezone.getEnd());
-	}
-
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */

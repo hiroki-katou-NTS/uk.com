@@ -22,4 +22,24 @@ public class TimeZone extends DomainObject {
 	/** The end. */
 	// 終了
 	protected TimeWithDayAttr end;
+
+	/**
+	 * Checks if is overlap.
+	 *
+	 * @param timezone the timezone
+	 * @return true, if is overlap
+	 */
+	public boolean isOverlap(TimeZone timezone) {
+		return !(this.end.lessThan(timezone.getStart()) || this.start.greaterThan(timezone.getEnd()));
+	}
+
+	/**
+	 * Checks if is between or equal.
+	 *
+	 * @param timezone the timezone
+	 * @return true, if is between or equal
+	 */
+	public boolean isBetweenOrEqual(TimeZone timezone) {
+		return this.start.greaterThanOrEqualTo(timezone.start) && this.end.lessThanOrEqualTo(timezone.getEnd());
+	}
 }
