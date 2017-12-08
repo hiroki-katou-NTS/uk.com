@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 450, height: 600 };</script>
+			<script>var dialogSize = { width: 430, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -22,26 +22,27 @@
 
 			<div id="contents-area">
 				<div class="cf">
-					<div style="float: left">
-						<div class="control-group">
-							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS0012_20')}</div>
-							<input id="search" data-bind="ntsTextEditor: {value: searchValue}" />
-							<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS0012_23')}</button>
-						</div>
-						<table id="grid_container" style="margin: auto;"
-							data-bind="ntsGridList: {
+					<div class="control-group">
+						<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS012_20')}</div>
+						<input tabindex="1" id="search"
+							data-bind="ntsTextEditor: {value: searchValue}" />
+						<button tabindex="2" id="searchButton" data-bind="click: search">#{i18n.getText('CAS012_23')}</button>
+					</div>
+					<table tabindex="3" id="grid_container" style="margin: auto;"
+						data-bind="ntsGridList: {
 											height: 400,
 											options: dataSource,
 											optionsValue: 'userID',
 											columns: columns,
 											value: selectUserID}">
-						</table>
-					</div>
+					</table>
+
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click :decision">#{i18n.getText('CAS0012_27')}</button>
-				<button data-bind ="click :cancel_Dialog">#{i18n.getText('CAS0012_28')}</button>
+				<button tabindex="4" class="proceed x-large"
+					data-bind="click :decision">#{i18n.getText('CAS012_27')}</button>
+				<button tabindex="5" data-bind="click :cancel_Dialog">#{i18n.getText('CAS012_28')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

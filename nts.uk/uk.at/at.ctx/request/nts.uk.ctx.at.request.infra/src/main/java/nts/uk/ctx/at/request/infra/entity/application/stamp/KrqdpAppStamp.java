@@ -20,8 +20,5 @@ public class KrqdpAppStamp {
 	
 	@Column(name="APP_ID")
 	public String appID;
-	
-	@Column(name="STAMP_REQUEST_MODE")
-	public Integer stampRequestMode;
 
 }

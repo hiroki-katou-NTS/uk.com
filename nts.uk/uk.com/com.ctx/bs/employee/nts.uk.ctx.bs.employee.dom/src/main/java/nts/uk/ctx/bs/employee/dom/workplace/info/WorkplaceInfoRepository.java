@@ -100,4 +100,13 @@ public interface WorkplaceInfoRepository {
 	 */
 	List<WorkplaceInfo> findByWkpIds(String companyId, List<String> wkpIds);
 	
+	/**
+	 * Find detail latest by wkp ids.
+	 *
+	 * @param companyId the company id
+	 * @param endDateLatest the end date latest
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId, GeneralDate endDateLatest);
+	
 }

@@ -10,6 +10,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -44,8 +47,23 @@ public class KrcstErAlCompareRange extends UkJpaEntity implements Serializable {
 	@Column(name = "END_VALUE")
 	public BigDecimal endValue;
 	
+	@OneToOne
+	@JoinColumns({
+		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
+	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+	
 	@Override
 	protected Object getKey() {
 		return this.krcstEralCompareRangePK;
+	}
+
+	public KrcstErAlCompareRange(KrcstErAlCompareRangePK krcstEralCompareRangePK, BigDecimal compareAtr,
+			BigDecimal startValue, BigDecimal endValue) {
+		super();
+		this.krcstEralCompareRangePK = krcstEralCompareRangePK;
+		this.compareAtr = compareAtr;
+		this.startValue = startValue;
+		this.endValue = endValue;
 	}
 }

@@ -32,7 +32,7 @@ public class DeleteRoleIndividualGrantCommandHandler extends CommandHandler<Dele
 		if (roleType == RoleType.SYSTEM_MANAGER) {
 			DatePeriod insertPeriod = new DatePeriod(command.getStartValidPeriod(), command.getEndValidPeriod());
 			boolean isValid = roleIndividualService.checkSysAdmin(command.getUserID(), insertPeriod);
-			if (isValid == true)
+			if (isValid == false)
 				throw new BusinessException("Msg_331");
 		}
 

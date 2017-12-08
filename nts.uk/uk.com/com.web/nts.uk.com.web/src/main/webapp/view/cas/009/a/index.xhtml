@@ -26,15 +26,15 @@
 				<div class="container">
 					<button id="new" data-bind="click: createNew" tabindex="1">#{i18n.getText('CAS009_3')}</button>
 					<button id="registration" data-bind ="click: save" class="proceed" tabindex="2">#{i18n.getText('CAS009_4')}</button>
-					<button id="delete" data-bind ="click: remove, disable: component.currentCode()==''" class="danger" tabindex="3">#{i18n.getText('CAS009_5')}</button>
-					<button id="reference" data-bind="enable: enableDetail" tabindex="4">#{i18n.getText('CAS009_6')}</button>
+					<button id="delete" data-bind ="click: remove, enable: component.currentCode()!='' &amp;&amp; $root.errors.isEmpty()" class="danger" tabindex="3">#{i18n.getText('CAS009_5')}</button>
+					<button id="reference" data-bind="enable: enableDetail, click: open_Dialog" tabindex="4">#{i18n.getText('CAS009_6')}</button>
 				</div>
 			</div>
 			<div id="contents-area" >
 				<div class="container">
 					<div id="left-content" data-bind="with : component ">
-						<div id='text_list' >#{i18n.getText('CAS009_7')}</div>
-						<div id='list_role'><ui:include src="../../../ccg/025/component/index.xhtml" /> </div>						
+						<div id='text_list' tabindex="5" >#{i18n.getText('CAS009_7')}</div>
+						<div id='list_role' tabindex="6"><ui:include src="../../../ccg/025/component/index.xhtml" /> </div>						
 					</div>
 					
 					<div id="right-content" >
@@ -44,18 +44,21 @@
 										<div data-bind="ntsFormLabel: {required: true, constraint: ['RoleCode' , 'RoleName']}">#{i18n.getText('CAS009_10')}</div>									
 									</td>
 									<td>
-										<input tabindex="5" id="roleCode"
+										<input tabindex="7" id="roleCode"
 			                                 data-bind="ntsTextEditor: {
 			                                 name: '#[CAS009_11]',
 			                                 constraint: 'RoleCode',
 			                                 value: roleCode,
-			                                 required: true}, hasFocus: isSelected, disable: roleId()!=''"/>
-										<input tabindex="6" id="roleName"
+			                                 required: true,
+			                                 enable: createMode,
+			                                 immediate: true }, hasFocus: createMode()"/>
+										<input tabindex="8" id="roleName"
 			                                 data-bind="ntsTextEditor: {
 			                                 name: '#[CAS009_12]',
 			                                 value: name,
 			                                 constraint: 'RoleName',
-			                                 required: true}"/>		                                 
+			                                 required: true,
+			                                 immediate: true}, hasFocus: !createMode()"/>		                                 
 									</td>
 								</tr>	
 								<tr>
@@ -63,7 +66,7 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS009_13')}</div>
 									</td>
 									<td>
-										<div  data-bind="ntsSwitchButton: {
+										<div tabindex="9"  data-bind="ntsSwitchButton: {
 																	options: enumAuthen,
 																	optionsValue: 'code',
 																	optionsText: 'name',
@@ -75,7 +78,7 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS009_16')}</div>
 									</td>
 									<td>
-										<div id="combo-box" data-bind="ntsComboBox: {
+										<div tabindex="10" id="combo-box" data-bind="ntsComboBox: {
 											options: enumRangeChange,
 											optionsValue: 'value',
 											visibleItemsCount: 20,
@@ -94,7 +97,7 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS009_17')}</div>
 									</td>
 									<td>
-										<div  data-bind="ntsSwitchButton: {
+										<div tabindex="11" data-bind="ntsSwitchButton: {
 																	options: enumAllow,
 																	optionsValue: 'code',
 																	optionsText: 'name',

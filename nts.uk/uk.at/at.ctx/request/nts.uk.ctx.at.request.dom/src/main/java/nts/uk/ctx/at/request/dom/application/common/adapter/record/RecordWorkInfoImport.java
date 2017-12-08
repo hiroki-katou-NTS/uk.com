@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.record;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 /**
  * 
  * @author Doan Duy Hung
@@ -42,4 +45,35 @@ public class RecordWorkInfoImport {
 
 	//日別実績の勤怠時間．実働時間．総労働時間．短時間勤務時間
 	private int time5;
+	
+	/**
+	 * 計算フレックス
+	 */
+	private int flexCaculation;
+	
+	/**
+	 * 計算残業
+	 */
+	private List<OvertimeInputCaculation> overtimeCaculation;
+	
+	/**
+	 * 計算振替残業
+	 */
+	private List<OvertimeInputCaculation> overtimeOverHeadCaculation;
+	/**
+	 * 計算休日出勤
+	 */
+	private List<OvertimeInputCaculation> overtimeHolidayCaculation;
+	/**
+	 * 計算休日出勤
+	 */
+	private List<OvertimeInputCaculation> overtimeTransferCaculation;
+	/**
+	 * 計算就業外深夜
+	 */
+	private int shiftNightCaculation;
+	/**
+	 * 休出深夜
+	 */
+	private int breakLateNight;
 }
