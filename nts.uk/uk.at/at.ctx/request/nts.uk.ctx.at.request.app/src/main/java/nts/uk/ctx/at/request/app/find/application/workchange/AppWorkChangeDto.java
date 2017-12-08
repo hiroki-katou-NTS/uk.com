@@ -10,8 +10,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 @AllArgsConstructor
 @Value
 public class AppWorkChangeDto
-{
-    
+{    
     /**
     * 会社ID
     */
@@ -92,9 +91,11 @@ public class AppWorkChangeDto
     */
     private int backHomeAtr2;
     
+    private Long version;
+    
     public static AppWorkChangeDto fromDomain(AppWorkChange domain)
     {
-        return new AppWorkChangeDto(domain.getCid(), domain.getAppId(), domain.getWorkTypeCd(), domain.getWorkTimeCd(), domain.getExcludeHolidayAtr(), domain.getWorkChangeAtr(), domain.getGoWorkAtr1(), domain.getBackHomeAtr1(), domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(), domain.getWorkTimeStart1(), domain.getWorkTimeEnd1(), domain.getWorkTimeStart2(), domain.getWorkTimeEnd2(), domain.getGoWorkAtr2(), domain.getBackHomeAtr2());
+        return new AppWorkChangeDto(domain.getCid(), domain.getAppId(), domain.getWorkTypeCd(), domain.getWorkTimeCd(), domain.getExcludeHolidayAtr(), domain.getWorkChangeAtr(), domain.getGoWorkAtr1(), domain.getBackHomeAtr1(), domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(), domain.getWorkTimeStart1(), domain.getWorkTimeEnd1(), domain.getWorkTimeStart2(), domain.getWorkTimeEnd2(), domain.getGoWorkAtr2(), domain.getBackHomeAtr2(), domain.getVersion());
     }
     
 }

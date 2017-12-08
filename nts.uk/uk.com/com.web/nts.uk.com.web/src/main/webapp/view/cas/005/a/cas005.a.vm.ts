@@ -23,8 +23,9 @@ module nts.uk.com.view.cas005.a {
             currentCodeList: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
             listWorkPlaceFunction: KnockoutObservableArray<model.WorkPlaceFunction>;
-            listWorkPlaceAuthority : KnockoutObservableArray<any>; 
-            listWpkAuthoritySelect : KnockoutObservableArray<any>;
+            listWorkPlaceAuthority : KnockoutObservableArray<model.WpkAuthoritySelect>; 
+            listWpkAuthoritySelect : KnockoutObservableArray<model.WpkAuthoritySelect>;
+            
             //table-right
             component: ccg.component.viewmodel.ComponentModel;
             
@@ -35,11 +36,11 @@ module nts.uk.com.view.cas005.a {
             listEmployeeRefRange  :KnockoutObservableArray<any>; //row 2 8
             listScheduleEmployeeRef :KnockoutObservableArray<any>; //row 4
             
-            selectedEmployeeReferenceRange: KnockoutObservable<string>;
-            bookingScreen :  KnockoutObservable<string>;
-            scheduleScreen :  KnockoutObservable<string>;
-            registeredInquiries :  KnockoutObservable<string>;
-            specifyingAgent :  KnockoutObservable<string>;
+            selectedEmployeeReferenceRange: KnockoutObservable<number>;
+            bookingScreen :  KnockoutObservable<number>;
+            scheduleScreen :  KnockoutObservable<number>;
+            registeredInquiries :  KnockoutObservable<number>;
+            specifyingAgent :  KnockoutObservable<number>;
             //list 
             listWebMenu : KnockoutObservableArray<any>;
             selectWebMenu : any;
@@ -47,19 +48,23 @@ module nts.uk.com.view.cas005.a {
             //enable
             isRegister :KnockoutObservable<boolean>;
             isDelete :KnockoutObservable<boolean>;
-            
+            enableRoleCode : KnockoutObservable<boolean>;
+            //obj roleCas005Command
+            roleCas005Command  :KnockoutObservable<model.RoleCas005Command>;
+            listWorkPlaceSelect : KnockoutObservableArray<model.WorkPlaceAuthorityCommand>;
+            listWorkPlaceAuthorityCommand : KnockoutObservableArray<model.WorkPlaceAuthorityCommand>;
             constructor() {
                 let self = this;
                 //table enum RoleType,EmployeeReferenceRange
                 self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
                 self.listEmployeeReferenceRange = ko.observableArray(__viewContext.enums.EmployeeReferenceRange);
-//                self.listEmployeeRefRange = ko.observableArray(__viewContext.enums.EmployeeRefRange);
-//                self.listScheduleEmployeeRef = ko.observableArray(__viewContext.enums.EmployeeRefRange);
-                self.selectedEmployeeReferenceRange = ko.observable("");
-                self.bookingScreen = ko.observable("");
-                self.scheduleScreen = ko.observable("");
-                self.registeredInquiries = ko.observable("");
-                self.specifyingAgent = ko.observable("");
+                self.listEmployeeRefRange = ko.observableArray(__viewContext.enums.EmployeeRefRange);
+                self.listScheduleEmployeeRef = ko.observableArray(__viewContext.enums.ScheduleEmployeeRef);
+                self.selectedEmployeeReferenceRange = ko.observable(0);
+                self.bookingScreen = ko.observable(0);
+                self.scheduleScreen = ko.observable(0);
+                self.registeredInquiries = ko.observable(0);
+                self.specifyingAgent = ko.observable(0);
               
                 //text
                 self.roleName = ko.observable('');
@@ -102,11 +107,17 @@ module nts.uk.com.view.cas005.a {
                 //enable
                 self.isRegister = ko.observable(false);
                 self.isDelete= ko.observable(false);
+                self.enableRoleCode = ko.observable(false);
                 //table right
                 self.component = new ccg.component.viewmodel.ComponentModel({ 
                     roleType: 3,
                     multiple: false
                 });
+                //obj roleCas005Command
+                self.roleCas005Command = ko.observable(null); 
+                self.listWorkPlaceSelect = ko.observableArray([]);
+                self.listWorkPlaceAuthorityCommand = ko.observableArray([]);
+                
                 self.component.currentCode.subscribe((value) => {
                     
                     let item = _.find(self.listRole(), ['roleId', value]);
@@ -117,11 +128,15 @@ module nts.uk.com.view.cas005.a {
                         self.roleCode(item.roleCode); 
                         self.listWpkAuthoritySelect([]);
                         for(let i = 0;i< self.listWorkPlaceAuthority().length;i++){
-                            if(self.listWorkPlaceAuthority()[i].roleId ==  value)
-                                self.listWpkAuthoritySelect.push(self.listWorkPlaceAuthority()[i]); 
+                            if(self.listWorkPlaceAuthority()[i].roleId ==  value){
+                                self.listWorkPlaceAuthority()[i].displayName = _.find(self.listWorkPlaceFunction(), ['functionNo', self.listWorkPlaceAuthority()[i].functionNo]).displayName;
+                                self.listWorkPlaceAuthority()[i].description = _.find(self.listWorkPlaceFunction(), ['functionNo', self.listWorkPlaceAuthority()[i].functionNo]).description;
+                                self.listWpkAuthoritySelect.push(self.listWorkPlaceAuthority()[i]);
+                            }
                         }
                         //web menu
                         self.getRoleByRoleTiesById(value);
+                        self.getEmploymentRoleById(value);
                         
                     }else{
                         self.roleName('');
@@ -187,6 +202,11 @@ module nts.uk.com.view.cas005.a {
                 let dfd = $.Deferred();
                 service.getAllWorkPlaceFunction().done(function(data){
                     self.listWorkPlaceFunction(data);
+                    for(let i = 0;i<self.listWorkPlaceFunction().length;i++){
+                        let temp = new model.WorkPlaceAuthorityCommand(self.listWorkPlaceFunction()[i].functionNo,true);
+                        self.listWorkPlaceAuthorityCommand().push(temp);
+                    }
+                    
                     dfd.resolve(data);  
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -218,8 +238,26 @@ module nts.uk.com.view.cas005.a {
                 let dfd = $.Deferred();
                 service.getAllWorkPlaceAuthority().done(function(data){
                     self.listWorkPlaceAuthority(data);
-                    self.selectRoleCodeByIndex(0);
                     dfd.resolve(data);  
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                dfd.resolve(); 
+            }
+            /**
+             * getEmploymentRoleById
+             */
+            getEmploymentRoleById(roleId : string){
+                let self = this;
+                let dfd = $.Deferred();            
+                service.getEmploymentRoleById(roleId).done(function(data){
+                    self.scheduleScreen(data.scheduleEmployeeRef);
+                    self.bookingScreen(data.bookEmployeeRef);
+                    self.specifyingAgent(data.employeeRefSpecAgent);
+                    self.registeredInquiries(data.presentInqEmployeeRef);
+                    self.selectReferenceAuthority(data.futureDateRefPermit);
+                    dfd.resolve(data);    
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -231,12 +269,38 @@ module nts.uk.com.view.cas005.a {
              * btnCreate
              */
             createButton(){
+                
                 let self = this;
+                self.listWpkAuthoritySelect();
+                self.enableRoleCode(true);
                 self.roleName(null);
+                self.roleCode("");
                 errors.clearAll();
                 $("#roleTypeCd").focus()
                 self.isRegister(true);
                 self.isDelete(false);
+                self.assignAtr(0);
+                self.selectWebMenu(0);
+                self.scheduleScreen(0);
+                self.bookingScreen(0);
+                self.specifyingAgent(0);
+                self.registeredInquiries(0);
+                self.selectReferenceAuthority(0);
+                self.listWpkAuthoritySelect([]);
+                self.listWorkPlaceAuthorityCommand([]);
+                for(let i = 0;i< self.listWorkPlaceFunction().length;i++){
+                    let temp = new model.WpkAuthoritySelect(self.listWorkPlaceAuthority()[i].functionNo,
+                        false,
+                        self.listWorkPlaceAuthority()[i].displayName,
+                        self.listWorkPlaceAuthority()[i].description
+                        )
+                    
+                    self.listWpkAuthoritySelect.push(temp);
+                }
+                for(let i = 0;i< self.listWpkAuthoritySelect().length;i++){ //sucribe
+                  let tempCommand = new model.WorkPlaceAuthorityCommand(self.listWpkAuthoritySelect()[i].functionNo,self.listWpkAuthoritySelect()[i].availability());
+                    self.listWorkPlaceAuthorityCommand().push(tempCommand);  
+                }                
             }
             
             /**
@@ -247,7 +311,24 @@ module nts.uk.com.view.cas005.a {
                 self.isRegister(true);
                 self.isDelete(true);
                 if (!$(".nts-input").ntsError("hasError")){
-                    self.selectRoleCodeByIndex(0);    
+                    self.roleCas005Command(new model.RoleCas005Command(
+                        self.roleCode(),
+                        3, //roletype
+                        self.employeeReferenceRange(),
+                        self.roleName(),
+                        self.assignAtr(),
+                        self.selectWebMenu(),
+                        self.scheduleScreen(),
+                        self.bookingScreen(),
+                        self.specifyingAgent(),
+                        self.registeredInquiries(),
+                        self.selectReferenceAuthority(),
+                        self.listWorkPlaceAuthorityCommand()
+                        ) );
+                    
+                    self.addRoleCas005(self.roleCas005Command() );
+                    self.enableRoleCode(false);
+                    //self.selectRoleCodeByIndex(0);    
                 }
                     
             }
@@ -258,7 +339,6 @@ module nts.uk.com.view.cas005.a {
                 let self = this;
                 self.isRegister(true);
                 self.isDelete(true);
-                
             }
             /**
              * get list  web menu 
@@ -275,7 +355,25 @@ module nts.uk.com.view.cas005.a {
                 });
                 return dfd.promise();
             }
+            /**
+             * add Role screen Cas005
+             */
+            addRoleCas005(command : model.RoleCas005Command){
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.addRoleCas005(command).done(function(){
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    dfd.resolve();
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise(); 
+            }
             
+            /**
+             * open dialog B
+             */
             openDialogB() {
                 let self = this;
                 let param = {
@@ -313,21 +411,21 @@ module nts.uk.com.view.cas005.a {
         //class RoleCas005Command
         export class RoleCas005Command{
             roleId : string;
-            roleCode : string;
-            roleType : number;
-            employeeReferenceRange : number;
-            name : string;
+            roleCode : string; //row 1
+            roleType : number; //
+            employeeReferenceRange : number; //row 3
+            name : string; //row 1
             contractCode : string;
-            assignAtr :number;
+            assignAtr :number; //row 2
             companyId: string;
             //RoleByRoleTies
-            webMenuCd : string;
+            webMenuCd : string; //row 5
             // class :就業ロール
-            scheduleEmployeeRef : number;
-            bookEmployeeRef : number;
-            employeeRefSpecAgent : number;
-            presentInqEmployeeRef : number;
-            futureDateRefPermit : number;
+            scheduleEmployeeRef : number; //A3_034 row 7
+            bookEmployeeRef : number;   //A3_032 row 6
+            employeeRefSpecAgent : number;//A3_038  row 9
+            presentInqEmployeeRef : number;//A3_036 row 8
+            futureDateRefPermit : number;//A3_12,13 row 4
             //WorkPlaceAuthority
             listWorkPlaceAuthority : Array<WorkPlaceAuthorityCommand>;
             constructor(
@@ -361,25 +459,37 @@ module nts.uk.com.view.cas005.a {
             }
             
         }//end class RoleCas005Command      
-        
                 
         //class WorkPlaceAuthorityCommand
         export class WorkPlaceAuthorityCommand{
             roleId : string;
             companyId : string;
             functionNo : number;
-            availability : boolean; 
-            constructor(roleId : string,
-                companyId : string,
+            availability : KnockoutObservable<boolean>; 
+            constructor(
                 functionNo : number,
                 availability : boolean){
-                    this.roleId = roleId;
-                    this.companyId = companyId;
                     this.functionNo = functionNo;
-                    this.availability = availability;
+                    this.availability = ko.observable(availability);
             }
-        }//end class WorkPlaceAuthorityCommand        
+        }//end class WorkPlaceAuthorityCommand   
         
+        export class WpkAuthoritySelect{
+            roleId : string;
+            functionNo : number;
+            availability :KnockoutObservable<boolean>;
+            displayName : string;
+            description : string;
+            constructor(
+            functionNo : number,
+            availability :boolean,
+            displayName : string,
+            description : string){
+                this.functionNo = functionNo;   
+                this.availability = ko.observable(availability);
+                this.displayName = displayName;
+                this.description = description;
+            }
+        }
     }//end module model
-
 }//end module

@@ -90,7 +90,7 @@ public class PersonInformationRoleFinder {
 	}
 	
 	public boolean userHasRoleType (int roleType){
-		Optional<RoleIndividualGrant> roleIndOpt = roleIndRepo.findRoleIndividualGrant(AppContexts.user().userId(), AppContexts.user().companyId(), RoleType.valueOf(roleType));
+		Optional<RoleIndividualGrant> roleIndOpt = roleIndRepo.findByUserCompanyRoleType(AppContexts.user().userId(), AppContexts.user().companyId(), roleType);
 		GeneralDate now =  GeneralDate.today();
 		return roleIndOpt.isPresent() && roleIndOpt.get().getValidPeriod().contains(now);
 	}

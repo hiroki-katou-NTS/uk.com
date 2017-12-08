@@ -1,8 +1,12 @@
-span.caret-bottom.outline{font-size: 6.2rem;margin-left: 200px;}
-div.form-label.required{ margin-right: 40px;}
-div.form-label{margin-left: 20px; margin-right: 40px;}
+span.caret-bottom.outline{font-size: 6.2rem;margin-left: 120px;}
+div.form-label.required{margin-left: 20px; margin-right: 10px;}
+div.form-label{margin-left: 20px; margin-right: 10px;}
 span.text{margin-left: 20px; display: inline-block;}
-#contents-area{margin-left: 40px;}
-.left-content{display: inline-block;}	
-.right-content{display: inline-block; margin-left: 60px;}
-#SlectUser{margin-top: 30px;}
+#combo-box{width: 120px;}
+
+.cf .pull-left:nth-child(1) {margin-left: 120px;}
+.pull-left .ntsRangeButton_Container{display: none;}
+.pull-left #daterangepicker {height:28px; }
+.caret-right.outline{font-size: 74px;margin: 10px 15px;}
+.pull-left .control-group.button{margin: 30px 0 20px 20px;}
+.pull-left .control-group.button button{margin-right: 10px;}
