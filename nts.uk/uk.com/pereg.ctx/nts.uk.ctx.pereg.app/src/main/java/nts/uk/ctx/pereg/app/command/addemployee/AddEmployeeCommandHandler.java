@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.IdentifierUtil;
@@ -177,7 +178,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		}
 
 		this.empDataRepo.add(EmployeeDataMngInfo.createFromJavaType(companyId, personId, employeeId,
-				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, GeneralDate.min(), "", ""));
+				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, GeneralDateTime.min(), "", ""));
 
 	}
 
