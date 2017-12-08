@@ -20,18 +20,18 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button tabindex="1" data-bind="click: createBtn">#{i18n.getText('CAS0012_4')}</button>
+					<button tabindex="1" data-bind="click: createBtn">#{i18n.getText('CAS012_4')}</button>
 					<button class="proceed" tabindex="2"
-						data-bind="click : registryBtn">#{i18n.getText('CAS0012_5')}</button>
+						data-bind="click : registryBtn">#{i18n.getText('CAS012_5')}</button>
 					<button class="danger" tabindex="3"
-						data-bind="click: deleteBtn, enable: !isCreate()">#{i18n.getText('CAS0012_6')}</button>
+						data-bind="click: deleteBtn, enable: !isCreate()">#{i18n.getText('CAS012_6')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
 				<div class="container">
 					<div class="cf">
 						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS0012_7')}</div>
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS012_7')}</div>
 							<div id="combo-box" tabindex="4"
 								data-bind="ntsComboBox: {
 								options: listRoleType,
@@ -44,7 +44,7 @@
 								]}"></div>
 						</div>
 						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS0012_9')}</div>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_9')}</div>
 							<div id="combo-box" tabindex="5"
 								data-bind="ntsComboBox: {
 									options: listCompany,
@@ -62,7 +62,7 @@
 					<div class="cf">
 						<div class="left-content">
 							<div class="valign-center control-group">
-								<span class="rolelist-label">#{i18n.getText('CAS0012_11')}</span>
+								<span class="rolelist-label">#{i18n.getText('CAS012_11')}</span>
 							</div>
 							<table tabindex="6" id="single-list"
 								data-bind="ntsGridList: {								
@@ -74,11 +74,11 @@
 						</div>
 						<div class="right-content">
 							<button id="btn-selectuser" tabindex="7" class="x-large"
-								data-bind="click : openCAS012_B, enable: isCreate">#{i18n.getText('CAS0012_16')}</button>
+								data-bind="click : openCAS012_B, enable: isCreate">#{i18n.getText('CAS012_16')}</button>
 							<label class="username"
 								data-bind="text: selectRoleIndividual().userName"></label>
 							<div class="valign-center control-group">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS0012_18')}</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_18')}</div>
 								<div id="daterangepicker" tabindex="8"
 									data-bind="ntsDateRangePicker: { value: datePeriod, maxRange: 'none', required: true, showNextPrevious: false }" />
 							</div>
