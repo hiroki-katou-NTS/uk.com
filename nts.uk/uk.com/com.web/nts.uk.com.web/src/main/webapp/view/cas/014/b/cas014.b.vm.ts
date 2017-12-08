@@ -162,11 +162,12 @@ module nts.uk.com.view.cas014.b {
 
                     service.registerData(command).done(function() {
                         //display registered data in selected state
-                        self.loadRoleSetHolder(self.selectedRoleSet(), data.employeeId);
-
-                        info({ messageId: "Msg_15" }).then(() => {
-                            $("#B4_2").focus();
+                        self.loadRoleSetHolder(self.selectedRoleSet(), data.employeeId).done(() => {
+                            info({ messageId: "Msg_15" }).then(() => {
+                                $("#B4_2").focus();
+                            });
                         });
+
                     }).fail(error => {
                         alertError({ messageId: error.messageId });
                     }).always(() => {
