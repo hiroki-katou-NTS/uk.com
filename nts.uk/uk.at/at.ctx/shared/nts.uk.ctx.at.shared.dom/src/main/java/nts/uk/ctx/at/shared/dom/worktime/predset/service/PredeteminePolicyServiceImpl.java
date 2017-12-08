@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset.service;
 
+import javax.ejb.Stateless;
+
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
@@ -15,6 +17,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * The Class PredeteminePolicyServiceImpl.
  */
+@Stateless
 public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 
 	/*

@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-
+@Stateless
 public class CommonWorkTimePolicyImpl implements CommonWorkTimePolicy {
 
 	@Override
