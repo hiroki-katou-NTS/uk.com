@@ -24,6 +24,11 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.bs.person.dom.person.info.BloodType;
+import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
+import nts.uk.ctx.bs.person.dom.person.info.Person;
+import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
@@ -64,21 +69,70 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 	@Inject
 	private EmployeeDataMngInfoRepository empDataRepo;
 
+	@Inject
+	private PersonRepository personRepo;
+
+	AddEmployeeCommand command;
+	String employeeId = IdentifierUtil.randomUniqueId();
+	String userId = IdentifierUtil.randomUniqueId();
+	String personId = IdentifierUtil.randomUniqueId();
+	List<ItemsByCategory> inputs;
+	String companyId = AppContexts.user().companyId();
+
 	@Override
 	protected void handle(CommandHandlerContext<AddEmployeeCommand> context) {
 
-		AddEmployeeCommand command = context.getCommand();
+		command = context.getCommand();
 
-		List<SettingItemDto> dataList = this.layoutFinder.itemListByCreateType(command.getCreateType(),
+		// add newPerson
+
+		addNewPerson();
+
+		// addmngInfo
+
+		addEmployeeDataMngInfo();
+
+		// add AffCompanyHist
+
+		addAffCompanyHist();
+
+		// update input
+
+		inputsProcess();
+
+		// add new User
+		addNewUser();
+
+		// register avatar
+
+		addAvatar();
+
+		// Update employee registration history
+		updateEmployeeRegHist();
+
+	}
+
+	private void addNewPerson() {
+
+		Person newPerson = Person.createFromJavaType(GeneralDate.min(), BloodType.Unselected.value,
+				GenderPerson.Male.value, personId, "", "", command.getEmployeeName(), "", "", "", "", "", "", "", "",
+				"", "", "");
+
+		this.personRepo.addNewPerson(newPerson);
+
+	}
+
+	private void inputsProcess() {
+
+		List<SettingItemDto> dataServer = this.layoutFinder.itemListByCreateType(command.getCreateType(),
 				command.getInitSettingId(), command.getHireDate(), command.getEmployeeCopyId());
 
-		// merge data from client with dataList
-		mergeData(dataList, command.getInputs());
+		// merge data from client with dataServer
+		mergeData(dataServer, command.getInputs());
 
-		List<ItemsByCategory> inputs = new ArrayList<ItemsByCategory>();
-
+		inputs = new ArrayList<ItemsByCategory>();
 		List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
-		dataList.forEach(x -> {
+		dataServer.forEach(x -> {
 
 			if (categoryCodeList.indexOf(x.getCategoryCode()) == -1 && x.getCategoryCode().charAt(1) == 'O') {
 
@@ -89,16 +143,31 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		categoryCodeList.forEach(categoryCd -> {
 
-			ItemsByCategory newCtg = createNewItemsByCategoryCode(dataList, categoryCd);
+			ItemsByCategory newCtg = createNewItemsByCategoryCode(dataServer, categoryCd);
 			if (newCtg != null) {
 
 				inputs.add(newCtg);
 			}
 
 		});
-		// set Person Name
-		setItemValue(inputs, "CS00002", "IS00003", command.getEmployeeName(), 2);
 
+		List<ItemsByCategory> updateInputs = inputs.stream()
+				.filter(x -> x.getCategoryCd() == "CS00002" || x.getCategoryCd() == "CS00003")
+				.collect(Collectors.toList());
+
+		PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
+
+		this.commandFacade.update(updateContainer);
+
+		inputs = inputs.stream().filter(x -> x.getCategoryCd() != "CS00002" && x.getCategoryCd() != "CS00003")
+				.collect(Collectors.toList());
+		// call add commandFacade
+		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, inputs);
+
+		this.commandFacade.add(addContainer);
+	}
+
+	private void addEmployeeDataMngInfo() {
 		// check duplicate employeeCode
 		List<EmployeeDataMngInfo> infoList = this.empDataRepo
 				.getEmployeeNotDeleteInCompany(AppContexts.user().companyId(), command.getEmployeeCode());
@@ -107,14 +176,12 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 			throw new BusinessException("Msg_345");
 		}
 
-		String personId = IdentifierUtil.randomUniqueId();
+		this.empDataRepo.add(EmployeeDataMngInfo.createFromJavaType(companyId, personId, employeeId,
+				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, GeneralDate.min(), "", ""));
 
-		String employeeId = IdentifierUtil.randomUniqueId();
+	}
 
-		String userId = IdentifierUtil.randomUniqueId();
-
-		// add AffCompanyHist
-
+	private void addAffCompanyHist() {
 		List<AffCompanyHistByEmployee> comHistList = new ArrayList<AffCompanyHistByEmployee>();
 
 		List<AffCompanyHistItem> comHistItemList = new ArrayList<AffCompanyHistItem>();
@@ -128,27 +195,17 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		this.companyHistRepo.add(newComHist);
 
-		PeregInputContainer inputContainer = new PeregInputContainer(personId, employeeId, inputs);
+	}
 
-		this.commandFacade.add(inputContainer);
-
-		// add new user
-		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
-		User newUser = User.createFromJavaType(userId, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false,
-				null, command.getEmployeeName(), employeeId);
-
-		this.userRepository.addNewUser(newUser);
-
-		// register avatar
+	private void addAvatar() {
 		PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, command.getAvatarId(),
 				TypeFile.AVATAR_FILE.value, null, null);
 
 		this.perFileManagementRepository.insert(perFile);
 
-		// Update employee registration history
+	}
 
-		String companyId = AppContexts.user().companyId();
+	private void updateEmployeeRegHist() {
 
 		String currentEmpId = AppContexts.user().employeeId();
 
@@ -169,22 +226,14 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 	}
 
-	private void setItemValue(List<ItemsByCategory> ctgList, String ctgCode, String ItemCode, String NewValue,
-			int saveType) {
-		if (!CollectionUtil.isEmpty(ctgList)) {
-			ItemsByCategory PersonCtg = ctgList.stream().filter(x -> x.getCategoryCd().equals(ctgCode)).findFirst()
-					.get();
+	private void addNewUser() {
+		// add new user
+		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
+		User newUser = User.createFromJavaType(userId, passwordHash, command.getLoginId(),
+				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false,
+				null, command.getEmployeeName(), employeeId);
 
-			Optional<ItemValue> PersonNameItemOpt = PersonCtg.getItems().stream()
-					.filter(x -> x.itemCode().equals(ItemCode)).findFirst();
-
-			if (PersonNameItemOpt.isPresent()) {
-				ItemValue PersonNameItem = PersonNameItemOpt.get();
-				PersonCtg.getItems().remove(PersonNameItem);
-				PersonCtg.getItems().add(
-						new ItemValue(PersonNameItem.definitionId(), PersonNameItem.itemCode(), NewValue, saveType));
-			}
-		}
+		this.userRepository.addNewUser(newUser);
 
 	}
 
