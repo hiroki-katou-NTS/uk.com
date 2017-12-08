@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
  * The Interface FixedWorkSettingPolicy.
@@ -17,5 +17,5 @@ public interface FixedWorkSettingPolicy {
 	 * @param fixedWork the fixed work
 	 * @param predTime the pred time
 	 */
-	void canRegister(FixedWorkSetting fixedWork, PredetemineTimeSet predTime);
+	void canRegister(FixedWorkSetting fixedWork, PredetemineTimeSetting predTime);
 }

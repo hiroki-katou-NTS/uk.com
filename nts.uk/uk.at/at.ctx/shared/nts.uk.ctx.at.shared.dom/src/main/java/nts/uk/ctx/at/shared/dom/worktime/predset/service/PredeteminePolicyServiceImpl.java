@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -26,7 +26,7 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	 * nts.uk.shr.com.time.TimeWithDayAttr, nts.uk.shr.com.time.TimeWithDayAttr)
 	 */
 	@Override
-	public void validateOneDay( PredetemineTimeSet pred, TimeWithDayAttr startTime,
+	public void validateOneDay( PredetemineTimeSetting pred, TimeWithDayAttr startTime,
 			TimeWithDayAttr endTime) {
 		int predEndTime = pred.getStartDateClock().valueAsMinutes() + pred.getRangeTimeDay().valueAsMinutes();
 		int predStartTime = pred.getStartDateClock().valueAsMinutes();
@@ -44,7 +44,7 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	 * nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime)
 	 */
 	@Override
-	public void compareWithOneDayRange( PredetemineTimeSet pred, DesignatedTime designatedTime) {
+	public void compareWithOneDayRange( PredetemineTimeSetting pred, DesignatedTime designatedTime) {
 		AttendanceTime oneDayRange = pred.getRangeTimeDay();
 
 		OneDayTime designatedHalfDayTime = designatedTime.getHalfDayTime();
@@ -64,7 +64,7 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	 * nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime)
 	 */
 	@Override
-	public void compareWithOneDayRange( PredetemineTimeSet pred,
+	public void compareWithOneDayRange( PredetemineTimeSetting pred,
 			LateEarlyGraceTime lateEarlyGraceTime) {
 		if (lateEarlyGraceTime.valueAsMinutes() > pred.getRangeTimeDay().valueAsMinutes()) {
 			throw new BusinessException("Msg_517");

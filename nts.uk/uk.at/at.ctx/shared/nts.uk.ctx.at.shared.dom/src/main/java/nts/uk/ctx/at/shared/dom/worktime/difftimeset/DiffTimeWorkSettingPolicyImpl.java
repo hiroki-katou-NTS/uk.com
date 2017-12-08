@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -30,7 +30,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * DiffTimezoneSetting)
 	 */
 	@Override
-	public boolean canRegister(PredetemineTimeSet pred, DiffTimeWorkSetting diffTimeWorkSetting) {
+	public boolean canRegister(PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
 		//validate StampReflectTimezone 516
 		this.validateStampReflectTimezone(pred, diffTimeWorkSetting);
 
@@ -50,7 +50,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * @param diffTimeWorkSetting
 	 *            the diff time work setting
 	 */
-	private void validateStampReflectTimezone(PredetemineTimeSet pred, DiffTimeWorkSetting diffTimeWorkSetting) {
+	private void validateStampReflectTimezone(PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
 
 		// get start and end time
 		TimeWithDayAttr start = diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().getStartTime();
@@ -70,7 +70,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * @param diffTimeWorkSetting
 	 *            the diff time work setting
 	 */
-	private void validateHDWorkTimeSheetSetting(PredetemineTimeSet pred,
+	private void validateHDWorkTimeSheetSetting(PredetemineTimeSetting pred,
 			DiffTimeWorkSetting diffTimeWorkSetting) {
 		diffTimeWorkSetting.getDayoffWorkTimezone().getRestTimezone().getRestTimezones().stream().forEach(item -> {
 			this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd());

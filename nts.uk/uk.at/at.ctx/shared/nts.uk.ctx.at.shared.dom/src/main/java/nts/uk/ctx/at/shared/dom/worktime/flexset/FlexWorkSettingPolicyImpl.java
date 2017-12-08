@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 
@@ -35,7 +35,7 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet)
 	 */
 	@Override
-	public void canRegisterFlexWorkSetting(FlexWorkSetting flexWorkSetting, PredetemineTimeSet predetemineTimeSet) {
+	public void canRegisterFlexWorkSetting(FlexWorkSetting flexWorkSetting, PredetemineTimeSetting predetemineTimeSet) {
 
 		// 使用区分 = 使用しない AND 最低勤務時間 > 所定時間.1日 => Msg_775
 		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.NOT_USE)

@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
  * The Class FixedWorkSettingPolicyImpl.
@@ -27,7 +27,7 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet)
 	 */
 	@Override
-	public void canRegister(FixedWorkSetting fixedWork, PredetemineTimeSet predTime) {
+	public void canRegister(FixedWorkSetting fixedWork, PredetemineTimeSetting predTime) {
 		// TODO
 	}
 
