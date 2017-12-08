@@ -346,7 +346,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
         }
 
         submit() {
-            nts.uk.ui.block.invisible();
             var self = this;
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             if (self.unitSelect() == 0) {
@@ -388,9 +387,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         presetItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.SCHEDULE ? self.rightItems()[i].trueCode : null,
                         operatorAtr: self.rightItems()[i].operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
                         name: self.rightItems()[i].name,
-                        roundingCd: self.roundingCd(),
-                        selectedProcessing: self.selectedProcessing(),
-                        uPCd: self.uPCd()
 
                     }
                     formAmount.push(unitAmount);
@@ -444,7 +440,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 nts.uk.ui.windows.setShared("KML002_E_DATA", moneyData);
             }
             nts.uk.ui.windows.close();
-            nts.uk.ui.block.clear();
         }
 
         cancel() {
