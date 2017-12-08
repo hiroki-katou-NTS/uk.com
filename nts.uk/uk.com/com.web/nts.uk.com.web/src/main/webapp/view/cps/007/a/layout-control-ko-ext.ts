@@ -598,7 +598,7 @@ module nts.custombinding {
                         <div data-bind="ntsDatePicker: {
                                     value: value,
                                     constraint: itemDefId.replace(/-/g, ''),
-                                    dateFormat: 'YYYY/MM/DD',
+                                    dateFormat: item.dateItemType == 1 ? 'YYYY/MM/DD' : (item.dateItemType == 2 ? 'YYYY/MM' : 'YYYY'),
                                     enable: editable,
                                     readonly: readonly
                                 }"></div>
@@ -1760,7 +1760,7 @@ module nts.custombinding {
     }
 
     interface IItemDate {
-        dateItemType?: number;
+        dateItemType?: DateType;
     }
 
     interface IItemString {
@@ -1865,6 +1865,12 @@ module nts.custombinding {
         CODE_NAME = 2,
         // 3:列挙型(Enum)
         ENUM = 3
+    }
+    
+    enum DateType {
+        YEARMONTHDAY = 1,
+        YEARMONTH = 2,
+        YEAR = 3
     }
 
     enum ACTION_ROLE {
