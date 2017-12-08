@@ -118,6 +118,8 @@ module nts.uk.at.view.kaf005.b {
             //TODO: test-setting calculateFlag = 0
             calculateFlag: KnockoutObservable<number> = ko.observable(1);
             version: number = 0;
+            
+            allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
