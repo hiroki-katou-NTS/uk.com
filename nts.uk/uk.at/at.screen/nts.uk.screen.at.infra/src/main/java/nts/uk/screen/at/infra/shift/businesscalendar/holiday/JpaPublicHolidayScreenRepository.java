@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KsmmtPublicHoliday;
 import nts.uk.screen.at.app.shift.businesscalendar.holiday.PublicHolidayScreenRepository;
-import nts.uk.screen.at.app.shift.specificdayset.company.StartDateEndDateScreenParams;
+import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScreenParams;
 
 /**
  * 
@@ -23,7 +23,7 @@ public class JpaPublicHolidayScreenRepository extends JpaRepository implements P
 			+ " AND s.ksmmtPublicHolidayPK.date >= :startDate AND s.ksmmtPublicHolidayPK.date <= :endDate";
 
 	@Override
-	public List<GeneralDate> findDataPublicHoliday(String companyId, StartDateEndDateScreenParams params) {
+	public List<GeneralDate> findDataPublicHoliday(String companyId, WorkplaceIdAndDateScreenParams params) {
 		return this.queryProxy().query(GET_BY_CID_AND_DATE, KsmmtPublicHoliday.class)
 				.setParameter("companyId", companyId).setParameter("startDate", params.startDate)
 				.setParameter("endDate", params.endDate).getList(x -> x.ksmmtPublicHolidayPK.date);
