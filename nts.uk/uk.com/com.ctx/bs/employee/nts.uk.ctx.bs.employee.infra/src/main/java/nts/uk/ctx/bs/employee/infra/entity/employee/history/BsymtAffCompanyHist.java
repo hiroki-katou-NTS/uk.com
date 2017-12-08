@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -37,11 +38,11 @@ public class BsymtAffCompanyHist extends UkJpaEntity implements Serializable {
 	public int destinationData;
 
 	@Column(name = "START_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate startDate;
 
 	@Column(name = "END_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate endDate;
 
 	@OneToOne(fetch = FetchType.LAZY, targetEntity = BsymtAffCompanyInfo.class, optional = false, cascade = CascadeType.REMOVE)
