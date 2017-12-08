@@ -60,7 +60,7 @@ public class RoleSetGrantedPersonFinder {
 		if (listRoleSetPerson != null && !listRoleSetPerson.isEmpty()) {
 			List<RoleSetGrantedPersonDto> listRoleSetPersonDto = new ArrayList<>();
 			for (RoleSetGrantedPerson rp : listRoleSetPerson) {
-				EmployeeImport empInfo = new EmployeeImport("XXXX YYYY", rp.getEmployeeID(), "99999999");// employeeAdapter.findByEmpId(rp.getEmployeeID());
+				EmployeeImport empInfo = employeeAdapter.findByEmpId(rp.getEmployeeID());
 				RoleSetGrantedPersonDto dto = new RoleSetGrantedPersonDto(rp.getRoleSetCd().v(), rp.getEmployeeID(),
 						empInfo.getEmployeeCode(), empInfo.getPersonalName(), rp.getValidPeriod().start(),
 						rp.getValidPeriod().end());
