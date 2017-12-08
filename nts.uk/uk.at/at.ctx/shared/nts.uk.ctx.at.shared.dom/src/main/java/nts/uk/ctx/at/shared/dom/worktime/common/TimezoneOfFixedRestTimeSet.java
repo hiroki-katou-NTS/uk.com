@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -19,6 +20,31 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	/** The timezone. */
 	//時間帯
 	private List<DeductionTime> timezones;
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		this.checkOverlap();
+	}
+
+	/**
+	 * Check overlap.
+	 */
+	private void checkOverlap() {
+		for (int i = 0; i < this.timezones.size(); i++) {
+			DeductionTime deduct1 = this.timezones.get(i);
+			for (int j = i + 1; j < this.timezones.size(); i++) {
+				DeductionTime deduct2 = this.timezones.get(j);
+				// check overlap
+				if (deduct1.isOverlap(deduct2)) {
+					throw new BusinessException("Msg_515");
+				}
+			}
+		}
+	}
 
 	/**
 	 * Instantiates a new timezone of fixed rest time set.

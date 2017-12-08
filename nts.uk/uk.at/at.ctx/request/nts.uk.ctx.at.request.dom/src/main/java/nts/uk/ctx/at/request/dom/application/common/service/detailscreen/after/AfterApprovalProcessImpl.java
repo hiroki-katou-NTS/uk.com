@@ -69,7 +69,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		//共通アルゴリズム「実績反映状態の判断」を実行する
 		this.judgmentActualReflection(application);
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
-		appRepo.updateApplication(application);
+		appRepo.fullUpdateApplication(application);
 		// get domain 申請種類別設定
 		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
 		// 承認処理時に自動でメールを送信するが trueの場合

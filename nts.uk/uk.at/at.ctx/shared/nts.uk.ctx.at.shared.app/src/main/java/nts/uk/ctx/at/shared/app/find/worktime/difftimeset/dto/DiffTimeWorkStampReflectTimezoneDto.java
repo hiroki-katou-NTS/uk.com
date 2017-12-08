@@ -13,23 +13,21 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectSetMeme
  * The Class DiffTimeWorkStampReflectTimezone.
  */
 @Getter
-public class DiffTimeWorkStampReflectTimezoneDto implements DiffTimeStampReflectSetMemento{
+public class DiffTimeWorkStampReflectTimezoneDto implements DiffTimeStampReflectSetMemento {
 
 	/** The stamp reflect timezone. */
 	private StampReflectTimezoneDto stampReflectTimezone;
 
 	/** The is update start time. */
 	private boolean isUpdateStartTime;
-	
+
 	@Override
 	public void setStampReflectTimezone(StampReflectTimezone stampReflectTimezone) {
-		// TODO Auto-generated method stub
-		
+		stampReflectTimezone.saveToMemento(this.stampReflectTimezone);
 	}
 
 	@Override
 	public void setIsUpdateStartTime(boolean isUpdateStartTime) {
-		// TODO Auto-generated method stub
-		
+		this.isUpdateStartTime = isUpdateStartTime;
 	}
 }

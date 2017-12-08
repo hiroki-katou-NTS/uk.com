@@ -26,8 +26,8 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KsmmtWpSpecDateSet s"
 			+ " INNER JOIN KsmstSpecificDateItem p ON s.ksmmtWpSpecDateSetPK.specificDateItemNo = p.ksmstSpecificDateItemPK.itemNo "
 			+ " WHERE s.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
-			+ " AND s.ksmmtComSpecDateSetPK.specificDate >= :startYm"
-			+ " AND s.ksmmtComSpecDateSetPK.specificDate <= :endYm";
+			+ " AND s.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
+			+ " AND s.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
 	
 	//Delete by Month 
 	

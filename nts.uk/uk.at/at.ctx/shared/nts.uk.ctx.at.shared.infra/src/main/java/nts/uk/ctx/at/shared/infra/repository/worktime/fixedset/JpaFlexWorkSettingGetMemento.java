@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -16,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
 /**
  * The Class JpaFlexWorkSettingGetMemento.
@@ -25,18 +27,28 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	
 	/** The entity. */
 	private KshmtFlexWorkSet entity;
+	
+	/** The entity settings. */
+	private List<KshmtFlexSettingGroup> entitySettings;
+	
+	
+	/** The entity OD grounp. */
+	private KshmtFlexOdGroup entityODGrounp;
+	
 
 	/**
 	 * Instantiates a new jpa flex work setting get memento.
 	 *
 	 * @param entity the entity
+	 * @param entitySettings the entity settings
+	 * @param entityODGrounp the entity OD grounp
 	 */
-	public JpaFlexWorkSettingGetMemento(KshmtFlexWorkSet entity) {
+	public JpaFlexWorkSettingGetMemento(KshmtFlexWorkSet entity, List<KshmtFlexSettingGroup> entitySettings,
+			KshmtFlexOdGroup entityODGrounp) {
 		super();
-		if(entity.getKshmtFlexWorkSetPK() == null){
-			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
-		}
 		this.entity = entity;
+		this.entitySettings = entitySettings;
+		this.entityODGrounp = entityODGrounp;
 	}
 
 	/*
@@ -92,8 +104,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public FlexOffdayWorkTime getOffdayWorkTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlexOffdayWorkTime(new JpaFlexODWorkTimeGetMemento(this.entityODGrounp));
 	}
 
 	/*
@@ -128,8 +139,12 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public List<FlexHalfDayWorkTime> getLstHalfDayWorkTimezone() {
-		// TODO Auto-generated method stub
-		return null;
+		if(CollectionUtil.isEmpty(this.entitySettings)){
+			return new ArrayList<>();
+		}
+		return this.entitySettings.stream()
+				.map(entitySetting -> new FlexHalfDayWorkTime(new JpaFlexHAWorkTimeGetMemento(entitySetting)))
+				.collect(Collectors.toList());
 	}
 
 	/*

@@ -10,6 +10,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -35,8 +38,20 @@ public class KrcstErAlSingleFixed extends UkJpaEntity implements Serializable {
 	@NotNull
 	@Column(name = "FIXED_VALUE")
 	public BigDecimal fixedValue;
+	
+	@OneToOne
+	@JoinColumns({
+			@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
+			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
+	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+	
 	@Override
 	protected Object getKey() {
 		return this.krcstEralSingleFixedPK;
+	}
+	public KrcstErAlSingleFixed(KrcstErAlSingleFixedPK krcstEralSingleFixedPK, BigDecimal fixedValue) {
+		super();
+		this.krcstEralSingleFixedPK = krcstEralSingleFixedPK;
+		this.fixedValue = fixedValue;
 	}
 }

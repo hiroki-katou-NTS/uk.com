@@ -91,5 +91,41 @@ public class FixedWorkSetting extends AggregateRoot {
 		memento.setLegalOTSetting(this.legalOTSetting);
 	}
 
-    //TODO: hash code + equal
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((workTimeCode == null) ? 0 : workTimeCode.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FixedWorkSetting other = (FixedWorkSetting) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (workTimeCode == null) {
+			if (other.workTimeCode != null)
+				return false;
+		} else if (!workTimeCode.equals(other.workTimeCode))
+			return false;
+		return true;
+	}
+
 }

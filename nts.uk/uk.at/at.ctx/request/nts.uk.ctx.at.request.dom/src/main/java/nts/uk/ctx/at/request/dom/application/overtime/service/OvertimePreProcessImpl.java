@@ -68,8 +68,11 @@ import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -123,6 +126,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	@Inject
 	private OvertimeSixProcess overtimeSixProcess;
+	@Inject
+	private WorkTimeRepository workTimeRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
 	@Override
 	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput, String appDate,
@@ -423,23 +431,58 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public AppOverTime getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours) {
+	public AppOvertimeReference getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours) {
 		// TODO Auto-generated method stub
-		List<OvertimeCheckResult> result = new ArrayList<>();
+		AppOvertimeReference result = new AppOvertimeReference();
+		List<CaculationTime> caculationTimes = new ArrayList<>();
 		if (PrePostAtr.POSTERIOR.value == prePostAtr) {
+			//Imported(申請承認)「勤務実績」を取得する
+			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
+			if (recordWorkInfoImport.getWorkTypeCode() != null) {
+				WorkTypeOvertime workTypeOvertime = new WorkTypeOvertime();
+				workTypeOvertime.setWorkTypeCode(recordWorkInfoImport.getWorkTypeCode().toString());
+				Optional<WorkType> workType = workTypeRepository.findByPK(companyID,
+						recordWorkInfoImport.getWorkTypeCode().toString());
+				if (workType.isPresent()) {
+					workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
+				}
+				result.setWorkTypeRefer(workTypeOvertime);
+			}
+			if (recordWorkInfoImport.getWorkTimeCode() != null) {
+				SiftType siftType = new SiftType();
+
+				siftType.setSiftCode(recordWorkInfoImport.getWorkTimeCode());
+				Optional<WorkTime> workTime = workTimeRepository.findByCode(companyID,
+						recordWorkInfoImport.getWorkTimeCode().toString());
+				if (workTime.isPresent()) {
+					siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
+				}
+				result.setSiftTypeRefer(siftType);
+			}
+			result.setWorkClockFrom1Refer(recordWorkInfoImport.getAttendanceStampTimeFirst());
+			result.setWorkClockTo1Refer(recordWorkInfoImport.getLeaveStampTimeFirst());
+			result.setWorkClockFrom2Refer(recordWorkInfoImport.getAttendanceStampTimeSecond());
+			result.setWorkClockTo2Refer(recordWorkInfoImport.getLeaveStampTimeSecond());
+			result.setOverTimeShiftNightRefer(recordWorkInfoImport.getShiftNightCaculation());
+			result.setFlexExessTimeRefer(recordWorkInfoImport.getFlexCaculation());
+			result.setAppDateRefer(appDate);
+			
+			
 			Optional<WorkTimeSet> workTimeSetOtp = workTimeSetRepository.findByCode(companyID, siftCode);
 			if (workTimeSetOtp.isPresent()) {
 				WorkTimeSet workTimeSet = workTimeSetOtp.get();
+				
 				if(checkTimeDay(appDate,workTimeSet)){
 					// 06-04-3_当日の場合
-					result = overtimeSixProcess.checkDuringTheDay(companyID, employeeID, appDate, requestAppDetailSetting, siftCode, overtimeHours);
+					caculationTimes = overtimeSixProcess.checkDuringTheDay(companyID, employeeID, appDate, requestAppDetailSetting, siftCode, overtimeHours,recordWorkInfoImport);
 				}else{
 					// 06-04-2_当日以外の場合
-					result = this.overtimeSixProcess.checkOutSideTimeTheDay(companyID, employeeID, appDate, requestAppDetailSetting, siftCode, overtimeHours);
+					caculationTimes = this.overtimeSixProcess.checkOutSideTimeTheDay(companyID, employeeID, appDate, requestAppDetailSetting, siftCode, overtimeHours,recordWorkInfoImport);
 				}
 			}
+			result.setOverTimeInputsRefer(caculationTimes);
 		}
-		return null;
+		return result;
 	}
 
 	private String convert(int minute) {
@@ -456,17 +499,22 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		return hourminute;
 	}
 
-	private boolean checkTimeDay(String appDate, WorkTimeSet workTimeSet) {
-		GeneralDateTime appDateGeneralstart = GeneralDateTime.fromString(appDate, "yyyy/MM/dd HH:mm");
-		GeneralDateTime appDateGeneralEnd = GeneralDateTime.fromString(appDate, "yyyy/MM/dd HH:mm");
+	/**
+	 * @param appDate
+	 * @param workTimeSet
+	 * @return
+	 */
+	public boolean checkTimeDay(String appDate, WorkTimeSet workTimeSet) {
+		GeneralDateTime appDateGeneralstart = GeneralDateTime.fromString(appDate + " 00:00", "yyyy/MM/dd HH:mm");
+		GeneralDateTime appDateGeneralEnd = GeneralDateTime.fromString(appDate + " 00:00", "yyyy/MM/dd HH:mm");
 
 		if (workTimeSet.getPrescribedTimezoneSetting() != null) {
 			if (workTimeSet.getPrescribedTimezoneSetting().getTimezone() != null) {
-				appDateGeneralstart.addHours(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getStart().hour());
-				appDateGeneralstart.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getStart().minute());
-				appDateGeneralEnd.addHours(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getEnd().hour());
-				appDateGeneralEnd.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getEnd().minute());
-				GeneralDateTime appDateGeneralSystem = GeneralDateTime.fromString(GeneralDateTime.now().toString(), "yyyy/MM/dd HH:mm");
+				appDateGeneralstart = appDateGeneralstart.addHours(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getStart().hour());
+				appDateGeneralstart = appDateGeneralstart.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getStart().minute());
+				appDateGeneralEnd = appDateGeneralEnd.addHours(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getEnd().hour());
+				appDateGeneralEnd = appDateGeneralEnd.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getEnd().minute());
+				GeneralDateTime appDateGeneralSystem = GeneralDateTime.fromString(GeneralDateTime.now().toString("yyyy/MM/dd HH:mm"), "yyyy/MM/dd HH:mm");
 				if(appDateGeneralSystem.after(appDateGeneralstart) && appDateGeneralSystem.before(appDateGeneralEnd)){
 					return true;
 				}

@@ -93,18 +93,20 @@ module a6 {
          */
         public updateViewByNotFlowMode(): void {
             var self = this;
-            _.defer(() => {
-                $('#nts-fix-table-a6-leavetime').ntsFixTableCustom(self.fixTableOptionLeavetime);
-            });
+            // TODO: need to check
+//            _.defer(() => {
+//                $('#nts-fix-table-a6-leavetime').ntsFixTableCustom(self.fixTableOptionLeavetime);
+//            });
         }
         /**
          * update view by flow mode
          */
         public updateViewByFlowMode(): void {
             var self = this;
-            _.defer(() => {
-                $('#nts-fix-table-a6-closework').ntsFixTableCustom(self.fixTableOptionClosework);
-            });
+            // TODO: need to check
+//            _.defer(() => {
+//                $('#nts-fix-table-a6-closework').ntsFixTableCustom(self.fixTableOptionClosework);
+//            });
         }
         
          /**

@@ -32,6 +32,9 @@ public class KrqdtAppStamp extends UkJpaEntity {
 	@EmbeddedId
 	public KrqdpAppStamp krqdpAppStampPK;
 	
+	@Column(name="STAMP_REQUEST_MODE")
+	public Integer stampRequestMode;
+	
 	@Version
 	@Column(name="EXCLUS_VER")
 	public Long version;
