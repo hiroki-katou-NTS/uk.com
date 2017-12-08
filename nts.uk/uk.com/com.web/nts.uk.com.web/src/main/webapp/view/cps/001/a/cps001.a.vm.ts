@@ -122,6 +122,7 @@ module cps001.a.vm {
                     switch (tab) {
                         default:
                         case TABS.LAYOUT: // layout mode
+                            category.id(undefined);
                             self.listLayout.removeAll();
                             layout.maintenanceLayoutID(undefined);
                             service.getAllLayout(employeeId).done((data: Array<ILayout>) => {
@@ -132,6 +133,7 @@ module cps001.a.vm {
                             });
                             break;
                         case TABS.CATEGORY: // category mode
+                            layout.maintenanceLayoutID(undefined);
                             self.listCategory.removeAll();
                             service.getCats(employeeId).done((data: Array<ICategory>) => {
                                 self.listCategory(data);
@@ -185,24 +187,53 @@ module cps001.a.vm {
 
             category.id.subscribe(id => {
                 if (id) {
-                    let query = {
-                        categoryId: id,
-                        employeeId: employee.employeeId(),
-                        standardDate: moment.utc(),
-                        categoryCode: undefined,
-                        personId: undefined,
-                        infoId: undefined
-                    };
                     let cat = _.find(self.listCategory(), x => x.id == id);
                     if (cat) {
                         category.categoryCode(cat.categoryCode);
                         category.categoryName(cat.categoryName);
                         category.categoryType(cat.categoryType);
                         category.isFixed(cat.isFixed);
-                        service.getCatData(query).done(data => {
-                            //layout.listItemClsDto.removeAll();
-                            layout.listItemClsDto(data.classificationItems);
-                        });
+                    }
+                    service.getCatChilds(id).done(data => {
+                        debugger;
+                    });
+                } else {
+                    category.categoryCode(undefined);
+                    category.categoryCode(undefined);
+                    category.categoryName(undefined);
+                    category.categoryType(undefined);
+                    category.isFixed(undefined);
+                }
+            });
+
+            category.categoryType.subscribe(t => {
+                layout.listItemClsDto.removeAll();
+                if (t) {
+                    let query = {
+                        categoryId: category.id(),
+                        employeeId: employee.employeeId(),
+                        standardDate: moment.utc(),
+                        categoryCode: undefined,
+                        personId: undefined,
+                        infoId: undefined
+                    };
+                    switch (t) {
+                        case IT_CAT_TYPE.SINGLE:
+                            service.getCatData(query).done(data => {
+                                //layout.listItemClsDto.removeAll();
+                                layout.listItemClsDto(data.classificationItems);
+                            });
+                            break;
+                        case IT_CAT_TYPE.MULTI:
+                            break;
+                        case IT_CAT_TYPE.CONTINU:
+                            break;
+                        case IT_CAT_TYPE.NODUPLICATE:
+                            break;
+                        case IT_CAT_TYPE.DUPLICATE:
+                            break;
+                        case IT_CAT_TYPE.CONTINUWED:
+                            break;
                     }
                 }
             });
@@ -310,7 +341,6 @@ module cps001.a.vm {
                     employeeId: emp.employeeId(),
                     inputs: inputs
                 };
-            debugger;
             // push data layout to webservice
             block();
             service.saveCurrentLayout(command).done(() => {
@@ -461,7 +491,6 @@ module cps001.a.vm {
             self.employeeId.subscribe(id => {
                 if (id) {
                     service.getPerson(id).done((data: IPersonInfo) => {
-                        debugger;
                         perInfo(data);
                     }).fail(() => {
                         perInfo();
@@ -596,7 +625,8 @@ module cps001.a.vm {
         MULTI = 2, // Multi info
         CONTINU = 3, // Continuos history
         NODUPLICATE = 4, //No duplicate history
-        DUPLICATE = 5 // Duplicate history
+        DUPLICATE = 5, // Duplicate history,
+        CONTINUWED = 6 // Continuos history with end date
     }
 
     interface IPeregQuery {
