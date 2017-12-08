@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
@@ -19,6 +20,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
+import nts.uk.shr.pereg.app.ItemValueType;
 
 /**
  * @author danpv
@@ -94,21 +96,43 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
 
-		String stringValue = domain.getDataState().getStringValue();
-
-		BigDecimal intValue = domain.getDataState().getNumberValue();
-
-		GeneralDate dateValue = domain.getDataState().getDateValue();
-
+		String stringValue = null;
+		BigDecimal intValue = null;
+		GeneralDate dateValue = null;
+		switch(EnumAdaptor.valueOf(domain.getDataState().getDataStateType().value, ItemValueType.class)){
+		case STRING:
+		case SELECTION:
+			stringValue = domain.getDataState().getStringValue();
+			break;
+		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
+			intValue = domain.getDataState().getNumberValue();
+			break;
+		case DATE:
+			dateValue = domain.getDataState().getDateValue();
+			break;
+		}
 		return new PpemtPerInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
 				dateValue);
 	}
 
 	private void updateEntity(PersonInfoItemData domain, PpemtPerInfoItemData entity) {
 		entity.saveDataAtr = domain.getDataState().getDataStateType().value;
-		entity.stringVal = domain.getDataState().getStringValue();
-		entity.intVal = domain.getDataState().getNumberValue();
-		entity.dateVal = domain.getDataState().getDateValue();
+		switch(EnumAdaptor.valueOf(entity.saveDataAtr, ItemValueType.class)){
+		case STRING:
+		case SELECTION:
+			entity.stringVal = domain.getDataState().getStringValue();
+			break;
+		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
+			entity.intVal = domain.getDataState().getNumberValue();
+			break;
+		case DATE:
+			entity.dateVal = domain.getDataState().getDateValue();
+			break;
+		}
 	}
 
 	/**
