@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
@@ -80,8 +81,10 @@ public class RegisterLayoutFinder {
 		}
 
 		NewLayout _layout = layout.get();
+		
+		List<LayoutPersonInfoClsDto> resultItemCls = null;
 
-		final List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
+		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
 
 		if (command.getCreateType() != 3) {
 
@@ -103,21 +106,35 @@ public class RegisterLayoutFinder {
 				}
 
 			});
+			if (command.getCreateType() == 2) {
+
+				listItemCls.forEach(itemCls -> {
+					if (!CollectionUtil.isEmpty(itemCls.getItems())) {
+						itemCls.setItems(itemCls.getItems().stream().filter(item -> {
+
+							LayoutPersonInfoValueDto subItem = (LayoutPersonInfoValueDto) item;
+
+							return subItem.getValue() != null;
+						}).collect(Collectors.toList()));
+					}
+				});
+
+				resultItemCls =	listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
+						.collect(Collectors.toList());
+			}
 
 		}
-		listItemCls.forEach(x -> {
+
+		resultItemCls.forEach(x -> {
 			PerInfoCtgFullDto ctgInfo = this.infoCtgFinder.getPerInfoCtg(x.getPersonInfoCategoryID());
 			if (ctgInfo != null) {
 				x.setItems(x.getListItemDf().stream()
 						.map(itemDf -> LayoutPersonInfoValueDto.fromItemDef(ctgInfo.getCategoryCode(), itemDf, 2))
 						.collect(Collectors.toList()));
 			}
-
 		});
 
-		return NewLayoutDto.fromDomain(_layout,
-				listItemCls.stream().filter(x -> x.getListItemDf() != null ? x.getListItemDf().size() > 0 : false)
-						.collect(Collectors.toList()));
+		return NewLayoutDto.fromDomain(_layout, resultItemCls);
 
 	}
 
