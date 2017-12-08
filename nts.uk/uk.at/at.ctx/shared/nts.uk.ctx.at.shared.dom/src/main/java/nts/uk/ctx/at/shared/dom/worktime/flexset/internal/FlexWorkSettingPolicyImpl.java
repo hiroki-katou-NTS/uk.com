@@ -2,13 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.flexset;
+package nts.uk.ctx.at.shared.dom.worktime.flexset.internal;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
