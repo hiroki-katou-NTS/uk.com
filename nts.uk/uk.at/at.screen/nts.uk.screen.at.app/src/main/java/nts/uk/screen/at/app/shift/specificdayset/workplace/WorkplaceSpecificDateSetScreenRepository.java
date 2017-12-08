@@ -15,5 +15,5 @@ public interface WorkplaceSpecificDateSetScreenRepository {
 	 * @param params
 	 * @return
 	 */
-	List<GeneralDate> findDataWkpSpecificDateSet(WorkplaceSpecificDateSetScreenParams params);
+	List<GeneralDate> findDataWkpSpecificDateSet(WorkplaceIdAndDateScreenParams params);
 }

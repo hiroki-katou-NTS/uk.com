@@ -20,7 +20,7 @@ module kml002.l.viewmodel {
         }
         start() {
             var self = this,
-            dfd = $.Deferred();
+                dfd = $.Deferred();
             self.getAllTotalTime();
             dfd.resolve();
             return dfd.promise();
@@ -33,13 +33,13 @@ module kml002.l.viewmodel {
             var dfd = $.Deferred();
             $.when(self.findTotalTimes(), self.findVertialCnts()).done(function() {
                 var verticalNoList = _.map(self.currentCodeList(), function(item) {
-                   return item.totalCountNo;
+                    return item.totalCountNo;
                 });
-                var rootItem =  _.filter(self.rootItems(), function(item: IItemModel) { 
-                    return _.indexOf(verticalNoList, item.totalCountNo) < 0;  
+                var rootItem = _.filter(self.rootItems(), function(item: IItemModel) {
+                    return _.indexOf(verticalNoList, item.totalCountNo) < 0;
                 });
                 self.items(rootItem);
-                
+
             });
             return dfd.promise();
         }
@@ -81,8 +81,10 @@ module kml002.l.viewmodel {
         }
 
         addTotalTime(): JQueryPromise<any> {
+
             var self = this;
             var dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
             if (!nts.uk.util.isNullOrUndefined(self.currentCodeList())) {
                 var items = [];
                 _.each(self.currentCodeList(), function(x) {
@@ -98,8 +100,10 @@ module kml002.l.viewmodel {
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 })
+                nts.uk.ui.block.clear();
                 return dfd.promise();
             }
+
         }
     }
 
