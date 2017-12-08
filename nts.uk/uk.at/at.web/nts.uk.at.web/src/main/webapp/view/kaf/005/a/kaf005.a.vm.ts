@@ -134,6 +134,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
                     $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
                     $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
+                    $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC')
                 })
             })
 

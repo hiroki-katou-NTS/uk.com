@@ -128,6 +128,7 @@ module nts.uk.at.view.kaf005.b {
                 $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
                 $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
                 $("#fixed-table").ntsFixedTable({ height: 120 });
+                $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                 self.startPage(self.appID());
             }
             
