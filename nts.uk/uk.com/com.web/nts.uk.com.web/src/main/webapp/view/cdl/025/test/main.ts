@@ -3,18 +3,25 @@ module nts.uk.at.view.cdl025.test.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import windows = nts.uk.ui.windows;
     export class ScreenModel {
+        listRoleType: Array<any>;
+        selectRoleTypeMulti: KnockoutObservable<any>;
+        selectRoleTypeSingle: KnockoutObservable<any>;
+        
         currentCode: KnockoutObservable<string>;
         currentCodes: KnockoutObservableArray<string>;
         constructor() {
             var self = this;
             self.currentCode = ko.observable("");
             self.currentCodes = ko.observableArray([]);
+            self.listRoleType = __viewContext.enums.RoleType;
+            self.selectRoleTypeMulti = ko.observable(0);
+            self.selectRoleTypeSingle = ko.observable(0);
         }
 
         openCDL025() {
             var self = this;
             let param = {
-                roleType: 1,
+                roleType: self.selectRoleTypeMulti(),
                 multiple: true,
                 currentCode: self.currentCodes()
             };
@@ -29,7 +36,7 @@ module nts.uk.at.view.cdl025.test.viewmodel {
         openCDL025Single() {
             var self = this;
             let param = {
-                roleType: 1,
+                roleType: self.selectRoleTypeSingle(),
                 multiple: false,
                 currentCode: self.currentCode()
             };
