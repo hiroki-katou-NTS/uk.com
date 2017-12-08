@@ -25,8 +25,8 @@ public class KwkdtStampCard extends UkJpaEntity implements Serializable {
 	
 	/* 個人ID */
 	@Basic(optional = false)
-	@Column(name = "PID")
-	public String personId;
+	@Column(name = "SID")
+	public String employeeID;
 	
 	@Override
 	protected Object getKey() {
