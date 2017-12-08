@@ -86,9 +86,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getAll().done((lstData) => {
-                let sortedData = _.orderBy(lstData, ['code'], ['asc']);
-                self.lstErrorAlarm(sortedData);
-                self.selectedErrorAlarmCode(sortedData[0].code);
+                if (lstData && lstData.length > 0) {
+                    let sortedData = _.orderBy(lstData, ['code'], ['asc']);
+                    self.lstErrorAlarm(sortedData);
+                    self.selectedErrorAlarmCode(sortedData[0].code);
+                    self.isNewMode(false); 
+                } else {
+                    self.isNewMode(true);    
+                }
                 dfd.resolve();
             });
             return dfd.promise();
@@ -125,7 +130,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let self = this;
             let data = self.selectedErrorAlarm().code();
             nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
-                debugger;
+                service.remove(data).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    self.startPage();
+                });
             })
         }
 
@@ -137,7 +145,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
                 // example wait
-                nts.uk.ui.windows.setShared('AllAttendanceObj', [270, 271, 272, 273, 274, 275]);
+                nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.selectedErrorAlarm().errorDisplayItem()]);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
                     let output = nts.uk.ui.windows.getShared("selectedChildAttendace");

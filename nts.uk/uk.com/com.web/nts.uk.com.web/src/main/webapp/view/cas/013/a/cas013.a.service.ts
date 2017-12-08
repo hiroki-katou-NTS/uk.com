@@ -8,6 +8,8 @@ module nts.uk.com.view.cas013.a {
                 getRole: "ctx/sys/auth/grant/roleindividual/getRoles",
                 getRoleGrants: "ctx/sys/auth/grant/roleindividual/getRoleGrants",
                 getRoleGrant: "ctx/sys/auth/grant/roleindividual/getRoleGrant",
+                insertRoleGrant: "ctx/sys/auth/grant/roleindividual/insertRoleGrant",
+                upDateRoleGrant:"",
                 
             }
             constructor() {
@@ -29,6 +31,27 @@ module nts.uk.com.view.cas013.a {
                 };
                 return ajax("com", this.paths.getRoleGrant, data);
             };
+            insertRoleGrant(roleType: string, roleId: string, userId: string, start: string, end: string): JQueryPromise<any> {
+                var roleGrant = {
+                    userID: userId,
+                    roleID: roleId, 
+                    roleType: roleType,
+                    startValidPeriod: start,
+                    endValidPeriod: end
+                };
+                return ajax("com", this.paths.insertRoleGrant, roleGrant);
+            }
+            upDateRoleGrant(roleType: string, roleId: string, userId: string, start: string, end: string): JQueryPromise<any> {
+                var roleGrant = {
+                    userID: userId,
+                    roleID: roleId, 
+                    roleType: roleType,
+                    startValidPeriod: start,
+                    endValidPeriod: end
+                };
+                return ajax("com", this.paths.upDateRoleGrant, roleGrant);
+            }
+
             
             
 
