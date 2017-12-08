@@ -5,6 +5,7 @@ import nts.arc.primitive.TimeClockPrimitiveValue;
 /**
  * The Class LaborContractTime.
  */
+// 労働契約時間
 public class LaborContractTime extends TimeClockPrimitiveValue<LaborContractTime> {
 
 	/** The Constant serialVersionUID. */

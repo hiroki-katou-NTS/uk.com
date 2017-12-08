@@ -35,24 +35,31 @@ public class WorkingConditionItem extends AggregateRoot {
 	private NotUseAtr autoStampSetAtr;
 
 	/** The auto interval set atr. */
+	// 就業時間帯の自動設定区分
 	private NotUseAtr autoIntervalSetAtr;
 
 	/** The employee id. */
+	// 社員ID
 	private String employeeId;
 
 	/** The vacation added time atr. */
+	// 休暇加算時間利用区分
 	private NotUseAtr vacationAddedTimeAtr;
 
 	/** The contract time. */
+	// 契約時間
 	private LaborContractTime contractTime;
 
 	/** The labor system. */
+	// 労働制
 	private WorkingSystem laborSystem;
 
 	/** The holiday add time set. */
+	// 休暇加算時間設定
 	private BreakdownTimeDay holidayAddTimeSet;
 
 	/** The schedule method. */
+	// 予定作成方法
 	private ScheduleMethod scheduleMethod;
 
 	/**

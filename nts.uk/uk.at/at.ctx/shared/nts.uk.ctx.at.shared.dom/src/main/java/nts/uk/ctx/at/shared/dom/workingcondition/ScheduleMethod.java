@@ -7,15 +7,19 @@ import nts.arc.layer.dom.DomainObject;
  * The Class ScheduleMethod.
  */
 @Getter
+// 予定作成方法
 public class ScheduleMethod extends DomainObject {
 	
 	/** The basic create method. */
+	// 基本作成方法
 	private WorkScheduleBasicCreMethod basicCreateMethod;
 	
 	/** The work schedule bus cal. */
+	// 営業日カレンダーによる勤務予定作成
 	private WorkScheduleBusCal workScheduleBusCal;
 	
 	/** The monthly pattern work schedule cre. */
+	// 月間パターンによる勤務予定作成
 	private MonthlyPatternWorkScheduleCre monthlyPatternWorkScheduleCre;
 	
 	

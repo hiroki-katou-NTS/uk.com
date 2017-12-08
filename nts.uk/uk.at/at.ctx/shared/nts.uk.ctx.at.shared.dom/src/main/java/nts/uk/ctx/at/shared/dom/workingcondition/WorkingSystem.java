@@ -4,6 +4,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 /**
  * The Enum WorkingSystem.
  */
+// 労働制
 public enum WorkingSystem {
 	
 	/** The regular work. */
