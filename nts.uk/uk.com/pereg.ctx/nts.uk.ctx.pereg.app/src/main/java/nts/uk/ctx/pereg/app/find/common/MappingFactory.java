@@ -267,19 +267,24 @@ public class MappingFactory {
 
 	public static Map<String, Object> getAllItem(PeregDto peregDto) {
 
-		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getClass());
+		Map<String, Object> dtoValue = new HashMap<String, Object>();
+		if (peregDto != null) {
 
-		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
-			peregDto.getEmpOptionalData().forEach(x -> {
-				dtoValue.put(x.getItemCode(), x.getValue());
-			});
-		} else {
-			peregDto.getPerOptionalData().forEach(x -> {
-				dtoValue.put(x.getItemCode(), x.getValue());
-			});
+			dtoValue.putAll(getDtoValue(peregDto.getDomainDto(), peregDto.getClass()));
+
+			if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
+				peregDto.getEmpOptionalData().forEach(x -> {
+
+					dtoValue.put(x.getItemCode(), x.getValue());
+
+				});
+			} else {
+				peregDto.getPerOptionalData().forEach(x -> {
+					dtoValue.put(x.getItemCode(), x.getValue());
+				});
+			}
 		}
 		return dtoValue;
-
 	}
 
 	/**

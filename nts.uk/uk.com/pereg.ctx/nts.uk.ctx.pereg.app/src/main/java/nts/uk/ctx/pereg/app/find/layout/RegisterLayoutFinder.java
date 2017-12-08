@@ -83,6 +83,24 @@ public class RegisterLayoutFinder {
 
 		NewLayout _layout = layout.get();
 
+		List<LayoutPersonInfoClsDto> listItemCls = getlistItemCls(command, _layout);
+
+		listItemCls.forEach(x -> {
+			PerInfoCtgFullDto ctgInfo = this.infoCtgFinder.getPerInfoCtg(x.getPersonInfoCategoryID());
+			if (ctgInfo != null) {
+				x.setItems(x
+						.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
+								.fromItemDef(ctgInfo.getCategoryCode(), itemDf, ActionRole.EDIT.value))
+						.collect(Collectors.toList()));
+			}
+		});
+
+		return NewLayoutDto.fromDomain(_layout, listItemCls);
+
+	}
+
+	private List<LayoutPersonInfoClsDto> getlistItemCls(GetLayoutByCeateTypeDto command, NewLayout _layout) {
+
 		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
 
 		if (command.getCreateType() != 3) {
@@ -118,24 +136,13 @@ public class RegisterLayoutFinder {
 					}
 				});
 
-				listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
+				return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
 						.collect(Collectors.toList());
 			}
 
 		}
 
-		listItemCls.forEach(x -> {
-			PerInfoCtgFullDto ctgInfo = this.infoCtgFinder.getPerInfoCtg(x.getPersonInfoCategoryID());
-			if (ctgInfo != null) {
-				x.setItems(x
-						.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
-								.fromItemDef(ctgInfo.getCategoryCode(), itemDf, ActionRole.EDIT.value))
-						.collect(Collectors.toList()));
-			}
-		});
-
-		return NewLayoutDto.fromDomain(_layout, listItemCls);
-
+		return listItemCls;
 	}
 
 	/**
