@@ -145,7 +145,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
                 // example wait
-                nts.uk.ui.windows.setShared('AllAttendanceObj', [270, 271, 272, 273, 274, 275]);
+                nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.selectedErrorAlarm().errorDisplayItem()]);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
                     let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
