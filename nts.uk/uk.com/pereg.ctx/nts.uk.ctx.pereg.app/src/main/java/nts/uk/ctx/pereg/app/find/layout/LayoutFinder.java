@@ -305,7 +305,7 @@ public class LayoutFinder {
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
 
 			if (peregDto != null) {
-				MappingFactory.mapItemClassDto(peregDto, classItemList);
+				MappingFactory.mapListItemClass(peregDto, classItemList);
 			}
 		} else {
 			switch (perInfoCategory.getCategoryType()) {

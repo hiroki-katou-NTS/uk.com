@@ -37,7 +37,25 @@ public class MappingFactory {
 	@Inject
 	I18NResourcesForUK ukResouce;
 
-	public static void mapItemClassDto(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
+	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
+		// map record ID
+		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
+			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
+			classItem.setRecordId(recordId);
+		});
+
+		// get dto value
+		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
+
+		// map fix value
+		mapFixDto(dtoValue, classItem);
+
+		// set option value
+		setOptionData(peregDto, classItem);
+
+	}
+
+	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
 		// map record ID
 		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
 			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
@@ -127,7 +145,21 @@ public class MappingFactory {
 	}
 
 	/**
-	 * match domain DTO with item-definition to create data object
+	 * set optional data
+	 * 
+	 * @param peregDto
+	 * @param classItem
+	 */
+	private static void setOptionData(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
+		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
+			mapEmployeeOptionData(peregDto.getEmpOptionalData(), classItem);
+		} else {
+			mapPersonOptionData(peregDto.getPerOptionalData(), classItem);
+		}
+	}
+
+	/**
+	 * match domain DTO with classItem list
 	 * 
 	 * @param domainDto
 	 * @param classItem
@@ -143,9 +175,26 @@ public class MappingFactory {
 	}
 
 	/**
+	 * match domain DTO with a classItem
+	 * 
+	 * @param domainDto
+	 * @param classItem
+	 * @param dtoClass
+	 */
+	public static void mapFixDto(Map<String, Object> itemCodeValueMap, LayoutPersonInfoClsDto classItem) {
+
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+			valueItem.setValue(itemCodeValueMap.get(valueItem.getItemCode()));
+		}
+
+	}
+
+	/**
+	 * map opitionData with classItems which in same category
 	 * 
 	 * @param empOptionalData
-	 * @param classItem
+	 * @param classItemList
 	 */
 	public static void mapEmployeeOptionData(List<EmpOptionalDto> empOptionalData,
 			List<LayoutPersonInfoClsDto> classItemList) {
@@ -163,6 +212,25 @@ public class MappingFactory {
 	}
 
 	/**
+	 * map opitionData with classItems which in same category
+	 * 
+	 * @param empOptionalData
+	 * @param classItem
+	 */
+	public static void mapEmployeeOptionData(List<EmpOptionalDto> empOptionalData, LayoutPersonInfoClsDto classItem) {
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+			for (EmpOptionalDto data : empOptionalData) {
+				if (data.getItemCode().equals(valueItem.getItemCode())) {
+					valueItem.setValue(data.getValue());
+				}
+			}
+
+		}
+	}
+
+	/**
+	 * 
 	 * @param perOptionalData
 	 * @param classItem
 	 */
@@ -177,6 +245,23 @@ public class MappingFactory {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * @param perOptionalData
+	 * @param classItem
+	 */
+	public static void mapPersonOptionData(List<PersonOptionalDto> perOptionalData, LayoutPersonInfoClsDto classItem) {
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+			for (PersonOptionalDto data : perOptionalData) {
+				if (data.getItemCode().equals(valueItem.getItemCode())) {
+					valueItem.setValue(data.getValue());
+				}
+
+			}
+
 		}
 	}
 
