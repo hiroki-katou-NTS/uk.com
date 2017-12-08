@@ -1,7 +1,7 @@
 /**
- * 5:09:55 PM Jul 24, 2017
+ * 5:14:50 PM Dec 5, 2017
  */
-package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktime;
 
 import java.io.Serializable;
 
@@ -19,16 +19,15 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KwrmtErAlWorkRecordPK implements Serializable {
-
+public class KrcstErAlWhPlanActualPK implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
-	@Column(name = "CID")
-	public String companyId;
+	@Column(name ="ERAL_CHECK_ID")
+	public String eralCheckId;
 	
 	@NotNull
-	@Column(name = "ERROR_ALARM_CD")
-	public String errorAlarmCode;
-	
+	@Column(name ="WORK_TIME_CD")
+	public String workTimeCode;
 }
