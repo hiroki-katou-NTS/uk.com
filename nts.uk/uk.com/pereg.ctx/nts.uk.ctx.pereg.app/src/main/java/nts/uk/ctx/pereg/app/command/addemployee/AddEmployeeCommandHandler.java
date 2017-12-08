@@ -198,10 +198,12 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 	}
 
 	private void addAvatar() {
-		PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, command.getAvatarId(),
-				TypeFile.AVATAR_FILE.value, null, null);
+		if (command.getAvatarId() != "") {
+			PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, command.getAvatarId(),
+					TypeFile.AVATAR_FILE.value, null, null);
 
-		this.perFileManagementRepository.insert(perFile);
+			this.perFileManagementRepository.insert(perFile);
+		}
 
 	}
 
@@ -247,8 +249,8 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 	}
 
-	private Object getItemValueById(List<ItemsByCategory> inputs, String itemCode) {
-		Object returnString = null;
+	private String getItemValueById(List<ItemsByCategory> inputs, String itemCode) {
+		String returnString = "";
 
 		for (ItemsByCategory ctg : inputs) {
 
@@ -268,7 +270,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
-			items.add(new ItemValue(item.getItemDefId(), item.getCategoryCode(), item.getValueAsString(),
+			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getValueAsString(),
 					item.getSaveData().getSaveDataType().value));
 		});
 		if (CollectionUtil.isEmpty(items)) {

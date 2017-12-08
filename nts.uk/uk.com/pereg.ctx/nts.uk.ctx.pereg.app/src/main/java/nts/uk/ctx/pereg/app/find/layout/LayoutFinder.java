@@ -108,7 +108,6 @@ public class LayoutFinder {
 		Map<String, PersonInfoCategoryAuth> mapCategoryAuth = perInfoCtgAuthRepo.getAllCategoryAuthByRoleId(roleId)
 				.stream().collect(Collectors.toMap(e -> e.getPersonInfoCategoryAuthId(), e -> e));
 		
-		long start = System.currentTimeMillis();
 		List<SimpleEmpMainLayoutDto> acceptSplLayouts = new ArrayList<>();
 		for (MaintenanceLayout simpleLayout : simpleLayouts) {
 			
@@ -117,7 +116,6 @@ public class LayoutFinder {
 			}
 			
 		}
-		System.out.println( (System.currentTimeMillis() - start));
 		return acceptSplLayouts;
 	}
 
@@ -151,7 +149,9 @@ public class LayoutFinder {
 		Map<String, List<PersonInfoItemAuth>> itemAuthMap = perInfoItemAuthRepo.getByRoleIdAndCategories(roleId,
 				categoryIdList);
 
+		// FILTER CLASS ITEMS WITH AUTHORITY
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
+			
 			// if item is separator line, do not check
 			if (classItem.getLayoutItemType() == LayoutItemType.SeparatorLine) {
 				authItemClasList.add(classItem);
@@ -169,15 +169,18 @@ public class LayoutFinder {
 			}
 		}
 
+		// GET DATA WITH EACH CATEGORY
 		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
 		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
-			List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
-					.get(classItem.getPersonInfoCategoryID());
-			if (classItemList == null) {
-				classItemList = new ArrayList<>();
-				classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
-			}
-			classItemList.add(classItem);
+			if (classItem.getLayoutItemType() != LayoutItemType.SeparatorLine) {
+				List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
+						.get(classItem.getPersonInfoCategoryID());
+				if (classItemList == null) {
+					classItemList = new ArrayList<>();
+					classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
+				}
+				classItemList.add(classItem);
+			} 
 		}
 
 		classItemInCategoryMap.forEach((categoryId, classItemList) -> {
@@ -194,20 +197,7 @@ public class LayoutFinder {
 
 		});
 
-		List<LayoutPersonInfoClsDto> authItemClasList1 = new ArrayList<>();
-		for (int i = 0; i < authItemClasList.size(); i++) {
-			if (i == 0) {
-				authItemClasList1.add(authItemClasList.get(i));
-			} else {
-				boolean notAcceptElement = authItemClasList.get(i).getLayoutItemType() == LayoutItemType.SeparatorLine
-						&& authItemClasList.get(i - 1).getLayoutItemType() == LayoutItemType.SeparatorLine;
-				if (!notAcceptElement) {
-					authItemClasList1.add(authItemClasList.get(i));
-				}
-			}
-		}
-
-		result.setClassificationItems(authItemClasList1);
+		result.setClassificationItems(removeDuplicateSeparator(authItemClasList));
 		return result;
 
 	}
@@ -589,6 +579,22 @@ public class LayoutFinder {
 			}
 		}
 
+	}
+	
+	private List<LayoutPersonInfoClsDto> removeDuplicateSeparator(List<LayoutPersonInfoClsDto> classItemList) {
+		List<LayoutPersonInfoClsDto> authItemClasList1 = new ArrayList<>();
+		for (int i = 0; i < classItemList.size(); i++) {
+			if (i == 0) {
+				authItemClasList1.add(classItemList.get(i));
+			} else {
+				boolean notAcceptElement = classItemList.get(i).getLayoutItemType() == LayoutItemType.SeparatorLine
+						&& classItemList.get(i - 1).getLayoutItemType() == LayoutItemType.SeparatorLine;
+				if (!notAcceptElement) {
+					authItemClasList1.add(classItemList.get(i));
+				}
+			}
+		}
+		return authItemClasList1;
 	}
 
 }
