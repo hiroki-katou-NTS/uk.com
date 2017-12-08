@@ -1122,63 +1122,20 @@ module ksu001.a.viewmodel {
         }
 
         /**
-         * Get data WkpSpecificDate
+         * Get data WkpSpecificDate, ComSpecificDate, PublicHoliday
          */
-        getDataWkpSpecificDate(): JQueryPromise<any> {
-            //            let self = this,
-            //                dfd = $.Deferred(),
-            //                obj = {
-            //                    workplaceId: self.empItems()[0].workplaceId,
-            //                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
-            //                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
-            //                };
-            //            service.getDataWkpSpecificDate(obj).done(function(data) {
-            //                self.dataWkpSpecificDate(data);
-            //                dfd.resolve();
-            //            }).fail(function() {
-            //                dfd.reject();
-            //            });
-            let self = this, dfd = $.Deferred();
-            self.dataWkpSpecificDate([]);
-            dfd.resolve();
-            return dfd.promise();
-        }
-
-        /**
-         * Get data WkpSpecificDate
-         */
-        getDataComSpecificDate(): JQueryPromise<any> {
-            //            let self = this,
-            //                dfd = $.Deferred(),
-            //                obj = {
-            //                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
-            //                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
-            //                };
-            //            service.getDataComSpecificDate(obj).done(function(data) {
-            //                self.dataComSpecificDate(data);
-            //            lve();
-            //            }).fail(function() {
-            //                dfd.reject();
-            //            });
-
-            let self = this, dfd = $.Deferred();
-            self.dataComSpecificDate([]);
-            dfd.resolve();
-            return dfd.promise();
-        }
-
-        /**
-         * Get data Public Holiday
-         */
-        getDataPublicHoliday(): JQueryPromise<any> {
+        getDataSpecDateAndHoliday(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred(),
                 obj = {
-                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
-                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
+                    workplaceId: self.empItems()[0].workplaceId,
+                    startDate: self.dtPrev(),
+                    endDate: self.dtAft()
                 };
-            service.getDataPublicHoliday(obj).done(function(data) {
-                self.dataPublicHoliday(data);
+            service.getDataSpecDateAndHoliday(obj).done(function(data) {
+                self.dataWkpSpecificDate(data.listWkpSpecificDate);
+                self.dataComSpecificDate(data.listComSpecificDate);
+                self.dataPublicHoliday(data.listPublicHoliday);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1475,24 +1432,25 @@ module ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 1, "bg-schedule-that-day"));
                 }
 
-                $.when(self.getDataWkpSpecificDate(), self.getDataComSpecificDate(), self.getDataPublicHoliday()).done(() => {
+                $.when(self.getDataSpecDateAndHoliday()).done(() => {
                     _.each(self.arrDay, (date) => {
-                        let dateFormat = +date.yearMonthDay;
+                        let ymd = date.yearMonthDay;
+                        let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                         if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-specific-date "));
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-specific-date"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date "));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
                         } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-sunday color-schedule-sunday"));
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-sunday color-schedule-sunday"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
                         } else if (date.weekDay === '土') {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-saturday color-schedule-saturday"));
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-saturday color-schedule-saturday"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday color-schedule-saturday"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday color-schedule-saturday"));
                         } else if (date.weekDay === '日') {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-sunday color-schedule-sunday"));
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-sunday color-schedule-sunday"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
                         } else {
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-weekdays color-weekdays"));
-                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-weekdays color-weekdays"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays color-weekdays"));
+                            detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays color-weekdays"));
                         }
                     });
                     dfd.resolve();
