@@ -403,6 +403,15 @@ public class AppOvertimeFinder {
 					}
 					
 		}
+				
+		// xu li hien thi du lieu xin truoc
+		if(overtimeRestAppCommonSet.isPresent()){
+			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value){
+				overTimeDto.setAllPreAppPanelFlg(false);
+			}else{
+				overTimeDto.setAllPreAppPanelFlg(true);
+			}
+		}
 		
 		return overTimeDto;
 	} 
