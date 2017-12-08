@@ -10,6 +10,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Data
@@ -84,8 +85,10 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
-		dataObject.setItem(sigleItem.getDataTypeState());
+		if ( itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
+			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+			dataObject.setItem(sigleItem.getDataTypeState());
+		}
 		return dataObject;
 	}
 
