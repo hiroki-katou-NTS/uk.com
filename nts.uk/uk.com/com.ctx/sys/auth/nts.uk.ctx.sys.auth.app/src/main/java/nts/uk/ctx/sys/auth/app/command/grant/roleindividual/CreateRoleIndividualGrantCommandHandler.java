@@ -7,12 +7,15 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.shr.com.i18n.TextResource;
 
 
 @Stateless
@@ -27,16 +30,21 @@ public class CreateRoleIndividualGrantCommandHandler extends CommandHandlerWithR
 	@Inject
 	private UserRepository userRepo;
 
+	private final String COMPANY_ID_SYSADMIN = "00000000000000000";
+
 	@Override
 	protected CreateRoleIndividualGrantCommandResult handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {
 		CreateRoleIndividualGrantCommand command = context.getCommand();
+				
+		if (StringUtil.isNullOrEmpty(command.getUserID(), true)) {
+			throw new BusinessException("Msg_218", "CAS012_17");
+		}
 		
+		if (command.getRoleType() != RoleType.COMPANY_MANAGER.value)
+			command.setCompanyID(COMPANY_ID_SYSADMIN);
 		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepo.findByUserCompanyRoleType(command.getUserID(), command.getCompanyID(), command.getRoleType());
 		if (roleIndividualGrant.isPresent()) {
 			throw new BusinessException("Msg_3");
-		}
-		if (command.getUserID() == null) {
-			throw new BusinessException("Msg_218");
 		}
 		
 		Role uniqueRole = roleRepository.findByType(command.getRoleType()).get(0);

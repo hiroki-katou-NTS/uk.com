@@ -16,5 +16,4 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 public interface ReflectStampDomainService {
 	
 	void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate, WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
-
 }

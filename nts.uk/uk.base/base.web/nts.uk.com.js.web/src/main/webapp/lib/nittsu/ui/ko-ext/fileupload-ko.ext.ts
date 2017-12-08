@@ -38,7 +38,7 @@ module nts.uk.ui.koExtentions {
             $fileuploadContainer.append($fileInput);
             $fileuploadContainer.appendTo(container);
 
-            $fileBrowserButton.click(function() {
+            $fileBrowserButton.attr("tabindex", -1).click(function() {
                 $fileInput.click();
             });
 
