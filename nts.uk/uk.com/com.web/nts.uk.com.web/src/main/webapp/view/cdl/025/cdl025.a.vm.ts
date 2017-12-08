@@ -8,8 +8,8 @@ module nts.uk.com.view.cdl025.a {
     export module viewmodel {
         export class ScreenModel {
             component: ccg.component.viewmodel.ComponentModel;
-            roleType : number;
-            multiple : boolean;
+            roleType: number;
+            multiple: boolean;
             currentCode: any;
             
             private searchMode: string;
@@ -26,7 +26,8 @@ module nts.uk.com.view.cdl025.a {
                 self.component = new ccg.component.viewmodel.ComponentModel({ 
                     roleType: self.roleType,
                     multiple: self.multiple,
-                    currentCode: self.currentCode                    
+                    currentCode: self.currentCode,
+                    showEmptyItem: true
                 });
             }
 
