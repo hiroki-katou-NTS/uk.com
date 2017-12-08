@@ -11,8 +11,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
-import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagement;
-import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagementPK;
+import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BsymtPersonFileManagement;
+import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BsymtPersonFileManagementPK;
 
 
 @Stateless
@@ -32,17 +32,17 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 			+" JOIN PpemtPerInfoCtg d ON c.personInfoctgId =  d.ppemtPerInfoCtgPK.perInfoCtgId "
 			+" WHERE c.sid = :sid AND c.filetype = :filetype ORDER BY c.disPOrder ASC";
 	
-	private PersonFileManagement toDomainEmpFileManagement(BsymtEmpFileManagement entity) {
+	private PersonFileManagement toDomainEmpFileManagement(BsymtPersonFileManagement entity) {
 		val domain = PersonFileManagement.createFromJavaType(entity.pid,
-				entity.bsymtEmpFileManagementPK.fileid, entity.filetype, entity.disPOrder,
+				entity.bsymtPerFileManagementPK.fileid, entity.filetype, entity.disPOrder,
 				entity.personInfoctgId);
 		return domain;
 	}
 	
 	
-	private BsymtEmpFileManagement toEntityEmpFileManagement(PersonFileManagement domain) {
-		BsymtEmpFileManagement entity = new BsymtEmpFileManagement();
-		entity.bsymtEmpFileManagementPK = new BsymtEmpFileManagementPK(domain.getFileID());
+	private BsymtPersonFileManagement toEntityEmpFileManagement(PersonFileManagement domain) {
+		BsymtPersonFileManagement entity = new BsymtPersonFileManagement();
+		entity.bsymtPerFileManagementPK = new BsymtPersonFileManagementPK(domain.getFileID());
 		entity.pid = domain.getPId();
 		entity.filetype = domain.getTypeFile().value;
 		entity.disPOrder = domain.getUploadOrder();
@@ -54,7 +54,7 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	 * @param listEmpFileManagementEntity
 	 * @return
 	 */
-	private List<PersonFileManagement> toListEmpFileManagement(List<BsymtEmpFileManagement> listEntity) {
+	private List<PersonFileManagement> toListEmpFileManagement(List<BsymtPersonFileManagement> listEntity) {
 		List<PersonFileManagement> lstEmpFileManagement = new ArrayList<>();
 		if (!listEntity.isEmpty()) {
 			listEntity.stream().forEach(c -> {
@@ -69,20 +69,20 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 	@Override
 	public void insert(PersonFileManagement domain) {
-		BsymtEmpFileManagement entity = toEntityEmpFileManagement(domain);
+		BsymtPersonFileManagement entity = toEntityEmpFileManagement(domain);
 		getEntityManager().persist(entity);
 	}
 
 	@Override
 	public void remove(PersonFileManagement domain) {
-		Optional<BsymtEmpFileManagement> entity = this.queryProxy().find(new BsymtEmpFileManagementPK(domain.getFileID()), BsymtEmpFileManagement.class);
+		Optional<BsymtPersonFileManagement> entity = this.queryProxy().find(new BsymtPersonFileManagementPK(domain.getFileID()), BsymtPersonFileManagement.class);
 		if(entity.isPresent())
 			this.commandProxy().remove(entity.get());
 	}
 
 	@Override
 	public List<PersonFileManagement> getDataByParams(String employeeId, int filetype) {
-		List<BsymtEmpFileManagement> listFile = this.queryProxy().query(GET_ALL_BY_SID, BsymtEmpFileManagement.class)
+		List<BsymtPersonFileManagement> listFile = this.queryProxy().query(GET_ALL_BY_SID, BsymtPersonFileManagement.class)
 				.setParameter("sid", employeeId)
 				.setParameter("filetype", filetype)
 				.getList();
@@ -104,7 +104,7 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	@Override
 	public Optional<PersonFileManagement> getEmpMana(String fileid) {
 		
-		BsymtEmpFileManagement entity = this.queryProxy().query(GET_BY_FILEID, BsymtEmpFileManagement.class)
+		BsymtPersonFileManagement entity = this.queryProxy().query(GET_BY_FILEID, BsymtPersonFileManagement.class)
 				.setParameter("fileid", fileid).getSingleOrNull();
 
 		PersonFileManagement empFileMana = new PersonFileManagement();
@@ -121,7 +121,7 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	@Override
 	public void update(PersonFileManagement domain) {
 		String fileid = domain.getFileID();
-		BsymtEmpFileManagement entity = this.queryProxy().query(GET_BY_FILEID, BsymtEmpFileManagement.class)
+		BsymtPersonFileManagement entity = this.queryProxy().query(GET_BY_FILEID, BsymtPersonFileManagement.class)
 				.setParameter("fileid", fileid).getSingleOrNull();
 		
 		entity.personInfoctgId = domain.getPersonInfoCategoryId();
@@ -145,8 +145,8 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 	@Override
 	public void removebyFileId(String fileId) {
-		BsymtEmpFileManagementPK pk = new BsymtEmpFileManagementPK(fileId);
-		this.commandProxy().remove(BsymtEmpFileManagement.class , pk);
+		BsymtPersonFileManagementPK pk = new BsymtPersonFileManagementPK(fileId);
+		this.commandProxy().remove(BsymtPersonFileManagement.class , pk);
 	}
 
 

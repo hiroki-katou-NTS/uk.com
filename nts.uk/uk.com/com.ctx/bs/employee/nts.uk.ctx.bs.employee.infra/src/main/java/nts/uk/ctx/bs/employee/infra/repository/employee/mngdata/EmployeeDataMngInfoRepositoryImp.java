@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -27,11 +28,16 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"WHERE e.bsymtEmployeeDataMngInfoPk.pId = :pId");
 
 	private static final String SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId AND e.employeeCode= :sCd AND e.delStatus=0");
+			"WHERE e.companyId = :cId AND e.employeeCode= :sCd AND e.delStatus=0");
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
-	private static final String GET_ALL_BY_CID =" SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ";
+	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ";
+	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
+
+	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
+			"WHERE e.delStatus = 0 AND e.employeeCode = :empcode AND e.companyId = :cid");
+
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -70,8 +76,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return queryProxy().query(SELECT_BY_ID, BsymtEmployeeDataMngInfo.class).setParameter("sId", sId)
 				.setParameter("pid", pId).getSingle().map(m -> toDomain(m)).orElse(null);
 	}
-	
-	
 
 	@Override
 	public List<EmployeeDataMngInfo> findByEmployeeId(String sId) {
@@ -79,7 +83,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.stream().map(m -> toDomain(m)).collect(Collectors.toList());
 	}
 
-	
 	@Override
 	public List<EmployeeDataMngInfo> findByPersonId(String pId) {
 		return queryProxy().query(SELECT_BY_PERSON_ID, BsymtEmployeeDataMngInfo.class).setParameter("pId", pId)
@@ -107,21 +110,18 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null, domain.getExternalCode().v());
 	}
 
-
-
-
 	// sonnlb code start
 
 	@Override
 	public List<EmployeeDataMngInfo> getEmployeeNotDeleteInCompany(String cId, String sCd) {
 
 		return queryProxy().query(SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY, BsymtEmployeeDataMngInfo.class)
-				.setParameter("cid", cId).setParameter("sId", sCd).getList().stream().map(x -> toDomain(x))
+				.setParameter("cId", cId).setParameter("sCd", sCd).getList().stream().map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
 
 	// sonnlb code end
-	
+
 	@Override
 	public void updateRemoveReason(EmployeeDataMngInfo domain) {
 		this.commandProxy().update(toEntity(domain));
@@ -129,10 +129,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public List<EmployeeDataMngInfo> getListEmpToDelete(String cid) {
-		
-		List<BsymtEmployeeDataMngInfo> listEntity= this.queryProxy().query(GET_ALL_BY_CID, BsymtEmployeeDataMngInfo.class)
-				.setParameter("cid", cid)
-				.getList();
+
+		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()
+				.query(GET_ALL_BY_CID, BsymtEmployeeDataMngInfo.class).setParameter("cid", cid).getList();
 
 		return toListEmployeeDataMngInfo(listEntity);
 	}
@@ -142,11 +141,16 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		if (!listEntity.isEmpty()) {
 			listEntity.stream().forEach(c -> {
 				EmployeeDataMngInfo employeeDataMngInfo = toDomain(c);
-				
+
 				lstEmployeeDataMngInfo.add(employeeDataMngInfo);
 			});
 		}
 		return lstEmployeeDataMngInfo;
+	}
+
+	public Optional<EmployeeDataMngInfo> findByEmployeCD(String empcode, String cid) {
+		return queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployeeDataMngInfo.class).setParameter("empcode", empcode)
+				.setParameter("cid", cid).getSingle().map(m -> toDomain(m));
 	}
 
 }

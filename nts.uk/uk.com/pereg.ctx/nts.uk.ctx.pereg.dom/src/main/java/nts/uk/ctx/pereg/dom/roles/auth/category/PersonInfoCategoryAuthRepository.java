@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.dom.roles.auth.category;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface PersonInfoCategoryAuthRepository {
@@ -16,6 +17,8 @@ public interface PersonInfoCategoryAuthRepository {
 	void deleteByRoleId(String roleId);
 
 	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId);
+	
+	Map<String, PersonInfoCategoryAuth> getByRoleIdAndCategories(String roleId, List<String> categoryIdList);
 
 	List<PersonInfoCategoryAuth> getAllCategoryAuthByRoleId(String roleId);
 

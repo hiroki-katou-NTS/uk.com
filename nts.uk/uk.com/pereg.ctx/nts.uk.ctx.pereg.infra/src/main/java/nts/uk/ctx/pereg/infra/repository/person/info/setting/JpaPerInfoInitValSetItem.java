@@ -57,16 +57,13 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
 			+ " ORDER BY E.disporder";
 
-	
 	private final String IS_EXITED_ITEM_LST_1 = "SELECT ITEM "
 			+ " FROM  PpemtPerInfoItem ITEM INNER JOIN PpemtPerInfoItemCm CM"
-			+ " ON  ITEM.itemCd = CM.ppemtPerInfoItemCmPK.itemCd" 
-			+ " WHERE   ITEM.abolitionAtr = 0"
-			+ " AND CM.itemType = 2"
-			+ " AND ITEM.perInfoCtgId IN :perInfoCtgId";
+			+ " ON  ITEM.itemCd = CM.ppemtPerInfoItemCmPK.itemCd" + " WHERE   ITEM.abolitionAtr = 0"
+			+ " AND CM.itemType = 2" + " AND ITEM.perInfoCtgId IN :perInfoCtgId";
 	// SONNLB
 	private final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
-			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd , pc.categoryCd"
 			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
 			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -108,7 +105,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		return domain;
 
 	}
-	
+
 	private static PersonInfoItemDefinition toDomainString(PpemtPerInfoItem entity) {
 		PersonInfoItemDefinition domain = new PersonInfoItemDefinition();
 		domain.setPerInfoCategoryId(entity.perInfoCtgId);
@@ -216,6 +213,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		return domain;
 
 	}
+
 	/**
 	 * convert from domain PerInfoInitValueSetItem to entity
 	 * PpemtPersonInitValueSettingItem
@@ -319,6 +317,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		domain.setItemCode(entity[10] == null ? "" : entity[10].toString());
 
+		domain.setCtgCode(entity[11] == null ? "" : entity[11].toString());
+
 		return domain;
 
 	}
@@ -403,10 +403,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	public List<String> isExistItem(List<String> perInfoCtgId) {
 		List<PersonInfoItemDefinition> item = this.queryProxy().query(IS_EXITED_ITEM_LST_1, PpemtPerInfoItem.class)
 				.setParameter("perInfoCtgId", perInfoCtgId).getList(c -> toDomainString(c));
-		
+
 		if (item.size() > 0) {
-			List<String> itemIdList = item.stream().map(c -> c.getPerInfoCategoryId()).
-					distinct().collect(Collectors.toList());
+			List<String> itemIdList = item.stream().map(c -> c.getPerInfoCategoryId()).distinct()
+					.collect(Collectors.toList());
 			return itemIdList;
 		}
 		return new ArrayList<>();

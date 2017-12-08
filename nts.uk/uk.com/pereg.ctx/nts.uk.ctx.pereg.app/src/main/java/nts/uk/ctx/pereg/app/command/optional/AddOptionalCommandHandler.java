@@ -50,6 +50,10 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 	@Override
 	protected void handle(CommandHandlerContext<PeregUserDefAddCommand> context) {
 		val command = context.getCommand();
+		
+		if (command.getItems() == null || command.getItems().isEmpty()){
+			return;
+		}
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
