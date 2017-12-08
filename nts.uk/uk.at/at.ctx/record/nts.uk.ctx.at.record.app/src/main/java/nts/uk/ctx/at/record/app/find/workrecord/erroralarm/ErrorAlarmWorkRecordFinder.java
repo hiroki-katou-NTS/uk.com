@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,8 +23,12 @@ public class ErrorAlarmWorkRecordFinder {
 	private ErrorAlarmWorkRecordRepository repository;
 
 	public List<ErrorAlarmWorkRecordDto> getListErrorAlarmWorkRecord() {
-		List<ErrorAlarmWorkRecord> lstDAta = repository.getListErrorAlarmWorkRecord(AppContexts.user().companyId());
-		return lstDAta.stream().map(item -> ErrorAlarmWorkRecordDto.fromDomain(item)).collect(Collectors.toList());
+		return repository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()).stream()
+				.map(domain -> ErrorAlarmWorkRecordDto.fromDomain(domain)).collect(Collectors.toList());
+	}
+
+	public ErrorAlarmWorkRecordDto findByCode(String code) {
+		return ErrorAlarmWorkRecordDto.fromDomain(repository.findByCode(code));
 	}
 
 }

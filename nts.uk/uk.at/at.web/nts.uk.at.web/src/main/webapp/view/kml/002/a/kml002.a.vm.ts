@@ -382,20 +382,19 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             blockUI.invisible();
             
-            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.getDataMount(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
+            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
 
                 if (self.settingItems().length > 0) {
                     self.singleSelectedCode(self.settingItems()[0].code);
                 }
-                
-                blockUI.clear();
-                
+                                
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);
+            }).always(() => {
+                blockUI.clear();    
             });
 
-            dfd.resolve();
             return dfd.promise();
         }
         /**
@@ -549,7 +548,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
 
             service.getByAtr(param).done((data) => {
-                var temp = [];
+                var temp = data;
                 let a = {
                     budgetAtr: 1,
                     externalBudgetCode: (data.length + 1).toString(),
@@ -564,48 +563,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 }
 
                 temp.push(a);
+                self.amountItems = _.clone(temp);
+                
                 temp.push(b);
-
-                _.forEach(data, function(item) {
-                    temp.push(item);
-                });
-
-                self.peopleItems = temp;
-
-                dfd.resolve(data);
-            }).fail(function(res) {
-                dfd.reject(res);
-            });
-
-            return dfd.promise();
-        }
-        
-        /**
-         * Get E screen data.
-         */
-        getDataMount(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-
-            let param = {
-                budgetAtr: 1,
-                // received from mother screen 0: day or 1: time
-                unitAtr: 0
-            }
-            service.getByAtr(param).done((data) => {
-                var temp = [];
-                let a = {
-                    budgetAtr: 1,
-                    externalBudgetCode: (data.length + 1).toString(),
-                    externalBudgetName: nts.uk.resource.getText("KML002_109"),
-                    unitAtr: 0
-                }
-                temp.push(a);
-                _.forEach(data, function(item) {
-                    temp.push(item);
-                });
-
-                self.amountItems = temp;
+                self.peopleItems = _.clone(temp);
+                
 
                 dfd.resolve(data);
             }).fail(function(res) {
@@ -619,32 +581,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             var self = this;
             var dfd = $.Deferred();
+            self.unitItems = _.clone(self.dailyItems);
             self.dailyItems = [];
-
-            var dailyAttendanceAtrs = [];
-            dailyAttendanceAtrs.push(5);
-            var param = {
-                dailyAttendanceItemAtrs: dailyAttendanceAtrs,
-                scheduleAtr: 0,
-                budgetAtr: 0,
-                unitAtr: 0
-            };
-            service.getDailyItems(param).done(function(data) {
-                let temp = [];
-                let items = _.sortBy(data, ['companyId', 'dispOrder']);
-
-                _.forEach(items, function(item: service.BaseItemsDto) {
-                    var name = item.itemName + nts.uk.resource.getText("KML002_43");
-                    temp.push({ id: item.id, name: name, itemType: item.itemType });
-                });
-
-                self.unitItems = temp;
-
-                dfd.resolve(data);
-            }).fail(function(res) {
-                dfd.reject(res);
-            });
-
             return dfd.promise();
         }
         
@@ -693,19 +631,15 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
 
             service.getByAtr(param).done((data) => {
-                var temp = [];
+                var temp = data;
                 let a = {
-                    budgetAtr: 3,
+                    budgetAtr: 1,
                     externalBudgetCode: (data.length + 1).toString(),
                     externalBudgetName: nts.uk.resource.getText("KML002_109"),
                     unitAtr: 0
                 }
 
                 temp.push(a);
-
-                _.forEach(data, function(item) {
-                    temp.push(item);
-                });
 
                 self.numericalItems = temp;
 

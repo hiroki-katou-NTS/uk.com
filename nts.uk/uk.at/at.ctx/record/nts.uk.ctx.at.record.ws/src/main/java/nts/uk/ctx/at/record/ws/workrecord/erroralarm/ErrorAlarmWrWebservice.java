@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.DeleteErAlCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.UpdateErrorAlarmWrCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.UpdateErrorAlarmWrCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.ErrorAlarmWorkRecordDto;
@@ -29,15 +30,30 @@ public class ErrorAlarmWrWebservice {
 	@Inject
 	private UpdateErrorAlarmWrCommandHandler updateCommandHandler;
 
+	@Inject
+	private DeleteErAlCommandHandler deleteErAlCommandHandler;
+
 	@POST
 	@Path("getall")
 	public List<ErrorAlarmWorkRecordDto> getAll() {
 		return this.finder.getListErrorAlarmWorkRecord();
 	}
-	
+
+	@POST
+	@Path("findByCode")
+	public ErrorAlarmWorkRecordDto findByCode(String code) {
+		return this.finder.findByCode(code);
+	}
+
 	@POST
 	@Path("update")
 	public void update(UpdateErrorAlarmWrCommand command) {
 		this.updateCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("remove")
+	public void remove(String code) {
+		this.deleteErAlCommandHandler.handle(code);
 	}
 }

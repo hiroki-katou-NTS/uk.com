@@ -31,7 +31,7 @@ module nts.uk.at.view.kdw003.c.viewmodel {
             });
             
             // TODO - remove when commit
-            self.selectedPerfFmtCodeList = new Array('001', '002', '009');
+           // self.selectedPerfFmtCodeList = new Array('001', '002', '009');
         }
         
         changeSelectedPerfFmtCode(foundItem) {
@@ -47,7 +47,7 @@ module nts.uk.at.view.kdw003.c.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            service.getFormatList(self.selectedPerfFmtCodeList).done((lstData) => {
+            service.getFormatList().done((lstData) => {
                 let sortedData = _.orderBy(lstData, ['dailyPerformanceFormatCode'], ['asc']);
                 self.dailyPerfFmtList(sortedData);
                 dfd.resolve();
