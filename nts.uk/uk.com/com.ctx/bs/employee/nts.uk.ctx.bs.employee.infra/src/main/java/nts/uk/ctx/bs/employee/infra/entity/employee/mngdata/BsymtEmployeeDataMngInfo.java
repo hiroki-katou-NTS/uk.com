@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -35,7 +36,7 @@ public class BsymtEmployeeDataMngInfo extends UkJpaEntity implements Serializabl
 	public int delStatus;
 
 	@Column(name = "DEL_DATE")
-	public GeneralDate delDateTmp;
+	public GeneralDateTime delDateTmp;
 
 	@Column(name = "REMV_REASON")
 	public String removeReason;

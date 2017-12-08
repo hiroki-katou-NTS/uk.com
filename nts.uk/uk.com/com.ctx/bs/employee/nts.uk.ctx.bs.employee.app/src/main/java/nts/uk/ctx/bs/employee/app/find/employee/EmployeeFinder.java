@@ -105,38 +105,8 @@ public class EmployeeFinder {
 		return employeeBusiness.generateCardNo(startLetters);
 	}
 
-	/**
-	 * get generate employee code and companyId
-	 * 
-	 * @param startLetter
-	 * @return
-	 */
+	
 
-
-	/**
-	 * Get All Employee temporary deletion
-	 * 
-	 * @return
-	 */
-//	public List<EmployeeToDeleteDto> getAllEmployeeInfoToDelete() {
-//
-//		return this.employeeRepository.getAllEmployeeInfoToDelete().stream()
-//				.map(item -> EmployeeToDeleteDto.fromDomain(item)).collect(Collectors.toList());
-//	}
-
-	/**
-	 * Gets EmployeeInfo to Delete by employeeId.
-	 *
-	 * @param employeeCode
-	 *            the employee code
-	 * @return the person id by employee code
-	 */
-	public EmployeeToDeleteDetailDto getEmployeeDetailInfoToDelete(String employeeId) {
-
-		EmployeeToDeleteDetailDto s = this.employeeRepository.getEmployeeDetailToDelete(employeeId)
-				.map(item -> EmployeeToDeleteDetailDto.fromDomain(item)).get();
-		return s;
-	}
 
 	public Optional<EmployeeDto> getInfoById(String employeeId) {
 		Optional<Employee> emp = employeeRepository.getBySid(employeeId);

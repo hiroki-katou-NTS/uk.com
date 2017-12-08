@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,9 +31,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
-	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
-	
-
+	private static final String GET_ALL_BY_CID =" SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ";
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -126,6 +125,28 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@Override
 	public void updateRemoveReason(EmployeeDataMngInfo domain) {
 		this.commandProxy().update(toEntity(domain));
+	}
+
+	@Override
+	public List<EmployeeDataMngInfo> getListEmpToDelete(String cid) {
+		
+		List<BsymtEmployeeDataMngInfo> listEntity= this.queryProxy().query(GET_ALL_BY_CID, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cid", cid)
+				.getList();
+
+		return toListEmployeeDataMngInfo(listEntity);
+	}
+
+	private List<EmployeeDataMngInfo> toListEmployeeDataMngInfo(List<BsymtEmployeeDataMngInfo> listEntity) {
+		List<EmployeeDataMngInfo> lstEmployeeDataMngInfo = new ArrayList<>();
+		if (!listEntity.isEmpty()) {
+			listEntity.stream().forEach(c -> {
+				EmployeeDataMngInfo employeeDataMngInfo = toDomain(c);
+				
+				lstEmployeeDataMngInfo.add(employeeDataMngInfo);
+			});
+		}
+		return lstEmployeeDataMngInfo;
 	}
 
 }

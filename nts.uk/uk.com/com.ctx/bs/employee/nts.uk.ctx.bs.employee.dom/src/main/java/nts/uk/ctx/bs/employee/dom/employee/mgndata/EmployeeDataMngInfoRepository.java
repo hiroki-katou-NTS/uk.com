@@ -26,4 +26,6 @@ public interface EmployeeDataMngInfoRepository {
 	// sonnlb code end
 	
 	void updateRemoveReason(EmployeeDataMngInfo domain);
+	
+	List<EmployeeDataMngInfo> getListEmpToDelete(String cid);
 }
