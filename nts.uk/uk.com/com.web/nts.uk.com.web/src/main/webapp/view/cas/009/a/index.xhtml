@@ -26,8 +26,8 @@
 				<div class="container">
 					<button id="new" data-bind="click: createNew" tabindex="1">#{i18n.getText('CAS009_3')}</button>
 					<button id="registration" data-bind ="click: save" class="proceed" tabindex="2">#{i18n.getText('CAS009_4')}</button>
-					<button id="delete" data-bind ="click: remove, disable: component.currentCode()==''" class="danger" tabindex="3">#{i18n.getText('CAS009_5')}</button>
-					<button id="reference" data-bind="enable: enableDetail" tabindex="4">#{i18n.getText('CAS009_6')}</button>
+					<button id="delete" data-bind ="click: remove, enable: component.currentCode()!='' &amp;&amp; $root.errors.isEmpty()" class="danger" tabindex="3">#{i18n.getText('CAS009_5')}</button>
+					<button id="reference" data-bind="enable: enableDetail, click: open_Dialog" tabindex="4">#{i18n.getText('CAS009_6')}</button>
 				</div>
 			</div>
 			<div id="contents-area" >
@@ -49,13 +49,16 @@
 			                                 name: '#[CAS009_11]',
 			                                 constraint: 'RoleCode',
 			                                 value: roleCode,
-			                                 required: true}, hasFocus: isSelected, disable: roleId()!=''"/>
+			                                 required: true,
+			                                 enable: createMode,
+			                                 immediate: true }, hasFocus: createMode()"/>
 										<input tabindex="6" id="roleName"
 			                                 data-bind="ntsTextEditor: {
 			                                 name: '#[CAS009_12]',
 			                                 value: name,
 			                                 constraint: 'RoleName',
-			                                 required: true}"/>		                                 
+			                                 required: true,
+			                                 immediate: true}, hasFocus: !createMode()"/>		                                 
 									</td>
 								</tr>	
 								<tr>

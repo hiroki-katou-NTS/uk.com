@@ -1,4 +1,4 @@
-module nts.uk.com.view.cas012.b.viewmodel {
+module nts.uk.com.view.cas013.b.viewmodel {
 
 
     export class ScreenModel {
@@ -9,17 +9,22 @@ module nts.uk.com.view.cas012.b.viewmodel {
         //user
         selectUserID: KnockoutObservable<string>;
         userName: KnockoutObservable<string>;
+        
+        enable1 : KnockoutObserveble<boolean>;
+        enable2 : KnockoutObserveble<boolean>;
 
         constructor() {
             var self = this;
 
+            self.enable1 = ko.observable(true);
+            self.enable2 = ko.observable(true);
+            
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'userID', key: 'userID', width: 100, hidden: true },
-                { headerText: nts.uk.resource.getText("CAS012_25"), key: 'loginID', width: 120, columnCssClass: "colStyle" },
-                { headerText: nts.uk.resource.getText("CAS012_26"), key: 'userName', width: 230 }
-
+                { headerText: nts.uk.resource.getText(""), key: 'userID', hidden: true },
+                { headerText: nts.uk.resource.getText("CAS013_29"), key: 'loginID', width: 100 },
+                { headerText: nts.uk.resource.getText("CAS013_30"), key: 'userName', width: 230 }
             ]);
             self.selectUserID = ko.observable('');
         }
@@ -52,7 +57,6 @@ module nts.uk.com.view.cas012.b.viewmodel {
                 decisionName: selectUser.userName
             };
             nts.uk.ui.windows.setShared("UserInfo", dataSetShare);
-
             self.cancel_Dialog();
         }
 

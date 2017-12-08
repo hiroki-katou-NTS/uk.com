@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width:400, height: 250 };</script>
+			<script>var dialogSize = { width:400, height: 280 };</script>
 			<com:stylefile path="cas012.c.style.css" />
 			<com:scriptfile path="cas012.c.service.js" />
 			<com:scriptfile path="cas012.c.start.js" />
@@ -25,6 +25,7 @@
 					<div id="combo-box" tabindex="5"
 						data-bind="ntsComboBox: {
 							options: listCompany,
+							visibleItemsCount: 5,
 							optionsValue: 'companyId',
 							value: selectedCompany,
 							optionsText: 'companyName',
