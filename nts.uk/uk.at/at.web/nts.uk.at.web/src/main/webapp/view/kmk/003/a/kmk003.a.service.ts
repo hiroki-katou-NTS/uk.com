@@ -8,6 +8,7 @@ module nts.uk.at.view.kmk003.a {
             getAllWorktime: "at/shared/worktimeset/findAll",
             getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",
+            findAllFlexWorkSetting: "ctx/at/shared/worktime/flexset/findAl"
         };
 
         export function findAllWorkTimeSet(): JQueryPromise<any> {
@@ -21,6 +22,12 @@ module nts.uk.at.view.kmk003.a {
         export function savePred(data: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.savePred, data);
         }
+        /**
+         * function find all data by call service
+         */
+        export function findAllFlexWorkSetting(): JQueryPromise<model.flexset.FlexWorkSettingDto[]> {
+            return nts.uk.request.ajax(servicePath.findAllFlexWorkSetting);
+        } 
 
         /**
          * Data Model
@@ -332,7 +339,6 @@ module nts.uk.at.view.kmk003.a {
                     calculateSetting: FlexCalcSettingDto;    
                 }
                 
-                
             }
             export module flowset {
                 
@@ -406,6 +412,77 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
             }
+            
+            export module predset{
+                
+                export interface BreakDownTimeDayDto {
+                    oneDay: number;
+                    morning: number;
+                    afternoon: number;
+                }
+
+                export interface PredetermineTimeDto {
+                    addTime: BreakDownTimeDayDto;
+                    predTime: BreakDownTimeDayDto;
+                }
+                
+                export interface TimezoneDto{
+                    useAtr: boolean;
+                    workNo: number;
+                    start: number;
+                    end: number;
+                }
+                
+                export interface PrescribedTimezoneSettingDto{
+                    morningEndTime: number;
+                    afternoonStartTime: number;
+                    timezone: TimezoneDto[];
+                }
+                
+                export interface PredetemineTimeSetDto{
+                    rangeTimeDay: number;
+                    workTimeCode: string;
+                    predTime: PredetermineTimeDto;    
+                    nightShift: number;
+                    prescribedTimezoneSetting: PrescribedTimezoneSettingDto;
+                    startDateClock: number;
+                    predetermine: boolean;
+                }   
+                
+            }
+            
+            export module worktimeset{
+                
+                export interface WorkTimeDivisionDto{
+                    workTimeDailyAtr: number;
+                    workTimeMethodSet: number;
+                }
+                
+                export interface WorkTimeDisplayNameDto{
+                    workTimeName: string;
+                    workTimeAbName: string;
+                    workTimeSymbol: string;
+                }
+                
+                export interface WorkTimeSettingDto{
+                    worktimeCode: string;
+                    workTimeDivision: WorkTimeDivisionDto;    
+                    abolishAtr: number;
+                    colorCode: string;
+                    workTimeDisplayName: WorkTimeDisplayNameDto;
+                    memo: string;
+                    note: string;
+                }    
+            }
+            
+            export module command {
+                export interface FlexWorkSettingSaveCommand {
+                    flexWorkSetting: flexset.FlexWorkSettingDto;
+                    predseting: predset.PredetemineTimeSetDto;
+                    worktimeSetting: worktimeset.WorkTimeSettingDto;
+                }
+            }
+            
         }
     }
 }

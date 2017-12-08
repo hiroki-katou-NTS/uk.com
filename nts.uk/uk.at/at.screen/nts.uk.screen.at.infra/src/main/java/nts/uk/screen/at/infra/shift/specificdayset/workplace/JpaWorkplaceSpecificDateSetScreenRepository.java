@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSet;
-import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenParams;
+import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScreenParams;
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenRepository;
 
 /**
@@ -25,7 +25,7 @@ public class JpaWorkplaceSpecificDateSetScreenRepository extends JpaRepository
 
 	@Override
 	public List<GeneralDate> findDataWkpSpecificDateSet(
-			WorkplaceSpecificDateSetScreenParams params) {
+			WorkplaceIdAndDateScreenParams params) {
 		return this.queryProxy().query(GET_BY_WORKPLACE_ID_AND_DATE, KsmmtWpSpecDateSet.class)
 				.setParameter("workplaceId", params.workplaceId).setParameter("startDate", params.startDate)
 				.setParameter("endDate", params.endDate).getList(x -> x.ksmmtWpSpecDateSetPK.specificDate);

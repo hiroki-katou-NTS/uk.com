@@ -19,7 +19,7 @@ public class WorkplaceSpecificDateSetScreenProcessor {
 	private WorkplaceSpecificDateSetScreenRepository repo;
 
 	public List<GeneralDate> findDataWkpSpecificDateSet(
-			WorkplaceSpecificDateSetScreenParams params) {
+			WorkplaceIdAndDateScreenParams params) {
 		return this.repo.findDataWkpSpecificDateSet(params);
 	}
 }
