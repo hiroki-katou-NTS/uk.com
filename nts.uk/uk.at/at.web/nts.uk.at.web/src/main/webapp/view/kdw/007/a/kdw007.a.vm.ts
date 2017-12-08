@@ -2,40 +2,43 @@ module nts.uk.at.view.kdw007.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
-        isUpdateMode: KnockoutObservable<boolean>;
+        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
 
-        listUseAtr: KnockoutObservableArray<any>;
-        listTypeAtr: KnockoutObservableArray<any>;
-        gridListColumns: KnockoutObservableArray<any>;
-        lstErrorAlarm: KnockoutObservableArray<any>;
-        selectedErrorAlarm: KnockoutObservable<any>;
-        selectedErrorAlarmCode: KnockoutObservable<string>;
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-        selectedTab: KnockoutObservable<string>;
-        //Tab 2
-        displayListEmployment: KnockoutObservable<string> = ko.observable("");;
-        displayListClassification: KnockoutObservable<string> = ko.observable("");
-        displayListJobTitle: KnockoutObservable<string> = ko.observable("");
-        displayListBusinessType: KnockoutObservable<string> = ko.observable("");
-        //Tab3
-        enumFilterByCompare: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: '予定と実績の比較をしない' },
-            { code: 1, name: '予定と実績が同じものを抽出する' },
-            { code: 2, name: '予定と実績が異なるものを抽出する' }
+        listUseAtr: KnockoutObservableArray<any> = ko.observableArray([
+            { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
+            { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
         ]);
-        enumLogicalOperator: ko.observableArray([
+        listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
+            { code: '0', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Error") },
+            { code: '1', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Alarm") },
+            { code: '2', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Other") }
+        ]);
+        gridListColumns: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: nts.uk.resource.getText("KDW007_6"), key: 'code', width: 45 },
+            { headerText: nts.uk.resource.getText("KDW007_7"), key: 'name', width: 280 }
+        ]);
+        lstErrorAlarm: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedErrorAlarm: KnockoutObservable<any> = ko.observable(new ErrorAlarmWorkRecord());
+        selectedErrorAlarmCode: KnockoutObservable<string> = ko.observable(null);
+        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([
+            { id: 'tab-1', title: nts.uk.resource.getText("KDW007_9"), content: '.settingTab', enable: ko.observable(true), visible: ko.observable(true) },
+            { id: 'tab-2', title: nts.uk.resource.getText("KDW007_83"), content: '.checkScopeTab', enable: ko.observable(true), visible: ko.observable(true) },
+            { id: 'tab-3', title: nts.uk.resource.getText("KDW007_84"), content: '.conditionSettingTab1', enable: ko.observable(true), visible: ko.observable(true) },
+            { id: 'tab-4', title: nts.uk.resource.getText("KDW007_85"), content: '.conditionSettingTab2', enable: ko.observable(true), visible: ko.observable(true) },
+            { id: 'tab-5', title: nts.uk.resource.getText("KDW007_86"), content: '.applicationTab', enable: ko.observable(true), visible: ko.observable(true) }
+        ]);
+        selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
+        errorDisplayItemName: KnockoutObservable<string> = ko.observable("");
+        //Tab3
+        enumLogicalOperator: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: 'AND' },
             { code: 1, name: 'OR' }
         ]);
-        //        enumFilterByCompare: KnockoutObservableArray<any> = ko.observableArray([
-        //            { code: 0, name: nts.uk.resource.getText("Enum_FilterByCompare_NotCompare") },
-        //            { code: 1, name: nts.uk.resource.getText("Enum_FilterByCompare_Extract_Same") },
-        //            { code: 2, name: nts.uk.resource.getText("Enum_FilterByCompare_Extract_Different") }
-        //        ]);
-        displayListWorkTypePlan: KnockoutObservable<string> = ko.observable("");
-        displayListWorkTimePlan: KnockoutObservable<string> = ko.observable("");
-        displayListWorkTypeActual: KnockoutObservable<string> = ko.observable("");
-        displayListWorkTimeActual: KnockoutObservable<string> = ko.observable("");
+        enumFilterByCompare: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: nts.uk.resource.getText("Enum_FilterByCompare_NotCompare") },
+            { code: 1, name: nts.uk.resource.getText("Enum_FilterByCompare_Extract_Same") },
+            { code: 2, name: nts.uk.resource.getText("Enum_FilterByCompare_Extract_Different") }
+        ]);
         // Tab 5
         lstApplicationType = ko.observableArray([
             { code: 0, name: "残業申請" },
@@ -60,74 +63,23 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         constructor() {
             let self = this;
-            self.isUpdateMode = ko.observable(false);
-            self.listUseAtr = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
-                { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
-            ]);
-            self.listTypeAtr = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Error") },
-                { code: '1', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Alarm") },
-                { code: '2', name: nts.uk.resource.getText("Enum_ErrorAlarmClassification_Other") }
-            ]);
-            self.gridListColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDW007_6"), key: 'code', width: 45 },
-                { headerText: nts.uk.resource.getText("KDW007_7"), key: 'name', width: 280 }
-            ]);
-            self.tabs = ko.observableArray([
-                { id: 'tab-1', title: nts.uk.resource.getText("KDW007_9"), content: '.settingTab', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: nts.uk.resource.getText("KDW007_83"), content: '.checkScopeTab', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-3', title: nts.uk.resource.getText("KDW007_84"), content: '.conditionSettingTab1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-4', title: nts.uk.resource.getText("KDW007_85"), content: '.conditionSettingTab2', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-5', title: nts.uk.resource.getText("KDW007_86"), content: '.applicationTab', enable: ko.observable(true), visible: ko.observable(true) }
-            ]);
-            self.selectedTab = ko.observable('tab-1');
-            self.lstErrorAlarm = ko.observableArray([]);
-            self.selectedErrorAlarm = ko.observable(ko.mapping.fromJS(new ErrorAlarmWorkRecord()));
-            self.selectedErrorAlarmCode = ko.observable(null);
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
                     let foundItem = _.find(self.lstErrorAlarm(), (item: ErrorAlarmWorkRecord) => {
                         return item.code == code;
                     });
                     if (foundItem) {
-                        self.isUpdateMode(false);
+                        self.isNewMode(false);
                         self.changeSelectedErrorAlarm(foundItem);
                     }
                 }
-            });
-            self.selectedErrorAlarm.subscribe((eral) => {
-                eral.alCheckTargetCondition.getEmploymentTextDisplay().done((result) => {
-                    self.displayListEmployment(result);
-                });
-                eral.alCheckTargetCondition.getClassificationTextDisplay().done((result) => {
-                    self.displayListClassification(result);
-                });
-                eral.alCheckTargetCondition.getJobTitleTextDisplay().done((result) => {
-                    self.displayListJobTitle(result);
-                });
-                eral.alCheckTargetCondition.getBusinessTypeTextDisplay().done((result) => {
-                    self.displayListBusinessType(result);
-                });
-                eral.workTypeCondition.getTextDisplay("plan").done((result) => {
-                    self.displayListWorkTypePlan(result);
-                });
-                eral.workTimeCondition.getTextDisplay("plan").done((result) => {
-                    self.displayListWorkTimePlan(result);
-                });
-                eral.workTypeCondition.getTextDisplay("actual").done((result) => {
-                    self.displayListWorkTypeActual(result);
-                });
-                eral.workTimeCondition.getTextDisplay("actual").done((result) => {
-                    self.displayListWorkTimeActual(result);
-                });
             });
         }
 
         changeSelectedErrorAlarm(foundItem) {
             let self = this;
             $(".nts-input").ntsError("clear");
-            self.selectedErrorAlarm(ko.mapping.fromJS(new ErrorAlarmWorkRecord(foundItem)));
+            self.selectedErrorAlarm(new ErrorAlarmWorkRecord(foundItem));
         }
 
         startPage(): JQueryPromise<any> {
@@ -142,24 +94,56 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             return dfd.promise();
         }
 
+        /* Function Area */
+
+        setNewMode() {
+            let self = this;
+            self.selectedErrorAlarmCode(null);
+            self.selectedErrorAlarm(new ErrorAlarmWorkRecord(null));
+            self.isNewMode(true);
+            self.selectedTab('tab-1');
+        }
+
         update() {
             let self = this;
-            self.selectedErrorAlarm().boldAtr() ? self.selectedErrorAlarm().boldAtr(1) : self.selectedErrorAlarm().boldAtr(0);
-            if (self.selectedErrorAlarm().name().trim() == '') {
-                self.selectedErrorAlarm().name('');
-                $("#errorAlarmWorkRecordName").focus();
-                return;
+            $(".need-check").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                let data = ko.mapping.toJS(self.selectedErrorAlarm());
+                debugger;
+                service.update(data).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    let currentItem = self.selectedErrorAlarmCode();
+                    self.startPage().done(() => {
+                        self.selectedErrorAlarmCode(currentItem);
+                    });
+                });
             }
-            if (self.selectedErrorAlarm().displayMessage().trim() == '') {
-                self.selectedErrorAlarm().displayMessage('');
-                $("#messageDisplay").focus();
-                return;
-            }
-            service.update(ko.mapping.toJS(self.selectedErrorAlarm)).done(() => {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                let currentItem = self.selectedErrorAlarmCode();
-                self.startPage().done(() => {
-                    self.selectedErrorAlarmCode(currentItem);
+
+        }
+
+        remove() {
+            let self = this;
+            let data = self.selectedErrorAlarm().code();
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
+                debugger;
+            })
+        }
+
+        /* Tab 1 */
+        openSelectAtdItemColorDialog() {
+            let self = this;
+            //Open dialog KDL021
+            service.getAllAttendanceItem().done((lstItem) => {
+                let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+                nts.uk.ui.windows.setShared('Multiple', false);
+                // example wait
+                nts.uk.ui.windows.setShared('AllAttendanceObj', [270, 271, 272, 273, 274, 275]);
+                nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.selectedErrorAlarm().errorDisplayItem()]);
+                nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
+                    let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
+                    if (output) {
+                        self.selectedErrorAlarm().errorDisplayItem(parseInt(output));
+                    }
                 });
             });
         }
@@ -177,7 +161,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 var output = getShared('CDL002Output');
                 if (output) {
                     self.selectedErrorAlarm().alCheckTargetCondition.lstEmployment(output);
-                    self.selectedErrorAlarm.valueHasMutated();
                 }
             });
         }
@@ -194,7 +177,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 var output = getShared('outputCDL003');
                 if (output) {
                     self.selectedErrorAlarm().alCheckTargetCondition.lstClassification(output);
-                    self.selectedErrorAlarm.valueHasMutated();
                 }
             })
         }
@@ -212,7 +194,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 let output = nts.uk.ui.windows.getShared('outputCDL004');
                 if (output) {
                     self.selectedErrorAlarm().alCheckTargetCondition.lstJobTitle(output);
-                    self.selectedErrorAlarm.valueHasMutated();
                 }
             })
         }
@@ -227,7 +208,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 let output = getShared("currentCodeList");
                 if (output) {
                     self.selectedErrorAlarm().alCheckTargetCondition.lstBusinessType(output);
-                    self.selectedErrorAlarm.valueHasMutated();
                 }
             });
         }
@@ -249,7 +229,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         } else {
                             self.selectedErrorAlarm().workTypeCondition.actualLstWorkType(results.map((result) => { return result.code; }));
                         }
-                        self.selectedErrorAlarm.valueHasMutated();
                     }
                 });
             });
@@ -263,7 +242,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 setShared('kml001multiSelectMode', true);
                 nts.uk.ui.windows.setShared('kml001selectAbleCodeList', lstWorkTime.map((worktime) => { return worktime.code; }));
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', lstSelectedCode);
-                nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定"}).onClosed(function() {
+                nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定" }).onClosed(function() {
                     let results = getShared("kml001selectedCodeList");
                     if (results) {
                         if (planOrActual === "plan") {
@@ -271,7 +250,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         } else {
                             self.selectedErrorAlarm().workTimeCondition.actualLstWorkTime(results.sort());
                         }
-                        self.selectedErrorAlarm.valueHasMutated();
                     }
                 });
             });
@@ -283,7 +261,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 param = {
                 };
             nts.uk.ui.windows.setShared("kdw007B", param);
-            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定"}).onClosed(() => {
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
                 let output = getShared("kdw007BResult");
                 if (output) {
                     debugger;
@@ -295,150 +273,163 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
     export class ErrorAlarmWorkRecord {
         /* 会社ID */
-        companyId: string;
+        companyId: KnockoutObservable<string>;
         /* コード */
-        code: string;
+        code: KnockoutObservable<string>;
         /* 名称 */
-        name: string;
+        name: KnockoutObservable<string>;
         /* システム固定とする */
-        fixedAtr: number;
+        fixedAtr: KnockoutObservable<number>;
         /* 使用する */
-        useAtr: number;
+        useAtr: KnockoutObservable<number>;
         /* 区分 */
-        typeAtr: number;
+        typeAtr: KnockoutObservable<number>;
         /* 表示メッセージ */
-        displayMessage: string;
+        displayMessage: KnockoutObservable<string>;
         /* メッセージを太字にする */
-        boldAtr: number;
+        boldAtr: KnockoutObservable<number>;
         /* メッセージの色 */
-        messageColor: string;
+        messageColor: KnockoutObservable<string>;
         /* エラーアラームを解除できる */
-        cancelableAtr: number;
+        cancelableAtr: KnockoutObservable<number>;
         /* エラー表示項目 */
-        errorDisplayItem: number;
+        errorDisplayItem: KnockoutObservable<number>;
+        errorDisplayItemName: KnockoutObservable<string>;
         /* チェック条件 */
         alCheckTargetCondition: AlarmCheckTargetCondition;
         /* 勤務種類の条件*/
         workTypeCondition: WorkTypeCondition;
         /* 就業時間帯の条件*/
         workTimeCondition: WorkTimeCondition;
-        operatorBetweenPlanActual: number;
-        lstApplicationTypeCode: Array<number>;
-        operatorBetweenGroups: number;
-        operatorGroup1: number;
-        operatorGroup2: number;
-        erAlAtdItemCondition: ErAlAtdItemCondition;
+        operatorBetweenPlanActual: KnockoutObservable<number>;
+        lstApplicationTypeCode: KnockoutObservableArray<number>;
+        operatorBetweenGroups: KnockoutObservable<number>;
+        operatorGroup1: KnockoutObservable<number>;
+        operatorGroup2: KnockoutObservable<number>;
+        erAlAtdItemConditionGroup1: Array<ErAlAtdItemCondition>;
+        erAlAtdItemConditionGroup2: Array<ErAlAtdItemCondition>;
 
         constructor(param?: ErrorAlarmWorkRecord) {
-            this.companyId = param && param.companyId ? param.companyId : '';
-            this.code = param && param.code ? param.code : '';
-            this.name = param && param.name ? param.name : '';
-            this.fixedAtr = param && param.fixedAtr ? param.fixedAtr : 0;
-            this.useAtr = param && param.useAtr ? param.useAtr : 0;
-            this.typeAtr = param && param.typeAtr ? param.typeAtr : 0;
-            this.displayMessage = param && param.displayMessage ? param.displayMessage : '';
-            this.boldAtr = param && param.boldAtr ? param.boldAtr : 0;
-            this.messageColor = param && param.messageColor ? param.messageColor : '';
-            this.cancelableAtr = param && param.cancelableAtr ? param.cancelableAtr : 0;
-            this.errorDisplayItem = param && param.errorDisplayItem ? param.errorDisplayItem : null;
-            this.alCheckTargetCondition = param && param.alCheckTargetCondition ? param.alCheckTargetCondition : new AlarmCheckTargetCondition();
-            this.workTypeCondition = param && param.workTypeCondition ? param.workTypeCondition : new WorkTypeCondition();
-            this.workTimeCondition = param && param.workTimeCondition ? param.workTimeCondition : new WorkTimeCondition();
-            this.operatorBetweenPlanActual = param && param.operatorBetweenPlanActual ? param.operatorBetweenPlanActual : 0;
-            this.lstApplicationTypeCode = param && param.lstApplicationTypeCode ? param.lstApplicationTypeCode : [];
-            this.operatorBetweenGroups = param && param.operatorBetweenGroups ? param.operatorBetweenGroups : 0;
-            this.operatorGroup1 = param && param.operatorGroup1 ? param.operatorGroup1 : 0;
-            this.operatorGroup2 = param && param.operatorGroup2 ? param.operatorGroup2 : 0;
-            this.erAlAtdItemCondition = param && param.erAlAtdItemCondition ? param.erAlAtdItemCondition : new ErAlAtdItemCondition();
+            this.companyId = param && param.companyId ? ko.observable(param.companyId) : ko.observable('');
+            this.code = param && param.code ? ko.observable(param.code) : ko.observable('');
+            this.name = param && param.name ? ko.observable(param.name) : ko.observable('');
+            this.fixedAtr = param && param.fixedAtr ? ko.observable(param.fixedAtr) : ko.observable(0);
+            this.useAtr = param && param.useAtr ? ko.observable(param.useAtr) : ko.observable(0);
+            this.typeAtr = param && param.typeAtr ? ko.observable(param.typeAtr) : ko.observable(0);
+            this.displayMessage = param && param.displayMessage ? ko.observable(param.displayMessage) : ko.observable('');
+            this.boldAtr = param && param.boldAtr ? ko.observable(param.boldAtr) : ko.observable(0);
+            this.messageColor = param && param.messageColor ? ko.observable(param.messageColor) : ko.observable('');
+            this.cancelableAtr = param && param.cancelableAtr ? ko.observable(param.cancelableAtr) : ko.observable(0);
+            this.errorDisplayItem = param && param.errorDisplayItem ? ko.observable(param.errorDisplayItem) : ko.observable(null);
+            this.errorDisplayItemName = ko.observable("");
+            this.alCheckTargetCondition = param && param.alCheckTargetCondition ? new AlarmCheckTargetCondition(param.alCheckTargetCondition) : new AlarmCheckTargetCondition(null);
+            this.workTypeCondition = param && param.workTypeCondition ? new WorkTypeCondition(param.workTypeCondition) : new WorkTypeCondition(null);
+            this.workTimeCondition = param && param.workTimeCondition ? new WorkTimeCondition(param.workTimeCondition) : new WorkTimeCondition(null);
+            this.operatorBetweenPlanActual = param && param.operatorBetweenPlanActual ? ko.observable(param.operatorBetweenPlanActual) : ko.observable(0);
+            this.lstApplicationTypeCode = param && param.lstApplicationTypeCode ? ko.observableArray(param.lstApplicationTypeCode) : ko.observableArray([]);
+            this.operatorBetweenGroups = param && param.operatorBetweenGroups ? ko.observable(param.operatorBetweenGroups) : ko.observable(0);
+            this.operatorGroup1 = param && param.operatorGroup1 ? ko.observable(param.operatorGroup1) : ko.observable(0);
+            this.operatorGroup2 = param && param.operatorGroup2 ? ko.observable(param.operatorGroup2) : ko.observable(0);
+            this.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemCondition ? param.erAlAtdItemCondition.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : this.initListAtdItemCondition();
+            this.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemCondition ? param.erAlAtdItemCondition.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : this.initListAtdItemCondition();
+            this.errorDisplayItem.subscribe((itemCode) => {
+                if (itemCode) {
+                    service.getAttendanceItemByCodes([itemCode]).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            this.errorDisplayItemName(lstItems[0].attendanceItemName);
+                        }
+                    });
+                } else {
+                    this.errorDisplayItemName("");
+                }
+            });
+            this.errorDisplayItem.valueHasMutated();
+        }
+
+        initListAtdItemCondition() {
+            let resultList = [];
+            resultList.push(new ErAlAtdItemCondition(1, null));
+            resultList.push(new ErAlAtdItemCondition(2, null));
+            resultList.push(new ErAlAtdItemCondition(3, null));
+            return resultList;
         }
     }
 
     export class AlarmCheckTargetCondition {
         /* 勤務種別でしぼり込む */
-        filterByBusinessType: boolean;
+        filterByBusinessType: KnockoutObservable<boolean>;
         /* 職位でしぼり込む */
-        filterByJobTitle: boolean;
+        filterByJobTitle: KnockoutObservable<boolean>;
         /* 雇用でしぼり込む */
-        filterByEmployment: boolean;
+        filterByEmployment: KnockoutObservable<boolean>;
         /* 分類でしぼり込む */
-        filterByClassification: boolean;
+        filterByClassification: KnockoutObservable<boolean>;
         /* 対象勤務種別*/
-        lstBusinessType: Array<string>;
+        lstBusinessType: KnockoutObservableArray<string>;
         /* 対象職位 */
-        lstJobTitle: Array<string>;
+        lstJobTitle: KnockoutObservableArray<string>;
         /* 対象雇用*/
-        lstEmployment: Array<string>;
+        lstEmployment: KnockoutObservableArray<string>;
         /* 対象分類 */
-        lstClassification: Array<string>;
+        lstClassification: KnockoutObservableArray<string>;
+        displayLstBusinessType: KnockoutObservable<string>;
+        displayLstJobTitle: KnockoutObservable<string>;
+        displayLstEmployment: KnockoutObservable<string>;
+        displayLstClassification: KnockoutObservable<string>;
 
-        constructor() {
-            this.filterByBusinessType = false;
-            this.filterByJobTitle = false;
-            this.filterByEmployment = false;
-            this.filterByClassification = false;
-            this.lstBusinessType = [];
-            this.lstJobTitle = [];
-            this.lstEmployment = [];
-            this.lstClassification = [];
-        }
-
-        getEmploymentTextDisplay() {
-            let self = this;
-            let dfd = $.Deferred();
-            let lstEmpt = self.lstEmployment();
-            if (lstEmpt && lstEmpt.length > 0) {
-                let displayText = "";
-                for (let i = 0; i < lstEmpt.length; i++) {
-                    service.getEmploymentByCode(lstEmpt[i]).done((empt) => {
-                        if (empt && empt.name) {
-                            if (displayText !== "") {
-                                displayText = displayText + ", " + empt.name;
-                            } else {
-                                displayText = displayText + empt.name;
-                            }
-                            if (i === lstEmpt.length - 1) {
-                                dfd.resolve(displayText);
-                            }
-                        }
-                    });
+        constructor(param) {
+            this.filterByBusinessType = param ? ko.observable(param.filterByBusinessType) : ko.observable(false);
+            this.filterByJobTitle = param ? ko.observable(param.filterByJobTitle) : ko.observable(false);
+            this.filterByEmployment = param ? ko.observable(param.filterByEmployment) : ko.observable(false);
+            this.filterByClassification = param ? ko.observable(param.filterByClassification) : ko.observable(false);
+            this.lstBusinessType = param ? ko.observableArray(param.lstBusinessType) : ko.observableArray([]);
+            this.lstJobTitle = param ? ko.observableArray(param.lstJobTitle) : ko.observableArray([]);
+            this.lstEmployment = param ? ko.observableArray(param.lstEmployment) : ko.observableArray([]);
+            this.lstClassification = param ? ko.observableArray(param.lstClassification) : ko.observableArray([]);
+            this.filterByBusinessType.subscribe((val) => {
+                if (!val) {
+                    $(".display-list-label").trigger("validate");
                 }
-            } else {
-                dfd.resolve("");
-            }
-            return dfd;
-        }
-
-        getClassificationTextDisplay() {
-            let self = this;
-            let dfd = $.Deferred();
-            let lstClss = self.lstClassification();
-            if (lstClss && lstClss.length > 0) {
-                let displayText = "";
-                for (let i = 0; i < lstClss.length; i++) {
-                    service.getClassificationByCode(lstClss[i]).done((clss) => {
-                        if (clss && clss.name) {
-                            if (displayText !== "") {
-                                displayText = displayText + ", " + clss.name;
-                            } else {
-                                displayText = displayText + clss.name;
-                            }
-                            if (i === lstClss.length - 1) {
-                                dfd.resolve(displayText);
-                            }
-                        }
-                    });
+            });
+            this.filterByJobTitle.subscribe((val) => {
+                if (!val) {
+                    $(".display-list-label").trigger("validate");
                 }
-            } else {
-                dfd.resolve("");
-            }
-            return dfd;
-        }
-
-        getJobTitleTextDisplay() {
-            let self = this;
-            let dfd = $.Deferred();
-            let lstJobTitle = self.lstJobTitle();
-            if (lstJobTitle && lstJobTitle.length > 0) {
+            });
+            this.filterByEmployment.subscribe((val) => {
+                if (!val) {
+                    $(".display-list-label").trigger("validate");
+                }
+            });
+            this.filterByClassification.subscribe((val) => {
+                if (!val) {
+                    $(".display-list-label").trigger("validate");
+                }
+            });
+            this.displayLstBusinessType = ko.observable("");
+            this.displayLstJobTitle = ko.observable("");
+            this.displayLstEmployment = ko.observable("");
+            this.displayLstClassification = ko.observable("");
+            this.lstBusinessType.subscribe((lstBussinessType) => {
+                if (lstBussinessType && lstBussinessType.length > 0) {
+                    let displayText = "";
+                    for (let i = 0; i < lstBussinessType.length; i++) {
+                        service.getBusinessTypeByCode(lstBussinessType[i]).done((businessType) => {
+                            if (businessType && businessType.businessTypeName) {
+                                if (displayText !== "") {
+                                    displayText = displayText + ", " + businessType.businessTypeName;
+                                } else {
+                                    displayText = displayText + businessType.businessTypeName;
+                                }
+                                if (i === lstBussinessType.length - 1) {
+                                    this.displayLstBusinessType(displayText);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+            this.lstJobTitle.subscribe((lstJobTitle) => {
                 let displayText = "";
                 let allJobTitle = [];
                 service.findAllJobTitle().done((data) => {
@@ -455,42 +446,51 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                     displayText = displayText + jobTitle.name;
                                 }
                                 if (i === lstJobTitle.length - 1) {
-                                    dfd.resolve(displayText);
+                                    this.displayLstJobTitle(displayText);
                                 }
                             }
                         }
                     }
                 });
-            } else {
-                dfd.resolve("");
-            }
-            return dfd;
-        }
-
-        getBusinessTypeTextDisplay() {
-            let self = this;
-            let dfd = $.Deferred();
-            let lstBussinessType = self.lstBusinessType();
-            if (lstBussinessType && lstBussinessType.length > 0) {
+            });
+            this.lstEmployment.subscribe((lstEmpt) => {
                 let displayText = "";
-                for (let i = 0; i < lstBussinessType.length; i++) {
-                    service.getBusinessTypeByCode(lstBussinessType[i]).done((businessType) => {
-                        if (businessType && businessType.businessTypeName) {
+                for (let i = 0; i < lstEmpt.length; i++) {
+                    service.getEmploymentByCode(lstEmpt[i]).done((empt) => {
+                        if (empt && empt.name) {
                             if (displayText !== "") {
-                                displayText = displayText + ", " + businessType.businessTypeName;
+                                displayText = displayText + ", " + empt.name;
                             } else {
-                                displayText = displayText + businessType.businessTypeName;
+                                displayText = displayText + empt.name;
                             }
-                            if (i === lstBussinessType.length - 1) {
-                                dfd.resolve(displayText);
+                            if (i === lstEmpt.length - 1) {
+                                this.displayLstEmployment(displayText);
                             }
                         }
                     });
                 }
-            } else {
-                dfd.resolve("");
-            }
-            return dfd;
+            });
+            this.lstClassification.subscribe((lstClss) => {
+                let displayText = "";
+                for (let i = 0; i < lstClss.length; i++) {
+                    service.getClassificationByCode(lstClss[i]).done((clss) => {
+                        if (clss && clss.name) {
+                            if (displayText !== "") {
+                                displayText = displayText + ", " + clss.name;
+                            } else {
+                                displayText = displayText + clss.name;
+                            }
+                            if (i === lstClss.length - 1) {
+                                this.displayLstClassification(displayText);
+                            }
+                        }
+                    });
+                }
+            });
+            this.lstBusinessType.valueHasMutated();
+            this.lstJobTitle.valueHasMutated();
+            this.lstEmployment.valueHasMutated();
+            this.lstClassification.valueHasMutated();
         }
 
     }
@@ -502,53 +502,88 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
     export class WorkTypeCondition {
 
-        useAtr: boolean;
-        comparePlanAndActual: number;
-        planFilterAtr: boolean;
-        planLstWorkType: Array<string>;
-        actualFilterAtr: boolean;
-        actualLstWorkType: Array<string>;
+        useAtr: KnockoutObservable<boolean>;
+        comparePlanAndActual: KnockoutObservable<number>;
+        planFilterAtr: KnockoutObservable<boolean>;
+        planLstWorkType: KnockoutObservableArray<string>;
+        actualFilterAtr: KnockoutObservable<boolean>;
+        actualLstWorkType: KnockoutObservableArray<string>;
+        displayLstWorkTypePlan: KnockoutObservable<string>;
+        displayLstWorkTypeActual: KnockoutObservable<string>;
 
-        constructor() {
-            this.useAtr = false;
-            this.comparePlanAndActual = 0;
-            this.planFilterAtr = false;
-            this.planLstWorkType = [];
-            this.actualFilterAtr = false;
-            this.actualLstWorkType = [];
-        }
-
-        getTextDisplay(planOrActual) {
-            let self = this;
-            let dfd = $.Deferred();
-            let lstWorkTypeCode = planOrActual === "plan" ? self.planLstWorkType() : self.actualLstWorkType();
-            if (lstWorkTypeCode && lstWorkTypeCode.length > 0) {
-                let displayText = "";
-                let lstWorkType = [];
-                service.getWorkTypeByListCode(lstWorkTypeCode).done((data) => {
-                    if (data && data.length > 0) {
-                        lstWorkType = data;
-                    }
-                }).then(() => {
-                    for (let i = 0; i < lstWorkTypeCode.length; i++) {
-                        for (let workType of lstWorkType) {
-                            if (lstWorkTypeCode[i] === workType.workTypeCode) {
-                                if (displayText !== "") {
-                                    displayText = displayText + ", " + workType.name;
-                                } else {
-                                    displayText = displayText + workType.name;
-                                }
-                                if (i === lstWorkTypeCode.length - 1) {
-                                    dfd.resolve(displayText);
+        constructor(param) {
+            this.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
+            this.comparePlanAndActual = param ? ko.observable(param.comparePlanAndActual) : ko.observable(0);
+            this.planFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
+            this.planLstWorkType = param ? ko.observable(param.planLstWorkType) : ko.observableArray([]);
+            this.actualFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
+            this.actualLstWorkType = param ? ko.observable(param.planLstWorkType) : ko.observableArray([]);
+            this.planFilterAtr.subscribe((val) => {
+                if (!val) {
+                    $(".display-list-label").trigger("validate");
+                }
+            });
+            this.actualFilterAtr.subscribe((val) => {
+                if (!val) {
+                    $(".display-list-label").trigger("validate");
+                }
+            });
+            this.displayLstWorkTypePlan = ko.observable("");
+            this.displayLstWorkTypeActual = ko.observable("");
+            this.planLstWorkType.subscribe((lstWorkTypeCode) => {
+                if (lstWorkTypeCode && lstWorkTypeCode.length > 0) {
+                    let displayText = "";
+                    let lstWorkType = [];
+                    service.getWorkTypeByListCode(lstWorkTypeCode).done((data) => {
+                        if (data && data.length > 0) {
+                            lstWorkType = data;
+                        }
+                    }).then(() => {
+                        for (let i = 0; i < lstWorkTypeCode.length; i++) {
+                            for (let workType of lstWorkType) {
+                                if (lstWorkTypeCode[i] === workType.workTypeCode) {
+                                    if (displayText !== "") {
+                                        displayText = displayText + ", " + workType.name;
+                                    } else {
+                                        displayText = displayText + workType.name;
+                                    }
+                                    if (i === lstWorkTypeCode.length - 1) {
+                                        this.displayLstWorkTypePlan(displayText);
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-            } else {
-                dfd.resolve("");
-            }
-            return dfd;
+                    });
+                }
+            });
+            this.actualLstWorkType.subscribe((lstWorkTypeCode) => {
+                if (lstWorkTypeCode && lstWorkTypeCode.length > 0) {
+                    let displayText = "";
+                    let lstWorkType = [];
+                    service.getWorkTypeByListCode(lstWorkTypeCode).done((data) => {
+                        if (data && data.length > 0) {
+                            lstWorkType = data;
+                        }
+                    }).then(() => {
+                        for (let i = 0; i < lstWorkTypeCode.length; i++) {
+                            for (let workType of lstWorkType) {
+                                if (lstWorkTypeCode[i] === workType.workTypeCode) {
+                                    if (displayText !== "") {
+                                        displayText = displayText + ", " + workType.name;
+                                    } else {
+                                        displayText = displayText + workType.name;
+                                    }
+                                    if (i === lstWorkTypeCode.length - 1) {
+                                        this.displayLstWorkTypeActual(displayText);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            this.planLstWorkType.valueHasMutated();
+            this.actualLstWorkType.valueHasMutated();
         }
     }
 
@@ -559,85 +594,291 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
     export class WorkTimeCondition {
 
-        useAtr: boolean;
-        comparePlanAndActual: number;
-        planFilterAtr: number;
-        planLstWorkTime: Array<string>;
-        actualFilterAtr: number;
-        actualLstWorkTime: Array<string>;
+        useAtr: KnockoutObservable<boolean>;
+        comparePlanAndActual: KnockoutObservable<number>;
+        planFilterAtr: KnockoutObservable<boolean>;
+        planLstWorkTime: KnockoutObservableArray<string>;
+        actualFilterAtr: KnockoutObservable<boolean>;
+        actualLstWorkTime: KnockoutObservableArray<string>;
+        displayLstWorkTimePlan: KnockoutObservable<string>;
+        displayLstWorkTimeActual: KnockoutObservable<string>;
 
-        constructor() {
-            this.useAtr = false;
-            this.comparePlanAndActual = 0;
-            this.planFilterAtr = 0;
-            this.planLstWorkTime = [];
-            this.actualFilterAtr = 0;
-            this.actualLstWorkTime = [];
-        }
-
-        getTextDisplay(planOrActual) {
-            let self = this;
-            let dfd = $.Deferred();
-            let lstWorkTimeCode = planOrActual === "plan" ? self.planLstWorkTime() : self.actualLstWorkTime();
-            if (lstWorkTimeCode && lstWorkTimeCode.length > 0) {
-                let displayText = "";
-                let lstWorkTime = [];
-                service.getWorkTimeByListCode(lstWorkTimeCode).done((data) => {
-                    if (data && data.length > 0) {
-                        lstWorkTime = data;
-                    }
-                }).then(() => {
-                    for (let i = 0; i < lstWorkTimeCode.length; i++) {
-                        for (let workTime of lstWorkTime) {
-                            if (lstWorkTimeCode[i] === workTime.code) {
-                                if (displayText !== "") {
-                                    displayText = displayText + ", " + workTime.name;
-                                } else {
-                                    displayText = displayText + workTime.name;
-                                }
-                                if (i === lstWorkTimeCode.length - 1) {
-                                    dfd.resolve(displayText);
+        constructor(param) {
+            this.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
+            this.comparePlanAndActual = param ? ko.observable(param.comparePlanAndActual) : ko.observable(0);
+            this.planFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
+            this.planLstWorkTime = param ? ko.observable(param.planLstWorkTime) : ko.observableArray([]);
+            this.actualFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
+            this.actualLstWorkTime = param ? ko.observable(param.actualLstWorkTime) : ko.observableArray([]);
+            this.planFilterAtr.subscribe((val) => {
+                if (!val) {
+                    $(".display-list-label").trigger("validate");
+                }
+            });
+            this.actualFilterAtr.subscribe((val) => {
+                if (!val) {
+                    $(".display-list-label").trigger("validate");
+                }
+            });
+            this.displayLstWorkTimePlan = ko.observable("");
+            this.displayLstWorkTimeActual = ko.observable("");
+            this.planLstWorkTime.subscribe((lstWorkTimeCode) => {
+                if (lstWorkTimeCode && lstWorkTimeCode.length > 0) {
+                    let displayText = "";
+                    let lstWorkTime = [];
+                    service.getWorkTimeByListCode(lstWorkTimeCode).done((data) => {
+                        if (data && data.length > 0) {
+                            lstWorkTime = data;
+                        }
+                    }).then(() => {
+                        for (let i = 0; i < lstWorkTimeCode.length; i++) {
+                            for (let workTime of lstWorkTime) {
+                                if (lstWorkTimeCode[i] === workTime.code) {
+                                    if (displayText !== "") {
+                                        displayText = displayText + ", " + workTime.name;
+                                    } else {
+                                        displayText = displayText + workTime.name;
+                                    }
+                                    if (i === lstWorkTimeCode.length - 1) {
+                                        this.displayLstWorkTimePlan(displayText);
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-            } else {
-                dfd.resolve("");
-            }
-            return dfd;
+                    });
+                }
+            });
+            this.actualLstWorkTime.subscribe((lstWorkTimeCode) => {
+                if (lstWorkTimeCode && lstWorkTimeCode.length > 0) {
+                    let displayText = "";
+                    let lstWorkTime = [];
+                    service.getWorkTimeByListCode(lstWorkTimeCode).done((data) => {
+                        if (data && data.length > 0) {
+                            lstWorkTime = data;
+                        }
+                    }).then(() => {
+                        for (let i = 0; i < lstWorkTimeCode.length; i++) {
+                            for (let workTime of lstWorkTime) {
+                                if (lstWorkTimeCode[i] === workTime.code) {
+                                    if (displayText !== "") {
+                                        displayText = displayText + ", " + workTime.name;
+                                    } else {
+                                        displayText = displayText + workTime.name;
+                                    }
+                                    if (i === lstWorkTimeCode.length - 1) {
+                                        this.displayLstWorkTimeActual(displayText);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            this.planLstWorkTime.valueHasMutated();
+            this.actualLstWorkTime.valueHasMutated();
         }
-
     }
 
     export class ErAlAtdItemCondition {
-        NO: number;
-        conditionAtr: number;
-        useAtr: boolean;
-        uncountableAtdItem: number;
-        countableAddAtdItems: Array<number>;
-        countableSubAtdItems: Array<number>;
-        conditionType: number;
-        compareOperator: number;
-        singleAddAtdItems: Array<number>;
-        singleSubAtdItems: Array<number>;
-        compareStartValue: number;
-        compareEndValue: number;
 
-        constructor() {
-            this.NO = 0;
-            this.conditionAtr = 0;
-            this.useAtr = false;
-            this.uncountableAtdItem = null;
-            this.countableAddAtdItems = [];
-            this.countableSubAtdItems = [];
-            this.conditionType = 0;
-            this.singleAddAtdItems = [];
-            this.singleSubAtdItems = [];
-            this.compareStartValue = 0;
-            this.compareEndValue = 0;
-            this.compareOperator = 0;
+        NO: KnockoutObservable<number>;
+        conditionAtr: KnockoutObservable<number>;
+        useAtr: KnockoutObservable<boolean>;
+        uncountableAtdItem: KnockoutObservable<number>;
+        countableAddAtdItems: KnockoutObservableArray<number>;
+        countableSubAtdItems: KnockoutObservableArray<number>;
+        conditionType: KnockoutObservable<number>;
+        compareOperator: KnockoutObservable<number>;
+        singleAtdItem: KnockoutObservable<number>;
+        compareStartValue: KnockoutObservable<number>;
+        compareEndValue: KnockoutObservable<number>;
+
+        displayLeftCompare: KnockoutObservable<string>;
+        displayLeftOperator: KnockoutObservable<string>;
+        displayTarget: KnockoutObservable<string>;
+        displayRightCompare: KnockoutObservable<string>;
+        displayRightOperator: KnockoutObservable<string>;
+
+        constructor(NO, param) {
+            let self = this;
+            self.NO = ko.observable(NO);
+            self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
+            self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
+            self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
+            self.countableAddAtdItems = param ? ko.observableArray(param.countableAddAtdItems) : ko.observableArray([]);
+            self.countableSubAtdItems = param ? ko.observableArray(param.countableSubAtdItems) : ko.observableArray([]);
+            self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
+            self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
+            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
+            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.displayLeftCompare = ko.observable("");
+            self.displayLeftOperator = ko.observable("");
+            self.displayTarget = ko.observable("");
+            self.displayRightCompare = ko.observable("");
+            self.displayRightOperator = ko.observable("");
+            self.setTextDisplay();
         }
+
+        setTextDisplay() {
+            let self = this;
+            if (self.useAtr()) {
+                self.setDisplayTarget();
+                self.setDisplayOperator();
+                self.setDisplayCompare();
+            } else {
+                self.displayLeftCompare("");
+                self.displayLeftOperator("");
+                self.displayTarget("");
+                self.displayRightCompare("");
+                self.displayRightOperator("");
+            }
+        }
+
+        setDisplayOperator() {
+            let self = this;
+            switch (self.compareOperator()) {
+                case 0:
+                    self.displayLeftOperator("＝");
+                    break;
+                case 1:
+                    self.displayLeftOperator("≠");
+                    break;
+                case 2:
+                    self.displayLeftOperator("＞");
+                    break;
+                case 3:
+                    self.displayLeftOperator("≧");
+                    break;
+                case 4:
+                    self.displayLeftOperator("＜");
+                    break;
+                case 5:
+                    self.displayLeftOperator("≦");
+                    break;
+                case 6:
+                    self.displayLeftOperator("＜");
+                    self.displayRightOperator("＜");
+                    break;
+                case 7:
+                    self.displayLeftOperator("≦");
+                    self.displayRightOperator("≦");
+                    break;
+                case 8:
+                    self.displayLeftOperator("＞");
+                    self.displayRightOperator("＞");
+                    break;
+                case 9:
+                    self.displayLeftOperator("≧");
+                    self.displayRightOperator("≧");
+                    break;
+            }
+        }
+
+        setDisplayCompare() {
+            let self = this;
+            let conditionAtr = self.conditionAtr();
+            if (self.compareOperator() > 5) {
+                // Compare with a range
+                let rawStartValue = self.compareStartValue();
+                let rawEndValue = self.compareEndValue();
+                let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue : nts.uk.time.parseTime(parseInt(rawStartValue), true).format();
+                let textDisplayRightCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue : nts.uk.time.parseTime(parseInt(rawEndValue), true).format();
+                self.displayLeftCompare(textDisplayLeftCompare);
+                self.displayRightCompare(textDisplayRightCompare);
+            } else {
+                // Compare with single value
+                if (self.conditionType() === 0) {
+                    // If is compare with a fixed value
+                    let rawValue = self.compareStartValue();
+                    let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue : nts.uk.time.parseTime(parseInt(rawValue), true).format();
+                    self.displayLeftCompare(textDisplayLeftCompare);
+                    self.displayRightCompare("");
+                } else {
+                    // If is compare with a attendance item
+                    if (self.singleAtdItem()) {
+                        service.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
+                            if (lstItems && lstItems.length > 0) {
+                                self.displayLeftCompare(lstItems[0].attendanceItemName);
+                                self.displayRightCompare("");
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        setDisplayTarget() {
+            let self = this;
+            self.displayTarget("");
+            if (self.conditionAtr() === 2) {
+                if (self.uncountableAtdItem()) {
+                    service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            self.displayTarget(lstItems[0].attendanceItemName);
+                        }
+                    });
+                }
+            } else {
+                if (self.countableAddAtdItems().length > 0) {
+                    service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            for (let i = 0; i < lstItems.length; i++) {
+                                let operator = (i === (lstItems.length - 1)) ? "" : " + ";
+                                self.displayTarget(self.displayTarget() + lstItems[i].attendanceItemName + operator);
+                            }
+                        }
+                    }).then(() => {
+                        if (self.countableSubAtdItems().length > 0) {
+                            service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                                if (lstItems && lstItems.length > 0) {
+                                    for (let i = 0; i < lstItems.length; i++) {
+                                        let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+                                        let beforeOperator = (i === 0) ? " - " : "";
+                                        self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                                    }
+                                }
+                            })
+                        }
+                    });
+                } else if (self.countableSubAtdItems().length > 0) {
+                    service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            for (let i = 0; i < lstItems.length; i++) {
+                                let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+                                let beforeOperator = (i === 0) ? " - " : "";
+                                self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                            }
+                        }
+                    })
+                }
+
+            }
+        }
+
+        openAtdItemConditionDialog() {
+            let self = this;
+            let param = ko.mapping.toJS(this);
+            nts.uk.ui.windows.setShared("KDW007BParams", param, true);
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+                let output = getShared("KDW007BResult");
+                if (output) {
+                    self.NO(output.NO);
+                    self.conditionAtr(output.conditionAtr);
+                    self.useAtr(true);
+                    self.uncountableAtdItem(output.uncountableAtdItem);
+                    self.countableAddAtdItems(output.countableAddAtdItems);
+                    self.countableSubAtdItems(output.countableSubAtdItems);
+                    self.conditionType(output.conditionType);
+                    self.singleAtdItem(output.singleAtdItem);
+                    self.compareStartValue(output.compareStartValue);
+                    self.compareEndValue(output.compareEndValue);
+                    self.compareOperator(output.compareOperator);
+                }
+                self.setTextDisplay();
+            });
+        }
+
     }
 
 }

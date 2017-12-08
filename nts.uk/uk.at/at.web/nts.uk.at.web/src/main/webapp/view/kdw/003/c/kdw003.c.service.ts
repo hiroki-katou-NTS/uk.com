@@ -7,7 +7,7 @@ module nts.uk.at.view.kdw003.c.service {
     /**
      * 対応するドメインモデル「会社の日別実績の修正のフォーマット」をすべて取得する
      */
-    export function getFormatList(codeList) {
-        return nts.uk.request.ajax(paths.getAll, codeList);
+    export function getFormatList() {
+        return nts.uk.request.ajax(paths.getAll);
     }
 }
