@@ -19,7 +19,7 @@ import nts.uk.shr.com.i18n.TextResource;
 
 
 @Stateless
-public class CreateRoleIndividualGrantCommandHandler extends CommandHandlerWithResult<CreateRoleIndividualGrantCommand, CreateRoleIndividualGrantCommandResult> {
+public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWithResult<CreateRoleIndividualGrantCommand, CreateRoleIndividualGrantCommandResult> {
 
 	@Inject
 	private RoleRepository roleRepository;
