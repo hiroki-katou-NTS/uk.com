@@ -1,5 +1,36 @@
 module nts.uk.at.view.kmk003.a {
 
+    import CommonRestSettingDto = service.model.common.CommonRestSettingDto;
+    import FlowRestSetDto = service.model.common.FlowRestSetDto;
+    import FlowFixedRestSetDto = service.model.common.FlowFixedRestSetDto;
+    import FlowWorkRestSettingDetailDto = service.model.common.FlowWorkRestSettingDetailDto;
+    import FlowWorkRestSettingDto = service.model.common.FlowWorkRestSettingDto;
+    import TimeRoundingSettingDto = service.model.common.TimeRoundingSettingDto;
+    import TimeZoneRoundingDto = service.model.common.TimeZoneRoundingDto;
+    import HDWorkTimeSheetSettingDto = service.model.common.HDWorkTimeSheetSettingDto;
+    import DeductionTimeDto = service.model.common.DeductionTimeDto;
+    import TimezoneOfFixedRestTimeSetDto = service.model.common.TimezoneOfFixedRestTimeSetDto;
+    import FlowRestSettingDto = service.model.common.FlowRestSettingDto;
+    import FlowRestTimezoneDto = service.model.common.FlowRestTimezoneDto;
+    import FlowWorkRestTimezoneDto = service.model.common.FlowWorkRestTimezoneDto;
+    import IntervalTimeDto = service.model.common.IntervalTimeDto;
+    import IntervalTimeSettingDto = service.model.common.IntervalTimeSettingDto;
+    import DesignatedTimeDto = service.model.common.DesignatedTimeDto;
+    import SubHolTransferSetDto = service.model.common.SubHolTransferSetDto;
+    import WorkTimezoneOtherSubHolTimeSetDto = service.model.common.WorkTimezoneOtherSubHolTimeSetDto;
+    import WorkTimezoneMedicalSetDto = service.model.common.WorkTimezoneMedicalSetDto;
+    import TotalRoundingSetDto = service.model.common.TotalRoundingSetDto;
+    import GoOutTimeRoundingSettingDto = service.model.common.GoOutTimeRoundingSettingDto;
+    import DeductGoOutRoundingSetDto = service.model.common.DeductGoOutRoundingSetDto;
+    import GoOutTypeRoundingSetDto = service.model.common.GoOutTypeRoundingSetDto;
+    import GoOutTimezoneRoundingSetDto = service.model.common.GoOutTimezoneRoundingSetDto;
+    import WorkTimezoneGoOutSetDto = service.model.common.WorkTimezoneGoOutSetDto;
+    import WorkTimezoneCommonSetDto = service.model.common.WorkTimezoneCommonSetDto;
+    import FlexWorkSettingSaveCommand = service.model.command.FlexWorkSettingSaveCommand;
+    import TimeSheetDto = service.model.flexset.TimeSheetDto;
+    import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
+    import CoreTimeSettingDto = service.model.flexset.CoreTimeSettingDto;
+    import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
     export module viewmodel {
 
         export class ScreenModel {
@@ -19,6 +50,8 @@ module nts.uk.at.view.kmk003.a {
             //sift code input
             siftCode: KnockoutObservable<string>;
             siftCodeOption: KnockoutObservable<any>;
+            
+            
 
             siftName: KnockoutObservable<string>;
             siftNameOption: KnockoutObservable<any>;
@@ -188,6 +221,11 @@ module nts.uk.at.view.kmk003.a {
                 service.savePred(data).done(function() {
                     self.isClickSave(false);
                 });
+                service.saveFlexWorkSetting(self.collectDataFlex()).done(function() {
+
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });
             }
             
             /**
@@ -196,7 +234,854 @@ module nts.uk.at.view.kmk003.a {
             private getFlowModeBySelected(selectedSettingMethod: string): boolean {
                 return (selectedSettingMethod === '3');
             }
+            
+            /**
+             * function collection data flex mode 
+             */
+            private collectDataFlex(): FlexWorkSettingSaveCommand{
+                var command: FlexWorkSettingSaveCommand;
+                command = {
+                    flexWorkSetting: null,
+                    predseting: null,
+                    worktimeSetting: null
+                };
+                return command;     
+            }
           
+        }
+        
+        
+        export class TimeSheetModel {
+            startTime: KnockoutObservable<number>;
+            endTime: KnockoutObservable<number>;
+
+            constructor() {
+                this.startTime = ko.observable(0);
+                this.endTime = ko.observable(0);
+            }
+
+            updateData(data: TimeSheetDto) {
+                this.startTime(data.startTime);
+                this.endTime(data.endTime);
+            }
+            toDto(): TimeSheetDto {
+                var dataDTO: TimeSheetDto = {
+                    startTime: this.startTime(),
+                    endTime: this.endTime(),
+                };
+                return dataDTO;
+            }
+        }
+
+        export class CoreTimeSettingModel {
+            coreTimeSheet: TimeSheetModel;
+            timesheet: KnockoutObservable<number>;
+            minWorkTime: KnockoutObservable<number>;
+            
+            constructor(){
+                this.coreTimeSheet = new TimeSheetModel();
+                this.timesheet = ko.observable(0);    
+                this.minWorkTime = ko.observable(0);    
+            }
+            
+            updateData(data: CoreTimeSettingDto) {
+                this.coreTimeSheet.updateData(data.coreTimeSheet);
+                this.timesheet(data.timesheet);
+                this.minWorkTime(data.minWorkTime);
+            }
+            
+            toDto(): CoreTimeSettingDto {
+                var dataDTO: CoreTimeSettingDto = {
+                    coreTimeSheet: this.coreTimeSheet.toDto(),
+                    timesheet: this.timesheet(),
+                    minWorkTime: this.minWorkTime()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class CommonRestSettingModel {
+            calculateMethod: KnockoutObservable<number>;
+            constructor(){
+                this.calculateMethod = ko.observable(0);    
+            }
+            
+            updateData(data: CommonRestSettingDto) {
+                this.calculateMethod(data.calculateMethod);
+            }
+            
+            toDto(): CommonRestSettingDto {
+                var dataDTO: CommonRestSettingDto = {
+                    calculateMethod: this.calculateMethod()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class FlowRestSetModel {
+            useStamp: KnockoutObservable<boolean>;
+            useStampCalcMethod: KnockoutObservable<number>;
+            timeManagerSetAtr: KnockoutObservable<number>;
+            calculateMethod: KnockoutObservable<number>;
+            
+            constructor(){
+                this.useStamp = ko.observable(false);
+                this.useStampCalcMethod = ko.observable(0);
+                this.timeManagerSetAtr = ko.observable(0);
+                this.calculateMethod = ko.observable(0);    
+            }
+            
+            updateData(data: FlowRestSetDto) {
+                this.useStamp(data.useStamp);
+                this.useStampCalcMethod(data.useStampCalcMethod);
+                this.timeManagerSetAtr(data.timeManagerSetAtr);
+                this.calculateMethod(data.calculateMethod);
+            }
+            
+            toDto(): FlowRestSetDto {
+                var dataDTO: FlowRestSetDto = {
+                    useStamp: this.useStamp(),
+                    useStampCalcMethod: this.useStampCalcMethod(),
+                    timeManagerSetAtr: this.timeManagerSetAtr(),
+                    calculateMethod: this.calculateMethod()
+                };
+                return dataDTO;
+
+            }
+        }
+        
+        export class FlowFixedRestSetModel {
+            isReferRestTime: KnockoutObservable<boolean>;
+            usePrivateGoOutRest: KnockoutObservable<boolean>;
+            useAssoGoOutRest: KnockoutObservable<boolean>;
+            calculateMethod: KnockoutObservable<number>;
+
+            constructor() {
+                this.isReferRestTime = ko.observable(false);
+                this.usePrivateGoOutRest = ko.observable(false);
+                this.useAssoGoOutRest = ko.observable(false);
+                this.calculateMethod = ko.observable(0);
+            }
+
+            updatedData(data: FlowFixedRestSetDto) {
+                this.isReferRestTime(data.isReferRestTime);
+                this.usePrivateGoOutRest(data.usePrivateGoOutRest);
+                this.useAssoGoOutRest(data.useAssoGoOutRest);
+                this.calculateMethod(data.calculateMethod);
+            }
+            
+            toDto(): FlowFixedRestSetDto{
+                var dataDTO: FlowFixedRestSetDto = {
+                     isReferRestTime: this.isReferRestTime(),   
+                     usePrivateGoOutRest: this.usePrivateGoOutRest(),   
+                     useAssoGoOutRest: this.useAssoGoOutRest(),   
+                     calculateMethod: this.calculateMethod()   
+                };
+                return dataDTO;    
+            }
+        }
+
+        export class FlowWorkRestSettingDetailModel {
+            flowRestSetting: FlowRestSetModel;
+            flowFixedRestSetting: FlowFixedRestSetModel;
+            usePluralWorkRestTime: KnockoutObservable<boolean>;
+            
+            constructor() {
+                this.flowRestSetting = new FlowRestSetModel();
+                this.flowFixedRestSetting = new FlowFixedRestSetModel();
+                this.usePluralWorkRestTime = ko.observable(false);
+            }
+            
+            updateData(data: FlowWorkRestSettingDetailDto){
+                this.flowRestSetting.updateData(data.flowRestSetting);
+                this.flowFixedRestSetting.updatedData(data.flowFixedRestSetting);
+                this.usePluralWorkRestTime(data.usePluralWorkRestTime);
+            }
+            
+            toDto(): FlowWorkRestSettingDetailDto {
+                var dataDTO: FlowWorkRestSettingDetailDto = {
+                    flowRestSetting: this.flowRestSetting.toDto(),
+                    flowFixedRestSetting: this.flowFixedRestSetting.toDto(),
+                    usePluralWorkRestTime: this.usePluralWorkRestTime()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class FlowWorkRestSettingModel {
+            commonRestSetting: CommonRestSettingModel;
+            flowRestSetting: FlowWorkRestSettingDetailModel;
+
+            constructor() {
+                this.commonRestSetting = new CommonRestSettingModel();
+                this.flowRestSetting = new FlowWorkRestSettingDetailModel();
+            }
+            
+            updateData(data: FlowWorkRestSettingDto){
+                this.commonRestSetting.updateData(data.commonRestSetting);
+                this.flowRestSetting.updateData(data.flowRestSetting);
+            }
+            
+            toDto(): FlowWorkRestSettingDto{
+                var dataDTO: FlowWorkRestSettingDto = {
+                    commonRestSetting: this.commonRestSetting.toDto(),
+                    flowRestSetting: this.flowRestSetting.toDto()
+                };
+                return dataDTO;    
+            }
+        }
+        
+        export class TimeRoundingSettingModel {
+            roundingTime: KnockoutObservable<number>;
+            rounding: KnockoutObservable<number>;
+
+            constructor() {
+                this.roundingTime = ko.observable(0);
+                this.rounding = ko.observable(0);
+            }
+
+            updateData(data: TimeRoundingSettingDto) {
+                this.roundingTime(data.roundingTime);
+                this.rounding(data.rounding);
+            }
+
+            toDto(): TimeRoundingSettingDto {
+                var dataDTO: TimeRoundingSettingDto = {
+                    roundingTime: this.roundingTime(),    
+                    rounding: this.rounding(),    
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class TimeZoneRoundingModel {
+            rounding: TimeRoundingSettingModel;
+            start: KnockoutObservable<number>;
+            end: KnockoutObservable<number>;
+
+            constructor() {
+                this.rounding = new TimeRoundingSettingModel();
+                this.start = ko.observable(0);
+                this.end = ko.observable(0);
+            }
+            
+            updateData(data: TimeZoneRoundingDto){
+                this.rounding.updateData(data.rounding);
+                this.start(data.start);
+                this.end(data.end);
+            }
+            
+            toDto(): TimeZoneRoundingDto {
+                var dataDTO: TimeZoneRoundingDto = {
+                    rounding: this.rounding.toDto(),
+                    start: this.start(),
+                    end: this.end()
+                };
+                return dataDTO;
+            }
+        }
+        
+        
+        export class HDWorkTimeSheetSettingModel {
+            workTimeNo: KnockoutObservable<number>;
+            timezone: TimeZoneRoundingModel;
+            isLegalHolidayConstraintTime: KnockoutObservable<boolean>;
+            inLegalBreakFrameNo: KnockoutObservable<boolean>;
+            isNonStatutoryDayoffConstraintTime: KnockoutObservable<boolean>;
+            outLegalBreakFrameNo: KnockoutObservable<number>;
+            isNonStatutoryHolidayConstraintTime: KnockoutObservable<boolean>;
+            outLegalPubHDFrameNo: KnockoutObservable<number>;
+            
+            constructor() {
+                this.workTimeNo = ko.observable(0);
+                this.timezone = new TimeZoneRoundingModel();
+                this.isLegalHolidayConstraintTime = ko.observable(false);
+                this.inLegalBreakFrameNo = ko.observable(false);
+                this.isNonStatutoryDayoffConstraintTime = ko.observable(false);
+                this.outLegalBreakFrameNo = ko.observable(0);
+                this.isNonStatutoryHolidayConstraintTime = ko.observable(false);
+                this.outLegalPubHDFrameNo = ko.observable(0);
+            }
+            
+            updateData(data: HDWorkTimeSheetSettingDto){
+                this.workTimeNo(data.workTimeNo);
+                this.timezone.updateData(data.timezone);
+                this.isLegalHolidayConstraintTime(data.isLegalHolidayConstraintTime);
+                this.inLegalBreakFrameNo(data.inLegalBreakFrameNo);
+                this.isNonStatutoryDayoffConstraintTime(data.isNonStatutoryDayoffConstraintTime);
+                this.outLegalBreakFrameNo(data.outLegalBreakFrameNo);
+                this.isNonStatutoryHolidayConstraintTime(data.isNonStatutoryHolidayConstraintTime);
+                this.outLegalPubHDFrameNo(data.outLegalPubHDFrameNo);
+            }
+            
+            toDto(): HDWorkTimeSheetSettingDto{
+                var dataDTO: HDWorkTimeSheetSettingDto = {
+                     workTimeNo: this.workTimeNo(),   
+                     timezone: this.timezone.toDto(),   
+                     isLegalHolidayConstraintTime: this.isLegalHolidayConstraintTime(),   
+                     inLegalBreakFrameNo: this.inLegalBreakFrameNo(),   
+                     isNonStatutoryDayoffConstraintTime: this.isNonStatutoryDayoffConstraintTime(),   
+                     outLegalBreakFrameNo: this.outLegalBreakFrameNo(),   
+                     isNonStatutoryHolidayConstraintTime: this.isNonStatutoryHolidayConstraintTime(),   
+                     outLegalPubHDFrameNo: this.outLegalPubHDFrameNo()   
+                };
+                return dataDTO;    
+            }
+        }
+        
+        export class DeductionTimeModel {
+            start: KnockoutObservable<number>;
+            end: KnockoutObservable<number>;
+
+            constructor() {
+                this.start = ko.observable(0);
+                this.end = ko.observable(0);
+            }
+
+            updateData(data: DeductionTimeDto) {
+                this.start(data.start);
+                this.end(data.end);
+            }
+
+            toDto(): DeductionTimeDto {
+                var dataDTO: DeductionTimeDto = {
+                    start: this.start(),
+                    end: this.end()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class TimezoneOfFixedRestTimeSetModel {
+            timezones: DeductionTimeModel[];
+            
+            constructor(){
+                this.timezones = [];    
+            }
+            
+            updateData(data: TimezoneOfFixedRestTimeSetDto) {
+                this.timezones = [];
+                for (var dataItem of data.timezones) {
+                    var dataModel: DeductionTimeModel = new DeductionTimeModel();
+                    dataModel.updateData(dataItem);
+                    this.timezones.push(dataModel);
+                }
+            }
+            
+            toDto(): TimezoneOfFixedRestTimeSetDto {
+                var timezones: DeductionTimeDto[] = [];
+                for (var dataModel of this.timezones) {
+                    timezones.push(dataModel.toDto());
+                }
+                var dataDTO: TimezoneOfFixedRestTimeSetDto = {
+                    timezones: timezones
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class FlowRestSettingModel {
+            flowRestTime: KnockoutObservable<number>;
+            flowPassageTime: KnockoutObservable<number>;
+
+            constructor() {
+                this.flowRestTime = ko.observable(0);
+                this.flowPassageTime = ko.observable(0);
+            }
+
+            updateData(data: FlowRestSettingDto) {
+                this.flowRestTime(data.flowRestTime);
+                this.flowPassageTime(data.flowPassageTime);
+            }
+
+            toDto(): FlowRestSettingDto {
+                var dataDTO: FlowRestSettingDto = {
+                    flowRestTime: this.flowRestTime(),
+                    flowPassageTime: this.flowPassageTime()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class FlowRestTimezoneModel {
+            flowRestSets: FlowRestSettingModel[];
+            useHereAfterRestSet: KnockoutObservable<boolean>;
+            hereAfterRestSet: FlowRestSettingModel;
+
+            constructor() {
+                this.flowRestSets = [];
+                this.useHereAfterRestSet = ko.observable(false);
+                this.hereAfterRestSet = new FlowRestSettingModel();
+            }
+
+            updateData(data: FlowRestTimezoneDto) {
+                this.flowRestSets = [];
+                for (var dataDTO of data.flowRestSets) {
+                    var dataModel: FlowRestSettingModel = new FlowRestSettingModel();
+                    dataModel.updateData(dataDTO);
+                    this.flowRestSets.push(dataModel);
+                }
+                this.useHereAfterRestSet(data.useHereAfterRestSet);
+                this.hereAfterRestSet.updateData(data.hereAfterRestSet);
+            }
+
+            toDto(): FlowRestTimezoneDto {
+                var flowRestSets: FlowRestSettingDto[] = [];
+                for (var dataModel of this.flowRestSets) {
+                    flowRestSets.push(dataModel.toDto());
+                }
+                var dataDTO: FlowRestTimezoneDto = {
+                    flowRestSets: flowRestSets,
+                    useHereAfterRestSet: this.useHereAfterRestSet(),
+                    hereAfterRestSet: this.hereAfterRestSet.toDto()
+                };
+                return dataDTO;
+            }
+        }
+        
+        
+        export class FlowWorkRestTimezoneModel {
+            fixRestTime: KnockoutObservable<boolean>;
+            fixedRestTimezone: TimezoneOfFixedRestTimeSetModel;
+            flowRestTimezone: FlowRestTimezoneModel;
+
+            constructor() {
+                this.fixRestTime = ko.observable(false);
+                this.fixedRestTimezone = new TimezoneOfFixedRestTimeSetModel();
+                this.flowRestTimezone = new FlowRestTimezoneModel();
+            }
+            
+            updateData(data: FlowWorkRestTimezoneDto){
+                this.fixRestTime(data.fixRestTime);
+                this.fixedRestTimezone.updateData(data.fixedRestTimezone);
+                this.flowRestTimezone.updateData(data.flowRestTimezone);
+            }
+            
+            toDto(): FlowWorkRestTimezoneDto {
+                var dataDTO: FlowWorkRestTimezoneDto = {
+                    fixRestTime: this.fixRestTime(),
+                    fixedRestTimezone: this.fixedRestTimezone.toDto(),
+                    flowRestTimezone: this.flowRestTimezone.toDto()
+                };
+                return dataDTO;
+            }
+        }
+        
+        
+        export class FlexOffdayWorkTimeModel {
+            lstWorkTimezone: HDWorkTimeSheetSettingModel[];
+            restTimezone: FlowWorkRestTimezoneModel;
+
+            constructor() {
+                this.lstWorkTimezone = [];
+                this.restTimezone = new FlowWorkRestTimezoneModel();
+            }
+            
+            updateData(data: FlexOffdayWorkTimeDto){
+                this.lstWorkTimezone = [];
+                for(var dataDTO of data.lstWorkTimezone){
+                    var dataModel: HDWorkTimeSheetSettingModel = new HDWorkTimeSheetSettingModel();
+                    dataModel.updateData(dataDTO);
+                    this.lstWorkTimezone.push(dataModel);
+                }
+                this.restTimezone.updateData(data.restTimezone);
+            }
+            
+            toDto(): FlexOffdayWorkTimeDto {
+                var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
+                for (var dataModel of this.lstWorkTimezone) {
+                    lstWorkTimezone.push(dataModel.toDto());
+                }
+                var dataDTO: FlexOffdayWorkTimeDto = {
+                    lstWorkTimezone: lstWorkTimezone,
+                    restTimezone: this.restTimezone.toDto()
+                };
+                return dataDTO;
+            }
+        }
+
+        export class IntervalTimeModel {
+            intervalTime: KnockoutObservable<number>;
+            rounding: TimeRoundingSettingModel;
+
+            constructor() {
+                this.intervalTime = ko.observable(0);
+                this.rounding = new TimeRoundingSettingModel();
+            }
+
+            updateData(data: IntervalTimeDto) {
+                this.intervalTime(data.intervalTime);
+                this.rounding.updateData(data.rounding);
+            }
+
+            toDto(): IntervalTimeDto {
+                var dataDTO: IntervalTimeDto = {
+                    intervalTime: this.intervalTime(),
+                    rounding: this.rounding.toDto()
+                };
+                return dataDTO;
+            }
+        }
+
+        export class IntervalTimeSettingModel {
+            useIntervalExemptionTime: KnockoutObservable<boolean>;
+            intervalExemptionTimeRound: TimeRoundingSettingModel;
+            intervalTime: IntervalTimeModel;
+            useIntervalTime: KnockoutObservable<boolean>;
+
+            constructor() {
+                this.useIntervalExemptionTime = ko.observable(false);
+                this.intervalExemptionTimeRound = new TimeRoundingSettingModel();
+                this.intervalTime = new IntervalTimeModel();
+                this.useIntervalTime = ko.observable(false);
+            }
+
+            updateData(data: IntervalTimeSettingDto) {
+                this.useIntervalExemptionTime(data.useIntervalExemptionTime);
+                this.intervalExemptionTimeRound.updateData(data.intervalExemptionTimeRound);
+                this.intervalTime.updateData(data.intervalTime);
+                this.useIntervalTime(data.useIntervalTime);
+            }
+
+            toDto(): IntervalTimeSettingDto {
+                var dataDTO: IntervalTimeSettingDto = {
+                    useIntervalExemptionTime: this.useIntervalExemptionTime(),
+                    intervalExemptionTimeRound: this.intervalExemptionTimeRound.toDto(),
+                    intervalTime: this.intervalTime.toDto(),
+                    useIntervalTime: this.useIntervalTime()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class DesignatedTimeModel {
+            oneDayTime: KnockoutObservable<number>;
+            halfDayTime: KnockoutObservable<number>;
+
+            constructor() {
+                this.oneDayTime = ko.observable(0);
+                this.halfDayTime = ko.observable(0);
+            }
+
+            updataData(data: DesignatedTimeDto) {
+                this.oneDayTime(data.oneDayTime);
+                this.halfDayTime(data.halfDayTime);
+            }
+
+            toDto(): DesignatedTimeDto {
+                var dataDTO: DesignatedTimeDto = {
+                    oneDayTime: this.oneDayTime(),
+                    halfDayTime: this.halfDayTime()
+                };
+                return dataDTO;
+            }
+        }
+
+        export class SubHolTransferSetModel {
+            certainTime: KnockoutObservable<number>;
+            useDivision: KnockoutObservable<boolean>;
+            designatedTime: DesignatedTimeModel;
+            subHolTransferSetAtr: KnockoutObservable<number>;
+
+            constructor() {
+                this.certainTime = ko.observable(0);
+                this.useDivision = ko.observable(false);
+                this.designatedTime = new DesignatedTimeModel();
+                this.subHolTransferSetAtr = ko.observable(0);
+            }
+
+            updateData(data: SubHolTransferSetDto) {
+                this.certainTime(data.certainTime);
+                this.useDivision(data.useDivision);
+                this.designatedTime.updataData(data.designatedTime);
+                this.subHolTransferSetAtr(data.subHolTransferSetAtr);
+            }
+
+            toDto(): SubHolTransferSetDto {
+                var dataDTO: SubHolTransferSetDto = {
+                      certainTime: this.certainTime(),  
+                      useDivision: this.useDivision(),  
+                      designatedTime: this.designatedTime.toDto(),  
+                      subHolTransferSetAtr: this.subHolTransferSetAtr(),  
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class WorkTimezoneOtherSubHolTimeSetModel {
+            subHolTimeSet: SubHolTransferSetModel;
+            workTimeCode: KnockoutObservable<string>;
+            originAtr: KnockoutObservable<number>;
+
+            constructor() {
+                this.subHolTimeSet = new SubHolTransferSetModel();
+                this.workTimeCode = ko.observable('');
+                this.originAtr = ko.observable(0);
+            }
+
+            updateData(data: WorkTimezoneOtherSubHolTimeSetDto) {
+                this.subHolTimeSet.updateData(data.subHolTimeSet);
+                this.workTimeCode(data.workTimeCode);
+                this.originAtr(data.originAtr);
+            }
+
+            toDto(): WorkTimezoneOtherSubHolTimeSetDto {
+                var dataDTO: WorkTimezoneOtherSubHolTimeSetDto = {
+                    subHolTimeSet: this.subHolTimeSet.toDto(),
+                    workTimeCode: this.workTimeCode(),
+                    originAtr: this.originAtr()
+                };
+                return dataDTO;
+            }
+        }
+
+        
+        export class WorkTimezoneMedicalSetModel {
+            roundingSet: TimeRoundingSettingModel;
+            workSystemAtr: KnockoutObservable<number>;
+            applicationTime: KnockoutObservable<number>;
+
+            constructor() {
+                this.roundingSet = new TimeRoundingSettingModel();
+                this.workSystemAtr = ko.observable(0);
+                this.applicationTime = ko.observable(0);
+            }
+
+            updateData(data: WorkTimezoneMedicalSetDto) {
+                this.roundingSet.updateData(data.roundingSet);
+                this.workSystemAtr(data.workSystemAtr);
+                this.applicationTime(data.applicationTime);
+            }
+
+            toDto(): WorkTimezoneMedicalSetDto {
+                var dataDTO: WorkTimezoneMedicalSetDto = {
+                    roundingSet: this.roundingSet.toDto(),
+                    workSystemAtr: this.workSystemAtr(),
+                    applicationTime: this.applicationTime()
+                };
+                return dataDTO;
+            }
+        }
+        
+        
+        export class TotalRoundingSetModel {
+            setSameFrameRounding: KnockoutObservable<number>;
+            frameStraddRoundingSet: KnockoutObservable<number>;
+
+            constructor() {
+                this.setSameFrameRounding = ko.observable(0);
+                this.frameStraddRoundingSet = ko.observable(0);
+            }
+
+            updateData(data: TotalRoundingSetDto) {
+                this.setSameFrameRounding(data.setSameFrameRounding);
+                this.frameStraddRoundingSet(data.frameStraddRoundingSet);
+            }
+
+            toDto(): TotalRoundingSetDto {
+                var dataDTO: TotalRoundingSetDto = {
+                    setSameFrameRounding: this.setSameFrameRounding(),
+                    frameStraddRoundingSet: this.frameStraddRoundingSet()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class GoOutTimeRoundingSettingModel {
+            roundingMethod: KnockoutObservable<number>;
+            roundingSetting: TimeRoundingSettingModel;
+
+            constructor() {
+                this.roundingMethod = ko.observable(0);
+                this.roundingSetting = new TimeRoundingSettingModel();
+            }
+
+            updataData(data: GoOutTimeRoundingSettingDto) {
+                this.roundingMethod(data.roundingMethod);
+                this.roundingSetting.updateData(data.roundingSetting);
+            }
+
+            toDto(): GoOutTimeRoundingSettingDto {
+                var dataDTO: GoOutTimeRoundingSettingDto = {
+                    roundingMethod: this.roundingMethod(),
+                    roundingSetting: this.roundingSetting.toDto()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class DeductGoOutRoundingSetModel {
+            deductTimeRoundingSetting: GoOutTimeRoundingSettingModel;
+            approTimeRoundingSetting: GoOutTimeRoundingSettingModel;
+
+            constructor() {
+                this.deductTimeRoundingSetting = new GoOutTimeRoundingSettingModel();
+                this.approTimeRoundingSetting = new GoOutTimeRoundingSettingModel();
+            }
+
+            updateData(data: DeductGoOutRoundingSetDto) {
+                this.deductTimeRoundingSetting.updataData(data.deductTimeRoundingSetting);
+                this.approTimeRoundingSetting.updataData(data.approTimeRoundingSetting);
+            }
+
+            toDto(): DeductGoOutRoundingSetDto {
+                var dataDTO: DeductGoOutRoundingSetDto = {
+                    deductTimeRoundingSetting: this.deductTimeRoundingSetting.toDto(),
+                    approTimeRoundingSetting: this.approTimeRoundingSetting.toDto()
+                };
+                return dataDTO;
+            }
+        }
+        
+        
+        export class GoOutTypeRoundingSetModel {
+            officalUseCompenGoOut: DeductGoOutRoundingSetModel;
+            privateUnionGoOut: DeductGoOutRoundingSetModel;
+
+            constructor() {
+                this.officalUseCompenGoOut = new DeductGoOutRoundingSetModel();
+                this.privateUnionGoOut = new DeductGoOutRoundingSetModel();
+            }
+
+            updateData(data: GoOutTypeRoundingSetDto) {
+                this.officalUseCompenGoOut.updateData(data.officalUseCompenGoOut);
+                this.privateUnionGoOut.updateData(data.privateUnionGoOut);
+            }
+
+            toDto(): GoOutTypeRoundingSetDto {
+                var dataDTO: GoOutTypeRoundingSetDto = {
+                    officalUseCompenGoOut: this.officalUseCompenGoOut.toDto(),
+                    privateUnionGoOut: this.privateUnionGoOut.toDto()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class GoOutTimezoneRoundingSetModel {
+            pubHolWorkTimezone: GoOutTypeRoundingSetModel;
+            workTimezone: GoOutTypeRoundingSetModel;
+            oTTimezone: GoOutTypeRoundingSetModel;
+
+            constructor() {
+                this.pubHolWorkTimezone = new GoOutTypeRoundingSetModel();
+                this.workTimezone = new GoOutTypeRoundingSetModel();
+                this.oTTimezone = new GoOutTypeRoundingSetModel();
+            }
+
+            updateData(data: GoOutTimezoneRoundingSetDto) {
+                this.pubHolWorkTimezone.updateData(data.pubHolWorkTimezone);
+                this.workTimezone.updateData(data.workTimezone);
+                this.oTTimezone.updateData(data.oTTimezone);
+            }
+
+            toDto(): GoOutTimezoneRoundingSetDto {
+                var dataDTO: GoOutTimezoneRoundingSetDto = {
+                    pubHolWorkTimezone: this.pubHolWorkTimezone.toDto(),
+                    workTimezone: this.workTimezone.toDto(),
+                    oTTimezone: this.oTTimezone.toDto()
+                };
+                return dataDTO;
+            }
+        }
+        
+        
+        export class WorkTimezoneGoOutSetModel {
+            totalRoundingSet: TotalRoundingSetModel;
+            diffTimezoneSetting: GoOutTimezoneRoundingSetModel;
+
+            constructor() {
+                this.totalRoundingSet = new TotalRoundingSetModel();
+                this.diffTimezoneSetting = new GoOutTimezoneRoundingSetModel();
+            }
+
+            updateData(data: WorkTimezoneGoOutSetDto) {
+                this.totalRoundingSet.updateData(data.totalRoundingSet);
+                this.diffTimezoneSetting.updateData(data.diffTimezoneSetting);
+            }
+
+            toDto(): WorkTimezoneGoOutSetDto {
+                var dataDTO: WorkTimezoneGoOutSetDto = {
+                    totalRoundingSet: this.totalRoundingSet.toDto(),
+                    diffTimezoneSetting: this.diffTimezoneSetting.toDto()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class WorkTimezoneCommonSetModel {
+            zeroHStraddCalculateSet: KnockoutObservable<boolean>;
+            intervalSet: IntervalTimeSettingModel;
+            subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel;
+            raisingSalarySet: KnockoutObservable<string>;
+            medicalSet: WorkTimezoneMedicalSetModel[];
+            goOutSet: WorkTimezoneGoOutSetModel;
+            /*
+            stampSet: WorkTimezoneStampSetModel;
+            lateNightTimeSet: WorkTimezoneLateNightTimeSetDto;
+            shortTimeWorkSet: WorkTimezoneShortTimeWorkSetDto;
+            extraordTimeSet: WorkTimezoneExtraordTimeSetDto;
+            lateEarlySet: WorkTimezoneLateEarlySetDto;
+            */
+
+            constructor() {
+                this.zeroHStraddCalculateSet = ko.observable(false);
+                this.intervalSet = new IntervalTimeSettingModel();
+                this.subHolTimeSet = new WorkTimezoneOtherSubHolTimeSetModel();
+                this.raisingSalarySet = ko.observable('');
+                this.medicalSet = [];
+                this.goOutSet = new WorkTimezoneGoOutSetModel();
+            }
+
+            updateData(data: WorkTimezoneCommonSetDto) {
+                this.zeroHStraddCalculateSet(data.zeroHStraddCalculateSet);
+                this.intervalSet.updateData(data.intervalSet);
+                this.subHolTimeSet.updateData(data.subHolTimeSet);
+                this.raisingSalarySet(data.raisingSalarySet);
+                this.goOutSet.updateData(data.goOutSet);
+            }
+            
+           /* toDto(): WorkTimezoneCommonSetDto{
+                var dataDTO: WorkTimezoneCommonSetDto = {
+                     zeroHStraddCalculateSet: this.zeroHStraddCalculateSet(),   
+                     intervalSet: this.intervalSet.toDto(),   
+                     subHolTimeSet: this.subHolTimeSet.toDto(),   
+                     raisingSalarySet: this.raisingSalarySet.toDto(),   
+                     goOutSet: this.goOutSet.toDto(),   
+                };
+                return dataDTO;    
+            }
+            */
+
+        }
+        
+        export class FlexWorkSettingModel {
+            workTimeCode: KnockoutObservable<string>;
+            useHalfDayShift: KnockoutObservable<boolean>;
+            coreTimeSetting: CoreTimeSettingModel;
+            restSetting: FlowWorkRestSettingModel;
+            offdayWorkTime: FlexOffdayWorkTimeModel;
+            commonSetting: WorkTimezoneCommonSetModel;
+            /*
+            lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[];
+            lstStampReflectTimezone: common.StampReflectTimezoneDto[];
+            calculateSetting: FlexCalcSettingDto;
+            */    
+            constructor(){
+                var self = this;
+                self.workTimeCode = ko.observable('');
+                self.useHalfDayShift = ko.observable(false);   
+                self.coreTimeSetting = new CoreTimeSettingModel();
+                self.restSetting = new FlowWorkRestSettingModel();
+                self.commonSetting = new WorkTimezoneCommonSetModel();
+            }
+            
+            updateData(data: FlexWorkSettingDto){
+                this.workTimeCode(data.workTimeCode);
+                this.useHalfDayShift(data.useHalfDayShift);
+                this.coreTimeSetting.updateData(data.coreTimeSetting);
+                this.restSetting.updateData(data.restSetting);
+                this.commonSetting.updateData(data.commonSetting);
+            }
         }
         
          export class WorkTimeItem {

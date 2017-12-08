@@ -8,7 +8,8 @@ module nts.uk.at.view.kmk003.a {
             getAllWorktime: "at/shared/worktimeset/findAll",
             getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",
-            findAllFlexWorkSetting: "ctx/at/shared/worktime/flexset/findAl"
+            findAllFlexWorkSetting: "ctx/at/shared/worktime/flexset/findAll",
+            saveFlexWorkSetting: "ctx/at/shared/worktime/flexset/save"
         };
 
         export function findAllWorkTimeSet(): JQueryPromise<any> {
@@ -28,6 +29,13 @@ module nts.uk.at.view.kmk003.a {
         export function findAllFlexWorkSetting(): JQueryPromise<model.flexset.FlexWorkSettingDto[]> {
             return nts.uk.request.ajax(servicePath.findAllFlexWorkSetting);
         } 
+        
+        /**
+         * function save flex work setting by call service
+         */
+        export function saveFlexWorkSetting(command: model.command.FlexWorkSettingSaveCommand): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.saveFlexWorkSetting, command);
+        }
 
         /**
          * Data Model
@@ -299,6 +307,7 @@ module nts.uk.at.view.kmk003.a {
                     startTime: number;
                     endTime: number;
                 }
+                
                 
                 export interface CoreTimeSettingDto{
                     coreTimeSheet: TimeSheetDto;
