@@ -114,15 +114,15 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	@Column(name = "ERAL_CHECK_ID", unique = true)
 	public String eralCheckId;
 
-	@OneToOne(cascade = CascadeType.ALL, optional = true)
-	@JoinTable(name = "KRCMT_ERAL_CONDITION", joinColumns = {
-			@JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID") })
+//	@OneToOne(cascade = CascadeType.ALL, optional = true)
+//	@JoinTable(name = "KRCMT_ERAL_CONDITION", joinColumns = {
+//			@JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID") })
 	public KrcmtErAlCondition krcmtErAlCondition;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_APPLICATION", joinColumns = {
-			@JoinColumn(name = "CID", referencedColumnName = "CID", nullable = true),
-			@JoinColumn(name = "ERROR_ALARM_CD", referencedColumnName = "ERROR_CD", nullable = true) })
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_APPLICATION", joinColumns = {
+//			@JoinColumn(name = "CID", referencedColumnName = "CID", nullable = true),
+//			@JoinColumn(name = "ERROR_ALARM_CD", referencedColumnName = "ERROR_CD", nullable = true) })
 	public List<KrcstErAlApplication> krcstErAlApplication;
 
 	@Column(name = "CANCEL_ROLE_ID")

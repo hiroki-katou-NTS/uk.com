@@ -53,37 +53,37 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name ="FiLTER_BY_BUSINESS_TYPE")
 	public BigDecimal filterByBusinessType;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_BUSINESS_TYPE", joinColumns = {
-		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
-	})
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_BUSINESS_TYPE", joinColumns = {
+//		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
+//	})
 	public List<KrcstErAlBusinessType> lstBusinessType;
 	
 	@Column(name ="FiLTER_BY_JOB_TITLE")
 	public BigDecimal filterByJobTitle;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_JOB_TITLE", joinColumns = {
-		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
-	})
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_JOB_TITLE", joinColumns = {
+//		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
+//	})
 	public List<KrcstErAlJobTitle> lstJobTitle;
 	
 	@Column(name ="FiLTER_BY_EMPLOYMENT")
 	public BigDecimal filterByEmployment;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_EMPLOYMENT", joinColumns = {
-		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
-	})
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_EMPLOYMENT", joinColumns = {
+//		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
+//	})
 	public List<KrcstErAlEmployment> lstEmployment;
 	
 	@Column(name ="FiLTER_BY_CLASSIFICATION")
 	public BigDecimal filterByClassification;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_CLASS", joinColumns = {
-		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
-	})
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_CLASS", joinColumns = {
+//		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
+//	})
 	public List<KrcstErAlClass> lstClassification;
 	
 	@Column(name ="WORKTYPE_USE_ATR")
@@ -101,16 +101,16 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name ="WT_COMPARE_ATR")
 	public BigDecimal wtCompareAtr;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_WT_ACTUAL", joinColumns = {
-		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
-	})
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_WT_ACTUAL", joinColumns = {
+//		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
+//	})
 	public List<KrcstErAlWtActual> lstWtActual;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_WT_PLAN", joinColumns = {
-		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
-	})
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_WT_PLAN", joinColumns = {
+//		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
+//	})
 	public List<KrcstErAlWtPlan> lstWtPlan;
 	
 	@Column(name ="WORKING_HOURS_USE_ATR")
@@ -128,16 +128,16 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name ="WH_COMPARE_ATR")
 	public BigDecimal whCompareAtr;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_WH_ACTUAL", joinColumns = {
-		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
-	})
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_WH_ACTUAL", joinColumns = {
+//		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
+//	})
 	public List<KrcstErAlWhActual> lstWhActual;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "KRCST_ER_AL_WH_PLAN", joinColumns = {
-		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
-	})
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "KRCST_ER_AL_WH_PLAN", joinColumns = {
+//		@JoinColumn(name="ERAL_CHECK_ID", referencedColumnName="ERAL_CHECK_ID", nullable= true)
+//	})
 	public List<KrcstErAlWhPlan> lstWhPlan;
 	
 	@Column(name ="OPERATOR_BETWEEN_GROUPS")
@@ -146,19 +146,19 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name ="ATD_ITEM_CONDITION_GROUP1")
 	public String atdItemConditionGroup1;
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = true)
-	@JoinTable(name = "KRCST_ER_AL_CON_GROUP", joinColumns = {
-		@JoinColumn(name="ATD_ITEM_CONDITION_GROUP1", referencedColumnName="CONDITION_GROUP_ID")
-	})
+//	@OneToOne(cascade = CascadeType.ALL, optional = true)
+//	@JoinTable(name = "KRCST_ER_AL_CON_GROUP", joinColumns = {
+//		@JoinColumn(name="ATD_ITEM_CONDITION_GROUP1", referencedColumnName="CONDITION_GROUP_ID")
+//	})
 	public KrcstErAlConGroup krcstErAlConGroup1;
 	
 	@Column(name ="ATD_ITEM_CONDITION_GROUP2")
 	public String atdItemConditionGroup2;
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = true)
-	@JoinTable(name = "KRCST_ER_AL_CON_GROUP", joinColumns = {
-		@JoinColumn(name="ATD_ITEM_CONDITION_GROUP2", referencedColumnName="CONDITION_GROUP_ID")
-	})
+//	@OneToOne(cascade = CascadeType.ALL, optional = true)
+//	@JoinTable(name = "KRCST_ER_AL_CON_GROUP", joinColumns = {
+//		@JoinColumn(name="ATD_ITEM_CONDITION_GROUP2", referencedColumnName="CONDITION_GROUP_ID")
+//	})
 	public KrcstErAlConGroup krcstErAlConGroup2;
 	
 	@Override
