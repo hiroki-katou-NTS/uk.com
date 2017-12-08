@@ -1,16 +1,15 @@
-package nts.uk.ctx.at.request.app.find.application.overtime.dto;
+package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
-import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppOvertimeReferenceDto {
+public class AppOvertimeReference {
 	/**
 	 * appDate
 	 */
@@ -19,7 +18,7 @@ public class AppOvertimeReferenceDto {
 	/**
 	 * 残業申請時間設定
 	 */
-	private List<OvertimeInputDto> overTimeInputsRefer;
+	private List<CaculationTime> overTimeInputsRefer;
 
 	/**
 	 * workType
@@ -56,5 +55,4 @@ public class AppOvertimeReferenceDto {
 	 * 就業時間外深夜時間
 	 */
 	private Integer overTimeShiftNightRefer;
-
 }

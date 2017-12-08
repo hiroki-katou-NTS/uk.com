@@ -13,10 +13,10 @@ import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
 @Stateless
 public class JpaStampRepository extends JpaRepository implements StampRepository {
 	private final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c";
-	private final String SELECT_NO_WHERE = "SELECT e.personId, d.workLocationName, c FROM KwkdtStamp c";
+	private final String SELECT_NO_WHERE = "SELECT e.employeeID, d.workLocationName, c FROM KwkdtStamp c";
 
 	private final String SELECT_BY_LIST_CARD_NO = SELECT_STAMP + " WHERE c.kwkdtStampPK.cardNumber IN :lstCardNumber";
-	private final String SELECT_BY_EMPPLOYEE_CODE = SELECT_NO_WHERE
+	private final String SELECT_BY_EMPPLOYEE_ID = SELECT_NO_WHERE
 			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
 			+ " INNER JOIN KwkdtStampCard e ON e.kwkdtStampCardPK.cardNumber = c.kwkdtStampPK.cardNumber"
@@ -61,13 +61,14 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	}
 
 	@Override
-	public List<StampItem> findByEmployeeCode(String companyId, List<String> lstCardNumber, String startDate,
+	public List<StampItem> findByEmployeeID(String companyId, List<String> stampCards, String startDate,
 			String endDate) {
-		List<StampItem> list = this.queryProxy().query(SELECT_BY_EMPPLOYEE_CODE, Object[].class)
+		List<StampItem> list = this.queryProxy().query(SELECT_BY_EMPPLOYEE_ID, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", GeneralDate.fromString(startDate, "yyyyMMdd"))
 				.setParameter("endDate", GeneralDate.fromString(endDate, "yyyyMMdd"))
-				.setParameter("lstCardNumber", lstCardNumber).getList(c -> toDomain(c));
+				.setParameter("lstCardNumber", stampCards)
+				.getList(c -> toDomain(c));
 		return list;
 	}
 
