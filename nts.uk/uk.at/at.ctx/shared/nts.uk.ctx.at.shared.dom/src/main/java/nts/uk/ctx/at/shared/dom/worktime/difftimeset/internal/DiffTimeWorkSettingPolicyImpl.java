@@ -2,13 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
+package nts.uk.ctx.at.shared.dom.worktime.difftimeset.internal;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -20,6 +22,10 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 //	/** The predetemine policy service. */
 //	@Inject
 //	private PredeteminePolicyService predeteminePolicyService;
+
+	/** The diff time half policy. */
+	@Inject
+	private DiffTimeHalfDayWorkTimezonePolicy diffTimeHalfPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -36,7 +42,8 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 
 		//validate HDWorkTimeSheetSetting 516
 		this.validateHDWorkTimeSheetSetting(pred, diffTimeWorkSetting);
-		
+
+		diffTimeWorkSetting.getHalfDayWorkTimezones().forEach(halfDay -> this.diffTimeHalfPolicy.validate(halfDay, pred));
 		return true;
 	}
 
