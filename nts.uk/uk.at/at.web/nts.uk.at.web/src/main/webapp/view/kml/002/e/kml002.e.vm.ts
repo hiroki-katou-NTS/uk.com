@@ -201,13 +201,16 @@ module nts.uk.at.view.kml002.e.viewmodel {
             } else {
                 self.enable(false);
             }
-            
+
             var devChange = false;
             if (self.currentData != null) {
                 if (self.unitSelect() == 0) {
                     if (self.currentData.calMethodAtr == 0) {
                         self.checked(self.currentData.timeUnit.actualDisplayAtr == 0 ? false : true);
                         self.bindData(self.currentData.timeUnit.lstTimeUnitFuncs);
+                        self.roundingCd(self.currentData.timeUnit.roundingTime),
+                        self.selectedProcessing(self.currentData.timeUnit.actualDisplayAtr),
+                        self.uPCd(self.currentData.timeUnit.unitPrice)
                     } else {
                         self.checkedTime(self.currentData.actualDisplayAtrTime);
                         self.selectedMethod(self.currentData.moneyFunc.calMethodAtr == 0 ? false : true);
@@ -284,7 +287,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                             self.rightItemsTime.removeAll();
                             self.enableReturnTime(false);
                         }
-                        
+
                         $("#treegridItemsTime").ntsGridList('deselectAll');
                     }).ifNo(() => {
                         devChange = true;
@@ -333,16 +336,16 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         self.displayItemsRuleAmount(self.allItemAmount());
                         self.bindDataAmout(self.currentData.moneyFunc.lstMoney);
                     }
-                   
+
                 }).fail(function(res) {
                     dfd.reject(res);
                 });
             };
-             var t1 = performance.now();
+            var t1 = performance.now();
             console.log("Selection process " + (t1 - t0) + " milliseconds.");
             dfd.resolve();
             return dfd.promise();
-           
+
         }
 
         submit() {
@@ -403,9 +406,8 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     },
                     timeUnit: {
                         roundingTime: self.roundingCd(),
-                        roundingAtr: self.selectedProcessing(),
+                        actualDisplayAtr: self.selectedProcessing() ? 1 : 0,
                         unitPrice: self.uPCd(),
-                        actualDisplayAtr: self.checked() ? 1 : 0,
                         lstTimeUnitFuncs: formAmount
                     }
                 }
@@ -501,9 +503,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 let items = _.sortBy(data, ['companyId', 'dispOrder']);
                 _.forEach(items, function(item: service.BaseItemsDto) {
                     var name = "";
-                    if(item.itemType == 0) {
+                    if (item.itemType == 0) {
                         name = item.itemName + nts.uk.resource.getText("KML002_43");
-                    } else if(item.itemType == 1) {
+                    } else if (item.itemType == 1) {
                         name = item.itemName + nts.uk.resource.getText("KML002_42");
                     }
                     temp.push(new ItemModel(item.id, name, item.itemType));
@@ -544,7 +546,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         displayItemsRuleAmount(allItemAmount: any) {
             let self = this;
             let temp = [];
@@ -842,9 +844,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 };
 
                 self.rightItems.push(itemData);
-                self.roundingCd(self.currentData.timeUnit.roundingAtr),
-                self.selectedProcessing(self.currentData.timeUnit.roundingTime),
-                self.uPCd(self.currentData.timeUnit.unitPrice)
+               
             });
         }
         bindDataMoney(lstMoney: any) {

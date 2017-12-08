@@ -688,21 +688,21 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var dfd = $.Deferred();
 
             let param = {
-                budgetAtr: 1,
+                budgetAtr: 3,
                 // received from mother screen 0: day or 1: time
-                unitAtr: 1
+                unitAtr: 0
             }
 
             service.getByAtr(param).done((data) => {
                 var temp = [];
                 let a = {
-                    budgetAtr: 1,
+                    budgetAtr: 3,
                     externalBudgetCode: (data.length + 1).toString(),
                     externalBudgetName: nts.uk.resource.getText("KML002_109"),
                     unitAtr: 0
                 }
                 let b = {
-                    budgetAtr: 1,
+                    budgetAtr: 3,
                     externalBudgetCode: (data.length + 2).toString(),
                     externalBudgetName: nts.uk.resource.getText("KML002_110"),
                     unitAtr: 0
