@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 
 /**
@@ -63,7 +63,7 @@ public class FlexWorkSettingPolicyImpl {
 		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.USE)){
 			
 			// get time zone 
-			Timezone timezone =  predetemineTimeSet.getPrescribedTimezoneSetting().getTimezone(WORK_NO_ONE);
+			TimezoneUse timezone =  predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne();
 			
 			// 開始 = 勤務NO = 1の場合の 所定時間帯設定.時間帯.開始
 			int startTime = timezone.getStart().valueAsMinutes();
