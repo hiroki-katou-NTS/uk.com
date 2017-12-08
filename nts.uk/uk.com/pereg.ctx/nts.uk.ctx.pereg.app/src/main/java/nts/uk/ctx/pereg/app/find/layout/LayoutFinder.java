@@ -152,6 +152,7 @@ public class LayoutFinder {
 				categoryIdList);
 
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
+			
 			// if item is separator line, do not check
 			if (classItem.getLayoutItemType() == LayoutItemType.SeparatorLine) {
 				authItemClasList.add(classItem);
@@ -171,13 +172,15 @@ public class LayoutFinder {
 
 		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
 		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
-			List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
-					.get(classItem.getPersonInfoCategoryID());
-			if (classItemList == null) {
-				classItemList = new ArrayList<>();
-				classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
-			}
-			classItemList.add(classItem);
+			if (classItem.getLayoutItemType() != LayoutItemType.SeparatorLine) {
+				List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
+						.get(classItem.getPersonInfoCategoryID());
+				if (classItemList == null) {
+					classItemList = new ArrayList<>();
+					classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
+				}
+				classItemList.add(classItem);
+			} 
 		}
 
 		classItemInCategoryMap.forEach((categoryId, classItemList) -> {
