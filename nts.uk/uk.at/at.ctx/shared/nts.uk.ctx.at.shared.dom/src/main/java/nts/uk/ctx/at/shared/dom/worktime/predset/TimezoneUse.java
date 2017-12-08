@@ -59,4 +59,13 @@ public class TimezoneUse extends TimeZone {
 		memento.setStart(this.start);
 		memento.setEnd(this.end);
 	}
+
+	/**
+	 * Checks if is used.
+	 *
+	 * @return true, if is used
+	 */
+	public boolean isUsed() {
+		return this.useAtr == UseSetting.USE ? true : false;
+	}
 }
