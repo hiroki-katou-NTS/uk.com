@@ -90,6 +90,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     let sortedData = _.orderBy(lstData, ['code'], ['asc']);
                     self.lstErrorAlarm(sortedData);
                     self.selectedErrorAlarmCode(sortedData[0].code);
+                } else {
+                    self.isNewMode(true);    
                 }
                 dfd.resolve();
             });
