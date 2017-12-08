@@ -101,7 +101,7 @@ public class RegisterLayoutFinder {
 						.filter(itemCls -> itemCls.getPersonInfoCategoryID() == query.getCategoryId()).findFirst();
 
 				if (clsDto.isPresent()) {
-					MappingFactory.mapItemClassDto(this.layoutProc.findSingle(query), clsDto.get());
+					MappingFactory.mapItemClass(this.layoutProc.findSingle(query), clsDto.get());
 				}
 
 			});

@@ -39,14 +39,14 @@
 			<div id="contents-area" class="cf"
 				data-bind="let: { 
 						text: nts.uk.resource.getText,
-						/*catType: {	
+						catType: {	
 							SINGLE : 1,
 							MULTI: 2,
-							CONTI: 3, // continuos history hasn't end date
+							CONTI: 3, /* continuos history hasn't end date */
 							NODUP: 4,
 							DUPLI: 5,
-							CONTIWED: 6 // continuos history has end date
-						}*/
+							CONTIWED: 6 /* continuos history has end date */
+						}
 					}">
 				<div id="ccgcomponent"></div>
 				<div class="left-area">
@@ -108,9 +108,9 @@
 								} }">
 							</div>
 						</div>
-						<div class="categorytab">
-							<div class="form-group search-box"
-								data-bind="let: { cat: currentCategory()} ">
+						<div class="categorytab"
+							data-bind="let: { cat: currentCategory()} ">
+							<div class="form-group search-box">
 								<button type="button">#{i18n.getText('CPS001_27')}</button>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
@@ -123,15 +123,111 @@
 										enable: true,
 										columns: [{ prop: 'categoryName', length: 10 }]}"></div>
 							</div>
-							<div data-bind="">
+							<div
+								data-bind="css: { 'hidden' : cat.categoryType() != catType.SINGLE }">
+								<div
+									data-bind="template: { name: 'list-data', data: { 
+											dataSource: ko.observableArray([]),
+											value: ko.observable(''),
+											primaryKey: 'id',
+											columns: [
+												{ headerText: 'コード', key: 'id', width: 100, hidden: true },
+					                			{ headerText: text('CPS001_25'), key: 'name', width: 232, hidden: false }
+											],
+										}
+									}">
+								</div>
+							</div>
+							<div
+								data-bind="css: { 'hidden' : cat.categoryType() != catType.MULTI }">
 								<div
 									data-bind="template: { name: 'list-multiple', data: { 
 										list: {
-										}, 
+											value: ko.observable(), 
+											dataSource: ko.observableArray([]),
+											primaryKey: 'id',
+											columns: [
+												{ headerText: 'コード', key: 'id', width: 100, hidden: true },
+					               				{ headerText: '名称', key: 'name', width: 232, hidden: false }
+											]
+										},
 										event: {
-										} 
-									}
-								}">
+											add: function() {},
+											delete: function() {}						
+										}
+									} }">
+								</div>
+							</div>
+							<div
+								data-bind="css: { 'hidden' : cat.categoryType() != catType.CONTI }">
+								<div
+									data-bind="template: { name: 'list-history', data: {
+										list: {
+											value: ko.observable(), 
+											dataSource: ko.observableArray([]),
+											primaryKey: 'id',
+											columns: [
+												{ headerText: 'コード', key: 'id', width: 100, hidden: true },
+					               				{ headerText: '名称', key: 'name', width: 232, hidden: false }
+											]
+										},
+										event: {
+											add: function() {},
+											replication: function() {},
+											delete: function() {}
+										}
+									} }">
+								</div>
+							</div>
+							<div
+								data-bind="css: { 'hidden' : cat.categoryType() != catType.NODUP }">
+								<div
+									data-bind="template: { name: 'list-data', data: { 
+											dataSource: ko.observableArray([]),
+											value: ko.observable(''),
+											primaryKey: 'id',
+											columns: [
+												{ headerText: 'コード', key: 'id', width: 100, hidden: true },
+					                			{ headerText: text('CPS001_25'), key: 'name', width: 232, hidden: false }
+											],
+										}
+									}">
+								</div>
+							</div>
+							<div
+								data-bind="css: { 'hidden' : cat.categoryType() != catType.DUPLI }">
+								<div
+									data-bind="template: { name: 'list-data', data: { 
+											dataSource: ko.observableArray([]),
+											value: ko.observable(''),
+											primaryKey: 'id',
+											columns: [
+												{ headerText: 'コード', key: 'id', width: 100, hidden: true },
+					                			{ headerText: text('CPS001_25'), key: 'name', width: 232, hidden: false }
+											],
+										}
+									}">
+								</div>
+							</div>
+							<div
+								data-bind="css: { 'hidden' : cat.categoryType() != catType.CONTIWED }">
+								<div
+									data-bind="template: { name: 'list-history', data: { 
+										list: {
+											value: ko.observable(), 
+											dataSource: ko.observableArray([]),
+											primaryKey: 'id',
+											columns: [
+												{ headerText: 'コード', key: 'id', width: 100, hidden: true },
+					               				{ headerText: '名称', key: 'name', width: 232, hidden: false }
+											]
+										},
+										event: {
+											add: function() {},
+											replication: function() {},
+											delete: function() {}
+										}
+									} }">
 								</div>
 							</div>
 						</div>
@@ -262,7 +358,6 @@
 						dataSource: $data.dataSource || ko.observableArray([])
 					}"></table>
 			</script>
-
 			<script type="text/html" id="list-history"
 				data-structor="{
 					list: {
@@ -277,7 +372,7 @@
 					event: {
 						add: function() {},
 						replication: function() {},
-						delete: function()
+						delete: function() {}
 					}
 				}">
 				<div class="form-group search-box">
@@ -312,7 +407,7 @@
 					},
 					event: {
 						add: function() {},
-						delete: function()						
+						delete: function() {}						
 					}
 				}">
 				<div class="form-group search-box">
