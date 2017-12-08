@@ -8,9 +8,11 @@ import nts.arc.layer.dom.DomainObject;
  * The Class MonthlyPatternWorkScheduleCre.
  */
 @Getter
+// 月間パターンによる勤務予定作成
 public class MonthlyPatternWorkScheduleCre extends DomainObject {
 	
 	/** The reference type. */
+	// 勤務種類と就業時間帯の参照先
 	private TimeZoneScheduledMasterAtr referenceType;
 	
 	/**
