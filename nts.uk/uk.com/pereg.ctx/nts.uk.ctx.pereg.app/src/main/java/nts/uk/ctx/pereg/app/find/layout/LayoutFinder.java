@@ -33,7 +33,6 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
@@ -284,14 +283,15 @@ public class LayoutFinder {
 	 */
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
 			GeneralDate stardardDate, String personId, String employeeId, PeregQuery query) {
-		
-		
+
+		cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
 
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
-			
-			cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
+
+			// cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(),
+			// authClassItem);
 			if (peregDto != null) {
 				MappingFactory.mapItemClassDto(peregDto, authClassItem);
 			}
@@ -299,7 +299,8 @@ public class LayoutFinder {
 			switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
 				// CLONE
-				cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), authClassItem);
+				// cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(),
+				// authClassItem);
 				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 					List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
 							perInfoCategory.getPersonInfoCategoryId());
@@ -326,7 +327,7 @@ public class LayoutFinder {
 							stardardDate);
 				} else {
 					// employee history
-					getEmpDataHistoryType(perInfoCategory.getPersonInfoCategoryId(), authClassItem, personId,
+					getEmpDataHistoryType(perInfoCategory.getPersonInfoCategoryId(), authClassItem, employeeId,
 							stardardDate);
 				}
 				break;
@@ -387,23 +388,19 @@ public class LayoutFinder {
 		for (PerInfoCtgData perInfoCtgData : perInfoCtgDatas) {
 			List<PersonInfoItemData> dataItems = perInItemDataRepo
 					.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-			GeneralDate startDate = null;
-			GeneralDate endDate = null;
-			for (PersonInfoItemData dataItem : dataItems) {
-				if (dataItem.getPerInfoItemDefId() == startDateId) {
-					startDate = dataItem.getDataState().getDateValue();
-				} else if (dataItem.getPerInfoItemDefId() == endDateId) {
-					endDate = dataItem.getDataState().getDateValue();
+
+			Optional<PersonInfoItemData> startDateOpt = dataItems.stream()
+					.filter(column -> column.getPerInfoItemDefId().equals(startDateId)).findFirst();
+
+			Optional<PersonInfoItemData> endDateOpt = dataItems.stream()
+					.filter(column -> column.getPerInfoItemDefId().equals(endDateId)).findFirst();
+
+			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
+				if (stardardDate.after(startDateOpt.get().getDataState().getDateValue())
+						&& stardardDate.before(endDateOpt.get().getDataState().getDateValue())) {
+					matchPersDataForSingleClsItem(authClassItem, dataItems);
+					break;
 				}
-			}
-
-			if (startDate == null || endDate == null) {
-				continue;
-			}
-
-			if (startDate.before(stardardDate) && endDate.after(stardardDate)) {
-				matchPersDataForSingleClsItem(authClassItem, dataItems);
-				break;
 			}
 
 		}
@@ -412,14 +409,14 @@ public class LayoutFinder {
 	/**
 	 * @param perInfoCategoryId
 	 * @param authClassItem
-	 * @param personId
+	 * @param employeeId
 	 * @param stardardDate
 	 *            Target: get data with history case. Employee case
 	 */
-	private void getEmpDataHistoryType(String perInfoCategoryId, LayoutPersonInfoClsDto authClassItem, String personId,
-			GeneralDate stardardDate) {
+	private void getEmpDataHistoryType(String perInfoCategoryId, LayoutPersonInfoClsDto authClassItem,
+			String employeeId, GeneralDate stardardDate) {
 		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
-		List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(personId, perInfoCategoryId);
+		List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(employeeId, perInfoCategoryId);
 		String startDateId = dateRangeItem.getStartDateItemId();
 		String endDateId = dateRangeItem.getEndDateItemId();
 
