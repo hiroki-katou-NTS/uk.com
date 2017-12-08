@@ -23,7 +23,11 @@ public class UpdateErrorAlarmWrCommandHandler extends CommandHandler<UpdateError
 	@Override
 	protected void handle(CommandHandlerContext<UpdateErrorAlarmWrCommand> context) {
 		UpdateErrorAlarmWrCommand command = context.getCommand();
-		this.repository.updateErrorAlarmWorkRecord(command.toDomain());
+		if(this.repository.findByCode(command.getCode())!= null){
+			this.repository.updateErrorAlarmWorkRecord(command.toDomain());
+		} else {
+			this.repository.addErrorAlarmWorkRecord(command.toDomain());
+		}
 	}
 
 }

@@ -18,6 +18,6 @@ import lombok.Getter;
 public class UncountableTarget extends CheckedTarget {
 	
 	//項目
-	private List<Integer> attendanceItems;
+	private Integer attendanceItem;
 
 }
