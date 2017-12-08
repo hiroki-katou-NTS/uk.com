@@ -582,7 +582,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
          */
         openCMM018() {
             let self = this;
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
+            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID() });
         }
         
         findBychangeAppDateData(data: any) {
