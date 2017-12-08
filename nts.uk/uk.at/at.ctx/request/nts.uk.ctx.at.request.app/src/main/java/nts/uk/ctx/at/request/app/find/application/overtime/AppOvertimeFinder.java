@@ -169,7 +169,7 @@ public class AppOvertimeFinder {
 	/**
 	 * @return
 	 */
-	public List<CaculationTime> getCaculationValue(List<CaculationTime> overtimeHours,List<CaculationTime> bonusTimes,int prePostAtr,String appDate){
+	public List<CaculationTime> getCaculationValue(List<CaculationTime> overtimeHours,List<CaculationTime> bonusTimes,int prePostAtr,String appDate,String siftCD){
 		 
 		List<CaculationTime> caculationTimes = new ArrayList<>();
 		String companyID = AppContexts.user().companyId();
@@ -189,17 +189,18 @@ public class AppOvertimeFinder {
 		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
 		if(appCommonSettingOutput.requestOfEachCommon != null){
 			List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-//			if(requestAppDetailSettings != null){
-//				this.overtimeSixProcess.checkDisplayColor(convert(overtimeHours),
-//						overtimeInputCaculations,
-//						prePostAtr,
-//						inputDate,
-//						GeneralDate.fromString(appDate, DATE_FORMAT),
-//						ApplicationType.OVER_TIME_APPLICATION.value,
-//						employeeID, 
-//						companyID, 
-//						requestAppDetailSettings.get(0));
-//			}
+			if(requestAppDetailSettings != null){
+				overtimeHours = this.overtimeSixProcess.checkDisplayColor(overtimeHours,
+						overtimeInputCaculations,
+						prePostAtr,
+						inputDate,
+						GeneralDate.fromString(appDate, DATE_FORMAT),
+						ApplicationType.OVER_TIME_APPLICATION.value,
+						employeeID, 
+						companyID, 
+						requestAppDetailSettings.get(0),
+						siftCD);
+			}
 			
 		}
 		// 06-02_残業時間を取得

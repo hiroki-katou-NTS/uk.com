@@ -168,6 +168,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         self.kaf000_a.getAllApprovalRoot();
                         self.kaf000_a.getMessageDeadline(0, value);
                         self.convertAppOvertimeReferDto(data);
+                        self.preAppPanelFlg(data.preAppPanelFlg);
                         dfd.resolve(data);
                     }).fail((res) =>{
                             dfd.reject(res);
@@ -415,6 +416,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636')
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636')
             }
+             if(errorCode == 3){
+                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164')
+                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164')
+            }
            
         }
         validate(): boolean{
@@ -459,7 +464,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 bonusTimes: ko.toJS(self.bonusTimes()),
                 prePostAtr : self.prePostSelected(),
-                appDate : moment(self.appDate()).format(self.DATEFORMART)
+                appDate : moment(self.appDate()).format(self.DATEFORMART),
+                siftCD: self.siftCD()
             }
             
             service.getCaculationResult(param).done(function(data){
@@ -468,7 +474,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 if(data != null){
                  for(let i =0; i < data.length; i++){
                    if(data[i].attendanceID == 1){
-                        
                        if(data[i].frameNo != 11 && data[i].frameNo != 12){
                            self.overtimeHours.push(new common.OvertimeCaculation("", "",
                             data[i].attendanceID,
@@ -479,6 +484,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                               data[i].applicationTime,
                               self.convertIntToTime(data[i].preAppTime),
                               self.convertIntToTime(data[i].caculationTime),"#[KAF005_55]"));
+                          
                        }else if(data[i].frameNo == 11){
                             self.overtimeHours.push(new common.OvertimeCaculation("", "",
                             data[i].attendanceID,
@@ -500,7 +506,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                              self.convertIntToTime(data[i].preAppTime),
                              self.convertIntToTime(data[i].caculationTime),"#[KAF005_66]"));
                        }
-                       
+                       self.changeColor(1,data[i].frameNo,data[i].errorCode);
                    }else if(data[i].attendanceID == 3){
                        self.bonusTimes.push(new common.OvertimeCaculation("", "", data[i].attendanceID,
                         "", data[i].frameNo,

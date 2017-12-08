@@ -58,7 +58,7 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("getCaculationResult")
 	public List<CaculationTime> getCaculationResult(ParamCaculationOvertime param) {
-		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate());
+		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD());
 	}
 	
 	

@@ -18,7 +18,7 @@ public interface OvertimeSixProcess {
 	 * @param overtimeInputCaculations
 	 */
 	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting);
+			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting,String siftCD);
 	/**
 	 * 06-02_残業時間を取得
 	 * @param companyID
@@ -55,7 +55,7 @@ public interface OvertimeSixProcess {
 	/**
 	 * 06-04_計算実績超過チェック
 	 */
-	public void checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting);
+	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting,GeneralDate appDate,List<CaculationTime> overTimeInputs, String siftCD);
 	
 	/**
 	 * 06-04-1_チェック条件

@@ -504,7 +504,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	 * @param workTimeSet
 	 * @return
 	 */
-	private boolean checkTimeDay(String appDate, WorkTimeSet workTimeSet) {
+	public boolean checkTimeDay(String appDate, WorkTimeSet workTimeSet) {
 		GeneralDateTime appDateGeneralstart = GeneralDateTime.fromString(appDate + " 00:00", "yyyy/MM/dd HH:mm");
 		GeneralDateTime appDateGeneralEnd = GeneralDateTime.fromString(appDate + " 00:00", "yyyy/MM/dd HH:mm");
 
