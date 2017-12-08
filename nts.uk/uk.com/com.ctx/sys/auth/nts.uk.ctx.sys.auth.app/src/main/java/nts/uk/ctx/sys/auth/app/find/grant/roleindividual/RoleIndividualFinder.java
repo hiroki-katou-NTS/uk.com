@@ -133,10 +133,12 @@ public class RoleIndividualFinder {
 			return null;
 		
 		Optional<RoleIndividualGrant> rGrant = this.roleIndividualGrantRepo.findByKey(userId, companyId, roleId);
-		
-		Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
-		
-		return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
+		try {
+			Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
+			return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 }

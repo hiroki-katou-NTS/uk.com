@@ -62,8 +62,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
             });
             self.selectedRoleIndividual.subscribe((code: string) => {
                 self.selectRoleGrant(code.toString());
-                self.isCreateMode(false);
-                self.isSelectedUser(false);
             });
 
 
@@ -114,37 +112,38 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     } else {
                         self.listRoleIndividual([]);
                         self.selectedRoleIndividual('');
+                        self.userName('');
+                        self.dateValue({});
                     }
                 });
             } else {
                 self.listRoleIndividual([]);
                 self.selectedRoleIndividual('');
+                self.userName('');
+                self.dateValue({});
             }
         }
         private selectRoleGrant(UserId: string): void {
             var self = this;
             var roleId = self.selectedRole();
             if (roleId != '' && UserId != '') {
-                new service.Service().getByUserIdAndRoleId(roleId, UserId).done(function(data: any) {
+                new service.Service().getRoleGrant(roleId, UserId).done(function(data: any) {
                     if (data != null) {
                         self.userName(data.userName);
                         self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
-                    } else {
-                        self.userName('');
-                        self.dateValue({});
-                    }
-
+                        self.selectedRoleIndividual(UserId);
+                        self.isCreateMode(false);
+                    } 
                 });
-            } else {
-                self.userName('');
-                self.dateValue({});
-            }
-            self.isCreateMode(true);
-
+            } 
         }
         New(): void {
             var self = this;
             self.isCreateMode(true);
+            self.selectedRoleIndividual('');
+            self.userName('');
+            self.dateValue({});
+            nts.uk.ui.errors.clearAll();
         }
         openBModal(): void {
             var self = this;
@@ -158,23 +157,44 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 if (data != null) {
                     self.userName(data.decisionName);
                     self.userId(data.decisionUserID);
-                    self.dateValue({});
                     self.isSelectedUser(true);
+                    self.selectRoleGrant(data.decisionUserID);
                 }
             });
         }
         save(): void{
             var self = this;
-            if(self.isSelectedUser()){
-                if(!nts.uk.util.isNullOrUndefined(self.selectedRoleType()) 
+            if(!nts.uk.util.isNullOrUndefined(self.selectedRoleType()) 
                     && !nts.uk.util.isNullOrUndefined(self.selectedRole())
                     && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
-                    && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)){
+                    && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)
+                    && self.userName() != ''){
+                if(self.isSelectedUser()){
                     console.log('save');
+                    self.insert();
+                }else{
+                    console.log('upDate');
                 }
+            }else if(self.selectedRole() == ''){
+                console.log('Chua Chon Role');
+            }else if(self.userName() == ''){
+                console.log('Chua Chon user');
+            }else if(nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)){
+                console.log('Chua Chon Ngay Thang');
             }else{
-                console.log('update');
-            }    
+                console.log('Chua Chon day du thong tin');
+            }
+                
+        }
+        private insert(): void{
+            var self = this;
+            if((self.userId() != '') 
+                && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
+                && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)
+                && self.selectedRole() != ''
+                && self.selectedRoleType() != ''){
+                
+            }
         }
 
     }

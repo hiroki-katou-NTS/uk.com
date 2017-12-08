@@ -7,7 +7,8 @@ module nts.uk.com.view.cas013.a {
                 getRoleType: "ctx/sys/auth/grant/roleindividual/getRoleType",
                 getRole: "ctx/sys/auth/grant/roleindividual/getRoles",
                 getRoleGrants: "ctx/sys/auth/grant/roleindividual/getRoleGrants",
-                getRoleGrant: "ctx/sys/auth/grant/roleindividual/getRoleGrant"
+                getRoleGrant: "ctx/sys/auth/grant/roleindividual/getRoleGrant",
+                
             }
             constructor() {
 
@@ -21,7 +22,7 @@ module nts.uk.com.view.cas013.a {
             getRoleGrants(role: string): JQueryPromise<any> {
                 return ajax("com", this.paths.getRoleGrants, role);
             };
-            getByUserIdAndRoleId(roleId: string, userId: string): JQueryPromise<any> {
+            getRoleGrant(roleId: string, userId: string): JQueryPromise<any> {
                 var data = {
                     roleID: roleId,
                     userID: userId
