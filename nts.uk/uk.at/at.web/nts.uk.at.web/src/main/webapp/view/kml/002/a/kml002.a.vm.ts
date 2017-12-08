@@ -689,7 +689,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             let param = {
                 budgetAtr: 3,
-                // received from mother screen 0: day or 1: time
                 unitAtr: 0
             }
 
@@ -701,15 +700,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     externalBudgetName: nts.uk.resource.getText("KML002_109"),
                     unitAtr: 0
                 }
-                let b = {
-                    budgetAtr: 3,
-                    externalBudgetCode: (data.length + 2).toString(),
-                    externalBudgetName: nts.uk.resource.getText("KML002_110"),
-                    unitAtr: 0
-                }
 
                 temp.push(a);
-                temp.push(b);
 
                 _.forEach(data, function(item) {
                     temp.push(item);
@@ -1569,15 +1561,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     for (var i = 0; i < data.length; i++) {
                                         var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                         var name = data[i].name != null ? data[i].name : "";
-                                        var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
-                                        var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                        var item = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
     
                                         if (name != "") {
                                             formulaResult += operator + " " + name + " ";
-                                        } else if (item1 != null) {
-                                            formulaResult += operator + " " + item1.externalBudgetName + " ";
-                                        } else if (item2 != null) {
-                                            formulaResult += operator + " " + item2.externalBudgetName + " ";
+                                        } else if (item != null) {
+                                            formulaResult += operator + " " + item.externalBudgetName + " ";
                                         }
                                     }
                                 }
@@ -1673,15 +1662,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     for (var i = 0; i < data.length; i++) {
                                         var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                         var name = data[i].name != null ? data[i].name : "";
-                                        var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
-                                        var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                        var item = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
     
                                         if (name != "") {
                                             formulaResult += operator + " " + name + " ";
-                                        } else if (item1 != null) {
-                                            formulaResult += operator + " " + item1.externalBudgetName + " ";
-                                        } else if (item2 != null) {
-                                            formulaResult += operator + " " + item2.externalBudgetName + " ";
+                                        } else if (item != null) {
+                                            formulaResult += operator + " " + item.externalBudgetName + " ";
                                         }
                                     }
                                 }
