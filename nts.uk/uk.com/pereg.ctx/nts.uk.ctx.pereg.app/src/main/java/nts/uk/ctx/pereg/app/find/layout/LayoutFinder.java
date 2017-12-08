@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
@@ -19,6 +21,7 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
@@ -160,6 +163,8 @@ public class LayoutFinder {
 					if (authClassItem.getLayoutItemType() == LayoutItemType.ITEM) {
 						getDataforSingleItem(perInfoCategory, authClassItem, stardardDate, browsingPeronId,
 								browsingEmpId, query);
+						checkActionRoleItemData(inforAuthItems, authClassItem, selfBrowsing);
+						
 					} else if (authClassItem.getLayoutItemType() == LayoutItemType.LIST) {
 					}
 					authItemClasList.add(authClassItem);
@@ -290,16 +295,12 @@ public class LayoutFinder {
 			// get domain data
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
 
-			// cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(),
-			// authClassItem);
 			if (peregDto != null) {
 				MappingFactory.mapItemClassDto(peregDto, authClassItem);
 			}
 		} else {
 			switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
-				// CLONE
-				// cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(),
 				// authClassItem);
 				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 					List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
@@ -336,6 +337,8 @@ public class LayoutFinder {
 			}
 
 		}
+		
+		
 	}
 
 	/**
@@ -445,6 +448,122 @@ public class LayoutFinder {
 			items.add(LayoutPersonInfoValueDto.cloneFromItemDef(categoryCode, itemDef));
 		}
 		classItem.setItems(items);
+	}
+	
+	
+	private void checkActionRoleWithData(PersonInfoCategory perInfoCategory, PersonInfoCategoryAuth personCategoryAuth,
+			List<PersonInfoItemAuth> inforAuthItems, LayoutPersonInfoClsDto authClassItem, GeneralDate standardDate,
+			boolean selfBrowsing) {
+		switch (perInfoCategory.getCategoryType()) {
+		case MULTIINFO:
+			List<Object> mulSeigoItemsData = new ArrayList<>();
+			for (Object mulItem : authClassItem.getItems()) {
+				@SuppressWarnings("unchecked")
+				List<LayoutPersonInfoValueDto> mulRowData = (List<LayoutPersonInfoValueDto>) mulItem;
+				List<LayoutPersonInfoValueDto> mulActionRoleRowData = checkAndSetActionRole(mulRowData, inforAuthItems,
+						selfBrowsing);
+				mulSeigoItemsData.add(mulActionRoleRowData);
+			}
+			authClassItem.setItems(mulSeigoItemsData);
+			break;
+		case CONTINUOUSHISTORY:
+		case NODUPLICATEHISTORY:
+		case DUPLICATEHISTORY:
+		case CONTINUOUS_HISTORY_FOR_ENDDATE:
+			DateRangeItem dateRangeItem = perInfoCateRepo
+					.getDateRangeItemByCtgId(perInfoCategory.getPersonInfoCategoryId());
+			String startDateId = dateRangeItem.getStartDateItemId();
+			String endDateId = dateRangeItem.getEndDateItemId();
+			List<Object> seigoItemsData = new ArrayList<>();
+			for (Object item : authClassItem.getItems()) {
+				@SuppressWarnings("unchecked")
+				List<LayoutPersonInfoValueDto> rowData = (List<LayoutPersonInfoValueDto>) item;
+				Optional<LayoutPersonInfoValueDto> startDateOpt = rowData.stream()
+						.filter(column -> column.getItemDefId().equals(startDateId)).findFirst();
+				Optional<LayoutPersonInfoValueDto> endDateOpt = rowData.stream()
+						.filter(column -> column.getItemDefId().equals(endDateId)).findFirst();
+
+				if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
+					PersonInfoAuthType auth = PersonInfoAuthType.UPDATE;
+					if (standardDate.after((GeneralDate) endDateOpt.get().getValue())) {
+						// past
+						auth = selfBrowsing ? personCategoryAuth.getSelfPastHisAuth()
+								: personCategoryAuth.getOtherPastHisAuth();
+					} else if (standardDate.before((GeneralDate) startDateOpt.get().getValue())) {
+						// future
+						auth = selfBrowsing ? personCategoryAuth.getSelfFutureHisAuth()
+								: personCategoryAuth.getOtherFutureHisAuth();
+					}
+					switch (auth) {
+					case REFERENCE:
+						rowData.forEach(element -> element.setActionRole(ActionRole.VIEW_ONLY));
+						seigoItemsData.add(rowData);
+						break;
+					case UPDATE:
+						List<LayoutPersonInfoValueDto> actionRoleRowData = checkAndSetActionRole(rowData,
+								inforAuthItems, selfBrowsing);
+						seigoItemsData.add(actionRoleRowData);
+						break;
+					case HIDE:
+						// do NOT add to authItemsData
+						break;
+					}
+				}
+			}
+			authClassItem.setItems(seigoItemsData);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private List<LayoutPersonInfoValueDto> checkAndSetActionRole(List<LayoutPersonInfoValueDto> rowData,
+			List<PersonInfoItemAuth> inforAuthItems, boolean selfBrowsing) {
+		List<LayoutPersonInfoValueDto> actionRoleRowData = new ArrayList<>();
+		for (LayoutPersonInfoValueDto element : rowData) {
+			Optional<PersonInfoItemAuth> authItemOpt = inforAuthItems.stream()
+					.filter(authItem -> authItem.getPersonItemDefId().equals(element.getItemDefId())).findFirst();
+			if (authItemOpt.isPresent()) {
+				PersonInfoAuthType auth = selfBrowsing ? authItemOpt.get().getSelfAuth()
+						: authItemOpt.get().getOtherAuth();
+				switch (auth) {
+				case REFERENCE:
+					element.setActionRole(ActionRole.VIEW_ONLY);
+					actionRoleRowData.add(element);
+					break;
+				case UPDATE:
+					element.setActionRole(ActionRole.EDIT);
+					actionRoleRowData.add(element);
+					break;
+				case HIDE:
+					// do NOT add to actionRoleRowData
+					break;
+				}
+			}
+		}
+		return actionRoleRowData;
+	}
+	
+	private void checkActionRoleItemData(List<PersonInfoItemAuth> inforAuthItems, LayoutPersonInfoClsDto classItem,
+			boolean selfBrowsing) {
+
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+
+			Optional<PersonInfoItemAuth> authItemOpt = inforAuthItems.stream()
+					.filter(p -> p.getPersonItemDefId().equals(valueItem.getItemDefId())).findFirst();
+
+			if (authItemOpt.isPresent()) {
+				ActionRole actionrole;
+				if (selfBrowsing) {
+					actionrole = EnumAdaptor.valueOf(authItemOpt.get().getSelfAuth().value, ActionRole.class);
+				} else {
+					actionrole = EnumAdaptor.valueOf(authItemOpt.get().getOtherAuth().value, ActionRole.class);
+				}
+				valueItem.setActionRole(actionrole);
+			}
+		}
+
 	}
 
 }
