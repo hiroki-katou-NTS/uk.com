@@ -60,7 +60,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
 			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " WHERE c.cid = :CID";
 
-	private final String SEE_BY_ROLEID_AND_CTG_ID_LIST = "SELECT FROM PpemtPersonCategoryAuth ctgAuth"
+	private final String SEE_BY_ROLEID_AND_CTG_ID_LIST = "SELECT ctgAuth FROM PpemtPersonCategoryAuth ctgAuth"
 			+ " WHERE ctgAuth.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " AND ctgAuth.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IN :categoryIdList";
 
