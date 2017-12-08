@@ -346,7 +346,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
         }
 
         submit() {
-            var t0 = performance.now();
+            nts.uk.ui.block.invisible();
             var self = this;
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             if (self.unitSelect() == 0) {
@@ -387,7 +387,10 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         attendanceItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.DAILY ? self.rightItems()[i].trueCode : null,
                         presetItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.SCHEDULE ? self.rightItems()[i].trueCode : null,
                         operatorAtr: self.rightItems()[i].operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
-                        name: self.rightItems()[i].name
+                        name: self.rightItems()[i].name,
+                        roundingCd: self.roundingCd(),
+                        selectedProcessing: self.selectedProcessing(),
+                        uPCd: self.uPCd()
 
                     }
                     formAmount.push(unitAmount);
@@ -407,10 +410,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         roundingAtr: self.selectedProcessing(),
                         unitPrice: self.uPCd(),
                         actualDisplayAtr: self.checked() ? 1 : 0,
-                        lstTimeUnitFuncs: formAmount,
-                        roundingCd: self.roundingCd(),
-                        selectedProcessing: self.selectedProcessing(),
-                        uPCd: self.uPCd()
+                        lstTimeUnitFuncs: formAmount
                     }
                 }
 
@@ -444,8 +444,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 nts.uk.ui.windows.setShared("KML002_E_DATA", moneyData);
             }
             nts.uk.ui.windows.close();
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
+            nts.uk.ui.block.clear();
         }
 
         cancel() {
@@ -585,7 +584,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
         }
 
         addition() {
-            var t0 = performance.now();
             let self = this;
             if (self.currentCodeList().length + self.rightItems().length > 100) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
@@ -611,41 +609,37 @@ module nts.uk.at.view.kml002.e.viewmodel {
             } else {
                 self.enableReturn(false);
             }
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
         subtraction() {
-            var t0 = performance.now();
             let self = this;
             if (self.currentCodeList().length + self.rightItems().length > 100) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             } else {
+                var rightItemsSub = self.rightItems();
                 _.forEach(self.currentCodeList(), function(sonCute) {
                     var item = _.find(self.items(), function(o) { return o.code == sonCute; });
-                    let i = self.rightItems().length;
+                    let i = rightItemsSub.length;
                     self.rightItems.push({
                         code: i.toString(),
                         trueCode: item.code.slice(0, -1),
                         itemType: item.itemType,
                         operatorAtr: nts.uk.resource.getText("KML002_38"),
                         name: item.name,
-                        id: self.rightItems().length + 1
+                        id: i + 1
                     });
                     i = i + 1;
                 });
+                self.rightItems(rightItemsSub);
             }
             if (self.rightItems().length >= 1) {
                 self.enableReturn(true);
             } else {
                 self.enableReturn(false);
             }
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
         returnItems() {
-             var t0 = performance.now();
             let self = this;
             let array = [];
             self.rightItems(_.filter(self.rightItems(), function(item) {
@@ -661,8 +655,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
             } else {
                 self.enableReturn(false);
             }
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
         additionAmount() {
@@ -740,6 +732,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
         }
 
         additionTime() {
+            nts.uk.ui.block.invisible();
             let self = this;
             if (self.currentCodeListTime().length + self.rightItemsTime().length > 100) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
@@ -854,9 +847,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 };
 
                 self.rightItems.push(itemData);
-                self.roundingCd(self.currentData.timeUnit.roundingCd),
-                self.selectedProcessing(self.currentData.timeUnit.selectedProcessing),
-                self.uPCd(self.currentData.timeUnit.uPCd)
+                self.roundingCd(self.currentData.timeUnit.roundingAtr),
+                self.selectedProcessing(self.currentData.timeUnit.roundingTime),
+                self.uPCd(self.currentData.timeUnit.unitPrice)
             });
         }
         bindDataMoney(lstMoney: any) {
