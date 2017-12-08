@@ -19,7 +19,7 @@ public class DisplayFormatSelectionWebService {
 
 	@POST
 	@Path("getFormatList")
-	public List<DailyPerformanceFormatDto> getAll(List<String> codeList) {
-		return this.processor.getDailyPerformanceFormatList(codeList);
+	public List<DailyPerformanceFormatDto> getAll() {
+		return this.processor.getDailyPerformanceFormatList();
 	}
 }
