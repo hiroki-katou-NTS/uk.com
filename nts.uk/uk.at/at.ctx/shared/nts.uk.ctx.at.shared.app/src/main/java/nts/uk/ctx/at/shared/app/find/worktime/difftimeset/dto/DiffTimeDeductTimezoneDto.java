@@ -18,21 +18,24 @@ public class DiffTimeDeductTimezoneDto implements DiffTimeDeductTimezoneSetMemen
 	/** The is update start time. */
 	private boolean isUpdateStartTime;
 
+	/** The start. */
+	private Integer start;
+
+	/** The end. */
+	private Integer end;
+
 	@Override
 	public void setStart(TimeWithDayAttr start) {
-		// TODO Auto-generated method stub
-		
+		this.start = start.v();
 	}
 
 	@Override
 	public void setEnd(TimeWithDayAttr end) {
-		// TODO Auto-generated method stub
-		
+		this.end = end.v();
 	}
 
 	@Override
 	public void setIsUpdateStartTime(boolean isUpdateStartTime) {
-		// TODO Auto-generated method stub
-		
+		this.isUpdateStartTime = isUpdateStartTime;
 	}
 }

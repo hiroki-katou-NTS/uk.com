@@ -176,16 +176,16 @@ module nts.uk.at.view.kml002 {
             }
 
             addFixedVertical(): JQueryPromise<any> {
-                
                 var self = this;
                 var dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
                 service.addFixedVertical(ko.toJS(self.items())).done(function(any) {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                }).always(()=>{
+                    nts.uk.ui.block.clear();    
                 });
-                nts.uk.ui.block.clear();
-                return dfd.promise();
                 
+                return dfd.promise();
             }
         }
         export interface ITotalTime {

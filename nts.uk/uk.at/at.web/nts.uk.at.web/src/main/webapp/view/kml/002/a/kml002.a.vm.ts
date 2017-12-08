@@ -58,8 +58,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.settingItems = ko.observableArray([]);
 
             self.settingColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML002_6"), prop: 'code', width: 50 },
-                { headerText: nts.uk.resource.getText("KML002_7"), prop: 'name', width: 200, formatter: _.escape }
+                { headerText: nts.uk.resource.getText("KML002_6"), prop: 'verticalCalCd', width: 50 },
+                { headerText: nts.uk.resource.getText("KML002_7"), prop: 'verticalCalName', width: 200, formatter: _.escape }
             ]);
 
             self.singleSelectedCode = ko.observable("");
@@ -385,7 +385,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
 
                 if (self.settingItems().length > 0) {
-                    self.singleSelectedCode(self.settingItems()[0].code);
+                    self.singleSelectedCode(self.settingItems()[0].verticalCalCd);
                 }
                                 
                 dfd.resolve();
@@ -583,6 +583,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var dfd = $.Deferred();
             self.unitItems = _.clone(self.dailyItems);
             self.dailyItems = [];
+            dfd.resolve();
             return dfd.promise();
         }
         
@@ -658,10 +659,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             self.settingItems([]);
-            service.findAllVerticalCalSet().done(function(data) {
-                _.forEach(data, function(item) {
-                    self.settingItems.push(new SettingItemModel(item.verticalCalCd, item.verticalCalName));
-                });
+            service.findAllVerticalCalSet().done(function(data: Array<SettingItemModel>) {
+                self.settingItems(data);
+                //new SettingItemModel(item.verticalCalCd, item.verticalCalName)
 
                 dfd.resolve(data);
             }).fail(function(res) {
@@ -778,7 +778,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
 
             if (self.editMode()) {
-                var filter = _.filter(self.settingItems(), function(o) { return o.code == self.code(); });
+                var filter = _.filter(self.settingItems(), function(o) { return o.verticalCalCd == self.code(); });
 
                 if(filter.length > 0) {
                     $('#input-code').ntsError('set', { messageId: "Msg_3" });
@@ -868,7 +868,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 
                 let count = 0;
                 for (let i = 0; i <= self.settingItems().length; i++) {
-                    if (self.settingItems()[i].code == self.singleSelectedCode()) {
+                    if (self.settingItems()[i].verticalCalCd == self.singleSelectedCode()) {
                         count = i;
                         break;
                     }
@@ -883,17 +883,17 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
                         // delete the last item
                         if (count == ((self.settingItems().length))) {
-                            self.singleSelectedCode(self.settingItems()[count - 1].code);
+                            self.singleSelectedCode(self.settingItems()[count - 1].verticalCalCd);
                             return;
                         }
                         // delete the first item
                         if (count == 0) {
-                            self.singleSelectedCode(self.settingItems()[0].code);
+                            self.singleSelectedCode(self.settingItems()[0].verticalCalCd);
                             return;
                         }
                         // delete item at mediate list 
                         else if (count > 0 && count < self.settingItems().length) {
-                            self.singleSelectedCode(self.settingItems()[count].code);
+                            self.singleSelectedCode(self.settingItems()[count].verticalCalCd);
                             return;
                         }
                     });
@@ -1625,12 +1625,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
     
 
     export class SettingItemModel {
-        code: string;
-        name: string;
-
+        verticalCalCd: string;
+        verticalCalName: string;
         constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+            this.verticalCalCd = code;
+            this.verticalCalName = name;
         }
     }
 

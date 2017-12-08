@@ -3,6 +3,7 @@ module kdl010.a.viewmodel {
         workLocationList: KnockoutObservableArray<any>;
         columns: KnockoutObservableArray<any>;
         selectCode: KnockoutObservable<any>;
+        selectedCode: string;
         constructor() {
             var self = this;
             this.selectCode = ko.observable([]);
@@ -23,7 +24,8 @@ module kdl010.a.viewmodel {
                  workLocationList = _.orderBy(workLocationList, ["workLocationCD"], ["asc"]);
                 self.workLocationList(workLocationList);
                 self.workLocationList().unshift(new WorkLocation( "", nts.uk.resource.getText("KDL010_9")));
-                self.selectCode(nts.uk.ui.windows.getShared('KDL010SelectWorkLocation'));
+                self.selectedCode = nts.uk.ui.windows.getShared('KDL010SelectWorkLocation'); 
+                self.selectCode(self.selectedCode);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
@@ -33,6 +35,8 @@ module kdl010.a.viewmodel {
         }
         
         cancel_Dialog(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared("KDL010workLocation", self.selectedCode);
             nts.uk.ui.windows.close();
         }
 
@@ -42,10 +46,10 @@ module kdl010.a.viewmodel {
             if (selectWorkLocation !== undefined) {
                 nts.uk.ui.windows.setShared("KDL010workLocation", selectWorkLocation.workLocationCD);
             }
-             else {
+            else {
                 nts.uk.ui.windows.setShared("KDL010workLocation", null, true);
-                }
-            self.cancel_Dialog();
+            }
+            nts.uk.ui.windows.close();
         }
 
     }

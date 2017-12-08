@@ -138,6 +138,10 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
 		
+		if (CollectionUtil.isEmpty(resultList)) {
+			return null;
+		}
+		
 		return workplaceIds.stream().map(wkpId -> {
 			List<BsymtWorkplaceHist> subListEntity = resultList.stream()
 					.filter(entity -> entity.getBsymtWorkplaceHistPK().getWkpid().equals(wkpId))

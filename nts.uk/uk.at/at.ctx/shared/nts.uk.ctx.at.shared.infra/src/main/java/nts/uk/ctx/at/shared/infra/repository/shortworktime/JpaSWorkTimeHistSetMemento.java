@@ -50,4 +50,15 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 		this.entity.setEndYmd(historyItem.end());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistSetMemento#
+	 * setCompanyId(java.lang.String)
+	 */
+	@Override
+	public void setCompanyId(String cid) {
+		this.entity.setCId(cid);
+	}
+
 }

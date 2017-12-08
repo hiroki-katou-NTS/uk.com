@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 @Getter
 public class FlHalfDayWtz extends DomainObject{
 
+	/** The work time zone. */
+	//勤務時間帯
+	private FlWtzSetting workTimeZone;
+	
 	/** The rest timezone. */
 	//休憩時間帯
 	private FlowWorkRestTimezone restTimezone;
 	
-	/** The work time zone. */
-	//勤務時間帯
-	private FlWtzSetting workTimeZone;
-
 	/**
 	 * Instantiates a new flow half day work timezone.
 	 *

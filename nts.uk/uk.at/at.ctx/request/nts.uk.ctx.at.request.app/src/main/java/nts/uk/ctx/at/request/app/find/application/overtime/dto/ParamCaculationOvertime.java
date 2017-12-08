@@ -25,5 +25,7 @@ public class ParamCaculationOvertime {
 	 */
 	private String appDate;
 	
+	private String siftCD;
+	
 
 }

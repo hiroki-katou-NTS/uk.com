@@ -12,14 +12,14 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 /**
  * The Class FlowOTTimezone.
  */
-//流動残業時間帯
+// 流動残業時間帯
 @Getter
 public class FlOTTimezone extends DomainObject {
 
 	/** The worktime no. */
 	// 就業時間帯NO
 	private Integer worktimeNo;
-	
+
 	/** The restrict time. */
 	// 拘束時間として扱う
 	private boolean restrictTime;
@@ -43,7 +43,8 @@ public class FlOTTimezone extends DomainObject {
 	/**
 	 * Instantiates a new flow OT timezone.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public FlOTTimezone(FlOTTimezoneGetMemento memento) {
 		this.worktimeNo = memento.getWorktimeNo();
@@ -57,7 +58,8 @@ public class FlOTTimezone extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(FlOTTimezoneSetMemento memento) {
 		memento.setWorktimeNo(this.worktimeNo);

@@ -71,5 +71,7 @@ public interface ApplicationRepository {
 	 */
 	List<Application>  getBeforeApplication(String companyId, GeneralDate appDate, GeneralDateTime inputDate, int appType, int prePostAtr);
 	
+	void fullUpdateApplication(Application application);
+	
 	
 }

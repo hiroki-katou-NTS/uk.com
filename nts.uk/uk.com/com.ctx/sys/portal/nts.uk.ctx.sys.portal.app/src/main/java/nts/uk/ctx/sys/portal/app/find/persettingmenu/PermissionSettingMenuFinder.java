@@ -29,9 +29,9 @@ public class PermissionSettingMenuFinder {
 				
 				dto.setCode(standardMenu.getCode());
 				dto.setDisplayName(standardMenu.getDisplayName());
-				dto.setProgramId("");
-				dto.setScreenId("");
-				dto.setQueryString("");
+				dto.setProgramId(standardMenu.getProgramId()+"");
+				dto.setScreenId(standardMenu.getScreenId()+"");
+				dto.setQueryString(standardMenu.getUrl());
 				result.add(dto);
 			});
 		}

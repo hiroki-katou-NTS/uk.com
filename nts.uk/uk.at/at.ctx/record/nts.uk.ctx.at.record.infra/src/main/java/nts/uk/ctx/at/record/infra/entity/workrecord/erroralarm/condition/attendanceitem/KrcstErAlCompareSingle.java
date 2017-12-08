@@ -10,11 +10,15 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -40,9 +44,23 @@ public class KrcstErAlCompareSingle extends UkJpaEntity implements Serializable 
     @Column(name = "CONDITION_TYPE")
     public BigDecimal conditionType;
     
+	@OneToOne
+	@JoinColumns({
+		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
+	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+    
 	@Override
 	protected Object getKey() {
 		return this.krcstEralCompareSinglePK;
+	}
+
+	public KrcstErAlCompareSingle(KrcstErAlCompareSinglePK krcstEralCompareSinglePK, BigDecimal compareAtr,
+			BigDecimal conditionType) {
+		super();
+		this.krcstEralCompareSinglePK = krcstEralCompareSinglePK;
+		this.compareAtr = compareAtr;
+		this.conditionType = conditionType;
 	}
     
 }

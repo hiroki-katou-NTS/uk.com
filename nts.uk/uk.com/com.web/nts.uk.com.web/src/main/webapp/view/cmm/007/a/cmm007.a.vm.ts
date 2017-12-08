@@ -24,6 +24,8 @@ module nts.uk.com.view.cmm007.a {
                     active: SideBarTabIndex.FIRST,
                     activate: (event, info) => {
                        $('#com_person').focus();
+                        let _self = this;
+                        _self.removeErrorMonitor();
                     }
                 });
             }
@@ -35,7 +37,9 @@ module nts.uk.com.view.cmm007.a {
                 $("#sidebar").ntsSideBar("init", {
                     active: SideBarTabIndex.SECOND,
                     activate: (event, info) => {
-                       $('#c3_15').focus();
+                       $('#tempAbsenceNo7').focus();
+                        let _self = this;
+                        _self.removeErrorMonitor();
                     }
                 });
             }
@@ -48,6 +52,8 @@ module nts.uk.com.view.cmm007.a {
                     active: SideBarTabIndex.THIRD,
                     activate: (event, info) => {
                        $('#plan_year_hd_frame1').focus();
+                        let _self = this;
+                        _self.removeErrorMonitor();
                     }
                 });   
             }
@@ -60,6 +66,8 @@ module nts.uk.com.view.cmm007.a {
                     active: SideBarTabIndex.FOURTH,
                     activate: (event, info) => {
                       $('#overtime_work_name1').focus();
+                        let _self = this;
+                        _self.removeErrorMonitor();
                     }
                 }); 
             }
@@ -72,8 +80,17 @@ module nts.uk.com.view.cmm007.a {
                     active: SideBarTabIndex.FIFTH,
                     activate: (event, info) => {
                       $('#work_day_off_name1').focus();
+                        let _self = this;
+                        _self.removeErrorMonitor();
                     }
                 });
+            }
+            
+            /**
+            *   remove all alert error all tab
+            **/
+            public removeErrorMonitor(): void {
+                $('.nts-input').ntsError('clear');    
             }
        }    
     }
