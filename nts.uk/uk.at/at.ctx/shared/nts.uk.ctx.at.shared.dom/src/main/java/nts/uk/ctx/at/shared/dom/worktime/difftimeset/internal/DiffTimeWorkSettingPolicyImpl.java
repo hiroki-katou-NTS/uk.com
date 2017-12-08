@@ -7,9 +7,11 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -19,9 +21,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy {
 
-//	/** The predetemine policy service. */
-//	@Inject
-//	private PredeteminePolicyService predeteminePolicyService;
+	// /** The predetemine policy service. */
+	// @Inject
+	// private PredeteminePolicyService predeteminePolicyService;
 
 	/** The diff time half policy. */
 	@Inject
@@ -37,13 +39,17 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 */
 	@Override
 	public boolean canRegister(PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
-		//validate StampReflectTimezone 516
+		// validate StampReflectTimezone 516
 		this.validateStampReflectTimezone(pred, diffTimeWorkSetting);
 
-		//validate HDWorkTimeSheetSetting 516
+		// validate HDWorkTimeSheetSetting 516
 		this.validateHDWorkTimeSheetSetting(pred, diffTimeWorkSetting);
 
-		diffTimeWorkSetting.getHalfDayWorkTimezones().forEach(halfDay -> this.diffTimeHalfPolicy.validate(halfDay, pred));
+		diffTimeWorkSetting.getHalfDayWorkTimezones()
+				.forEach(halfDay -> this.diffTimeHalfPolicy.validate(halfDay, pred));
+
+		// validate EmTimezoneChangeExtent
+		this.validateEmTimezoneChangeExtent(pred, diffTimeWorkSetting.getChangeExtent());
 		return true;
 	}
 
@@ -64,7 +70,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		TimeWithDayAttr end = diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().getEndTime();
 
 		// validate
-//		this.predeteminePolicyService.validateOneDay(pred, start, end);
+		// this.predeteminePolicyService.validateOneDay(pred, start, end);
 	}
 
 	/**
@@ -77,10 +83,28 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * @param diffTimeWorkSetting
 	 *            the diff time work setting
 	 */
-	private void validateHDWorkTimeSheetSetting(PredetemineTimeSetting pred,
-			DiffTimeWorkSetting diffTimeWorkSetting) {
+	private void validateHDWorkTimeSheetSetting(PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
 		diffTimeWorkSetting.getDayoffWorkTimezone().getRestTimezone().getRestTimezones().stream().forEach(item -> {
-//			this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd());
+			// this.predeteminePolicyService.validateOneDay(pred,
+			// item.getStart(), item.getEnd());
 		});
+	}
+
+	/**
+	 * Validate em timezone change extent.
+	 *
+	 * @param pred the pred
+	 * @param emTimezoneChangeExtent the em timezone change extent
+	 */
+	private void validateEmTimezoneChangeExtent(PredetemineTimeSetting pred,
+			EmTimezoneChangeExtent emTimezoneChangeExtent) {
+		// TODO
+		// validate Msg_781
+		if (emTimezoneChangeExtent.getBehindChange().valueAsMinutes() >= pred.getRangeTimeDay().valueAsMinutes()) {
+			throw new BusinessException("Msg_781");
+		}
+		// validate Msg_783
+
+		// validate Msg_784
 	}
 }
