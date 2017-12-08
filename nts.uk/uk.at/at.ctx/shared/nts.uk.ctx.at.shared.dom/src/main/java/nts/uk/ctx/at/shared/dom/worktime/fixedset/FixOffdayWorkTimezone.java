@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,8 +32,7 @@ public class FixOffdayWorkTimezone extends DomainObject {
 	/**
 	 * Instantiates a new fix offday work timezone.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public FixOffdayWorkTimezone(FixOffdayWorkTimezoneGetMemento memento) {
 		this.restTimezone = memento.getRestTimezone();
@@ -45,8 +42,7 @@ public class FixOffdayWorkTimezone extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(FixOffdayWorkTimezoneSetMemento memento) {
 		memento.setRestTimezone(this.restTimezone);
@@ -62,33 +58,21 @@ public class FixOffdayWorkTimezone extends DomainObject {
 	public void validate() {
 		super.validate();
 
-		List<String> lstWorkTime = this.lstWorkTimezone.stream().map(item -> item.getTimezone().toString())
-				.collect(Collectors.toList());
+		// #Msg_756
+		this.checkRestTimezone();
 
-		this.restTimezone.getLstTimezone().forEach((timezone) -> {
-			// has in 休出時間帯.時間帯
-			boolean isHasWorkTime = lstWorkTime.contains(timezone.toString());
-
-			if (!isHasWorkTime) {
-				throw new BusinessException("Msg_756");
-			}
-		});
-
-		// validate overlap
-		this.validOverlap();
+		// #Msg_515 - domain TimezoneOfFixedRestTimeSet - validate overlap
+		this.validOverlap();		
 	}
 
 	/**
 	 * Valid overlap.
 	 */
 	private void validOverlap() {
-		// sort asc by start time
-		Collections.sort(this.lstWorkTimezone, new Comparator<HDWorkTimeSheetSetting>() {
-			@Override
-			public int compare(HDWorkTimeSheetSetting obj1, HDWorkTimeSheetSetting obj2) {
-				return obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart());
-			}
-		});
+		// sort asc by start time		
+		this.lstWorkTimezone = this.lstWorkTimezone.stream()
+				.sorted((obj1, obj2) -> obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart()))
+				.collect(Collectors.toList());
 
 		Iterator<HDWorkTimeSheetSetting> iterator = this.lstWorkTimezone.iterator();
 		while (iterator.hasNext()) {
@@ -102,6 +86,24 @@ public class FixOffdayWorkTimezone extends DomainObject {
 				throw new BusinessException("Msg_515");
 			}
 		}
+	}
+	
+	/**
+	 * Check rest timezone.
+	 */
+	private void checkRestTimezone() {
+		List<String> lstWorkTime = this.lstWorkTimezone.stream()
+				.map(item -> item.getTimezone().toString())
+				.collect(Collectors.toList());
+
+		this.restTimezone.getLstTimezone().forEach((timezone) -> {
+			// has in 休出時間帯.時間帯
+			boolean isHasWorkTime = lstWorkTime.contains(timezone.toString());
+
+			if (!isHasWorkTime) {
+				throw new BusinessException("Msg_756");
+			}
+		});
 	}
 
 }

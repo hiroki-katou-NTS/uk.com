@@ -142,11 +142,12 @@ module a2 {
          */
         public updateViewByFlowMode(): void {
             var self = this;
-            _.defer(() => {
-                $('#nts-fix-table-a2-oneday').ntsFixTableCustom(self.fixTableOptionOneDay);
-                $('#nts-fix-table-a2-morning').ntsFixTableCustom(self.fixTableOptionMorning);
-                $('#nts-fix-table-a2-afternoon').ntsFixTableCustom(self.fixTableOptionAfternoon);
-            });
+            // TODO: need to check
+//            _.defer(() => {
+//                $('#nts-fix-table-a2-oneday').ntsFixTableCustom(self.fixTableOptionOneDay);
+//                $('#nts-fix-table-a2-morning').ntsFixTableCustom(self.fixTableOptionMorning);
+//                $('#nts-fix-table-a2-afternoon').ntsFixTableCustom(self.fixTableOptionAfternoon);
+//            });
         }
 
         /**

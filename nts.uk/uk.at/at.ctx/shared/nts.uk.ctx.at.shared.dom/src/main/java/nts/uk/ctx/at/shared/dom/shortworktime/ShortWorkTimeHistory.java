@@ -22,6 +22,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ShortWorkTimeHistory extends AggregateRoot
 		implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 
+	/** The company id. */
+	// 会社ID
+	private String companyId;
+	
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
@@ -36,6 +40,7 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	 * @param memento the memento
 	 */
 	public ShortWorkTimeHistory(SWorkTimeHistGetMemento memento) {
+		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.historyItem = memento.getHistoryItem();
 	}
@@ -46,6 +51,7 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	 * @param memento the memento
 	 */
 	public void saveToMemento(SWorkTimeHistSetMemento memento) {
+		memento.setCompanyId(this.companyId);
 		memento.setEmployeeId(this.employeeId);
 		memento.setHistoryItem(this.historyItem);
 	}

@@ -7,13 +7,14 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class DiffTimeRestTimezone.
  */
 // 時差勤務の休憩時間帯
 @Getter
-public class DiffTimeRestTimezone {
+public class DiffTimeRestTimezone extends DomainObject {
 	
 	/** The rest timezone. */
 	// 休憩時間帯

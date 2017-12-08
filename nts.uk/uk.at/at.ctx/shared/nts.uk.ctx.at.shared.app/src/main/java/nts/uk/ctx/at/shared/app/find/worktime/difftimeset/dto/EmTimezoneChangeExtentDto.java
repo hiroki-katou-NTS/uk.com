@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.InstantRoundingDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtentSetMemento;
@@ -16,30 +17,26 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtentSetMe
 public class EmTimezoneChangeExtentDto implements EmTimezoneChangeExtentSetMemento {
 
 	/** The ahead change. */
-	private AttendanceTime aheadChange;
+	private Integer aheadChange;
 
 	/** The unit. */
-	private InstantRounding unit;
+	private InstantRoundingDto unit;
 
 	/** The behind change. */
-	private AttendanceTime behindChange;
+	private Integer behindChange;
 
 	@Override
 	public void setAheadChange(AttendanceTime aheadChange) {
-		// TODO Auto-generated method stub
-		
+		this.aheadChange = aheadChange.v();
 	}
 
 	@Override
 	public void setUnit(InstantRounding unit) {
-		// TODO Auto-generated method stub
-		
+		unit.saveToMememto(this.unit);
 	}
 
 	@Override
 	public void setBehindChange(AttendanceTime behindChange) {
-		// TODO Auto-generated method stub
-		
+		this.behindChange = behindChange.v();
 	}
-
 }
