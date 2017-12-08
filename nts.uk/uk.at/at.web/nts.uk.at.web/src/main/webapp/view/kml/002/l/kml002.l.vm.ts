@@ -97,13 +97,18 @@ module kml002.l.viewmodel {
                 }
                 service.addTotalTimes(dataTranfer).done(function(res) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
-                })
-                nts.uk.ui.block.clear();
+                }).always(()=>{
+                    nts.uk.ui.block.clear();    
+                });
                 return dfd.promise();
             }
-
+            
+            dfd.resolve();
+            nts.uk.ui.block.clear();
+            return dfd.promise();
         }
     }
 
