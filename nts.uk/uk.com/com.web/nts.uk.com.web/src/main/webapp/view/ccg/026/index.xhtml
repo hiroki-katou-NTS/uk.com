@@ -22,39 +22,37 @@
 				<div id="content" class="cf">
 					<h2>CCG026 Testing page</h2>
 					<div data-bind="with: componentViewmodel">
-					   <div data-bind="with: setting">
-					   <h3>roleId: <span data-bind="text: ko.toJSON(roleId)"/>, classification: <span data-bind="text: ko.toJSON(classification)"/>, //workplace, maxRow: <span data-bind="text: ko.toJSON(maxRow)"/></h3><br/>
-					    
-					   <table>
-						   <tr>
-							   <td><b>Role Id</b></td>
-							   <td>
-								   <input class="nts-input" id="inpRoleId" 
-			                                        data-bind="ntsTextEditor:{
-			                                            value: roleId,
-			                                            required: true,
-			                                            enable: true}" />
-		                       </td>
-						   </tr>
-						   <tr>
-                               <td><b>Classification</b></td>
-                               <td>
-                                   <input class="nts-input" id="inpClassification" 
-                                                    data-bind="ntsTextEditor:{
-                                                        value: classification,
-                                                        required: true,
-                                                        enable: true}" />
-                               </td>
-                           </tr>
-					   </table>
+					   <div data-bind="with: parameterInput">
+						   <h3>roleId: <span data-bind="text: ko.toJSON(roleId)"/>, classification: <span data-bind="text: ko.toJSON(classification)"/>, //workplace, maxRow: <span data-bind="text: ko.toJSON(maxRow)"/></h3><br/>
+						    
+						   <table>
+							   <tr>
+								   <td><b>Role Id</b></td>
+								   <td>
+									   <input class="nts-input" id="inpRoleId" 
+				                                        data-bind="ntsTextEditor:{
+				                                            value: roleId,
+				                                            required: true,
+				                                            enable: true}" />
+			                       </td>
+							   </tr>
+							   <tr>
+	                               <td><b>Max Row</b></td>
+	                               <td>
+	                                   <input class="nts-input" id="inpClassification" 
+	                                                    data-bind="ntsTextEditor:{
+	                                                        value: maxRow,
+	                                                        required: true,
+	                                                        enable: true}" />
+	                               </td>
+	                           </tr>
+						   </table>
                        </div>
+   						<ui:include src="component/index.xhtml" />
+					
+						<div>
+						<b>Selected count:</b> <span data-bind="text: ko.toJSON(listFunctionPermissions.filter(item => item.availability).length)"></span></div>
 
-						<div id="pannel-top" data-bind="ntsPanel:{width: '400px', height: '200px', direction: '', showIcon: true, visible: true}">
-							<ui:include src="component/index.xhtml" />
-						</div>
-						<!-- 
-						<div><b>Selected count:</b> <span data-bind="text: ko.toJSON(currentCode)"></span></div>
-						 -->
 					</div>
 <!-- 					
 					<article class="cf">
