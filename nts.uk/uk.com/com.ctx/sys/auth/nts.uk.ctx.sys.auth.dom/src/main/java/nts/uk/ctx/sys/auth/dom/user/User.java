@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 @Setter
 @AllArgsConstructor
 public class User extends AggregateRoot {
+	/** ユーザ */
 	//ID
 	/** The user id. */
 	private String userID;
@@ -53,7 +54,7 @@ public class User extends AggregateRoot {
 	/** The associated employee id. */
 	private String associatedPersonID;
 	
-	public static User createFromJavatype(String userID,Boolean defaultUser,String password, String loginID ,String contractCode,GeneralDate expirationDate, Boolean specialUser ,Boolean multiCompanyConcurrent ,String mailAddress ,String userName,String associatedPersonID  ){
+	public static User createFromJavatype(String userID,Boolean defaultUser,String password, String loginID ,String contractCode,GeneralDate expirationDate, boolean specialUser ,boolean multiCompanyConcurrent ,String mailAddress ,String userName,String associatedPersonID  ){
 		
 		return new User(userID,
 				defaultUser,

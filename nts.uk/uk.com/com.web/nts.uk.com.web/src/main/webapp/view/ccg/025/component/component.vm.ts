@@ -4,6 +4,8 @@ module nts.uk.com.view.ccg025.a.component {
     export interface Option {
         roleType?: number;
         multiple?: boolean;
+        currentCode?: any;
+        showEmptyItem?: boolean;
     }
 
     export module viewmodel {
@@ -12,7 +14,8 @@ module nts.uk.com.view.ccg025.a.component {
             currentCode: any;
             private columns: KnockoutObservableArray<any>;
             private defaultOption: Option = {
-                multiple: true
+                multiple: true,
+                showEmptyItem: false
             }
             private setting: Option;
             private searchMode: string;
@@ -22,17 +25,15 @@ module nts.uk.com.view.ccg025.a.component {
                 self.setting = $.extend({}, self.defaultOption, option);
                 self.searchMode = (self.setting.multiple) ? "highlight" : "filter";
                 self.listRole = ko.observableArray([]);
-                if (self.setting.multiple)
-                    self.currentCode = ko.observableArray([]);
-                else
-                    self.currentCode = ko.observable("");
                 if (self.setting.multiple) {
+                    self.currentCode = ko.observableArray([]);
                     self.columns = ko.observableArray([
                         { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden: true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
                         { headerText: getText("CCG025_4"), prop: 'name', width: 180 }
                     ]);
                 } else {
+                    self.currentCode = ko.observable("");
                     self.columns = ko.observableArray([
                         { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden: true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
@@ -46,7 +47,7 @@ module nts.uk.com.view.ccg025.a.component {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 return self.getListRoleByRoleType(self.setting.roleType);
-            }//end start page
+            }
 
             /** Get list Role by Type */
             private getListRoleByRoleType(roleType: number): JQueryPromise<Array<model.Role>> {
@@ -55,19 +56,35 @@ module nts.uk.com.view.ccg025.a.component {
                 service.getListRoleByRoleType(roleType).done((data: Array<model.Role>) => {
                     data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
                     self.listRole(data);
-                    self.selectItem();
+                    self.addEmptyItem();
+
+                    // Select item base on param code
+                    if (nts.uk.util.isNullOrUndefined(self.setting.currentCode)) {
+                        self.selectFirstItem();
+                    } else {
+                        self.currentCode(self.setting.currentCode);
+                    }
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError(res.message).then(() => {
+                        nts.uk.ui.block.clear();
+                    });
                 });
                 return dfd.promise();
             }
 
-            /** Select first item */
-            private selectItem(): void {
+            private addEmptyItem(): void {
                 var self = this;
-                if (self.listRole().length > 0 && !self.setting.multiple) {
+                if (self.setting.showEmptyItem && !self.setting.multiple) {
+                    self.listRole.unshift(new model.Role("", "", 0, 0, "選択なし", "", 0, ""));
+                }
+            }
+
+            /** Select first item */
+            private selectFirstItem(): void {
+                var self = this;
+                if (self.listRole().length > 0) {
                     self.currentCode(self.listRole()[0].roleId);
                 }
             }
@@ -78,9 +95,18 @@ module nts.uk.com.view.ccg025.a.component {
     //module model
     export module model {
 
-        /**
-         * class Role
-         */
+        export interface IRole {
+            roleId: string;
+            roleCode: string;
+            roleType: number;
+            employeeReferenceRange: number;
+            name: string;
+            contractCode: string;
+            assignAtr: number;
+            companyId: string;
+        }
+        
+        /** class Role */
         export class Role {
             roleId: string;
             roleCode: string;
@@ -101,8 +127,6 @@ module nts.uk.com.view.ccg025.a.component {
                 this.contractCode = contractCode;
                 this.assignAtr = assignAtr;
                 this.companyId = companyId;
-
-
             }
         }//end class Role
 

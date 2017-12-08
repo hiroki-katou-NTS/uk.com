@@ -8,6 +8,9 @@
 
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:EnumScript>
+				nts.uk.ctx.sys.auth.dom.role.RoleType
+			</com:EnumScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/sample/catalog/catalog.css" />
 			<com:scriptfile path="/view/sample/catalog/start.js" />
@@ -22,13 +25,35 @@
 					<div id="content" class="cf">
 						<h1>KDW025 Testing page</h1>
 						<h2>Multi selection</h2>
-						<h3>roleType: 1, multiple: true</h3>
-						<button data-bind="click: openCDL025">Detail Screen</button>
+						<h3>Multiple: true</h3>
+						<div id="combo-box-multi"
+							data-bind="ntsComboBox: {
+								options: listRoleType,
+								optionsValue: 'value',
+								value: selectRoleTypeMulti,
+								optionsText: 'value',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div>
+						<div><button data-bind="click: openCDL025">Open Dialog</button></div>
 						<div><span data-bind="text : currentCodes"></span></div>
 						<br/>
 						<h2>Single selection</h2>
-						<h3>roleType: 1, multiple: false</h3>
-						<button data-bind="click: openCDL025Single">Detail Screen</button>
+						<h3>Multiple: false</h3>
+						<div id="combo-box-single"
+							data-bind="ntsComboBox: {
+								options: listRoleType,
+								optionsValue: 'value',
+								value: selectRoleTypeSingle,
+								optionsText: 'value',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div>						
+						<div><button data-bind="click: openCDL025Single">Open Dialog</button></div>
 						<div><span data-bind="text : ko.toJSON(currentCode)"></span></div>
 						<article class="cf">
 							<div class="tabs">
@@ -46,12 +71,14 @@ openCDL025() {
     var self = this;
     let param = {
         roleType: 1,
-        multiple: true
+        multiple: true,
+        currentCode: self.currentCodes()
     };
     nts.uk.ui.windows.setShared("paramCdl025", param);
     nts.uk.ui.windows.sub.modal("/view/cdl/025/index.xhtml").onClosed(() => {
         let data = nts.uk.ui.windows.getShared("dataCdl025");
-        self.currentCodes(data);
+        if (!nts.uk.util.isNullOrUndefined(data))
+            self.currentCodes(data);
     });
 }
 
@@ -60,12 +87,14 @@ openCDL025Single() {
     var self = this;
     let param = {
         roleType: 1,
-        multiple: false
+        multiple: false,
+        currentCode: self.currentCode()
     };
     nts.uk.ui.windows.setShared("paramCdl025", param);
     nts.uk.ui.windows.sub.modal("/view/cdl/025/index.xhtml").onClosed(() => {
         let data = nts.uk.ui.windows.getShared("dataCdl025");
-        self.currentCode(data);
+        if (!nts.uk.util.isNullOrUndefined(data))
+            self.currentCode(data);
     });
 }]]></pre>
 								</div>
@@ -85,9 +114,10 @@ openCDL025Single() {
 											<tr>
 												<td>nts.uk.ui.windows.setShared("paramCdl025", param)</td>
 												<td><b>Agruments:</b><br/>
-												<i>param:</i> {
-												roleType: number,
-												multiple: boolean
+												<i>param:</i> {<br/>
+												<i>roleType:</i> number,<br/>
+												<i>multiple:</i> boolean,<br/>
+												<i>currentCode:</i> any<br/>
 												}
 												</td>
 											</tr>

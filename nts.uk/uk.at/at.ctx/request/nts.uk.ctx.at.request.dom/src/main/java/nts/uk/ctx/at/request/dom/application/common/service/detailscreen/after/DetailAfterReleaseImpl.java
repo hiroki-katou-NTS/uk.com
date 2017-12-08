@@ -86,7 +86,7 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 		
 		// 「反映情報」．実績反映状態を「未反映」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「未反映」)
 		application.setReflectPerState(ReflectPlanPerState.NOTREFLECTED);
-		appRepo.updateApplication(application);
+		appRepo.fullUpdateApplication(application);
 		// ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする(update domain 「申請」 và 「承認情報」「反映情報」 tương ứng)
 		// 情報メッセージ（Msg_221）(hiển thị message thông báo （Msg_221）)
 	}
