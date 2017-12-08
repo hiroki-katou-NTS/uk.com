@@ -151,7 +151,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.getOvertimeByUI({
                 url: urlParam,
                 appDate: moment(new Date()).format(self.DATEFORMART),
-                uiType: 1
+                uiType: 0
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();
