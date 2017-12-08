@@ -65,4 +65,35 @@ public class BreakDownTimeDay extends DomainObject{
 			throw new BusinessException("Msg_778"); 
 		}
 	}
+
+
+	/**
+	 * Instantiates a new break down time day.
+	 *
+	 * @param oneDay the one day
+	 * @param morning the morning
+	 * @param afternoon the afternoon
+	 */
+	public BreakDownTimeDay(int oneDay, int morning, int afternoon) {
+		super();
+		this.oneDay = new AttendanceTime(oneDay);
+		this.morning = new AttendanceTime(morning);
+		this.afternoon = new AttendanceTime(afternoon);
+	}
+
+
+	/**
+	 * Instantiates a new break down time day.
+	 *
+	 * @param oneDay the one day
+	 * @param morning the morning
+	 * @param afternoon the afternoon
+	 */
+	public BreakDownTimeDay(AttendanceTime oneDay, AttendanceTime morning, AttendanceTime afternoon) {
+		super();
+		this.oneDay = oneDay;
+		this.morning = morning;
+		this.afternoon = afternoon;
+	}
+	
 }

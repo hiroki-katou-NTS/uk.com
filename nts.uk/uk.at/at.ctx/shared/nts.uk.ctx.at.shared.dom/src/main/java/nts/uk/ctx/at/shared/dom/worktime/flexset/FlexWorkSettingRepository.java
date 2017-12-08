@@ -18,5 +18,13 @@ public interface FlexWorkSettingRepository {
 	 * @return the list
 	 */
 	public List<FlexWorkSetting> findAll(String companyId);
+	
+	
+	/**
+	 * Save flex work setting.
+	 *
+	 * @param domain the domain
+	 */
+	public void saveFlexWorkSetting(FlexWorkSetting domain);
 
 }

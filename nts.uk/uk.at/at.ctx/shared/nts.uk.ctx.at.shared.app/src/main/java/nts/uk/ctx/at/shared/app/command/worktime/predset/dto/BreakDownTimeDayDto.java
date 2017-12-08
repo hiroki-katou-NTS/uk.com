@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.find.worktime.predset.dto;
+package nts.uk.ctx.at.shared.app.command.worktime.predset.dto;
 
 import lombok.Getter;
 import lombok.Setter;

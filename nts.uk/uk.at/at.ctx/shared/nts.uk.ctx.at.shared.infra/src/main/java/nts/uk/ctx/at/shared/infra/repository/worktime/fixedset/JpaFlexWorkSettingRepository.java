@@ -42,6 +42,18 @@ public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexW
 		return entitys.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository#
+	 * saveFlexWorkSetting(nts.uk.ctx.at.shared.dom.worktime.flexset.
+	 * FlexWorkSetting)
+	 */
+	@Override
+	public void saveFlexWorkSetting(FlexWorkSetting domain) {
+		// TODO Auto-generated method stub
+		
+	}
 	/**
 	 * To domain.
 	 *

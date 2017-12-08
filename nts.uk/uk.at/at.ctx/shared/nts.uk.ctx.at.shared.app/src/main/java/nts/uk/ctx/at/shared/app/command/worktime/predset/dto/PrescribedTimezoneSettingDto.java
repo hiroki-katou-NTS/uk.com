@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.find.worktime.predset.dto;
+package nts.uk.ctx.at.shared.app.command.worktime.predset.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +11,22 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class PrescribedTimezoneSettingDto.
  */
-
 @Getter
+
+/**
+ * Sets the lst timezone.
+ *
+ * @param lstTimezone the new lst timezone
+ */
 @Setter
-public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingSetMemento{
+public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingGetMemento{
 	
 	/** The morning end time. */
 	public Integer morningEndTime;
@@ -32,47 +37,41 @@ public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingSe
 	/** The lst timezone. */
 	public List<TimezoneDto> lstTimezone;
 
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
-	 * PrescribedTimezoneSettingSetMemento#setMorningEndTime(nts.uk.shr.com.time
-	 * .TimeWithDayAttr)
+	 * PrescribedTimezoneSettingGetMemento#getMorningEndTime()
 	 */
 	@Override
-	public void setMorningEndTime(TimeWithDayAttr morningEndTime) {
-		this.morningEndTime = morningEndTime.valueAsMinutes();
+	public TimeWithDayAttr getMorningEndTime() {
+		return new TimeWithDayAttr(this.morningEndTime);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
-	 * PrescribedTimezoneSettingSetMemento#setAfternoonStartTime(nts.uk.shr.com.
-	 * time.TimeWithDayAttr)
+	 * PrescribedTimezoneSettingGetMemento#getAfternoonStartTime()
 	 */
 	@Override
-	public void setAfternoonStartTime(TimeWithDayAttr afternoonStartTime) {
-		this.afternoonStartTime = afternoonStartTime.valueAsMinutes();
+	public TimeWithDayAttr getAfternoonStartTime() {
+		return new TimeWithDayAttr(this.afternoonStartTime);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
-	 * PrescribedTimezoneSettingSetMemento#setLstTimezone(java.util.List)
+	 * PrescribedTimezoneSettingGetMemento#getLstTimezone()
 	 */
 	@Override
-	public void setLstTimezone(List<Timezone> lstTimezone) {
-		if (CollectionUtil.isEmpty(lstTimezone)) {
-			this.lstTimezone = new ArrayList<>();
-		} else {
-			this.lstTimezone = lstTimezone.stream().map(domain->{
-				TimezoneDto dto = new TimezoneDto();
-				domain.saveToMemento(dto);
-				return dto;
-			}).collect(Collectors.toList());
+	public List<Timezone> getLstTimezone() {
+		if(CollectionUtil.isEmpty(this.lstTimezone)){
+			return new ArrayList<>();
 		}
+		return this.lstTimezone.stream().map(dto-> new Timezone(dto)).collect(Collectors.toList());
 	}
 
 }

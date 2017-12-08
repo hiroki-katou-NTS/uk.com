@@ -2,23 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.find.worktime.predset.dto;
+package nts.uk.ctx.at.shared.app.command.worktime.worktimeset.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * The Class BreakDownTimeDayDto.
- */
 @Getter
 @Setter
-public class BreakDownTimeDayDto {
-	/** The one day. */
-	public Integer oneDay;
+public class WorkTimeDivisionDto {
+	
+	/** The work time daily atr. */
+	public Integer workTimeDailyAtr;
 
-	/** The morning. */
-	public Integer morning;
-
-	/** The afternoon. */
-	public Integer afternoon;
+	/** The work time method set. */
+	public Integer workTimeMethodSet;
 }
