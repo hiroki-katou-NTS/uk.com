@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -32,8 +31,12 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 */
 	@Override
 	public boolean canRegister(PredetemineTimeSet pred, DiffTimeWorkSetting diffTimeWorkSetting) {
+		//validate StampReflectTimezone 516
 		this.validateStampReflectTimezone(pred, diffTimeWorkSetting);
 
+		//validate HDWorkTimeSheetSetting 516
+		this.validateHDWorkTimeSheetSetting(pred, diffTimeWorkSetting);
+		
 		return true;
 	}
 
@@ -67,8 +70,10 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * @param diffTimeWorkSetting
 	 *            the diff time work setting
 	 */
-	private void validateDiffTimezoneSet(String companyId, WorkTimeCode worktimeCode,
+	private void validateHDWorkTimeSheetSetting(PredetemineTimeSet pred,
 			DiffTimeWorkSetting diffTimeWorkSetting) {
-		// TODO
+		diffTimeWorkSetting.getDayoffWorkTimezone().getRestTimezone().getRestTimezones().stream().forEach(item -> {
+			this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd());
+		});
 	}
 }
