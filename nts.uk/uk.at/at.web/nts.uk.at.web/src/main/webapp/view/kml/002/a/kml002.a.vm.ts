@@ -382,20 +382,19 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             blockUI.invisible();
             
-            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.getDataMount(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
+            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
 
                 if (self.settingItems().length > 0) {
                     self.singleSelectedCode(self.settingItems()[0].code);
                 }
-                
-                blockUI.clear();
-                
+                                
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);
+            }).always(() => {
+                blockUI.clear();    
             });
 
-            dfd.resolve();
             return dfd.promise();
         }
         /**
@@ -549,7 +548,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
 
             service.getByAtr(param).done((data) => {
-                var temp = [];
+                var temp = data;
                 let a = {
                     budgetAtr: 1,
                     externalBudgetCode: (data.length + 1).toString(),
@@ -564,48 +563,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 }
 
                 temp.push(a);
+                self.amountItems = _.clone(temp);
+                
                 temp.push(b);
-
-                _.forEach(data, function(item) {
-                    temp.push(item);
-                });
-
-                self.peopleItems = temp;
-
-                dfd.resolve(data);
-            }).fail(function(res) {
-                dfd.reject(res);
-            });
-
-            return dfd.promise();
-        }
-        
-        /**
-         * Get E screen data.
-         */
-        getDataMount(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-
-            let param = {
-                budgetAtr: 1,
-                // received from mother screen 0: day or 1: time
-                unitAtr: 0
-            }
-            service.getByAtr(param).done((data) => {
-                var temp = [];
-                let a = {
-                    budgetAtr: 1,
-                    externalBudgetCode: (data.length + 1).toString(),
-                    externalBudgetName: nts.uk.resource.getText("KML002_109"),
-                    unitAtr: 0
-                }
-                temp.push(a);
-                _.forEach(data, function(item) {
-                    temp.push(item);
-                });
-
-                self.amountItems = temp;
+                self.peopleItems = _.clone(temp);
+                
 
                 dfd.resolve(data);
             }).fail(function(res) {
@@ -619,32 +581,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             var self = this;
             var dfd = $.Deferred();
+            self.unitItems = _.clone(self.dailyItems);
             self.dailyItems = [];
-
-            var dailyAttendanceAtrs = [];
-            dailyAttendanceAtrs.push(5);
-            var param = {
-                dailyAttendanceItemAtrs: dailyAttendanceAtrs,
-                scheduleAtr: 0,
-                budgetAtr: 0,
-                unitAtr: 0
-            };
-            service.getDailyItems(param).done(function(data) {
-                let temp = [];
-                let items = _.sortBy(data, ['companyId', 'dispOrder']);
-
-                _.forEach(items, function(item: service.BaseItemsDto) {
-                    var name = item.itemName + nts.uk.resource.getText("KML002_43");
-                    temp.push({ id: item.id, name: name, itemType: item.itemType });
-                });
-
-                self.unitItems = temp;
-
-                dfd.resolve(data);
-            }).fail(function(res) {
-                dfd.reject(res);
-            });
-
             return dfd.promise();
         }
         
@@ -688,32 +626,20 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var dfd = $.Deferred();
 
             let param = {
-                budgetAtr: 1,
-                // received from mother screen 0: day or 1: time
-                unitAtr: 1
+                budgetAtr: 3,
+                unitAtr: 0
             }
 
             service.getByAtr(param).done((data) => {
-                var temp = [];
+                var temp = data;
                 let a = {
                     budgetAtr: 1,
                     externalBudgetCode: (data.length + 1).toString(),
                     externalBudgetName: nts.uk.resource.getText("KML002_109"),
                     unitAtr: 0
                 }
-                let b = {
-                    budgetAtr: 1,
-                    externalBudgetCode: (data.length + 2).toString(),
-                    externalBudgetName: nts.uk.resource.getText("KML002_110"),
-                    unitAtr: 0
-                }
 
                 temp.push(a);
-                temp.push(b);
-
-                _.forEach(data, function(item) {
-                    temp.push(item);
-                });
 
                 self.numericalItems = temp;
 
@@ -1569,15 +1495,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     for (var i = 0; i < data.length; i++) {
                                         var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                         var name = data[i].name != null ? data[i].name : "";
-                                        var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
-                                        var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                        var item = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
     
                                         if (name != "") {
                                             formulaResult += operator + " " + name + " ";
-                                        } else if (item1 != null) {
-                                            formulaResult += operator + " " + item1.externalBudgetName + " ";
-                                        } else if (item2 != null) {
-                                            formulaResult += operator + " " + item2.externalBudgetName + " ";
+                                        } else if (item != null) {
+                                            formulaResult += operator + " " + item.externalBudgetName + " ";
                                         }
                                     }
                                 }
@@ -1673,15 +1596,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                     for (var i = 0; i < data.length; i++) {
                                         var operator = data[i].operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38");
                                         var name = data[i].name != null ? data[i].name : "";
-                                        var item1 = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
-                                        var item2 = _.find(self.peopleItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
+                                        var item = _.find(self.numericalItems, function(o) { return o.externalBudgetCode == data[i].externalBudgetCd; });
     
                                         if (name != "") {
                                             formulaResult += operator + " " + name + " ";
-                                        } else if (item1 != null) {
-                                            formulaResult += operator + " " + item1.externalBudgetName + " ";
-                                        } else if (item2 != null) {
-                                            formulaResult += operator + " " + item2.externalBudgetName + " ";
+                                        } else if (item != null) {
+                                            formulaResult += operator + " " + item.externalBudgetName + " ";
                                         }
                                     }
                                 }

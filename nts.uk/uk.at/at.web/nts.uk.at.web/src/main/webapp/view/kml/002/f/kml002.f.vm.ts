@@ -273,6 +273,7 @@ module nts.uk.at.view.kml002.f.viewmodel {
          * Submit data to A screen.
          */
         submit() {
+            nts.uk.ui.block.invisible();
             var self = this;
             var formNumer = [];
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
@@ -289,7 +290,9 @@ module nts.uk.at.view.kml002.f.viewmodel {
              });
 
             nts.uk.ui.windows.setShared("KML002_F_DATA", formNumer);
+            nts.uk.ui.block.clear();
             nts.uk.ui.windows.close();
+            
         }
 
         /**
