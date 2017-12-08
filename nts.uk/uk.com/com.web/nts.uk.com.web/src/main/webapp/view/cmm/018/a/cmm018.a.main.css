@@ -65,7 +65,7 @@ table#fixed-tablePsB tbody td{
     white-space: nowrap;
     overflow: hidden;
 }
-#fixed-table {
+/* #fixed-table {
 	height: 550px !important;
 }
 
@@ -75,7 +75,7 @@ table#fixed-tablePsB tbody td{
 
 #fixed-tablePs {
 	height: 550px !important;
-}
+} */
 
 .nts-fixed-table .nts-fixed-body-container {
 	overflow-x: hidden !important; 
