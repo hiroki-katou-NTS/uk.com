@@ -1,3 +1,4 @@
+
 package nts.uk.ctx.sys.auth.infra.entity.user;
 
 import java.io.Serializable;
@@ -63,12 +64,12 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     /** The special user. */
     /** 特別利用者 */
     @Column(name = "SPECIAL_USER")
-    public boolean specialUser;
+    public int specialUser;
     
     /** The multi com. */
     /**複数会社を兼務する */
     @Column(name = "MULTI_COM")
-    public boolean multiCompanyConcurrent;
+    public int multiCompanyConcurrent;
     
     /** The mail add. */
     /** メールアドレス*/
