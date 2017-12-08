@@ -94,7 +94,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	@Column(name = "USE_ATR")
 	public BigDecimal useAtr;
 
-	@Column(name = "ERAR_ATR")
+	@Column(name = "ERAL_ATR")
 	public BigDecimal typeAtr;
 
 	@Column(name = "BOLD_ATR")
