@@ -8,6 +8,7 @@ module cps002.a.vm {
     import subModal = nts.uk.ui.windows.sub.modal;
     import jump = nts.uk.request.jump;
     import liveView = nts.uk.request.liveView;
+    import character = nts.uk.characteristics;
 
     export class ViewModel {
 
@@ -46,6 +47,8 @@ module cps002.a.vm {
         isAllowAvatarUpload: KnockoutObservable<boolean> = ko.observable(false);
 
         currentUseSetting: KnockoutObservable<UserSetting> = ko.observable(null);
+
+        employeeBasicInfo: KnockoutObservable<IEmployeeBasicInfo> = ko.observable(null);
 
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
@@ -172,6 +175,10 @@ module cps002.a.vm {
 
             let self = this;
 
+
+            nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
+                self.employeeBasicInfo(data);
+            });
             service.getLayout().done((layout) => {
                 if (layout) {
                     service.getUserSetting().done((result: IUserSetting) => {
@@ -318,7 +325,7 @@ module cps002.a.vm {
 
                 },
                 layout = self.layout();
-
+            self.currentEmployee().avatarId("");
             self.currentStep(2);
 
 
@@ -495,7 +502,17 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
-                service.addNewEmployee(command).done(() => {
+                service.addNewEmployee(command).done((employeeId) => {
+
+                    character.save('NewEmployeeBasicInfo', {
+                        copyEmployeeId: command.employeeCopyId,
+                        jobEntryDate: command.hireDate,
+                        initialValueCode: self.initSettingSelectedCode(),
+                        employeeID: employeeId,
+                        employeeCreationMethod: self.createTypeId()
+
+                    });
+
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
@@ -550,7 +567,7 @@ module cps002.a.vm {
 
                 if (getShared("userSettingStatus")) {
                     service.getUserSetting().done((result: IUserSetting) => {
-
+                        self.currentUseSetting(new UserSetting(result));
                         self.getLastRegHistory(result);
 
                     });
@@ -581,8 +598,8 @@ module cps002.a.vm {
 
         openInitModal() {
 
-            setShared("isDialog", true);
-            subModal('/view/cps/009/a/index.xhtml', { title: '' }).onClosed(() => {
+            setShared("CPS002_PARAM", true);
+            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
 
             });
         }
@@ -772,9 +789,9 @@ module cps002.a.vm {
 
     class EmpRegHistory {
 
-        lastRegEmployee: KnockoutObservable<RegEmployee> = ko.observable(null);
+        lastRegEmployee: KnockoutObservable<RegEmployee> = ko.observable(new RegEmployee("", ""));
 
-        lastRegEmployeeOfCompany: KnockoutObservable<RegEmployee> = ko.observable(null);
+        lastRegEmployeeOfCompany: KnockoutObservable<RegEmployee> = ko.observable(new RegEmployee("", ""));
 
 
         constructor(param: IEmpRegHistory) {
@@ -785,11 +802,26 @@ module cps002.a.vm {
         }
     }
 
+    class IEmployeeBasicInfo {
+        copyEmployeeId: string;
+        jobEntryDate: string;
+        initialValueCode: string;
+        employeeID: string;
+        employeeCreationMethod: string;
+
+    }
+
     class RegEmployee {
 
         employeeID: string;
 
         employeeName: string;
+
+        constructor(employeeID: string, employeeName: string) {
+            this.employeeID = employeeID;
+
+            this.employeeName = employeeName;
+        }
     }
 
     interface IRoleAuth {

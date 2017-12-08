@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.security.hash.password.PasswordHash;
@@ -47,7 +47,7 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
  *
  */
 @Stateless
-public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand> {
+public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmployeeCommand, String> {
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
 
@@ -73,17 +73,24 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 	private PersonRepository personRepo;
 
 	AddEmployeeCommand command;
-	String employeeId = IdentifierUtil.randomUniqueId();
-	String userId = IdentifierUtil.randomUniqueId();
-	String personId = IdentifierUtil.randomUniqueId();
+	String employeeId;
+	String userId;
+	String personId;
 	List<ItemsByCategory> inputs;
-	String companyId = AppContexts.user().companyId();
+	String companyId;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddEmployeeCommand> context) {
+	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
 
 		command = context.getCommand();
 
+		employeeId = IdentifierUtil.randomUniqueId();
+
+		userId = IdentifierUtil.randomUniqueId();
+
+		personId = IdentifierUtil.randomUniqueId();
+
+		companyId = AppContexts.user().companyId();
 		// add newPerson
 
 		addNewPerson();
@@ -109,6 +116,8 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		// Update employee registration history
 		updateEmployeeRegHist();
+		
+		return employeeId;
 
 	}
 

@@ -26,7 +26,9 @@ import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSe
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 /**
  * @author sonnlb
@@ -115,11 +117,23 @@ public class RegisterLayoutFinder {
 			}
 
 			queryList.forEach(query -> {
-				Optional<LayoutPersonInfoClsDto> clsDto = listItemCls.stream()
+				Optional<LayoutPersonInfoClsDto> clsDtoOpt = listItemCls.stream()
 						.filter(itemCls -> itemCls.getPersonInfoCategoryID() == query.getCategoryId()).findFirst();
 
-				if (clsDto.isPresent()) {
-					MappingFactory.mapItemClass(this.layoutProc.findSingle(query), clsDto.get());
+				if (clsDtoOpt.isPresent()) {
+
+					PeregDto peregDto = this.layoutProc.findSingle(query);
+
+					if (peregDto != null) {
+						LayoutPersonInfoClsDto clsDto = clsDtoOpt.get();
+						clsDto.setItems(clsDto
+								.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
+										.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
+								.collect(Collectors.toList()));
+
+						MappingFactory.mapItemClass(peregDto, clsDto);
+
+					}
 				}
 
 			});
@@ -174,7 +188,7 @@ public class RegisterLayoutFinder {
 
 			this.initCtgSettingFinder.getAllCategoryBySetId(initSettingId).forEach(x -> {
 
-				listQuery.add(new PeregQuery(x.getCategoryCd(), employeeCopyId, null, baseDate));
+				listQuery.add(new PeregQuery(x.getCategoryCd(), AppContexts.user().employeeId(), null, baseDate));
 			});
 
 		}
