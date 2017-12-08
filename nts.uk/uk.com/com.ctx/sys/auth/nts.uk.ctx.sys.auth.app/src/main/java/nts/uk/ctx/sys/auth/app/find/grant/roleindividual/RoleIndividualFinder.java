@@ -21,6 +21,8 @@ import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonImport;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
+import nts.uk.ctx.sys.auth.dom.role.Role;
+import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
@@ -37,18 +39,24 @@ public class RoleIndividualFinder {
 
 	@Inject
 	private PersonAdapter personAdapter;
-	
-    @Inject
-    private CompanyAdapter companyAdapter;
+
+	@Inject
+	private CompanyAdapter companyAdapter;
+
+	@Inject
+	private RoleRepository roleRepo;
 
 	private final String COMPANY_ID_SYSADMIN = "00000000000000000";
 
 	public RoleIndividualDto findByCompanyAndRoleType(String companyID, int roleType) {
+		// Get list Role
+		
+		String contractCD =AppContexts.user().contractCode();		
 
 		// Get list RoleIndividualGrant
 		if (roleType != RoleType.COMPANY_MANAGER.value)
 			companyID = COMPANY_ID_SYSADMIN;
-		
+
 		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByCompanyIdAndRoleType(companyID, roleType);
 
 		// Get list User information
@@ -56,10 +64,10 @@ public class RoleIndividualFinder {
 		List<User> listUser = userRepo.getByListUser(listUserID);
 		List<String> listAssPersonID = listUser.stream().map(c -> c.getAssociatedPersonID()).distinct().collect(Collectors.toList());
 		List<PersonImport> listPerson = personAdapter.findByPersonIds(listAssPersonID);
-		
+
 		// Build RoleIndividualGrantDto
 		List<RoleIndividualGrantDto> listRoleIndividualGrantDto = new ArrayList<>();
-		for (RoleIndividualGrant roleIndividualGrant: listRoleIndividualGrant) {
+		for (RoleIndividualGrant roleIndividualGrant : listRoleIndividualGrant) {
 			// Filter get User
 			User user = listUser.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst().get();
 			String userName = user.getUserName().v();
@@ -70,43 +78,36 @@ public class RoleIndividualFinder {
 				if (optPerson.isPresent())
 					userName = optPerson.get().getPersonName();
 			}
-		  
+
 			// Add to list
-			RoleIndividualGrantDto dto = new RoleIndividualGrantDto(
-					roleIndividualGrant.getCompanyId(),
-					roleIndividualGrant.getRoleId(),
-					roleIndividualGrant.getRoleType().value,
-					loginID,
-					roleIndividualGrant.getUserId(), 
-					userName,
-					roleIndividualGrant.getValidPeriod().start(), 
-					roleIndividualGrant.getValidPeriod().end());
+			RoleIndividualGrantDto dto = new RoleIndividualGrantDto(roleIndividualGrant.getCompanyId(), roleIndividualGrant.getRoleId(), roleIndividualGrant.getRoleType().value, loginID, roleIndividualGrant.getUserId(), userName,
+					roleIndividualGrant.getValidPeriod().start(), roleIndividualGrant.getValidPeriod().end());
 			listRoleIndividualGrantDto.add(dto);
 		}
 
 		return new RoleIndividualDto(COMPANY_ID_SYSADMIN, listRoleIndividualGrantDto);
 
 	}
-	
+
 	public RoleIndividualGrantMetaDto getMetadata() {
-		
+
 		// Get List Enum RoleType
-		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,  RoleType.SYSTEM_MANAGER, RoleType.COMPANY_MANAGER, RoleType.GROUP_COMAPNY_MANAGER);
-		
+		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class, RoleType.SYSTEM_MANAGER, RoleType.COMPANY_MANAGER, RoleType.GROUP_COMAPNY_MANAGER);
+
 		// Get list Company Information
 		List<CompanyImport> listCompanyImport = companyAdapter.findAllCompany();
 
 		return new RoleIndividualGrantMetaDto(enumRoleType, listCompanyImport);
 	}
 
-	public List<RoleTypeDto> GetRoleType(){
+	public List<RoleTypeDto> GetRoleType() {
 		List<RoleTypeDto> roleTypeDtos = new ArrayList<>();
 		for (RoleType r : RoleType.values()) {
 			roleTypeDtos.add(new RoleTypeDto(r.value, r.nameId, r.description));
 		}
 		return roleTypeDtos;
 	}
-	
+
 	public List<RoleIndividualGrantDto> getRoleGrants(String roleId) {
 		String companyId = AppContexts.user().companyId();
 		if (companyId == null)
@@ -126,17 +127,17 @@ public class RoleIndividualFinder {
 		return rGrants;
 
 	}
-	
-	public RoleIndividualGrantDto getRoleGrant(String userId, String roleId){
+
+	public RoleIndividualGrantDto getRoleGrant(String userId, String roleId) {
 		String companyId = AppContexts.user().companyId();
 		if (companyId == null)
 			return null;
-		
+
 		Optional<RoleIndividualGrant> rGrant = this.roleIndividualGrantRepo.findByKey(userId, companyId, roleId);
-		
+
 		Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
-		
+
 		return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
 	}
-	
+
 }

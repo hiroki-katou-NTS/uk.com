@@ -15,7 +15,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.context.AppContexts;
 
 
 @Stateless
@@ -46,17 +46,18 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 		if (roleIndividualGrant.isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
+		String contractCD = AppContexts.user().contractCode();
+		Optional<Role> uniqueRole = roleRepository.findByContractCDRoleTypeAndCompanyID(contractCD, command.getRoleType(),command.companyID);
 		
-		Role uniqueRole = roleRepository.findByType(command.getRoleType()).get(0);
 		
 		// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
-		RoleIndividualGrant domain = command.toDomain(uniqueRole.getRoleId());
+		RoleIndividualGrant domain = command.toDomain(uniqueRole.get().getRoleId());
 		roleIndividualGrantRepo.add(domain);
 
 		if (command.isSetRoleAdminFlag() == true) {
 			RoleIndividualGrant roleIndiGrantSys = RoleIndividualGrant.createFromJavaType(
 					command.getUserID(),
-					uniqueRole.getRoleId(),
+					uniqueRole.get().getRoleId(),
 					command.getDecisionCompanyID(),
 					command.getRoleType(),
 					command.getStartValidPeriod(),
