@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.auth.app.command.employmentrole;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +9,6 @@ import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeRefRange;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRole;
 import nts.uk.ctx.at.auth.dom.employmentrole.ScheduleEmployeeRef;
-
 
 @Getter
 @Setter

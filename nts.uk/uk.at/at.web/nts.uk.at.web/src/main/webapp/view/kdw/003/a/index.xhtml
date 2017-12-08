@@ -21,6 +21,7 @@
 				<com:stylefile path="kdw003.a.style.css" />
 				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 				<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			</ui:define>
 			
 			<ui:define name="content">
@@ -61,12 +62,12 @@
 							]}"></div>
 						<button id="btnExtraction" data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
 						<div class="vacationRemaining-container">
-							<button id="btnVacationRemaining" data-bind="click: btnVacationRemaining_Click">#{i18n.getText('KDW003_21')}</button>
+							<button id="btnVacationRemaining" data-bind="click: btnVacationRemaining_Click , visible: referenceVacation().allVacation" >#{i18n.getText('KDW003_21')}</button>
 							<div id="vacationRemaining-content">
-								<button data-bind ="visible: referenceVacation().yearHoliday">#{i18n.getText('Com_PaidHoliday')}</button>
+								<button data-bind ="visible: referenceVacation().yearHoliday20">#{i18n.getText('Com_PaidHoliday')}</button>
 								<button data-bind ="visible: referenceVacation().substVacation">#{i18n.getText('Com_SubstituteHoliday')}</button>
-								<button data-bind ="visible: referenceVacation().compensLeave">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-								<button>#{i18n.getText('Com_CompensationHoliday')}</button>
+								<button data-bind ="visible: referenceVacation().yearHoliday19">#{i18n.getText('Com_FundedPaidHoliday')}</button>
+								<button data-bind ="visible: referenceVacation().compensLeave">#{i18n.getText('Com_CompensationHoliday')}</button>
 								<button data-bind ="visible: referenceVacation().com60HVacation">#{i18n.getText('Com_ExsessHoliday')}</button>
 							</div>
 						</div>
@@ -104,6 +105,7 @@
 						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
 						<div class="compact-grid grid-container" id="gid" >
 							<table id="dpGrid"></table>
+							<div id="sample-component"></div>
 						</div>
 						<span style="margin: 10px 0 0 18px; display: inline-block;">■　生産性を上げて、残業時間を減らしましょう！</span>
 					</div>

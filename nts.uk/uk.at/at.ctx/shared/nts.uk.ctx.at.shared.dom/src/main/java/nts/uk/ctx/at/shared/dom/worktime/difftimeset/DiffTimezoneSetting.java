@@ -18,10 +18,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 @Getter
 public class DiffTimezoneSetting extends DomainObject{
 
-	private static final Integer MIN_WORK_NO = 2;
-
-	private static final Integer ZERO = 1;
-	
 	/** The employment timezone. */
 	// 就業時間帯
 	private List<EmTimeZoneSet> employmentTimezones;
@@ -54,31 +50,28 @@ public class DiffTimezoneSetting extends DomainObject{
 	public void validate() {
 		super.validate();
 		
-		// Validate employmentTimezones
-		EmTimeZoneSet firstEmTimeZoneSet = this.employmentTimezones.get(ZERO);
-		int countEmTimeZoneSet = ZERO;
-		for (EmTimeZoneSet item : this.employmentTimezones) {
-			if (item.getTimezone().getStart().equals(firstEmTimeZoneSet.getTimezone().getStart())
-					&& item.getTimezone().getEnd().equals(firstEmTimeZoneSet.getTimezone().getEnd())) {
-				countEmTimeZoneSet++;
+		// Validate overlap employmentTimezones
+		for (int i = 0; i < this.employmentTimezones.size(); i++) {
+			EmTimeZoneSet em = this.employmentTimezones.get(i);
+			for (int j = i + 1; j < this.employmentTimezones.size(); i++) {
+				EmTimeZoneSet em2 = this.employmentTimezones.get(j);
+				// check overlap
+				if (em.getTimezone().isOverlap(em2.getTimezone())) {
+					throw new BusinessException("Msg_515");
+				}
 			}
 		}
-		if (countEmTimeZoneSet >= MIN_WORK_NO) {
-			throw new BusinessException("Msg_515");
-		}
-
-		// validate oTTimezones
-
-		DiffTimeOTTimezoneSet firstDiffTimeOTTimezoneSet = this.oTTimezones.get(ZERO);
-		int countOTTimezones = ZERO;
-		for (DiffTimeOTTimezoneSet item : this.oTTimezones) {
-			if (item.getTimezone().getStart().equals(firstDiffTimeOTTimezoneSet.getTimezone().getStart())
-					&& item.getTimezone().getEnd().equals(firstDiffTimeOTTimezoneSet.getTimezone().getEnd())) {
-				countOTTimezones++;
+		
+		// validate overlap oTTimezones
+		for (int i = 0; i < this.oTTimezones.size(); i++) {
+			DiffTimeOTTimezoneSet em = this.oTTimezones.get(i);
+			for (int j = i + 1; j < this.oTTimezones.size(); i++) {
+				DiffTimeOTTimezoneSet em2 = this.oTTimezones.get(j);
+				// check overlap
+				if (em.getTimezone().isOverlap(em2.getTimezone())) {
+					throw new BusinessException("Msg_515");
+				}
 			}
-		}
-		if (countOTTimezones >= MIN_WORK_NO) {
-			throw new BusinessException("Msg_515");
 		}
 	}
 }

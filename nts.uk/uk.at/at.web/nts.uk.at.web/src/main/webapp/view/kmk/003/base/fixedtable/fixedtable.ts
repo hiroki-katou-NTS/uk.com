@@ -276,7 +276,7 @@ module kmk003.base.fixedtable {
          */
         public calStyleTable() {
             let self = this;
-            let heigthCell = 32;
+            let heigthCell = 35;
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
@@ -564,7 +564,7 @@ module kmk003.base.fixedtable {
                     ko.cleanNode($(element)[0]);
                     ko.applyBindingsToDescendants(screenModel, $(element)[0]);
                     
-                    // calculate height table
+                    // set height table
                     screenModel.$tableSelector.height(screenModel.tableStyle.height);
                 });
             });

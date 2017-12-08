@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 
 public interface OvertimeSixProcess {
@@ -31,7 +32,11 @@ public interface OvertimeSixProcess {
 	 * @return
 	 */
 	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType);
-	
+	/**
+	 * @return
+	 * 06-02-2_申請時間を取得
+	 */
+	public List<CaculationTime> getAppOvertimeCaculation(List<CaculationTime> caculationTimes);
 	/**
 	 * 06-03_加給時間を取得
 	 * @param companyID
@@ -57,4 +62,28 @@ public interface OvertimeSixProcess {
 	 * @return
 	 */
 	public boolean checkCondition(int prePostAtr, int appType,String companyID);
+	
+	/**
+	 * 06-04-2_当日以外の場合
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @param requestAppDetailSetting
+	 * @param siftCD
+	 * @param overtimeHours
+	 * @return
+	 */
+	public List<OvertimeCheckResult> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours);
+	
+	/**
+	 * 06-04-3_当日の場合
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @param requestAppDetailSetting
+	 * @param siftCD
+	 * @param overtimeHours
+	 * @return
+	 */
+	public List<OvertimeCheckResult> checkDuringTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours);
 }

@@ -9,12 +9,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.EmploymentRoleDataDto;
-import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRole;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRoleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmploymentRoleDataFinder {
+	
 	@Inject
 	private EmploymentRoleRepository repo;
 	
@@ -34,7 +34,5 @@ public class EmploymentRoleDataFinder {
 			return data.get();
 		return null;
 	}
-	
-	
 	
 }

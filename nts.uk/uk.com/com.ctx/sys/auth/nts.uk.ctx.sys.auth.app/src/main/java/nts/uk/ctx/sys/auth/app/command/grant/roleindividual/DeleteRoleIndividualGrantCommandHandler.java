@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -11,6 +12,7 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 @Stateless
 @Transactional
 public class DeleteRoleIndividualGrantCommandHandler extends CommandHandler<DeleteRoleIndividualGrantCommand> {
@@ -24,15 +26,17 @@ public class DeleteRoleIndividualGrantCommandHandler extends CommandHandler<Dele
 	@Override
 	protected void handle(CommandHandlerContext<DeleteRoleIndividualGrantCommand> context) {
 		DeleteRoleIndividualGrantCommand command = context.getCommand();
-        
-		if(command.getRoleType() == RoleType.SYSTEM_MANAGER){
-			DatePeriod insertPeriod = new DatePeriod(command.getStartDate(),command.getEndDate());
-			boolean isValid = roleIndividualService.checkSysAdmin(command.getUserId(), insertPeriod);
-		    if(isValid == true)
-			throw new BusinessException("Msg_331");
+
+		RoleType roleType = EnumAdaptor.valueOf(command.getRoleType(), RoleType.class);
+		
+		if (roleType == RoleType.SYSTEM_MANAGER) {
+			DatePeriod insertPeriod = new DatePeriod(command.getStartValidPeriod(), command.getEndValidPeriod());
+			boolean isValid = roleIndividualService.checkSysAdmin(command.getUserID(), insertPeriod);
+			if (isValid == true)
+				throw new BusinessException("Msg_331");
 		}
-		roleIndividualGrantRepo.remove(command.getUserId(), command.getCompanyId(), command.getRoleType());
+
+		roleIndividualGrantRepo.remove(command.getUserID(), command.getCompanyID(), roleType.value);
 	}
-	
 
 }

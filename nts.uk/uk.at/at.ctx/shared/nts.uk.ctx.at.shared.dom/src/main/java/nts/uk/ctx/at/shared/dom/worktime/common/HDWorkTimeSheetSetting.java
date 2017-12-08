@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -85,9 +84,6 @@ public class HDWorkTimeSheetSetting extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.timezone.getStart().v() >= this.timezone.getEnd().v()) {
-			throw new BusinessException("Msg_770");
-		}
 	}
 	
 }

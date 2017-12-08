@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.specificdate;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 		val entity = new KsmstSpecificDateItem();
 		entity.ksmstSpecificDateItemPK = new KsmstSpecificDateItemPK(domain.getCompanyId(), domain.getSpecificDateItemNo().v());
 		entity.name = domain.getSpecificName().v();
-		entity.useAtr = BigDecimal.valueOf(domain.getUseAtr().value);
+		entity.useAtr = domain.getUseAtr().value;
 		return entity;
 	}
 

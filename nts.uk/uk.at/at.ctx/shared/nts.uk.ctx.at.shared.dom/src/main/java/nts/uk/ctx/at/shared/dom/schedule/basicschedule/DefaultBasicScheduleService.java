@@ -30,10 +30,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 	@Inject
 	public WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	public WorkTimeSetRepository workTimeSetRepo;
-	
+
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
@@ -227,8 +227,9 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		}
 	}
 
-	
-
+	/**
+	 * 
+	 */
 	@Override
 	public boolean isReverseStartAndEndTime(TimeWithDayAttr scheduleStartClock, TimeWithDayAttr scheduleEndClock) {
 		return scheduleStartClock.greaterThanOrEqualTo(scheduleEndClock);

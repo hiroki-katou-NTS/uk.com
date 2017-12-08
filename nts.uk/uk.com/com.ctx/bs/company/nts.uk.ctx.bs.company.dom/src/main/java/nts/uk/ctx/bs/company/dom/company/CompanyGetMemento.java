@@ -14,7 +14,7 @@ public interface CompanyGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CCD getCompanyCode();
+	CompanyCode getCompanyCode();
 
 	/**
 	 * Gets the company name.

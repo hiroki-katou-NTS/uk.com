@@ -14,14 +14,14 @@ import nts.arc.time.GeneralDate;
  */
 public interface PublicHolidayRepository {
 	
-	Optional<PublicHoliday> getHolidaysByDate(String companyID, BigDecimal date);
+	Optional<PublicHoliday> getHolidaysByDate(String companyID, GeneralDate date);
 
-	List<PublicHoliday> getHolidaysByListDate(String companyId, List<BigDecimal> lstDate);
+	List<PublicHoliday> getHolidaysByListDate(String companyId, List<GeneralDate> lstDate);
 	
 	List<PublicHoliday> getAllHolidays(String companyId);
 
 
-	void remove (String companyID , BigDecimal date);
+	void remove (String companyID , GeneralDate date);
 	
 	void update (PublicHoliday  publicHoliday);
 	
@@ -33,5 +33,5 @@ public interface PublicHolidayRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<PublicHoliday> getpHolidayWhileDate(String companyId, int strDate, int endDate);
+	List<PublicHoliday> getpHolidayWhileDate(String companyId, GeneralDate strDate, GeneralDate endDate);
 }
