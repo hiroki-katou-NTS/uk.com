@@ -168,7 +168,7 @@ module nts.uk.at.view.kaf005.b {
                 self.restTimeDisFlg(data.displayRestTime);
                 self.appDate(data.application.applicationDate);
                 self.employeeName(data.employeeName);
-                self.employeeID(data.employeeID);
+                self.employeeID(data.application.applicantSID);
                 if (data.siftType != null) {
                     self.siftCD(data.siftType.siftCode);
                     self.siftName(data.siftType.siftName);
