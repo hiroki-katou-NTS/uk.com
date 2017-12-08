@@ -6,38 +6,51 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonWorkTimePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+
 @Stateless
 public class CommonWorkTimePolicyImpl implements CommonWorkTimePolicy {
 
+	// validate 就業時間帯の遅刻・早退設定
 	@Override
-	public void validateWorkTimeOfTimezoneSet(PredetemineTimeSetting pred) {
+	public void validateWorkTimezoneLateEarlySet(PredetemineTimeSetting pred,
+			WorkTimezoneLateEarlySet workTimezoneLateEarlySet) {
 
-		// TODO
-		// validate msg_515
+		// validate Msg_517
+		workTimezoneLateEarlySet.getOtherClassSets().stream().forEach(item -> {
+			if (item.getGraceTimeSet().getGraceTime().valueAsMinutes() > pred.getRangeTimeDay().valueAsMinutes()) {
+				throw new BusinessException("Msg_517");
+			}
+		});
 
-		// validate msg_773
+		// TODO Auto-generated method stub
+		// validate
 
-		// validate msg_774
-
-		// validate msg_770
 	}
 
+	// validate 代休振替設定
 	@Override
-	public void validateOverTimeHourSet(PredetemineTimeSetting pred) {
-		// TODO Auto-generated method stub
-		// validate msg_515
+	public void validateSubHolTransferSet(PredetemineTimeSetting pred, SubHolTransferSet subHolTransferSet) {
 
-		// validate msg_519
+		// validate Msg_781 for certainTime
+		if (subHolTransferSet.getCertainTime().valueAsMinutes() >= pred.getRangeTimeDay().valueAsMinutes()) {
+			throw new BusinessException("Msg_781");
+		}
 
-		// validate msg_780
+		// validate Msg_781 for Designated time
 
-		// validate msg_770
+		if (subHolTransferSet.getDesignatedTime().getHalfDayTime().valueAsMinutes() >= pred.getRangeTimeDay()
+				.valueAsMinutes()
+				|| subHolTransferSet.getDesignatedTime().getHalfDayTime().valueAsMinutes() >= pred.getRangeTimeDay()
+						.valueAsMinutes()) {
+			throw new BusinessException("Msg_781");
+		}
 		
-		// validate msg_779
-		
-		// validate msg_516
+		//TODO case no msg
 	}
 
 }
