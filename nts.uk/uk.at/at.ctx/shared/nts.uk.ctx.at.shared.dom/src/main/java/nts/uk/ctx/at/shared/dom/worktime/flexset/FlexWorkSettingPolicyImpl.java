@@ -17,11 +17,11 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyServic
  * The Class FlexWorkSettingPolicyImpl.
  */
 @Stateless
-public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
+public class FlexWorkSettingPolicyImpl {
 	
 	/** The service. */
-	@Inject
-	private PredeteminePolicyService service;
+//	@Inject
+//	private PredeteminePolicyService service;
 	
 	/** The work no one. */
 	public static int WORK_NO_ONE = 1;
@@ -34,7 +34,6 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 	 * FlexWorkSetting,
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet)
 	 */
-	@Override
 	public void canRegisterFlexWorkSetting(FlexWorkSetting flexWorkSetting, PredetemineTimeSetting predetemineTimeSet) {
 
 		// 使用区分 = 使用しない AND 最低勤務時間 > 所定時間.1日 => Msg_775
@@ -77,17 +76,17 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		
 		// 使用区分 = 使用する
 		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.USE)) {
-			this.service.validateOneDay(predetemineTimeSet,
-					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(),
-					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime());
+//			this.service.validateOneDay(predetemineTimeSet,
+//					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(),
+//					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime());
 		}
 		// Msg_781 DesignatedTime
-		this.service.compareWithOneDayRange(predetemineTimeSet,
-				flexWorkSetting.getCommonSetting().getSubHolTimeSet().getSubHolTimeSet().getDesignatedTime());
+//		this.service.compareWithOneDayRange(predetemineTimeSet,
+//				flexWorkSetting.getCommonSetting().getSubHolTimeSet().getSubHolTimeSet().getDesignatedTime());
 		
 		// Msg_516
 		flexWorkSetting.getLstStampReflectTimezone().forEach(setting -> {
-			this.service.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
+//			this.service.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
 		});
 		
 	}

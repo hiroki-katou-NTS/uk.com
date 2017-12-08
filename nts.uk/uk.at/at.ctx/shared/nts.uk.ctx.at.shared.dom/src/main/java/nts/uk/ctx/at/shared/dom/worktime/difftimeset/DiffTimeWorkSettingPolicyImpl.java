@@ -17,9 +17,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy {
 
-	/** The predetemine policy service. */
-	@Inject
-	private PredeteminePolicyService predeteminePolicyService;
+//	/** The predetemine policy service. */
+//	@Inject
+//	private PredeteminePolicyService predeteminePolicyService;
 
 	/*
 	 * (non-Javadoc)
@@ -57,7 +57,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		TimeWithDayAttr end = diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().getEndTime();
 
 		// validate
-		this.predeteminePolicyService.validateOneDay(pred, start, end);
+//		this.predeteminePolicyService.validateOneDay(pred, start, end);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	private void validateHDWorkTimeSheetSetting(PredetemineTimeSetting pred,
 			DiffTimeWorkSetting diffTimeWorkSetting) {
 		diffTimeWorkSetting.getDayoffWorkTimezone().getRestTimezone().getRestTimezones().stream().forEach(item -> {
-			this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd());
+//			this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd());
 		});
 	}
 }
