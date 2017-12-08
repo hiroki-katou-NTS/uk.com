@@ -99,5 +99,11 @@ public class RoleIndividualWebService extends WebService {
 		return this.roleIndividualFinder.getRoleGrant(rDto.getUserID(), rDto.getRoleID());
 	}
 	
+	@POST
+	@Path("insertRoleGrant")
+	public String InsertRoleGrant(){
+		return null;
+	}
+	
 	
 }
