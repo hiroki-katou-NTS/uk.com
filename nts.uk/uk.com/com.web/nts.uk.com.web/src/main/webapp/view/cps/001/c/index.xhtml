@@ -47,8 +47,9 @@
 								dataSource: listEmpDelete ,
 								primaryKey: 'code',
 								columns: [
-					                { headerText: nts.uk.resource.getText('CPS001_52'), key: 'code', width: 140 }, 
-					                { headerText: nts.uk.resource.getText('CPS001_53'), key: 'name', width: 160 }, 
+					                { headerText: nts.uk.resource.getText('CPS001_52'), key: 'code', width: 140 , hidden: false }, 
+					                { headerText: '', key: 'name', width: 160 , hidden: false },
+					                { headerText: '', key: 'id', width: 160 , hidden: true }
 								],
 								multiple: false,
 								value: currentEmployee().code

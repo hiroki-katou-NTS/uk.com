@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.command.employee.deletemanagement;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -8,6 +9,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.RemoveReason;
@@ -31,11 +33,11 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 			List<EmployeeDataMngInfo> listEmpData = EmpDataMngRepo.findByEmployeeId(command.getSId());
 			if (!listEmpData.isEmpty()) {
 				EmployeeDataMngInfo empInfo =  EmpDataMngRepo.findByEmployeeId(command.getSId()).get(0);
+				GeneralDateTime currentDatetime = GeneralDateTime.legacyDateTime(new Date());
+				empInfo.setDeleteDateTemporary(currentDatetime);
 				empInfo.setRemoveReason(new RemoveReason(command.getReason()));
 				EmpDataMngRepo.updateRemoveReason(empInfo);
 			} 
 		}
-
 	}
-
 }

@@ -1,10 +1,8 @@
 package nts.uk.ctx.bs.employee.app.find.employee;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class EmployeeToDeleteDto {
 
 	// employeeCode
@@ -15,6 +13,13 @@ public class EmployeeToDeleteDto {
 
 	// ReasonRemove
 	private String name;
+	
+	//
+	private String id;
+	
+	public static EmployeeToDeleteDto fromDomain(String scd, String reason, String name , String id) {
+		return new EmployeeToDeleteDto(scd, reason, name , id);
+	}
 
 	public static EmployeeToDeleteDto fromDomain(String scd, String reason) {
 		return new EmployeeToDeleteDto(scd, reason);
@@ -34,5 +39,15 @@ public class EmployeeToDeleteDto {
 		super();
 		this.code = code;
 		this.reason = reason;
-	}
+	} 
+	
+	public EmployeeToDeleteDto(String code, String reason, String name, String id) {
+		super();
+		this.code = code;
+		this.reason = reason;
+		this.name= name;
+		this.id= id;
+	} 
+	
+	
 }
