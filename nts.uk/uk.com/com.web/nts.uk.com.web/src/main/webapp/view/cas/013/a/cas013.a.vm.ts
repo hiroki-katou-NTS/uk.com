@@ -49,19 +49,18 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.dateValue = ko.observable({});
 
 
-            self.selectedRoleType.subscribe((code: string) => {
-                self.getRoles(code.toString());
+            self.selectedRoleType.subscribe((roleType: string) => {
+                self.getRoles(roleType.toString());
                 self.isCreateMode(false);
                 self.isSelectedUser(false);
             });
 
-            self.selectedRole.subscribe((code: string) => {
-                self.selectRole(code.toString());
-                self.isCreateMode(false);
+            self.selectedRole.subscribe((roleId: string) => {
+                self.selectRole(roleId.toString(),'');
                 self.isSelectedUser(false);
             });
-            self.selectedRoleIndividual.subscribe((code: string) => {
-                self.selectRoleGrant(code.toString());
+            self.selectedRoleIndividual.subscribe((userId: string) => {
+                self.selectRoleGrant(userId.toString());
             });
 
 
@@ -98,7 +97,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             }
         }
 
-        private selectRole(roleId: string): void {
+        private selectRole(roleId: string, userIdSelected: string): void {
             var self = this;
             if (roleId != '') {
                 new service.Service().getRoleGrants(roleId).done(function(data: any) {
@@ -108,7 +107,11 @@ module nts.uk.com.view.cas013.a.viewmodel {
                             items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod))
                         }
                         self.listRoleIndividual(items);
-                        self.selectedRoleIndividual(items[0].userId);
+                        if(nts.uk.text.isNullOrEmpty(userIdSelected)){
+                            self.selectedRoleIndividual(items[0].userId);
+                        }else{
+                            self.selectedRoleIndividual(userIdSelected);    
+                        }
                     } else {
                         self.listRoleIndividual([]);
                         self.selectedRoleIndividual('');
@@ -132,6 +135,9 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         self.userName(data.userName);
                         self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
                         self.selectedRoleIndividual(UserId);
+                        if(self.isCreateMode()){
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                        }
                         self.isCreateMode(false);
                     } 
                 });
@@ -164,37 +170,62 @@ module nts.uk.com.view.cas013.a.viewmodel {
         }
         save(): void{
             var self = this;
-            if(!nts.uk.util.isNullOrUndefined(self.selectedRoleType()) 
-                    && !nts.uk.util.isNullOrUndefined(self.selectedRole())
+            if(!nts.uk.text.isNullOrEmpty(self.selectedRoleType()) 
+                    && !nts.uk.text.isNullOrEmpty(self.selectedRole())
                     && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
                     && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)
                     && self.userName() != ''){
-                if(self.isSelectedUser()){
-                    console.log('save');
+                if(self.isSelectedUser() && self.isCreateMode()){
                     self.insert();
                 }else{
                     console.log('upDate');
                 }
-            }else if(self.selectedRole() == ''){
-                console.log('Chua Chon Role');
-            }else if(self.userName() == ''){
-                console.log('Chua Chon user');
+            }else if(nts.uk.text.isNullOrEmpty(self.selectedRole())){
+                //nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
+            }else if(nts.uk.text.isNullOrEmpty(self.userName())){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
             }else if(nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)){
-                console.log('Chua Chon Ngay Thang');
+                $(".nts-input").trigger("validate");
             }else{
-                console.log('Chua Chon day du thong tin');
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
             }
                 
         }
         private insert(): void{
             var self = this;
-            if((self.userId() != '') 
-                && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
-                && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)
-                && self.selectedRole() != ''
-                && self.selectedRoleType() != ''){
-                
-            }
+            var roleTpye = self.selectedRoleType();
+            var roleId = self.selectedRole();
+            var userId = self.userId();
+            var start = nts.uk.time.parseMoment(self.dateValue().startDate).format();
+            var end = nts.uk.time.parseMoment(self.dateValue().endDate).format();
+            new service.Service().insertRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
+                if(!nts.uk.util.isNullOrUndefined(data)){
+                    self.selectRole(roleId,data);
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
+                    self.isCreateMode(false);
+                }else{
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                    self.isCreateMode(false);
+                }
+            });
+        }
+        private upDate(): void{
+            var self = this;
+            var roleTpye = self.selectedRoleType();
+            var roleId = self.selectedRole();
+            var userId = self.userId();
+            var start = nts.uk.time.parseMoment(self.dateValue().startDate).format();
+            var end = nts.uk.time.parseMoment(self.dateValue().endDate).format();
+            new service.Service().insertRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
+                if(!nts.uk.util.isNullOrUndefined(data)){
+                    self.selectRole(roleId,data);
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
+                    self.isCreateMode(false);
+                }else{
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                    self.isCreateMode(false);
+                }
+            });
         }
 
     }
