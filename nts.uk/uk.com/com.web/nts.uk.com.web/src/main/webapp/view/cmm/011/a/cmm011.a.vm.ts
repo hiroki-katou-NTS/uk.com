@@ -58,9 +58,12 @@ module nts.uk.com.view.cmm011.a {
                     if (!nts.uk.text.isNullOrEmpty(self.treeWorkplace().selectedWpkId())) {
                         return true;
                     }
-                    if (self.treeWorkplace().lstWorkplace().length < 1) {
+                    // check when new mode
+                    if (self.treeWorkplace().lstWorkplace().length < 1
+                        || self.treeWorkplace().lstWorkplace().length > 0 && self.workplaceHistory().lstWpkHistory().length > 0) {
                         return self.isNewMode();
                     }
+                    // check case unselect item in grid
                     return !self.isNewMode();
                 })
                 
@@ -247,7 +250,12 @@ module nts.uk.com.view.cmm011.a {
                 command.createType = self.creationType;
                 command.startDate = new Date(self.strDWorkplace());
                 command.wkpConfigInfoHistId = self.wkpConfigHistId;
-                command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
+                
+                if (self.isNewMode()) {
+                    command.wkpIdSelected = self.treeWorkplace().currentWpkId();
+                } else {
+                    command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
+                }
 
                 // data workplace
                 let workplace: any = {};
@@ -340,6 +348,18 @@ module nts.uk.com.view.cmm011.a {
                         if (creationType) {
                             self.isNewMode(true);
                             self.creationType = creationType;
+                            
+                            // set current select item grid
+                            self.treeWorkplace().currentWpkId(self.treeWorkplace().selectedWpkId());
+                            
+                            // reset selected item grid
+                            self.treeWorkplace().selectedWpkId(null);
+                            
+                            // in new mode, find hierarchy before select
+                            self.treeWorkplace().selectedHierarchyCd = self.treeWorkplace()
+                                .findSelectedHierarchyCd(self.treeWorkplace().currentWpkId());
+                            
+                            // new workplace history
                             self.workplaceHistory().newHistory();
                         }
                         // Focus
@@ -432,6 +452,7 @@ module nts.uk.com.view.cmm011.a {
             treeColumns: Array<any>;
             lstWorkplace: KnockoutObservableArray<TreeWorkplace>;
             selectedWpkId: KnockoutObservable<string>;
+            currentWpkId: KnockoutObservable<string>;
             
             treeArray: KnockoutObservableArray<any>;
             selectedHierarchyCd: string;
@@ -446,6 +467,8 @@ module nts.uk.com.view.cmm011.a {
 
                 self.lstWorkplace = ko.observableArray([]);
                 self.selectedWpkId = ko.observable(null);
+                self.currentWpkId = ko.observable(null);
+                
                 self.treeArray = ko.observableArray([]);
                 
                 self.treeColumns = self.treeColumns = [
@@ -505,7 +528,7 @@ module nts.uk.com.view.cmm011.a {
                     self.parentModel.isNewMode(false);
                     
                     // get hierarchy code selected.
-                    self.selectedHierarchyCd = self.getSelectedHierarchyCd();
+                    self.selectedHierarchyCd = self.findSelectedHierarchyCd(newValue);
 
                     // get wkp list hist by wkpId
                     self.parentModel.workplaceHistory().loadWkpHistoryByWkpId(newValue);
@@ -622,11 +645,11 @@ module nts.uk.com.view.cmm011.a {
             /**
              * getSelectedHierarchyCd
              */
-            private getSelectedHierarchyCd(): string {
+            public findSelectedHierarchyCd(wpkId: string): string {
                 let self = this;
                 let hierarchyCode: string = "";
                 for (let item of self.treeArray()) {
-                    if (item.workplaceId == self.selectedWpkId()) {
+                    if (item.workplaceId == wpkId) {
                         hierarchyCode = item.hierarchyCode;
                         break;
                     }
