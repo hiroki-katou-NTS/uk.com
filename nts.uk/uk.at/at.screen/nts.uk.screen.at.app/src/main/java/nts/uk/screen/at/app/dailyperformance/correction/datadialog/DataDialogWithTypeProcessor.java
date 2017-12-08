@@ -24,7 +24,8 @@ public class DataDialogWithTypeProcessor {
 	public CodeNameType getDutyType(String companyId, String workTypeCode, String employmentCode) {
 		List<WorkTypeChangedDto> dtos = repo.findWorkTypeChanged(employmentCode, workTypeCode, companyId);
 		Set<String> workTypeCodes = dtos.stream().map(x -> x.getTypeCode()).collect(Collectors.toSet());
-		return CodeNameType.create(TypeLink.SERVICE_PLACE.value, repo.findWorkType(companyId, workTypeCodes));
+		List<CodeName> codeNames =  repo.findWorkType(companyId, workTypeCodes);
+		return CodeNameType.create(TypeLink.SERVICE_PLACE.value, codeNames);
 	}
 
 	// 就業時間帯
