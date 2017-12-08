@@ -35,11 +35,11 @@ public class User extends AggregateRoot {
 
 	//特別利用者
 	/** The special user. */
-	private boolean specialUser;
+	private int specialUser;
 
 	//複数会社を兼務する
 	/** The multi company concurrent. */
-	private boolean multiCompanyConcurrent;
+	private int multiCompanyConcurrent;
 
 	//メールアドレス
 	/** The mail address. */
@@ -53,7 +53,7 @@ public class User extends AggregateRoot {
 	/** The associated employee id. */
 	private String associatedPersonID;
 	
-	public static User createFromJavatype(String userID,Boolean defaultUser,String password, String loginID ,String contractCode,GeneralDate expirationDate, Boolean specialUser ,Boolean multiCompanyConcurrent ,String mailAddress ,String userName,String associatedPersonID  ){
+	public static User createFromJavatype(String userID,Boolean defaultUser,String password, String loginID ,String contractCode,GeneralDate expirationDate, int specialUser ,int multiCompanyConcurrent ,String mailAddress ,String userName,String associatedPersonID  ){
 		
 		return new User(userID,
 				defaultUser,

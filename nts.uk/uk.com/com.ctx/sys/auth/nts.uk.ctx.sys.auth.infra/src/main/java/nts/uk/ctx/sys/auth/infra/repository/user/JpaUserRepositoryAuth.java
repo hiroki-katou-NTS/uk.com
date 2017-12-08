@@ -81,6 +81,8 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	public List<User> searchUser(String userIDName, GeneralDate date) {
 		return this.queryProxy().
 				query(SELECT_BY_ID_OR_NAME, SacmtUser.class)
+				
+				
 				.setParameter("userIDName", userIDName)
 				.setParameter("date", date)
 				.getList(c -> toDomain(c));
