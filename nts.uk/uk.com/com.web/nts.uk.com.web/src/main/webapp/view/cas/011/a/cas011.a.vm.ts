@@ -322,7 +322,9 @@ module nts.uk.com.view.cas011.a.viewmodel {
             windows.sub.modal('/view/cdl/025/index.xhtml', { title: '' }).onClosed(function(): any {
               //get data from share window
                 var roleId = windows.getShared('dataCdl025');
-                self.setRoleId(roleType, roleId);
+                if (roleId != undefined) {
+                    self.setRoleId(roleType, roleId);
+                }
                 self.setFocusAfterSelectRole(roleType);
                 block.clear();
             });
