@@ -344,9 +344,9 @@ module nts.uk.com.view.cmm018.a {
                 } 
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                 // Init Fixed Table
-                $("#fixed-table").ntsFixedTable({ height: 550, width: 910 });
-                $("#fixed-tableWp").ntsFixedTable({ height: 550, width: 910 });
-                $("#fixed-tablePs").ntsFixedTable({ height: 550, width: 910 });
+                $("#fixed-table").ntsFixedTable({ height: 550, width: 920 });
+                $("#fixed-tableWp").ntsFixedTable({ height: 550, width: 920 });
+                $("#fixed-tablePs").ntsFixedTable({ height: 550, width: 920 });
             }
             convertEmployeeCcg01ToKcp009(dataList : vmbase.EmployeeSearchDto[]) : void{
                 let self = this;    
