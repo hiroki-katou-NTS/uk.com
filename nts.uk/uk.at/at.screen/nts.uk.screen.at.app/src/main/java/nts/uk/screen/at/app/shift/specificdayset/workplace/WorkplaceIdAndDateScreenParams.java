@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.shift.specificdayset.workplace;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -8,8 +9,8 @@ import lombok.Data;
  *
  */
 @Data
-public class WorkplaceSpecificDateSetScreenParams {
+public class WorkplaceIdAndDateScreenParams {
 	public String workplaceId;
-	public int startDate;
-	public int endDate;
+	public GeneralDate startDate;
+	public GeneralDate endDate;
 }

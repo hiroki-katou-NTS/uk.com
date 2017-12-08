@@ -46,13 +46,13 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily, params.formatCodes);
 	}
 	
 	@POST
 	@Path("errorCode")
 	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
-		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily, params.errorCodes);
+		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
 	}
 	
 	@POST

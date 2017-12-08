@@ -7,5 +7,5 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceForm
 public interface DisplayFormatSelectionRepository {
 	
 	// 対応するドメインモデル「会社の日別実績の修正のフォーマット」をすべて取得する
-	List<DailyPerformanceFormatDto> getDailyPerformanceFormatList(String companyId, List<String> codeList);
+	List<DailyPerformanceFormatDto> getDailyPerformanceFormatList(String companyId);
 }

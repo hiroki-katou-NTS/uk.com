@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSet;
 import nts.uk.screen.at.app.shift.specificdayset.company.ComSpecificDateSetScreenRepository;
-import nts.uk.screen.at.app.shift.specificdayset.company.StartDateEndDateScreenParams;
+import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScreenParams;
 
 /**
  * 
@@ -24,7 +24,7 @@ public class JpaComSpecificDateSetScreenRepository extends JpaRepository impleme
 
 	@Override
 	public List<GeneralDate> findDataComSpecificDateSet(String companyId,
-			StartDateEndDateScreenParams params) {
+			WorkplaceIdAndDateScreenParams params) {
 		return this.queryProxy().query(GET_BY_CID_AND_DATE, KsmmtComSpecDateSet.class)
 				.setParameter("companyId", companyId).setParameter("startDate", params.startDate)
 				.setParameter("endDate", params.endDate).getList(x -> x.ksmmtComSpecDateSetPK.specificDate);

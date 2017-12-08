@@ -73,7 +73,6 @@ module cmm001.a {
                         return item.companyCode == value;
                     });
                     service.findComId(foundItem.companyId).done((id) => {
-                        console.log(id);
                         self.currentCompany(new CompanyModel(id));
                         self.checkInsert(false);
                         let param = {
