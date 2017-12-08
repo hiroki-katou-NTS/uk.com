@@ -3,22 +3,28 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
+import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOnHolidayOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class ReflectStampDomainServiceImpl implements ReflectStampDomainService {
@@ -32,27 +38,31 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 
+	@Inject
+	private BasicScheduleAdapter basicScheduleAdapter;
+
 	@Override
-	public void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate) {
+	public void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
 
-		Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance = workInformationRepository.find(employeeID,
-				processingDate);
+		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode();
 
-		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.get().getRecordWorkInformation().getWorkTypeCode();
+		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode();
 
-		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.get().getRecordWorkInformation().getWorkTimeCode();
-
-		// 1日半日出勤・1日休日系の判定
+		// 打刻反映時の出勤休日扱いチェック - 1日半日出勤・1日休日系の判定
 		WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCode.v());
 
-		// 終了状態：休日扱い
-		if (workStyle == WorkStyle.ONE_DAY_REST) {
+		// result data
+		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
 
+		// after check 打刻反映時の出勤休日扱いチェック
+		// 終了状態：休日扱い - 休日系の打刻範囲を取得する
+		if (workStyle == WorkStyle.ONE_DAY_REST) {
+			this.holidayStampRange(companyID, workInfoOfDailyPerformance, processingDate, employeeID);
 		}
-		// 終了状態：出勤扱い
+		// 終了状態：出勤扱い - 出勤系の打刻範囲を取得する
 		else {
-			this.RangeOfStampOneDay(workTimeCode, companyID,
-					workInfoOfDailyPerformance.get().getScheduleWorkInformation());
+			stampReflectRangeOutput = this.attendanSytemStampRange(workTimeCode, companyID, workInfoOfDailyPerformance);
 		}
 
 	}
@@ -60,32 +70,311 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	/*
 	 * 1日分の打刻反映範囲を取得
 	 */
-	private StampReflectRangeOutput RangeOfStampOneDay(WorkTimeCode workTimeCode, String companyID,
-			WorkInformation scheduleWorkInformation) {
+	private StampReflectRangeOutput attendanSytemStampRange(WorkTimeCode workTimeCode, String companyID,
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
 
-		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
+		StampReflectRangeOutput stampReflectRangeOutput = null;
 
+		// ドメインモデル「就業時間帯の設定」を取得
+		// TODO - wait new wave
 		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
 
+		// 1日分の打刻反映範囲を取得
 		if (workTimeSetting.isPresent()) {
 			// 打刻反映時間帯を取得する - TODO
 			// this step is common of domain from New Wave's team
-			// fake data
 			List<StampReflectTimezone> stampReflectTimezones = new ArrayList<>();
+			// fake data
+
 			if (!stampReflectTimezones.isEmpty()) {
-				// new list for copy data
-				List<StampReflectTimezone> stampReflectTimezoneList = new ArrayList<>();
-				stampReflectTimezones.forEach(stamp -> {
-//					StampReflectTimezone stampReflectTimezone = new StampReflectTimezone();
-					// TODO - not setter? - add setter or create new class
-					
-					
-					stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectTimezoneList);
+				List<StampReflectTimezoneOutput> stampReflectRangeOutputs = new ArrayList<>();
+				stampReflectTimezones.stream().forEach(timezone -> {
+					StampReflectTimezoneOutput stampReflectTimezoneOutput = new StampReflectTimezoneOutput(
+							timezone.getWorkNo(), timezone.getClassification(), timezone.getEndTime(),
+							timezone.getStartTime());
+					stampReflectRangeOutputs.add(stampReflectTimezoneOutput);
 				});
+				stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectRangeOutputs);
+			} else {
+				return stampReflectRangeOutput;
 			}
 		}
 
 		return stampReflectRangeOutput;
 	}
 
+	/*
+	 * 休日系の打刻範囲を取得する
+	 */
+	private StampReflectRangeOutput holidayStampRange(String companyID,
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance, GeneralDate processingDate, String employeeId) {
+
+		StampReflectOnHolidayOutPut stampReflectOnHolidayOutPut = new StampReflectOnHolidayOutPut();
+
+		// get workTimeCode
+		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode();
+
+		// 当日の打刻反映範囲を取得 - 当日の就業時間帯コードを取得
+		// start get data of this day
+		if (workTimeCode.equals(null)) {
+			// use workTypeCode
+			WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode();
+			// TODO - 休日出勤時の勤務情報を取得する - new wave
+			// param : companyID, employeeId, workTypeCode
+			// output : workTimeCodeResult
+			// workTimeCode = workTimeCodeResult;
+		}
+
+		// 当日の打刻反映範囲を取得 - end get data of this day
+		StampReflectRangeOutput stampReflectRangeOutput = this.attendanSytemStampRange(workTimeCode, companyID,
+				workInfoOfDailyPerformance);
+		// set data of this day
+		stampReflectOnHolidayOutPut.setStampReflectThisDay(stampReflectRangeOutput);
+
+		// 前々日の打刻反映範囲を取得 - get data of two day before
+		GeneralDate twoDayBeforeDate = processingDate.addDays(-2);
+		StampReflectRangeOutput stampTwoDay = this.calculationStamp(workInfoOfDailyPerformance, twoDayBeforeDate,
+				employeeId, companyID, 1);
+		// set data of two day before
+		stampReflectOnHolidayOutPut.setStampReflectTwoDayBefore(stampTwoDay);
+
+		// 前日の打刻反映範囲を取得 - get data of previous day
+		GeneralDate previousDay = processingDate.addDays(-1);
+		StampReflectRangeOutput stampPreviousDay = this.calculationStamp(workInfoOfDailyPerformance, previousDay,
+				employeeId, companyID, 2);
+		stampReflectOnHolidayOutPut.setStampReflectPreviousDay(stampPreviousDay);
+
+		// 翌日の打刻反映範囲を取得 - get data of next day
+		GeneralDate nextDay = processingDate.addDays(1);
+		StampReflectRangeOutput stampNextDay = this.calculationStamp(workInfoOfDailyPerformance, nextDay, employeeId,
+				companyID, 3);
+		stampReflectOnHolidayOutPut.setStampReflectNextDay(stampNextDay);
+
+		// 前々日との関係から打刻反映範囲を補正
+		this.stampReflectCorrection(stampTwoDay);
+		
+		// 前日との関係から打刻範囲範囲を補正
+		this.stampReflectCorrection(stampPreviousDay);
+		
+		// 翌日との関係から打刻反映範囲を補正 
+		this.nextDayCorrection(stampNextDay);
+		
+		return stampReflectRangeOutput;
+	}
+
+	/*
+	 * function common for calculation for two day before, previous day, next
+	 * day
+	 */
+	private StampReflectRangeOutput calculationStamp(WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
+			GeneralDate processingDate, String employeeId, String companyID, int dayAttr) {
+
+		/**
+		 * dayAttr 1 : two day before , 2 : previous day 3 : next day
+		 */
+
+		// 打刻反映時の出勤休日扱いチェック
+		// 1日半日出勤・1日休日系の判定
+		WorkStyle workStyle = basicScheduleService
+				.checkWorkDay(workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v());
+
+		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
+
+		if (workStyle != WorkStyle.ONE_DAY_REST) {
+			// get workTimeCode of processingDate
+			String worktimeCode = this.stampRangeCheckWorkRecord(processingDate, employeeId);
+			if (worktimeCode != null) {
+				// 1日分の打刻反映範囲を取得
+				stampReflectRangeOutput = this.attendanSytemStampRange(new WorkTimeCode(worktimeCode), companyID,
+						workInfoOfDailyPerformance);
+
+				if (stampReflectRangeOutput != null && !stampReflectRangeOutput.getLstStampReflectTimezone().isEmpty()) {
+					// loop list 出退勤
+					stampReflectRangeOutput.getLstStampReflectTimezone().stream().forEach(timezone -> {
+						if (dayAttr == 1) {
+							// 開始時刻をパラメータ「ズラす時間」だけズラす
+							TimeWithDayAttr startTimeTwoDay = new TimeWithDayAttr(timezone.getStartTime().v() - 2880);
+							if (startTimeTwoDay.v() < (-720)) {
+								startTimeTwoDay = new TimeWithDayAttr(-720);
+							}
+							// 終了時刻をパラメータ「ズラす時間」だけズラす
+							TimeWithDayAttr endTimeTwoDay = new TimeWithDayAttr(timezone.getEndTime().v() - 2880);
+							if (endTimeTwoDay.v() < (-720)) {
+								endTimeTwoDay = new TimeWithDayAttr(-720);
+							}
+							timezone.setStartTime(startTimeTwoDay);
+							timezone.setEndTime(endTimeTwoDay);
+
+						} else if (dayAttr == 2) {
+							TimeWithDayAttr startTimePreviousDay = new TimeWithDayAttr(
+									timezone.getStartTime().v() - 1440);
+							if (startTimePreviousDay.v() < (-720)) {
+								startTimePreviousDay = new TimeWithDayAttr(-720);
+							}
+							TimeWithDayAttr endTimePreviousDay = new TimeWithDayAttr(timezone.getEndTime().v() - 1440);
+							if (endTimePreviousDay.v() < (-720)) {
+								endTimePreviousDay = new TimeWithDayAttr(-720);
+							}
+							timezone.setStartTime(startTimePreviousDay);
+							timezone.setEndTime(endTimePreviousDay);
+						} else if (dayAttr == 3) {
+							TimeWithDayAttr startTimeNextDay = new TimeWithDayAttr(timezone.getStartTime().v() + 1440);
+							if (startTimeNextDay.v() > 4319) {
+								startTimeNextDay = new TimeWithDayAttr(4319);
+							}
+							TimeWithDayAttr endTimeNextDay = new TimeWithDayAttr(timezone.getEndTime().v() + 1440);
+							if (endTimeNextDay.v() > 4319) {
+								endTimeNextDay = new TimeWithDayAttr(4319);
+							}
+							timezone.setStartTime(startTimeNextDay);
+							timezone.setEndTime(endTimeNextDay);
+						}
+					});
+				}
+
+			}
+
+		}
+
+		return stampReflectRangeOutput;
+	}
+
+	/*
+	 * 打刻範囲チェック用勤務実績取得
+	 */
+	public String stampRangeCheckWorkRecord(GeneralDate processingDate, String employeeId) {
+		// ドメインモデル「日別実績の勤務情報」を取得
+		Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance = this.workInformationRepository
+				.find(employeeId, processingDate);
+
+		if (workInfoOfDailyPerformance.isPresent()) {
+			// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
+			Optional<BasicScheduleSidDto> basicScheduleHasData = this.basicScheduleAdapter
+					.findAllBasicSchedule(employeeId, processingDate);
+			if (basicScheduleHasData.isPresent()) {
+				return basicScheduleHasData.get().getWorkTimeCode();
+			} else {
+				return null;
+			}
+		} else {
+			if (!(workInfoOfDailyPerformance.get().getRecordWorkInformation().getWorkTimeCode() == null)) {
+				return workInfoOfDailyPerformance.get().getRecordWorkInformation().getWorkTimeCode().v();
+			} else {
+				if (!(workInfoOfDailyPerformance.get().getScheduleWorkInformation().getWorkTimeCode() == null)) {
+					return workInfoOfDailyPerformance.get().getScheduleWorkInformation().getWorkTimeCode().v();
+				} else {
+					return null;
+				}
+			}
+		}
+	}
+
+	/*
+	 * Stamp Reflect Correction
+	 */
+	private void stampReflectCorrection(StampReflectRangeOutput stampReflectRangeOutput) {
+		
+		if (!stampReflectRangeOutput.getLstStampReflectTimezone().isEmpty()) {
+			// 前々日の打刻反映範囲から一番遅い時刻を取得
+			TimeWithDayAttr lastestTimeGoWork = getLastestTimeFromListStampReflect(GoLeavingWorkAtr.GO_WORK, stampReflectRangeOutput);
+			// 出勤の打刻反映範囲を補正
+			deleteBeforeDesignatedTimeFromStampReflect(GoLeavingWorkAtr.GO_WORK, lastestTimeGoWork, stampReflectRangeOutput);
+			// 前日の打刻反映範囲から一番遅い時刻を取得
+			TimeWithDayAttr lastestTimeLeavingWork = getLastestTimeFromListStampReflect(GoLeavingWorkAtr.LEAVING_WORK, stampReflectRangeOutput);
+			// 退勤の打刻反映範囲を補正
+			deleteBeforeDesignatedTimeFromStampReflect(GoLeavingWorkAtr.LEAVING_WORK, lastestTimeLeavingWork, stampReflectRangeOutput);
+		}
+	};
+	/*
+	 * next day correction
+	 */
+	private void nextDayCorrection(StampReflectRangeOutput stampReflectRangeOutput){
+		
+		if(!stampReflectRangeOutput.getLstStampReflectTimezone().isEmpty()){
+			// 翌日の打刻反映範囲から一番早い時刻を取得
+			TimeWithDayAttr earliestTimeGoWork = getEarliestTimeFromStampReflect(GoLeavingWorkAtr.GO_WORK, stampReflectRangeOutput);
+			
+			// 出勤の打刻反映範囲を補正
+			deleteAfterDesignatedTimeFromStampReflect(GoLeavingWorkAtr.GO_WORK, earliestTimeGoWork, stampReflectRangeOutput);
+			
+			//翌日の打刻反映範囲から一番早い時刻を取得
+			TimeWithDayAttr earliestLeavingWork = getEarliestTimeFromStampReflect(GoLeavingWorkAtr.LEAVING_WORK, stampReflectRangeOutput);
+			
+			// 退勤の打刻反映範囲を補正
+			deleteAfterDesignatedTimeFromStampReflect(GoLeavingWorkAtr.LEAVING_WORK, earliestLeavingWork, stampReflectRangeOutput);
+		}
+	}
+	
+	public TimeWithDayAttr getEarliestTimeFromStampReflect(GoLeavingWorkAtr goLeavingWorkAtr,
+			StampReflectRangeOutput stampReflectRangeOutput){
+		
+		List<StampReflectTimezoneOutput> stampReflectTimezoneList = stampReflectRangeOutput.getLstStampReflectTimezone()
+				.stream().filter(item -> item.getClassification() == goLeavingWorkAtr).collect(Collectors.toList());
+		if (goLeavingWorkAtr != null){
+			stampReflectTimezoneList =  stampReflectRangeOutput.getLstStampReflectTimezone();
+		}		
+
+		TimeWithDayAttr earliestTime = null;
+		for (StampReflectTimezoneOutput stampReflect : stampReflectTimezoneList){
+			if(stampReflect.getStartTime().lessThan(earliestTime) || (earliestTime == null)){
+				earliestTime = new TimeWithDayAttr(stampReflect.getStartTime().v());
+			}
+		};
+		
+		return earliestTime;
+	}
+	
+	/*
+	 * 打刻反映範囲から指定時刻以降を削除 
+	 */
+	public void deleteAfterDesignatedTimeFromStampReflect(GoLeavingWorkAtr goLeavingWorkAtr, TimeWithDayAttr earliestTime, StampReflectRangeOutput stampReflectRangeOutput){
+		List<StampReflectTimezoneOutput> list = stampReflectRangeOutput.getLstStampReflectTimezone()
+				.stream().filter(item -> item.getClassification() == goLeavingWorkAtr).collect(Collectors.toList());
+		
+		for(StampReflectTimezoneOutput timeZone : list){
+			if (timeZone.getStartTime().lessThan(earliestTime) && timeZone.getEndTime().greaterThan(earliestTime)) {
+				timeZone.setEndTime(new TimeWithDayAttr(earliestTime.v() - 1));	
+			} else if (timeZone.getStartTime().greaterThan(earliestTime)) {
+				stampReflectRangeOutput = new StampReflectRangeOutput();
+			}
+		}
+	}
+
+	/*
+	 * 打刻反映範囲のListから一番遅い時刻を取得
+	 */
+	public TimeWithDayAttr getLastestTimeFromListStampReflect(GoLeavingWorkAtr goLeavingWorkAtr,
+			StampReflectRangeOutput stampReflectRangeOutput) {
+		List<StampReflectTimezoneOutput> stampReflectTimezoneList = stampReflectRangeOutput.getLstStampReflectTimezone()
+				.stream().filter(item -> item.getClassification() == goLeavingWorkAtr).collect(Collectors.toList());
+		if (goLeavingWorkAtr != null){
+			stampReflectTimezoneList =  stampReflectRangeOutput.getLstStampReflectTimezone();
+		}
+		
+		TimeWithDayAttr lastestTime = null;
+		for (StampReflectTimezoneOutput stampReflect : stampReflectTimezoneList){
+			if(stampReflect.getEndTime().greaterThan(lastestTime) || (lastestTime == null)){
+				lastestTime = new TimeWithDayAttr(stampReflect.getEndTime().v());
+			}
+		};
+
+		return lastestTime;
+	}
+	
+	/*
+	 * 打刻反映範囲から指定時刻以前を削除
+	 */
+	public void deleteBeforeDesignatedTimeFromStampReflect(GoLeavingWorkAtr goLeavingWorkAtr, TimeWithDayAttr lastestTime, StampReflectRangeOutput stampReflectRangeOutput){
+		
+		List<StampReflectTimezoneOutput> list = stampReflectRangeOutput.getLstStampReflectTimezone()
+				.stream().filter(item -> item.getClassification() == goLeavingWorkAtr).collect(Collectors.toList());
+		
+		for(StampReflectTimezoneOutput timeZone : list){
+			if(timeZone.getStartTime().lessThan(lastestTime) && timeZone.getEndTime().greaterThan(lastestTime)){
+				timeZone.setStartTime(new TimeWithDayAttr(lastestTime.v() + 1));
+			} else if(timeZone.getEndTime().lessThan(lastestTime)) {
+				stampReflectRangeOutput = new StampReflectRangeOutput();
+			}
+		}
+	}
 }

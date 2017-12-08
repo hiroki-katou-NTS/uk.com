@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
@@ -239,7 +240,10 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		//アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening Corresponding to Employees"--
 		ClosureDto closureDto = repo.getClosureId(sId, dateRange.getEndDate());
-	    
+		
+		//get employmentCode 
+		AffEmploymentHistoryDto employment= repo.getAffEmploymentHistory(sId, dateRange);
+		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data
 		getHolidaySettingData(screenDto);
 		

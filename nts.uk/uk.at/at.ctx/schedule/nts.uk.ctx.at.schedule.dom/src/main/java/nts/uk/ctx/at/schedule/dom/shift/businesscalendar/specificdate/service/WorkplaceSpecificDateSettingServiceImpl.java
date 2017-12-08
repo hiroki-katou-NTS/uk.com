@@ -41,7 +41,7 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 	@Override
 	public SpecificDateItemOutput workplaceSpecificDateSettingService(String companyID, String workPlaceID, GeneralDate date) {
 		List<SpecificDateItemNo> specificDateItemList = new ArrayList<SpecificDateItemNo>();
-		List<CompanySpecificDateItem> companySpecificDateItemList = companySpecificDateRepository.getComSpecByDateWithName(companyID, date.toString("yyyyMMdd"));
+		List<CompanySpecificDateItem> companySpecificDateItemList = companySpecificDateRepository.getComSpecByDateWithName(companyID, date, date);
 		if(!CollectionUtil.isEmpty(companySpecificDateItemList)){
 			List<String> numberList = companySpecificDateItemList.stream().map(x -> x.getSpecificDateItemNo().v().toString()).collect(Collectors.toList());
 			numberList.stream().distinct();
@@ -52,7 +52,7 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 		// アルゴリズム「職場IDから上位職場を取得する」を実行する ( Acquire upper workplace from workplace ID )
 		List<String> workplaceIDList = scWorkplaceAdapter.findParentWpkIdsByWkpId(companyID, workPlaceID, date);
 		workplaceIDList.stream().forEach(workplace -> {
-			List<WorkplaceSpecificDateItem> workplaceSpecificDateItemList = workplaceSpecificDateRepository.getWpSpecByDateWithName(workplace, date.toString("yyyyMMdd"));
+			List<WorkplaceSpecificDateItem> workplaceSpecificDateItemList = workplaceSpecificDateRepository.getWpSpecByDateWithName(workplace, date, date);
 			workplaceSpecificDateItemList.stream().distinct();
 			workplaceSpecificDateItemList.forEach(item -> {
 				if(!specificDateItemList.contains(item.getSpecificDateItemNo())){

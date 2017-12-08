@@ -23,6 +23,13 @@ public interface RoleRepository {
 	 * @return
 	 */
 	Optional<Role> findByRoleId(String roleId);
+	/**
+	 * Find role by role code and role type
+	 * @param roleCode
+	 * @param RoleType
+	 * @return
+	 */
+	Optional<Role> findRoleByRoleCode(String roleCode,int roleType );
 	
 	/**
 	 * Find by list role id.

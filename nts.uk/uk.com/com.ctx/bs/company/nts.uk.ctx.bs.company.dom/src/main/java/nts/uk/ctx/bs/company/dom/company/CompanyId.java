@@ -6,8 +6,8 @@ package nts.uk.ctx.bs.company.dom.company;
 
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
-
 /**
+ * 会社ID
  * The Class CompanyId.
  */
 @StringMaxLength(17)
@@ -18,7 +18,6 @@ public class CompanyId extends CodePrimitiveValue<CompanyId>{
 
 	/**
 	 * Instantiates a new company id.
-	 *
 	 * @param rawValue the raw value
 	 */
 	public CompanyId(String rawValue) {

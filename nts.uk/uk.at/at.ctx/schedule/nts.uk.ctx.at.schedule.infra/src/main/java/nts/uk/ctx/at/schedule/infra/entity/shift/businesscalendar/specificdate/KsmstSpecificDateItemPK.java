@@ -20,6 +20,6 @@ public class KsmstSpecificDateItemPK implements Serializable {
 	public String companyId;
 	
 	@Column(name = "SPECIFIC_DATE_ITEM_NO")
-	public BigDecimal itemNo;
+	public Integer itemNo;
 
 }

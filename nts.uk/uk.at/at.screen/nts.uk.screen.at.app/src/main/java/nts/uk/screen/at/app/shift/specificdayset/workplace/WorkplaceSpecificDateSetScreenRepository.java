@@ -1,7 +1,8 @@
 package nts.uk.screen.at.app.shift.specificdayset.workplace;
 
-import java.math.BigDecimal;
 import java.util.List;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -14,5 +15,5 @@ public interface WorkplaceSpecificDateSetScreenRepository {
 	 * @param params
 	 * @return
 	 */
-	List<BigDecimal> findDataWkpSpecificDateSet(WorkplaceSpecificDateSetScreenParams params);
+	List<GeneralDate> findDataWkpSpecificDateSet(WorkplaceSpecificDateSetScreenParams params);
 }

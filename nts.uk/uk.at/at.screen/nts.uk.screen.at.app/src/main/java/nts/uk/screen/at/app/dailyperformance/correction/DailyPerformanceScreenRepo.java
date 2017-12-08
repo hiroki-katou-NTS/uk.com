@@ -7,8 +7,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTimeWorkplaceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTypeChangedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
@@ -125,6 +129,16 @@ public interface DailyPerformanceScreenRepo {
 	
 	EmploymentDto findEmployment(String companyId, String employmentCode);
 	
+	List<CodeName> findEmployment(String companyId);
+	
+	List<CodeName> findJobInfo(String companyId, GeneralDate baseDate);
+	
+	List<CodeName> findClassification(String companyId);
+	
+	List<CodeName> findWorkplace(String companyId, GeneralDate date);
+	
+	List<CodeName> findWorkplaceLocation(String companyId);
+	
 	ClosureEmploymentDto findByEmploymentCD(String companyID, String employmentCD);
 	
 	List<DailyRecEditSetDto> getDailyRecEditSet(List<String> listEmployeeId, DateRange dateRange);
@@ -148,4 +162,12 @@ public interface DailyPerformanceScreenRepo {
 	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
 	
 	List<DailyPerformanceAuthorityDto> findDailyAuthority(String roleId);
-}
+	
+	List<WorkTimeWorkplaceDto> findWorkHours(String companyId, String workplaceId);
+	
+	List<CodeName> findWorkTimeZone(String companyId, List<String> shifCode);
+	
+	List<WorkTypeChangedDto> findWorkTypeChanged(String employmentCode, String typeCode, String companyId);
+	
+	List<CodeName> findWorkType(String companyId, Set<String> typeCodes);
+ }

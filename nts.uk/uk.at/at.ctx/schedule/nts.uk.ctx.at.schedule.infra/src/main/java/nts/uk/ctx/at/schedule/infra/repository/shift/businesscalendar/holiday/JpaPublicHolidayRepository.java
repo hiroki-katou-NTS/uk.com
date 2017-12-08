@@ -3,12 +3,14 @@
  */
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.holiday;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KsmmtPublicHoliday;
@@ -34,7 +36,7 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 			+ " AND c.ksmmtPublicHolidayPK.date <= :endDate";
 
 	@Override
-	public List<PublicHoliday> getHolidaysByListDate(String companyId, List<BigDecimal> lstDate) {
+	public List<PublicHoliday> getHolidaysByListDate(String companyId, List<GeneralDate> lstDate) {
 		return this.queryProxy().query(SELECT_BY_LISTDATE, KsmmtPublicHoliday.class)
 				.setParameter("companyId", companyId).setParameter("lstDate", lstDate).getList().stream()
 				.map(entity -> toDomain(entity)).collect(Collectors.toList());
@@ -52,13 +54,13 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 	}
 
 	@Override
-	public Optional<PublicHoliday> getHolidaysByDate(String companyID, BigDecimal date) {
+	public Optional<PublicHoliday> getHolidaysByDate(String companyID, GeneralDate date) {
 		return this.queryProxy().query(SELECT_BY_DATE, KsmmtPublicHoliday.class)
 				.setParameter("companyId", companyID).setParameter("date", date).getSingle(c -> toDomain(c));
 	}
 
 	@Override
-	public void remove(String companyID, BigDecimal date) {
+	public void remove(String companyID, GeneralDate date) {
 		this.commandProxy().remove(KsmmtPublicHoliday.class, new KsmmtPublicHolidayPK(companyID, date));
 		this.getEntityManager().flush();
 	}
@@ -91,7 +93,7 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 	 * @return
 	 */
 	@Override
-	public List<PublicHoliday> getpHolidayWhileDate(String companyId,int strDate, int endDate) {
+	public List<PublicHoliday> getpHolidayWhileDate(String companyId,GeneralDate strDate, GeneralDate endDate) {
 		return this.queryProxy().query(SELECT_BY_SDATE_EDATE, KsmmtPublicHoliday.class)
 				.setParameter("companyId", companyId)
 				.setParameter("strDate", strDate)

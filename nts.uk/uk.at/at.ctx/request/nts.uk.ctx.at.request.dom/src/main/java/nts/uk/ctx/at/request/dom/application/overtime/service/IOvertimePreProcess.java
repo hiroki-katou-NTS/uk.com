@@ -90,6 +90,12 @@ public interface IOvertimePreProcess {
 	public AppOverTime getPreApplication(String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
 	
 	/**
+	 * 01-10_0時跨ぎチェック
+	 * @return
+	 */
+	public boolean displayBreaktime();
+	
+	/**
 	 * 01-13_事前事後区分を取得
 	 * @param companyID
 	 * @param applicationDto
@@ -118,7 +124,7 @@ public interface IOvertimePreProcess {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public void getResultContentActual(int prePostAtr,String siftCode,String companyID,String appDate);
+	public AppOverTime getResultContentActual(int prePostAtr,String siftCode,String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours);
 	
 	/**
 	 * @param employeeID

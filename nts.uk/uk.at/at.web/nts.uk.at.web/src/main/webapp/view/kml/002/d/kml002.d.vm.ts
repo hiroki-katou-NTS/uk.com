@@ -41,16 +41,12 @@ module nts.uk.at.view.kml002.d.viewmodel {
             self.currentRightCodeList = ko.observableArray([]);
             self.listBudget = ko.observableArray([]);
             self.checked.subscribe((value) => {
-                var t0 = performance.now();
                 if(self.rightItems().length > 0){
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_194" }).ifYes(() => {
                         self.rightItems([]);
                         if(value){
                             let foundItem = _.find(self.listBudget(), (item: ItemModel) => {
                                 return item.name ==  nts.uk.resource.getText("KML002_109");
-                            });
-                            let search = _.find(self.listBudget(), (item: ItemModel) => {
-                                return item.name ==  nts.uk.resource.getText("KML002_110");
                             });
                             self.items([]);
                             self.rightItems([]);
@@ -66,9 +62,6 @@ module nts.uk.at.view.kml002.d.viewmodel {
                         let foundItem = _.find(self.listBudget(), (item: ItemModel) => {
                             return item.name ==  nts.uk.resource.getText("KML002_109");
                         });
-                        let search = _.find(self.listBudget(), (item: ItemModel) => {
-                            return item.name ==  nts.uk.resource.getText("KML002_110");
-                        });
                         self.items([]);
                         self.rightItems([]);
                         self.currentCodeList.removeAll();
@@ -78,8 +71,6 @@ module nts.uk.at.view.kml002.d.viewmodel {
                         self.items(self.listBudget());
                     }
                 }
-                var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
             })
         }
 
@@ -91,15 +82,14 @@ module nts.uk.at.view.kml002.d.viewmodel {
             var dfd = $.Deferred();
             let array = [];
             let i = 2;
-            
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             let param = {
                 budgetAtr: 1,   
                 // received from mother screen 0: day or 1: time
-                unitAtr: 0
+                unitAtr: data.unit
             }
             
             service.getByAtr(param).done((lst) => {  
-                console.log(lst);
                 let sortedData= _.orderBy(lst, ['externalBudgetCode'], ['asc']);
                 _.map(sortedData, function(item){
                     array.push({
@@ -125,12 +115,10 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 self.items(sortedLst); 
                 self.listBudget(sortedLst);
                 
-                var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
-            
                 if(data.formPeople != null) {
                     if(data.formPeople.lstPeopleFunc.length > 0) {
                         let dataItems = [];
-                        
+                        self.checked(data.formPeople.actualDisplayAtr == 1? true: false);
                         _.forEach(data.formPeople.lstPeopleFunc, function(item){
                             let curItem = _.find(self.items(), function(o) { return o.code == item.externalBudgetCd; });
                             
@@ -205,6 +193,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
          * event when click add button 
          */
         add(){
+              var t0 = performance.now();
             let self = this;
             console.log(self.rightItems());
             if((self.rightItems().length + self.currentCodeList().length) > 100){
@@ -228,6 +217,8 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 self.rightItems(righItems);
                 console.log(self.rightItems());
             }
+             var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         
         /**

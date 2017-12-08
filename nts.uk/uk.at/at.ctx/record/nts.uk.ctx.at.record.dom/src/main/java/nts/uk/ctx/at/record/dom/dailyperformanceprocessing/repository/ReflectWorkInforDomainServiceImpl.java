@@ -230,8 +230,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				this.errMessageInfoRepository.add(action);
 			});
 		}
-
-//		this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeId, day);
 	}
 
 	private void workschedule(String companyId, String employeeID, GeneralDate day, String empCalAndSumExecLogID,
@@ -258,11 +256,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// ドメインモデル「打刻反映管理」を取得する
 		Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
 				.findByCid(companyId);
-
-		// ドメインモデル「日別実績の出退勤」を取得する
 		// 日別実績の出退勤
-		Optional<TimeLeavingOfDailyPerformance> timeLeavingOptional = this.timeLeavingOfDailyPerformanceRepository
-				.findByKey(employeeID, day);
+		TimeLeavingOfDailyPerformance timeLeavingOptional = new TimeLeavingOfDailyPerformance();
 
 		// check data
 		// 存在しない - no data
@@ -640,25 +635,29 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// 出勤反映 = true
 			// 出勤に自動打刻セットする
 			if (automaticStampSetDetailDto.getAttendanceReflectAttr() == UseAtr.USE) {
+				
+				List<TimeLeavingWork> timeLeavingWorkList = new ArrayList<>();
+				
 				// ドメインモデル「日別実績の出退勤」を取得する
-				// timeLeavingOptional
 				// 自動打刻セット詳細．出退勤を順次確認する
 				automaticStampSetDetailDto.getTimeLeavingWorks().stream().forEach(timeLeaving -> {
-
-					Optional<TimeLeavingWork> stamp = timeLeavingOptional.get().getTimeLeavingWorks().stream()
-							.filter(itemm -> itemm.getWorkNo().v().equals(timeLeaving.getWorkNo().v())).findAny();
+					TimeLeavingWork stamp = null;
+					if(timeLeavingOptional.getTimeLeavingWorks() != null){
+						stamp = timeLeavingOptional.getTimeLeavingWorks().stream().filter(itemx -> itemx.getWorkNo().v().equals(timeLeaving.getWorkNo().v())).findFirst().get();
+					}
+					
 					if (stampReflectionManagement.get()
 							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
 							|| (stampReflectionManagement.get()
 									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
 									&& timeLeaving.getAttendanceStamp().getStamp().getTimeWithDay()
 											.lessThanOrEqualTo(currentMinuteOfDay))) {
-
+						
 						TimeLeavingWork work = new TimeLeavingWork();
 						// 勤務NOが同じ実績．出退勤を確認する
 						// 存在しない
-						if (!timeLeavingOptional.get().getTimeLeavingWorks().stream()
-								.anyMatch(item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v())) {
+						if (timeLeavingOptional.getTimeLeavingWorks() == null || (timeLeavingOptional.getTimeLeavingWorks() != null && !timeLeavingOptional.getTimeLeavingWorks().stream()
+								.anyMatch(item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v()))) {
 
 							// 実績．出退勤．出勤．打刻←詳細．出退勤．出勤．打刻
 							TimeActualStamp timeActualStamp = new TimeActualStamp();
@@ -667,22 +666,24 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							work.setWorkNo(timeLeaving.getWorkNo());
 							work.setAttendanceStamp(timeActualStamp);
 
-							timeLeavingOptional.get().getTimeLeavingWorks().add(work);
+							timeLeavingWorkList.add(work);
 							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
 							// .filter(item ->
 							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
 							// .getAttendanceStamp());
 						}
-
 						// 存在する && 入っていない
-						if (timeLeavingOptional.get().getTimeLeavingWorks().stream()
-								.anyMatch(item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v())
-								&& stamp.get().getAttendanceStamp().getStamp().equals(null)) {
-
-							timeLeavingOptional.get().getTimeLeavingWorks().stream()
-									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-									.getAttendanceStamp().setStamp(timeLeaving.getAttendanceStamp().getStamp());
-
+						if ((timeLeavingOptional.getTimeLeavingWorks() != null && timeLeavingOptional.getTimeLeavingWorks().stream()
+								.anyMatch(item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v()))
+								&& (stamp != null
+								&& (stamp.getLeaveStamp() == null 
+								|| (stamp.getLeaveStamp() != null && stamp.getLeaveStamp().getStamp() == null)))) {
+							
+							TimeActualStamp timeActualStamp = new TimeActualStamp();
+							timeActualStamp.setStamp(timeLeaving.getAttendanceStamp().getStamp());
+							
+							stamp.setAttendanceStamp(timeActualStamp);
+							
 							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
 							// .filter(item ->
 							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
@@ -691,15 +692,22 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					}
 					;
 				});
+				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
 
 			}
-
+			
 			// 退勤反映 = true
 			if (automaticStampSetDetailDto.getRetirementAttr() == UseAtr.USE) {
+				
+				List<TimeLeavingWork> timeLeavingWorkLst = new ArrayList<>();
+				
 				automaticStampSetDetailDto.getTimeLeavingWorks().stream().forEach(timeLeavingWork -> {
 
-					Optional<TimeLeavingWork> stamp = timeLeavingOptional.get().getTimeLeavingWorks().stream()
-							.filter(itemm -> itemm.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v())).findAny();
+					TimeLeavingWork stamp = null;
+					if (!timeLeavingOptional.getTimeLeavingWorks().isEmpty()) {
+						stamp = timeLeavingOptional.getTimeLeavingWorks().stream()
+								.filter(itemm -> itemm.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v())).findAny().get();
+					}					
 
 					if (stampReflectionManagement.get()
 							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
@@ -711,7 +719,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						TimeLeavingWork timeLeaving = new TimeLeavingWork();
 						// 勤務NOが同じ実績．出退勤を確認する
 						// 存在しない
-						if (!timeLeavingOptional.get().getTimeLeavingWorks().stream()
+						if (timeLeavingOptional.getTimeLeavingWorks() != null && !timeLeavingOptional.getTimeLeavingWorks().stream()
 								.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v())) {
 
 							// 実績．出退勤．出勤．打刻←詳細．出退勤．出勤．打刻
@@ -721,22 +729,29 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							timeLeaving.setWorkNo(timeLeavingWork.getWorkNo());
 							timeLeaving.setLeaveStamp(actualStamp);
 
-							timeLeavingOptional.get().getTimeLeavingWorks().add(timeLeaving);
+							timeLeavingWorkLst.add(timeLeaving);
+
 							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
 							// .filter(item ->
 							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
 							// .getLeaveStamp());
 						}
-
 						// 存在する && 入っていない
-						if (!timeLeavingOptional.get().getTimeLeavingWorks().stream()
-								.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v())
-								|| (timeLeavingOptional.get().getTimeLeavingWorks().stream()
-										.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v())
-										&& stamp.get().getLeaveStamp().getStamp().equals(null))) {
-							timeLeavingOptional.get().getTimeLeavingWorks().stream()
-									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-									.getLeaveStamp().setStamp(timeLeaving.getLeaveStamp().getStamp());
+						if ((timeLeavingOptional.getTimeLeavingWorks() != null 
+								&& timeLeavingOptional.getTimeLeavingWorks().stream()
+								.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v())) 
+								&& (stamp != null 
+								&& (stamp.getLeaveStamp() == null 
+								|| (stamp.getLeaveStamp() != null && stamp.getLeaveStamp().getStamp() == null)))) {
+							
+							TimeActualStamp timeActualStamp = new TimeActualStamp();
+							timeActualStamp.setStamp(timeLeavingWork.getAttendanceStamp().getStamp());
+							
+							stamp.setLeaveStamp(timeActualStamp);
+							
+//							timeLeavingOptional.getTimeLeavingWorks().stream()
+//									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+//									.getLeaveStamp().setStamp(timeLeaving.getLeaveStamp().getStamp());
 							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
 							// .filter(item ->
 							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
@@ -744,10 +759,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						}
 					}
 				});
+
+				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkLst);
 			}
 		}
 
 		this.errMessageInfoRepository.addList(errMesInfos);
+
+		this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day, workInfoOfDailyPerformanceUpdate);
 
 		if (errMesInfos.isEmpty()) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する
@@ -770,7 +789,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 			// ドメインモデル「日別実績の出退勤」を更新する - update
 			// TimeLeavingOfDailyPerformance
-			timeLeavingOptional.get();
+//			timeLeavingOptional.getTimeLeavingWorks();
 		}
 
 	}

@@ -9,15 +9,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleScreenSymbolParams;
 import nts.uk.screen.at.app.schedule.basicschedule.StateWorkTypeCodeDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineScreenDto;
-import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
-import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenParams;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenProcessor;
@@ -51,33 +48,25 @@ public class Ksu001Webservice extends WebService {
 	@Inject
 	private PublicHolidayScreenProcessor publicHolidayScreenProcessor;
 
-	@POST
-	@Path("getDataBasicSchedule")
-	public List<BasicScheduleScreenDto> getData(BasicScheduleScreenParams params) {
-		return this.bScheduleScreenProces.getByListSidAndDate(params);
-	}
-
-	@POST
-	@Path("getDataWorkScheTimezone")
-	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(BasicScheduleScreenParams params) {
-		return this.bScheduleScreenProces.getDataWorkScheTimezone(params);
-	}
-
-	@POST
-	@Path("getListWorkTime")
-	public List<WorkTimeScreenDto> getWorkTime() {
-		return this.bScheduleScreenProces.getListWorkTime();
-	}
-
 	/**
-	 * Gets worktype base on Cid and deprecateCls
-	 *
-	 * @return the by Cid and deprecateCls
+	 * Get list data of workType and workTime for combo-box
+	 * 
+	 * @return List WorkType WorkTime
 	 */
 	@POST
-	@Path("getListWorkType")
-	public List<WorkTypeScreenDto> getByCIdAndDeprecateCls() {
-		return this.bScheduleScreenProces.findByCIdAndDeprecateCls();
+	public ListWorkTypeWorkTimeDto init() {
+		ListWorkTypeWorkTimeDto result = new ListWorkTypeWorkTimeDto(
+				this.bScheduleScreenProces.findByCIdAndDeprecateCls(), this.bScheduleScreenProces.getListWorkTime());
+		return result;
+	}
+
+	@POST
+	@Path("getDataBasicSchedule")
+	public BasicScheduleScreenAtDto getDataBasicScheduleScreenAtDto(BasicScheduleScreenParams params) {
+		BasicScheduleScreenAtDto result = new BasicScheduleScreenAtDto(
+				this.bScheduleScreenProces.getByListSidAndDate(params),
+				this.bScheduleScreenProces.getDataWorkScheTimezone(params));
+		return result;
 	}
 
 	@POST
@@ -94,19 +83,19 @@ public class Ksu001Webservice extends WebService {
 
 	@POST
 	@Path("getDataWkpSpecificDate")
-	public List<BigDecimal> getDataWkpSpecificDate(WorkplaceSpecificDateSetScreenParams params) {
+	public List<GeneralDate> getDataWkpSpecificDate(WorkplaceSpecificDateSetScreenParams params) {
 		return this.workplaceSpecificDateSetScreenProcessor.findDataWkpSpecificDateSet(params);
 	}
 
 	@POST
 	@Path("getDataComSpecificDate")
-	public List<BigDecimal> getDataComSpecificDate(StartDateEndDateScreenParams params) {
+	public List<GeneralDate> getDataComSpecificDate(StartDateEndDateScreenParams params) {
 		return this.comSpecificDateSetScreenProcessor.findDataComSpecificDateSet(params);
 	}
 
 	@POST
 	@Path("getDataPublicHoliday")
-	public List<BigDecimal> getDataPublicHoliday(StartDateEndDateScreenParams params) {
+	public List<GeneralDate> getDataPublicHoliday(StartDateEndDateScreenParams params) {
 		return this.publicHolidayScreenProcessor.findDataPublicHoliday(params);
 	}
 
