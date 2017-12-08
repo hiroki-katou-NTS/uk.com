@@ -47,6 +47,10 @@ public class KrcmtDailyAttendanceItem extends UkJpaEntity implements Serializabl
 	/* 属性 */
 	@Column(name = "DAILY_ATTENDANCE_ATR")
 	public BigDecimal dailyAttendanceAtr;
+	
+	/* Group */
+	@Column(name = "TYPE_OF_MASTER")
+	public BigDecimal typeOfMaster;
 
 	@Override
 	protected Object getKey() {
