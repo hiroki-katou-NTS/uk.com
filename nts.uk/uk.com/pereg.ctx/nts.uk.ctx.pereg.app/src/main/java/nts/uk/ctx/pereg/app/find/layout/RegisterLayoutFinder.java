@@ -126,13 +126,14 @@ public class RegisterLayoutFinder {
 
 					if (peregDto != null) {
 						LayoutPersonInfoClsDto clsDto = clsDtoOpt.get();
-						clsDto.setItems(clsDto
-								.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
-										.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
-								.collect(Collectors.toList()));
+						if (!CollectionUtil.isEmpty(clsDto.getListItemDf())) {
+							clsDto.setItems(clsDto.getListItemDf()
+									.stream().map(itemDf -> LayoutPersonInfoValueDto
+											.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
+									.collect(Collectors.toList()));
 
-						MappingFactory.mapItemClass(peregDto, clsDto);
-
+							MappingFactory.mapItemClass(peregDto, clsDto);
+						}
 					}
 				}
 
