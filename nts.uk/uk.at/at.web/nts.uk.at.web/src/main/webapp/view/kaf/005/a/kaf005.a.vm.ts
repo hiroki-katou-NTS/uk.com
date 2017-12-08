@@ -398,9 +398,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         //登録処理を実行
         registerData(overtime) {
-            service.createOvertime(overtime).done(() => {
+            service.createOvertime(overtime).done((data) => {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    location.reload();
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
+                                location.reload();    
+                            });
+                        } else {
+                            location.reload();        
+                        }
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })

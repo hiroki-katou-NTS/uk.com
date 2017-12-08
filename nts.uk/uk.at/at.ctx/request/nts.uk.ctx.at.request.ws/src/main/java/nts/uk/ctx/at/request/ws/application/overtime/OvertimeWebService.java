@@ -64,8 +64,8 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("create")
-	public void createOvertime(CreateOvertimeCommand command){
-		createHandler.handle(command);
+	public List<String> createOvertime(CreateOvertimeCommand command){
+		return createHandler.handle(command);
 	}
 	@POST
 	@Path("checkBeforeRegister")
