@@ -151,4 +151,14 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 				.getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
 	}
 
+	@Override
+	public Optional<Role> findByContractCDRoleTypeAndCompanyID(String contractCD, int roleType, String companyID) {
+		String query = "SELECT e FROM SacmtRole e WHERE e.contractCode =: contractCode AND e.roleType = :roleType AND e.cid =: cid";
+		return this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("contractCode", contractCD)
+				.setParameter("roleType", roleType)
+				.setParameter("cid", companyID)
+				.getList().stream().map(x ->new Role (new JpaRoleGetMemento(x))).findFirst();
+	}
+
 }
