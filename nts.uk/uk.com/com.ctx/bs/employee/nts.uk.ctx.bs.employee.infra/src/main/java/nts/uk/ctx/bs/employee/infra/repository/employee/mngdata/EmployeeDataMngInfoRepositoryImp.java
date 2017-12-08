@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,6 +33,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
 	
+	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
+			"WHERE e.delStatus = 0 AND e.employeeCode = :empcode AND e.companyId = :cid");
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -126,6 +129,12 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@Override
 	public void updateRemoveReason(EmployeeDataMngInfo domain) {
 		this.commandProxy().update(toEntity(domain));
+	}
+
+	@Override
+	public Optional<EmployeeDataMngInfo> findByEmployeCD(String empcode, String cid) {
+		return queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployeeDataMngInfo.class).setParameter("empcode", empcode)
+				.setParameter("cid", cid).getSingle().map(m -> toDomain(m));
 	}
 
 }
