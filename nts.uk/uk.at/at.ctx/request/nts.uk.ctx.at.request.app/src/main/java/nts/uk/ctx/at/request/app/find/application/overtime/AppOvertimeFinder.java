@@ -203,41 +203,16 @@ public class AppOvertimeFinder {
 			
 		}
 		// 06-02_残業時間を取得
-		List<CaculationTime> caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value);
-		if(caculationTimeHours != null){
-			for(CaculationTime caculationTime : caculationTimeHours){
-				for(CaculationTime caculationTimeOld : overtimeHours){
-					if(caculationTime.getFrameNo() == caculationTimeOld.getFrameNo()){
-						caculationTimeOld.setPreAppTime(caculationTime.getPreAppTime());
-						caculationTimeOld.setCaculationTime(caculationTime.getCaculationTime());
-					}
-				}
-			}
-		}else{
-			for(CaculationTime caculationTimeOld : overtimeHours){
-				caculationTimeOld.setPreAppTime(null);
-			}
-		}
+		List<CaculationTime> caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value,overtimeHours);
+		
 		
 		// 06-03_加給時間を取得
-		List<CaculationTime> caculationTimeBonus= this.overtimeSixProcess.getCaculationBonustime(companyID, employeeID, appDate,  ApplicationType.OVER_TIME_APPLICATION.value);
-		if(caculationTimeBonus != null){
-			for(CaculationTime caculationTime : caculationTimeBonus){
-				for(CaculationTime caculationTimeOld : bonusTimes){
-					if(caculationTime.getFrameNo() == caculationTimeOld.getFrameNo()){
-						caculationTimeOld.setPreAppTime(caculationTime.getPreAppTime());
-					}
-				}
-			}
-		}else{
-			for(CaculationTime caculationTimeOld : bonusTimes){
-				caculationTimeOld.setPreAppTime(null);
-			}
-		}
-		for(CaculationTime overtimeHour : overtimeHours){
+		List<CaculationTime> caculationTimeBonus= this.overtimeSixProcess.getCaculationBonustime(companyID, employeeID, appDate,  ApplicationType.OVER_TIME_APPLICATION.value,bonusTimes);
+		
+		for(CaculationTime overtimeHour : caculationTimeHours){
 			caculationTimes.add(overtimeHour);
 		}
-		for(CaculationTime bonusTime : bonusTimes){
+		for(CaculationTime bonusTime : caculationTimeBonus){
 			caculationTimes.add(bonusTime);
 		}
 		// 計算フラグ=0
@@ -805,23 +780,7 @@ public class AppOvertimeFinder {
 		}
 		result.setPreAppOvertimeDto(preAppOvertimeDto);
 	}
-//	private List<OverTimeInput> convert(List<CaculationTime> overTimeInputDtos){
-//		List<OverTimeInput> overTimeInputs = new ArrayList<>();
-//		for(CaculationTime overtimeInputDto : overTimeInputDtos){
-//			if(overtimeInputDto .getStartTime() != null){
-//				OverTimeInput overTimeInput = OverTimeInput.createSimpleFromJavaType(overtimeInputDto.getCompanyID(),
-//						overtimeInputDto.getAppID(),
-//						overtimeInputDto.getAttendanceID(), 
-//						overtimeInputDto.getFrameNo(),
-//						overtimeInputDto.getStartTime(),
-//						overtimeInputDto.getEndTime(),
-//						overtimeInputDto.getApplicationTime(),
-//						overtimeInputDto.getTimeItemTypeAtr());
-//				overTimeInputs.add(overTimeInput);
-//			}
-//		}
-//		return overTimeInputs;
-//	}
+
 	private List<OvertimeInputDto> convertOverTimeInputDto(List<OverTimeInput> overtimeInputs,String companyID){
 		List<OvertimeInputDto> overTimeInputDtos = new ArrayList<>();
 		List<Integer> frameOverTimeNo = new ArrayList<>();

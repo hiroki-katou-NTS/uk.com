@@ -53,7 +53,7 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("checkConvertPrePost")
 	public OverTimeDto convertPrePost(ParamChangeAppDate param) {
-		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate());
+		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate(),param.getSiftCD(),param.getOvertimeHours());
 	}
 	@POST
 	@Path("getCaculationResult")

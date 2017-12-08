@@ -24,7 +24,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
@@ -51,27 +50,28 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#checkDisplayColor(java.util.List, java.util.List, int, nts.arc.time.GeneralDateTime, nts.arc.time.GeneralDate, int, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting)
 	 */
 	@Override
-	public void checkDisplayColor(List<OverTimeInput> overTimeInputs,
+	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
 			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate, int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting) {
 		
-		for(OverTimeInput overtimeInput : overTimeInputs ){
+		for(CaculationTime overtimeInput : overTimeInputs ){
 			for(OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations){
 					if(overtimeInput.getFrameNo() == overtimeInputCaculation.getFrameNo()){
-						if(overtimeInput.getStartTime().v() == overtimeInputCaculation.getResultCaculation()){
-							if(overtimeInput.getStartTime().v() == 0){
-								continue;
-							}else if(overtimeInput.getStartTime().v() > 0){
-								// 03-01_事前申請超過チェック
-								OvertimeCheckResult overtimeCheckResult = this.IErrorCheckBeforeRegister.preApplicationExceededCheck(overtimeInput.getCompanyID(),appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), overtimeInputCaculation.getAttendanceID(), overTimeInputs);
-								// 06-04_計算実績超過チェック
-								checkCaculationActualExcess(prePostAtr,appType,employeeID,companyID,requestAppDetailSetting);
-							}
-						}else{
-							// in màu
+						if(overtimeInput.getApplicationTime() != overtimeInputCaculation.getResultCaculation()){
+							overtimeInput.setErrorCode(3); // 色定義名：計算値
+						}
+						if(overtimeInputCaculation.getResultCaculation() == 0){
+							continue;
+						}else if(overtimeInputCaculation.getResultCaculation() > 0){
+							// 03-01_事前申請超過チェック
+							OvertimeCheckResult overtimeCheckResult = this.IErrorCheckBeforeRegister.preApplicationExceededCheck(overtimeInput.getCompanyID(),appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), overtimeInputCaculation.getAttendanceID(), convert(overtimeInput));
+							
+							// 06-04_計算実績超過チェック
+							checkCaculationActualExcess(prePostAtr,appType,employeeID,companyID,requestAppDetailSetting);
 						}
 					}
 			}
 		}
+		return overTimeInputs;
 		
 	}
 	
@@ -113,26 +113,26 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	 */
 	@Override
 	public List<CaculationTime> getCaculationOvertimeHours(String companyID, String employeeId, String appDate,
-			int appType) {
-		List<CaculationTime> overtimeInputs = new ArrayList<>();
+			int appType,List<CaculationTime> overtimeHours) {
+		
 		/* 01-10_0時跨ぎチェック
 		* TODO
 		*/
 		// 06-02-1_事前申請を取得
-		overtimeInputs = getAppOvertimeHoursPre(companyID,employeeId,appDate,appType);
+		overtimeHours = getAppOvertimeHoursPre(companyID,employeeId,appDate,appType,overtimeHours);
 		
 		/* 06-02-2_申請時間を取得
 		* TODO
 		*/
-		getAppOvertimeCaculation(overtimeInputs);
-		return overtimeInputs;
+		getAppOvertimeCaculation(overtimeHours);
+		return overtimeHours;
 	}
 	/* 
 	 * 06-02-1_事前申請を取得
 	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#getAppOvertimeHoursPre(java.lang.String, java.lang.String, java.lang.String, int)
 	 */
 	@Override
-	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType) {
+	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> overtimeHours) {
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
 		if(overtimeRestAppCommonSetting.isPresent()){
 			if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
@@ -141,13 +141,12 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getApplicationID());
 					if(appOvertime.isPresent()){
 						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceID.NORMALOVERTIME.value);
-						List<CaculationTime> caculations = convertCaculation(overtimeInputs);
-						return caculations;
+						overtimeHours = convertCaculation(overtimeInputs,overtimeHours);
 					}
 				}
 			}
 		}
-		return null;
+		return overtimeHours;
 	}
 	/* 06-02-2_申請時間を取得 */
 	@Override
@@ -161,7 +160,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 				}
 			}
 		}
-		return null;
+		return caculationTimes;
 	}
 
 	/* 
@@ -169,10 +168,10 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#getCaculationBonustime(java.lang.String, java.lang.String, java.lang.String, int)
 	 */
 	@Override
-	public List<CaculationTime> getCaculationBonustime(String companyID, String employeeId, String appDate, int appType) {
+	public List<CaculationTime> getCaculationBonustime(String companyID, String employeeId, String appDate, int appType,List<CaculationTime> caculationTimes) {
 		
 		// 06-03-1_加給事前申請を取得
-		List<CaculationTime> overtimeInputs = getAppBonustimePre(companyID,employeeId,appDate, appType);
+		List<CaculationTime> overtimeInputs = getAppBonustimePre(companyID,employeeId,appDate, appType,caculationTimes);
 		return overtimeInputs;
 		// 06-03-2_加給計算時間を取得
 		// TODO
@@ -182,7 +181,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#getAppBonustimePre(java.lang.String, java.lang.String, java.lang.String, int)
 	 */
 	@Override
-	public List<CaculationTime> getAppBonustimePre(String companyID, String employeeId, String appDate, int appType) {
+	public List<CaculationTime> getAppBonustimePre(String companyID, String employeeId, String appDate, int appType,List<CaculationTime> caculationTimes) {
 		
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
 		if(overtimeRestAppCommonSetting.isPresent()){
@@ -192,13 +191,12 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getApplicationID());
 					if(appOvertime.isPresent()){
 						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceID.BONUSPAYTIME.value);
-						List<CaculationTime> caculations = convertCaculation(overtimeInputs);
-						return caculations;
+						caculationTimes = convertCaculation(overtimeInputs,caculationTimes);
 					}
 				}
 			}
 		}
-		return null;
+		return caculationTimes;
 	}
 	
 	/* 06-04-2_当日以外の場合 */
@@ -266,19 +264,14 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	 * @param overtimeInputs
 	 * @return
 	 */
-	private List<CaculationTime> convertCaculation(List<OverTimeInput> overtimeInputs){
-		List<CaculationTime> caculations = new ArrayList<>();
-		for(OverTimeInput overtimeInput : overtimeInputs){
-			CaculationTime caculationTime = new CaculationTime(overtimeInput.getCompanyID(), 
-					overtimeInput.getAppID(),
-					overtimeInput.getAttendanceID().value,
-					overtimeInput.getFrameNo(),
-					overtimeInput.getTimeItemTypeAtr().value,
-					"",
-					null,
-					overtimeInput.getApplicationTime().v().toString(),
-					null,0);
-			caculations.add(caculationTime);
+	private List<CaculationTime> convertCaculation(List<OverTimeInput> overtimeInputs,List<CaculationTime> caculations){
+		for(CaculationTime caTime : caculations ){
+			for(OverTimeInput overtimeInput : overtimeInputs){
+				if(caTime.getFrameNo() == overtimeInput.getFrameNo()){
+					caTime.setPreAppTime(overtimeInput.getApplicationTime().toString());
+					caculations.add(caTime);
+				}
+			}
 		}
 		return caculations;
 	}
@@ -297,15 +290,14 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	}
 	private List<CaculationTime> printColor(List<CaculationTime> overtimeHours,List<OvertimeInputCaculation> overtimeInputCaculations){
 		List<CaculationTime> result = new ArrayList<>();
-		CaculationTime caculation = new CaculationTime();
 		for(CaculationTime caculationTime : overtimeHours){
 			for(OvertimeInputCaculation overtimeInput :overtimeInputCaculations){
 				if(caculationTime.getFrameNo() == overtimeInput.getFrameNo()){
 					if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() > overtimeInput.getResultCaculation()){
-						caculation.setFrameNo(caculationTime.getFrameNo());
-						caculation.setErrorCode(2);
-						caculation.setCaculationTime(Integer.toString(overtimeInput.getResultCaculation()));
-						result.add(caculation);
+						caculationTime.setFrameNo(caculationTime.getFrameNo());
+						caculationTime.setErrorCode(2);
+						caculationTime.setCaculationTime(Integer.toString(overtimeInput.getResultCaculation()));
+						result.add(caculationTime);
 					}
 				}
 			}
@@ -318,5 +310,21 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		String minute = parts[1];
 		return Integer.parseInt(hour) * 60 + Integer.parseInt(minute);
 	}
+	private List<OverTimeInput> convert(CaculationTime caculationTime){
+	List<OverTimeInput> overTimeInputs = new ArrayList<>();
+		if(caculationTime .getApplicationTime() != null){
+			OverTimeInput overTimeInput = OverTimeInput.createSimpleFromJavaType(caculationTime.getCompanyID(),
+					caculationTime.getAppID(),
+					caculationTime.getAttendanceID(), 
+					caculationTime.getFrameNo(),
+					-1,
+					-1,
+					caculationTime.getApplicationTime(),
+					caculationTime.getTimeItemTypeAtr());
+			overTimeInputs.add(overTimeInput);
+		}
+	
+	return overTimeInputs;
+}
 	
 }

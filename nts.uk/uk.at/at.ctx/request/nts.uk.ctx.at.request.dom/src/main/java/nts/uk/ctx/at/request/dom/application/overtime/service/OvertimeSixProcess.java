@@ -17,7 +17,7 @@ public interface OvertimeSixProcess {
 	 * @param overTimeInputs
 	 * @param overtimeInputCaculations
 	 */
-	public void checkDisplayColor(List<OverTimeInput> overTimeInputs,
+	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
 			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting);
 	/**
 	 * 06-02_残業時間を取得
@@ -27,12 +27,12 @@ public interface OvertimeSixProcess {
 	 * @param appType
 	 * @return
 	 */
-	public List<CaculationTime> getCaculationOvertimeHours(String companyID,String employeeId, String appDate,int appType);
+	public List<CaculationTime> getCaculationOvertimeHours(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> overtimeHours);
 	/**
 	 * 06-02-1_事前申請を取得
 	 * @return
 	 */
-	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType);
+	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> overtimeHours);
 	/**
 	 * @return
 	 * 06-02-2_申請時間を取得
@@ -45,13 +45,13 @@ public interface OvertimeSixProcess {
 	 * @param appDate
 	 * @param appType
 	 */
-	public List<CaculationTime> getCaculationBonustime(String companyID,String employeeId, String appDate,int appType);
+	public List<CaculationTime> getCaculationBonustime(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> caculationTimes);
 	
 	/**
 	 * 06-03-1_加給事前申請を取得
 	 * @return
 	 */
-	public List<CaculationTime> getAppBonustimePre(String companyID,String employeeId, String appDate,int appType);
+	public List<CaculationTime> getAppBonustimePre(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> caculationTimes);
 	/**
 	 * 06-04_計算実績超過チェック
 	 */
