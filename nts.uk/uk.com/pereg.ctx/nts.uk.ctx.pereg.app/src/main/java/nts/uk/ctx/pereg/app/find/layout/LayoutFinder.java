@@ -39,7 +39,9 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
+import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
+import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassification;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
@@ -59,6 +61,9 @@ public class LayoutFinder {
 
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
+	
+	@Inject
+	private ILayoutPersonInfoClsRepository itemClsRepo;
 
 	@Inject
 	private EmployeeRepository employeeRepository;
@@ -91,6 +96,7 @@ public class LayoutFinder {
 	private IMaintenanceLayoutRepository layoutRepo;
 
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
+		
 		String loginEmpId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forCompanyAdmin();
@@ -98,14 +104,20 @@ public class LayoutFinder {
 		boolean selfBrowsing = loginEmpId.equals(browsingEmpId);
 
 		List<MaintenanceLayout> simpleLayouts = layoutRepo.getAllMaintenanceLayout(companyId);
+		
 		Map<String, PersonInfoCategoryAuth> mapCategoryAuth = perInfoCtgAuthRepo.getAllCategoryAuthByRoleId(roleId)
 				.stream().collect(Collectors.toMap(e -> e.getPersonInfoCategoryAuthId(), e -> e));
+		
+		long start = System.currentTimeMillis();
 		List<SimpleEmpMainLayoutDto> acceptSplLayouts = new ArrayList<>();
 		for (MaintenanceLayout simpleLayout : simpleLayouts) {
+			
 			if (haveAnItemAuth(simpleLayout.getMaintenanceLayoutID(), mapCategoryAuth, selfBrowsing)) {
 				acceptSplLayouts.add(SimpleEmpMainLayoutDto.fromDomain(simpleLayout));
 			}
+			
 		}
+		System.out.println( (System.currentTimeMillis() - start));
 		return acceptSplLayouts;
 	}
 
@@ -140,6 +152,7 @@ public class LayoutFinder {
 				categoryIdList);
 
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
+			
 			// if item is separator line, do not check
 			if (classItem.getLayoutItemType() == LayoutItemType.SeparatorLine) {
 				authItemClasList.add(classItem);
@@ -159,13 +172,15 @@ public class LayoutFinder {
 
 		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
 		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
-			List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
-					.get(classItem.getPersonInfoCategoryID());
-			if (classItemList == null) {
-				classItemList = new ArrayList<>();
-				classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
-			}
-			classItemList.add(classItem);
+			if (classItem.getLayoutItemType() != LayoutItemType.SeparatorLine) {
+				List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
+						.get(classItem.getPersonInfoCategoryID());
+				if (classItemList == null) {
+					classItemList = new ArrayList<>();
+					classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
+				}
+				classItemList.add(classItem);
+			} 
 		}
 
 		classItemInCategoryMap.forEach((categoryId, classItemList) -> {
@@ -202,8 +217,8 @@ public class LayoutFinder {
 
 	private boolean haveAnItemAuth(String layoutId, Map<String, PersonInfoCategoryAuth> mapCategoryAuth,
 			boolean selfBrowsing) {
-		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutId);
-		for (LayoutPersonInfoClsDto itemClass : itemClassList) {
+		List<LayoutPersonInfoClassification> itemClassList = this.itemClsRepo.getAllByLayoutId(layoutId);
+		for (LayoutPersonInfoClassification itemClass : itemClassList) {
 			if (itemClass.getLayoutItemType() == LayoutItemType.SeparatorLine) {
 				continue;
 			}
