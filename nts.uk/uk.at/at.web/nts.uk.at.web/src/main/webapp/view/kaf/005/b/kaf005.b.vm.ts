@@ -485,7 +485,7 @@ module nts.uk.at.view.kaf005.b {
                         self.siftName(childData.selectedWorkTimeName);
                         service.getRecordWork(
                             {
-                                employeeID: self.employeeID("000426a2-181b-4c7f-abc8-6fff9f4f983a"), 
+                                employeeID: self.employeeID(), 
                                 appDate: moment(self.appDate()).format("YYYY/MM/DD"),
                                 siftCD: self.siftCD(),
                                 prePostAtr: self.prePostSelected(),
