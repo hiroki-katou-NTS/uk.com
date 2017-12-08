@@ -26,14 +26,14 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	}
 
 	@Override
-	public List<StampCardItem> findByListPersonID(List<String> lstEmployeeId) {
+	public List<StampCardItem> findByListEmployeeID(List<String> lstEmployeeId) {
 		return this.queryProxy().query(SELECT_BY_LIST_PERSON, KwkdtStampCard.class)
 				.setParameter("lstEmployeeId", lstEmployeeId)
 				.getList(c -> toDomain(c));
 	}
 	
 	@Override
-	public List<StampCardItem> findByPersonID(String employeeID) {
+	public List<StampCardItem> findByEmployeeID(String employeeID) {
 		return this.queryProxy().query(SELECT_BY_SID, KwkdtStampCard.class)
 				.setParameter("employeeID", employeeID)
 				.getList(c -> toDomain(c));

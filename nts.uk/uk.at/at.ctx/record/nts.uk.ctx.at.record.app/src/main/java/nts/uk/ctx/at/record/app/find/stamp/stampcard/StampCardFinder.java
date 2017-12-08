@@ -21,7 +21,7 @@ public class StampCardFinder {
 	 * 
 	 * */
 	public List<String> findByLstSID(List<String> lstPersonId) {
-		List<String> lstCardNumber = stampCardRepo.findByListPersonID(lstPersonId)
+		List<String> lstCardNumber = stampCardRepo.findByListEmployeeID(lstPersonId)
 				.stream()
 				.map(item -> item.getCardNumber().v())
 				.collect(Collectors.toList());
@@ -35,7 +35,7 @@ public class StampCardFinder {
 	 * 
 	 * */
 	public List<StampCardDto> findByPersonID(String employeeId) {
-		List<StampCardDto> lstCardNumber = stampCardRepo.findByPersonID(employeeId)
+		List<StampCardDto> lstCardNumber = stampCardRepo.findByEmployeeID(employeeId)
 				.stream()
 				.map(item -> StampCardDto.fromDomain(item))
 				.collect(Collectors.toList());;

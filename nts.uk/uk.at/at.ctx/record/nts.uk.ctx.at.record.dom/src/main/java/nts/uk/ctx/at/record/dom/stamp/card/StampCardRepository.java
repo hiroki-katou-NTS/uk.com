@@ -8,12 +8,12 @@ public interface StampCardRepository {
 	 * @param employeeID
 	 * @return
 	 */
-	List<StampCardItem> findByPersonID(String employeeID);
+	List<StampCardItem> findByEmployeeID(String employeeID);
 	/**
 	 * Get List Card by List employee ID
 	 * @param lstEmployeeID
 	 * @return
 	 */
-	List<StampCardItem> findByListPersonID(List<String> lstEmployeeID);
+	List<StampCardItem> findByListEmployeeID(List<String> lstEmployeeID);
 	
 }
