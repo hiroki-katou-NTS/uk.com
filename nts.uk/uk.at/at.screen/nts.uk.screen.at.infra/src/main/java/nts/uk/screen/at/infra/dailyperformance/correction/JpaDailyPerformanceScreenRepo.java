@@ -539,7 +539,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
 				.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
 						f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
-						String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo), f.order, f.columnWidth.intValue()))
+						String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo), f.order,
+						f.columnWidth != null ? f.columnWidth.intValue() > 0 ? f.columnWidth.intValue() : 100 : 100))
 				.distinct().collect(Collectors.toList());
 	}
 
@@ -610,9 +611,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					return new DPErrorSettingDto(s.kwrmtErAlWorkRecordPK.companyId,
 							s.kwrmtErAlWorkRecordPK.errorAlarmCode, s.errorAlarmName,
 							s.fixedAtr.intValue() == 1 ? true : false, s.useAtr.intValue() == 1 ? true : false,
-							s.typeAtr.intValue(), "", s.boldAtr.intValue() == 1 ? true : false,
-							s.messageColor, s.cancelableAtr.intValue() == 1 ? true : false,
-							s.errorDisplayItem.intValue());
+							s.typeAtr.intValue(), "", s.boldAtr.intValue() == 1 ? true : false, s.messageColor,
+							s.cancelableAtr.intValue() == 1 ? true : false, s.errorDisplayItem.intValue());
 				}).collect(Collectors.toList());
 	}
 

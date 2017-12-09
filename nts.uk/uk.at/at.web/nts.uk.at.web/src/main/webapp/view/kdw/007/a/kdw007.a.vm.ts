@@ -79,7 +79,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         changeSelectedErrorAlarm(foundItem) {
             let self = this;
             $(".nts-input").ntsError("clear");
-            self.selectedErrorAlarm(new ErrorAlarmWorkRecord(foundItem));
+            self.reSetData(self.selectedErrorAlarm(), foundItem);
         }
 
         startPage(): JQueryPromise<any> {
@@ -104,9 +104,34 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         setNewMode() {
             let self = this;
             self.selectedErrorAlarmCode(null);
-            self.selectedErrorAlarm(new ErrorAlarmWorkRecord(null));
+            self.reSetData(self.selectedErrorAlarm(), null);
             self.isNewMode(true);
             self.selectedTab('tab-1');
+        }
+    
+        reSetData(selectedErrorAlarm, param) {
+            selectedErrorAlarm.companyId(param && param.companyId ? param.companyId : '');
+            selectedErrorAlarm.code(param && param.code ? param.code : '');
+            selectedErrorAlarm.name(param && param.name ? param.name : '');
+            selectedErrorAlarm.fixedAtr(param && param.fixedAtr ? param.fixedAtr : 0);
+            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 0);
+            selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);
+            selectedErrorAlarm.displayMessage(param && param.displayMessage ? param.displayMessage : '');
+            selectedErrorAlarm.boldAtr(param && param.boldAtr ? param.boldAtr : 0);
+            selectedErrorAlarm.messageColor(param && param.messageColor ? param.messageColor : '');
+            selectedErrorAlarm.cancelableAtr(param && param.cancelableAtr ? param.cancelableAtr : 0);
+            selectedErrorAlarm.errorDisplayItem(param && param.errorDisplayItem ? param.errorDisplayItem : null);
+            selectedErrorAlarm.errorDisplayItemName("");
+            selectedErrorAlarm.alCheckTargetCondition = param && param.alCheckTargetCondition ? new AlarmCheckTargetCondition(param.alCheckTargetCondition) : new AlarmCheckTargetCondition(null);
+            selectedErrorAlarm.workTypeCondition = param && param.workTypeCondition ? new WorkTypeCondition(param.workTypeCondition) : new WorkTypeCondition(null);
+            selectedErrorAlarm.workTimeCondition = param && param.workTimeCondition ? new WorkTimeCondition(param.workTimeCondition) : new WorkTimeCondition(null);
+            selectedErrorAlarm.operatorBetweenPlanActual(param && param.operatorBetweenPlanActual ? param.operatorBetweenPlanActual : 0);
+            selectedErrorAlarm.lstApplicationTypeCode(param && param.lstApplicationTypeCode ? param.lstApplicationTypeCode : []);
+            selectedErrorAlarm.operatorBetweenGroups(param && param.operatorBetweenGroups ? param.operatorBetweenGroups : 0);
+            selectedErrorAlarm.operatorGroup1(param && param.operatorGroup1 ? param.operatorGroup1 : 0);
+            selectedErrorAlarm.operatorGroup2(param && param.operatorGroup2 ? param.operatorGroup2 : 0);
+            selectedErrorAlarm.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemCondition ? param.erAlAtdItemCondition.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : selectedErrorAlarm.initListAtdItemCondition();
+            selectedErrorAlarm.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemCondition ? param.erAlAtdItemCondition.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : selectedErrorAlarm.initListAtdItemCondition();
         }
 
         update() {
@@ -306,7 +331,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         }
         /* End Tab 4 */
     }
-
+    
     export class ErrorAlarmWorkRecord {
         /* 会社ID */
         companyId: KnockoutObservable<string>;
