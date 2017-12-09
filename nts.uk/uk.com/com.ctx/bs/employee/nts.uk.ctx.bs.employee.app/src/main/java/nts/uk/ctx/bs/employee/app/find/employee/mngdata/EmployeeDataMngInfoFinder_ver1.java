@@ -12,12 +12,13 @@ import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemR
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
-import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeDataMngInfoFinder_ver1 {
@@ -40,11 +41,12 @@ public class EmployeeDataMngInfoFinder_ver1 {
 	private EmploymentHistoryItemRepository employmentHisItemRepo;
 
 	public EmployeeInfo getEmployeeInfo(String sid) {
+		String companyId = AppContexts.user().companyId();
 		Optional<EmployeeInfo> nameInfo = this.employeeMngRepo.findById(sid);
 		Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,
 				GeneralDate.today());
 
-		Optional<Employment> emp = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(sid, GeneralDate.today());
+		Optional<EmploymentInfo> emp = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId, sid, GeneralDate.today());
 		if (nameInfo.isPresent()) {
 			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid,
 					GeneralDate.today());
@@ -78,7 +80,7 @@ public class EmployeeDataMngInfoFinder_ver1 {
 
 			if (emp.isPresent()) {
 
-				nameInfo.get().setContractCodeType(emp.get().getEmploymentName().toString());
+				nameInfo.get().setContractCodeType(emp.get().getEmploymentName());
 			} else {
 
 				nameInfo.get().setContractCodeType(" ");
