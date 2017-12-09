@@ -65,7 +65,7 @@ module cps001.a.service {
     }
 
     export function saveCurrentLayout(command: any) {
-        return ajax(paths.layout.add, command);
+        return ajax(paths.layout.register, command);
     }
 
     export function getData() {

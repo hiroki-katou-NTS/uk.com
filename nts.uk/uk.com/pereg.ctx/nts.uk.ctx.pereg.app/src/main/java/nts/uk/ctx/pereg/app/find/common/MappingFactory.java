@@ -41,7 +41,10 @@ public class MappingFactory {
 		// map record ID
 		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
 			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
-			classItem.setRecordId(recordId);
+			for ( Object item : classItem.getItems()) {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				valueItem.setRecordId(recordId);
+			}
 		});
 
 		// get dto value
@@ -55,11 +58,21 @@ public class MappingFactory {
 
 	}
 
+	/**
+	 * map peregDto to classItemList which is same category 
+	 * @param peregDto
+	 * @param classItemList
+	 */
 	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
 		// map record ID
 		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
 			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
-			classItemList.forEach(classItem -> classItem.setRecordId(recordId));
+			for ( LayoutPersonInfoClsDto classItem : classItemList) {
+				for ( Object item : classItem.getItems()) {
+					LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+					valueItem.setRecordId(recordId);
+				}
+			}
 		});
 
 		// get DTO value
@@ -78,16 +91,14 @@ public class MappingFactory {
 		// get dto value
 		Map<String, Object> dtoValue = peregDto == null ? new HashMap<String, Object>()
 				: getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
-		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem,
-				peregDto == null ? null : peregDto.getDomainDto().getRecordId());
+		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem);
 	}
 
 	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, Map<String, Object> dtoFieldValue,
-			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, String recordId) {
+			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 
 		lstPerInfoItemDef.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
-			layoutPerInfoClsDto.setRecordId(recordId);
 			if (item.getItemDefType() == 2) {
 				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
 			} else {
@@ -296,13 +307,16 @@ public class MappingFactory {
 	 */
 	public static void mapPerOptionalDto(EmpMaintLayoutDto empMaintLayoutDto,
 			List<PersonOptionalDto> lstCtgItemOptionalDto, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
-		lstPerInfoItemDef.forEach(item -> {
+		lstPerInfoItemDef.forEach(item -> {			
 			if (item.getItemCode().charAt(1) == 'O') {
-				Optional<PersonOptionalDto> empOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
-					return data.getItemCode().equals(item.getItemCode());
-				}).findFirst();
-				Object value = empOptionalDto.isPresent() ? empOptionalDto.get().getValue() : null;
-				setOptionValueToClsDto(empMaintLayoutDto, item, value);
+				LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
+				if(item.getItemDefType() == 2){
+					setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
+				}else{
+					setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
+					item.getLstChildItemDef().forEach(x -> setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, x));
+				}
+				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 			}
 		});
 	}
@@ -318,22 +332,40 @@ public class MappingFactory {
 			List<EmpOptionalDto> lstCtgItemOptionalDto, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 		lstPerInfoItemDef.forEach(item -> {
 			if (item.getItemCode().charAt(1) == 'O') {
-				Optional<EmpOptionalDto> empOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
-					return data.getItemCode().equals(item.getItemCode());
-				}).findFirst();
-				Object value = empOptionalDto.isPresent() ? empOptionalDto.get().getValue() : null;
-				setOptionValueToClsDto(empMaintLayoutDto, item, value);
-			}
+				LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
+				if(item.getItemDefType() == 2){
+					setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
+				}else{
+					setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
+					item.getLstChildItemDef().forEach(x -> setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, x));
+				}
+				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+			}			
 		});
 	}
+	
+	private static void setPerClsItemValue(List<PersonOptionalDto> lstCtgItemOptionalDto, LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item){
+		Optional<PersonOptionalDto> perOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
+			return data.getItemCode().equals(item.getItemCode());
+		}).findFirst();
+		Object value = perOptionalDto.isPresent() ? perOptionalDto.get().getValue() : null;
+		setOptionValueToClsDto(layoutPerInfoClsDto, item, value);
+	}
+	
+	private static void setEmpClsItemValue(List<EmpOptionalDto> lstCtgItemOptionalDto, LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item){
+		Optional<EmpOptionalDto> empOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
+			return data.getItemCode().equals(item.getItemCode());
+		}).findFirst();
+		Object value = empOptionalDto.isPresent() ? empOptionalDto.get().getValue() : null;
+		setOptionValueToClsDto(layoutPerInfoClsDto, item, value);
+	}
 
-	private static void setOptionValueToClsDto(EmpMaintLayoutDto empMaintLayoutDto, PerInfoItemDefForLayoutDto item,
-			Object value) {
-		LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
+	private static void setOptionValueToClsDto(LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item,
+			Object value) {		
 		layoutPerInfoClsDto.getListItemDf().add(item);
 		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
-		empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+		
 	}
 
 	private static LayoutPersonInfoClsDto newClsDtoInstanceForTypeItem(PerInfoItemDefForLayoutDto item) {

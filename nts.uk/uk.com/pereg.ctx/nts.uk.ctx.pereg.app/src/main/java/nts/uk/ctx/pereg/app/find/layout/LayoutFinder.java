@@ -26,7 +26,11 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.CodeNameRefTypeDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
+import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
+import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -37,6 +41,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
@@ -53,6 +59,7 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
@@ -94,6 +101,9 @@ public class LayoutFinder {
 
 	@Inject
 	private IMaintenanceLayoutRepository layoutRepo;
+	
+	@Inject
+	private SelectionFinder selectionFinder;
 
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 		
@@ -292,13 +302,13 @@ public class LayoutFinder {
 	/**
 	 * @param perInfoCategory
 	 * @param authClassItem
-	 * @param stardardDate
+	 * @param standardDate
 	 * @param personId
 	 * @param employeeId
 	 * @param query
 	 */
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, List<LayoutPersonInfoClsDto> classItemList,
-			GeneralDate stardardDate, String personId, String employeeId, PeregQuery query) {
+			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
 
 		cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), classItemList);
 
@@ -336,11 +346,11 @@ public class LayoutFinder {
 				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 					// person history
 					getPersDataHistoryType(perInfoCategory.getPersonInfoCategoryId(), classItemList, personId,
-							stardardDate);
+							standardDate);
 				} else {
 					// employee history
 					getEmpDataHistoryType(perInfoCategory.getPersonInfoCategoryId(), classItemList, employeeId,
-							stardardDate);
+							standardDate);
 				}
 				break;
 			default:
@@ -348,6 +358,28 @@ public class LayoutFinder {
 			}
 
 		}
+		
+		// getComboBox
+		classItemList.forEach(classItem -> {
+			for (Object item : classItem.getItems()) {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				if (valueItem.getItem().getDataTypeValue() == DataTypeValue.SELECTION.value) {
+					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
+					if (selectionItemDto.getReferenceType() == ReferenceTypes.CODE_NAME) {
+						CodeNameRefTypeDto codeNameTypeDto = (CodeNameRefTypeDto) selectionItemDto;
+						List<SelectionInitDto> selectionList = selectionFinder
+								.getAllSelectionByCompanyId(codeNameTypeDto.getTypeCode(), standardDate);
+						List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
+						for (SelectionInitDto selection : selectionList) {
+							lstComboBoxValue
+									.add(new ComboBoxObject(selection.getSelectionId(), selection.getSelectionName()));
+						}
+						valueItem.setLstComboBoxValue(lstComboBoxValue);
+					}
+				}
+			}
+		});
+		
 
 	}
 

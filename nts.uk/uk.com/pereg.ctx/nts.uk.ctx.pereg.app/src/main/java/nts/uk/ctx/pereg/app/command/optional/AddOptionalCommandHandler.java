@@ -80,7 +80,7 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 			
 			for (ItemValue item : command.getItems()){
 				
-				OptionalUtil.createDataState(item,state);
+				state = OptionalUtil.createDataState(item);
 				
 				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
 				perInfoItemDataRepository.addItemData(itemData);
@@ -94,7 +94,7 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 			EmpInfoItemData itemData = null;
 			DataState state = null;
 			for (ItemValue item : command.getItems()){
-				OptionalUtil.createDataState(item,state);
+				state = OptionalUtil.createDataState(item);
 				itemData = new EmpInfoItemData(item.definitionId(), recordId, state);
 				empInfoItemDataRepository.addItemData(itemData);
 			}

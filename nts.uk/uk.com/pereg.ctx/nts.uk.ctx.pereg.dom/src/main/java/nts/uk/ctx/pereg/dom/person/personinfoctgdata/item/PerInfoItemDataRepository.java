@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.dom.person.personinfoctgdata.item;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -12,6 +13,8 @@ public interface PerInfoItemDataRepository {
 	List<PersonInfoItemData> getAllInfoItemByPidCtgId(String ctgId, String pid);
 	
 	List<PersonInfoItemData> getAllInfoItemByRecordId(String recordId);
+	
+	Optional<PersonInfoItemData> getPerInfoItemDataByItemDefIdAndRecordId(String perInfoItemDef, String recordId);
 	
 	/**
 	 * Add item data

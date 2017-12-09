@@ -20,7 +20,8 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 			+ " WHERE ad.sid = :sid ORDER BY ad.strDate";
 	
 	private static final String SELECT_BY_EMPID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
-			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate <= ad.endDate";
+			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate "
+			+ " AND ad.endDate >= :standardDate  ";
 	
 	private static final String SELECT_BY_HISTID = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.hisId = :historyId";
@@ -30,7 +31,7 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		DateHistoryItem dateItem = null;
 		for (BsymtAffiDepartmentHist item : listHist){
 			dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
-			affDepart.add(dateItem);
+			affDepart.getHistoryItems().add(dateItem);
 		}
 		return affDepart;
 	}

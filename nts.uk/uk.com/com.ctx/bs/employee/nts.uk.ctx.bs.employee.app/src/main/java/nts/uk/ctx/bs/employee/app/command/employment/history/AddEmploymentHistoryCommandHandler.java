@@ -59,7 +59,7 @@ implements PeregAddCommandHandler<AddEmploymentHistoryCommand> {
 		
 		employmentHistoryService.add(itemtoBeAdded);
 		
-		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getSalarySegment().intValue(), command.getEmploymentCode());
+		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(), command.getSalarySegment()!= null?command.getSalarySegment().intValue():0, command.getEmploymentCode());
 		employmentHistoryItemRepository.adḍ̣̣̣(histItem);
 		
 		return new PeregAddCommandResult(newHistID);

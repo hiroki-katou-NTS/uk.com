@@ -33,10 +33,10 @@ public class UpdateTemporaryAbsenceCommand {
 	 * 出産種別 （産前休業の場合）
 	 */
 	@PeregItem("IS00092")
-	private boolean multiple;
+	private BigDecimal multiple;
 	
 	@PeregItem("IS00090")
-	private boolean sameFamily;
+	private BigDecimal sameFamily;
 	
 	@PeregItem("IS00093")
 	private BigDecimal childType;
@@ -45,7 +45,7 @@ public class UpdateTemporaryAbsenceCommand {
 	private GeneralDate createDate;
 
 	@PeregItem("IS00096")
-	private boolean spouseIsLeave;
+	private BigDecimal spouseIsLeave;
 	
 	@PeregItem("IS00091")
 	private BigDecimal sameFamilyDays;

@@ -16,6 +16,8 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 @Data
 @RequiredArgsConstructor
 public class LayoutPersonInfoValueDto {
+	
+	private String recordId;
 
 	// categoryID
 	@NonNull
@@ -112,6 +114,7 @@ public class LayoutPersonInfoValueDto {
 
 	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object value) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
+		dataObject.setRecordId(itemDef.getRecordId());
 		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(itemDef.getPerInfoCtgCd());
