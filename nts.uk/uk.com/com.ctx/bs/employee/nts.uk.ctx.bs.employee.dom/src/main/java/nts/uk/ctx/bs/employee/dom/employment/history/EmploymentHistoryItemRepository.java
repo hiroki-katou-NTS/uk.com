@@ -1,5 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.employment.history;
 
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.employment.Employment;
+
 public interface EmploymentHistoryItemRepository {
 	/**
 	 * Add employment
@@ -18,4 +23,6 @@ public interface EmploymentHistoryItemRepository {
 	 * @param domain
 	 */
 	void delete(String histId);
+	
+	Optional<Employment> getDetailEmploymentHistoryItem(String sid, GeneralDate date);
 }

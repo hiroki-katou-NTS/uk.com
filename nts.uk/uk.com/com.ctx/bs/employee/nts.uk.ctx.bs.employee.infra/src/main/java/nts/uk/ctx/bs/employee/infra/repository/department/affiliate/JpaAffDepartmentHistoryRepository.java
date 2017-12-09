@@ -20,7 +20,8 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 			+ " WHERE ad.sid = :sid ORDER BY ad.strDate";
 	
 	private static final String SELECT_BY_EMPID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
-			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate <= ad.endDate";
+			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate "
+			+ " AND ad.endDate >= :standardDate  ";
 	
 	private static final String SELECT_BY_HISTID = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.hisId = :historyId";

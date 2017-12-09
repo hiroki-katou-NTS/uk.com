@@ -26,6 +26,8 @@ public interface SelectionRepository {
 	// Lanlt
 	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate, int selectionItemClsAtr);
 	
+	List<Selection> getAllSelectionByCompanyId(String companyId, String selectionItemId, GeneralDate baseDate);
+	
 	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate);
 	// Lanlt
 
