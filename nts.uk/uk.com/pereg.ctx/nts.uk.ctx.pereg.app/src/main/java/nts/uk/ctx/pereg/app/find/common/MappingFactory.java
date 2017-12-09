@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
@@ -299,13 +300,14 @@ public class MappingFactory {
 		lstPerInfoItemDef.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
 			if (item.getItemCode().charAt(1) == 'O') {
-				if(item.getItemDefType() == 2){
+				if (item.getItemDefType() == 2) {
 					setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
-				}else{
+				} else {
 					setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
-					item.getLstChildItemDef().forEach(x -> setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, x));
+					item.getLstChildItemDef()
+							.forEach(x -> setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, x));
 				}
-				
+
 			}
 			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		});
@@ -323,27 +325,30 @@ public class MappingFactory {
 		lstPerInfoItemDef.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
 			if (item.getItemCode().charAt(1) == 'O') {
-				if(item.getItemDefType() == 2){
+				if (item.getItemDefType() == 2) {
 					setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
-				}else{
+				} else {
 					setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
-					item.getLstChildItemDef().forEach(x -> setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, x));
+					item.getLstChildItemDef()
+							.forEach(x -> setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, x));
 				}
-				
+
 			}
 			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		});
 	}
-	
-	private static void setPerClsItemValue(List<PersonOptionalDto> lstCtgItemOptionalDto, LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item){
+
+	private static void setPerClsItemValue(List<PersonOptionalDto> lstCtgItemOptionalDto,
+			LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item) {
 		Optional<PersonOptionalDto> perOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
 			return data.getItemCode().equals(item.getItemCode());
 		}).findFirst();
 		Object value = perOptionalDto.isPresent() ? perOptionalDto.get().getValue() : null;
 		setOptionValueToClsDto(layoutPerInfoClsDto, item, value);
 	}
-	
-	private static void setEmpClsItemValue(List<EmpOptionalDto> lstCtgItemOptionalDto, LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item){
+
+	private static void setEmpClsItemValue(List<EmpOptionalDto> lstCtgItemOptionalDto,
+			LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item) {
 		Optional<EmpOptionalDto> empOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
 			return data.getItemCode().equals(item.getItemCode());
 		}).findFirst();
@@ -351,12 +356,12 @@ public class MappingFactory {
 		setOptionValueToClsDto(layoutPerInfoClsDto, item, value);
 	}
 
-	private static void setOptionValueToClsDto(LayoutPersonInfoClsDto layoutPerInfoClsDto, PerInfoItemDefForLayoutDto item,
-			Object value) {		
+	private static void setOptionValueToClsDto(LayoutPersonInfoClsDto layoutPerInfoClsDto,
+			PerInfoItemDefForLayoutDto item, Object value) {
 		layoutPerInfoClsDto.getListItemDf().add(item);
 		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
-		
+
 	}
 
 	private static LayoutPersonInfoClsDto newClsDtoInstanceForTypeItem(PerInfoItemDefForLayoutDto item) {
@@ -367,4 +372,5 @@ public class MappingFactory {
 		layoutPerInfoClsDto.setClassName(item.getItemName());
 		return layoutPerInfoClsDto;
 	}
+
 }
