@@ -135,7 +135,7 @@ public class PeregProcessor {
 			return new EmpMaintLayoutDto();
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = new ArrayList<>();
 		for (int i = 0; i < lstItemDef.size(); i++){
-			lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutFinder.createFromDomain(perInfoCtg.getPersonEmployeeType().value, query.getEmployeeId(),
+			lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutFinder.createFromDomain(query.getEmployeeId(),
 					lstItemDef.get(i), query.getCategoryCode(), i));
 		}
 

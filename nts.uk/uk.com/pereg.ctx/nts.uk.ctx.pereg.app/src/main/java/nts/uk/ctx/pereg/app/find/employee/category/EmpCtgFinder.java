@@ -112,8 +112,11 @@ public class EmpCtgFinder {
 				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
 															companyId, contractCode, loginEmpId.equals(query.getEmployeeId())));
 		DateRangeItem dateRangeItem = perInfoCtgRepositoty.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
+		Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> { return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());}).findFirst();
+		if(!period.isPresent()) return new ArrayList<>();
+		List<String> timePerInfoItemDefIds = ((SetItem)period.get().getItemTypeState()).getItems();
 		return perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE ?
-				getEmpInfoTypeHist(lstItemDef, dateRangeItem, query) : getPerInfoTypeHist(lstItemDef, dateRangeItem, query);
+				getEmpInfoTypeHist(timePerInfoItemDefIds, query) : getPerInfoTypeHist(timePerInfoItemDefIds, query);
 		
 //		
 //		Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> { return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());}).findFirst();
@@ -123,7 +126,7 @@ public class EmpCtgFinder {
 //				getEmpInfoTypeHist() : getPerInfoTypeHist(query, timePerInfoItemDefIds);
 	}
 	
-	private List<ComboBoxObject> getPerInfoTypeHist(List<PersonInfoItemDefinition> lstItemDef, DateRangeItem dateRangeItem, PeregQuery query){
+	private List<ComboBoxObject> getPerInfoTypeHist(List<String> timePerInfoItemDefIds, PeregQuery query){
 		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
 		// get EmpInfoCtgData to get record id
 		List<PerInfoCtgData> lstPerInfoCtgData = perInfoCtgDataRepository.getByPerIdAndCtgId(query.getEmployeeId(), query.getCategoryId());
@@ -135,53 +138,40 @@ public class EmpCtgFinder {
 			//get option value value combo box
 			String value = empInfoCtgData.getRecordId();
 			//get option text
-			Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> { return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());}).findFirst();
-			if(!period.isPresent()) break;
-			List<String> timePerInfoItemDefIds = ((SetItem)period.get().getItemTypeState()).getItems();
-			
 			List<String> optionText = new ArrayList<>();
-			List<PersonInfoItemData> lstItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
-			lstValidItemData = lstItemData.stream().filter(
-					item -> (lstItemDef.stream().filter(i -> i.getPerInfoItemDefId().equals(item.getPerInfoItemDefId())).count()) > 0
-					).collect(Collectors.toList());
-			for(PersonInfoItemData itemData : lstValidItemData){
-				if(timePerInfoItemDefIds.contains(itemData.getPerInfoItemDefId()))
-					optionText.add(itemData.getPerInfoItemDefId());
-				lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(0)));
+			List<PersonInfoItemData> lstPerInfoCtgItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
+			if(lstPerInfoCtgItemData.size() != 0) {
+				for(PersonInfoItemData itemData : lstValidItemData){
+					if(timePerInfoItemDefIds.contains(itemData.getPerInfoItemDefId()))
+						optionText.add(itemData.getPerInfoItemDefId());
+					lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(0)));
+				}
 			}
-			
 		}
 		return lstComboBoxObject;
 	}
 	//[b49ae8bd-f423-46ff-8cfc-ea0fecce2b54, f1ad76db-3cb3-4b79-ae29-86804bcc0865]
-	private List<ComboBoxObject> getEmpInfoTypeHist(List<PersonInfoItemDefinition> lstItemDef, DateRangeItem dateRangeItem, PeregQuery query){
+	private List<ComboBoxObject> getEmpInfoTypeHist(List<String> timePerInfoItemDefIds, PeregQuery query){
 		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
 		// get EmpInfoCtgData to get record id
 		List<EmpInfoCtgData> lstEmpInfoCtgData = emInfoCtgDataRepository.getByEmpIdAndCtgId(query.getEmployeeId(), query.getCategoryId());
 		if(lstEmpInfoCtgData.size() == 0) return lstComboBoxObject;
 		
-		//get lst item data and filter base on item def
-		List<EmpInfoItemData> lstValidItemData = new ArrayList<>();
+		
 		for(EmpInfoCtgData empInfoCtgData :  lstEmpInfoCtgData){
 			//get option value value combo box
 			String value = empInfoCtgData.getRecordId();
 			//get option text
-			Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> { return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());}).findFirst();
-			if(!period.isPresent()) break;
-			List<String> timePerInfoItemDefIds = ((SetItem)period.get().getItemTypeState()).getItems();
-			
 			List<String> optionText = new ArrayList<>();
-			List<EmpInfoItemData> lstItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
-			lstValidItemData = lstItemData.stream().filter(
-					item -> (lstItemDef.stream().filter(i -> i.getPerInfoItemDefId().equals(item.getPerInfoDefId())).count()) > 0
-					).collect(Collectors.toList());
-			for(EmpInfoItemData itemData : lstItemData){
-				if(timePerInfoItemDefIds.contains(itemData.getPerInfoDefId()))
-					optionText.add(itemData.getDataState().getDateValue().toString());				
+			List<EmpInfoItemData> lstEmpInfoCtgItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
+			if(lstEmpInfoCtgItemData.size() != 0) {
+				for(EmpInfoItemData itemData : lstEmpInfoCtgItemData){
+					if(timePerInfoItemDefIds.contains(itemData.getPerInfoDefId()))
+						optionText.add(itemData.getDataState().getDateValue().toString());				
+				}
+				lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
-			lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 		}
 		return lstComboBoxObject;
 	}
-
 }

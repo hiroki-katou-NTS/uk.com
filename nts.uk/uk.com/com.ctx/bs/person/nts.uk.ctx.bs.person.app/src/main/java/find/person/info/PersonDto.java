@@ -90,7 +90,7 @@ public class PersonDto extends PeregDomainDto{
 		boolean hasPerNameMultilLangKana = checkExist(person.getPersonNameGroup().getPersonalNameMultilingual(), 
 				person.getPersonNameGroup().getPersonalNameMultilingual() == null ? null : person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana());
 
-		return new PersonDto(person.getBirthDate(), 
+		PersonDto personDto =  new PersonDto(person.getBirthDate(), 
 				person.getBloodType().value, 
 				person.getGender().value, 
 				person.getPersonNameGroup().getPersonName().getFullName().v().trim(),
@@ -107,6 +107,8 @@ public class PersonDto extends PeregDomainDto{
 				hasTodokedeFullNameFullName ? person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v().trim() : "", 
 				hasPerNameMultilLang ? person.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v().trim() : "", 
 				hasPerNameMultilLangKana ? person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v().trim() : "");
+		personDto.setRecordId(person.getPersonId());
+		return personDto;
 	}
 	
 	private static boolean checkExist(Object parent, Object obj){

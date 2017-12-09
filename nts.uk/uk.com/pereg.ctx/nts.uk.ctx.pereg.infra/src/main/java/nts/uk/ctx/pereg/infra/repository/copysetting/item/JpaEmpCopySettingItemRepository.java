@@ -16,11 +16,13 @@ import nts.uk.ctx.pereg.infra.entity.copysetting.item.PpestEmployeeCopySettingIt
 @Stateless
 public class JpaEmpCopySettingItemRepository extends JpaRepository implements EmpCopySettingItemRepository {
 
-	private static final String SELECT_EMP_COPY_SETTING_ITEM_BY_CTG_ID_QUERY_STRING = "SELECT DISTINCT pi.perInfoCtgId,pc.categoryCd,pi.ppemtPerInfoItemPK.perInfoItemDefId,pi.itemCd,pi.itemName,pi.requiredAtr"
+	private static final String SELECT_EMP_COPY_SETTING_ITEM_BY_CTG_ID_QUERY_STRING = "SELECT DISTINCT pi.perInfoCtgId,pc.categoryCd,pi.ppemtPerInfoItemPK.perInfoItemDefId,pi.itemCd,pi.itemName,pi.requiredAtr,pm.dataType"
 			+ " FROM PpestEmployeeCopySettingItem ci" + " INNER JOIN PpestEmployeeCopySetting cs "
 			+ " ON ci.categoryId = cs.ppestEmployeeCopySettingPk.categoryId" + " INNER JOIN PpemtPerInfoCtg pc"
 			+ " ON ci.categoryId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId=pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoItemCm pm"
+			+ " ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " INNER JOIN PpemtPersonItemAuth pa"
 			+ " ON ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId=pa.ppemtPersonItemAuthPk.personItemDefId"
 			+ " WHERE pc.categoryCd =:categoryCd AND pc.cid=:companyId";
@@ -57,9 +59,10 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 		String itemCode = entity[3] != null ? entity[3].toString() : "";
 		String itemName = entity[4] != null ? entity[4].toString() : "";
 		int isRequired = entity[5] != null ? Integer.parseInt(entity[5].toString()) : 0;
+		int dataType = entity[6] != null ? Integer.parseInt(entity[6].toString()) : 0;
 
 		return EmpCopySettingItem.createFromJavaType(perInfoCtgId, categoryCd, perInfoItemDefId, itemCode, itemName,
-				isRequired);
+				isRequired, dataType);
 
 	}
 
@@ -83,7 +86,7 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 		return this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class).setParameter("companyId", companyId)
 				.setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
 					EmpCopySettingItem newCopyItem = EmpCopySettingItem.createFromJavaType(perInfoCategoryId, "",
-							String.valueOf(i[0]), "", String.valueOf(i[1]), 0);
+							String.valueOf(i[0]), "", String.valueOf(i[1]), 0, 0);
 					newCopyItem.setAlreadyCopy(Boolean.valueOf(i[2].toString()));
 
 					return newCopyItem;

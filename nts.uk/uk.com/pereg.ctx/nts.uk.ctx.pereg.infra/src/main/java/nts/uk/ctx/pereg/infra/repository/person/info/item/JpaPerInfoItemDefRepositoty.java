@@ -203,7 +203,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
-		
+
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
 					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));
@@ -435,10 +435,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 			case 6:
 				ReferenceTypeState referenceTypeState = null;
-				if (selectionItemRefType.intValue() == ReferenceTypes.DESIGNATED_MASTER.value) {
-					referenceTypeState = ReferenceTypeState.createMasterReferenceCondition(selectionItemRefCode);
-				} else if (selectionItemRefType.intValue() == ReferenceTypes.CODE_NAME.value) {
-					referenceTypeState = ReferenceTypeState.createCodeNameReferenceType(selectionItemRefCode);
+				if (selectionItemRefType != null) {
+					if (selectionItemRefType.intValue() == ReferenceTypes.DESIGNATED_MASTER.value) {
+						referenceTypeState = ReferenceTypeState.createMasterReferenceCondition(selectionItemRefCode);
+					} else if (selectionItemRefType.intValue() == ReferenceTypes.CODE_NAME.value) {
+						referenceTypeState = ReferenceTypeState.createCodeNameReferenceType(selectionItemRefCode);
+					}
 				} else {
 					referenceTypeState = ReferenceTypeState.createEnumReferenceCondition(selectionItemRefCode);
 				}
@@ -631,7 +633,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 							String.valueOf(i[1]));
 				});
 	}
-	
+
 	@Override
 	public List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId,
 			String contractCode) {
@@ -666,5 +668,4 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		return false;
 	}
 
-	
 }

@@ -12,18 +12,22 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class LastEmRegHistory extends EmpRegHistory {
 	String lastRegEmployeeOfCompanyID;
+	String lastRegEmployeeOfCompanyCd;
 
 	public static LastEmRegHistory createFromJavaType(String registeredEmployeeID, String companyId,
-			GeneralDate registeredDate, String lastRegEmployeeID, String lastRegEmployeeOfCompanyID) {
+			GeneralDate registeredDate, String lastRegEmployeeID, String lastRegEmployeeCd,
+			String lastRegEmployeeOfCompanyID, String lastRegEmployeeOfCompanyCd) {
 		return new LastEmRegHistory(registeredEmployeeID, companyId, registeredDate, lastRegEmployeeID,
-				lastRegEmployeeOfCompanyID);
+				lastRegEmployeeCd, lastRegEmployeeOfCompanyID, lastRegEmployeeOfCompanyCd);
 
 	}
 
 	public LastEmRegHistory(String registeredEmployeeID, String companyId, GeneralDate registeredDate,
-			String lastRegEmployeeID, String lastRegEmployeeOfCompanyID) {
-		super(registeredEmployeeID, companyId, registeredDate, lastRegEmployeeID);
+			String lastRegEmployeeID, String lastRegEmployeeCd, String lastRegEmployeeOfCompanyID,
+			String lastRegEmployeeOfCompanyCd) {
+		super(registeredEmployeeID, companyId, registeredDate, lastRegEmployeeID, lastRegEmployeeCd);
 		this.lastRegEmployeeOfCompanyID = lastRegEmployeeOfCompanyID;
+		this.lastRegEmployeeOfCompanyCd = lastRegEmployeeOfCompanyCd;
 	}
 
 }
