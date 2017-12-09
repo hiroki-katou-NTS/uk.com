@@ -33,7 +33,7 @@ public class KrcstErAlApplication extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcstErAlApplicationPK krcstErAlApplicationPK;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "ERROR_CD", referencedColumnName = "ERROR_ALARM_CD", insertable = false, updatable = false) })
 	public KwrmtErAlWorkRecord kwrmtErAlWorkRecord;
