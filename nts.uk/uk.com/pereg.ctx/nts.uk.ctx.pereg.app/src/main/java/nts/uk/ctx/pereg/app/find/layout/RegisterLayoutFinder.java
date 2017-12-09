@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
@@ -64,6 +65,9 @@ public class RegisterLayoutFinder {
 	@Inject
 	private PerInfoCategoryFinder infoCtgFinder;
 
+	@Inject
+	private EmpInfoItemDataFinder infoItemDataFinder;
+
 	// sonnlb end
 
 	// sonnlb code start
@@ -116,40 +120,13 @@ public class RegisterLayoutFinder {
 
 			}
 
-			queryList.forEach(query -> {
-				Optional<LayoutPersonInfoClsDto> clsDtoOpt = listItemCls.stream()
-						.filter(itemCls -> itemCls.getPersonInfoCategoryID() == query.getCategoryId()).findFirst();
+			setDataSystem(queryList, listItemCls);
 
-				if (clsDtoOpt.isPresent()) {
+			setDataOptinal(queryList, listItemCls);
 
-					PeregDto peregDto = this.layoutProc.findSingle(query);
-
-					if (peregDto != null) {
-						LayoutPersonInfoClsDto clsDto = clsDtoOpt.get();
-						if (!CollectionUtil.isEmpty(clsDto.getListItemDf())) {
-							clsDto.setItems(clsDto.getListItemDf()
-									.stream().map(itemDf -> LayoutPersonInfoValueDto
-											.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
-									.collect(Collectors.toList()));
-
-							MappingFactory.mapItemClass(peregDto, clsDto);
-						}
-					}
-				}
-
-			});
 			if (command.getCreateType() == 2) {
 
-				listItemCls.forEach(itemCls -> {
-					if (!CollectionUtil.isEmpty(itemCls.getItems())) {
-						itemCls.setItems(itemCls.getItems().stream().filter(item -> {
-
-							LayoutPersonInfoValueDto subItem = (LayoutPersonInfoValueDto) item;
-
-							return subItem.getValue() != null;
-						}).collect(Collectors.toList()));
-					}
-				});
+				removeNotDefItem(listItemCls);
 
 				return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
 						.collect(Collectors.toList());
@@ -158,6 +135,94 @@ public class RegisterLayoutFinder {
 		}
 
 		return listItemCls;
+	}
+
+	private void removeNotDefItem(List<LayoutPersonInfoClsDto> listItemCls) {
+		listItemCls.forEach(itemCls -> {
+			if (!CollectionUtil.isEmpty(itemCls.getItems())) {
+				itemCls.setItems(itemCls.getItems().stream().filter(item -> {
+
+					LayoutPersonInfoValueDto subItem = (LayoutPersonInfoValueDto) item;
+
+					return subItem.getValue() != null;
+				}).collect(Collectors.toList()));
+			}
+		});
+
+	}
+
+	private void setDataOptinal(List<PeregQuery> queryList, List<LayoutPersonInfoClsDto> listItemCls) {
+		List<PeregQuery> queryOptinalList = queryList.stream().filter(x -> x.getCategoryCode().charAt(1) == 'O')
+				.collect(Collectors.toList());
+
+		// set data for optinalCategory
+		queryOptinalList.forEach(query -> {
+
+			Optional<LayoutPersonInfoClsDto> clsDtoOpt = listItemCls.stream()
+					.filter(itemCls -> itemCls.getPersonInfoCategoryID() == query.getCategoryId()).findFirst();
+			if (clsDtoOpt.isPresent()) {
+
+				List<SettingItemDto> dataList = this.infoItemDataFinder.loadInfoItemDataList(query.getCategoryCode(),
+						AppContexts.user().companyId(), AppContexts.user().employeeId());
+
+				if (!CollectionUtil.isEmpty(dataList) && !CollectionUtil.isEmpty(clsDtoOpt.get().getListItemDf())) {
+					LayoutPersonInfoClsDto clsDto = clsDtoOpt.get();
+					clsDto.setItems(clsDto
+							.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
+									.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
+							.collect(Collectors.toList()));
+					clsDto.getItems().forEach(item -> {
+						LayoutPersonInfoValueDto itemData = (LayoutPersonInfoValueDto) item;
+						itemData.setValue(getValueByItemCode(dataList, itemData.getItemCode()));
+					});
+				}
+
+			}
+		});
+
+	}
+
+	private Object getValueByItemCode(List<SettingItemDto> dataList, String itemCode) {
+
+		Object returnData = null;
+		Optional<SettingItemDto> itemDtoOpt = dataList.stream().filter(x -> x.getItemCode().equals(itemCode))
+				.findFirst();
+
+		if (itemDtoOpt.isPresent()) {
+			SettingItemDto itemDto = itemDtoOpt.get();
+			returnData = itemDto.getValueAsString();
+		}
+		return returnData;
+	}
+
+	private void setDataSystem(List<PeregQuery> queryList, List<LayoutPersonInfoClsDto> listItemCls) {
+
+		List<PeregQuery> querySysTemList = queryList.stream().filter(x -> x.getCategoryCode().charAt(1) == 'S')
+				.collect(Collectors.toList());
+		// set data for systemCategory
+		querySysTemList.forEach(query -> {
+			Optional<LayoutPersonInfoClsDto> clsDtoOpt = listItemCls.stream()
+					.filter(itemCls -> itemCls.getPersonInfoCategoryID() == query.getCategoryId()).findFirst();
+
+			if (clsDtoOpt.isPresent()) {
+
+				PeregDto peregDto = this.layoutProc.findSingle(query);
+
+				if (peregDto != null && !CollectionUtil.isEmpty(clsDtoOpt.get().getListItemDf())) {
+					LayoutPersonInfoClsDto clsDto = clsDtoOpt.get();
+
+					clsDto.setItems(clsDto
+							.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
+									.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
+							.collect(Collectors.toList()));
+
+					MappingFactory.mapItemClass(peregDto, clsDto);
+
+				}
+			}
+
+		});
+
 	}
 
 	/**

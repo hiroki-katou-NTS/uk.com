@@ -117,7 +117,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		// Update employee registration history
 		updateEmployeeRegHist();
-		
+
 		return employeeId;
 
 	}
@@ -281,7 +281,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
 			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getValueAsString(),
-					item.getSaveData().getSaveDataType().value));
+					item.getDataType()));
 		});
 		if (CollectionUtil.isEmpty(items)) {
 			return null;
