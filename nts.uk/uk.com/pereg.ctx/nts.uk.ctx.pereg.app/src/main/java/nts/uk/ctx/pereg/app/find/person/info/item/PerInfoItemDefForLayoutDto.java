@@ -24,6 +24,8 @@ public class PerInfoItemDefForLayoutDto extends PerInfoItemDefDto{
 	
 	private int itemDefType;
 	
+	private String recordId;
+	
 	/**
 	 * combo box value list when item type selection
 	 */

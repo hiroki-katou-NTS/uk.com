@@ -96,11 +96,10 @@ public class SelectionFinder {
      * @param baseDate
      * @return
      */
-	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, String baseDate) {
+	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, GeneralDate date) {
 		String companyId = AppContexts.user().companyId();
-		GeneralDate baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
 		List<SelectionInitDto> selectionLst = new ArrayList<>();
-			selectionLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, baseDateConvert).stream()
+			selectionLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date).stream()
 					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
 		
 		return selectionLst;

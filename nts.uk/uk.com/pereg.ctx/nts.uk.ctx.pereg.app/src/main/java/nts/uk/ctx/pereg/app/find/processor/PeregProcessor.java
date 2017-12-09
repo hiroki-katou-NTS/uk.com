@@ -157,10 +157,11 @@ public class PeregProcessor {
 	private void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, PeregQuery query, PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		if(perInfoCtg.getIsFixed() == IsFixed.FIXED){
 			//get domain data
-			PeregDto queryResult = layoutingProcessor.findSingle(query);
-
+			PeregDto peregDto = layoutingProcessor.findSingle(query);
+			//set record id
+			setRecordId(lstPerInfoItemDef, peregDto == null ? null : peregDto.getDomainDto().getRecordId());
 			//set fixed data	
-			MappingFactory.mapListClsDto(empMaintLayoutDto, queryResult, lstPerInfoItemDef);
+			MappingFactory.mapListClsDto(empMaintLayoutDto, peregDto, lstPerInfoItemDef);
 			
 			// set optional data
 			setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
@@ -194,6 +195,7 @@ public class PeregProcessor {
 	private void setEmpInfoItemData(EmpMaintLayoutDto empMaintLayoutDto, String recordId, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		List<EmpOptionalDto> lstCtgItemOptionalDto = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
+		setRecordId(lstPerInfoItemDef, recordId);
 		MappingFactory.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 	
@@ -208,6 +210,17 @@ public class PeregProcessor {
 		List<PersonOptionalDto> lstCtgItemOptionalDto = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
 		MappingFactory.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
+	}
+	
+	private void setRecordId(List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, String recordId){
+		lstPerInfoItemDef.forEach(item -> {
+			if(item.getItemDefType() == 2)
+				item.setRecordId(recordId);
+			else{
+				item.setRecordId(recordId);
+				item.getLstChildItemDef().forEach(i -> i.setRecordId(recordId));
+			}
+		});
 	}
 
 }

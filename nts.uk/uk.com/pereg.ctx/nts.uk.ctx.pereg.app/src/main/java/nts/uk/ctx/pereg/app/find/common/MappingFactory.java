@@ -91,16 +91,14 @@ public class MappingFactory {
 		// get dto value
 		Map<String, Object> dtoValue = peregDto == null ? new HashMap<String, Object>()
 				: getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
-		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem,
-				peregDto == null ? null : peregDto.getDomainDto().getRecordId());
+		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem);
 	}
 
 	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, Map<String, Object> dtoFieldValue,
-			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, String recordId) {
+			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 
 		lstPerInfoItemDef.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
-			//layoutPerInfoClsDto.setRecordId(recordId);
 			if (item.getItemDefType() == 2) {
 				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
 			} else {
