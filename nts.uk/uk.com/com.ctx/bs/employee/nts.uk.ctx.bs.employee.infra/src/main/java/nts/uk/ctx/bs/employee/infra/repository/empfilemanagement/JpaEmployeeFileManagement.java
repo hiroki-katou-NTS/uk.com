@@ -20,15 +20,15 @@ import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BpsmtPersonFileMana
 public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFileManagementRepository{
 
 
-	public final String GET_ALL_BY_PID = "SELECT c FROM BsymtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
+	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 
-	public final String CHECK_EXIST = "SELECT COUNT(c) FROM BsymtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
+	public final String CHECK_EXIST = "SELECT COUNT(c) FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 	
-	public final String GET_BY_FILEID = "SELECT c FROM BsymtPersonFileManagement c WHERE c.bsymtPerFileManagementPK.fileid = :fileid ";
+	public final String GET_BY_FILEID = "SELECT c FROM BpsmtPersonFileManagement c WHERE c.bsymtPerFileManagementPK.fileid = :fileid ";
 	
 	//public final String DELETE_DOCUMENT_BY_FILEID = "DELETE FROM BsymtPersonFileManagement c  WHERE c.BsymtPersonFileManagementPK.fileid = :fileid";
 
-	public final String GET_ALL_DOCUMENT_FILE = "SELECT c.pid , c.bsymtPerFileManagementPK.fileid , c.disPOrder FROM BsymtPersonFileManagement c "
+	public final String GET_ALL_DOCUMENT_FILE = "SELECT c.pid , c.bsymtPerFileManagementPK.fileid , c.disPOrder FROM BpsmtPersonFileManagement c "
 			+" WHERE c.pid = :pid AND c.filetype = :filetype ORDER BY c.disPOrder ASC";
 	
 	private PersonFileManagement toDomainEmpFileManagement(BpsmtPersonFileManagement entity) {
