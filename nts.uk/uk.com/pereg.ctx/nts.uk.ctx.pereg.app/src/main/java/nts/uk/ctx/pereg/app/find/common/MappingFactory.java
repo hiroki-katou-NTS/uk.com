@@ -41,7 +41,10 @@ public class MappingFactory {
 		// map record ID
 		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
 			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
-			classItem.setRecordId(recordId);
+			for ( Object item : classItem.getItems()) {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				valueItem.setRecordId(recordId);
+			}
 		});
 
 		// get dto value
@@ -55,11 +58,21 @@ public class MappingFactory {
 
 	}
 
+	/**
+	 * map peregDto to classItemList which is same category 
+	 * @param peregDto
+	 * @param classItemList
+	 */
 	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
 		// map record ID
 		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
 			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
-			classItemList.forEach(classItem -> classItem.setRecordId(recordId));
+			for ( LayoutPersonInfoClsDto classItem : classItemList) {
+				for ( Object item : classItem.getItems()) {
+					LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+					valueItem.setRecordId(recordId);
+				}
+			}
 		});
 
 		// get DTO value
@@ -87,7 +100,7 @@ public class MappingFactory {
 
 		lstPerInfoItemDef.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
-			layoutPerInfoClsDto.setRecordId(recordId);
+			//layoutPerInfoClsDto.setRecordId(recordId);
 			if (item.getItemDefType() == 2) {
 				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
 			} else {
