@@ -20,7 +20,6 @@ module cps001.f.vm {
         onfilenameclick: (fileId) => void;
 
         items: Array<GridItem> = [];
-        comboItems: Array<PersonCtg> = [];
 
         comboColumns = [{ prop: 'name', length: 12 }];
 
@@ -51,14 +50,10 @@ module cps001.f.vm {
             self.items = [];
             let dataShare: IDataShare = getShared('CPS001F_PARAM') || null;
             var dfdGetData = service.getData("90000000-0000-0000-0000-000000000001");
-            var dfdGetInfoCategory = service.getInfoCatagory();
 
-            $.when(dfdGetData, dfdGetInfoCategory).done((datafile: Array<IEmpFileMana>, dataCategory: Array<IPersonCtg>) => {
+            $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
                 _.forEach(datafile, function(item) {
                     self.items.push(new GridItem(item));
-                });
-                _.forEach(dataCategory, function(item) {
-                    self.comboItems.push(new PersonCtg(item));
                 });
                 dfd.resolve();
             });
@@ -76,7 +71,7 @@ module cps001.f.vm {
                     service.savedata({
                         sid: '90000000-0000-0000-0000-000000000001',
                         fileid: res[0].id,
-                        personInfoCtgId: self.comboItems[0].id,
+                        personInfoCtgId: "",
                         uploadOrder: 1
                     }).done(() => {
                         self.restart();
@@ -86,7 +81,7 @@ module cps001.f.vm {
                     service.savedata({
                         sid: '90000000-0000-0000-0000-000000000001',
                         fileid: res[0].id,
-                        personInfoCtgId: self.comboItems[0].id,
+                        personInfoCtgId: "",
                         uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
                     }).done(() => {
                         self.start().done(() => {
