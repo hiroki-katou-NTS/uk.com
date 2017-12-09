@@ -62,8 +62,10 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @return
 	 */
 	public PerInfoItemDefForLayoutDto createFromDomain(String empId, PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder){
-		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
+		ActionRole actionRole = getActionRole(empId, itemDef.getPerInfoCategoryId(), itemDef.getPerInfoItemDefId());
+		if(actionRole == ActionRole.HIDDEN) return null;
 		PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = new PerInfoItemDefForLayoutDto();
+		perInfoItemDefForLayoutDto.setActionRole(actionRole);
 		perInfoItemDefForLayoutDto.setId(itemDef.getPerInfoItemDefId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgId(itemDef.getPerInfoCategoryId());
 		perInfoItemDefForLayoutDto.setPerInfoCtgCd(perInfoCd);
@@ -73,9 +75,10 @@ public class PerInfoItemDefForLayoutFinder {
 		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired().value);
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
-		perInfoItemDefForLayoutDto.setActionRole(getActionRole(empId, itemDef.getPerInfoCategoryId(), itemDef.getPerInfoItemDefId()));
+		
 		perInfoItemDefForLayoutDto.setSelectionItemRefType(itemDef.getSelectionItemRefType());
 		perInfoItemDefForLayoutDto.setItemTypeState(createItemTypeStateDto(itemDef.getItemTypeState()));
+		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		perInfoItemDefForLayoutDto.setSelectionItemRefTypes(selectionItemRefTypes);
 		if(perInfoItemDefForLayoutDto.getItemDefType() == 2){
 			SingleItem singleItemDom = (SingleItem) itemDef.getItemTypeState();
