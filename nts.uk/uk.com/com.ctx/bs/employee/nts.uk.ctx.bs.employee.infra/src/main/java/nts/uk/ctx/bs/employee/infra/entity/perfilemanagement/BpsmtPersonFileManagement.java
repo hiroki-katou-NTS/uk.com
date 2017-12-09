@@ -16,8 +16,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "BSYMT_PER_FILE_MANAGEMENT")
-public class BsymtPersonFileManagement extends UkJpaEntity implements Serializable{
+@Table(name = "BPSMT_PER_FILE_MANAGEMENT")
+public class BpsmtPersonFileManagement extends UkJpaEntity implements Serializable{
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class BsymtPersonFileManagement extends UkJpaEntity implements Serializab
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public BsymtPersonFileManagementPK bsymtPerFileManagementPK;
+	public BpsmtPersonFileManagementPK bsymtPerFileManagementPK;
 	
 	/** 個人ID */
 	@Basic(optional = false)
@@ -41,22 +41,16 @@ public class BsymtPersonFileManagement extends UkJpaEntity implements Serializab
 	@Basic(optional = true)
 	@Column(name = "DISPORDER")
 	public Integer disPOrder;
-	
-	@Basic(optional = true)
-	@Column(name = "PERSON_INFO_CTG_ID")
-	public String personInfoctgId;
-	
-	
+		
 	@Override
 	protected Object getKey() {
 		return bsymtPerFileManagementPK;
 	}
 
 
-	public BsymtPersonFileManagement updateFromDomain(PersonFileManagement domain) {
+	public BpsmtPersonFileManagement updateFromDomain(PersonFileManagement domain) {
 		this.filetype = domain.getTypeFile().value;
 		this.disPOrder = domain.getUploadOrder();
-		this.personInfoctgId = domain.getPersonInfoCategoryId();
 		return this;
 	}
 }

@@ -72,8 +72,10 @@ public class PeregProcessor {
 		lstPerInfoCtg = perInfoCtgRepositoty.getPerInfoCtgByParentCdWithOrder(perInfoCtg.getCategoryCode().v(),
 				contractCode, companyId, true);
 		lstPerInfoCtg.add(0, perInfoCtg);
-		return lstPerInfoCtg.stream().map(x -> new PerInfoCtgFullDto(x.getPersonInfoCategoryId(), x.getCategoryCode().v(), x.getCategoryParentCode().v(),
-				x.getCategoryName().v(), x.getPersonEmployeeType().value, x.getIsAbolition().value, x.getCategoryType().value, x.getIsFixed().value))
+		return lstPerInfoCtg.stream()
+				.map(x -> new PerInfoCtgFullDto(x.getPersonInfoCategoryId(), x.getCategoryCode().v(),
+						x.getCategoryParentCode().v(), x.getCategoryName().v(), x.getPersonEmployeeType().value,
+						x.getIsAbolition().value, x.getCategoryType().value, x.getIsFixed().value))
 				.collect(Collectors.toList());
 	}
 	
@@ -135,8 +137,10 @@ public class PeregProcessor {
 			return new EmpMaintLayoutDto();
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = new ArrayList<>();
 		for (int i = 0; i < lstItemDef.size(); i++){
-			lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutFinder.createFromDomain(query.getEmployeeId(),
-					lstItemDef.get(i), query.getCategoryCode(), i));
+			PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = perInfoItemDefForLayoutFinder.createFromDomain(query.getEmployeeId(),
+					lstItemDef.get(i), query.getCategoryCode(), i);
+			if(perInfoItemDefForLayoutDto != null)
+				lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutDto);
 		}
 
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();

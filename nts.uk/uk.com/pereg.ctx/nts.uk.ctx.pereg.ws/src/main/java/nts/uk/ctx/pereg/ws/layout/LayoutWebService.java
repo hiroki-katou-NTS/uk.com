@@ -39,12 +39,16 @@ public class LayoutWebService extends WebService {
 	}
 	
 	/**
+	 * get category and it's children
+	 * @author xuan vinh
 	 * 
+	 * @param ctgId
+	 * @return
 	 */
 	
-	@Path("find/getctgtab/{categoryId}")
+	@Path("find/getctgtab/{categoryid}")
 	@POST
-	public List<PerInfoCtgFullDto> getCtgTab(@PathParam("categoryId")String ctgId){
+	public List<PerInfoCtgFullDto> getCtgTab(@PathParam("categoryid")String ctgId){
 		return this.layoutProcessor.getCtgTab(ctgId);
 	}
 	

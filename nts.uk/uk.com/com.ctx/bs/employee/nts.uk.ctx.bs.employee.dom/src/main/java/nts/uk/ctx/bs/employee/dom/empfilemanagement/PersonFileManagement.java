@@ -29,13 +29,8 @@ public class PersonFileManagement extends AggregateRoot {
 	/** order document file */
 	private Integer uploadOrder;
 
-	/** The PersonalInformationCtgID */
-	private String personInfoCategoryId;
-
-	public static PersonFileManagement createFromJavaType(String pId, String fileID, int typeFile, Integer uploadOrder,
-			String personInfoCategoryId) {
-		return new PersonFileManagement(pId, fileID, EnumAdaptor.valueOf(typeFile, TypeFile.class), uploadOrder,
-				personInfoCategoryId);
+	public static PersonFileManagement createFromJavaType(String pId, String fileID, int typeFile, Integer uploadOrder) {
+		return new PersonFileManagement(pId, fileID, EnumAdaptor.valueOf(typeFile, TypeFile.class), uploadOrder);
 	}
 
 }

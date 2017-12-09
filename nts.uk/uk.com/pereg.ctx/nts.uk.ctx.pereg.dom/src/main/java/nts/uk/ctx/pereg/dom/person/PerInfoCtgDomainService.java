@@ -41,13 +41,13 @@ public class PerInfoCtgDomainService {
 	 * @return List<PersonInfoItemDefinition>
 	 */
 
-	public List<PersonInfoItemDefinition> getPerItemDef(ParamForGetPerItem paramObject) {		
-		if (paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.MULTIINFO
-				|| paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.SINGLEINFO) 
-			return getPerInfoItemDefWithAuth(paramObject);
-		else 
-			return getPerInfoItemDefWithHis(paramObject);	
-	}
+//	public List<PersonInfoItemDefinition> getPerItemDef(ParamForGetPerItem paramObject) {		
+//		if (paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.MULTIINFO
+//				|| paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.SINGLEINFO) 
+//			return getPerInfoItemDefWithAuth(paramObject);
+//		else 
+//			return getPerInfoItemDefWithHis(paramObject);	
+//	}
 	
 	/**
 	 * get list person information item definition and filter by auth
@@ -55,7 +55,7 @@ public class PerInfoCtgDomainService {
 	 * @return List<PersonInfoItemDefinition>
 	 */
 	
-	private List<PersonInfoItemDefinition> getPerInfoItemDefWithAuth(ParamForGetPerItem paramObject){
+	public List<PersonInfoItemDefinition> getPerItemDef(ParamForGetPerItem paramObject){
 		// get per info item def with order
 		List<PersonInfoItemDefinition> lstPerInfoDef = perInfoItemDefRepositoty.getAllPerInfoItemDefByCategoryId(
 				paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getContractCode());
