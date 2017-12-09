@@ -47,6 +47,9 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 	@Override
 	protected void handle(CommandHandlerContext<PeregUserDefUpdateCommand> context) {
 		val command = context.getCommand();
+		if (command.getItems() == null || command.getItems().isEmpty()){
+			return;
+		}
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
@@ -69,7 +72,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			
 			for (ItemValue item : command.getItems()){
 				
-				OptionalUtil.createDataState(item,state);
+				state = OptionalUtil.createDataState(item);
 				
 				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
 				perInfoItemDataRepository.updateItemData(itemData);
@@ -83,7 +86,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			EmpInfoItemData itemData = null;
 			DataState state = null;
 			for (ItemValue item : command.getItems()){
-				OptionalUtil.createDataState(item, state);
+				state = OptionalUtil.createDataState(item);
 				itemData = new EmpInfoItemData(item.definitionId(), command.getRecordId(), state);
 				empInfoItemDataRepository.updateEmpInfoItemData(itemData);
 			}

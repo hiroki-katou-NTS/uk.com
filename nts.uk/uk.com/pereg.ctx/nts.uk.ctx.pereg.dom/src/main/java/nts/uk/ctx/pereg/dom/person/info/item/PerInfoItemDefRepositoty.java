@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.dom.person.info.item;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

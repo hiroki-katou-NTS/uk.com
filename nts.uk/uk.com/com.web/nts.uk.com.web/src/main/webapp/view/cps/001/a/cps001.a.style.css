@@ -217,7 +217,7 @@
 	min-width: 860px;
 }
 
-#contents-area .category-input .layout-control .drag-panel {
+#contents-area .category-input .cat-has-childs .layout-control .drag-panel {
 	min-width: 830px;
 	border: none;
 	height: auto;

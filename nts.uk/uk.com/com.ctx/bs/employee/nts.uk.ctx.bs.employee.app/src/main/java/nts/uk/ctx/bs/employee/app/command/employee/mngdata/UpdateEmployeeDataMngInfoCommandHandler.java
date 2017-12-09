@@ -1,9 +1,12 @@
 package nts.uk.ctx.bs.employee.app.command.employee.mngdata;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
@@ -33,6 +36,13 @@ public class UpdateEmployeeDataMngInfoCommandHandler extends CommandHandler<Upda
 		
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		
+		// 同じ会社IDかつ、削除状況＝削除していないものは、社員コードは重複してはいけない （#Msg_345#）
+		Optional<EmployeeDataMngInfo> employeeData = employeeDataMngInfoRepository.findByEmployeCD(command.getEmployeeCode(), companyId);
+		
+		if (employeeData.isPresent() && !employeeData.get().getEmployeeId().equals(command.getEmployeeId())){
+			throw new BusinessException("Msg_345");
+		}
 		
 		EmployeeDataMngInfo domain = new EmployeeDataMngInfo(companyId,command.getPersonId(), command.getEmployeeId(),command.getEmployeeCode(),command.getExternalCode());
 		

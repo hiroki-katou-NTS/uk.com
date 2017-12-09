@@ -1,7 +1,9 @@
 package nts.uk.ctx.pereg.infra.repository.roles.auth.category;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -41,8 +43,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPersonRole pr" + " ON pr.ppemtPersonRolePk.roleId = p.ppemtPersonCategoryAuthPk.roleId"
 			+ " WHERE c.cid = :companyId" + " AND c.abolitionAtr = 0" + " AND p.allowOtherRef = 1"
-			+ "	AND c.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdlst"
-			+ "	ORDER BY co.disporder ";
+			+ "	AND c.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdlst" + "	ORDER BY co.disporder ";
 
 	private final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 
@@ -58,6 +59,10 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
 			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " WHERE c.cid = :CID";
+
+	private final String SEE_BY_ROLEID_AND_CTG_ID_LIST = "SELECT ctgAuth FROM PpemtPersonCategoryAuth ctgAuth"
+			+ " WHERE ctgAuth.ppemtPersonCategoryAuthPk.roleId = :roleId"
+			+ " AND ctgAuth.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IN :categoryIdList";
 
 	private final String DEL_BY_ROLE_ID = " DELETE  FROM PpemtPersonCategoryAuth c"
 			+ " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId";
@@ -156,6 +161,13 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				.map(e -> {
 					return Optional.of(toDomain(e));
 				}).orElse(Optional.empty());
+	}
+
+	@Override
+	public Map<String, PersonInfoCategoryAuth> getByRoleIdAndCategories(String roleId, List<String> categoryIdList) {
+		return this.queryProxy().query(SEE_BY_ROLEID_AND_CTG_ID_LIST, PpemtPersonCategoryAuth.class)
+				.setParameter("roleId", roleId).setParameter("categoryIdList", categoryIdList).getList().stream()
+				.collect(Collectors.toMap(c -> c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, c -> toDomain(c)));
 	}
 
 	@Override

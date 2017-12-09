@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
@@ -19,6 +20,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
+import nts.uk.shr.pereg.app.ItemValueType;
 
 /**
  * @author danpv
@@ -37,6 +39,11 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " where itemData.primaryKey.recordId = :recordId";
+	
+	private static final String GET_BY_ITEM_DEF_ID_AND_RECORD_ID = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerInfoItemData itemData"
+			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " where itemData.primaryKey.perInfoDefId = :perInfoDefId and itemData.primaryKey.recordId = :recordId";
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_PID = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.pInfoCtgId = :ctgid AND ic.pId = :pid";
@@ -54,6 +61,16 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		return PersonInfoItemData.createFromJavaType(entity[10].toString(), entity[0].toString(), entity[1].toString(),
 				entity[11].toString(), entity[12].toString(), entity[9].toString(), isRequired, dataStateType,
 				entity[5].toString(), intValue, dateValue);
+	}
+	
+	private PersonInfoItemData toDomainNew(Object[] data){
+		PpemtPerInfoItemData itemData = (PpemtPerInfoItemData) data[0];
+		PpemtPerInfoItem itemInfo = (PpemtPerInfoItem) data[1];
+		PpemtPerInfoCtg infoCtg = (PpemtPerInfoCtg) data[2];
+		return PersonInfoItemData.createFromJavaType(itemInfo.itemCd, itemInfo.ppemtPerInfoItemPK.perInfoItemDefId,
+				itemData.primaryKey.recordId, infoCtg.ppemtPerInfoCtgPK.perInfoCtgId, infoCtg.categoryCd,
+				itemInfo.itemName, itemInfo.requiredAtr, itemData.saveDataAtr, itemData.stringVal, itemData.intVal,
+				itemData.dateVal);
 	}
 
 	/*
@@ -77,15 +94,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			return new ArrayList<>();
 		}
 			
-		return datas.stream().map(data -> {
-			PpemtPerInfoItemData itemData = (PpemtPerInfoItemData) data[0];
-			PpemtPerInfoItem itemInfo = (PpemtPerInfoItem) data[1];
-			PpemtPerInfoCtg infoCtg = (PpemtPerInfoCtg) data[2];
-			return PersonInfoItemData.createFromJavaType(itemInfo.itemCd, itemInfo.ppemtPerInfoItemPK.perInfoItemDefId,
-					itemData.primaryKey.recordId, infoCtg.ppemtPerInfoCtgPK.perInfoCtgId, infoCtg.categoryCd,
-					itemInfo.itemName, itemInfo.requiredAtr, itemData.saveDataAtr, itemData.stringVal, itemData.intVal,
-					itemData.dateVal);
-		}).collect(Collectors.toList());
+		return datas.stream().map(data -> toDomainNew(data)).collect(Collectors.toList());
 		
 	}
 
@@ -94,21 +103,43 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
 
-		String stringValue = domain.getDataState().getStringValue();
-
-		BigDecimal intValue = domain.getDataState().getNumberValue();
-
-		GeneralDate dateValue = domain.getDataState().getDateValue();
-
+		String stringValue = null;
+		BigDecimal intValue = null;
+		GeneralDate dateValue = null;
+		switch(EnumAdaptor.valueOf(domain.getDataState().getDataStateType().value, ItemValueType.class)){
+		case STRING:
+		case SELECTION:
+			stringValue = domain.getDataState().getStringValue();
+			break;
+		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
+			intValue = domain.getDataState().getNumberValue();
+			break;
+		case DATE:
+			dateValue = domain.getDataState().getDateValue();
+			break;
+		}
 		return new PpemtPerInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
 				dateValue);
 	}
 
 	private void updateEntity(PersonInfoItemData domain, PpemtPerInfoItemData entity) {
 		entity.saveDataAtr = domain.getDataState().getDataStateType().value;
-		entity.stringVal = domain.getDataState().getStringValue();
-		entity.intVal = domain.getDataState().getNumberValue();
-		entity.dateVal = domain.getDataState().getDateValue();
+		switch(EnumAdaptor.valueOf(entity.saveDataAtr, ItemValueType.class)){
+		case STRING:
+		case SELECTION:
+			entity.stringVal = domain.getDataState().getStringValue();
+			break;
+		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
+			entity.intVal = domain.getDataState().getNumberValue();
+			break;
+		case DATE:
+			entity.dateVal = domain.getDataState().getDateValue();
+			break;
+		}
 	}
 
 	/**
@@ -151,6 +182,13 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTGID_AND_PID, Object[].class)
 				.setParameter("ctgid", ctgId).setParameter("pid", pid).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<PersonInfoItemData> getPerInfoItemDataByItemDefIdAndRecordId(String perInfoDefId, String recordId) {
+		return this.queryProxy().query(GET_BY_ITEM_DEF_ID_AND_RECORD_ID)
+				.setParameter("recordId", recordId)
+				.setParameter("perInfoDefId", perInfoDefId).getSingle(data -> toDomainNew(data));
 	}
 
 }

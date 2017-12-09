@@ -126,9 +126,7 @@
 												constraint:'CardNumber',
 												name: '#{i18n.getText('CPS002_18')}',
 												option: {
-												 	width: '160' ,
-												autofill:true,
-												filldirection:'left'
+												 	width: '160' 
 												 }
 												 }" />
 											<button
@@ -398,7 +396,7 @@
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_108')}</td>
-												<td data-bind="text:currentEmployee().employeeCode()"></td>
+												<td data-bind="text:currentEmployee().loginId()"></td>
 											</tr>
 										</tbody>
 									</table>

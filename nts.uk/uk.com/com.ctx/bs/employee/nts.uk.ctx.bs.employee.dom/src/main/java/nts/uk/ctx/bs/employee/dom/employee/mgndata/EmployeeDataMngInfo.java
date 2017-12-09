@@ -7,6 +7,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
 
 @Getter
@@ -32,7 +33,7 @@ public class EmployeeDataMngInfo extends AggregateRoot {
 	private EmployeeDeletionAttr deletedStatus;
 
 	/** 一時削除日時 */
-	private GeneralDate deleteDateTemporary;
+	private GeneralDateTime deleteDateTemporary;
 
 	/** 削除理由 */
 	private RemoveReason removeReason;
@@ -48,7 +49,7 @@ public class EmployeeDataMngInfo extends AggregateRoot {
 		this.externalCode = new ExternalCode(externalCode);
 	}
 	public static EmployeeDataMngInfo createFromJavaType(String cId, String pId, String sId, String sCd, int delStatus,
-			GeneralDate delTemp, String removeReason, String extCode) {
+			GeneralDateTime delTemp, String removeReason, String extCode) {
 		return new EmployeeDataMngInfo(cId, pId, sId, new EmployeeCode(sCd),
 				EnumAdaptor.valueOf(delStatus, EmployeeDeletionAttr.class), delTemp, new RemoveReason(removeReason),
 				new ExternalCode(extCode));

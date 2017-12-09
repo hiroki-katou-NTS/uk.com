@@ -6,14 +6,15 @@ module cps001.a.service {
         layout: {
             getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
             getDetails: "ctx/pereg/person/maintenance/findLayoutData",
-            'add': '/facade/pereg/add',
-            'update': '/facade/pereg/update',
-            'delete': '/facade/pereg/delete'
+            'register': 'facade/pereg/register'
         },
         category: {
             'getCats': 'ctx/pereg/employee/category/getall/{0}',
             'getDetails': 'ctx/pereg/layout/find/gettabdetail',
-            'getTabsInfo': 'ctx/pereg/layout/find/getctgtab/{0}' //categoryId
+            'getTabsInfo': 'ctx/pereg/layout/find/getctgtab/{0}', //categoryId
+            'add': 'facade/pereg/add',
+            'update': 'facade/pereg/update',
+            'delete': 'facade/pereg/delete',
         },
         person: {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
@@ -34,6 +35,10 @@ module cps001.a.service {
     export function getCats(id: string) {
         return ajax(format(paths.category.getCats, id));
     };
+
+    export function getCatChilds(id: string) {
+        return ajax(format(paths.category.getTabsInfo, id));
+    }
 
     export function getCatData(query: any) {
         return ajax(paths.category.getDetails, query);
@@ -60,7 +65,7 @@ module cps001.a.service {
     }
 
     export function saveCurrentLayout(command: any) {
-        return ajax(paths.layout.add, command);
+        return ajax(paths.layout.register, command);
     }
 
     export function getData() {

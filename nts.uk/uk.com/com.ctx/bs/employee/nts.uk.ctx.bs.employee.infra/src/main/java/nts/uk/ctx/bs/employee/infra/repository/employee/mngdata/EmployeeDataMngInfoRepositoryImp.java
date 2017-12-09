@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +34,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
-	private static final String SELECT_BY_SID = "SELECT e.employeeCode, p.personName, p.businessName "
+	//Lanlt end
+	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName "
 			+ " FROM BsymtEmployeeDataMngInfo e " + " INNER JOIN BpsmtPerson p"
 			+ " ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sid";
@@ -43,6 +45,14 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " AND d.bsymtDepartmentInfoPK.histId = h.bsymtDepartmentHistPK.histId "
 			+ " AND d.bsymtDepartmentInfoPK.cid = h.bsymtDepartmentHistPK.cid"
 			+ " WHERE  d.bsymtDepartmentInfoPK.depId =:depId" + " AND h.strD <= :date" + " AND h.endD >= :date";
+	
+	//Lanlt end
+	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ";
+	
+	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
+
+	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
+			"WHERE e.delStatus = 0 AND e.employeeCode = :empcode AND e.companyId = :cid");
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -162,7 +172,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public Optional<EmployeeInfo> findById(String sid) {
-		Optional<EmployeeInfo> emp = queryProxy().query(SELECT_BY_SID, Object[].class).setParameter("sid", sid)
+		Optional<EmployeeInfo> emp = queryProxy().query(SELECT_BY_SID_1, Object[].class).setParameter("sid", sid)
 				.getSingle(c -> toDomain(c, 0));
 		return emp;
 
@@ -173,7 +183,33 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		// TODO Auto-generated method stub SEL_DEPARTMENT
 		Optional<EmployeeInfo> emp = queryProxy().query(SEL_DEPARTMENT, Object[].class)
 				.setParameter("depId", departmentId).setParameter("date", date).getSingle(c -> toDomain(c, 1));
-		return null;
+		return emp;
+	}
+		
+	public List<EmployeeDataMngInfo> getListEmpToDelete(String cid) {
+
+		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()
+				.query(GET_ALL_BY_CID, BsymtEmployeeDataMngInfo.class).setParameter("cid", cid).getList();
+
+		return toListEmployeeDataMngInfo(listEntity);
+	}
+
+	private List<EmployeeDataMngInfo> toListEmployeeDataMngInfo(List<BsymtEmployeeDataMngInfo> listEntity) {
+		List<EmployeeDataMngInfo> lstEmployeeDataMngInfo = new ArrayList<>();
+		if (!listEntity.isEmpty()) {
+			listEntity.stream().forEach(c -> {
+				EmployeeDataMngInfo employeeDataMngInfo = toDomain(c);
+
+				lstEmployeeDataMngInfo.add(employeeDataMngInfo);
+			});
+		}
+		return lstEmployeeDataMngInfo;
+	}
+
+	public Optional<EmployeeDataMngInfo> findByEmployeCD(String empcode, String cid) {
+		return queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployeeDataMngInfo.class).setParameter("empcode", empcode)
+				.setParameter("cid", cid).getSingle().map(m -> toDomain(m));
+
 	}
 
 }

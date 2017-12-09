@@ -1,9 +1,12 @@
 package nts.uk.ctx.bs.employee.app.command.employee.mngdata;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
@@ -35,6 +38,11 @@ public class AddEmployeeDataMngInfoCommandHandler extends CommandHandlerWithResu
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 	
+		Optional<EmployeeDataMngInfo> employeeData = employeeDataMngInfoRepository.findByEmployeCD(command.getEmployeeCode(), companyId);
+		
+		if (employeeData.isPresent()){
+			throw new BusinessException("Msg_345");
+		}
 		/** Default:
 		 deletedStatus = false
 		 deleteDateTemporary = null

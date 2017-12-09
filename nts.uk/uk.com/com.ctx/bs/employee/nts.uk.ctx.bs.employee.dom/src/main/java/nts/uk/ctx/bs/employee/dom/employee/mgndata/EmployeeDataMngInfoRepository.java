@@ -2,9 +2,7 @@ package nts.uk.ctx.bs.employee.dom.employee.mgndata;
 
 import java.util.List;
 import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
-
 public interface EmployeeDataMngInfoRepository {
 	void add(EmployeeDataMngInfo domain);
 
@@ -15,14 +13,14 @@ public interface EmployeeDataMngInfoRepository {
 	void remove(String sid, String pId);
 
 	EmployeeDataMngInfo findById(String sid, String pId);
-
 	// Lanlt code start
-	
+
 	Optional<EmployeeInfo> findById(String sid);
-	
+
 	Optional<EmployeeInfo> getDepartment(String departmentId, GeneralDate date);
 
 	// Lanlt code end
+
 	List<EmployeeDataMngInfo> findByEmployeeId(String sid);
 
 	List<EmployeeDataMngInfo> findByPersonId(String pid);
@@ -36,4 +34,8 @@ public interface EmployeeDataMngInfoRepository {
 	// sonnlb code end
 
 	void updateRemoveReason(EmployeeDataMngInfo domain);
+
+	List<EmployeeDataMngInfo> getListEmpToDelete(String cid);
+
+	Optional<EmployeeDataMngInfo> findByEmployeCD(String empcode, String cid);
 }

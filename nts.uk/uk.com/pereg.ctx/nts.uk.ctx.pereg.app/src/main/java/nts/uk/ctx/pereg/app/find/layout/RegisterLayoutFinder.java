@@ -9,12 +9,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
@@ -24,7 +26,9 @@ import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSe
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 /**
  * @author sonnlb
@@ -81,7 +85,25 @@ public class RegisterLayoutFinder {
 
 		NewLayout _layout = layout.get();
 
-		final List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
+		List<LayoutPersonInfoClsDto> listItemCls = getlistItemCls(command, _layout);
+
+		listItemCls.forEach(x -> {
+			PerInfoCtgFullDto ctgInfo = this.infoCtgFinder.getPerInfoCtg(x.getPersonInfoCategoryID());
+			if (ctgInfo != null) {
+				x.setItems(x
+						.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
+								.fromItemDef(ctgInfo.getCategoryCode(), itemDf, ActionRole.EDIT.value))
+						.collect(Collectors.toList()));
+			}
+		});
+
+		return NewLayoutDto.fromDomain(_layout, listItemCls);
+
+	}
+
+	private List<LayoutPersonInfoClsDto> getlistItemCls(GetLayoutByCeateTypeDto command, NewLayout _layout) {
+
+		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
 
 		if (command.getCreateType() != 3) {
 
@@ -95,30 +117,47 @@ public class RegisterLayoutFinder {
 			}
 
 			queryList.forEach(query -> {
-				Optional<LayoutPersonInfoClsDto> clsDto = listItemCls.stream()
+				Optional<LayoutPersonInfoClsDto> clsDtoOpt = listItemCls.stream()
 						.filter(itemCls -> itemCls.getPersonInfoCategoryID() == query.getCategoryId()).findFirst();
 
-				if (clsDto.isPresent()) {
-					MappingFactory.mapItemClassDto(this.layoutProc.findSingle(query), clsDto.get());
+				if (clsDtoOpt.isPresent()) {
+
+					PeregDto peregDto = this.layoutProc.findSingle(query);
+
+					if (peregDto != null) {
+						LayoutPersonInfoClsDto clsDto = clsDtoOpt.get();
+						if (!CollectionUtil.isEmpty(clsDto.getListItemDf())) {
+							clsDto.setItems(clsDto.getListItemDf()
+									.stream().map(itemDf -> LayoutPersonInfoValueDto
+											.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
+									.collect(Collectors.toList()));
+
+							MappingFactory.mapItemClass(peregDto, clsDto);
+						}
+					}
 				}
 
 			});
+			if (command.getCreateType() == 2) {
 
-		}
-		listItemCls.forEach(x -> {
-			PerInfoCtgFullDto ctgInfo = this.infoCtgFinder.getPerInfoCtg(x.getPersonInfoCategoryID());
-			if (ctgInfo != null) {
-				x.setItems(x.getListItemDf().stream()
-						.map(itemDf -> LayoutPersonInfoValueDto.fromItemDef(ctgInfo.getCategoryCode(), itemDf, 2))
-						.collect(Collectors.toList()));
+				listItemCls.forEach(itemCls -> {
+					if (!CollectionUtil.isEmpty(itemCls.getItems())) {
+						itemCls.setItems(itemCls.getItems().stream().filter(item -> {
+
+							LayoutPersonInfoValueDto subItem = (LayoutPersonInfoValueDto) item;
+
+							return subItem.getValue() != null;
+						}).collect(Collectors.toList()));
+					}
+				});
+
+				return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
+						.collect(Collectors.toList());
 			}
 
-		});
+		}
 
-		return NewLayoutDto.fromDomain(_layout,
-				listItemCls.stream().filter(x -> x.getListItemDf() != null ? x.getListItemDf().size() > 0 : false)
-						.collect(Collectors.toList()));
-
+		return listItemCls;
 	}
 
 	/**
@@ -150,7 +189,7 @@ public class RegisterLayoutFinder {
 
 			this.initCtgSettingFinder.getAllCategoryBySetId(initSettingId).forEach(x -> {
 
-				listQuery.add(new PeregQuery(x.getCategoryCd(), employeeCopyId, null, baseDate));
+				listQuery.add(new PeregQuery(x.getCategoryCd(), AppContexts.user().employeeId(), null, baseDate));
 			});
 
 		}

@@ -59,17 +59,18 @@ public class SettingItemDto {
 		return resultDto;
 	}
 
-	public static SaveDataDto createSaveDataDto(int saveDataValue, Object value) {
+	public static SaveDataDto createSaveDataDto(int saveDataValue, String value) {
 		SaveDataDto resultDto = new SaveDataDto();
 
 		SaveDataType saveDataType = EnumAdaptor.valueOf(saveDataValue, SaveDataType.class);
 
 		switch (saveDataType) {
 		case DATE:
-			resultDto = SaveDataDto.createDataDto(GeneralDate.fromString(value.toString(), "ddMMyyyy"));
+			resultDto = SaveDataDto.createDataDto(
+					value != "" ? GeneralDate.fromString(value.toString(), "ddMMyyyy") : GeneralDate.min());
 			break;
 		case NUMBERIC:
-			resultDto = SaveDataDto.createDataDto(Integer.parseInt(value.toString()));
+			resultDto = SaveDataDto.createDataDto(value != "" ? Integer.parseInt(value.toString()) : 0);
 			break;
 		case STRING:
 			resultDto = SaveDataDto.createDataDto(value.toString());
