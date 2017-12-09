@@ -77,6 +77,7 @@ public class LayoutPersonInfoClsFinder {
 							classDto.setClassName(catDto.getCategoryName());
 						}
 					}
+					System.out.println(classDto.getClassName());
 					break;
 				case SeparatorLine: // SeparatorLine
 					break;
