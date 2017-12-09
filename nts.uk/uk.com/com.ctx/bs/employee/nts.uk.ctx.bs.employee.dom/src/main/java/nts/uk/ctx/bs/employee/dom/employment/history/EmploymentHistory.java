@@ -22,13 +22,20 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Setter
 public class EmploymentHistory extends AggregateRoot
 		implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
+	
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
 
-	/** The employee id. */
-	// 社員ID
+	/**
+	 * 社員ID
+	 */
 	private String employeeId;
 
-	/** The Date History Item. */
-	// 履歴項目
+	/**
+	 * 履歴項目
+	 */
 	private List<DateHistoryItem> historyItems;
 
 	@Override

@@ -19,6 +19,25 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " INNER JOIN BsymtEmploymentHistItem i" + " ON  h.hisId = i.hisId " + " AND h.sid  = i.sid"
 			+ " AND a.bsymtEmploymentPK.code =  i.empCode" + " WHERE h.sid =:sid" + " AND h.strDate <= :date"
 			+ " AND h.endDate >= :date " + " AND a.bsymtEmploymentPK.cid =:companyId";
+	
+	@Override
+	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
+		Optional<EmploymentInfo> employee = this.queryProxy().query(SEL_HIS_ITEM, Object[].class)
+				.setParameter("sid", sid).setParameter("date", date).setParameter("companyId", companyId)
+				.getSingle(c -> toDomainEmployee(c));
+		return employee;
+	}
+	
+	@Override
+	public Optional<EmploymentHistoryItem> getByHistoryId(String historyId) {
+		Optional<BsymtEmploymentHistItem> hiDataOpt = this.queryProxy().find(historyId, BsymtEmploymentHistItem.class);
+		if (hiDataOpt.isPresent()) {
+			BsymtEmploymentHistItem ent = hiDataOpt.get();
+			return Optional.of( EmploymentHistoryItem.createFromJavaType(ent.hisId, ent.sid, ent.empCode, ent.salarySegment));
+		}
+		return null;
+	}
+	
 
 	/**
 	 * Convert from domain to entity
@@ -49,8 +68,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 * @param entity
 	 */
 	private void updateEntity(EmploymentHistoryItem domain, BsymtEmploymentHistItem entity) {
-		entity.setEmpCode(domain.getEmploymentCode().v());
-		entity.setSalarySegment(domain.getSalarySegment().value);
+		entity.empCode = domain.getEmploymentCode().v();
+		entity.salarySegment = domain.getSalarySegment().value;
 		// entity.setSid(domain.getEmployeeId());
 	}
 
@@ -79,12 +98,5 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		this.commandProxy().remove(BsymtEmploymentHistItem.class, histId);
 	}
 
-	@Override
-	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
-		Optional<EmploymentInfo> employee = this.queryProxy().query(SEL_HIS_ITEM, Object[].class)
-				.setParameter("sid", sid).setParameter("date", date).setParameter("companyId", companyId)
-				.getSingle(c -> toDomainEmployee(c));
-		return employee;
-	}
 
 }
