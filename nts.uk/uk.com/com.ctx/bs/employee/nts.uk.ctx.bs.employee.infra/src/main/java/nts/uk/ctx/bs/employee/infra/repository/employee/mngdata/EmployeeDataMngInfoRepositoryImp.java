@@ -1,13 +1,16 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
 
@@ -30,8 +33,16 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
-	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
-	
+	private static final String SELECT_BY_SID = "SELECT e.employeeCode, p.personName, p.businessName "
+			+ " FROM BsymtEmployeeDataMngInfo e " + " INNER JOIN BpsmtPerson p"
+			+ " ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId"
+			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sid";
+
+	private static final String SEL_DEPARTMENT = " SELECT d.cd , d.name FROM  BsymtDepartmentInfo d"
+			+ " INNER JOIN BsymtDepartmentHist h" + " ON  d.bsymtDepartmentInfoPK.depId = h.bsymtDepartmentHistPK.depId"
+			+ " AND d.bsymtDepartmentInfoPK.histId = h.bsymtDepartmentHistPK.histId "
+			+ " AND d.bsymtDepartmentInfoPK.cid = h.bsymtDepartmentHistPK.cid"
+			+ " WHERE  d.bsymtDepartmentInfoPK.depId =:depId" + " AND h.strD <= :date" + " AND h.endD >= :date";
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -71,8 +82,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return queryProxy().query(SELECT_BY_ID, BsymtEmployeeDataMngInfo.class).setParameter("sId", sId)
 				.setParameter("pid", pId).getSingle().map(m -> toDomain(m)).orElse(null);
 	}
-	
-	
 
 	@Override
 	public List<EmployeeDataMngInfo> findByEmployeeId(String sId) {
@@ -80,7 +89,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.stream().map(m -> toDomain(m)).collect(Collectors.toList());
 	}
 
-	
 	@Override
 	public List<EmployeeDataMngInfo> findByPersonId(String pId) {
 		return queryProxy().query(SELECT_BY_PERSON_ID, BsymtEmployeeDataMngInfo.class).setParameter("pId", pId)
@@ -99,6 +107,33 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				entity.removeReason, entity.extCode);
 	}
 
+	// Lanlt start - header
+	private EmployeeInfo toDomain(Object[] entity, int component) {
+		EmployeeInfo emp = new EmployeeInfo();
+		if (component == 0) {
+			if (entity[0] != null) {
+				emp.setEmployeeCode(entity[0].toString());
+			}
+
+			if (entity[1] != null) {
+				emp.setEmployeeName(entity[1].toString());
+			}
+
+			if (entity[2] != null) {
+				emp.setPersonName(entity[2].toString());
+			}
+		} else if (component == 1) {
+			if (entity[0] != null && entity[1] != null)
+				emp.setDepartmentName(entity[0].toString() + " " + entity[1].toString());
+
+		}
+
+		return emp;
+
+	}
+
+	// Lanlt end
+
 	private BsymtEmployeeDataMngInfo toEntity(EmployeeDataMngInfo domain) {
 		BsymtEmployeeDataMngInfoPk primaryKey = new BsymtEmployeeDataMngInfoPk(domain.getEmployeeId(),
 				domain.getPersonId());
@@ -107,9 +142,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				domain.getDeletedStatus().value, domain.getDeleteDateTemporary(),
 				domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null, domain.getExternalCode().v());
 	}
-
-
-
 
 	// sonnlb code start
 
@@ -122,10 +154,26 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	// sonnlb code end
-	
+
 	@Override
 	public void updateRemoveReason(EmployeeDataMngInfo domain) {
 		this.commandProxy().update(toEntity(domain));
+	}
+
+	@Override
+	public Optional<EmployeeInfo> findById(String sid) {
+		Optional<EmployeeInfo> emp = queryProxy().query(SELECT_BY_SID, Object[].class).setParameter("sid", sid)
+				.getSingle(c -> toDomain(c, 0));
+		return emp;
+
+	}
+
+	@Override
+	public Optional<EmployeeInfo> getDepartment(String departmentId, GeneralDate date) {
+		// TODO Auto-generated method stub SEL_DEPARTMENT
+		Optional<EmployeeInfo> emp = queryProxy().query(SEL_DEPARTMENT, Object[].class)
+				.setParameter("depId", departmentId).setParameter("date", date).getSingle(c -> toDomain(c, 1));
+		return null;
 	}
 
 }
