@@ -19,18 +19,17 @@ import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BsymtPersonFileMana
 @Transactional
 public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFileManagementRepository{
 
-	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND c.filetype = :filetype";
+	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 
-	public final String CHECK_EXIST = "SELECT COUNT(c) FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND c.filetype = :filetype";
+	public final String CHECK_EXIST = "SELECT COUNT(c) FROM BsymtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 	
-	public final String GET_BY_FILEID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.bsymtEmpFileManagementPK.fileid = :fileid ";
+	public final String GET_BY_FILEID = "SELECT c FROM BsymtPersonFileManagement c WHERE c.bsymtPerFileManagementPK.fileid = :fileid ";
 	
-	//public final String DELETE_DOCUMENT_BY_FILEID = "DELETE FROM BsymtEmpFileManagement c  WHERE c.bsymtEmpFileManagementPK.fileid = :fileid";
+	//public final String DELETE_DOCUMENT_BY_FILEID = "DELETE FROM BsymtPersonFileManagement c  WHERE c.BsymtPersonFileManagementPK.fileid = :fileid";
 
 
-	public final String GET_ALL_DOCUMENT_FILE = "SELECT c.sid , c.bsymtEmpFileManagementPK.fileid , c.disPOrder , c.personInfoctgId ,d.categoryName FROM BsymtEmpFileManagement c "
-			+" JOIN PpemtPerInfoCtg d ON c.personInfoctgId =  d.ppemtPerInfoCtgPK.perInfoCtgId "
-			+" WHERE c.sid = :sid AND c.filetype = :filetype ORDER BY c.disPOrder ASC";
+	public final String GET_ALL_DOCUMENT_FILE = "SELECT c.pid , c.bsymtPerFileManagementPK.fileid , c.disPOrder , c.personInfoctgId FROM BsymtPersonFileManagement c "
+			+" WHERE c.pid = :pid AND c.filetype = :filetype ORDER BY c.disPOrder ASC";
 	
 	private PersonFileManagement toDomainEmpFileManagement(BsymtPersonFileManagement entity) {
 		val domain = PersonFileManagement.createFromJavaType(entity.pid,
@@ -83,7 +82,7 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	@Override
 	public List<PersonFileManagement> getDataByParams(String employeeId, int filetype) {
 		List<BsymtPersonFileManagement> listFile = this.queryProxy().query(GET_ALL_BY_SID, BsymtPersonFileManagement.class)
-				.setParameter("sid", employeeId)
+				.setParameter("pid", employeeId)
 				.setParameter("filetype", filetype)
 				.getList();
 
@@ -94,7 +93,7 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	@Override
 	public List<Object[]> getListDocumentFile(String employeeId, int filetype) {
 		List<Object[]> listFile = this.queryProxy().query(GET_ALL_DOCUMENT_FILE, Object[].class)
-				.setParameter("sid", employeeId)
+				.setParameter("pid", employeeId)
 				.setParameter("filetype", filetype)
 				.getList();
 		return listFile;
@@ -133,7 +132,7 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	@Override
 	public boolean checkObjectExist(String employeeId, int fileType) {
 		Optional<Long> count = this.queryProxy().query(CHECK_EXIST, long.class)
-				.setParameter("sid", employeeId)
+				.setParameter("pid", employeeId)
 				.setParameter("filetype", fileType)
 				.getSingle();
 		if(!count.isPresent()) return false;
