@@ -296,18 +296,17 @@ public class MappingFactory {
 	 */
 	public static void mapPerOptionalDto(EmpMaintLayoutDto empMaintLayoutDto,
 			List<PersonOptionalDto> lstCtgItemOptionalDto, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
-		lstPerInfoItemDef.forEach(item -> {
-			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
+		lstPerInfoItemDef.forEach(item -> {			
 			if (item.getItemCode().charAt(1) == 'O') {
+				LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
 				if(item.getItemDefType() == 2){
 					setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
 				}else{
 					setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
 					item.getLstChildItemDef().forEach(x -> setPerClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, x));
 				}
-				
+				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 			}
-			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		});
 	}
 
@@ -321,17 +320,16 @@ public class MappingFactory {
 	public static void mapEmpOptionalDto(EmpMaintLayoutDto empMaintLayoutDto,
 			List<EmpOptionalDto> lstCtgItemOptionalDto, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 		lstPerInfoItemDef.forEach(item -> {
-			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
 			if (item.getItemCode().charAt(1) == 'O') {
+				LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
 				if(item.getItemDefType() == 2){
 					setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
 				}else{
 					setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, item);
 					item.getLstChildItemDef().forEach(x -> setEmpClsItemValue(lstCtgItemOptionalDto, layoutPerInfoClsDto, x));
 				}
-				
-			}
-			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
+			}			
 		});
 	}
 	
