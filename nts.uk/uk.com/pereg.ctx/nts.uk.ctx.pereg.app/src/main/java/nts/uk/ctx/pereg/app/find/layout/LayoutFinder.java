@@ -19,6 +19,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
@@ -68,7 +69,7 @@ public class LayoutFinder {
 
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
-	
+
 	@Inject
 	private ILayoutPersonInfoClsRepository itemClsRepo;
 
@@ -101,12 +102,12 @@ public class LayoutFinder {
 
 	@Inject
 	private IMaintenanceLayoutRepository layoutRepo;
-	
+
 	@Inject
 	private SelectionFinder selectionFinder;
 
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
-		
+
 		String loginEmpId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forCompanyAdmin();
@@ -114,17 +115,17 @@ public class LayoutFinder {
 		boolean selfBrowsing = loginEmpId.equals(browsingEmpId);
 
 		List<MaintenanceLayout> simpleLayouts = layoutRepo.getAllMaintenanceLayout(companyId);
-		
+
 		Map<String, PersonInfoCategoryAuth> mapCategoryAuth = perInfoCtgAuthRepo.getAllCategoryAuthByRoleId(roleId)
 				.stream().collect(Collectors.toMap(e -> e.getPersonInfoCategoryAuthId(), e -> e));
-		
+
 		List<SimpleEmpMainLayoutDto> acceptSplLayouts = new ArrayList<>();
 		for (MaintenanceLayout simpleLayout : simpleLayouts) {
-			
+
 			if (haveAnItemAuth(simpleLayout.getMaintenanceLayoutID(), mapCategoryAuth, selfBrowsing)) {
 				acceptSplLayouts.add(SimpleEmpMainLayoutDto.fromDomain(simpleLayout));
 			}
-			
+
 		}
 		return acceptSplLayouts;
 	}
@@ -161,7 +162,7 @@ public class LayoutFinder {
 
 		// FILTER CLASS ITEMS WITH AUTHORITY
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
-			
+
 			// if item is separator line, do not check
 			if (classItem.getLayoutItemType() == LayoutItemType.SeparatorLine) {
 				authItemClasList.add(classItem);
@@ -183,14 +184,19 @@ public class LayoutFinder {
 		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
 		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
 			if (classItem.getLayoutItemType() != LayoutItemType.SeparatorLine) {
-				List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
-						.get(classItem.getPersonInfoCategoryID());
-				if (classItemList == null) {
-					classItemList = new ArrayList<>();
-					classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
+				if (classItem.getLayoutItemType() == LayoutItemType.ITEM) {
+					List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
+							.get(classItem.getPersonInfoCategoryID());
+					if (classItemList == null) {
+						classItemList = new ArrayList<>();
+						classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
+					}
+					classItemList.add(classItem);
+				} else {
+					
 				}
-				classItemList.add(classItem);
-			} 
+			}
+
 		}
 
 		classItemInCategoryMap.forEach((categoryId, classItemList) -> {
@@ -358,28 +364,17 @@ public class LayoutFinder {
 			}
 
 		}
-		
+
 		// getComboBox
 		classItemList.forEach(classItem -> {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				if (valueItem.getItem().getDataTypeValue() == DataTypeValue.SELECTION.value) {
 					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					if (selectionItemDto.getReferenceType() == ReferenceTypes.CODE_NAME) {
-						CodeNameRefTypeDto codeNameTypeDto = (CodeNameRefTypeDto) selectionItemDto;
-						List<SelectionInitDto> selectionList = selectionFinder
-								.getAllSelectionByCompanyId(codeNameTypeDto.getTypeCode(), standardDate);
-						List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
-						for (SelectionInitDto selection : selectionList) {
-							lstComboBoxValue
-									.add(new ComboBoxObject(selection.getSelectionId(), selection.getSelectionName()));
-						}
-						valueItem.setLstComboBoxValue(lstComboBoxValue);
-					}
+					valueItem.setLstComboBoxValue(ComboBoxRetrieveFactory.getComboBox(selectionItemDto, standardDate));
 				}
 			}
 		});
-		
 
 	}
 
@@ -612,7 +607,7 @@ public class LayoutFinder {
 		}
 
 	}
-	
+
 	private List<LayoutPersonInfoClsDto> removeDuplicateSeparator(List<LayoutPersonInfoClsDto> classItemList) {
 		List<LayoutPersonInfoClsDto> authItemClasList1 = new ArrayList<>();
 		for (int i = 0; i < classItemList.size(); i++) {
