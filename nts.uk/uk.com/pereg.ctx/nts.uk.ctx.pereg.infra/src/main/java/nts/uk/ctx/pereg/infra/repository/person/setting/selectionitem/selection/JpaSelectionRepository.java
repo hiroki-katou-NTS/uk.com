@@ -9,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelection;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 
@@ -30,6 +29,8 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 			+ " WHERE si.selectionId = :selectionId";
 
 	// Lanlt
+	
+	// cps005
 	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE = " SELECT se , item.selectionItemName FROM PpemtSelectionItem  item"
 			+ " INNER JOIN PpemtHistorySelection his "
 			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelection se"
@@ -38,6 +39,17 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
 			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
 			+ " AND item.selectionItemClsAtr =:selectionItemClsAtr "
+			+ " ORDER BY order.dispOrder";
+	
+	// selection for company
+	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionItem  item"
+			+ " INNER JOIN PpemtHistorySelection his "
+			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelection se"
+			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelItemOrder order"
+			+ " ON his.histidPK.histId = order.histId "
+			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
+			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
+			+ " AND  his.companyId =:companyId"
 			+ " ORDER BY order.dispOrder";
 	
 	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem  item"
@@ -153,6 +165,15 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	public List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate) {
 		List<Selection> selectionLst = this.queryProxy().query(SEL_ALL_BY_SEL_ID, PpemtSelection.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("baseDate", baseDate)
+				.getList(c -> toDomain(c));
+		return selectionLst;
+	}
+
+	@Override
+	public List<Selection> getAllSelectionByCompanyId(String companyId, String selectionItemId, GeneralDate baseDate) {
+		List<Selection> selectionLst = this.queryProxy().query(SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID, Object[].class)
+				.setParameter("selectionItemId", selectionItemId).setParameter("baseDate", baseDate)
+				.setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
 		return selectionLst;
 	}
