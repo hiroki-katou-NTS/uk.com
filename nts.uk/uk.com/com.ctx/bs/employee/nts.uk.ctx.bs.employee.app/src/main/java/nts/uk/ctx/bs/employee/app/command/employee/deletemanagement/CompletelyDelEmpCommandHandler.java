@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 
 @Stateless
 @Transactional
@@ -25,7 +26,8 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 		List<EmployeeDataMngInfo> listEmpData = empDataMngRepo.findByEmployeeId(sid);
 		if (!listEmpData.isEmpty()) {
 			EmployeeDataMngInfo empInfo = listEmpData.get(0);
-			// to do
+			empInfo.setDeletedStatus(EmployeeDeletionAttr.PURGEDELETED);
+			empDataMngRepo.updateRemoveReason(empInfo);
 		}
 	}
 

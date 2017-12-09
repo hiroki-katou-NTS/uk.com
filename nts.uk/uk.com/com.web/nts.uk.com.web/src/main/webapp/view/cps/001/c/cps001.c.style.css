@@ -29,8 +29,8 @@
 	box-sizing: border-box;
 }
 
-#contents-area .nts-searchbbox-wrapper .nts-editor-wrapped.ntsControl {
-	width: calc(100% - 140px);
+.nts-searchbbox-wrapper div.input-wrapper {
+	max-width: 175px;
 }
 
 #contents-area .ntsSearchBox.nts-editor {

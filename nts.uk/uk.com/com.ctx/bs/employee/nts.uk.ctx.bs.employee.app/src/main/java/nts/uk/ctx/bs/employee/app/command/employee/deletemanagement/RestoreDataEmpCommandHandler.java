@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.app.command.employee.deletemanagement;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -9,10 +8,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
@@ -39,9 +37,10 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 
 			if (!listEmpData.isEmpty()) {
 				EmployeeDataMngInfo empInfo = listEmpData.get(0);
-				GeneralDateTime currentDatetime = GeneralDateTime.legacyDateTime(new Date());
 				empInfo.setEmployeeCode(new EmployeeCode(command.getNewCode().toString()));
-				empInfo.setDeleteDateTemporary(currentDatetime);
+				empInfo.setDeletedStatus(EmployeeDeletionAttr.NOTDELETED);
+				empInfo.setDeleteDateTemporary(null);
+				empInfo.setRemoveReason(null);
 
 				empDataMngRepo.updateRemoveReason(empInfo);
 

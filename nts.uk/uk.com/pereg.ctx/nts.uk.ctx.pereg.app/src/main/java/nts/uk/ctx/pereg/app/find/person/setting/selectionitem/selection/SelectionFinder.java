@@ -71,7 +71,7 @@ public class SelectionFinder {
 
 	}
 
-	// ham nay su dung chu y selectionItemClsAtr co gia tri la 0 vs 1 
+	// ham nay su dung chu y selectionItemClsAtr co gia tri la 0 vs 1
 	// con bang itemCommon thi co gia tri la 1 vs 2 ko map vs nhau
 	// do do ma ham nay phai chuyen doi de co du lieu chinh xac
 	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate,
@@ -90,4 +90,19 @@ public class SelectionFinder {
 	}
 
 	// Lanlt
+    /**
+     * for companyID
+     * @param selectionItemId
+     * @param baseDate
+     * @return
+     */
+	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, GeneralDate date) {
+		String companyId = AppContexts.user().companyId();
+		List<SelectionInitDto> selectionLst = new ArrayList<>();
+			selectionLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date).stream()
+					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+		
+		return selectionLst;
+
+	}
 }

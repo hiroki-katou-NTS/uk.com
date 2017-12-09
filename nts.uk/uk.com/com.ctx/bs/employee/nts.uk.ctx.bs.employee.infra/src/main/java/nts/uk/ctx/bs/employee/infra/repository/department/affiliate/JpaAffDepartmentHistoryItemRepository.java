@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.employee.infra.entity.department.BsymtAffiDepartmentHistIte
 @Stateless
 public class JpaAffDepartmentHistoryItemRepository extends JpaRepository implements AffDepartmentHistoryItemRepository{
 
-	private static final String SELECT_BY_HISTID = "SELECT adh BsymtAffiDepartmentHistItem adh"
+	private static final String SELECT_BY_HISTID = "SELECT adh FROM BsymtAffiDepartmentHistItem adh"
 			+ " WHERE adh.hisId = :historyId";
 	
 	private AffDepartmentHistoryItem toDomain(BsymtAffiDepartmentHistItem entity){
