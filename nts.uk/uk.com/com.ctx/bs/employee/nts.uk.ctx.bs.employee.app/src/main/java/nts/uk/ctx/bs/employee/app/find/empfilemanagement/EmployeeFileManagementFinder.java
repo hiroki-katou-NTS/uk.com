@@ -32,11 +32,12 @@ public class EmployeeFileManagementFinder {
 
 	public List<EmployeeFileManagementDto> getListDocumentFile(String employeeId) {
 
-		return empFileManagementRepository.getListDocumentFile(employeeId, 2).stream()
+		 List<EmployeeFileManagementDto> s =  empFileManagementRepository.getListDocumentFile(employeeId, 2).stream()
 				.map(x -> new EmployeeFileManagementDto(x[0].toString(), x[1].toString(),
 						fileStorage.getInfo(x[1].toString()).get().getOriginalName(), Integer.parseInt(x[2].toString()),
 						x[3].toString(), x[4].toString()))
 				.collect(Collectors.toList());
+		return s;
 
 	}
 

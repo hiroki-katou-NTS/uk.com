@@ -49,6 +49,7 @@ module cps001.f.vm {
             let self = this,
                 dfd = $.Deferred();
             self.items = [];
+            let dataShare: IDataShare = getShared('CPS001F_PARAM') || null;
             var dfdGetData = service.getData("90000000-0000-0000-0000-000000000001");
             var dfdGetInfoCategory = service.getInfoCatagory();
 
@@ -134,6 +135,11 @@ module cps001.f.vm {
         }
 
 
+    }
+
+      // Object truyen tu man A sang
+    interface IDataShare {
+        pid: string;
     }
 
 

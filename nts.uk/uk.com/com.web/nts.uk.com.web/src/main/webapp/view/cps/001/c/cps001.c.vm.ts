@@ -82,9 +82,15 @@ module cps001.c.vm {
                 let indexItemDelete = _.findIndex(ko.toJS(self.listEmpDelete), function(item: any) { return item.id == currentItem.id; });
                 let objToRestore = { id: currentItem.id, code: currentItem.code, newCode: detail.newCode, newName: detail.newName };
                 service.restoreData(objToRestore).done(() => {
-
-                    self.start(listItem[indexItemDelete].id).done(() => { });
-                    
+                    if (itemListLength === 1) {
+                        self.start();
+                    } else if (itemListLength - 1 === indexItemDelete) {
+                        self.start(listItem[indexItemDelete - 1].id).done(() => {
+                        });
+                    } else if (itemListLength - 1 > indexItemDelete) {
+                        self.start(listItem[indexItemDelete + 1].id).done(() => {
+                        });
+                    }
                 });
 
             }).ifCancel(() => {

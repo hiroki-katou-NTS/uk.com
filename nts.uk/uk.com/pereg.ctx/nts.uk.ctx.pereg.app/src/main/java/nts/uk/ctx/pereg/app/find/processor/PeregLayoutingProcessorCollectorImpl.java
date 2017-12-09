@@ -26,27 +26,27 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 
 	/** ctg single finder */
 	private static final List<TypeLiteral<?>> FINDER_CTG_SINGLE_HANDLER_CLASSES = Arrays.asList(
-			// CS00001
+			// CS00001  社員データ管理
 			new TypeLiteral<PeregFinder<EmployeeDataMngInfoDto>>(){},
-			// CS00002
+			// CS00002 個人基本情報
 			new TypeLiteral<PeregFinder<PersonDto>>(){},
-			// CS00003
+			// CS00003 所属会社履歴
 			new TypeLiteral<PeregFinder<AffCompanyHistInfoDto>>(){},
-			// CS00004
+			// CS00004 分類１
 			new TypeLiteral<PeregFinder<AffClassificationDto>>(){},
-			// CS00014
+			// CS00014 雇用
 			new TypeLiteral<PeregFinder<EmploymentHistoryDto>>(){},
-			// CS00015		
+			// CS00015 部門本務	
 			new TypeLiteral<PeregFinder<AffDeptHistDto>>(){},
-			// CS00016
+			// CS00016 職位本務
 			new TypeLiteral<PeregFinder<AffJobTitleDto>>(){},
-			// CS00017
+			// CS00017 職場
 			new TypeLiteral<PeregFinder<AffWorlplaceHistItemDto>>(){},
-			// CS00018
+			// CS00018 休職休業
 			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>(){}
-			// CS00019
-			// CS00020
-			// CS00021
+			// CS00019 短時間勤務
+			// CS00020 労働条件
+			// CS00021 勤務種別
 			);
 
 	@Override

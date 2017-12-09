@@ -19,14 +19,14 @@ import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BsymtPersonFileMana
 @Transactional
 public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFileManagementRepository{
 
+
 	public final String GET_ALL_BY_PID = "SELECT c FROM BsymtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 
 	public final String CHECK_EXIST = "SELECT COUNT(c) FROM BsymtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 	
 	public final String GET_BY_FILEID = "SELECT c FROM BsymtPersonFileManagement c WHERE c.bsymtPerFileManagementPK.fileid = :fileid ";
 	
-	//public final String DELETE_DOCUMENT_BY_FILEID = "DELETE FROM BsymtEmpFileManagement c  WHERE c.bsymtEmpFileManagementPK.fileid = :fileid";
-
+	//public final String DELETE_DOCUMENT_BY_FILEID = "DELETE FROM BsymtPersonFileManagement c  WHERE c.BsymtPersonFileManagementPK.fileid = :fileid";
 
 	public final String GET_ALL_DOCUMENT_FILE = "SELECT c.pid , c.bsymtPerFileManagementPK.fileid , c.disPOrder , c.personInfoctgId ,d.categoryName FROM BsymtPersonFileManagement c "
 			+" JOIN PpemtPerInfoCtg d ON c.personInfoctgId =  d.ppemtPerInfoCtgPK.perInfoCtgId "
@@ -81,9 +81,9 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	}
 
 	@Override
-	public List<PersonFileManagement> getDataByParams(String perId, int filetype) {
+	public List<PersonFileManagement> getDataByParams(String employeeId, int filetype) {
 		List<BsymtPersonFileManagement> listFile = this.queryProxy().query(GET_ALL_BY_PID, BsymtPersonFileManagement.class)
-				.setParameter("pid", perId)
+				.setParameter("pid", employeeId)
 				.setParameter("filetype", filetype)
 				.getList();
 
@@ -92,9 +92,9 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 
 	@Override
-	public List<Object[]> getListDocumentFile(String persId, int filetype) {
+	public List<Object[]> getListDocumentFile(String employeeId, int filetype) {
 		List<Object[]> listFile = this.queryProxy().query(GET_ALL_DOCUMENT_FILE, Object[].class)
-				.setParameter("pid", persId)
+				.setParameter("pid", employeeId)
 				.setParameter("filetype", filetype)
 				.getList();
 		return listFile;
@@ -131,9 +131,9 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 
 	@Override
-	public boolean checkObjectExist(String persId, int fileType) {
+	public boolean checkObjectExist(String employeeId, int fileType) {
 		Optional<Long> count = this.queryProxy().query(CHECK_EXIST, long.class)
-				.setParameter("pid", persId)
+				.setParameter("pid", employeeId)
 				.setParameter("filetype", fileType)
 				.getSingle();
 		if(!count.isPresent()) return false;
