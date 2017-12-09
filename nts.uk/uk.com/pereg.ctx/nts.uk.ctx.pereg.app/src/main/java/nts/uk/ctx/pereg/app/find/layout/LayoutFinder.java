@@ -27,11 +27,8 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.CodeNameRefTypeDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
-import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
-import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -42,7 +39,6 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
@@ -60,7 +56,6 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
@@ -102,9 +97,6 @@ public class LayoutFinder {
 
 	@Inject
 	private IMaintenanceLayoutRepository layoutRepo;
-
-	@Inject
-	private SelectionFinder selectionFinder;
 
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
