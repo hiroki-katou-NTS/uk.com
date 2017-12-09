@@ -224,7 +224,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getLastRegHistory(currentEmpId);
 
 		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId, GeneralDate.today(),
-				employeeId);
+				employeeId, "");
 
 		if (optRegHist.isPresent()) {
 

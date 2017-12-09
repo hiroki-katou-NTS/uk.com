@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
@@ -32,7 +31,7 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
  *
  */
 @Stateless
-public class ComboBoxRetrieveFactory<E> {
+public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private static SelectionFinder selectionFinder;
@@ -66,10 +65,13 @@ public class ComboBoxRetrieveFactory<E> {
 		switch (selectionItemDto.getReferenceType()) {
 		case ENUM:
 			EnumRefConditionDto enumTypeDto = (EnumRefConditionDto) selectionItemDto;
-			List<ComboBoxObject> listcombo =  EnumAdaptor.convertToValueNameList((Class<E>) enumMap.get(enumTypeDto.getEnumName())).stream()
+			Class<?> enumClass = enumMap.get(enumTypeDto.getEnumName());
+			if ( enumClass == null) {
+				return new ArrayList<>();
+			}
+			return EnumAdaptor.convertToValueNameList((Class<E>) enumClass).stream()
 					.map(enumElement -> new ComboBoxObject(enumElement.getValue() + "", enumElement.getFieldName()))
 					.collect(Collectors.toList());
-			return listcombo;
 		case CODE_NAME:
 			CodeNameRefTypeDto codeNameTypeDto = (CodeNameRefTypeDto) selectionItemDto;
 			List<SelectionInitDto> selectionList = selectionFinder

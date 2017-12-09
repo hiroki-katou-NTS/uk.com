@@ -211,6 +211,7 @@ module cps002.a.vm {
             if (showHistory) {
                 service.getLastRegHistory().done((result: IEmpRegHistory) => {
                     if (result) {
+                        
                         self.empRegHistory(new EmpRegHistory(result));
                     }
                 });
@@ -797,7 +798,7 @@ module cps002.a.vm {
         constructor(param: IEmpRegHistory) {
             this.lastRegEmployee(param ? param.lastRegEmployee : null);
 
-            this.lastRegEmployee(param ? param.lastRegEmployeeOfCompany : null);
+            this.lastRegEmployeeOfCompany(param ? param.lastRegEmployeeOfCompany : null);
 
         }
     }
@@ -813,12 +814,12 @@ module cps002.a.vm {
 
     class RegEmployee {
 
-        employeeID: string;
+        employeeCd: string;
 
         employeeName: string;
 
-        constructor(employeeID: string, employeeName: string) {
-            this.employeeID = employeeID;
+        constructor(employeeCd: string, employeeName: string) {
+            this.employeeCd = employeeCd;
 
             this.employeeName = employeeName;
         }
