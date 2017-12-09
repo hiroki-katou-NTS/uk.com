@@ -18,8 +18,6 @@ import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassif
 
 public class LayoutPersonInfoClsDto {
 
-	private String recordId;
-	
 	private String layoutID;
 	
 	private int dispOrder;
