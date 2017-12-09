@@ -96,10 +96,10 @@ public class SelectionFinder {
      * @param baseDate
      * @return
      */
-	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId) {
+	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, GeneralDate date) {
 		String companyId = AppContexts.user().companyId();
 		List<SelectionInitDto> selectionLst = new ArrayList<>();
-			selectionLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, GeneralDate.today()).stream()
+			selectionLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date).stream()
 					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
 		
 		return selectionLst;
