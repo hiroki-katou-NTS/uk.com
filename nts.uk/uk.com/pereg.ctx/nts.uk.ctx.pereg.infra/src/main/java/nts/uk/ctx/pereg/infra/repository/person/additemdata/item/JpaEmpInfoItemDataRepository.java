@@ -7,14 +7,17 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataState;
 import nts.uk.ctx.pereg.infra.entity.person.additemdata.item.PpemtEmpInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.additemdata.item.PpemtEmpInfoItemDataPk;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
+import nts.uk.shr.pereg.app.ItemValueType;
 
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
@@ -31,6 +34,11 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE id.ppemtEmpInfoItemDataPk.recordId = :recordId";
+	
+	private static final String SELECT_ALL_INFO_ITEM_BY_ITEMDEF_ID_AND_RECODE_ID = "SELECT id, pi, pc FROM PpemtEmpInfoItemData id"
+			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE id.ppemtEmpInfoItemDataPk.perInfoDefId = :perInfoDefId AND id.ppemtEmpInfoItemDataPk.recordId = :recordId";
 	
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.personInfoCtgId = :ctgid AND ic.employeeId = :sid";
@@ -86,18 +94,45 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	 */
 	private PpemtEmpInfoItemData toEntiy(EmpInfoItemData domain) {
 		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(), domain.getRecordId());
-		String stringValue = domain.getDataState().getStringValue();
-		BigDecimal intValue = domain.getDataState().getNumberValue();
-		GeneralDate dateValue = domain.getDataState().getDateValue();
+		String stringValue = null;
+		BigDecimal intValue = null;
+		GeneralDate dateValue = null;
+		switch(EnumAdaptor.valueOf(domain.getDataState().getDataStateType().value, ItemValueType.class)){
+		case STRING:
+		case SELECTION:
+			stringValue = domain.getDataState().getStringValue();
+			break;
+		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
+			intValue = domain.getDataState().getNumberValue();
+			break;
+		case DATE:
+			dateValue = domain.getDataState().getDateValue();
+			break;
+		}
 		return new PpemtEmpInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
 				dateValue);
 	}
 
 	private void updateEntiy(EmpInfoItemData domain, PpemtEmpInfoItemData entity) {
-		entity.stringValue = domain.getDataState().getStringValue();
-		entity.intValue = domain.getDataState().getNumberValue();
-		entity.dateValue = domain.getDataState().getDateValue();
 		entity.saveDataType = domain.getDataState().getDataStateType().value;
+		
+		switch(EnumAdaptor.valueOf(entity.saveDataType, ItemValueType.class)){
+		case STRING:
+		case SELECTION:
+			entity.stringValue = domain.getDataState().getStringValue();
+			break;
+		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
+			entity.intValue = domain.getDataState().getNumberValue();
+			break;
+		case DATE:
+			entity.dateValue = domain.getDataState().getDateValue();
+			break;
+		}
+		
 	}
 
 	@Override
@@ -133,5 +168,12 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 				.setParameter("ctgid", ctgId)
 				.setParameter("sid", employeeId)
 				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<EmpInfoItemData> getInfoItemByItemDefIdAndRecordId(String itemDefId, String recordId) {
+		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ITEMDEF_ID_AND_RECODE_ID, Object[].class)
+				.setParameter("recordId", recordId)
+				.setParameter("perInfoDefId", itemDefId).getSingle(c -> toDomainNew(c));
 	}
 }

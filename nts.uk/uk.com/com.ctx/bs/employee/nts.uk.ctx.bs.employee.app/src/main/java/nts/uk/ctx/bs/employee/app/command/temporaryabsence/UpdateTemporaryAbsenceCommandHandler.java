@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.command.temporaryabsence;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -59,9 +60,23 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		tempAbsHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		
+		BigDecimal falseValue = new BigDecimal(0);
+		boolean multiple = false;
+		if (command.getMultiple() != null){
+			multiple = falseValue.compareTo(command.getMultiple()) == 0 ? false : true;
+		}
+		boolean sameFamily = false;
+		if (command.getSameFamily() != null){
+			sameFamily = falseValue.compareTo(command.getSameFamily()) == 0 ? false : true;
+		}
+		boolean spouseIsLeave = false;
+		if (command.getSpouseIsLeave() != null){
+			spouseIsLeave = falseValue.compareTo(command.getSpouseIsLeave()) == 0 ? false : true;
+		}
+		
 		// Update detail table
-		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr().intValue(), command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory().intValue(), command.isMultiple(),
-				command.getFamilyMemberId(), command.isSameFamily(), command.getChildType().intValue(), command.getCreateDate(), command.isSpouseIsLeave(), command.getSameFamilyDays().intValue());
+		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr().intValue(), command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory()!= null? command.getSoInsPayCategory().intValue():0, multiple,
+				command.getFamilyMemberId(), sameFamily,command.getChildType() != null ? command.getChildType().intValue() : 0, command.getCreateDate(),spouseIsLeave, command.getSameFamilyDays() != null? command.getSameFamilyDays().intValue():0);
 		temporaryAbsenceRepository.update(temporaryAbsence);
 	}
 

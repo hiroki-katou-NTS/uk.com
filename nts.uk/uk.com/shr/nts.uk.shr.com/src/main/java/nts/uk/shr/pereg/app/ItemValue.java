@@ -46,7 +46,7 @@ public class ItemValue {
 			convertedValue = this.value;
 			break;
 		case DATE:
-			convertedValue = GeneralDate.fromString(this.value, "yyyyMMdd");
+			convertedValue = GeneralDate.fromString(this.value, "yyyy/MM/dd");
 			break;
 		default:
 			throw new RuntimeException("invalid type: " + this.type);

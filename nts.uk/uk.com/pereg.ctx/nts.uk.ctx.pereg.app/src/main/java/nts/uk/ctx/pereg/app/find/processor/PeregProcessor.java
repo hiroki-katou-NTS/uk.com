@@ -109,8 +109,7 @@ public class PeregProcessor {
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
-		// String roleId = AppContexts.user().roles().forPersonalInfo();
-		String roleId = "99900000-0000-0000-0000-000000000001";
+		String roleId = AppContexts.user().roles().forCompanyAdmin();
 
 		// get Employee
 		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), query.getEmployeeId()).get();
@@ -208,9 +207,7 @@ public class PeregProcessor {
 	private void setPerInfoItemData(EmpMaintLayoutDto empMaintLayoutDto, String recordId, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
 		List<PersonOptionalDto> lstCtgItemOptionalDto = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-		
-		if(lstCtgItemOptionalDto.size() > 0)
-			MappingFactory.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
+		MappingFactory.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 
 }

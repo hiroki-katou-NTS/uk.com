@@ -3,9 +3,12 @@ package command.person.info;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -33,7 +36,7 @@ public class AddPersonCommandHandler extends CommandHandlerWithResult<AddPersonC
 		
 		val command = context.getCommand();
 		
-		Person newPerson = Person.createFromJavaType(command.getBirthDate(),command.getBloodType().intValue(),command.getGender().intValue(),command.getPersonId() ,
+		Person newPerson = Person.createFromJavaType(command.getBirthDate(),command.getBloodType()!= null? command.getBloodType().intValue():0,command.getGender()!= null?command.getGender().intValue():0,command.getPersonId() ,
 				command.getBusinessName(),command.getBusinessNameKana(),command.getPersonName(),command.getPersonNameKana(),command.getBusinessOtherName(),command.getBusinessEnglishName(),
 				command.getPersonRomanji(),command.getPersonRomanjiKana(),command.getTodokedeFullName(),command.getTodokedeFullNameKana(),command.getOldName(),command.getOldNameKana(),
 				command.getPersonalNameMultilingual(),command.getPersonalNameMultilingualKana());
