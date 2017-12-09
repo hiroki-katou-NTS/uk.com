@@ -17,10 +17,11 @@ public class EmpRegHistory extends AggregateRoot {
 	protected String companyId;
 	protected GeneralDate registeredDate;
 	protected String lastRegEmployeeID;
+	protected String lastRegEmployeeCd;
 
 	public static EmpRegHistory createFromJavaType(String registeredEmployeeID, String companyId,
-			GeneralDate registeredDate, String lastRegEmployeeID) {
-		return new EmpRegHistory(registeredEmployeeID, companyId, registeredDate, lastRegEmployeeID);
+			GeneralDate registeredDate, String lastRegEmployeeID, String lastRegEmployeeCd) {
+		return new EmpRegHistory(registeredEmployeeID, companyId, registeredDate, lastRegEmployeeID, lastRegEmployeeCd);
 	}
 
 }

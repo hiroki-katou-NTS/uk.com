@@ -14,20 +14,21 @@ import nts.uk.ctx.pereg.infra.entity.reghistory.PpedtEmployeeRegistrationHistory
 @Stateless
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {
 
-	private static final String SELECT_ALL = "SELECT rh FROM PpedtEmployeeRegistrationHistory rh";
+	private static final String SELECT_ALL = "SELECT rh,em.employeeCode FROM PpedtEmployeeRegistrationHistory rh"
+			+ " INNER JOIN BsymtEmployeeDataMngInfo em ON rh.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID = em.bsymtEmployeeDataMngInfoPk.sId";
 
 	private static final String GET_LAST_REG_BY_COMPANY_QUERY_STRING = SELECT_ALL
 			+ " WHERE rh.companyId= :companyId  ORDER BY rh.registeredDate ";
 
+	private static final String GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING = SELECT_ALL
+			+ " WHERE rh.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID= :employeeId";
+
 	@Override
 	public Optional<LastEmRegHistory> getLastRegHistory(String registeredEmployeeID, String companyId) {
 
-		Optional<PpedtEmployeeRegistrationHistory> optEmpHist = this.queryProxy().find(
-				new PpedtEmployeeRegistrationHistoryPk(registeredEmployeeID), PpedtEmployeeRegistrationHistory.class);
+		Optional<EmpRegHistory> optEmpHist = this.getLastRegHistory(registeredEmployeeID);
 
-		Optional<PpedtEmployeeRegistrationHistory> optCompHist = this.getEntityManager()
-				.createQuery(GET_LAST_REG_BY_COMPANY_QUERY_STRING, PpedtEmployeeRegistrationHistory.class)
-				.setParameter("companyId", companyId).setMaxResults(1).getResultList().stream().findFirst();
+		Optional<EmpRegHistory> optCompHist = this.getLastRegHistoryOfCompany(companyId);
 
 		LastEmRegHistory result = toLastDomain(optEmpHist, optCompHist);
 		return Optional
@@ -36,30 +37,44 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 
 	}
 
-	private EmpRegHistory toDomain(PpedtEmployeeRegistrationHistory entity) {
+	private EmpRegHistory toDomain(Object[] entity) {
 
-		return EmpRegHistory.createFromJavaType(entity.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID,
-				entity.companyId, entity.registeredDate, entity.lastRegEmployeeID);
+		PpedtEmployeeRegistrationHistory regHistEntity = (PpedtEmployeeRegistrationHistory) entity[0];
+
+		return EmpRegHistory.createFromJavaType(regHistEntity.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID,
+				regHistEntity.companyId, regHistEntity.registeredDate, regHistEntity.lastRegEmployeeID,
+				entity[1].toString());
 	}
 
-	private LastEmRegHistory toLastDomain(Optional<PpedtEmployeeRegistrationHistory> optEmpHist,
-			Optional<PpedtEmployeeRegistrationHistory> optCompHist) {
+	private Optional<EmpRegHistory> getLastRegHistoryOfCompany(String companyId) {
+
+		return this.getEntityManager().createQuery(GET_LAST_REG_BY_COMPANY_QUERY_STRING, Object[].class)
+				.setParameter("companyId", companyId).setMaxResults(1).getResultList().stream().findFirst()
+				.map(x -> toDomain(x));
+
+	}
+
+	private LastEmRegHistory toLastDomain(Optional<EmpRegHistory> optEmpHist, Optional<EmpRegHistory> optCompHist) {
 
 		LastEmRegHistory result = new LastEmRegHistory();
 		if (optEmpHist.isPresent()) {
-			PpedtEmployeeRegistrationHistory empHist = optEmpHist.get();
+			EmpRegHistory empHist = optEmpHist.get();
 
-			result.setCompanyId(empHist.companyId);
-			result.setLastRegEmployeeID(empHist.lastRegEmployeeID);
-			result.setRegisteredDate(empHist.registeredDate);
-			result.setRegisteredEmployeeID(empHist.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID);
-
+			result.setCompanyId(empHist.getCompanyId());
+			result.setLastRegEmployeeID(empHist.getLastRegEmployeeID());
+			result.setRegisteredDate(empHist.getRegisteredDate());
+			result.setRegisteredEmployeeID(empHist.getRegisteredEmployeeID());
+			result.setLastRegEmployeeCd(empHist.getLastRegEmployeeCd());
 		}
 
 		if (optCompHist.isPresent()) {
-			if (!optCompHist.get().lastRegEmployeeID.equals(result.getLastRegEmployeeID())) {
-				PpedtEmployeeRegistrationHistory comHist = optCompHist.get();
-				result.setLastRegEmployeeOfCompanyID(comHist.lastRegEmployeeID);
+
+			EmpRegHistory comHist = optCompHist.get();
+
+			if (!comHist.getLastRegEmployeeID().equals(result.getLastRegEmployeeID())) {
+
+				result.setLastRegEmployeeOfCompanyID(comHist.getLastRegEmployeeID());
+				result.setLastRegEmployeeOfCompanyCd(comHist.getLastRegEmployeeCd());
 			}
 		}
 
@@ -94,8 +109,9 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 
 	@Override
 	public Optional<EmpRegHistory> getLastRegHistory(String registeredEmployeeID) {
-		return this.queryProxy().find(new PpedtEmployeeRegistrationHistoryPk(registeredEmployeeID),
-				PpedtEmployeeRegistrationHistory.class).map(x -> toDomain(x));
+
+		return this.queryProxy().query(GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING, Object[].class).getSingle()
+				.map(x -> toDomain(x));
 	}
 
 }
