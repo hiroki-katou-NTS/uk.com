@@ -3,7 +3,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
     export class ScreenModel {
         dataSource: any;
-        columns: KnockoutObservableArray<any>;
+        columns: Array<any>;
         //search
         searchValue: KnockoutObservable<string>;
         //user
@@ -21,11 +21,11 @@ module nts.uk.com.view.cas013.b.viewmodel {
             
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
-            self.columns = ko.observableArray([
+            self.columns = [
                 { headerText: nts.uk.resource.getText(""), key: 'userID', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_29"), key: 'loginID', width: 100 },
+                { headerText: nts.uk.resource.getText("CAS013_29"), key: 'loginID', width: 150 },
                 { headerText: nts.uk.resource.getText("CAS013_30"), key: 'userName', width: 230 }
-            ]);
+            ];
             self.selectUserID = ko.observable('');
         }
 

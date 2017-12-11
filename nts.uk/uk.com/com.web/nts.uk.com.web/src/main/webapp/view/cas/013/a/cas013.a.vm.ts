@@ -1,6 +1,6 @@
 module nts.uk.com.view.cas013.a.viewmodel {
 
-    export class screenModel {
+    export class ScreenModel {
         // Metadata
         isCreateMode: KnockoutObservable<boolean> = ko.observable(false);
         isSelectedUser: KnockoutObservable<boolean> = ko.observable(false);
@@ -32,15 +32,15 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.selectedRole = ko.observable('');
             self.listRoleIndividual = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText(""), key: 'roleId', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_11"), key: 'roleCode', width: 80 },
-                { headerText: nts.uk.resource.getText("CAS013_12"), key: 'name', width: 160 }
+                { headerText: '', key: 'roleId', hidden: true },
+                { headerText: nts.uk.resource.getText("CAS013_11"), key: 'roleCode', width: 80, columnCssClass: "colStyle" },
+                { headerText: nts.uk.resource.getText("CAS013_12"), key: 'name', width: 160, columnCssClass: "colStyle" },
             ]);
             self.columnsIndividual = ko.observableArray([
                 { headerText: '', key: 'userId', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 80 },
-                { headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 70 },
-                { headerText: nts.uk.resource.getText("CAS013_17"), key: 'datePeriod', width: 190 },
+                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 100 , columnCssClass: "colStyle"},
+                { headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 120 , columnCssClass: "colStyle"},
+                { headerText: nts.uk.resource.getText("CAS013_17"), key: 'datePeriod', width: 210 },
             ]);
             self.selectedRoleIndividual = ko.observable('');
             self.userName = ko.observable('');
