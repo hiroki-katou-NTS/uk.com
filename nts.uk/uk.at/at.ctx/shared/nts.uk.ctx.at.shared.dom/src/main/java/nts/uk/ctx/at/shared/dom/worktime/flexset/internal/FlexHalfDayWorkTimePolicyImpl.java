@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -22,6 +23,9 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 	@Inject
 	private FixedWorkTimezoneSetPolicy fixedWtzSetPolicy;
 
+	@Inject
+	private FlowWorkRestTimezonePolicy flowRestPolicy;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -31,7 +35,11 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 	 */
 	@Override
 	public void validate(FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime) {
+		// validate FixedWorkTimezoneSet
 		this.fixedWtzSetPolicy.validate(flexHalfDay.getWorkTimezone(), predTime);
+
+		// validate list FlowWorkRestTimezone
+		flexHalfDay.getLstRestTimezone().forEach(resTime -> this.flowRestPolicy.validate(predTime, resTime));
 	}
 
 }

@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -25,11 +26,13 @@ public class FlexWorkSettingPolicyImpl {
 //	@Inject
 //	private PredeteminePolicyService service;
 
+	/** The flex half day policy. */
 	@Inject
 	private FlexHalfDayWorkTimePolicy flexHalfDayPolicy;
-	
-	/** The work no one. */
-	public static int WORK_NO_ONE = 1;
+
+	/** The flex offday policy. */
+	@Inject
+	private FlexOffdayWorkTimePolicy flexOffdayPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -94,10 +97,12 @@ public class FlexWorkSettingPolicyImpl {
 //			this.service.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
 		});
 
-		// validate Msg_516
+		// valiadte FlexHalfDayWorkTime
 		flexWorkSetting.getLstHalfDayWorkTimezone()
 				.forEach(halfDay -> this.flexHalfDayPolicy.validate(halfDay, predetemineTimeSet));
-		
+
+		// validate FlexOffdayWorkTime
+		this.flexOffdayPolicy.validate(predetemineTimeSet, flexWorkSetting.getOffdayWorkTime());
 	}
 	
 
