@@ -10,12 +10,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pereg.app.find.layout.GetLayoutByCeateTypeDto;
 import nts.uk.ctx.pereg.app.find.layout.LayoutFinderOld;
 import nts.uk.ctx.pereg.app.find.layout.LayoutQuery;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
-import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 
 @Path("bs/employee/layout")
 @Produces(MediaType.APPLICATION_JSON)
