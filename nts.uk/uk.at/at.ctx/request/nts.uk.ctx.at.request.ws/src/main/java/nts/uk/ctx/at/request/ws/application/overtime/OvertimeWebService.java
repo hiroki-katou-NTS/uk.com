@@ -48,24 +48,24 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("findByChangeAppDate")
 	public OverTimeDto findByChangeAppDate(ParamChangeAppDate param) {
-		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr());
+		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours());
 	}
 	@POST
 	@Path("checkConvertPrePost")
 	public OverTimeDto convertPrePost(ParamChangeAppDate param) {
-		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate());
+		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate(),param.getSiftCD(),param.getOvertimeHours());
 	}
 	@POST
 	@Path("getCaculationResult")
 	public List<CaculationTime> getCaculationResult(ParamCaculationOvertime param) {
-		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate());
+		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD());
 	}
 	
 	
 	@POST
 	@Path("create")
-	public void createOvertime(CreateOvertimeCommand command){
-		createHandler.handle(command);
+	public List<String> createOvertime(CreateOvertimeCommand command){
+		return createHandler.handle(command);
 	}
 	@POST
 	@Path("checkBeforeRegister")
@@ -81,14 +81,14 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public void update(UpdateOvertimeCommand command) {
-		this.updateOvertimeCommandHandler.handle(command);
+	public List<String> update(UpdateOvertimeCommand command) {
+		return this.updateOvertimeCommandHandler.handle(command);
 	}
 	
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParam param) {
-		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD);
+		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours());
 	}
 }
 
@@ -103,4 +103,6 @@ class RecordWorkParam {
 	public String employeeID; 
 	public String appDate;
 	public String siftCD;
+	public int prePostAtr;
+	public List<CaculationTime> overtimeHours;
 }

@@ -27,16 +27,6 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 
 	private final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRoleSetGrantedPerson r Where r.companyId = :companyId And r.roleSetCd = :roleSetCd";
 
-	private RoleSetGrantedPerson toDomain(SacmtRoleSetGrantedPerson entity) {
-		return new RoleSetGrantedPerson(entity.roleSetCd, entity.companyId, entity.startDate, entity.endDate,
-				entity.employeeId);
-	}
-
-	private SacmtRoleSetGrantedPerson toEntity(RoleSetGrantedPerson domain) {
-		return new SacmtRoleSetGrantedPerson(domain.getEmployeeID(), domain.getRoleSetCd().v(), domain.getCompanyId(),
-				domain.getValidPeriod().start(), domain.getValidPeriod().end());
-	}
-
 	@Override
 	public boolean checkRoleSetCdExist(String roleSetCd, String companyId) {
 		return this.queryProxy().query(GET_ALL_BY_CID_AND_ROLESET_CODE, SacmtRoleSetGrantedPerson.class)
@@ -46,12 +36,12 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 	@Override
 	public List<RoleSetGrantedPerson> getAll(String roleSetCd, String companyId) {
 		return this.queryProxy().query(GET_ALL_BY_CID_AND_ROLESET_CODE, SacmtRoleSetGrantedPerson.class)
-				.setParameter("companyId", companyId).setParameter("roleSetCd", roleSetCd).getList(r -> toDomain(r));
+				.setParameter("companyId", companyId).setParameter("roleSetCd", roleSetCd).getList(r -> SacmtRoleSetGrantedPerson.toDomain(r));
 	}
 
 	@Override
 	public void insert(RoleSetGrantedPerson domain) {
-		this.commandProxy().insert(toEntity(domain));
+		this.commandProxy().insert(SacmtRoleSetGrantedPerson.toEntity(domain));
 	}
 
 	@Override
@@ -71,7 +61,7 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 
 	@Override
 	public Optional<RoleSetGrantedPerson> getByEmployeeId(String employeeId) {
-		return this.queryProxy().find(employeeId, SacmtRoleSetGrantedPerson.class).map(r -> toDomain(r));
+		return this.queryProxy().find(employeeId, SacmtRoleSetGrantedPerson.class).map(r -> SacmtRoleSetGrantedPerson.toDomain(r));
 	}
 
 }

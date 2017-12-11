@@ -12,13 +12,13 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class FlowRestTimezone.
  */
-//流動休憩時間帯
+// 流動休憩時間帯
 @Getter
 public class FlowRestTimezone extends DomainObject {
 
 	/** The flow rest set. */
 	// 流動休憩設定
-	private List<FlowRestSetting> flowRestSet;
+	private List<FlowRestSetting> flowRestSets;
 
 	/** The use here after rest set. */
 	// 設定以降の休憩を使用する
@@ -34,7 +34,7 @@ public class FlowRestTimezone extends DomainObject {
 	 * @param memento the memento
 	 */
 	public FlowRestTimezone(FlowRestTimezoneGetMemento memento) {
-		this.flowRestSet = memento.getFlowRestSet();
+		this.flowRestSets = memento.getFlowRestSet();
 		this.useHereAfterRestSet = memento.getUseHereAfterRestSet();
 		this.hereAfterRestSet = memento.getHereAfterRestSet();
 	}
@@ -45,7 +45,7 @@ public class FlowRestTimezone extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(FlowRestTimezoneSetMemento memento) {
-		memento.setFlowRestSet(this.flowRestSet);
+		memento.setFlowRestSet(this.flowRestSets);
 		memento.setUseHereAfterRestSet(this.useHereAfterRestSet);
 		memento.setHereAfterRestSet(this.hereAfterRestSet);
 	}

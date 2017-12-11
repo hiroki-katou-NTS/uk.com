@@ -6,13 +6,14 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSetSetMemento;
 
 /**
  * The Class WorkTimezoneShortTimeWorkSetDto.
  */
 @Getter
 @Setter
-public class WorkTimezoneShortTimeWorkSetDto {
+public class WorkTimezoneShortTimeWorkSetDto implements WorkTimezoneShortTimeWorkSetSetMemento {
 	
 	/** The nurs timezone work use. */
 	private boolean nursTimezoneWorkUse;
@@ -23,20 +24,40 @@ public class WorkTimezoneShortTimeWorkSetDto {
 	/** The child care work use. */
 	private boolean childCareWorkUse;
 
-	/**
-	 * Instantiates a new work timezone short time work set dto.
-	 *
-	 * @param nursTimezoneWorkUse the nurs timezone work use
-	 * @param employmentTimeDeduct the employment time deduct
-	 * @param childCareWorkUse the child care work use
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * WorkTimezoneShortTimeWorkSetSetMemento#setNursTimezoneWorkUse(boolean)
 	 */
-	public WorkTimezoneShortTimeWorkSetDto(boolean nursTimezoneWorkUse, boolean employmentTimeDeduct,
-			boolean childCareWorkUse) {
-		super();
-		this.nursTimezoneWorkUse = nursTimezoneWorkUse;
-		this.employmentTimeDeduct = employmentTimeDeduct;
-		this.childCareWorkUse = childCareWorkUse;
+	@Override
+	public void setNursTimezoneWorkUse(boolean val) {
+		this.nursTimezoneWorkUse = val;
+		
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * WorkTimezoneShortTimeWorkSetSetMemento#setEmploymentTimeDeduct(boolean)
+	 */
+	@Override
+	public void setEmploymentTimeDeduct(boolean val) {
+		this.employmentTimeDeduct = val;
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * WorkTimezoneShortTimeWorkSetSetMemento#setChildCareWorkUse(boolean)
+	 */
+	@Override
+	public void setChildCareWorkUse(boolean val) {
+		this.childCareWorkUse = val;
+		
+	}
 	
 }

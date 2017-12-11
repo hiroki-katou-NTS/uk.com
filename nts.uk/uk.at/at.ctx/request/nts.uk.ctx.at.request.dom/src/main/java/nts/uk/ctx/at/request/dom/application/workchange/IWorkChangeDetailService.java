@@ -7,5 +7,5 @@ public interface IWorkChangeDetailService {
 	 * @param appId: 申請者ID
 	 * @return 勤務変更申請基本データ
 	 */
-	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId);
+	WorkChangeDetail getWorkChangeDetailById(String cid, String appId);
 }

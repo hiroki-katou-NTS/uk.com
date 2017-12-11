@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
 
 /**
  * The Class TimezoneOfFixedRestTimeSet.
@@ -19,7 +19,32 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 
 	/** The timezone. */
 	//時間帯
-	private List<DeductionTime> timezone;
+	private List<DeductionTime> timezones;
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		this.checkOverlap();
+	}
+
+	/**
+	 * Check overlap.
+	 */
+	private void checkOverlap() {
+		for (int i = 0; i < this.timezones.size(); i++) {
+			DeductionTime deduct1 = this.timezones.get(i);
+			for (int j = i + 1; j < this.timezones.size(); i++) {
+				DeductionTime deduct2 = this.timezones.get(j);
+				// check overlap
+				if (deduct1.isOverlap(deduct2)) {
+					throw new BusinessException("Msg_515");
+				}
+			}
+		}
+	}
 
 	/**
 	 * Instantiates a new timezone of fixed rest time set.
@@ -27,7 +52,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	 * @param memento the memento
 	 */
 	public TimezoneOfFixedRestTimeSet(TimezoneOfFixedRestTimeSetGetMemento memento) {
-		this.timezone = memento.getTimezone();
+		this.timezones = memento.getTimezones();
 	}
 
 	/**
@@ -36,7 +61,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(TimezoneOfFixedRestTimeSetSetMemento memento) {
-		memento.setTimezone(this.timezone);
+		memento.setTimezones(this.timezones);
 	}
 	
 }

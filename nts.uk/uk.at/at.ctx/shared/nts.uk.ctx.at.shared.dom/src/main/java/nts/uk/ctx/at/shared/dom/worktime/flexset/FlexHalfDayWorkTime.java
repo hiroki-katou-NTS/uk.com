@@ -9,8 +9,8 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkTimezoneSet;
 
 /**
  * The Class FlexHalfDayWorkTime.
@@ -21,15 +21,15 @@ public class FlexHalfDayWorkTime extends DomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
-	private List<FlowWorkRestTimezone> restTimezone;
+	private List<FlowWorkRestTimezone> lstRestTimezone;
 	
 	/** The work timezone. */
 	// 勤務時間帯
 	private FixedWorkTimezoneSet workTimezone;
 	
-	/** The am pm atr. */
+	/** The ampm atr. */
 	// 午前午後区分
-	private AmPmAtr amPmAtr;
+	private AmPmAtr ampmAtr;
 
 	/**
 	 * Instantiates a new flex half day work time.
@@ -37,9 +37,9 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public FlexHalfDayWorkTime(FlexHalfDayWorkTimeGetMemento memento) {
-		this.restTimezone = memento.getRestTimezone();
+		this.lstRestTimezone = memento.getLstRestTimezone();
 		this.workTimezone = memento.getWorkTimezone();
-		this.amPmAtr = memento.getAmPmAtr();
+		this.ampmAtr = memento.getAmpmAtr();
 	}
 	
 	/**
@@ -48,8 +48,8 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(FlexHalfDayWorkTimeSetMemento memento){
-		memento.setRestTimezone(this.restTimezone);
+		memento.setLstRestTimezone(this.lstRestTimezone);
 		memento.setWorkTimezone(this.workTimezone);
-		memento.setAmPmAtr(this.amPmAtr);
+		memento.setAmpmAtr(this.ampmAtr);
 	}
 }

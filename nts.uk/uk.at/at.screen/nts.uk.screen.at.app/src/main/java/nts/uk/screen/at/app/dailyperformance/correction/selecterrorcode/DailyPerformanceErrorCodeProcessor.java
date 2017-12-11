@@ -50,7 +50,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DailyPerformanceErrorCodeProcessor {
 	@Inject
 	private DailyPerformanceScreenRepo repo;
-	public DailyPerformanceCorrectionDto generateData(DateRange dateRange, List<DailyPerformanceEmployeeDto> lstEmployee, int displayFormat, CorrectionOfDailyPerformance correct, List<String> errorCodes) {
+	public DailyPerformanceCorrectionDto generateData(DateRange dateRange, List<DailyPerformanceEmployeeDto> lstEmployee, int displayFormat, CorrectionOfDailyPerformance correct, List<String> errorCodes, List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
 		
@@ -119,7 +119,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
 		 Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed( closureDto.getClosureId(), closureDto.getClosureMonth());
 		 
-		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(), correct);
+		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(), correct, formatCodes);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
 		//Map<Integer, Integer> typeControl =  lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem:: getId, DPAttendanceItem::getAttendanceAtr));
@@ -140,7 +140,7 @@ public class DailyPerformanceErrorCodeProcessor {
 						cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()), "Link Name"+ item.getId(),
 								String.valueOf(item.getAttendanceAtr()), "Link2"));
 					} else {
-						cellDatas.add(new DPCellDataDto("_"+String.valueOf(item.getId()), String.valueOf(a),
+						cellDatas.add(new DPCellDataDto("A"+String.valueOf(item.getId()), String.valueOf(a),
 								String.valueOf(item.getAttendanceAtr()), "label"));
 					}
 				});
@@ -195,7 +195,7 @@ public class DailyPerformanceErrorCodeProcessor {
 	}
 	
 	/** アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items" */
-	private DPControlDisplayItem getControlDisplayItems(List<String> lstEmployeeId, DateRange dateRange, CorrectionOfDailyPerformance correct) {
+	private DPControlDisplayItem getControlDisplayItems(List<String> lstEmployeeId, DateRange dateRange, CorrectionOfDailyPerformance correct, List<String> formatCodeSelects) {
 		DPControlDisplayItem result = new DPControlDisplayItem();
 		String companyId = AppContexts.user().companyId();
 		if (lstEmployeeId.size() > 0) {
@@ -212,18 +212,25 @@ public class DailyPerformanceErrorCodeProcessor {
             	List<AuthorityFormatSheetDto> authorityFormatSheets = new ArrayList<>();
             	//アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
             	// kiem tra thong tin rieng biet user
-                if(correct == null){
-                	List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo.findAuthorityFormatInitialDisplay(companyId);
-                	if(!initialDisplayDtos.isEmpty()){
-                		List<String> formatCodes = initialDisplayDtos.stream().map(x -> x.getDailyPerformanceFormatCode()).collect(Collectors.toList());
-                		//Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
-                		authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
-                		List<BigDecimal>sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo()).collect(Collectors.toList());
-                		authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
-                	}else{
-                		//アルゴリズム「表示項目の選択を起動する」を実行する
-                		///画面「表示フォーマットの選択」をモーダルで起動する(Chạy màn hình "Select display format" theo cách thức) -- chay man hinh C
-                	}
+				if (correct == null) {
+					if (formatCodeSelects.isEmpty()) {
+						List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo
+								.findAuthorityFormatInitialDisplay(companyId);
+						if (!initialDisplayDtos.isEmpty()) {
+							List<String> formatCodes = initialDisplayDtos.stream()
+									.map(x -> x.getDailyPerformanceFormatCode()).collect(Collectors.toList());
+							// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
+							authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
+							List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
+									.collect(Collectors.toList());
+							authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
+						}
+					} else {
+						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
+						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
+								.collect(Collectors.toList());
+						authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodeSelects, sheetNos);
+					}
                 }else{
                 	//Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
                 	    List<String> formatCodes = Arrays.asList(correct.getPreviousDisplayItem());
@@ -247,7 +254,7 @@ public class DailyPerformanceErrorCodeProcessor {
     				List<DPHeaderDto> lstHeader = new ArrayList<>();
     				for(FormatDPCorrectionDto dto : lstFormat){
     					// chia cot con code name cua AttendanceItemId chinh va set 
-    					lstHeader.add(DPHeaderDto.createSimpleHeader("_"+String.valueOf(dto.getAttendanceItemId()),
+    					lstHeader.add(DPHeaderDto.createSimpleHeader("A"+String.valueOf(dto.getAttendanceItemId()),
     							String.valueOf(dto.getColumnWidth()) + "px", mapDP));
     				}
     				result.setLstHeader(lstHeader);
@@ -276,7 +283,7 @@ public class DailyPerformanceErrorCodeProcessor {
         				result.addColumnsToSheet(lstFormat, mapDP);
         				List<DPHeaderDto> lstHeader = new ArrayList<>();
         				for(FormatDPCorrectionDto dto : lstFormat){
-        					lstHeader.add(DPHeaderDto.createSimpleHeader("_"+String.valueOf(dto.getAttendanceItemId()),
+        					lstHeader.add(DPHeaderDto.createSimpleHeader("A"+String.valueOf(dto.getAttendanceItemId()),
         							String.valueOf(dto.getColumnWidth()) + "px", mapDP));
         				}
         				result.setLstHeader(lstHeader);

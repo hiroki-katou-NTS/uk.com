@@ -11,7 +11,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/sample/catalog/catalog.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/sample/catalog/catalog.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kmk/003/base/fixtable/fixtable.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
 			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
 			<com:scriptfile path="kmk003.sample.start.js" />
 			<com:scriptfile path="kmk003.sample.vm.js" />
@@ -23,16 +23,7 @@
 				<div id="side-menu" class="cf"></div>
 				
 				<div style="margin-left: 30px" id="content" class="cf">
-					<div style="margin-bottom: 10px;">
-						<div class="cf"
-								data-bind="ntsSwitchButton: {
-														options: selectionOption,
-														optionsValue: 'code',
-														optionsText: 'name',
-														value: selectedType,
-														enable: true }"></div>
-					</div>	
-					<div id="nts-fix-table"></div>
+					<div id="nts-fix-table" data-bind="ntsFixTableCustom: {option: fixTableOption}"></div>
 					
 					<h2>Guide</h2>
 					<article class="cf" style="margin-top: 10px;">
@@ -47,11 +38,11 @@
 									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
 									<pre><![CDATA[<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
-		<com:scriptfile path="/view/kmk/003/base/fixtable/fixtable.js" of="/nts.uk.at.web"/>
+		<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
 		<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
 </ui:define>]]></pre>
 									<p>Create a div tag to bind table</p>
-									<pre><![CDATA[<div id="nts-fix-table"></div>]]></pre>
+									<pre><![CDATA[<div id="nts-fix-table" data-bind="ntsFixTableCustom: {option: fixTableOption}"></div>]]></pre>
 								</div><!-- END TAB HTML -->
 								
 								<!-- BEGIN TABS VIEWMODEL -->

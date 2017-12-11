@@ -1,16 +1,25 @@
 package nts.uk.ctx.sys.auth.infra.repository.user;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
+
 @Stateless
 public class JpaUserRepositoryAuth extends JpaRepository implements UserRepository {
+	private final String SELECT_ALL_USER = "SELECT c FROM SacmtUser c ";
+	private final String SELECT_BY_USER = "SELECT c FROM SacmtUser c" 
+			+ " WHERE c.sacmtUserPK.userID = :userID";
+	private final String SELECT_BY_ID_OR_NAME  ="SELECT c From SacmtUser c"
+			+ " WHERE (c.sacmtUserPK.userID LIKE CONCAT('%', :userIDName, '%')"
+			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))"
+			+ " AND c.expirationDate >= :date";
 
 	@Override
 	public Optional<User> getByLoginId(String loginId) {
@@ -26,19 +35,46 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 
 	@Override
 	public Optional<User> getByUserID(String userID) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy()
+				.query(SELECT_BY_USER,SacmtUser.class)
+				.setParameter("userID", userID)
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public List<User> getByListUser(List<String> userID) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<User> data =  this.queryProxy()
+				.query(SELECT_ALL_USER, SacmtUser.class)
+				.getList(c -> c.toDomain());
+		List<User> dataSelect = new ArrayList<>();
+		for(String id :userID){
+			for (User user : data){
+				if(user.getUserID().equals(id)){
+					dataSelect.add(user);
+				}
+			}
+		}  
+		
+		return dataSelect;
 	}
 
-	
+	@Override
+	public List<User> searchUser(String userIDName, GeneralDate date) {
+		return this.queryProxy().
+				query(SELECT_BY_ID_OR_NAME, SacmtUser.class)
+				
+				
+				.setParameter("userIDName", userIDName)
+				.setParameter("date", date)
+				.getList(c -> c.toDomain());
+	}
 
-
-
+	@Override
+	public List<User> getAllUser() {
+		return this.queryProxy()
+				.query(SELECT_ALL_USER, SacmtUser.class)
+				.getList(c -> c.toDomain());
+	}
 
 }

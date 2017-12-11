@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.OTFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.SettlementOrder;
 
 /**
  * The Class ExtraordWorkOTFrameSet.
@@ -18,7 +16,7 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 
 	/** The OT frame no. */
 	// 残業枠NO
-	private OTFrameNo OTFrameNo;
+	private OTFrameNo oTFrameNo;
 
 	/** The in legal work frame no. */
 	// 法内残業枠NO
@@ -34,7 +32,7 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 	 * @param memento the memento
 	 */
 	public ExtraordWorkOTFrameSet (ExtraordWorkOTFrameSetGetMemento memento) {
-		this.OTFrameNo = memento.getOTFrameNo();
+		this.oTFrameNo = memento.getOTFrameNo();
 		this.inLegalWorkFrameNo = memento.getInLegalWorkFrameNo();
 		this.settlementOrder = memento.getSettlementOrder();
 	}
@@ -45,7 +43,7 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(ExtraordWorkOTFrameSetSetMemento memento) {
-		memento.setOTFrameNo(this.OTFrameNo);
+		memento.setOTFrameNo(this.oTFrameNo);
 		memento.setInLegalWorkFrameNo(this.inLegalWorkFrameNo);
 		memento.setSettlementOrder(this.settlementOrder);
 	}

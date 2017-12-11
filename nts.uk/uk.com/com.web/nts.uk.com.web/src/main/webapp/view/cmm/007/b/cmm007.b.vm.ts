@@ -50,7 +50,7 @@ module nts.uk.com.view.cmm007.b {
                 _self.com_department = ko.observable("");
                 _self.com_workplace = ko.observable("");
                 _self.com_office = ko.observable("");
-                _self.com_company = ko.observable("adasd");
+                _self.com_company = ko.observable("");
                 _self.com_contract = ko.observable("");
                 _self.com_user = ko.observable("");
                 _self.com_project = ko.observable("");
@@ -147,7 +147,6 @@ module nts.uk.com.view.cmm007.b {
                         }
                     });
                     dfd.resolve();
-                    $('#com_person').focus();
                 });
                 
                 return dfd.promise();

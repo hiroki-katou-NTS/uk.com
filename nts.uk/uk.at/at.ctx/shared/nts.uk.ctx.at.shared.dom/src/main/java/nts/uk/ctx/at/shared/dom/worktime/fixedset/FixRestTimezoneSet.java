@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 /**
  * The Class FixRestTimezoneSet.
  */
-//固定勤務の休憩時間帯
+// 固定勤務の休憩時間帯
 @Getter
 public class FixRestTimezoneSet extends DomainObject {
 
@@ -25,30 +25,52 @@ public class FixRestTimezoneSet extends DomainObject {
 	// 時間帯
 	private List<DeductionTime> lstTimezone;
 
-	/* (non-Javadoc)
+	/**
+	 * Instantiates a new fix rest timezone set.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public FixRestTimezoneSet(FixRestTimezoneSetGetMemento memento) {
+		this.lstTimezone = memento.getLstTimezone();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(FixRestTimezoneSetSetMemento memento) {
+		memento.setLstTimezone(this.lstTimezone);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
 	public void validate() {
 		super.validate();
-		
+
 		// 時間帯が重複してはいけない。
 		this.validOverlap();
-		
+
 		// TODO: validate message 516
 	}
-	
+
 	/**
 	 * Valid overlap.
 	 */
 	private void validOverlap() {
 		// sort asc by start time
-		Collections.sort(this.lstTimezone, Comparator.comparing(DeductionTime :: getStart));
-		
+		Collections.sort(this.lstTimezone, Comparator.comparing(DeductionTime::getStart));
+
 		Iterator<DeductionTime> iterator = this.lstTimezone.iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			DeductionTime current = iterator.next();
-			
+
 			if (!iterator.hasNext()) {
 				break;
 			}
@@ -58,5 +80,5 @@ public class FixRestTimezoneSet extends DomainObject {
 			}
 		}
 	}
-	
+
 }

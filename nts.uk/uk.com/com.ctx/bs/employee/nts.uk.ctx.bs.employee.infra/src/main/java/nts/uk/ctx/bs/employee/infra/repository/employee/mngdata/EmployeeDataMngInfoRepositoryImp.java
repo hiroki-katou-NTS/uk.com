@@ -34,8 +34,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
-	//Lanlt end
-	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName "
+	// Lanlt end
+	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday "
 			+ " FROM BsymtEmployeeDataMngInfo e " + " INNER JOIN BpsmtPerson p"
 			+ " ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sid";
@@ -45,10 +45,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " AND d.bsymtDepartmentInfoPK.histId = h.bsymtDepartmentHistPK.histId "
 			+ " AND d.bsymtDepartmentInfoPK.cid = h.bsymtDepartmentHistPK.cid"
 			+ " WHERE  d.bsymtDepartmentInfoPK.depId =:depId" + " AND h.strD <= :date" + " AND h.endD >= :date";
-	
-	//Lanlt end
+
+	// Lanlt end
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ";
-	
+
 	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
 
 	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
@@ -132,6 +132,11 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			if (entity[2] != null) {
 				emp.setPersonName(entity[2].toString());
 			}
+
+			if (entity[3] != null) {
+				emp.setBirthday(GeneralDate.fromString(entity[3].toString(), "yyyy/MM/dd"));
+			}
+			
 		} else if (component == 1) {
 			if (entity[0] != null && entity[1] != null)
 				emp.setDepartmentName(entity[0].toString() + " " + entity[1].toString());
@@ -185,7 +190,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("depId", departmentId).setParameter("date", date).getSingle(c -> toDomain(c, 1));
 		return emp;
 	}
-		
+
 	public List<EmployeeDataMngInfo> getListEmpToDelete(String cid) {
 
 		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()

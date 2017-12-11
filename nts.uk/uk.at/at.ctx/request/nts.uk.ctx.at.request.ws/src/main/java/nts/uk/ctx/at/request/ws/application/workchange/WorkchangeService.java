@@ -74,7 +74,7 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("getWorkchangeByAppID/{appId}")
-	public WorkChangeDetailDto getWorkchangeByAppID(@PathParam("appID") String appId) {
+	public WorkChangeDetailDto getWorkchangeByAppID(@PathParam("appId") String appId) {
 		return detailFinder.getWorkChangeDetailById(appId);
 	}
 	

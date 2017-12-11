@@ -14,7 +14,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  * ロールセットコード - The Class RoleSetCode.
  * @author HieuNV
  */
-@StringCharType(CharType.NUMERIC)
+@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(2)
 @ZeroPaddedCode
 public class RoleSetCode extends StringPrimitiveValue<RoleSetCode> {

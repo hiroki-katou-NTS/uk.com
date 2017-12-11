@@ -129,6 +129,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 
 	@Override
 	public Optional<ApplicationSetting> getApplicationSettingByComID(String companyID) {
-		return this.queryProxy().find(new KrqstApplicationSettingPK(companyID), KrqstApplicationSetting.class).map(x-> toDomain(x));
+		 Optional<ApplicationSetting> op = this.queryProxy().find(new KrqstApplicationSettingPK(companyID), KrqstApplicationSetting.class).map(x-> toDomain(x));
+		 return op;
 	}
 }

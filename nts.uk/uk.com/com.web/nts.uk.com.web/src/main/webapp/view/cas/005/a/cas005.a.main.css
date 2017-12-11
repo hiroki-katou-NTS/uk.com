@@ -16,3 +16,11 @@ td{
 button.nts-switch-button{
 	width: 85px;
 }
+
+#table-infor th,#table-infor td{
+	 border: 1px solid black;
+}
+
+#table-infor th,#table-label th{
+
+}
