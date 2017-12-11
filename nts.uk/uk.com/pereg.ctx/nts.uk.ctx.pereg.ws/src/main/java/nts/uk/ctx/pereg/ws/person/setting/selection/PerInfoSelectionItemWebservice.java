@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommand;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.RemoveSelectionItemCommand;
@@ -223,5 +224,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("updateSelOrder")
 	public void updateSelOrder(List<UpdateSelOrderCommand> lstSelOrder) {
 		this.updateSelOrder.handle(lstSelOrder);
+	}
+	
+	
+	@POST
+	@Path("findAllByCompanyId/{selectionItemId}")
+	public List<SelectionInitDto> getAllelectionItemByCompany(@PathParam("selectionItemId")String selectionItemId) {
+		return this.selecFider.getAllSelectionByCompanyId(selectionItemId, GeneralDate.today());
 	}
 }
