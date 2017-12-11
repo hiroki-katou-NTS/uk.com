@@ -110,7 +110,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 	@Override
 	public Optional<EmpRegHistory> getLastRegHistory(String registeredEmployeeID) {
 
-		return this.queryProxy().query(GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING, Object[].class).getSingle()
+		return this.queryProxy().query(GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING, Object[].class).setParameter("employeeId", registeredEmployeeID).getSingle()
 				.map(x -> toDomain(x));
 	}
 
