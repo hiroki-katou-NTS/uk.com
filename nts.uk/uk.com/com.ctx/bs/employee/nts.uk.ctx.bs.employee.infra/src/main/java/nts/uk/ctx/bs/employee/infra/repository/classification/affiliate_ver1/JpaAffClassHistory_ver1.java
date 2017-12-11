@@ -28,7 +28,7 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 	private static String GET_BY_EID = "select h from BsymtAffClassHistory_Ver1 h where h.sid = :sid ORDER BY h.startDate";
 
 	private final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory_Ver1 h"
-			+ " where h.sid = :sid and h.startDate <= :referDate and h.endDate >= :referDate";
+			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
 
 	@Override
 	public Optional<AffClassHistory_ver1> getByHistoryId(String historyId) {
@@ -46,7 +46,8 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 	@Override
 	public Optional<AffClassHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		Optional<BsymtAffClassHistory_Ver1> optionData = this.queryProxy()
-				.query(GET_BY_SID_DATE, BsymtAffClassHistory_Ver1.class).getSingle();
+				.query(GET_BY_SID_DATE, BsymtAffClassHistory_Ver1.class)
+				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
 		if ( optionData.isPresent() ) {
 			return Optional.of(toDomain(optionData.get()));
 		}

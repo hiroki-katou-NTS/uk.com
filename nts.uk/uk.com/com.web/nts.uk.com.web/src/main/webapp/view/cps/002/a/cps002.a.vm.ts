@@ -227,7 +227,6 @@ module cps002.a.vm {
                 self.empRegHistory(null);
 
             }
-
         }
 
         getEmployeeCode(userSetting: IUserSetting): JQueryPromise<any> {
@@ -349,6 +348,8 @@ module cps002.a.vm {
                 layout.listItemClsDto(data.itemsClassification || []);
 
             });
+
+            $("#employeeAvatar").focus();
 
 
 
@@ -610,10 +611,7 @@ module cps002.a.vm {
 
         openInitModal() {
 
-            setShared("CPS002_PARAM", true);
-            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
-
-            });
+            jump('/view/cps/009/a/index.xhtml');
         }
 
 
