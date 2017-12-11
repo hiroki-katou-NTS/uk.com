@@ -50,6 +50,8 @@ module cps002.a.vm {
 
         employeeBasicInfo: KnockoutObservable<IEmployeeBasicInfo> = ko.observable(null);
 
+        layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
+
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
             isQuickSearchTab: true,
@@ -144,11 +146,14 @@ module cps002.a.vm {
 
             self.currentEmployee().avatarId.subscribe((avartarId) => {
 
-                var self = this;
-                var avartarContent = $("#employeeAvatar");
-                avartarContent.html("");
-                avartarContent.append($("<img/>").attr("src", liveView(avartarId)).attr("id", "employeeAvatar"));
-
+                if (avartarId == "") {
+                    var self = this;
+                    var avartarContent = $("#employeeAvatar");
+                    avartarContent.html("");
+                    avartarContent.append($("<img/>").attr("src", liveView(avartarId)).attr("id", "employeeAvatar"));
+                } else {
+                    avartarContent.html("");
+                }
 
             });
 
@@ -486,30 +491,11 @@ module cps002.a.vm {
         finish() {
 
             let self = this,
-                inputs: Array<any> = _(self.layout().listItemClsDto())
-                    .map(x => x.items())
-                    .flatten()
-                    .groupBy("categoryCode")
-                    .map(items => {
-                        return {
-                            recordId: <string>undefined,
-                            categoryCd: <string>items[0].categoryCode,
-                            items: <Array<any>>ko.toJS(items).map(m => {
-                                return {
-                                    definitionId: m.itemDefId,
-                                    itemCode: m.itemCode,
-                                    value: m.value,
-                                    'type': m.type
-                                };
-                            })
-                        };
-                    })
-                    .value(),
                 command = ko.toJS(self.currentEmployee());
             //add atr
             command.employeeCopyId = self.copyEmployee().employeeId;
             command.initSettingId = self.currentInitSetting().itemId;
-            command.inputs = inputs;
+            command.inputs = self.layoutData();
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
@@ -591,20 +577,21 @@ module cps002.a.vm {
         }
 
         openIModal() {
-            let self = this;
-            if (true) {
-                setShared("imageId", self.currentEmployee().avatarId());
-
-                subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
-
-                    let imageResult = getShared("imageId");
-
-                    if (imageResult) {
-                        self.currentEmployee().avatarId(imageResult);
-                    }
-
-                });
+            let self = this,
+                avatarId = self.currentEmployee().avatarId();
+            if (avatarId == "") {
+                setShared("imageId", avatarId);
             }
+            subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
+
+                let imageResult = getShared("imageId");
+
+                if (imageResult) {
+                    self.currentEmployee().avatarId(imageResult);
+                }
+
+            });
+
 
         }
 
