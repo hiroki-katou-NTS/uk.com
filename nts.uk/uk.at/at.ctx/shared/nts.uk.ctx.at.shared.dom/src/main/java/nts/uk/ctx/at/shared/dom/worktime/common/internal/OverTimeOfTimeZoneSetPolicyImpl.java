@@ -35,25 +35,33 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 	 */
 	@Override
 	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet, EmTimeZoneSet emTimezone) {
+		val otTimezone = otSet.getTimezone();
+		val shift1Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftOne();
+		val shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();
+
 		// validate msg_516
 		this.tzrPolicy.validateRange(predTime, otSet.getTimezone());
 
 		// validate msg_519
-		val otTimezone = otSet.getTimezone();
-		val shift1Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftOne();
-		val shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();
 		// TODO: trong ea chua mo ta truong hop khong co shift timezone
 		if (otTimezone.isBetweenOrEqual(shift1Timezone) || otTimezone.isBetweenOrEqual(shift2Timezone)) {
 			throw new BusinessException("Msg_519");
 		}
 
 		// validate msg_779
-		if (otSet.isEarlyOTUse() == false && otSet.getTimezone().isStartLessThan(emTimezone.getTimezone())) {
+		boolean isNotEarlyAndPred = !otSet.isEarlyOTUse() && !predTime.isPredetermine();
+		boolean condition1 = !shift2Timezone.isUsed() && (otTimezone.getStart().lessThan(shift1Timezone.getEnd())
+				|| otTimezone.getEnd().lessThan(shift1Timezone.getEnd()));
+		boolean condition2 = shift2Timezone.isUsed() && (otTimezone.getStart().lessThan(shift2Timezone.getEnd())
+				|| otTimezone.getEnd().lessThan(shift2Timezone.getEnd()));
+		if (isNotEarlyAndPred && (condition1 || condition2)) {
 			throw new BusinessException("Msg_779");
 		}
 
 		// validate msg_780
-		if (otSet.isEarlyOTUse() == true && !otSet.getTimezone().isStartLessThan(emTimezone.getTimezone())) {
+		if (!predTime.isPredetermine() && otSet.isEarlyOTUse()
+				&& (otTimezone.getStart().greaterThan(shift1Timezone.getStart())
+						|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart()))) {
 			throw new BusinessException("Msg_780");
 		}
 	}
