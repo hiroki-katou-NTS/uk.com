@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface WokingConditionItemRepository.
  */
@@ -45,8 +47,17 @@ public interface WorkingConditionItemRepository {
 	/**
 	 * Gets the all woking condition item.
 	 *
-	 * @param companyId the company id
 	 * @return the all woking condition item
 	 */
 	List<WorkingConditionItem> getAllWokingConditionItem();
+	
+	
+	/**
+	 * Find working condition item by pers work day.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	Optional<WorkingConditionItem> findWorkingConditionItemByPersWorkCat(String employeeId, GeneralDate baseDate);
 }
