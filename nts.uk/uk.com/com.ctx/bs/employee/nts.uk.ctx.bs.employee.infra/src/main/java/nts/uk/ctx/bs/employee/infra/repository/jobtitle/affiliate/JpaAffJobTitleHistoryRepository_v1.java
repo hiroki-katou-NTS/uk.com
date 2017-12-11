@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
@@ -18,6 +19,9 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 
 	private final String QUERY_GET_AFFJOBTITLEHIST_BYSID = "SELECT jb FROM BsymtAffJobTitleHist jb"
 			+ " WHERE jb.sid = :sid ORDER BY jb.strDate";
+	
+	private final String GET_BY_SID_DATE = "select h from BsymtAffJobTitleHist h"
+			+ " where h.sid = :sid and h.strDate <= :referDate and h.endDate >= :referDate";
 
 	/**
 	 * Convert from domain to entity
@@ -111,6 +115,16 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		domain.add(dateItem);
 
 		return domain;
+	}
+
+	@Override
+	public Optional<AffJobTitleHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		Optional<BsymtAffJobTitleHist> optionaData = this.queryProxy()
+				.query(GET_BY_SID_DATE, BsymtAffJobTitleHist.class).getSingle();
+		if ( optionaData.isPresent()) {
+			return Optional.of(toDomain(optionaData.get()));
+		}
+		return Optional.empty();
 	}
 
 }

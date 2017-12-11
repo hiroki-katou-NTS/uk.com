@@ -49,13 +49,22 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		Optional<AffJobTitleHistoryItem> optionData = affJobTitleItemRepo.getByEmpIdAndReferDate(query.getEmployeeId(),
-				query.getStandardDate());
-		if (optionData.isPresent()) {
-			AffJobTitleHistoryItem histItem = optionData.get();
-			AffJobTitleHistory_ver1 history = affJobTitleRepo.getByHistoryId(histItem.getHistoryId()).get();
-			return AffJobTitleDto.createFromDomain(histItem, history);
+		
+		Optional<AffJobTitleHistory_ver1> historyOpt;
+		if ( query.getInfoId() != null ) {
+			historyOpt = affJobTitleRepo.getByHistoryId(query.getInfoId());
+		} else {
+			historyOpt = affJobTitleRepo.getByEmpIdAndStandardDate(query.getEmployeeId(), query.getStandardDate());
 		}
+		
+		if ( historyOpt.isPresent()) {
+			Optional<AffJobTitleHistoryItem> histItemOpt = affJobTitleItemRepo
+					.findByHitoryId(historyOpt.get().getHistoryItems().get(0).identifier());
+			if ( histItemOpt.isPresent()) {
+				return AffJobTitleDto.createFromDomain(histItemOpt.get(), historyOpt.get());
+			}
+		}
+		
 		return null;
 	}
 
