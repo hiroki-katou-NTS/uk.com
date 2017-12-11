@@ -84,23 +84,26 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	public void validate() {
 		super.validate();
 		
-		// valid case greater than 23:59
-		if (this.startDateClock.greaterThanOrEqualTo(TimeWithDayAttr.THE_NEXT_DAY_0000)) {
+		// validate startDateClock in -12:00 ~ 23:59
+		if ((this.startDateClock.valueAsMinutes() < TimeWithDayAttr.THE_PREVIOUS_DAY_1200.valueAsMinutes())
+				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {
 			throw new BusinessException("Msg_785");
 		}
 		
-		/** Valid timezone
-		 * 開始←所定時間設定．日付開始時刻, 終了← 所定時間設定．１日の範囲時間　経過後
-		 * 開始～終了の間であること。
-		 */
-		int startMinutes = this.startDateClock.v();
-		int endMinutes = this.rangeTimeDay.v();
+		// validate timezone
+		int startTime = this.startDateClock.valueAsMinutes();
+		int endTime = this.startDateClock.valueAsMinutes() + this.rangeTimeDay.valueAsMinutes();
 		boolean isInValidTimezone = this.prescribedTimezoneSetting.getLstTimezone().stream()
-				.filter(timezone -> timezone.getStart().v() >= startMinutes && timezone.getStart().v() <= endMinutes
-						&& timezone.getEnd().v() >= startMinutes && timezone.getEnd().v() <= endMinutes)
-				.collect(Collectors.toList())
-				.isEmpty();
-		if (isInValidTimezone) {
+				.filter(timezone -> (timezone.getStart().valueAsMinutes() < startTime)
+						|| (timezone.getEnd().valueAsMinutes() > endTime))
+				.collect(Collectors.toList()).isEmpty();
+
+		// validate morning End time and afternoon start time
+		int morningEnd = this.prescribedTimezoneSetting.getMorningEndTime().valueAsMinutes();
+		int afternoonStart = this.prescribedTimezoneSetting.getAfternoonStartTime().valueAsMinutes();
+		boolean isInvalidStartEnd = (morningEnd < startTime) || (afternoonStart > endTime);
+		
+		if (isInValidTimezone || isInvalidStartEnd) {
 			throw new BusinessException("Msg_516");
 		}
 	}
