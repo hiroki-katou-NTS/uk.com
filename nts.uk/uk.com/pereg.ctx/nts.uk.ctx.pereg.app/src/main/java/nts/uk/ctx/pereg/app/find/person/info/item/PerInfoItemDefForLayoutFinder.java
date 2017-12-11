@@ -167,10 +167,10 @@ public class PerInfoItemDefForLayoutFinder {
 		if(!perItemAuth.isPresent()) return ActionRole.HIDDEN;
 		if (isSelfAuth)
 			return personInfoItemAuthRepository.getItemDetai(roleId, ctgId, perInfoItemId).get()
-					.getSelfAuth() != PersonInfoAuthType.UPDATE ? ActionRole.EDIT : ActionRole.VIEW_ONLY;
+					.getSelfAuth() == PersonInfoAuthType.UPDATE ? ActionRole.EDIT : ActionRole.VIEW_ONLY;
 		else
 			return personInfoItemAuthRepository.getItemDetai(roleId, ctgId, perInfoItemId).get()
-					.getOtherAuth() != PersonInfoAuthType.UPDATE ? ActionRole.EDIT : ActionRole.VIEW_ONLY;
+					.getOtherAuth() == PersonInfoAuthType.UPDATE ? ActionRole.EDIT : ActionRole.VIEW_ONLY;
 	}
 	
 	/**

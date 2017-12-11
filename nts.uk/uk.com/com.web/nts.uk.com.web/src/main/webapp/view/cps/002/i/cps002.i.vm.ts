@@ -44,7 +44,10 @@ module cps002.i.vm {
                         setShared("imageId", self.imageId());
                         self.close();
                     });
-                }
+                }else {
+                    nts.uk.ui.block.clear();
+                    self.close();
+                    }
             }else self.close();            
         }
         getImage(){
