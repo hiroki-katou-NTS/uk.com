@@ -103,7 +103,12 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 
 	@Override
 	public void update(RoleIndividualGrant roleIndividualGrant) {
-		this.commandProxy().update(SacmtRoleIndiviGrant.toEntity(roleIndividualGrant));
+		SacmtRoleIndiviGrant newEntity = SacmtRoleIndiviGrant.toEntity(roleIndividualGrant);
+		SacmtRoleIndiviGrant updateEntity = this.queryProxy().find(newEntity.sacmtRoleIndiviGrantPK, SacmtRoleIndiviGrant.class).get();
+		updateEntity.roleId = newEntity.roleId;
+		updateEntity.strD = newEntity.strD;
+		updateEntity.endD = newEntity.endD;
+		this.commandProxy().update(updateEntity);
 	}
 
 	@Override

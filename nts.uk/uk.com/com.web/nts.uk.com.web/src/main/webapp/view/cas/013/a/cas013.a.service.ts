@@ -9,8 +9,7 @@ module nts.uk.com.view.cas013.a {
                 getRoleGrants: "ctx/sys/auth/grant/roleindividual/getRoleGrants",
                 getRoleGrant: "ctx/sys/auth/grant/roleindividual/getRoleGrant",
                 insertRoleGrant: "ctx/sys/auth/grant/roleindividual/insertRoleGrant",
-                upDateRoleGrant:"",
-                
+                upDateRoleGrant:"ctx/sys/auth/grant/roleindividual/upDateRoleGrant"
             }
             constructor() {
 
