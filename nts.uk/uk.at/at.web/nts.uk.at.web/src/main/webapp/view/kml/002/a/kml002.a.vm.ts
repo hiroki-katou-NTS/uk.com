@@ -575,19 +575,39 @@ module nts.uk.at.view.kml002.a.viewmodel {
         }
 
         formulaTimeUnit(): JQueryPromise<any> {
-
-            var self = this;
+           var self = this;
             var dfd = $.Deferred();
-            self.unitItems = _.clone(self.dailyItems);
-            self.dailyItems = [];
-            dfd.resolve();
+
+            var dailyAttendanceAtrs = [];
+            dailyAttendanceAtrs.push(5);
+            var param = {
+                dailyAttendanceItemAtrs: dailyAttendanceAtrs,
+                scheduleAtr: 0,
+                budgetAtr: 1,
+                unitAtr: 0
+            };
+            service.getDailyItems(param).done(function(data) {
+                let temp = [];
+                let items = _.sortBy(data, ['companyId', 'dispOrder']);
+
+                _.forEach(items, function(item: service.BaseItemsDto) {
+                    var name = item.itemName + nts.uk.resource.getText("KML002_43");
+                    temp.push({ id: item.id, name: name, itemType: item.itemType });
+                });
+
+                self.unitItems = temp;
+
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
+
             return dfd.promise();
         }
 
         formulaTime(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.dailyItems = [];
 
             var dailyAttendanceAtrs = [];
             dailyAttendanceAtrs.push(3);
