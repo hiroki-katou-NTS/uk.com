@@ -147,6 +147,7 @@ module cps002.a.vm {
             });
 
             self.start();
+
         }
 
         loadCopySettingItemData() {
@@ -194,7 +195,7 @@ module cps002.a.vm {
                         self.currentUseSetting(new UserSetting(result));
 
                         self.getLastRegHistory(result);
-
+                        $("#hireDate").focus();
                     });
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
@@ -202,6 +203,7 @@ module cps002.a.vm {
                     });
                 }
             });
+
         }
 
         getLastRegHistory(userSetting: IUserSetting) {
@@ -211,6 +213,7 @@ module cps002.a.vm {
             if (showHistory) {
                 service.getLastRegHistory().done((result: IEmpRegHistory) => {
                     if (result) {
+
                         self.empRegHistory(new EmpRegHistory(result));
                     }
                 });
@@ -398,6 +401,7 @@ module cps002.a.vm {
                 self.loadCopySettingCtgData();
 
                 $('#hor-scroll-button-show').trigger('click');
+                $('#inp_baseDate').focus();
 
             }
 
@@ -545,8 +549,10 @@ module cps002.a.vm {
 
                 let result = getShared("CPS002_PARAM"),
                     currentEmp = self.currentEmployee();
+                if (result) {
 
-                param === 'true' ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
+                    param === 'true' ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
+                }
             });
         }
 
@@ -665,7 +671,7 @@ module cps002.a.vm {
 
     interface IRegEmployee {
 
-        employeeID: string;
+        employeeCd: string;
 
         employeeName: string;
 
@@ -797,7 +803,7 @@ module cps002.a.vm {
         constructor(param: IEmpRegHistory) {
             this.lastRegEmployee(param ? param.lastRegEmployee : null);
 
-            this.lastRegEmployee(param ? param.lastRegEmployeeOfCompany : null);
+            this.lastRegEmployeeOfCompany(param ? param.lastRegEmployeeOfCompany : null);
 
         }
     }
@@ -813,12 +819,12 @@ module cps002.a.vm {
 
     class RegEmployee {
 
-        employeeID: string;
+        employeeCd: string;
 
         employeeName: string;
 
-        constructor(employeeID: string, employeeName: string) {
-            this.employeeID = employeeID;
+        constructor(employeeCd: string, employeeName: string) {
+            this.employeeCd = employeeCd;
 
             this.employeeName = employeeName;
         }

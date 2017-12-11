@@ -35,10 +35,8 @@ public class EmploymentHistoryItem extends AggregateRoot{
 	// 雇用コード. 
 	private EmploymentCode employmentCode;
 	
-	public static EmploymentHistoryItem createFromJavaType(String histId, String sid, int salary, String employmentCD){
+	public static EmploymentHistoryItem createFromJavaType(String histId, String sid, String employmentCD, int salary){
 		return new EmploymentHistoryItem(histId,sid,EnumAdaptor.valueOf(salary, SalarySegment.class),new EmploymentCode(employmentCD));
 	}
-
-	
 	
 }

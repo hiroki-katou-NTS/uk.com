@@ -14,17 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class BsymtEmploymentHist.
  */
-@Getter
-@Setter
 @Entity
 @AllArgsConstructor
 @Table(name = "BSYMT_EMPLOYMENT_HIST")
@@ -36,7 +32,7 @@ public class BsymtEmploymentHist extends UkJpaEntity implements Serializable {
 	/** The historyid - PK. */
 	@Id
 	@Column(name = "HISTORY_ID")
-	private String hisId;
+	public String hisId;
 
 	@Column(name = "CID")
 	public String companyId;
@@ -44,16 +40,16 @@ public class BsymtEmploymentHist extends UkJpaEntity implements Serializable {
 	/** The employeeId. */
 	@Basic(optional = false)
 	@Column(name = "SID")
-	private String sid;
+	public String sid;
 
 	@Basic(optional = true)
 	@Column(name = "STR_DATE")
-	private GeneralDate strDate;
+	public GeneralDate strDate;
 
 	@Basic(optional = true)
 	@Column(name = "END_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDate endDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate endDate;
 
 	/**
 	 * Instantiates a new cempt employment.

@@ -70,8 +70,7 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @return
 	 */
 	boolean isExist(String settingId, String perInfoCtgId);
-	
-	
+
 	/**
 	 * check category have item init list ?
 	 * 
@@ -79,7 +78,7 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @param settingId
 	 * @return
 	 */
-	List<String> isExistItem( List<String> perInfoCtgId);
+	List<String> isExistItem(List<String> perInfoCtgId);
 
 	/**
 	 * delete all item by settingId

@@ -65,8 +65,9 @@ public class CopySettingItemFinder {
 			if (itemInfoOpt.isPresent()) {
 				EmpCopySettingItem itemInfo = itemInfoOpt.get();
 
-				result.add(SettingItemDto.createFromJavaType(itemInfo.getCategoryCode(), itemInfo.getItemDefId(), k,
-						itemInfo.getItemName(), itemInfo.getIsRequired().value, v.toString()));
+				result.add(new SettingItemDto(itemInfo.getCategoryCode(), itemInfo.getItemDefId(), k,
+						itemInfo.getItemName(), itemInfo.getIsRequired().value,
+						SettingItemDto.createSaveDataDto(1, v.toString()), itemInfo.getDataType()));
 			}
 
 		});

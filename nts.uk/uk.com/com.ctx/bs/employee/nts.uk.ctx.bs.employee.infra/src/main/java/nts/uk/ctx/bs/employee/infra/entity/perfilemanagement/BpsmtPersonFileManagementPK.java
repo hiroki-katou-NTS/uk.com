@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Embeddable
-public class BsymtPersonFileManagementPK {
+public class BpsmtPersonFileManagementPK {
 
 	private static final long serialVersionUID = 1L;
 

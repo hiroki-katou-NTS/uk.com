@@ -36,8 +36,10 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	private DataState dataState;
 
+	private int dataType;
+
 	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
-			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState) {
+			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType) {
 		super();
 		this.itemCode = itemCode;
 		this.perInfoDefId = perInfoDefId;
@@ -47,6 +49,7 @@ public class EmpInfoItemData extends AggregateRoot {
 		this.itemName = itemName;
 		this.isRequired = isRequired;
 		this.dataState = dataState;
+		this.dataType = dataType;
 	}
 
 	public EmpInfoItemData(String perInfoDefId, String recordId, DataState dataState) {
@@ -58,20 +61,24 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	public static EmpInfoItemData createFromJavaType(String itemCode, String perInfoDefId, String recordId,
 			String perInfoCtgId, String perInfoCtgCd, String itemName, int isRequired, int dataStateType,
-			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
+			String stringValue, BigDecimal intValue, GeneralDate dateValue, int dataType) {
 
 		return new EmpInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd, itemName,
-				EnumAdaptor.valueOf(isRequired, IsRequired.class), createDataState(
-						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
+				EnumAdaptor.valueOf(isRequired, IsRequired.class),
+				createDataState(EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue,
+						dateValue),
+				dataType);
 
 	}
 
 	public static EmpInfoItemData createFromJavaType(String perInfoDefId, String recordId, int dataStateType,
-			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
+			String stringValue, BigDecimal intValue, GeneralDate dateValue, int dataType) {
 
 		return new EmpInfoItemData(new ItemCode(""), perInfoDefId, recordId, "", "", "",
-				EnumAdaptor.valueOf(0, IsRequired.class), createDataState(
-						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
+				EnumAdaptor.valueOf(0, IsRequired.class),
+				createDataState(EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue,
+						dateValue),
+				dataType);
 
 	}
 
