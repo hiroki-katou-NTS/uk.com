@@ -267,7 +267,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			Optional<ItemValue> optItem = ctg.getItems().stream().filter(x -> x.itemCode().equals(itemCode))
 					.findFirst();
 			if (optItem.isPresent()) {
-				returnString = optItem.get().value();
+				if (optItem.get().value() != null){
+				returnString = optItem.get().value().toString();
+				}
 				break;
 			}
 
