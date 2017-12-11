@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.company.dom.company.Company;
-import nts.uk.ctx.bs.company.dom.company.CompanyInforNew;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 
 @Stateless
@@ -46,10 +45,10 @@ public class CompanyPubImp implements ICompanyPub {
 	 */
 	@Override
 	public CompanyExport getCompanyByCid(String cid) {
-		Optional<CompanyInforNew> companyOpt = repo.getComanyByCid(cid);
+		Optional<Company> companyOpt = repo.getComanyByCid(cid);
 		CompanyExport result = new CompanyExport();
 		if (companyOpt.isPresent()) {
-			CompanyInforNew company = companyOpt.get();
+			Company company = companyOpt.get();
 			result.setCompanyCode(company.getCompanyCode() == null ? "" : company.getCompanyCode().v());
 			result.setCompanyId(company.getCompanyId());
 			result.setCompanyName(company.getCompanyName() == null ? "" : company.getCompanyName().v());
