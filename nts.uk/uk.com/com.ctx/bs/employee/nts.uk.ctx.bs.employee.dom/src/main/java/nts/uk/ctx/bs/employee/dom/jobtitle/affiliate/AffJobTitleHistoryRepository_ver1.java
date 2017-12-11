@@ -2,11 +2,25 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 public interface AffJobTitleHistoryRepository_ver1 {
 	
+	/**
+	 * get with primary key
+	 * @param historyId
+	 * @return
+	 */
 	Optional<AffJobTitleHistory_ver1> getByHistoryId(String historyId);
+	
+	/**
+	 * get with employeeId and standard date
+	 * @param employeeId
+	 * @param standardDate
+	 * @return
+	 */
+	Optional<AffJobTitleHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
 	// get listbypid
 	Optional<AffJobTitleHistory_ver1> getListBySid(String cid, String sid);
