@@ -227,7 +227,6 @@ module cps002.a.vm {
                 self.empRegHistory(null);
 
             }
-
         }
 
         getEmployeeCode(userSetting: IUserSetting): JQueryPromise<any> {
@@ -349,6 +348,8 @@ module cps002.a.vm {
                 layout.listItemClsDto(data.itemsClassification || []);
 
             });
+
+            $("#employeeAvatar").focus();
 
 
 

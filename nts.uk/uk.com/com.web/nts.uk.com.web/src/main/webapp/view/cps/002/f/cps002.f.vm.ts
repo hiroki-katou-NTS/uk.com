@@ -46,7 +46,7 @@ module cps002.f.vm {
             });
 
             self.start();
-
+            $(".searchCtg .ntsSearchBox").focus();
         }
         register() {
             let self = this;

@@ -15,10 +15,11 @@ module cps002.e.vm {
             let self = this;
             self.cardNoMode = getShared("cardNoMode");
             if (self.cardNoMode) {
-
                 self.txtCardNo(getShared("userValue"));
+                $("#txtCardNo").focus();
             } else {
                 self.txtEmployeeCode(getShared("userValue"));
+                $("#txtEmployeeCode").focus();
             }
             self.generateEmCode(getShared("value"));
         }
