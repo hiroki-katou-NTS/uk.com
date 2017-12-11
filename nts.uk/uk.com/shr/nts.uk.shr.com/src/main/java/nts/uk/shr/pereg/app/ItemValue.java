@@ -67,7 +67,7 @@ public class ItemValue {
 			this.value = obj.toString();
 			break;
 		case DATE:
-			this.value = ((GeneralDate)obj).toString("yyyyMMdd");
+			this.value = ((GeneralDate)obj).toString("yyyy/MM/dd");
 			break;
 		default:
 			throw new RuntimeException("invalid type: " + this.type);
