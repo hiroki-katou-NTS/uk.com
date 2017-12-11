@@ -81,7 +81,7 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 			try {
 				if(!Strings.isBlank(email)) {
 					mailSender.send("nts", email, new MailContents("nts mail", "new mail from NTS"));
-					destinationMails.add(email);
+					destinationMails.add(email + System.lineSeparator());
 				}
 				
 			} catch (SendMailFailedException e) {

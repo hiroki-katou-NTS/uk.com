@@ -19,8 +19,8 @@ public class EmployeeInfoFinder {
 	@Inject
 	private EmployeeBusiness employeeBusiness;
 
-	@Inject
-	private UserRepository userRepo;
+//	@Inject
+//	private UserRepository userRepo;
 
 	public String getGenerateEmplCodeAndComId(String startLetters) {
 		String ComId = AppContexts.user().companyId();
@@ -43,13 +43,13 @@ public class EmployeeInfoFinder {
 		// if (isDuplicateCardNo) {
 		// throw new BusinessException(new RawErrorMessage("Msg_346"));
 		// }
-		Boolean isDuplicateLoginId = this.userRepo.getByLoginId(empInfo.getLoginId()).isPresent();
+//		Boolean isDuplicateLoginId = this.userRepo.getByLoginId(empInfo.getLoginId()).isPresent();
 
-		if (isDuplicateLoginId) {
-
-			throw new BusinessException(new RawErrorMessage("Msg_757"));
-
-		}
+//		if (isDuplicateLoginId) {
+//
+//			throw new BusinessException(new RawErrorMessage("Msg_757"));
+//
+//		}
 
 	}
 }

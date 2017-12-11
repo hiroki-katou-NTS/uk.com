@@ -287,7 +287,7 @@ public class CommonApprovalRootFinder {
 			//add in lstAppRoot
 			lstComRoot.add(new CompanyAppRootDto(companyApprovalRoot,lstApprovalPhase));
 		}
-		return new CommonApprovalRootDto(companyName,"",lstComRoot, null, null);
+		return new CommonApprovalRootDto(companyName,"","",lstComRoot, null, null);
 	}
 	/**
 	 * get Data Work place Approval Root
@@ -337,7 +337,7 @@ public class CommonApprovalRootFinder {
 			//add in lstAppRoot
 			lstWpRoot.add(new WorkPlaceAppRootDto(workplaceApprovalRoot,lstApprovalPhase));
 		}
-		return new CommonApprovalRootDto(companyName, workplaceId, null, lstWpRoot, null);
+		return new CommonApprovalRootDto(companyName, workplaceId,"", null, lstWpRoot, null);
 	}
 	/**
 	 * get Data Person Approval Root
@@ -380,7 +380,7 @@ public class CommonApprovalRootFinder {
 			//add in lstAppRoot
 			lstPsRoot.add(new PersonAppRootDto(personApprovalRoot,lstApprovalPhase));
 		}
-		return new CommonApprovalRootDto(companyName, "", null, null, lstPsRoot);
+		return new CommonApprovalRootDto(companyName, "",employeeId, null, null, lstPsRoot);
 	}
 	/**
 	 * grouping history

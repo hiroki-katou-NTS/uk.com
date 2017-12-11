@@ -24,7 +24,7 @@ public interface ContinuousHistory<H extends HistoryItem<S, D>, S extends Genera
 		this.latestStartItem().ifPresent(latest -> {
 			if (!(latest.span().isStart().before(itemToBeAdded.start()))
 					&& latest.span().isEnd().beforeOrEqual(itemToBeAdded.end())) {
-				throw new BusinessException("");
+				throw new BusinessException("Msg_102");
 			}
 			
 			latest.shortenEndToAccept(itemToBeAdded);

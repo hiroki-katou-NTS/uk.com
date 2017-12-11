@@ -4,6 +4,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
@@ -40,10 +41,7 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 		for(int i = 0; i < appApprovalPhaseList.size(); i++){
 			AppApprovalPhase appApprovalPhase = appApprovalPhaseList.get(i);
 			// アルゴリズム「承認者一覧を取得する」を実行する(thực hiện xử lý 「承認者一覧を取得する」)
-			List<String> approverList = afterApprovalProcess.actualReflectionStateDecision(
-											application.getApplicationID(), 
-											appApprovalPhase.getPhaseID(), 
-											ApprovalAtr.APPROVED);
+			List<String> approverList = afterApprovalProcess.getListApprover(application.getCompanyID(), application.getApplicationID());
 			
 			// ループ中の承認フェーズに承認者がいる
 			// không có approver trong phase thì chuyển phase
@@ -82,11 +80,13 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 			
 		}
 		
-		if(!cancelFlag) return;
+		if(!cancelFlag) {
+			throw new BusinessException("Khong the release");
+		}
 		
 		// 「反映情報」．実績反映状態を「未反映」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「未反映」)
 		application.setReflectPerState(ReflectPlanPerState.NOTREFLECTED);
-		appRepo.updateApplication(application);
+		appRepo.fullUpdateApplication(application);
 		// ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする(update domain 「申請」 và 「承認情報」「反映情報」 tương ứng)
 		// 情報メッセージ（Msg_221）(hiển thị message thông báo （Msg_221）)
 	}

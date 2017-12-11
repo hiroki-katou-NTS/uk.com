@@ -6,13 +6,16 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento;
 
 /**
  * The Class WorkTimezoneGoOutSetDto.
  */
 @Getter
 @Setter
-public class WorkTimezoneGoOutSetDto {
+public class WorkTimezoneGoOutSetDto implements WorkTimezoneGoOutSetSetMemento{
 	
 	/** The total rounding set. */
 	private TotalRoundingSetDto totalRoundingSet;
@@ -20,19 +23,33 @@ public class WorkTimezoneGoOutSetDto {
 	/** The diff timezone setting. */
 	private GoOutTimezoneRoundingSetDto diffTimezoneSetting;
 
-	/**
-	 * Instantiates a new work timezone go out set dto.
-	 *
-	 * @param totalRoundingSet the total rounding set
-	 * @param diffTimezoneSetting the diff timezone setting
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento#
+	 * setTotalRoundingSet(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * TotalRoundingSet)
 	 */
-	public WorkTimezoneGoOutSetDto(TotalRoundingSetDto totalRoundingSet,
-			GoOutTimezoneRoundingSetDto diffTimezoneSetting) {
-		super();
-		this.totalRoundingSet = totalRoundingSet;
-		this.diffTimezoneSetting = diffTimezoneSetting;
+	@Override
+	public void setTotalRoundingSet(TotalRoundingSet set) {
+		set.saveToMemento(this.totalRoundingSet);
+		
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento#
+	 * setDiffTimezoneSetting(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimezoneRoundingSet)
+	 */
+	@Override
+	public void setDiffTimezoneSetting(GoOutTimezoneRoundingSet set) {
+		set.saveToMememto(this.diffTimezoneSetting);
+	}
+
 	
 
 }

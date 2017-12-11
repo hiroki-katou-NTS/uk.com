@@ -12,22 +12,18 @@ import java.util.Optional;
  */
 
 public interface CompanyRepository {
-	
+		
 	/**
-	 * Gets the comany id.
-	 *
-	 * @param companyId the company id
-	 * @return the comany id
+	 * Find all company with isAbolition=0
+	 * @return
 	 */
-	Optional<Company> getComanyById(String companyId);
-	
 	List<Company>  getAllCompany();
 	
 	/** 
 	 * get all company from database
 	 * @author: Hoang Yen
 	 */
-	List<CompanyInforNew> findAll();
+	List<Company> findAll();
 	
 	/**
 	 * find a company infor item by code 
@@ -36,9 +32,8 @@ public interface CompanyRepository {
 	 * @param companyCd
 	 * @author: Hoang Yen
 	 * @return
-	 * 
 	 */
-	Optional<CompanyInforNew> findComByCode(String companyId);
+	Optional<Company> find(String companyId);
 	
 	/**
 	 * get address
@@ -52,7 +47,7 @@ public interface CompanyRepository {
 	 * update a company
 	 * @author: Hoang Yen
 	 */
-	void updateCom(CompanyInforNew company);
+	void updateCom(Company company);
 	
 	/**
 	 * update add infor
@@ -65,7 +60,7 @@ public interface CompanyRepository {
 	 * insert a company 
 	 * @author: Hoang Yen
 	 */
-	void insertCom(CompanyInforNew company);
+	void insertCom(Company company);
 
 	/**
 	 * insert Address information company
@@ -91,10 +86,16 @@ public interface CompanyRepository {
 	 */
 	Optional<Company> getComanyInfoByCid(String cid);
 	
+	/**
+	 * check list company mustn't be abolished all 
+	 * @param currentCompanyId
+	 * @return
+	 * @author yennth
+	 */
 	boolean checkAbolish(String currentCompanyId);
 	
 	// request list No.125
-	Optional<CompanyInforNew> getComanyByCid(String cid);
+	Optional<Company> getComanyByCid(String cid);
 	
 }
 

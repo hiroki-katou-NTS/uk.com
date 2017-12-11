@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
@@ -24,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeCommand>{
+public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<UpdateOvertimeCommand, List<String>>{
 
 	@Inject
 	private OvertimeRepository overtimeRepository;
@@ -39,7 +40,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeC
 	private ApplicationRepository applicationRepository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<UpdateOvertimeCommand> context) {
+	protected List<String> handle(CommandHandlerContext<UpdateOvertimeCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateOvertimeCommand command = context.getCommand();
 		Optional<AppOverTime> opAppOverTime = overtimeRepository.getFullAppOvertime(companyID, command.getAppID());
@@ -78,7 +79,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandler<UpdateOvertimeC
 				appOverTime.getApplication().getPrePostAtr());
 		overtimeRepository.update(appOverTime);
 		applicationRepository.updateApplication(appOverTime.getApplication());
-		detailAfterUpdate.processAfterDetailScreenRegistration(appOverTime.getApplication());
+		return detailAfterUpdate.processAfterDetailScreenRegistration(appOverTime.getApplication());
 	}
 
 }

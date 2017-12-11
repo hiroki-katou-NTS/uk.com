@@ -10,7 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
+			</com:ValidatorScript>
 			<com:stylefile path="cas012.a.style.css" />
 			<com:scriptfile path="cas012.a.vm.js" />
 			<com:scriptfile path="cas012.a.service.js" />
@@ -19,47 +19,72 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1">#{i18n.getText('CAS0012_4')}</button>
-				<button class="proceed" tabindex="2">#{i18n.getText('CAS0012_5')}</button>
-				<button class="danger" tabindex="3">#{i18n.getText('CAS0012_6')}</button>
+				<div class="container">
+					<button tabindex="1" data-bind="click: createBtn">#{i18n.getText('CAS012_4')}</button>
+					<button class="proceed" tabindex="2"
+						data-bind="click : registryBtn">#{i18n.getText('CAS012_5')}</button>
+					<button class="danger" tabindex="3"
+						data-bind="click: deleteBtn, enable: !isCreate()">#{i18n.getText('CAS012_6')}</button>
+				</div>
 			</div>
 			<div id="contents-area">
-				<div class="valign-center control-group">
-					<div
-						data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">#{i18n.getText('CAS0012_7')}</div>
-					<div id="combo-box" tabindex="4"
-						data-bind="ntsComboBox: {
-							options: listRollType,
-							optionsValue: 'code',
-							value: selectedRollType,
-							optionsText: 'name',
-							columns: [
-								{ prop: 'name', length: 10 }
-							]}"></div>
+				<div class="container">
+					<div class="cf">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS012_7')}</div>
+							<div id="combo-box" tabindex="4"
+								data-bind="ntsComboBox: {
+								options: listRoleType,
+								optionsValue: 'value',
+								visibleItemsCount: 5,
+								value: selectedRoleType,
+								optionsText: 'localizedName',
+								columns: [
+									{ prop: 'localizedName', length: 8}
+								]}"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_9')}</div>
+							<div id="combo-box" tabindex="5"
+								data-bind="ntsComboBox: {
+									options: listCompany,
+									optionsValue: 'companyId',
+									visibleItemsCount: 5,
+									value: selectedCompany,
+									optionsText: 'companyName',
+									enable: (selectedRoleType() == 1),
+									columns: [
+										{ prop: 'companyName', length: 8 }
+									]}"></div>
+						</div>
+						<span class="caret-bottom"></span>
+					</div>
+					<div class="cf">
+						<div class="left-content">
+							<div class="valign-center control-group">
+								<span class="rolelist-label">#{i18n.getText('CAS012_11')}</span>
+							</div>
+							<table tabindex="6" id="single-list"
+								data-bind="ntsGridList: {								
+								height: 350,
+								dataSource: listRoleIndividual,
+								primaryKey: 'GUID',
+								columns: columns,
+								value: currentCode}"></table>
+						</div>
+						<div class="right-content">
+							<button id="btn-selectuser" tabindex="7" class="x-large"
+								data-bind="click : openCAS012_B, enable: isCreate">#{i18n.getText('CAS012_16')}</button>
+							<label class="username"
+								data-bind="text: selectRoleIndividual().userName"></label>
+							<div class="valign-center control-group">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_18')}</div>
+								<div id="daterangepicker" tabindex="8"
+									data-bind="ntsDateRangePicker: { value: datePeriod, maxRange: 'none', required: true, showNextPrevious: false }" />
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="valign-center control-group">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS0012_9')}</div>
-					<div id="combo-box" tabindex="5"
-						data-bind="ntsComboBox: {
-							options: listCompany,
-							optionsValue: 'code',
-							value: selectedCompany,
-							optionsText: 'name',
-							columns: [
-								{ prop: 'name', length: 10 }
-							]}"></div>
-				</div>
-				<span class="caret-bottom outline"></span>
-				<div class="valign-center control-group">
-					<span class="text">#{i18n.getText('CAS0012_11')}</span>
-				</div>
-				<table tabindex="6" id="single-list" data-bind="ntsGridList: {								
-							height: 350,
-							dataSource: listRoleIndividual,
-							primaryKey: 'codeRoleIndividual',
-							columns: columns,
-							value: currentCode
-					}"></table>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -54,6 +54,9 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private ApproveAcceptedRepository approveAcceptedRepository;
 	
 	@Inject
+	private ApplicationRepository applicationRepository;
+	
+	@Inject
 	private MailSender mailsender;
 	
 	@Override
@@ -66,7 +69,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		//共通アルゴリズム「実績反映状態の判断」を実行する
 		this.judgmentActualReflection(application);
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
-		appRepo.updateApplication(application);
+		appRepo.fullUpdateApplication(application);
 		// get domain 申請種類別設定
 		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
 		// 承認処理時に自動でメールを送信するが trueの場合
@@ -223,6 +226,27 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		}
 		
 		
+	}
+	@Override
+	public List<String> getListApprover(String companyID, String appID) {
+		List<String> listApprover = new ArrayList<String>();
+		Optional<Application> opApplication = applicationRepository.getAppById(companyID, appID);
+		if(!opApplication.isPresent()){
+			return listApprover;
+		}
+		Application application = opApplication.get();
+		application.getListPhase().stream().forEach(phase ->{
+			phase.getListFrame().stream().forEach(frame -> {
+				frame.getListApproveAccepted().stream().forEach(accepted -> {
+					if(Strings.isNotBlank(accepted.getRepresenterSID())){
+						listApprover.add(accepted.getRepresenterSID());
+					} else {
+						listApprover.add(accepted.getApproverSID());
+					}
+				});
+			});
+		});
+		return listApprover;
 	}
 
 }

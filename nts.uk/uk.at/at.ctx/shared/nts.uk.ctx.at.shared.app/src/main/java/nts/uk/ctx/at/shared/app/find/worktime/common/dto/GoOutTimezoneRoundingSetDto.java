@@ -6,13 +6,15 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSetSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSet;
 
 /**
  * The Class GoOutTimezoneRoundingSetDto.
  */
 @Getter
 @Setter
-public class GoOutTimezoneRoundingSetDto {
+public class GoOutTimezoneRoundingSetDto implements GoOutTimezoneRoundingSetSetMemento{
 	
 	/** The pub hol work timezone. */
 	private GoOutTypeRoundingSetDto pubHolWorkTimezone;
@@ -21,21 +23,42 @@ public class GoOutTimezoneRoundingSetDto {
 	private GoOutTypeRoundingSetDto workTimezone;
 	
 	/** The OT timezone. */
-	private GoOutTypeRoundingSetDto OTTimezone;
+	private GoOutTypeRoundingSetDto oTTimezone;
 
-	/**
-	 * Instantiates a new go out timezone rounding set dto.
-	 *
-	 * @param pubHolWorkTimezone the pub hol work timezone
-	 * @param workTimezone the work timezone
-	 * @param oTTimezone the o T timezone
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimezoneRoundingSetSetMemento#setPubHolWorkTimezone(nts.uk.ctx.at.
+	 * shared.dom.worktime.common.GoOutTypeRoundingSet)
 	 */
-	public GoOutTimezoneRoundingSetDto(GoOutTypeRoundingSetDto pubHolWorkTimezone, GoOutTypeRoundingSetDto workTimezone,
-			GoOutTypeRoundingSetDto oTTimezone) {
-		super();
-		this.pubHolWorkTimezone = pubHolWorkTimezone;
-		this.workTimezone = workTimezone;
-		OTTimezone = oTTimezone;
+	@Override
+	public void setPubHolWorkTimezone(GoOutTypeRoundingSet pubHolWorkTimezone) {
+		pubHolWorkTimezone.saveToMemento(this.pubHolWorkTimezone);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimezoneRoundingSetSetMemento#setWorkTimezone(nts.uk.ctx.at.shared.
+	 * dom.worktime.common.GoOutTypeRoundingSet)
+	 */
+	@Override
+	public void setWorkTimezone(GoOutTypeRoundingSet workTimezone) {
+		workTimezone.saveToMemento(this.workTimezone);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimezoneRoundingSetSetMemento#setOTTimezone(nts.uk.ctx.at.shared.dom
+	 * .worktime.common.GoOutTypeRoundingSet)
+	 */
+	@Override
+	public void setOTTimezone(GoOutTypeRoundingSet OTTimezone) {
+		OTTimezone.saveToMemento(this.oTTimezone);
 	}
 
 	

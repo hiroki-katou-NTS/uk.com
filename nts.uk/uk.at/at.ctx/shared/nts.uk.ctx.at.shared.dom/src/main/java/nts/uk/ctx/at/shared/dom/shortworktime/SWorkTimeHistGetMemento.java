@@ -10,6 +10,13 @@ import nts.uk.shr.com.history.DateHistoryItem;
  * The Interface SWorkTimeHistGetMemento.
  */
 public interface SWorkTimeHistGetMemento {
+	
+	/**
+	 * Gets the company id.
+	 *
+	 * @return the company id
+	 */
+	String getCompanyId();
 
 	/**
 	 * Gets the employee id.

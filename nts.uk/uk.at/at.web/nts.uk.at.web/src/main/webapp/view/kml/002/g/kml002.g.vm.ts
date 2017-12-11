@@ -58,8 +58,9 @@ module nts.uk.at.view.kml002.g.viewmodel {
 
         submit() {
             var self = this;
+            nts.uk.ui.block.invisible();
+                
             var item = _.find(self.unitPriceItems(), function(o) { return o.uPCd == self.uPCd(); });
-            
             var data = {
                 verticalCalCd: self.genVertId(),
                 verticalCalItemId: self.verticalId(),
@@ -69,7 +70,8 @@ module nts.uk.at.view.kml002.g.viewmodel {
             };
 
             nts.uk.ui.windows.setShared("KML002_G_DATA", data);
-            nts.uk.ui.windows.close(); 
+            nts.uk.ui.block.clear();
+            nts.uk.ui.windows.close();
         }
 
         cancel() {

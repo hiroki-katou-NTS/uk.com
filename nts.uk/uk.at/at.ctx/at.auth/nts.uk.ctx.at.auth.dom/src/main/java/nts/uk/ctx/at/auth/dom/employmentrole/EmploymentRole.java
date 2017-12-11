@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.auth.dom.employmentrole;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 

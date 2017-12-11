@@ -130,6 +130,10 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	public void setWorkTypeSingle(boolean filterAtr, List<String> lstWorkType) {
 		((SingleWorkType) this.workTypeCondition).setTargetWorkType(filterAtr, lstWorkType);
 	}
+	
+	public void chooseWorkTypeOperator(int operator){
+		((PlanActualWorkType) this.workTypeCondition).chooseOperator(operator);
+	}
 
 	/**
 	 * Set WorkTimeCondtion: PlanActualWorkTime or SingleWorkTime
@@ -173,6 +177,10 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	public void setWorkTimeSingle(boolean filterAtr, List<String> lstWorkTime) {
 		((SingleWorkTime) this.workTimeCondition).setTargetWorkTime(filterAtr, lstWorkTime);
 	}
+	
+	public void chooseWorkTimeOperator(int operator){
+		((PlanActualWorkTime) this.workTimeCondition).chooseOperator(operator);
+	}
 
 	/**
 	 * Create AttendanceItemCondition
@@ -191,7 +199,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param conditions
 	 * @return
 	 */
-	public ErrorAlarmCondition setAttendanceItemConditionGroup1(int conditionOperator, List<ErAlAttendanceItemCondition> conditions) {
+	public ErrorAlarmCondition setAttendanceItemConditionGroup1(int conditionOperator, List<ErAlAttendanceItemCondition<?>> conditions) {
 		ErAlConditionsAttendanceItem group = ErAlConditionsAttendanceItem.init(conditionOperator);
 		group.addAtdItemConditions(conditions);
 		this.atdItemCondition.setGroup1(group);
@@ -204,7 +212,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param conditions
 	 * @return
 	 */
-	public ErrorAlarmCondition setAttendanceItemConditionGroup2(int conditionOperator, List<ErAlAttendanceItemCondition> conditions) {
+	public ErrorAlarmCondition setAttendanceItemConditionGroup2(int conditionOperator, List<ErAlAttendanceItemCondition<?>> conditions) {
 		ErAlConditionsAttendanceItem group = ErAlConditionsAttendanceItem.init(conditionOperator);
 		group.addAtdItemConditions(conditions);
 		this.atdItemCondition.setGroup2(group);

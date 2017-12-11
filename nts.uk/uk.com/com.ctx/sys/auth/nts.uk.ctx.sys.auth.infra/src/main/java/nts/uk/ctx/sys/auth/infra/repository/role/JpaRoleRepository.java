@@ -19,7 +19,6 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
 
@@ -141,6 +140,25 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		String query ="SELECT e FROM SacmtRole e WHERE e.roleId = :roleId ";
 		return this.queryProxy().query(query, SacmtRole.class)
 				.setParameter("roleId", roleId).getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
+	}
+
+	@Override
+	public Optional<Role> findRoleByRoleCode(String roleCode, int roleType) {
+		String query ="SELECT e FROM SacmtRole e WHERE e.code = :code AND e.roleType = :roleType ";
+		return this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("code", roleCode)
+				.setParameter("roleType", roleType)
+				.getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
+	}
+
+	@Override
+	public Optional<Role> findByContractCDRoleTypeAndCompanyID(String contractCD, int roleType, String companyID) {
+		String query = "SELECT e FROM SacmtRole e WHERE e.contractCode = :contractCode AND e.roleType = :roleType AND e.cid = :cid";
+		return this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("contractCode", contractCD)
+				.setParameter("roleType", roleType)
+				.setParameter("cid", companyID)
+				.getList().stream().map(x ->new Role (new JpaRoleGetMemento(x))).findFirst();
 	}
 
 }

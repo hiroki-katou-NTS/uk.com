@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.workchange;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -9,6 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 */
 @AllArgsConstructor
 @Getter
+@Setter
 public class AppWorkChange extends AggregateRoot
 {
     

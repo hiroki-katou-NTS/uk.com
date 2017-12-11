@@ -11,16 +11,20 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -50,7 +54,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		TaskDataSetter dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("dailyCreateCount", 0);
 		dataSetter.setData("dailyCreateStatus", ExecutionStatus.PROCESSING.nameId);
-		dataSetter.setData("dailyCreateHasError", "");
+		dataSetter.setData("dailyCreateHasError", " ");
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -58,6 +62,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 		//①実行方法を取得する
 		Optional<EmpCalAndSumExeLog> empCalAndSumExeLog = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+		
+		Optional<ExecutionLog> executionLog = empCalAndSumExeLog.get().getExecutionLogs().stream().filter(item -> item.getExecutionContent() == ExecutionContent.DAILY_CREATION).findFirst();
 		
 		//②対象者を取得する
 		List<TargetPerson> targetPersons = new ArrayList<>();
@@ -79,7 +85,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		dataSetter.setData("dailyCreateTotal", targetPersons.size());
 		
 		//各処理の実行		
-		ProcessState status = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList, periodTime, executionAttr, companyId, empCalAndSumExecLogID);
+		ProcessState status = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList, periodTime, executionAttr, companyId, empCalAndSumExecLogID, executionLog);
 		
 		// ドメインモデル「就業計算と修正実行ログ」を更新する
 		// 就業計算と集計実行ログ．実行状況　←　実行中止

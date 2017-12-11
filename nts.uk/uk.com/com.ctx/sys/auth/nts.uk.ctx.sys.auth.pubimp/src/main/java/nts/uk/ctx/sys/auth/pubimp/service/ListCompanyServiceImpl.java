@@ -39,7 +39,7 @@ public class ListCompanyServiceImpl implements ListCompanyService {
 	public List<String> getListCompanyId(String userId,String associatedPersonId) {
 		List<String> lstCompanyId = new ArrayList<String>();
 		// get roleIndividualGrant
-		RoleIndividualGrant individualGrant = roleIndividualGrantRepository.findByUser(userId, GeneralDate.today()).get();
+		RoleIndividualGrant individualGrant = roleIndividualGrantRepository.findByUserAndDate(userId, GeneralDate.today()).get();
 		// get roles by roleId
 		List<Role> lstRole = roleRepository.findById(individualGrant.getRoleId());
 		// TODO get list employee imported by User associated Id #No.124

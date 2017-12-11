@@ -442,6 +442,32 @@ public class ProgramIdConsts {
 
 	public static final String CPS017D = "CPS017D";
 	
+	public static final String CAS005A = "CAS005A";
+	public static final String CAS005B = "CAS005B";
+	public static final String CAS005C = "CAS005C";
+	
+	public static final String CAS009A = "CAS009A";
+	public static final String CAS009B = "CAS009B";
+
+	public static final String CAS011A = "CAS011A";
+	public static final String CAS011C = "CAS011C";
+
+	public static final String CAS012A = "CAS012A";
+	public static final String CAS012B = "CAS012B";
+	public static final String CAS012C = "CAS012C";
+
+	public static final String CAS013A = "CAS013A";
+	public static final String CAS013B = "CAS013B";
+
+	public static final String CAS014A = "CAS014A";
+	public static final String CAS014B = "CAS014B";
+
+	public static final String CCG025 = "CAS013A";
+	
+	public static final String CCG026 = "CCG025";
+	
+	public static final String CDL025 = "CDL025";
+	
 	public static final String CPS001A = "CPS001A";
 	
 	public static final String CPS001B = "CPS001B";

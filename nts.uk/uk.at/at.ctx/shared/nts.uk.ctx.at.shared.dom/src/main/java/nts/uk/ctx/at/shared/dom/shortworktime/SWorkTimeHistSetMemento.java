@@ -10,6 +10,13 @@ import nts.uk.shr.com.history.DateHistoryItem;
  * The Interface ShortWorkTimeHistorySetMemento.
  */
 public interface SWorkTimeHistSetMemento {
+	
+	/**
+	 * Sets the company id.
+	 *
+	 * @param cid the new company id
+	 */
+	void setCompanyId(String cid);
 
 	/**
 	 * Sets the employee id.

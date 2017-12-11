@@ -48,7 +48,7 @@ public class WorkTimeSettingFinder {
 	 */
 	public WorkTimeSettingDto findByCode(String worktimeCode) {
 		String companyId = AppContexts.user().companyId();
-		WorkTimeSetting worktimeSetting = workTimeSettingRepository.findByCode(companyId, worktimeCode);
+		WorkTimeSetting worktimeSetting = workTimeSettingRepository.findByCode(companyId, worktimeCode).get();
 		WorkTimeSettingDto dto = new WorkTimeSettingDto();
 		worktimeSetting.saveToMemento(dto);
 		return dto;

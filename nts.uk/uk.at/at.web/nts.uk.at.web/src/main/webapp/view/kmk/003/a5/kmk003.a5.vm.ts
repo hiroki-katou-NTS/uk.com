@@ -78,21 +78,22 @@ module a5 {
 
         public loadData(): void {
             let self = this;
-            if (self.display23()) {
-                $('#ntsft-a5-oneday').ntsFixTableCustom(self.oneDayOption);
-                $('#ntsft-a5-morning').ntsFixTableCustom(self.morningOption);
-                $('#ntsft-a5-afternoon').ntsFixTableCustom(self.afternoonOption);
-            }
-            if (self.display26()) {
-                $('#ntsft-a5-onedayFlex').ntsFixTableCustom(self.oneDayFlexOption);
-                $('#ntsft-a5-morningFlex').ntsFixTableCustom(self.morningFlexOption);
-                $('#ntsft-a5-afternoonFlex').ntsFixTableCustom(self.afternoonFlexOption);
-
-                // single list
-                $('#ntsft-a5-onedayFlex2').ntsFixTableCustom(self.oneDayFlexOption2);
-                $('#ntsft-a5-morningFlex2').ntsFixTableCustom(self.morningFlexOption2);
-                $('#ntsft-a5-afternoonFlex2').ntsFixTableCustom(self.afternoonFlexOption2);
-            }
+            // TODO need to check
+//            if (self.display23()) {
+//                $('#ntsft-a5-oneday').ntsFixTableCustom(self.oneDayOption);
+//                $('#ntsft-a5-morning').ntsFixTableCustom(self.morningOption);
+//                $('#ntsft-a5-afternoon').ntsFixTableCustom(self.afternoonOption);
+//            }
+//            if (self.display26()) {
+//                $('#ntsft-a5-onedayFlex').ntsFixTableCustom(self.oneDayFlexOption);
+//                $('#ntsft-a5-morningFlex').ntsFixTableCustom(self.morningFlexOption);
+//                $('#ntsft-a5-afternoonFlex').ntsFixTableCustom(self.afternoonFlexOption);
+//
+//                // single list
+//                $('#ntsft-a5-onedayFlex2').ntsFixTableCustom(self.oneDayFlexOption2);
+//                $('#ntsft-a5-morningFlex2').ntsFixTableCustom(self.morningFlexOption2);
+//                $('#ntsft-a5-afternoonFlex2').ntsFixTableCustom(self.afternoonFlexOption2);
+//            }
         }
 
         private initComputed(valueAccessor: any): void {

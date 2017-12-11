@@ -84,9 +84,9 @@ module nts.uk.ui.validation {
     function checkCharType(inputText:string, charType: nts.uk.text.CharType):ValidationResult{
         var result = new ValidationResult();
         let validateResult;
-        if (!util.isNullOrUndefined(this.charType)) { 
-                inputText = autoConvertText(inputText, this.charType);
-                validateResult = this.charType.validate(inputText); 
+        if (!util.isNullOrUndefined(charType)) { 
+                inputText = autoConvertText(inputText, charType);
+                validateResult = charType.validate(inputText); 
                 if (!validateResult.isValid) {
                     result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
                                 [ this.name, !util.isNullOrUndefined(this.constraint) 
@@ -99,11 +99,11 @@ module nts.uk.ui.validation {
           return result;
     }
     function autoConvertText(inputText: string, charType:nts.uk.text.CharType):string{
-        if (this.charType.viewName === '半角英数字') {
+        if (charType.viewName === '半角英数字') {
            inputText = text.toUpperCase(inputText);
-        } else if (this.charType.viewName === 'カタカナ') {
+        } else if (charType.viewName === 'カタカナ') {
            inputText = text.oneByteKatakanaToTwoByte(inputText);    
-        } else if (this.charType.viewName === 'カナ') {
+        } else if (charType.viewName === 'カナ') {
            inputText = text.hiraganaToKatakana(text.oneByteKatakanaToTwoByte(inputText));
         }
         return inputText;
@@ -129,8 +129,11 @@ module nts.uk.ui.validation {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
                 }
+            } else if (util.isNullOrEmpty(inputText)) {
+                result.success(inputText);
+                return result;
             }
-            let validateResult;
+            
             // Check CharType
             result= checkCharType(inputText,this.charType);
             if(!result.isValid) return result;
@@ -138,8 +141,8 @@ module nts.uk.ui.validation {
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     let maxLength = this.constraint.maxLength;
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
-                                [ this.name, maxLength ]), validateResult.errorCode);
+                    result.fail(nts.uk.resource.getMessage(result.errorMessage,
+                                [ this.name, maxLength ]), result.errorCode);
                     return result;
                 }
                 
@@ -151,7 +154,6 @@ module nts.uk.ui.validation {
                 }
             }
             
-            result.success(inputText);
             return result;
         }
     }

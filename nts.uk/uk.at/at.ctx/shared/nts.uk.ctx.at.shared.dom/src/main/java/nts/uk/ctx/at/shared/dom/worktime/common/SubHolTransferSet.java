@@ -28,7 +28,7 @@ public class SubHolTransferSet extends DomainObject{
 	
 	/** The Sub hol transfer set atr. */
 	//振替区分
-	private SubHolTransferSetAtr SubHolTransferSetAtr;
+	private SubHolTransferSetAtr subHolTransferSetAtr;
 
 	/**
 	 * Instantiates a new sub hol transfer set.
@@ -39,7 +39,7 @@ public class SubHolTransferSet extends DomainObject{
 		this.certainTime = memento.getCertainTime();
 		this.useDivision = memento.getUseDivision();
 		this.designatedTime = memento.getDesignatedTime();
-		this.SubHolTransferSetAtr = memento.getSubHolTransferSetAtr();
+		this.subHolTransferSetAtr = memento.getSubHolTransferSetAtr();
 	}
 
 	/**
@@ -51,6 +51,6 @@ public class SubHolTransferSet extends DomainObject{
 		memento.setCertainTime(this.certainTime);
 		memento.setUseDivision(this.useDivision);
 		memento.setDesignatedTime(this.designatedTime);
-		memento.setSubHolTransferSetAtr(this.SubHolTransferSetAtr);
+		memento.setSubHolTransferSetAtr(this.subHolTransferSetAtr);
 	}
 }

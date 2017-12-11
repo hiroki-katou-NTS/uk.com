@@ -1,6 +1,9 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
-import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -9,7 +12,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class Timezone.
  */
 //時間帯(使用区分付き)
-@Builder
 @Getter
 public class Timezone extends DomainObject {
 
@@ -41,5 +43,29 @@ public class Timezone extends DomainObject {
 	 */
 	public void updateEndTime(TimeWithDayAttr end) {
 		this.end = end;
+	}
+	
+	/**
+	 * Instantiates a new timezone.
+	 *
+	 * @param memento the memento
+	 */
+	public Timezone(TimezoneGetMemento memento) {
+		this.useAtr = memento.getUseAtr();
+		this.workNo = memento.getWorkNo();
+		this.start = memento.getStart();
+		this.end = memento.getEnd();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(TimezoneSetMemento memento){
+		memento.setUseAtr(this.useAtr);
+		memento.setWorkNo(this.workNo);
+		memento.setStart(this.start);
+		memento.setEnd(this.end);
 	}
 }

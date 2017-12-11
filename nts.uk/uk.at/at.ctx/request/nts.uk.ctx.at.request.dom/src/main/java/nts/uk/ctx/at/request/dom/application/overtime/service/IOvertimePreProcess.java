@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 
 /**
  * 01_初期データ取得
@@ -90,6 +91,12 @@ public interface IOvertimePreProcess {
 	public AppOverTime getPreApplication(String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
 	
 	/**
+	 * 01-10_0時跨ぎチェック
+	 * @return
+	 */
+	public boolean displayBreaktime();
+	
+	/**
 	 * 01-13_事前事後区分を取得
 	 * @param companyID
 	 * @param applicationDto
@@ -118,7 +125,7 @@ public interface IOvertimePreProcess {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public void getResultContentActual(int prePostAtr,String siftCode,String companyID,String appDate);
+	public AppOvertimeReference getResultContentActual(int prePostAtr,String siftCode,String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours);
 	
 	/**
 	 * @param employeeID
@@ -128,4 +135,11 @@ public interface IOvertimePreProcess {
 	 * @return
 	 */
 	public Optional<BonusPaySetting> getBonusPaySetting(String employeeID,String siftCode,String companyID,SWkpHistImport sWkpHistImport);
+	
+	/**
+	 * @param appDate
+	 * @param workTimeSet
+	 * @return
+	 */
+	public boolean checkTimeDay(String appDate, WorkTimeSet workTimeSet);
 }
