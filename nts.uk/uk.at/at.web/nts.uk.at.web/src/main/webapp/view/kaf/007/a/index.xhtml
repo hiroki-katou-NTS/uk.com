@@ -31,9 +31,9 @@
 					<!--A1_2 印刷（PDF）--> 
 					<button id="btnSpecSetting" data-bind="">#{i18n.getText('KAF007_55')}</button>
 					<!--A1_3 実績参照--> 
-					<button  data-bind="click: openCMM018Click">#{i18n.getText('KAF007_56')}</button>		
+					<button data-bind="click: openKDL004Click">#{i18n.getText('KAF007_56')}</button>		
 					<!--A1_4 承認者変更ボタン--> 				
-					<button data-bind="click: openKDL004Click">#{i18n.getText('KAF005_12')}</button>				
+					<button data-bind="click: openCMM018Click">#{i18n.getText('KAF005_12')}</button>				
 					<!--A1_5 登録時にメールを送信するしない区分--> 
 					<!--A1_5_1 登録時にメールを送信する--> 
 					<div class="btnSendMail"
@@ -49,7 +49,7 @@
 					<!-- Main -->
 					<div class="mainScreen cf">
 						<ui:include src="../share/index.xhtml"></ui:include>
-					</div><br/>
+					</div>
 					<!-- Footer -->
 					<div class="lstApprover" data-bind="with: kaf000_a">
 						<ui:include src="../../000/a/index2.xhtml" />
