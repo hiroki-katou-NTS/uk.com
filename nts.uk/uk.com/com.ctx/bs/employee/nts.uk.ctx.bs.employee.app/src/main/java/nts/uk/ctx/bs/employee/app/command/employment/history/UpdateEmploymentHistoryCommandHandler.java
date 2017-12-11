@@ -19,16 +19,16 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
 public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<UpdateEmploymentHistoryCommand>
-	implements PeregUpdateCommandHandler<UpdateEmploymentHistoryCommand>{
-	
+		implements PeregUpdateCommandHandler<UpdateEmploymentHistoryCommand> {
+
 	@Inject
 	private EmploymentHistoryRepository employmentHistoryRepository;
 	@Inject
 	private EmploymentHistoryItemRepository employmentHistoryItemRepository;
-	
+
 	@Inject
 	private EmploymentHistoryService employmentHistoryService;
-	
+
 	@Override
 	public String targetCategoryCd() {
 		return "CS00014";
@@ -43,22 +43,23 @@ public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<Update
 	protected void handle(CommandHandlerContext<UpdateEmploymentHistoryCommand> context) {
 		val command = context.getCommand();
 		Optional<EmploymentHistory> existHist = employmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
-		if (!existHist.isPresent()){
-			throw new RuntimeException("invalid employmentHistory"); 
+		if (!existHist.isPresent()) {
+			throw new RuntimeException("invalid employmentHistory");
 		}
-			
+
 		Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
-                .filter(h -> h.identifier().equals(command.getHistoryId()))
-                .findFirst();
-		
-		if (!itemToBeUpdate.isPresent()){
+				.filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
+
+		if (!itemToBeUpdate.isPresent()) {
 			throw new RuntimeException("invalid employmentHistory");
 		}
 		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		employmentHistoryService.update(existHist.get(), itemToBeUpdate.get());
-		
+
 		// Update detail table
-		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getSalarySegment()!= null?command.getSalarySegment().intValue():0, command.getEmploymentCode());
+		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(command.getHistoryId(),
+				command.getEmployeeId(), command.getEmploymentCode(),
+				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : 0);
 		employmentHistoryItemRepository.update(histItem);
 	}
 

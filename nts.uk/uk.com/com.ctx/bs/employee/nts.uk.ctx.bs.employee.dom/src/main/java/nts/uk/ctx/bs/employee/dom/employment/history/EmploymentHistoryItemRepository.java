@@ -6,6 +6,17 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 
 public interface EmploymentHistoryItemRepository {
+	
+	
+	Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date);
+	
+	/**
+	 * get with historyId
+	 * @param historyId
+	 * @return
+	 */
+	Optional<EmploymentHistoryItem> getByHistoryId(String historyId);
+	
 	/**
 	 * Add employment
 	 * @param domain
@@ -24,5 +35,5 @@ public interface EmploymentHistoryItemRepository {
 	 */
 	void delete(String histId);
 	
-	Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date);
+	
 }

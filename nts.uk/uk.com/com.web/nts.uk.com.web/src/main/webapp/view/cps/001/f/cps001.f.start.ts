@@ -25,8 +25,8 @@ function init() {
         virtualizationMode: 'continuous',
         columns: [
             { headerText: 'ID', key: 'id', dataType: 'string', width: '50px', hidden: true },
-            { headerText: nts.uk.resource.getText('CPS001_81'), key: 'fileName', dataType: 'string', width: '800px', ntsControl: 'Link1' },
-            { headerText: nts.uk.resource.getText('CPS001_83'), key: 'open', dataType: 'string', width: '50px', unbound: true, template: '<button onclick="ButtonClick.call(this)" data-id="${id}">' + nts.uk.resource.getText("CPS001_83") + '</button>' }
+            { headerText: nts.uk.resource.getText('CPS001_81'), key: 'fileName', dataType: 'string', width: '750px', ntsControl: 'Link1' },
+            { headerText: nts.uk.resource.getText('CPS001_83'), key: 'open', dataType: 'string', width: '50px', unbound: true, template: "<button  style='width: 77px' onclick='ButtonClick.call(this)' data-id='${id}'>" + nts.uk.resource.getText("CPS001_83") + "</button>" }
 
         ],
         features: [{ name: 'Sorting', type: 'local' }],

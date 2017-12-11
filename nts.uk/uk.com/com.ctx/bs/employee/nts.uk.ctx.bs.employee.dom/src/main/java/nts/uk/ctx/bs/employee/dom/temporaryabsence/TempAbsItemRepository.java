@@ -3,20 +3,9 @@ package nts.uk.ctx.bs.employee.dom.temporaryabsence;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
-
 public interface TempAbsItemRepository {
 
 	// ------------------------------GET HISTORY ITEM
-	/**
-	 * Get by employee Id and reference Date
-	 * 
-	 * @param sid
-	 * @param referenceDate
-	 * @return
-	 */
-	Optional<TempAbsenceHisItem> getItemByEmpIdAndReferDate(String employeeId, GeneralDate referenceDate);
-
 	/**
 	 * get TempAbsenceHisItem by history Id
 	 * 

@@ -12,7 +12,6 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.CareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.ChildCareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 

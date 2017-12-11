@@ -253,8 +253,7 @@ public class EmployeeInDesignatedFinder {
 					// BaseDate <= RetirementDate) is not empty
 
 				// Get TemporaryAbsence By employee ID and BaseDate
-				Optional<TempAbsenceHisItem> temporaryAbsOpt = temporaryAbsenceRepo
-						.getItemByEmpIdAndReferDate(employee.getSId(), referenceDate);
+				Optional<TempAbsenceHisItem> temporaryAbsOpt = Optional.empty();
 				if (temporaryAbsOpt.isPresent()) {
 					// Domain TemporaryAbsence is Present
 					TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsOpt.get();
