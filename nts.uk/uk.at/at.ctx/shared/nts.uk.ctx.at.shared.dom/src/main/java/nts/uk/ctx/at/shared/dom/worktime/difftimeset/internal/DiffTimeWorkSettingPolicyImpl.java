@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
@@ -29,6 +30,10 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	@Inject
 	private DiffTimeHalfDayWorkTimezonePolicy diffTimeHalfPolicy;
 
+	/** The common work time policy. */
+	@Inject
+	private CommonWorkTimePolicy commonWorkTimePolicy;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -50,6 +55,10 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 
 		// validate EmTimezoneChangeExtent
 		this.validateEmTimezoneChangeExtent(pred, diffTimeWorkSetting.getChangeExtent());
+		
+		//validate common setting
+		this.commonWorkTimePolicy.validate(pred, diffTimeWorkSetting.getCommonSet());
+		
 		return true;
 	}
 
