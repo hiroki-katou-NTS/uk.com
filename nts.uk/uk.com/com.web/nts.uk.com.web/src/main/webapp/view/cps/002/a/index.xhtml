@@ -72,7 +72,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_103')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<div class="form_step1"
+											<div class="form_step1" id="hireDate"
 												data-bind="ntsDatePicker: {value: hireDate , dateFormat: 'YYYY/MM/DD'}"></div>
 										</div>
 
@@ -415,11 +415,11 @@
 							</div>
 							<!-- layout end -->
 							<div class='div_line' style="padding-bottom: 20px;">
-								<com:ko-if bind="createTypeId()!==3">
+								<com:ko-if bind="createTypeId()===3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
 								</com:ko-if>
-								<com:ko-if bind="createTypeId()===3">
+								<com:ko-if bind="createTypeId()!==3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_52')}</button>
 								</com:ko-if>

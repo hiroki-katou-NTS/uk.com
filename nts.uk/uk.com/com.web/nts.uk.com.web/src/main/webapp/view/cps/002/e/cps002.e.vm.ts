@@ -55,8 +55,6 @@ module cps002.e.vm {
         }
 
         close() {
-
-            setShared("CPS002_PARAM", "");
             close();
         }
     }

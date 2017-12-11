@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
@@ -20,6 +21,9 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	private final String QUERY_BYEMPLOYEEID = "SELECT ep FROM BsymtEmploymentHist ep"
 			+ " WHERE ep.sid = :sid ORDER BY ep.strDate";
+	
+	private final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h" 
+			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
 
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
@@ -29,10 +33,10 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	 * @return
 	 */
 	private EmploymentHistory toEmploymentHistory(List<BsymtEmploymentHist> listHist) {
-		EmploymentHistory empment = new EmploymentHistory(listHist.get(0).getSid(), new ArrayList<>());
+		EmploymentHistory empment = new EmploymentHistory(listHist.get(0).companyId, listHist.get(0).sid, new ArrayList<>());
 		DateHistoryItem dateItem = null;
 		for (BsymtEmploymentHist item : listHist) {
-			dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
+			dateItem = new DateHistoryItem(item.hisId, new DatePeriod(item.strDate, item.endDate));
 			empment.add(dateItem);
 		}
 		return empment;
@@ -46,6 +50,32 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			return Optional.of(toEmploymentHistory(listHist));
 		}
 		return Optional.empty();
+	}
+	
+	@Override
+	public Optional<EmploymentHistory> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		Optional<BsymtEmploymentHist> optionData = this.queryProxy().query(GET_BY_EMPID_AND_STD, BsymtEmploymentHist.class)
+				.getSingle();
+		if (optionData.isPresent()) {
+			return Optional.of(toDomain(optionData.get()));
+		}
+		return null;
+	}
+	
+	@Override
+	public Optional<EmploymentHistory> getByHistoryId(String historyId) {
+		Optional<BsymtEmploymentHist> optionData = this.queryProxy().find(historyId, BsymtEmploymentHist.class);
+		if (optionData.isPresent()) {
+			return Optional.of(toDomain(optionData.get()));
+		}
+		return null;
+	}
+	
+	private EmploymentHistory toDomain(BsymtEmploymentHist entity) {
+		EmploymentHistory domain = new EmploymentHistory(entity.companyId, entity.sid, new ArrayList<DateHistoryItem>());
+		DateHistoryItem dateItem = new DateHistoryItem(entity.hisId, new DatePeriod(entity.strDate, entity.endDate));
+		domain.add(dateItem);
+		return domain;
 	}
 
 	@Override
@@ -95,8 +125,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	 * @return
 	 */
 	private void updateEntity(DateHistoryItem item, BsymtEmploymentHist entity) {
-		entity.setStrDate(item.start());
-		entity.setEndDate(item.end());
+		entity.strDate = item.start();
+		entity.endDate = item.end();
 	}
 
 	/**
@@ -142,4 +172,6 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		updateEntity(aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
+
+
 }

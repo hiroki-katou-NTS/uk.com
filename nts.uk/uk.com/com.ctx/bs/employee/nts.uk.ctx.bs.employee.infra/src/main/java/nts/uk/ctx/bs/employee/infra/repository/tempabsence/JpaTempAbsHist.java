@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
@@ -18,6 +19,9 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	private final String QUERY_GET_TEMPORARYABSENCE_BYSID = "SELECT ta FROM BsymtTempAbsHistory ta"
 			+ " WHERE ta.sid = :sid ORDER BY ta.startDate";
+	
+	private final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
+			+ " where h.sid = :sid and h.startDate <= :referDate and h.endDate >= :referDate";
 
 	/**
 	 * Convert from domain to entity
@@ -91,6 +95,16 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		}
 		return Optional.empty();
 
+	}
+	
+	@Override
+	public Optional<TempAbsenceHistory> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		Optional<BsymtTempAbsHistory> optionData = this.queryProxy()
+				.query(GET_BY_SID_DATE, BsymtTempAbsHistory.class).getSingle();
+		if (optionData.isPresent()) {
+			return Optional.of(toDomain(optionData.get()));
+		}
+		return Optional.empty();
 	}
 
 	/**

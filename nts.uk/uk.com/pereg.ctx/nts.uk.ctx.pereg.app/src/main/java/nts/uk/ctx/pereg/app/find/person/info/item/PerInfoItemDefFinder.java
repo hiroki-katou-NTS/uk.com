@@ -211,8 +211,8 @@ public class PerInfoItemDefFinder {
 	}
 
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
-		return this.pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().contractCode())
-				.stream().map(i -> {
+		List<PersonInfoItemDefinition> itemDefinition =  this.pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().contractCode());
+		return itemDefinition.stream().map(i -> {
 					int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(),
 							i.getPerInfoItemDefId());
 					return mappingFromDomaintoDto(i, dispOrder);
@@ -242,11 +242,12 @@ public class PerInfoItemDefFinder {
 
 	public PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
+		ItemTypeStateDto itemTypeStateDto = createItemTypeStateDto(itemDef.getItemTypeState());
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
 				itemDef.getIsFixed().value, itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
 				itemDef.getRequireChangable().value, dispOrder, itemDef.getSelectionItemRefType(),
-				createItemTypeStateDto(itemDef.getItemTypeState()), selectionItemRefTypes);
+				itemTypeStateDto, selectionItemRefTypes);
 	}
 
 	private PerInfoItemChangeDefDto mappingFromDomaintoDto_for_Selection(PersonInfoItemDefinition itemDef,
