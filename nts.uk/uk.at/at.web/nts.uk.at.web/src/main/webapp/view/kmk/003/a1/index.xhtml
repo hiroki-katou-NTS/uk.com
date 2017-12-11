@@ -11,34 +11,39 @@
 			<td class="td-cell" colspan="7"><div>#{i18n.getText('KMK003_41')}</div>
 				<div>
 					<hr />
-				</div></td>
+				</div>
+			</td>
 		</tr>
 		<tr>
 			<td class="td-cell"><div
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_32')}</div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: dayStartTime,
-							constraint: 'TimeWithDayAttr',
-							inputFormat: 'time',
-							mode: 'time',
-							option: dayStartTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: dayStartTime,
+					constraint: 'TimeWithDayAttr',
+					inputFormat: 'time',
+					mode: 'time',
+					option: dayStartTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_33')}</div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTextEditor: {
-										value: oneDayRangeTime,
-										constraint: '',
-										option: oneDayRangeTimeOption,
-										required: true,
-										enable: true
-										}" />
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_33')}</div>
+			</td> 
+			<td class="td-cell">
+				<input data-bind="ntsTextEditor: {
+					value: oneDayRangeTime,
+					constraint: '',
+					option: oneDayRangeTimeOption,
+					required: true,
+					enable: true
+					}" 
+				/>
 			</td>
 			<td class="td-cell"><span>#{i18n.getText('KMK003_211')}</span></td>
 			<td class="td-cell">
@@ -46,221 +51,272 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_125')}</div></td>
-			<td class="td-cell"><span>#{i18n.getText('KMK003_126')}</span></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: beforeUpdateWorkTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
-			<td class="td-cell"><span>#{i18n.getText('KMK003_127')}</span></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: afterUpdateWorkTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: afterUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
-			<td class="td-cell"></td>
-		</tr>
-		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_216')}</div></td>
-			<td class="td-cell"><span>#{i18n.getText('KMK003_36')}</span> <span>#{i18n.getText('KMK003_209')}</span>
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_125')}</div>
 			</td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: firstFixedStartTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
-			<td class="td-cell"><span>#{i18n.getText('KMK003_210')}</span></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: firstFixedEndTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: afterUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
-			<td class="td-cell"><div
-					data-bind="ntsCheckBox: { checked: includeOTTime }">#{i18n.getText('KMK003_38')}</div></td>
+			<td class="td-cell">
+				<span>#{i18n.getText('KMK003_126')}</span>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: beforeUpdateWorkTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
+			<td class="td-cell">
+				<span>#{i18n.getText('KMK003_127')}</span>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: afterUpdateWorkTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: afterUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
+			<td class="td-cell"></td>
+		</tr>
+		<tr>
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_216')}</div>
+			</td>
+			<td class="td-cell">
+				<span>#{i18n.getText('KMK003_36')}</span> <span>#{i18n.getText('KMK003_209')}</span>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: firstFixedStartTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
+			<td class="td-cell">
+				<span>#{i18n.getText('KMK003_210')}</span>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: firstFixedEndTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: afterUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}"
+				/>
+			</td>
+			<td class="td-cell">
+				<div data-bind="ntsCheckBox: { checked: includeOTTime }">#{i18n.getText('KMK003_38')}</div>
+			</td>
 		</tr>
 		<tr>
 			<td class="td-cell"></td>
-			<td class="td-cell"><div
-					data-bind="ntsCheckBox: { checked: secondTimes }">#{i18n.getText('KMK003_37')}</div>
-				<span>#{i18n.getText('KMK003_209')}</span></td>
-			<td data-bind="visible:isDetailMode" class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: secondFixedStartTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: secondTimes,
-							readonly: false,
-							immediate: false}" /></td>
-			<td class="td-cell"><span>#{i18n.getText('KMK003_210')}</span></td>
-			<td data-bind="visible:isDetailMode" class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: secondFixedEndTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: afterUpdateWorkTimeOption,
-							required: true,
-							enable: secondTimes,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<div data-bind="ntsCheckBox: { checked: secondTimes }">#{i18n.getText('KMK003_37')}</div>
+				<span>#{i18n.getText('KMK003_209')}</span>
+			</td>
+			<td data-bind="visible:isDetailMode" class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: secondFixedStartTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: secondTimes,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
+			<td class="td-cell">
+				<span>#{i18n.getText('KMK003_210')}</span>
+			</td>
+			<td data-bind="visible:isDetailMode" class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: secondFixedEndTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: afterUpdateWorkTimeOption,
+					required: true,
+					enable: secondTimes,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_157')}</div></td>
-			<td class="td-cell"><div class="cf"
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_157')}</div>
+			</td>
+			<td class="td-cell">
+				<div class="cf" 
 					data-bind="ntsSwitchButton: {
-							options: useCoreTimeOptions,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: useCoreTime,
-							enable: true }"></div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: coreTimeStart,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: afterUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+					options: useCoreTimeOptions,
+					optionsValue: 'code',
+					optionsText: 'name',
+					value: useCoreTime,
+					enable: true }">
+				</div>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: coreTimeStart,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: afterUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
 			<td class="td-cell">#{i18n.getText('KMK003_160')}</td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: coreTimeEnd,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: afterUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: coreTimeEnd,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: afterUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" />
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_184')}</div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: leastWorkTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_184')}</div>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: leastWorkTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" />
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_39')}</div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: morningEndTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_39')}</div>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: morningEndTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_40')}</div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: afternoonStartTime,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_40')}</div>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: afternoonStartTime,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell" colspan="7"><div>#{i18n.getText('KMK003_41')}</div>
+			<td class="td-cell" colspan="7">
+				<div>#{i18n.getText('KMK003_41')}</div>
 				<div>
 					<hr />
-				</div></td>
+				</div>
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_42')}</div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: oneDay,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_42')}</div>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: oneDay,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" 
+				/>
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_43')}</div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: morning,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_43')}</div>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: morning,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" />
+			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_44')}</div></td>
-			<td class="td-cell"><input
-				data-bind="ntsTimeEditor: {
-							value: afternoon,
-							constraint: '',
-							inputFormat: 'time',
-							mode: 'time',
-							option: beforeUpdateWorkTimeOption,
-							required: true,
-							enable: true,
-							readonly: false,
-							immediate: false}" /></td>
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_44')}</div>
+			</td>
+			<td class="td-cell">
+				<input data-bind="ntsTimeEditor: {
+					value: afternoon,
+					constraint: '',
+					inputFormat: 'time',
+					mode: 'time',
+					option: beforeUpdateWorkTimeOption,
+					required: true,
+					enable: true,
+					readonly: false,
+					immediate: false}" />
+			</td>
 		</tr>
 	</table>
 </ui:composition>

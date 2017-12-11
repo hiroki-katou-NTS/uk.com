@@ -5,18 +5,29 @@ module nts.uk.at.view.kmk003.a {
         *  Service paths
         */
         let servicePath: any = {
-            getAllWorktime: "at/shared/worktimeset/findAll",
+            findAllWorktime: "at/shared/worktimeset/findAll",
+            findWorktimeSetingByCode: "at/shared/worktimeset/findByCode",
             getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",
             findAllFlexWorkSetting: "ctx/at/shared/worktime/flexset/findAll",
             saveFlexWorkSetting: "ctx/at/shared/worktime/flexset/save"
         };
 
-        export function findAllWorkTimeSet(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getAllWorktime);
+        /**
+         * function find all work time set
+         */
+        export function findAllWorkTimeSet(): JQueryPromise<model.worktimeset.SimpleWorkTimeSettingDto[]> {
+            return nts.uk.request.ajax(servicePath.findAllWorktime);
+        }
+        
+         /**
+         * function find work time set by code
+         */
+        export function findWorktimeSetingByCode(workTimeCode: string): JQueryPromise<model.worktimeset.WorkTimeSettingDto> {
+            return nts.uk.request.ajax(servicePath.findWorktimeSetingByCode + '/' + workTimeCode);
         }
 
-        export function getPredByWorkTimeCode(workTimeCode: string): JQueryPromise<any> {
+        export function getPredByWorkTimeCode(workTimeCode: string): JQueryPromise<model.worktimeset.WorkTimeSettingDto> {
             return nts.uk.request.ajax(servicePath.getPredByWorkTimeCode + "/" + workTimeCode);
         }
         
@@ -482,6 +493,11 @@ module nts.uk.at.view.kmk003.a {
                     memo: string;
                     note: string;
                 }    
+                
+                export interface SimpleWorkTimeSettingDto {
+                    worktimeCode: string;
+                    workTimeName: string;
+                }
             }
             
             export module command {

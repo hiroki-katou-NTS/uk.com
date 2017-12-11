@@ -79,15 +79,15 @@
 									data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMK003_9')}
 								</div>
 								<div style="width: 300px"
-									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', 
-									comId: 'single-list', items: workTimezoneItems,  selectedKey: 'code', 
-									fields: ['name', 'code'], mode: 'igGrid'}">
+									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
+									comId: 'single-list', items: workTimeSettings,  selectedKey: 'worktimeCode', 
+									fields: ['workTimeName', 'worktimeCode'], mode: 'igGrid'}">
 								</div>
 								<table id="single-list"
 									data-bind="ntsGridList: {
 									height: 320,
-									options: workTimezoneItems,
-									optionsValue: 'code',
+									options: workTimeSettings,
+									optionsValue: 'worktimeCode',
 									columns: columns,
 									multiple: false,
 									value: selectedWorkTimezone
@@ -105,7 +105,7 @@
 									</td>
 									<td class="td-cell">
 										<input data-bind="ntsTextEditor: {
-											value: siftCode,
+											value: workTimeSettingModel.worktimeCode,
 											constraint: '',
 											option: siftCodeOption,
 											required: true,
@@ -114,7 +114,7 @@
 									</td>
 									<td class="td-cell">
 										<input data-bind="ntsTextEditor: {
-											value: siftName,
+											value: workTimeSettingModel.workTimeDisplayName.workTimeName,
 											constraint: '',
 											option: siftNameOption,
 											required: true,

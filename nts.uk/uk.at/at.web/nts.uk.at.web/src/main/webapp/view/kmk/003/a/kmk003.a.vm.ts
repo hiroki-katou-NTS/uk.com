@@ -43,6 +43,12 @@ module nts.uk.at.view.kmk003.a {
     import StampReflectTimezoneDto = service.model.common.StampReflectTimezoneDto;
     import OverTimeOfTimeZoneSetDto = service.model.common.OverTimeOfTimeZoneSetDto;
     import FlexWorkSettingSaveCommand = service.model.command.FlexWorkSettingSaveCommand;
+    
+    import WorkTimeDivisionDto = service.model.worktimeset.WorkTimeDivisionDto;
+    import WorkTimeDisplayNameDto = service.model.worktimeset.WorkTimeDisplayNameDto;
+    import WorkTimeSettingDto = service.model.worktimeset.WorkTimeSettingDto;
+    import SimpleWorkTimeSettingDto = service.model.worktimeset.SimpleWorkTimeSettingDto;
+    
     import TimeSheetDto = service.model.flexset.TimeSheetDto;
     import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
     import CoreTimeSettingDto = service.model.flexset.CoreTimeSettingDto;
@@ -60,7 +66,7 @@ module nts.uk.at.view.kmk003.a {
             settingMethodOptions: KnockoutObservableArray<ItemSettingMethod>;
             selectedSettingMethod: KnockoutObservable<string>;
 
-            workTimezoneItems: KnockoutObservableArray<WorkTimeItem>;
+            workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
             columns: KnockoutObservable<any>;
             selectedWorkTimezone: KnockoutObservable<string>;
 
@@ -103,8 +109,9 @@ module nts.uk.at.view.kmk003.a {
             selectedTab: KnockoutObservable<string>;
 
             //data
-            data: KnockoutObservable<any>;
             isClickSave: KnockoutObservable<boolean>;
+            
+            workTimeSettingModel: WorkTimeSettingModel;
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
@@ -119,7 +126,7 @@ module nts.uk.at.view.kmk003.a {
                 ]);
                 self.selectedSettingMethod = ko.observable('1');
                 
-                self.workTimezoneItems = ko.observableArray([]);
+                self.workTimeSettings = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'code', width: 100 },
                     { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'name', width: 130 },
@@ -199,8 +206,8 @@ module nts.uk.at.view.kmk003.a {
                 self.selectedTab = ko.observable('tab-1');
 
                 //data get from service
-                self.data = ko.observable();
                 self.isClickSave = ko.observable(false);
+                self.workTimeSettingModel = new WorkTimeSettingModel();
             }
 
             /**
@@ -210,36 +217,29 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                service.findAllWorkTimeSet().done(function(data: any) {
-                    self.pushDataWorkTime(data);
-                    self.data(data);
+                service.findAllWorkTimeSet().done(function(worktime) {
+                    self.workTimeSettings(worktime);
+                    if(worktime && worktime.length > 0){
+                        service.findWorktimeSetingByCode(worktime[0].worktimeCode).done(function(worktimgSetting) {
+                            self.workTimeSettingModel.updateData(worktimgSetting);
+                              dfd.resolve();
+                        });            
+                    }
                 });
-                service.getPredByWorkTimeCode("AAA").done(function(data: any) {
-                    alert();
-                });
+                
                 // set ntsFixedTable style
-                dfd.resolve();
                 return dfd.promise();
             }
             
-            private pushDataWorkTime(data: any) {
-                let self = this;
-                let listData:any = [];
-                data.forEach(function(item: any, index: any) {
-                    listData.push(new WorkTimeItem(item.worktimeCode
-                        , item.workTimeName));
-                });
-                self.workTimezoneItems(listData);
-            }
             
             private save() {
                 let self = this;
-                let data = self.data();
+                /*let data = self.data();
                 self.tabMode('2');
                 self.isClickSave(true);
                 service.savePred(data).done(function() {
                     self.isClickSave(false);
-                });
+                });*/
                 service.saveFlexWorkSetting(self.collectDataFlex()).done(function() {
 
                 }).fail(function(error) {
@@ -258,11 +258,12 @@ module nts.uk.at.view.kmk003.a {
              * function collection data flex mode 
              */
             private collectDataFlex(): FlexWorkSettingSaveCommand{
+                var self = this;
                 var command: FlexWorkSettingSaveCommand;
                 command = {
                     flexWorkSetting: null,
                     predseting: null,
-                    worktimeSetting: null
+                    worktimeSetting: self.workTimeSettingModel.toDto()
                 };
                 return command;     
             }
@@ -1696,13 +1697,96 @@ module nts.uk.at.view.kmk003.a {
             }
         }
         
-         export class WorkTimeItem {
-            code: string;
-            name: string;
+        export class WorkTimeDivisionModel {
+            workTimeDailyAtr: KnockoutObservable<number>;
+            workTimeMethodSet: KnockoutObservable<number>;
 
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+            constructor() {
+                this.workTimeDailyAtr = ko.observable(0);
+                this.workTimeMethodSet = ko.observable(0);
+            }
+
+            updateData(data: WorkTimeDivisionDto) {
+                this.workTimeDailyAtr(data.workTimeDailyAtr);
+                this.workTimeMethodSet(data.workTimeMethodSet);
+            }
+
+            toDto(): WorkTimeDivisionDto {
+                var dataDTO: WorkTimeDivisionDto = {
+                    workTimeDailyAtr: this.workTimeDailyAtr(),
+                    workTimeMethodSet: this.workTimeMethodSet()
+                };
+                return dataDTO;
+            }
+        }
+
+        export class WorkTimeDisplayNameModel {
+            workTimeName: KnockoutObservable<string>;
+            workTimeAbName: KnockoutObservable<string>;
+            workTimeSymbol: KnockoutObservable<string>;
+
+            constructor() {
+                this.workTimeName = ko.observable('');
+                this.workTimeAbName = ko.observable('');
+                this.workTimeSymbol = ko.observable('');
+            }
+
+            updateData(data: WorkTimeDisplayNameDto) {
+                this.workTimeName(data.workTimeName);
+                this.workTimeAbName(data.workTimeAbName);
+                this.workTimeSymbol(data.workTimeSymbol);
+            }
+
+            toDto(): WorkTimeDisplayNameDto {
+                var dataDTO: WorkTimeDisplayNameDto = {
+                    workTimeName: this.workTimeName(),
+                    workTimeAbName: this.workTimeAbName(),
+                    workTimeSymbol: this.workTimeSymbol()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class WorkTimeSettingModel {
+            worktimeCode: KnockoutObservable<string>;
+            workTimeDivision: WorkTimeDivisionModel;
+            abolishAtr: KnockoutObservable<number>;
+            colorCode: KnockoutObservable<string>;
+            workTimeDisplayName: WorkTimeDisplayNameModel;
+            memo: KnockoutObservable<string>;
+            note: KnockoutObservable<string>;
+            
+            constructor(){
+                this.worktimeCode = ko.observable('');
+                this.workTimeDivision = new WorkTimeDivisionModel();
+                this.abolishAtr = ko.observable(0);    
+                this.colorCode = ko.observable('');    
+                this.workTimeDisplayName = new WorkTimeDisplayNameModel();
+                this.memo = ko.observable('');
+                this.note = ko.observable('');
+            }
+            
+            updateData(data: WorkTimeSettingDto){
+                this.worktimeCode(data.worktimeCode);
+                this.workTimeDivision.updateData(data.workTimeDivision);
+                this.abolishAtr(data.abolishAtr);
+                this.colorCode(data.colorCode);
+                this.workTimeDisplayName.updateData(data.workTimeDisplayName);
+                this.memo(data.memo);
+                this.note(data.note);
+            }
+            
+            toDto(): WorkTimeSettingDto{
+                var dataDTO : WorkTimeSettingDto = {
+                  worktimeCode: this.worktimeCode(),      
+                  workTimeDivision: this.workTimeDivision.toDto(),      
+                  abolishAtr: this.abolishAtr(),      
+                  colorCode: this.colorCode(),      
+                  workTimeDisplayName: this.workTimeDisplayName.toDto(),      
+                  memo: this.memo(),      
+                  note: this.note()      
+                };
+                return dataDTO;    
             }
         }
         
