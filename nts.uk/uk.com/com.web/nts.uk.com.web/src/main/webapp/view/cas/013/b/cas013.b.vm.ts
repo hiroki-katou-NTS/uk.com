@@ -10,14 +10,14 @@ module nts.uk.com.view.cas013.b.viewmodel {
         selectUserID: KnockoutObservable<string>;
         userName: KnockoutObservable<string>;
         
-        enable1 : KnockoutObserveble<boolean>;
-        enable2 : KnockoutObserveble<boolean>;
+        special : KnockoutObserveble<boolean>;
+        multi : KnockoutObserveble<boolean>;
 
         constructor() {
             var self = this;
 
-            self.enable1 = ko.observable(true);
-            self.enable2 = ko.observable(true);
+            self.special = ko.observable(true);
+            self.multi = ko.observable(true);
             
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
@@ -35,7 +35,10 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_438" });
                 return;
             }
-            service.searchUser(self.searchValue()).done(function(data) {
+            var key = self.searchValue();
+            var Special = self.special();
+            var Multi= self.multi();
+            service.searchUser(key,Special,Multi).done(function(data) {
                 self.dataSource(data);
             });
         }

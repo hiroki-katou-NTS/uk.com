@@ -20,6 +20,11 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 			+ " WHERE (c.sacmtUserPK.userID LIKE CONCAT('%', :userIDName, '%')"
 			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))"
 			+ " AND c.expirationDate >= :date";
+	private final String SELECT_BY_KEY  ="SELECT c From SacmtUser c"
+			+ " WHERE (c.sacmtUserPK.userID LIKE CONCAT('%', :userIDName, '%')"
+			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))"
+			+ " AND c.specialUser = :specialUser "
+			+ " AND c.multiCompanyConcurrent = :multiCompanyConcurrent";
 
 	@Override
 	public Optional<User> getByLoginId(String loginId) {
@@ -39,6 +44,21 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.query(SELECT_BY_USER,SacmtUser.class)
 				.setParameter("userID", userID)
 				.getSingle(c -> c.toDomain());
+	}
+	
+	@Override
+	public List<User> findByKey(String key, boolean Special, boolean Multi) {
+		int special = 0;
+		if(Special) special = 1;
+		int multi = 0;
+		if(Multi) multi = 1;
+		
+		return this.queryProxy()
+				.query(SELECT_BY_KEY,SacmtUser.class)
+				.setParameter("userIDName", key)
+				.setParameter("specialUser", special)
+				.setParameter("multiCompanyConcurrent", multi)
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
