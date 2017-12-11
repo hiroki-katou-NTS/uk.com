@@ -95,4 +95,5 @@ public class FlexWorkSetting extends AggregateRoot {
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
 		memento.setCalculateSetting(this.calculateSetting);
 	}
+	
 }

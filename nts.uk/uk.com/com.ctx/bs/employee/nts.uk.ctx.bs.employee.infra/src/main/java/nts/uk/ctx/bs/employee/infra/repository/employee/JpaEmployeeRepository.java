@@ -21,7 +21,6 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployeePk;
 import nts.uk.ctx.bs.employee.infra.entity.employee.jobentryhistory.BsymtJobEntryHistory;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
@@ -96,14 +95,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " WHERE c.companyId = :companyId " + " AND c.personId = :personId"
 			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :systemDate" + " AND d.retireDate >= :systemDate";
 
-	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
-			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
-			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
-			+ " FROM PpemtPerInfoCtg ca "
-			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
-
 	private final String SELECT_EMPLOYEE_BY_EMP_ID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :employeeId";
 	
 	/**
@@ -146,20 +137,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		entity.personId = domain.getPId();
 		entity.companyMobileMail = domain.getMobileMail().v();
 		return entity;
-	}
-
-	// mapping
-	private PersonInfoCategory createDomainPerInfoCtgFromEntity(Object[] c) {
-		String personInfoCategoryId = String.valueOf(c[0]);
-		String categoryCode = String.valueOf(c[1]);
-		String categoryName = String.valueOf(c[2]);
-		int abolitionAtr = Integer.parseInt(String.valueOf(c[3]));
-		String categoryParentCd = (c[4] != null) ? String.valueOf(c[4]) : null;
-		int categoryType = Integer.parseInt(String.valueOf(c[5]));
-		int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
-		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
-		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
-				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
 	}
 
 	@Override
@@ -379,28 +356,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		return Optional.of(emp);
 	}
 
-	/**
-	 * case : Employee Selected trùng với employee đang nhập
-	 */
-	@Override
-	public List<PersonInfoCategory> getAllPerInfoCtg(String companyId) {
-		// TODO Auto-generated method stub
-		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1, Object[].class)
-				.setParameter("cid", companyId).getList(c -> {
-					return createDomainPerInfoCtgFromEntity(c);
-				});
-
-	}
-
-	/**
-	 * case : Employee Selected khác với employee đang nhập
-	 */
-	@Override
-	public List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	/* for requestList No.126
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository#GetByListEmployeeId(java.util.List)

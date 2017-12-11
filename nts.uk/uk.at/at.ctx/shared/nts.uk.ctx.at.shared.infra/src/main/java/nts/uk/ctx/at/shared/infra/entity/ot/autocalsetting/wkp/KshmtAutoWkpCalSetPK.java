@@ -1,8 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp;
 
 import java.io.Serializable;
@@ -14,33 +13,45 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KshmtAutoWkpCalSetPK.
  */
 @Getter
 @Setter
 @Embeddable
 public class KshmtAutoWkpCalSetPK implements Serializable {
-    /**
-	 * 
-	 */
+    
+    /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
+    /** The cid. */
     @Column(name = "CID")
     private String cid;
 
+    /** The wkpid. */
     @Column(name = "WKPID")
     private String wkpid;
 
+    /**
+     * Instantiates a new kshmt auto wkp cal set PK.
+     */
     public KshmtAutoWkpCalSetPK() {
     	super();
     }
 
+    /**
+     * Instantiates a new kshmt auto wkp cal set PK.
+     *
+     * @param cid the cid
+     * @param wkpid the wkpid
+     */
     public KshmtAutoWkpCalSetPK(String cid, String wkpid) {
         this.cid = cid;
         this.wkpid = wkpid;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -49,6 +60,9 @@ public class KshmtAutoWkpCalSetPK implements Serializable {
         return hash;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set

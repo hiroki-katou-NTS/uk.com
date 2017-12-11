@@ -201,13 +201,16 @@ module nts.uk.at.view.kml002.e.viewmodel {
             } else {
                 self.enable(false);
             }
-            
+
             var devChange = false;
             if (self.currentData != null) {
                 if (self.unitSelect() == 0) {
                     if (self.currentData.calMethodAtr == 0) {
                         self.checked(self.currentData.timeUnit.actualDisplayAtr == 0 ? false : true);
                         self.bindData(self.currentData.timeUnit.lstTimeUnitFuncs);
+                        self.roundingCd(self.currentData.timeUnit.roundingTime),
+                        self.selectedProcessing(self.currentData.timeUnit.actualDisplayAtr),
+                        self.uPCd(self.currentData.timeUnit.unitPrice)
                     } else {
                         self.checkedTime(self.currentData.actualDisplayAtrTime);
                         self.selectedMethod(self.currentData.moneyFunc.calMethodAtr == 0 ? false : true);
@@ -284,7 +287,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                             self.rightItemsTime.removeAll();
                             self.enableReturnTime(false);
                         }
-                        
+
                         $("#treegridItemsTime").ntsGridList('deselectAll');
                     }).ifNo(() => {
                         devChange = true;
@@ -333,20 +336,19 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         self.displayItemsRuleAmount(self.allItemAmount());
                         self.bindDataAmout(self.currentData.moneyFunc.lstMoney);
                     }
-                   
+
                 }).fail(function(res) {
                     dfd.reject(res);
                 });
             };
-             var t1 = performance.now();
+            var t1 = performance.now();
             console.log("Selection process " + (t1 - t0) + " milliseconds.");
             dfd.resolve();
             return dfd.promise();
-           
+
         }
 
         submit() {
-            var t0 = performance.now();
             var self = this;
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             if (self.unitSelect() == 0) {
@@ -387,7 +389,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         attendanceItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.DAILY ? self.rightItems()[i].trueCode : null,
                         presetItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.SCHEDULE ? self.rightItems()[i].trueCode : null,
                         operatorAtr: self.rightItems()[i].operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
-                        name: self.rightItems()[i].name
+                        name: self.rightItems()[i].name,
 
                     }
                     formAmount.push(unitAmount);
@@ -404,13 +406,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     },
                     timeUnit: {
                         roundingTime: self.roundingCd(),
-                        roundingAtr: self.selectedProcessing(),
+                        actualDisplayAtr: self.selectedProcessing() ? 1 : 0,
                         unitPrice: self.uPCd(),
-                        actualDisplayAtr: self.checked() ? 1 : 0,
-                        lstTimeUnitFuncs: formAmount,
-                        roundingCd: self.roundingCd(),
-                        selectedProcessing: self.selectedProcessing(),
-                        uPCd: self.uPCd()
+                        lstTimeUnitFuncs: formAmount
                     }
                 }
 
@@ -444,8 +442,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 nts.uk.ui.windows.setShared("KML002_E_DATA", moneyData);
             }
             nts.uk.ui.windows.close();
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
         cancel() {
@@ -507,9 +503,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 let items = _.sortBy(data, ['companyId', 'dispOrder']);
                 _.forEach(items, function(item: service.BaseItemsDto) {
                     var name = "";
-                    if(item.itemType == 0) {
+                    if (item.itemType == 0) {
                         name = item.itemName + nts.uk.resource.getText("KML002_43");
-                    } else if(item.itemType == 1) {
+                    } else if (item.itemType == 1) {
                         name = item.itemName + nts.uk.resource.getText("KML002_42");
                     }
                     temp.push(new ItemModel(item.id, name, item.itemType));
@@ -550,7 +546,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         displayItemsRuleAmount(allItemAmount: any) {
             let self = this;
             let temp = [];
@@ -585,7 +581,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
         }
 
         addition() {
-            var t0 = performance.now();
             let self = this;
             if (self.currentCodeList().length + self.rightItems().length > 100) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
@@ -611,41 +606,37 @@ module nts.uk.at.view.kml002.e.viewmodel {
             } else {
                 self.enableReturn(false);
             }
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
         subtraction() {
-            var t0 = performance.now();
             let self = this;
             if (self.currentCodeList().length + self.rightItems().length > 100) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             } else {
+                var rightItemsSub = self.rightItems();
                 _.forEach(self.currentCodeList(), function(sonCute) {
                     var item = _.find(self.items(), function(o) { return o.code == sonCute; });
-                    let i = self.rightItems().length;
+                    let i = rightItemsSub.length;
                     self.rightItems.push({
                         code: i.toString(),
                         trueCode: item.code.slice(0, -1),
                         itemType: item.itemType,
                         operatorAtr: nts.uk.resource.getText("KML002_38"),
                         name: item.name,
-                        id: self.rightItems().length + 1
+                        id: i + 1
                     });
                     i = i + 1;
                 });
+                self.rightItems(rightItemsSub);
             }
             if (self.rightItems().length >= 1) {
                 self.enableReturn(true);
             } else {
                 self.enableReturn(false);
             }
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
         returnItems() {
-             var t0 = performance.now();
             let self = this;
             let array = [];
             self.rightItems(_.filter(self.rightItems(), function(item) {
@@ -661,8 +652,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
             } else {
                 self.enableReturn(false);
             }
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
         additionAmount() {
@@ -740,6 +729,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
         }
 
         additionTime() {
+            nts.uk.ui.block.invisible();
             let self = this;
             if (self.currentCodeListTime().length + self.rightItemsTime().length > 100) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
@@ -854,9 +844,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 };
 
                 self.rightItems.push(itemData);
-                self.roundingCd(self.currentData.timeUnit.roundingCd),
-                self.selectedProcessing(self.currentData.timeUnit.selectedProcessing),
-                self.uPCd(self.currentData.timeUnit.uPCd)
+               
             });
         }
         bindDataMoney(lstMoney: any) {

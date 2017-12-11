@@ -1,8 +1,10 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
+import java.util.List;
+
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.pereg.app.command.PeregInputContainer;
+import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 @Data
 public class AddEmployeeCommand {
@@ -23,6 +25,6 @@ public class AddEmployeeCommand {
 	/** The login id. */
 	private String loginId;
 
-	private PeregInputContainer inputContainer;
+	private final List<ItemsByCategory> inputs;
 
 }

@@ -75,8 +75,9 @@ public class DPControlDisplayItem {
 					if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
 						s.addColumn("Code"+f.getAttendanceItemId());
 						s.addColumn("Name"+f.getAttendanceItemId());
+						s.addColumn("A"+String.valueOf(f.getAttendanceItemId()));
 					}else{
-						s.addColumn("_"+String.valueOf(f.getAttendanceItemId()));
+						s.addColumn("A"+String.valueOf(f.getAttendanceItemId()));
 					}
 				}
 			});
@@ -86,7 +87,7 @@ public class DPControlDisplayItem {
 	public void setHeaderText(List<DPAttendanceItem> lstAttendanceItem) {
 		lstAttendanceItem.stream().forEach(i -> {
 			Optional<DPHeaderDto> header = this.getLstHeader().stream()
-					.filter(h -> h.getKey().equals("_"+String.valueOf(i.getId()))).findFirst();
+					.filter(h -> h.getKey().equals("A"+String.valueOf(i.getId()))).findFirst();
 			if (header.isPresent()) {
 				header.get().setHeaderText(i);
 			}
@@ -96,7 +97,7 @@ public class DPControlDisplayItem {
 	public void setHeaderColor(List<DPAttendanceItemControl> lstAttendanceItemControl) {
 		lstAttendanceItemControl.stream().forEach(i -> {
 			Optional<DPHeaderDto> header = this.getLstHeader().stream()
-					.filter(h -> h.getKey().equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
+					.filter(h -> h.getKey().equals(String.valueOf("A"+i.getAttendanceItemId()))).findFirst();
 			if (header.isPresent()) {
 				header.get().setHeaderColor(i);
 				if(!header.get().getGroup().isEmpty()){

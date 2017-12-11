@@ -70,7 +70,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
@@ -766,7 +766,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 		this.errMessageInfoRepository.addList(errMesInfos);
 
-		this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day, workInfoOfDailyPerformanceUpdate);
+		this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day, workInfoOfDailyPerformanceUpdate, timeLeavingOptional);
 
 		if (errMesInfos.isEmpty()) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する

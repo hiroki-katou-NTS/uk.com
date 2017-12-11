@@ -9,6 +9,7 @@ package nts.uk.ctx.bs.employee.pubimp.jobtitle;
  *****************************************************************/
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,15 +19,19 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
-import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SimpleJobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 
 /**
@@ -53,6 +58,10 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	/** The job title history repository. */
 	@Inject
 	private AffJobTitleHistoryRepository jobTitleHistoryRepository;
+	
+	/** The sequence master repository. */
+	@Inject
+	private SequenceMasterRepository sequenceMasterRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -207,6 +216,32 @@ public class JobTitlePubImp implements SyJobTitlePub {
 				.jobTitleName(jobTitleInfo.getJobTitleName().v())
 				.startDate(affJobTitleHist.getPeriod().start())
 				.endDate(affJobTitleHist.getPeriod().end()).build());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub#findByIds(java.lang.
+	 * String, java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<SimpleJobTitleExport> findByIds(String companyId, List<String> jobIds,
+			GeneralDate baseDate) {
+		// Query infos
+		List<JobTitleInfo> jobTitleInfos = this.jobTitleInfoRepository.findByIds(companyId, jobIds, baseDate);
+		
+		List<SequenceMaster> seqMasters = this.sequenceMasterRepository.findByCompanyId(companyId);
+		
+		Map<SequenceCode, Integer> seqMasterMap = seqMasters.stream().collect(Collectors.toMap(SequenceMaster::getSequenceCode, SequenceMaster::getOrder));
+		
+		// Return
+		return jobTitleInfos.stream()
+				.map(item -> SimpleJobTitleExport.builder().jobTitleId(item.getJobTitleId())
+						.jobTitleCode(item.getJobTitleCode().v())
+						.jobTitleName(item.getJobTitleName().v())
+						.disporder(seqMasterMap.get(item.getSequenceCode())).build())
+				.collect(Collectors.toList());
 	}
 
 }

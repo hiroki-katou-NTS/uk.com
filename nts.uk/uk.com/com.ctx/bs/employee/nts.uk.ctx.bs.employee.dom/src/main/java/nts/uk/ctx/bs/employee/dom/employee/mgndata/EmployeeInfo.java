@@ -1,0 +1,20 @@
+package nts.uk.ctx.bs.employee.dom.employee.mgndata;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+public class EmployeeInfo {
+	private String employeeCode;
+	private String employeeName;
+	private String personName;
+	private String departmentName;
+	private String position;
+	private String contractCodeType;
+
+}

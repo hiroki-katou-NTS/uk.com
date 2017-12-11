@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.EmTimeZoneSetDto;
@@ -16,24 +17,30 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSettingSetMemen
  * The Class DiffTimezoneSetting.
  */
 @Getter
-public class DiffTimezoneSettingDto implements DiffTimezoneSettingSetMemento{
+public class DiffTimezoneSettingDto implements DiffTimezoneSettingSetMemento {
 
 	/** The employment timezone. */
 	private List<EmTimeZoneSetDto> employmentTimezones;
 
 	/** The OT timezone. */
-	private List<DiffTimeOTTimezoneSetDto> OTTimezones;
+	private List<DiffTimeOTTimezoneSetDto> oTTimezones;
 
 	@Override
 	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezones) {
-		// TODO Auto-generated method stub
-		
+		employmentTimezones.stream().map(item -> {
+			EmTimeZoneSetDto dto = new EmTimeZoneSetDto();
+			item.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
-	public void setOTTimezones(List<DiffTimeOTTimezoneSet> OTTimezones) {
-		// TODO Auto-generated method stub
-		
+	public void setOTTimezones(List<DiffTimeOTTimezoneSet> oTTimezones) {
+		oTTimezones.stream().map(item -> {
+			DiffTimeOTTimezoneSetDto dto = new DiffTimeOTTimezoneSetDto();
+			item.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 
 }

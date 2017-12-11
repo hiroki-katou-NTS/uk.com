@@ -16,15 +16,15 @@ public interface DiffTimezoneSettingSetMemento {
 	/**
 	 * Sets the employment timezones.
 	 *
-	 * @param employmentTimezone the new employment timezones
+	 * @param employmentTimezones the new employment timezones
 	 */
-	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezone);
+	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezones);
 
 	/**
 	 * Sets the OT timezones.
 	 *
-	 * @param OTTimezone the new OT timezones
+	 * @param oTTimezones the new OT timezones
 	 */
-	public void setOTTimezones(List<DiffTimeOTTimezoneSet> OTTimezone);
+	public void setOTTimezones(List<DiffTimeOTTimezoneSet> oTTimezones);
 
 }

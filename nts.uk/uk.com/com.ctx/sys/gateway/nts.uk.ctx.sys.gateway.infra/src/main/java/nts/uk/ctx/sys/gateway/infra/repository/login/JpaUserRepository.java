@@ -95,7 +95,7 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		short isSpecialUser =  (short) (user.isSpecialUser()?1:0);
 		short isMultiCompanyConcurrent =  (short) (user.isMultiCompanyConcurrent()?1:0);
 		return new SgwmtUser(user.getUserId(), user.getPassword().v(), user.getLoginId().v(), user.getContractCode().v(), 
-				Date.valueOf(user.getExpirationDate().toString()), isSpecialUser, isMultiCompanyConcurrent, user.getMailAddress().v(), user.getUserName().v(), user.getAssociatedPersonId());
+				Date.valueOf(user.getExpirationDate().toString("yyyy-MM-dd")), isSpecialUser, isMultiCompanyConcurrent, user.getMailAddress().v(), user.getUserName().v(), user.getAssociatedPersonId());
 	}
 
 }

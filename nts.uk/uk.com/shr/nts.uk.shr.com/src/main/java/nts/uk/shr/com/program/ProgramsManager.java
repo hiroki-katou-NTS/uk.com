@@ -192,6 +192,44 @@ public class ProgramsManager {
 			"/view/cps/005/b/index.xhtml");
 	
 	/**
+	 * CPS001A
+	 */
+	public static final Program CPS001A  = new Program(WebAppId.COM, ProgramIdConsts.CPS001A, "CPS001_1",
+			"/view/cps/001/a/index.xhtml");
+	
+	/**
+	 * CPS001B
+	 */
+	public static final Program CPS001B  = new Program(WebAppId.COM, ProgramIdConsts.CPS001B, "CPS001_2",
+			"/view/cps/001/b/index.xhtml");
+	
+	/**
+	 * CPS001C
+	 */
+	public static final Program CPS001C  = new Program(WebAppId.COM, ProgramIdConsts.CPS001C, "CPS001_3",
+			"/view/cps/001/c/index.xhtml");
+	
+	
+	/**
+	 * CPS001D
+	 */
+	public static final Program CPS001D  = new Program(WebAppId.COM, ProgramIdConsts.CPS001D, "CPS001_94",
+			"/view/cps/001/d/index.xhtml");
+
+	/**
+	 * CPS001E
+	 */
+	public static final Program CPS001E  = new Program(WebAppId.COM, ProgramIdConsts.CPS001E, "CPS001_95",
+			"/view/cps/001/e/index.xhtml");
+	
+	/**
+	 * CPS001F
+	 */
+	public static final Program CPS001F  = new Program(WebAppId.COM, ProgramIdConsts.CPS001F, "CPS001_96",
+			"/view/cps/001/f/index.xhtml");
+	
+	
+	/**
 	 * KMK011A
 	 */
 	public static final Program KMK011A = new Program(WebAppId.AT, ProgramIdConsts.KMK011A, "KMK011_1",
@@ -1079,8 +1117,8 @@ public class ProgramsManager {
 	public static final Program CCG025 = new Program(WebAppId.COM, ProgramIdConsts.CCG025, "CCG025_1",
 			"/view/ccg/025/component/index.xhtml");
 	
-	public static final Program CDL025 = new Program(WebAppId.COM, ProgramIdConsts.CDL025, "CCG025_1",
-			"/view/cdl/025/a/index.xhtml");
+	public static final Program CDL025 = new Program(WebAppId.COM, ProgramIdConsts.CDL025, "CDL025_1",
+			"/view/cdl/025/index.xhtml");
 
 	
 	// TODO: Define new programs here.

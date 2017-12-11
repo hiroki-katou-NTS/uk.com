@@ -128,6 +128,11 @@ module nts.custombinding {
                         display: inline-block;
                     }
 
+                    .layout-control .item-classification div.set-item-list div.set-item.set-item-sperator {
+                        width: 37px;
+                        text-align: center;
+                    }
+
                     .layout-control .item-classification .table-container {
                         max-width: calc(100% - 225px);
                         color: #000;
@@ -456,6 +461,7 @@ module nts.custombinding {
                                             constraint: _constraint.length && _constraint || undefined  }"></div>
                                         <div data-bind="if: (_item || {}).type == 1" class="set-items">
                                             <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
+                                                <div class="set-item set-item-sperator" data-bind="css: { 'hidden': $index() == 0 }">~</div>
                                                 <div data-bind="template: {
                                                         data: set,
                                                         name: 'itemtemplate'
@@ -592,7 +598,7 @@ module nts.custombinding {
                         <div data-bind="ntsDatePicker: {
                                     value: value,
                                     constraint: itemDefId.replace(/-/g, ''),
-                                    dateFormat: 'YYYY/MM/DD',
+                                    dateFormat: item.dateItemType == 1 ? 'YYYY/MM/DD' : (item.dateItemType == 2 ? 'YYYY/MM' : 'YYYY'),
                                     enable: editable,
                                     readonly: readonly
                                 }"></div>
@@ -639,13 +645,13 @@ module nts.custombinding {
                 </script>`;
 
         private api = {
-            getCat: 'ctx/bs/person/info/category/find/companyby/{0}',
-            getCats: "ctx/bs/person/info/category/findby/company",
-            getGroups: 'ctx/bs/person/groupitem/getAll',
-            getItemCats: 'ctx/bs/person/info/ctgItem/layout/findby/categoryId/{0}',
-            getItemGroups: 'ctx/bs/person/groupitem/getAllItemDf/{0}',
-            getItemsById: 'ctx/bs/person/info/ctgItem/layout/findby/itemId/{0}',
-            getItemsByIds: 'ctx/bs/person/info/ctgItem/layout/findby/listItemId',
+            getCat: 'ctx/pereg/person/info/category/find/companyby/{0}',
+            getCats: "ctx/pereg/person/info/category/findby/company",
+            getGroups: 'ctx/pereg/person/groupitem/getAll',
+            getItemCats: 'ctx/pereg/person/info/ctgItem/layout/findby/categoryId/{0}',
+            getItemGroups: 'ctx/pereg/person/groupitem/getAllItemDf/{0}',
+            getItemsById: 'ctx/pereg/person/info/ctgItem/layout/findby/itemId/{0}',
+            getItemsByIds: 'ctx/pereg/person/info/ctgItem/layout/findby/listItemId',
         };
 
         private services = {
@@ -1050,7 +1056,7 @@ module nts.custombinding {
                                         switch (dts.stringItemType) {
                                             default:
                                             case ITEM_STRING_TYPE.ANY:
-                                                constraint.charType = 'Alphabet';
+                                                constraint.charType = 'Any';
                                                 break;
                                             case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                                 constraint.charType = 'AnyHalfWidth';
@@ -1219,7 +1225,6 @@ module nts.custombinding {
                 });
 
                 opts.sortable.isEditable.valueHasMutated();
-
                 _.each(data, (x, i) => {
                     // define common function for init new item value
                     let modifitem = (def: any, item: any) => {
@@ -1231,9 +1236,9 @@ module nts.custombinding {
 
                         def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
 
-                        def.hidden = _.has(def, "actionRole") ? def.actionRole == 0 : true;
-                        def.readonly = _.has(def, "actionRole") ? def.actionRole == 1 : !!opts.sortable.isEnabled();
-                        def.editable = _.has(def, "actionRole") ? def.actionRole == 2 : !!opts.sortable.isEditable();;
+                        def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
+                        def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
+                        def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
 
                         def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
                         def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
@@ -1264,7 +1269,7 @@ module nts.custombinding {
                                             itemCode: item.itemCode,
                                             itemName: item.itemName,
                                             itemDefId: item.id,
-                                            value: ko.observable()
+                                            value: undefined
                                         };
                                         x.items.push(def);
                                     }
@@ -1296,7 +1301,7 @@ module nts.custombinding {
                                                 itemCode: item.itemCode,
                                                 itemName: item.itemName,
                                                 itemDefId: item.id,
-                                                value: ko.observable()
+                                                value: undefined
                                             };
                                             row.push(def);
                                         }
@@ -1308,6 +1313,39 @@ module nts.custombinding {
                                 x.items = undefined;
                                 break;
                         }
+                    }
+
+                    switch (x.layoutItemType) {
+                        case IT_CLA_TYPE.ITEM:
+                            _.each((x.items()), (def, i) => {
+                                $.extend(def, {
+                                    value: ko.isObservable(def.value) ? def.value : ko.observable(def.value)
+                                });
+                            });
+                            break;
+                        case IT_CLA_TYPE.LIST:
+                            // define row number
+                            let rn = _.map(ko.toJS(x.items), x => x).length;
+
+                            _.each(_.range(rn), i => {
+                                let row = x.items()[i];
+
+                                if (!row || !_.isArray(row)) {
+                                    row = [];
+                                }
+
+                                x.items()[i] = row;
+
+                                _.each((x.items()), (def, j) => {
+                                    $.extend(def, {
+                                        value: ko.isObservable(def.value) ? def.value : ko.observable(def.value)
+                                    });
+                                });
+                            });
+                            break;
+                        case IT_CLA_TYPE.SPER:
+                            x.items = undefined;
+                            break;
                     }
                 });
                 // write primitive constraints to viewContext
@@ -1722,7 +1760,7 @@ module nts.custombinding {
     }
 
     interface IItemDate {
-        dateItemType?: number;
+        dateItemType?: DateType;
     }
 
     interface IItemString {
@@ -1827,6 +1865,18 @@ module nts.custombinding {
         CODE_NAME = 2,
         // 3:列挙型(Enum)
         ENUM = 3
+    }
+    
+    enum DateType {
+        YEARMONTHDAY = 1,
+        YEARMONTH = 2,
+        YEAR = 3
+    }
+
+    enum ACTION_ROLE {
+        HIDDEN = <any>"HIDDEN",
+        VIEW_ONLY = <any>"VIEW_ONLY",
+        EDIT = <any>"EDIT"
     }
 }
 

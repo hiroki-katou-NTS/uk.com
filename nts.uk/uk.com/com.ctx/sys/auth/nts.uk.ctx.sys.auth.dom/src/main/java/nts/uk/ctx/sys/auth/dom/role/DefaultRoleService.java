@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
@@ -59,29 +60,35 @@ public class DefaultRoleService implements RoleService{
 	public void removeRole(String roleId) {
 		String companyId = AppContexts.user().companyId();
 		Role role = roleRepo.findByRoleId(roleId).get();		
-		if (role.getAssignAtr() == RoleAtr.INCHARGE) {
+		if (role.getAssignAtr() == RoleAtr.INCHARGE) {			
 			List<RoleIndividualGrant> roleIndi = roleGrantRepo.findByRoleId(roleId);
-			if (!roleIndi.isEmpty())
-				throw new BusinessException("Msg_584");
-			else
-				roleRepo.remove(roleId);
-
+			if (!roleIndi.isEmpty()) {
+				GeneralDate now =  GeneralDate.today();
+				roleIndi.forEach(x ->{
+					if(x.getValidPeriod().contains(now)) {
+						 throw new BusinessException("Msg_584");
+					}
+				});							
+			}					
+			roleRepo.remove(roleId);				
 		} else {
 			Optional<DefaultRoleSet> defaultOpt = defaultRoleSetRepo.findByCompanyId(companyId);
-			if (!defaultOpt.isPresent()) {
+			if (defaultOpt.isPresent()) {
 				DefaultRoleSet defaultRoleSet = defaultOpt.get();
 				Optional<RoleSet> roleSetOpt = roleSetRepo
 						.findByRoleSetCdAndCompanyId(defaultRoleSet.getRoleSetCd().toString(), companyId);
 				if (roleSetOpt.isPresent()){
 					RoleSet rs = roleSetOpt.get();
-					if (rs.getPersonInfRoleId().equals(roleId) || rs.getSalaryRoleId().equals(roleId)
-							|| rs.getOfficeHelperRoleId().equals(roleId) || rs.getHRRoleId().equals(roleId)
-							|| rs.getEmploymentRoleId().equals(roleId) || rs.getMyNumberRoleId().equals(roleId))
+					if ((rs.getPersonInfRoleId() != null && rs.getPersonInfRoleId().equals(roleId))
+							|| (rs.getSalaryRoleId() != null && rs.getSalaryRoleId().equals(roleId))
+							|| (rs.getOfficeHelperRoleId() != null && rs.getOfficeHelperRoleId().equals(roleId))
+							|| (rs.getHRRoleId() != null && rs.getHRRoleId().equals(roleId))
+							|| (rs.getEmploymentRoleId() != null && rs.getEmploymentRoleId().equals(roleId))
+							|| (rs.getMyNumberRoleId() != null && rs.getMyNumberRoleId().equals(roleId)))
 						throw new BusinessException("Msg_586");
 				} 
-			} else{
-				roleRepo.remove(roleId);									
-			}			
+			} 		
+			roleRepo.remove(roleId);											
 		}
 		
 	}

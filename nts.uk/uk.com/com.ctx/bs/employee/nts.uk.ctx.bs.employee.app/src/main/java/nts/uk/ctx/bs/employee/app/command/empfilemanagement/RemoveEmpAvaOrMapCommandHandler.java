@@ -18,7 +18,7 @@ public class RemoveEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapC
 	protected void handle(CommandHandlerContext<EmpAvaOrMapCommand> context) {
 		EmpAvaOrMapCommand command = context.getCommand();
 		this.empFileManagementRepository.remove(PersonFileManagement.createFromJavaType(command.getEmployeeId(),
-				command.getFileId(), command.getFileType(), null, null));
+				command.getFileId(), command.getFileType(), null));
 	}
 
 }
