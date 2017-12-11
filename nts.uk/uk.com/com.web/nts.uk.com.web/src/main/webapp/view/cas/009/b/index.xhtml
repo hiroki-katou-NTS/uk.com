@@ -17,14 +17,14 @@
 
 		<ui:define name="content">
 			<div id="contents-area" >
-					<div id="list_link" >
+					<div tabindex="1" id="list_link" >
 						<a class="hyperlink" href="#">アイコン無し、ただのリンク</a>
 						<a class="hyperlink" href="#">アイコン無し、ただのリンク</a>
 						<a class="hyperlink" href="#">アイコン無し、ただのリンク</a>
 					</div>
 			</div>
 			<div id="functions-area-bottom" >
-				<button data-bind='click: closeDialog'>#{i18n.getText('CAS009_21')}</button>
+				<button tabindex="2" data-bind='click: closeDialog'>#{i18n.getText('CAS009_21')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
