@@ -6,3 +6,9 @@
 	padding-top: 15px;
 	padding-bottom: 15px;
 }
+
+#functions-area button {
+    min-width: 65px;
+    float: right;
+    margin-right: 19px;
+}
