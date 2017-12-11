@@ -166,7 +166,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                         self.calculatorItems([]);
                         self.allItemsData = [];
-                        var sortedItems = _.sortBy(data.verticalCalItems, [function(o) { return o.order; }]);
+                        var sortedItems = _.sortBy(data.verticalCalItems, [function(o) { return o.dispOrder; }]);
                         self.allItemsData = sortedItems;
 
                         if (self.allItemsData.length < 50) {
@@ -226,8 +226,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                             items.push(new CalculatorItem(item));
                         }
-
-                        self.calculatorItems(items);
+                        
+                        var sorted = _.sortBy(items, [function(o) { return o.order(); }]);
+                        self.calculatorItems(sorted);
                     });
                 }
             });
@@ -1057,12 +1058,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
          */
         resetFormula(temp: any) {
             var self = this;
-
-            var curDataItem = null;
             var beforeFormula = "";
             var formularTxt = "";
 
             for (var i = 0; i < temp.length; i++) {
+                var curDataItem = null;
+                
                 if (temp[i].formBuilt != null) {
                     curDataItem = temp[i].formBuilt
                 } else if (temp[i].formTime != null) {
@@ -1071,7 +1072,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     curDataItem = temp[i].formPeople
                 } else if (temp[i].formulaAmount != null) {
                     curDataItem = temp[i].formulaAmount
-                } else if (temp[i].numerical != null) {
+                } else if (temp[i].numerical.length > 0 && temp[i].numerical != null) {
                     curDataItem = temp[i].numerical
                 } else if (temp[i].unitPrice != null) {
                     curDataItem = temp[i].unitPrice
@@ -1399,7 +1400,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         ];
                         var unit = _.find(unitPrices, function(o) { return o.uPCd == data.unitPrice; });
 
-                        formulaResult = data.unitName != null ? data.unitName : unit.uPName;
+                        formulaResult = data.unitName != null ? data.unitName : (unit != null ? unit.uPName : "");
                     } else { // Other attributes
                         // If is first item
                         if (index == 0) {
