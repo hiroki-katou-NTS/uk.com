@@ -38,6 +38,11 @@ public class KshmtWorkingCondPK extends UkJpaEntity implements Serializable {
 	public KshmtWorkingCondPK() {
 		super();
 	}
+	
+	public KshmtWorkingCondPK(String sid, String historyId) {
+		 this.sid = sid;
+	     this.historyId = historyId;
+	}
 
 	/**
 	 * Hash code.

@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.infra.entity.workingcondition;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +20,7 @@ import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -50,12 +50,12 @@ public class KshmtWorkingCond extends UkJpaEntity implements Serializable {
 	/** The str D. */
 	@Column(name = "STR_D")
 	@Temporal(TemporalType.DATE)
-	private Date strD;
+	private GeneralDate strD;
 
 	/** The end D. */
 	@Column(name = "END_D")
 	@Temporal(TemporalType.DATE)
-	private Date endD;
+	private GeneralDate endD;
 
 	/** The kshmt working cond items. */
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

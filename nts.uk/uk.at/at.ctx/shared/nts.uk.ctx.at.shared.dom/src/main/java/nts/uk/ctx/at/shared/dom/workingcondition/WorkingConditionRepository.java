@@ -14,7 +14,7 @@ public interface WorkingConditionRepository {
 	 * @param employeeId the employee id
 	 * @return the optional
 	 */
-	Optional<WorkingCondition> findWokingCondition(String employeeId);
+	Optional<WorkingCondition> findWokingCondition(String employeeId, String histId);
 	
 	/**
 	 * Adds the.
@@ -35,12 +35,12 @@ public interface WorkingConditionRepository {
 	 *
 	 * @param employeeId the employee id
 	 */
-	void remove(String employeeId);
+	void remove(String employeeId, String histId);
 	
 	/**
 	 * Gets the all woking condition.
 	 *
 	 * @return the all woking condition
 	 */
-	List<WorkingCondition> getAllWokingCondition();
+	List<WorkingCondition> getAllWokingCondition(String companyId);
 }
