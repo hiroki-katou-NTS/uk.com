@@ -30,11 +30,9 @@ public class WorkTimeSetWebService extends WebService {
 	private WorkTimeSettingFinder workTimeSetFinder;
 
 	/**
-	 * Find by code.
+	 * Find all.
 	 *
-	 * @param workTimeCode
-	 *            the work time code
-	 * @return the pred dto
+	 * @return the list
 	 */
 	@POST
 	@Path("findAll")
@@ -53,5 +51,5 @@ public class WorkTimeSetWebService extends WebService {
 	public WorkTimeSettingDto findByCode(@PathParam("worktimeCode") String worktimeCode) {
 		return this.workTimeSetFinder.findByCode(worktimeCode);
 	}
-
+	
 }
