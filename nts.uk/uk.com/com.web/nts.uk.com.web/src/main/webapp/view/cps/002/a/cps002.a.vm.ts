@@ -611,10 +611,7 @@ module cps002.a.vm {
 
         openInitModal() {
 
-            setShared("CPS002_PARAM", true);
-            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
-
-            });
+            jump('/view/cps/009/a/index.xhtml');
         }
 
 
