@@ -6,7 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml" data-bind="with: screenModel">
+	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:ValidatorScript>
 					nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameName
@@ -59,7 +59,7 @@
 			<com:scriptfile path="cmm007.a.start.js" />
 		</ui:define>
 		<ui:define name="sidebar">
-			<ul tabindex="1" class="navigator" data-bind="with: main">
+			<ul tabindex="1" class="navigator">
 				<li data-bind="click: onSelectTabB"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('CMM007_2')}</a></li>
 				<li data-bind="click: onSelectTabC"><a tabindex="-1" 
@@ -74,19 +74,19 @@
 		</ui:define>
 		<ui:define name="sidebar-content">
 			<!-- COMPANY WORK TIME SETTING  START -->
-			<div id="tabpanel-1" role="tabpanel" data-bind="with: systemDefine">
+			<div id="tabpanel-1" role="tabpanel" data-bind="with: systemDefine()">
 				<ui:include src="../b/index.xhtml" />
 			</div>
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: temporaryAbsenceFr">
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: temporaryAbsenceFr()">
 				<ui:include src="../c/index.xhtml" />
 			</div>
-			<div id="tabpanel-3" role="tabpanel" data-bind="with: planYearHolidayFr">
+			<div id="tabpanel-3" role="tabpanel" data-bind="with: planYearHolidayFr()">
 				<ui:include src="../d/index.xhtml" />
 			</div>
-			<div id="tabpanel-4" role="tabpanel" data-bind="with: overtimeWorkFr">
+			<div id="tabpanel-4" role="tabpanel" data-bind="with: overtimeWorkFr()">
 				<ui:include src="../e/index.xhtml" />
 			</div>
-			<div id="tabpanel-5" role="tabpanel" data-bind="with: workdayoffFr">
+			<div id="tabpanel-5" role="tabpanel" data-bind="with: workdayoffFr()">
 				<ui:include src="../g/index.xhtml" />
 			</div>
 		</ui:define>
