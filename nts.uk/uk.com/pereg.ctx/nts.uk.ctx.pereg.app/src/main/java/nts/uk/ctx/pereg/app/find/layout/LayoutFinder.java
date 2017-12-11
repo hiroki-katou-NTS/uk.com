@@ -98,6 +98,9 @@ public class LayoutFinder {
 
 	@Inject
 	private IMaintenanceLayoutRepository layoutRepo;
+	
+	@Inject
+	private ComboBoxRetrieveFactory comboBoxFactory;
 
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
@@ -365,7 +368,7 @@ public class LayoutFinder {
 				DataTypeStateDto itemDataTypeSate = valueItem.getItem();
 				if ( itemDataTypeSate != null && itemDataTypeSate.getDataTypeValue() == DataTypeValue.SELECTION.value) {
 					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					valueItem.setLstComboBoxValue(ComboBoxRetrieveFactory.getComboBox(selectionItemDto, standardDate));
+					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, standardDate));
 				}
 			}
 		});
