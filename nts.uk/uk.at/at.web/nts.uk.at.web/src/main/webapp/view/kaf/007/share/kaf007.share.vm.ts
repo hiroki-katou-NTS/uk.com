@@ -101,7 +101,6 @@ module nts.uk.at.view.kaf007.share {
                self.commentFontColor2 = ko.observable('#000000');
            }
        }
-       
        /**
         * 申請
         */
@@ -253,6 +252,33 @@ module nts.uk.at.view.kaf007.share {
                 self.commentFontColor2 = ko.observable('#000000');
             }
         }
+        export class RecordWorkInfo{
+            appDate : KnockoutObservable<string>;
+            workTypeCode : KnockoutObservable<string>;
+            workTypeName : KnockoutObservable<string>;
+            workTimeCode : KnockoutObservable<string>;
+            workTimeName : KnockoutObservable<string>;
+            startTime1 : KnockoutObservable<number>;
+            endTime1 : KnockoutObservable<number>;
+            startTime2 : KnockoutObservable<number>;
+            endTime2 : KnockoutObservable<number>;
+            breakTimeStart : KnockoutObservable<number>;
+            breakTimeEnd : KnockoutObservable<number>;
+            constructor() {
+                let self = this;
+                self.appDate = ko.observable('');
+                self.workTypeCode = ko.observable('');
+                self.workTypeName = ko.observable('');
+                self.workTimeCode = ko.observable('');
+                self.workTimeName = ko.observable('');
+                self.startTime1 = ko.observable(0);
+                self.endTime1 = ko.observable(0);
+                self.startTime2 = ko.observable(0);
+                self.endTime2 = ko.observable(0);
+                self.breakTimeStart = ko.observable(0);
+                self.breakTimeEnd = ko.observable(0);
+            }            
+        }
         /*export enum WorkChangeType{
             //0:申請時に決める（初期選択：勤務を変更しない）
             NotInitSelection = 0,
@@ -263,5 +289,11 @@ module nts.uk.at.view.kaf007.share {
             //3:変更する
             Change,
         }*/
+        export enum AppDateType{
+            //申請開始日                                 
+            StartDate = 0,
+            //1:申請終了日
+            EndDate
+        }
     }
 }

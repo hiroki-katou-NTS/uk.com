@@ -31,7 +31,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, List<String>> {
 
 	private static final String EMPTY_STRING = "";
-	
+	private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
 	
@@ -51,7 +51,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
 		// 入力者
-		String persionId = AppContexts.user().personId();
+		String personId = AppContexts.user().personId();
 		// 申請者
 		String applicantSID = AppContexts.user().employeeId();
 
@@ -60,24 +60,43 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 
 		// 申請
 		Application app = new Application(companyId, appID,
-				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), GeneralDateTime.now(), persionId,
-				new AppReason(EMPTY_STRING), appCommand.getApplicationDate(),
-				new AppReason(appCommand.getApplicationReason()), ApplicationType.WORK_CHANGE_APPLICATION, applicantSID,
-				EnumAdaptor.valueOf(0, ReflectPlanScheReason.class), null,
-				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
-				EnumAdaptor.valueOf(0, ReflectPerScheReason.class), null,
-				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
-				appCommand.getStartDate(), appCommand.getEndDate(), pharseList);
+				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), 
+				GeneralDateTime.now(), 
+				personId,
+				new AppReason(EMPTY_STRING), 
+				appCommand.getApplicationDate(),
+				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())), 
+				ApplicationType.WORK_CHANGE_APPLICATION, applicantSID,
+				EnumAdaptor.valueOf(0, ReflectPlanScheReason.class), 
+				null,
+				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), 
+				EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
+				EnumAdaptor.valueOf(0, ReflectPerScheReason.class), 
+				null,
+				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), 
+				EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
+				appCommand.getStartDate(), 
+				appCommand.getEndDate(), 
+				pharseList);
 
 		// 勤務変更申請
-		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(companyId, appID,
-				workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),
-				workChangeCommand.getExcludeHolidayAtr(), workChangeCommand.getWorkChangeAtr(),
-				workChangeCommand.getGoWorkAtr1(), workChangeCommand.getBackHomeAtr1(),
-				workChangeCommand.getBreakTimeStart1(), workChangeCommand.getBreakTimeEnd1(),
-				workChangeCommand.getWorkTimeStart1(), workChangeCommand.getWorkTimeEnd1(),
-				workChangeCommand.getWorkTimeStart2(), workChangeCommand.getWorkTimeEnd2(),
-				workChangeCommand.getGoWorkAtr2(), workChangeCommand.getBackHomeAtr2());
+		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(
+				companyId, 
+				appID,
+				workChangeCommand.getWorkTypeCd(), 
+				workChangeCommand.getWorkTimeCd(),
+				workChangeCommand.getExcludeHolidayAtr(), 
+				workChangeCommand.getWorkChangeAtr(),
+				workChangeCommand.getGoWorkAtr1(), 
+				workChangeCommand.getBackHomeAtr1(),
+				workChangeCommand.getBreakTimeStart1(), 
+				workChangeCommand.getBreakTimeEnd1(),
+				workChangeCommand.getWorkTimeStart1(), 
+				workChangeCommand.getWorkTimeEnd1(),
+				workChangeCommand.getWorkTimeStart2(), 
+				workChangeCommand.getWorkTimeEnd2(),
+				workChangeCommand.getGoWorkAtr2(), 
+				workChangeCommand.getBackHomeAtr2());
 
 		return workChangeRegisterService.registerData(workChangeDomain, app);
 	}
