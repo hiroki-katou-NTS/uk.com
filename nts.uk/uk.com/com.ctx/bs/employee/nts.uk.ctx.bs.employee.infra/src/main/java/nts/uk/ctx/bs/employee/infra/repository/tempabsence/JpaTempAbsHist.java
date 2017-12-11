@@ -21,7 +21,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			+ " WHERE ta.sid = :sid ORDER BY ta.startDate";
 	
 	private final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
-			+ " where h.sid = :sid and h.startDate <= :referDate and h.endDate >= :referDate";
+			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
 
 	/**
 	 * Convert from domain to entity
@@ -100,7 +100,10 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	@Override
 	public Optional<TempAbsenceHistory> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		Optional<BsymtTempAbsHistory> optionData = this.queryProxy()
-				.query(GET_BY_SID_DATE, BsymtTempAbsHistory.class).getSingle();
+				.query(GET_BY_SID_DATE, BsymtTempAbsHistory.class)
+				.setParameter("sid", employeeId)
+				.setParameter("standardDate", standardDate)
+				.getSingle();
 		if (optionData.isPresent()) {
 			return Optional.of(toDomain(optionData.get()));
 		}

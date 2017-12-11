@@ -55,6 +55,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	@Override
 	public Optional<EmploymentHistory> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		Optional<BsymtEmploymentHist> optionData = this.queryProxy().query(GET_BY_EMPID_AND_STD, BsymtEmploymentHist.class)
+				.setParameter("sid", employeeId).setParameter("stdDate", standardDate)
 				.getSingle();
 		if (optionData.isPresent()) {
 			return Optional.of(toDomain(optionData.get()));

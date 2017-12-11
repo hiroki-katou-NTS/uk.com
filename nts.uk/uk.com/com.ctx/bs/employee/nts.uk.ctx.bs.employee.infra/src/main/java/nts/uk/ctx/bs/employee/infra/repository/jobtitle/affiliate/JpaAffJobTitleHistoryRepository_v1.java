@@ -21,7 +21,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 			+ " WHERE jb.sid = :sid ORDER BY jb.strDate";
 	
 	private final String GET_BY_SID_DATE = "select h from BsymtAffJobTitleHist h"
-			+ " where h.sid = :sid and h.strDate <= :referDate and h.endDate >= :referDate";
+			+ " where h.sid = :sid and h.strDate <= :standardDate and h.endDate >= :standardDate";
 
 	/**
 	 * Convert from domain to entity
@@ -120,7 +120,8 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	@Override
 	public Optional<AffJobTitleHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		Optional<BsymtAffJobTitleHist> optionaData = this.queryProxy()
-				.query(GET_BY_SID_DATE, BsymtAffJobTitleHist.class).getSingle();
+				.query(GET_BY_SID_DATE, BsymtAffJobTitleHist.class)
+				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
 		if ( optionaData.isPresent()) {
 			return Optional.of(toDomain(optionaData.get()));
 		}
