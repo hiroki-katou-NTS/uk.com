@@ -16,6 +16,7 @@ import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividual
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandResult;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommand;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.RoleIndividualCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommand;
@@ -50,6 +51,9 @@ public class RoleIndividualWebService extends WebService {
 	
 	@Inject
 	private DeleteSysRoleIndividualGrantCommandHandler deleteHandler;
+	
+	@Inject
+	private DeleteRoleIndividualGrantCommandHandler deleteRoleGrant;
 	
 	@Inject
 	private PersonInformationRoleFinder personInforRoleFinder;
@@ -121,5 +125,10 @@ public class RoleIndividualWebService extends WebService {
 		return new JavaTypeResult<String>(updateRoleGrant.UpDateRoleGrant(roleGrant));
 	}
 	
+	@POST
+	@Path("deleteRoleGrant")
+	public void DeleteRoleGrant(DeleteRoleIndividualGrantCommand roleGrant){
+		this.deleteRoleGrant.deleteRoleGrant(roleGrant);
+	}
 	
 }
