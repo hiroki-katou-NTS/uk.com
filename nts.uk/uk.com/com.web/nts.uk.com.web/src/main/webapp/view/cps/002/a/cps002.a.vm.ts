@@ -81,6 +81,12 @@ module cps002.a.vm {
 
             });
 
+            self.employeeBasicInfo.subscribe((data) => {
+                if (data) {
+                    self.currentEmployee().hireDate
+                }
+            });
+
             self.initSettingSelectedCode.subscribe((initCode) => {
                 if (initCode === '') {
                     return;
@@ -543,7 +549,7 @@ module cps002.a.vm {
                 employee = self.currentEmployee();
 
             setShared("cardNoMode", isCardNoMode);
-            setShared("userValue", isCardNoMode ? useSetting.cardNumberLetter : useSetting.employeeCodeLetter);
+            setShared("userValue", useSetting ? isCardNoMode ? useSetting.cardNumberLetter : useSetting.employeeCodeLetter : "");
             setShared("value", isCardNoMode ? employee.cardNo() : employee.employeeCode());
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
@@ -551,7 +557,7 @@ module cps002.a.vm {
                     currentEmp = self.currentEmployee();
                 if (result) {
 
-                    param === 'true' ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
+                    param === isCardNoMode ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
                 }
             });
         }
@@ -624,6 +630,7 @@ module cps002.a.vm {
     }
 
     class Employee {
+
         employeeName: KnockoutObservable<string> = ko.observable("");
         employeeCode: KnockoutObservable<string> = ko.observable("");
         hireDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -631,7 +638,6 @@ module cps002.a.vm {
         avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
-
     }
 
 
@@ -810,10 +816,10 @@ module cps002.a.vm {
 
     class IEmployeeBasicInfo {
         copyEmployeeId: string;
-        jobEntryDate: string;
+        jobEntryDate: Date;
         initialValueCode: string;
         employeeID: string;
-        employeeCreationMethod: string;
+        employeeCreationMethod: number;
 
     }
 
