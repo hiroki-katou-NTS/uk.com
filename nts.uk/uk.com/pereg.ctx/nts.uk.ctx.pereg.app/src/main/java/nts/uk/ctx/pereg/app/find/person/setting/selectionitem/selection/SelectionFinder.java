@@ -90,18 +90,23 @@ public class SelectionFinder {
 	}
 
 	// Lanlt
-    /**
-     * for companyID
-     * @param selectionItemId
-     * @param baseDate
-     * @return
-     */
+	/**
+	 * for companyID
+	 * 
+	 * @param selectionItemId
+	 * @param baseDate
+	 * @return
+	 */
 	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, GeneralDate date) {
 		String companyId = AppContexts.user().companyId();
 		List<SelectionInitDto> selectionLst = new ArrayList<>();
-			selectionLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date).stream()
-					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
-		
+		List<Selection> domainLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date);
+		if (domainLst != null) {
+
+			selectionLst = domainLst.stream().map(c -> SelectionInitDto.fromDomainSelection(c))
+					.collect(Collectors.toList());
+		}
+
 		return selectionLst;
 
 	}
