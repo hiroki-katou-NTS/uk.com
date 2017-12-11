@@ -210,7 +210,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private void addAvatar() {
 		if (command.getAvatarId() != "") {
 			PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, command.getAvatarId(),
-					TypeFile.AVATAR_FILE.value, null, null);
+					TypeFile.AVATAR_FILE.value, null);
 
 			this.perFileManagementRepository.insert(perFile);
 		}

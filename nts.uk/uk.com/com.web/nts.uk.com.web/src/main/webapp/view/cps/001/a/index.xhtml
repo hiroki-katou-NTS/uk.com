@@ -99,11 +99,11 @@
 							<div
 								data-bind="template: { name: 'list-data', data: {
 									dataSource: listLayout,
-									value: layout.maintenanceLayoutID,
-									primaryKey: 'maintenanceLayoutID',
+									value: layout.id,
+									primaryKey: 'id',
 									columns: [
-										{ headerText: 'コード', key: 'maintenanceLayoutID', width: 100, hidden: true },
-			                			{ headerText: text('CPS001_25'), key: 'layoutName', width: 232, hidden: false }
+										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
+			                			{ headerText: text('CPS001_25'), key: 'name', width: 232, hidden: false }
 									],
 								} }">
 							</div>
@@ -317,7 +317,8 @@
 								data-bind="template: { 
 									name: 'simple-layout', 
 									data: {
-										items: layout.listItemClsDto
+										items: layout.listItemCls,
+										outData: layoutData
 								 	}
 								}"></div>
 						</div>
@@ -330,7 +331,7 @@
 									data-bind="template: { 
 									name: 'simple-layout', 
 									data: {
-										items: layout.listItemClsDto
+										items: layout.listItemCls
 								 	}
 								}"></div>
 							</div>
@@ -340,7 +341,7 @@
 									name: 'cat-with-child', 
 									data: {
 										currentTabCategory: currentTabCategory,
-										listItemClsDto: layout.listItemClsDto
+										listItemCls: layout.listItemCls
 								 	}
 								}"></div>
 							</div>
@@ -443,11 +444,13 @@
 			</script>
 			<script type="text/html" id="simple-layout"
 				data-structor="{
-					items: listItemClassification
+					items: listItemClassification,
+					outData: outData
 				}">
 				<div style="padding-top: 10px"
 					data-bind="ntsLayoutControl: { 
 					data: $data.items,
+					outData: $data.outData,
 					editAble: 2 }"></div>
 			</script>
 			<script type="text/html" id="multiple-layout"
@@ -484,7 +487,7 @@
 								data-bind="template: { 
 									name: 'simple-layout', 
 									data: {
-										items: $data.listItemClsDto
+										items: $data.listItemCls
 								 	}
 								}"></div>
 					</div>
@@ -494,7 +497,7 @@
 								data-bind="template: { 
 									name: 'simple-layout', 
 									data: {
-										items: $data.listItemClsDto
+										items: $data.listItemCls
 								 	}
 								}"></div>
 					</div>

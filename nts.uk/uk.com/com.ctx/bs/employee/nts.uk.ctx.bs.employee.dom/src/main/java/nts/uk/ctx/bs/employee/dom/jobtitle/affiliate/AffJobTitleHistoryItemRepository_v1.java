@@ -6,7 +6,19 @@ import nts.arc.time.GeneralDate;
 
 public interface AffJobTitleHistoryItemRepository_v1 {
 	
+	/**
+	 * @param employeeId
+	 * @param referDate
+	 * @return
+	 */
 	Optional<AffJobTitleHistoryItem> getByEmpIdAndReferDate(String employeeId, GeneralDate referDate);
+	
+	/**
+	 * find with primary key
+	 * @param historyId
+	 * @return
+	 */
+	Optional<AffJobTitleHistoryItem> findByHitoryId(String historyId);
 	
 	/**
 	 * ドメインモデル「職務職位」を新規登録する

@@ -38,7 +38,7 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 	public Class<TempAbsHisItemDto> dtoClass() {
 		return TempAbsHisItemDto.class;
 	}
-	
+
 	@Override
 	public DataClassification dataType() {
 		return DataClassification.EMPLOYEE;
@@ -46,21 +46,17 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		TempAbsenceHisItem histItem;
-		TempAbsenceHistory history;
-		if ( query.getInfoId() != null ) {
-			String historyId = query.getInfoId();
-			histItem = tempAbsItemRepo.getItemByHitoryID(historyId).get();
-			history = tempAbsHistRepo.getByHistId(historyId).get();
-			return TempAbsHisItemDto.createFromDomain(history, histItem);
+		Optional<TempAbsenceHisItem> histItemOpt;
+		Optional<TempAbsenceHistory> historyOpt;
+		if (query.getInfoId() != null) {
+			historyOpt = tempAbsHistRepo.getByHistId(query.getInfoId());
 		} else {
-			Optional<TempAbsenceHisItem> optionalData = tempAbsItemRepo.getItemByEmpIdAndReferDate(query.getEmployeeId(),
-					query.getStandardDate());
-			if (optionalData.isPresent()) {
-				histItem = optionalData.get();
-				history = tempAbsHistRepo.getByHistId(histItem.getHistoryId()).get();
-				return TempAbsHisItemDto.createFromDomain(history, histItem);
-			}
+			historyOpt = tempAbsHistRepo.getItemByEmpIdAndStandardDate(query.getEmployeeId(), query.getStandardDate());
+
+		}
+		if (historyOpt.isPresent()) {
+			histItemOpt = tempAbsItemRepo.getItemByHitoryID(historyOpt.get().getDateHistoryItems().get(0).identifier());
+			return TempAbsHisItemDto.createFromDomain(historyOpt.get(), histItemOpt.get());
 		}
 		return null;
 	}
@@ -84,5 +80,4 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 		return null;
 	}
 
-	
 }

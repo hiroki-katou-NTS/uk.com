@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.ParamForGetPerItem;
@@ -64,6 +66,8 @@ public class EmpCtgFinder {
 	
 	@Inject
 	private EmpInfoItemDataRepository empInfoItemDataRepository;
+	
+	@Inject EmployeeRepository employeeRepository;
 	
 	/**
 	 * Get all category by selected employee
@@ -156,8 +160,10 @@ public class EmpCtgFinder {
 	
 	private List<ComboBoxObject> getHistInfoPersonType(List<String> timePerInfoItemDefIds, PeregQuery query){
 		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
+		
+		Employee employee = employeeRepository.getBySid(query.getEmployeeId()).get();
 		// get EmpInfoCtgData to get record id
-		List<PerInfoCtgData> lstPerInfoCtgData = perInfoCtgDataRepository.getByPerIdAndCtgId(query.getEmployeeId(), query.getCategoryId());
+		List<PerInfoCtgData> lstPerInfoCtgData = perInfoCtgDataRepository.getByPerIdAndCtgId(employee.getPId(), query.getCategoryId());
 		if(lstPerInfoCtgData.size() == 0) return lstComboBoxObject;
 		
 		//get lst item data and filter base on item def
