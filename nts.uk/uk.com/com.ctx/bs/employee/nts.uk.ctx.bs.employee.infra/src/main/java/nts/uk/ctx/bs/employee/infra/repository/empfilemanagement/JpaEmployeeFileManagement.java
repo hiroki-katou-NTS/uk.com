@@ -78,9 +78,9 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	}
 
 	@Override
-	public List<PersonFileManagement> getDataByParams(String employeeId, int filetype) {
+	public List<PersonFileManagement> getDataByParams(String pid, int filetype) {
 		List<BpsmtPersonFileManagement> listFile = this.queryProxy().query(GET_ALL_BY_PID, BpsmtPersonFileManagement.class)
-				.setParameter("pid", employeeId)
+				.setParameter("pid", pid)
 				.setParameter("filetype", filetype)
 				.getList();
 
@@ -89,9 +89,9 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 
 	@Override
-	public List<Object[]> getListDocumentFile(String employeeId, int filetype) {
+	public List<Object[]> getListDocumentFile(String pid, int filetype) {
 		List<Object[]> listFile = this.queryProxy().query(GET_ALL_DOCUMENT_FILE, Object[].class)
-				.setParameter("pid", employeeId)
+				.setParameter("pid", pid)
 				.setParameter("filetype", filetype)
 				.getList();
 		return listFile;
