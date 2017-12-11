@@ -18,25 +18,26 @@ import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.EmployeeDele
 import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.EmployeeDeleteCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.EmployeeDeleteToRestoreCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.deletemanagement.RestoreDataEmpCommandHandler;
-import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDetailDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
+import nts.uk.ctx.bs.employee.app.find.employee.deletemanagement.EmployeeDeleteFinder;
 
 @Path("basic/organization/deleteempmanagement")
 @Produces({ "application/json", "text/plain" })
 public class DelEmpManagementWebService extends WebService {
 
 	@Inject
-	private EmployeeFinder employeeFinder;
-
-	@Inject
 	private RestoreDataEmpCommandHandler restoreEmpHandler;
 
 	@Inject
 	private EmployeeDeleteCommandHandler empDeleteHandler;
-	
+
 	@Inject
 	private CompletelyDelEmpCommandHandler completelyDelEmpHandler;
+
+	@Inject
+	private EmployeeDeleteFinder employeeDeleteFinder;
+
 
 	/**
 	 * Get Employee Info to Display Screen Delete Emp
@@ -47,25 +48,25 @@ public class DelEmpManagementWebService extends WebService {
 	@POST
 	@Path("getemployeetodelete/{employeeId}")
 	public EmployeeToDeleteDto getEmployee(@PathParam("employeeId") String employeeId) {
-		return employeeFinder.getEmployeeInfoToDelete(employeeId);
+			return this.employeeDeleteFinder.getEmployeeInfo(employeeId);
 	}
 
 	@POST
 	@Path("deleteemployee")
-	public void delereEmployee(EmployeeDeleteCommand command) {
+	public void deleteEmployee(EmployeeDeleteCommand command) {
 		this.empDeleteHandler.handle(command);
 	}
 
 	@POST
 	@Path("getallemployeetodelete")
 	public List<EmployeeToDeleteDto> getAllEmployeeDelete() {
-		return employeeFinder.getAllEmployeeInfoToDelete();
+		return employeeDeleteFinder.getAllEmployeeInfoToDelete();
 	}
 
 	@POST
 	@Path("getdetailemployeetodelete/{employeeId}")
 	public EmployeeToDeleteDetailDto getDetailEmpDelete(@PathParam("employeeId") String employeeId) {
-		return employeeFinder.getEmployeeDetailInfoToDelete(employeeId);
+		return employeeDeleteFinder.getDetailEmployeeInfoToDelete(employeeId);
 	}
 
 	@POST
@@ -73,7 +74,7 @@ public class DelEmpManagementWebService extends WebService {
 	public void restoreData(EmployeeDeleteToRestoreCommand command) {
 		this.restoreEmpHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("deleteemp/{employeeId}")
 	public void deleteEmp(@PathParam("employeeId") String employeeId) {

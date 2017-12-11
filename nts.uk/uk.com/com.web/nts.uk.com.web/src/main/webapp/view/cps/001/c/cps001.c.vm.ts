@@ -52,6 +52,7 @@ module cps001.c.vm {
                         self.currentEmployee(new Employee(data[0]));
                         currentEmployee.code(data[0].code);
                     } else {
+                        debugger;
                         let _item: IEmployees = _.find(ko.toJS(self.listEmpDelete()), function(item: IEmployees) { return item.id == sid; });
                         if (_item) {
                             self.currentEmployee(new Employee(_item));
@@ -79,7 +80,7 @@ module cps001.c.vm {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_528" }).ifYes(() => {
                 let itemListLength = self.listEmpDelete().length;
                 let indexItemDelete = _.findIndex(ko.toJS(self.listEmpDelete), function(item: any) { return item.id == currentItem.id; });
-                let objToRestore = { sid: currentItem.id, code: currentItem.code, newCode: detail.newCode, newName: detail.newName };
+                let objToRestore = { id: currentItem.id, code: currentItem.code, newCode: detail.newCode, newName: detail.newName };
                 service.restoreData(objToRestore).done(() => {
                     if (itemListLength === 1) {
                         self.start();
@@ -90,7 +91,6 @@ module cps001.c.vm {
                         self.start(listItem[indexItemDelete + 1].id).done(() => {
                         });
                     }
-
                 });
 
             }).ifCancel(() => {
@@ -120,17 +120,15 @@ module cps001.c.vm {
 
         }
 
-        closeUp() { 
-                close();
+        closeUp() {
+            close();
         }
 
         newMode() {
             let self = this,
                 listItem: Array<IEmployees> = self.listEmpDelete(),
                 detail: EmployeeInfo = self.detail();
-
-            detail.datedelete('');
-            detail.reason('');
+            debugger;
             detail.newCode('');
             detail.newName('');
         }

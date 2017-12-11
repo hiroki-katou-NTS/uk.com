@@ -1,12 +1,12 @@
 module nts.uk.com.view.cas001.a.service {
     import ajax = nts.uk.request.ajax;
     var paths = {
-        getPersonRoleList: "/ctx/bs/person/roles/findAll",
-        getPersonRoleAuth: "/ctx/bs/person/roles/auth/find/{0}",
-        getCategoryRoleList: "/ctx/bs/person/roles/auth/category/findAllCategory/{0}",
-        getCategoryAuth: "/ctx/bs/person/roles/auth/category/find/{0}/{1}",
-        getPersonRoleItemList: "/ctx/bs/person/roles/auth/item/findAllItem/{0}/{1}",
-        savePersonRole: "/ctx/bs/person/roles/auth/save"
+        getPersonRoleList: "/ctx/pereg/roles/findAll",
+        getPersonRoleAuth: "/ctx/pereg/roles/auth/find/{0}",
+        getCategoryRoleList: "/ctx/pereg/roles/auth/category/findAllCategory/{0}",
+        getCategoryAuth: "/ctx/pereg/roles/auth/category/find/{0}/{1}",
+        getPersonRoleItemList: "/ctx/pereg/roles/auth/item/findAllItem/{0}/{1}",
+        savePersonRole: "/ctx/pereg/roles/auth/save"
     }
 
     export function getPersonRoleList(): JQueryPromise<any> {

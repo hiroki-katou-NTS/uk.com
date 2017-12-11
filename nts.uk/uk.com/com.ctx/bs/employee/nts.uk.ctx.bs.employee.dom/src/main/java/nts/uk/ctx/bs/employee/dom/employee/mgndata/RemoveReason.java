@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.employee.mgndata;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /** 削除理由 */
+@StringMaxLength(500)
 public class RemoveReason extends StringPrimitiveValue<RemoveReason> {
 
 	/**

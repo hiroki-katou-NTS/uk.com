@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSetting;
-import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSettingRepository;
+import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
+import nts.uk.ctx.pereg.dom.usesetting.UserSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

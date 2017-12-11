@@ -3,8 +3,8 @@ module nts.uk.com.view.cps017.c.service {
     import format = nts.uk.text.format;
     var paths = {
         
-        getAllPerInfoHistorySelection: "ctx/bs/person/info/setting/selection/findAllHistSelection/{0}",
-        addHistoryData: "ctx/bs/person/info/setting/selection/addHistoryData"
+        getAllPerInfoHistorySelection: "ctx/pereg/person/info/setting/selection/findAllHistSelection/{0}",
+        addHistoryData: "ctx/pereg/person/info/setting/selection/addHistoryData"
     }
 
     //history datetime:

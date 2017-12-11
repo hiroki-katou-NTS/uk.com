@@ -7,49 +7,54 @@ module cps002.e.vm {
     import alertError = nts.uk.ui.dialog.alertError;
 
     export class ViewModel {
-        cardNoMode: KnockoutObservable<boolean> = ko.observable(false);
+        cardNoMode: boolean = false;
         txtEmployeeCode: KnockoutObservable<string> = ko.observable("");
         txtCardNo: KnockoutObservable<string> = ko.observable("");
         generateEmCode: KnockoutObservable<string> = ko.observable("");
         constructor() {
             let self = this;
             self.cardNoMode = getShared("cardNoMode");
+            if (self.cardNoMode) {
+
+                self.txtCardNo(getShared("userValue"));
+            } else {
+                self.txtEmployeeCode(getShared("userValue"));
+            }
+            self.generateEmCode(getShared("value"));
         }
-        
-        getCode(){
+
+        getCode() {
             let self = this;
             self.cardNoMode ? self.getCardNo() : self.getEmlCode();
         }
-        
-        getEmlCode(){
+
+        getEmlCode() {
             let self = this;
-            service.getEmlCode(self.txtEmployeeCode()).done(function(emCode){
+            service.getEmlCode(self.txtEmployeeCode()).done(function(emCode) {
                 self.generateEmCode(emCode);
-            
-            }).fail(function(){
-                 alertError({ messageId: "Msg_505" });
+
+            }).fail(function() {
+                alertError({ messageId: "Msg_505" });
             });
         }
-        
-        getCardNo(){
+
+        getCardNo() {
             let self = this;
-            service.getCardNo(self.txtCardNo()).done(function(emCode){
+            service.getCardNo(self.txtCardNo()).done(function(emCode) {
                 self.generateEmCode(emCode);
-            
-            }).fail(function(){
-                 alertError({ messageId: "Msg_505" });
+
+            }).fail(function() {
+                alertError({ messageId: "Msg_505" });
             });
         }
-        
-        returnEmCode(){
+
+        returnEmCode() {
             let self = this;
             setShared("CPS002_PARAM", self.generateEmCode());
             close();
         }
-        
-        close(){
-      
-            setShared("CPS002_PARAM", "");
+
+        close() {
             close();
         }
     }

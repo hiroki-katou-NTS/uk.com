@@ -32,12 +32,11 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 			// update
 			PersonFileManagement domain = empFileMana.get();
 			domain.setFileID(commad.getFileid());
-			domain.setPersonInfoCategoryId("");
 
 		} else {
 			// insert
 			PersonFileManagement domain = PersonFileManagement.createFromJavaType(commad.getSid(), commad.getFileid(),
-					2, commad.getUploadOrder(), commad.getPersonInfoCtgId());
+					2, commad.getUploadOrder());
 			empFileManagementRepo.insert(domain);
 		}
 	}

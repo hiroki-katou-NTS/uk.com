@@ -20,7 +20,7 @@ public class AddWidowHistoryCommandHandler extends CommandHandlerWithResult<AddW
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00014";
+		return null;
 	}
 
 	@Override

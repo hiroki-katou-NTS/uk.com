@@ -31,5 +31,5 @@ public interface SubJobPosRepository {
 	 * ドメインモデル「職務職位（兼務）」を削除する
 	 * @param domain
 	 */
-	void deleteSubJobPosition(SubJobPosition domain);
+	void deleteSubJobPosition(String subJobPosId);
 }

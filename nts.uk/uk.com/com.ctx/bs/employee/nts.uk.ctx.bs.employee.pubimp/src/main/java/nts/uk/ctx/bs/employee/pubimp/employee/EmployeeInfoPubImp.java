@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,11 +10,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -27,6 +34,9 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 	@Inject
 	PersonRepository personRepo;
+
+	@Inject
+	AffCompanyHistRepository affCompanyHistRepo;
 
 	@Override
 	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode,
@@ -70,11 +80,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		if (!listEmpDomain.isEmpty()) {
 
 			listResult = listEmpDomain.stream()
-					.map(item -> EmpBasicInfoExport.builder()
-							.employeeId(item.getSId())
-							.employeeCode(item.getSCd().v())
-							.pId(item.getPId())
-							.companyMailAddress(item.getCompanyMail().v())
+					.map(item -> EmpBasicInfoExport.builder().employeeId(item.getSId()).employeeCode(item.getSCd().v())
+							.pId(item.getPId()).companyMailAddress(item.getCompanyMail().v())
 							.entryDate(item.getListEntryJobHist().get(0).getJoinDate())
 							.retiredDate(item.getListEntryJobHist().get(0).getRetirementDate()).build())
 					.collect(Collectors.toList());
@@ -86,11 +93,12 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			if (!listPersonDomain.isEmpty()) {
 				for (int j = 0; j < listResult.size(); j++) {
 					EmpBasicInfoExport resultItem = listResult.get(j);
-					Person per = listPersonDomain.stream()
-							.filter(m -> m.getPersonId() == resultItem.getPId()).collect(Collectors.toList()).get(0);
-					listResult.get(j).setPersonMailAddress(per.getMailAddress().v());
-					listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().v());
-					listResult.get(j).setGender(per.getGender().value);
+					Person per = listPersonDomain.stream().filter(m -> m.getPersonId().equals(resultItem.getPId()))
+							.collect(Collectors.toList()).get(0);
+					listResult.get(j).setPersonMailAddress(null);
+					listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().getFullName() == null ? ""
+							: per.getPersonNameGroup().getPersonName().getFullName().v());
+					listResult.get(j).setGender(per.getGender() == null ? 0 : per.getGender().value);
 					listResult.get(j).setBirthDay(per.getBirthDate());
 				}
 			}
@@ -99,4 +107,61 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		return listResult;
 	}
 
+	/**
+	 * Get Employee Info By Pid. Requets List No.124
+	 */
+	@Override
+	public List<EmpInfoExport> getEmpInfoByPid(String pid) {
+
+		List<EmpInfoExport> listResult = new ArrayList<>();
+
+		if (pid == null) {
+			return null;
+		}
+		// get domain Affiliated Company History-所属会社履歴
+		AffCompanyHist affCompanyHist = this.affCompanyHistRepo.getAffCompanyHistoryOfPerson(pid);
+
+		// get systemDate
+		Date date = new Date();
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
+
+		if (affCompanyHist != null) {
+
+			if (!CollectionUtil.isEmpty(affCompanyHist.getLstAffCompanyHistByEmployee())) {
+
+				// check all item in List<AffCompanyHistItem>
+				for (AffCompanyHistByEmployee affCompanyHistByEmployee : affCompanyHist.getLstAffCompanyHistByEmployee()) {
+
+					if (!CollectionUtil.isEmpty(affCompanyHistByEmployee.getLstAffCompanyHistoryItem())) {
+
+						for (AffCompanyHistItem affCompanyHistItem : affCompanyHistByEmployee
+								.getLstAffCompanyHistoryItem()) {
+							
+							if (systemDate.beforeOrEquals(affCompanyHistItem.end())
+									&& systemDate.afterOrEquals(affCompanyHistItem.start())) {
+								Optional<Person> personOpt = personRepo.getByPersonId(affCompanyHist.getPId());
+								if (personOpt.isPresent()) {
+									Person person = personOpt.get();
+									EmpInfoExport empInfoExport = new EmpInfoExport();
+									empInfoExport.setPId(person.getPersonId() == null ? "" : null);
+									empInfoExport.setPersonName(person.getPersonNameGroup().getPersonName().toString() == null ? "" : null);
+									empInfoExport.setEmployeeId(affCompanyHistByEmployee.getSId() == null ? "" : null);
+									if (affCompanyHistByEmployee.getSId() != null) {
+										Optional<Employee> employeeOpt = this.repo.getBySid(affCompanyHistByEmployee.getSId());
+										if (employeeOpt.isPresent()) {
+											Employee employee = employeeOpt.get();
+											empInfoExport.setEmployeeCode(employee.getSCd() == null ? "" : employee.getSCd().v());
+											empInfoExport.setCompanyId(employee.getCompanyId());
+										}
+									}
+									listResult.add(empInfoExport);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return listResult;
+	}
 }

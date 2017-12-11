@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		
+
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 610,
@@ -19,106 +19,91 @@
 			<com:scriptfile path="cps002.g.service.js" />
 			<com:scriptfile path="cps002.g.vm.js" />
 			<com:scriptfile path="cps002.g.start.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.pereg.dom.usesetting.EmpCodeLetter
+				nts.uk.ctx.pereg.dom.usesetting.CardNoLetter
+			</com:ValidatorScript>
+
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area" class="cf coverBlock">
-				
+
 				<div>
-					<table class="tblContent">
+					<table class="tblContent" data-bind="with:currentUserSetting">
 						<tr>
 							<td colspan="2" class="txtTopLable">
-							<div>#{i18n.getText('CPS002_76')}</div>
+								<div>#{i18n.getText('CPS002_76')}</div>
 							</td>
 						</tr>
 						<tr>
-							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_77')}</div></td>
+
+							<td width="200px"><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_77')}</div></td>
 							<td>
-								<div>
-									<span class="ntsControl">
-									<label class="ntsRadioBox">
-										<input type="radio" value="1" name="employCode" data-bind="checked: empCodeValue" />
-											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_78')}</span>
-									</label>
-									</span>
-									<input type="text" class="txtEmpCodeFirstChar" maxLength="11" data-bind="value: txtEmpCodeLetter" />
+
+								<div id="empInitGroup"
+									data-bind="ntsRadioBoxGroup: {
+										options: $parent.employeeInitItemList ,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: employeeCodeType ,
+										enable: true }"></div>
+								<div id="empCodeLetter">
+									<input
+										data-bind="ntsTextEditor: {
+													value: employeeCodeLetter ,
+													constraint:'EmpCodeLetter',
+													name: '#{i18n.getText('CPS002_77')}',
+													option: {
+														textmode: 'text',
+										            	width: '80px',
+										            	textalign: 'left'
+													},
+													enable: employeeCodeType() === 1
+													}" />
 									<span>#{i18n.getText('CPS002_82')}</span>
-								</div>
-								<div>
-									<span class="ntsControl">
-									<label class="ntsRadioBox">
-										<input type="radio" value="3" name="employCode" data-bind="checked: empCodeValue" />
-											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_79')}</span>
-									</label>
-									</span>
-								</div>
-								<div>
-									<span class="ntsControl">
-									<label class="ntsRadioBox">
-										<input type="radio" value="2" name="employCode" data-bind="checked: empCodeValue" />
-											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_80')}</span>
-									</label>
-									</span>
 								</div>
 							</td>
 						</tr>
-						<!--  -->
 						<tr>
 							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_83')}</div></td>
 							<td>
-								<div>
-									<span class="ntsControl">
-									<label class="ntsRadioBox">
-										<input type="radio" value="1" name="cardNo" data-bind="checked: cardNoValue" />
-											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_78')}</span>
-									</label>
-									</span>
-									<input type="text" class="txtEmpCodeFirstChar" maxLength='20' data-bind="value: txtCardNo" />
+								<div id="initCardNoGroup"
+									data-bind="ntsRadioBoxGroup: {
+										options: $parent.cardNoInitItemList ,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: cardNumberType ,
+										enable: true }"></div>
+
+								<div id="cardNoLetter">
+
+									<input
+										data-bind="ntsTextEditor: {
+													value: cardNumberLetter ,
+													constraint:'CardNoLetter',
+													name: '#{i18n.getText('CPS002_83')}',
+													option: {
+														textmode: 'text',
+										            	width: '80px',
+										            	textalign: 'left'
+													},
+													enable: cardNumberType() === 1
+													}" />
+
 									<span>#{i18n.getText('CPS002_87')}</span>
-								</div>
-								<div>
-									<span class="ntsControl">
-									<label class="ntsRadioBox">
-										<input type="radio" value="4" name="cardNo" data-bind="checked: cardNoValue" />
-											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_84')}</span>
-									</label>
-									</span>
-								</div>
-								<div>
-									<span class="ntsControl">
-									<label class="ntsRadioBox">
-										<input type="radio" value="3" name="cardNo" data-bind="checked: cardNoValue" />
-											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_85')}</span>
-									</label>
-									</span>
-								</div>
-								<div>
-									<span class="ntsControl">
-									<label class="ntsRadioBox">
-										<input type="radio" value="5" name="cardNo" data-bind="checked: cardNoValue" />
-											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_86')}</span>
-									</label>
-									</span>
-								</div>
-								<div>
-									<span class="ntsControl">
-									<label class="ntsRadioBox">
-										<input type="radio" value="2" name="textRadio" data-bind="checked: cardNoValue" />
-											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_80')}</span>
-									</label>
-									</span>
 								</div>
 							</td>
 						</tr>
-						<!--  -->
 						<tr>
 							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_88')}</div></td>
 							<td>
-								<div class="cf" data-bind="ntsSwitchButton: {
-									options: roundingRules,
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
+									options: $parent.recentRegistrationItems,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedRuleCode,
+									value: recentRegistrationType,
 									enable: true }">
 								</div>
 							</td>

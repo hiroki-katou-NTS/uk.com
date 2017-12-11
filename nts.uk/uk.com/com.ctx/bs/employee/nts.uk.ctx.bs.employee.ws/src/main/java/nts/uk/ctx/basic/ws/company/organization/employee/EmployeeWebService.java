@@ -21,11 +21,13 @@ import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeInDesignatedFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeSearchOutput;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.SearchEmpInput;
+import nts.uk.ctx.bs.employee.app.find.employee.mngdata.EmployeeDataMngInfoFinder_ver1;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListQuery;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchQuery;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchQueryProcessor;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 
 @Path("basic/organization/employee")
 @Produces({ "application/json", "text/plain" })
@@ -41,6 +43,9 @@ public class EmployeeWebService extends WebService {
 	/** The emp in designated finder. */
 	@Inject
 	private EmployeeInDesignatedFinder empInDesignatedFinder;
+	
+	@Inject
+	private EmployeeDataMngInfoFinder_ver1 empFinder;
 
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}/{baseDate}")
@@ -205,6 +210,14 @@ public class EmployeeWebService extends WebService {
 		return this.empInDesignatedFinder.searchEmpByWorkplaceList(input);
 	}
 	
+	/**
+	 * get header for cps001
+	 */
+	@POST
+	@Path("get-header/{employeeId}")
+	public EmployeeInfo getEmployeeInfo(@PathParam(value = "employeeId") String employeeId) {
+		return this.empFinder.getEmployeeInfo(employeeId);
+	}	
 	
 	
 	

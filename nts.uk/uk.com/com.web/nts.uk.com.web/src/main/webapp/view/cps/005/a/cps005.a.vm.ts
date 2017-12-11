@@ -86,7 +86,7 @@ module nts.uk.com.view.cps005.a {
                         info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
                         alertError({ messageId: error.message });
-                         block.clear();
+                        block.clear();
                     });
                 } else {
                     let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
@@ -94,7 +94,12 @@ module nts.uk.com.view.cps005.a {
                         self.reloadData(newCategory.categoryName);
                         info({ messageId: "Msg_15" }).then(() => {
                             confirm({ messageId: "Msg_213" }).ifYes(() => {
-                                setShared('categoryId', self.currentData().perInfoCtgSelectCode());
+                                let params = {
+                                    categoryId: self.currentData().perInfoCtgSelectCode(),
+                                    currentCtg: ko.toJS(self.currentData().currentCtgSelected())
+
+                                };
+                                setShared('CPS005_A', params);
                                 modal("/view/cps/005/b/index.xhtml").onClosed(() => {
                                     let ctgCode = self.currentData().perInfoCtgSelectCode();
                                     self.currentData().perInfoCtgSelectCode("");
@@ -108,7 +113,7 @@ module nts.uk.com.view.cps005.a {
                         });
                     }).fail(error => {
                         alertError({ messageId: error.message });
-                         block.clear();
+                        block.clear();
                     });
                 }
             }
@@ -116,12 +121,12 @@ module nts.uk.com.view.cps005.a {
             openDialogB() {
                 let self = this,
                     params = {
-                        categoryId : self.currentData().perInfoCtgSelectCode(),
-                        currentCtg : ko.toJS(self.currentData().currentCtgSelected())
-                        
+                        categoryId: self.currentData().perInfoCtgSelectCode(),
+                        currentCtg: ko.toJS(self.currentData().currentCtgSelected())
+
                     };
                 block.invisible();
-               
+
                 setShared('CPS005_A', params);
                 modal("/view/cps/005/b/index.xhtml").onClosed(() => {
                     let ctgCode = self.currentData().perInfoCtgSelectCode();

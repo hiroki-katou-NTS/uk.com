@@ -4,7 +4,6 @@ package nts.uk.ctx.bs.employee.app.command.workplace.assigned;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
-import nts.uk.shr.pereg.app.PeregHistoryId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
@@ -21,7 +20,6 @@ public class AssignedWorkplaceCommand {
 	@PeregItem("")
 	private String workplaceId;
 	
-	@PeregHistoryId
 	private String historyId;
 	
 	@PeregItem("")

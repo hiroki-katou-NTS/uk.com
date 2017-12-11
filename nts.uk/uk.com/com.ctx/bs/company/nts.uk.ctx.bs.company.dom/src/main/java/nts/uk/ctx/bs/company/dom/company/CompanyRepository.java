@@ -93,5 +93,9 @@ public interface CompanyRepository {
 	 * @author yennth
 	 */
 	boolean checkAbolish(String currentCompanyId);
+	
+	// request list No.125
+	Optional<Company> getComanyByCid(String cid);
+	
 }
 
