@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingPolicy;
@@ -33,7 +34,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet) {
+	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet, EmTimeZoneSet emTimezone) {
 		// validate msg_516
 		this.tzrPolicy.validateRange(predTime, otSet.getTimezone());
 
@@ -44,6 +45,16 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		// TODO: trong ea chua mo ta truong hop khong co shift timezone
 		if (otTimezone.isBetweenOrEqual(shift1Timezone) || otTimezone.isBetweenOrEqual(shift2Timezone)) {
 			throw new BusinessException("Msg_519");
+		}
+
+		// validate msg_779
+		if (otSet.isEarlyOTUse() == false && otSet.getTimezone().isStartLessThan(emTimezone.getTimezone())) {
+			throw new BusinessException("Msg_779");
+		}
+
+		// validate msg_780
+		if (otSet.isEarlyOTUse() == true && !otSet.getTimezone().isStartLessThan(emTimezone.getTimezone())) {
+			throw new BusinessException("Msg_780");
 		}
 	}
 }
