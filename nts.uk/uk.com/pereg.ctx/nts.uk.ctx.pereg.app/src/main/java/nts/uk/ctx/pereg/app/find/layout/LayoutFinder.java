@@ -329,18 +329,16 @@ public class LayoutFinder {
 					List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
 							perInfoCategory.getPersonInfoCategoryId());
 					if (!perInfoCtgDatas.isEmpty()) {
-						PerInfoCtgData perInfoCtgData = perInfoCtgDatas.get(0);
-						List<PersonInfoItemData> dataItems = perInItemDataRepo
-								.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-						matchPersDataForSingleClsItem(classItemList, dataItems);
+						String recordId = perInfoCtgDatas.get(0).getRecordId();
+						List<PersonInfoItemData> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId);
+						matchPersDataForSingleClsItem(recordId, classItemList, dataItems);
 					}
 				} else {
-					EmpInfoCtgData perInfoCtgData = empInCtgDataRepo
-							.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId())
-							.get();
-					List<EmpInfoItemData> dataItems = empInItemDataRepo
-							.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-					matchEmpDataForDefItems(classItemList, dataItems);
+					String recordId = empInCtgDataRepo
+							.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId()).get()
+							.getRecordId();
+					List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId);
+					matchEmpDataForDefItems(recordId, classItemList, dataItems);
 				}
 				break;
 			case CONTINUOUSHISTORY:
@@ -376,15 +374,21 @@ public class LayoutFinder {
 	}
 
 	/**
+	 * Target: map optional data with definition item. Person case
+	 * @param recordId
 	 * @param classItemList
 	 * @param dataItems
-	 *            Target: map optional data with definition item. Person case
 	 */
-	private void matchPersDataForSingleClsItem(List<LayoutPersonInfoClsDto> classItemList,
+	private void matchPersDataForSingleClsItem(String recordId, List<LayoutPersonInfoClsDto> classItemList,
 			List<PersonInfoItemData> dataItems) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				
+				// recordId
+				valueItem.setRecordId(recordId);
+				
+				// data
 				for (PersonInfoItemData dataItem : dataItems) {
 					if (valueItem.getItemCode().equals(dataItem.getItemCode().v())) {
 						valueItem.setValue(dataItem.getDataState().getValue());
@@ -396,14 +400,20 @@ public class LayoutFinder {
 	}
 
 	/**
-	 * @param authClassItem
+	 * Target: map optional data with definition item. employee case
+	 * @param recordId
+	 * @param classItemList
 	 * @param dataItems
-	 *            Target: map optional data with definition item. employee case
 	 */
-	private void matchEmpDataForDefItems(List<LayoutPersonInfoClsDto> classItemList, List<EmpInfoItemData> dataItems) {
+	private void matchEmpDataForDefItems(String recordId, List<LayoutPersonInfoClsDto> classItemList, List<EmpInfoItemData> dataItems) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				
+				// recordId
+				valueItem.setRecordId(recordId);
+				
+				// data
 				for (EmpInfoItemData dataItem : dataItems) {
 					if (valueItem.getItemCode().equals(dataItem.getItemCode().v())) {
 						valueItem.setValue(dataItem.getDataState().getValue());
@@ -427,8 +437,9 @@ public class LayoutFinder {
 		String startDateId = dateRangeItem.getStartDateItemId();
 		String endDateId = dateRangeItem.getEndDateItemId();
 		for (PerInfoCtgData perInfoCtgData : perInfoCtgDatas) {
-			List<PersonInfoItemData> dataItems = perInItemDataRepo
-					.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+			String recordId = perInfoCtgData.getRecordId();
+
+			List<PersonInfoItemData> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId);
 
 			Optional<PersonInfoItemData> startDateOpt = dataItems.stream()
 					.filter(column -> column.getPerInfoItemDefId().equals(startDateId)).findFirst();
@@ -439,7 +450,7 @@ public class LayoutFinder {
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
 				if (stardardDate.after(startDateOpt.get().getDataState().getDateValue())
 						&& stardardDate.before(endDateOpt.get().getDataState().getDateValue())) {
-					matchPersDataForSingleClsItem(classItemList, dataItems);
+					matchPersDataForSingleClsItem(recordId, classItemList, dataItems);
 					break;
 				}
 			}
@@ -462,7 +473,8 @@ public class LayoutFinder {
 		String endDateId = dateRangeItem.getEndDateItemId();
 
 		for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
-			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
+			String recordId = empInfoCtgData.getRecordId();
+			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId);
 
 			Optional<EmpInfoItemData> startDateOpt = dataItems.stream()
 					.filter(column -> column.getPerInfoDefId().equals(startDateId)).findFirst();
@@ -472,7 +484,7 @@ public class LayoutFinder {
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
 				if (stardardDate.after(startDateOpt.get().getDataState().getDateValue())
 						&& stardardDate.before(endDateOpt.get().getDataState().getDateValue())) {
-					matchEmpDataForDefItems(classItemList, dataItems);
+					matchEmpDataForDefItems(recordId, classItemList, dataItems);
 					break;
 				}
 			}

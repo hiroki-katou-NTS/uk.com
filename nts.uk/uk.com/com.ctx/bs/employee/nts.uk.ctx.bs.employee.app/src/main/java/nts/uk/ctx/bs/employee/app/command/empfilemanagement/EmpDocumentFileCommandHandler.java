@@ -25,7 +25,7 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 
 		AddEmpDocumentFileCommand commad = context.getCommand();
 
-		List<PersonFileManagement> listEmpfile = empFileManagementRepo.getDataByParams(commad.getSid(), 2);
+		List<PersonFileManagement> listEmpfile = empFileManagementRepo.getDataByParams(commad.getPid(), 2);
 
 		Optional<PersonFileManagement> empFileMana = empFileManagementRepo.getEmpMana(commad.getFileid());
 		if (empFileMana.isPresent()) {
@@ -35,7 +35,7 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 
 		} else {
 			// insert
-			PersonFileManagement domain = PersonFileManagement.createFromJavaType(commad.getSid(), commad.getFileid(),
+			PersonFileManagement domain = PersonFileManagement.createFromJavaType(commad.getPid(), commad.getFileid(),
 					2, commad.getUploadOrder());
 			empFileManagementRepo.insert(domain);
 		}

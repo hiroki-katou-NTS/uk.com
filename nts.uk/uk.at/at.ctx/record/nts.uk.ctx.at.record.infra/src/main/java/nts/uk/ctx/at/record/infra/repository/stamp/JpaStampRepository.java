@@ -32,10 +32,18 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	private static StampItem toDomainStampOnly(Object[] object) {
 		KwkdtStamp entity = (KwkdtStamp) object[0];
 		// Set empty value for 2 record not exist in Stamp Entity.
-		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,
-				entity.kwkdtStampPK.attendanceTime, entity.stampCombinationAtr, entity.siftCd, entity.stampMethod,
-				entity.kwkdtStampPK.stampAtr, entity.workLocationCd, "", entity.stampReason,
-				entity.kwkdtStampPK.stampDate, "");
+		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,				
+				entity.kwkdtStampPK.attendanceTime, 
+				entity.stampCombinationAtr, 
+				entity.siftCd, 
+				entity.stampMethod,
+				entity.kwkdtStampPK.stampAtr, 
+				entity.workLocationCd, 
+				"", 
+				entity.goOutReason,
+				entity.kwkdtStampPK.stampDate, 
+				"",
+				entity.reflectedAtr);
 		return domain;
 	}
 
@@ -44,9 +52,17 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 		String workLocationName = (String) object[1];
 		KwkdtStamp entity = (KwkdtStamp) object[2];
 		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,
-				entity.kwkdtStampPK.attendanceTime, entity.stampCombinationAtr, entity.siftCd, entity.stampMethod,
-				entity.kwkdtStampPK.stampAtr, entity.workLocationCd, workLocationName, entity.stampReason,
-				entity.kwkdtStampPK.stampDate, personId);
+				entity.kwkdtStampPK.attendanceTime, 
+				entity.stampCombinationAtr, 
+				entity.siftCd, 
+				entity.stampMethod,
+				entity.kwkdtStampPK.stampAtr, 
+				entity.workLocationCd, 
+				workLocationName, 
+				entity.goOutReason,
+				entity.kwkdtStampPK.stampDate, 
+				personId,
+				entity.reflectedAtr);
 		return domain;
 	}
 

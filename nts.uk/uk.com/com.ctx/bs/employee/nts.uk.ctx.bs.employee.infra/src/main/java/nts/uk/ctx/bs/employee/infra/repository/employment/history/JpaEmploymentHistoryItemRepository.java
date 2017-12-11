@@ -79,7 +79,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	}
 
 	@Override
-	public void adḍ̣̣̣(EmploymentHistoryItem domain) {
+	public void add(EmploymentHistoryItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
