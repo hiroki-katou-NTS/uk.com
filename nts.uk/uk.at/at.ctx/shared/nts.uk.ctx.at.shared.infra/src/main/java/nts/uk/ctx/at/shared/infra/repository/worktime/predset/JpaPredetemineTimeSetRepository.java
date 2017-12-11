@@ -15,8 +15,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet_;
@@ -28,10 +28,10 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet_
  * The Class JpaPredetemineTimeSetRepository.
  */
 @Stateless
-public class JpaPredetemineTimeSetRepository extends JpaRepository implements PredetemineTimeSetRepository {
+public class JpaPredetemineTimeSetRepository extends JpaRepository implements PredetemineTimeSettingRepository {
 
 	@Override
-	public PredetemineTimeSet findByWorkTimeCode(String companyId, String workTimeCode) {
+	public PredetemineTimeSetting findByWorkTimeCode(String companyId, String workTimeCode) {
 		// get entity manager
 		EntityManager em1 = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder1 = em1.getCriteriaBuilder();
@@ -74,7 +74,7 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 
 		List<KshmtWorkTimeSheetSet> lstKshmtWorkTimeSheetSet = em2.createQuery(cq2).getResultList();
 
-		return new PredetemineTimeSet(new JpaPredetemineTimeGetMemento(kwtstWorkTimeSet, lstKshmtWorkTimeSheetSet));
+		return new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(kwtstWorkTimeSet, lstKshmtWorkTimeSheetSet));
 	}
 
 }

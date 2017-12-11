@@ -242,6 +242,7 @@ module nts.uk.com.view.cmm018.shr {
             /**会社名*/
             companyName: string;
             workplaceId: string;
+            employeeId: string;
             lstCompanyRoot: Array<CompanyAppRootDto>;
             lstWorkplaceRoot: Array<WorkPlaceAppRootDto>;
             lstPersonRoot: Array<PersonAppRootDto>;

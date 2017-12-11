@@ -15,7 +15,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.pred.PredCommand;
 import nts.uk.ctx.at.shared.app.command.pred.PredCommandHandler;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.PredetemineTimeSetFinder;
-import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSetDto;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
 
 /**
  * The Class PredTimeSetWebService.
@@ -41,7 +41,7 @@ public class PredTimeSetWebService extends WebService {
 	 */
 	@POST
 	@Path("findByWorkTimeCode/{workTimeCode}")
-	public PredetemineTimeSetDto findByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode) {
+	public PredetemineTimeSettingDto findByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode) {
 		return this.predetemineTimeSetFinder.findByWorkTimeCode(workTimeCode);
 	}
 

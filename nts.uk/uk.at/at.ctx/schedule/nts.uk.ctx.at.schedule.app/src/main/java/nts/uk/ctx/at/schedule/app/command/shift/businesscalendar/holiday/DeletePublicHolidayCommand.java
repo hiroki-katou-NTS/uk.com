@@ -19,5 +19,5 @@ import lombok.Setter;
 
 public class DeletePublicHolidayCommand {
 
-	private BigDecimal date;
+	private String date;
 }

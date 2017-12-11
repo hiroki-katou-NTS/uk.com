@@ -26,7 +26,7 @@ public class ErrorAlarmWorkRecordDto {
 	private int typeAtr;
 
 	/* 表示メッセージ */
-	private String displayMessage;
+	private String eralCheckId;
 
 	/* メッセージを太字にする */
 	private int boldAtr;

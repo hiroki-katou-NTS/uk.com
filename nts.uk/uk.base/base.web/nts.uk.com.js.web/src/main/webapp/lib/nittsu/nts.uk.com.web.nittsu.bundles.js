@@ -841,6 +841,7 @@ var nts;
                 allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
                 allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
                 allHiragana: /^[ぁ-ん　ー ]*$/,
+                workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/
             };
             /**
              * 文字列の半角文字数を数える（Unicode用）
@@ -1073,6 +1074,17 @@ var nts;
             }
             text_3.halfInt = halfInt;
             /**
+             * Determinies if text is workplace code
+             * @param text text to check
+             */
+            function workplaceCode(text) {
+                return {
+                    probe: regexp.workplaceCode.test(text),
+                    messageId: 'FND_E_ALPHANUMERIC'
+                };
+            }
+            text_3.workplaceCode = workplaceCode;
+            /**
              * 文字列中のHTML記号をサニタイズする
              * @param text 変換対象の文字列
              */
@@ -1260,13 +1272,17 @@ var nts;
                 Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
                 Any: new CharType('全角', 1, nts.uk.text.anyChar),
                 Kana: new CharType('カナ', 1, nts.uk.text.allFullKatakana),
-                HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt)
+                HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt),
+                WorkplaceCode: new CharType('半角英数字', 0.5, nts.uk.text.workplaceCode)
             };
             function getCharType(primitiveValueName) {
                 var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                 if (constraint === undefined)
                     return null;
-                if (constraint.charType === undefined)
+                if (primitiveValueName === "WorkplaceCode" && !constraint.charType) {
+                    constraint.charType = "WorkplaceCode";
+                }
+                else if (constraint.charType === undefined)
                     constraint.charType = "Any";
                 var charType = charTypes[constraint.charType];
                 if (charType === undefined) {
@@ -1761,17 +1777,6 @@ var nts;
                 return result;
             }
             time_1.formatYearMonth = formatYearMonth;
-            /**
-            * Format MonthDay
-            * @param  {any} [monthDay]  Input MonthDay
-            * @return {string}          Formatted MonthDay
-            */
-            function formatMonthDayLocalized(monthDay) {
-                monthDay = String(monthDay);
-                monthDay = uk.text.padLeft(monthDay, '0', 4);
-                return moment.utc(monthDay, "MMDD").format("MMMDo");
-            }
-            time_1.formatMonthDayLocalized = formatMonthDayLocalized;
             /**
             * Format by pattern
             * @param  {Date}   [date]		 Input date
@@ -3272,9 +3277,9 @@ var nts;
                 function checkCharType(inputText, charType) {
                     var result = new ValidationResult();
                     var validateResult;
-                    if (!util.isNullOrUndefined(this.charType)) {
-                        inputText = autoConvertText(inputText, this.charType);
-                        validateResult = this.charType.validate(inputText);
+                    if (!util.isNullOrUndefined(charType)) {
+                        inputText = autoConvertText(inputText, charType);
+                        validateResult = charType.validate(inputText);
                         if (!validateResult.isValid) {
                             result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !util.isNullOrUndefined(this.constraint)
                                     ? (!util.isNullOrUndefined(this.constraint.maxLength)
@@ -3286,13 +3291,13 @@ var nts;
                     return result;
                 }
                 function autoConvertText(inputText, charType) {
-                    if (this.charType.viewName === '半角英数字') {
+                    if (charType.viewName === '半角英数字') {
                         inputText = uk.text.toUpperCase(inputText);
                     }
-                    else if (this.charType.viewName === 'カタカナ') {
+                    else if (charType.viewName === 'カタカナ') {
                         inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
                     }
-                    else if (this.charType.viewName === 'カナ') {
+                    else if (charType.viewName === 'カナ') {
                         inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
                     }
                     return inputText;
@@ -3313,7 +3318,10 @@ var nts;
                                 return result;
                             }
                         }
-                        var validateResult;
+                        else if (util.isNullOrEmpty(inputText)) {
+                            result.success(inputText);
+                            return result;
+                        }
                         // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
@@ -3322,7 +3330,7 @@ var nts;
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
                                 return result;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
@@ -3332,7 +3340,6 @@ var nts;
                                 }
                             }
                         }
-                        result.success(inputText);
                         return result;
                     };
                     return WorkplaceCodeValidator;
@@ -4565,6 +4572,7 @@ var nts;
                                     container.remove();
                                     then();
                                 });
+                                container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
                             },
                             close: function (event) {
                             }
@@ -6267,29 +6275,6 @@ var nts;
                                 var $row = $("<tr></tr>");
                                 $row.click(function () {
                                     error.$control[0].focus();
-                                    var $dialogContainer = $dialog.closest("[role='dialog']");
-                                    var $self = nts.uk.ui.windows.getSelf();
-                                    var additonalTop = 0;
-                                    var additonalLeft = 0;
-                                    if (!$self.isRoot) {
-                                        var $currentDialog = $self.$dialog.closest("[role='dialog']");
-                                        var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
-                                        var currentDialogOffset = $currentDialog.offset();
-                                        additonalTop = currentDialogOffset.top + $currentHeadBar.height();
-                                        additonalLeft = currentDialogOffset.left;
-                                    }
-                                    var currentControlOffset = error.$control.offset();
-                                    var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - window.scrollY;
-                                    var left = additonalLeft + currentControlOffset.left - window.scrollX;
-                                    var $errorDialogOffset = $dialogContainer.offset();
-                                    var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
-                                    var maxTop = $errorDialogOffset.top + $dialogContainer.height();
-                                    if ($errorDialogOffset.top < top && top < maxTop) {
-                                        $dialogContainer.css("top", top + 15);
-                                    }
-                                    if (($errorDialogOffset.left < left && left < maxLeft)) {
-                                        $dialogContainer.css("left", left);
-                                    }
                                 });
                                 $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
                                 headers.forEach(function (header) {
@@ -6360,7 +6345,7 @@ var nts;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
-                        var immediate = false;
+                        var immediate = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var valueUpdate = (immediate === true) ? 'input' : 'change';
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
@@ -6496,25 +6481,30 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        //            $input.on("keyup", (e) => {
-                        //                var code = e.keyCode || e.which;
-                        //                if (!readonly && code.toString() !== '9') {
-                        //                    let validator = self.getValidator(data);
-                        //                    var newText = $input.val();
-                        //                    var result = validator.validate(newText,{ isCheckExpression: true });
-                        //                    $input.data("inputting", true);
-                        //                    $input.ntsError('clear');
-                        //                    if (!result.isValid) {
-                        //                        $input.ntsError('set', result.errorMessage, result.errorCode);
-                        //                    } 
-                        //                    
-                        //                    setTimeout(function(){
-                        //                        $input.val(newText);
-                        //                        $input.focus(); 
-                        //                        $input.data("inputting", false);
-                        //                    }, 10);
-                        //                }
-                        //            });
+                        $input.on("keyup", function (e) {
+                            var code = e.keyCode || e.which;
+                            if (!readonly && code.toString() !== '9') {
+                                var validator = self.getValidator(data);
+                                var newText = $input.val();
+                                var result = validator.validate(newText, { isCheckExpression: true });
+                                //                    $input.data("inputting", true);
+                                var hasError = $input.data("hasError");
+                                $input.ntsError('clear');
+                                if (!result.isValid) {
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                }
+                                if (hasError && $input.data("hasError") && !$input.is(":focus")) {
+                                    setTimeout(function () {
+                                        setTimeout(function () { return $input.focus(); }, 100);
+                                    }, 1);
+                                }
+                            }
+                            //                setTimeout(function(){
+                            //                    $input.val(newText);
+                            //                    $input.focus(); 
+                            //                    $input.data("inputting", false);
+                            //                }, 10);
+                        });
                         // Format on blur
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
@@ -11555,18 +11545,13 @@ var nts;
                             }
                             var $container = $("<div class='nts-fixed-table cf'/>");
                             $originTable.after($container);
-                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid nts-fixed-header'/>").css({ "max-width": viewWidth });
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").css({ "max-width": viewWidth });
                             var $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(width);
                             var $headerTable = $("<table class='fixed-table'></table>");
                             $headerTable.append($colgroup.clone()).append($thead);
                             $headerTable.appendTo($headerWrapper);
                             $headerContainer.append($headerWrapper);
-                            var $header = $("<div>");
-                            $headerContainer.appendTo($header);
-                            $header.appendTo($container);
-                            $header.height($headerContainer.height());
-                            var $headerScroll = $("<div>", { "class": "scroll-header nts-fixed-header", width: 17, height: $headerContainer.height() });
-                            $headerScroll.appendTo($header);
+                            $headerContainer.appendTo($container);
                             $originTable.addClass("nts-fixed-body-table");
                             var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
                             var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
@@ -11576,31 +11561,15 @@ var nts;
                                 bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
                             }
                             var resizeEvent = function () {
-                                $header.height($headerContainer.height());
                                 if (bodyHeight < $originTable.height()) {
                                     if (/Edge/.test(navigator.userAgent)) {
-                                        $headerScroll.width(12);
                                         $bodyContainer.css("padding-right", "12px");
                                     }
                                     else {
-                                        $headerScroll.width(17);
                                         $bodyContainer.css("padding-right", "17px");
                                     }
                                 }
                                 else {
-                                    //                        if($originTable.height() !== 0){
-                                    //                            if(/Edge/.test(navigator.userAgent)){
-                                    //                                $bodyWrapper.height($originTable.height());
-                                    //                                $bodyContainer.height($originTable.height() + 12);
-                                    //                            }else {
-                                    //                                $bodyWrapper.height($originTable.height());
-                                    //                                $bodyContainer.height($originTable.height() + 17);
-                                    //                            } 
-                                    //                            $headerScroll.width(0);   
-                                    //                            $bodyWrapper.removeClass("body-no-record");   
-                                    //                        } else {
-                                    //                            $bodyWrapper.addClass("body-no-record");    
-                                    //                        }
                                     $bodyContainer.css("padding-right", "0px");
                                 }
                                 setTimeout(resizeEvent, 20);
@@ -11608,7 +11577,7 @@ var nts;
                             $bodyContainer.scroll(function (evt, ui) {
                                 var bodyScroll = $bodyContainer.scrollLeft();
                                 if (bodyScroll > 0) {
-                                    bodyScroll = bodyScroll + 1.25;
+                                    bodyScroll = bodyScroll + 1.5;
                                     $headerContainer.css({ "border-left": "1px solid #CCC" });
                                 }
                                 else {
@@ -12699,8 +12668,6 @@ var nts;
                                 var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
                                 isEnable = isEnable !== undefined ? isEnable : controlDef.enable === undefined ? true : controlDef.enable;
                                 var data = {
-                                    rowId: rowId,
-                                    columnKey: column.key,
                                     controlDef: controlDef,
                                     update: update,
                                     deleteRow: deleteRow,
@@ -14418,8 +14385,7 @@ var nts;
                             LinkLabel.prototype.draw = function (data) {
                                 return $('<div/>').addClass(this.containerClass()).append($("<a/>")
                                     .addClass("link-button").css({ backgroundColor: "inherit", color: "deepskyblue" })
-                                    .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey))
-                                    .data("click", data.controlDef.click));
+                                    .text(data.initValue).on("click", data.controlDef.click)).data("click", data.controlDef.click);
                             };
                             LinkLabel.prototype.enable = function ($container) {
                                 var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
@@ -18540,6 +18506,7 @@ var nts;
                                     });
                                 }
                                 else if (!uk.util.isNullOrUndefined(bodyCellStyleFt)) {
+                                    var count_1 = 0;
                                     _.forEach(bodyCellStyleFt.decorator, function (colorDef) {
                                         if (key === colorDef.columnKey && data[self.options.primaryKey] === colorDef.rowId) {
                                             var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
@@ -18550,6 +18517,8 @@ var nts;
                                                     $child.data("hide", $child.text());
                                                     $child.text("");
                                                 }
+                                                if (++count_1 >= 2)
+                                                    return false;
                                             }
                                             else {
                                                 $cell.addClass(colorDef.clazz);
@@ -22766,12 +22735,6 @@ var nts;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
                                 break;
-                            case "lockCell":
-                                lockCell(self, params[0], params[1]);
-                                break;
-                            case "unlockCell":
-                                unlockCell(self, params[0], params[1]);
-                                break;
                             case "popupValue":
                                 returnPopupValue(self, params[0]);
                                 break;
@@ -23144,81 +23107,6 @@ var nts;
                                 break;
                         }
                         $grid.data(histType, null);
-                    }
-                    /**
-                     * Lock cell.
-                     */
-                    function lockCell($container, rowId, columnKey) {
-                        var $table = helper.getMainTable($container);
-                        var ds = helper.getDataSource($table);
-                        var pk = helper.getPrimaryKey($table);
-                        var i = -1;
-                        _.forEach(ds, function (r, j) {
-                            if (r[pk] === rowId) {
-                                i = j;
-                                return false;
-                            }
-                        });
-                        if (i === -1)
-                            return;
-                        var locks = $table.data(internal.DET);
-                        var found = -1;
-                        if (locks && locks[i] && locks[i].length > 0) {
-                            _.forEach(locks[i], function (c, j) {
-                                if (c === columnKey) {
-                                    found = j;
-                                    return false;
-                                }
-                            });
-                        }
-                        if (found === -1) {
-                            var $cell = selection.cellAt($table, i, columnKey);
-                            if (!locks) {
-                                locks = {};
-                                locks[i] = [columnKey];
-                                $table.data(internal.DET, locks);
-                            }
-                            else if (locks && !locks[i]) {
-                                locks[i] = [columnKey];
-                            }
-                            else
-                                locks[i].push(columnKey);
-                            helper.markCellWith(style.DET_CLS, $cell);
-                        }
-                    }
-                    /**
-                     * Unlock cell.
-                     */
-                    function unlockCell($container, rowId, columnKey) {
-                        var $table = helper.getMainTable($container);
-                        var ds = helper.getDataSource($table);
-                        var pk = helper.getPrimaryKey($table);
-                        var i = -1;
-                        _.forEach(ds, function (r, j) {
-                            if (r[pk] === rowId) {
-                                i = j;
-                                return false;
-                            }
-                        });
-                        if (i === -1)
-                            return;
-                        var locks = $table.data(internal.DET);
-                        var found = -1;
-                        if (locks && locks[i] && locks[i].length > 0) {
-                            _.forEach(locks[i], function (c, j) {
-                                if (c === columnKey) {
-                                    found = j;
-                                    return false;
-                                }
-                            });
-                        }
-                        if (found > -1) {
-                            var $cell = selection.cellAt($table, i, columnKey);
-                            locks[i].splice(found, 1);
-                            if (locks[i].length === 0)
-                                delete locks[i];
-                            helper.stripCellWith(style.DET_CLS, $cell);
-                        }
                     }
                     /**
                      * Return popup value.

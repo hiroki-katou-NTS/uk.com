@@ -1,8 +1,8 @@
 module ksu001.ja.viewmodel {
 
     export class ScreenModel {
-        txtName: KnockoutObservable<string> = ko.observableArray('');
-        txtName1: KnockoutObservable<string> = ko.observableArray('');
+        txtName: KnockoutObservable<string> = ko.observable('');
+        txtName1: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
             { code: '1', name: '四捨五入' },
             { code: '2', name: '切り上げ' }
@@ -20,11 +20,15 @@ module ksu001.ja.viewmodel {
             let self = this;
 
             self.contextMenu = [
-                { id: "cut", text: "切り取り", action: self.openDialogJB },
-                { id: "copy", text: "名前を変更", action: null },
-                { id: "delete", text: "削除", action: self.remove }
+                { id: "copy", text: nts.uk.resource.getText("KSU001_1706"), action: null },
+                { id: "delete", text: nts.uk.resource.getText("KSU001_1708"), action: self.remove }
             ];
-            $("#test2").ntsButtonTable("init", { row: 3, column: 10, source: self.source(), contextMenu: self.contextMenu, disableMenuOnDataNotSet: [1, 2], mode: "normal" });
+            $("#test2").ntsButtonTable("init", { row: 3, column: 10, source: self.source(), contextMenu: self.contextMenu, click: self.openDialogJB(), mode: "master" });
+        }
+
+        clear(): void {
+            let self = this;
+            self.source([]);
         }
 
         /**
@@ -39,7 +43,7 @@ module ksu001.ja.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
                 dfd.resolve();
             });
-            
+
             return dfd.promise();
         }
 

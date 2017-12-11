@@ -33,6 +33,17 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo_;
 @Stateless
 public class JpaWorkplaceInfoRepository extends JpaRepository implements WorkplaceInfoRepository {
 
+	/** The Constant MAX_ELEMENTS. */
+	private static final Integer MAX_ELEMENTS = 1000;
+	
+	/** The Constant FIND_WKP_DETAIL_LATEST. */
+	private static final String FIND_WKP_DETAIL_LATEST = "SELECT wkpInfor FROM BsymtWorkplaceHist AS wkp "
+			+ "INNER JOIN BsymtWorkplaceInfo AS wkpInfor ON wkp.bsymtWorkplaceHistPK.cid = wkpInfor.bsymtWorkplaceInfoPK.cid "
+			+ "AND wkp.bsymtWorkplaceHistPK.wkpid = wkpInfor.bsymtWorkplaceInfoPK.wkpid "
+			+ "AND wkp.bsymtWorkplaceHistPK.historyId = wkpInfor.bsymtWorkplaceInfoPK.historyId "
+			+ "WHERE wkp.bsymtWorkplaceHistPK.cid = :cid "
+			+ "AND wkp.endD = :endDateLatest";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -334,14 +345,40 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		// select root
 		cq.select(root);
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
-				.get(BsymtWorkplaceInfoPK_.wkpid).in(wkpIds));
+		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(wkpIds, MAX_ELEMENTS, (subList) -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
+					.get(BsymtWorkplaceInfoPK_.wkpid).in(subList));
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		return em.createQuery(cq).getResultList().stream()
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		
+		// check empty
+		if (CollectionUtil.isEmpty(resultList)) {
+			return new ArrayList<>();
+		}
+		
+		return resultList.stream()
+				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
+				.collect(Collectors.toList());
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findDetailLatestByWkpIds(java.lang.String)
+	 */
+	@Override
+	public List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId, GeneralDate endDateLatest) {
+		
+		List<BsymtWorkplaceInfo> resultList = this.queryProxy().query(FIND_WKP_DETAIL_LATEST, BsymtWorkplaceInfo.class)
+				.setParameter("cid", companyId)
+				.setParameter("endDateLatest", endDateLatest)
+				.getList();
+		return resultList.stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}

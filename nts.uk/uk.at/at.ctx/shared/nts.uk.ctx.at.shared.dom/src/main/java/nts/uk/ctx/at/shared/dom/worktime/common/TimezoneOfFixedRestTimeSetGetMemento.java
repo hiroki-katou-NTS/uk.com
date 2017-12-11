@@ -6,17 +6,15 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
-
 /**
  * The Interface TimezoneOfFixedRestTimeSetGetMemento.
  */
 public interface TimezoneOfFixedRestTimeSetGetMemento {
 
 	/**
-	 * Gets the timezone.
+	 * Gets the timezones.
 	 *
-	 * @return the timezone
+	 * @return the timezones
 	 */
-	List<DeductionTime> getTimezone();
+	List<DeductionTime> getTimezones();
 }

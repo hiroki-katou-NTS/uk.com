@@ -23,7 +23,7 @@ public class MustNotDuplicate<H extends HistoryItem<S, D>, S extends GeneralPeri
 				.anyMatch(e -> isDuplicated(e.span().compare(itemToBeAdded.span())));
 		
 		if (isDuplicated) {
-			throw new BusinessException("");
+			throw new BusinessException("Msg_106");
 		}
 	}
 
@@ -38,7 +38,7 @@ public class MustNotDuplicate<H extends HistoryItem<S, D>, S extends GeneralPeri
 				.anyMatch(e -> isDuplicated(e.span().compare(newSpan)));
 		
 		if (isDuplicated) {
-			throw new BusinessException("");
+			throw new BusinessException("Msg_107");
 		}
 	}
 

@@ -10,12 +10,15 @@
 			<title>#{i18n.getText('CPS001_1')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 920,
+					width : 1000,
 					height : 700
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-
 			<com:stylefile path="cps001.c.style.css" />
 			<com:scriptfile path="cps001.c.service.js" />
 			<com:scriptfile path="cps001.c.vm.js" />
@@ -69,6 +72,7 @@
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_56')}</div>
 						<input data-bind="ntsTextEditor: {
 							value: newCode,
+							constraint: 'EmployeeCode',
 							required: false,
 							enable: true,
 							readonly: false}" />
@@ -78,6 +82,7 @@
 						<input data-bind="ntsTextEditor: {
 							value: newName,
 							required: false,
+							constraint: 'BusinessName',
 							enable: true,
 							readonly: false}" />
 					</div>

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
 /**
  * @author hungnm
@@ -19,9 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
 @EqualsAndHashCode(callSuper = false)
 @Getter
 public class ErrorAlarmMessage extends DomainObject {
-
-	/* 表示メッセージ */
-	private DisplayMessage displayMessage;
 
 	/* メッセージを太字にする */
 	private Boolean boldAtr;
@@ -35,7 +31,7 @@ public class ErrorAlarmMessage extends DomainObject {
 	 * @param String displayMessage, boolean boldAtr, String messageColor
 	 * @return ErrorAlarmMessage
 	 **/
-	public static ErrorAlarmMessage createFromJavaType(String displayMessage, boolean boldAtr, String messageColor) {
-		return new ErrorAlarmMessage(new DisplayMessage(displayMessage), boldAtr, new ColorCode(messageColor));
+	public static ErrorAlarmMessage createFromJavaType(boolean boldAtr, String messageColor) {
+		return new ErrorAlarmMessage(boldAtr, new ColorCode(messageColor));
 	}
 }

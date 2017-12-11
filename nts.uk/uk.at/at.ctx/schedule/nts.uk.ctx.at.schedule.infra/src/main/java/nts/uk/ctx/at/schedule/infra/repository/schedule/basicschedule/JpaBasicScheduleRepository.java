@@ -63,9 +63,13 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
 		this.commandProxy().insert(x);
 		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
-		this.insertAllWorkScheduleTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate(),
-				bSchedule.getWorkScheduleTimeZones());
-		
+		List<WorkScheduleTimeZone> list = new ArrayList<>();
+		bSchedule.getWorkScheduleTimeZones().stream()
+				.filter(map -> (map.getScheduleStartClock() != null && map.getScheduleEndClock() != null))
+				.map(map -> list.add(map)).collect(Collectors.toList());
+		if (list.size() > 0) {
+			this.insertAllWorkScheduleTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate(), list);
+		}
 	}
 
 	/*
@@ -82,8 +86,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
 		this.commandProxy().updateAll(this.updateWorkScheduleTimeZone(bSchedule));
 	}
+
 	/**
 	 * update work schedule time zone
+	 * 
 	 * @param bSchedule
 	 * @return
 	 */
@@ -134,16 +140,18 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		return Optional.empty();
 	}
-	
+
 	/**
 	 * Find by id.
 	 *
-	 * @param employeeId the employee id
-	 * @param date the date
+	 * @param employeeId
+	 *            the employee id
+	 * @param date
+	 *            the date
 	 * @return the optional
 	 */
-	private Optional<KscdtBasicSchedule> findById(String employeeId, GeneralDate date){
-		return this.queryProxy().find(new KscdtBasicSchedulePK(employeeId,date), KscdtBasicSchedule.class);
+	private Optional<KscdtBasicSchedule> findById(String employeeId, GeneralDate date) {
+		return this.queryProxy().find(new KscdtBasicSchedulePK(employeeId, date), KscdtBasicSchedule.class);
 	}
 
 	/*
@@ -160,8 +168,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KSCMT_CHILD_CARE_SCH (KscmtChildCareSch SQL)
-		CriteriaQuery<KscdtScheChildCare> cq = criteriaBuilder
-				.createQuery(KscdtScheChildCare.class);
+		CriteriaQuery<KscdtScheChildCare> cq = criteriaBuilder.createQuery(KscdtScheChildCare.class);
 
 		// root data
 		Root<KscdtScheChildCare> root = cq.from(KscdtScheChildCare.class);
@@ -173,21 +180,19 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.sid),
-				employeeId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.sid), employeeId));
 
 		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd),
-				baseDate));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd), baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by child care number asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KscdtScheChildCare_.kscdtScheChildCarePK)
-				.get(KscdtScheChildCarePK_.childCareNumber)));
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.childCareNumber)));
 
 		// create query
 		TypedQuery<KscdtScheChildCare> query = em.createQuery(cq);
@@ -223,19 +228,18 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.sid), employeeId));
+		lstpredicateWhere.add(
+				criteriaBuilder.equal(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.sid), employeeId));
 
 		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.ymd), baseDate));
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.ymd), baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by no id asc
-		cq.orderBy(criteriaBuilder
-				.asc(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.no)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.no)));
 
 		// create query
 		TypedQuery<KscdtScheFee> query = em.createQuery(cq);
@@ -248,9 +252,12 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	/**
 	 * Insert all child care.
 	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
-	 * @param childCareSchedules the child care schedules
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
+	 * @param childCareSchedules
+	 *            the child care schedules
 	 */
 	private void insertAllChildCare(String employeeId, GeneralDate baseDate,
 			List<ChildCareSchedule> childCareSchedules) {
@@ -264,12 +271,12 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}).collect(Collectors.toList());
 		this.commandProxy().insertAll(entityChildCares);
 	}
-	
-	
+
 	/**
 	 * To domain child care.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the child care schedule
 	 */
 	private ChildCareSchedule toDomainChildCare(KscdtScheChildCare entity) {
@@ -279,7 +286,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	/**
 	 * To domain person fee.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the work schedule person fee
 	 */
 	private WorkSchedulePersonFee toDomainPersonFee(KscdtScheFee entity) {
@@ -289,7 +297,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the kscdt basic schedule
 	 */
 	private KscdtBasicSchedule toEntity(BasicSchedule domain) {
@@ -297,10 +306,12 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		domain.saveToMemento(new JpaBasicScheduleSetMemento(entity));
 		return entity;
 	}
+
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the kscdt basic schedule
 	 */
 	private KscdtBasicSchedule toEntityUpdate(BasicSchedule domain) {
@@ -317,8 +328,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
-	 * @param entityTimeZones the entity time zones
+	 * @param entity
+	 *            the entity
+	 * @param entityTimeZones
+	 *            the entity time zones
 	 * @return the basic schedule
 	 */
 	private BasicSchedule toDomain(KscdtBasicSchedule entity, List<KscdtWorkScheduleTimeZone> entityTimeZones) {
@@ -329,9 +342,12 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	/**
 	 * Insert all work schedule time zone.
 	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
-	 * @param list the list
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
+	 * @param list
+	 *            the list
 	 */
 	private void insertAllWorkScheduleTimeZone(String employeeId, GeneralDate baseDate,
 			List<WorkScheduleTimeZone> list) {
@@ -345,15 +361,17 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}).collect(Collectors.toList());
 		this.commandProxy().insertAll(entityWorkTimeZone);
 	}
-	
+
 	/**
 	 * Removes the all child care.
 	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
 	 */
 	private void removeAllChildCare(String employeeId, GeneralDate baseDate) {
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -376,17 +394,20 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd), baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
 		em.createQuery(cq).executeUpdate();
 
 	}
+
 	/**
 	 * Removes the all child care.
 	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
 	 */
 	private void removeAllTimeZone(String employeeId, GeneralDate baseDate) {
 
@@ -415,7 +436,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
 		em.createQuery(cq).executeUpdate();
@@ -435,12 +456,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		return this.queryProxy().find(new KscdtWorkScheduleTimeZonePK(employeeId, date, scheduleCnt),
 				KscdtWorkScheduleTimeZone.class);
 	}
-	
+
 	/**
 	 * Find all work schedule time zone.
 	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
 	 * @return the list
 	 */
 	private List<KscdtWorkScheduleTimeZone> findAllWorkScheduleTimeZone(String employeeId, GeneralDate baseDate) {
@@ -471,7 +494,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
 		TypedQuery<KscdtWorkScheduleTimeZone> query = em.createQuery(cq);

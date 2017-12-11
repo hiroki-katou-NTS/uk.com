@@ -34,7 +34,7 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 public class ComboBoxRetrieveFactory {
 
 	@Inject
-	private static SelectionFinder selectionFinder;
+	private SelectionFinder selectionFinder;
 	
 	private static Map<String, Class<?>> enumMap;
 	static  {
@@ -61,7 +61,7 @@ public class ComboBoxRetrieveFactory {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, GeneralDate standardDate) {
+	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, GeneralDate standardDate) {
 		switch (selectionItemDto.getReferenceType()) {
 		case ENUM:
 			EnumRefConditionDto enumTypeDto = (EnumRefConditionDto) selectionItemDto;
@@ -78,7 +78,7 @@ public class ComboBoxRetrieveFactory {
 					.getAllSelectionByCompanyId(codeNameTypeDto.getTypeCode(), standardDate);
 			List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
 			for (SelectionInitDto selection : selectionList) {
-				lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionName(), selection.getSelectionId()));
+				lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), selection.getSelectionName()));
 			}
 			return lstComboBoxValue;
 		case DESIGNATED_MASTER:

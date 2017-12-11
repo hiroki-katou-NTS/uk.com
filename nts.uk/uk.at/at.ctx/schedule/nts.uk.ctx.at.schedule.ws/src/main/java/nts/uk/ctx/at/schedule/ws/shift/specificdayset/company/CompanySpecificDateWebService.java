@@ -32,15 +32,14 @@ public class CompanySpecificDateWebService extends WebService {
 	private DeleteCompanySpecificDateCommandHandler deleteCommand;
 
 	@POST
-	@Path("getcompanyspecificdaysetbydate/{processDate}")
-	public List<CompanySpecificDateDto> getCompanySpecificDateByCompany(@PathParam("processDate") int processDate) {
+	@Path("getcompanyspecificdaysetbydate")
+	public List<CompanySpecificDateDto> getCompanySpecificDateByCompany(String processDate) {
 		return this.find.getComSpecByDate(processDate);
 	}
 
 	@POST
-	@Path("getcompanyspecificdaysetbydatewithname/{processDate}")
-	public List<CompanySpecificDateDto> getCompanySpecificDateByCompanyWithName(
-			@PathParam("processDate") String processDate) {
+	@Path("getcompanyspecificdaysetbydatewithname")
+	public List<CompanySpecificDateDto> getCompanySpecificDateByCompanyWithName(String processDate) {
 		return this.find.getComSpecByDateWithName(processDate);
 	}
 	

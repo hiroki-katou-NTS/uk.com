@@ -6,5 +6,7 @@ import lombok.Data;
 public class DeleteWorkplaceSpecificDateCommand {
 	private String workPlaceId;
 	
-	private String yearMonth;
+	private String startDate;
+	
+	private String endDate;
 }

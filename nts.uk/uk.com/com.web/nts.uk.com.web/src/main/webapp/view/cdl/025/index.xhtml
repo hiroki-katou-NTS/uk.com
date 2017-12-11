@@ -7,7 +7,7 @@
 <body style="overflow: hidden;">
 	<ui:composition template="../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 470, height: 530 };</script>
+			<script>var dialogSize = { width: 430, height: 530 };</script>
 			<com:stylefile path="cdl025.a.main.css" />
 			
 			<com:scriptfile set="IGNITE" />
@@ -25,8 +25,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button  class="x-large proceed" data-bind="click: decision">#{i18n.getText('CDL025_6')}</button>
-				<button  data-bind="click: cancel">#{i18n.getText('CDL025_7')}</button>
+				<button class="x-large proceed" data-bind="click: decision">#{i18n.getText('CDL025_6')}</button>
+				<button data-bind="click: cancel">#{i18n.getText('CDL025_7')}</button>
 			</div>
 		</ui:define>
 		

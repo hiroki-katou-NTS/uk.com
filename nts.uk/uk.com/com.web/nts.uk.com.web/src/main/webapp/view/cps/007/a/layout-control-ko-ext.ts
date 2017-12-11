@@ -1256,30 +1256,22 @@ module nts.custombinding {
                                     switch (data.item.dataTypeValue) {
                                         default:
                                         case ITEM_SINGLE_TYPE.STRING:
-                                            return {
-                                                value: data.value ? String(data.value) : undefined,
-                                                typeData: 1
-                                            };
-                                        case ITEM_SINGLE_TYPE.NUMERIC:
-                                            return {
-                                                value: data.value ? Number(data.value) : undefined,
-                                                typeData: 2
-                                            };
-                                        case ITEM_SINGLE_TYPE.DATE:
-                                            return {
-                                                value: data.value ? moment.utc(data.value).toDate() : undefined,
-                                                typeData: 3
-                                            };
-                                        case ITEM_SINGLE_TYPE.TIME:
-                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                            return {
-                                                value: data.value ? Number(String(data.value).replace(/:/g, '')) : undefined,
-                                                typeData: 2
-                                            };
                                         case ITEM_SINGLE_TYPE.SELECTION:
                                             return {
                                                 value: data.value ? String(data.value) : undefined,
                                                 typeData: 1
+                                            };
+                                        case ITEM_SINGLE_TYPE.TIME:
+                                        case ITEM_SINGLE_TYPE.NUMERIC:
+                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                            return {
+                                                value: data.value ? String(data.value).replace(/:/g, '') : undefined,
+                                                typeData: 2
+                                            };
+                                        case ITEM_SINGLE_TYPE.DATE:
+                                            return {
+                                                value: data.value ? moment.utc(data.value).format("YYYY/MM/dd") : undefined,
+                                                typeData: 3
                                             };
                                     }
                                 };

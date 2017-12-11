@@ -8,48 +8,74 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoleRepository {
-	
+
 	/**
 	 * Find by id.
 	 *
-	 * @param roleId the role id
+	 * @param roleId
+	 *            the role id
 	 * @return Role
 	 */
 	List<Role> findById(String roleId);
-	
+
 	/**
 	 * Find by id
+	 * 
 	 * @param roleId
 	 * @return
 	 */
 	Optional<Role> findByRoleId(String roleId);
-	
+
+	/**
+	 * Find role by role code and role type
+	 * 
+	 * @param roleCode
+	 * @param RoleType
+	 * @return
+	 */
+	Optional<Role> findRoleByRoleCode(String roleCode, int roleType);
+
 	/**
 	 * Find by list role id.
 	 *
-	 * @param companyId the company id
-	 * @param lstRoleId the lst role id
+	 * @param companyId
+	 *            the company id
+	 * @param lstRoleId
+	 *            the lst role id
 	 * @return the list
 	 */
-	List<Role> findByListRoleId(String companyId,List<String> lstRoleId);
+	List<Role> findByListRoleId(String companyId, List<String> lstRoleId);
 	
 	/**
-	 *  insert new role
+	 * 
+	 * @param contractCD
+	 * @param RoleType
+	 * @param companyID
+	 * @return
+	 */
+	Optional<Role> findByContractCDRoleTypeAndCompanyID(String contractCD, int roleType, String companyID);
+
+	/**
+	 * insert new role
+	 * 
 	 * @param role
 	 */
 	void insert(Role role);
-	
+
 	/**
-	 *  update role
+	 * update role
+	 * 
 	 * @param role
 	 */
 	void update(Role role);
-	
-	/** remove role 
+
+	/**
+	 * remove role
+	 * 
 	 * @param roleId
 	 */
 	void remove(String roleId);
-	
+
 	/**
 	 * find by role type
 	 * 
@@ -58,7 +84,7 @@ public interface RoleRepository {
 	 * @return Role
 	 */
 	List<Role> findByType(String companyId, int roleType);
-	
+
 	/**
 	 * find by role type
 	 * 

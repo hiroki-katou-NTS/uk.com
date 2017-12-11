@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @Embeddable
 @AllArgsConstructor
@@ -21,9 +22,9 @@ public class KsmmtWpSpecDateSetPK implements Serializable{
 	public String workplaceId;
 
 	@Column(name = "SPECIFIC_DATE")
-	public BigDecimal specificDate;
+	public GeneralDate specificDate;
 
 	@Column(name = "SPECIFIC_DATE_ITEM_NO")
-	public BigDecimal specificDateItemNo;
+	public Integer specificDateItemNo;
 
 }
