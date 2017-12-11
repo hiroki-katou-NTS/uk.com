@@ -147,15 +147,6 @@ public class PrescribedTimezoneSetting extends DomainObject {
 			throw new BusinessException("Msg_778");
 		}
 		
-		// valid 時間帯.開始  < 時間帯.終了
-		boolean isValidTimeRange = this.lstTimezone.stream()
-				.filter(timezone -> timezone.getStart().lessThan(timezone.getEnd()))
-				.collect(Collectors.toList())
-				.isEmpty();
-		if (!isValidTimeRange) {
-			throw new BusinessException("Msg_770");
-		}
-		
 		// TODO: valid message Msg_516
 		
 		// valid: 2 時間帯 có 勤務NO=1 và 2 not overlap

@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 
 /**
  * The Class DeductionTime.
@@ -32,18 +31,6 @@ public class DeductionTime extends TimeZone {
 	public void saveToMemento(DeductionTimeSetMemento memento){
 		memento.setStart(this.start);
 		memento.setEnd(this.end);
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.dom.DomainObject#validate()
-	 */
-	@Override
-	public void validate() {
-		super.validate();
-		
-		if (this.start.greaterThanOrEqualTo(this.end)) {
-			throw new BusinessException("Msg_770");
-		}
 	}
 	
 	/* (non-Javadoc)

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -22,6 +23,17 @@ public class TimeZone extends DomainObject {
 	/** The end. */
 	// 終了
 	protected TimeWithDayAttr end;
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.start.greaterThanOrEqualTo(this.end)) {
+			throw new BusinessException("Msg_770");
+		}
+	}
 
 	/**
 	 * Checks if is overlap.
