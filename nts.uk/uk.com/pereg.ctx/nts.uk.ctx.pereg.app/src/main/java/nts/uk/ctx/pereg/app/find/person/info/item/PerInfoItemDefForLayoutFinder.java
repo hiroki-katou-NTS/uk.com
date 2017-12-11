@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,15 +11,14 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
-import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.CodeNameReferenceType;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
@@ -48,8 +46,8 @@ public class PerInfoItemDefForLayoutFinder {
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
 	
-	@Inject
-	private SelectionFinder selectionFinder;
+	@Inject 
+	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
 	
 	
 	/**
@@ -202,8 +200,7 @@ public class PerInfoItemDefForLayoutFinder {
 	
 	
 	private List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto){
-		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();
-		
-		 return lstComboBoxObject;
+		SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
+		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, GeneralDate.today());
 	}
 }
