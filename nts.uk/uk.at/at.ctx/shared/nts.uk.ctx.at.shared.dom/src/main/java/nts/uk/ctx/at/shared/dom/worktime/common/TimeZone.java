@@ -34,6 +34,16 @@ public class TimeZone extends DomainObject {
 	}
 
 	/**
+	 * Checks if is start less than.
+	 *
+	 * @param timezone the timezone
+	 * @return true, if is start less than
+	 */
+	public boolean isStartLessThan(TimeZone timezone) {
+		return this.start.lessThan(timezone.getStart());
+	}
+
+	/**
 	 * Checks if is between or equal.
 	 *
 	 * @param timezone the timezone
