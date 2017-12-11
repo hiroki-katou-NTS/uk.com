@@ -26,6 +26,14 @@ module nts.uk.at.view.kmk003.a {
     import GoOutTimezoneRoundingSetDto = service.model.common.GoOutTimezoneRoundingSetDto;
     import WorkTimezoneGoOutSetDto = service.model.common.WorkTimezoneGoOutSetDto;
     import WorkTimezoneCommonSetDto = service.model.common.WorkTimezoneCommonSetDto;
+    import InstantRoundingDto = service.model.common.InstantRoundingDto;
+    import RoundingSetDto = service.model.common.RoundingSetDto;
+    import PrioritySettingDto = service.model.common.PrioritySettingDto;
+    import WorkTimezoneStampSetDto = service.model.common.WorkTimezoneStampSetDto;
+    import WorkTimezoneLateNightTimeSetDto = service.model.common.WorkTimezoneLateNightTimeSetDto;
+    import WorkTimezoneShortTimeWorkSetDto = service.model.common.WorkTimezoneShortTimeWorkSetDto;
+    import HolidayFramsetDto = service.model.common.HolidayFramsetDto;
+    import ExtraordWorkOTFrameSetDto = service.model.common.ExtraordWorkOTFrameSetDto;
     import FlexWorkSettingSaveCommand = service.model.command.FlexWorkSettingSaveCommand;
     import TimeSheetDto = service.model.flexset.TimeSheetDto;
     import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
@@ -1008,6 +1016,218 @@ module nts.uk.at.view.kmk003.a {
             }
         }
         
+        export class InstantRoundingModel {
+            fontRearSection: KnockoutObservable<number>;
+            roundingTimeUnit: KnockoutObservable<number>;
+
+            constructor() {
+                this.fontRearSection = ko.observable(0);
+                this.roundingTimeUnit = ko.observable(0);
+            }
+
+            updateData(data: InstantRoundingDto) {
+                this.fontRearSection(data.fontRearSection);
+                this.roundingTimeUnit(data.roundingTimeUnit);
+            }
+
+            toDto(): InstantRoundingDto {
+                var dataDTO: InstantRoundingDto = {
+                    fontRearSection: this.fontRearSection(),
+                    roundingTimeUnit: this.roundingTimeUnit()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class RoundingSetModel {
+            roundingSet: InstantRoundingModel;
+            section: KnockoutObservable<number>;
+
+            constructor() {
+                this.roundingSet = new InstantRoundingModel();
+                this.section = ko.observable(0);
+            }
+
+            updateData(data: RoundingSetDto) {
+                this.roundingSet.updateData(data.roundingSet);
+                this.section(data.section);
+            }
+
+            toDto(): RoundingSetDto {
+                var dataDTO: RoundingSetDto = {
+                    roundingSet: this.roundingSet.toDto(),
+                    section: this.section()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class PrioritySettingModel {
+            priorityAtr: KnockoutObservable<number>;
+            stampAtr: KnockoutObservable<number>;
+
+            constructor() {
+                this.priorityAtr = ko.observable(0);
+                this.stampAtr = ko.observable(0);
+            }
+
+            updateData(data: PrioritySettingDto) {
+                this.priorityAtr(data.priorityAtr);
+                this.stampAtr(data.stampAtr);
+            }
+
+            toDto(): PrioritySettingDto {
+                var dataDTO: PrioritySettingDto = {
+                    priorityAtr: this.priorityAtr(),
+                    stampAtr: this.stampAtr()
+                };
+                return dataDTO;
+            }
+        }
+        
+        export class WorkTimezoneStampSetModel {
+            roundingSets: RoundingSetModel[];
+            prioritySets: PrioritySettingModel[];
+            
+            constructor(){
+                this.roundingSets = [];
+                this.prioritySets = [];    
+            }
+            
+            updateData(data: WorkTimezoneStampSetDto) {
+                this.roundingSets = [];
+                for(var dataRoundingDTO of data.roundingSets){
+                    var dataRoundingModel: RoundingSetModel = new RoundingSetModel();
+                    dataRoundingModel.updateData(dataRoundingDTO);
+                    this.roundingSets.push(dataRoundingModel);   
+                }
+                
+                this.prioritySets = [];
+                for(var dataPriorityDTO of data.prioritySets){
+                    var dataPriorityModel: PrioritySettingModel = new PrioritySettingModel();
+                    dataPriorityModel.updateData(dataPriorityDTO);
+                    this.prioritySets.push(dataPriorityModel);   
+                }
+            }
+        }
+        
+        export class WorkTimezoneLateNightTimeSetModel {
+            roundingSetting: TimeRoundingSettingModel;
+
+            constructor() {
+                this.roundingSetting = new TimeRoundingSettingModel();
+            }
+
+            updateData(data: WorkTimezoneLateNightTimeSetDto) {
+                this.roundingSetting.updateData(data.roundingSetting);
+            }
+
+            toDto(): WorkTimezoneLateNightTimeSetDto {
+                var dataDTO: WorkTimezoneLateNightTimeSetDto = {
+                    roundingSetting: this.roundingSetting.toDto()
+                };
+                return dataDTO;
+            }
+        }
+
+        
+        export class WorkTimezoneShortTimeWorkSetModel {
+            nursTimezoneWorkUse: KnockoutObservable<boolean>;
+            employmentTimeDeduct: KnockoutObservable<boolean>;
+            childCareWorkUse: KnockoutObservable<boolean>;
+
+            constructor() {
+                this.nursTimezoneWorkUse = ko.observable(false);
+                this.employmentTimeDeduct = ko.observable(false);
+                this.childCareWorkUse = ko.observable(false);
+            }
+
+            updateData(data: WorkTimezoneShortTimeWorkSetDto) {
+                this.nursTimezoneWorkUse(data.nursTimezoneWorkUse);
+                this.employmentTimeDeduct(data.employmentTimeDeduct);
+                this.childCareWorkUse(data.childCareWorkUse);
+            }
+
+            toDto(): WorkTimezoneShortTimeWorkSetDto {
+                var dataDTO: WorkTimezoneShortTimeWorkSetDto = {
+                    nursTimezoneWorkUse: this.nursTimezoneWorkUse(),
+                    employmentTimeDeduct: this.employmentTimeDeduct(),
+                    childCareWorkUse: this.childCareWorkUse()
+                };
+                return dataDTO;
+            }
+        }
+        
+
+        export class HolidayFramsetModel {
+            inLegalBreakoutFrameNo: KnockoutObservable<number>;
+            outLegalBreakoutFrameNo: KnockoutObservable<number>;
+            outLegalPubHolFrameNo: KnockoutObservable<number>;
+
+            constructor() {
+                this.inLegalBreakoutFrameNo = ko.observable(0);
+                this.outLegalBreakoutFrameNo = ko.observable(0);
+                this.outLegalPubHolFrameNo = ko.observable(0);
+            }
+
+            updataData(data: HolidayFramsetDto) {
+                this.inLegalBreakoutFrameNo(data.inLegalBreakoutFrameNo);
+                this.outLegalBreakoutFrameNo(data.outLegalBreakoutFrameNo);
+                this.outLegalPubHolFrameNo(data.outLegalPubHolFrameNo);
+            }
+
+            toDto(): HolidayFramsetDto {
+                var dataDTO: HolidayFramsetDto = {
+                    inLegalBreakoutFrameNo: this.inLegalBreakoutFrameNo(),
+                    outLegalBreakoutFrameNo: this.outLegalBreakoutFrameNo(),
+                    outLegalPubHolFrameNo: this.outLegalPubHolFrameNo()
+                };
+                return dataDTO;
+            }
+        }
+
+        export class ExtraordWorkOTFrameSetModel {
+            oTFrameNo: KnockoutObservable<number>;
+            inLegalWorkFrameNo: KnockoutObservable<number>;
+            settlementOrder: KnockoutObservable<number>;
+
+            constructor() {
+                this.oTFrameNo = ko.observable(0);
+                this.inLegalWorkFrameNo = ko.observable(0);
+                this.settlementOrder = ko.observable(0);
+            }
+
+            updateData(data: ExtraordWorkOTFrameSetDto) {
+                this.oTFrameNo(data.oTFrameNo);
+                this.inLegalWorkFrameNo(data.inLegalWorkFrameNo);
+                this.settlementOrder(data.settlementOrder);
+            }
+
+            toDto(): ExtraordWorkOTFrameSetDto {
+                var dataDTO: ExtraordWorkOTFrameSetDto = {
+                    oTFrameNo: this.oTFrameNo(),
+                    inLegalWorkFrameNo: this.inLegalWorkFrameNo(),
+                    settlementOrder: this.settlementOrder()
+                };
+                return dataDTO;
+            }
+
+        }
+        export class WorkTimezoneExtraordTimeSetModel {
+            holidayFrameSet: HolidayFramsetModel;
+            timeRoundingSet: TimeRoundingSettingModel;
+            oTFrameSet: ExtraordWorkOTFrameSetModel;
+            calculateMethod: KnockoutObservable<number>;
+            
+            constructor(){
+                this.holidayFrameSet = new HolidayFramsetModel();
+                this.timeRoundingSet = new TimeRoundingSettingModel();
+                this.oTFrameSet = new ExtraordWorkOTFrameSetModel();
+                this.calculateMethod = ko.observable(0);
+            }
+        }
+        
+        
         export class WorkTimezoneCommonSetModel {
             zeroHStraddCalculateSet: KnockoutObservable<boolean>;
             intervalSet: IntervalTimeSettingModel;
@@ -1015,10 +1235,10 @@ module nts.uk.at.view.kmk003.a {
             raisingSalarySet: KnockoutObservable<string>;
             medicalSet: WorkTimezoneMedicalSetModel[];
             goOutSet: WorkTimezoneGoOutSetModel;
-            /*
             stampSet: WorkTimezoneStampSetModel;
-            lateNightTimeSet: WorkTimezoneLateNightTimeSetDto;
-            shortTimeWorkSet: WorkTimezoneShortTimeWorkSetDto;
+            lateNightTimeSet: WorkTimezoneLateNightTimeSetModel;
+            shortTimeWorkSet: WorkTimezoneShortTimeWorkSetModel;
+            /*
             extraordTimeSet: WorkTimezoneExtraordTimeSetDto;
             lateEarlySet: WorkTimezoneLateEarlySetDto;
             */
@@ -1030,6 +1250,9 @@ module nts.uk.at.view.kmk003.a {
                 this.raisingSalarySet = ko.observable('');
                 this.medicalSet = [];
                 this.goOutSet = new WorkTimezoneGoOutSetModel();
+                this.stampSet = new WorkTimezoneStampSetModel();
+                this.lateNightTimeSet = new WorkTimezoneLateNightTimeSetModel();
+                this.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSetModel();
             }
 
             updateData(data: WorkTimezoneCommonSetDto) {
@@ -1038,15 +1261,21 @@ module nts.uk.at.view.kmk003.a {
                 this.subHolTimeSet.updateData(data.subHolTimeSet);
                 this.raisingSalarySet(data.raisingSalarySet);
                 this.goOutSet.updateData(data.goOutSet);
+                this.stampSet.updateData(data.stampSet);
+                this.lateNightTimeSet.updateData(data.lateNightTimeSet);
+                this.shortTimeWorkSet.updateData(data.shortTimeWorkSet);
             }
-            
-           /* toDto(): WorkTimezoneCommonSetDto{
+            /*
+           toDto(): WorkTimezoneCommonSetDto{
                 var dataDTO: WorkTimezoneCommonSetDto = {
                      zeroHStraddCalculateSet: this.zeroHStraddCalculateSet(),   
                      intervalSet: this.intervalSet.toDto(),   
                      subHolTimeSet: this.subHolTimeSet.toDto(),   
                      raisingSalarySet: this.raisingSalarySet.toDto(),   
                      goOutSet: this.goOutSet.toDto(),   
+                     stampSet: this.stampSet.toDto(),   
+                     lateNightTimeSet: this.lateNightTimeSet.toDto(),   
+                     shortTimeWorkSet: this.shortTimeWorkSet.toDto(),   
                 };
                 return dataDTO;    
             }
