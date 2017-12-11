@@ -23,7 +23,6 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -34,13 +33,7 @@ import nts.uk.shr.com.mail.SendMailFailedException;
 public class NewAfterRegisterImpl implements NewAfterRegister {
 	
 	@Inject
-	private ApplicationRepository applicationRepository;
-	
-	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	
-	@Inject
-	private AppApprovalPhaseRepository appApprovalPhaseRepository;
 	
 	@Inject
 	private AfterApprovalProcess detailedScreenAfterApprovalProcessService;
@@ -57,7 +50,7 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 	
-	public List<String> processAfterRegister(Application application){
+	public String processAfterRegister(Application application){
 		
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする ( Domain model "Application type setting". Check to send mail automatically when newly registered )
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(application.getCompanyID(), application.getApplicationType().value);
@@ -66,14 +59,14 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)) {
-			return Collections.emptyList();
+			return null;
 		}
 		// アルゴリズム「送信先リストの取得」を実行する  ( Execute the algorithm "Acquire destination list" )
 		List<String> destinationList = acquireDestinationList(application);
 		
 		// 送信先リストに項目がいるかチェックする ( Check if there is an item in the destination list )
-		if(destinationList.size() < 1) return Collections.emptyList();
-		List<String> destinationMails = new ArrayList<>();
+		if(destinationList.size() < 1) return null;
+		String mails = "";
 		for(String destination : destinationList) {
 			// sendMail(obj);
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」 ??? 
@@ -81,7 +74,7 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 			try {
 				if(!Strings.isBlank(email)) {
 					mailSender.send("nts", email, new MailContents("nts mail", "new mail from NTS"));
-					destinationMails.add(email + System.lineSeparator());
+					mails += email + System.lineSeparator();
 				}
 				
 			} catch (SendMailFailedException e) {
@@ -89,7 +82,7 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 				e.printStackTrace();
 			}
 		}
-		return destinationMails;
+		return mails;
 	}
 	
 	public List<String> acquireDestinationList(Application application){

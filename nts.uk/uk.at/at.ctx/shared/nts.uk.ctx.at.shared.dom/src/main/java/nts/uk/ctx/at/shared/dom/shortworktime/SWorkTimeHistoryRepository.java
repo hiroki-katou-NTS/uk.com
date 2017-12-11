@@ -14,20 +14,6 @@ import nts.arc.time.GeneralDate;
 public interface SWorkTimeHistoryRepository {
 
 	/**
-	 * Adds the.
-	 *
-	 * @param domain the domain
-	 */
-	void add(ShortWorkTimeHistory domain);
-	
-	/**
-	 * Update.
-	 *
-	 * @param domain the domain
-	 */
-	void update(ShortWorkTimeHistory domain);
-	
-	/**
 	 * Find by key.
 	 *
 	 * @param empId the emp id
@@ -35,7 +21,7 @@ public interface SWorkTimeHistoryRepository {
 	 * @return the optional
 	 */
 	Optional<ShortWorkTimeHistory> findByKey(String empId, String histId);
-	
+
 	/**
 	 * Find by base date.
 	 *
