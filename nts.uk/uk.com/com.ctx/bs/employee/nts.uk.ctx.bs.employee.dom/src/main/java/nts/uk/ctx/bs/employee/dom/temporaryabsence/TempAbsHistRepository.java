@@ -2,8 +2,13 @@ package nts.uk.ctx.bs.employee.dom.temporaryabsence;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 
+/**
+ * @author danpv
+ *
+ */
 public interface TempAbsHistRepository {
 
 	// -----------------------------GET HISTORY ----------------------------------
@@ -21,6 +26,14 @@ public interface TempAbsHistRepository {
 	 * @return
 	 */
 	Optional<TempAbsenceHistory> getByHistId( String histId);
+	
+	/**
+	 * get a TemporaryAbsenceHist with employeeId and standard date
+	 * @param employeeId
+	 * @param referenceDate
+	 * @return
+	 */
+	Optional<TempAbsenceHistory> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
 	// ------------------------------ COMMAND HISTORY---------------------------------
 	/**
