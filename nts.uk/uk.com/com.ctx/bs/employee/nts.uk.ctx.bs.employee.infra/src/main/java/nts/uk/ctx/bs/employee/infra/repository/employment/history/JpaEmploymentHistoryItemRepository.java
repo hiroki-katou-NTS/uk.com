@@ -15,10 +15,15 @@ import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHis
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
 
 	private static String SEL_HIS_ITEM = " SELECT a.bsymtEmploymentPK.code ,a.name FROM BsymtEmployment a"
-			+ " INNER JOIN BsymtEmploymentHist h" + " ON a.bsymtEmploymentPK.cid = h.companyId"
-			+ " INNER JOIN BsymtEmploymentHistItem i" + " ON  h.hisId = i.hisId " + " AND h.sid  = i.sid"
-			+ " AND a.bsymtEmploymentPK.code =  i.empCode" + " WHERE h.sid =:sid" + " AND h.strDate <= :date"
-			+ " AND h.endDate >= :date " + " AND a.bsymtEmploymentPK.cid =:companyId";
+			+ " INNER JOIN BsymtEmploymentHist h" 
+			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
+			+ " INNER JOIN BsymtEmploymentHistItem i"
+			+ " ON  h.hisId = i.hisId " 
+			+ " AND h.sid  = i.sid"
+			+ " AND a.bsymtEmploymentPK.code =  i.empCode" 
+			+ " WHERE h.sid =:sid" + " AND h.strDate <= :date"
+			+ " AND h.endDate >= :date " 
+			+ " AND a.bsymtEmploymentPK.cid =:companyId";
 
 	/**
 	 * Convert from domain to entity
