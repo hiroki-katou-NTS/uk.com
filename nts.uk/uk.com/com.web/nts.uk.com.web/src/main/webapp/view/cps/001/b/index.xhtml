@@ -14,6 +14,9 @@
 					height : 440
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.employee.dom.employee.mgndata.RemoveReason
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps001.b.style.css" />
 			<com:scriptfile path="cps001.b.service.js" />
@@ -25,21 +28,26 @@
 			<div id="contents-area" data-bind="with: empDelete">
 				<div class="form-group">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_45')}</div>
-					<span class="text-inform" data-bind="text: code"></span>
-					<span class="text-inform" data-bind="text: name"></span>
+					<span class="text-inform" data-bind="text: code"></span> <span
+						class="text-inform" data-bind="text: name"></span>
 				</div>
 				<div class="form-group">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_46')}</div>
-					<textarea data-bind="ntsMultilineEditor: {
+					<div class="row1"
+						data-bind="ntsFormLabel: {constraint: 'RemoveReason'}">#{i18n.getText('CPS001_46')}</div>
+					<div>
+						<textarea
+							data-bind="ntsMultilineEditor: {
 						value: reason,
-						/*constraint: '',*/
+						constraint: 'RemoveReason',
 						option: {},
 						enable: true,
 						readonly: false,
 						immediate: false}">
 						</textarea>
+					</div>
 				</div>
-				<div class="text-bottom" data-bind="html: nts.uk.resource.getText('CPS001_48').replace(/\n/g, '&lt;br/&gt;')"></div>
+				<div class="text-bottom"
+					data-bind="html: nts.uk.resource.getText('CPS001_48').replace(/\n/g, '&lt;br/&gt;')"></div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="danger x-large" data-bind="click: pushData">#{i18n.getText('CPS001_43')}</button>
