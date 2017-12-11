@@ -74,13 +74,14 @@ module cps001.a.vm {
         person: KnockoutComputed<PersonInfo> = ko.computed(() => {
             let self = this,
                 employee = self.employee();
-
             return employee.personInfo();
         });
 
         // for case: layout
         listLayout: KnockoutObservableArray<ILayout> = ko.observableArray([]);
         currentLayout: KnockoutObservable<Layout> = ko.observable(new Layout());
+        // for case: category
+        categoryLayout: KnockoutObservableArray<Layout> = ko.observableArray([new Layout()]);
 
         // for case: combobox
         listCategory: KnockoutObservableArray<ICategory> = ko.observableArray([]);
@@ -106,19 +107,25 @@ module cps001.a.vm {
                     auth.allowDocRef(!!data.allowDocRef);
                     auth.allowAvatarRef(!!data.allowAvatarRef);
                     auth.allowMapBrowse(!!data.allowMapBrowse);
+                } else {
+                    auth.allowAvatarRef(false);
+                    auth.allowAvatarRef(false);
+                    auth.allowMapBrowse(false);
                 }
             });
 
             self.tabActive.subscribe(tab => {
-                let employeeId = employee.employeeId();
+                let employeeId: string = employee.employeeId();
                 if (!!employeeId) {
                     // clear all error message
                     clearError();
                     switch (tab) {
                         default:
                         case TABS.LAYOUT: // layout mode
+                            category.id(undefined);
                             self.listLayout.removeAll();
-                            service.getAllLayout().done((data: Array<ILayout>) => {
+                            layout.maintenanceLayoutID(undefined);
+                            service.getAllLayout(employeeId).done((data: Array<ILayout>) => {
                                 if (data && data.length) {
                                     self.listLayout(data);
                                     layout.maintenanceLayoutID(data[0].maintenanceLayoutID);
@@ -126,10 +133,12 @@ module cps001.a.vm {
                             });
                             break;
                         case TABS.CATEGORY: // category mode
+                            layout.maintenanceLayoutID(undefined);
                             self.listCategory.removeAll();
                             service.getCats(employeeId).done((data: Array<ICategory>) => {
                                 self.listCategory(data);
                             });
+                            layout.maintenanceLayoutID(undefined);
                             break;
                     }
                 }
@@ -137,6 +146,14 @@ module cps001.a.vm {
 
             employee.employeeId.subscribe(id => {
                 if (id) {
+
+                    let emp = _.find(self.listEmployee(), x => x.employeeId == id);
+                    if (emp) {
+                        employee.workplaceId(emp.workplaceId);
+                        employee.workplaceCode(emp.workplaceCode);
+                        employee.workplaceName(emp.workplaceName);
+                    }
+
                     self.tabActive.valueHasMutated();
                 }
             });
@@ -149,62 +166,85 @@ module cps001.a.vm {
 
             layout.maintenanceLayoutID.subscribe(id => {
                 if (id) {
+                    category.id(undefined);
                     // clear all error message
                     clearError();
+                    let query: ILayoutQuery = {
+                        layoutId: id,
+                        browsingEmpId: employee.employeeId(),
+                        standardDate: moment.utc(layout.standardDate()).toDate()
+                    };
 
-                    service.getCurrentLayout(id).done((data: ILayout) => {
+                    service.getCurrentLayout(query).done((data: ILayout) => {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');
 
-                        // lấy list item definition trong db
-                        // duyệt
-                        _.each(data.listItemClsDto, x => {
-                            // khởi tạo giá trị items
-                            x.items = ko.observableArray([]);
+                        if (data.standardDate) {
+                            layout.standardDate(data.standardDate);
+                        }
 
-                            // kiểm tra kiểu item
-                            /*if (x.layoutItemType == 'ITEM') {
-                                if (x.listItemDf && x.listItemDf[0]) {
-                                    _.each(x.listItemDf, m => {
-                                        x.items.push({
-                                            itemDefId: m.id,
-                                            itemCode: m.itemCode,
-                                            value: ko.observable('xxxx')
-                                        });
-                                    });
-                                }
-                            } else {
-                                _.each(Array(3), (_x, i) => {
-                                    let rows = [];
-                                    _.each(x.listItemDf, (m, j) => {
-                                        rows.push({
-                                            itemDefId: m.id,
-                                            itemCode: m.itemCode,
-                                            value: ko.observable('xxxx')
-                                        });
-                                    });
-                                    x.items.push(rows);
-                                });
-                            }*/
-                        });
-
-                        layout.listItemClsDto(data.listItemClsDto || []);
+                        layout.listItemClsDto(data.classificationItems || []);
                     });
 
+                } else {
+                    layout.layoutCode(undefined);
+                    layout.layoutName(undefined);
+                    layout.standardDate(undefined);
+                    layout.listItemClsDto([]);
                 }
             });
 
             category.id.subscribe(id => {
                 if (id) {
-                    let query = {
-                        ctgId: id,
-                        empId: employee.employeeId(),
-                        standardDate: moment.utc()
-                    };
-
-                    service.getTabInfo(query).done(data => {
-                        debugger;
+                    layout.maintenanceLayoutID(undefined);
+                    let cat = _.find(self.listCategory(), x => x.id == id);
+                    if (cat) {
+                        category.categoryCode(cat.categoryCode);
+                        category.categoryName(cat.categoryName);
+                        category.categoryType(cat.categoryType);
+                        category.isFixed(cat.isFixed);
+                    }
+                    service.getCatChilds(id).done(data => {
+                        category.hasChilds(data.length > 1);
                     });
+                } else {
+                    category.categoryCode(undefined);
+                    category.categoryCode(undefined);
+                    category.categoryName(undefined);
+                    category.categoryType(undefined);
+                    category.isFixed(undefined);
+                }
+            });
+
+            category.categoryType.subscribe(t => {
+                layout.listItemClsDto.removeAll();
+                if (t) {
+                    let query = {
+                        categoryId: category.id(),
+                        employeeId: employee.employeeId(),
+                        standardDate: moment.utc(),
+                        categoryCode: undefined,
+                        personId: undefined,
+                        infoId: undefined
+                    };
+                    switch (t) {
+                        case IT_CAT_TYPE.SINGLE:
+                            service.getCatData(query).done(data => {
+                                //layout.listItemClsDto.removeAll();
+                                layout.listItemClsDto(data.classificationItems);
+                            });
+                            break;
+                        case IT_CAT_TYPE.MULTI:
+                            break;
+                        case IT_CAT_TYPE.CONTINU:
+                            break;
+                        case IT_CAT_TYPE.NODUPLICATE:
+                            break;
+                        case IT_CAT_TYPE.DUPLICATE:
+                            break;
+                        case IT_CAT_TYPE.CONTINUWED:
+                            break;
+                    }
                 }
             });
 
@@ -227,8 +267,11 @@ module cps001.a.vm {
         }
 
         deleteEmployee() {
-            let self = this;
+            let self = this,
+                emp = self.employee(),
+                person = self.person();
 
+            setShared('CPS001B_PARAM', { sid: emp.employeeId(), pid: person.personId() });
             modal('../b/index.xhtml').onClosed(() => { });
         }
 
@@ -280,11 +323,88 @@ module cps001.a.vm {
         }
 
         saveData() {
-            let self = this;
+            let self = this,
+                emp = self.employee(),
+                person = emp.personInfo(),
+                layout = self.currentLayout(),
+                proc = function(data: any): any {
+                    if (!data.item) {
+                        return {
+                            value: String(data.value),
+                            typeData: 1
+                        };
+                    }
 
+                    switch (data.item.dataTypeValue) {
+                        default:
+                        case ITEM_SINGLE_TYPE.STRING:
+                            return {
+                                value: String(data.value),
+                                typeData: 1
+                            };
+                        case ITEM_SINGLE_TYPE.NUMERIC:
+                            return {
+                                value: Number(data.value),
+                                typeData: 2
+                            };
+                        case ITEM_SINGLE_TYPE.DATE:
+                            return {
+                                value: moment.utc(data.value).toDate(),
+                                typeData: 3
+                            };
+                        case ITEM_SINGLE_TYPE.TIME:
+                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                            return {
+                                value: Number(String(data.value).replace(/:/g, '')),
+                                typeData: 2
+                            };
+                        case ITEM_SINGLE_TYPE.SELECTION:
+                            return {
+                                value: Number(data.value),
+                                typeData: 2
+                            };
+                    }
+                },
+                inputs: Array<IPeregItemCommand> = _(_(layout.listItemClsDto())
+                    .filter(x => x.items && x.items())
+                    .each(x => _.each(x.items(), m => {
+                        if (_.isArray(m)) {
+                            _.each(m, k => {
+                                k.recordId = x.recordId;
+                            });
+                        } else {
+                            m.recordId = x.recordId;
+                        }
+                    }))
+                    .map(x => x.items()))
+                    .flatten()
+                    .flatten()
+                    .filter((x: any) => !!x && !!x.item && !_.isEqual(x.item, {}))
+                    .groupBy("categoryCode")
+                    .map(items => {
+                        return {
+                            recordId: <string>items[0].recordId,
+                            categoryCd: <string>items[0].categoryCode,
+                            items: <Array<IPeregItemValueCommand>>ko.toJS(items).map(m => {
+                                let data = proc(m);
+                                return {
+                                    definitionId: m.itemDefId,
+                                    itemCode: m.itemCode,
+                                    value: data.value,
+                                    'type': data.typeData
+                                };
+                            })
+                        };
+                    })
+                    .value(),
+                command: IPeregCommand = {
+                    personId: person.personId(),
+                    employeeId: emp.employeeId(),
+                    inputs: inputs
+                };
             // push data layout to webservice
             block();
-            service.saveData({}).done(() => {
+            service.saveCurrentLayout(command).done(() => {
                 self.start();
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();
@@ -301,6 +421,8 @@ module cps001.a.vm {
         layoutName?: string;
         maintenanceLayoutID: string;
         listItemClsDto?: Array<any>;
+        classificationItems?: Array<any>;
+        standardDate?: string;
     }
 
     class Layout {
@@ -308,6 +430,7 @@ module cps001.a.vm {
         layoutName: KnockoutObservable<string> = ko.observable('');
         maintenanceLayoutID: KnockoutObservable<string> = ko.observable('');
         listItemClsDto: KnockoutObservableArray<any> = ko.observableArray([]);
+        standardDate: KnockoutObservable<string> = ko.observable(undefined);
 
         constructor(param?: ILayout) {
             let self = this;
@@ -315,9 +438,16 @@ module cps001.a.vm {
                 self.layoutCode(param.layoutCode || '');
                 self.layoutName(param.layoutName || '');
                 self.maintenanceLayoutID(param.maintenanceLayoutID || '');
+                self.standardDate(param.standardDate)
 
                 self.listItemClsDto(param.listItemClsDto || []);
             }
+        }
+
+        // recall selected layout event
+        filterData() {
+            let self = this;
+            self.maintenanceLayoutID.valueHasMutated();
         }
     }
 
@@ -325,7 +455,7 @@ module cps001.a.vm {
         id: string;
         categoryCode?: string;
         categoryName?: string;
-        categoryType?: number;
+        categoryType?: IT_CAT_TYPE;
         isFixed?: number;
     }
 
@@ -333,8 +463,9 @@ module cps001.a.vm {
         id: KnockoutObservable<string> = ko.observable('');
         categoryCode: KnockoutObservable<string> = ko.observable('');
         categoryName: KnockoutObservable<string> = ko.observable('');
-        categoryType: KnockoutObservable<number> = ko.observable(0);
+        categoryType: KnockoutObservable<IT_CAT_TYPE> = ko.observable(0);
         isFixed: KnockoutObservable<number> = ko.observable(0);
+        hasChilds: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(param: ICategory) {
             let self = this;
@@ -395,7 +526,7 @@ module cps001.a.vm {
                     if (data) {
                         person.personId(data.personId);
                         person.birthDate(data.birthDate);
-                        person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
+                        person.fullName(data.personNameGroup ? data.personNameGroup.businessName : '');
                     } else {
                         person.personId('');
                         person.birthDate(undefined);
@@ -429,11 +560,19 @@ module cps001.a.vm {
 
                     // get employee && employment info
                     service.getEmpInfo(id).done((data: IEmployeeInfo) => {
-                        self.employeeCode(data.employeeCode);
+                        if (data) {
+                            self.employeeCode(data.employeeCode);
 
-                        // set entire days with data receive
-                        self.daysOfEntire(data.daysOfEntire);
-                        self.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                            // set entire days with data receive
+                            self.daysOfEntire(data.daysOfEntire);
+                            self.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                        } else {
+                            self.employeeCode(undefined);
+
+                            // set entire days is zero
+                            self.daysOfEntire(0);
+                            self.daysOfTemporaryAbsence(0);
+                        }
                     }).fail(() => {
                         self.employeeCode(undefined);
 
@@ -497,7 +636,7 @@ module cps001.a.vm {
 
             self.personId(param.personId || '');
             self.code(param.code || '');
-            self.fullName(param.personNameGroup && param.personNameGroup.personName || '');
+            self.fullName(param.personNameGroup ? param.personNameGroup.businessName : '');
         }
 
         age: KnockoutComputed<string> = ko.computed(() => {
@@ -542,7 +681,15 @@ module cps001.a.vm {
         CATEGORY = <any>"category"
     }
 
-
+    // define ITEM_CATEGORY_TYPE
+    enum IT_CAT_TYPE {
+        SINGLE = 1, // Single info
+        MULTI = 2, // Multi info
+        CONTINU = 3, // Continuos history
+        NODUPLICATE = 4, //No duplicate history
+        DUPLICATE = 5, // Duplicate history,
+        CONTINUWED = 6 // Continuos history with end date
+    }
 
     interface IPeregQuery {
         ctgId: string;
@@ -550,5 +697,42 @@ module cps001.a.vm {
         empId: string;
         standardDate: Date;
         infoId?: string;
+    }
+
+    interface ILayoutQuery {
+        layoutId: string;
+        browsingEmpId: string;
+        standardDate: Date;
+    }
+
+    interface IPeregCommand {
+        personId: string;
+        employeeId: string;
+        inputs: Array<IPeregItemCommand>;
+    }
+
+    interface IPeregItemCommand {
+        /** category code */
+        categoryCd: string;
+        /** Record Id, but this is null when new record */
+        recordId: string;
+        /** input items */
+        items: Array<IPeregItemValueCommand>;
+    }
+
+    enum ITEM_SINGLE_TYPE {
+        STRING = 1,
+        NUMERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6
+    }
+
+    interface IPeregItemValueCommand {
+        definitionId: string;
+        itemCode: string;
+        value: string;
+        'type': number;
     }
 }

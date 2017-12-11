@@ -9,7 +9,7 @@ public class DeleteAffiliationDepartmentCommand {
 
 	/** The id. */
 	@PeregRecordId
-	private String id;
+	private String historyId;
 	/** The employee id. */
 	@PeregEmployeeId
 	private String employeeId;

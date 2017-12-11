@@ -7,9 +7,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommand;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandResult;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommand;
@@ -34,6 +37,9 @@ public class RoleIndividualWebService extends WebService {
 
 	@Inject
 	private CreateSysRoleIndividualGrantCommandHandler createHandler;
+	
+	@Inject
+	private CreateRoleIndividualGrantCommandHandler createRoleGrantHandler;
 
 	@Inject
 	private UpdateRoleIndividualGrantCommandHandler updateHandler;
@@ -101,8 +107,14 @@ public class RoleIndividualWebService extends WebService {
 	
 	@POST
 	@Path("insertRoleGrant")
-	public String InsertRoleGrant(){
-		return null;
+	public JavaTypeResult<String> InsertRoleGrant(CreateRoleIndividualGrantCommand roleGrant){
+		return new JavaTypeResult<String>(createRoleGrantHandler.InsertRoleGrant(roleGrant));
+	}
+	
+	@POST
+	@Path("upDateRoleGrant")
+	public JavaTypeResult<String> UpDateRoleGrant(CreateRoleIndividualGrantCommand roleGrant){
+		return new JavaTypeResult<String>("");
 	}
 	
 	

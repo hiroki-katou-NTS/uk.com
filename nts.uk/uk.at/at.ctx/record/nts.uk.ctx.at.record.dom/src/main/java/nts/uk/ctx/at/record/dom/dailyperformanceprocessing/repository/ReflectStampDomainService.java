@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 /**
  * 
@@ -15,5 +16,5 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
  */
 public interface ReflectStampDomainService {
 	
-	void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate, WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
+	void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate, WorkInfoOfDailyPerformance workInfoOfDailyPerformance, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);
 }

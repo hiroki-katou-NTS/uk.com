@@ -3,9 +3,9 @@ module cps008.a.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getAll: "ctx/bs/person/maintenance/findAll",
-        getDetails: "ctx/bs/person/maintenance/findOne/{0}",
-        saveData: "ctx/bs/person/maintenance/saveLayout"
+        getAll: "ctx/pereg/person/maintenance/findAll",
+        getDetails: "ctx/pereg/person/maintenance/findOne/{0}",
+        saveData: "ctx/pereg/person/maintenance/saveLayout"
     };
 
     /**

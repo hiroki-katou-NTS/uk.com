@@ -2,11 +2,11 @@ module nts.uk.com.view.cps006.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     let paths = {
-        getAllCategory: "ctx/bs/person/info/ctg/findAll",
-        getAllPerInfoItemDefByCtgId: "ctx/bs/person/info/item/findby/categoryId/{0}",
-        updateCtgInfo: "ctx/bs/person/info/ctg/updateCtgInfo",
-        updateCategoryOrder: "ctx/bs/person/info/ctg/updateCtgOrder",
-        getDetailCtgInfo: "ctx/bs/person/info/ctg/find/root/{0}"
+        getAllCategory: "ctx/pereg/person/info/ctg/findAll",
+        getAllPerInfoItemDefByCtgId: "ctx/pereg/person/info/item/findby/categoryId/{0}",
+        updateCtgInfo: "ctx/pereg/person/info/ctg/updateCtgInfo",
+        updateCategoryOrder: "ctx/pereg/person/info/ctg/updateCtgOrder",
+        getDetailCtgInfo: "ctx/pereg/person/info/ctg/find/root/{0}"
     }
     export function getAllCategory() {
         return ajax(paths.getAllCategory);

@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
-import find.person.setting.init.category.SettingCtgDto;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.SettingCtgDto;
 
 /**
  * @author sonnlb

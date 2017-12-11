@@ -16,13 +16,14 @@ public class AnyLeave extends TempAbsenceHisItem {
 	 * @param remarks
 	 * @param soInsPayCategory
 	 */
-	private AnyLeave(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory) {
-		super(LeaveHolidayType.ANY_LEAVE, historyId, employeeId, remarks, soInsPayCategory);
+	private AnyLeave(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
+			String familyMemberId) {
+		super(LeaveHolidayType.ANY_LEAVE, historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 	}
 
-	public static AnyLeave init(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory) {
-		return new AnyLeave(historyId, employeeId, new GenericString(remarks), soInsPayCategory);
+	public static AnyLeave init(String historyId, String employeeId, String remarks, Integer soInsPayCategory,
+			String familyMemberId) {
+		return new AnyLeave(historyId, employeeId, new GenericString(remarks), soInsPayCategory, familyMemberId);
 	}
 
 }

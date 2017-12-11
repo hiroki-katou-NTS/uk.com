@@ -2,8 +2,8 @@ module nts.uk.com.view.cps017.d.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getAllPerInfoHistorySelection: "ctx/bs/person/info/setting/selection/findAllHistSelection/{0}",
-        editHistoryData: "ctx/bs/person/info/setting/selection/editHistory"
+        getAllPerInfoHistorySelection: "ctx/pereg/person/info/setting/selection/findAllHistSelection/{0}",
+        editHistoryData: "ctx/pereg/person/info/setting/selection/editHistory"
     }
 
     //history datetime:

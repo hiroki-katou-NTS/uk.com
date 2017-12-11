@@ -36,20 +36,21 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 				sgwstAccountLockPolicy.errorCount = accountLockPolicy.getErrorCount().v();
 				sgwstAccountLockPolicy.isUse = new BigDecimal(1);
 				sgwstAccountLockPolicy.lockInterval = new BigDecimal(accountLockPolicy.getLockInterval().v());
-				sgwstAccountLockPolicy.lockOutMessage = accountLockPolicy.getLockOutMessage().v();
+				sgwstAccountLockPolicy.lockOutMessage = accountLockPolicy.getLockOutMessage().v() == "" ? "　"
+						: accountLockPolicy.getLockOutMessage().v();
 
 			} else {
 				sgwstAccountLockPolicy.errorCount = new BigDecimal(1);
 				sgwstAccountLockPolicy.isUse = new BigDecimal(0);
 				sgwstAccountLockPolicy.lockInterval = new BigDecimal(0);
-				sgwstAccountLockPolicy.lockOutMessage = "";
+				sgwstAccountLockPolicy.lockOutMessage = "　";
 			}
 		} else {
 			if (accountLockPolicy.isUse()) {
 				this.commandProxy().insert(this.toEntity(accountLockPolicy));
 			} else {
-				this.commandProxy().insert(new SgwstAccountLockPolicy(accountLockPolicy.getContractCode().v(), new BigDecimal(1),
-						new BigDecimal(0), "", new BigDecimal(0)));
+				this.commandProxy().insert(new SgwstAccountLockPolicy(accountLockPolicy.getContractCode().v(),
+						new BigDecimal(1), new BigDecimal(0), "　", new BigDecimal(0)));
 			}
 		}
 	}
@@ -63,7 +64,8 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 	private SgwstAccountLockPolicy toEntity(AccountLockPolicy accountLockPolicy) {
 		return new SgwstAccountLockPolicy(accountLockPolicy.getContractCode().v(),
 				accountLockPolicy.getErrorCount().v(), new BigDecimal(accountLockPolicy.getLockInterval().v()),
-				accountLockPolicy.getLockOutMessage().v(), new BigDecimal(accountLockPolicy.isUse() ? 1 : 0));
+				accountLockPolicy.getLockOutMessage().v() == "" ? "　" : accountLockPolicy.getLockOutMessage().v(),
+				new BigDecimal(accountLockPolicy.isUse() ? 1 : 0));
 	}
 
 }

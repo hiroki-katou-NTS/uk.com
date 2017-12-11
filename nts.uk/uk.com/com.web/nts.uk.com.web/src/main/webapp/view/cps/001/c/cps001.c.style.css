@@ -29,8 +29,8 @@
 	box-sizing: border-box;
 }
 
-#contents-area .nts-searchbbox-wrapper .nts-editor-wrapped.ntsControl {
-	width: calc(100% - 140px);
+.nts-searchbbox-wrapper div.input-wrapper {
+	max-width: 175px;
 }
 
 #contents-area .ntsSearchBox.nts-editor {
@@ -43,4 +43,21 @@
 
 #contents-area .form-group .form-label {
 	min-width: 160px;
+}
+
+.ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
+	.ui-iggrid .ui-iggrid-tablebody td {
+	border-top: none;
+	border-right: none;
+	border-left: none;
+}
+
+.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header,
+	.ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active,
+	.ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus,
+	.ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header,
+	.ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active,
+	.ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus
+	{
+	border: none;
 }

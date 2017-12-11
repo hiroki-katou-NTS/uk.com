@@ -18,7 +18,7 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 	protected void handle(CommandHandlerContext<EmpAvaOrMapCommand> context) {
 		EmpAvaOrMapCommand command = context.getCommand();
 		this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(command.getEmployeeId(),
-				command.getFileId(), command.getFileType(), null, null));
+				command.getFileId(), command.getFileType(), null));
 	}
 
 }

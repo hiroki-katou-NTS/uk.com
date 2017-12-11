@@ -177,6 +177,10 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	public void setWorkTimeSingle(boolean filterAtr, List<String> lstWorkTime) {
 		((SingleWorkTime) this.workTimeCondition).setTargetWorkTime(filterAtr, lstWorkTime);
 	}
+	
+	public void chooseWorkTimeOperator(int operator){
+		((PlanActualWorkTime) this.workTimeCondition).chooseOperator(operator);
+	}
 
 	/**
 	 * Create AttendanceItemCondition

@@ -468,4 +468,15 @@ public class ProgramIdConsts {
 	
 	public static final String CDL025 = "CDL025";
 	
+	public static final String CPS001A = "CPS001A";
+	
+	public static final String CPS001B = "CPS001B";
+	
+	public static final String CPS001C = "CPS001C";
+	
+	public static final String CPS001D = "CPS001D";
+	
+	public static final String CPS001E = "CPS001E";
+	
+	public static final String CPS001F = "CPS001F";
 }
