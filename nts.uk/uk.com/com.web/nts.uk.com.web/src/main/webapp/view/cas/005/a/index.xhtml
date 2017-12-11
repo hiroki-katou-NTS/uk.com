@@ -28,254 +28,256 @@
 			</com:EnumScript>
 			<!--EmployeeReferenceRange 6,EmployeeRefRange 2 8,ScheduleEmployeeRef 4 -->
 		</ui:define>
-		<div class="container">
+		
 			<ui:define name="content">
-				
-				<div id="functions-area">
-					<!-- A1_001 -->
-					<button class="large " data-bind="click :createButton ">#{i18n.getText('CAS005_10')}</button>
-					<!-- A1_002 -->
-					<button class="proceed large "  data-bind="click : registerButton ,enable : isRegister">#{i18n.getText('CAS005_11')}</button>
-					<!-- A1_003 -->
-					<button class="danger large " data-bind="click : deleteButton ,enable : isDelete">#{i18n.getText('CAS005_12')}</button>
-					<!-- A1_004 -->
-					<button class="large ">#{i18n.getText('CAS005_13')}</button>
-					<!-- A1_005 -->
-					<button class="large " data-bind="click : openDialogB">#{i18n.getText('CAS005_14')}</button>
-					<!-- A1_006 -->
-					<span style="float: right; margin-top: 7px;">#{i18n.getText('CAS005_15')}</span>
+				<div class="container">
+					<div id="functions-area">
+						<!-- A1_001 -->
+						<button tabindex="1" class="large " data-bind="click :createButton ">#{i18n.getText('CAS005_10')}</button>
+						<!-- A1_002 -->
+						<button tabindex="2"  class="proceed large "  data-bind="click : registerButton ,enable : isRegister">#{i18n.getText('CAS005_11')}</button>
+						<!-- A1_003 -->
+						<button tabindex="3" class="danger large " data-bind="click : deleteButton ,enable : isDelete">#{i18n.getText('CAS005_12')}</button>
+						<!-- A1_004 -->
+						<button tabindex="4" class="large " data-bind="click : openDialogC ">#{i18n.getText('CAS005_13')}</button>
+						<!-- A1_005 -->
+						<button tabindex="5" class="large " data-bind="click : openDialogB ">#{i18n.getText('CAS005_14')}</button>
+						<!-- A1_006 -->
+						<span style="float: right; margin-top: 7px;">#{i18n.getText('CAS005_15')}</span>
+					</div>
 				</div>
-				
-				<div id="contents-area" style="margin-top: 30px; margin-left: 30px;overflow: hidden;">
-					<div style="margin-bottom: 20px;">#{i18n.getText('CAS005_20')}</div>
-					<!-- body right -->
-					<div style="width: 340px; float: left;" data-bind="with: component">
-						<div id="pannel-top" data-bind="ntsPanel:{width: '340px', height: '530px', direction: '', showIcon: true, visible: true}">
-							<ui:include src="../../../ccg/025/component/index.xhtml" />
+				<div class="container">
+					<div id="contents-area" style="margin-top: 30px; margin-left: 30px;overflow: hidden;">
+						<div style="margin-bottom: 20px;">#{i18n.getText('CAS005_20')}</div>
+						<!-- body left  -->
+						<div style="width: 340px; float: left;" data-bind="with: component">
+							<div id="pannel-top" tabindex="6" data-bind="ntsPanel:{width: '340px', height: '530px', direction: '', showIcon: true, visible: true}">
+								<ui:include src="../../../ccg/025/component/index.xhtml" />
+							</div>
+						</div>
+						<!-- body right -->
+						<div class=" body-right">
+							<table>
+								<!-- row 1 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px; padding-bottom: 5px;"
+											data-bind="ntsFormLabel: {required: true,constraint:['RoleCode', 'RoleName'] }">#{i18n.getText('CAS005_30')}</div>
+									</td>
+									<td><input id="roleTypeCd" tabindex="7" style="width: 70px;"
+										data-bind="ntsTextEditor: {value: roleCode, constraint: 'RoleCode',required: true, enable : enableRoleCode }" />
+										<input tabindex="8"
+										style="margin-left: 11px;"
+										data-bind="ntsTextEditor:  {value: roleName, constraint: 'RoleName',required: true}" /></td>
+								</tr>
+								<!-- row 2 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_33')}</div>
+									</td>
+									<td>
+										<div class="cf" tabindex="9"
+											data-bind="ntsSwitchButton: {
+														options: categoryAssign,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: assignAtr,
+														enable: true }">
+										</div>
+									</td>
+								</tr>
+								<!-- row 3 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_37')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="10"
+											data-bind="ntsComboBox: {
+														options: listEmployeeReferenceRange,
+														optionsValue: 'value',
+														value: employeeReferenceRange,
+														optionsText: 'name',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 4 -->
+								<tr >
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_38')}</div>
+									</td>
+									<td>
+										<div class="cf" tabindex="11"
+											data-bind="ntsSwitchButton: {
+														options: referenceAuthority,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectReferenceAuthority ,
+														enable: true }">
+										</div>
+									</td>
+								</tr>
+								<!-- row 5 -->
+								<tr data-bind=" visible : visibleWebmenu ">
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_50')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="12"
+											data-bind="ntsComboBox: {
+														options: listWebMenu,
+														optionsValue: 'webMenuCode',
+														value: selectWebMenu,
+														optionsText: 'webMenuName',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'webMenuName', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 6 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_52')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="13"
+											data-bind="ntsComboBox: {
+														options: listEmployeeRefRange,
+														optionsValue: 'value',
+														value: bookingScreen,
+														optionsText: 'name',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 7 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_54')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="14"
+											data-bind="ntsComboBox: {
+														options: listScheduleEmployeeRef ,
+														optionsValue: 'value',
+														value: scheduleScreen,
+														optionsText: 'name',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 8 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_56')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="15"
+											data-bind="ntsComboBox: {
+														options: listEmployeeReferenceRange,
+														optionsValue: 'value',
+														value: registeredInquiries,
+														optionsText: 'name',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 9 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;" tabindex="16"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_58')}</div>
+									</td>
+									<td>
+										<div id="combo-box"
+											data-bind="ntsComboBox: {
+														options: listEmployeeRefRange,
+														optionsValue: 'value',
+														value: specifyingAgent,
+														optionsText: 'name',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 10 -->
+								<tr>
+									<td colspan="2">
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_70')}</div>
+									</td>
+								</tr>
+								<!-- row 11 -->
+								<tr>
+									<td colspan="2">
+										<table id="table-infor">
+											<thead>
+												<tr class="bg-green">
+													<th style="width: 120px;">設定</th>
+													<th style="width: 50px;">利用区分</th>
+													<th style="width: 350px;">説明</th>
+												</tr>
+											</thead>
+											<tbody id="listWpkAuthoritySelect">
+												<com:ko-foreach bind=" listWpkAuthoritySelect ">
+													<tr>
+														<td data-bind="text : displayName" ></td>
+														<td style="text-align: center;"><div data-bind="ntsCheckBox: { checked: availability }"></div></td>
+														<td data-bind="text : description" ></td>
+													</tr>
+												</com:ko-foreach>
+											</tbody>
+										</table>
+										<!-- <table id="multi-list"
+											data-bind="ntsGridList: {
+												height: 320,
+												options: listWorkPlaceFunction ,
+												optionsValue: 'functionNo',
+												columns: columns,
+												multiple: true,
+												value: currentCodeList,
+												rows : 3
+											}">
+										</table> -->
+									</td>
+								</tr>
+		
+							</table>
 						</div>
 					</div>
-					<!-- body left -->
-					<div class="body-left">
-						<table>
-							<!-- row 1 -->
-							<tr>
-								<td>
-									<div style="padding-right: 20px; padding-bottom: 5px;"
-										data-bind="ntsFormLabel: {required: true,constraint:['RoleCode', 'RoleName'] }">#{i18n.getText('CAS005_30')}</div>
-								</td>
-								<td><input id="roleTypeCd" style="width: 70px;"
-									data-bind="ntsTextEditor: {value: roleCode, constraint: 'RoleCode',required: true, enable : enableRoleCode }" /><input
-									style="margin-left: 11px;"
-									data-bind="ntsTextEditor:  {value: roleName, constraint: 'RoleName',required: true}" /></td>
-							</tr>
-							<!-- row 2 -->
-							<tr>
-								<td>
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_33')}</div>
-								</td>
-								<td>
-									<div class="cf"
-										data-bind="ntsSwitchButton: {
-													options: categoryAssign,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: assignAtr,
-													enable: true }">
-									</div>
-								</td>
-							</tr>
-							<!-- row 3 -->
-							<tr>
-								<td>
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_37')}</div>
-								</td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-													options: listEmployeeReferenceRange,
-													optionsValue: 'value',
-													value: employeeReferenceRange,
-													optionsText: 'name',
-													editable: false,
-													enable: isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}">
-									</div>
-								</td>
-							</tr>
-							<!-- row 4 -->
-							<tr >
-								<td>
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_38')}</div>
-								</td>
-								<td>
-									<div class="cf"
-										data-bind="ntsSwitchButton: {
-													options: referenceAuthority,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectReferenceAuthority ,
-													enable: true }">
-									</div>
-								</td>
-							</tr>
-							<!-- row 5 -->
-							<tr data-bind=" visible : visibleWebmenu ">
-								<td>
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_50')}</div>
-								</td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-													options: listWebMenu,
-													optionsValue: 'webMenuCode',
-													value: selectWebMenu,
-													optionsText: 'webMenuName',
-													editable: false,
-													enable: isEnable,
-													columns: [
-														{ prop: 'webMenuName', length: 10 },
-													]}">
-									</div>
-								</td>
-							</tr>
-							<!-- row 6 -->
-							<tr>
-								<td>
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_52')}</div>
-								</td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-													options: listEmployeeRefRange,
-													optionsValue: 'value',
-													value: bookingScreen,
-													optionsText: 'name',
-													editable: false,
-													enable: isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}">
-									</div>
-								</td>
-							</tr>
-							<!-- row 7 -->
-							<tr>
-								<td>
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_54')}</div>
-								</td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-													options: listScheduleEmployeeRef ,
-													optionsValue: 'value',
-													value: scheduleScreen,
-													optionsText: 'name',
-													editable: false,
-													enable: isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}">
-									</div>
-								</td>
-							</tr>
-							<!-- row 8 -->
-							<tr>
-								<td>
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_56')}</div>
-								</td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-													options: listEmployeeReferenceRange,
-													optionsValue: 'value',
-													value: registeredInquiries,
-													optionsText: 'name',
-													editable: false,
-													enable: isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}">
-									</div>
-								</td>
-							</tr>
-							<!-- row 9 -->
-							<tr>
-								<td>
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_58')}</div>
-								</td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-													options: listEmployeeRefRange,
-													optionsValue: 'value',
-													value: specifyingAgent,
-													optionsText: 'name',
-													editable: false,
-													enable: isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}">
-									</div>
-								</td>
-							</tr>
-							<!-- row 10 -->
-							<tr>
-								<td colspan="2">
-									<div style="padding-right: 20px;"
-										data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_70')}</div>
-								</td>
-							</tr>
-							<!-- row 11 -->
-							<tr>
-								<td colspan="2">
-									<table id="table-infor">
-										<thead>
-											<tr class="bg-green">
-												<th style="width: 120px;">設定</th>
-												<th style="width: 50px;">利用区分</th>
-												<th style="width: 350px;">説明</th>
-											</tr>
-										</thead>
-										<tbody id="listWpkAuthoritySelect">
-											<com:ko-foreach bind=" listWpkAuthoritySelect ">
-												<tr>
-													<td data-bind="text : displayName" ></td>
-													<td style="text-align: center;"><div data-bind="ntsCheckBox: { checked: availability }"></div></td>
-													<td data-bind="text : description" ></td>
-												</tr>
-											</com:ko-foreach>
-										</tbody>
-									</table>
-									<!-- <table id="multi-list"
-										data-bind="ntsGridList: {
-											height: 320,
-											options: listWorkPlaceFunction ,
-											optionsValue: 'functionNo',
-											columns: columns,
-											multiple: true,
-											value: currentCodeList,
-											rows : 3
-										}">
-									</table> -->
-								</td>
-							</tr>
-	
-						</table>
-					</div>
 				</div>
-				
 			</ui:define>
-		</div>
+		
 	</ui:composition>
 </body>
 </html>

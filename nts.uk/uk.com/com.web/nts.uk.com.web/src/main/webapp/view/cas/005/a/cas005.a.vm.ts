@@ -611,8 +611,8 @@ module nts.uk.com.view.cas005.a {
             }
             
             //open dialog C 
-            openDialogB() {
-                
+            openDialogC() {
+                nts.uk.ui.windows.sub.modal("/view/cas/005/c/index.xhtml");
             }
 
         }//end screenModel
