@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class UpdateRoleIndividualGrantCommandHandler extends CommandHandler<UpdateRoleIndividualGrantCommand> {
+public class UpdateSysRoleIndividualGrantCommandHandler extends CommandHandler<UpdateRoleIndividualGrantCommand> {
 	
 	@Inject
 	private RoleIndividualService roleIndividualService;

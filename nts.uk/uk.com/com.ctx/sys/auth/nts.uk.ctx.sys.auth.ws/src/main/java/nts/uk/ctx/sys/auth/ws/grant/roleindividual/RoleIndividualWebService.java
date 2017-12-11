@@ -16,10 +16,10 @@ import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividual
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandResult;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommand;
-import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.RoleIndividualCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommand;
-import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantDto;
@@ -42,10 +42,10 @@ public class RoleIndividualWebService extends WebService {
 	private CreateRoleIndividualGrantCommandHandler createRoleGrantHandler;
 
 	@Inject
-	private UpdateRoleIndividualGrantCommandHandler updateHandler;
+	private UpdateSysRoleIndividualGrantCommandHandler updateHandler;
 	
 	@Inject
-	private DeleteRoleIndividualGrantCommandHandler deleteHandler;
+	private DeleteSysRoleIndividualGrantCommandHandler deleteHandler;
 	
 	@Inject
 	private PersonInformationRoleFinder personInforRoleFinder;

@@ -15,7 +15,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
-public class DeleteRoleIndividualGrantCommandHandler extends CommandHandler<DeleteRoleIndividualGrantCommand> {
+public class DeleteSysRoleIndividualGrantCommandHandler extends CommandHandler<DeleteRoleIndividualGrantCommand> {
 
 	@Inject
 	private RoleIndividualService roleIndividualService;
