@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,6 +14,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
 public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
@@ -38,6 +44,12 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	@Inject
 	ApplicationReasonRepository appFormReposity;
 	
+	@Inject
+	private WorkTimeRepository workTimeRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
 	@Override
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
 		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
@@ -51,7 +63,16 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		workChangeDetail.setDetailedScreenPreBootModeOutput(preBootOuput);
 		
 		//アルゴリズム「勤務変更申請基本データ（更新）」を実行する
-		AppWorkChange appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();
+		AppWorkChange appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();		
+		//Get work type name & work time name
+		Optional<WorkTime> workTime = workTimeRepository.findByCode(cid, appWorkChange.getWorkTimeCd());
+		if (workTime.isPresent()) {
+			appWorkChange.setWorkTimeName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
+		}
+		Optional<WorkType> workType = workTypeRepository.findByPK(cid, appWorkChange.getWorkTypeCd());
+		if (workType.isPresent()) {
+			appWorkChange.setWorkTypeName(workType.get().getName().v());
+		}
 		workChangeDetail.setAppWorkChange(appWorkChange);
 		
 		//アルゴリズム「14-3.詳細画面の初期モード」を実行する
