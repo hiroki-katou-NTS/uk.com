@@ -25,29 +25,11 @@ import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 
 @Stateless
 public class PerInfoCtgDomainService {
-
-	@Inject
-	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
-//	@Inject
-//	private PersonInfoRoleAuthRepository personInfoRoleAuthRepository;
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
 
 	@Inject
 	private PersonInfoItemAuthRepository personInfoItemAuthRepository;
-	/**
-	 * get person information item definition
-	 * @param paramObject
-	 * @return List<PersonInfoItemDefinition>
-	 */
-
-//	public List<PersonInfoItemDefinition> getPerItemDef(ParamForGetPerItem paramObject) {		
-//		if (paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.MULTIINFO
-//				|| paramObject.getPersonInfoCategory().getCategoryType() == CategoryType.SINGLEINFO) 
-//			return getPerInfoItemDefWithAuth(paramObject);
-//		else 
-//			return getPerInfoItemDefWithHis(paramObject);	
-//	}
 	
 	/**
 	 * get list person information item definition and filter by auth
@@ -76,16 +58,6 @@ public class PerInfoCtgDomainService {
 							.get().getOtherAuth() != PersonInfoAuthType.HIDE;
 			else return false;			
 		}).collect(Collectors.toList());
-	}
-	
-	/**
-	 * get list person information item definition and filter by date range
-	 * @param paramObject
-	 * @return List<PersonInfoItemDefinition>
-	 */
-	private List<PersonInfoItemDefinition> getPerInfoItemDefWithHis(ParamForGetPerItem paramObject){	
-		return perInfoItemDefRepositoty
-				.getAllPerInfoItemDefByCategoryId(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getContractCode());
 	}
 
 }
