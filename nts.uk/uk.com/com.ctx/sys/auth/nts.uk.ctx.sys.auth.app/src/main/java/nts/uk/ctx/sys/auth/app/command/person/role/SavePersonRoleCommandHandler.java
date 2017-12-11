@@ -42,6 +42,12 @@ public class SavePersonRoleCommandHandler extends CommandHandler<SavePersonRoleC
 	}
 
 	private void updatePersonInfoRole(SavePersonRoleCommand command) {
-		roleService.updateRole(command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode()));
+		Role role = command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode());
+		roleService.updateRole(role);
+		
+		PersonRole personRole = new PersonRole();
+		personRole.setRoleId(role.getRoleId());
+		personRole.setReferFutureDate(command.getReferFutureDate());
+		personRoleRepo.update(personRole);
 	}
 }

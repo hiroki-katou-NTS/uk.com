@@ -10,7 +10,7 @@ module ksu001.o1.viewmodel {
         time2: KnockoutObservable<string> = ko.observable('15:00');
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
-        nameWorkTimeType: KnockoutComputed<ExCell>;
+        nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
 
         constructor() {
@@ -61,14 +61,11 @@ module ksu001.o1.viewmodel {
                         workTimeCode = '';
                     }
                 }
-                return new ExCell({
+                return new ksu001.common.viewmodel.ExCell({
                     workTypeCode: workTypeCode,
                     workTypeName: workTypeName,
                     workTimeCode: workTimeCode,
-                    workTimeName: workTimeName,
-                    symbol: null,
-                    startTime: null,
-                    endTime: null
+                    workTimeName: workTimeName
                 });
             });
 
@@ -107,35 +104,6 @@ module ksu001.o1.viewmodel {
          */
         closeDialog(): void {
             nts.uk.ui.windows.close();
-        }
-    }
-
-    interface IExCell {
-        workTypeCode: string,
-        workTypeName: string,
-        workTimeCode: string,
-        workTimeName: string,
-        symbol: string,
-        startTime: any,
-        endTime: any
-    }
-
-    class ExCell {
-        workTypeCode: string;
-        workTypeName: string;
-        workTimeCode: string;
-        workTimeName: string;
-        symbol: string;
-        startTime: any;
-        endTime: any;
-        constructor(params: IExCell) {
-            this.workTypeCode = params.workTypeCode;
-            this.workTypeName = params.workTypeName;
-            this.workTimeCode = params.workTimeCode;
-            this.workTimeName = params.workTimeName;
-            this.symbol = params.symbol;
-            this.startTime = params.startTime;
-            this.endTime = params.endTime;
         }
     }
 }

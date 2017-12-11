@@ -38,7 +38,7 @@ public class TempAbsenceFrameFinder {
 		
 		cId = AppContexts.user().companyId();
 		
-		TempAbsenceFrame tempAbsenceFrame = tafRepo.findByTAFPk(cId, tempAbsenceFrameNo);
+		TempAbsenceFrame tempAbsenceFrame = tafRepo.findByTempAbsenceFramePk(cId, tempAbsenceFrameNo);
 		if (tempAbsenceFrame != null) {
 			TempAbsenceFrameDto dto = new TempAbsenceFrameDto();
 			tempAbsenceFrame.saveToMemento(dto);

@@ -5,30 +5,45 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
-import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSetSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
 
+/**
+ * The Class DeductGoOutRoundingSetDto.
+ */
 @Getter
-@Setter
-public class DeductGoOutRoundingSetDto {
+public class DeductGoOutRoundingSetDto implements DeductGoOutRoundingSetSetMemento {
 
 	/** The deduct time rounding setting. */
 	private GoOutTimeRoundingSettingDto deductTimeRoundingSetting;
-	
+
 	/** The appro time rounding setting. */
 	private GoOutTimeRoundingSettingDto approTimeRoundingSetting;
 
-	/**
-	 * Instantiates a new deduct go out rounding set dto.
-	 *
-	 * @param deductTimeRoundingSetting the deduct time rounding setting
-	 * @param approTimeRoundingSetting the appro time rounding setting
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSetSetMemento
+	 * #setDeductTimeRoundingSetting(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimeRoundingSetting)
 	 */
-	public DeductGoOutRoundingSetDto(GoOutTimeRoundingSettingDto deductTimeRoundingSetting,
-			GoOutTimeRoundingSettingDto approTimeRoundingSetting) {
-		super();
-		this.deductTimeRoundingSetting = deductTimeRoundingSetting;
-		this.approTimeRoundingSetting = approTimeRoundingSetting;
+	@Override
+	public void setDeductTimeRoundingSetting(GoOutTimeRoundingSetting set) {
+		set.saveToMemento(this.deductTimeRoundingSetting);
 	}
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSetSetMemento
+	 * #setApproTimeRoundingSetting(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * GoOutTimeRoundingSetting)
+	 */
+	@Override
+	public void setApproTimeRoundingSetting(GoOutTimeRoundingSetting set) {
+		set.saveToMemento(this.approTimeRoundingSetting);
+	}
+
 }

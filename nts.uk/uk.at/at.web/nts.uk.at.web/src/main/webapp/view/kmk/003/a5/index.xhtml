@@ -35,42 +35,42 @@
 	</div>
 	-->
         <com:ko tag="if" bind="display23">
-            <div id="ntsft-a5-oneday"></div>
-            <div id="ntsft-a5-morning"></div>
-            <div id="ntsft-a5-afternoon"></div>
+            <div id="ntsft-a5-oneday" data-bind="ntsFixTableCustom: {option: oneDayOption}"></div>
+            <div id="ntsft-a5-morning" data-bind="ntsFixTableCustom: {option: morningOption}"></div>
+            <div id="ntsft-a5-afternoon" data-bind="ntsFixTableCustom: {option: afternoonOption}"></div>
         </com:ko>
 
         <!-- Flex setting -->
         <com:ko tag="if" bind="display26">
 
 		<!-- One day -->
-        <div id="ntsft-a5-onedayFlex"></div>
+        <div id="ntsft-a5-onedayFlex" data-bind="ntsFixTableCustom: {option: oneDayFlexOption}"></div>
         <div class="control-group">
             <div data-bind="ntsCheckBox: {
                  checked: checkOneDay,
                  enable: true,
                  text: nts.uk.resource.getText('KMK003_144') }"></div>
         </div>
-        <div id="ntsft-a5-onedayFlex2"></div>
+        <div id="ntsft-a5-onedayFlex2" data-bind="ntsFixTableCustom: {option: morningFlexOption}"></div>
 
 		<!-- Morning -->
-        <div id="ntsft-a5-morningFlex"></div>
+        <div id="ntsft-a5-morningFlex" data-bind="ntsFixTableCustom: {option: afternoonFlexOption}"></div>
         <div class="control-group">
             <div data-bind="ntsCheckBox: {
                  checked: checkMorning,
                  enable: true,
                  text: nts.uk.resource.getText('KMK003_144') }"></div>
         </div>
-        <div id="ntsft-a5-morningFlex2"></div>
+        <div id="ntsft-a5-morningFlex2" data-bind="ntsFixTableCustom: {option: oneDayFlexOption2}"></div>
 
 		<!-- Afternoon -->
-        <div id="ntsft-a5-afternoonFlex"></div>
+        <div id="ntsft-a5-afternoonFlex" data-bind="ntsFixTableCustom: {option: morningFlexOption2}"></div>
         <div class="control-group">
             <div data-bind="ntsCheckBox: {
                  checked: checkAfternoon,
                  enable: true,
                  text: nts.uk.resource.getText('KMK003_144') }"></div>
         </div>
-        <div id="ntsft-a5-afternoonFlex2"></div>
+        <div id="ntsft-a5-afternoonFlex2" data-bind="ntsFixTableCustom: {option: afternoonFlexOption2}"></div>
         </com:ko>
     </ui:composition>

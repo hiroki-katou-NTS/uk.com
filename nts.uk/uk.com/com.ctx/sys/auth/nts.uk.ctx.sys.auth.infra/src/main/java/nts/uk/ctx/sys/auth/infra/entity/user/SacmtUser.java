@@ -1,12 +1,11 @@
+
 package nts.uk.ctx.sys.auth.infra.entity.user;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -15,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Getter
@@ -25,9 +26,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 public class SacmtUser extends UkJpaEntity implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	 @EmbeddedId
@@ -36,7 +34,7 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     /** The default User */
     /** デフォルトユーザ*/
     @Column(name = "DEFAULT_USER")
-    public boolean defaultUser;
+    public int defaultUser;
     
     /** The password. */
     /**パスワード*/
@@ -57,17 +55,17 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     /** 有効期限 */
     @Column(name = "EXPIRATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    public Date expirationDate;
+    public GeneralDate expirationDate;
     
     /** The special user. */
     /** 特別利用者 */
     @Column(name = "SPECIAL_USER")
-    public boolean specialUser;
+    public int specialUser;
     
     /** The multi com. */
     /**複数会社を兼務する */
     @Column(name = "MULTI_COM")
-    public boolean multiCompanyConcurrent;
+    public int multiCompanyConcurrent;
     
     /** The mail add. */
     /** メールアドレス*/
@@ -84,13 +82,28 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     @Column(name = "ASSO_PID")
     public String associatedPersonID;
 	
-	
-	
-	
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return sacmtUserPK;
 	}
 
+	public User toDomain() {
+		boolean specialUser = this.specialUser == 1;
+		boolean multiCompanyConcurrent = this.multiCompanyConcurrent == 1;
+		boolean defaultUser = this.defaultUser == 1;
+		return User.createFromJavatype(
+				this.sacmtUserPK.userID, 
+				defaultUser, 
+				this.password, 
+				this.loginID, 
+				this.contractCd, 
+				this.expirationDate, 
+				specialUser, 
+				multiCompanyConcurrent, 
+				this.mailAdd, 
+				this.userName, 
+				this.associatedPersonID);
+	}
+
+	
 }

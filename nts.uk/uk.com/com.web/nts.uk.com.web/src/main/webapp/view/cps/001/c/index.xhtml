@@ -33,17 +33,17 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div class="left-area">
-					<div class="bg-green caret-right caret-background" >
+					<div class="bg-green caret-right caret-background">
 						<div style="width: 700px"
 							data-bind="ntsSearchBox: {
-								targetKey: 'id', 
-								mode:'grid', 
 								searchMode: 'filter',
+								targetKey: 'code', 
 								comId:'list_employees', 
-								items: ko.observableArray([]),
+								items: listEmpDelete,
 								selected: 'code',
 								selectedKey: 'code',
-								fields: ['name', 'code']}"></div>
+								fields: ['code', 'name'],
+								mode:'igGrid',}"></div>
 						<table id="list_employees"
 							data-bind="ntsGridList: {								
 								rows: 20,
@@ -70,7 +70,8 @@
 					</div>
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_56')}</div>
-						<input data-bind="ntsTextEditor: {
+						<input
+							data-bind="ntsTextEditor: {
 							value: newCode,
 							constraint: 'EmployeeCode',
 							required: false,
@@ -79,7 +80,8 @@
 					</div>
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_58')}</div>
-						<input data-bind="ntsTextEditor: {
+						<input 
+							data-bind="ntsTextEditor: {
 							value: newName,
 							required: false,
 							constraint: 'BusinessName',

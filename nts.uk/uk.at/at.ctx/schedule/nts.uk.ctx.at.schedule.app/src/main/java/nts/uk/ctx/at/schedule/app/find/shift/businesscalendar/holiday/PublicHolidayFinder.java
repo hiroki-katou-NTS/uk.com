@@ -24,9 +24,12 @@ public class PublicHolidayFinder {
 
 	@Inject
 	private PublicHolidayRepository publicHolidayRepository;
+	
+	final String DATE_FORMAT = "yyyy/MM/dd";
 
-	public List<PublicHolidayDto> getHolidaysByListDate(List<BigDecimal> lstDate) {
-		return this.publicHolidayRepository.getHolidaysByListDate(AppContexts.user().companyId(), lstDate).stream()
+	public List<PublicHolidayDto> getHolidaysByListDate(List<String> lstDate) {
+		List<GeneralDate> lstGeneralDate = lstDate.stream().map(x -> GeneralDate.fromString(x, DATE_FORMAT)).collect(Collectors.toList());
+		return this.publicHolidayRepository.getHolidaysByListDate(AppContexts.user().companyId(), lstGeneralDate).stream()
 				.map(domain -> PublicHolidayDto.fromDomain(domain)).collect(Collectors.toList());
 	}
 	
@@ -35,8 +38,8 @@ public class PublicHolidayFinder {
 				.map(domain -> PublicHolidayDto.fromDomain(domain)).collect(Collectors.toList());
 	}
 	
-	public Optional<PublicHolidayDto> getHolidayByDate(BigDecimal date){
+	public Optional<PublicHolidayDto> getHolidayByDate(String date){
 		return this.publicHolidayRepository.getHolidaysByDate(AppContexts.user().companyId(), 
-				date).map(x -> PublicHolidayDto.fromDomain(x));
+				GeneralDate.fromString(date, DATE_FORMAT)).map(x -> PublicHolidayDto.fromDomain(x));
 	}
 }

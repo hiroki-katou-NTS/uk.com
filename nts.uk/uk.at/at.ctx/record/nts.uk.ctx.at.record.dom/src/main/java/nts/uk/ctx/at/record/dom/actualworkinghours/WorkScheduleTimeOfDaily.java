@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktimeset.fluid.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 

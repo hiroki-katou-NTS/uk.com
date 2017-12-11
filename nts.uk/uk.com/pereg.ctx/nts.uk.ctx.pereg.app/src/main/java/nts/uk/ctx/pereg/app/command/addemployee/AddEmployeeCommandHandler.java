@@ -55,8 +55,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Inject
 	private PeregCommandFacade commandFacade;
 
-	@Inject
-	private UserRepository userRepository;
+//	@Inject
+//	private UserRepository userRepository;
 
 	@Inject
 	private EmpFileManagementRepository perFileManagementRepository;
@@ -245,7 +245,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false,
 				null, command.getEmployeeName(), employeeId);
 
-		this.userRepository.addNewUser(newUser);
+//		this.userRepository.addNewUser(newUser);
 
 	}
 

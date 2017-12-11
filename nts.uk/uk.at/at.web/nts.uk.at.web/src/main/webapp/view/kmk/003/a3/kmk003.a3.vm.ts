@@ -193,20 +193,22 @@ module a3 {
          */
         public updateViewByNotFlowMode(): void {
             var self = this;
-            _.defer(() => {
-                $('#nts-fix-table-a3-overtime').ntsFixTableCustom(self.fixTableOptionOvertime);
-                $('#nts-fix-table-a3-morning').ntsFixTableCustom(self.fixTableOptionMorning);
-                $('#nts-fix-table-a3-afternoon').ntsFixTableCustom(self.fixTableOptionAfternoon);
-            });
+            // TODO: need to check
+//            _.defer(() => {
+//                $('#nts-fix-table-a3-overtime').ntsFixTableCustom(self.fixTableOptionOvertime);
+//                $('#nts-fix-table-a3-morning').ntsFixTableCustom(self.fixTableOptionMorning);
+//                $('#nts-fix-table-a3-afternoon').ntsFixTableCustom(self.fixTableOptionAfternoon);
+//            });
         }
         /**
          * update view by flow mode
          */
         public updateViewByFlowMode(): void {
             var self = this;
-            _.defer(() => {
-                $('#nts-fix-table-a3-overtime-flow').ntsFixTableCustom(self.fixTableOptionOvertime);
-            });
+            // TODO: need to check
+//            _.defer(() => {
+//                $('#nts-fix-table-a3-overtime-flow').ntsFixTableCustom(self.fixTableOptionOvertime);
+//            });
         }
         
         /**
@@ -214,11 +216,12 @@ module a3 {
          */
         public updateViewByFlexMode(): void {
             var self = this;
-            _.defer(() => {
-                $('#nts-fix-table-a3-overtime-flex').ntsFixTableCustom(self.fixTableOptionOvertimeFlex);
-                $('#nts-fix-table-a3-morning-flex').ntsFixTableCustom(self.fixTableOptionMorningFlex);
-                $('#nts-fix-table-a3-afternoon-flex').ntsFixTableCustom(self.fixTableOptionAfternoonFlex);
-            });
+            // TODO: need to check
+//            _.defer(() => {
+//                $('#nts-fix-table-a3-overtime-flex').ntsFixTableCustom(self.fixTableOptionOvertimeFlex);
+//                $('#nts-fix-table-a3-morning-flex').ntsFixTableCustom(self.fixTableOptionMorningFlex);
+//                $('#nts-fix-table-a3-afternoon-flex').ntsFixTableCustom(self.fixTableOptionAfternoonFlex);
+//            });
         }
          /**
          * init array setting column option overtime flex mode

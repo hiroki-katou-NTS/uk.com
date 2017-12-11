@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.shorttimework;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
-import nts.uk.ctx.at.shared.dom.worktimeset.fluid.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

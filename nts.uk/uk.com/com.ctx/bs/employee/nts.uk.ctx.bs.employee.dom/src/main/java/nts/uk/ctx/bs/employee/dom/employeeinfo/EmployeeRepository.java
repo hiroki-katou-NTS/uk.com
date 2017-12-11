@@ -103,37 +103,36 @@ public interface EmployeeRepository {
 	 * @return
 	 */
 	Optional<Object[]> getEmployeeDetailToDelete(String employeeId);
-	
+
 	/**
 	 * Get list EmployeeDelete
+	 * 
 	 * @return
 	 */
 
 	List<Object[]> getAllEmployeeInfoToDelete();
 
-	
-
 	/**
 	 * Update Employee
+	 * 
 	 * @param domain
 	 */
 	void updateEmployee(Employee domain);
-	
+
 	/**
 	 * @param employeeId
 	 * @param companyId
 	 * @param systemDate
-	 * RequestList #101
+	 *            RequestList #101
 	 * @return the optional
 	 */
-	Optional<Employee> findBySidCidSystemDate(String companyId, String personId , GeneralDate systemDate);
-	
-	//sonnlb code start
+	Optional<Employee> findBySidCidSystemDate(String companyId, String personId, GeneralDate systemDate);
+
+	// sonnlb code start
 
 	void addNewEmployee(Employee newEmployee);
-	
-	//sonnlb code end
-	
+
+	// sonnlb code end
 
 	/**
 	 * Gets the list Employee by list employeeIds.
@@ -145,5 +144,15 @@ public interface EmployeeRepository {
 	List<Employee> getByListEmployeeId(List<String> employeeIds);
 
 	Optional<Employee> getInfoById(String employeeId);
+
+	/**
+	 * @author lanlt 
+	 * find employee
+	 * @param companyId
+	 * @param sid
+	 * @param standardDate
+	 * @return Employee
+	 */
+	Optional<Employee> findByEmployeeID(String companyId, String sid, GeneralDate standardDate);
 
 }

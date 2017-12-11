@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Builder;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
@@ -16,8 +15,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * The Class PrescribedTimezoneSetting.
  */
-//所定時間帯設定
-@Builder
+// 所定時間帯設定
 @Getter
 public class PrescribedTimezoneSetting extends DomainObject {
 
@@ -39,6 +37,27 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	/** The shift two. */
 	public static Integer SHIFT_TWO = 2;
 	
+	/**
+	 * Instantiates a new prescribed timezone setting.
+	 *
+	 * @param memento the memento
+	 */
+	public PrescribedTimezoneSetting(PrescribedTimezoneSettingGetMemento memento) {
+		this.morningEndTime = memento.getMorningEndTime();
+		this.afternoonStartTime = memento.getAfternoonStartTime();
+		this.lstTimezone = memento.getLstTimezone();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PrescribedTimezoneSettingSetMemento memento){
+		memento.setMorningEndTime(this.morningEndTime);
+		memento.setAfternoonStartTime(this.afternoonStartTime);
+		memento.setLstTimezone(this.lstTimezone);
+	}
 	/**
 	 * Update start time shift.
 	 *

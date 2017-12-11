@@ -26,6 +26,7 @@
             allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
             allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
             allHiragana: /^[ぁ-ん　ー ]*$/,
+            workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/
         };
 
         /**
@@ -258,6 +259,17 @@
                         messageId: 'FND_E_HALFINT'
                     };
         }
+        
+        /**
+         * Determinies if text is workplace code
+         * @param text text to check
+         */
+        export function workplaceCode(text: string) {
+            return {
+                probe: regexp.workplaceCode.test(text),
+                messageId: 'FND_E_ALPHANUMERIC'
+            };            
+        }
 
         /**
          * 文字列中のHTML記号をサニタイズする
@@ -475,14 +487,20 @@
             HalfInt: new CharType(
                 '半整数',
                 0.5,
-                nts.uk.text.halfInt)
+                nts.uk.text.halfInt),
+            WorkplaceCode: new CharType(
+                '半角英数字',
+                0.5,
+                nts.uk.text.workplaceCode)
         };
 
         export function getCharType(primitiveValueName: string): CharType {
             var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
             if (constraint === undefined)
                 return null;
-            if (constraint.charType === undefined)
+            if (primitiveValueName === "WorkplaceCode" && !constraint.charType) {
+                constraint.charType = "WorkplaceCode";
+            } else if (constraint.charType === undefined)
                 constraint.charType = "Any";
             var charType = charTypes[constraint.charType];
             if (charType === undefined) {

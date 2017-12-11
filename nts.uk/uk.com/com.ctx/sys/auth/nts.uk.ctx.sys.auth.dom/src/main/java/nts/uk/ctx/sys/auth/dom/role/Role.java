@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.role;
 
+import java.util.UUID;
+
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -54,7 +56,7 @@ public class Role extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public Role(RoleGetMemento memento) {
-		if(memento.getRoleId() == null ){
+		if(memento.getRoleId() == null || memento.getRoleId().equals("")){
 			this.roleId = IdentifierUtil.randomUniqueId();
 		} else{
 			this.roleId = memento.getRoleId();
@@ -115,6 +117,19 @@ public class Role extends AggregateRoot {
 	public boolean canDelete(){
 		if(this.roleType == RoleType.SYSTEM_MANAGER) throw new BusinessException("MSG_503");
 		return true;
+	}
+
+	public Role(RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
+			RoleName name, ContractCode contractCode, RoleAtr assignAtr, String companyId) {
+		super();
+		this.roleId = IdentifierUtil.randomUniqueId();
+		this.roleCode = roleCode;
+		this.roleType = roleType;
+		this.employeeReferenceRange = employeeReferenceRange;
+		this.name = name;
+		this.contractCode = contractCode;
+		this.assignAtr = assignAtr;
+		this.companyId = companyId;
 	}
 	
 }

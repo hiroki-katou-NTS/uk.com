@@ -28,7 +28,7 @@ public class JpaExtractConditionSelectionRepository extends JpaRepository implem
 										entity.kwrmtErAlWorkRecordPK.errorAlarmCode,
 										entity.errorAlarmName, entity.fixedAtr.intValue(),
 										entity.useAtr.intValue(), entity.typeAtr.intValue(),
-										entity.messageDisplay, entity.boldAtr.intValue(),
+										entity.eralCheckId, entity.boldAtr.intValue(),
 										entity.messageColor, entity.cancelableAtr.intValue(),
 										entity.errorDisplayItem);
 	}

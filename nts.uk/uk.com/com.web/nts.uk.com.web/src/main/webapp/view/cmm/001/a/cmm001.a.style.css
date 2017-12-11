@@ -30,7 +30,6 @@
 
 #companyCode {
 	width: 50px;
-	text-align: center;
 }
 
 #combo-box {
@@ -45,7 +44,7 @@
 
 #ntsleft {
 	float: left;
-	width: 440px;
+	width: 370px;
 	height: 500px;
 	margin-top: 2px;
 }
@@ -61,7 +60,7 @@
 }
 
 .ntsCheckbox-left {
-	margin-left: 325px;
+	margin-left: 225px;
 	margin-top: 10px;
 }
 
@@ -132,13 +131,12 @@ ui-widget-header {
 }
 
 input.ntsSearchBox {
-	width: 200px;
+	width: 165px;
 }
 
-button.search-btn {
+/* button.search-btn {
 	width: 90px;
-}
-
+} */
 .flex-box {
 	display: flex;
 	align-items: center;
@@ -153,7 +151,7 @@ button.search-btn {
 	margin-bottom: 0px !important;
 }
 
-#companyName{
+#companyName {
 	width: 360px !important;
 	margin-left: -50px !important;
 }
@@ -165,7 +163,7 @@ button.search-btn {
 }
 
 #companyNameAbb {
-	width: 360px !important;
+	/* width: 360px !important; */
 	margin-top: -20px;
 	margin-left: -50px !important;
 }
@@ -209,29 +207,29 @@ button.search-btn {
 }
 
 #LBLAddress1 {
-	margin-left: 24px;
-	display: inline-block;
+	/* margin-left: 24px;
+	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
 
 #LBLAddress2 {
-	margin-left: 24px;
-	display: inline-block;
+	/* margin-left: 24px;
+	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
 
 #LBLAddressKana1 {
-	margin-left: 24px;
-	display: inline-block;
+	/* margin-left: 24px;
+	display: inline-block; */
 	line-height: 30px;
 	height: 40px;
 }
 
 #LBLAddressKana2 {
-	margin-left: 24px;
-	display: inline-block;
+	/* margin-left: 30px;
+	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
@@ -270,50 +268,57 @@ body>div:nth-child(4) {
 
 .left20 {
 	margin-left: 20px;
+	margin-top: -12px;
 }
 
 #colum1 {
 	width: 120px;
-	margin-left: -50px;	
+	margin-left: -50px;
 }
-#searchZipCode{
+
+#searchZipCode {
 	margin-left: -80px;
 }
 
-#checkbtn{
+#checkbtn {
 	height: 25px;
 }
 
-#corporateMyNumber{
+#corporateMyNumber {
 	margin-left: -50px;
 	width: 115px;
 }
 
-#presidentName{
+#presidentName {
 	margin-left: -50px;
 }
 
-#presidentJobTitle{
+#presidentJobTitle {
 	margin-left: -50px;
 }
 
-#codeNameLb{
+#codeNameLb {
 	margin-top: -8px;
 }
 
-.ntsCheckBox-label{
+.ntsCheckBox-label {
 	width: 130px;
 }
 
-#faxNo{
+#faxNo {
 	margin-left: -50px;
 }
 
-.cf1{
+.cf1 {
 	margin-left: -70px;
 }
 
-#switchhelpbtn{
-    margin-left: 30px;
-    height: 27px;
+#switchhelpbtn {
+	margin-left: 30px;
+	height: 27px;
 }
+
+#tab-1, #tab-2, #tab-3 {
+	height: 370px;
+}
+

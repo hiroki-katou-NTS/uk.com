@@ -15,7 +15,6 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class RoleIndividualGrantExportRepoImpl.
@@ -27,14 +26,11 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 	@Inject
 	private RoleIndividualGrantRepository roleIndividualGrantRepository;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUserAndRoleType(java.lang.String, java.lang.Integer)
-	 */
 	@Override
 	public RoleIndividualGrantExport getByUserAndRoleType(String userId, Integer roleType) {
-		Optional<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository
-				.findByUserAndRole(userId, RoleType.valueOf(roleType));
-		return new RoleIndividualGrantExport(roleIndividualGrant.get().getRoleId());
+		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository
+				.findByUserAndRole(userId, RoleType.valueOf(roleType).value).get(0);
+		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
 	}
 
 	@Override
@@ -48,9 +44,4 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUser(java.lang.String)
-	 */
-
 }

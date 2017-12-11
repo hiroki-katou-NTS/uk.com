@@ -43,4 +43,12 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 				new DatePeriod(this.entity.getStrYmd(), this.entity.getEndYmd()));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento#getCompanyId()
+	 */
+	@Override
+	public String getCompanyId() {
+		return this.entity.getCId();
+	}
+
 }

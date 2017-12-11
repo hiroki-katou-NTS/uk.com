@@ -19,9 +19,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.Wo
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 
 /**
- * The Class BasicSchedule.
+ * The Class BasicSchedule. 勤務予定基本情報
  */
-// 勤務予定基本情報
 @Getter
 public class BasicSchedule extends AggregateRoot {
 
@@ -64,7 +63,7 @@ public class BasicSchedule extends AggregateRoot {
 	/** The work schedule person fees. */
 	// 勤務予定人件費
 	private List<WorkSchedulePersonFee> workSchedulePersonFees;
-	
+
 	/** The child care schedules. */
 	// 勤務予定育児介護時間帯
 	private List<ChildCareSchedule> childCareSchedules;
@@ -111,12 +110,18 @@ public class BasicSchedule extends AggregateRoot {
 	/**
 	 * Creates the from java type.
 	 *
-	 * @param sId the s id
-	 * @param date the date
-	 * @param workTypeCode the work type code
-	 * @param workTimeCode the work time code
-	 * @param confirmedAtr the confirmed atr
-	 * @param workDayAtr the work day atr
+	 * @param sId
+	 *            the s id
+	 * @param date
+	 *            the date
+	 * @param workTypeCode
+	 *            the work type code
+	 * @param workTimeCode
+	 *            the work time code
+	 * @param confirmedAtr
+	 *            the confirmed atr
+	 * @param workDayAtr
+	 *            the work day atr
 	 * @return the basic schedule
 	 */
 	public static BasicSchedule createFromJavaType(String sId, GeneralDate date, String workTypeCode,
@@ -129,7 +134,8 @@ public class BasicSchedule extends AggregateRoot {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(BasicScheduleSetMemento memento) {
 		memento.setEmployeeId(this.employeeId);
@@ -145,7 +151,9 @@ public class BasicSchedule extends AggregateRoot {
 		memento.setChildCareSchedules(this.childCareSchedules);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -164,7 +172,9 @@ public class BasicSchedule extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -217,6 +227,5 @@ public class BasicSchedule extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
-	
+
 }

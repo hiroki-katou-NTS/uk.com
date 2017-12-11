@@ -1,8 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.entity.jobtitle;
 
 import java.io.Serializable;
@@ -18,8 +17,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class BsymtJobSeqMaster.
- *
- * @author NWS_THANHNC_PC
  */
 @Getter
 @Setter
@@ -46,6 +43,7 @@ public class BsymtJobSeqMaster extends UkJpaEntity implements Serializable {
      * Instantiates a new bsymt job seq master.
      */
     public BsymtJobSeqMaster() {
+    	super();
     }
 
     /**

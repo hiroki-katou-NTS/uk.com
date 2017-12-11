@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
+import static java.util.stream.Collectors.groupingBy;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.*;
-
-import java.util.ArrayList;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,11 +23,10 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -84,20 +82,23 @@ public class CheckBeforeRegisterOvertime {
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
 		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceID.NORMALOVERTIME);
-		if (overtimeInputs == null || overtimeInputs.isEmpty()) {
-			result.setErrorCode(1);
-			result.setFrameNo(-1);
-			result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
-			return result;
+		// if (overtimeInputs == null || overtimeInputs.isEmpty()) {
+		// result.setErrorCode(1);
+		// result.setFrameNo(-1);
+		// result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
+		// return result;
+		// }
+		if (overtimeInputs != null && !overtimeInputs.isEmpty()) {
+			res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(),
+					app.getInputDate(), app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
+			if (res.getErrorCode() != 0) {
+				result.setErrorCode(res.getErrorCode());
+				result.setFrameNo(res.getFrameNo());
+				result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
+				return result;
+			}
 		}
-		res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(), app.getInputDate(),
-				app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
-		if (res.getErrorCode() != 0) {
-			result.setErrorCode(res.getErrorCode());
-			result.setFrameNo(res.getFrameNo());
-			result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
-			return result;
-		}
+		
 		// TODO: 実績超過チェック
 		beforeCheck.OvercountCheck(app.getCompanyID(), app.getApplicationDate(), app.getPrePostAtr());
 		// TODO: ３６協定時間上限チェック（月間）

@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.entity.shortworktime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -25,17 +24,14 @@ public class BshmtSchildCareFramePK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The sid. */
-	@Basic(optional = false)
 	@Column(name = "SID")
 	private String sid;
 
 	/** The hist id. */
-	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	private String histId;
 
 	/** The str clock. */
-	@Basic(optional = false)
 	@Column(name = "STR_CLOCK")
 	private Integer strClock;
 
@@ -43,6 +39,7 @@ public class BshmtSchildCareFramePK implements Serializable {
 	 * Instantiates a new bshmt schild care frame PK.
 	 */
 	public BshmtSchildCareFramePK() {
+		super();
 	}
 
 	/**

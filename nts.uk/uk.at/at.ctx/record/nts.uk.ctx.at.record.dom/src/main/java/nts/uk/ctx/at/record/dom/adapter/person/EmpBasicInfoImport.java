@@ -18,6 +18,8 @@ public class EmpBasicInfoImport {
 
 	/** The person id. 個人ID */
 	private String pId;
+	
+	private String namePerson;
 
 	/** The EmployeeCode. 社員コード */
 	private String employeeCode;

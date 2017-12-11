@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw007.a.service {
     var paths: any = {
         getAll: "ctx/at/record/workrecord/erroralarm/getall",
         update: "ctx/at/record/workrecord/erroralarm/update",
+        remove: "ctx/at/record/workrecord/erroralarm/remove",
         getEmploymentByCode: "bs/employee/employment/findByCode/",
         getClassificationByCode: "bs/employee/classification/find/",
         findAllJobTitle: "bs/employee/jobtitle/findAll",
@@ -10,7 +11,9 @@ module nts.uk.at.view.kdw007.a.service {
         getAllWorkType: "at/share/worktype/findAll",
         getWorkTypeByListCode: "at/share/worktype/getpossibleworktype",
         getAllWorkTime: "at/shared/worktime/findAll",
-        getWorkTimeByListCode: "at/shared/worktime/findByCodes"
+        getWorkTimeByListCode: "at/shared/worktime/findByCodes",
+        getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
+        getAllAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
     }
 
     export function getAll() {
@@ -19,6 +22,10 @@ module nts.uk.at.view.kdw007.a.service {
 
     export function update(command) {
         return nts.uk.request.ajax(paths.update, command);
+    }
+    
+    export function remove(code) {
+        return nts.uk.request.ajax("at",paths.remove, code);
     }
 
     export function getEmploymentByCode(code) {
@@ -51,6 +58,14 @@ module nts.uk.at.view.kdw007.a.service {
     
      export function getWorkTimeByListCode(lstCode) {
         return nts.uk.request.ajax("at", paths.getWorkTimeByListCode, lstCode);
+    }
+    
+    export function getAttendanceItemByCodes(codes) {
+        return nts.uk.request.ajax("at", paths.getAttendanceItemByCodes, codes);
+    }
+    
+    export function getAllAttendanceItem() {
+        return nts.uk.request.ajax("at", paths.getAllAttendanceItem);
     }
 
 }

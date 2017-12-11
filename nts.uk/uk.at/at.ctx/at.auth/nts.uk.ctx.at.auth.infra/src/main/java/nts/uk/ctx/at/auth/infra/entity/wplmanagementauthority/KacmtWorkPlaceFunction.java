@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.FeatureDescriptionOfDailyPerformance;
