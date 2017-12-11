@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 
 @Stateless
 @Transactional
-public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, List<String>> {
+public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, String> {
 
 	private static final String EMPTY_STRING = "";
 	private static final String COLON_STRING = ":";
@@ -36,7 +36,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	private IWorkChangeRegisterService workChangeRegisterService;
 	
 	@Override
-	protected List<String> handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
+	protected String handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
 		AddAppWorkChangeCommand addCommand = context.getCommand();
 
 		// Application command

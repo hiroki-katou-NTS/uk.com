@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandler;
@@ -69,8 +70,8 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("addworkchange")
-	public List<String> addWorkChange(AddAppWorkChangeCommand command){
-		return addHandler.handle(command);
+	public JavaTypeResult<String> addWorkChange(AddAppWorkChangeCommand command){
+		return new JavaTypeResult<String>(addHandler.handle(command));
 	}
 	/**
 	 * 
