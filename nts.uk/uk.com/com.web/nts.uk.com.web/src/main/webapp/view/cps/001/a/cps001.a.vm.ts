@@ -95,9 +95,6 @@ module cps001.a.vm {
         // resource id for title in category mode
         titleResource: KnockoutObservable<string> = ko.observable('');
 
-        // output data on layout changed
-        layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
-
         // output data on category changed
         categoriesData: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -230,7 +227,9 @@ module cps001.a.vm {
             });
 
             category.categoryType.subscribe(t => {
-                layout.listItemCls.removeAll();
+                let layouts = self.categoryLayouts;
+
+                layouts.removeAll();
                 if (t) {
                     let query = {
                         categoryId: category.id(),
@@ -244,12 +243,17 @@ module cps001.a.vm {
                         case IT_CAT_TYPE.SINGLE:
                             service.getCatData(query).done(data => {
                                 //layout.listItemCls.removeAll();
+                                let layout = new Layout();
+
                                 layout.listItemCls(data.classificationItems);
                             });
                             break;
                         case IT_CAT_TYPE.MULTI:
                             break;
                         case IT_CAT_TYPE.CONTINU:
+                            service.getHistData(query).done(data => {
+                                debugger;
+                            });
                             break;
                         case IT_CAT_TYPE.NODUPLICATE:
                             break;
@@ -284,7 +288,10 @@ module cps001.a.vm {
                 emp = self.employee(),
                 person = self.person();
 
-            setShared('CPS001B_PARAM', { sid: emp.employeeId(), pid: person.personId() });
+            setShared('CPS001B_PARAMS', {
+                sid: emp.employeeId(),
+                pid: person.personId()
+            });
             modal('../b/index.xhtml').onClosed(() => { });
         }
 
@@ -300,7 +307,9 @@ module cps001.a.vm {
 
             permision().done((perm: IPersonAuth) => {
                 if (!!perm.allowAvatarUpload) {
-                    setShared("CPS001D_PARAMS", iemp);
+                    setShared("CPS001D_PARAMS", {
+                        employeeId: iemp.employeeId
+                    });
                     modal('../d/index.xhtml').onClosed(() => {
                         let data = getShared("CPS001D_VALUES");
                         employee.avatar(data.fileId ? liveView(data.fileId) : undefined);
@@ -310,26 +319,39 @@ module cps001.a.vm {
         }
 
         unManagerEmployee() {
-            let self = this;
+            let self = this,
+                employee: EmployeeInfo = self.employee(),
+                iemp: IEmployeeInfo = ko.toJS(employee);
 
-            modal('../c/index.xhtml').onClosed(() => { });
+            modal('../c/index.xhtml').onClosed(() => {
+                self.start();
+            });
         }
 
         pickLocation() {
-            let self = this;
+            let self = this,
+                employee: EmployeeInfo = self.employee(),
+                iemp: IEmployeeInfo = ko.toJS(employee);
 
             permision().done((perm: IPersonAuth) => {
                 if (!!perm.allowMapBrowse) {
+                    setShared("CPS001E_PARAMS", {
+                        employeeId: iemp.employeeId
+                    });
                     modal('../e/index.xhtml').onClosed(() => { });
                 }
             });
         }
 
         uploadebook() {
-            let self = this;
+            let self = this,
+                person = self.person();
 
             permision().done((perm: IPersonAuth) => {
                 if (!!perm.allowDocRef) {
+                    setShared("CPS001F_PARAMS", {
+                        pid: person.personId()
+                    });
                     modal('../f/index.xhtml').onClosed(() => { });
                 }
             });
@@ -339,8 +361,8 @@ module cps001.a.vm {
             let self = this,
                 emp = self.employee(),
                 person = emp.personInfo(),
-                inputs = self.layoutData(),
                 layout = self.currentLayout(),
+                inputs = layout.outData(),
                 command: IPeregCommand = {
                     personId: person.personId(),
                     employeeId: emp.employeeId(),
@@ -376,6 +398,7 @@ module cps001.a.vm {
         id: KnockoutObservable<string> = ko.observable('');
         listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
         standardDate: KnockoutObservable<string> = ko.observable(undefined);
+        outData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor(param?: ILayout) {
             let self = this;

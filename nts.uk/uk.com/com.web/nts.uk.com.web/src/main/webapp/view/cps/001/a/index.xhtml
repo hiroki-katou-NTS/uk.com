@@ -318,7 +318,7 @@
 									name: 'simple-layout', 
 									data: {
 										items: layout.listItemCls,
-										outData: layoutData
+										outData: layout.outData
 								 	}
 								}"></div>
 						</div>
@@ -450,7 +450,7 @@
 				<div style="padding-top: 10px"
 					data-bind="ntsLayoutControl: { 
 					data: $data.items,
-					outData: $data.outData,
+					outData: $data.outData || ko.observableArray([]),
 					editAble: 2 }"></div>
 			</script>
 			<script type="text/html" id="multiple-layout"

@@ -1270,7 +1270,7 @@ module nts.custombinding {
                                             };
                                         case ITEM_SINGLE_TYPE.DATE:
                                             return {
-                                                value: data.value ? moment.utc(data.value).format("YYYY/MM/dd") : undefined,
+                                                value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
                                                 typeData: 3
                                             };
                                     }
