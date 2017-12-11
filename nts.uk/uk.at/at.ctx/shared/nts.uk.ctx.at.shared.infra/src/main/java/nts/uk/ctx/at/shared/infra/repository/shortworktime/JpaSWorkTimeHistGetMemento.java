@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -14,41 +17,55 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 
+	private final static int FIRST_ITEM_INDEX = 0;
+
 	/** The entity. */
-	private BshmtWorktimeHist entity;
-	
+	private List<BshmtWorktimeHist> entities;
+
 	/**
 	 * Instantiates a new jpa S work time hist get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
-	public JpaSWorkTimeHistGetMemento(BshmtWorktimeHist entity) {
-		this.entity = entity;
+	public JpaSWorkTimeHistGetMemento(List<BshmtWorktimeHist> entities) {
+		this.entities = entities;
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento#getEmployeeId()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento#
+	 * getEmployeeId()
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.entity.getBshmtWorktimeHistPK().getSid();
+		return this.entities.get(FIRST_ITEM_INDEX).getBshmtWorktimeHistPK().getSid();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento#getHistoryItem()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento#
+	 * getHistoryItem()
 	 */
 	@Override
-	public DateHistoryItem getHistoryItem() {
-		return new DateHistoryItem(this.entity.getBshmtWorktimeHistPK().getHistId(),
-				new DatePeriod(this.entity.getStrYmd(), this.entity.getEndYmd()));
+	public List<DateHistoryItem> getHistoryItems() {
+		return this.entities.stream()
+				.map(item -> new DateHistoryItem(item.getBshmtWorktimeHistPK().getHistId(),
+						new DatePeriod(item.getStrYmd(), item.getEndYmd())))
+				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento#getCompanyId()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento#
+	 * getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getCId();
+		return this.entities.get(FIRST_ITEM_INDEX).getCId();
 	}
 
 }

@@ -14,7 +14,7 @@ module cps001.b.vm {
         constructor() {
             let self = this,
                 empDelete: ModelDelete = self.empDelete(),
-                dataShare: IDataShare = getShared('CPS001B_PARAM') || null;
+                dataShare: IDataShare = getShared('CPS001B_PARAMS') || null;
 
             if (dataShare) {
 
@@ -41,7 +41,7 @@ module cps001.b.vm {
                 empDelete: IModelDto = ko.toJS(self.empDelete);
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this,
-                    dataShare: IDataShare = getShared('CPS001B_PARAM') || null;
+                    dataShare: IDataShare = getShared('CPS001B_PARAMS') || null;
                 if (dataShare) {
                     let command = { sId: dataShare.sid, reason: empDelete.reason };
                     service.deleteEmp(command).done(() => {

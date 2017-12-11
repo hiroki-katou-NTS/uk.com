@@ -64,14 +64,14 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	}
 
 	@Override
-	public List<String> appStampRegister(String applicationReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+	public String appStampRegister(String applicationReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
 		return appStampRegistration(appStamp, appApprovalPhases);
 	}
 	
 	// 打刻申請の新規登録
-	private List<String> appStampRegistration(AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+	private String appStampRegistration(AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		appStamp.setListPhase(appApprovalPhases);
 		newBeforeRegister.processBeforeRegister(appStamp);
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);

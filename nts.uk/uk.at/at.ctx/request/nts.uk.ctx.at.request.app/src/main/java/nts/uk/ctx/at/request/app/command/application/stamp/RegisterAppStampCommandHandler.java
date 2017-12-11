@@ -37,7 +37,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, List<String>> {
+public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, String> {
 	
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 
@@ -45,7 +45,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 	private AppStampNewDomainService applicationStampNewDomainService;
 
 	@Override
-	protected List<String> handle(CommandHandlerContext<AppStampCmd> context) {
+	protected String handle(CommandHandlerContext<AppStampCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		AppStampCmd appStampCmd = context.getCommand();
@@ -196,7 +196,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 				return applicationStampNewDomainService.appStampRegister(applicationReason, appStamp, appApprovalPhases);
 				
 			default:
-				return Collections.emptyList();
+				return null;
 			
 		}
 	}
