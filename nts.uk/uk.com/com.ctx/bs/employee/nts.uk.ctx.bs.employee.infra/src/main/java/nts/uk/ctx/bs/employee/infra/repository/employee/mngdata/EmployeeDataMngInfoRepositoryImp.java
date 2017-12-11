@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
@@ -9,6 +13,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
@@ -53,7 +58,17 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.delStatus = 0 AND e.employeeCode = :empcode AND e.companyId = :cid");
+	
+	// duongtv start code
+	/** The select by list emp code. */
+	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
+			+ " AND e.employeeCode IN :listEmployeeCode ";
+	
+	/** The select by list emp id. */
+	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
+			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ";
 
+	// duongtv end code
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -212,4 +227,45 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	}
 
+	// duong tv start code
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
+	 * #findByListEmployeeId(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<EmployeeDataMngInfo> findByListEmployeeId(String companyId, List<String> employeeIds) {
+		// fix bug empty list
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+
+		return this.queryProxy().query(SELECT_BY_LIST_EMP_ID, BsymtEmployeeDataMngInfo.class)
+				.setParameter("companyId", companyId).setParameter("employeeIds", employeeIds).getList().stream()
+				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
+	 * #findByListEmployeeCode(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<EmployeeDataMngInfo> findByListEmployeeCode(String companyId, List<String> employeeCodes) {
+		// fix bug empty list
+		if (CollectionUtil.isEmpty(employeeCodes)) {
+			return new ArrayList<>();
+		}
+
+		return this.queryProxy().query(SELECT_BY_LIST_EMP_CODE, BsymtEmployeeDataMngInfo.class)
+				.setParameter("companyId", companyId).setParameter("listEmployeeCode", employeeCodes).getList().stream()
+				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+	}
+
+	// duong tv end code
 }
