@@ -63,10 +63,6 @@ public class HistoryPolicy {
             exceptions.addMessage("Msg_127");
             isHasError = true;
         }
-        if (newPeriod.end().before(newPeriod.start())) {
-            exceptions.addMessage("Msg_667");
-            isHasError = true;
-        }
         // has error, throws message
         if (isHasError) {
             exceptions.throwExceptions();

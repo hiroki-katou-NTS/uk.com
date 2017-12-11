@@ -24,7 +24,7 @@
 		<span>#{i18n.getText('KSU001_1701')}</span>
 		<div>
 			<input data-bind="ntsTextEditor: {value: textName, enable: true}" />
-			<button class="proceed">#{i18n.getText('KSU001_1703')}</button>
+			<button class="proceed" data-bind="click: decision">#{i18n.getText('KSU001_1703')}</button>
 			<button data-bind="click: closePopup">#{i18n.getText('KSU001_1704')}</button>
 		</div>
 	</div>

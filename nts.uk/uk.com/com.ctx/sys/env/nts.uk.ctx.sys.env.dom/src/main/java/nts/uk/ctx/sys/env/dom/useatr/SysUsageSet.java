@@ -10,7 +10,6 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * システム利用設定
  * @author yennth
- *
  */
 @Getter
 @AllArgsConstructor
@@ -26,6 +25,7 @@ public class SysUsageSet extends AggregateRoot{
 	private ShuGyo shugyo;
 	/** 給与システム **/
 	private Kyuyo kyuyo;
+	
 	public static SysUsageSet createFromJavaType(String companyId, 
 													int jinji, int shugyo, int kyuyo){
 		return new SysUsageSet(companyId,
@@ -34,6 +34,12 @@ public class SysUsageSet extends AggregateRoot{
 							EnumAdaptor.valueOf(kyuyo, Kyuyo.class));
 	}
 	
+	/**
+	 * check list company mustn't be abolished all 
+	 * @param currentCompanyId
+	 * @return
+	 * @author yennth
+	 */
 	public static String createCompanyId(String companyCode, String contractCd) {
 		return contractCd + "-" + companyCode;
 	}
@@ -42,12 +48,4 @@ public class SysUsageSet extends AggregateRoot{
 	public void validate(){
 		super.validate();
 	}
-
-//	public SysUsageSet(String companyId, Jinji jinji, ShuGyo shugyo, Kyuyo kyuyo) {
-//		super();
-//		this.jinji = jinji;
-//		this.shugyo = shugyo;
-//		this.kyuyo = kyuyo;
-//		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
-//	}
 }

@@ -10,9 +10,9 @@ import lombok.Value;
 public class SpecificDateItemCommand {
 	private String companyId;
 	
-	private int useAtr;
+	private Integer useAtr;
 	
-	private int specificDateItemNo;
+	private Integer specificDateItemNo;
 	
 	private String specificName;
 }

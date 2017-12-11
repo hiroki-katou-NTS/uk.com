@@ -30,9 +30,11 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 @Transactional
 public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, List<String>> {
 
+	private static final String EMPTY_STRING = "";
+	
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
-
+	
 	@Override
 	protected List<String> handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
 		AddAppWorkChangeCommand addCommand = context.getCommand();
@@ -59,13 +61,13 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		// 申請
 		Application app = new Application(companyId, appID,
 				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), GeneralDateTime.now(), persionId,
-				new AppReason(appCommand.getReversionReason()), appCommand.getApplicationDate(),
+				new AppReason(EMPTY_STRING), appCommand.getApplicationDate(),
 				new AppReason(appCommand.getApplicationReason()), ApplicationType.WORK_CHANGE_APPLICATION, applicantSID,
 				EnumAdaptor.valueOf(0, ReflectPlanScheReason.class), null,
 				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
 				EnumAdaptor.valueOf(0, ReflectPerScheReason.class), null,
 				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
-				appCommand.getApplicationDate(), appCommand.getApplicationDate(), pharseList);
+				appCommand.getStartDate(), appCommand.getEndDate(), pharseList);
 
 		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(companyId, appID,

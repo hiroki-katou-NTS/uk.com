@@ -28,9 +28,15 @@ public class GetDataApprovalRootOfSubjectRequest {
 	
 	public List<ApprovalRootOfSubjectRequestDto> getApprovalRootOfSubjectRequest(ObjApprovalRootInput objApprovalRootInput){
 		String companyID = AppContexts.user().companyId();
+		String sid = "";
+		if(Strings.isBlank(objApprovalRootInput.getSid())){
+			sid = AppContexts.user().employeeId();
+		} else {
+			sid = objApprovalRootInput.getSid();
+		}
 		GeneralDate generalDate = GeneralDate.fromString(objApprovalRootInput.getStandardDate(), "yyyy/MM/dd");
-		List<ApprovalRootOfSubjectRequestDto> data =  this.approvalRootRepo.getApprovalRootOfSubjectRequest( companyID,
-				objApprovalRootInput.getSid(), objApprovalRootInput.getEmploymentRootAtr(), 
+		List<ApprovalRootOfSubjectRequestDto> data =  this.approvalRootRepo.getApprovalRootOfSubjectRequest(companyID,
+				sid, objApprovalRootInput.getEmploymentRootAtr(), 
 				objApprovalRootInput.getAppType(),generalDate)
 				.stream()
 				.map(c->ApprovalRootOfSubjectRequestDto.fromDomain(c))

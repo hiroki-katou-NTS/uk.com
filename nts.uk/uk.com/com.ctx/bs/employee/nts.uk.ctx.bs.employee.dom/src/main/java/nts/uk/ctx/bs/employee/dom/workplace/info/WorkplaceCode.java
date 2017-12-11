@@ -1,20 +1,26 @@
 package nts.uk.ctx.bs.employee.dom.workplace.info;
 
-import nts.arc.primitive.constraint.StringRegEx;
-import nts.uk.shr.com.primitive.CodePrimitiveValue;
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 
- *職場コード
+ * The Class WorkplaceCode.
  */
-@StringRegEx("^[a-zA-Z0-9_-]{1,10}$")
-public class WorkplaceCode extends CodePrimitiveValue<WorkplaceCode>{
+// 職場コード
+@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(10)
+public class WorkplaceCode extends StringPrimitiveValue<WorkplaceCode>{
 
-	/**
-	 * serialVersionUID
-	 */
+	/** serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new workplace code.
+	 *
+	 * @param rawValue the raw value
+	 */
 	public WorkplaceCode(String rawValue) {
 		super(rawValue);
 	}

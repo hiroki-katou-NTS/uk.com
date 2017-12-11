@@ -7,9 +7,9 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.StampReflectTimezone;
 
 /**
  * The Interface FlexWorkSettingGetMemento.
@@ -66,18 +66,18 @@ public interface FlexWorkSettingSetMemento {
 	void setUseHalfDayShift(boolean useHalfDayShift);
 
 	/**
-	 * Sets the half day work timezone.
+	 * Sets the lst half day work timezone.
 	 *
-	 * @param halfDayWorkTimezone the new half day work timezone
+	 * @param halfDayWorkTimezone the new lst half day work timezone
 	 */
-	void setHalfDayWorkTimezone(List<FlexHalfDayWorkTime> halfDayWorkTimezone);
+	void setLstHalfDayWorkTimezone(List<FlexHalfDayWorkTime> halfDayWorkTimezone);
 
 	/**
-	 * Sets the stamp reflect timezone.
+	 * Sets the lst stamp reflect timezone.
 	 *
-	 * @param stampReflectTimezone the new stamp reflect timezone
+	 * @param stampReflectTimezone the new lst stamp reflect timezone
 	 */
-	void setStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone);
+	void setLstStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone);
 
 	/**
 	 * Sets the calculate setting.

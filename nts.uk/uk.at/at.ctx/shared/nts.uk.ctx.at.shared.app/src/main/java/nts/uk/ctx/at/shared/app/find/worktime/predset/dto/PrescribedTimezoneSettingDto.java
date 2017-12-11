@@ -4,21 +4,75 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.predset.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class PrescribedTimezoneSettingDto.
  */
-@Builder
-public class PrescribedTimezoneSettingDto {
+
+@Getter
+@Setter
+public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingSetMemento{
+	
 	/** The morning end time. */
 	public Integer morningEndTime;
 	
 	/** The afternoon start time. */
 	public Integer afternoonStartTime;
 	
-	/** The timezone. */
-	public List<TimezoneDto> timezone;
+	/** The lst timezone. */
+	public List<TimezoneDto> lstTimezone;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
+	 * PrescribedTimezoneSettingSetMemento#setMorningEndTime(nts.uk.shr.com.time
+	 * .TimeWithDayAttr)
+	 */
+	@Override
+	public void setMorningEndTime(TimeWithDayAttr morningEndTime) {
+		this.morningEndTime = morningEndTime.valueAsMinutes();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
+	 * PrescribedTimezoneSettingSetMemento#setAfternoonStartTime(nts.uk.shr.com.
+	 * time.TimeWithDayAttr)
+	 */
+	@Override
+	public void setAfternoonStartTime(TimeWithDayAttr afternoonStartTime) {
+		this.afternoonStartTime = afternoonStartTime.valueAsMinutes();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
+	 * PrescribedTimezoneSettingSetMemento#setLstTimezone(java.util.List)
+	 */
+	@Override
+	public void setLstTimezone(List<Timezone> lstTimezone) {
+		if (CollectionUtil.isEmpty(lstTimezone)) {
+			this.lstTimezone = new ArrayList<>();
+		} else {
+			this.lstTimezone = lstTimezone.stream().map(domain->{
+				TimezoneDto dto = new TimezoneDto();
+				domain.saveToMemento(dto);
+				return dto;
+			}).collect(Collectors.toList());
+		}
+	}
+
 }

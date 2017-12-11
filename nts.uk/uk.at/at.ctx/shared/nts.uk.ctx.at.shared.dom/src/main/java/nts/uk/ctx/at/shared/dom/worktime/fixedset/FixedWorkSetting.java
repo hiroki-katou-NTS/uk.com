@@ -9,6 +9,8 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 
@@ -54,4 +56,76 @@ public class FixedWorkSetting extends AggregateRoot {
 	/** The legal OT setting. */
 	// 法定内残業設定
     private LegalOTSetting legalOTSetting;
+    
+    /**
+     * Instantiates a new fixed work setting.
+     *
+     * @param memento the memento
+     */
+    public FixedWorkSetting(FixedWorkSettingGetMemento memento) {
+    	this.companyId = memento.getCompanyId();
+    	this.workTimeCode = memento.getWorkTimeCode();
+    	this.offdayWorkTimezone = memento.getOffdayWorkTimezone();
+    	this.commonSetting = memento.getCommonSetting();
+    	this.useHalfDayShift = memento.getUseHalfDayShift();
+    	this.fixedWorkRestSetting = memento.getFixedWorkRestSetting();
+    	this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
+    	this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
+        this.legalOTSetting = memento.getLegalOTSetting();
+    }
+    
+    /**
+     * Save to memento.
+     *
+     * @param memento the memento
+     */
+    public void saveToMemento(FixedWorkSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setWorkTimeCode(this.workTimeCode);
+		memento.setOffdayWorkTimezone(this.offdayWorkTimezone);
+		memento.setCommonSetting(this.commonSetting);
+		memento.setUseHalfDayShift(this.useHalfDayShift);
+		memento.setFixedWorkRestSetting(this.fixedWorkRestSetting);
+		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
+		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
+		memento.setLegalOTSetting(this.legalOTSetting);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((workTimeCode == null) ? 0 : workTimeCode.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FixedWorkSetting other = (FixedWorkSetting) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (workTimeCode == null) {
+			if (other.workTimeCode != null)
+				return false;
+		} else if (!workTimeCode.equals(other.workTimeCode))
+			return false;
+		return true;
+	}
+
 }

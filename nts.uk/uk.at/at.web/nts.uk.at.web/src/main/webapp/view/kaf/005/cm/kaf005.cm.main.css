@@ -2,8 +2,8 @@
 	vertical-align: middle;
 }
 
-.valign-center.control-group {
-	margin: 5px 0px 0px 40px;
+.control-group.valign-top>* {
+	vertical-align: top;
 }
 
 .row-cell-margin {
@@ -78,7 +78,7 @@ div.form-label.broken {
 }
 .panel.panel-gray-bg {
 	float: right;
-	height: 300px;
+	min-height: 300px;
 	width: 250px;
 	margin-top: 20px;
 }
@@ -113,11 +113,11 @@ div.form-label.broken {
 }
 
 #label-1 {
-	margin-left: 20px;
+	
 }
 
 .lstApprover {
-	margin-left: 20px;
+	
 }
 /*workType, Sift */
 .lblSiftCd, .lblWorkTypeCd {
@@ -137,8 +137,15 @@ div.form-label.broken {
 	margin-left: 15px;
 }
 .table-time{
-	margin-left: 131px;
+	display: inline-block;
+	margin-left: 15px;
 }
 .fix-margin-left{
 	margin-left:13px;
+}
+.cm-column {
+	width: 130px;
+}
+.cm-column2 {
+	width: 145px;
 }

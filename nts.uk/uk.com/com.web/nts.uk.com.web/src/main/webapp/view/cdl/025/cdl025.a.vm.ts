@@ -8,31 +8,27 @@ module nts.uk.com.view.cdl025.a {
     export module viewmodel {
         export class ScreenModel {
             component: ccg.component.viewmodel.ComponentModel;
-            listRole : KnockoutObservableArray<model.Role>;
-            currentCode : KnockoutObservable<string>;
-            currentCodes : KnockoutObservableArray<string>;
-            roleType : number;
-            multiple : boolean;
-            //
+            roleType: number;
+            multiple: boolean;
+            currentCode: any;
+            
             private searchMode: string;
             
             constructor() {
                 let self = this;
                 let param = nts.uk.ui.windows.getShared("paramCdl025"); 
-                if(param !=null){
+                if(!nts.uk.util.isNullOrUndefined(param)){
                     self.roleType = param.roleType;
-                    self.multiple = param.multiple;    
+                    self.multiple = param.multiple;
+                    self.currentCode = param.currentCode;
                 }
                 
                 self.component = new ccg.component.viewmodel.ComponentModel({ 
                     roleType: self.roleType,
-                    multiple: self.multiple
+                    multiple: self.multiple,
+                    currentCode: self.currentCode,
+                    showEmptyItem: true
                 });
-                self.listRole = ko.observableArray([]);
-                self.currentCode = ko.observable('');
-                self.currentCodes = ko.observableArray([]);
-                //
-                
             }
 
             /** Start page */
@@ -40,7 +36,6 @@ module nts.uk.com.view.cdl025.a {
                 let self = this;
                 let dfd = $.Deferred();
                 self.component.startPage().done(function(){
-                    self.listRole(self.component.listRole());
                     dfd.resolve();    
                 });
                 return dfd.promise();
@@ -49,14 +44,8 @@ module nts.uk.com.view.cdl025.a {
             /** btn decision*/
             decision(){
                 let self = this;
-                let param = {
-                    currentCode :self.component.currentCode(),
-                    multiple :  self.multiple
-                };
-                nts.uk.ui.windows.setShared("dataCdl025", param);
+                nts.uk.ui.windows.setShared("dataCdl025", self.component.currentCode());
                 nts.uk.ui.windows.close();
-                //nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml");
-                
             }
             
             /** btn cancel*/

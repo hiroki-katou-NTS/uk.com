@@ -79,28 +79,7 @@
 						<tr>
 								<td>設定済項目リスト</td>
 								<td>
-									<div>
-										<input data-bind="ntsTextEditor: {
-											value: itemSetting,
-											required: false,
-											enable: true,
-											option: {
-												width: '190px'
-											},
-											readonly: false}"/>
-										<button data-bind="click: addItem">Add item</button>
-									</div>
-									<div id="list-box" data-bind="ntsListBox: {
-										options: itemList,
-										optionsValue: 'name',
-										optionsText: 'name',
-										multiple: true,
-										value: selectedItems,
-										enable: true,
-										rows: 10,
-										columns: [
-											{ key: 'name', length: 19},
-										]}" style="margin-top: 10px;"></div>
+									<input data-bind="ntsTextEditor: { value: itemSetting, option: { width: '310' } }" />
 								</td>
 							</tr>
 					</table>

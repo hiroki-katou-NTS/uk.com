@@ -93,7 +93,8 @@ module nts.uk.ui.jqueryExtentions {
 //                            $bodyWrapper.removeClass("body-no-record");   
 //                        } else {
 //                            $bodyWrapper.addClass("body-no-record");    
-//                        }
+//                        } 
+                        $headerScroll.width(0);
                         $bodyContainer.css("padding-right", "0px");
                     }
                 

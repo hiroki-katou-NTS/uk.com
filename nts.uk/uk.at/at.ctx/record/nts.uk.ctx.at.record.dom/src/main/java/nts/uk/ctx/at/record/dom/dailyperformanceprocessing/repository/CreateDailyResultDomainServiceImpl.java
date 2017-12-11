@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
@@ -36,7 +37,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 	@Override
 	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
-			DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID) {
+			DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog) {
 
 		val dataSetter = asyncContext.getDataSetter();
 
@@ -45,12 +46,11 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		// AsyncCommandHandlerContext<SampleCancellableAsyncCommand> ABC;
 
 		// ③日別実績の作成処理
-		// 日別作成を実行するかチェックする
-		Optional<ExecutionLog> executionLog = empCalAndSumExeLogRepository.getByExecutionContent(empCalAndSumExecLogID,
-				ExecutionContent.DAILY_CREATION.value);
-
-		ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getExecutionType();
 		if (executionLog.isPresent()) {
+
+			// 日別作成を実行するかチェックする
+			ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getExecutionType();
+			
 			// ④ログ情報（実行ログ）を更新する
 			empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.PROCESSING.value);
 

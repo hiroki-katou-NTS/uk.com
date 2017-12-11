@@ -12,12 +12,16 @@ import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemR
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -40,53 +44,65 @@ public class EmployeeDataMngInfoFinder_ver1 {
 	@Inject
 	private EmploymentHistoryItemRepository employmentHisItemRepo;
 
+	@Inject
+	private EmployeeRepository employeeRepo;
+
+	@Inject
+	private TempAbsHistRepository tempHistRepo;
+
 	public EmployeeInfo getEmployeeInfo(String sid) {
 		String companyId = AppContexts.user().companyId();
-		Optional<EmployeeInfo> nameInfo = this.employeeMngRepo.findById(sid);
-		Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,
-				GeneralDate.today());
+		GeneralDate date = GeneralDate.today();
+		
+		Optional<EmployeeInfo> empInfo = this.employeeMngRepo.findById(sid);
+		Optional<Employee> empFull = this.employeeRepo.findByEmployeeID(companyId, sid, date);
+		Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(sid);
+		if (empFull.isPresent() && tempHist.isPresent()) {
+			empFull.get().setTemporaryAbsenceHistory(tempHist.get());
+			empInfo.get().setNumberOfWork(empFull.get().getDaysOfEntire() - empFull.get().getDaysOfTemporaryAbsence());
 
-		Optional<EmploymentInfo> emp = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId, sid, GeneralDate.today());
-		if (nameInfo.isPresent()) {
-			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid,
-					GeneralDate.today());
+		}
+		Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid, date);
+
+		Optional<EmploymentInfo> emp = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId, sid, date);
+		if (empInfo.isPresent()) {
+			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid, date);
 
 			if (department.isPresent()) {
 				String historyId = department.get().getHistoryItems().get(0).identifier();
 				Optional<AffDepartmentHistoryItem> historyItem = this.historyItemRepo.getByHistId(historyId);
 				if (historyItem.isPresent()) {
 					Optional<EmployeeInfo> departmentInfo = this.employeeMngRepo
-							.getDepartment(historyItem.get().getDepartmentId(), GeneralDate.today());
+							.getDepartment(historyItem.get().getDepartmentId(), date);
 					if (departmentInfo.isPresent()) {
-						nameInfo.get().setDepartmentName(departmentInfo.get().getDepartmentName());
+						empInfo.get().setDepartmentName(departmentInfo.get().getDepartmentName());
 					}
 				} else {
-					nameInfo.get().setDepartmentName(" ");
+					empInfo.get().setDepartmentName(" ");
 
 				}
 			}
 
 			if (jobTitleHisItem.isPresent()) {
-				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(),
-						GeneralDate.today());
+				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(), date);
 				if (jobInfo.isPresent()) {
 
-					nameInfo.get().setPosition(jobInfo.get().getJobTitleName().toString());
+					empInfo.get().setPosition(jobInfo.get().getJobTitleName().toString());
 				}
 
 			} else {
-				nameInfo.get().setPosition(" ");
+				empInfo.get().setPosition(" ");
 			}
 
 			if (emp.isPresent()) {
 
-				nameInfo.get().setContractCodeType(emp.get().getEmploymentName());
+				empInfo.get().setContractCodeType(emp.get().getEmploymentName());
 			} else {
 
-				nameInfo.get().setContractCodeType(" ");
+				empInfo.get().setContractCodeType(" ");
 			}
-			return nameInfo.get();
-		}
+			return empInfo.get();
+		}	
 
 		return new EmployeeInfo();
 

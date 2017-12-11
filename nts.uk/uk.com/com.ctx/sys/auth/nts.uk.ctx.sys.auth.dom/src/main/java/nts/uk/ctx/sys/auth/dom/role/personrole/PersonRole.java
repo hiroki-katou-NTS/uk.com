@@ -4,6 +4,8 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
+ * 個人情報ロール
+ * 
  * @author dxthuong
  *
  */

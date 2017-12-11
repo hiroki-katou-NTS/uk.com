@@ -105,67 +105,67 @@ public class WorkTypeReportData {
 	/**
 	 * 午前の日勤・夜勤時間を求める
 	 */
-	private int morningDayNightTimeAsk;
+	private Integer morningDayNightTimeAsk;
 	/**
 	 *  午前の出勤時刻を直行とする
 	 */
-	private int morningAttendanceTime;
+	private Integer morningAttendanceTime;
 	/**
 	 *  午前の退勤時刻を直帰とする
 	 */
-	private int morningTimeLeaveWork;
+	private Integer morningTimeLeaveWork;
 	/**
 	 *  午前の休日日数をカウントする
 	 */
-	private int morningCountHodiday;
+	private Integer morningCountHodiday;
 	/**
 	 *  午前の公休を消化する
 	 */
-	private int morningDigestPublicHd;
+	private Integer morningDigestPublicHd;
 	/**
 	 *  午前の代休を発生させる
 	 */
-	private int morningGenSubHodiday;
+	private Integer morningGenSubHodiday;
 	/**
 	 *  午前の欠勤の集計枠
 	 */
-	private int morningSumAbsenseNo;
+	private Integer morningSumAbsenseNo;
 	/**
 	 *  午前の特別休暇の集計枠
 	 */
-	private int morningSumSpHodidayNo;
+	private Integer morningSumSpHodidayNo;
 	/**
 	 * 午後の日勤・夜勤時間を求める
 	 */
-	private int afternoonDayNightTimeAsk;
+	private Integer afternoonDayNightTimeAsk;
 	/**
 	 *  午後の出勤時刻を直行とする
 	 */
-	private int afternoonAttendanceTime;
+	private Integer afternoonAttendanceTime;
 	/**
 	 *  午後の退勤時刻を直帰とする
 	 */
-	private int afternoonTimeLeaveWork;
+	private Integer afternoonTimeLeaveWork;
 	/**
 	 *  午後の休日日数をカウントする
 	 */
-	private int afternoonCountHodiday;
+	private Integer afternoonCountHodiday;
 	/**
 	 *  午後の公休を消化する
 	 */
-	private int afternoonDigestPublicHd;
+	private Integer afternoonDigestPublicHd;
 	/**
 	 *  午後の代休を発生させる
 	 */
-	private int afternoonGenSubHodiday;
+	private Integer afternoonGenSubHodiday;
 	/**
 	 *  午後の欠勤の集計枠
 	 */
-	private int afternoonSumAbsenseNo;
+	private Integer afternoonSumAbsenseNo;
 	/**
 	 * 午後の 特別休暇の集計枠
 	 */
-	private int afternoonSumSpHodidayNo;
+	private Integer afternoonSumSpHodidayNo;
 	/**
 	 *  他言語名称
 	 */

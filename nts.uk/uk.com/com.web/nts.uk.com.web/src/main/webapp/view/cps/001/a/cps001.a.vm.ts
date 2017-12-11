@@ -98,6 +98,9 @@ module cps001.a.vm {
         // output data on layout changed
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
 
+        // output data on category changed
+        categoriesData: KnockoutObservableArray<any> = ko.observableArray([]);
+
         constructor() {
             let self = this,
                 auth = self.auth(),
@@ -344,9 +347,8 @@ module cps001.a.vm {
                     inputs: inputs
                 };
 
-            debugger;
             // push data layout to webservice
-            /*block();
+            block();
             service.saveCurrentLayout(command).done(() => {
                 self.start();
                 info({ messageId: "Msg_15" }).then(function() {
@@ -355,7 +357,7 @@ module cps001.a.vm {
             }).fail((mes) => {
                 unblock();
                 alert(mes.message);
-            });*/
+            });
         }
     }
 

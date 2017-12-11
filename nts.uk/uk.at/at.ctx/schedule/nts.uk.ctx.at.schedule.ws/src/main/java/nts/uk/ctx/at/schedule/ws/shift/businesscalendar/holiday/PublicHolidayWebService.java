@@ -44,7 +44,7 @@ public class PublicHolidayWebService extends WebService {
 
 	@POST
 	@Path("getHolidayByListDate")
-	public List<PublicHolidayDto> getHolidayByListDate(List<BigDecimal> lstDate) {
+	public List<PublicHolidayDto> getHolidayByListDate(List<String> lstDate) {
 		return this.publicHolidayFinder.getHolidaysByListDate(lstDate);
 	}
 
@@ -56,7 +56,7 @@ public class PublicHolidayWebService extends WebService {
 	
 	@POST
 	@Path("getHolidayByDate/{date}")
-	public Optional<PublicHolidayDto> getHolidayByDate(@PathParam("date") BigDecimal date){
+	public Optional<PublicHolidayDto> getHolidayByDate(@PathParam("date") String date){
 		return this.publicHolidayFinder.getHolidayByDate(date);
 	}
 

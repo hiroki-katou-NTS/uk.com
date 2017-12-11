@@ -97,6 +97,13 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	private final String SELECT_EMPLOYEE_BY_EMP_ID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :employeeId";
 	
+	public final String SELECT_BY_EMP_ID = "SELECT distinct c FROM BsymtEmployee c "
+			+ " INNER JOIN BsymtJobEntryHistory d "
+			+ " ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
+			+ " AND c.companyId = d.companyId"
+			+ " WHERE c.companyId = :companyId " + " AND c.bsymtEmployeePk.sId =:sId"
+			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate" + " AND d.retireDate >= :standardDate";
+	
 	/**
 	 * convert entity BsymtEmployee to domain Employee
 	 * 
@@ -381,5 +388,23 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				.setParameter("employeeId", employeeId)
 				.getSingle()
 				.map(m -> toDomainEmployee(m));
+	}
+
+	@Override
+	public Optional<Employee> findByEmployeeID(String companyId, String sid, GeneralDate standardDate) {
+		Optional<BsymtEmployee> entity = this.queryProxy().query(SELECT_BY_EMP_ID, BsymtEmployee.class)
+				.setParameter("companyId", companyId).setParameter("sId", sid)
+				.setParameter("standardDate", standardDate).getSingle();
+
+		Employee emp = new Employee();
+		if (entity.isPresent()) {
+			emp = toDomainEmployee(entity.get());
+
+			if (!entity.get().listEntryHist.isEmpty()) {
+				emp.setListEntryJobHist(
+						entity.get().listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
+			}
+		}
+		return Optional.of(emp);
 	}
 }

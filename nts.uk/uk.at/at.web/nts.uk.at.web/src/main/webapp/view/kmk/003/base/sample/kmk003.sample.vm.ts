@@ -4,8 +4,6 @@ module nts.uk.at.view.kmk003.sample {
 
         export class ScreenModel {
             
-            selectionOption: KnockoutObservableArray<any>;
-            selectedType: KnockoutObservable<number>;
             enable: KnockoutObservable<boolean>;
             fixTableOption: any;
             itemList: KnockoutObservableArray<any>;
@@ -13,12 +11,6 @@ module nts.uk.at.view.kmk003.sample {
             
             constructor() {
                 let self = this;
-                
-                self.selectionOption = ko.observableArray([
-                    { code: 0, name: 'Single Selection' },
-                    { code: 1, name: 'Multiple Selection' },
-                ]);
-                self.selectedType = ko.observable(1);
                 
                 self.enable = ko.observable(true);
                 
@@ -40,12 +32,6 @@ module nts.uk.at.view.kmk003.sample {
                     columns: self.columnSetting(),
                     tabindex: 10
                 }
-                
-                self.selectedType.subscribe(function(newValue) {
-                    self.enable(newValue == 1);
-                    self.fixTableOption.isMultipleSelect = self.enable();
-                    $('#nts-fix-table').ntsFixTableCustom(self.fixTableOption);
-                });
                 
                 self.dataSource.subscribe((newList) => {
                     console.log(newList);

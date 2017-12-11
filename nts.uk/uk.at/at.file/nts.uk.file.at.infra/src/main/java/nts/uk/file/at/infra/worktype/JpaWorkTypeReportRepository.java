@@ -40,8 +40,8 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 			if (entity.worktypeAtr == WorkTypeUnit.OneDay.value) {
 				workTypeSetOneDay = entity.worktypeSetList.get(0);
 			} else {
-				workTypeSetMorning = entity.worktypeSetList.get(0);
-				workTypeSetAfternoon = entity.worktypeSetList.get(1);
+				workTypeSetMorning = entity.worktypeSetList.size() > 0 ? entity.worktypeSetList.get(0) : null;
+				workTypeSetAfternoon = entity.worktypeSetList.size() > 1 ? entity.worktypeSetList.get(1) : null;
 			}
 		}
 
@@ -71,16 +71,22 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 				workTypeSetOneDay.sumAbsenseNo, 
 				workTypeSetOneDay.sumSpHolidayNo, 
 				EnumAdaptor.valueOf(workTypeSetOneDay.closeAtr, CloseAtr.class), 
-				workTypeSetMorning.dayNightTimeAsk,
-				workTypeSetMorning.attendanceTime,workTypeSetMorning.timeLeaveWork,workTypeSetMorning.countHoliday,workTypeSetMorning.digestPublicHd,
-				workTypeSetMorning.genSubHoliday, workTypeSetMorning.sumAbsenseNo,workTypeSetMorning.sumSpHolidayNo,
-				workTypeSetAfternoon.dayNightTimeAsk,
-				workTypeSetAfternoon.attendanceTime,
-				workTypeSetAfternoon.timeLeaveWork,
-				workTypeSetAfternoon.countHoliday,
-				workTypeSetAfternoon.digestPublicHd,
-				workTypeSetAfternoon.genSubHoliday,
-				workTypeSetAfternoon.sumAbsenseNo,workTypeSetAfternoon.sumSpHolidayNo, 
+				workTypeSetMorning != null ? workTypeSetMorning.dayNightTimeAsk : null,
+				workTypeSetMorning != null ? workTypeSetMorning.attendanceTime : null,
+				workTypeSetMorning != null ? workTypeSetMorning.timeLeaveWork : null,
+				workTypeSetMorning != null ? workTypeSetMorning.countHoliday : null,
+				workTypeSetMorning != null ? workTypeSetMorning.digestPublicHd : null,
+				workTypeSetMorning != null ? workTypeSetMorning.genSubHoliday : null, 
+				workTypeSetMorning != null ? workTypeSetMorning.sumAbsenseNo : null,
+				workTypeSetMorning != null ? workTypeSetMorning.sumSpHolidayNo : null,
+				workTypeSetAfternoon != null ? workTypeSetAfternoon.dayNightTimeAsk : null,
+				workTypeSetAfternoon != null ? workTypeSetAfternoon.attendanceTime : null,
+				workTypeSetAfternoon != null ? workTypeSetAfternoon.timeLeaveWork : null,
+				workTypeSetAfternoon != null ? workTypeSetAfternoon.countHoliday : null,
+				workTypeSetAfternoon != null ? workTypeSetAfternoon.digestPublicHd : null,
+				workTypeSetAfternoon != null ? workTypeSetAfternoon.genSubHoliday : null,
+				workTypeSetAfternoon != null ? workTypeSetAfternoon.sumAbsenseNo : null,
+				workTypeSetAfternoon != null ? workTypeSetAfternoon.sumSpHolidayNo : null, 
 				workTypeLanguage.name, workTypeLanguage.abname, dispOrder);
 	}
 }
