@@ -2,6 +2,8 @@ package nts.uk.shr.pereg.app;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -39,14 +41,24 @@ public class ItemValue {
 		case NUMERIC:
 		case TIME:
 		case TIMEPOINT:
-			convertedValue = new BigDecimal(this.value);
+			// In case of value is empty or null return default value
+			if (StringUtils.isEmpty(this.value)){
+				convertedValue = new BigDecimal(0);
+			} else {
+				convertedValue = new BigDecimal(this.value);
+			}
 			break;
 		case STRING:
 		case SELECTION:
 			convertedValue = this.value;
 			break;
 		case DATE:
-			convertedValue = GeneralDate.fromString(this.value, "yyyy/MM/dd");
+			// In case of value is empty or null return null 
+			if (StringUtils.isEmpty(this.value)){
+				convertedValue = null;
+			} else {
+				convertedValue = GeneralDate.fromString(this.value, "yyyy/MM/dd");
+			}
 			break;
 		default:
 			throw new RuntimeException("invalid type: " + this.type);
