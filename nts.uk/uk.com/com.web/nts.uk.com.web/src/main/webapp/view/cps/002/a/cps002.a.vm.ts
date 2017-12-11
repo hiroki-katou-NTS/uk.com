@@ -145,10 +145,13 @@ module cps002.a.vm {
             });
 
             self.currentEmployee().avatarId.subscribe((avartarId) => {
+            
 
-                if (avartarId == "") {
-                    var self = this;
-                    var avartarContent = $("#employeeAvatar");
+                var self = this,
+                    avartarContent = $("#employeeAvatar");
+
+                if (avartarId != "") {
+
                     avartarContent.html("");
                     avartarContent.append($("<img/>").attr("src", liveView(avartarId)).attr("id", "employeeAvatar"));
                 } else {
@@ -786,9 +789,9 @@ module cps002.a.vm {
 
     class EmpRegHistory {
 
-        lastRegEmployee: KnockoutObservable<RegEmployee> = ko.observable(new RegEmployee("", ""));
+        lastRegEmployee: KnockoutObservable<RegEmployee> = ko.observable(null);
 
-        lastRegEmployeeOfCompany: KnockoutObservable<RegEmployee> = ko.observable(new RegEmployee("", ""));
+        lastRegEmployeeOfCompany: KnockoutObservable<RegEmployee> = ko.observable(null);
 
 
         constructor(param: IEmpRegHistory) {

@@ -138,6 +138,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			if (affCompanyHistItem == null) {
 				affCompanyHistItem = new AffCompanyHistItem();
 				affCompanyHistItem.setDestinationData(item.destinationData == 1);
+				affCompanyHistItem.setHistoryId(item.bsymtAffCompanyHistPk.historyId);
 				affCompanyHistItem.setDatePeriod(new DatePeriod(item.startDate, item.endDate));
 
 				affCompanyHistByEmployee.addAffCompanyHistItem(affCompanyHistItem);

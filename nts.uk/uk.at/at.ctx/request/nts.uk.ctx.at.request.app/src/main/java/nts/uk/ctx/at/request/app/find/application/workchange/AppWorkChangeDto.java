@@ -93,9 +93,23 @@ public class AppWorkChangeDto
     
     private Long version;
     
-    public static AppWorkChangeDto fromDomain(AppWorkChange domain)
-    {
-        return new AppWorkChangeDto(domain.getCid(), domain.getAppId(), domain.getWorkTypeCd(), domain.getWorkTimeCd(), domain.getExcludeHolidayAtr(), domain.getWorkChangeAtr(), domain.getGoWorkAtr1(), domain.getBackHomeAtr1(), domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(), domain.getWorkTimeStart1(), domain.getWorkTimeEnd1(), domain.getWorkTimeStart2(), domain.getWorkTimeEnd2(), domain.getGoWorkAtr2(), domain.getBackHomeAtr2(), domain.getVersion());
-    }
+    /**
+     * 勤務種類名
+     */
+    private String workTypeName;
     
+    /**
+     * 就業時間帯名
+     */
+    private String workTimeName;
+
+	public static AppWorkChangeDto fromDomain(AppWorkChange domain) {
+		return new AppWorkChangeDto(domain.getCid(), domain.getAppId(), domain.getWorkTypeCd(), domain.getWorkTimeCd(),
+				domain.getExcludeHolidayAtr(), domain.getWorkChangeAtr(), domain.getGoWorkAtr1(),
+				domain.getBackHomeAtr1(), domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(),
+				domain.getWorkTimeStart1(), domain.getWorkTimeEnd1(), domain.getWorkTimeStart2(),
+				domain.getWorkTimeEnd2(), domain.getGoWorkAtr2(), domain.getBackHomeAtr2(), domain.getVersion(),
+				domain.getWorkTypeName(), domain.getWorkTimeName());
+	}
+
 }
