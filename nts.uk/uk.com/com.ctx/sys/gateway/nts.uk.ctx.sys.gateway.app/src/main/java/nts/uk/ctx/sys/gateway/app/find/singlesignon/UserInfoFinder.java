@@ -33,7 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class UserFinder.
  */
 @Stateless
-public class UserFinder {
+public class UserInfoFinder {
 
 	/** The person info adapter. */
 	@Inject
