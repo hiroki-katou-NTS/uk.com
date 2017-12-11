@@ -24,6 +24,7 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class RoleIndividualFinder {
@@ -106,5 +107,38 @@ public class RoleIndividualFinder {
 		return roleTypeDtos;
 	}
 	
+	public List<RoleIndividualGrantDto> getRoleGrants(String roleId) {
+		String companyId = AppContexts.user().companyId();
+		if (companyId == null)
+			return null;
+
+		List<RoleIndividualGrant> ListRoleGrants = new ArrayList<>();
+		ListRoleGrants = this.roleIndividualGrantRepo.findByCompanyRole(companyId, roleId);
+
+		List<String> userId = ListRoleGrants.stream().map(c -> c.getUserId()).distinct().collect(Collectors.toList());
+		List<User> listUsers = userRepo.getByListUser(userId);
+
+		List<RoleIndividualGrantDto> rGrants = new ArrayList<>();
+		for (RoleIndividualGrant rGrant : ListRoleGrants) {
+			User user = listUsers.stream().filter(c -> c.getUserID().equals(rGrant.getUserId())).findFirst().get();
+			rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, user.getUserName().v(), user.getLoginID().v()));
+		}
+		return rGrants;
+
+	}
+	
+	public RoleIndividualGrantDto getRoleGrant(String userId, String roleId){
+		String companyId = AppContexts.user().companyId();
+		if (companyId == null)
+			return null;
+		
+		Optional<RoleIndividualGrant> rGrant = this.roleIndividualGrantRepo.findByKey(userId, companyId, roleId);
+		try {
+			Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
+			return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
+		} catch (Exception e) {
+			return null;
+		}
+	}
 	
 }

@@ -131,8 +131,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		for (int i = 0; i < overtimeInputs.size(); i++) {
 			OverTimeInput afterTime = overtimeInputs.get(i);
 			int frameNo = afterTime.getFrameNo();
-			OverTimeInput beforeTime = beforeOvertimeInputs.stream().filter(item -> item.getFrameNo() == frameNo)
-					.findFirst().get();
+			Optional<OverTimeInput> beforeTimeOpt = beforeOvertimeInputs.stream()
+					.filter(item -> item.getFrameNo() == frameNo).findFirst();
+			if (!beforeTimeOpt.isPresent()) {
+				continue;
+			}
+			OverTimeInput beforeTime = beforeTimeOpt.get();
 			if (null == beforeTime) {
 				continue;
 			}

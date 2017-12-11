@@ -1,4 +1,4 @@
-module a4 {
+module a7 {
     class ScreenModel {
 
         fixTableOption: any;
@@ -92,7 +92,8 @@ module a4 {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
 
-                $('#nts-fix-table-a7').ntsFixTableCustom(screenModel.fixTableOption);
+                // TODO: need to check
+//                $('#nts-fix-table-a7').ntsFixTableCustom(screenModel.fixTableOption);
             });
         }
 

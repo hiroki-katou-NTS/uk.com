@@ -39,6 +39,7 @@
 	width: 930px;
 	height: 26px;
 	text-align: center;
+	min-width: 25px;
 }
 
 #table-date th {
@@ -46,5 +47,5 @@
 }
 
 #table-date td {
-	font-size: smaller;
+	font-size: 14px;
 }

@@ -87,7 +87,7 @@ public class DPHeaderDto {
 		if(attendanceAtr == DailyAttendanceAtr.Code.value ){
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length()-2))/2;
-			groups.add(new DPHeaderDto("コード", "Code"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "","code","search", false, false));
+			groups.add(new DPHeaderDto("コード", "Code"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "","","search", false, false));
 			groups.add(new DPHeaderDto("名称", "Name"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "Link2", false, false));
 			dto.setGroup(groups);
 		}

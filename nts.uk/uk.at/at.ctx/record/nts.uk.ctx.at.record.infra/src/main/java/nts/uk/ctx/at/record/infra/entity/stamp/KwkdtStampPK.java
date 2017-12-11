@@ -18,7 +18,7 @@ public class KwkdtStampPK implements Serializable {
 	@Column(name = "CARD_NUMBER")
 	public String cardNumber;
 	/* 勤怠時刻 */
-	@Column(name = "ATTENDANCE_TIME")
+	@Column(name = "ATTENDANCE_CLOCK")
 	public int attendanceTime;
 
 	/* 打刻区分 */

@@ -8,8 +8,8 @@
 		<com:ko tag="if" bind="isShowButton">
 			<div style="margin-bottom: 15px;">
 				<button data-bind="click: addRowItem, enable: isEnaleAddButton" style="margin-right: 10px;">
-					a</button>
-				<button data-bind="click: removeItem, enable: isEnaleRemoveButton">b</button>
+					#{i18n.getText('KMK003_52')}</button>
+				<button data-bind="click: removeItem, enable: isEnaleRemoveButton">#{i18n.getText('KMK003_53')}</button>
 			</div>
 		</com:ko>
 		<!-- BEGIN BINDING HEADER -->
@@ -43,7 +43,7 @@
 		</table><!-- END BINDING HEADER -->
 		
 		<!-- BEGIN BINDING CONTENT -->
-		<table id="fixed-table-custom" data-bind="style: {height: tableStyle.height + 'px'}" style="overflow: auto;display: inline-block;">
+		<table id="fixed-table-custom" style="overflow: auto;display: inline-block;">
 			<colgroup>
 				<com:ko tag="if" bind="isMultiple">
 					<col width="36"></col>

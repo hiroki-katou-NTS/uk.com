@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk003.a4 {
+module nts.uk.at.view.kmk003.a7 {
     export module service {
 
         /**

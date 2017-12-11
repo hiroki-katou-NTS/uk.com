@@ -7,12 +7,14 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.collection.CollectionUtil;
 
 /**
  * The Class TimeDiffDayOffWorkTimezone.
  */
-//時差勤務の休日出勤用勤務時間帯
+// 時差勤務の休日出勤用勤務時間帯
 @Getter
 public class DiffTimeDayOffWorkTimezone extends DomainObject {
 
@@ -44,5 +46,23 @@ public class DiffTimeDayOffWorkTimezone extends DomainObject {
 	public void saveToMemento(DiffTimeDayOffWorkTimezoneSetMemento memento) {
 		memento.setRestTimezone(this.restTimezone);
 		memento.setWorkTimezones(this.workTimezones);
+	}
+
+	@Override
+	public void validate() {
+		super.validate();
+		this.checkOverlap();
+	}
+
+	private void checkOverlap() {
+		if (!CollectionUtil.isEmpty(this.workTimezones)) {
+			for (int i = 0; i < this.workTimezones.size(); i++) {
+				for (int j = i + 1; j < this.workTimezones.size(); j++) {
+					if (this.workTimezones.get(i).getTimezone().isOverlap(this.workTimezones.get(j).getTimezone())) {
+						throw new BusinessException("Msg_515");
+					}
+				}
+			}
+		}
 	}
 }

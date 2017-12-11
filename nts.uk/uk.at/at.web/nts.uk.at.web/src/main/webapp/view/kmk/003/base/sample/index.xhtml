@@ -23,7 +23,7 @@
 				<div id="side-menu" class="cf"></div>
 				
 				<div style="margin-left: 30px" id="content" class="cf">
-					<div id="nts-fix-table" data-bind="ntsFixTableCustom: {dataSource: dataSource, option: fixTableOption}"></div>
+					<div id="nts-fix-table" data-bind="ntsFixTableCustom: {option: fixTableOption}"></div>
 					
 					<h2>Guide</h2>
 					<article class="cf" style="margin-top: 10px;">
@@ -38,7 +38,7 @@
 									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
 									<pre><![CDATA[<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
-		<com:scriptfile path="/view/kmk/003/base/fixtable/fixtable.js" of="/nts.uk.at.web"/>
+		<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
 		<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
 </ui:define>]]></pre>
 									<p>Create a div tag to bind table</p>

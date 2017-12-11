@@ -71,4 +71,10 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 		memento.setLegalOTframeNo(this.legalOTframeNo);
 		memento.setSettlementOrder(this.settlementOrder);
 	}
+	
+	@Override
+	public void validate()
+	{
+		super.validate();
+	}
 }

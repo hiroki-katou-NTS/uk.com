@@ -26,7 +26,8 @@ module kdl010.b.viewmodel {
                 }
                 else{
                     self.workLocationCD = ko.observable("");
-                    nts.uk.ui.block.clear();}
+                    nts.uk.ui.block.clear();
+                }
             });
         }
     }

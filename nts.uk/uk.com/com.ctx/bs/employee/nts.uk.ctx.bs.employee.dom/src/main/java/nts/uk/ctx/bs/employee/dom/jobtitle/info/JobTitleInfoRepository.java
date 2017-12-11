@@ -112,4 +112,14 @@ public interface JobTitleInfoRepository {
 	boolean isJobTitleCodeExist(String companyId, String jobTitleCode);
 	
 	
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param jobIds the job ids
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<JobTitleInfo> findByIds(String companyId, List<String> jobIds, GeneralDate baseDate);
+	
 }

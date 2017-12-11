@@ -2,6 +2,10 @@
 	vertical-align: middle;
 }
 
+.control-group.valign-top>* {
+	vertical-align: top;
+}
+
 .row-cell-margin {
 	margin: 5px 0px 5px 5px;
 }
@@ -109,11 +113,11 @@ div.form-label.broken {
 }
 
 #label-1 {
-	margin-left: 20px;
+	
 }
 
 .lstApprover {
-	margin-left: 20px;
+	
 }
 /*workType, Sift */
 .lblSiftCd, .lblWorkTypeCd {
@@ -133,8 +137,15 @@ div.form-label.broken {
 	margin-left: 15px;
 }
 .table-time{
-	margin-left: 131px;
+	display: inline-block;
+	margin-left: 15px;
 }
 .fix-margin-left{
 	margin-left:13px;
+}
+.cm-column {
+	width: 130px;
+}
+.cm-column2 {
+	width: 145px;
 }

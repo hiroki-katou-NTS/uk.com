@@ -63,6 +63,7 @@ module nts.uk.com.view.cmm007.d {
                         _self.enablePlanYearHdFrName1(true);
                         _self.requiredPlanYearHdFrName1(true);
                         _self.useAtrPlanYearHdFrName1(USE_CLASSIFICATION.USE);
+                        $('#plan_year_hd_frame1').ntsEditor("validate");
                     }else{ 
                         _self.enablePlanYearHdFrName1(false);
                         _self.requiredPlanYearHdFrName1(false);
@@ -83,6 +84,7 @@ module nts.uk.com.view.cmm007.d {
                         _self.enablePlanYearHdFrName2(true);
                         _self.requiredPlanYearHdFrName2(true);
                         _self.useAtrPlanYearHdFrName2(USE_CLASSIFICATION.USE);
+                        $('#plan_year_hd_frame2').ntsEditor("validate");
                     }else{ 
                         _self.enablePlanYearHdFrName2(false);
                         _self.requiredPlanYearHdFrName2(false);
@@ -103,6 +105,7 @@ module nts.uk.com.view.cmm007.d {
                         _self.enablePlanYearHdFrName3(true);
                         _self.requiredPlanYearHdFrName3(true);
                         _self.useAtrPlanYearHdFrName3(USE_CLASSIFICATION.USE);
+                        $('#plan_year_hd_frame3').ntsEditor("validate");
                     }else{ 
                         _self.enablePlanYearHdFrName3(false);
                         _self.requiredPlanYearHdFrName3(false);
@@ -123,6 +126,7 @@ module nts.uk.com.view.cmm007.d {
                         _self.enablePlanYearHdFrName4(true);
                         _self.requiredPlanYearHdFrName4(true);
                         _self.useAtrPlanYearHdFrName4(USE_CLASSIFICATION.USE);
+                        $('#plan_year_hd_frame4').ntsEditor("validate");
                     }else{ 
                         _self.enablePlanYearHdFrName4(false);
                         _self.requiredPlanYearHdFrName4(false);
@@ -143,6 +147,7 @@ module nts.uk.com.view.cmm007.d {
                         _self.enablePlanYearHdFrName5(true);
                         _self.requiredPlanYearHdFrName5(true);
                         _self.useAtrPlanYearHdFrName5(USE_CLASSIFICATION.USE);
+                        $('#plan_year_hd_frame5').ntsEditor("validate");
                     }else{ 
                         _self.enablePlanYearHdFrName5(false);
                         _self.requiredPlanYearHdFrName5(false);
@@ -243,11 +248,21 @@ module nts.uk.com.view.cmm007.d {
             private hasError(): boolean {
                 let _self = this;
                 _self.clearErrors();
-                $('#plan_year_hd_frame1').ntsEditor("validate");
-                $('#plan_year_hd_frame2').ntsEditor("validate");
-                $('#plan_year_hd_frame3').ntsEditor("validate");
-                $('#plan_year_hd_frame4').ntsEditor("validate");
-                $('#plan_year_hd_frame5').ntsEditor("validate"); 
+                if (_self.useAtrPlanYearHdFrName1() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame1').ntsEditor("validate");    
+                }
+                if (_self.useAtrPlanYearHdFrName2() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame2').ntsEditor("validate");    
+                }
+                if (_self.useAtrPlanYearHdFrName3() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame3').ntsEditor("validate");    
+                }
+                if (_self.useAtrPlanYearHdFrName4() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame4').ntsEditor("validate");    
+                }
+                if (_self.useAtrPlanYearHdFrName5() == USE_CLASSIFICATION.USE) {
+                    $('#plan_year_hd_frame5').ntsEditor("validate");    
+                } 
                
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;

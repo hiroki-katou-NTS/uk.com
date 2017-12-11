@@ -683,7 +683,9 @@ module nts.uk.ui {
                             container.dialog("destroy");  
                             container.remove();
                             then();
-                        });   
+                        });
+                        
+                        container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
                     },
                     close: function(event) {
                     }

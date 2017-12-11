@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORMULA_UNITPRICE")
+@Table(name = "KSCST_FORM_UNITPRICE")
 public class KscstFormulaUnitPrice extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
