@@ -864,7 +864,7 @@ project (':com.web:nts.uk.com.web') {
 		
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: '0.2'
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.2'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.2'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.3'
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.2'
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: '0.2'
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: '0.2'
@@ -995,7 +995,7 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: '0.2'
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: '0.2'
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.2'
-		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.2'
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.3'
 
 	}
 }
