@@ -14,12 +14,12 @@
 		    </colgroup>
 		    <thead>
                <tr> 
-                   <th class="ui-widget-header" style ="text-align: center;">画面名#{i18n.getText('CCG026_2')}</th>
-                   <th class="ui-widget-header" style ="text-align: center;">利用可否</th>
+                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_2')}</th>
+                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_3')}</th>
                    <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_4')}</th>
                </tr>
 		    </thead>
-		    <tbody data-bind = "foreach: listFunctionPermissions">
+		    <tbody data-bind = "foreach: listPermissions">
 		        <tr>
 		            <td><div data-bind = "text: displayName" class="limited-label description"></div></td>
 		            <td class="halign-center"><div data-bind="ntsCheckBox: {checked: availability}"></div></td>
