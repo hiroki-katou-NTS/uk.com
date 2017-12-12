@@ -74,7 +74,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 		if (command.isSetting()) {
 
 			if (itemSetting.size() == 0 || itemSetting == null) {
-				this.ctgRepo.delete(command.getSettingId());
+				this.ctgRepo.delete(command.getPerInfoCtgId(),command.getSettingId());
 				itemCommand.stream().forEach(c -> {
 					Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(command.getSettingId(),
 							command.getPerInfoCtgId(), c.getPerInfoItemDefId());
