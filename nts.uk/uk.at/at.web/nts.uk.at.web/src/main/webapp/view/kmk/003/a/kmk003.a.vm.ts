@@ -48,6 +48,7 @@ module nts.uk.at.view.kmk003.a {
     import WorkTimeDisplayNameDto = service.model.worktimeset.WorkTimeDisplayNameDto;
     import WorkTimeSettingDto = service.model.worktimeset.WorkTimeSettingDto;
     import SimpleWorkTimeSettingDto = service.model.worktimeset.SimpleWorkTimeSettingDto;
+    import WorkTimeSettingEnumDto = service.model.worktimeset.WorkTimeSettingEnumDto;
     
     import TimeSheetDto = service.model.flexset.TimeSheetDto;
     import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
@@ -70,31 +71,26 @@ module nts.uk.at.view.kmk003.a {
             columns: KnockoutObservable<any>;
             selectedWorkTimezone: KnockoutObservable<string>;
 
-            //screen mode
-            isUpdateMode: KnockoutObservable<boolean>;
-            //sift code input
             siftCode: KnockoutObservable<string>;
-            siftCodeOption: KnockoutObservable<any>;
             
             
 
             siftName: KnockoutObservable<string>;
-            siftNameOption: KnockoutObservable<any>;
+            
 
             siftShortName: KnockoutObservable<string>;
-            siftShortNameOption: KnockoutObservable<any>;
+            
 
             siftSymbolName: KnockoutObservable<string>;
-            siftSymbolNameOption: KnockoutObservable<any>;
+           
 
             //color
             pickColor: KnockoutObservable<string>;
 
             siftRemark: KnockoutObservable<string>;
-            siftRemarkOption: KnockoutObservable<any>;
 
             memo: KnockoutObservable<string>;
-            memoOption: KnockoutObservable<any>;
+            
 
             //tab mode
             tabModeOptions: KnockoutObservableArray<any>;
@@ -112,6 +108,7 @@ module nts.uk.at.view.kmk003.a {
             isClickSave: KnockoutObservable<boolean>;
             
             workTimeSettingModel: WorkTimeSettingModel;
+            settingEnum: WorkTimeSettingEnumDto;
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
@@ -134,38 +131,20 @@ module nts.uk.at.view.kmk003.a {
                 ]);
                 self.selectedWorkTimezone = ko.observable('');
 
-                self.isUpdateMode = ko.observable(true);
 
                 self.siftCode = ko.observable('');
-                self.siftCodeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "60"
-                }));
                 self.siftName = ko.observable('');
-                self.siftNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "150"
-                }));
                 self.siftShortName = ko.observable('');
-                self.siftShortNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "60"
-                }));
 
                 self.siftSymbolName = ko.observable('');
-                self.siftSymbolNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "50"
-                }));
 
                 //color
                 self.pickColor = ko.observable('');
 
                 self.siftRemark = ko.observable('');
-                self.siftRemarkOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "200"
-                }));
+               
 
                 self.memo = ko.observable('');
-                self.memoOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "200"
-                }));
 
                 //tab mode
                 self.tabModeOptions = ko.observableArray([
@@ -216,16 +195,19 @@ module nts.uk.at.view.kmk003.a {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
-                service.findAllWorkTimeSet().done(function(worktime) {
-                    self.workTimeSettings(worktime);
-                    if(worktime && worktime.length > 0){
-                        service.findWorktimeSetingByCode(worktime[0].worktimeCode).done(function(worktimgSetting) {
-                            self.workTimeSettingModel.updateData(worktimgSetting);
-                              dfd.resolve();
-                        });            
-                    }
+                service.getEnumWorktimeSeting().done(function(setting) {
+                    self.settingEnum = setting;
+                    service.findAllWorkTimeSet().done(function(worktime) {
+                        self.workTimeSettings(worktime);
+                        if (worktime && worktime.length > 0) {
+                            service.findWorktimeSetingByCode(worktime[0].worktimeCode).done(function(worktimgSetting) {
+                                self.workTimeSettingModel.updateData(worktimgSetting);
+                                dfd.resolve();
+                            });
+                        }
+                    });
                 });
+                
                 
                 // set ntsFixedTable style
                 return dfd.promise();
@@ -1750,26 +1732,53 @@ module nts.uk.at.view.kmk003.a {
         export class WorkTimeSettingModel {
             worktimeCode: KnockoutObservable<string>;
             workTimeDivision: WorkTimeDivisionModel;
-            abolishAtr: KnockoutObservable<number>;
+            isAbolish: KnockoutObservable<boolean>;
             colorCode: KnockoutObservable<string>;
             workTimeDisplayName: WorkTimeDisplayNameModel;
             memo: KnockoutObservable<string>;
             note: KnockoutObservable<string>;
-            
-            constructor(){
-                this.worktimeCode = ko.observable('');
-                this.workTimeDivision = new WorkTimeDivisionModel();
-                this.abolishAtr = ko.observable(0);    
-                this.colorCode = ko.observable('');    
-                this.workTimeDisplayName = new WorkTimeDisplayNameModel();
-                this.memo = ko.observable('');
-                this.note = ko.observable('');
+            siftCodeOption: KnockoutObservable<any>;
+            isUpdateMode: KnockoutObservable<boolean>;
+            siftNameOption: KnockoutObservable<any>;
+            siftShortNameOption: KnockoutObservable<any>;
+            siftSymbolNameOption: KnockoutObservable<any>;
+            siftRemarkOption: KnockoutObservable<any>;
+            memoOption: KnockoutObservable<any>;
+
+            constructor() {
+                var self = this;
+                self.worktimeCode = ko.observable('');
+                self.workTimeDivision = new WorkTimeDivisionModel();
+                self.isAbolish = ko.observable(false);
+                self.colorCode = ko.observable('');
+                self.workTimeDisplayName = new WorkTimeDisplayNameModel();
+                self.memo = ko.observable('');
+                self.note = ko.observable('');
+                self.siftCodeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "60"
+                }));
+                self.siftNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "150"
+                }));
+                self.siftShortNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "60"
+                }));
+                self.siftSymbolNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "50"
+                }));
+                self.siftRemarkOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "300"
+                }));
+                self.memoOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "300"
+                }));
+                self.isUpdateMode = ko.observable(false);
             }
-            
+
             updateData(data: WorkTimeSettingDto){
                 this.worktimeCode(data.worktimeCode);
                 this.workTimeDivision.updateData(data.workTimeDivision);
-                this.abolishAtr(data.abolishAtr);
+                this.isAbolish(data.isAbolish);
                 this.colorCode(data.colorCode);
                 this.workTimeDisplayName.updateData(data.workTimeDisplayName);
                 this.memo(data.memo);
@@ -1780,13 +1789,17 @@ module nts.uk.at.view.kmk003.a {
                 var dataDTO : WorkTimeSettingDto = {
                   worktimeCode: this.worktimeCode(),      
                   workTimeDivision: this.workTimeDivision.toDto(),      
-                  abolishAtr: this.abolishAtr(),      
+                  isAbolish: this.isAbolish(),      
                   colorCode: this.colorCode(),      
                   workTimeDisplayName: this.workTimeDisplayName.toDto(),      
                   memo: this.memo(),      
                   note: this.note()      
                 };
                 return dataDTO;    
+            }
+            
+            updateMode(isUpdateMode: boolean){
+                this.isUpdateMode(isUpdateMode);    
             }
         }
         

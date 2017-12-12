@@ -20,10 +20,8 @@ module a9 {
         /**
          * Constructor
          */
-        constructor(data: any) {
+        constructor() {
             let _self = this;
-            
-            _self.data = ko.observable(data());
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -125,13 +123,11 @@ module a9 {
                 .mergeRelativePath('/view/kmk/003/a9/index.xhtml').serialize();
             // Get data
             let input = valueAccessor();
-            let data = input.data;
 
-            let screenModel = new ScreenModel(data);
+            let screenModel = new ScreenModel();
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
             });
         }
 

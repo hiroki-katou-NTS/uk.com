@@ -20,17 +20,15 @@ module a2 {
         selectedCodeCalMed: KnockoutObservable<any>;
         selectedCodeSetting: KnockoutObservable<any>;
 
-        data: KnockoutObservable<any>;
         /**
         * Constructor.
         */
-        constructor(data: any, selectedSettingMethod: any, selectedTab: any) {
+        constructor(selectedSettingMethod: any, selectedTab: any) {
             let self = this;
             self.selectedSettingMethod = selectedSettingMethod;
             self.selectedTab = selectedTab;
             self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
             self.isActiveTab = ko.observable(self.getActiveTabBySelected(self.selectedTab()));
-            self.data = ko.observable(data());
             self.dataSourceOneDay = ko.observableArray([]);
             self.dataSourceMorning = ko.observableArray([]);
             self.dataSourceAfternoon = ko.observableArray([]);
@@ -285,15 +283,13 @@ module a2 {
                 .mergeRelativePath('/view/kmk/003/a2/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
-            let data = input.data;
             let selectedSettingMethod = input.settingMethod;
             let selectedTab = input.settingTab;
 
-            let screenModel = new ScreenModel(data, selectedSettingMethod, selectedTab);
+            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
                 if(!screenModel.isFlowMode()){
                     screenModel.updateViewByFlowMode();
                 }

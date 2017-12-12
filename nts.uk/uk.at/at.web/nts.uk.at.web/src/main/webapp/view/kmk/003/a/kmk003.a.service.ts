@@ -7,6 +7,7 @@ module nts.uk.at.view.kmk003.a {
         let servicePath: any = {
             findAllWorktime: "at/shared/worktimeset/findAll",
             findWorktimeSetingByCode: "at/shared/worktimeset/findByCode",
+            getEnumWorktimeSeting: "at/shared/worktimeset/getenum",
             getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",
             findAllFlexWorkSetting: "ctx/at/shared/worktime/flexset/findAll",
@@ -25,6 +26,12 @@ module nts.uk.at.view.kmk003.a {
          */
         export function findWorktimeSetingByCode(workTimeCode: string): JQueryPromise<model.worktimeset.WorkTimeSettingDto> {
             return nts.uk.request.ajax(servicePath.findWorktimeSetingByCode + '/' + workTimeCode);
+        }
+         /**
+         * function get all enum by setting work time
+         */
+        export function getEnumWorktimeSeting(): JQueryPromise<model.worktimeset.WorkTimeSettingEnumDto> {
+            return nts.uk.request.ajax(servicePath.getEnumWorktimeSeting);
         }
 
         export function getPredByWorkTimeCode(workTimeCode: string): JQueryPromise<model.worktimeset.WorkTimeSettingDto> {
@@ -487,7 +494,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimeSettingDto{
                     worktimeCode: string;
                     workTimeDivision: WorkTimeDivisionDto;    
-                    abolishAtr: number;
+                    isAbolish: boolean;
                     colorCode: string;
                     workTimeDisplayName: WorkTimeDisplayNameDto;
                     memo: string;
@@ -498,6 +505,18 @@ module nts.uk.at.view.kmk003.a {
                     worktimeCode: string;
                     workTimeName: string;
                 }
+                
+                export interface EnumConstantDto {
+                    value: number;
+                    fieldName: string;
+                    localizedName: string;
+                }
+                
+                export interface WorkTimeSettingEnumDto {
+                    workTimeDailyAtr: EnumConstantDto[];
+                    workTimeMethodSet: EnumConstantDto[];
+                }
+            
             }
             
             export module command {

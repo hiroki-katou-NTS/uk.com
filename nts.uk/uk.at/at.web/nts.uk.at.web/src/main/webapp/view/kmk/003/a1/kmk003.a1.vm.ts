@@ -38,12 +38,11 @@ module a1 {
         morning: KnockoutObservable<number>;
         afternoon: KnockoutObservable<number>;
 
-        data: KnockoutObservable<any>;
         isDetailMode: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
-        constructor(data: any, screenMode: any, settingMethod: string, workTimeCode: string, isClickSave: any) {
+        constructor(screenMode: any, settingMethod: string, workTimeCode: string, isClickSave: any) {
             let self = this;
 
             //day start Time
@@ -96,15 +95,12 @@ module a1 {
             self.morning = ko.observable(0);
             self.afternoon = ko.observable(0);
 
-            self.data = ko.observable(data());
             self.isDetailMode = ko.observable(true);
             screenMode.subscribe(function(value: any) {
                 value == "2" ? self.isDetailMode(true) : self.isDetailMode(false);
             });
             isClickSave.subscribe(function(value: any) {
                 if (value) {
-                    var oldData = data();
-                    self.collectData(oldData);
                 }
             });
         }
@@ -138,7 +134,6 @@ module a1 {
         public collectData(oldData: any) {
             let self = this;
             oldData.startDateClock = self.dayStartTime();
-            self.data(oldData);
         }
 
     }
@@ -179,17 +174,15 @@ module a1 {
                 .mergeRelativePath('/view/kmk/003/a1/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
-            let data = input.data;
             let screenMode = input.screenMode;
             let settingMethod = ko.unwrap(input.settingMethod);
             let workTimeCode = input.workTimeCode;
             let isClickSave = input.saveAction;
 
-            let screenModel = new ScreenModel(data, screenMode, settingMethod, workTimeCode, isClickSave);
+            let screenModel = new ScreenModel(screenMode, settingMethod, workTimeCode, isClickSave);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
             });
         }
 
