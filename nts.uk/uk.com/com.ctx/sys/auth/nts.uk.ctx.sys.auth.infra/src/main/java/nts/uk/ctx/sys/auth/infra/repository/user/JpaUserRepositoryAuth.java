@@ -19,9 +19,6 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	private final String SELECT_BY_USER = "SELECT c FROM SacmtUser c" + " WHERE c.sacmtUserPK.userID = :userID";
 	private final String SELECT_BY_ID_OR_NAME = "SELECT c From SacmtUser c"
 			+ " WHERE (c.sacmtUserPK.userID LIKE CONCAT('%', :userIDName, '%')"
-<<<<<<< HEAD
-			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))" + " AND c.expirationDate >= :date";
-=======
 			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))"
 			+ " AND c.expirationDate >= :date";
 	private final String SELECT_BY_KEY  ="SELECT c From SacmtUser c"
@@ -29,7 +26,6 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :key, '%')))"
 			+ " AND c.specialUser = :specialUser "
 			+ " AND c.multiCompanyConcurrent = :multiCompanyConcurrent";
->>>>>>> pj/at/dev/teamF
 
 	@Override
 	public Optional<User> getByLoginId(String loginId) {
