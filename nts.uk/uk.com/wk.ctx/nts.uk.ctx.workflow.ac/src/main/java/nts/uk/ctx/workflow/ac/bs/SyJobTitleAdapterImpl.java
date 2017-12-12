@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
@@ -34,8 +35,9 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 
 	@Override
 	public JobTitleImport findJobTitleBySid(String employeeId, GeneralDate baseDate) {
-		Optional<JobTitleExport> export = this.syJobTitlePub.findBySid(employeeId, baseDate);
-		return export.map(x -> this.toImport(x)).orElse(null);
+		Optional<EmployeeJobHistExport> export = this.syJobTitlePub.findBySid(employeeId, baseDate);
+		//return export.map(x -> this.toImport(x)).orElse(null);
+		return null;
 	}
 
 	@Override
