@@ -9,7 +9,7 @@ module nts.uk.com.view.cas011.a.service {
             addRoleSet:                 "screen/sys/auth/cas011/addroleset",
             updateRoleSet:              "screen/sys/auth/cas011/updateroleset",
             removeRoleSet:              "screen/sys/auth/cas011/deleteroleset",
-            getAllWebMenu:              "ctx/sys/auth/roleset/findallwebmenu",
+            getAllWebMenu:              "sys/portal/webmenu/find",
             getRoleById:                "ctx/sys/auth/role/getrolebyroleid/{0}"
     }
 
