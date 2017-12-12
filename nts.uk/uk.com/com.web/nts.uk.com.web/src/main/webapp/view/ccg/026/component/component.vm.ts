@@ -1,4 +1,4 @@
-module nts.uk.com.view.ccg026.a.component {
+module nts.uk.com.view.ccg026.component {
     import getText = nts.uk.resource.getText;
 
     export interface IOption {
@@ -22,113 +22,151 @@ module nts.uk.com.view.ccg026.a.component {
 
     export module viewmodel {
         export class ComponentModel {
-            listFunctionPermissions: KnockoutObservableArray<model.IDescriptionOfAvailabilityPermission> = ko.observableArray([]);
-            //listAviableFunctionPermissions: KnockoutObservableArray<model.IAvailabilityPermission>;
+            listFunctionPermissions: Array<model.IDescriptionOfAvailabilityPermission> = [];
 
             parameterInput: KnockoutObservable<Option> = ko.observable(new Option({
                                                                         roleId: ''
                                                                         ,classification: 0
                                                                         , maxRow: 1 
             }));
-
+            
             constructor(option: IOption) {
-                let self = this,
+                var self = this,
                     parameterInput = self.parameterInput();
 
                 parameterInput.roleId(option.roleId);
                 parameterInput.classification(option.classification);
                 parameterInput.maxRow(option.maxRow);
-                parameterInput.roleId.subscribe(() => {
-                    self.getListOfFunctionPermission();
+
+                parameterInput.roleId.subscribe((x) => {
+                    //alert("Checked count 1: " + self.listFunctionPermissions.filter((item) => item.availability).length);
+                    //alert("Checked count 2: " + $('#permissionGrid').data('igGrid').dataSource._data.filter((item) => item.availability).length);
+                    self.buildAvialabilityFunctionPermission().done(() => {
+                        //bind data into grid
+                        self.bindPermissionGrid();
+                    });
                 });
-                /*
-                setting.classification.subscribe(() => {
-                    self.getListOfFunctionPermission(self.setting.roleId, self.setting.classification);
-                });
-                */
             }
 
             /** functiton start page */
             startPage(): JQueryPromise<any> {
-                let self = this,
-                parameterInput = self.parameterInput();
-                let dfd = $.Deferred();
-                self.getListOfFunctionPermission().always(function() {
-                    //build grid
-                    self.bindPermissionGrid();
-                    //load grid
-                    self.loadPermissionGrid();
-                    dfd.resolve();
+                var self = this,
+                    parameterInput = self.parameterInput();
+
+                var dfd = $.Deferred();
+
+                //build grid
+                self.loadPermissionGrid();
+
+                $.when(self.getListOfFunctionPermission(), self.buildAvialabilityFunctionPermission())
+                    .done(() => {
+                        //bind data into grid
+                        self.bindPermissionGrid();
+                        //setting uncheck if function is default
+                        self.setCheckBoxIsCanUse();
+                        dfd.resolve();
+                }).fail(function(res: any) {
+                    dfd.reject();
                 });
                 return dfd.promise();
             }//end start page
 
-            /** Get list Role by Type */
-            getListOfFunctionPermission(): JQueryPromise<any> {
-                let self = this,
+            /**
+             * Get List Of Function Permission
+             */
+             private getListOfFunctionPermission(): JQueryPromise<any> {
+                var self = this,
                     parameterInput = self.parameterInput(),
                     listFunctionPermissions = self.listFunctionPermissions;
-                let dfd = $.Deferred();
+                var dfd = $.Deferred();
 
-                self.listFunctionPermissions.removeAll();
-                service.getListOfDescriptionFunctionPermission(parameterInput.roleId(), parameterInput.classification()).done((dataDescriptions: Array<model.IDescriptionOfAvailabilityPermission>) => {
-                    dataDescriptions = _.orderBy(dataDescriptions, ['assignAtr', 'functionNo'], ['asc', 'asc']);
-                    self.listFunctionPermissions(dataDescriptions);
-                    service.getListOfAviabilityFunctionPermission(parameterInput.roleId(), parameterInput.classification()).done((dataAvailability: Array<model.IAvailabilityPermission>) => {
-                        //process data
-                        //filter get only function have avaible permission
-                        dataAvailability = dataAvailability.filter(item => item.availability);
-                       // self.listAviableFunctionPermissions(dataAvailability);
-                       //setting check for ListOfFunctionPermission and show
-                        //loop???
-                        for (var i = 0, len = dataAvailability.length; i < len; i++) {
-                            let index = _.findIndex(listFunctionPermissions(), function (x: model.IDescriptionOfAvailabilityPermission) 
-                                    { return x.functionNo == dataAvailability[i].functionNo});
-                            if (index > -1) {
-                                self.listFunctionPermissions()[index].initialValue = true;
-                            }
-                          }
-
+                service.getListOfDescriptionFunctionPermission(parameterInput.classification())
+                    .done((dataDescriptions: Array<model.IDescriptionOfAvailabilityPermission>) => {
+                        dataDescriptions = _.orderBy(dataDescriptions, ['assignAtr', 'functionNo'], ['asc', 'asc']);
+                        self.listFunctionPermissions = dataDescriptions;
                         dfd.resolve(self.listFunctionPermissions);
+                }).fail(function(res: any) {
+                    self.listFunctionPermissions = [];
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+            }
 
-                    }).fail(function(res: any) {
-                        dfd.reject();
-                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-                    });
+            /**
+             * build list of FunctionPermission with avialability value
+             */
+            private buildAvialabilityFunctionPermission(): JQueryPromise<any> {
+                var self = this,
+                parameterInput = self.parameterInput(),
+                    listFunctionPermissions = self.listFunctionPermissions;
+                var dfd = $.Deferred();
+                service.getListOfAviabilityFunctionPermission(parameterInput.roleId(), parameterInput.classification())
+                    .done((dataAvailability: Array<model.IAvailabilityPermission>) => {
+                    //process data
+                    //filter get only function have avaible permission
+                    dataAvailability = dataAvailability.filter(item => item.availability);
+                   //setting check for ListOfFunctionPermission and show
+                    for (var i = 0, len = listFunctionPermissions.length; i < len; i++) {
+                        var index = _.findIndex(dataAvailability, function (x: model.IAvailabilityPermission) 
+                                { return x.functionNo == listFunctionPermissions[i].functionNo});
+                        var isAvailability : boolean = (index > -1);
+                        listFunctionPermissions[i].availability =  isAvailability || listFunctionPermissions[i].initialValue;
+                    }
+                    dfd.resolve(listFunctionPermissions);
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 });
                 return dfd.promise();
             }
-        
-            bindPermissionGrid() {
-                let self = this,
-                listFunctionPermissions = self.listFunctionPermissions();
-                
+
+            /**
+             * bindPermissionGrid
+             */
+            private bindPermissionGrid() {
+                var self = this,
+                listFunctionPermissions = self.listFunctionPermissions;
                 $('#useCheckAll').prop('checked', false);
                 if (!nts.uk.util.isNullOrUndefined(listFunctionPermissions)) {
-
-                    //var dstControls = _(listFunctionPermissions).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
-                    $("#permissionGrid").igGrid("dataSourceObject", _.sortBy(listFunctionPermissions, 'itemId')).igGrid("dataBind");
-                    var dataSource = $('#permissionGrid').data('igGrid').dataSource;
+                    listFunctionPermissions = _(listFunctionPermissions).groupBy('functionNo').map(_.spread(_.assign)).value();
+                    $("#permissionGrid").igGrid("dataSourceObject", _.sortBy(listFunctionPermissions, 'functionNo')).igGrid("dataBind");
                 }
             }
 
-            loadPermissionGrid() {
-                let self = this;
+            /**
+             * Run first time after bind data
+             */
+            private setCheckBoxIsCanUse() {
+                var dataSource = $('#permissionGrid').data('igGrid').dataSource;
+                var filteredData = dataSource.transformedData('afterfilteringandpaging');
+                var i;
+                var l = filteredData.length;
+                for (i = 0; i < l; i++) {
+                    if (filteredData[i].initialValue) {
+                        var cellYouCanChangeIt = $('#permissionGrid').igGrid('cellAt', 1, i);
+                        cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                    }
+                }
+
+            }
+            /**
+             * loadPermissionGrid
+             */
+            private loadPermissionGrid() {
+                var self = this;
                 //load igrid
                 var DailyServiceTypeControls = [];
-                var useTemplate = "<input type='checkbox' {{if ${use} }} checked {{/if}} onclick='useChanged(this, ${itemId})' />";
-                var useHeader = "<input type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
-                if (self.setting.maxRow < 0 ) {
-                    self.setting.maxRow = 0;
+                var availabilityTemplate = "<input type='checkbox' {{if ${availability} }} checked {{/if}} onclick='avialabilityChanged(this, ${functionNo})' />";
+                var availabilityHeader = "<input type='checkbox' id = 'avialabilityCheckAll' onclick='avialabilityHeaderChanged(this)'/> ";
+                if (self.parameterInput.maxRow < 0 ) {
+                    self.parameterInput.maxRow = 0;
                 }
-                var gridHeight = $("#permissionGrid").rows[0].clientHeight * (self.setting.maxRow + 1);
+
                 $("#permissionGrid").igGrid({
-                    primaryKey: "attendanceItemId",
-                    height: gridHeight,
-                    dataSource: DailyServiceTypeControls,
+                    primaryKey: "functionNo",
+                    height: 300,
+                    dataSource: self.listFunctionPermissions,
                     autoGenerateColumns: false,
                     alternateRowStyles: false,
                     dataSourceType: "json",
@@ -139,9 +177,10 @@ module nts.uk.com.view.ccg026.a.component {
                     virtualizationMode: "fixed",
                     columns: [
                         { key: "functionNo",    dataType: "string",  hidden: true},
-                        { key: "displayName",   width: "250px", headerText: nts.uk.resource.getText('CCG026_2'), dataType: "string" },
-                        { key: "initialValue",  width: "100px", headerText: useHeader + nts.uk.resource.getText('CCG026_3'), dataType: "bool", template: useTemplate },
-                        { key: "description",   width: "300px", headerText: nts.uk.resource.getText('CCG026_4'), dataType: "string" },
+                        { key: "displayName",   width: "250px", headerText: nts.uk.resource.getText('CCG026_2'), dataType: "string", formatter: _.escape },
+                        { key: "availability",  width: "100px", headerText: availabilityHeader + nts.uk.resource.getText('CCG026_3'), dataType: "bool", template: availabilityTemplate },
+                        { key: "description",   width: "300px", headerText: nts.uk.resource.getText('CCG026_4'), dataType: "string", formatter: _.escape },
+                        { key: "initialValue",    dataType: "bool",  hidden: true}
                     ],
                     features: [
                         {
@@ -153,8 +192,10 @@ module nts.uk.com.view.ccg026.a.component {
                             columnSettings: [
                                 { columnKey: "functionNo", hidden: true },
                                 { columnKey: "displayName", readOnly: true },
-                                { columnKey: "initialValue", readOnly: true },
+                                { columnKey: "availability", readOnly: true },
                                 { columnKey: "description", readOnly: true },
+                                { columnKey: "initialValue", hidden: true }
+                                
                             ]
                         },
                         {
@@ -168,26 +209,14 @@ module nts.uk.com.view.ccg026.a.component {
 
                     ]
                 });
+                var gridHeight = $("#permissionGrid tbody tr").height()  * (self.parameterInput.maxRow + 1);
+                $("#permissionGrid").height = gridHeight;
             }
-            useChanged(element, rowId) {
-                var value = $("#permissionGrid").igGrid("getCellValue", rowId, "use");
-                if ($("#permissionGrid").igGridUpdating('isEditing')) {
-                    $("#permissionGrid").igGridUpdating('endEdit', true);
-                }
-                $("#permissionGrid").igGridUpdating("setCellValue", rowId, "use", value != true);
-            }
-
-            useHeaderChanged(element) {
-                var dataSource = $('#permissionGrid').data('igGrid').dataSource;
-                //var filteredData = dataSource.transformedData('afterfilteringandpaging');
-                var i;
-                var l = dataSource.length;
-                for (i = 0; i < l; i++) {
-                    $("#permissionGrid").igGridUpdating("setCellValue", dataSource[i].itemId, "use", element.checked);
-                }
-            }
-        }//end screenModel
+            
+        }//end componentModel
     }//end viewmodel
+
+
 
     //module model
     export module model {
@@ -198,6 +227,7 @@ module nts.uk.com.view.ccg026.a.component {
             displayName:    string;
             displayOrder:   number;
             description:    string;
+            availability:   boolean;
         }
 
         export class DescriptionOfAvailabilityPermission {
@@ -206,13 +236,15 @@ module nts.uk.com.view.ccg026.a.component {
             displayName:    string;
             displayOrder:   number;
             description:    string;
+            availability:   boolean;
             constructor(param: IDescriptionOfAvailabilityPermission) {
-                let self = this;
-                self.functionNo = param.functionNo;
-                self.initialValue = param.initialValue;
-                self.displayName = param.displayName;
-                self.displayOrder = param.displayOrder;
-                self.description = param.description;
+                var self = this;
+                self.functionNo     = param.functionNo;
+                self.initialValue   = param.initialValue;
+                self.displayName    = param.displayName;
+                self.displayOrder   = param.displayOrder;
+                self.description    = param.description;
+                self.availability   = param.availability || false;
             }
         }
 
@@ -236,8 +268,60 @@ module nts.uk.com.view.ccg026.a.component {
                 self.availability = param.availability;
             }
         }
-
-        
     }//end module model
 
 }//end module
+
+/**
+ * process when click on avialability check box header
+ * @param element
+ */
+function avialabilityHeaderChanged(element) {
+    var dataSource = $('#permissionGrid').data('igGrid').dataSource;
+    if (!dataSource || !dataSource._data) {
+        return;
+    }
+    var i;
+    var l = dataSource._data.length;
+    for (i = 0; i < l; i++) {
+        $("#permissionGrid").igGridUpdating("setCellValue", dataSource._data[i].functionNo
+                , "availability", dataSource._data[i].initialValue || element.checked);
+    }
+}
+
+/**
+ * process when click on avialability check box
+ * @param element
+ * @param rowId
+ */
+function avialabilityChanged(element, rowId) {
+
+    var dataSource = $('#permissionGrid').data('igGrid').dataSource;
+    if (!dataSource || !dataSource._data || rowId < 1 || rowId > dataSource._data.length) {
+        return;
+    }
+    var value = $("#permissionGrid").igGrid("getCellValue", dataSource._data[rowId-1].functionNo, "availability");
+    if ($("#permissionGrid").igGridUpdating('isEditing')) {
+        $("#permissionGrid").igGridUpdating('endEdit', true);
+    }
+    $("#permissionGrid").igGridUpdating("setCellValue", dataSource._data[rowId-1].functionNo, "availability", dataSource._data[rowId - 1].initialValue || value != true);
+    
+    if (value) {
+        $("#avialabilityCheckAll").attr('checked', false);
+        return;
+    }
+    dataSource = $('#permissionGrid').data('igGrid').dataSource;
+    if (!dataSource || !dataSource._data) {
+        return;
+    }
+    var i;
+    var l = dataSource._data.length;
+    var isAllChecked = true;
+    for (i = 0; i < l; i++) {
+        if (!$("#permissionGrid").igGrid("getCellValue", dataSource._data[i].functionNo, "availability")) {
+            isAllChecked = false;
+            break;
+        }
+    }
+    $("#avialabilityCheckAll").attr('checked', isAllChecked);
+}

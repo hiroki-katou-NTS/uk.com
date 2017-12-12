@@ -36,8 +36,8 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	public String sid;
 	
 	@Basic(optional = false)
-	@Column(name = "LEAVE_HOLIDAY_ATR")
-	public int leaveHolidayAtr;
+	@Column(name = "TEMP_ABS_FRAME_NO")
+	public int tempAbsFrameNo;
 
 	@Basic(optional = true)
 	@Column(name = "REMARKS")
@@ -90,11 +90,11 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	 * @param remarks
 	 * @param soInsPayCategory
 	 */
-	public BsymtTempAbsHisItem (String historyId, String employeeId, int leaveHolidayAtr, String remarks,
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
 			Integer soInsPayCategory) {
 		this.histId = historyId;
 		this.sid = employeeId;
-		this.leaveHolidayAtr = leaveHolidayAtr;
+		this.tempAbsFrameNo = tempAbsFrameNo;
 		this.remarks = remarks;
 		this.soInsPayCategory = soInsPayCategory;
 	}
@@ -106,11 +106,11 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	 * @param soInsPayCategory
 	 * @param multiple
 	 */
-	public BsymtTempAbsHisItem (String historyId, String employeeId, int leaveHolidayAtr, String remarks,
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
 			Integer soInsPayCategory, Boolean multiple) {
 		this.histId = historyId;
 		this.sid = employeeId;
-		this.leaveHolidayAtr = leaveHolidayAtr;
+		this.tempAbsFrameNo = tempAbsFrameNo;
 		this.remarks = remarks;
 		this.soInsPayCategory = soInsPayCategory;
 		this.multiple = multiple ? 1: 0;
@@ -123,11 +123,11 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	 * @param soInsPayCategory
 	 * @param familyMemberId
 	 */
-	public BsymtTempAbsHisItem (String historyId, String employeeId, int leaveHolidayAtr, String remarks,
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
 			Integer soInsPayCategory, String familyMemberId) {
 		this.histId = historyId;
 		this.sid = employeeId;
-		this.leaveHolidayAtr = leaveHolidayAtr;
+		this.tempAbsFrameNo = tempAbsFrameNo;
 		this.remarks = remarks;
 		this.soInsPayCategory = soInsPayCategory;
 		this.familyMemberId = familyMemberId;
@@ -144,12 +144,12 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	 * @param createDate
 	 * @param spouseIsLeave
 	 */
-	public BsymtTempAbsHisItem (String historyId, String employeeId, int leaveHolidayAtr, String remarks,
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
 			Integer soInsPayCategory, Boolean sameFamily, Integer childType, String familyMemberId,
 			GeneralDate createDate, Boolean spouseIsLeave) {
 		this.histId = historyId;
 		this.sid = employeeId;
-		this.leaveHolidayAtr = leaveHolidayAtr;
+		this.tempAbsFrameNo = tempAbsFrameNo;
 		this.remarks = remarks;
 		this.soInsPayCategory = soInsPayCategory;
 		this.sameFamily = sameFamily ? 1: 0;
@@ -168,11 +168,11 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	 * @param sameFamilyDays
 	 * @param familyMemberId
 	 */
-	public BsymtTempAbsHisItem (String historyId, String employeeId, int leaveHolidayAtr, String remarks,
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
 			Integer soInsPayCategory, Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
 		this.histId = historyId;
 		this.sid = employeeId;
-		this.leaveHolidayAtr = leaveHolidayAtr;
+		this.tempAbsFrameNo = tempAbsFrameNo;
 		this.remarks = remarks;
 		this.soInsPayCategory = soInsPayCategory;
 		this.sameFamily = sameFamily ? 1: 0;

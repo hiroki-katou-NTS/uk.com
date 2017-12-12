@@ -38,8 +38,8 @@ public class StampDto {
 				domain.getStampAtr().name,
 				domain.getWorkLocationCd().v(), 
 				domain.getWorkLocationName().v(),
-				domain.getStampReason().value,
-				domain.getStampReason().name,
+				domain.getGoOutReason().value,
+				domain.getGoOutReason().name,
 				domain.getDate(),
 				domain.getPersonId());
 	}
