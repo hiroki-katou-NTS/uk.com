@@ -15,7 +15,10 @@ public class DeleteRoleIndividualGrantCommandHandler {
 	public void deleteRoleGrant(DeleteRoleIndividualGrantCommand roleGrant){
 		String companyId = AppContexts.user().companyId();
 		if (companyId == null)
-			throw new NullPointerException();
+			return;
+		
+		if(roleGrant.userID == null)
+			return;
 		
 		this.roleIndividualGrantRepository.remove(roleGrant.userID, companyId, roleGrant.roleType);
 	}

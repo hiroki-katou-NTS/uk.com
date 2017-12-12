@@ -99,6 +99,10 @@ public class RoleIndividualFinder {
 	}
 
 	public List<RoleTypeDto> GetRoleType(){
+		String companyId = AppContexts.user().companyId();
+		if (companyId == null)
+			return null;
+		
 		List<RoleTypeDto> roleTypeDtos = new ArrayList<>();
 		for (RoleType r : RoleType.values()) {
 			roleTypeDtos.add(new RoleTypeDto(r.value, r.nameId, r.description));
@@ -110,7 +114,10 @@ public class RoleIndividualFinder {
 		String companyId = AppContexts.user().companyId();
 		if (companyId == null)
 			return null;
-
+		
+		if(roleId == null)
+			return null;
+		
 		List<RoleIndividualGrant> ListRoleGrants = new ArrayList<>();
 		ListRoleGrants = this.roleIndividualGrantRepo.findByCompanyRole(companyId, roleId);
 
@@ -129,6 +136,9 @@ public class RoleIndividualFinder {
 	public RoleIndividualGrantDto getRoleGrant(String userId, String roleId){
 		String companyId = AppContexts.user().companyId();
 		if (companyId == null)
+			return null;
+		
+		if (userId == null || roleId == null)
 			return null;
 		
 		Optional<RoleIndividualGrant> rGrant = this.roleIndividualGrantRepo.findByKey(userId, companyId, roleId);
