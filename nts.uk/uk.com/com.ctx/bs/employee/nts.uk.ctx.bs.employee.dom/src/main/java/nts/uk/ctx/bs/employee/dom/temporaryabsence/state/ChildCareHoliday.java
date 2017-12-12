@@ -3,9 +3,12 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 
 /**
  * @author danpv Domain Name : 育児休業
@@ -43,7 +46,8 @@ public class ChildCareHoliday extends TempAbsenceHisItem {
 	private ChildCareHoliday(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
 			Boolean sameFamily, Integer childType, String familyMemberId, GeneralDate createDate,
 			Boolean spouseIsLeave) {
-		super(LeaveHolidayType.CHILD_CARE_NURSING, historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
+		super(new TempAbsenceFrameNo(BigDecimal.valueOf(4)), historyId, employeeId, remarks, soInsPayCategory,
+				familyMemberId);
 		this.sameFamily = sameFamily;
 		this.childType = childType;
 		this.createDate = createDate;

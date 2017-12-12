@@ -30,12 +30,12 @@ public class EmployeeInfoFinder {
 
 	public void validateEmpInfo(EmpInfoDto empInfo) {
 
-		Boolean isDuplicateEmpCode = this.employeeRepository.isDuplicateEmpCode(AppContexts.user().companyId(),
-				empInfo.getEmployeeCode());
-
-		if (isDuplicateEmpCode) {
-			throw new BusinessException(new RawErrorMessage("Msg_345"));
-		}
+//		Boolean isDuplicateEmpCode = this.employeeRepository.isDuplicateEmpCode(AppContexts.user().companyId(),
+//				empInfo.getEmployeeCode());
+//
+//		if (isDuplicateEmpCode) {
+//			throw new BusinessException(new RawErrorMessage("Msg_345"));
+//		}
 		// Boolean isDuplicateCardNo =
 		// this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
 		// empInfo.getCardNo());

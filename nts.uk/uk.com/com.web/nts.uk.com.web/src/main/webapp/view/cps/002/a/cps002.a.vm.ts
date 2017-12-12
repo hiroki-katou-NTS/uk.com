@@ -294,7 +294,7 @@ module cps002.a.vm {
             let self = this,
                 employee = self.currentEmployee(),
                 command = {
-                    employeeCode: employee.employeeCode(),
+                    EmployeeCode: employee.employeeCode(),
                     cardNo: employee.cardNo(),
                     LoginId: employee.loginId()
                 };
@@ -582,7 +582,7 @@ module cps002.a.vm {
         openIModal() {
             let self = this,
                 avatarId = self.currentEmployee().avatarId();
-            if (avatarId == "") {
+            if (avatarId != "") {
                 setShared("imageId", avatarId);
             }
             subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
@@ -594,8 +594,6 @@ module cps002.a.vm {
                 }
 
             });
-
-
         }
 
 
