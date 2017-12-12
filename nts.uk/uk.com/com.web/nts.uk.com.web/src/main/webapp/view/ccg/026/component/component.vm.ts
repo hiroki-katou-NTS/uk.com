@@ -1,42 +1,22 @@
 module nts.uk.com.view.ccg026.component {
     import getText = nts.uk.resource.getText;
 
-    export interface IOption {
-        roleId: string;
-        classification: number;
-        maxRow: number;
-    }
-
-    export class Option {
-        roleId: KnockoutObservable<string> = ko.observable('');
-        maxRow: number = 3;    
-        classification: number = 1;
-        
-        constructor(param: IOption) {
-            let self = this;
-            self.roleId(param.roleId);
-            self.maxRow = param.maxRow;
-            self.classification = param.classification;
-        }
-    }
-
     export module viewmodel {
         export class ComponentModel {
             listFunctionPermissions: Array<model.FunctionPermission> = [];
-            parameterInput: KnockoutObservable<Option> = ko.observable(new Option({
+            parameterInput: model.Option = new model.Option({
                                                                         roleId: ''
-                                                                        ,classification: 0
-                                                                        , maxRow: 1 
-            }));
+                                                                        ,classification: 1
+                                                                        , maxRow: 3
+            });
 
-            constructor(option: IOption) {
+            constructor(option: model.IOption) {
                 let self = this,
-                    parameterInput = self.parameterInput();
+                    parameterInput = self.parameterInput;
 
                 parameterInput.roleId(option.roleId);
                 parameterInput.classification = option.classification;
                 parameterInput.maxRow = option.maxRow;
-
                 parameterInput.roleId.subscribe((x) => {
                    // reset function avialability 
                    self.buildAvialabilityFunctionPermission().done(() => {
@@ -46,12 +26,11 @@ module nts.uk.com.view.ccg026.component {
 
             /** functiton start page */
             startPage(): JQueryPromise<any> {
-                let self = this,
-                    parameterInput = self.parameterInput();
+                let self = this;
                 let dfd = $.Deferred();
 
                 // caculate height by row number
-                var heigth = self.parameterInput.maxRow * 27;
+                var heigth : number = (self.parameterInput.maxRow + 1) * 27;
                 $("#fixed-table").ntsFixedTable({ height: heigth});
                 $.when(self.getListOfFunctionPermission(), self.buildAvialabilityFunctionPermission()).done(() => {
                          dfd.resolve();
@@ -66,7 +45,7 @@ module nts.uk.com.view.ccg026.component {
              */
              private getListOfFunctionPermission(): JQueryPromise<any> {
                 let self = this,
-                    parameterInput = self.parameterInput(),
+                    parameterInput = self.parameterInput,
                     listFunctionPermissions = self.listFunctionPermissions;
                 let dfd = $.Deferred();
 
@@ -98,7 +77,7 @@ module nts.uk.com.view.ccg026.component {
              */
             private buildAvialabilityFunctionPermission(): JQueryPromise<any> {
                 let self = this,
-                    parameterInput = self.parameterInput(),
+                    parameterInput = self.parameterInput,
                     listFunctionPermissions = self.listFunctionPermissions;
                 let dfd = $.Deferred();
                 service.getListOfAviabilityFunctionPermission(parameterInput.roleId(), parameterInput.classification)
@@ -127,6 +106,28 @@ module nts.uk.com.view.ccg026.component {
     //module model
     export module model {
 
+        //Model Input parameter
+        export interface IOption {
+            roleId:         string;
+            classification: number;
+            maxRow:         number;
+        }
+
+      //Class Input parameter
+        export class Option {
+            roleId: KnockoutObservable<string> = ko.observable('');
+            maxRow: number = 3;    
+            classification: number = 1; //1: work place
+            
+            constructor(param: IOption) {
+                let self = this;
+                self.roleId(param.roleId);
+                self.maxRow = param.maxRow;
+                self.classification = param.classification;
+            }
+        }
+
+        //Model Function Permission
         export interface IFunctionPermission {
             functionNo:     string;
             initialValue:   boolean;
@@ -136,6 +137,7 @@ module nts.uk.com.view.ccg026.component {
             availability:   boolean;
         }
 
+      //Class Function Permission
         export class FunctionPermission {
             functionNo:     string;
             initialValue:   boolean;
@@ -155,6 +157,7 @@ module nts.uk.com.view.ccg026.component {
             
         }
 
+       //Model Function Availability Permission
         export interface IAvailabilityPermission {
             functionNo: string;
             roleId:     string;
