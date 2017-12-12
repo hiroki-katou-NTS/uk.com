@@ -11,11 +11,15 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtScheduleMethod.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSHMT_SCHEDULE_METHOD")
 public class KshmtScheduleMethod extends UkJpaEntity implements Serializable {
