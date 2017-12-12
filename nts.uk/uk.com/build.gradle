@@ -865,7 +865,7 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: '0.2'
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.2'
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.3'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.2'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.3'
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: '0.2'
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: '0.2'
 		
@@ -1066,7 +1066,7 @@ project (':query:nts.uk.query.infra') {
 		compile group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3'
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: '0.2'
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: '0.2'
-		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.2'
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.3'
 		
 		//compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: '0.1'
 		//compile group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.infra', version: '0.1'
