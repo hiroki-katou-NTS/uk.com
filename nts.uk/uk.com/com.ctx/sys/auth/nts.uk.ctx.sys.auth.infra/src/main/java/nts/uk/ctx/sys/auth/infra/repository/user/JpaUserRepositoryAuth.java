@@ -104,12 +104,10 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 
 	private SacmtUser toEntity(User user) {
 
-		short isSpecialUser = (short) (user.isSpecialUser() ? 1 : 0);
-		short isMultiCompanyConcurrent = (short) (user.isMultiCompanyConcurrent() ? 1 : 0);
 		short isDefaultUser = (short) (user.isDefaultUser() ? 1 : 0);
 		return new SacmtUser(new SacmtUserPK(user.getUserID()), isDefaultUser, user.getPassword().v(),
-				user.getLoginID().v(), user.getContractCode().v(), user.getExpirationDate(), isSpecialUser,
-				isMultiCompanyConcurrent, user.getMailAddress().v(), user.getUserName().v(),
+				user.getLoginID().v(), user.getContractCode().v(), user.getExpirationDate(), user.getSpecialUser().value,
+				user.getMultiCompanyConcurrent().value, user.getMailAddress().v(), user.getUserName().v(),
 				user.getAssociatedPersonID());
 	}
 
