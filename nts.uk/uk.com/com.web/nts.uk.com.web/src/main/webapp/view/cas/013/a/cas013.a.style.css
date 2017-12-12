@@ -9,7 +9,7 @@ span.text{margin-left: 20px; display: inline-block;}
 .cf .pull-left:nth-child(1) {margin-left: 50px;}
 .pull-left .ntsRangeButton_Container{display: none;}
 .pull-left #daterangepicker {height:28px; }
-.caret-right.outline{font-size: 74px;margin: 10px 0px;height: 3.3em;}
-.caret-right.outline:after{border-width: 1.4em 0.5em;}
+.caret-right.outline{font-size: 74px;margin: 10px 0px;height:4em;}
+.caret-right.outline:after{border-width: 1.7em 0.5em;}
 .pull-left .control-group.button{margin: 30px 0 20px 20px;}
 .pull-left .control-group.button button{margin-right: 10px;}

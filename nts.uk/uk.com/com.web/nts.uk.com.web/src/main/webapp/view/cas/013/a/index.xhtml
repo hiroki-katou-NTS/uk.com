@@ -44,9 +44,9 @@
 							<div class="valign-center control-group">
 								<span class="text-left">#{i18n.getText('CAS013_9')}</span>
 							</div>
-							<table tabindex="5" id="single-list"
+							<table tabindex="5" id="role-list"
 								data-bind="ntsGridList: {								
-									height: 210,
+									rows: 10,
 									dataSource: listRole,
 									primaryKey: 'roleId',
 									columns: columns,
@@ -60,9 +60,9 @@
 							<div class="valign-center control-group">
 								<span class="text-left">#{i18n.getText('CAS013_13')}</span>
 							</div>
-							<table tabindex="6" id="single-list"
+							<table tabindex="6" id="roleindi-list"
 								data-bind="ntsGridList: {								
-									height: 210,
+									rows: 10,
 									dataSource: listRoleIndividual,
 									primaryKey: 'userId',
 									columns: columnsIndividual,
