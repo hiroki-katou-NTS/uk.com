@@ -271,14 +271,18 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		dataList.forEach(x -> {
 
-			x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
-					getItemValueById(inputs, x.getItemCode())));
+			String StringData = getItemValueById(inputs, x.getItemCode());
+			
+			if (StringData != null) {
+				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
+						getItemValueById(inputs, x.getItemCode())));
+			}
 		});
 
 	}
 
 	private String getItemValueById(List<ItemsByCategory> inputs, String itemCode) {
-		String returnString = "";
+		String returnString = null;
 
 		for (ItemsByCategory ctg : inputs) {
 
