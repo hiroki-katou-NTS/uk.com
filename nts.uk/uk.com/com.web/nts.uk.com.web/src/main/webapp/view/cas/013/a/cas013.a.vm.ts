@@ -33,13 +33,13 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.listRoleIndividual = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: '', key: 'roleId', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_11"), key: 'roleCode', width: 80, columnCssClass: "colStyle" },
-                { headerText: nts.uk.resource.getText("CAS013_12"), key: 'name', width: 160, columnCssClass: "colStyle" },
+                { headerText: nts.uk.resource.getText("CAS013_11"), key: 'roleCode', width: 80 },
+                { headerText: nts.uk.resource.getText("CAS013_12"), key: 'name', width: 160 },
             ]);
             self.columnsIndividual = ko.observableArray([
                 { headerText: '', key: 'userId', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 100 , columnCssClass: "colStyle"},
-                { headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 120 , columnCssClass: "colStyle"},
+                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 100 },
+                { headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 120 },
                 { headerText: nts.uk.resource.getText("CAS013_17"), key: 'datePeriod', width: 210 },
             ]);
             self.selectedRoleIndividual = ko.observable('');
