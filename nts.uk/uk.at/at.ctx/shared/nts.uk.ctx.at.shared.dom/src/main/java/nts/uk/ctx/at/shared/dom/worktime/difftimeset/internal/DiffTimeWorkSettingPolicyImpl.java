@@ -59,7 +59,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 				.forEach(halfDay -> this.diffTimeHalfPolicy.validate(halfDay, pred));
 
 		// validate EmTimezoneChangeExtent
-		this.validateEmTimezoneChangeExtent(pred, diffTimeWorkSetting.getChangeExtent());
+		this.validateEmTimezoneChangeExtent(pred, diffTimeWorkSetting);
 		
 		//validate common setting
 		this.commonWorkTimePolicy.validate(pred, diffTimeWorkSetting.getCommonSet());
@@ -114,14 +114,52 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * @param emTimezoneChangeExtent the em timezone change extent
 	 */
 	private void validateEmTimezoneChangeExtent(PredetemineTimeSetting pred,
-			EmTimezoneChangeExtent emTimezoneChangeExtent) {
-		// TODO
-		// validate Msg_781
-		if (emTimezoneChangeExtent.getBehindChange().valueAsMinutes() >= pred.getRangeTimeDay().valueAsMinutes()) {
-			throw new BusinessException("Msg_781");
-		}
-		// validate Msg_783
+			DiffTimeWorkSetting diffTimeWorkSetting) {
 
+		// validate Msg_781
+		int startTime = pred.getStartDateClock().valueAsMinutes();
+		int endTime = startTime+ pred.getRangeTimeDay().valueAsMinutes();
+		
+		int aheadChange = diffTimeWorkSetting.getChangeExtent().getAheadChange().valueAsMinutes();
+		int behindChange = diffTimeWorkSetting.getChangeExtent().getBehindChange().valueAsMinutes();
+		
+		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(halfDay -> {
+			halfDay.getWorkTimezone().getEmploymentTimezones().stream().forEach(item -> {
+				boolean isInvalidAheadChange = startTime + aheadChange > item.getTimezone().getStart().valueAsMinutes();
+				boolean isInvalidBehindChange = behindChange + item.getTimezone().getEnd().valueAsMinutes() > endTime;
+
+				if (isInvalidAheadChange || isInvalidBehindChange) {
+					throw new BusinessException("Msg_781");
+				}
+			});
+		});
+		
+		// TODO
+		// validate Msg_783 for work time
+		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(item->{
+			
+		});
+		
+		// validate Msg_783 for OT time
+		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(item -> {
+			item.getWorkTimezone().getEmploymentTimezones().stream().forEach(workItem->{
+				int workStart = workItem.getTimezone().getStart().valueAsMinutes();
+				int workEnd = workItem.getTimezone().getEnd().valueAsMinutes();
+				
+				//TODO get end of fixed start
+				int endOfFixStart= 0;
+				
+				//TODO get start of fixed end
+				int startOfFixEnd = 0;
+				
+				if (workStart - aheadChange < endOfFixStart) {
+					throw new BusinessException("Msg_783");
+				}
+				if (workEnd + behindChange > startOfFixEnd) {
+					throw new BusinessException("Msg_783");
+				}
+			});
+		});
 		// validate Msg_784
 	}
 }
