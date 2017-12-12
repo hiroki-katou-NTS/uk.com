@@ -6,7 +6,8 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
+import nts.uk.shr.com.history.DateHistoryItem;
+
 /**
  * The Interface WorkingConditionGetMemento.
  */
@@ -18,14 +19,6 @@ public interface WorkingConditionGetMemento {
 	 * @return the company id
 	 */
 	String getCompanyId();
-	
-	
-	/**
-	 * Gets the history id.
-	 *
-	 * @return the history id
-	 */
-	String getHistoryId();
 
 	/**
 	 * Gets the employee id.

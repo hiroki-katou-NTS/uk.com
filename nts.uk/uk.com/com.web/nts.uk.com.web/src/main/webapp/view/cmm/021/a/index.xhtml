@@ -44,9 +44,9 @@
 					<i class="icon icon-searchbox"></i>
 					<div class="reference-date">
 						<div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">#{i18n.getText('CMM021_8')}</div>
-						<div class="base-date-editor" style="margin-left: 20px;"
+						<div tabindex="4" class="base-date-editor" style="margin-left: 20px;"
 							data-bind=" ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, required: true}"></div>
-						<button data-bind="click: loadUserInfo" style="width: 60px; margin-left: 7px" class="button-load-user-info">#{i18n.getText('CMM021_9')}</button>
+						<button tabindex="5" data-bind="click: loadUserInfo" style="width: 60px; margin-left: 7px" class="button-load-user-info">#{i18n.getText('CMM021_9')}</button>
 					</div>
 
 					<!-- A6_2 , A6_3 , A6_4: Setting Use -->
@@ -109,7 +109,7 @@
 					</div>
 					<div>
 						<span>#{i18n.getText('CMM021_14')}</span> 
-						<span>#{i18n.getText('CMM021_19')}</span>
+						<span class="right-content-space-login">#{i18n.getText('CMM021_19')}</span>
 						<span data-bind="text: loginId"></span>
 					</div>
 				</div>
@@ -126,7 +126,7 @@
 						<com:ko tag="if" bind="isScreenCSelected">
 							<ui:include src="c.xhtml" />
 						</com:ko>
-
+						
 					</div>
 				</div>
 			</div>

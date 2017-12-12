@@ -11,10 +11,12 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 
 @Stateless
-public class JpaWorkingConditionItemRepository extends JpaRepository implements WorkingConditionItemRepository{
+public class JpaWorkingConditionItemRepository extends JpaRepository
+		implements WorkingConditionItemRepository {
 
 	@Override
-	public Optional<WorkingConditionItem> findWokingConditionItem(String employeeId, String historyId) {
+	public Optional<WorkingConditionItem> findWokingConditionItem(String employeeId,
+			String historyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -22,19 +24,19 @@ public class JpaWorkingConditionItemRepository extends JpaRepository implements 
 	@Override
 	public void add(WorkingConditionItem workingConditionItem) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(WorkingConditionItem workingConditionItem) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void remove(String employeeId, String historyId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
