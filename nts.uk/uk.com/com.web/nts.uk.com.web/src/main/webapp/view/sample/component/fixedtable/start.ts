@@ -1,5 +1,25 @@
 __viewContext.ready(function () {
     class ScreenModel {
+        itemList: KnockoutObservableArray<ScreenItem>;
+        
+        constructor() {
+            var self = this;
+            self.itemList = ko.observableArray([]);
+            $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
+        }
+        
+        addItem(){
+            var self = this;
+            self.itemList.push(new ScreenItem());    
+        }
+        
+        removeItem(){
+            var self = this;
+            self.itemList.pop();    
+        }
+    }
+    
+    class ScreenItem {
         text: KnockoutObservable<string>;
         enable: KnockoutObservable<boolean>;
         
@@ -16,7 +36,6 @@ __viewContext.ready(function () {
                 new ItemModel('3', '基本給')
             ]);
             self.selectedCode = ko.observable('1');
-            $("#fixed-table").ntsFixedTable({ height: 300 });
         }
     }
     

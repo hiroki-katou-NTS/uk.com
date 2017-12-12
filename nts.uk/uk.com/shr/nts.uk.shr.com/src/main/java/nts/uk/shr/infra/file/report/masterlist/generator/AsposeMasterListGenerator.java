@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.aspose.cells.AutoFitterOptions;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -25,13 +27,14 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
+import nts.uk.shr.infra.file.report.masterlist.webservice.ReportType;
 
 @Stateless
 public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implements MasterListReportGenerator{
 
 	private final String REPORT_ID = "MASTER_LIST";
 	
-	private final String REPORT_FILE_NAME = "マスターリスト_{TYPE}_{DATE}.xlsx";
+//	private final String REPORT_FILE_NAME = "マスターリスト_{TYPE}_{DATE}";
 	
 	private final int HEADER_INFOR_START_ROW = 0;
 	
@@ -60,7 +63,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		
 		sheet.setName("マスターリスト");
 		
-		String reportName = this.fillHeader(cells, dataSource.getHeaders(), columns.size() <= 1 ? 1 : columns.size() - 1);
+		String reportName = this.fillHeader(cells, dataSource, columns.size() <= 1 ? 1 : columns.size() - 1);
 		
 		if (!columns.isEmpty()){
 			this.setCommonStyle(cells);
@@ -82,13 +85,13 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		
 		switch (dataSource.getReportType()) {
 		case CSV:
-			reportContext.saveAsCSV(this.createNewFile(generatorContext, reportName));
+			reportContext.saveAsCSV(this.createNewFile(generatorContext, reportName + ".csv"));
 			break;
 		case EXCEL:
-			reportContext.saveAsExcel(this.createNewFile(generatorContext, reportName));
+			reportContext.saveAsExcel(this.createNewFile(generatorContext, reportName + ".xlsx"));
 			break;
 		case PDF:
-			reportContext.saveAsPdf(this.createNewFile(generatorContext, reportName));
+			reportContext.saveAsPdf(this.createNewFile(generatorContext, reportName + ".pdf"));
 			break;
 		default:
 			break;
@@ -107,25 +110,30 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		cells.setStandardHeightPixels(STANDARD_HEIGHT);
 	}
 
-	private String fillHeader (Cells cells, Map<String, String> headerData, int columnSize) {
-		
-		int i = START_COLUMN;
+	private String fillHeader (Cells cells, MasterListExportSource dataSource, int columnSize) {
+		Map<String, String> headerData = dataSource.getHeaders();
+		int i = HEADER_INFOR_START_ROW;
+		boolean isCsv = isExportCsvFile(dataSource.getReportType());
 		for (Entry<String, String> headerInfor : headerData.entrySet()) {
 			Cell labelCell = cells.get(HEADER_INFOR_START_ROW + i, 0);
-			Range valueCell = cells.createRange(HEADER_INFOR_START_ROW + i, 1, 1, columnSize);
+			Range valueCell = cells.createRange(HEADER_INFOR_START_ROW + i, 1, 1, isCsv ? 1 : columnSize);
 			valueCell.merge();
+
+			Style style = this.getCellStyleNoBorder(labelCell.getStyle());
 			
 			labelCell.setValue(headerInfor.getKey());
 			valueCell.setValue(headerInfor.getValue());
-			Style style = this.getCellStyleNoBorder(labelCell.getStyle());
+			
 			labelCell.setStyle(style);
 			valueCell.setStyle(style);
+			
 			i++;
 		}
-		String reportName = REPORT_FILE_NAME.replace("{TYPE}", headerData.get("【種類】"))
-				.replace("{DATE}", getCreateReportTime(headerData.get("【日時】")));
-		
-		return reportName;
+		return StringUtils.join(headerData.get("【種類】"), "_", getCreateReportTime(headerData.get("【日時】")));
+	}
+	
+	private boolean isExportCsvFile(ReportType reportType){
+		return reportType == ReportType.CSV;
 	}
 	
 	private void drawTableHeader(Cells cells, List<MasterHeaderColumn> columns) {

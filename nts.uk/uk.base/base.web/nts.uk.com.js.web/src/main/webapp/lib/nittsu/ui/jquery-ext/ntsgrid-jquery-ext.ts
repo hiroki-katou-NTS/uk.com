@@ -95,7 +95,7 @@ module nts.uk.ui.jqueryExtentions {
                     }
                 });
             }
-            validation.scanValidators($(self), options.columns); 
+            let flatCols = validation.scanValidators($(self), options.columns); 
             // Cell color
             let cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
             
@@ -103,6 +103,7 @@ module nts.uk.ui.jqueryExtentions {
             
             let columnControlTypes = {};
             let columnSpecialTypes = {};
+            let bounceCombos = {};
             let cbHeaderColumns = [];
             let cbSelectionColumns = {};
             let formatColumn = function(column: any) {
@@ -140,7 +141,7 @@ module nts.uk.ui.jqueryExtentions {
                     return column;  
                 }
                 // Special column types
-                specialColumn.ifTrue(columnSpecialTypes, column);
+                specialColumn.ifTrue(columnSpecialTypes, column, bounceCombos, flatCols);
                 
                 // Control types
                 if (column.ntsControl === undefined) {
@@ -188,6 +189,8 @@ module nts.uk.ui.jqueryExtentions {
                     var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
                     isEnable = isEnable !== undefined ? isEnable : controlDef.enable === undefined ? true : controlDef.enable;
                     var data = {
+                        rowId: rowId,
+                        columnKey: column.key,
                         controlDef: controlDef,
                         update: update,
                         deleteRow: deleteRow,
@@ -196,6 +199,11 @@ module nts.uk.ui.jqueryExtentions {
                         showHeaderCheckbox: column.showHeaderCheckbox,
                         enable: isEnable
                     };
+                    
+                    let back;
+                    if (back = bounceCombos[column.key]) {
+                        data.bounce = back;
+                    }
                     var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
                     var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", ntsControls.HEIGHT_CONTROL));
                     var $_self = $self;
@@ -361,6 +369,7 @@ module nts.uk.ui.jqueryExtentions {
              */
             function startEditCell(evt: any, ui: any) {
                 if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
+                    if ($(evt.currentTarget).find("div[class*='nts-editor-container']").length > 0) return false;
                     let selectedCell = selection.getSelectedCell($(evt.target));
                     if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
                     $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index,
@@ -890,7 +899,7 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 let ntsSwitchs = $element.find(".nts-switch-container");
                 if (ntsSwitchs.length > 0) {
-                    ntsSwitchs.find("button:first").focus();
+                    ntsSwitchs.find("button").filter((i, b) => $(b).hasClass("selected")).focus();
                 }
             }
             
@@ -1266,6 +1275,7 @@ module nts.uk.ui.jqueryExtentions {
             export let BUTTON: string = 'Button';
             export let DELETE_BUTTON = 'DeleteButton';
             export let TEXTBOX = 'TextBox';
+            export let TEXT_EDITOR = 'TextEditor';
             export let IMAGE = 'Image';
             export let HEIGHT_CONTROL = "27px";
             
@@ -1286,6 +1296,8 @@ module nts.uk.ui.jqueryExtentions {
                         return new Button();
                     case DELETE_BUTTON:
                         return new DeleteButton();
+                    case TEXT_EDITOR:
+                        return new TextEditor();
                     case LINK_LABEL:
                         return new LinkLabel();
                     case IMAGE:
@@ -1307,7 +1319,11 @@ module nts.uk.ui.jqueryExtentions {
                         let rId = rowObj[$grid.igGrid("option", "primaryKey")];
                         var $gridCell = $grid.igGrid("cellById", rId, column.key);
                         if ($gridCell && $($gridCell.children()[0]).children().length === 0) {
-                            $("." + controlCls).append(new Label().draw({ text: value }));
+                            let action;
+                            if (column.click && _.isFunction(column.click)) {
+                                action = () => column.click(rowId, column.key);
+                            }
+                            $("." + controlCls).append(new Label(action).draw({ text: value }));
                             let cellElement = { 
                                 id: rId,
                                 columnKey: column.key,
@@ -1455,13 +1471,24 @@ module nts.uk.ui.jqueryExtentions {
                         });
                         
                         if (!util.isNullOrUndefined(index)) {
+                            let arrowNav = false;
                             if (utils.isArrowLeft(evt)) {
                                 index = index === 0 ? ($buttons.length - 1) : --index;
+                                arrowNav = true;
                             }
                             if (utils.isArrowRight(evt)) {
                                 index = index === $buttons.length - 1 ? 0 : ++index;
+                                arrowNav = true;
                             }
-                            $buttons.eq(index).focus();
+                            
+                            let $targetButton = $buttons.eq(index);
+                            $targetButton.focus();
+                            if (arrowNav) {
+                                var selectedValue = $targetButton.data('swbtn');
+                                $('button', container).removeClass(selectedCssClass);
+                                $targetButton.addClass(selectedCssClass);
+                                data.update(selectedValue);
+                            }
                         }
                     });
     
@@ -1472,6 +1499,7 @@ module nts.uk.ui.jqueryExtentions {
                         var btn = $('<button>').text(text).css("height", "26px")
                             .addClass('nts-switch-button')
                             .attr('data-swbtn', value)
+                            .attr('tabindex', -1)
                             .on('click', function() {
                                 var selectedValue = $(this).data('swbtn');
                                 $('button', container).removeClass(selectedCssClass);
@@ -1599,8 +1627,15 @@ module nts.uk.ui.jqueryExtentions {
                                     let $comboContainer = $(targetCell).find("." + __self.containerClass());
                                     // Save selected item
                                     $comboContainer.data(internal.COMBO_SELECTED, selectedValue);
+                                    
+                                    if (data.bounce) {
+                                        updating.updateCell(__self.$containedGrid, rowId, data.bounce, selectedValue);
+                                    }
                                 }, 0);
                             }
+                        },
+                        rendered: function() {
+                            container.igCombo("option", "tabIndex", -1);
                         }
                     });
                     // Save init value
@@ -1647,7 +1682,8 @@ module nts.uk.ui.jqueryExtentions {
     
                 draw(data: any): JQuery {
                     var $container = $("<div/>").addClass(this.containerClass());
-                    var $button = $("<button/>").addClass("ntsButton").css("height", "25px").appendTo($container).text(data.controlDef.text || data.initValue)
+                    var $button = $("<button/>").addClass("ntsButton").css("height", "25px").appendTo($container)
+                        .text(data.controlDef.text || data.initValue).attr("tabindex", -1)
                         .data("enable", data.enable).on("click", $.proxy(data.controlDef.click, null, data.rowObj));
                     $button.prop("disabled", !data.enable);
                     return $container;
@@ -1673,14 +1709,157 @@ module nts.uk.ui.jqueryExtentions {
                 }
             }
             
+            class TextEditor extends NtsControlBase {
+                containerClass(): string {
+                    return "nts-editor-container";
+                }
+                
+                draw(data: any): JQuery {
+                    let self = this;
+                    let constraint = data.controlDef.constraint;
+                    let $container = $("<div/>").addClass(this.containerClass());
+                    let $input = $("<input/>").addClass("nts-editor nts-input").css({ padding: "2px", width: "96%" })
+                                    .attr("tabindex", -1).val(data.initValue);
+                    if (constraint.valueType === "Time") $input.css("text-align", "right");
+                    let $editor = $("<span/>").addClass("nts-editor-wrapper ntsControl").css("width", "100%").append($input).appendTo($container);
+                    
+                    let cell;
+                    self.validate(data.controlDef, data.initValue).success(t => {
+                        $input.val(t);
+                        $input.data(internal.TXT_RAW, data.initValue);
+                    }).terminate();
+                    
+                    let valueToDs = function(valueType, before, after) {
+                        switch (valueType) {
+                            case "Integer":
+                            case "HalfInt":
+                            case "String":
+                                return before;
+                            case "Time":
+                                return after;
+                        }
+                    };
+                    
+                    $input.on(events.Handler.KEY_DOWN, function(evt) {
+                        // TODO: Add check if error not occurred on this cell,
+                        // depends on which border to set red.
+                        if (utils.isEnterKey(evt)) {
+                            let value = $input.val();
+                            self.validate(data.controlDef, value).success(t => {
+                                cell = self.cellBelongTo($input);
+                                errors.clear(self.$containedGrid, cell);
+                                let val = valueToDs(constraint.valueType, value, t);
+                                $input.data(internal.TXT_RAW, val); 
+                                data.update(val);
+                            }).fail(errId => {
+                                cell = self.cellBelongTo($input);
+                                errors.set(self.$containedGrid, cell, resource.getMessage(errId));
+                            }).terminate;
+                        }
+                    });
+                    
+                    $input.on(events.Handler.KEY_UP, function(evt) {
+                        self.validate(data.controlDef, $input.val()).success(t => {
+                            cell = self.cellBelongTo($input);
+                            errors.clear(self.$containedGrid, cell);
+                        }).fail(errId => {
+                            cell = self.cellBelongTo($input);
+                            errors.set(self.$containedGrid, cell, nts.uk.resource.getMessage(errId));
+                        }).terminate();
+                    });
+                    $input.on(events.Handler.BLUR, function(evt) {
+                        self.validate(data.controlDef, $input.val()).success(t => {
+                            let value = $input.val();
+                            cell = self.cellBelongTo($input);
+                            errors.clear(self.$containedGrid, cell);
+                            let val = valueToDs(constraint.valueType, value, t);
+                            data.update(val);
+                            $input.data(internal.TXT_RAW, val);
+                            $input.val(t);
+                        }).fail(errId => {
+                            cell = self.cellBelongTo($input);
+                            errors.set(self.$containedGrid, cell, nts.uk.resource.getMessage(errId));
+                        }).terminate();
+                    });
+                    
+                    $input.on(events.Handler.CLICK, function(evt) {
+                        let rawValue = $input.data(internal.TXT_RAW);
+                        if (!errors.any({ element: $input.closest("td")[0] }) 
+                            && !util.isNullOrUndefined(rawValue)) $input.val(rawValue);
+                    });
+                    
+                    return $container;
+                }
+                
+                cellBelongTo($input: JQuery) {
+                    let self = this;
+                    let cell = {};
+                    cell.element = $input.closest("td")[0];
+                    let $gridControl = $input.closest("div[class*='nts-grid-control']");
+                    if ($gridControl.length === 0) return;
+                    let clazz = $gridControl.attr("class").split(" ")[0];
+                    let pos = clazz.split("-");
+                    cell.id = utils.parseIntIfNumber(pos.pop(), self.$containedGrid, utils.getColumnsMap(self.$containedGrid))
+                    cell.columnKey = pos.pop();
+                    return cell;
+                }
+                
+                validate(controlDef: any, value: any) {
+                    let constraint = controlDef.constraint;
+                    if (constraint.required && (_.isEmpty(value) || _.isNull(value))) return validation.Result.invalid("FND_E_REQ_INPUT");
+                    switch (constraint.valueType) {
+                        case "Integer":
+                            let valid = uk.ntsNumber.isNumber(value, false);
+                            if (!valid) return validation.Result.invalid("FND_E_INTEGER");
+                            let formatted = value;
+                            if (constraint.format === "Number_Separated") {
+                                formatted = uk.ntsNumber.formatNumber(value, { formatId: constraint.format });
+                            }
+                            return validation.Result.OK(formatted);
+                        case "Time":
+                            return validation.parseTime(value, constraint.format);
+                        case "HalfInt": 
+                            if (uk.ntsNumber.isHalfInt(value)) {
+                                return new validation.Result.OK(value);
+                            }
+                            return new validation.Result.invalid("FND_E_HALFINT");
+                        case "String":
+                            return validation.Result.OK(value);
+                    }
+                }
+                
+                enable($container: JQuery): void {
+                    let self = this;
+                    let $wrapper = $container.find("." + self.containerClass());
+                    $wrapper.find("input").prop("disabled", false);
+                }
+                disable($container: JQuery): void {
+                    let self = this;
+                    let $wrapper = $container.find("." + self.containerClass());
+                    $wrapper.find("input").prop("disabled", true);
+                }
+            }
+            
             class Label extends NtsControlBase {
+                action: any;
+                constructor(action?: any) {
+                    this.action = action;
+                }
+                
                 containerClass(): string {
                     return "nts-label-container";
                 }
                 
                 draw(data: any): JQuery {
+                    let self = this;
                     var $container = $("<div/>").addClass(this.containerClass());
-                    $("<label/>").addClass("ntsLabel").css("padding-left", "0px").text(data.text).appendTo($container);
+                    let $label = $("<label/>").addClass("ntsLabel").css({ padding: "3px 0px", display: "inline-block", width: "100%" }).text(data.text).appendTo($container);
+                    if (self.action && _.isFunction(self.action)) {
+                        $container.on(events.Handler.CLICK, function(evt) {
+                            self.action();
+                        });
+                        $label.css({ cursor: "pointer" });
+                    }
                     return $container;
                 }
                 
@@ -1700,7 +1879,8 @@ module nts.uk.ui.jqueryExtentions {
                 draw(data: any): JQuery {
                     return $('<div/>').addClass(this.containerClass()).append($("<a/>")
                                         .addClass("link-button").css({ backgroundColor: "inherit", color: "deepskyblue" })
-                                        .text(data.initValue).on("click", data.controlDef.click)).data("click", data.controlDef.click);
+                                        .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey))
+                                        .data("click", data.controlDef.click);
                 }
                 
                 enable($container: JQuery): void {
@@ -1753,7 +1933,7 @@ module nts.uk.ui.jqueryExtentions {
             export let CODE: string = "code";
             export let COMBO_CODE: string = "comboCode";
             
-            export function ifTrue(columnSpecialTypes: any, column: any) {
+            export function ifTrue(columnSpecialTypes: any, column: any, bounceCombos: any, flatCols: any) {
                 if (util.isNullOrUndefined(column.ntsType)) return;
                 if (column.ntsType === CODE) {
                     columnSpecialTypes[column.key] = { type: column.ntsType,
@@ -1761,6 +1941,13 @@ module nts.uk.ui.jqueryExtentions {
                 } else if (column.ntsType === COMBO_CODE) {
                     columnSpecialTypes[column.key] = { type: column.ntsType,
                                                        onChange: identity };
+                    let index = _.findIndex(flatCols, function(o) {
+                        return o.key === column.key;
+                    });
+                    let b;
+                    if (index + 1 < flatCols.length && (b = flatCols[index + 1]) !== undefined) {
+                        bounceCombos[b.key] = column.key;
+                    }
                 }
             }
             
@@ -2220,6 +2407,7 @@ module nts.uk.ui.jqueryExtentions {
                 static KEY_DOWN: string = "keydown";
                 static KEY_UP: string = "keyup";
                 static FOCUS_IN: string = "focusin";
+                static BLUR: string = "blur";
                 static CLICK: string = "click";
                 static MOUSE_DOWN: string = "mousedown";
                 static SCROLL: string = "scroll";
@@ -2443,6 +2631,7 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     // Load columns size
                     columnSize.load($grid);
+                    utils.setChildrenTabIndex($grid, -1);
                 };
             }
             
@@ -2464,6 +2653,8 @@ module nts.uk.ui.jqueryExtentions {
         
         module validation {
             export let VALIDATORS: string = "ntsValidators"; 
+            let H_M_MAX: number = 60;
+            
             export class ColumnFieldValidator {
                 name: string;
                 primitiveValue: string;
@@ -2497,6 +2688,46 @@ module nts.uk.ui.jqueryExtentions {
                 }
             }
             
+            export class Result {
+                isValid: boolean;
+                formatted: any;
+                errorMessageId: string;
+                onSuccess: any = $.noop;
+                onFail: any = $.noop;
+                constructor(isValid: boolean, formatted?: any, messageId?: string) {
+                    this.isValid = isValid;
+                    this.formatted = formatted;
+                    this.errorMessageId = messageId;
+                }
+                
+                static OK(formatted: any) {
+                    return new Result(true, formatted);
+                }
+                
+                static invalid(msgId: string) {
+                    return new Result(false, null, msgId);
+                }
+                
+                success(cnt: any) {
+                    this.onSuccess = cnt;
+                    return this;
+                }
+                
+                fail(cnt: any) {
+                    this.onFail = cnt;
+                    return this;
+                }
+                
+                terminate() {
+                    let self = this;
+                    if (self.isValid && self.onSuccess && _.isFunction(self.onSuccess)) {
+                         self.onSuccess(self.formatted);
+                    } else if (!self.isValid && self.onFail && _.isFunction(self.onFail)) {
+                        self.onFail(self.errorMessageId);
+                    }
+                }
+            }
+            
             function getValidators(columnsDef: any) : { [columnKey: string]: ColumnFieldValidator } {
                 var validators: any = {};
                 _.forEach(columnsDef, function(def: any) {
@@ -2507,7 +2738,22 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             export function scanValidators($grid: JQuery, columnsDef: any) {
-                $grid.data(VALIDATORS, getValidators(utils.analyzeColumns(columnsDef)));
+                let columns = utils.analyzeColumns(columnsDef);
+                $grid.data(VALIDATORS, getValidators(columns));
+                return columns;
+            }
+            
+            export function parseTime(value: any, format?: any): Result {
+                if (uk.ntsNumber.isNumber(value, false)) {
+                    if (value <= H_M_MAX) return Result.OK(value);
+                    let hh = Math.floor(value / 100);
+                    let mm = value % 100;
+                    if (mm >= H_M_MAX) return Result.invalid("NEED_MSG_INVALID_TIME_FORMAT");
+                    return Result.OK(hh + ":" + mm.toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }));
+                }
+                let formatRes = uk.time.applyFormat(format, value, undefined);
+                if (!formatRes) return Result.invalid("NEED_MSG_INVALID_TIME_FORMAT");
+                return Result.OK(formatRes);
             }
         }
         
@@ -2537,7 +2783,7 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             export function set($grid: JQuery, cell: any, message: string) {
-                if (any(cell)) return;
+                if (!cell || !cell.element || any(cell)) return;
                 let $cell = $(cell.element);
                 decorate($cell);
                 let errorDetails = createErrorInfos($grid, cell, message);
@@ -2564,7 +2810,7 @@ module nts.uk.ui.jqueryExtentions {
             } 
             
             export function clear($grid: JQuery, cell: any) {
-                if (!any(cell)) return;
+                if (!cell || !cell.element || !any(cell)) return;
                 let $cell = $(cell.element);
                 $cell.removeClass(HAS_ERROR);
                 $cell.css(NO_ERROR_STL);
@@ -2575,7 +2821,7 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             export function any(cell: any) {
-                return $(cell.element).hasClass(HAS_ERROR);
+                return cell.element && $(cell.element).hasClass(HAS_ERROR);
             }
             
             function addErrorInSheet($grid: JQuery, cell: any) {
@@ -3360,6 +3606,7 @@ module nts.uk.ui.jqueryExtentions {
             export let SETTINGS = "ntsSettings";
             export let ERRORS_LOG = "ntsErrorsLog";
             export let LOADER = "ntsLoader";
+            export let TXT_RAW = "rawText";
         }
         
         module utils {
@@ -3526,6 +3773,7 @@ module nts.uk.ui.jqueryExtentions {
                     case ntsControls.BUTTON:
                     case ntsControls.DELETE_BUTTON:
                     case ntsControls.IMAGE:
+                    case ntsControls.TEXT_EDITOR:
                         return true;
                 }
                 return false;
@@ -3728,6 +3976,11 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     flatColumns(column.group, flatCols);
                 });
+            }
+            
+            export function setChildrenTabIndex($grid: JQuery, index: number) {
+                let container = $grid.igGrid("container");
+                $(container).find("tr, th, td").attr("tabindex", index);
             }
         }
     }

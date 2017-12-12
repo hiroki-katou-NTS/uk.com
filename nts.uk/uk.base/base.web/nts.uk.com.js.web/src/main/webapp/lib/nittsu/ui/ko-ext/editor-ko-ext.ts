@@ -14,7 +14,7 @@ module nts.uk.ui.koExtentions {
             var value: KnockoutObservable<any> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+            var immediate: boolean = false;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var valueUpdate: string = (immediate === true) ? 'input' : 'change';
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
@@ -156,14 +156,14 @@ module nts.uk.ui.koExtentions {
             $input.on("keyup", (e) => {
                 var code = e.keyCode || e.which;
                 if (!readonly && code.toString() !== '9') {
-                let validator = self.getValidator(data);
+                    let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
                     if (!result.isValid) {
                         $input.ntsError('set', result.errorMessage, result.errorCode);
-                    }
-                }
+                    } 
+                } 
             });
             
             // Format on blur
@@ -194,7 +194,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         $input.ntsError('set', result.errorMessage, result.errorCode);
                         value(newText);
-                    }
+                    } 
                 }
             });
 

@@ -8,5 +8,7 @@ public interface PeregCommandHandlerCollector {
 
 	Set<PeregAddCommandHandler<?>> collectAddHandlers();
 
-	Set<PeregUpdateCommandHandler<?>> collectUpdateHandlers();
+	Set<PeregUpdateCommandHandler<?>> collectUpdateHandlers();;
+
+	Set<PeregDeleteCommandHandler<?>> collectDeleteHandlers();
 }

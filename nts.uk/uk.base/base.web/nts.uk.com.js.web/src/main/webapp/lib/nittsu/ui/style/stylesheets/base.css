@@ -3616,6 +3616,16 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
 }
 
+.nts-editor-container {
+	height: 100%;
+	margin-left: -1px;
+}
+
+.nts-editor-wrapper {
+	width: 100%;
+	margin: 1px;
+}
+
 /* line 231, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
@@ -3638,7 +3648,7 @@ button.nts-switch-button[disabled]:hover {
 /* line 4, ../sass/components/_extable.scss */
 .extable .xheader td {
   color: #000;
-  background-color: #CFF1A5;
+  background-color: #D9D9D9;
   font-weight: bold;
 }
 
@@ -3956,19 +3966,40 @@ div .ex-area-line.x-stay {
 .nts-fixed-table table.fixed-table > tbody > tr:hover > th {
   background-color: #C5F1F7;
 }
+.nts-fixed-table table.fixed-table tbody td:last-child {
+  border-right: 0px;
+}
+.nts-fixed-table table.fixed-table thead th:last-child {
+  border-right: 0px;
+}
 /* line 20, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-header-container {
-  overflow: auto;
+  overflow: hidden; 
+  border-right: 1px #CCC solid;
 }
 /* line 24, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-container {
   overflow: auto;
   float: left;
   border: 1px solid #CCC;
+  border-top: 0px;
+border-left: 0px;
+}
+/* line 30, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-header {
+  display: inline-block;
+}
+/* line 30, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .scroll-header{
+	background-color: #EDE9ED;
 }
 /* line 30, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-wrapper {
   margin: -1px 0 0 -1px;
+border-left: 1px solid #CCC;
+}
+.nts-fixed-table .body-no-record{
+	margin-left: 0px;
 }
 
 /* line 2, ../sass/components/_fileupload.scss */

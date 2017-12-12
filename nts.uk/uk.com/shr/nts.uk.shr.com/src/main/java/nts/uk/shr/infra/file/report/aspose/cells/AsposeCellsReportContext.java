@@ -6,8 +6,11 @@ import java.util.Map;
 
 import javax.enterprise.inject.spi.CDI;
 
+import com.aspose.cells.Encoding;
 import com.aspose.cells.ICellsDataTable;
 import com.aspose.cells.SaveFormat;
+import com.aspose.cells.SaveOptions;
+import com.aspose.cells.TxtSaveOptions;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 
@@ -103,7 +106,17 @@ public class AsposeCellsReportContext implements AutoCloseable {
 	
 	public void saveAsCSV(OutputStream outputStream) {
 		try {
-			this.workbook.save(outputStream, SaveFormat.CSV);
+			TxtSaveOptions opts = new TxtSaveOptions(SaveFormat.CSV);
+			opts.setEncoding(Encoding.getUTF8());
+			this.workbook.save(outputStream, opts);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public void saveWithOtherOption(OutputStream outputStream, SaveOptions saveOptions) {
+		try {
+			this.workbook.save(outputStream, saveOptions);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

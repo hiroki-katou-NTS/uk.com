@@ -7,7 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
-//@Stateless
+@Stateless
 public class SampleUpdatePersonBaseCommandHandler extends CommandHandler<SampleUpdatePersonBaseCommand>
 		implements PeregUpdateCommandHandler<SampleUpdatePersonBaseCommand> {
 

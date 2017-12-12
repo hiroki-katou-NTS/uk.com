@@ -8,6 +8,10 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 @Getter
 public abstract class PeregUserDefCommand {
+	
+	private final String personId;
+	
+	private final String employeeId;
 
 	/** category ID */
 	private final String categoryId;
@@ -18,9 +22,20 @@ public abstract class PeregUserDefCommand {
 	/** input items */
 	private final List<ItemValue> items;
 	
-	public PeregUserDefCommand(ItemsByCategory itemsByCategory) {
-		this.categoryId = itemsByCategory.getCategoryId();
-		this.recordId = itemsByCategory.getRecordId();
-		this.items = itemsByCategory.collectItemsDefinedByUser();
+	public PeregUserDefCommand(String personId, String employeeId, ItemsByCategory itemsByCategory) {
+		this(
+				personId,
+				employeeId,
+				itemsByCategory.getCategoryId(),
+				itemsByCategory.getRecordId(),
+				itemsByCategory.collectItemsDefinedByUser());
+	}
+	
+	public PeregUserDefCommand(String personId, String employeeId, String categoryId, String recordId, List<ItemValue> items) {
+		this.personId = personId;
+		this.employeeId = employeeId;
+		this.categoryId = categoryId;
+		this.recordId = recordId;
+		this.items = items;
 	}
 }

@@ -17,10 +17,24 @@ import nts.uk.shr.infra.file.storage.info.entity.CisdtStoredFile;
 @Stateless
 public class DefaultStoredFileInfoRepository extends JpaRepository implements StoredFileInfoRepository {
 
+	private static final String FIND_ZIP;
+	static {
+		StringBuilder findZipQb = new StringBuilder();
+		findZipQb.append("SELECT a FROM CisdtStoredFile a");
+		findZipQb.append(" WHERE a.originalName = :name");
+		FIND_ZIP = findZipQb.toString();
+	}
+	
 	@Override
 	public Optional<StoredFileInfo> find(String fileId) {
 		return this.queryProxy().find(fileId, CisdtStoredFile.class)
 				.map(e -> toDomain(e));
+	}
+	
+	@Override
+	public Optional<StoredFileInfo> findZipEntry(String fileId, String entryName) {
+		return this.queryProxy().query(FIND_ZIP, CisdtStoredFile.class).setParameter("name", fileId + "/" + entryName)
+				.getSingle(e -> toDomain(e));
 	}
 
 	@Override

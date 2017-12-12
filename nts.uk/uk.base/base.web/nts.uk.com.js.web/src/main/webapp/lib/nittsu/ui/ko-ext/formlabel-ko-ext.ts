@@ -16,6 +16,7 @@ module nts.uk.ui.koExtentions {
             var isRequired = ko.unwrap(data.required) === true;
             var isInline = ko.unwrap(data.inline) === true;
             var isEnable = ko.unwrap(data.enable) !== false;
+            var cssClass = data.cssClass !== undefined ? ko.unwrap(data.cssClass) : "";
             
             var $formLabel = $(element).addClass('form-label');
 
@@ -43,9 +44,12 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
             var text: string = (data.text !== undefined) ? ko.unwrap(data.text) : $(element).find('label').html();
+            var cssClass = data.cssClass !== undefined ? ko.unwrap(data.cssClass) : "";
             var container = $(element);
             
-            container.find("label").html(text);
+            let $label = container.find("label");
+            $label.removeClass($label.data("cssClass")).addClass(cssClass).html(text);
+            $label.data("cssClass", cssClass);
         }
     }
     

@@ -6,6 +6,10 @@ import lombok.Value;
 
 @Value
 public class PeregInputContainer {
+	
+	private final String personId;
+	
+	private final String employeeId;
 
 	private final List<ItemsByCategory> inputs;
 }
