@@ -130,7 +130,11 @@ module cps002.a.vm {
                 }
                 self.itemSettingList.removeAll();
                 if (self.isUseInitValue()) {
-                    service.getAllInitValueItemSetting(self.currentInitSetting().itemId, categoryCode, nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd')).done((result: Array<SettingItem>) => {
+                    let command = ko.toJS(self.currentEmployee());
+                    command.initSettingId = self.currentInitSetting().itemId;
+                    command.baseDate = self.currentEmployee().hireDate();
+                    command.categoryCd = categoryCode;
+                    service.getAllInitValueItemSetting(command).done((result: Array<SettingItem>) => {
                         if (result.length) {
                             self.itemSettingList(_.map(result, item => {
                                 return new SettingItem(item);
@@ -540,7 +544,6 @@ module cps002.a.vm {
                 employee = self.currentEmployee();
 
             setShared("cardNoMode", isCardNoMode);
-            setShared("userValue", useSetting ? isCardNoMode ? useSetting.cardNumberLetter : useSetting.employeeCodeLetter : "");
             setShared("value", isCardNoMode ? employee.cardNo() : employee.employeeCode());
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
