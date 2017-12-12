@@ -37,8 +37,18 @@ public class EmpRegHistoryFinder {
 
 			EmpRegHistoryDto regHistDto = EmpRegHistoryDto.createFromDomain(opt.get());
 
-			if (!setLastRegName(regHistDto.getLastRegEmployee())
-					&& !setLastRegName(regHistDto.getLastRegEmployeeOfCompany())) {
+			boolean setEmpNameRes = setLastRegName(regHistDto.getLastRegEmployee());
+
+			boolean setComNameRes = false;
+			if (regHistDto.getLastRegEmployee().EmployeeID != regHistDto.getLastRegEmployeeOfCompany().EmployeeID) {
+
+				setComNameRes = setLastRegName(regHistDto.getLastRegEmployeeOfCompany());
+			} else {
+
+				regHistDto.setLastRegEmployeeOfCompany(null);
+			}
+
+			if (!setEmpNameRes && !setComNameRes) {
 
 				return null;
 			}
