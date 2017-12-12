@@ -10624,7 +10624,7 @@ var nts;
                             $headerContainer.appendTo($header);
                             $header.appendTo($container);
                             $header.height($headerContainer.height());
-                            var $headerScroll = $("<div>", { "class": "scroll-header nts-fixed-header", width: 17, height: $headerContainer.height() });
+                            var $headerScroll = $("<div>", { "class": "scroll-header nts-fixed-header", width: 16, height: $headerWrapper.outerHeight() });
                             $headerScroll.appendTo($header);
                             $originTable.addClass("nts-fixed-body-table");
                             var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
@@ -10638,30 +10638,24 @@ var nts;
                                 $header.height($headerContainer.height());
                                 if (bodyHeight < $originTable.height()) {
                                     if (/Edge/.test(navigator.userAgent)) {
-                                        $headerScroll.width(12);
+                                        $headerScroll.width(11);
                                         $bodyContainer.css("padding-right", "12px");
                                     }
                                     else {
-                                        $headerScroll.width(17);
+                                        $headerScroll.width(16);
                                         $bodyContainer.css("padding-right", "17px");
                                     }
+                                    $headerScroll.css({ "border-right": "1px #CCC solid", "border-top": "1px #CCC solid", "border-bottom": "1px #CCC solid" });
                                 }
                                 else {
                                     $headerScroll.width(0);
+                                    $headerScroll.css({ "border-right": "0px", "border-top": "0px", "border-bottom": "0px" });
                                     $bodyContainer.css("padding-right", "0px");
                                 }
                                 setTimeout(resizeEvent, 20);
                             };
                             $bodyContainer.scroll(function (evt, ui) {
-                                var bodyScroll = $bodyContainer.scrollLeft();
-                                if (bodyScroll > 0) {
-                                    bodyScroll = bodyScroll + 1.25;
-                                    $headerContainer.css({ "border-left": "1px solid #CCC" });
-                                }
-                                else {
-                                    $headerContainer.css({ "border-left": "0px solid #CCC" });
-                                }
-                                $headerContainer.scrollLeft(bodyScroll);
+                                $headerContainer.scrollLeft($bodyContainer.scrollLeft());
                             });
                             $bodyWrapper.width(width).height(bodyHeight);
                             $bodyWrapper.append($originTable);
