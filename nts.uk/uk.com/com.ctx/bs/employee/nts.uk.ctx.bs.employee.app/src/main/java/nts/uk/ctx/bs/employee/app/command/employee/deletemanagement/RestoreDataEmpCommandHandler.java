@@ -37,7 +37,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 
 			if (!listEmpData.isEmpty()) {
 				EmployeeDataMngInfo empInfo = listEmpData.get(0);
-				empInfo.setEmployeeCode(new EmployeeCode(command.getNewCode().toString()));
+				empInfo.setEmployeeCode(new EmployeeCode(command.getCode().toString()));
 				empInfo.setDeletedStatus(EmployeeDeletionAttr.NOTDELETED);
 				empInfo.setDeleteDateTemporary(null);
 				empInfo.setRemoveReason(null);
@@ -47,7 +47,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				// get Person
 				Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
 				PersonNameGroup nameGroup = person.getPersonNameGroup();
-				nameGroup.setBusinessName(new BusinessName(command.getNewName()));
+				nameGroup.setBusinessName(new BusinessName(command.getName()));
 				person.setPersonNameGroup(nameGroup);
 				personRepo.update(person);
 			}
