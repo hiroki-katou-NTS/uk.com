@@ -1256,7 +1256,6 @@ module nts.custombinding {
                                     switch (data.item.dataTypeValue) {
                                         default:
                                         case ITEM_SINGLE_TYPE.STRING:
-                                        case ITEM_SINGLE_TYPE.SELECTION:
                                             return {
                                                 value: data.value ? String(data.value) : undefined,
                                                 typeData: 1
@@ -1273,6 +1272,18 @@ module nts.custombinding {
                                                 value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
                                                 typeData: 3
                                             };
+                                        case ITEM_SINGLE_TYPE.SELECTION:
+                                            if (data.item.referenceType != ITEM_SELECT_TYPE.ENUM) {
+                                                return {
+                                                    value: data.value ? String(data.value) : undefined,
+                                                    typeData: 1
+                                                };
+                                            } else {
+                                                return {
+                                                    value: data.value ? String(data.value) : undefined,
+                                                    typeData: 2
+                                                };
+                                            }
                                     }
                                 };
 
@@ -1850,7 +1861,7 @@ module nts.custombinding {
         dataTypeState?: IItemDefinitionData // Single item value
     }
 
-    interface IItemDefinitionData extends IItemTime, IItemDate, IItemString, IItemTimePoint, IItemNumeric {
+    interface IItemDefinitionData extends IItemTime, IItemDate, IItemString, IItemTimePoint, IItemNumeric, IItemSelection {
         dataTypeValue: ITEM_SINGLE_TYPE; // type of value of item
         editable?: KnockoutObservable<boolean>;
         readonly?: KnockoutObservable<boolean>;
@@ -1886,7 +1897,7 @@ module nts.custombinding {
     }
 
     interface IItemSelection extends IItemMasterSelection, IItemEnumSelection, IItemCodeNameSelection {
-        referenceType?: number;
+        referenceType?: ITEM_SELECT_TYPE;
     }
 
     interface IItemMasterSelection {
@@ -1962,11 +1973,11 @@ module nts.custombinding {
     // type of item if it's selection item
     enum ITEM_SELECT_TYPE {
         // 1:専用マスタ(DesignatedMaster)
-        DESIGNATED_MASTER = 1,
+        DESIGNATED_MASTER = <any>"DESIGNATED_MASTER",
         // 2:コード名称(CodeName)
-        CODE_NAME = 2,
+        CODE_NAME = <any>"CODE_NAME",
         // 3:列挙型(Enum)
-        ENUM = 3
+        ENUM = <any>"ENUM"
     }
 
     enum DateType {
