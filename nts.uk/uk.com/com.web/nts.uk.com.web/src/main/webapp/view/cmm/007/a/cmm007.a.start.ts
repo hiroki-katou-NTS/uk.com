@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm007.a {
     __viewContext.ready(function() {
         let mainTab = new viewmodel.ScreenModel();
 
-        blockUI.invisible();
+        blockUI.grayout();
         
         mainTab.start_page().done(function(screenModel){
             __viewContext.bind(screenModel);
