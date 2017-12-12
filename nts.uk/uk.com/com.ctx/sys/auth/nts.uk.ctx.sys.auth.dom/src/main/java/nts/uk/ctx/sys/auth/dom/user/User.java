@@ -11,8 +11,11 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @AllArgsConstructor
+/** ユーザ
+ * User
+ *  */
 public class User extends AggregateRoot {
-	/** ユーザ */
+	
 	//ID
 	/** The user id. */
 	private String userID;
