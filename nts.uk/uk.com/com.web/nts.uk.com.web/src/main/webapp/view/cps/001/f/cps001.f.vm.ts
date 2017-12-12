@@ -74,7 +74,7 @@ module cps001.f.vm {
                 // upload file 
                 $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
                     self.fileId(res[0].id);
-                    var maxSize = 1024; // 10MB 10485760
+                    var maxSize = 10485760; // 10MB = 10485760B
 
                     // get Info
                     nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(info : any) {
@@ -106,7 +106,8 @@ module cps001.f.vm {
                             }
                         } else {
                             // show dialog
-                            showDialog.alertError({ messageId: "Msg_70" }).then(function() { });
+                            var sizefile = ((info.originalSize)/(1024*1024)).toFixed(2);;
+                            showDialog.alertError({ messageId: "Msg_70",  messageParams: [sizefile]}).then(function() { });
                         }
                     });
 
@@ -114,7 +115,7 @@ module cps001.f.vm {
                 }).fail(function(err) {
                     nts.uk.ui.dialog.alertError(err);
                 });
-                setShared('CPS001B_VALUE', {});
+                setShared('CPS001F_VALUE', {});
             }
         }
 
