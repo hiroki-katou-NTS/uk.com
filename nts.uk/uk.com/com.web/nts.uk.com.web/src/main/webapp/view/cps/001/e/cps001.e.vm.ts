@@ -20,27 +20,27 @@ module cps001.e.vm {
         }
         start() {
             let self = this, 
-            params: IEmpFileMn = getShared("CPS001E_PARAMS");
-            if(params){
-                //get employee file management domain by employeeId
-                service.getAvatar(self.empFileMn().employeeId).done(function(data) {
-                    if (data) {
-                        self.empFileMn().fileId = data.fileId ? data.fileId : "";
-                        self.empFileMn().fileType = 1;
-                        if (self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
-                            self.getImage();
-                        self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
+             params = getShared("CPS001E_PARAMS");
+            self.empFileMn().employeeId = params.employeeId;
+            //get employee file management domain by employeeId
+            service.getAvatar(self.empFileMn().employeeId).done(function(data) {
+                if (data) {
+                    self.empFileMn().fileId = data.fileId ? data.fileId : "";
+                    self.empFileMn().fileType = 1;
+                    if (self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
+                        self.getImage();
+                    self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
+                }
+                $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+                    if (!self.isInit) {
+                        self.isChange(true);
+                        return;
                     }
-                    $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
-                        if (!self.isInit) {
-                            self.isChange(true);
-                            return;
-                        }
-                        self.isInit = false;
-                    });
-                    
+                    self.isInit = false;
                 });
-            }else self.isChange(true);
+                
+            });
+
         }
 
         upload() {
