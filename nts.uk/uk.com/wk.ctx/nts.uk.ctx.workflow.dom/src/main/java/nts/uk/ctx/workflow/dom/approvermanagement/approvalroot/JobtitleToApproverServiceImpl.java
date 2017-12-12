@@ -100,15 +100,14 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	private boolean checkIfApproverIsGreaterThanRequester(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		JobTitleImport jobOfEmp = this.syJobTitleAdapter.findJobTitleBySid(sid, baseDate);
 		// 承認者の
-		JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
+		JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);		
 		if (jobOfEmp != null) {
 			// 申請の
-			JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(),
-					baseDate);
+			JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(), baseDate);
 			if (jobOfApprover == null || jobOfRequest == null) {
 				return false;
 			}
-			if (jobOfRequest.isGreaterThan(jobOfRequest)) {
+			if (jobOfApprover.isGreaterThan(jobOfRequest)) {
 				return true;
 			}
 
