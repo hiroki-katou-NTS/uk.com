@@ -88,10 +88,11 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 				TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsenceItemRepo
 						.getItemByHitoryID(temporaryAbsOpt.get().getDateHistoryItems().get(0).identifier()).get();
 				// set LeaveHolidayType 
-				
-				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getLeaveHolidayType().value);
+				int tempAbsenceFrNo = temporaryAbsenceDomain.getTempAbsenceFrNo().v().intValue();
+				int leaveHolidayType = tempAbsenceFrNo <= 6 ? tempAbsenceFrNo : 7; 
+				statusOfEmploymentExport.setLeaveHolidayType(leaveHolidayType);
 
-				if (temporaryAbsenceDomain.getLeaveHolidayType().value == 1) {
+				if (leaveHolidayType == 1) {
 					// trường hợp 休職休業区分＝休職  LeaveHolidayState = TEMP_LEAVE(1)
 					
 					// StatusOfEmployment = LEAVE_OF_ABSENCE
