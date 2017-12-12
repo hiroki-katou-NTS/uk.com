@@ -1,4 +1,5 @@
 module a1 {
+    import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.PredetemineTimeSettingModel;
     class ScreenModel {
 
         dayStartTime: KnockoutObservable<number>;
@@ -39,10 +40,12 @@ module a1 {
         afternoon: KnockoutObservable<number>;
 
         isDetailMode: KnockoutObservable<boolean>;
+        predseting: PredetemineTimeSettingModel;
         /**
         * Constructor.
         */
-        constructor(screenMode: any, settingMethod: string, workTimeCode: string, isClickSave: any) {
+        constructor(screenMode: any, settingMethod: string, workTimeCode: string, isClickSave: any,
+            predseting: PredetemineTimeSettingModel) {
             let self = this;
 
             //day start Time
@@ -103,6 +106,7 @@ module a1 {
                 if (value) {
                 }
             });
+            self.predseting = predseting;
         }
 
         //bind data to screen items
@@ -178,8 +182,9 @@ module a1 {
             let settingMethod = ko.unwrap(input.settingMethod);
             let workTimeCode = input.workTimeCode;
             let isClickSave = input.saveAction;
+            let predseting: PredetemineTimeSettingModel = input.predseting;
 
-            let screenModel = new ScreenModel(screenMode, settingMethod, workTimeCode, isClickSave);
+            let screenModel = new ScreenModel(screenMode, settingMethod, workTimeCode, isClickSave, predseting);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

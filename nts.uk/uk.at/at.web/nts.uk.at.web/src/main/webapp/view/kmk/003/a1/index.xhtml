@@ -15,11 +15,12 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="td-cell"><div
-					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_32')}</div></td>
 			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_32')}</div>
+			</td>
+			<td class="td-cell"> 
 				<input data-bind="ntsTimeEditor: {
-					value: dayStartTime,
+					value: predseting.startDateClock,
 					constraint: 'TimeWithDayAttr',
 					inputFormat: 'time',
 					mode: 'time',
