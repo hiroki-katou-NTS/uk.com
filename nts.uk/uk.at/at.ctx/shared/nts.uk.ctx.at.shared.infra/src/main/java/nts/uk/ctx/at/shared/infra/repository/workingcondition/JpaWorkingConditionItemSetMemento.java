@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
-import java.util.Arrays;
-
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
@@ -13,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK;
 
 @Stateless
 public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSetMemento{
