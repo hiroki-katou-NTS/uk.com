@@ -31,7 +31,7 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList #33
-	Optional<JobTitleExport> findBySid(String employeeId, GeneralDate baseDate);
+	Optional<EmployeeJobHistExport> findBySid(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find job title by position id.

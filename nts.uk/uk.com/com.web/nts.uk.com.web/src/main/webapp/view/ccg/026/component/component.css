@@ -9,3 +9,17 @@ td {
     width: 30em;
     overflow-y: auto;
 }
+.readOnlyColorIsUse {
+    background-color: #BFBFBF;
+    pointer-events: none;
+}
+.readOnlyColor {
+    background-color: #BFBFBF;
+}
+
+.readOnlyCheckBox {
+    pointer-events: none;
+}
+.row {
+	height:50px;
+}

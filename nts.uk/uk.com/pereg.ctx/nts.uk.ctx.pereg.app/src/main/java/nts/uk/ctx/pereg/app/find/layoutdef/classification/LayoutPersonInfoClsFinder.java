@@ -43,9 +43,6 @@ public class LayoutPersonInfoClsFinder {
 				switch (classDto.getLayoutItemType()) {
 				case ITEM: // single item
 				case LIST: // list item
-					if (classDto.getDispOrder() == 4) {
-						System.out.println();
-					}
 					List<String> listId = this.clsItemDefFinder.getItemDefineIds(classDto.getLayoutID(),
 							classDto.getDispOrder());
 
@@ -79,7 +76,6 @@ public class LayoutPersonInfoClsFinder {
 							classDto.setClassName(catDto.getCategoryName());
 						}
 					}
-					System.out.println(classDto.getClassName());
 					break;
 				case SeparatorLine: // SeparatorLine
 					break;
