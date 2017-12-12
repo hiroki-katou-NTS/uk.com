@@ -22,55 +22,44 @@
 				<div id="content" class="cf">
 					<h2>CCG026 Testing page</h2>
 					<div data-bind="with: componentViewmodel">
-					   <div data-bind="with: parameterInput">
-						   <h3>roleId: <span data-bind="text: ko.toJSON(roleId)"/>, classification: <span data-bind="text: ko.toJSON(classification)"/>, //workplace, maxRow: <span data-bind="text: ko.toJSON(maxRow)"/></h3><br/>
-						    
-						   <table>
-							   <tr>
-								   <td><b>Role Id</b></td>
-								   <td>
-									   <input class="nts-input" id="inpRoleId" 
-				                                        data-bind="ntsTextEditor:{
-				                                            value: roleId,
-				                                            required: true,
-				                                            enable: true}" />
-			                       </td>
-							   </tr>
-						   </table>
-                       </div>
-   						<ui:include src="component/index.xhtml" />
-					
+						<div data-bind="with: parameterInput">
+							<h3>roleId: <input class="nts-input" id="inpRoleId" data-bind="ntsTextEditor:{ value: roleId, required: true}" /></h3>
+							<h3>classification: <span data-bind="text: ko.toJSON(classification)" /></h3>
+							<h3>maxRow: <span data-bind="text: ko.toJSON(maxRow)" /></h3>
+							<br/>
+						</div>
+						<ui:include src="component/index.xhtml" />
 						<div>
-						<b>Count:</b> <span data-bind="text: ko.toJSON(listFunctionPermissions.filter(item => item.availability).length)"></span></div>
-        
-                    <b>Result:</b>
-			        <table id="fixed-table">
-			            <colgroup>
-			                <col width="200px"/>
-			                <col width="100px"/>
-			                <col width="350px"/>
-			            </colgroup>
-			            <thead>
-			               <tr> 
-			                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_2')}</th>
-			                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_3')}</th>
-			                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_4')}</th>
-			               </tr>
-			            </thead>
-			            <tbody data-bind = "foreach: listFunctionPermissions">
-			                <tr>
-			                    <td><div data-bind = "text: displayName" style="display: inline-block; white-space: nowrap;"></div></td>
-			                    <td style ="text-align: center;"><div data-bind="ntsCheckBox: {checked: availability, enable : false}"></div></td>
-			                    <td><div data-bind = "text: description" style="display: inline-block; white-space: nowrap;"></div></td>
-			                    
-			                </tr>
-			            </tbody>
-			        </table>
-
-
-
+							<b>Count:</b> <span
+								data-bind="text: ko.toJSON(listFunctionPermissions.filter(item => item.availability).length)"></span>
+						</div>
+						<b>Result:</b>
+						<table id="fixed-table">
+							<colgroup>
+								<col width="200px" />
+								<col width="100px" />
+								<col width="350px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('CCG026_2')}</th>
+									<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('CCG026_3')}</th>
+									<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('CCG026_4')}</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: listFunctionPermissions">
+								<tr>
+									<td><div data-bind="text: displayName"
+											style="display: inline-block; white-space: nowrap;"></div></td>
+									<td style="text-align: center;"><div
+											data-bind="ntsCheckBox: {checked: availability, enable : false}"></div></td>
+									<td><div data-bind="text: description"
+											style="display: inline-block; white-space: nowrap;"></div></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-<!-- 					
+					<!-- 					
 					<article class="cf">
 						<div class="tabs">
 							<ol>
