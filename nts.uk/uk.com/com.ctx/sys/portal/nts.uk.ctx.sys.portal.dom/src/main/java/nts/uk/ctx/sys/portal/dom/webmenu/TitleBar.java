@@ -1,17 +1,17 @@
 package nts.uk.ctx.sys.portal.dom.webmenu;
 
 import java.util.List;
-import java.util.UUID;
 
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.text.IdentifierUtil;
 
 @Value
 public class TitleBar {
 
-	private UUID menuBarId;
+	private String menuBarId;
 
-	private UUID titleMenuId;
+	private String titleMenuId;
 
 	private TitleBarName titleMenuName;
 
@@ -32,7 +32,7 @@ public class TitleBar {
 	public static TitleBar createFromJavaType(String menuBarId, String titleMenuId, String titleMenuName,
 			String backgroundColor, String imageFile, String textColor, int titleMenuAtr, String titleMenuCode,
 			Integer displayOrder, List<TreeMenu> treeMenu) {
-		return new TitleBar(UUID.fromString(menuBarId), UUID.fromString(titleMenuId), new TitleBarName(titleMenuName),
+		return new TitleBar(menuBarId, titleMenuId, new TitleBarName(titleMenuName),
 				new ColorCode(backgroundColor), imageFile, new ColorCode(textColor),
 				EnumAdaptor.valueOf(titleMenuAtr, TitleMenuAtr.class), new TitleMenuCode(titleMenuCode), displayOrder,
 				treeMenu);
@@ -41,11 +41,11 @@ public class TitleBar {
 	public static TitleBar newTitleMenu(String menuBarId, String titleMenuName, String backgroundColor,
 			String imageFile, String textColor, int titleMenuAtr, String titleMenuCode, Integer displayOrder,
 			List<TreeMenu> treeMenu) {	
-		UUID titleMenuId = UUID.randomUUID();
-		return createFromJavaType(menuBarId,titleMenuId.toString(),titleMenuName, backgroundColor, imageFile, textColor, titleMenuAtr, titleMenuCode, displayOrder, treeMenu);
+		String titleMenuId = createTitleMenuId();
+		return createFromJavaType(menuBarId,titleMenuId,titleMenuName, backgroundColor, imageFile, textColor, titleMenuAtr, titleMenuCode, displayOrder, treeMenu);
 	}
 	
-	public static UUID createTitleMenuId() {
-		return UUID.randomUUID();
+	public static String createTitleMenuId() {
+		return IdentifierUtil.randomUniqueId();
 	}
 }
