@@ -15914,8 +15914,8 @@ var nts;
                             var self = this;
                             var menu = _.map(contextMenu, function (m) {
                                 var action = function () {
-                                    m.action().done(function (result) {
-                                        var element = self.container.data("context-opening");
+                                    var element = self.container.data("context-opening");
+                                    m.action(element).done(function (result) {
                                         element.trigger("contextmenufinished", result);
                                     });
                                 };
@@ -22462,8 +22462,10 @@ var nts;
                         var freeResize = nts.uk.util.isNullOrUndefined(data.freeResize) ? true : ko.unwrap(data.freeResize);
                         var resizeRatio = nts.uk.util.isNullOrUndefined(data.resizeRatio) ? 1 : ko.unwrap(data.resizeRatio);
                         var height = nts.uk.util.isNullOrUndefined(data.height) ? 600 : ko.unwrap(data.height);
+                        var extension = nts.uk.util.isNullOrUndefined(data.accept) ? [] : ko.unwrap(data.accept);
+                        var msgIdForUnknownFile = nts.uk.util.isNullOrUndefined(data.msgIdForUnknownFile) ? 'Msg_77' : ko.unwrap(data.msgIdForUnknownFile);
                         var croppable = false;
-                        var helper = new ImageEditorHelper();
+                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile);
                         var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element).append($container);
                         var constructSite = new ImageEditorConstructSite($element, helper);
                         var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
@@ -22560,10 +22562,7 @@ var nts;
                             event.preventDefault();
                             var files = evt.originalEvent["dataTransfer"].files;
                             if (!nts.uk.util.isNullOrEmpty(files)) {
-                                var firstImageFile = self.helper.getFirstFile(files);
-                                if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                                    self.assignImageToView(firstImageFile);
-                                }
+                                self.validateFile(files);
                             }
                         });
                         this.$previewArea.on('dragenter', function (event) {
@@ -22690,8 +22689,18 @@ var nts;
                                 self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                                 return;
                             }
-                            self.assignImageToView(this.files[0]);
+                            self.validateFile(this.files);
                         });
+                    };
+                    ImageEditorConstructSite.prototype.validateFile = function (files) {
+                        var self = this;
+                        var firstImageFile = self.helper.getFirstFile(files);
+                        if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                            self.assignImageToView(firstImageFile);
+                        }
+                        else {
+                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), messageParams: [self.helper.toStringExtension()] });
+                        }
                     };
                     ImageEditorConstructSite.prototype.assignImageToView = function (file) {
                         var self = this;
@@ -22718,23 +22727,29 @@ var nts;
                     return ImageEditorConstructSite;
                 }());
                 var ImageEditorHelper = (function () {
-                    function ImageEditorHelper(query, extensions) {
+                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
                         this.IMAGE_EXTENSION = [".png", ".jpg", ".jpeg"];
                         this.BYTE_SIZE = 1024;
                         this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
                         this.data = query;
-                        if (!nts.uk.util.isNullOrUndefined(extensions)) {
+                        this.msgIdForUnknownFile = msgIdForUnknownFile;
+                        if (!nts.uk.util.isNullOrEmpty(extensions)) {
                             this.IMAGE_EXTENSION = extensions;
                         }
                     }
                     ImageEditorHelper.prototype.toStringExtension = function () {
-                        return this.IMAGE_EXTENSION.join(",");
+                        return this.IMAGE_EXTENSION.join(", ");
+                    };
+                    ImageEditorHelper.prototype.getMsgIdForUnknownFile = function () {
+                        return this.msgIdForUnknownFile;
                     };
                     ImageEditorHelper.prototype.getFirstFile = function (files) {
                         var IMAGE_EXTENSION = this.IMAGE_EXTENSION;
                         return _.find(files, function (file) {
                             return _.find(IMAGE_EXTENSION, function (ie) {
-                                return file.type.indexOf(ie.replace(".", "")) >= 0;
+                                var isType = file.type === ie.replace(".", "");
+                                var isType2 = file.name.substr(file.name.lastIndexOf(".")) === ie;
+                                return isType || isType2;
                             }) !== undefined;
                         });
                     };
@@ -23175,3 +23190,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
