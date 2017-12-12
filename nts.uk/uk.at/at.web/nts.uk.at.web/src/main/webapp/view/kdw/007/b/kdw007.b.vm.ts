@@ -238,7 +238,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
     export class ErAlAtdItemCondition {
 
-        NO: KnockoutObservable<number>;
+        targetNO: KnockoutObservable<number>;
         conditionAtr: KnockoutObservable<number>;
         useAtr: KnockoutObservable<boolean>;
         uncountableAtdItem: KnockoutObservable<number>;
@@ -251,7 +251,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         compareEndValue: KnockoutObservable<number>;
 
         constructor(param) {
-            this.NO = ko.observable(param.NO);
+            this.targetNO = ko.observable(param.NO);
             this.conditionAtr = ko.observable(param.conditionAtr);
             this.useAtr = ko.observable(param.useAtr);
             this.uncountableAtdItem = ko.observable(param.uncountableAtdItem);

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 /**
  * The Interface EmployeeRepository.
@@ -104,45 +103,36 @@ public interface EmployeeRepository {
 	 * @return
 	 */
 	Optional<Object[]> getEmployeeDetailToDelete(String employeeId);
-	
+
 	/**
 	 * Get list EmployeeDelete
+	 * 
 	 * @return
 	 */
 
 	List<Object[]> getAllEmployeeInfoToDelete();
 
-	
-
 	/**
 	 * Update Employee
+	 * 
 	 * @param domain
 	 */
 	void updateEmployee(Employee domain);
-	
+
 	/**
 	 * @param employeeId
 	 * @param companyId
 	 * @param systemDate
-	 * RequestList #101
+	 *            RequestList #101
 	 * @return the optional
 	 */
-	Optional<Employee> findBySidCidSystemDate(String companyId, String personId , GeneralDate systemDate);
-	
-	/**
-	 * 
-	 * @param companyId
-	 * @return
-	 */
-	List<PersonInfoCategory> getAllPerInfoCtg(String companyId);
-	
-	List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId );
-	//sonnlb code start
+	Optional<Employee> findBySidCidSystemDate(String companyId, String personId, GeneralDate systemDate);
+
+	// sonnlb code start
 
 	void addNewEmployee(Employee newEmployee);
-	
-	//sonnlb code end
-	
+
+	// sonnlb code end
 
 	/**
 	 * Gets the list Employee by list employeeIds.
@@ -154,5 +144,15 @@ public interface EmployeeRepository {
 	List<Employee> getByListEmployeeId(List<String> employeeIds);
 
 	Optional<Employee> getInfoById(String employeeId);
+
+	/**
+	 * @author lanlt 
+	 * find employee
+	 * @param companyId
+	 * @param sid
+	 * @param standardDate
+	 * @return Employee
+	 */
+	Optional<Employee> findByEmployeeID(String companyId, String sid, GeneralDate standardDate);
 
 }

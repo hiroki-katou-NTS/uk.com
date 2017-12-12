@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.shortworktime;
 
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -32,7 +31,7 @@ public class ShortWorkTimeHistory extends AggregateRoot
 
 	/** The history item. */
 	// 履歴項目
-	private DateHistoryItem historyItem;
+	private List<DateHistoryItem> historyItems;
 
 	/**
 	 * Instantiates a new short work time history.
@@ -42,7 +41,7 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	public ShortWorkTimeHistory(SWorkTimeHistGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
-		this.historyItem = memento.getHistoryItem();
+		this.historyItems = memento.getHistoryItems();
 	}
 	
 	/**
@@ -53,7 +52,7 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	public void saveToMemento(SWorkTimeHistSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmployeeId(this.employeeId);
-		memento.setHistoryItem(this.historyItem);
+		memento.setHistoryItems(this.historyItems);
 	}
 	
 	/**
@@ -63,7 +62,7 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	 */
 	@Override
 	public List<DateHistoryItem> items() {
-		return Arrays.asList(this.historyItem);
+		return this.historyItems;
 	}
 
 	/* (non-Javadoc)
@@ -74,7 +73,7 @@ public class ShortWorkTimeHistory extends AggregateRoot
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((employeeId == null) ? 0 : employeeId.hashCode());
-		result = prime * result + ((historyItem == null) ? 0 : historyItem.hashCode());
+		result = prime * result + ((historyItems == null) ? 0 : historyItems.hashCode());
 		return result;
 	}
 
@@ -95,10 +94,10 @@ public class ShortWorkTimeHistory extends AggregateRoot
 				return false;
 		} else if (!employeeId.equals(other.employeeId))
 			return false;
-		if (historyItem == null) {
-			if (other.historyItem != null)
+		if (historyItems == null) {
+			if (other.historyItems != null)
 				return false;
-		} else if (!historyItem.equals(other.historyItem))
+		} else if (!historyItems.equals(other.historyItems))
 			return false;
 		return true;
 	}

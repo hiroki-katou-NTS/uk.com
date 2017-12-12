@@ -27,7 +27,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWorkChangeCommand> {
-
+	private static final String EMPTY_STRING = "";
+	private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeUpdateService updateService;
 
@@ -49,8 +50,10 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 		Application updateApp = new Application(companyId,
 				// command.goBackCommand.getAppID(),
 				appID, EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), appCommand.getInputDate(),
-				appCommand.getEnteredPersonSID(), new AppReason(appCommand.getReversionReason()),
-				appCommand.getApplicationDate(), new AppReason(appCommand.getApplicationReason()),
+				appCommand.getEnteredPersonSID(), 
+				new AppReason(EMPTY_STRING), 
+				appCommand.getApplicationDate(), 
+				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())),
 				EnumAdaptor.valueOf(appCommand.getApplicationType(), ApplicationType.class),
 				appCommand.getApplicantSID(),
 				EnumAdaptor.valueOf(appCommand.getReflectPlanScheReason(), ReflectPlanScheReason.class),

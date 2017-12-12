@@ -94,9 +94,23 @@ public class AppWorkChange extends AggregateRoot
     */
     private int backHomeAtr2;
     
-    public static AppWorkChange createFromJavaType(String cid, String appId, String workTypeCd, String workTimeCd, int excludeHolidayAtr, int workChangeAtr, int goWorkAtr1, int backHomeAtr1, int breakTimeStart1, int breakTimeEnd1, int workTimeStart1, int workTimeEnd1, int workTimeStart2, int workTimeEnd2, int goWorkAtr2, int backHomeAtr2)
-    {
-        return new AppWorkChange(cid, appId, workTypeCd, workTimeCd, excludeHolidayAtr, workChangeAtr, goWorkAtr1, backHomeAtr1, breakTimeStart1, breakTimeEnd1, workTimeStart1, workTimeEnd1, workTimeStart2, workTimeEnd2, goWorkAtr2,  backHomeAtr2);
-    }
+    /**
+     * 勤務種類名
+     */
+    private String workTypeName;
     
+    /**
+     * 就業時間帯名
+     */
+    private String workTimeName;
+    
+	public static AppWorkChange createFromJavaType(String cid, String appId, String workTypeCd, String workTimeCd,
+			int excludeHolidayAtr, int workChangeAtr, int goWorkAtr1, int backHomeAtr1, int breakTimeStart1,
+			int breakTimeEnd1, int workTimeStart1, int workTimeEnd1, int workTimeStart2, int workTimeEnd2,
+			int goWorkAtr2, int backHomeAtr2) {
+		return new AppWorkChange(cid, appId, workTypeCd, workTimeCd, excludeHolidayAtr, workChangeAtr, goWorkAtr1,
+				backHomeAtr1, breakTimeStart1, breakTimeEnd1, workTimeStart1, workTimeEnd1, workTimeStart2,
+				workTimeEnd2, goWorkAtr2, backHomeAtr2, null, null);
+	}
+
 }

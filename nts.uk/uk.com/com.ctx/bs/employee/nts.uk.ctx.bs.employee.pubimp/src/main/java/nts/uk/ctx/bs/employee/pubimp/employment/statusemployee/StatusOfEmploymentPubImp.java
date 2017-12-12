@@ -13,8 +13,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
@@ -26,7 +28,10 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 	private EmployeeRepository empRepo;
 
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepo;
+	private TempAbsItemRepository temporaryAbsenceItemRepo;
+	
+	@Inject 
+	private TempAbsHistRepository temporaryAbsenceRepo;
 
 	@Override
 	public StatusOfEmploymentExport getStatusOfEmployment(String employeeId, GeneralDate referenceDate) {
@@ -77,10 +82,11 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 			// <= RetirementDate 退職年月日
 
 			// lấy domain 休職休業 TemporaryAbsence theo employeeId và referenceDate
-			Optional<TempAbsenceHisItem> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
+			Optional<TempAbsenceHistory> temporaryAbsOpt = temporaryAbsenceRepo.getItemByEmpIdAndStandardDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
 				// tốn tại domain 
-				TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsOpt.get();
+				TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsenceItemRepo
+						.getItemByHitoryID(temporaryAbsOpt.get().getDateHistoryItems().get(0).identifier()).get();
 				// set LeaveHolidayType 
 				
 				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getLeaveHolidayType().value);

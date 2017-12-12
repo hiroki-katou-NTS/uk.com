@@ -4,10 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.shortworktime;
 
+import java.util.List;
+
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
- * The Interface ShortWorkTimeHistorySetMemento.
+ * The Interface SWorkTimeHistSetMemento.
  */
 public interface SWorkTimeHistSetMemento {
 	
@@ -26,9 +28,9 @@ public interface SWorkTimeHistSetMemento {
 	void setEmployeeId(String empId);
 	
 	/**
-	 * Sets the history item.
+	 * Sets the history items.
 	 *
-	 * @param historyItem the new history item
+	 * @param historyItems the new history items
 	 */
-	void setHistoryItem(DateHistoryItem historyItem);
+	void setHistoryItems(List<DateHistoryItem> historyItems);
 }

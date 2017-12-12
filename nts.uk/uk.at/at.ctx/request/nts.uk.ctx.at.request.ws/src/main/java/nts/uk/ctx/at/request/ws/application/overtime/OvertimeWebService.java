@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegisterOvertime;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
@@ -64,8 +65,9 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("create")
-	public List<String> createOvertime(CreateOvertimeCommand command){
-		return createHandler.handle(command);
+	public JavaTypeResult<String> createOvertime(CreateOvertimeCommand command){
+		JavaTypeResult<String>  test = new JavaTypeResult<String>(createHandler.handle(command)); 
+		return test;
 	}
 	@POST
 	@Path("checkBeforeRegister")

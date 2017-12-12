@@ -11,18 +11,18 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataState;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataState;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommand;
@@ -50,6 +50,10 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 	@Override
 	protected void handle(CommandHandlerContext<PeregUserDefAddCommand> context) {
 		val command = context.getCommand();
+		
+		if (command.getItems() == null || command.getItems().isEmpty()){
+			return;
+		}
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
@@ -61,7 +65,7 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 		String recordId = command.getRecordId();
 		
 		// In case of optional category
-		if (StringUtils.isNotEmpty(recordId)){
+		if (StringUtils.isEmpty(recordId)){
 			recordId = IdentifierUtil.randomUniqueId();
 		}
 		// In case of person
@@ -76,7 +80,7 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 			
 			for (ItemValue item : command.getItems()){
 				
-				OptionalUtil.createDataState(item,state);
+				state = OptionalUtil.createDataState(item);
 				
 				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
 				perInfoItemDataRepository.addItemData(itemData);
@@ -90,7 +94,7 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 			EmpInfoItemData itemData = null;
 			DataState state = null;
 			for (ItemValue item : command.getItems()){
-				OptionalUtil.createDataState(item,state);
+				state = OptionalUtil.createDataState(item);
 				itemData = new EmpInfoItemData(item.definitionId(), recordId, state);
 				empInfoItemDataRepository.addItemData(itemData);
 			}

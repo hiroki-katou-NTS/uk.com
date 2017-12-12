@@ -12,7 +12,7 @@ module nts.uk.at.view.kdw007.a.service {
         getWorkTypeByListCode: "at/share/worktype/getpossibleworktype",
         getAllWorkTime: "at/shared/worktime/findAll",
         getWorkTimeByListCode: "at/shared/worktime/findByCodes",
-        getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName"
+        getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
         getAllAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
     }
 
@@ -25,7 +25,7 @@ module nts.uk.at.view.kdw007.a.service {
     }
     
     export function remove(code) {
-        return nts.uk.request.ajax(paths.update, code);
+        return nts.uk.request.ajax("at",paths.remove, code);
     }
 
     export function getEmploymentByCode(code) {

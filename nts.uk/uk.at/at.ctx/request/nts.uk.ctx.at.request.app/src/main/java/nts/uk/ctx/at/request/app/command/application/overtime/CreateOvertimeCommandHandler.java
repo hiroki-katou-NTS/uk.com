@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<CreateOvertimeCommand, List<String>> {
+public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<CreateOvertimeCommand, String> {
 
 	@Inject
 	private IFactoryOvertime factoryOvertime;
@@ -35,7 +35,7 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Override
-	protected List<String> handle(CommandHandlerContext<CreateOvertimeCommand> context) {
+	protected String handle(CommandHandlerContext<CreateOvertimeCommand> context) {
 
 		//
 		CreateOvertimeCommand command = context.getCommand();

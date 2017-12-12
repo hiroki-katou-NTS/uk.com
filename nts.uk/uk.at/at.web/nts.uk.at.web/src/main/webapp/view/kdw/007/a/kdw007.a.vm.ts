@@ -79,7 +79,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         changeSelectedErrorAlarm(foundItem) {
             let self = this;
             $(".nts-input").ntsError("clear");
-            self.selectedErrorAlarm(new ErrorAlarmWorkRecord(foundItem));
+            self.reSetData(self.selectedErrorAlarm(), foundItem);
         }
 
         startPage(): JQueryPromise<any> {
@@ -90,9 +90,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     let sortedData = _.orderBy(lstData, ['code'], ['asc']);
                     self.lstErrorAlarm(sortedData);
                     self.selectedErrorAlarmCode(sortedData[0].code);
-                    self.isNewMode(false); 
+                    self.isNewMode(false);
                 } else {
-                    self.isNewMode(true);    
+                    self.isNewMode(true);
                 }
                 dfd.resolve();
             });
@@ -104,9 +104,34 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         setNewMode() {
             let self = this;
             self.selectedErrorAlarmCode(null);
-            self.selectedErrorAlarm(new ErrorAlarmWorkRecord(null));
+            self.reSetData(self.selectedErrorAlarm(), null);
             self.isNewMode(true);
             self.selectedTab('tab-1');
+        }
+    
+        reSetData(selectedErrorAlarm, param) {
+            selectedErrorAlarm.companyId(param && param.companyId ? param.companyId : '');
+            selectedErrorAlarm.code(param && param.code ? param.code : '');
+            selectedErrorAlarm.name(param && param.name ? param.name : '');
+            selectedErrorAlarm.fixedAtr(param && param.fixedAtr ? param.fixedAtr : 0);
+            selectedErrorAlarm.useAtr(param && param.useAtr ? param.useAtr : 0);
+            selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);
+            selectedErrorAlarm.displayMessage(param && param.displayMessage ? param.displayMessage : '');
+            selectedErrorAlarm.boldAtr(param && param.boldAtr ? param.boldAtr : 0);
+            selectedErrorAlarm.messageColor(param && param.messageColor ? param.messageColor : '');
+            selectedErrorAlarm.cancelableAtr(param && param.cancelableAtr ? param.cancelableAtr : 0);
+            selectedErrorAlarm.errorDisplayItem(param && param.errorDisplayItem ? param.errorDisplayItem : null);
+            selectedErrorAlarm.errorDisplayItemName("");
+            selectedErrorAlarm.alCheckTargetCondition = param && param.alCheckTargetCondition ? new AlarmCheckTargetCondition(param.alCheckTargetCondition) : new AlarmCheckTargetCondition(null);
+            selectedErrorAlarm.workTypeCondition = param && param.workTypeCondition ? new WorkTypeCondition(param.workTypeCondition) : new WorkTypeCondition(null);
+            selectedErrorAlarm.workTimeCondition = param && param.workTimeCondition ? new WorkTimeCondition(param.workTimeCondition) : new WorkTimeCondition(null);
+            selectedErrorAlarm.operatorBetweenPlanActual(param && param.operatorBetweenPlanActual ? param.operatorBetweenPlanActual : 0);
+            selectedErrorAlarm.lstApplicationTypeCode(param && param.lstApplicationTypeCode ? param.lstApplicationTypeCode : []);
+            selectedErrorAlarm.operatorBetweenGroups(param && param.operatorBetweenGroups ? param.operatorBetweenGroups : 0);
+            selectedErrorAlarm.operatorGroup1(param && param.operatorGroup1 ? param.operatorGroup1 : 0);
+            selectedErrorAlarm.operatorGroup2(param && param.operatorGroup2 ? param.operatorGroup2 : 0);
+            selectedErrorAlarm.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemCondition ? param.erAlAtdItemCondition.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : selectedErrorAlarm.initListAtdItemCondition();
+            selectedErrorAlarm.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemCondition ? param.erAlAtdItemCondition.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : selectedErrorAlarm.initListAtdItemCondition();
         }
 
         update() {
@@ -114,6 +139,34 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 let data = ko.mapping.toJS(self.selectedErrorAlarm());
+                data.boldAtr = data.boldAtr ? 1 : 0;
+                data.alCheckTargetCondition.filterByBusinessType = data.alCheckTargetCondition.filterByBusinessType ? 1 : 0;
+                data.alCheckTargetCondition.filterByEmployment = data.alCheckTargetCondition.filterByEmployment ? 1 : 0;
+                data.alCheckTargetCondition.filterByJobTitle = data.alCheckTargetCondition.filterByJobTitle ? 1 : 0;
+                data.alCheckTargetCondition.filterByClassification = data.alCheckTargetCondition.filterByClassification ? 1 : 0;
+                data.workTypeCondition.planFilterAtr = data.workTypeCondition.planFilterAtr ? 1 : 0;
+                data.workTypeCondition.actualFilterAtr = data.workTypeCondition.actualFilterAtr ? 1 : 0;
+                data.workTimeCondition.planFilterAtr = data.workTimeCondition.planFilterAtr ? 1 : 0;
+                data.workTimeCondition.actualFilterAtr = data.workTimeCondition.actualFilterAtr ? 1 : 0;
+                data.alCheckTargetCondition.lstBusinessType = Object.values(data.alCheckTargetCondition.lstBusinessType);
+                data.alCheckTargetCondition.lstJobTitle = Object.values(data.alCheckTargetCondition.lstJobTitle);
+                data.alCheckTargetCondition.lstEmployment = Object.values(data.alCheckTargetCondition.lstEmployment);
+                data.alCheckTargetCondition.lstClassification = Object.values(data.alCheckTargetCondition.lstClassification);
+                data.workTypeCondition.planLstWorkType = Object.values(data.workTypeCondition.planLstWorkType);
+                data.workTypeCondition.actualLstWorkType = Object.values(data.workTypeCondition.actualLstWorkType);
+                data.workTimeCondition.planLstWorkTime = Object.values(data.workTimeCondition.planLstWorkTime);
+                data.workTimeCondition.actualLstWorkTime = Object.values(data.workTimeCondition.actualLstWorkTime);
+                data.lstApplicationTypeCode = Object.values(data.lstApplicationTypeCode);
+                data.erAlAtdItemConditionGroup1 = Object.values(data.erAlAtdItemConditionGroup1);
+                data.erAlAtdItemConditionGroup2 = Object.values(data.erAlAtdItemConditionGroup2);
+                _.forEach(data.erAlAtdItemConditionGroup1, (item) => {
+                    item.countableAddAtdItems = Object.values(item.countableAddAtdItems);
+                    item.countableSubAtdItems = Object.values(item.countableSubAtdItems);
+                });
+                _.forEach(data.erAlAtdItemConditionGroup2, (item) => {
+                    item.countableAddAtdItems = Object.values(item.countableAddAtdItems);
+                    item.countableSubAtdItems = Object.values(item.countableSubAtdItems);
+                });
                 debugger;
                 service.update(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -278,7 +331,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         }
         /* End Tab 4 */
     }
-
+    
     export class ErrorAlarmWorkRecord {
         /* 会社ID */
         companyId: KnockoutObservable<string>;
@@ -525,7 +578,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.planFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
             this.planLstWorkType = param ? ko.observable(param.planLstWorkType) : ko.observableArray([]);
             this.actualFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
-            this.actualLstWorkType = param ? ko.observable(param.planLstWorkType) : ko.observableArray([]);
+            this.actualLstWorkType = param ? ko.observable(param.actualLstWorkType) : ko.observableArray([]);
             this.planFilterAtr.subscribe((val) => {
                 if (!val) {
                     $(".display-list-label").trigger("validate");
@@ -689,7 +742,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
     export class ErAlAtdItemCondition {
 
-        NO: KnockoutObservable<number>;
+        targetNO: KnockoutObservable<number>;
         conditionAtr: KnockoutObservable<number>;
         useAtr: KnockoutObservable<boolean>;
         uncountableAtdItem: KnockoutObservable<number>;
@@ -709,7 +762,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         constructor(NO, param) {
             let self = this;
-            self.NO = ko.observable(NO);
+            self.targetNO = ko.observable(NO);
             self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
             self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
             self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
