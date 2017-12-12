@@ -30,7 +30,7 @@ public class FlowRestSettingPolicyImpl implements FlowRestSettingPolicy {
 		
 		// Validate #Msg_781
 		if (flowRestSetting.getFlowPassageTime().greaterThanOrEqualTo(predTime.getRangeTimeDay())
-				|| flowRestSetting.getFlowRestTime().greaterThanOrEqualTo(predTime.getRangeTimeDay())) {
+				|| flowRestSetting.getFlowRestTime().greaterThan(predTime.getRangeTimeDay())) {
 			throw new BusinessException("Msg_781");
 		}
 	}
