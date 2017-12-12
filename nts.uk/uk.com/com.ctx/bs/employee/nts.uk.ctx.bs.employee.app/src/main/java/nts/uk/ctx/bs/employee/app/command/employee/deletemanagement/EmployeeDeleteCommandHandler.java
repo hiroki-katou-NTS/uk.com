@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.RemoveReason;
 
 @Stateless
@@ -36,6 +37,7 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 				GeneralDateTime currentDatetime = GeneralDateTime.legacyDateTime(new Date());
 				empInfo.setDeleteDateTemporary(currentDatetime);
 				empInfo.setRemoveReason(new RemoveReason(command.getReason()));
+				empInfo.setDeletedStatus(EmployeeDeletionAttr.TEMPDELETED);
 				EmpDataMngRepo.updateRemoveReason(empInfo);
 			} 
 		}
