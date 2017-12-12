@@ -25,7 +25,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class EmployeeDataMngInfoFinder_ver1 {
+public class GetHeaderOfCPS001Finder {
 	@Inject
 	private EmployeeDataMngInfoRepository employeeMngRepo;
 
@@ -49,6 +49,7 @@ public class EmployeeDataMngInfoFinder_ver1 {
 
 	@Inject
 	private TempAbsHistRepository tempHistRepo;
+	
 
 	public EmployeeInfo getEmployeeInfo(String sid) {
 		String companyId = AppContexts.user().companyId();
