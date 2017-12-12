@@ -4,16 +4,15 @@
 package nts.uk.ctx.bs.employee.dom.temporaryabsence;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.AfterChildbirth;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.AnyLeave;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.CareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.ChildCareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.GenericString;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.SickLeave;
 
@@ -24,10 +23,19 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.SickLeave;
 @Getter
 public class TempAbsenceHisItem extends AggregateRoot {
 
-	private LeaveHolidayType leaveHolidayType;
+	/**
+	 * 休職休業枠NO
+	 */
+	private TempAbsenceFrameNo tempAbsenceFrNo;
 
+	/**
+	 * 履歴ID
+	 */
 	private String historyId;
 
+	/**
+	 * 社員ID
+	 */
 	private String employeeId;
 
 	// ------------- Optional ----------------
@@ -60,9 +68,9 @@ public class TempAbsenceHisItem extends AggregateRoot {
 	 * @param remarks2
 	 * @param soInsPayCategory2
 	 */
-	public TempAbsenceHisItem(LeaveHolidayType leaveHolidayType, String historyId, String employeeId,
+	public TempAbsenceHisItem(TempAbsenceFrameNo tempAbsenceFrNo, String historyId, String employeeId,
 			GenericString remarks, Integer soInsPayCategory, String familyMemberId) {
-		this.leaveHolidayType = leaveHolidayType;
+		this.tempAbsenceFrNo = tempAbsenceFrNo;
 		this.historyId = historyId;
 		this.employeeId = employeeId;
 		this.remarks = remarks;
@@ -70,69 +78,33 @@ public class TempAbsenceHisItem extends AggregateRoot {
 		this.familyMemberId = familyMemberId;
 	}
 
-	public static TempAbsenceHisItem createTempAbsenceHisItem(int leaveHolidayType, String historyId, String employeeId,
+	public static TempAbsenceHisItem createTempAbsenceHisItem(int tempAbsenceFrNo, String historyId, String employeeId,
 			String remarks, Integer soInsPayCategory, Boolean multiple, String familyMemberId, Boolean sameFamily,
 			Integer childType, GeneralDate createDate, Boolean spouseIsLeave, Integer sameFamilyDays) {
-		LeaveHolidayType leaveType = EnumAdaptor.valueOf(leaveHolidayType, LeaveHolidayType.class);
-		switch (leaveType) {
-		case LEAVE_OF_ABSENCE:
+		switch (tempAbsenceFrNo) {
+		case 1:
 			return Leave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
-		case MIDWEEK_CLOSURE:
+		case 2:
 			return MidweekClosure.init(historyId, employeeId, remarks, soInsPayCategory, multiple, familyMemberId);
-		case AFTER_CHILDBIRTH:
+		case 3:
 			return AfterChildbirth.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
-		case CHILD_CARE_NURSING:
+		case 4:
 			return ChildCareHoliday.init(historyId, employeeId, remarks, soInsPayCategory, sameFamily, childType,
 					familyMemberId, createDate, spouseIsLeave);
-		case NURSING_CARE_LEAVE:
+		case 5:
 			return CareHoliday.init(historyId, employeeId, remarks, soInsPayCategory, sameFamily, sameFamilyDays,
 					familyMemberId);
-		case SICK_LEAVE:
+		case 6:
 			return SickLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
-		case ANY_LEAVE:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
 			return AnyLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 		default:
 			return null;
 		}
 
-	}
-
-	public static TempAbsenceHisItem createLeave(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, String familyMemberId) {
-		return Leave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
-	}
-
-	public static TempAbsenceHisItem createMidweekClosure(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, Boolean multiple, String familyMemberId) {
-		return MidweekClosure.init(historyId, employeeId, remarks, soInsPayCategory, multiple, familyMemberId);
-	}
-
-	public static TempAbsenceHisItem createAfterChildbirth(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, String familyMemberId) {
-		return AfterChildbirth.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
-	}
-
-	public static TempAbsenceHisItem createChildCareHoliday(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, Boolean sameFamily, Integer childType, String familyMemberId,
-			GeneralDate createDate, Boolean spouseIsLeave) {
-		return ChildCareHoliday.init(historyId, employeeId, remarks, soInsPayCategory, sameFamily, childType,
-				familyMemberId, createDate, spouseIsLeave);
-	}
-
-	public static TempAbsenceHisItem createCareHoliday(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
-		return CareHoliday.init(historyId, employeeId, remarks, soInsPayCategory, sameFamily, sameFamilyDays,
-				familyMemberId);
-	}
-
-	public static TempAbsenceHisItem createSickLeave(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, String familyMemberId) {
-		return SickLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
-	}
-
-	public static TempAbsenceHisItem createAnyLeave(String historyId, String employeeId, String remarks,
-			Integer soInsPayCategory, String familyMemberId) {
-		return AnyLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 	}
 
 }

@@ -3,7 +3,10 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
+import java.math.BigDecimal;
+
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 
 /**
  * @author danpv Domain Name : 産前休業
@@ -22,7 +25,8 @@ public class MidweekClosure extends TempAbsenceHisItem {
 
 	private MidweekClosure(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
 			Boolean multiple, String familyMemberId) {
-		super(LeaveHolidayType.MIDWEEK_CLOSURE, historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
+		super(new TempAbsenceFrameNo(BigDecimal.valueOf(2)), historyId, employeeId, remarks, soInsPayCategory,
+				familyMemberId);
 		this.multiple = multiple;
 	}
 
