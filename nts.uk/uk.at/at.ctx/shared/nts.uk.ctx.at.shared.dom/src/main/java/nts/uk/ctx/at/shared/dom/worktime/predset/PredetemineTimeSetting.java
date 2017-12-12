@@ -53,10 +53,9 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	private boolean predetermine;
 
 	/**
-	 * Instantiates a new predetemine time set.
+	 * Instantiates a new predetemine time setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public PredetemineTimeSetting(PredetemineTimeSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();

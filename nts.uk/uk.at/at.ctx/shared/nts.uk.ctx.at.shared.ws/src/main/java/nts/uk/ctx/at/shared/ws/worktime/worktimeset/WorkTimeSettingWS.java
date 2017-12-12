@@ -14,9 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
-import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingEnumDto;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -30,6 +30,7 @@ public class WorkTimeSettingWS extends WebService {
 	/** The work time set finder. */
 	@Inject
 	private WorkTimeSettingFinder workTimeSetFinder;
+	
 	
 	/** The i 18 n. */
 	@Inject
@@ -54,7 +55,7 @@ public class WorkTimeSettingWS extends WebService {
 	 */
 	@POST
 	@Path("findByCode/{worktimeCode}")
-	public WorkTimeSettingDto findByCode(@PathParam("worktimeCode") String worktimeCode) {
+	public WorkTimeSettingInfoDto findByCode(@PathParam("worktimeCode") String worktimeCode) {
 		return this.workTimeSetFinder.findByCode(worktimeCode);
 	}
 	
