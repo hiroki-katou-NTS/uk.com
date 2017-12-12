@@ -35,10 +35,6 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
-import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
-import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
-import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
-import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
@@ -280,7 +276,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
 		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false, "",
+				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 0, 0, "",
 				command.getEmployeeName(), employeeId);
 
 		this.userRepository.addNewUser(newUser);
@@ -332,7 +328,12 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		}
 		String recordId = null;
 
-		if (categoryCd == "CS00002" || categoryCd == "CS00001") {
+		if (categoryCd == "CS00001") {
+
+			recordId = employeeId;
+		}
+
+		if (categoryCd == "CS00002") {
 			recordId = personId;
 		}
 
