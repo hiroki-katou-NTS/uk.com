@@ -81,7 +81,7 @@ public class RegisterLayoutFinder {
 	 */
 	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
 
-		Optional<NewLayout> layout = repo.getLayout();
+		Optional<NewLayout> layout = repo.getLayout(false);
 		if (!layout.isPresent()) {
 
 			return null;
