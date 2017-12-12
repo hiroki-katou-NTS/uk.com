@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Value
 @Getter
-public class GetLayoutByCeateTypeDto {
+public class GetLayoutByCreateTypeDto {
 
 	private int createType;
 
@@ -15,5 +15,11 @@ public class GetLayoutByCeateTypeDto {
 	private GeneralDate baseDate;
 
 	private String employeeId;
+
+	private String employeeName;
+
+	private String employeeCode;
+
+	private GeneralDate hireDate;
 
 }
