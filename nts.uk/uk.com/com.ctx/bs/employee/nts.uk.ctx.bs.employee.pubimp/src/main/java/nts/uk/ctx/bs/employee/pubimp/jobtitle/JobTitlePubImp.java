@@ -103,7 +103,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	}
 
 	@Override
-	public Optional<JobTitleExport> findBySid(String employeeId, GeneralDate baseDate) {
+	public Optional<EmployeeJobHistExport> findBySid(String employeeId, GeneralDate baseDate) {
 		// Query
 		Optional<AffJobTitleHistory_ver1> optAffJobTitleHist = this.affJobTitleHisRepo_ver1
 				.getByEmpIdAndStandardDate(employeeId, baseDate);
@@ -118,20 +118,21 @@ public class JobTitlePubImp implements SyJobTitlePub {
 			// Get information of employee
 			Employee employee = this.employeeRepository.getBySid(employeeId).get();
 
-			SimpleJobTitleExport simpleJobTitleExport = findByIds(employee.getCompanyId(),
-					Arrays.asList(affJobTitleHistItem.getJobTitleId()), baseDate).get(0);
-
-			JobTitleExport jobTitleExport = JobTitleExport.builder()
-					.companyId(employee.getCompanyId())
-					.jobTitleId(affJobTitleHistItem.getJobTitleId())
-					.jobTitleCode(simpleJobTitleExport.getJobTitleCode())
-					.jobTitleName(simpleJobTitleExport.getJobTitleName())
-					.sequenceCode(null)
-					.startDate(dateHistoryItem.start())
-					.endDate(dateHistoryItem.end())
-					.build();
-			// Return
-			return Optional.of(jobTitleExport);
+			List<SimpleJobTitleExport> simpleJobTitleExports = findByIds(employee.getCompanyId(),
+					Arrays.asList(affJobTitleHistItem.getJobTitleId()), baseDate);
+			
+			if ( !simpleJobTitleExports.isEmpty()) {
+				SimpleJobTitleExport simpleJobTitleExport = simpleJobTitleExports.get(0);
+				EmployeeJobHistExport jobTitleExport = EmployeeJobHistExport.builder()
+						.employeeId(employeeId)
+						.jobTitleID(simpleJobTitleExport.getJobTitleId())
+						.jobTitleName(simpleJobTitleExport.getJobTitleName())
+						.startDate(dateHistoryItem.start())
+						.endDate(dateHistoryItem.end())
+						.build();
+				// Return
+				return Optional.of(jobTitleExport);
+			}
 		}
 
 		return null;
