@@ -58,7 +58,7 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 		}
 
 		Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.get().getPeriods().stream()
-				.filter(h -> h.identifier().equals(command.getEmployeeId())).findFirst();
+				.filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
 		if (!itemToBeUpdateOpt.isPresent()) {
 			throw new RuntimeException("invalid AffClassHistory_ver1");
 		}
