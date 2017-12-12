@@ -86,5 +86,15 @@ public class AppWorkChangeCommand
     */
     private int backHomeAtr2;
     
+    /**
+     * 勤務種類名
+     */
+    private String workTypeName;
+    
+    /**
+     * 就業時間帯名
+     */
+    private String workTimeName;
+    
     private Long version;
 }

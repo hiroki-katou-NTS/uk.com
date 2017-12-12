@@ -32,12 +32,12 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	private IAppWorkChangeRepository workChangeRepository;
 	
 	@Override
-	public List<String> registerData(AppWorkChange workChange, Application app) {
+	public String registerData(AppWorkChange workChange, Application app) {
 		// アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
-		checkWorkHour(workChange);
+		//checkWorkHour(workChange);
 		
 		// アルゴリズム「勤務変更申請休憩時間１チェックの内容」を実行する
-		checkBreakTime1(workChange);
+		//checkBreakTime1(workChange);
 		
 		// アルゴリズム「2-1.新規画面登録前の処理」を実行する
 		newBeforeRegister.processBeforeRegister(app);
@@ -50,9 +50,9 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		workChangeRepository.add(workChange);
 		
 		//共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-		List<String> listEmail = newAfterRegister.processAfterRegister(app);
+		String mails = newAfterRegister.processAfterRegister(app);
 		
-		return listEmail;
+		return mails;
 	}
 
 	@Override

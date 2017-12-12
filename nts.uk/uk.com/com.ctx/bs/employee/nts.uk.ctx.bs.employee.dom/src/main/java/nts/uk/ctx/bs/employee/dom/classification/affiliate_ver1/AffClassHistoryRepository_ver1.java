@@ -5,6 +5,7 @@ package nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -20,6 +21,14 @@ public interface AffClassHistoryRepository_ver1 {
 	 * @return
 	 */
 	Optional<AffClassHistory_ver1> getByHistoryId(String historyId);
+	
+	/**
+	 * get with employeeId and standardDate
+	 * @param employeeId
+	 * @param standardDate
+	 * @return
+	 */
+	Optional<AffClassHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
 	/**
 	 * return historyDomain with periods

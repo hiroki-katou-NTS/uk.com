@@ -40,13 +40,11 @@ module cps002.g.vm {
             let self = this,
                 dfd = $.Deferred();
             service.getUserSetting().done((result: IUserSetting) => {
-
                 if (result) {
                     self.currentUserSetting(new UserSetting(result));
-                    dfd.resolve();
                 }
 
-
+                dfd.resolve();
             });
 
             return dfd.promise();

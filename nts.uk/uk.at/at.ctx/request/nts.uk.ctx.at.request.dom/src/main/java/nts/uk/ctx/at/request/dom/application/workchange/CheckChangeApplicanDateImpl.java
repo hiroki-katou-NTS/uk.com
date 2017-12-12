@@ -8,8 +8,7 @@ public class CheckChangeApplicanDateImpl implements ICheckChangeApplicanDate{
 
 	@Override
 	public void CheckChangeApplicationDate(GeneralDate startDate, GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		if (endDate == null) {
+		if (startDate == null || endDate == null) {
 			return;
 		}
 		//申請日付開始日を基準に共通アルゴリズム「申請日を変更する」を実行する

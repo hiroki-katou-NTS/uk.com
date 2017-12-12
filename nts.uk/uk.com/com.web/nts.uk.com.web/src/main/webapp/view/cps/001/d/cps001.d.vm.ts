@@ -89,7 +89,7 @@ module cps001.d.vm {
         getImage(){
             let self = this;
             let id = self.empFileMn().fileId;
-            $("#test").ntsImageEditor("selectByFileId", id); 
+            $("#test")["ntsImageEditor"]("selectByFileId", id); 
         }
         close(){
            close();

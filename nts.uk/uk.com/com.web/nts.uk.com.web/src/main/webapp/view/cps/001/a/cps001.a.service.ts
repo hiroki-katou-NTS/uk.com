@@ -12,6 +12,7 @@ module cps001.a.service {
             'getCats': 'ctx/pereg/employee/category/getall/{0}',
             'getDetails': 'ctx/pereg/layout/find/gettabdetail',
             'getTabsInfo': 'ctx/pereg/layout/find/getctgtab/{0}', //categoryId
+            'getHistData': '/ctx/pereg/employee/category/getlistinfocategory',
             'add': 'facade/pereg/add',
             'update': 'facade/pereg/update',
             'delete': 'facade/pereg/delete',
@@ -20,7 +21,7 @@ module cps001.a.service {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
         },
         emp: {
-            getInfo: 'basic/organization/employee/get-info/{0}',
+            getInfo: 'basic/organization/employee/get-header/{0}',
             getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
             permision: 'ctx/pereg/roles/auth/get-self-auth',
         },
@@ -42,6 +43,10 @@ module cps001.a.service {
 
     export function getCatData(query: any) {
         return ajax(paths.category.getDetails, query);
+    }
+
+    export function getHistData(query: any) {
+        return ajax(paths.category.getHistData, query);
     }
 
     export function getAvatar(id: string) {

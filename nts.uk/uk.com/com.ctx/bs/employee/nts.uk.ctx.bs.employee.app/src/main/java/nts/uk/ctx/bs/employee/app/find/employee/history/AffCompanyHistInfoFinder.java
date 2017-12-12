@@ -1,6 +1,8 @@
 package nts.uk.ctx.bs.employee.app.find.employee.history;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -54,7 +56,12 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		return null;
+		AffCompanyHist affCompanyHist = achFinder.getAffCompanyHistoryOfEmployee(query.getEmployeeId());
+		if (affCompanyHist != null)
+			return affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.collect(Collectors.toList());
+		return new ArrayList<>();
 	}
 
 }

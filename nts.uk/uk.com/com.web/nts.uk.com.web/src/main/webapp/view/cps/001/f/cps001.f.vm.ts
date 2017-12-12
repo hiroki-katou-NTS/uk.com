@@ -1,9 +1,11 @@
 module cps001.f.vm {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import alertError = nts.uk.ui.dialog.alertError;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import showDialog = nts.uk.ui.dialog;
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
@@ -26,12 +28,12 @@ module cps001.f.vm {
 
         constructor() {
             let self = this,
-                dto: any = getShared('CPS001B_PARAM') || {};
+                dto: any = getShared('CPS001F_PARAMS') || {};
 
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
             self.fileInfo = ko.observable(null);
-            self.accept = ko.observableArray([".png", '.gif', '.jpg', '.jpeg']);
+            self.accept = ko.observableArray([".xls", '.pdf']);
             self.textId = ko.observable("CPS001_71");
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
@@ -48,8 +50,9 @@ module cps001.f.vm {
             let self = this,
                 dfd = $.Deferred();
             self.items = [];
-            let dataShare: IDataShare = getShared('CPS001F_PARAM') || null;
-            var dfdGetData = service.getData("90000000-0000-0000-0000-000000000001");
+            let dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
+            debugger;
+            var dfdGetData = service.getData(dataShare.pid);
 
             $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
                 _.forEach(datafile, function(item) {
@@ -62,38 +65,64 @@ module cps001.f.vm {
 
 
         pushData() {
-            let self = this;
-            // upload file 
-            $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
-                self.fileId(res[0].id);
-                // save file to domain EmployeeFileManagement
-                if (self.items.length == 0) {
-                    service.savedata({
-                        sid: '90000000-0000-0000-0000-000000000001',
-                        fileid: res[0].id,
-                        personInfoCtgId: "",
-                        uploadOrder: 1
-                    }).done(() => {
-                        self.restart();
-                        self.filename("");
+            let self = this,
+                dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
+            if (dataShare.pid != null) {
+
+                self.start();
+
+                // upload file 
+                $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
+                    self.fileId(res[0].id);
+                    var maxSize = 1024; // 10MB 10485760
+
+                    // get Info
+                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(info : any) {
+                        self.fileInfo(info);
+                        if (info.originalSize <= maxSize) {
+                            // save file to domain EmployeeFileManagement
+                            if (self.items.length == 0) {
+                                service.savedata({
+                                    pid: dataShare.pid,
+                                    fileid: res[0].id,
+                                    personInfoCtgId: "",
+                                    uploadOrder: 1
+                                }).done(() => {
+                                    self.restart();
+                                    self.filename("");
+                                });
+                            } else {
+                                service.savedata({
+                                    pid: dataShare.pid,
+                                    fileid: res[0].id,
+                                    personInfoCtgId: "",
+                                    uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
+                                }).done(() => {
+                                    self.start().done(() => {
+                                        self.restart();
+                                        self.filename("");
+                                    });
+                                });
+                            }
+                        } else {
+                            // show dialog
+                            showDialog.alertError({ messageId: "Msg_70" }).then(function() { });
+                        }
                     });
-                } else {
-                    service.savedata({
-                        sid: '90000000-0000-0000-0000-000000000001',
-                        fileid: res[0].id,
-                        personInfoCtgId: "",
-                        uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
-                    }).done(() => {
-                        self.start().done(() => {
-                            self.restart();
-                            self.filename("");
-                        });
-                    });
-                }
-            }).fail(function(err) {
-                nts.uk.ui.dialog.alertError(err);
+
+
+                }).fail(function(err) {
+                    nts.uk.ui.dialog.alertError(err);
+                });
+                setShared('CPS001B_VALUE', {});
+            }
+        }
+
+        checkSize() {
+            var self = this;
+            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(res) {
+                self.fileInfo(res);
             });
-            setShared('CPS001B_VALUE', {});
         }
 
         deleteItem(rowItem: IEmpFileMana) {
@@ -132,7 +161,7 @@ module cps001.f.vm {
 
     }
 
-      // Object truyen tu man A sang
+    // Object truyen tu man A sang
     interface IDataShare {
         pid: string;
     }
