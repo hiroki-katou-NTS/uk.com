@@ -18,11 +18,8 @@ module cps002.i.vm {
         start(){
             let self = this;
             self.imageId(getShared("imageId"));
-            if(self.imageId() != ""){
+            if(self.imageId() != "" && self.imageId() != undefined){
                 self.getImage();
-                let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
-                if(!isImageLoaded.imgOnView)
-                    self.isInit = false;
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
                         self.isChange(true);
@@ -30,7 +27,7 @@ module cps002.i.vm {
                     }
                     self.isInit = false;
                 });
-            }
+            }else self.isChange(true);
             
         }
         upload(){
@@ -51,7 +48,7 @@ module cps002.i.vm {
                         setShared("imageId", self.imageId());
                         self.close();
                     });
-                }
+                }else self.close();
             }else self.close();          
         }
         getImage(){

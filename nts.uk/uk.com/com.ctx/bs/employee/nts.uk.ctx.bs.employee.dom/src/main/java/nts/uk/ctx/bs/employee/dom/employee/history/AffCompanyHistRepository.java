@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.employee.history;
 
+import nts.arc.time.GeneralDate;
+
 public interface AffCompanyHistRepository {
 	/** add new affiliation history */
 	void add(AffCompanyHist domain);
@@ -22,6 +24,8 @@ public interface AffCompanyHistRepository {
 	AffCompanyHist getAffCompanyHistoryOfPerson(String personId);
 
 	AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId);
+
+	AffCompanyHist getAffCompanyHistoryOfEmployeeAndBaseDate(String employeeId, GeneralDate baseDate);
 
 	AffCompanyHist getAffCompanyHistoryOfHistInfo(String histId);
 

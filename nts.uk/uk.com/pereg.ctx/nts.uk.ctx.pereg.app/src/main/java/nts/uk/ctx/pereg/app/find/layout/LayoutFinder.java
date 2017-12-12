@@ -198,8 +198,7 @@ public class LayoutFinder {
 		classItemInCategoryMap.forEach((categoryId, classItemList) -> {
 			PersonInfoCategory perInfoCategory = perInfoCateRepo
 					.getPerInfoCategory(categoryId, AppContexts.user().contractCode()).get();
-			PeregQuery query = new PeregQuery(perInfoCategory.getCategoryCode().v(), layoutQuery.getBrowsingEmpId(),
-					browsingPeronId, stardardDate);
+			PeregQuery query = new PeregQuery(perInfoCategory.getCategoryCode().v(), layoutQuery.getBrowsingEmpId(), stardardDate);
 			// get data
 			getDataforSingleItem(perInfoCategory, classItemList, stardardDate, browsingPeronId, browsingEmpId, query);
 
