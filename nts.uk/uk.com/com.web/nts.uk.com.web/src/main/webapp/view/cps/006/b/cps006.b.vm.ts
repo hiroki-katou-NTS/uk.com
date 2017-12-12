@@ -200,7 +200,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                         self.loadDataForGrid().done(function() {
                             self.currentItem().selectionLst([]);
                             if (command.dataType === 6) {
-                                service.getAllSelByHistory(command.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
+                                service.getAllSelByHistory(command.selectionItemId).done(function(data) {
                                     self.currentItem().selectionLst.removeAll();
                                     self.currentItem().selectionLst(data);
                                     self.currentItem().selectionLst.valueHasMutated();
@@ -438,7 +438,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             modal('/view/cps/017/a/index.xhtml', { title: '', height: 800, width: 1500 }).onClosed(function(): any {
                 debugger;
                 self.currentItem().selectionLst([]);
-                service.getAllSelByHistory(params.selectionItemId, baseDate, self.currentCategory.personEmployeeType).done(function(data) {
+                service.getAllSelByHistory(params.selectionItemId).done(function(data) {
                     self.currentItem().selectionLst(data);
                     self.currentItem().selectionLst.valueHasMutated();
 

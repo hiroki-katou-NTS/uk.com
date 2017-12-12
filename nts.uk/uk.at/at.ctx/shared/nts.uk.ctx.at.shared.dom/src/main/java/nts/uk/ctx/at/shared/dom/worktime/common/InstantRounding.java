@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 // 時刻丸め
 @Getter
+@AllArgsConstructor
 public class InstantRounding extends DomainObject {
 
 	/** The font rear section. */
