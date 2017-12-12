@@ -1,39 +1,29 @@
 package nts.uk.ctx.sys.auth.app.command.grant.roleindividual;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
-import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class UpdateRoleIndividualGrantCommandHandler extends CommandHandler<UpdateRoleIndividualGrantCommand> {
-	
-	@Inject
-	private RoleIndividualService roleIndividualService;
-	
-	@Inject
-	private RoleIndividualGrantRepository roleIndividualGrantRepo;
+public class UpdateRoleIndividualGrantCommandHandler {
 
-	@Override
-	protected void handle(CommandHandlerContext<UpdateRoleIndividualGrantCommand> context) {
-		UpdateRoleIndividualGrantCommand command = context.getCommand();
-
-		if (command.getUserID().isEmpty()) {
-			throw new BusinessException("Msg_218");
-		}
+	@Inject
+	private RoleIndividualGrantRepository roleIndividualGrantRepository;
+	
+	public String UpDateRoleGrant(UpdateRoleIndividualGrantCommand roleGrant){
+		String companyId = AppContexts.user().companyId();
+		if (companyId == null)
+			return null;
+		roleGrant.setCompanyID(companyId);
 		
-		DatePeriod insertPeriod = new DatePeriod(command.getStartValidPeriod(),command.getEndValidPeriod());
-		boolean isValid = roleIndividualService.checkSysAdmin(command.getUserID(), insertPeriod);
-		if (isValid == false){
-			throw new BusinessException("Msg_330");
+		if(roleGrant.userID == null)
+			return null;
+		
+		if(this.roleIndividualGrantRepository.findByUserCompanyRoleType(roleGrant.userID, roleGrant.companyID, roleGrant.roleType).isPresent()){
+			this.roleIndividualGrantRepository.update(roleGrant.toDomain());
+			return roleGrant.getUserID();
+		}else{
+			return null;
 		}
-		roleIndividualGrantRepo.update(command.toDomain());
-
 	}
-
 }

@@ -13,8 +13,8 @@ import nts.arc.primitive.constraint.IntegerRange;
 @AllArgsConstructor
 @IntegerRange(max = 1, min = 0)
 public enum ApprovalAuthority {
-    HasRight(1),
-    HasntRight(0);
+    HasRight(1), //あり
+    HasntRight(0); //なし
 
     public final int value;
 }
