@@ -9,65 +9,63 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
 
-
 /**
  * The Class JpaSingleDayScheduleSetMemento.
  */
-public class JpaSingleDayScheduleWorkCategorySetMemento implements SingleDayScheduleSetMemento{
-	
+public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento {
+
 	/** The entity. */
 	private KshmtPerWorkCat entity;
-	
-	/** The Constant DEFAULT_WORK_TIME_CODE. */
-	public static final String DEFAULT_WORK_TIME_CODE = "000"; 
-	
-	/** The Constant DEFAULT_TIMES_ONE. */
-	public static final int DEFAULT_TIMES_ONE = 1; 
-	
-	/** The Constant DEFAULT_TIMES_TWO. */
-	public static final int DEFAULT_TIMES_TWO = 2; 
-	
-	
-	
+
 	/**
 	 * Instantiates a new jpa single day schedule set memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
-	public JpaSingleDayScheduleWorkCategorySetMemento(KshmtPerWorkCat entity) {
-		if(entity.getKshmtPerWorkCatPK() == null){
+	public JpaSDayScheWorkCatSetMemento(KshmtPerWorkCat entity) {
+		if (entity.getKshmtPerWorkCatPK() == null) {
 			entity.setKshmtPerWorkCatPK(new KshmtPerWorkCatPK());
 		}
 		this.entity = entity;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento#setWorkTypeCode(nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento#
+	 * setWorkTypeCode(nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode)
 	 */
 	@Override
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.entity.setWorkTypeCode(workTypeCode.v());
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento#setWorkingHours(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento#
+	 * setWorkingHours(java.util.List)
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
 
-		//TODO:
+		// TODO:
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento#setWorkTimeCode(java.util.Optional)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento#
+	 * setWorkTimeCode(java.util.Optional)
 	 */
 	@Override
 	public void setWorkTimeCode(Optional<WorkTimeCode> workTimeCode) {

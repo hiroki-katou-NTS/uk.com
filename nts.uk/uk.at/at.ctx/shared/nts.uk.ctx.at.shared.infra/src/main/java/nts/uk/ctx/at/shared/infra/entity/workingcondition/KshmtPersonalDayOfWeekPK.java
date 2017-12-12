@@ -38,6 +38,20 @@ public class KshmtPersonalDayOfWeekPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kshmt personal day of week PK.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @param perWorkDayOffAtr
+	 *            the per work day off atr
+	 */
+	public KshmtPersonalDayOfWeekPK(String historyId, int perWorkDayOffAtr) {
+		super();
+		this.historyId = historyId;
+		this.perWorkDayOffAtr = perWorkDayOffAtr;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

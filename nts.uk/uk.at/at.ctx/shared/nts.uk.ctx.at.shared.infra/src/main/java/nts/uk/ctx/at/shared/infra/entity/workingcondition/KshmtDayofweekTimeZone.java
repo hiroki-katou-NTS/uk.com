@@ -6,14 +6,12 @@ package nts.uk.ctx.at.shared.infra.entity.workingcondition;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtDayofweekTimeZone.
@@ -22,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_DAYOFWEEK_TIME_ZONE")
-public class KshmtDayofweekTimeZone extends UkJpaEntity implements Serializable {
+public class KshmtDayofweekTimeZone extends KshmtTimeZone implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -30,22 +28,6 @@ public class KshmtDayofweekTimeZone extends UkJpaEntity implements Serializable 
 	/** The kshmt dayofweek time zone PK. */
 	@EmbeddedId
 	protected KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK;
-
-	/** The exclus ver. */
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
-
-	/** The use atr. */
-	@Column(name = "USE_ATR")
-	private int useAtr;
-
-	/** The cnt. */
-	@Column(name = "CNT")
-	private int cnt;
-
-	/** The end time. */
-	@Column(name = "END_TIME")
-	private int endTime;
 
 	/**
 	 * Instantiates a new kshmt dayofweek time zone.

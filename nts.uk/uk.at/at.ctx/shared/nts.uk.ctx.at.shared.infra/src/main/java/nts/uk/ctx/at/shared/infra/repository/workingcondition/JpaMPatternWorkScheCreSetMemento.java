@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 /**
  * The Class JpaMonthlyPatternWorkScheduleCreSetMemento.
  */
-public class JpaMonthlyPatternWorkScheduleCreSetMemento implements MonthlyPatternWorkScheduleCreSetMemento{
+public class JpaMPatternWorkScheCreSetMemento implements MonthlyPatternWorkScheduleCreSetMemento{
 
 	/** The kshmt schedule method. */
 	private KshmtScheduleMethod kshmtScheduleMethod;
@@ -18,7 +18,7 @@ public class JpaMonthlyPatternWorkScheduleCreSetMemento implements MonthlyPatter
 	 *
 	 * @param entity the entity
 	 */
-	public JpaMonthlyPatternWorkScheduleCreSetMemento(KshmtScheduleMethod entity){
+	public JpaMPatternWorkScheCreSetMemento(KshmtScheduleMethod entity){
 		this.kshmtScheduleMethod = entity;
 	}
 

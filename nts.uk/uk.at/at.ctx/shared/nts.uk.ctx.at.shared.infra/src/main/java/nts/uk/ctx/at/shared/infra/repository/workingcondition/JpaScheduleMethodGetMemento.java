@@ -45,7 +45,7 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 */
 	@Override
 	public MonthlyPatternWorkScheduleCre getMonthlyPatternWorkScheduleCre() {
-		return new MonthlyPatternWorkScheduleCre(new JpaMonthlyPatternWorkScheduleCreGetMemento(this.kshmtScheduleMethod));
+		return new MonthlyPatternWorkScheduleCre(new JpaMPatternWorkScheCreGetMemento(this.kshmtScheduleMethod));
 	}
 
 }
