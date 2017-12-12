@@ -940,7 +940,19 @@ public class ProgramsManager {
 	public static final Program CDL003 = new Program(WebAppId.COM, ProgramIdConsts.CDL003, "CDL003_4",
 			"/view/cdl/003/a/index.xhtml");
 	
-	public static final Program CMM011 = new Program(WebAppId.COM, ProgramIdConsts.CMM011, null,
+	public static final Program CMM011A = new Program(WebAppId.COM, ProgramIdConsts.CMM011A, "CMM011_1",
+			"/view/cmm/011/a/index.xhtml");
+	
+	public static final Program CMM011B = new Program(WebAppId.COM, ProgramIdConsts.CMM011B, "CMM011_2",
+			"/view/cmm/011/a/index.xhtml");
+	
+	public static final Program CMM011D = new Program(WebAppId.COM, ProgramIdConsts.CMM011D, "CMM011_4",
+			"/view/cmm/011/a/index.xhtml");
+	
+	public static final Program CMM011E = new Program(WebAppId.COM, ProgramIdConsts.CMM011E, "CMM011_5",
+			"/view/cmm/011/a/index.xhtml");
+	
+	public static final Program CMM011F = new Program(WebAppId.COM, ProgramIdConsts.CMM011F, "CMM011_3",
 			"/view/cmm/011/a/index.xhtml");
 	
 	public static final Program CDL008 = new Program(WebAppId.COM, ProgramIdConsts.CDL008, "CDL008_1",

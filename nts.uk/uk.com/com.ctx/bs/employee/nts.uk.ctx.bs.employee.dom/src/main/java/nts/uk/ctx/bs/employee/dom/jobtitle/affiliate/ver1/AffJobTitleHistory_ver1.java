@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
+package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1;
 
 import java.util.List;
 
