@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
@@ -30,6 +32,37 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	/** The ampm atr. */
 	// 午前午後区分
 	private AmPmAtr ampmAtr;
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.isNotFixRestTime() && this.hasNoNo1()) {
+			throw new BusinessException("Msg_847");
+		}
+	}
+
+	/**
+	 * Checks if is not fix rest time.
+	 *
+	 * @return true, if is not fix rest time
+	 */
+	private boolean isNotFixRestTime() {
+		return this.lstRestTimezone.stream().anyMatch(item -> !item.isFixRestTime());
+	}
+
+	/**
+	 * Checks for no no 1.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean hasNoNo1() {
+		val EM_TIME_NO_1 = 1;
+		return this.workTimezone.getLstWorkingTimezone().stream()
+				.anyMatch(item -> item.getEmploymentTimeFrameNo().v() != EM_TIME_NO_1);
+	}
 
 	/**
 	 * Instantiates a new flex half day work time.
