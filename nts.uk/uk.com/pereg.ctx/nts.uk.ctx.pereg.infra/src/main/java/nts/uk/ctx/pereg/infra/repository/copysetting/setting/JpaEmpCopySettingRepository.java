@@ -52,4 +52,26 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 				.setParameter("categoryId", perInfoCtgId).setParameter("companyId", companyId).getSingle();
 		return a.isPresent() ? (a.get().intValue() > 0 ? true : false) : false;
 	}
+
+	private PpestEmployeeCopySetting toEntity(EmpCopySetting domain) {
+		PpestEmployeeCopySettingPk key = new PpestEmployeeCopySettingPk(domain.getCategoryId());
+
+		return new PpestEmployeeCopySetting(key, domain.getCompanyId());
+	}
+
+	@Override
+	public void addCtgCopySetting(EmpCopySetting newCtg) {
+		this.commandProxy().insert(toEntity(newCtg));
+
+	}
+
+	@Override
+	public void removeCtgCopySetting(String perInfoCtgId) {
+		if (this.queryProxy().find(new PpestEmployeeCopySettingPk(perInfoCtgId), PpestEmployeeCopySetting.class)
+				.isPresent()) {
+			this.commandProxy().remove(PpestEmployeeCopySetting.class, new PpestEmployeeCopySettingPk(perInfoCtgId));
+
+		}
+
+	}
 }

@@ -9,4 +9,8 @@ public interface EmpCopySettingRepository {
 	void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId);
 
 	boolean checkPerInfoCtgAlreadyCopy(String perInfoCtgId, String companyId);
+
+	void addCtgCopySetting(EmpCopySetting newCtg);
+
+	void removeCtgCopySetting(String perInfoCtgId);
 }
