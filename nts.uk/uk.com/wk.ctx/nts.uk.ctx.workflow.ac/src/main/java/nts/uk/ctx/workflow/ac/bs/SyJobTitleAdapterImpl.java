@@ -3,7 +3,6 @@
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.workflow.ac.bs;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,8 +35,9 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 	@Override
 	public JobTitleImport findJobTitleBySid(String employeeId, GeneralDate baseDate) {
 		Optional<EmployeeJobHistExport> export = this.syJobTitlePub.findBySid(employeeId, baseDate);
-		//return export.map(x -> this.toImport(x)).orElse(null);
-		return null;
+		return export.map(x -> {
+			return new JobTitleImport(x.getJobTitleID(), x.getJobTitleCode(), x.getJobTitleName(), "", x.getStartDate(), x.getEndDate());
+		}).orElse(new JobTitleImport("", "", "", "", null, null));
 	}
 
 	@Override
@@ -54,7 +54,6 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 	 */
 	private JobTitleImport toImport(JobTitleExport ex) {
 		return new JobTitleImport(
-				ex.getCompanyId(), 
 				ex.getJobTitleId(), 
 				ex.getJobTitleCode(), 
 				ex.getJobTitleName(), 
