@@ -18,11 +18,11 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiv
 public class JpaRoleIndividualGrantRepository extends JpaRepository implements RoleIndividualGrantRepository {
 
 	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"
-			+ " AND c.strD => :date AND c.endD <= :date";
+			+ " AND c.strD >= :date AND c.endD <= :date";
 
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate date) {
-		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userId", userId)
+		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
 				.setParameter("date", date).getSingle(c -> c.toDomain());
 	}
 
