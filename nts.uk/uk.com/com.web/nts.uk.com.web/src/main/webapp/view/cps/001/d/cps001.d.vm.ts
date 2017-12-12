@@ -28,8 +28,9 @@ module cps001.d.vm {
                     self.empFileMn().fileType =0;
                     if(self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
                         self.getImage();
+                    else self.isChange(true);
                     self.oldEmpFileMn = {employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType};
-                }
+                }else self.isChange(true);
                  $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
                         self.isChange(true);
@@ -46,6 +47,10 @@ module cps001.d.vm {
             let self = this;
             nts.uk.ui.block.grayout();
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
+            if($("#test").data("cropper") == undefined) {
+                self.close();
+                return;
+            }
             if($("#test").data("cropper").cropped)
                 self.isChange(true);
             if(isImageLoaded.imgOnView){
@@ -92,6 +97,7 @@ module cps001.d.vm {
             $("#test")["ntsImageEditor"]("selectByFileId", id); 
         }
         close(){
+            nts.uk.ui.block.clear();
            close();
         }
     }

@@ -1,10 +1,11 @@
-package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
+package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemNote;
 
 /**
  * The Class AffJobHistoryItem.

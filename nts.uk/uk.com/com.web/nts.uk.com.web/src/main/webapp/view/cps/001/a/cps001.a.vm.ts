@@ -300,7 +300,6 @@ module cps001.a.vm {
                 employee: EmployeeInfo = self.employee(),
                 iemp: IEmployeeInfo = ko.toJS(employee);
 
-            // cancel click if hasn't emp
             if (!iemp || !iemp.employeeId) {
                 return;
             }
@@ -312,7 +311,9 @@ module cps001.a.vm {
                     });
                     modal('../d/index.xhtml').onClosed(() => {
                         let data = getShared("CPS001D_VALUES");
-                        employee.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                        
+                        if(data)
+                            employee.avatar(data.fileId ? liveView(data.fileId) : undefined);
                     });
                 }
             });
