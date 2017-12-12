@@ -37,7 +37,7 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	public WorkTimeDivisionDto workTimeDivision;
 
 	/** The abolish atr. */
-	public Integer abolishAtr;
+	public Boolean isAbolish;
 
 	/** The color code. */
 	public String colorCode;
@@ -83,7 +83,10 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	 */
 	@Override
 	public AbolishAtr getAbolishAtr() {
-		return AbolishAtr.valueOf(this.abolishAtr);
+		if(this.isAbolish){
+			return AbolishAtr.ABOLISH;
+		}
+		return AbolishAtr.NOT_ABOLISH;
 	}
 
 	/* (non-Javadoc)
