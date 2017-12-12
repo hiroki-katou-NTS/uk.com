@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -32,6 +33,6 @@ public interface SingleDayScheduleSetMemento {
 	 *
 	 * @param workTimeCode the new work time code
 	 */
-	void setWorkTimeCode(WorkTimeCode workTimeCode);
+	void setWorkTimeCode(Optional<WorkTimeCode> workTimeCode);
 
 }

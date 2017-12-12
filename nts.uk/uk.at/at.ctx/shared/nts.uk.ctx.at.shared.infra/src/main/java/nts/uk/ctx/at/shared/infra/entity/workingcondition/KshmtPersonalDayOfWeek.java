@@ -17,11 +17,15 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtPersonalDayOfWeek.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSHMT_PERSONAL_DAY_OF_WEEK")
 public class KshmtPersonalDayOfWeek extends UkJpaEntity implements Serializable {

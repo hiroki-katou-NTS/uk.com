@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -27,7 +28,7 @@ public class SingleDaySchedule extends DomainObject{
 	
 	/** The work time code. */
 	// 就業時間帯コード
-	private WorkTimeCode workTimeCode;
+	private Optional<WorkTimeCode> workTimeCode;
 	
 	
 	/**
@@ -49,7 +50,7 @@ public class SingleDaySchedule extends DomainObject{
 	public void saveToMemento(SingleDayScheduleSetMemento memento){
 		memento.setWorkTypeCode(this.workTypeCode);
 		memento.setWorkTimeCode(this.workTimeCode);
-		memento.setWorkingHours(workingHours);
+		memento.setWorkingHours(this.workingHours);
 	}
 	
 }

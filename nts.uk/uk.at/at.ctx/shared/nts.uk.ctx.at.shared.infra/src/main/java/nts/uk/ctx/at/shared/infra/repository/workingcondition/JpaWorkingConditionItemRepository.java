@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 
@@ -38,6 +39,13 @@ public class JpaWorkingConditionItemRepository extends JpaRepository implements 
 
 	@Override
 	public List<WorkingConditionItem> getAllWokingConditionItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<WorkingConditionItem> findWorkingConditionItemByPersWorkCat(String employeeId,
+			GeneralDate baseDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
