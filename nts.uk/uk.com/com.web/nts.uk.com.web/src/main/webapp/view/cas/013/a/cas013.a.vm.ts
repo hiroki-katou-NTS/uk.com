@@ -9,6 +9,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
         //ComboBOx RollType
         listRoleType: KnockoutObservableArray<RollType>;
         selectedRoleType: KnockoutObservable<string>;
+
         //list Roll
         listRole: KnockoutObservableArray<Role>;
         selectedRole: KnockoutObservable<string>;
@@ -172,20 +173,15 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 && !nts.uk.text.isNullOrEmpty(self.selectedRole())
                 && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
                 && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)
-                && self.userName() != '') {
+                && self.userName() != ''
+                && !nts.uk.ui.errors.hasError()) {
                 if (self.isSelectedUser() && self.isCreateMode()) {
                     self.insert();
                 } else {
                     console.log('upDate');
                     self.upDate();
                 }
-            } else if (nts.uk.text.isNullOrEmpty(self.selectedRole())) {
-                //nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
             } else if (nts.uk.text.isNullOrEmpty(self.userName())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
-            } else if (nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)) {
-                $(".nts-input").trigger("validate");
-            } else {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
             }
 
@@ -226,14 +222,16 @@ module nts.uk.com.view.cas013.a.viewmodel {
             });
         }
         Delete(): void {
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                var self = this;
-                var roleTpye = self.selectedRoleType();
-                var userId = self.selectedRoleIndividual();
-                new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
-                    self.selectRole(self.selectedRole(),'');
+            if (!nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    var self = this;
+                    var roleTpye = self.selectedRoleType();
+                    var userId = self.selectedRoleIndividual();
+                    new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
+                        self.selectRole(self.selectedRole(), '');
+                    });
                 });
-            })
+            }
         }
 
     }

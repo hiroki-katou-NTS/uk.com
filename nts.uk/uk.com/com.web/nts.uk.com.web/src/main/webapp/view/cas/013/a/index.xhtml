@@ -21,8 +21,10 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button tabindex="1" data-bind="click: New">#{i18n.getText('CAS013_4')}</button>
-				<button class="proceed" tabindex="2" data-bind="click: save">#{i18n.getText('CAS013_5')}</button>
-				<button class="danger" tabindex="3" data-bind="click: Delete, enable: isDelete">#{i18n.getText('CAS013_6')}</button>
+				<button class="proceed" tabindex="2"
+					data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('CAS013_5')}</button>
+				<button class="danger" tabindex="3"
+					data-bind="click: Delete, enable: isDelete()">#{i18n.getText('CAS013_6')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="container">
@@ -73,7 +75,7 @@
 							<div class="control-group button">
 								<button tabindex="7" class="x-large"
 									data-bind="click: openBModal, enable: isCreateMode">#{i18n.getText('CAS013_18')}</button>
-								<div data-bind="text: userName" class="ntsControl"></div>
+								<div data-bind="text: userName" class="ntsControl limited-label"></div>
 							</div>
 
 							<div class="control-group">
