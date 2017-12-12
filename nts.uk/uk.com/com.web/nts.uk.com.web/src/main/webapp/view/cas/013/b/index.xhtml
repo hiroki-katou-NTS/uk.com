@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 450, height: 600 };</script>
+			<script>var dialogSize = { width: 400, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -22,7 +22,7 @@
 
 			<div id="contents-area">
 				<div class="cf">
-					<div style="float: left">
+					<div style="float: left;margin: 5px 16px;">
 						<div class="control-group">
 							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_22')}</div>
 							<input id="search" tabindex="1" data-bind="ntsTextEditor: {value: searchValue}" />
@@ -36,7 +36,7 @@
 						</div>
 						<table id="grid_container" style="margin: auto;"
 							data-bind="ntsGridList: {
-											height: 300,
+											height: 330,
 											options: dataSource,
 											optionsValue: 'userID',
 											columns: columns,

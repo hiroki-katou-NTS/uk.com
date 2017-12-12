@@ -23,8 +23,8 @@ module nts.uk.com.view.cas013.b.viewmodel {
             self.dataSource = ko.observableArray([]);
             self.columns = [
                 { headerText: nts.uk.resource.getText(""), key: 'userID', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_29"), key: 'loginID', width: 150 },
-                { headerText: nts.uk.resource.getText("CAS013_30"), key: 'userName', width: 230 }
+                { headerText: nts.uk.resource.getText("CAS013_29"), key: 'loginID', width: 130 },
+                { headerText: nts.uk.resource.getText("CAS013_30"), key: 'userName', width: 200 }
             ];
             self.selectUserID = ko.observable('');
         }
