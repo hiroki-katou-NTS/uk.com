@@ -265,7 +265,7 @@ module nts.uk.com.view.cmm021.a {
                     { headerText: nts.uk.resource.getText('CMM021_14'), key: 'loginId', width: 150 },
                     { headerText: nts.uk.resource.getText('CMM021_13'), key: 'employeeCode', width: 150 },
                     { headerText: nts.uk.resource.getText('CMM021_15'), key: 'personName', width: 150 },
-                    { headerText: nts.uk.resource.getText('CMM021_17'), key: 'other', width: 70, formatter: lockIcon }
+                    { headerText: nts.uk.resource.getText('CMM021_17'), key: 'other', width: 40, formatter: lockIcon }
                 ]);
 
             }
@@ -464,19 +464,13 @@ module nts.uk.com.view.cmm021.a {
                 }
 
 
-                // t.hop co 1 gia tri bo chon
                 saveCommand.userId = _self.userId();
-               // let dfd = $.Deferred<any>();
                 service.saveWindowAccount(saveCommand)
                     .done((data: any) => {
                         _self.loadUserInfo();
                         _self.updateMode();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });
-//                    .fail((res: any) => {
-//                        dfd.reject(res);
-//                    });
-                //return dfd.promise();
 
             }
 
@@ -601,37 +595,7 @@ module nts.uk.com.view.cmm021.a {
                     _self.SaveOtherAcc();
                 }
 
-            }
-
-//            .ifYes(() => {
-//                            nts.uk.ui.block.grayout();
-//                           
-//
-//                            service.removeJobTitleHistory(removeCommand)
-//                                .done(() => {
-//                                    // Show message
-//                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-//                                        // Reload list
-//                                        _self.reloadComponent();
-//                                    });                                   
-//                                })
-//                                .fail((res: any) => {                                   
-//                                    // Show error list
-//                                    nts.uk.ui.dialog.bundledErrors(res);
-//                                })
-//                                .always(() => {
-//                                    nts.uk.ui.block.clear();
-//                                });
-//                        })
-//                        .ifNo(() => {
-//
-//                        });
-            
-            
-            
-            
-            
-            
+            }  
             
             private deleteWindowAccount() {
                 let _self = this;
@@ -675,7 +639,12 @@ module nts.uk.com.view.cmm021.a {
                         _self.companyCode6(data.companyCode);
                         _self.userName6(data.userName);
                         _self.enable_C1_1(true);
+                    }else{
+                        _self.companyCode6("");
+                        _self.userName6("");
+                        _self.enable_C1_1(true); 
                     }
+                    
                     //_self.otherSysAcc(data);                    
                     dfd.resolve();
                 })

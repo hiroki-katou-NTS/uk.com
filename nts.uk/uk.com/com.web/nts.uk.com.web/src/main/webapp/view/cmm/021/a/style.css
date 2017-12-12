@@ -56,6 +56,10 @@
 }
 
 .right-content .right-content-space {
+	padding-left: 28px;
+}
+
+.right-content .right-content-space-login {
 	padding-left: 14px;
 }
 
