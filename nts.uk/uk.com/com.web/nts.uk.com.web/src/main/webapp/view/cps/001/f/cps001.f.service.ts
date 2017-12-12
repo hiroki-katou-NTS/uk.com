@@ -7,8 +7,7 @@ module cps001.f.service {
         'savedata': 'basic/organization/empfilemanagement/savedocfile',
         'updateCtgdata': 'basic/organization/empfilemanagement/updatectgdocfile',
         'updatedata': 'basic/organization/empfilemanagement/updatedata',
-        'deletedata': 'basic/organization/empfilemanagement/deletedata/{0}',
-        'getInfoCatagory': 'ctx/bs/person/info/ctg/findAll',
+        'deletedata': 'basic/organization/empfilemanagement/deletedata/{0}'
     };
 
     export function getData(employeeId: any) {
@@ -25,10 +24,6 @@ module cps001.f.service {
 
     export function deletedata(fileid: any) {
         return ajax(format(paths.deletedata, fileid));
-    }
-
-    export function getInfoCatagory() {
-        return ajax(paths.getInfoCatagory);
     }
 
     export function updateCtgdata(command: any) {

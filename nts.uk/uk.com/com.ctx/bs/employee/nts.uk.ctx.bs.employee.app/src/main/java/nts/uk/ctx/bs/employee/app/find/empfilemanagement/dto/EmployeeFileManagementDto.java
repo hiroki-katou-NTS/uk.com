@@ -32,6 +32,13 @@ public class EmployeeFileManagementDto {
 		this.uploadOrder = uploadOder;
 		this.personInfoCategoryId = perInfCtgId;
 	}
+	
+	public EmployeeFileManagementDto(String sId, String fileId, String fileName, Integer uploadOder){
+		this.employeeId = sId;
+		this.fileId = fileId;
+		this.fileName = fileName;
+		this.uploadOrder = uploadOder;
+	}
 	public EmployeeFileManagementDto(String sId, String fileId, int fileType){
 		this.employeeId = sId;
 		this.fileId = fileId;

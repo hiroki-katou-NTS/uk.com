@@ -4,20 +4,26 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
+/**
+ * 所属部門（兼務）
+ * @author xuan vinh
+ *
+ */
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "BSYMT_CURR_AFFI_DEPT_HIST")
 public class BsymtCurrAffiDeptHist {
 

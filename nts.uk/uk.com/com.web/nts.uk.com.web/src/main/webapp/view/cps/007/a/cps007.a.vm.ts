@@ -24,26 +24,26 @@ module cps007.a.vm {
                 layout = self.layout();
 
             // get layout info on startup
-            service.getData().done((x: ILayout) => {
-                layout.id(x.id);
-                layout.code(x.code);
-                layout.name(x.name);
+            service.getData().done((lt: ILayout) => {
+                layout.id(lt.id);
+                layout.code(lt.code);
+                layout.name(lt.name);
 
                 // remove all sibling sperators
-                let maps = _(x.itemsClassification)
-                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                let maps = _(lt.itemsClassification)
+                    .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
                     .filter(x => x != -1).value();
 
                 _.each(maps, (t, i) => {
                     if (maps[i + 1] == t + 1) {
-                        _.remove(x.itemsClassification, (m: IItemClassification) => {
-                            let item: IItemClassification = ko.unwrap(x.itemsClassification)[maps[i + 1]];
-                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                        _.remove(lt.itemsClassification, (m: IItemClassification) => {
+                            let item: IItemClassification = ko.unwrap(lt.itemsClassification)[maps[i + 1]];
+                            return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
                         });
                     }
                 });
 
-                layout.itemsClassification(x.itemsClassification);
+                layout.itemsClassification(lt.itemsClassification);
             });
         }
 
@@ -58,7 +58,7 @@ module cps007.a.vm {
                         return {
                             dispOrder: i + 1,
                             personInfoCategoryID: item.personInfoCategoryID,
-                            layoutItemType: item.layoutItemType,
+                            layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
                             listItemClsDf: _(item.listItemDf || []).map((def, j) => {
                                 return {
                                     dispOrder: j + 1,
@@ -68,7 +68,7 @@ module cps007.a.vm {
                         };
                     }).value()
                 };
-
+            
             let itemids = _(command.itemsClassification)
                 .map(x => x.listItemClsDf)
                 .flatten()
@@ -84,7 +84,6 @@ module cps007.a.vm {
                 error({ messageId: 'Msg_202' });
                 return;
             }
-
             // push data layout to webservice
             invisible();
             service.saveData(command).done(() => {
@@ -94,8 +93,9 @@ module cps007.a.vm {
                 });
             }).fail((mes) => {
                 unblock();
-                console.log(mes);
                 error({ messageId: mes.messageId, messageParams: mes.parameterIds });
+            }).done(x => {
+                unblock();
             });
         }
     }
@@ -105,7 +105,7 @@ module cps007.a.vm {
         dispOrder?: number;
         className?: string;
         personInfoCategoryID?: string;
-        layoutItemType: number;
+        layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>;
     }
 
@@ -145,5 +145,12 @@ module cps007.a.vm {
             // replace x by class that implement this interface
             self.itemsClassification(param.itemsClassification || []);
         }
+    }
+
+    // define ITEM_CLASSIFICATION_TYPE
+    enum IT_CLA_TYPE {
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 }

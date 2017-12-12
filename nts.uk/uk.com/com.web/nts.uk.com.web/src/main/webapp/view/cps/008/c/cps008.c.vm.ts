@@ -29,7 +29,7 @@ module cps008.c.viewmodel {
             let self = this,
                 layout: ILayout = ko.toJS(self.layout);
             let s = 'd';
-            
+
 
             if (layout.newCode == '' || layout.newName == '') {
                 if (layout.newCode == '') {
@@ -42,7 +42,12 @@ module cps008.c.viewmodel {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_355" });
                 return;
             } else if (layout.newCode && layout.newName) {
-                setShared('CPS008C_RESPONE', { id: layout.id, code: layout.newCode, name: layout.newName, action: layout.overrideMode });
+                setShared('CPS008C_RESPONE', {
+                    id: layout.id,
+                    code: layout.newCode,
+                    name: layout.newName,
+                    action: layout.overrideMode
+                });
                 close();
             }
         }

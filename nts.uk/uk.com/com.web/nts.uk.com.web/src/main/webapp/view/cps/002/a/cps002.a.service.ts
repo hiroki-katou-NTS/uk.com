@@ -4,16 +4,12 @@ module cps002.a.service {
 
     let
         regpath = "ctx/pereg/",
-        basicpath = "ctx/bs/person/"
-        , otherpath: any = {
+        paths: any = {
             getEmployeeCode: 'basic/organization/employee/getGenerateEmplCode',
-            getCardNumber: 'basic/organization/employee/getGenerateCardNo'
-        }, basicpaths: any = {
-            getLayout: 'newlayout/get',
-            getAllInitValueSetting: 'info/setting/init/findAllHasChild',
-            getSelfRoleAuth: 'roles/auth/getSelfAuth',
-        },
-        regpaths: any = {
+            getCardNumber: 'basic/organization/employee/getGenerateCardNo',
+            getLayout: 'person/newlayout/get',
+            getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
+            getSelfRoleAuth: 'roles/auth/get-self-auth',
             getUserSetting: 'usersetting/getUserSetting',
             getLastRegHistory: 'empreghistory/getLastRegHistory',
             getGenerateEmplCodeAndComId: 'addemployee/getGenerateEmplCodeAndComId',
@@ -24,68 +20,67 @@ module cps002.a.service {
             getAllInitValueItemSetting: 'initsetting/item/findInit/{0}/{1}/{2}',
             getLayoutByCreateType: 'layout/getByCreateType',
             addNewEmployee: 'addemployee/addNewEmployee'
-        }
-        ;
+        };
 
     export function getLayout() {
-        return ajax(basicpath + basicpaths.getLayout);
+        return ajax(regpath + paths.getLayout);
     }
 
     export function getUserSetting() {
-        return ajax(regpath + regpaths.getUserSetting);
+        return ajax(regpath + paths.getUserSetting);
     }
 
     export function getLastRegHistory() {
-        return ajax(regpath + regpaths.getLastRegHistory);
+        return ajax(regpath + paths.getLastRegHistory);
     }
 
     export function getEmployeeCode(employeeLetter) {
-        return ajax(otherpath.getEmployeeCode, employeeLetter);
+        return ajax(paths.getEmployeeCode, employeeLetter);
     }
 
     export function getCardNumber(cardLetter) {
-        return ajax(otherpath.getCardNumber, cardLetter);
+        return ajax(paths.getCardNumber, cardLetter);
     }
 
     export function getEmployeeCodeAndComId(employeeLetter) {
-        return ajax(otherpath.getCardNumber, employeeLetter);
+        return ajax(paths.getCardNumber, employeeLetter);
     }
 
-    export function validateEmpInfo(employeeCode, cardNo) {
-        return ajax(regpath + regpaths.validateEmpInfo, { employeeCode: employeeCode, cardNo: cardNo });
+    export function validateEmpInfo(command) {
+        return ajax(regpath + paths.validateEmpInfo, command);
     }
 
     export function getCopySetting() {
-        return ajax(regpath + regpaths.getCopySetting);
+        return ajax(regpath + paths.getCopySetting);
     }
 
     export function getAllCopySettingItem(employeeId, categoryCd, baseDate) {
-        return ajax(format(regpath + regpaths.getAllCopySettingItem, employeeId, categoryCd, baseDate));
+        return ajax(format(regpath + paths.getAllCopySettingItem, employeeId, categoryCd, baseDate));
     }
 
     export function getAllInitValueSetting() {
-        return ajax(basicpath + basicpaths.getAllInitValueSetting);
+        return ajax(regpath + paths.getAllInitValueSetting);
     }
 
     export function getAllInitValueCtgSetting(settingId: string) {
-        return ajax(format(regpath + regpaths.getAllInitValueCtgSetting, settingId));
+        return ajax(format(regpath + paths.getAllInitValueCtgSetting, settingId));
 
     }
 
     export function getAllInitValueItemSetting(settingId, categoryCd, baseDate) {
-        return ajax(format(regpath + regpaths.getAllInitValueItemSetting, settingId, categoryCd, baseDate));
+        return ajax(format(regpath + paths.getAllInitValueItemSetting, settingId, categoryCd, baseDate));
     }
 
     export function getSelfRoleAuth() {
-        return ajax(basicpath + basicpaths.getSelfRoleAuth);
+        return ajax(regpath + paths.getSelfRoleAuth);
     }
 
     export function getLayoutByCreateType(command) {
-        return ajax(regpath + regpaths.getLayoutByCreateType, command);
+        return ajax(regpath + paths.getLayoutByCreateType, command);
     }
 
     export function addNewEmployee(command) {
-        return ajax(regpath + regpaths.addNewEmployee, command);
+        return ajax(regpath + paths.addNewEmployee, command);
     }
 
 }

@@ -38,4 +38,23 @@ public class CompanyPubImp implements ICompanyPub {
 		}
 		return result;
 	}
+
+	/**
+	 * for request list No.125
+	 * @return Company Info
+	 */
+	@Override
+	public CompanyExport getCompanyByCid(String cid) {
+		Optional<Company> companyOpt = repo.getComanyByCid(cid);
+		CompanyExport result = new CompanyExport();
+		if (companyOpt.isPresent()) {
+			Company company = companyOpt.get();
+			result.setCompanyCode(company.getCompanyCode() == null ? "" : company.getCompanyCode().v());
+			result.setCompanyId(company.getCompanyId());
+			result.setCompanyName(company.getCompanyName() == null ? "" : company.getCompanyName().v());
+			result.setIsAbolition(company.getIsAbolition().value);
+		}
+		return result;
+
+	}
 }

@@ -107,7 +107,7 @@ public class JpaJobTitleMain extends JpaRepository implements JobTitleMainReposi
 	 * @param domain
 	 * @return
 	 */
-	private void toEntityJobTitleMain(JobTitleMain domain, BsymtJobTitleMain entity){
+	private void updateEntityJobTitleMain(JobTitleMain domain, BsymtJobTitleMain entity){
 		entity.histId = domain.getDateHistoryItem().identifier();
 		entity.jobTitleId = domain.getJobTitleId();
 		entity.sId = domain.getSid();
@@ -139,8 +139,21 @@ public class JpaJobTitleMain extends JpaRepository implements JobTitleMainReposi
 			throw new RuntimeException("invalid JobTitleMain");
 		}
 		updateBsymtJobPosMainHist(domain, existItemHst.get());
+		updateEntityJobTitleMain(domain, existItem.get());
 		
+		this.commandProxy().update(existItem.get());
 		this.commandProxy().update(existItemHst.get());
+	}
+
+	@Override
+	public void deleteJobTitleMain(String jobTitleMainId) {
+		Optional<BsymtJobTitleMain> existItem = this.queryProxy().find(jobTitleMainId, BsymtJobTitleMain.class);
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid JobTitleMain");
+		}
+		// Remove main table and history table
+		this.commandProxy().remove(BsymtJobPosMainHist.class,existItem.get().histId);
+		this.commandProxy().remove(BsymtJobTitleMain.class,jobTitleMainId);
 	}
 
 }

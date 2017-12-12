@@ -31,7 +31,9 @@
 
 #step1_content_top_right {
 	float: left;
-	width: 250px;
+	width: 350px;
+	background-color: #F2F2F2;
+	padding: 10px;
 }
 
 .nts-wizard.vertical>.steps {
@@ -39,12 +41,12 @@
 }
 
 .nts-wizard.vertical>.content {
-	width: 1000px;
+	width: 1050px;
 	min-height: 43em;
 }
 
 #emp_reg_info_wizard {
-	width: 1320px !important;
+	width: 1400px !important;
 }
 
 #top_right_hr {
@@ -101,7 +103,7 @@
 }
 
 .next_btn {
-	width: 120px;
+	width: 150px;
 }
 /* step1 */
 
@@ -146,6 +148,7 @@
 	position: relative;
 	border-radius: 5px;
 	padding: 0px 5px 10px 25px;
+	margin-top: 25px;
 }
 
 #value_item {

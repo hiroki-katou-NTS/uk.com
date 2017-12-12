@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
 
 /**
  * The Class AffWorkplaceHistoryItem.
@@ -24,16 +23,17 @@ public class AffWorkplaceHistoryItem {
 	// 社員ID
 	private String employeeId;
 	
-	/** The workplaceCode. */
+	/** The workplaceId. */
 	// 職場コード
-	private WorkplaceCode  workplaceCode;
+	private String  workplaceId;
 	
 	/** The normalWorkplaceCode. */
 	// 通常職場コード
-	private WorkplaceCode  normalWorkplaceCode;
+	private String  normalWorkplaceId;
 	
-	/** The normalWorkplaceCode. */
-	// 場所コード
-	private LocationCode  locationCode;
+	public static AffWorkplaceHistoryItem createFromJavaType(String histId, String employeeId, String workplaceId, String normalWorkplaceId){
+		return new AffWorkplaceHistoryItem(histId,employeeId, workplaceId, normalWorkplaceId);
+
+	}
 	
 }

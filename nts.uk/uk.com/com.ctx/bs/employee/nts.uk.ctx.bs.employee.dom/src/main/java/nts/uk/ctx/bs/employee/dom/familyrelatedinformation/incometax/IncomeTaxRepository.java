@@ -13,5 +13,5 @@ public interface IncomeTaxRepository {
 	 * ドメインモデル「家族所属税」を削除する
 	 * @param domain
 	 */
-	void deleteIncomeTax(IncomeTax domain);
+	void deleteIncomeTax(String incomeTaxId);
 }

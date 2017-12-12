@@ -9,6 +9,6 @@ module nts.uk.com.view.cps009.a {
         __viewContext.bind(__viewContext["viewModel"]);
         $(".ntsSearchBox").attr("placeholder", "名称で検索…");
         $(".search-btn").html("絞り込み");
-        
+
     });
 }

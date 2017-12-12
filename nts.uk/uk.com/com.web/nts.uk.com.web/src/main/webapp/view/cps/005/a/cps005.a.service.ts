@@ -2,11 +2,11 @@ module nts.uk.com.view.cps005.a {
     export module service {
         export class Service {
             paths = {
-                getAllPerInfoCtg: "ctx/bs/person/info/category/findAll/company/root",
-                getPerInfoCtg: "ctx/bs/person/info/category/find/companyby/{0}",
-                getPerInfoCtgWithItemsName: "ctx/bs/person/info/category/find/withItemsName/{0}",
-                addPerInfoCtg: "ctx/bs/person/info/category/add",
-                updatePerInfoCtg: "ctx/bs/person/info/category/update",
+                getAllPerInfoCtg: "ctx/pereg/person/info/category/findAll/company/root",
+                getPerInfoCtg: "ctx/pereg/person/info/category/find/companyby/{0}",
+                getPerInfoCtgWithItemsName: "ctx/pereg/person/info/category/find/withItemsName/{0}",
+                addPerInfoCtg: "ctx/pereg/person/info/category/add",
+                updatePerInfoCtg: "ctx/pereg/person/info/category/update",
             }
             constructor() {
 
