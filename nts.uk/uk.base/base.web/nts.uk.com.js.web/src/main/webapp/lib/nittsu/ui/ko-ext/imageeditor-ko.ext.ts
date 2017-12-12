@@ -384,7 +384,7 @@ module nts.uk.ui.koExtentions {
             if (!this.isOutSiteUrl(this.data.url)) {
                 return this.data.url;
             } else {
-                return `http://cors-anywhere.herokuapp.com/${this.data.url}`;
+                return `http://cors-anywhere.herokuapp.com/${this.data.url}`; 
             }
         }
 
