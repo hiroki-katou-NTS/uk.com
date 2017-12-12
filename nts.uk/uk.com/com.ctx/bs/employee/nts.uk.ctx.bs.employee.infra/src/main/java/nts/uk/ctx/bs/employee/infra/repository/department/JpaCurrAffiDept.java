@@ -10,11 +10,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDept;
 import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDeptRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtCurrAffiDept;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtCurrAffiDeptHist;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplace;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplaceHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 

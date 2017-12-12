@@ -19,59 +19,82 @@ import lombok.Setter;
 @Getter
 @Embeddable
 public class KshmtWorkCatTimeZonePK implements Serializable {
-    
-    /** The Constant serialVersionUID. */
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-    
-    /** The history id. */
-    @Column(name = "HISTORY_ID")
-    private String historyId;
-    
-    /** The per work cat atr. */
-    @Column(name = "PER_WORK_CAT_ATR")
-    private int perWorkCatAtr;
-    
-    /** The start time. */
-    @Column(name = "START_TIME")
-    private int startTime;
 
-    /**
-     * Instantiates a new kshmt work cat time zone PK.
-     */
-    public KshmtWorkCatTimeZonePK() {
-    	super();
-    }
+	/** The history id. */
+	@Column(name = "HISTORY_ID")
+	private String historyId;
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (historyId != null ? historyId.hashCode() : 0);
-        hash += (int) perWorkCatAtr;
-        hash += (int) startTime;
-        return hash;
-    }
+	/** The per work cat atr. */
+	@Column(name = "PER_WORK_CAT_ATR")
+	private int perWorkCatAtr;
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof KshmtWorkCatTimeZonePK)) {
-            return false;
-        }
-        KshmtWorkCatTimeZonePK other = (KshmtWorkCatTimeZonePK) object;
-        if ((this.historyId == null && other.historyId != null) || (this.historyId != null && !this.historyId.equals(other.historyId))) {
-            return false;
-        }
-        if (this.perWorkCatAtr != other.perWorkCatAtr) {
-            return false;
-        }
-        if (this.startTime != other.startTime) {
-            return false;
-        }
-        return true;
-    }
+	/** The start time. */
+	@Column(name = "START_TIME")
+	private int startTime;
+
+	/**
+	 * Instantiates a new kshmt work cat time zone PK.
+	 */
+	public KshmtWorkCatTimeZonePK() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new kshmt work cat time zone PK.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @param perWorkCatAtr
+	 *            the per work cat atr
+	 * @param startTime
+	 *            the start time
+	 */
+	public KshmtWorkCatTimeZonePK(String historyId, int perWorkCatAtr, int startTime) {
+		super();
+		this.historyId = historyId;
+		this.perWorkCatAtr = perWorkCatAtr;
+		this.startTime = startTime;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (historyId != null ? historyId.hashCode() : 0);
+		hash += (int) perWorkCatAtr;
+		hash += (int) startTime;
+		return hash;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KshmtWorkCatTimeZonePK)) {
+			return false;
+		}
+		KshmtWorkCatTimeZonePK other = (KshmtWorkCatTimeZonePK) object;
+		if ((this.historyId == null && other.historyId != null)
+				|| (this.historyId != null && !this.historyId.equals(other.historyId))) {
+			return false;
+		}
+		if (this.perWorkCatAtr != other.perWorkCatAtr) {
+			return false;
+		}
+		if (this.startTime != other.startTime) {
+			return false;
+		}
+		return true;
+	}
+
 }

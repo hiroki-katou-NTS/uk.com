@@ -83,6 +83,12 @@ public class KshmtWorkingCondItem extends UkJpaEntity implements Serializable {
 	@Column(name = "HD_ADD_TIME_AFTERNOON")
 	private Integer hdAddTimeAfternoon;
 
+	/** The kshmt working cond item. */
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = false, updatable = false) })
+	private KshmtWorkingCond kshmtWorkingCond;
+
 	/** The kshmt working cond items. */
 	@JoinColumns({
 			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = false, updatable = false) })

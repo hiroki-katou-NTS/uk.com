@@ -50,7 +50,7 @@ public enum WorkCategoryAtr {
 	private final static WorkCategoryAtr[] values = WorkCategoryAtr.values();
 
 	/**
-	 * Instantiates a new personal work atr.
+	 * Instantiates a new work category atr.
 	 *
 	 * @param value the value
 	 * @param nameId the name id
@@ -66,7 +66,7 @@ public enum WorkCategoryAtr {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the personal work atr
+	 * @return the work category atr
 	 */
 	public static WorkCategoryAtr valueOf(Integer value) {
 		// Invalid object.

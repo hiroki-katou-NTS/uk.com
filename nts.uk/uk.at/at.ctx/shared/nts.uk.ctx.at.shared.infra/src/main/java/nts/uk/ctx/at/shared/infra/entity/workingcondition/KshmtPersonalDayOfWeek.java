@@ -48,10 +48,10 @@ public class KshmtPersonalDayOfWeek extends UkJpaEntity implements Serializable 
 	/** The work time code. */
 	@Column(name = "WORK_TIME_CODE")
 	private String workTimeCode;
-	
+
 	/** The kshmt per work cats. */
 	@JoinColumns({
-			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = true, updatable = true) ,
+			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = true, updatable = true),
 			@JoinColumn(name = "PER_WORK_DAY_OFF_ATR", referencedColumnName = "PER_WORK_DAY_OFF_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtDayofweekTimeZone> kshmtDayofweekTimeZones;
