@@ -1,21 +1,21 @@
-module nts.uk.com.view.ccg026.a.component {
+module nts.uk.com.view.ccg026.component {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
 
     export module service {
         var paths = {
-            getListOfDescriptionWorkPlacePermission: "ctx/sys/auth/role/getListOfDescriptionWorkPlacePermissionByRoleId/{0}",
-            getListOfAvialabilityWorkPlacePermission: "ctx/sys/auth/role/getListOfAvialabilityWorkPlacePermissionByRoleId/{0}"
+            getListOfWorkPlaceFunctions: "at/auth/workplace/wplmanagementauthority/workplacefunction/getlistworkplacefunction",
+            getListOfWorkPlaceauthorities: "at/auth/workplace/wplmanagementauthority/workplaceauthority/getallWorkplaceauthoritybyid/{0}"
         }
         /**
          * get getListOfFunctionPermission by roleId
          */
-        export function getListOfDescriptionFunctionPermission(roleId : string, classification : number): JQueryPromise<Array<any>> {
+        export function getListOfDescriptionFunctionPermission(classification : number): JQueryPromise<Array<any>> {
             
             switch (classification) {
             
             case 1: // workplace
-                return ajax("com", format(paths.getListOfDescriptionWorkPlacePermission, roleId));
+                return ajax("at", paths.getListOfWorkPlaceFunctions);
             default:
                 let dfd = $.Deferred();
             
@@ -27,7 +27,7 @@ module nts.uk.com.view.ccg026.a.component {
         export function getListOfAviabilityFunctionPermission(roleId : string, classification : number): JQueryPromise<Array<any>> {
             switch (classification) {
             case 1: // workplace
-                return ajax("com", format(paths.getListOfAvialabilityWorkPlacePermission, roleId));
+                return ajax("at", format(paths.getListOfWorkPlaceauthorities, roleId));
             default:
                 break;
             }

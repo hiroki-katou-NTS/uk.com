@@ -19,7 +19,17 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	private final String SELECT_BY_USER = "SELECT c FROM SacmtUser c" + " WHERE c.sacmtUserPK.userID = :userID";
 	private final String SELECT_BY_ID_OR_NAME = "SELECT c From SacmtUser c"
 			+ " WHERE (c.sacmtUserPK.userID LIKE CONCAT('%', :userIDName, '%')"
+<<<<<<< HEAD
 			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))" + " AND c.expirationDate >= :date";
+=======
+			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))"
+			+ " AND c.expirationDate >= :date";
+	private final String SELECT_BY_KEY  ="SELECT c From SacmtUser c"
+			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :key, '%'))"
+			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :key, '%')))"
+			+ " AND c.specialUser = :specialUser "
+			+ " AND c.multiCompanyConcurrent = :multiCompanyConcurrent";
+>>>>>>> pj/at/dev/teamF
 
 	@Override
 	public Optional<User> getByLoginId(String loginId) {
@@ -37,6 +47,21 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	public Optional<User> getByUserID(String userID) {
 		return this.queryProxy().query(SELECT_BY_USER, SacmtUser.class).setParameter("userID", userID)
 				.getSingle(c -> c.toDomain());
+	}
+	
+	@Override
+	public List<User> findByKey(String key, boolean Special, boolean Multi) {
+		int special = 0;
+		if(Special) special = 1;
+		int multi = 0;
+		if(Multi) multi = 1;
+		
+		return this.queryProxy()
+				.query(SELECT_BY_KEY,SacmtUser.class)
+				.setParameter("key", key)
+				.setParameter("specialUser", special)
+				.setParameter("multiCompanyConcurrent", multi)
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
