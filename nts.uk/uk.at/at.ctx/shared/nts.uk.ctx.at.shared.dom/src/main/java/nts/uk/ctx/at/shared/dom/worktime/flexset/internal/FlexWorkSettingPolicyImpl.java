@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -33,6 +34,10 @@ public class FlexWorkSettingPolicyImpl {
 	/** The flex offday policy. */
 	@Inject
 	private FlexOffdayWorkTimePolicy flexOffdayPolicy;
+
+	/** The wtz common set policy. */
+	@Inject
+	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -103,6 +108,9 @@ public class FlexWorkSettingPolicyImpl {
 
 		// validate FlexOffdayWorkTime
 		this.flexOffdayPolicy.validate(predetemineTimeSet, flexWorkSetting.getOffdayWorkTime());
+
+		// validate WorkTimezoneCommonSet
+		this.wtzCommonSetPolicy.validate(predetemineTimeSet, flexWorkSetting.getCommonSetting());
 	}
 	
 

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingPolicy;
@@ -24,6 +25,10 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 
 	@Inject
 	private FixHalfDayWorkTimezonePolicy fixHalfDayPolicy;
+
+	/** The wtz common set policy. */
+	@Inject
+	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -48,6 +53,9 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		// validate Msg_516
 		fixedWorkSetting.getLstHalfDayWorkTimezone()
 				.forEach(halfDay -> this.fixHalfDayPolicy.validate(halfDay, predetemineTimeSet));
+
+		// validate WorkTimezoneCommonSet
+		this.wtzCommonSetPolicy.validate(predetemineTimeSet, fixedWorkSetting.getCommonSetting());
 
 	}
 
