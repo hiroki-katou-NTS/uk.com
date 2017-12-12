@@ -51,21 +51,19 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 
 	@Override
 	public AffClassificationDto getSingleData(PeregQuery query) {
-		AffClassHistItem_ver1 histItem;
-		AffClassHistory_ver1 history;
+		Optional<AffClassHistItem_ver1> histItem;
+		Optional<AffClassHistory_ver1> history;
 		if (query.getInfoId() != null) {
-			String historyId = query.getInfoId();
-			histItem = affClassHistItemRepo.getByHistoryId(historyId).get();
-			history = affClassHistRepo.getByHistoryId(historyId).get();
-			return AffClassificationDto.createFromDomain(histItem, history);
+			history = affClassHistRepo.getByHistoryId(query.getInfoId());
 		} else {
-			Optional<AffClassHistItem_ver1> itemOption = affClassHistItemRepo
-					.getByEmpIdAndReferDate(query.getEmployeeId(), query.getStandardDate());
-			if (itemOption.isPresent()) {
-				histItem = itemOption.get();
-				history = affClassHistRepo.getByHistoryId(histItem.getHistoryId()).get();
-				return AffClassificationDto.createFromDomain(histItem, history);
+			history = affClassHistRepo.getByEmpIdAndStandardDate(query.getEmployeeId(), query.getStandardDate());
+		}
+		if (history.isPresent()) {
+			histItem = affClassHistItemRepo.getByHistoryId(history.get().getPeriods().get(0).identifier());
+			if ( histItem.isPresent()) {
+				return AffClassificationDto.createFromDomain(histItem.get(), history.get());
 			}
+			
 		}
 		return null;
 	}

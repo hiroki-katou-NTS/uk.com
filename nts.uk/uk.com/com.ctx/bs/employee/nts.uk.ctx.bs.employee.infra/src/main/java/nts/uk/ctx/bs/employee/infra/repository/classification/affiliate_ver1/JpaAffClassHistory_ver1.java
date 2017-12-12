@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate_ver1.BsymtAffClassHistory_Ver1;
@@ -26,6 +27,9 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 
 	private static String GET_BY_EID = "select h from BsymtAffClassHistory_Ver1 h where h.sid = :sid ORDER BY h.startDate";
 
+	private final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory_Ver1 h"
+			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
+
 	@Override
 	public Optional<AffClassHistory_ver1> getByHistoryId(String historyId) {
 
@@ -37,6 +41,17 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 		}
 		return Optional.empty();
 
+	}
+
+	@Override
+	public Optional<AffClassHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		Optional<BsymtAffClassHistory_Ver1> optionData = this.queryProxy()
+				.query(GET_BY_SID_DATE, BsymtAffClassHistory_Ver1.class)
+				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
+		if ( optionData.isPresent() ) {
+			return Optional.of(toDomain(optionData.get()));
+		}
+		return null;
 	}
 
 	private AffClassHistory_ver1 toDomain(BsymtAffClassHistory_Ver1 entity) {

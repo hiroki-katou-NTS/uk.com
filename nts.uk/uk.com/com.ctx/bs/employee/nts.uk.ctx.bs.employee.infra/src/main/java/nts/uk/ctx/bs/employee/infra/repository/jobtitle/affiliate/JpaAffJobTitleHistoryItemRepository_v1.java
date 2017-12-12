@@ -13,7 +13,7 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHi
 @Stateless
 public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 		implements AffJobTitleHistoryItemRepository_v1 {
-
+	
 	private final String GET_BY_SID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " inner join BsymtAffJobTitleHist h on hi.hisId = h.hisId"
 			+ " where hi.sid = :sid and h.strDate <= :referDate and h.endDate >= :referDate";
@@ -36,8 +36,8 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	 * @param entity
 	 */
 	private void updateEntity(AffJobTitleHistoryItem domain, BsymtAffJobTitleHistItem entity) {
-		entity.setJobTitleId(domain.getJobTitleId());
-		entity.setNote(domain.getNote().v());
+		entity.jobTitleId = domain.getJobTitleId();
+		entity.note = domain.getNote().v();
 	}
 
 	@Override
@@ -70,6 +70,21 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 		this.commandProxy().remove(BsymtAffJobTitleHistItem.class, histId);
 	}
 
+	private AffJobTitleHistoryItem toDomain(BsymtAffJobTitleHistItem ent) {
+		return AffJobTitleHistoryItem.createFromJavaType(ent.hisId, ent.sid, ent.jobTitleId,
+				ent.note);
+	}
+
+	@Override
+	public Optional<AffJobTitleHistoryItem> findByHitoryId(String historyId) {
+		Optional<BsymtAffJobTitleHistItem> optionData = this.queryProxy().find(historyId,
+				BsymtAffJobTitleHistItem.class);
+		if (optionData.isPresent()) {
+			return Optional.of(toDomain(optionData.get()));
+		}
+		return Optional.empty();
+	}
+	
 	@Override
 	public Optional<AffJobTitleHistoryItem> getByEmpIdAndReferDate(String employeeId, GeneralDate referDate) {
 		Optional<BsymtAffJobTitleHistItem> optionData = this.queryProxy()
@@ -77,8 +92,8 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 				.setParameter("referDate", referDate).getSingle();
 		if (optionData.isPresent()) {
 			BsymtAffJobTitleHistItem ent = optionData.get();
-			return Optional.of(AffJobTitleHistoryItem.createFromJavaType(ent.getHisId(), ent.getSid(),
-					ent.getJobTitleId(), ent.getNote()));
+			return Optional.of(AffJobTitleHistoryItem.createFromJavaType(ent.hisId, ent.sid,
+					ent.jobTitleId, ent.note));
 		}
 		return Optional.empty();
 	}

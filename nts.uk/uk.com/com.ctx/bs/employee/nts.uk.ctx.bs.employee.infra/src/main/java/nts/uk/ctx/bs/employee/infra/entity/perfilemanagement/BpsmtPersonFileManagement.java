@@ -32,12 +32,12 @@ public class BpsmtPersonFileManagement extends UkJpaEntity implements Serializab
 	@Column(name = "PID")
 	public String pid;
 	
-	/** 個人ID */
+	/** ファイルの種類 */
 	@Basic(optional = true)
 	@Column(name = "FILE_TYPE")
 	public int filetype;
 	
-	/** 個人ID */
+	/** 表示順*/
 	@Basic(optional = true)
 	@Column(name = "DISPORDER")
 	public Integer disPOrder;

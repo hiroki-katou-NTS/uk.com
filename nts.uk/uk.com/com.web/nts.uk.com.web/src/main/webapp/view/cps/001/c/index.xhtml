@@ -10,12 +10,15 @@
 			<title>#{i18n.getText('CPS001_1')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 920,
+					width : 1000,
 					height : 700
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-
 			<com:stylefile path="cps001.c.style.css" />
 			<com:scriptfile path="cps001.c.service.js" />
 			<com:scriptfile path="cps001.c.vm.js" />
@@ -30,17 +33,17 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div class="left-area">
-					<div class="bg-green caret-right caret-background" >
+					<div class="bg-green caret-right caret-background">
 						<div style="width: 700px"
 							data-bind="ntsSearchBox: {
-								targetKey: 'id', 
-								mode:'grid', 
 								searchMode: 'filter',
+								targetKey: 'code', 
 								comId:'list_employees', 
-								items: ko.observableArray([]),
+								items: listEmpDelete,
 								selected: 'code',
 								selectedKey: 'code',
-								fields: ['name', 'code']}"></div>
+								fields: ['code', 'name'],
+								mode:'igGrid',}"></div>
 						<table id="list_employees"
 							data-bind="ntsGridList: {								
 								rows: 20,
@@ -67,17 +70,21 @@
 					</div>
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_56')}</div>
-						<input data-bind="ntsTextEditor: {
+						<input
+							data-bind="ntsTextEditor: {
 							value: newCode,
+							constraint: 'EmployeeCode',
 							required: false,
 							enable: true,
 							readonly: false}" />
 					</div>
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_58')}</div>
-						<input data-bind="ntsTextEditor: {
+						<input 
+							data-bind="ntsTextEditor: {
 							value: newName,
 							required: false,
+							constraint: 'BusinessName',
 							enable: true,
 							readonly: false}" />
 					</div>

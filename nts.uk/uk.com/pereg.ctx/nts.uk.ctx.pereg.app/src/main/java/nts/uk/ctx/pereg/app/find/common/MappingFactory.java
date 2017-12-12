@@ -21,7 +21,6 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.PeregItem;
-import nts.uk.shr.pereg.app.PeregRecordId;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
@@ -39,13 +38,11 @@ public class MappingFactory {
 
 	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 		// map record ID
-		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
-			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
-			for ( Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				valueItem.setRecordId(recordId);
-			}
-		});
+		String recordId = peregDto.getDomainDto().getRecordId();
+		for ( Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+			valueItem.setRecordId(recordId);
+		}
 
 		// get dto value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
@@ -65,15 +62,13 @@ public class MappingFactory {
 	 */
 	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
 		// map record ID
-		AnnotationUtil.getFieldAnnotated(peregDto.getDtoClass(), PeregRecordId.class).ifPresent(field -> {
-			String recordId = ReflectionUtil.getFieldValue(field, peregDto.getDomainDto());
-			for ( LayoutPersonInfoClsDto classItem : classItemList) {
-				for ( Object item : classItem.getItems()) {
-					LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-					valueItem.setRecordId(recordId);
-				}
+		String recordId = peregDto.getDomainDto().getRecordId();
+		for ( LayoutPersonInfoClsDto classItem : classItemList) {
+			for ( Object item : classItem.getItems()) {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				valueItem.setRecordId(recordId);
 			}
-		});
+		}
 
 		// get DTO value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());

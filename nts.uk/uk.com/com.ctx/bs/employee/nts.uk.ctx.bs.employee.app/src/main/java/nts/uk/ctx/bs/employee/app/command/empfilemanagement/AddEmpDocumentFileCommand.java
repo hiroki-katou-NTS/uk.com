@@ -8,7 +8,7 @@ import lombok.Data;
 public class AddEmpDocumentFileCommand {
 
 	/** The employment Id. */
-	private String sid;
+	private String pid;
 	
 	/** The file id. */
 	private String fileid;

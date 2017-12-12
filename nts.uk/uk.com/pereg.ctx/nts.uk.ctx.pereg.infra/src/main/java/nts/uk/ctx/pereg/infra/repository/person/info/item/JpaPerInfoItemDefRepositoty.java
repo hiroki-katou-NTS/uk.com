@@ -440,11 +440,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 						referenceTypeState = ReferenceTypeState.createMasterReferenceCondition(selectionItemRefCode);
 					} else if (selectionItemRefType.intValue() == ReferenceTypes.CODE_NAME.value) {
 						referenceTypeState = ReferenceTypeState.createCodeNameReferenceType(selectionItemRefCode);
+					} else if (selectionItemRefType.intValue() == ReferenceTypes.ENUM.value) {
+
+						referenceTypeState = ReferenceTypeState.createEnumReferenceCondition(selectionItemRefCode);
 					}
-				} else {
-					referenceTypeState = ReferenceTypeState.createEnumReferenceCondition(selectionItemRefCode);
+					dataTypeState = DataTypeState.createSelectionItem(referenceTypeState);
 				}
-				dataTypeState = DataTypeState.createSelectionItem(referenceTypeState);
+				
+
 				break;
 			default:
 				break;

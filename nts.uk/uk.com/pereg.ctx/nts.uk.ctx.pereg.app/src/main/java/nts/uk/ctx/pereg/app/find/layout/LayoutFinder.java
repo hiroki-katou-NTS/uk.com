@@ -27,6 +27,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
@@ -97,6 +98,9 @@ public class LayoutFinder {
 
 	@Inject
 	private IMaintenanceLayoutRepository layoutRepo;
+	
+	@Inject
+	private ComboBoxRetrieveFactory comboBoxFactory;
 
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
@@ -361,9 +365,10 @@ public class LayoutFinder {
 		classItemList.forEach(classItem -> {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				if (valueItem.getItem().getDataTypeValue() == DataTypeValue.SELECTION.value) {
+				DataTypeStateDto itemDataTypeSate = valueItem.getItem();
+				if ( itemDataTypeSate != null && itemDataTypeSate.getDataTypeValue() == DataTypeValue.SELECTION.value) {
 					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					valueItem.setLstComboBoxValue(ComboBoxRetrieveFactory.getComboBox(selectionItemDto, standardDate));
+					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, standardDate));
 				}
 			}
 		});
