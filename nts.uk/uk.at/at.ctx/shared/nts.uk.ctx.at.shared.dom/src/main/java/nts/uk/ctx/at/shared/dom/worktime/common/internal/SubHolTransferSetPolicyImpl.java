@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -27,7 +28,12 @@ public class SubHolTransferSetPolicyImpl implements SubHolTransferSetPolicy {
 	 */
 	@Override
 	public void validate(PredetemineTimeSetting predSet, SubHolTransferSet subHdSet) {
-		if (subHdSet.getCertainTime().greaterThanOrEqualTo(predSet.getRangeTimeDay())) {
+		AttendanceTime oneDayRange = predSet.getRangeTimeDay();
+		boolean isCertainDayInvalid = subHdSet.getCertainTime().greaterThanOrEqualTo(oneDayRange);
+		boolean isHalfDayInvalid = subHdSet.getDesignatedTime().getHalfDayTime().greaterThanOrEqualTo(oneDayRange);
+		boolean isOneDayInvalid = subHdSet.getDesignatedTime().getOneDayTime().greaterThanOrEqualTo(oneDayRange);
+
+		if (isHalfDayInvalid || isOneDayInvalid || isCertainDayInvalid) {
 			throw new BusinessException("Msg_781");
 		}
 	}
