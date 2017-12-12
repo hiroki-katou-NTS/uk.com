@@ -49,24 +49,26 @@ public class GetHeaderOfCPS001Finder {
 
 	@Inject
 	private TempAbsHistRepository tempHistRepo;
-	
 
 	public EmployeeInfo getEmployeeInfo(String sid) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate date = GeneralDate.today();
-		
+
 		Optional<EmployeeInfo> empInfo = this.employeeMngRepo.findById(sid);
-		Optional<Employee> empFull = this.employeeRepo.findByEmployeeID(companyId, sid, date);
-		Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(sid);
-		if (empFull.isPresent() && tempHist.isPresent()) {
-			empFull.get().setTemporaryAbsenceHistory(tempHist.get());
-			empInfo.get().setNumberOfWork(empFull.get().getDaysOfEntire() - empFull.get().getDaysOfTemporaryAbsence());
-
-		}
-		Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid, date);
-
-		Optional<EmploymentInfo> emp = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId, sid, date);
 		if (empInfo.isPresent()) {
+			EmployeeInfo _emp = empInfo.get();
+			Optional<Employee> empFull = this.employeeRepo.findByEmployeeID(companyId, sid, date);
+			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(sid);
+
+			if (empFull.isPresent() && tempHist.isPresent()) {
+				empFull.get().setTemporaryAbsenceHistory(tempHist.get());
+				_emp.setNumberOfWork(empFull.get().getDaysOfEntire() - empFull.get().getDaysOfTemporaryAbsence());
+			}
+
+			Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid, date);
+
+			Optional<EmploymentInfo> emp = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId, sid,
+					date);
 			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid, date);
 
 			if (department.isPresent()) {
@@ -75,38 +77,38 @@ public class GetHeaderOfCPS001Finder {
 				if (historyItem.isPresent()) {
 					Optional<EmployeeInfo> departmentInfo = this.employeeMngRepo
 							.getDepartment(historyItem.get().getDepartmentId(), date);
+
 					if (departmentInfo.isPresent()) {
-						empInfo.get().setDepartmentName(departmentInfo.get().getDepartmentName());
+						EmployeeInfo _dept = departmentInfo.get();
+
+						_emp.setDepartmentCode(_dept.getDepartmentCode());
+						_emp.setDepartmentName(_dept.getDepartmentName());
 					}
 				} else {
-					empInfo.get().setDepartmentName(" ");
-
+					_emp.setDepartmentName(" ");
 				}
 			}
 
 			if (jobTitleHisItem.isPresent()) {
-				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(), date);
+				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(),
+						date);
+
 				if (jobInfo.isPresent()) {
-
-					empInfo.get().setPosition(jobInfo.get().getJobTitleName().toString());
+					_emp.setPosition(jobInfo.get().getJobTitleName().toString());
 				}
-
 			} else {
-				empInfo.get().setPosition(" ");
+				_emp.setPosition(" ");
 			}
 
 			if (emp.isPresent()) {
-
-				empInfo.get().setContractCodeType(emp.get().getEmploymentName());
+				_emp.setContractCodeType(emp.get().getEmploymentName());
 			} else {
-
-				empInfo.get().setContractCodeType(" ");
+				_emp.setContractCodeType(" ");
 			}
-			return empInfo.get();
-		}	
+
+			return _emp;
+		}
 
 		return new EmployeeInfo();
-
 	}
-
 }
