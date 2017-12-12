@@ -23,7 +23,10 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 @Produces(MediaType.APPLICATION_JSON)
 public class PeregEmpCtgWebService {
 	@Inject
-	private EmpCtgFinder empCtgFinder;;
+	private EmpCtgFinder empCtgFinder;
+	
+//	@Inject
+//	private PeregBusinessTypeFinder PeregBusinessTypeFinder;
 
 	@POST
 	@Path("getall/{employeeId}")
