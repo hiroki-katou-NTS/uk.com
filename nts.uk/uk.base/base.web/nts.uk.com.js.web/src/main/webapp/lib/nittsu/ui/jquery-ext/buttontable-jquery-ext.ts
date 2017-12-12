@@ -176,8 +176,8 @@ module nts.uk.ui.jqueryExtentions {
                 let self = this;
                 let menu = _.map(contextMenu, function(m){
                     let action = function (){
-                        m.action().done(function(result){
-                            let element: JQuery = self.container.data("context-opening");
+                        let element: JQuery = self.container.data("context-opening");
+                        m.action(element).done(function(result){
                             element.trigger("contextmenufinished", result);    
                         });
                     }
