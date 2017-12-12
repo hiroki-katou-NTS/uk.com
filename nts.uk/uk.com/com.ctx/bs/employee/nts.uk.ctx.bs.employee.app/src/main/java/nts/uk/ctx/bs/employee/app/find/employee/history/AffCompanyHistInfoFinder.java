@@ -46,6 +46,11 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 
 		AffCompanyHist domain = achFinder.getAffCompanyHistoryOfHistInfo(query.getInfoId());
 
+		if (domain == null) {
+			domain = achFinder.getAffCompanyHistoryOfEmployeeAndBaseDate(query.getEmployeeId(),
+					query.getStandardDate());
+		}
+
 		return AffCompanyHistInfoDto.fromDomain(domain, info);
 	}
 

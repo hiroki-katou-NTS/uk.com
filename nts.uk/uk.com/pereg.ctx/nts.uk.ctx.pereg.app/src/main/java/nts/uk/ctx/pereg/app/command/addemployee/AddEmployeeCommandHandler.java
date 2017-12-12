@@ -1,12 +1,14 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -35,8 +37,8 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
-import nts.uk.ctx.sys.gateway.dom.login.User;
-import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ItemValue;
@@ -47,7 +49,7 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
  * @author sonnlb
  *
  */
-@Stateless
+@RequestScoped
 public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmployeeCommand, String> {
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
@@ -55,8 +57,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Inject
 	private PeregCommandFacade commandFacade;
 
-//	@Inject
-//	private UserRepository userRepository;
+	@Inject
+	private UserRepository userRepository;
 
 	@Inject
 	private EmpFileManagementRepository perFileManagementRepository;
@@ -79,6 +81,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	String personId;
 	List<ItemsByCategory> inputs;
 	String companyId;
+	String comHistId;
+
+	List<String> fixedCtgList = Arrays.asList("CS00001", "CS00002", "CS00003");
 
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
@@ -92,6 +97,22 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		personId = IdentifierUtil.randomUniqueId();
 
 		companyId = AppContexts.user().companyId();
+
+		comHistId = IdentifierUtil.randomUniqueId();
+
+		addBasicData();
+
+		// call commandFacade
+
+		inputsProcess();
+
+		return employeeId;
+
+	}
+
+	@Transactional
+	private void addBasicData() {
+
 		// add newPerson
 
 		addNewPerson();
@@ -104,10 +125,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		addAffCompanyHist();
 
-		// update input
-
-		inputsProcess();
-
 		// add new User
 		addNewUser();
 
@@ -117,9 +134,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		// Update employee registration history
 		updateEmployeeRegHist();
-
-		return employeeId;
-
 	}
 
 	private void addNewPerson() {
@@ -132,6 +146,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	}
 
+	@Transactional
 	private void inputsProcess() {
 
 		List<SettingItemDto> dataServer = this.layoutFinder.itemListByCreateType(command.getCreateType(),
@@ -161,15 +176,18 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		});
 
-		List<ItemsByCategory> updateInputs = inputs.stream()
-				.filter(x -> x.getCategoryCd() == "CS00002" || x.getCategoryCd() == "CS00003")
+		// update data
+		List<ItemsByCategory> updateInputs = inputs.stream().filter(x -> fixedCtgList.indexOf(x.getCategoryCd()) != -1)
 				.collect(Collectors.toList());
 
-		PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
+		if (!CollectionUtil.isEmpty(updateInputs)) {
 
-		this.commandFacade.update(updateContainer);
+			PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
 
-		inputs = inputs.stream().filter(x -> x.getCategoryCd() != "CS00002" && x.getCategoryCd() != "CS00003")
+			this.commandFacade.update(updateContainer);
+
+		}
+		inputs = inputs.stream().filter(x -> fixedCtgList.indexOf(x.getCategoryCd()) == -1)
 				.collect(Collectors.toList());
 		// call add commandFacade
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, inputs);
@@ -196,7 +214,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		List<AffCompanyHistItem> comHistItemList = new ArrayList<AffCompanyHistItem>();
 
-		comHistItemList.add(new AffCompanyHistItem(IdentifierUtil.randomUniqueId(), false,
+		comHistItemList.add(new AffCompanyHistItem(comHistId, false,
 				new DatePeriod(command.getHireDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"))));
 
 		comHistList.add(new AffCompanyHistByEmployee(employeeId, comHistItemList));
@@ -241,11 +259,11 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private void addNewUser() {
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
-		User newUser = User.createFromJavaType(userId, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false,
-				null, command.getEmployeeName(), employeeId);
+		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
+				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false, "",
+				command.getEmployeeName(), employeeId);
 
-//		this.userRepository.addNewUser(newUser);
+		this.userRepository.addNewUser(newUser);
 
 	}
 
@@ -267,8 +285,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			Optional<ItemValue> optItem = ctg.getItems().stream().filter(x -> x.itemCode().equals(itemCode))
 					.findFirst();
 			if (optItem.isPresent()) {
-				if (optItem.get().value() != null){
-				returnString = optItem.get().value().toString();
+				if (optItem.get().value() != null) {
+					returnString = optItem.get().value().toString();
 				}
 				break;
 			}
@@ -288,7 +306,18 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		if (CollectionUtil.isEmpty(items)) {
 			return null;
 		}
-		return new ItemsByCategory(categoryCd, null, items);
+		String recordId = null;
+
+		if (categoryCd == "CS00002" || categoryCd == "CS00001") {
+			recordId = personId;
+		}
+
+		if (categoryCd == "CS00003") {
+			recordId = comHistId;
+
+		}
+
+		return new ItemsByCategory(categoryCd, recordId, items);
 	}
 
 	private List<SettingItemDto> getAllItemInCategoryByCode(List<SettingItemDto> sourceList, String categoryCode) {

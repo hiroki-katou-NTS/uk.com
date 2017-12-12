@@ -26,7 +26,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID = "SELECT aw FROM BsymtAffiWorkplaceHist aw "
 			+ "WHERE aw.sid = :sid ORDER BY aw.strDate";
 	private static final String SELECT_BY_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
-			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate <= aw.endDate";
+			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.hisId = :histId";

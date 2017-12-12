@@ -21,7 +21,7 @@ public interface EmploymentHistoryItemRepository {
 	 * Add employment
 	 * @param domain
 	 */
-	void adḍ̣̣̣(EmploymentHistoryItem domain);
+	void add(EmploymentHistoryItem domain);
 	
 	/**
 	 * Update employment

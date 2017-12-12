@@ -3,8 +3,11 @@
  */
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.state;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 
 /**
  * @author danpv Domain Name : 介護休業
@@ -34,7 +37,8 @@ public class CareHoliday extends TempAbsenceHisItem {
 	 */
 	private CareHoliday(String historyId, String employeeId, GenericString remarks, Integer soInsPayCategory,
 			Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
-		super(LeaveHolidayType.NURSING_CARE_LEAVE, historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
+		super(new TempAbsenceFrameNo(BigDecimal.valueOf(5)), historyId, employeeId, remarks, soInsPayCategory,
+				familyMemberId);
 		this.sameFamily = sameFamily;
 		this.sameFamilyDays = sameFamilyDays;
 	}
