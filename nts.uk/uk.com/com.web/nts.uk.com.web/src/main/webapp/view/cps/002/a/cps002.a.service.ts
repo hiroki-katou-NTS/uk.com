@@ -7,7 +7,7 @@ module cps002.a.service {
         paths: any = {
             getEmployeeCode: 'basic/organization/employee/getGenerateEmplCode',
             getCardNumber: 'basic/organization/employee/getGenerateCardNo',
-            getLayout: 'person/newlayout/get',
+            getLayout: 'person/newlayout/get-layout-can-null',
             getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
             getSelfRoleAuth: 'roles/auth/get-self-auth',
             getUserSetting: 'usersetting/getUserSetting',
