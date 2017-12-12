@@ -51,8 +51,8 @@ module nts.uk.ui.jqueryExtentions {
                 case "cellAt": {
                     builder = $element.data("builder");
                     let tbody: JQuery = builder.container.find("tbody");
-                    let rowAt = tbody.find("tr:nth-child("+ option + ")");
-                    let cellAt = rowAt.find("td:nth-child("+ option2 + ")");
+                    let rowAt = tbody.find("tr:nth-child("+ (option + 1) + ")");
+                    let cellAt = rowAt.find("td:nth-child("+ (option2 + 1) + ")");
                     return {
                         element: cellAt,
                         data: cellAt.data("cell-data"),
@@ -63,8 +63,8 @@ module nts.uk.ui.jqueryExtentions {
                 case "setCellValue": {
                     builder = $element.data("builder");
                     let tbody: JQuery = builder.container.find("tbody");
-                    let rowAt = tbody.find("tr:nth-child("+ option + ")");
-                    let cellAt = rowAt.find("td:nth-child("+ option2 + ")");
+                    let rowAt = tbody.find("tr:nth-child("+ (option + 1) + ")");
+                    let cellAt = rowAt.find("td:nth-child("+ (option2 + 1) + ")");
                     builder.setCellValue(cellAt.find("button"), option3);
                     break;
                 } 
@@ -74,7 +74,7 @@ module nts.uk.ui.jqueryExtentions {
                     return _.map(selectedButton, function(c){
                         let button = $(c);
                         let cell = button.parent();
-                        let rowIdx = parseInt(cell.parent().attr("data-idx"));
+                        let rowIdx = parseInt(cell.attr("row-idx"));
                         let columnIdx = parseInt(cell.attr("column-idx"));
                         return {
                             element: cell,
@@ -87,26 +87,22 @@ module nts.uk.ui.jqueryExtentions {
                 case "setSelectedCell": {
                     builder = $element.data("builder");
                     let tbody: JQuery = builder.container.find("tbody");
-                    let rowAt = tbody.find("tr:nth-child("+ option + ")");
-                    let cellAt = rowAt.find("td:nth-child("+ option2 + ")");
-                    if(!cellAt.hasClass("ntsButtonCellSelected")){
-                        cellAt.addClass("ntsButtonCellSelected");
-                    }
+                    let rowAt = tbody.find("tr:nth-child("+ (option + 1) + ")");
+                    let cellAt = rowAt.find("td:nth-child("+ (option2 + 1) + ")");
+                    cellAt.find("button").trigger("cellselecting");
                     break;
                 }
                 case "clearSelectedCellAt": {
                     builder = $element.data("builder");
                     let tbody: JQuery = builder.container.find("tbody");
-                    let rowAt = tbody.find("tr:nth-child("+ option + ")");
-                    let cellAt = rowAt.find("td:nth-child("+ option2 + ")");
-                    if(cellAt.hasClass("ntsButtonCellSelected")){
-                        cellAt.removeClass("ntsButtonCellSelected");
-                    }
+                    let rowAt = tbody.find("tr:nth-child("+ (option + 1) + ")");
+                    let cellAt = rowAt.find("td:nth-child("+ (option2 + 1) + ")");
+                    cellAt.find("button").trigger("cellselecting");
                     break;
                 }
                 case "clearAllSelectedCells": {
                     builder = $element.data("builder");
-                    this.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
+                    this.container.find(".ntsButtonCellSelected").trigger("cellselecting");;
                     break;
                 }
                 case "getDataCells": {
@@ -115,7 +111,7 @@ module nts.uk.ui.jqueryExtentions {
                     return _.map(dataButton, function(c){
                         let button = $(c);
                         let cell = button.parent();
-                        let rowIdx = parseInt(cell.parent().attr("data-idx"));
+                        let rowIdx = parseInt(cell.attr("row-idx"));
                         let columnIdx = parseInt(cell.attr("column-idx"));
                         return {
                             element: cell,
@@ -221,15 +217,15 @@ module nts.uk.ui.jqueryExtentions {
                 
                 for(let i = 0; i < this.column; i++){
                     let idx = dataIdx*this.column + i;
-                    this.buildCell(row, idx, id + "-cell-" + idx, isNull(rowData) || isNull(rowData[i]) ? {} : rowData[i], i);
+                    this.buildCell(row, dataIdx, idx, id + "-cell-" + idx, isNull(rowData) || isNull(rowData[i]) ? {} : rowData[i], i);
                 }
                 
                 row.appendTo(container);
             }
             
-            buildCell(container: JQuery, dataIdx: number, id: string, data: any, columnIdx) {
+            buildCell(container: JQuery, rowIdx: number, dataIdx: number, id: string, data: any, columnIdx) {
                 let self = this;
-                let cell = $("<td>", {"class": "ntsCell ntsButtonTableCell", id: id, attr: {"data-idx": dataIdx, "data-id": id, "column-idx": columnIdx}});
+                let cell = $("<td>", {"class": "ntsCell ntsButtonTableCell", id: id, attr: {"row-idx": rowIdx, "data-idx": dataIdx, "data-id": id, "column-idx": columnIdx}});
                 let contextClass = "menu" + this.id;
                 let button = $("<button>", {"class": "ntsButtonCell ntsButtonTableButton " + contextClass, attr: {"data-idx": dataIdx, "data-id": id}});
                 button.text(isEmpty(data.text) ? "+" : data.text);
@@ -251,15 +247,33 @@ module nts.uk.ui.jqueryExtentions {
                             });
                         }
                     } else {
-                        if(!c.data("empty-cell")){
-                            if(c.hasClass("ntsButtonCellSelected")){
-                                c.removeClass("ntsButtonCellSelected");    
-                            } else {
-                                c.addClass("ntsButtonCellSelected");    
-                            }
+                        c.trigger("cellselecting");
+                    }
+                });
+                
+                button.bind("cellselecting", function(evt, data){
+                    let c = $(this);
+                    if(!c.data("empty-cell")){
+                        if(c.hasClass("ntsButtonCellSelected")){
+                            c.removeClass("ntsButtonCellSelected");    
+                            self.container.trigger("cellselectedchanging", {column: -1, row: -1});
+                        } else {
+                            self.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
+                            c.addClass("ntsButtonCellSelected");    
+                            let oCell = c.parent();
+                            self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx"))}); 
+                        }
+                    } else{
+                        let oldSelected = self.container.find(".ntsButtonCellSelected");
+                        if(!nts.uk.util.isNullOrEmpty(oldSelected)){
+                            let oCell = oldSelected.parent();
+                            self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx"))});    
+                        } else {
+                            self.container.trigger("cellselectedchanging", {column: -1, row: -1});
                         }
                     }
                 });
+                
                 button.contextmenu(function() {
                     let c = $(this);
                     let enable: boolean = c.data("empty-cell");
@@ -303,9 +317,24 @@ module nts.uk.ui.jqueryExtentions {
                     button.data("empty-cell", true);
                     data = {};
                 }
-                let rowIdx = parseInt(cell.parent().attr("data-idx"));
+                let rowIdx = parseInt(cell.attr("row-idx"));
                 let columnIdx = parseInt(cell.attr("column-idx"));
+                if(nts.uk.util.isNullOrUndefined(this.source[rowIdx])){
+                    this.source[rowIdx] = [];
+                }
                 this.source[rowIdx][columnIdx] = data;
+                this.container.trigger("sourcechanging", {source: this.cloneSource()});
+            }
+            
+            cloneSource(){
+//                let clonedSource = [];
+//                _.forEach(this.source, function(row, idx){
+//                    clonedSource[idx] = [];
+//                    _.forEach(row, function(cell, idx2){
+//                        clonedSource[idx][idx2] = _.cloneDeep(cell);
+//                    });    
+//                });
+                return _.cloneDeep(this.source);
             }
         }
         
