@@ -159,13 +159,13 @@
 								</div>
 							</div>
 							<div
-								data-bind="css: { 'hidden' : cat.categoryType() != catType.CONTI }">
-								<div data-bind="text: ko.toJSON(_.first(multipleData()))"></div>
+								data-bind="let: { multiple: _.first(multipleData()) }, 
+										   css: { 'hidden' : cat.categoryType() != catType.CONTI }">
 								<div
 									data-bind="template: { name: 'list-history', data: {
 										list: {
-											value: ko.observable(), 
-											dataSource: _.first(multipleData()),
+											value: multiple.id, 
+											dataSource: multiple.data,
 											primaryKey: 'optionValue',
 											columns: [
 												{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
@@ -173,9 +173,9 @@
 											]
 										},
 										event: {
-											add: function() {},
+											add: multiple.add,
 											replication: function() {},
-											delete: function() {}
+											delete: multiple.remove
 										}
 									} }">
 								</div>
@@ -269,9 +269,8 @@
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_14')}</td>
-											<td><span data-bind="text: _emp.departmentCode"></span> 
-												<span data-bind="text: _emp.departmentName"></span>
-											</td>
+											<td><span data-bind="text: _emp.departmentCode"></span>
+												<span data-bind="text: _emp.departmentName"></span></td>
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_15')}</td>
@@ -328,7 +327,8 @@
 								class="cat-no-childs">
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.SINGLE }">
-									<div data-bind="foreach: { data: layouts().filter(function(m){ return m.listItemCls().length != 0}), as: 'lay' }">
+									<div
+										data-bind="foreach: { data: layouts().filter(function(m){ return m.listItemCls().length != 0}), as: 'lay' }">
 										<div style="padding-top: 10px"
 											data-bind="ntsLayoutControl: { 
 											data: lay.listItemCls,
@@ -338,10 +338,26 @@
 								</div>
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.MULTI }">
-									MULTI</div>
+									<div
+										data-bind="foreach: { data: layouts().filter(function(m){ return m.listItemCls().length != 0}), as: 'lay' }">
+										<div style="padding-top: 10px"
+											data-bind="ntsLayoutControl: { 
+											data: lay.listItemCls,
+											outData: lay.outData,
+											editAble: 2 }"></div>
+									</div>
+								</div>
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.CONTI }">
-									CONTI</div>
+									<div
+										data-bind="foreach: { data: layouts().filter(function(m){ return m.listItemCls().length != 0}), as: 'lay' }">
+										<div style="padding-top: 10px"
+											data-bind="ntsLayoutControl: { 
+											data: lay.listItemCls,
+											outData: lay.outData,
+											editAble: 2 }"></div>
+									</div>
+								</div>
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.NODUP }">
 									NODUP</div>
