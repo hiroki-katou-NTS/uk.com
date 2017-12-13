@@ -13,11 +13,12 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
  *
  */
 @Getter
-@Setter
 @NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
-	//勤務NO
+	/*
+	 * 勤務NO
+	 */
 	private WorkNo workNo;
 	
 	private TimeActualStamp attendanceStamp;
