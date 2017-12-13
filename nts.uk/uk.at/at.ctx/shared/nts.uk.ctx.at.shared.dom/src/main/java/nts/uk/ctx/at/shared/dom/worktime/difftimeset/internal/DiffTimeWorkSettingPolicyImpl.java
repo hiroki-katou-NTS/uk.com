@@ -138,6 +138,25 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		// validate Msg_783 for work time
 		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(item->{
 			
+			//TODO waiting confirm get update start time
+			boolean canUpdateStartTime = false;
+			if (canUpdateStartTime) {
+				diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(halfDay -> {
+					halfDay.getWorkTimezone().getEmploymentTimezones().stream().forEach(workTime -> {
+						//TODO waiting confirm get fix rest time 
+						int fixRestTimeStart = 0;
+						int fixRestTimeEnd = 0;
+
+						boolean invalidBehind = workTime.getTimezone().getStart().valueAsMinutes()
+								+ behindChange > fixRestTimeStart;
+						boolean invalidAhead = workTime.getTimezone().getEnd().valueAsMinutes()
+								- aheadChange < fixRestTimeEnd;
+						if (invalidAhead || invalidBehind) {
+							throw new BusinessException("Msg_783");
+						}
+					});
+				});
+			}
 		});
 		
 		// validate Msg_783 for OT time
@@ -160,6 +179,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 				}
 			});
 		});
-		// validate Msg_784
+		
+		// January 2k18 validate Msg_784 
 	}
 }
