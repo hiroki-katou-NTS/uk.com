@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
@@ -42,7 +43,7 @@ public class CopySettingItemFinder {
 		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
 				isSelf);
 
-		if (itemList.isEmpty()) {
+		if (CollectionUtil.isEmpty(itemList)) {
 			boolean isPersonnelRepresentative = true;
 
 			if (isPersonnelRepresentative) {
@@ -60,14 +61,16 @@ public class CopySettingItemFinder {
 
 		dataMap.forEach((k, v) -> {
 
-			Optional<EmpCopySettingItem> itemInfoOpt = itemList.stream().filter(x -> x.getItemCode() == k).findFirst();
+			Optional<EmpCopySettingItem> itemInfoOpt = itemList.stream().filter(x -> x.getItemCode().equals(k))
+					.findFirst();
 
 			if (itemInfoOpt.isPresent()) {
 				EmpCopySettingItem itemInfo = itemInfoOpt.get();
 
 				result.add(new SettingItemDto(itemInfo.getCategoryCode(), itemInfo.getItemDefId(), k,
 						itemInfo.getItemName(), itemInfo.getIsRequired().value,
-						SettingItemDto.createSaveDataDto(1, v.toString()), itemInfo.getDataType()));
+						SettingItemDto.createSaveDataDto(1, v != null ? v.toString() : ""),
+						itemInfo.getDataType()));
 			}
 
 		});
