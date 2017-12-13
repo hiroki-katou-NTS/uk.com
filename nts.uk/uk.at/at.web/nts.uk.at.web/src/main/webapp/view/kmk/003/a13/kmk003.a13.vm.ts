@@ -1,23 +1,17 @@
-module a9 {
+module a13 {
     
     /**
-     * Screen Model - Tab 9
-     * 就業時間帯の共通設定 -> 遅刻早退設定
-     * WorkTimeCommonSet -> LateLeaveEarlySettingOfWorkTime
+     * Screen Model - Tab 13
+     * 就業時間帯の共通設定 -> 臨時設定
+     * WorkTimeCommonSet -> TemporaryWorkTimeSet
      */
     class ScreenModel {
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
-        // Screen data
-        data: KnockoutObservable<any>;
-
-        // Data - Input value: Late 遅刻
-        lateSetting: TimeRoundingModel;
-        
-        // Data - Input value: Leave early 早退
-        leaveEarlySetting: TimeRoundingModel;     
+        // Data - Input value: TemporaryWorkTime 臨時設定
+        temporaryWorkTimeSetting: TimeRoundingModel;
         
         /**
          * Constructor
@@ -32,19 +26,10 @@ module a9 {
             });
             
             // Init data
-            _self.lateSetting = new TimeRoundingModel();
-            _self.leaveEarlySetting = new TimeRoundingModel();
+            _self.temporaryWorkTimeSetting = new TimeRoundingModel();
             
             //TODO
             _self.isDetailMode = ko.observable(true);     
-        }
-        
-        /**
-         * Bind data to screen items
-         */
-        public bindDataToScreen(data: any) {
-            let _self = this;
-            //TODO
         }
         
         /**
@@ -102,10 +87,12 @@ module a9 {
         }
     }
     
+    
+    
     /**
-     * Knockout Binding Handler - Tab 9
+     * Knockout Binding Handler - Tab 13
      */
-    class KMK003A9BindingHandler implements KnockoutBindingHandler {
+    class KMK003A13BindingHandler implements KnockoutBindingHandler {
         
         /**
          * Constructor
@@ -123,7 +110,7 @@ module a9 {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
             let webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/a9/index.xhtml').serialize();
+                .mergeRelativePath('/view/kmk/003/a13/index.xhtml').serialize();
             // Get data
             let input = valueAccessor();
 
@@ -136,5 +123,5 @@ module a9 {
 
     }
     
-    ko.bindingHandlers['ntsKMK003A9'] = new KMK003A9BindingHandler();
+    ko.bindingHandlers['ntsKMK003A13'] = new KMK003A13BindingHandler();
 }
