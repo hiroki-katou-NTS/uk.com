@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.pubimp.schedulemanagementcontrol;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControl;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.schedule.pub.schedulemanagementcontrol.ScheduleManagementCo
 /**
  * The Class ScheduleManagementControlPubImpl.
  */
+@Stateless
 public class ScheduleManagementControlPubImpl implements ScheduleManagementControlPub{
 
 	/** The repository. */
