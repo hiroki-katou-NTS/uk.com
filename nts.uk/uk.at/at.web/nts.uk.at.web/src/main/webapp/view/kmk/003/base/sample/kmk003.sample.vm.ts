@@ -59,6 +59,13 @@ module nts.uk.at.view.kmk003.sample {
             }
             
             /**
+             * testDataSource
+             */
+            public testDataSource() {
+                console.log(this.dataSource());
+            }
+            
+            /**
              * columnSetting
              */
             private columnSetting(): Array<any> {
