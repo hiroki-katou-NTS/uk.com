@@ -27,7 +27,7 @@ public class KscdtWorkScheduleTimeZonePK implements Serializable {
 	@Column(name = "YMD")
 	public GeneralDate date;
 
-	@Column(name = "SCHEDULE_CNT")
+	@Column(name = "CNT")
 	public int scheduleCnt;
 
 }
