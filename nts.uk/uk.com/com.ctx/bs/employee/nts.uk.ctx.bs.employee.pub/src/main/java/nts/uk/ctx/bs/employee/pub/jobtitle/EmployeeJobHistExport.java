@@ -20,10 +20,6 @@ public class EmployeeJobHistExport {
 	// 社員ID
 	private String employeeId;
 
-	/** The job title code. */
-	// 職位コード
-	private String jobTitleCode;
-	
 	/** The job title id. */
 	// 職位ID
 	private String jobTitleID;
