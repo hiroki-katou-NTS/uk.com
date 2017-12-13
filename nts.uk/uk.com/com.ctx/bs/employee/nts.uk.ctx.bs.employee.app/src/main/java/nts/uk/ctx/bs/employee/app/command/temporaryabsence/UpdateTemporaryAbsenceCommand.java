@@ -19,7 +19,7 @@ public class UpdateTemporaryAbsenceCommand {
 	private String histoyId;
 	
 	@PeregItem("IS00089")
-	private BigDecimal leaveHolidayAtr;
+	private BigDecimal tempAbsenceFrNo;
 	
 	/** 備考 */
 	@PeregItem("IS00097")
