@@ -114,7 +114,7 @@ module cps001.a.vm {
         });
 
         // output data on category changed
-        multipleData: KnockoutObservableArray<any> = ko.observableArray(_.fill(Array(10), 0).map(x => ko.observableArray([])));
+        multipleData: KnockoutObservableArray<MultiData> = ko.observableArray(_.fill(Array(10), 0).map(x => new MultiData()));
 
         constructor() {
             let self = this,
@@ -240,38 +240,60 @@ module cps001.a.vm {
                         categoryId: category.id(),
                         employeeId: employee.employeeId(),
                         standardDate: moment.utc(),
-                        categoryCode: undefined,
-                        personId: undefined,
+                        categoryCode: category.categoryCode(),
+                        personId: person.personId(),
                         infoId: undefined
                     };
                     switch (t) {
                         case IT_CAT_TYPE.SINGLE:
+                        case IT_CAT_TYPE.NODUPLICATE:
                             service.getCatData(query).done(data => {
                                 layout.listItemCls(data.classificationItems);
-                                _.each(layouts(), (item, index) => {
-                                    if (index > 0) {
-                                        item.listItemCls([]);
-                                    }
-                                });
                             });
                             break;
                         case IT_CAT_TYPE.MULTI:
+                            service.getCatData(query).done(data => {
+                                layout.listItemCls(data.classificationItems);
+                            });
                             break;
                         case IT_CAT_TYPE.CONTINU:
                             service.getHistData(query).done(data => {
-                                let source = _.first(list());
-                                debugger;
-                                source(data);
+                                let source: MultiData = _.first(list());
+                                source.data(data);
+                                if (source.id() == data[0].optionValue) {
+                                    source.id.valueHasMutated();
+                                } else {
+                                    source.id(data[0].optionValue);
+                                }
                             });
                             break;
-                        case IT_CAT_TYPE.NODUPLICATE:
-                            break;
                         case IT_CAT_TYPE.DUPLICATE:
+                            debugger;
                             break;
                         case IT_CAT_TYPE.CONTINUWED:
+                            debugger;
                             break;
                     }
                 }
+            });
+
+            _.each(list(), (item, index) => {
+                let lt = _.find(layouts(), (l, i) => i == index);
+
+                item.id.subscribe(v => {
+                    let query = {
+                        categoryId: category.id(),
+                        employeeId: employee.employeeId(),
+                        standardDate: moment.utc(),
+                        categoryCode: category.categoryCode(),
+                        personId: person.personId(),
+                        infoId: v
+                    };
+
+                    service.getCatData(query).done(data => {
+                        lt.listItemCls(data.classificationItems);
+                    });
+                });
             });
 
             self.start();
@@ -662,6 +684,16 @@ module cps001.a.vm {
                 self.allowMapBrowse(!!param.allowMapBrowse);
             }
         }
+    }
+
+    interface IMultiData {
+        optionText: string;
+        optionValue: string;
+    }
+
+    class MultiData {
+        id: KnockoutObservable<string> = ko.observable(undefined);
+        data: KnockoutObservableArray<IMultiData> = ko.observableArray([]);
     }
 
     enum TABS {
