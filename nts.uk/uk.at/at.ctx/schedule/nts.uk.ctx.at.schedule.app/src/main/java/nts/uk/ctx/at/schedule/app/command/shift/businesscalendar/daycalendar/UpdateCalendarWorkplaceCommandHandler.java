@@ -2,18 +2,20 @@ package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.daycalendar;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 
 @Stateless
 public class UpdateCalendarWorkplaceCommandHandler extends CommandHandler<List<UpdateCalendarWorkplaceCommand>> {
+	
+	private final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Inject
 	private CalendarWorkPlaceRepository calendarWorkplaceRepo;
@@ -24,11 +26,11 @@ public class UpdateCalendarWorkplaceCommandHandler extends CommandHandler<List<U
 		for(UpdateCalendarWorkplaceCommand calendarWorkplaceCommand: calendarWorkplaceCommands) {
 			CalendarWorkplace calendarWorkplace = CalendarWorkplace.createFromJavaType(
 					calendarWorkplaceCommand.getWorkPlaceId(), 
-					calendarWorkplaceCommand.getDateId(),
+					GeneralDate.fromString(calendarWorkplaceCommand.getDate(), DATE_FORMAT),
 					calendarWorkplaceCommand.getWorkingDayAtr());
 			Optional<CalendarWorkplace> calendarCom =calendarWorkplaceRepo.findCalendarWorkplaceByDate(
 					calendarWorkplaceCommand.getWorkPlaceId(),
-					calendarWorkplaceCommand.getDateId());
+					GeneralDate.fromString(calendarWorkplaceCommand.getDate(), DATE_FORMAT));
 			//neu da ton tai
 			if (calendarCom.isPresent()) {
 				calendarWorkplaceRepo.updateCalendarWorkplace(calendarWorkplace);

@@ -32,7 +32,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.UseSet;
 @Stateless
 public class CalendarInformationServiceImpl implements ICalendarInformationService {
 	
-	private final String DATE_FORMAT = "yyyyMMdd";
+	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private CalendarCompanyRepository calendarCompanyRepository;
@@ -75,18 +75,17 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	 * @return UseSet
 	 */
 	private UseSet getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date){
-		BigDecimal dateID = new BigDecimal(date.toString(DATE_FORMAT));
-		Optional<CalendarCompany> opCalendarCompany = calendarCompanyRepository.findCalendarCompanyByDate(companyID, dateID);
+		Optional<CalendarCompany> opCalendarCompany = calendarCompanyRepository.findCalendarCompanyByDate(companyID, date);
 		if(opCalendarCompany.isPresent()){
 			return opCalendarCompany.get().getWorkingDayAtr();
 		}
 		
-		Optional<CalendarWorkplace> opCalendarWorkplace = calendarWorkPlaceRepository.findCalendarWorkplaceByDate(workplaceID, dateID);
+		Optional<CalendarWorkplace> opCalendarWorkplace = calendarWorkPlaceRepository.findCalendarWorkplaceByDate(workplaceID, date);
 		if(opCalendarWorkplace.isPresent()){
 			return opCalendarWorkplace.get().getWorkingDayAtr();
 		}
 		
-		Optional<CalendarClass> opCalendarClass = calendarClassRepository.findCalendarClassByDate(companyID, classCD, dateID);
+		Optional<CalendarClass> opCalendarClass = calendarClassRepository.findCalendarClassByDate(companyID, classCD, date);
 		if(opCalendarClass.isPresent()){
 			return opCalendarClass.get().getWorkingDayAtr();
 		}

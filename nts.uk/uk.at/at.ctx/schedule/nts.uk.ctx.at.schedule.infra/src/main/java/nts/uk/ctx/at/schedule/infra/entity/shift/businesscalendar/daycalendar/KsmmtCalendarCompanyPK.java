@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @Embeddable
 @AllArgsConstructor
@@ -23,5 +23,5 @@ public class KsmmtCalendarCompanyPK implements Serializable {
 	public String companyId;
 	
 	@Column(name = "YMD_K")
-	public BigDecimal dateId;
+	public GeneralDate date;
 }
