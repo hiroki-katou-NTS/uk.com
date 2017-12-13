@@ -12,6 +12,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessEnglishName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
@@ -53,8 +54,7 @@ public class Person extends AggregateRoot {
 	
 	//for required field
 	public static Person createFromJavaType(String personId, GeneralDate birthDate, int bloodType, int gender, String businessName, String personName, String personNameKana) {
-		return new Person(personId, birthDate, EnumAdaptor.valueOf(bloodType, BloodType.class),
-				EnumAdaptor.valueOf(gender, GenderPerson.class), new BusinessName(businessName), new FullNameSet(personName, personNameKana));
+		return new Person(personId, birthDate, bloodType,gender, new BusinessName(businessName), new FullNameSet(personName, personNameKana));
 	}
 	public Person(String personId, PersonNameGroup personNameGroup) {
 		super();
@@ -63,13 +63,33 @@ public class Person extends AggregateRoot {
 	}
 	
 	//constructor for required field
-	public Person(String personId, GeneralDate birthDate, BloodType bloodType, GenderPerson gender, BusinessName businessName, FullNameSet personName){
+	public Person(String personId, GeneralDate birthDate, int bloodType, int gender, BusinessName businessName, FullNameSet personName){
 		super();
 		this.personId = personId;
 		this.birthDate = birthDate;
-		this.bloodType = bloodType;
-		this.gender = gender;
+		
+		if (ConstantUtils.ENUM_UNDEFINE_VALUE != bloodType){
+			this.bloodType = EnumAdaptor.valueOf(bloodType,BloodType.class);
+		}
+		if (ConstantUtils.ENUM_UNDEFINE_VALUE != gender){
+			this.gender = EnumAdaptor.valueOf(gender,GenderPerson.class);
+		}
+		
 		this.personNameGroup = new PersonNameGroup(personName, businessName);
+	}
+	public Person(GeneralDate birthDate,int bloodType, int gender,String personId,PersonNameGroup personNameGroup){
+		super();
+		this.personId = personId;
+		this.birthDate = birthDate;
+		
+		if (ConstantUtils.ENUM_UNDEFINE_VALUE != bloodType){
+			this.bloodType = EnumAdaptor.valueOf(bloodType,BloodType.class);
+		}
+		if (ConstantUtils.ENUM_UNDEFINE_VALUE != gender){
+			this.gender = EnumAdaptor.valueOf(gender,GenderPerson.class);
+		}
+		
+		this.personNameGroup =personNameGroup;
 	}
 	
 	// sonnlb code start
@@ -90,8 +110,7 @@ public class Person extends AggregateRoot {
 				new BusinessEnglishName(businessEnglishName), personNameSet,PersonalNameMultilingualSet,  personRomanjiSet,
 				todokedeFullNameSet, oldNameSet);
 
-		return new Person(birthDate, EnumAdaptor.valueOf(bloodType, BloodType.class),
-				EnumAdaptor.valueOf(gender, GenderPerson.class), personId, personNameGroup);
+		return new Person(birthDate,bloodType,gender, personId, personNameGroup);
 	}
 
 	// sonnlb code end
