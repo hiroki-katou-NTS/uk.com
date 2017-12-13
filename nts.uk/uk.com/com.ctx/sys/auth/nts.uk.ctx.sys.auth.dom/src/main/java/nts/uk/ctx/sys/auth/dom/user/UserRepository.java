@@ -12,7 +12,7 @@ public interface UserRepository {
 	 * @param loginId the login id
 	 * @return the by login id
 	 */
-	Optional<User> getByLoginId(String loginId); 
+	 List<User> getByLoginId(String loginId); 
 	
 	/**
 	 * Gets the by associated person id.
