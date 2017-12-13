@@ -30,6 +30,11 @@
 			<com:stylefile path="../a10/kmk003.a10.style.css" />
 			<com:scriptfile path="../a12/kmk003.a12.vm.js" />
 			<com:stylefile path="../a12/kmk003.a12.style.css" />
+			
+			<!-- Begin tab 11 -->
+			<com:scriptfile path="../a11/kmk003.a11.vm.js" />
+			<com:stylefile path="../a11/kmk003.a11.style.css" /><!-- End tab 11 -->
+			
 			<com:scriptfile path="../a13/kmk003.a13.vm.js" />
 			<com:stylefile path="../a13/kmk003.a13.style.css" />
 			<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
@@ -291,7 +296,10 @@
 												</div>
 											</div>
 											<div class="tab-a11">
-												<span>Tab Content 1</span><br />
+												<div class="tab-a11">
+													<div data-bind="ntsKMK003A11: {}">
+												</div>
+											</div>
 											</div>
 											<div class="tab-a12">
 												<div data-bind="ntsKMK003A12: {}">
