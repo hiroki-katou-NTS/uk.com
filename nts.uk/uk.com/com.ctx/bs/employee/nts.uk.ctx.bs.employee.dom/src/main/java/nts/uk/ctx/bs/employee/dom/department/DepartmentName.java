@@ -8,10 +8,11 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class DepartmentName. 部門名称
+ * The Class DepartmentName.
  */
 @StringMaxLength(20)
-public class DepartmentName extends StringPrimitiveValue<DepartmentName>{
+// 部門名称
+public class DepartmentName extends StringPrimitiveValue<DepartmentName> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -19,7 +20,8 @@ public class DepartmentName extends StringPrimitiveValue<DepartmentName>{
 	/**
 	 * Instantiates a new department name.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
 	public DepartmentName(String rawValue) {
 		super(rawValue);

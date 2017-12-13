@@ -219,6 +219,7 @@ module cps002.a.vm {
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
                         //move to toppage
+                        jump('/view/cps/008/a/index.xhtml');
                     });
                 }
             });
@@ -316,7 +317,15 @@ module cps002.a.vm {
 
                 }).fail((error) => {
 
-                    dialog({ messageId: error.message });
+                    let message = error.message;
+                    switch (message) {
+                        case "Msg_345":
+                            $('#employeeCode').ntsError('set', { messageId: message });
+                            break;
+                        case "Msg_757":
+                            $('#loginId').ntsError('set', { messageId: message });
+                            break;
+                    }
 
                 });
             }
@@ -335,21 +344,15 @@ module cps002.a.vm {
 
         gotoStep3() {
             let self = this,
-                command = {
-                    createType: self.createTypeId(),
-
-                    initSettingId: self.currentInitSetting().itemId,
-
-                    baseDate: self.currentEmployee().hireDate(),
-
-                    employeeId: self.copyEmployee().employeeId
-
-                },
+                command = ko.toJS(self.currentEmployee()),
                 layout = self.layout();
             self.currentEmployee().avatarId("");
             self.currentStep(2);
 
-
+            //add atr
+            command.employeeCopyId = self.copyEmployee().employeeId;
+            command.initSettingId = self.currentInitSetting().itemId;
+            command.createType = self.createTypeId();
             service.getLayoutByCreateType(command).done((data: ILayout) => {
                 layout.layoutCode(data.layoutCode || '');
                 layout.layoutName(data.layoutName || '');

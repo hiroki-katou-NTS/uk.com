@@ -5,7 +5,11 @@ module cps001.b.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
-    let __viewContext: any = window['__viewContext'] || {};
+
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
 
@@ -22,7 +26,7 @@ module cps001.b.vm {
                 service.getEmployeeInfo(dataShare.sid).done((data: IModelDto) => {
                     if (data) {
                         empDelete.code(data.code); // scd
-                        empDelete.reason(data.reason); // reason delete
+                        //empDelete.reason(data.reason); // reason delete
                     }
                 });
 
@@ -46,7 +50,7 @@ module cps001.b.vm {
                     let command = { sId: dataShare.sid, reason: empDelete.reason };
                     service.deleteEmp(command).done(() => {
                         showDialog.info({ messageId: "Msg_16" }).then(function() {
-                            setShared('CPS001B_VALUE', {});
+                            setShared('CPS001B_VALUES', {});
                             close();
                         });
                     });

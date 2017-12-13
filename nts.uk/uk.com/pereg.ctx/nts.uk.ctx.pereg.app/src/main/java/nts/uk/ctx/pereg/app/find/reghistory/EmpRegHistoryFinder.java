@@ -81,7 +81,7 @@ public class EmpRegHistoryFinder {
 
 		String PersonName = person.getPersonNameGroup().getPersonName().getFullName().v();
 
-		regEmpDto.setEmployeeName(businessName != "" ? businessName : PersonName);
+		regEmpDto.setEmployeeName(!businessName.equals("") ? businessName : PersonName);
 
 		return true;
 

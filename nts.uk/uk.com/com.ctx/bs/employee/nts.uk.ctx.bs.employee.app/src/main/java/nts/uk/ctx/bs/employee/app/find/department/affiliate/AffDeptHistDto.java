@@ -69,6 +69,7 @@ public class AffDeptHistDto extends PeregDomainDto{
 		dto.setAffHistoryTranfsType(affDeptHistItem.getAffHistoryTranfsType());
 		dto.setDistributionRatio(affDeptHistItem.getDistributionRatio().v().trim());
 		dto.setStartDate(startDate);
+		dto.setEndDate(endDate);
 		return dto;
 	}
 }

@@ -63,7 +63,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 		if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			
 			// Update category data
-			perInfoCtgDataRepository.updateCategoryData(new PerInfoCtgData(command.getRecordId(),perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
+//			perInfoCtgDataRepository.updateCategoryData(new PerInfoCtgData(command.getRecordId(),perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
 			
 			// Insert item data
 			PersonInfoItemData itemData = null;
@@ -80,7 +80,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			
 		} else if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
 			// Update emp category data
-			emInfoCtgDataRepository.updateEmpInfoCtgData(new EmpInfoCtgData(command.getRecordId(),perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
+//			emInfoCtgDataRepository.updateEmpInfoCtgData(new EmpInfoCtgData(command.getRecordId(),perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
 			
 			// Add item data
 			EmpInfoItemData itemData = null;

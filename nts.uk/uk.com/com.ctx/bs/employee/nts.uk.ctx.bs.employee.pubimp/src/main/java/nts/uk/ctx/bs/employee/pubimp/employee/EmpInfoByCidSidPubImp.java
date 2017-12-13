@@ -47,7 +47,7 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 		if (empOpt.isPresent()) {
 			empDataMng = empOpt.get();
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(pid);
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfPerson(pid);
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist
 					.getAffCompanyHistByEmployee(empDataMng.getEmployeeId());
