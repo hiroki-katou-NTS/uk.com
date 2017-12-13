@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -49,20 +49,18 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 
 	@Override
 	public EmploymentHistoryDto getSingleData(PeregQuery query) {
-		Optional<EmploymentHistory> optHis;
-		if ( query.getInfoId() != null ) {
+		Optional<DateHistoryItem> optHis;
+		if (query.getInfoId() != null) {
 			optHis = this.empHistRepo.getByHistoryId(query.getInfoId());
 		} else {
 			optHis = this.empHistRepo.getByEmployeeIdAndStandardDate(query.getEmployeeId(), query.getStandardDate());
 		}
-		if ( optHis.isPresent()) {
-			
-			Optional<EmploymentHistoryItem> hisItemOpt = empHistItemRepo
-					.getByHistoryId(optHis.get().getHistoryItems().get(0).identifier());
+		if (optHis.isPresent()) {
+			Optional<EmploymentHistoryItem> hisItemOpt = empHistItemRepo.getByHistoryId(optHis.get().identifier());
 			if (hisItemOpt.isPresent()) {
 				return EmploymentHistoryDto.createFromDomain(optHis.get(), hisItemOpt.get());
 			}
-			
+
 		}
 		return null;
 	}
