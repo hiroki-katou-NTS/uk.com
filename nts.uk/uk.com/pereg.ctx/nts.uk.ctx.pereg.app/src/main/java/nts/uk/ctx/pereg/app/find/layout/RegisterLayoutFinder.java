@@ -8,11 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
-import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
-import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
@@ -25,13 +22,11 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFin
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
-import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 /**
  * @author sonnlb
@@ -54,21 +49,12 @@ public class RegisterLayoutFinder {
 	private EmpCopySettingFinder copySettingFinder;
 
 	@Inject
-	private LayoutingProcessor layoutProc;
-
-	@Inject
 
 	private CopySettingItemFinder copyItemFinder;
 
 	@Inject
 
 	private InitValueSetItemFinder initItemFinder;
-
-	@Inject
-	private PerInfoCategoryFinder infoCtgFinder;
-
-	@Inject
-	private EmpInfoItemDataFinder infoItemDataFinder;
 
 	// sonnlb end
 
@@ -81,7 +67,7 @@ public class RegisterLayoutFinder {
 	 *            : command from client push to webservice
 	 * @return NewLayoutDto
 	 */
-	public NewLayoutDto getByCreateType(GetLayoutByCreateTypeDto command) {
+	public NewLayoutDto getByCreateType(AddEmployeeCommand command) {
 
 		Optional<NewLayout> layout = repo.getLayout(false);
 		if (!layout.isPresent()) {
@@ -93,38 +79,24 @@ public class RegisterLayoutFinder {
 
 		List<LayoutPersonInfoClsDto> listItemCls = getlistItemCls(command, _layout);
 
-		listItemCls.forEach(x -> {
-			PerInfoCtgFullDto ctgInfo = this.infoCtgFinder.getPerInfoCtg(x.getPersonInfoCategoryID());
-			if (ctgInfo != null) {
-				x.setItems(x
-						.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
-								.fromItemDef(ctgInfo.getCategoryCode(), itemDf, ActionRole.EDIT.value))
-						.collect(Collectors.toList()));
-			}
-		});
-
 		return NewLayoutDto.fromDomain(_layout, listItemCls);
 
 	}
 
-	private List<LayoutPersonInfoClsDto> getlistItemCls(GetLayoutByCreateTypeDto command, NewLayout _layout) {
+	private List<LayoutPersonInfoClsDto> getlistItemCls(AddEmployeeCommand command, NewLayout _layout) {
 
 		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
 
 		if (command.getCreateType() != 3) {
 
-			List<PeregQuery> queryList = loadQueryList(command.getCreateType(), command.getInitSettingId(),
-					command.getBaseDate(), command.getEmployeeId());
+			List<SettingItemDto> dataServer = this.getItemListByCreateType(command);
 
-			if (queryList.isEmpty()) {
+			if (CollectionUtil.isEmpty(dataServer)) {
 
 				return null;
-
 			}
 
-			setDataSystem(queryList, listItemCls);
-
-			setDataOptinal(queryList, listItemCls);
+			setData(dataServer, listItemCls);
 
 			if (command.getCreateType() == 2) {
 
@@ -153,114 +125,39 @@ public class RegisterLayoutFinder {
 
 	}
 
-	private void setDataOptinal(List<PeregQuery> queryList, List<LayoutPersonInfoClsDto> listItemCls) {
-		List<PeregQuery> queryOptinalList = queryList.stream().filter(x -> x.getCategoryCode().charAt(1) == 'O')
-				.collect(Collectors.toList());
+	private void setData(List<SettingItemDto> dataServer, List<LayoutPersonInfoClsDto> listItemCls) {
 
-		// set data for optinalCategory
-		queryOptinalList.forEach(query -> {
+		dataServer.forEach(setItem -> {
 
-			Optional<LayoutPersonInfoClsDto> clsDtoOpt = listItemCls.stream()
-					.filter(itemCls -> itemCls.getPersonInfoCategoryID() == query.getCategoryId()).findFirst();
-			if (clsDtoOpt.isPresent()) {
-
-				List<SettingItemDto> dataList = this.infoItemDataFinder.loadInfoItemDataList(query.getCategoryCode(),
-						AppContexts.user().companyId(), AppContexts.user().employeeId());
-
-				if (!CollectionUtil.isEmpty(dataList) && !CollectionUtil.isEmpty(clsDtoOpt.get().getListItemDf())) {
-					LayoutPersonInfoClsDto clsDto = clsDtoOpt.get();
-					clsDto.setItems(clsDto
-							.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
-									.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
-							.collect(Collectors.toList()));
-					clsDto.getItems().forEach(item -> {
-						LayoutPersonInfoValueDto itemData = (LayoutPersonInfoValueDto) item;
-						itemData.setValue(getValueByItemCode(dataList, itemData.getItemCode()));
-					});
-				}
-
-			}
+			createInfoValueDtoByDefId(setItem, listItemCls);
 		});
 
 	}
 
-	private Object getValueByItemCode(List<SettingItemDto> dataList, String itemCode) {
+	private void createInfoValueDtoByDefId(SettingItemDto setItem, List<LayoutPersonInfoClsDto> listItemCls) {
 
-		Object returnData = null;
-		Optional<SettingItemDto> itemDtoOpt = dataList.stream().filter(x -> x.getItemCode().equals(itemCode))
+		Optional<LayoutPersonInfoClsDto> clsOpt = listItemCls.stream()
+				.filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getListItemDf()))
+				.filter(itemCls -> itemCls.getListItemDf().stream()
+						.filter(itemDf -> itemDf.getId().equals(setItem.getItemDefId())).findFirst().isPresent())
 				.findFirst();
 
-		if (itemDtoOpt.isPresent()) {
-			SettingItemDto itemDto = itemDtoOpt.get();
-			returnData = itemDto.getValueAsString();
-		}
-		return returnData;
-	}
+		if (clsOpt.isPresent()) {
+			LayoutPersonInfoClsDto cls = clsOpt.get();
+			Optional<PerInfoItemDefDto> itemDef = cls.getListItemDf().stream()
+					.filter(itemDf -> itemDf.getId().equals(setItem.getItemDefId())).findFirst();
+			LayoutPersonInfoValueDto newLayoutDto = LayoutPersonInfoValueDto.fromItemDef(setItem, itemDef.get(),
+					ActionRole.EDIT.value);
+			if (CollectionUtil.isEmpty(cls.getItems())) {
+				List<Object> itemList = new ArrayList<Object>();
+				itemList.add(newLayoutDto);
+				cls.setItems(itemList);
+			} else {
 
-	private void setDataSystem(List<PeregQuery> queryList, List<LayoutPersonInfoClsDto> listItemCls) {
-
-		List<PeregQuery> querySysTemList = queryList.stream().filter(x -> x.getCategoryCode().charAt(1) == 'S')
-				.collect(Collectors.toList());
-		// set data for systemCategory
-		querySysTemList.forEach(query -> {
-			Optional<LayoutPersonInfoClsDto> clsDtoOpt = listItemCls.stream()
-					.filter(itemCls -> itemCls.getPersonInfoCategoryID() == query.getCategoryId()).findFirst();
-
-			if (clsDtoOpt.isPresent()) {
-
-				PeregDto peregDto = this.layoutProc.findSingle(query);
-
-				if (peregDto != null && !CollectionUtil.isEmpty(clsDtoOpt.get().getListItemDf())) {
-					LayoutPersonInfoClsDto clsDto = clsDtoOpt.get();
-
-					clsDto.setItems(clsDto
-							.getListItemDf().stream().map(itemDf -> LayoutPersonInfoValueDto
-									.fromItemDef(query.getCategoryCode(), itemDf, ActionRole.EDIT.value))
-							.collect(Collectors.toList()));
-
-					MappingFactory.mapItemClass(peregDto, clsDto);
-
-				}
+				cls.getItems().add(newLayoutDto);
 			}
 
-		});
-
-	}
-
-	/**
-	 * load All PeregDto in database by createType
-	 * 
-	 * @param createType
-	 *            : type client need create data
-	 * @param initSettingId
-	 *            : settingId need find item in
-	 * @param baseDate
-	 *            : date need find
-	 * @param employeeCopyId
-	 *            : id of employee copy
-	 * @return SettingItemDto List
-	 */
-	public List<PeregQuery> loadQueryList(int createType, String initSettingId, GeneralDate baseDate,
-			String employeeCopyId) {
-
-		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
-		// Copy Type
-		if (createType == 1) {
-
-			this.copySettingFinder.getEmpCopySetting().forEach(x -> {
-				listQuery.add(new PeregQuery(x.getCategoryCd(), employeeCopyId, null, baseDate));
-			});
-
-		} else {
-			// Init Value Type
-
-			this.initCtgSettingFinder.getAllCategoryBySetId(initSettingId).forEach(x -> {
-
-				listQuery.add(new PeregQuery(x.getCategoryCd(), AppContexts.user().employeeId(), null, baseDate));
-			});
-
 		}
-		return listQuery;
 	}
 
 	/**
@@ -276,7 +173,7 @@ public class RegisterLayoutFinder {
 	 *            : id of employee copy
 	 * @return SettingItemDto List
 	 */
-	public List<SettingItemDto> itemListByCreateType(AddEmployeeCommand command) {
+	public List<SettingItemDto> getItemListByCreateType(AddEmployeeCommand command) {
 
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();

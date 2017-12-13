@@ -70,7 +70,7 @@ public class SettingItemDto {
 		switch (saveDataType) {
 		case DATE:
 			resultDto = SaveDataDto.createDataDto(
-					value != "" && value !=null? GeneralDate.fromString(value.toString(), "ddMMyyyy") : GeneralDate.min());
+					value != "" && value !=null? GeneralDate.fromString(value.toString(), "yyyy/MM/dd") : GeneralDate.min());
 			break;
 		case NUMBERIC:
 			resultDto = SaveDataDto.createDataDto(value != "" &&value !=null ? Integer.parseInt(value.toString()) : 0);

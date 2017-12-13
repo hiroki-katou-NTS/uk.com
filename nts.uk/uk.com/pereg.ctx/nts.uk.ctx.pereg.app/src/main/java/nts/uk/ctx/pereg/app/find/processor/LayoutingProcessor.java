@@ -52,6 +52,7 @@ public class LayoutingProcessor {
 		
 		// get domain data
 		val finderClass = this.finders.get(query.getCategoryCode());
+		if(finderClass == null) return null;
 		PeregDomainDto domainDto = finderClass.findSingle(query);
 		
 		if ( domainDto == null ) {

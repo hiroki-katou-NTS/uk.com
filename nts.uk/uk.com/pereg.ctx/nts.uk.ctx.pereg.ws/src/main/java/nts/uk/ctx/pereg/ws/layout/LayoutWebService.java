@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pereg.app.find.layout.GetLayoutByCreateTypeDto;
+import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
@@ -34,7 +34,7 @@ public class LayoutWebService extends WebService {
 
 	@Path("getByCreateType")
 	@POST
-	public NewLayoutDto getByCreateType(GetLayoutByCreateTypeDto command) {
+	public NewLayoutDto getByCreateType(AddEmployeeCommand command) {
 		return this.layoutFinder.getByCreateType(command);
 	}
 	

@@ -188,9 +188,11 @@ public class PerInfoItemDefForLayoutFinder {
 			
 			// get itemId list of children
 			SetItem setItem = (SetItem) item;
+			List<String> items = setItem.getItems();
+			if(items.size() == 0) return lstResult;
 			// get children by itemId list
 			List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty
-					.getPerInfoItemDefByListId(setItem.getItems(), contractCode);
+					.getPerInfoItemDefByListId(items, contractCode);
 			for (int i = 0; i < lstDomain.size(); i++)
 				lstResult.add(createFromDomain(empId, lstDomain.get(i), perInfoCd, dispOrder));
 		}
