@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 
@@ -15,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
  */
 @Getter
 // フレックス勤務の休日出勤用勤務時間帯
-public class FlexOffdayWorkTime {
+public class FlexOffdayWorkTime extends DomainObject {
 
 	/** The lst work timezone. */
 	// 勤務時間帯
@@ -44,5 +46,25 @@ public class FlexOffdayWorkTime {
 		memento.setLstWorkTimezone(this.lstWorkTimezone);
 		memento.setRestTimezone(this.restTimezone);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.restTimezone.isFixRestTime() && !this.isRestTzInHolidayTz()) {
+			throw new BusinessException("Msg_756");
+		}
+	}
+
+	/**
+	 * Checks if is rest tz in hd wtz.
+	 *
+	 * @return true, if is rest tz in hd wtz
+	 */
+	private boolean isRestTzInHolidayTz() {
+		return this.restTimezone.getFixedRestTimezone().getTimezones().stream().anyMatch(
+				resTz -> this.lstWorkTimezone.stream().anyMatch(hdWtz -> resTz.isBetweenOrEqual(hdWtz.getTimezone())));
+	}
 }
