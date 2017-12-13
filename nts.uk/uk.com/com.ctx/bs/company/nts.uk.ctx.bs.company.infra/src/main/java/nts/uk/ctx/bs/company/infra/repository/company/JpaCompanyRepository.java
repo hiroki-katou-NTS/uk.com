@@ -149,7 +149,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.shortComName = domain.getShortComName().v();
 		entity.isAbolition = domain.getIsAbolition().value;
 		entity.startMonth = domain.getStartMonth().value;
-		entity.taxNo = domain.getTaxNo().v();
+		entity.taxNo = domain.getTaxNo() != null ? domain.getTaxNo().v() : null;
 		if (domain.getAddInfor() != null) {
 			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor());
 		}
@@ -170,7 +170,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.add_2 = domain.getAdd_2().v();
 		entity.addKana_1 = domain.getAddKana_1().v();
 		entity.addKana_2 = domain.getAddKana_2().v();
-		entity.postCd = domain.getPostCd().v();
+		entity.postCd = domain.getPostCd().v() != null ? domain.getPostCd().v() : null;
 		entity.phoneNum = domain.getPhoneNum().v();
 		return entity;
 	}
