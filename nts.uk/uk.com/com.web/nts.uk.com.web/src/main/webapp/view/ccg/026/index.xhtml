@@ -68,8 +68,8 @@
 								<h2>TypeScript</h2>
 <pre><![CDATA[module nts.uk.com.view.cdl026.a {
 	import getText = nts.uk.resource.getText;
-	import ccg = nts.uk.com.view.ccg026.a;
-	import model = nts.uk.com.view.ccg026.a.component.model;
+	import ccg = nts.uk.com.view.ccg026;
+	import model = nts.uk.com.view.ccg026.component.model;
 	
 	export module viewmodel {
 		export class ScreenModel {
@@ -90,7 +90,7 @@
 				let self = this;
 				let dfd = $.Deferred();
 				self.component.startPage().done(() => {
-					self.listPermission(self.component.listPermissions());
+					self.listPermission(self.component.listPermissions);
 					dfd.resolve();	
 				});
 				return dfd.promise();
