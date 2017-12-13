@@ -26,7 +26,6 @@ public class UpdateCtgDocFileCommandHandler extends CommandHandler<UpdateCtgDocF
 		Optional<PersonFileManagement> domain = empFileManagementRepository.getEmpMana(command.getFileId());
 		if (domain.isPresent()) {
 			PersonFileManagement emp = domain.get();
-			emp.setPersonInfoCategoryId(command.getPersonInfoCategoryIdNew());
 			empFileManagementRepository.update(emp);
 		}
 		

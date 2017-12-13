@@ -7,6 +7,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 
 @Stateless
 public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapCommand>{
@@ -14,11 +16,15 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 	@Inject
 	private EmpFileManagementRepository empFileManagementRepository;
 	
+	@Inject
+	private EmployeeRepository emplRepo;
+	
 	@Override
 	protected void handle(CommandHandlerContext<EmpAvaOrMapCommand> context) {
 		EmpAvaOrMapCommand command = context.getCommand();
-		this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(command.getEmployeeId(),
-				command.getFileId(), command.getFileType(), null, null));
+		Employee employee = emplRepo.getBySid(command.getEmployeeId()).get();
+		this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(employee.getPId(),
+				command.getFileId(), command.getFileType(), null));
 	}
 
 }

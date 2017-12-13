@@ -4,31 +4,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
-import nts.uk.shr.pereg.app.PeregHistoryId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregPersonId;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
-@Value
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class ItemsByCategory {
 
 	/** category code */
-	private final String categoryCd;
+	private String categoryCd;
 	
 	/** Record Id, but this is null when new record */
-	private final String recordId;
-	
-	/** For history domain */
-	private final String historyId;
+	private String recordId;
 	
 	/** input items */
-	private final List<ItemValue> items;
+	private List<ItemValue> items;
 
 	
 	public Object createCommandForSystemDomain(String personId, String employeeId, Class<?> commandClass) {
@@ -50,11 +53,6 @@ public class ItemsByCategory {
 			ReflectionUtil.setFieldValue(field, command, this.recordId);
 		});
 		
-		// set history ID
-		AnnotationUtil.getFieldAnnotated(commandClass, PeregHistoryId.class).ifPresent(field -> {
-			ReflectionUtil.setFieldValue(field, command, this.historyId);
-		});
-
 		// set item values
 		val inputsMap = this.createInputsMap();
 		

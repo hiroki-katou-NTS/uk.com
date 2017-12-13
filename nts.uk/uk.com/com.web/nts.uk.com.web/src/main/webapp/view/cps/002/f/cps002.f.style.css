@@ -59,13 +59,17 @@
 	text-align: center;
 }
 
-#multiList_headers colgroup col:NTH-CHILD(1), #multiList col:NTH-CHILD(1) {
+#multiList_headers colgroup col:NTH-CHILD(1), #multiList col:NTH-CHILD(1)
+	{
 	width: 100px !important;
 }
-#multiList .ui-state-active{
+
+#multiList .ui-state-active {
 	background-color: white !important;
 	color: black !important;
 }
 
-
+#searchCtg {
+	margin-top: 10px;
+}
 

@@ -24,10 +24,14 @@ public interface UserRepository {
 	
 	Optional<User> getByUserID(String userID);
 	
+	List<User> findByKey(String key, boolean Special, boolean Multi);
+	
 	List<User> searchUser(String userIDName , GeneralDate date);
 	
 	List<User> getByListUser(List<String> userID);
 	
 	List<User> getAllUser();
+
+	void addNewUser(User newUser);
 	
 }

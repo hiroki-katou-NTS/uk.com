@@ -74,7 +74,7 @@ public class ErrorAlarmWorkRecordDto {
 	
 	private static ErAlAtdItemConditionDto convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain){
 		ErAlAtdItemConditionDto erAlAtdItemConditionDto = new ErAlAtdItemConditionDto();
-		erAlAtdItemConditionDto.setNO(itemDomain.getTargetNO());
+		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
 		erAlAtdItemConditionDto.setUseAtr(true);
 		// Check Target
@@ -266,7 +266,8 @@ public class ErrorAlarmWorkRecordDto {
 			wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getWorkTimePlan().getLstWorkTime().stream()
 					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			errorAlarmWorkRecordDto
-					.setOperatorBetweenPlanActual(wtimeConditionDomain.getOperatorBetweenPlanActual().value);
+					.setOperatorBetweenPlanActual(((PlanActualWorkType) domain.getErrorAlarmCondition()
+							.getWorkTypeCondition()).getOperatorBetweenPlanActual().value);
 		} else {
 			SingleWorkTime wtimeConditionDomain = (SingleWorkTime) domain.getErrorAlarmCondition()
 					.getWorkTimeCondition();

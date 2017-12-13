@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.find.user.UserDto;
 import nts.uk.ctx.sys.auth.app.find.user.UserFinder;
+import nts.uk.ctx.sys.auth.app.find.user.UserKeyDto;
 
 @Path("ctx/sys/auth/user")
 @Produces("application/json")
@@ -29,5 +30,12 @@ public class UserWebService extends WebService {
 	public List<UserDto> getListUser() {
 		return this.userFinder.getAllUser();
 	}
+	
+	@POST
+	@Path("findByKey")
+	public List<UserDto> FindByKey(UserKeyDto userKeyDto) {
+		return this.userFinder.findByKey(userKeyDto);
+	}
+	
 	
 }

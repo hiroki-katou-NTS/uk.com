@@ -10,15 +10,17 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
  */
 @Getter
 public class RoleByRoleTies extends AggregateRoot  {
+    /**ロールID */
+    private String roleId;
 	/** メニューコードリスト */
     private WebMenuCode webMenuCd;
     
-    /**ロールID */
-    private String roleId;
 
-	public RoleByRoleTies(WebMenuCode webMenuCd, String roleId) {
+
+	public RoleByRoleTies(String roleId,WebMenuCode webMenuCd ) {
 		super();
-		this.webMenuCd = webMenuCd;
 		this.roleId = roleId;
+		this.webMenuCd = webMenuCd;
+		
 	}
 }

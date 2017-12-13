@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.plannedyearholiday.frame;
 
-import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameName;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameNo;
@@ -18,12 +17,8 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 public class JpaPlanYearHolidayFrameSetMemento implements PlanYearHolidayFrameSetMemento{
 	
-	/**
-	 * Sets the kscst plan year hd frame.
-	 *
-	 * @param kscstPlanYearHdFrame the new kscst plan year hd frame
-	 */
-	@Setter
+	
+	/** The kscst plan year hd frame. */
 	private KscstPlanYearHdFrame kscstPlanYearHdFrame;
 	
 	/**
@@ -38,16 +33,14 @@ public class JpaPlanYearHolidayFrameSetMemento implements PlanYearHolidayFrameSe
 		this.kscstPlanYearHdFrame = kscstPlanYearHdFrame;
 	}
 
-	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationSetMemento#setCompanyId(nts.uk.ctx.bs.employee.dom.common.CompanyId)
+	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.kscstPlanYearHdFrame.getKscstPlanYearHdFramePK().setCid(companyId.v());
 	}
-
-
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameSetMemento#setPlanYearHolidayFrameNo(nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameNo)
 	 */
@@ -56,7 +49,6 @@ public class JpaPlanYearHolidayFrameSetMemento implements PlanYearHolidayFrameSe
 		this.kscstPlanYearHdFrame.getKscstPlanYearHdFramePK().setPlanYearHdNo(planYearHolidayFrNo.v().shortValue());
 	}
 
-
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameSetMemento#setUseClassification(nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr)
 	 */
@@ -64,7 +56,6 @@ public class JpaPlanYearHolidayFrameSetMemento implements PlanYearHolidayFrameSe
 	public void setUseClassification(NotUseAtr useAtr) {
 		this.kscstPlanYearHdFrame.setUseAtr((short)useAtr.value);
 	}
-
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameSetMemento#setPlanYearHolidayFrameName(nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameName)

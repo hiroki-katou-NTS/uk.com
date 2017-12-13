@@ -12,14 +12,11 @@ import lombok.Data;
 @AllArgsConstructor
 public class EmployeeDeleteToRestoreCommand {
 	
-	/** The employment Id. */
-	private String sId;
+	/** The sid. */
+	private String id;
 	
 	private String code;
 	
-	/** The newCode, newName of Employee after RestoreData. */
-	private String newCode;
-	
-	private String newName;
+	private String name;
 	
 }

@@ -111,7 +111,7 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor,
 			boolean cancelableAtr, BigDecimal errorDisplayItem, List<Integer> lstApplication) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
-				new ErrorAlarmWorkRecordCode("U" + code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
+				code.length() < 4 ? new ErrorAlarmWorkRecordCode("U" + code) : new ErrorAlarmWorkRecordCode(code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
 				ErrorAlarmMessage.createFromJavaType(boldAtr, messageColor), cancelableAtr, errorDisplayItem,
 				lstApplication, IdentifierUtil.randomUniqueId());

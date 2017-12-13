@@ -24,7 +24,6 @@ module CPS009Constraint {
                     switch (dts.stringItemType) {
                         default:
                         case ITEM_STRING_TYPE.ANY:
-                            constraint.charType = 'Alphabet';
                             break;
                         case ITEM_STRING_TYPE.ANYHALFWIDTH:
                             constraint.charType = 'AnyHalfWidth';

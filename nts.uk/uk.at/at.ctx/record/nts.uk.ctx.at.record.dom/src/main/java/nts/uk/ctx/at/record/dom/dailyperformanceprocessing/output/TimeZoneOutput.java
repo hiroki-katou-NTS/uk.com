@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class TimeZoneOutput {
 	
 	/** The start. */

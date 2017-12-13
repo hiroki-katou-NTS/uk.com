@@ -61,7 +61,7 @@ public class BsymtJobInfo extends UkJpaEntity implements Serializable {
 	/** The bsymt job hist. */
 	@OneToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "SEQ_CD", referencedColumnName = "SEQ_CD") })
+			@PrimaryKeyJoinColumn(name = "SEQUENCE_CD", referencedColumnName = "SEQ_CD") })
 	public BsymtJobSeqMaster bsymtJobSeqMaster;
     
     /**

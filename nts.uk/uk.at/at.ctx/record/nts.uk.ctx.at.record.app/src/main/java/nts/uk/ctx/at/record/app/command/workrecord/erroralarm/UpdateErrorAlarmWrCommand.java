@@ -105,7 +105,7 @@ public class UpdateErrorAlarmWrCommand {
 
 	private ErAlAttendanceItemCondition<?> convertAtdIemConToDomain(ErAlAtdItemConditionDto atdItemCon) {
 		ErAlAttendanceItemCondition<Object> atdItemConDomain = new ErAlAttendanceItemCondition<Object>(companyId, code,
-				atdItemCon.getNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr());
+				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr());
 		// Set Target
 		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
 			atdItemConDomain.setUncountableTarget(atdItemCon.getUncountableAtdItem());
@@ -187,7 +187,7 @@ public class UpdateErrorAlarmWrCommand {
 			condition.setWorkTimePlan(workTimeCondition.isPlanFilterAtr(), workTimeCondition.getPlanLstWorkTime());
 			condition.setWorkTimeActual(workTimeCondition.isActualFilterAtr(),
 					workTimeCondition.getActualLstWorkTime());
-			condition.chooseWorkTypeOperator(operatorBetweenPlanActual);
+			condition.chooseWorkTimeOperator(operatorBetweenPlanActual);
 		} else {
 			condition.setWorkTimeSingle(workTimeCondition.isPlanFilterAtr(), workTimeCondition.getPlanLstWorkTime());
 		}

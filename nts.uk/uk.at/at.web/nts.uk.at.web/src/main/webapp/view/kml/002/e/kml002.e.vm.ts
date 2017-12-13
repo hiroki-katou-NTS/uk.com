@@ -729,7 +729,6 @@ module nts.uk.at.view.kml002.e.viewmodel {
         }
 
         additionTime() {
-            nts.uk.ui.block.invisible();
             let self = this;
             if (self.currentCodeListTime().length + self.rightItemsTime().length > 100) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });

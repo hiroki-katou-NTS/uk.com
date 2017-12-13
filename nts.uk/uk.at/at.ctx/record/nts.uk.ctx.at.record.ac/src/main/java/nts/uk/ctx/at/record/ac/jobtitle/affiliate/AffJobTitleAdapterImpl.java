@@ -21,9 +21,12 @@ public class AffJobTitleAdapterImpl implements AffJobTitleAdapter {
 	@Override
 	public Optional<AffJobTitleSidImport> findByEmployeeId(String employeeId, GeneralDate baseDate) {
 		Optional<EmployeeJobHistExport> employeeJobHis = this.syJobTitlePub.findSJobHistBySId(employeeId, baseDate);
+		if(!employeeJobHis.isPresent()) {
+			return Optional.empty();
+		}
 		DatePeriod dateRange = new DatePeriod(employeeJobHis.get().getStartDate(), employeeJobHis.get().getEndDate());
 		AffJobTitleSidImport affJobTitleSidImport = new AffJobTitleSidImport(employeeJobHis.get().getEmployeeId(),
-				employeeJobHis.get().getJobTitleCode(), dateRange);
+				employeeJobHis.get().getJobTitleID(), dateRange);
 		return Optional.of(affJobTitleSidImport);
 	}
 

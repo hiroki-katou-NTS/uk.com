@@ -45,17 +45,13 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 	 */
 	private BsymtJobInfo toEntity(JobTitleInfo jobTitleInfo) {
 
-		Optional<BsymtJobInfo> optional = this.queryProxy()
-				.find(new BsymtJobInfoPK(jobTitleInfo.getCompanyId().v(),
-						jobTitleInfo.getJobTitleHistoryId(), jobTitleInfo.getJobTitleId()),
-						BsymtJobInfo.class);
-		BsymtJobInfo entity = new BsymtJobInfo();
-		if (optional.isPresent()) {
-			entity = optional.get();
-		}
+		BsymtJobInfoPK pk = new BsymtJobInfoPK(jobTitleInfo.getCompanyId().v(),
+				jobTitleInfo.getJobTitleHistoryId(), jobTitleInfo.getJobTitleId());
+		BsymtJobInfo entity = this.queryProxy()
+				.find(pk, BsymtJobInfo.class)
+				.orElse(new BsymtJobInfo());
 
-		JpaJobTitleInfoSetMemento memento = new JpaJobTitleInfoSetMemento(entity);
-		jobTitleInfo.saveToMemento(memento);
+		jobTitleInfo.saveToMemento(new JpaJobTitleInfoSetMemento(entity));
 		return entity;
 	}
 
