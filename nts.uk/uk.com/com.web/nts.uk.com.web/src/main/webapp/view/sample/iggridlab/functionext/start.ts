@@ -156,6 +156,7 @@ module nts.uk.ui.gridlist {
 //                            adjustVirtualHeights: false,
                             columns: [
                                 { headerText: 'ID', key: 'id', dataType: 'number', width: '60px', ntsControl: 'Label', hidden: false },
+                                { headerText: 'Image', key: 'flexImage', dataType: 'string', width: '60px', ntsControl: 'FlexImage' },
                                 { headerText: 'Picture', key: "picture", dataType: "string", width: '60px', ntsControl: 'Image' },
 //                                 headerText: 'Common1',
 //                                    group: [
@@ -238,6 +239,7 @@ module nts.uk.ui.gridlist {
                                             showFixButtons: false,
                                             columnSettings: [
                                                             { columnKey: 'id', isFixed: true },
+                                                            { columnKey: 'flexImage', isFixed: true },
                                                             { columnKey: 'picture', isFixed: true },
                                                              { columnKey: 'flag', isFixed: true },
                                                              { columnKey: 'ruleCode', isFixed: true } ]},
@@ -360,6 +362,7 @@ module nts.uk.ui.gridlist {
                                             { name: 'Combobox3', options: comboItems3, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'name', controlType: 'ComboBox', enable: true },
                                             { name: 'Link1', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
                                             { name: 'Link2', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
+                                            { name: 'FlexImage', source: 'ui-icon ui-icon-info', click: function() { alert('Show!'); }, controlType: 'FlexImage' },
                                             { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' },
                                             { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } }]
 //                                            { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } }]
