@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 /**
  * 承認枠
@@ -18,20 +19,23 @@ public class ApprovalFrame {
 	
 	private String rootStateID;
 	
-	private Integer rootType;
+	private RootType rootType;
 	
 	private Integer phaseOrder;
 	
 	private Integer frameOrder;
 	
-	private ApprovalAtr approvalAtr;
+	@Setter
+	private ApprovalBehaviorAtr approvalAtr;
 	
 	private Boolean confirmAtr;
 	
 	private List<ApproverState> listApproverState;
 	
+	@Setter
 	private String approverID;
 	
+	@Setter
 	private String representerID;
 	
 	private GeneralDate approvalDate;

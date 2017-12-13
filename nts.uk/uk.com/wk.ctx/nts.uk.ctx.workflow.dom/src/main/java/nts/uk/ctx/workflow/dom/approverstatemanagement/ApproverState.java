@@ -15,7 +15,7 @@ public class ApproverState {
 	
 	private String rootStateID;
 	
-	private Integer rootType;
+	private RootType rootType;
 	
 	private Integer phaseOrder;
 	
