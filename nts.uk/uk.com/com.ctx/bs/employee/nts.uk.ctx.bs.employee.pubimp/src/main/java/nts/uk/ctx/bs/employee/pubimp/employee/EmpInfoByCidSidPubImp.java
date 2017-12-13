@@ -1,16 +1,20 @@
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -19,8 +23,12 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 @Stateless
 public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 
+	
 	@Inject
-	private EmployeeRepository empRepo;
+	private EmployeeDataMngInfoRepository empDataMngRepo;
+
+	@Inject
+	private AffCompanyHistRepository affComHistRepo;
 
 	@Inject
 	private PersonRepository perRepo;
@@ -30,16 +38,35 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 
 		EmpInfoByCidSidExport result = new EmpInfoByCidSidExport();
 
-		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
-		GeneralDate systemDate = GeneralDate.legacyDate(new Date(sdf.format(date)));
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
-		Optional<Employee> empOpt = empRepo.findBySidCidSystemDate(cid, pid, systemDate);
+		Optional<EmployeeDataMngInfo> empOpt = empDataMngRepo.findByCidPid(cid, pid);
 
+		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
 		if (empOpt.isPresent()) {
-			Employee employee = empOpt.get();
-			Person person = getPersonInfo(employee.getPId());
-			setResult(employee, person);
+			empDataMng = empOpt.get();
+
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(pid);
+
+			AffCompanyHistByEmployee affComHistByEmp = affComHist
+					.getAffCompanyHistByEmployee(empDataMng.getEmployeeId());
+
+			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
+			Person person = new Person();
+
+			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
+				return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+			}).collect(Collectors.toList());
+			
+			if (!filter.isEmpty()) {
+				affComHistItem = filter.get(0);
+
+				person = getPersonInfo(affComHist.getPId());
+				if (person != null) {
+					result = setResult(empDataMng, person);
+				}
+			}
 		}
 
 		return result;
@@ -49,13 +76,13 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 	 * @param person
 	 * @param employee
 	 */
-	private EmpInfoByCidSidExport setResult(Employee employee, Person person) {
+	private EmpInfoByCidSidExport setResult(EmployeeDataMngInfo emp, Person person) {
 		EmpInfoByCidSidExport result = new EmpInfoByCidSidExport();
-		result.setPid(employee.getSId());
-		result.setCid(employee.getCompanyId());
-		result.setScd(employee.getSCd().v());
-		result.setSid(employee.getSId());
-		result.setPersonName(person.getPersonNameGroup().getPersonName().getFullName().v());
+		result.setPid(emp.getPersonId());
+		result.setCid(emp.getCompanyId());
+		result.setScd(emp.getEmployeeCode() == null ? "" : emp.getEmployeeCode().v());
+		result.setSid(emp.getEmployeeId());
+		result.setPersonName(person.getPersonNameGroup().getBusinessName()  == null ? "" : person.getPersonNameGroup().getBusinessName() .v());
 		return result;
 	}
 
