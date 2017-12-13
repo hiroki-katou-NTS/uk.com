@@ -4,7 +4,7 @@ module nts.uk.com.view.ccg026.component {
     export module viewmodel {
         export class ComponentModel {
             roleId: KnockoutObservable<string> = ko.observable("");
-            listPermissions: Array<model.FunctionPermission> = [];
+            listPermissions: KnockoutObservableArray<model.FunctionPermission> = ko.observableArray([]);
             
             private defaultSetting: model.ISetting = {
                 classification: 1,
@@ -16,7 +16,7 @@ module nts.uk.com.view.ccg026.component {
                 let self = this;
                 self.setting = $.extend({}, self.defaultSetting, option);
                 
-                self.roleId(option.roleId);
+                self.roleId("");
                 self.roleId.subscribe((x) => {
                     // reset function avialability 
                     self.buildAvialabilityFunctionPermission().done(() => {
@@ -32,7 +32,7 @@ module nts.uk.com.view.ccg026.component {
                 // caculate height by row number
                 var headerHeight: number = 23;
                 var heigth: number = (self.setting.maxRow) * 28 + headerHeight;
-                $("#table-permission").ntsFixedTable({ height: heigth });
+                $("html").find("#table-permission").ntsFixedTable({ height: heigth });
                 $.when(self.getListOfFunctionPermission(), self.buildAvialabilityFunctionPermission()).done(() => {
                     dfd.resolve();
                 }).fail(function(res: any) {
@@ -45,8 +45,7 @@ module nts.uk.com.view.ccg026.component {
              * Get List Of Function Permission
              */
             private getListOfFunctionPermission(): JQueryPromise<any> {
-                let self = this,
-                    listPermissions = self.listPermissions;
+                let self = this;
                 let dfd = $.Deferred();
 
                 service.getListOfDescriptionFunctionPermission(self.setting.classification)
@@ -65,7 +64,7 @@ module nts.uk.com.view.ccg026.component {
                         }
                         dfd.resolve();
                     }).fail(function(res: any) {
-                        self.listPermissions = [];
+                        self.listPermissions([]);
                         dfd.reject();
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
@@ -76,8 +75,7 @@ module nts.uk.com.view.ccg026.component {
              * build list of FunctionPermission with avialability value
              */
             private buildAvialabilityFunctionPermission(): JQueryPromise<any> {
-                let self = this,
-                    listPermissions = self.listPermissions;
+                let self = this;
                 let dfd = $.Deferred();
                 service.getListOfAviabilityFunctionPermission(self.roleId(), self.setting.classification)
                     .done((dataAvailability: Array<model.IAvailabilityPermission>) => {
@@ -85,12 +83,13 @@ module nts.uk.com.view.ccg026.component {
                         //filter get only function have availability permission
                         dataAvailability = dataAvailability.filter(item => item.availability);
                         //setting check for ListOfFunctionPermission and show
-                        for (var i = 0, len = listPermissions.length; i < len; i++) {
+                        for (var i = 0, len = self.listPermissions().length; i < len; i++) {
                             var index = _.findIndex(dataAvailability, function(x: model.IAvailabilityPermission)
-                            { return x.functionNo == listPermissions[i].functionNo });
+                            { return x.functionNo == self.listPermissions()[i].functionNo });
                             var isAvailability: boolean = (index > -1);
-                            listPermissions[i].availability(isAvailability || listPermissions[i].initialValue);
+                            self.listPermissions()[i].availability(isAvailability || self.listPermissions()[i].initialValue);
                         }
+                        self.listPermissions.valueHasMutated();
                         dfd.resolve();
                     }).fail(function(res: any) {
                         dfd.reject();
@@ -107,7 +106,6 @@ module nts.uk.com.view.ccg026.component {
 
         //Model Input parameter
         export interface IOption {
-            roleId: string;
             classification: number;
             maxRow: number;
         }
@@ -120,7 +118,7 @@ module nts.uk.com.view.ccg026.component {
 
         //Model Function Permission
         export interface IFunctionPermission {
-            functionNo: string;
+            functionNo: number;
             initialValue: boolean;
             displayName: string;
             displayOrder: number;
@@ -130,7 +128,7 @@ module nts.uk.com.view.ccg026.component {
 
         //Class Function Permission
         export class FunctionPermission {
-            functionNo: string;
+            functionNo: number;
             initialValue: boolean;
             displayName: string;
             displayOrder: number;
@@ -150,7 +148,7 @@ module nts.uk.com.view.ccg026.component {
 
         //Model Function Availability Permission
         export interface IAvailabilityPermission {
-            functionNo: string;
+            functionNo: number;
             roleId: string;
             companyId: string;
             availability: boolean;
