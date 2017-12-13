@@ -105,4 +105,17 @@ module ksu001.common.viewmodel {
             this.endTime = params.endTime;
         }
     }
+
+    export class CellColor {
+        columnKey: any;
+        rowId: any;
+        innerIdx: any;
+        clazz: any;
+        constructor(columnKey: any, rowId: any, clazz: any, innerIdx?: any) {
+            this.columnKey = columnKey;
+            this.rowId = rowId;
+            this.innerIdx = innerIdx;
+            this.clazz = clazz;
+        }
+    }
 }

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "KSCDT_WORK_SCH_TIMEZONE")
+@Table(name = "KSCDT_SCHE_TIMEZONE")
 public class KscdtWorkScheduleTimeZone extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,21 +31,14 @@ public class KscdtWorkScheduleTimeZone extends UkJpaEntity implements Serializab
 	@Column(name = "BOUNCE_ATR")
 	public int bounceAtr;
 
-	@Column(name = "SCHEDULE_START_CLOCK")
+	@Column(name = "START_CLOCK")
 	public int scheduleStartClock;
 
-	@Column(name = "SCHEDULE_START_DAY_ATR")
-	public int scheduleStartDayAtr;
-
-	@Column(name = "SCHEDULE_END_CLOCK")
+	@Column(name = "END_CLOCK")
 	public int scheduleEndClock;
-
-	@Column(name = "SCHEDULE_END_DAY_ATR")
-	public int scheduleEndDayAtr;
 
 	@Override
 	protected Object getKey() {
 		return this.kscdtWorkScheduleTimeZonePk;
 	}
-
 }

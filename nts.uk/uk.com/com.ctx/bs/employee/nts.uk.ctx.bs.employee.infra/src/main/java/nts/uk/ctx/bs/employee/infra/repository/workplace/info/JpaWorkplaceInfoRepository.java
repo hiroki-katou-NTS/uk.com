@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.info;
@@ -42,7 +42,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 			+ "AND wkp.bsymtWorkplaceHistPK.wkpid = wkpInfor.bsymtWorkplaceInfoPK.wkpid "
 			+ "AND wkp.bsymtWorkplaceHistPK.historyId = wkpInfor.bsymtWorkplaceInfoPK.historyId "
 			+ "WHERE wkp.bsymtWorkplaceHistPK.cid = :cid "
-			+ "AND wkp.endD = :endDateLatest";
+			+ "GROUP BY wkpInfor, wkp.endD HAVING wkp.endD = MAX(wkp.endD)";
 	
 	/*
 	 * (non-Javadoc)
@@ -372,11 +372,10 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findDetailLatestByWkpIds(java.lang.String)
 	 */
 	@Override
-	public List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId, GeneralDate endDateLatest) {
+	public List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId) {
 		
 		List<BsymtWorkplaceInfo> resultList = this.queryProxy().query(FIND_WKP_DETAIL_LATEST, BsymtWorkplaceInfo.class)
 				.setParameter("cid", companyId)
-				.setParameter("endDateLatest", endDateLatest)
 				.getList();
 		return resultList.stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))

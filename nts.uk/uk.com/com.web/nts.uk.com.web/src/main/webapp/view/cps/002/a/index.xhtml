@@ -84,7 +84,7 @@
 												data-bind="ntsFormLabel: {  required: true,constraint:'EmployeeCode' }">#{i18n.getText('CPS002_104')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input class="form_step1"
+											<input class="form_step1" id="employeeCode"
 												data-bind="ntsTextEditor: {
 												constraint:'EmployeeCode' ,
 												name: '#{i18n.getText('CPS002_104')}',
@@ -141,7 +141,7 @@
 												data-bind="ntsFormLabel: {  required: true ,constraint:'LoginId' }">#{i18n.getText('CPS002_108')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input class="form_step1"
+											<input class="form_step1" id="loginId"
 												data-bind="ntsTextEditor: {
 											value: loginId ,
 											constraint:'LoginId',

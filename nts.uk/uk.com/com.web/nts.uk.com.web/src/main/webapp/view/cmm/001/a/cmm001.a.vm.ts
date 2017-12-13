@@ -72,8 +72,8 @@ module cmm001.a {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
                     });
-                    service.findComId(foundItem.companyId).done((id) => {
-                        self.currentCompany(new CompanyModel(id));
+                    service.findComId(foundItem.companyId).done((comId) => {
+                        self.currentCompany(new CompanyModel(comId));
                         self.checkInsert(false);
                         let param = {
                             companyId: self.currentCompany().companyId()
@@ -96,7 +96,7 @@ module cmm001.a {
                             self.currentCompany().kyuyo(sys.kyuyo);
                             self.currentCompany().shugyo(sys.shugyo);
                         });
-                        self.currentCompany().isAbolition() == 1 ? true : false;
+                        
                         $("#companyName").focus();
                     });
                 }
@@ -107,7 +107,7 @@ module cmm001.a {
                     self.sel001Data(self.listCom());
                     self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 } else {
-                    self.sel001Data(_.filter(self.listCom(), function(obj) {
+                    self.sel001Data(_.filter(self.listCom(), function(obj:ICompany) {
                         return obj.isAbolition == 1;
                     }));
                     if (self.sel001Data().length == 0) {
@@ -214,11 +214,14 @@ module cmm001.a {
                 phoneNum: self.currentCompany().addinfor().phoneNum(),
 
             }
+             if((dataAdd.faxNum == "" || dataAdd.faxNum == null) && (dataAdd.add_1 == "" || dataAdd.add_1 == null) && (dataAdd.add_2 == "" || dataAdd.add_2 == null) && (dataAdd.addKana_1 == "" || dataAdd.addKana_1 == null) && (dataAdd.addKana_2 == "" || dataAdd.addKana_2 == null) && (dataAdd.postCd == "" || dataAdd.postCd == null) && (dataAdd.phoneNum == "" || dataAdd.phoneNum == null)){
+                    dataAdd = null;
+                }
             let dataCom = {
                 ccd: self.currentCompany().companyCode(),
                 name: self.currentCompany().companyName(),
                 month: self.currentCompany().startMonth(),
-                abolition: self.currentCompany().isAbolition() == true ? 1 : 0,
+                abolition: self.currentCompany().isAbolition() ? 1 : 0,
                 repname: self.currentCompany().repname(),
                 repJob: self.currentCompany().repJob(),
                 comNameKana: self.currentCompany().comNameKana(),
@@ -246,7 +249,7 @@ module cmm001.a {
                 sysCm: dataSys,
                 divCm: dataDiv,
             }
-            if (self.currentCompany().isAbolition() == false) {
+            if (!self.currentCompany().isAbolition()) {
                 $('#checked2').ntsError('clear');
             }  
             if (nts.uk.ui.errors.hasError()) {
@@ -332,7 +335,7 @@ module cmm001.a {
         companyId: KnockoutObservable<string>;
         companyName: KnockoutObservable<string>;
         contractCd: KnockoutObservable<string>;
-        isAbolition: KnockoutObservable<number>;
+        isAbolition: KnockoutObservable<boolean>;
         repJob: KnockoutObservable<string>;
         repname: KnockoutObservable<string>;
         shortComName: KnockoutObservable<string>;
@@ -350,13 +353,13 @@ module cmm001.a {
             this.companyId = ko.observable(param.companyId);
             this.companyName = ko.observable(param.companyName);
             this.contractCd = ko.observable(param.contractCd);
-            this.isAbolition = ko.observable(param.isAbolition);
+            this.isAbolition = ko.observable(param.isAbolition == 1);
             this.repJob = ko.observable(param.repJob);
             this.repname = ko.observable(param.repname);
             this.shortComName = ko.observable(param.shortComName);
             this.startMonth = ko.observable(param.startMonth);
             this.taxNum = ko.observable(param.taxNum);
-            this.addinfor = ko.observable(new AddInfor(param.addinfor) || new AddInfor({
+            var address: IAddInfor = {
                 addKana_1: "",
                 addKana_2: "",
                 add_1: "",
@@ -367,7 +370,11 @@ module cmm001.a {
                 faxNum: "",
                 phoneNum: "",
                 postCd: ""
-            }));
+            };
+            if(param.addinfor != null){
+                address = param.addinfor;
+            }
+            this.addinfor = ko.observable(new AddInfor(address));
             this.regWorkDiv = ko.observable(param.regWorkDiv);
             this.jinji = ko.observable(param.jinji);
             this.kyuyo = ko.observable(param.kyuyo);

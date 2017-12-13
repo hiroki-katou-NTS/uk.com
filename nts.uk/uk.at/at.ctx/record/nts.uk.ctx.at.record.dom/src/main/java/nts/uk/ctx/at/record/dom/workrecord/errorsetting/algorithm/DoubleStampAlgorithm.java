@@ -27,8 +27,8 @@ public class DoubleStampAlgorithm {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 	
-	public OutPutProcess doubleStamp (String companyID, String employeeID, GeneralDate processingDate, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance){
-		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
+	public void doubleStamp (String companyID, String employeeID, GeneralDate processingDate, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance){
+//		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
 		
 		List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
 		
@@ -42,7 +42,7 @@ public class DoubleStampAlgorithm {
 			OutPutProcess outPutLeaving = this.doubleStampCheckProcessing(companyID, employeeID, processingDate, leavingTimeActual);
 		}
 		
-		return outPutProcess;
+//		return outPutProcess;
 	}
 	
 	private OutPutProcess doubleStampCheckProcessing(String companyID, String employeeID, GeneralDate processingDate, TimeActualStamp timeActualStamp){
@@ -55,11 +55,9 @@ public class DoubleStampAlgorithm {
 		} else {
 			OutPutProcess outPut = createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, 
 					employeeID, processingDate,
-					new ErrorAlarmWorkRecordCode(SystemFixedErrorAlarm.DOUBLE_STAMP.name()), attendanceItemIDs);
+					new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDs);
 			outPutCheckProcessing = OutPutProcess.HAS_ERROR;
 		}
-		
-		
 		return outPutCheckProcessing;
 	}
 

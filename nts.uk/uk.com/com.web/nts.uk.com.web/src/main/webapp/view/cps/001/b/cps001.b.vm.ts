@@ -50,7 +50,7 @@ module cps001.b.vm {
                     let command = { sId: dataShare.sid, reason: empDelete.reason };
                     service.deleteEmp(command).done(() => {
                         showDialog.info({ messageId: "Msg_16" }).then(function() {
-                            setShared('CPS001B_VALUE', {});
+                            setShared('CPS001B_VALUES', {});
                             close();
                         });
                     });
@@ -80,12 +80,6 @@ module cps001.b.vm {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         reason: KnockoutObservable<string> = ko.observable('');
-        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-            resizeable: true,
-            placeholder: "Placeholder for text editor",
-            width: "",
-            textalign: "left"
-        }));
 
         constructor(param: IModelDto) {
             let self = this;
