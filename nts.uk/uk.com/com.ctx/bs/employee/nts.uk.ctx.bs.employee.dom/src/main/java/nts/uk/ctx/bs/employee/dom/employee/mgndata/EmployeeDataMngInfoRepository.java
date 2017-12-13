@@ -62,4 +62,21 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return the list
 	 */
 	List<EmployeeDataMngInfo> findByListEmployeeCode(String companyId, List<String> employeeCodes);
+	
+	
+	/**
+	 *  Get List EmployeeDataMngInfo By List Sid
+	 * @param listSid
+	 * @return
+	 */
+	List<EmployeeDataMngInfo> findByListEmployeeId(List<String> listSid);
+	
+	/**
+	 * Get EmployeeDataMngInfo
+	 * @param cid
+	 * @param pid
+	 * @return
+	 */
+	Optional<EmployeeDataMngInfo> findByCidPid(String cid, String pid);
+	
 }

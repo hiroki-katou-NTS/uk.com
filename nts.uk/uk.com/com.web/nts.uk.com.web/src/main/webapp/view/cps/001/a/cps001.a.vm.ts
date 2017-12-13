@@ -344,7 +344,7 @@ module cps001.a.vm {
             permision().done((perm: IPersonAuth) => {
                 if (!!perm.allowMapBrowse) {
                     setShared("CPS001E_PARAMS", {
-                        employeeId: iemp.employeeId
+                        employeeId: "000426a2-181b-4c7f-abc8-6fff9f4f983a"
                     });
                     modal('../e/index.xhtml').onClosed(() => { });
                 }
@@ -606,6 +606,9 @@ module cps001.a.vm {
         personNameKana?: string;
         personRomanji?: string;
         todokedeFullName?: string;
+        
+        
+        
         todokedeOldFullName?: string;
     }
 
