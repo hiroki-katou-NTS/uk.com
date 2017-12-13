@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
@@ -42,11 +44,34 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 
 	@Override
 	public AffCompanyHistInfoDto getSingleData(PeregQuery query) {
-		AffCompanyInfo info = aciFinder.getAffCompanyInfoByHistId(query.getInfoId());
+		if (query.getInfoId() == null) {
+			AffCompanyHist domain = achFinder.getAffCompanyHistoryOfEmployeeAndBaseDate(query.getEmployeeId(),
+					query.getStandardDate());
+			if (domain == null) {
+				return null;
+			}
 
-		AffCompanyHist domain = achFinder.getAffCompanyHistoryOfHistInfo(query.getInfoId());
+			AffCompanyHistByEmployee empHist = domain.getLstAffCompanyHistByEmployee().get(0);
+			if (empHist == null) {
+				return null;
+			}
 
-		return AffCompanyHistInfoDto.fromDomain(domain, info);
+			AffCompanyHistItem histItem = empHist.getLstAffCompanyHistoryItem().get(0);
+
+			if (histItem == null) {
+				return null;
+			}
+
+			AffCompanyInfo info = aciFinder.getAffCompanyInfoByHistId(histItem.getHistoryId());
+
+			return AffCompanyHistInfoDto.fromDomain(domain, info);
+		} else {
+			AffCompanyInfo info = aciFinder.getAffCompanyInfoByHistId(query.getInfoId());
+
+			AffCompanyHist domain = achFinder.getAffCompanyHistoryOfHistInfo(query.getInfoId());
+
+			return AffCompanyHistInfoDto.fromDomain(domain, info);
+		}
 	}
 
 	@Override

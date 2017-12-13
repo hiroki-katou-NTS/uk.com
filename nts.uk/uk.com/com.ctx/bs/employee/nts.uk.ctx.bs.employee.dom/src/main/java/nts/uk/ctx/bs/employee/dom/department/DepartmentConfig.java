@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.department;
@@ -8,23 +8,29 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class DepartmentConfig.
  */
-//部門構成
+// 部門構成
 @Getter
-public class DepartmentConfig extends AggregateRoot {
+public class DepartmentConfig extends AggregateRoot
+		implements PersistentResidentHistory<DepartmentConfigHistory, DatePeriod, GeneralDate> {
 
 	/** The company id. */
-	//会社ID
+	// 会社ID
 	private String companyId;
 
 	/** The dep config history. */
-	//履歴
+	// 履歴
 	private List<DepartmentConfigHistory> depConfigHistory;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -35,7 +41,9 @@ public class DepartmentConfig extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -55,5 +63,12 @@ public class DepartmentConfig extends AggregateRoot {
 		return true;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.com.history.History#items()
+	 */
+	@Override
+	public List<DepartmentConfigHistory> items() {
+		return this.depConfigHistory;
+	}
+
 }

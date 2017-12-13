@@ -66,7 +66,7 @@ public class AddEmploymentHistoryCommandHandler
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(),
 				command.getEmploymentCode(),
 				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : 0);
-		employmentHistoryItemRepository.adḍ̣̣̣(histItem);
+		employmentHistoryItemRepository.add(histItem);
 
 		return new PeregAddCommandResult(newHistID);
 	}

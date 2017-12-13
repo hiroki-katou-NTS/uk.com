@@ -69,6 +69,14 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ";
 
 	// duongtv end code
+	
+	/** The select by list empId. */
+	public final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM + " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
+	
+	/** The select by cid and pid. */
+	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM + " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
+	
+	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -85,8 +93,12 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			// entity.delDateTmp = domain.getDeleteDateTemporary();
 			// entity.delStatus = domain.getDeletedStatus().value;
 			// entity.removeReason = domain.getRemoveReason().v();
-			entity.employeeCode = domain.getEmployeeCode().v();
-			entity.extCode = domain.getExternalCode().v();
+			if (domain.getEmployeeCode() != null){
+				entity.employeeCode = domain.getEmployeeCode().v();
+			}
+			if (domain.getExternalCode() != null){
+				entity.extCode = domain.getExternalCode().v();
+			}
 			commandProxy().update(entity);
 		}
 	}
@@ -273,4 +285,34 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	// duong tv end code
+	
+	@Override
+	public List<EmployeeDataMngInfo> findByListEmployeeId(List<String> listSid) {
+		
+		if (CollectionUtil.isEmpty(listSid)) {
+			return new ArrayList<>();
+		}
+		
+		return this.queryProxy().query(SELECT_BY_LIST_EMPID, BsymtEmployeeDataMngInfo.class)
+				.setParameter("listSid", listSid).getList().stream()
+				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<EmployeeDataMngInfo> findByCidPid(String cid, String pid) {
+		BsymtEmployeeDataMngInfo entity = this.queryProxy().query(SELECT_BY_CID_PID, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cid", cid)
+				.setParameter("pid", pid)
+				.getSingleOrNull();
+
+		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
+		if (entity != null) {
+			empDataMng = toDomain(entity);
+			return Optional.of(empDataMng);
+
+		} else {
+			return Optional.empty();
+		}
+	}
+
 }

@@ -7,17 +7,17 @@ import lombok.Data;
 @AllArgsConstructor
 public class EmployeeToDeleteDetailDto {
 	
-	private String newCode;
+	private String code;
 
-	private String newName;
+	private String name;
 	
 	private String reason;
 	
-	private String datedelete;
+	private String dateDelete;
 	
 	
 
-	public static EmployeeToDeleteDetailDto fromDomain(String newCode,  String newName , String reason , String datedelete) {
-		return new EmployeeToDeleteDetailDto(newCode, newName, reason, datedelete);
+	public static EmployeeToDeleteDetailDto fromDomain(String code,  String name , String reason , String dateDelete) {
+		return new EmployeeToDeleteDetailDto(code, name, reason, dateDelete);
 	}
 }

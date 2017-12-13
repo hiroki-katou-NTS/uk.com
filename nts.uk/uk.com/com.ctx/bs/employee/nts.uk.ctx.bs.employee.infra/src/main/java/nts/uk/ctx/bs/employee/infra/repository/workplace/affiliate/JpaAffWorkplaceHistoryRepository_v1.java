@@ -24,9 +24,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implements AffWorkplaceHistoryRepository_v1 {
 	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID = "SELECT aw FROM BsymtAffiWorkplaceHist aw "
-			+ "WHERE aw.sid = :sid ORDER BY aw.strDate";
+			+ "WHERE aw.sid = :sid and aw.cid = :companyId ORDER BY aw.strDate";
 	private static final String SELECT_BY_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
-			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate <= aw.endDate";
+			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.hisId = :histId";
@@ -65,9 +65,10 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		return domain;
 	}
 	@Override
-	public Optional<AffWorkplaceHistory_ver1> getAffWorkplaceHistByEmployeeId(String employeeId) {
+	public Optional<AffWorkplaceHistory_ver1> getAffWorkplaceHistByEmployeeId(String companyId, String employeeId) {
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(QUERY_GET_AFFWORKPLACEHIST_BYSID,BsymtAffiWorkplaceHist.class)
-				.setParameter("sid", employeeId).getList();
+				.setParameter("sid", employeeId)
+				.setParameter("companyId", companyId).getList();
 		if (listHist != null && !listHist.isEmpty()){
 			return Optional.of(toDomainTemp(listHist));
 		}

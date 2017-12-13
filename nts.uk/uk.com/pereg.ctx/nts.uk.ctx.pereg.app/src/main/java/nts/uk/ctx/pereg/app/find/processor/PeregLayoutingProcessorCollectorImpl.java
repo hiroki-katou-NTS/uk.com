@@ -10,6 +10,7 @@ import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
 import find.person.info.PersonDto;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
 import nts.uk.ctx.bs.employee.app.find.department.affiliate.AffDeptHistDto;
 import nts.uk.ctx.bs.employee.app.find.employee.history.AffCompanyHistInfoDto;
@@ -43,10 +44,11 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00017 職場
 			new TypeLiteral<PeregFinder<AffWorlplaceHistItemDto>>(){},
 			// CS00018 休職休業
-			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>(){}
+			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>(){},
 			// CS00019 短時間勤務
 			// CS00020 労働条件
 			// CS00021 勤務種別
+			new TypeLiteral<PeregFinder<BusinessTypeDto>>(){}
 			);
 
 	@Override

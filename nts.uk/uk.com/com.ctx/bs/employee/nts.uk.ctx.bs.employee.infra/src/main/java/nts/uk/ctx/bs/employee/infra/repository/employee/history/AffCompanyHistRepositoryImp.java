@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -40,6 +41,10 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId ORDER BY c.startDate ");
+
+	private static final String SELECT_BY_EMPID_AND_BASE_DATE = String.join(" ", SELECT_NO_PARAM,
+			"WHERE c.bsymtAffCompanyHistPk.sId = :sId", "AND c.startDate <= :baseDate", "AND c.endDate >= :baseDate",
+			"ORDER BY c.startDate ");
 
 	private static final String SELECT_BY_PRIMARY_KEY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.pId = :pId", "AND c.bsymtAffCompanyHistPk.sId = :sId",
@@ -107,6 +112,15 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	public AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId) {
 		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
 				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId).getList();
+
+		return toDomain(lstBsymtAffCompanyHist);
+	}
+
+	@Override
+	public AffCompanyHist getAffCompanyHistoryOfEmployeeAndBaseDate(String employeeId, GeneralDate baseDate) {
+		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
+				.query(SELECT_BY_EMPID_AND_BASE_DATE, BsymtAffCompanyHist.class).setParameter("sId", employeeId)
+				.setParameter("baseDate", baseDate).getList();
 
 		return toDomain(lstBsymtAffCompanyHist);
 	}

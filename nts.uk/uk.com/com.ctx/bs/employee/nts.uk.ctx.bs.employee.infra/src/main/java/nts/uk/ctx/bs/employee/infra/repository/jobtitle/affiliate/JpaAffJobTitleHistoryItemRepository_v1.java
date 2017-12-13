@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHistItem;
 
 @Stateless
@@ -36,8 +36,12 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	 * @param entity
 	 */
 	private void updateEntity(AffJobTitleHistoryItem domain, BsymtAffJobTitleHistItem entity) {
-		entity.jobTitleId = domain.getJobTitleId();
-		entity.note = domain.getNote().v();
+		if (domain.getJobTitleId() != null){
+			entity.jobTitleId = domain.getJobTitleId();
+		}
+		if (domain.getNote() != null){
+			entity.note = domain.getNote().v();
+		}
 	}
 
 	@Override

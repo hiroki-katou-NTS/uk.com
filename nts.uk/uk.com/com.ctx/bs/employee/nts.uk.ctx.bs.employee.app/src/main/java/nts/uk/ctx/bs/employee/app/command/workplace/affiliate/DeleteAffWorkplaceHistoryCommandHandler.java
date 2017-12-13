@@ -12,6 +12,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryService
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
@@ -41,8 +42,8 @@ public class DeleteAffWorkplaceHistoryCommandHandler extends CommandHandler<Dele
 	@Override
 	protected void handle(CommandHandlerContext<DeleteAffWorkplaceHistoryCommand> context) {
 		val command = context.getCommand();
-		
-		Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getAffWorkplaceHistByEmployeeId(command.getEmployeeId());
+		String companyId = AppContexts.user().companyId();
+		Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getAffWorkplaceHistByEmployeeId(companyId, command.getEmployeeId());
 		
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory"); 

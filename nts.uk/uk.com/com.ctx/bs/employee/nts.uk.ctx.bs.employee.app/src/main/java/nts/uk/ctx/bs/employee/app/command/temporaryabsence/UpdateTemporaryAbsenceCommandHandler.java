@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
@@ -61,22 +62,22 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 		tempAbsHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		
 		BigDecimal falseValue = new BigDecimal(0);
-		boolean multiple = false;
+		Boolean multiple = null;
 		if (command.getMultiple() != null){
 			multiple = falseValue.compareTo(command.getMultiple()) == 0 ? false : true;
 		}
-		boolean sameFamily = false;
+		Boolean sameFamily = null;
 		if (command.getSameFamily() != null){
 			sameFamily = falseValue.compareTo(command.getSameFamily()) == 0 ? false : true;
 		}
-		boolean spouseIsLeave = false;
+		Boolean spouseIsLeave = null;
 		if (command.getSpouseIsLeave() != null){
 			spouseIsLeave = falseValue.compareTo(command.getSpouseIsLeave()) == 0 ? false : true;
 		}
 		
 		// Update detail table
-		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr().intValue(), command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory()!= null? command.getSoInsPayCategory().intValue():0, multiple,
-				command.getFamilyMemberId(), sameFamily,command.getChildType() != null ? command.getChildType().intValue() : 0, command.getCreateDate(),spouseIsLeave, command.getSameFamilyDays() != null? command.getSameFamilyDays().intValue():0);
+		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getTempAbsenceFrNo() != null? command.getTempAbsenceFrNo().intValue() : ConstantUtils.ENUM_UNDEFINE_VALUE, command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory()!= null? command.getSoInsPayCategory().intValue():null, multiple,
+				command.getFamilyMemberId(), sameFamily,command.getChildType() != null ? command.getChildType().intValue() : null, command.getCreateDate(),spouseIsLeave, command.getSameFamilyDays() != null? command.getSameFamilyDays().intValue():null);
 		temporaryAbsenceRepository.update(temporaryAbsence);
 	}
 

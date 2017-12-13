@@ -18,11 +18,11 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiv
 public class JpaRoleIndividualGrantRepository extends JpaRepository implements RoleIndividualGrantRepository {
 
 	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"
-			+ " AND c.strD => :date AND c.endD <= :date";
+			+ " AND c.strD <= :date AND c.endD >= :date";
 
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate date) {
-		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userId", userId)
+		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
 				.setParameter("date", date).getSingle(c -> c.toDomain());
 	}
 
@@ -103,7 +103,12 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 
 	@Override
 	public void update(RoleIndividualGrant roleIndividualGrant) {
-		this.commandProxy().update(SacmtRoleIndiviGrant.toEntity(roleIndividualGrant));
+		SacmtRoleIndiviGrant newEntity = SacmtRoleIndiviGrant.toEntity(roleIndividualGrant);
+		SacmtRoleIndiviGrant updateEntity = this.queryProxy().find(newEntity.sacmtRoleIndiviGrantPK, SacmtRoleIndiviGrant.class).get();
+		updateEntity.roleId = newEntity.roleId;
+		updateEntity.strD = newEntity.strD;
+		updateEntity.endD = newEntity.endD;
+		this.commandProxy().update(updateEntity);
 	}
 
 	@Override

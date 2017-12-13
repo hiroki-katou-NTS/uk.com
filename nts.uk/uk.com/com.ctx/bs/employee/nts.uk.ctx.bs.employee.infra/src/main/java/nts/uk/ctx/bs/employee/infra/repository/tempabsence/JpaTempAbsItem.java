@@ -41,7 +41,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		Boolean multiple = ent.multiple == null ? null : ent.multiple == 1;
 		Boolean sameFamily = ent.sameFamily == null ? null : ent.sameFamily == 1;
 		Boolean spouseIsLeave = ent.spouseIsLeave == null ? null : ent.spouseIsLeave == 1;
-		return TempAbsenceHisItem.createTempAbsenceHisItem(ent.leaveHolidayAtr, ent.histId, ent.sid,
+		return TempAbsenceHisItem.createTempAbsenceHisItem(ent.tempAbsFrameNo, ent.histId, ent.sid,
 				ent.remarks, Integer.valueOf(ent.soInsPayCategory), multiple, ent.familyMemberId, sameFamily,
 				ent.childType, ent.createDate, spouseIsLeave, ent.sameFamilyDays);
 	}
@@ -82,39 +82,40 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	 * @return
 	 */
 	private BsymtTempAbsHisItem toEntity(TempAbsenceHisItem domain) {
-		switch (domain.getLeaveHolidayType()) {
-		case LEAVE_OF_ABSENCE:
+		int tempAbsenceFrNo = domain.getTempAbsenceFrNo().v().intValue();
+		switch (tempAbsenceFrNo) {
+		case 1:
 			Leave leave = (Leave) domain;
 			return new BsymtTempAbsHisItem(leave.getHistoryId(), leave.getEmployeeId(),
-					leave.getLeaveHolidayType().value, leave.getRemarks().v(), leave.getSoInsPayCategory());
-		case MIDWEEK_CLOSURE:
+					tempAbsenceFrNo, leave.getRemarks().v(), leave.getSoInsPayCategory());
+		case 2:
 			MidweekClosure midweek = (MidweekClosure) domain;
 			return new BsymtTempAbsHisItem(midweek.getHistoryId(), midweek.getEmployeeId(),
-					midweek.getLeaveHolidayType().value, midweek.getRemarks().v(), midweek.getSoInsPayCategory(),
+					tempAbsenceFrNo, midweek.getRemarks().v(), midweek.getSoInsPayCategory(),
 					midweek.getMultiple());
-		case AFTER_CHILDBIRTH:
+		case 3:
 			AfterChildbirth childBirth = (AfterChildbirth) domain;
 			return new BsymtTempAbsHisItem(childBirth.getHistoryId(), childBirth.getEmployeeId(),
-					childBirth.getLeaveHolidayType().value, childBirth.getRemarks().v(),
+					tempAbsenceFrNo, childBirth.getRemarks().v(),
 					childBirth.getSoInsPayCategory(),childBirth.getFamilyMemberId());
-		case CHILD_CARE_NURSING:
+		case 4:
 			ChildCareHoliday childCare = (ChildCareHoliday) domain;
 			return new BsymtTempAbsHisItem(childCare.getHistoryId(), childCare.getEmployeeId(),
-					childCare.getLeaveHolidayType().value, childCare.getRemarks().v(), childCare.getSoInsPayCategory(), childCare.getSameFamily(), childCare.getChildType(),childCare.getFamilyMemberId(), 
+					tempAbsenceFrNo, childCare.getRemarks().v(), childCare.getSoInsPayCategory(), childCare.getSameFamily(), childCare.getChildType(),childCare.getFamilyMemberId(), 
 					childCare.getCreateDate(), childCare.getSpouseIsLeave());
-		case NURSING_CARE_LEAVE:
+		case 5:
 			CareHoliday careLeave = (CareHoliday) domain;
 			return new BsymtTempAbsHisItem(careLeave.getHistoryId(), careLeave.getEmployeeId(),
-					careLeave.getLeaveHolidayType().value, careLeave.getRemarks().v(), careLeave.getSoInsPayCategory(), careLeave.getSameFamily() ,
+					tempAbsenceFrNo, careLeave.getRemarks().v(), careLeave.getSoInsPayCategory(), careLeave.getSameFamily() ,
 					careLeave.getSameFamilyDays(), careLeave.getFamilyMemberId());
-		case SICK_LEAVE:
+		case 6:
 			SickLeave sickLeave = (SickLeave) domain;
 			return new BsymtTempAbsHisItem(sickLeave.getHistoryId(), sickLeave.getEmployeeId(),
-					sickLeave.getLeaveHolidayType().value, sickLeave.getRemarks().v(), sickLeave.getSoInsPayCategory());
-		case ANY_LEAVE:
+					tempAbsenceFrNo, sickLeave.getRemarks().v(), sickLeave.getSoInsPayCategory());
+		case 7:
 			AnyLeave anyLeave = (AnyLeave) domain;
 			return new BsymtTempAbsHisItem(anyLeave.getHistoryId(), anyLeave.getEmployeeId(),
-					anyLeave.getLeaveHolidayType().value, anyLeave.getRemarks().v(), anyLeave.getSoInsPayCategory());
+					tempAbsenceFrNo, anyLeave.getRemarks().v(), anyLeave.getSoInsPayCategory());
 		default:
 			return null;
 		}
@@ -129,39 +130,65 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	 */
 	private void updateEntity(TempAbsenceHisItem domain, BsymtTempAbsHisItem entity) {
 		// Common value
-		entity.histId = domain.getHistoryId();
-		entity.leaveHolidayAtr = domain.getLeaveHolidayType().value;
-		entity.remarks = domain.getRemarks().v();
-		entity.soInsPayCategory = domain.getSoInsPayCategory();
+//		entity.histId = domain.getHistoryId();
+		if (domain.getTempAbsenceFrNo() != null){
+			entity.tempAbsFrameNo = domain.getTempAbsenceFrNo().v().intValue();
+		}
+		if (domain.getRemarks() != null){
+			entity.remarks = domain.getRemarks().v();
+		}
+		if (domain.getSoInsPayCategory() != null){
+			entity.soInsPayCategory = domain.getSoInsPayCategory();
+		}
 
-		switch (domain.getLeaveHolidayType()) {
-		case LEAVE_OF_ABSENCE:
+		switch (domain.getTempAbsenceFrNo().v().intValue()) {
+		case 1:
 			break;
-		case MIDWEEK_CLOSURE:
+		case 2:
 			MidweekClosure midweek = (MidweekClosure) domain;
-			entity.multiple = midweek.getMultiple() ? 1 : 0;
+			if (midweek.getMultiple() != null){
+				entity.multiple = midweek.getMultiple() ? 1 : 0;
+			}
 			break;
-		case AFTER_CHILDBIRTH:
+		case 3:
 			AfterChildbirth childBirth = (AfterChildbirth) domain;
-			entity.familyMemberId = childBirth.getFamilyMemberId();
+			if (childBirth.getFamilyMemberId() != null){
+				entity.familyMemberId = childBirth.getFamilyMemberId();
+			}
 			break;
-		case CHILD_CARE_NURSING:
+		case 4:
 			ChildCareHoliday childCare = (ChildCareHoliday) domain;
-			entity.sameFamily = childCare.getSameFamily() ? 1 : 0;
-			entity.childType = childCare.getChildType();
-			entity.familyMemberId = childCare.getFamilyMemberId();
-			entity.createDate = childCare.getCreateDate();
-			entity.spouseIsLeave = childCare.getSpouseIsLeave() ? 1 : 0;
+			if (childCare.getSameFamily() != null){
+				entity.sameFamily = childCare.getSameFamily() ? 1 : 0;
+			}
+			if (childCare.getChildType() != null){
+				entity.childType = childCare.getChildType();
+			}
+			if (childCare.getFamilyMemberId() != null){
+				entity.familyMemberId = childCare.getFamilyMemberId();
+			}
+			if (childCare.getCreateDate() != null){
+				entity.createDate = childCare.getCreateDate();
+			}
+			if (childCare.getSpouseIsLeave() != null){
+				entity.spouseIsLeave = childCare.getSpouseIsLeave() ? 1 : 0;
+			}
 			break;
-		case NURSING_CARE_LEAVE:
+		case 5:
 			CareHoliday careLeave = (CareHoliday) domain;
-			entity.sameFamily = careLeave.getSameFamily() ? 1 : 0;
-			entity.sameFamilyDays = careLeave.getSameFamilyDays();
-			entity.familyMemberId = careLeave.getFamilyMemberId();
+			if (careLeave.getSameFamily() != null){
+				entity.sameFamily = careLeave.getSameFamily() ? 1 : 0;
+			}
+			if (careLeave.getSameFamilyDays() != null){
+				entity.sameFamilyDays = careLeave.getSameFamilyDays();
+			}
+			if (careLeave.getFamilyMemberId() != null){
+				entity.familyMemberId = careLeave.getFamilyMemberId();
+			}
 			break;
-		case SICK_LEAVE:
+		case 6:
 			break;
-		case ANY_LEAVE:
+		case 7:
 			break;
 		default:
 		}

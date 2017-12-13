@@ -184,9 +184,12 @@
 												<div class="last_reg_title">
 													<b>#{i18n.getText('CPS002_20')}</b>
 												</div>
-												<label><b>#{i18n.getText('CPS002_21')}</b> </label> <label><b
-													data-bind="text:employeeCd"></b> </label> &#09; <label><b
-													data-bind="text:employeeName"></b> </label>
+												<div style="display: inline-block; float: left;">
+													<label><b>#{i18n.getText('CPS002_21')}</b></label> <label><b
+														data-bind="text:employeeCd"></b> </label>
+												</div>
+												<div class="lastHistName" data-bind="text:employeeName">
+												</div>
 											</div>
 										</com:ko-if>
 										<com:ko-if bind="lastRegEmployeeOfCompany">
@@ -195,9 +198,12 @@
 												<div class="last_reg_title">
 													<b>#{i18n.getText('CPS002_22')} </b>
 												</div>
-												<label><b>#{i18n.getText('CPS002_21')}</b></label> <label><b
-													data-bind="text:employeeCd"></b> </label> &#09; <label><b
-													data-bind="text:employeeName"></b> </label>
+												<div style="display: inline-block; float: left;">
+													<label><b>#{i18n.getText('CPS002_21')}</b></label> <label><b
+														data-bind="text:employeeCd"></b> </label>
+												</div>
+												<div class="lastHistName" data-bind="text:employeeName">
+												</div>
 											</div>
 										</com:ko-if>
 									</div>
