@@ -19,12 +19,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class PrescribedTimezoneSettingDto.
  */
 @Getter
-
-/**
- * Sets the lst timezone.
- *
- * @param lstTimezone the new lst timezone
- */
 @Setter
 public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingGetMemento{
 	
