@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 /**
  * 承認フェーズインスタンス
  * @author Doan Duy Hung
@@ -17,10 +18,11 @@ public class ApprovalPhaseState {
 	
 	private String rootStateID;
 	
-	private Integer rootType;
+	private RootType rootType;
 	
 	private Integer phaseOrder;
 	
+	@Setter
 	private ApprovalAtr approvalAtr;
 	
 	private ApprovalForm approvalForm;

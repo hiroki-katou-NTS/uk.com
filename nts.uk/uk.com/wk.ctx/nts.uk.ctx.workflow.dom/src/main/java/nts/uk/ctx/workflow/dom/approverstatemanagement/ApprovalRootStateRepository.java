@@ -4,6 +4,8 @@ import java.util.Optional;
 
 public interface ApprovalRootStateRepository {
 	
-	public Optional<ApprovalRootState> findByID(String companyID, String rootStateID);
+	public Optional<ApprovalRootState> findEmploymentApp(String companyID, String rootStateID);
+	
+	public void update(ApprovalRootState approvalRootState);
 	
 }

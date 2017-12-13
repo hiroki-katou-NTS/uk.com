@@ -18,7 +18,7 @@ public class ApprovalRootState {
 	
 	private String rootStateID;
 	
-	private Integer rootType;
+	private RootType rootType;
 	
 	private String historyID;
 	
