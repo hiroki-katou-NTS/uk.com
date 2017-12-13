@@ -10,12 +10,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.initsetting.item.findInitItemDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
@@ -79,7 +81,7 @@ public class RegisterLayoutFinder {
 	 *            : command from client push to webservice
 	 * @return NewLayoutDto
 	 */
-	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
+	public NewLayoutDto getByCreateType(GetLayoutByCreateTypeDto command) {
 
 		Optional<NewLayout> layout = repo.getLayout();
 		if (!layout.isPresent()) {
@@ -105,7 +107,7 @@ public class RegisterLayoutFinder {
 
 	}
 
-	private List<LayoutPersonInfoClsDto> getlistItemCls(GetLayoutByCeateTypeDto command, NewLayout _layout) {
+	private List<LayoutPersonInfoClsDto> getlistItemCls(GetLayoutByCreateTypeDto command, NewLayout _layout) {
 
 		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
 
@@ -274,34 +276,38 @@ public class RegisterLayoutFinder {
 	 *            : id of employee copy
 	 * @return SettingItemDto List
 	 */
-	public List<SettingItemDto> itemListByCreateType(int createType, String initSettingId, GeneralDate baseDate,
-			String employeeCopyId) {
+	public List<SettingItemDto> itemListByCreateType(AddEmployeeCommand command) {
 
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
 		// Copy Type
-		if (createType == 1) {
+		if (command.getCreateType() == 1) {
 
 			this.copySettingFinder.getEmpCopySetting().forEach(x -> {
-				listQuery.add(new PeregQuery(x.getCategoryCd(), employeeCopyId, null, baseDate));
+				listQuery.add(
+						new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
 			});
 
 			listQuery.forEach(x -> {
-				result.addAll(
-						this.copyItemFinder.getAllCopyItemByCtgCode(x.getCategoryCode(), employeeCopyId, baseDate));
+				result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(x.getCategoryCode(),
+						command.getEmployeeCopyId(), command.getHireDate()));
 			});
 
 		} else {
 			// Init Value Type
 
-			this.initCtgSettingFinder.getAllCategoryBySetId(initSettingId).forEach(x -> {
+			this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
 
-				listQuery.add(new PeregQuery(x.getCategoryCd(), employeeCopyId, null, baseDate));
+				listQuery.add(
+						new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
 			});
 
 			listQuery.forEach(x -> {
-				result.addAll(
-						this.initItemFinder.getAllInitItemByCtgCode(initSettingId, x.getCategoryCode(), baseDate));
+
+				findInitItemDto findInitCommand = new findInitItemDto(command.getInitSettingId(), command.getHireDate(),
+						x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(),
+						command.getHireDate());
+				result.addAll(this.initItemFinder.getAllInitItemByCtgCode(findInitCommand));
 			});
 
 		}

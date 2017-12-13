@@ -44,7 +44,7 @@ public interface PerInfoCategoryRepositoty {
 	List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgCd, String contractCd, String companyId, boolean isASC);
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
-	
+	List<PersonInfoCategory> getAllPerInfoCategoryNoMulAndDupHist(String companyId, String contractCd);
 	// vinhpx: end
 	
 	//laitv
@@ -57,4 +57,6 @@ public interface PerInfoCategoryRepositoty {
 	 * @return
 	 */
 	Optional<PersonInfoCategory> getPerInfoCategoryByCtgCD(String categoryCD, String companyID);
+
+	
 }

@@ -71,7 +71,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
                     };
                     service.addCompanyEvent(command).done(() => {
                         self.start();
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }).fail((res) => {
 
                     });
@@ -87,7 +87,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
                     };
                     service.addWorkplaceEvent(command).done(() => {
                         self.start();
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }).fail((res) => {
 
                     });
@@ -99,7 +99,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
 
         removeEvent() {
             let self = this;
-            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                 .ifYes(() => {
                     if (self.workplaceId == "0") {
                         let command = {
@@ -108,7 +108,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
                         };
                         service.removeCompanyEvent(command).done(() => {
                             self.start();
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", []));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         }).fail((res) => {
 
                         });
@@ -120,7 +120,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
                         };
                         service.removeWorkplaceEvent(command).done(() => {
                             self.start();
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", []));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         }).fail((res) => {
 
                         });

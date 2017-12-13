@@ -149,8 +149,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Transactional
 	private void inputsProcess() {
 
-		List<SettingItemDto> dataServer = this.layoutFinder.itemListByCreateType(command.getCreateType(),
-				command.getInitSettingId(), command.getHireDate(), command.getEmployeeCopyId());
+		List<SettingItemDto> dataServer = this.layoutFinder.itemListByCreateType(command);
 
 		// merge data from client with dataServer
 		mergeData(dataServer, command.getInputs());

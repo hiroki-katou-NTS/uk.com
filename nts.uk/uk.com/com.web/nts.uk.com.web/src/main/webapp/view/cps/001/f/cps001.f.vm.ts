@@ -33,7 +33,7 @@ module cps001.f.vm {
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
             self.fileInfo = ko.observable(null);
-            self.accept = ko.observableArray([".xls", '.pdf']);
+            self.accept = ko.observableArray([""]);
             self.textId = ko.observable("CPS001_71");
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
@@ -51,7 +51,6 @@ module cps001.f.vm {
                 dfd = $.Deferred();
             self.items = [];
             let dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
-            debugger;
             var dfdGetData = service.getData(dataShare.pid);
 
             $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
@@ -72,49 +71,46 @@ module cps001.f.vm {
                 self.start();
 
                 // upload file 
-                $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
+                $("#file-upload").ntsFileUpload({ stereoType: "document" }).done(function(res) {
                     self.fileId(res[0].id);
-                    var maxSize = 1024; // 10MB 10485760
-
+                    var maxSize = 10485760; // 10MB = 10485760B
+                    
                     // get Info
-                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(info : any) {
+                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(info: any) {
                         self.fileInfo(info);
-                        if (info.originalSize <= maxSize) {
-                            // save file to domain EmployeeFileManagement
-                            if (self.items.length == 0) {
-                                service.savedata({
-                                    pid: dataShare.pid,
-                                    fileid: res[0].id,
-                                    personInfoCtgId: "",
-                                    uploadOrder: 1
-                                }).done(() => {
+                        
+                        // save file to domain EmployeeFileManagement
+                        if (self.items.length == 0) {
+                            service.savedata({
+                                pid: dataShare.pid,
+                                fileid: res[0].id,
+                                personInfoCtgId: "",
+                                uploadOrder: 1
+                            }).done(() => {
+                                self.restart();
+                                self.filename("");
+                            });
+                        } else {
+                            service.savedata({
+                                pid: dataShare.pid,
+                                fileid: res[0].id,
+                                personInfoCtgId: "",
+                                uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
+                            }).done(() => {
+                                self.start().done(() => {
                                     self.restart();
                                     self.filename("");
                                 });
-                            } else {
-                                service.savedata({
-                                    pid: dataShare.pid,
-                                    fileid: res[0].id,
-                                    personInfoCtgId: "",
-                                    uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
-                                }).done(() => {
-                                    self.start().done(() => {
-                                        self.restart();
-                                        self.filename("");
-                                    });
-                                });
-                            }
-                        } else {
-                            // show dialog
-                            showDialog.alertError({ messageId: "Msg_70" }).then(function() { });
+                            });
                         }
+
                     });
 
 
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.alertError(err);
+                    showDialog.alertError(err);
                 });
-                setShared('CPS001B_VALUE', {});
+                setShared('CPS001F_VALUE', {});
             }
         }
 

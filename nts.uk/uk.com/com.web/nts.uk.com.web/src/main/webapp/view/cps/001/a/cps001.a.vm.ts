@@ -69,7 +69,7 @@ module cps001.a.vm {
 
         // for employee info.
         listEmployee: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
-        employee: KnockoutObservable<EmployeeInfo> = ko.observable(new EmployeeInfo({ employeeId: '', workplaceId: '' }));
+        employee: KnockoutObservable<EmployeeInfo> = ko.observable(new EmployeeInfo({ employeeId: '' }));
 
         person: KnockoutComputed<PersonInfo> = ko.computed(() => {
             let self = this,
@@ -157,14 +157,6 @@ module cps001.a.vm {
 
             employee.employeeId.subscribe(id => {
                 if (id) {
-
-                    let emp = _.find(self.listEmployee(), x => x.employeeId == id);
-                    if (emp) {
-                        employee.workplaceId(emp.workplaceId);
-                        employee.workplaceCode(emp.workplaceCode);
-                        employee.workplaceName(emp.workplaceName);
-                    }
-
                     self.tabActive.valueHasMutated();
                 }
             });
@@ -300,7 +292,6 @@ module cps001.a.vm {
                 employee: EmployeeInfo = self.employee(),
                 iemp: IEmployeeInfo = ko.toJS(employee);
 
-            // cancel click if hasn't emp
             if (!iemp || !iemp.employeeId) {
                 return;
             }
@@ -312,7 +303,9 @@ module cps001.a.vm {
                     });
                     modal('../d/index.xhtml').onClosed(() => {
                         let data = getShared("CPS001D_VALUES");
-                        employee.avatar(data.fileId ? liveView(data.fileId) : undefined);
+
+                        if (data)
+                            employee.avatar(data.fileId ? liveView(data.fileId) : undefined);
                     });
                 }
             });
@@ -336,7 +329,7 @@ module cps001.a.vm {
             permision().done((perm: IPersonAuth) => {
                 if (!!perm.allowMapBrowse) {
                     setShared("CPS001E_PARAMS", {
-                        employeeId: iemp.employeeId
+                        employeeId: "000426a2-181b-4c7f-abc8-6fff9f4f983a"
                     });
                     modal('../e/index.xhtml').onClosed(() => { });
                 }
@@ -454,31 +447,30 @@ module cps001.a.vm {
         employeeCode?: string;
         employeeName?: string;
         avatar?: string;
-        workplaceId: string;
-        workplaceCode?: string;
+        departmentCode?: string;
         workplaceName?: string;
-        daysOfEntire?: number;
-        daysOfTemporaryAbsence?: number;
+        numberOfWork?: number;
     }
 
     class EmployeeInfo {
         employeeId: KnockoutObservable<string> = ko.observable('');
         employeeCode: KnockoutObservable<string> = ko.observable('');
         employeeName: KnockoutObservable<string> = ko.observable('');
+        departmentCode: KnockoutObservable<string> = ko.observable('');
+        departmentName: KnockoutObservable<string> = ko.observable('');
+
+        position: KnockoutObservable<string> = ko.observable('');
+        contractType: KnockoutObservable<string> = ko.observable('');
+
+        numberOfWork: KnockoutObservable<number> = ko.observable(0);
+
         avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
-        workplaceId: KnockoutObservable<string> = ko.observable('');
-        workplaceCode: KnockoutObservable<string> = ko.observable('');
-        workplaceName: KnockoutObservable<string> = ko.observable('');
-        daysOfEntire: KnockoutObservable<number> = ko.observable(0);
-        daysOfTemporaryAbsence: KnockoutObservable<number> = ko.observable(0);
         personInfo: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
 
         // calc days of work process
         entire: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
-                days = self.daysOfEntire();
-
-            days -= self.daysOfTemporaryAbsence();
+                days = self.numberOfWork();
 
             let current = moment.utc(),
                 entire = moment.utc().add(-days, 'days'),
@@ -507,14 +499,6 @@ module cps001.a.vm {
                 self.employeeCode(param.employeeCode);
                 self.employeeName(param.employeeName);
 
-                self.workplaceId(param.workplaceId);
-                self.workplaceCode(param.workplaceCode);
-                self.workplaceName(param.workplaceName);
-
-                self.daysOfEntire(param.daysOfEntire);
-                self.daysOfTemporaryAbsence(param.daysOfTemporaryAbsence);
-
-
                 self.avatar(param.avatar || DEF_AVATAR);
             }
 
@@ -530,22 +514,21 @@ module cps001.a.vm {
                     service.getEmpInfo(id).done((data: IEmployeeInfo) => {
                         if (data) {
                             self.employeeCode(data.employeeCode);
+                            self.employeeName(data.employeeName);
+
                             // set entire days with data receive
-                            self.daysOfEntire(data.daysOfEntire);
-                            self.daysOfTemporaryAbsence(data.daysOfTemporaryAbsence);
+                            self.numberOfWork(data.numberOfWork);
                         } else {
                             self.employeeCode(undefined);
 
                             // set entire days is zero
-                            self.daysOfEntire(0);
-                            self.daysOfTemporaryAbsence(0);
+                            self.numberOfWork(0);
                         }
                     }).fail(() => {
                         self.employeeCode(undefined);
 
                         // set entire days is zero
-                        self.daysOfEntire(0);
-                        self.daysOfTemporaryAbsence(0);
+                        self.numberOfWork(0);
                     });
 
                     permision().done((perm: IPersonAuth) => {
@@ -590,6 +573,9 @@ module cps001.a.vm {
         personNameKana?: string;
         personRomanji?: string;
         todokedeFullName?: string;
+        
+        
+        
         todokedeOldFullName?: string;
     }
 

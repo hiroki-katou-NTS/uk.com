@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -76,8 +78,11 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(query.getEmployeeId());
+		if(!optional.isPresent()) return new ArrayList<>();
+		return optional.get().getHistory().stream()
+		.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+		.collect(Collectors.toList());
 	}
 
 	@Override
