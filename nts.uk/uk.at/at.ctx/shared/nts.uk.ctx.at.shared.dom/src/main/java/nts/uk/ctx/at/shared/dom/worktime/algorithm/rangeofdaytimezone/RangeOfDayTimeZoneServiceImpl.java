@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author trungtran
  *
  */
+@Stateless
 public class RangeOfDayTimeZoneServiceImpl implements RangeOfDayTimeZoneService {
 	
 	@Inject

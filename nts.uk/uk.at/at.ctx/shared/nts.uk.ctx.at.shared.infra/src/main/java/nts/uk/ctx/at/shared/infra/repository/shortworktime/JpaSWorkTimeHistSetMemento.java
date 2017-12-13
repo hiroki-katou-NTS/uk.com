@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,6 +20,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 
+	/** The company id. */
+	private String companyId;
+
 	/** The entity. */
 	private List<BshmtWorktimeHist> entities;
 
@@ -28,7 +32,8 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSWorkTimeHistSetMemento(List<BshmtWorktimeHist> entities) {
+	public JpaSWorkTimeHistSetMemento(String companyId, List<BshmtWorktimeHist> entities) {
+		this.companyId = companyId;
 		entities.stream().forEach(item -> {
 			if (item.getBshmtWorktimeHistPK() == null) {
 				item.setBshmtWorktimeHistPK(new BshmtWorktimeHistPK());
@@ -60,24 +65,41 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 	 */
 	@Override
 	public void setHistoryItems(List<DateHistoryItem> historyItems) {
-		Map<String, DatePeriod> mapHistoryItem = historyItems.stream().collect(Collectors.toMap(DateHistoryItem::identifier, DateHistoryItem::span));
+		List<String> histIds = historyItems.stream().map(DateHistoryItem::identifier)
+				.collect(Collectors.toList());
+
+		Map<String, DatePeriod> mapHistoryItems = historyItems.stream()
+				.collect(Collectors.toMap(DateHistoryItem::identifier, DateHistoryItem::span));
+
+		// Remove not save entities
+		this.entities = this.entities.stream()
+				.filter(item -> histIds.contains(item.getBshmtWorktimeHistPK().getHistId()))
+				.collect(Collectors.toList());
+
+		List<String> entityHistIds = new ArrayList<>();
+
 		this.entities.stream().forEach(item -> {
-			item.setStrYmd(mapHistoryItem.get(item.getBshmtWorktimeHistPK().getHistId()).start());
-			item.setEndYmd(mapHistoryItem.get(item.getBshmtWorktimeHistPK().getHistId()).end());
-		});
-		
-		// TODO: Check again
-		List<String> existHistIds = this.entities.stream().map(item -> {
-			return item.getBshmtWorktimeHistPK().getHistId();
-		}).collect(Collectors.toList());
-		
-		historyItems.stream().forEach(item -> {
-			BshmtWorktimeHistPK bshmtWorktimeHistPK = new BshmtWorktimeHistPK();
-			if(!existHistIds.contains(item.identifier())){
-				bshmtWorktimeHistPK.setHistId(bshmtWorktimeHistPK.getHistId());
+			BshmtWorktimeHistPK kshmtWorkingCondPK = item.getBshmtWorktimeHistPK();
+			histIds.add(kshmtWorkingCondPK.getHistId());
+			if (mapHistoryItems.keySet().contains(kshmtWorkingCondPK.getHistId())) {
+				item.setStrYmd(mapHistoryItems.get(kshmtWorkingCondPK.getHistId()).start());
+				item.setEndYmd(mapHistoryItems.get(kshmtWorkingCondPK.getHistId()).end());
 			}
 		});
-		
+
+		historyItems.stream().forEach(item -> {
+			if (!entityHistIds.contains(item.identifier())) {
+				BshmtWorktimeHist entity = new BshmtWorktimeHist();
+				BshmtWorktimeHistPK kshmtWorkingCondPK = new BshmtWorktimeHistPK(companyId,
+						item.identifier());
+				entity.setBshmtWorktimeHistPK(kshmtWorkingCondPK);
+				entity.setCId(companyId);
+				entity.setStrYmd(item.start());
+				entity.setEndYmd(item.end());
+				this.entities.add(entity);
+			}
+		});
+
 	}
 
 	/*
