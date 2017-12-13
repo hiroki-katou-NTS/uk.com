@@ -12,3 +12,8 @@
     float: right;
     margin-right: 19px;
 }
+.nts-fileupload-container .browser-button {
+    float: left;
+    margin-right: 5px;
+    width: 70px;
+}

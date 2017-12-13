@@ -3,21 +3,21 @@ module nts.uk.com.view.ccg026.component {
 
     export module viewmodel {
         export class ComponentModel {
-            listFunctionPermissions: Array<model.FunctionPermission> = [];
-            parameterInput: model.Option = new model.Option({
-                roleId: ''
-                , classification: 1
-                , maxRow: 3
-            });
+            roleId: KnockoutObservable<string> = ko.observable("");
+            listPermissions: Array<model.FunctionPermission> = [];
+            
+            private defaultSetting: model.ISetting = {
+                classification: 1,
+                maxRow: 10
+            };
+            private setting: model.ISetting;
 
             constructor(option: model.IOption) {
-                let self = this,
-                    parameterInput = self.parameterInput;
-
-                parameterInput.roleId(option.roleId);
-                parameterInput.classification = option.classification;
-                parameterInput.maxRow = option.maxRow;
-                parameterInput.roleId.subscribe((x) => {
+                let self = this;
+                self.setting = $.extend({}, self.defaultSetting, option);
+                
+                self.roleId(option.roleId);
+                self.roleId.subscribe((x) => {
                     // reset function avialability 
                     self.buildAvialabilityFunctionPermission().done(() => {
                     });
@@ -31,7 +31,7 @@ module nts.uk.com.view.ccg026.component {
 
                 // caculate height by row number
                 var headerHeight: number = 23;
-                var heigth: number = (self.parameterInput.maxRow) * 28 + headerHeight;
+                var heigth: number = (self.setting.maxRow) * 28 + headerHeight;
                 $("#table-permission").ntsFixedTable({ height: heigth });
                 $.when(self.getListOfFunctionPermission(), self.buildAvialabilityFunctionPermission()).done(() => {
                     dfd.resolve();
@@ -46,15 +46,14 @@ module nts.uk.com.view.ccg026.component {
              */
             private getListOfFunctionPermission(): JQueryPromise<any> {
                 let self = this,
-                    parameterInput = self.parameterInput,
-                    listFunctionPermissions = self.listFunctionPermissions;
+                    listPermissions = self.listPermissions;
                 let dfd = $.Deferred();
 
-                service.getListOfDescriptionFunctionPermission(parameterInput.classification)
+                service.getListOfDescriptionFunctionPermission(self.setting.classification)
                     .done((dataDescriptions: Array<model.IFunctionPermission>) => {
                         dataDescriptions = _.orderBy(dataDescriptions, ['assignAtr', 'functionNo'], ['asc', 'asc']);
                         for (var i = 0, len = dataDescriptions.length; i < len; i++) {
-                            self.listFunctionPermissions.push(new model.FunctionPermission
+                            self.listPermissions.push(new model.FunctionPermission
                                 ({
                                     functionNo: dataDescriptions[i].functionNo,
                                     initialValue: dataDescriptions[i].initialValue,
@@ -66,7 +65,7 @@ module nts.uk.com.view.ccg026.component {
                         }
                         dfd.resolve();
                     }).fail(function(res: any) {
-                        self.listFunctionPermissions = [];
+                        self.listPermissions = [];
                         dfd.reject();
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
@@ -78,20 +77,19 @@ module nts.uk.com.view.ccg026.component {
              */
             private buildAvialabilityFunctionPermission(): JQueryPromise<any> {
                 let self = this,
-                    parameterInput = self.parameterInput,
-                    listFunctionPermissions = self.listFunctionPermissions;
+                    listPermissions = self.listPermissions;
                 let dfd = $.Deferred();
-                service.getListOfAviabilityFunctionPermission(parameterInput.roleId(), parameterInput.classification)
+                service.getListOfAviabilityFunctionPermission(self.roleId(), self.setting.classification)
                     .done((dataAvailability: Array<model.IAvailabilityPermission>) => {
                         //process data
                         //filter get only function have availability permission
                         dataAvailability = dataAvailability.filter(item => item.availability);
                         //setting check for ListOfFunctionPermission and show
-                        for (var i = 0, len = listFunctionPermissions.length; i < len; i++) {
+                        for (var i = 0, len = listPermissions.length; i < len; i++) {
                             var index = _.findIndex(dataAvailability, function(x: model.IAvailabilityPermission)
-                            { return x.functionNo == listFunctionPermissions[i].functionNo });
+                            { return x.functionNo == listPermissions[i].functionNo });
                             var isAvailability: boolean = (index > -1);
-                            listFunctionPermissions[i].availability(isAvailability || listFunctionPermissions[i].initialValue);
+                            listPermissions[i].availability(isAvailability || listPermissions[i].initialValue);
                         }
                         dfd.resolve();
                     }).fail(function(res: any) {
@@ -115,17 +113,9 @@ module nts.uk.com.view.ccg026.component {
         }
 
         //Class Input parameter
-        export class Option {
-            roleId: KnockoutObservable<string> = ko.observable('');
-            maxRow: number = 3;
-            classification: number = 1; //1: work place
-
-            constructor(param: IOption) {
-                let self = this;
-                self.roleId(param.roleId);
-                self.maxRow = param.maxRow;
-                self.classification = param.classification;
-            }
+        export interface ISetting {
+            maxRow: number;
+            classification: number;
         }
 
         //Model Function Permission

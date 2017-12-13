@@ -156,7 +156,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     if (data != null) {
                         self.userName(data.userName);
                         self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
-                        self.selectedRoleIndividual(UserId);
                         self.isCreateMode(false);
                         self.isSelectedUser(false);
                         self.isDelete(true);
@@ -201,7 +200,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 if (self.isSelectedUser() && self.isCreateMode()) {
                     self.insert();
                 } else {
-                    console.log('upDate');
                     self.upDate();
                 }
             } else if (nts.uk.text.isNullOrEmpty(self.userName())) {
