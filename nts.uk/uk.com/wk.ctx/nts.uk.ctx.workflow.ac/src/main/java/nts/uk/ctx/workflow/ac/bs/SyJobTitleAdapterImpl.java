@@ -36,7 +36,7 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 	public JobTitleImport findJobTitleBySid(String employeeId, GeneralDate baseDate) {
 		Optional<EmployeeJobHistExport> export = this.syJobTitlePub.findBySid(employeeId, baseDate);
 		return export.map(x -> {
-			return new JobTitleImport(x.getJobTitleID(), x.getJobTitleCode(), x.getJobTitleName(), "", x.getStartDate(), x.getEndDate());
+			return new JobTitleImport(x.getJobTitleID(), null , x.getJobTitleName(), "", x.getStartDate(), x.getEndDate());
 		}).orElse(new JobTitleImport("", "", "", "", null, null));
 	}
 
