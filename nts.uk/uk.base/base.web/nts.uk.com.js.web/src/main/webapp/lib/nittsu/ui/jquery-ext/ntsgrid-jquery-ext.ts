@@ -1276,6 +1276,7 @@ module nts.uk.ui.jqueryExtentions {
             export let DELETE_BUTTON = 'DeleteButton';
             export let TEXTBOX = 'TextBox';
             export let TEXT_EDITOR = 'TextEditor';
+            export let FLEX_IMAGE = 'FlexImage';
             export let IMAGE = 'Image';
             export let HEIGHT_CONTROL = "27px";
             
@@ -1300,6 +1301,8 @@ module nts.uk.ui.jqueryExtentions {
                         return new TextEditor();
                     case LINK_LABEL:
                         return new LinkLabel();
+                    case FLEX_IMAGE:
+                        return new FlexImage();
                     case IMAGE:
                         return new Image();
                 }
@@ -1879,7 +1882,7 @@ module nts.uk.ui.jqueryExtentions {
                 draw(data: any): JQuery {
                     return $('<div/>').addClass(this.containerClass()).append($("<a/>")
                                         .addClass("link-button").css({ backgroundColor: "inherit", color: "deepskyblue" })
-                                        .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey))
+                                        .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey)))
                                         .data("click", data.controlDef.click);
                 }
                 
@@ -1890,6 +1893,33 @@ module nts.uk.ui.jqueryExtentions {
                 disable($container: JQuery): void {
                     var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
                     $wrapper.find("a").css("color", "#AAA").off("click");
+                }
+            }
+            
+            class FlexImage extends NtsControlBase {
+                containerClass(): string {
+                    return "nts-fleximage-container";
+                }
+                
+                draw(data: any): JQuery {
+                    let $container = $("<div/>").addClass(this.containerClass());
+                    if (util.isNullOrUndefined(data.initValue) || _.isEmpty(data.initValue)) return $container;
+                    let $image = $("<span/>").addClass(data.controlDef.source);
+                    if (data.controlDef.click && _.isFunction(data.controlDef.click)) {
+                        $container.on(events.Handler.CLICK, $.proxy(data.controlDef.click, null, data.columnKey, data.rowId))
+                            .css({ cursor: "pointer" }).data(events.Handler.CLICK, data.controlDef.click);
+                    }
+                    return $container.append($image);
+                }
+                
+                enable($container: JQuery): void {
+                    let $wrapper = $container.find("." + this.containerClass()).data("enable", true);
+                    $wrapper.on(events.Handler.CLICK, $wrapper.data(events.Handler.CLICK));
+                }
+                
+                disable($container: JQuery): void {
+                    let $wrapper = $container.find("." + this.containerClass()).data("enable", false);
+                    $wrapper.off(events.Handler.CLICK);
                 }
             }
             
@@ -1971,7 +2001,7 @@ module nts.uk.ui.jqueryExtentions {
                 let nextColumn = utils.nextColumnByKey(visibleColumnsMap, columnKey, isFixedColumn);
                 if (util.isNullOrUndefined(nextColumn) || nextColumn.index === 0) return;
                 
-                specialColumn.onChange(pastedText).done(function(res: any) {
+                specialColumn.onChange(columnKey, cell.id, pastedText).done(function(res: any) {
                     let updatedRow = {};
                     let $gridRow = utils.rowAt(cell);
                     if (specialColumn.type === COMBO_CODE) {
@@ -2001,7 +2031,7 @@ module nts.uk.ui.jqueryExtentions {
                 return true;
             }
             
-            function identity(value) {
+            function identity(key, id, value) {
                 let dfd = $.Deferred();
                 dfd.resolve(value);
                 return dfd.promise();  
@@ -3748,6 +3778,7 @@ module nts.uk.ui.jqueryExtentions {
                     case ntsControls.CHECKBOX:
                     case ntsControls.LINK_LABEL:
                     case ntsControls.COMBOBOX:
+                    case ntsControls.FLEX_IMAGE:
                     case ntsControls.IMAGE:
                         return false;
                 }
@@ -3772,6 +3803,7 @@ module nts.uk.ui.jqueryExtentions {
                     case ntsControls.COMBOBOX:
                     case ntsControls.BUTTON:
                     case ntsControls.DELETE_BUTTON:
+                    case ntsControls.FLEX_IMAGE:
                     case ntsControls.IMAGE:
                     case ntsControls.TEXT_EDITOR:
                         return true;
