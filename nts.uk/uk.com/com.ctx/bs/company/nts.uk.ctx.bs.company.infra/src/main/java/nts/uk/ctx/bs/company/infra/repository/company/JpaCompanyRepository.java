@@ -48,7 +48,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 //	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
 
 	
-	private final String GET_BY_CID = SELECT_NO_WHERE + " WHERE c.bcmmtAddInforPK.companyId = :cid AND c.isAbolition = 0 ";
+	private final String GET_BY_CID = SELECT_NO_WHERE + " WHERE c.bcmmtCompanyInforPK.companyId = :cid AND c.isAbolition = 0 ";
 	
 //	/**
 //	 * @param entity
