@@ -31,39 +31,32 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
 
 	@Override
-	public Optional<AffClassHistory_ver1> getByHistoryId(String historyId) {
+	public Optional<DateHistoryItem> getByHistoryId(String historyId) {
 
 		Optional<BsymtAffClassHistory_Ver1> optionData = this.queryProxy().find(historyId,
 				BsymtAffClassHistory_Ver1.class);
 		if (optionData.isPresent()) {
-			BsymtAffClassHistory_Ver1 ent = optionData.get();
-			return Optional.of(toDomain(ent));
+			BsymtAffClassHistory_Ver1 entity = optionData.get();
+			return Optional.of(new DateHistoryItem(entity.historyId,
+					new DatePeriod(entity.startDate, entity.endDate)));
 		}
 		return Optional.empty();
 
 	}
 
 	@Override
-	public Optional<AffClassHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+	public Optional<DateHistoryItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		Optional<BsymtAffClassHistory_Ver1> optionData = this.queryProxy()
 				.query(GET_BY_SID_DATE, BsymtAffClassHistory_Ver1.class)
 				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
 		if ( optionData.isPresent() ) {
-			return Optional.of(toDomain(optionData.get()));
+			BsymtAffClassHistory_Ver1 entity = optionData.get();
+			return Optional.of(new DateHistoryItem(entity.historyId,
+					new DatePeriod(entity.startDate, entity.endDate)));
 		}
-		return null;
+		return Optional.empty();
 	}
 
-	private AffClassHistory_ver1 toDomain(BsymtAffClassHistory_Ver1 entity) {
-		AffClassHistory_ver1 domain = new AffClassHistory_ver1(entity.cid, entity.sid,
-				new ArrayList<DateHistoryItem>());
-
-		DateHistoryItem dateItem = new DateHistoryItem(entity.historyId,
-				new DatePeriod(entity.startDate, entity.endDate));
-		domain.add(dateItem);
-
-		return domain;
-	}
 
 	private Optional<AffClassHistory_ver1> toDomain(List<BsymtAffClassHistory_Ver1> entities) {
 		if (entities == null || entities.isEmpty()) {

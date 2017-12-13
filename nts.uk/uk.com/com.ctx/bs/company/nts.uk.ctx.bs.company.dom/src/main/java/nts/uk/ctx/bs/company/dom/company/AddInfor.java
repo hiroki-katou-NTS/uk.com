@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.primitive.Add_1;
 import nts.uk.ctx.bs.company.dom.company.primitive.Add_2;
 import nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_1;
@@ -40,9 +41,12 @@ public class AddInfor extends DomainObject{
 												String add_2, String addKana_1, 
 												String addKana_2, String postCd, 
 												String phoneNum){
-		return new AddInfor(companyId, new FaxNum(faxNum), new Add_1(add_1),
-							new Add_2(add_2), new Add_Kana_1(addKana_1),
-							new Add_Kana_2(addKana_2), new PostCd(postCd),
-							new PhoneNum(phoneNum));
+		return new AddInfor(companyId, !StringUtil.isNullOrEmpty(faxNum, true) ? new FaxNum(faxNum) : new FaxNum(""), 
+							!StringUtil.isNullOrEmpty(add_1, true) ? new Add_1(add_1): new Add_1(""),
+							!StringUtil.isNullOrEmpty(add_2, true) ? new Add_2(add_2) : new Add_2(""), 
+							!StringUtil.isNullOrEmpty(addKana_1, true) ? new Add_Kana_1(addKana_1) : new Add_Kana_1(""),
+							!StringUtil.isNullOrEmpty(addKana_2, true) ? new Add_Kana_2(addKana_2) : new Add_Kana_2(""), 
+							!StringUtil.isNullOrEmpty(postCd, true) ? new PostCd(postCd) : new PostCd(""),
+							!StringUtil.isNullOrEmpty(phoneNum, true) ? new PhoneNum(phoneNum) : new PhoneNum(""));
 	}
 }

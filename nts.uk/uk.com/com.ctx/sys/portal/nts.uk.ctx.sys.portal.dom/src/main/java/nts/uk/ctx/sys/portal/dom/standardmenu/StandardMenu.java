@@ -54,10 +54,10 @@ public class StandardMenu extends AggregateRoot {
 	private int logSettingDisplay;
 	
 	/** プログラムID **/
-	private int programId;
+	private String programId;
 	
 	/** 遷移先の画面ID **/
-	private int screenId;
+	private String screenId;
 
 	/**
 	 * Instantiates a new Standard Menu.

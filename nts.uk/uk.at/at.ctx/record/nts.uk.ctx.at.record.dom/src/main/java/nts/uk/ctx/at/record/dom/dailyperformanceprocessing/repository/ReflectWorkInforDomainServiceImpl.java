@@ -270,8 +270,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			workInfoOfDailyPerformanceUpdate.setCalculationState(CalculationState.Calculated);
 			workInfoOfDailyPerformanceUpdate.setYmd(day);
 			
-			errMesInfos = new ArrayList<>();
-			
 			if (personalLaborHasData.get().getScheduleManagementAtr() == UseAtr.USE) {
 
 				// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
@@ -284,7 +282,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 							new ErrMessageResource("006"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 							new ErrMessageContent(TextResource.localize(TextResource.localize("Msg_431"))));
-					errMesInfos.add(employmentErrMes);
+					errMesInfos.add(employmentErrMes);				
+
+					this.errMessageInfoRepository.addList(errMesInfos);
 				}
 				// 存在する - has data
 				else {
@@ -300,7 +300,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 								new ErrMessageResource("007"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 								new ErrMessageContent(TextResource.localize("Msg_432")));
-						errMesInfos.add(employmentErrMes);
+						errMesInfos.add(employmentErrMes);						
+
+						this.errMessageInfoRepository.addList(errMesInfos);
 					} else {
 						// copy information for employeeId has data
 						List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
@@ -330,7 +332,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
 					}
 				}
-
 				
 			} else {
 				// 個人情報から勤務種類と就業時間帯を写す
@@ -468,12 +469,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// 所定時間設定
 				// this step can not processing, waiting Newwave
 			}
-		}		
 
-		this.errMessageInfoRepository.addList(errMesInfos);
-
-		if (errMesInfos.isEmpty()) {
-			createStamp(companyId, workInfoOfDailyPerformanceUpdate, personalLaborHasData, timeLeavingOptional);
+			if (errMesInfos.isEmpty()) {
+				createStamp(companyId, workInfoOfDailyPerformanceUpdate, personalLaborHasData, timeLeavingOptional);
+			}
+			
 		}
 
 		// check tay

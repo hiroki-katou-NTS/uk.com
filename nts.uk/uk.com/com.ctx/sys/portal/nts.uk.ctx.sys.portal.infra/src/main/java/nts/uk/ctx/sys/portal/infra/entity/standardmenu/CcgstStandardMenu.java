@@ -61,10 +61,10 @@ public class CcgstStandardMenu extends UkJpaEntity implements Serializable {
 	public int logSettingDisplay;
 	
 	@Column(name = "PROGRAM_ID")
-	public int programId;
+	public String programId;
 	
 	@Column(name = "SCREEN_ID")
-	public int screenID;
+	public String screenID;
 
 	@Override
 	protected CcgstStandardMenuPK getKey() {

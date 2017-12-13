@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.department;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
@@ -30,7 +32,7 @@ public class AddAffiliationDepartmentCommand{
 
 	// 分配率
 	@PeregItem("IS00075")
-	private String distributionRatio;
+	private BigDecimal distributionRatio;
 	
 	/** The period. */
 	@PeregItem("IS00071")

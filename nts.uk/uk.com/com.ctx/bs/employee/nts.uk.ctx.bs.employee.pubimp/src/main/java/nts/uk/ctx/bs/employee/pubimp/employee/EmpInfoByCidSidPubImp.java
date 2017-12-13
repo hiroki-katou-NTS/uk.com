@@ -23,7 +23,6 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 @Stateless
 public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 
-	
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
 
@@ -47,6 +46,11 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 		if (empOpt.isPresent()) {
 			empDataMng = empOpt.get();
 
+			result.setSid(empDataMng.getEmployeeId());
+			result.setScd(empDataMng.getEmployeeCode() == null ? null : empDataMng.getEmployeeCode().v());
+			result.setCid(empDataMng.getCompanyId());
+			result.setPid(empDataMng.getPersonId());
+
 			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfPerson(pid);
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist
@@ -54,17 +58,20 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 
 			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
 			Person person = new Person();
-
-			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
-			}).collect(Collectors.toList());
 			
-			if (!filter.isEmpty()) {
-				affComHistItem = filter.get(0);
+			if (affComHistByEmp.items() != null) {
+				
+				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
+					return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+				}).collect(Collectors.toList());
 
-				person = getPersonInfo(affComHist.getPId());
-				if (person != null) {
-					result = setResult(empDataMng, person);
+				if (!filter.isEmpty()) {
+					affComHistItem = filter.get(0);
+
+					person = getPersonInfo(affComHist.getPId());
+					if (person != null) {
+						result = setResult(empDataMng, person);
+					}
 				}
 			}
 		}
@@ -82,7 +89,8 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 		result.setCid(emp.getCompanyId());
 		result.setScd(emp.getEmployeeCode() == null ? "" : emp.getEmployeeCode().v());
 		result.setSid(emp.getEmployeeId());
-		result.setPersonName(person.getPersonNameGroup().getBusinessName()  == null ? "" : person.getPersonNameGroup().getBusinessName() .v());
+		result.setPersonName(person.getPersonNameGroup().getBusinessName() == null ? ""
+				: person.getPersonNameGroup().getBusinessName().v());
 		return result;
 	}
 
@@ -91,6 +99,8 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 		Person person = new Person();
 		if (personOpt.isPresent()) {
 			person = personOpt.get();
+		}else {
+			return null;
 		}
 		return person;
 	}

@@ -7,11 +7,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author yennth
  *
  */
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class RepJob extends StringPrimitiveValue<RepJob>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
-	/** 代表者職位 **/
+	/** 会社代表者職位 **/
 	public RepJob(String rawValue){
 		super(rawValue);
 	}
