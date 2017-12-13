@@ -24,7 +24,7 @@ public interface UserRepository {
 	
 	Optional<User> getByUserID(String userID);
 	
-	List<User> findByKey(String key, boolean Special, boolean Multi);
+    List<User> searchBySpecialAndMulti(GeneralDate systemDate, int special, int multi);
 	
 	List<User> searchUser(String userIDName , GeneralDate date);
 	

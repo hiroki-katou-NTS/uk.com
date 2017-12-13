@@ -4,6 +4,7 @@ module ksu001 {
 
         init(element: any, valueAccessor: () => any, allBindingsAccessor?: KnockoutAllBindingsAccessor, viewModel?: any, bindingContext?: KnockoutBindingContext): void {
             let data = valueAccessor();
+            let colors: any[] = ko.unwrap(data.colors());
             let heightC: string = !!data.height ? ko.unwrap(data.height()) : 'auto';
             let widthC: string = !!data.width ? ko.unwrap(data.width()) : '400px';
             let startDate: Date = ko.unwrap(data.startDate());
@@ -15,11 +16,11 @@ module ksu001 {
             let container = $(element);
             //set width
             container.css('width', widthC);
-            
+
             container.fullCalendar({
                 height: heightC,
                 dateAlignment: "week",
-                defaultDate: startDate,
+                defaultDate: startDate, 
                 validRange: {
                     start: startDate,
                     end: endDate
@@ -29,15 +30,21 @@ module ksu001 {
                 header: false,
             });
 
-            //add color for header of cell, which is disabled
+            //set color for header of cell, which is disabled
             _.each($('div.fc-content-skeleton thead td:not(.fc-day-top)'), (x) => {
-                if (x.cellIndex == 0) {
-                    $(x).addClass('fc-day-top fc-sun fc-past');
-                } else if (x.cellIndex == 6) {
-                    $(x).addClass('fc-day-top fc-sat fc-past');
-                } else {
-                    $(x).addClass('fc-day-top fc-past');
-                }
+                $(x).addClass('fc-day-top color-gray');
+                //                if (x.cellIndex == 0) {
+                //                    $(x).addClass('fc-day-top fc-sun fc-past');
+                //                } else if (x.cellIndex == 6) {
+                //                    $(x).addClass('fc-day-top fc-sat fc-past');
+                //                } else {
+                //                    $(x).addClass('fc-day-top fc-past');
+                //                }
+            });
+
+            //set color for header of cell, which is not disable
+            _.each(_.filter(colors, ['rowId', 0]),(color) =>{
+                    
             });
 
             //create timeLable and button
@@ -88,8 +95,7 @@ module ksu001 {
             });
         }
 
-        update(element: any, valueAccessor: () => any, allBindingsAccessor?: KnockoutAllBindingsAccessor, viewModel?: any, bindingContext?: KnockoutBindingContext): void {
-        }
+        update(element: any, valueAccessor: () => any, allBindingsAccessor?: KnockoutAllBindingsAccessor, viewModel?: any, bindingContext?: KnockoutBindingContext): void { }
     }
 
     ko.bindingHandlers['ntsExCalendar'] = new ExCalendarBindingHandler();
