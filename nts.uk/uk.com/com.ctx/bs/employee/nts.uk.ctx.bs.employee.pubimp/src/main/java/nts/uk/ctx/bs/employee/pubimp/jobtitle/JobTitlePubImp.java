@@ -225,7 +225,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		// Return
 		return Optional.of(EmployeeJobHistExport.builder().
 				employeeId(affJobTitleHist.getEmployeeId())
-				.jobTitleCode(jobTitleInfo.getJobTitleCode().v())
+				.jobTitleID(jobTitleInfo.getJobTitleId())
 				.jobTitleName(jobTitleInfo.getJobTitleName().v())
 				.startDate(affJobTitleHist.getPeriod().start())
 				.endDate(affJobTitleHist.getPeriod().end()).build());
