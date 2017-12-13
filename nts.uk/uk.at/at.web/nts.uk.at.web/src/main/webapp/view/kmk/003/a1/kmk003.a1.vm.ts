@@ -8,8 +8,6 @@ module a1 {
         oneDayRangeTime: KnockoutObservable<string>;
         oneDayRangeTimeOption: KnockoutObservable<any>;
 
-        nightWorkShift: KnockoutObservable<boolean>;
-
         beforeUpdateWorkTime: KnockoutObservable<number>;
         beforeUpdateWorkTimeOption: KnockoutObservable<any>;
 
@@ -61,7 +59,6 @@ module a1 {
                 textmode: "text",
             }));
 
-            self.nightWorkShift = ko.observable(true);
 
             self.beforeUpdateWorkTime = ko.observable(0);
             self.beforeUpdateWorkTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({

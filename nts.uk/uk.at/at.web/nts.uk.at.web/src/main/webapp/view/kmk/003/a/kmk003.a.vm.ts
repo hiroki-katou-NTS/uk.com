@@ -214,7 +214,7 @@ module nts.uk.at.view.kmk003.a {
                                 self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
                                 self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
                                 service.findByCodeFlexWorkSetting(worktime[0].worktimeCode).done(function(flexdata){
-                                    self.updateData(flexdata);
+                                    self.updateDataFlexMode(flexdata);
                                     dfd.resolve();
                                 });
                             });
@@ -267,7 +267,7 @@ module nts.uk.at.view.kmk003.a {
             /**
              * update data by flex mode
              */
-            private updateData(data: FlexWorkSettingDto) {
+            private updateDataFlexMode(data: FlexWorkSettingDto) {
                 var self = this;
                 if (data.useHalfDayShift) {
                     self.useHalfDay('1');
