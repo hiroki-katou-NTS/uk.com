@@ -360,7 +360,15 @@
 								</div>
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.NODUP }">
-									NODUP</div>
+									<div
+										data-bind="foreach: { data: layouts().filter(function(m){ return m.listItemCls().length != 0}), as: 'lay' }">
+										<div style="padding-top: 10px"
+											data-bind="ntsLayoutControl: { 
+											data: lay.listItemCls,
+											outData: lay.outData,
+											editAble: 2 }"></div>
+									</div>
+								</div>
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.DUPLI }">
 									DUPLI</div>
