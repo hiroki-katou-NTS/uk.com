@@ -51,6 +51,7 @@ module cps001.e.vm {
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
+                        self.empFileMn().employeeId = "000426a2-181b-4c7f-abc8-6fff9f4f983a";
                         self.empFileMn().fileId = data.id;
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
                     });
