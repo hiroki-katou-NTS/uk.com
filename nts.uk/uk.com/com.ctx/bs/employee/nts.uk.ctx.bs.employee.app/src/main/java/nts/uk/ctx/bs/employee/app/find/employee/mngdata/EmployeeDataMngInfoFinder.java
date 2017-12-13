@@ -26,7 +26,6 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 
 	@Override
 	public Class<EmployeeDataMngInfoDto> dtoClass() {
-		// TODO Auto-generated method stub
 		return EmployeeDataMngInfoDto.class;
 	}
 
@@ -38,11 +37,9 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 	@Override
 	public EmployeeDataMngInfoDto getSingleData(PeregQuery query) {
 		List<EmployeeDataMngInfo> domain = edMngFinder.findByEmployeeId(query.getEmployeeId());
-		
 		if (domain.isEmpty()) {
 			return null;
 		}
-		
 		return EmployeeDataMngInfoDto.fromDomain(domain.get(0));
 	}
 

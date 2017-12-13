@@ -15,9 +15,8 @@ public class EmpRegHistoryDto {
 	RegEmployeeDto lastRegEmployeeOfCompany;
 
 	public static EmpRegHistoryDto createFromDomain(LastEmRegHistory domain) {
-		return new EmpRegHistoryDto(
-				domain.getLastRegEmployeeID() != null
-						? new RegEmployeeDto(domain.getLastRegEmployeeID(), domain.getLastRegEmployeeCd(), "") : null,
+		return new EmpRegHistoryDto(domain.getLastRegEmployeeID() != null
+				? new RegEmployeeDto(domain.getRegisteredEmployeeID(), domain.getLastRegEmployeeCd(), "") : null,
 				domain.getLastRegEmployeeOfCompanyID() != null ? new RegEmployeeDto(
 						domain.getLastRegEmployeeOfCompanyID(), domain.getLastRegEmployeeOfCompanyCd(), "") : null);
 	}
