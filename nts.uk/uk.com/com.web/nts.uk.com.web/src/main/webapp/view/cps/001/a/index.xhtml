@@ -160,15 +160,16 @@
 							</div>
 							<div
 								data-bind="css: { 'hidden' : cat.categoryType() != catType.CONTI }">
+								<div data-bind="text: ko.toJSON(_.first(multipleData()))"></div>
 								<div
 									data-bind="template: { name: 'list-history', data: {
 										list: {
 											value: ko.observable(), 
-											dataSource: ko.observableArray([]),
-											primaryKey: 'id',
+											dataSource: _.first(multipleData()),
+											primaryKey: 'optionValue',
 											columns: [
-												{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-					               				{ headerText: '名称', key: 'name', width: 232, hidden: false }
+												{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
+					               				{ headerText: '名称', key: 'optionText', width: 232, hidden: false }
 											]
 										},
 										event: {

@@ -114,7 +114,7 @@ module cps001.a.vm {
         });
 
         // output data on category changed
-        multipleData: KnockoutObservableArray<any> = ko.observableArray([]);
+        multipleData: KnockoutObservableArray<any> = ko.observableArray(_.fill(Array(10), 0).map(x => ko.observableArray([])));
 
         constructor() {
             let self = this,
@@ -259,7 +259,9 @@ module cps001.a.vm {
                             break;
                         case IT_CAT_TYPE.CONTINU:
                             service.getHistData(query).done(data => {
-
+                                let source = _.first(list());
+                                debugger;
+                                source(data);
                             });
                             break;
                         case IT_CAT_TYPE.NODUPLICATE:
@@ -606,9 +608,9 @@ module cps001.a.vm {
         personNameKana?: string;
         personRomanji?: string;
         todokedeFullName?: string;
-        
-        
-        
+
+
+
         todokedeOldFullName?: string;
     }
 
