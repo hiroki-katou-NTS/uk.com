@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
@@ -38,19 +38,19 @@ public class ReleaseImpl implements ReleaseService {
 			if(CollectionUtil.isEmpty(approvers)){
 				return;
 			}
-			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalAtr.UNAPPROVED);
+			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED);
 			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-				phaseNotApprovalFlag = Boolean.logicalAnd(phaseNotApprovalFlag, approvalFrame.getApprovalAtr().equals(ApprovalAtr.UNAPPROVED));
+				phaseNotApprovalFlag = Boolean.logicalAnd(phaseNotApprovalFlag, approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED));
 			}
 			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
 				return;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				approvalFrame.setApprovalAtr(ApprovalAtr.UNAPPROVED);
+				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 				approvalFrame.setApproverID("");
 				approvalFrame.setRepresenterID("");
 			});
-			approvalPhaseState.setApprovalAtr(ApprovalAtr.UNAPPROVED);
+			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 		});
 		approvalRootStateRepository.update(approvalRootState);
 	}

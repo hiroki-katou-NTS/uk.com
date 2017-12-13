@@ -17,13 +17,13 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
-import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSetRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SearchSetFlg;
+import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 
 /**
  * 3.職位から承認者へ変換する
