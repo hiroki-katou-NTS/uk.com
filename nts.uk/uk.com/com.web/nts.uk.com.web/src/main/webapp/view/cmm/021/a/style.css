@@ -39,8 +39,11 @@
 }
 
 .nts-switch-button.selected{
-	width: 101px;
+	width: 102px;
 	
+}
+.nts-switch-button{
+	width: 102px;
 }
 
 
@@ -98,6 +101,7 @@
 	padding-left: 40px;	
 	padding-top: 10px;
 }
+
 
 /* /* .ntsSearchBox nts-editor ntsSearchBox_Component{ */
 *

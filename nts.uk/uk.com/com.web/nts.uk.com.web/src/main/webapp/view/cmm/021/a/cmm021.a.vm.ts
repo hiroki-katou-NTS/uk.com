@@ -54,6 +54,9 @@ module nts.uk.com.view.cmm021.a {
             userName5: KnockoutObservable<string>;
 
             isLoading: KnockoutObservable<boolean>;
+            
+            enable_A2_1: KnockoutObservable<boolean>;
+            enable_A2_2: KnockoutObservable<boolean>;
 
             enable_B1_1: KnockoutObservable<boolean>;
             enable_B2_1: KnockoutObservable<boolean>;
@@ -76,13 +79,6 @@ module nts.uk.com.view.cmm021.a {
             otherSysAcc: KnockoutObservable<OtherSysAccFinderDto>;
 
             enable_C1_1: KnockoutObservable<boolean>;
-
-
-
-            enable_A2_1: KnockoutObservable<boolean>;
-            enable_A2_2: KnockoutObservable<boolean>;
-            
-            SaveOtherSysAccountCommand: SaveOtherSysAccountCommand;
 
 
             constructor() {
@@ -135,6 +131,9 @@ module nts.uk.com.view.cmm021.a {
 
                 _self.hostName5 = ko.observable("");
                 _self.userName5 = ko.observable("");
+                
+                _self.enable_A2_1 = ko.observable(true);
+                _self.enable_A2_2 = ko.observable(true);
 
                 // UI
                 _self.enable_B1_1 = ko.observable(false);
@@ -142,7 +141,6 @@ module nts.uk.com.view.cmm021.a {
                 _self.enable_B3_1 = ko.observable(false);
                 _self.enable_B4_1 = ko.observable(false);
                 _self.enable_B5_1 = ko.observable(false);
-
 
                 //SUBSCRIBLE 
                 _self.hostName1.subscribe(() => {
@@ -205,12 +203,14 @@ module nts.uk.com.view.cmm021.a {
                     }
                 });
 
-
                 _self.userId = ko.observable("");
                 _self.userIdBeChoosen = ko.observable("");
                 _self.userId.subscribe((newValue) => {
+                    if (!newValue) {
+                        return;
+                    }
                     _self.userIdBeChoosen(newValue);
-
+                    
                     if (_self.isScreenBSelected()) {
                         _self.findListWindowAccByUserId(newValue);
                         _self.checkSettingWinAccChoosen(newValue);
@@ -235,15 +235,18 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenCSelected = ko.observable(false);
                 _self.isScreenBSelected.subscribe((newValue) => {
                     if (newValue) {
+                        _self.userId(null);
                         _self.userId(_self.listUserDto[0].userId);
+                        _self.findListWindowAccByUserId(_self.userId());
                     }
                 });
                 _self.isScreenCSelected.subscribe((newValue) => {
                     if (newValue) {
+                        _self.userId(null);
                         _self.userId(_self.listUserDto[0].userId);
+                        _self.findFirstOtherAcc(_self.userId());
                     }
                 });
-
 
                 // Screen C
                 _self.companyCode6 = ko.observable("");
@@ -252,22 +255,13 @@ module nts.uk.com.view.cmm021.a {
                 _self.otherSysAcc = ko.observable(null);
                 _self.enable_C1_1 = ko.observable(false);
 
-
-
-                _self.enable_A2_1 = ko.observable(true);
-                _self.enable_A2_2 = ko.observable(true);
-                
-                _self.SaveOtherSysAccountCommand = new SaveOtherSysAccountCommand();
-
-
                 this.columns = ko.observableArray([
                     { headerText: '', key: 'employeeId', width: 150, hidden: true },
                     { headerText: nts.uk.resource.getText('CMM021_14'), key: 'loginId', width: 150 },
                     { headerText: nts.uk.resource.getText('CMM021_13'), key: 'employeeCode', width: 150 },
                     { headerText: nts.uk.resource.getText('CMM021_15'), key: 'personName', width: 150 },
-                    { headerText: nts.uk.resource.getText('CMM021_17'), key: 'other', width: 40, formatter: lockIcon }
+                    { headerText: nts.uk.resource.getText('CMM021_17'), key: 'other', width: 70, formatter: lockIcon }
                 ]);
-
             }
 
             /**
@@ -281,7 +275,7 @@ module nts.uk.com.view.cmm021.a {
                     .done((data: UserDto[]) => {
                         _self.listUserDto = data;
                         _self.loadUserDto();
-                        _self.isScreenBSelected(true);
+                        _self.onSelectScreenB();
                         _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
                         _self.addLockIcon();
                         dfd.resolve();
@@ -310,8 +304,6 @@ module nts.uk.com.view.cmm021.a {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 }
             }
-
-
 
             //find list Window Acc
             private findListWindowAccByUserId(userId: string): JQueryPromise<any> {
@@ -396,15 +388,11 @@ module nts.uk.com.view.cmm021.a {
                 _self.userId(user.userId);
 
             }
-
-            private clearAllError() {
-                nts.uk.ui.errors.clearAll();
-            }
-
+        
             private saveWindowAcc() {
 
                 var _self = this;
-
+                
                 let user = _self.listUserDto.filter(item => _self.selectedEmployeeId() == item.employeeId)[0];
 
                 let win1 = _self.windowAcc1;
@@ -442,7 +430,6 @@ module nts.uk.com.view.cmm021.a {
                     saveCommand.winAcc3 = win3;
                 }
 
-
                 if (_self.enable_B4_1()) {
                     win4.userId = _self.userId();
                     win4.hostName = _self.hostName4();
@@ -451,8 +438,6 @@ module nts.uk.com.view.cmm021.a {
                     win4.useAtr = 1;
                     saveCommand.winAcc4 = win4;
                 }
-
-
 
                 if (_self.enable_B5_1()) {
                     win5.userId = _self.userId();
@@ -463,7 +448,6 @@ module nts.uk.com.view.cmm021.a {
                     saveCommand.winAcc5 = win5;
                 }
 
-
                 saveCommand.userId = _self.userId();
                 service.saveWindowAccount(saveCommand)
                     .done((data: any) => {
@@ -473,7 +457,8 @@ module nts.uk.com.view.cmm021.a {
                     });
 
             }
-
+            
+            // common function load list user info
             private loadUserInfo() {
                 let _self = this;
                 let dfd = $.Deferred<any>();
@@ -515,14 +500,12 @@ module nts.uk.com.view.cmm021.a {
             }
 
 
-
             private loadUserUnsetting() {
                 let _self = this;
                 _self.items([]);
                 for (let userDto of _self.listUserDto) {
                     if (!userDto.isSetting) {
                         _self.listUserUnsetting.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, userDto.other));
-                        //_self.loadUserDto();
                     }
                 }
                 _self.items(_self.listUserUnsetting);
@@ -603,7 +586,6 @@ module nts.uk.com.view.cmm021.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(() => {
                         service.removeWindowAccount(_self.userIdBeChoosen()).done((data: any) => {
                             _self.loadUserInfo();
-                            //_self.unselectedMode();
                             _self.newMode();
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
@@ -634,7 +616,6 @@ module nts.uk.com.view.cmm021.a {
                 let dfd = $.Deferred<any>();
 
                 service.findOtherSysAccByUserId(userId).done((data: any) => {
-                    //_self.loadUserInfo();
                     if (data) {
                         _self.companyCode6(data.companyCode);
                         _self.userName6(data.userName);
@@ -645,7 +626,6 @@ module nts.uk.com.view.cmm021.a {
                         _self.enable_C1_1(true); 
                     }
                     
-                    //_self.otherSysAcc(data);                    
                     dfd.resolve();
                 })
                     .fail((res: any) => {
@@ -660,14 +640,11 @@ module nts.uk.com.view.cmm021.a {
                 let dfd = $.Deferred<any>();
 
                 service.findOtherSysAccByUserId(_self.userIdBeChoosen()).done((data: any) => {
-                    //_self.loadUserInfo();
-                    console.log(data);
                     if (data) {
                         _self.companyCode6(data.companyCode);
                         _self.userName6(data.userName);
                         _self.enable_C1_1(true);
                     }
-                    //_self.otherSysAcc(data);                    
                     dfd.resolve();
                 })
                     .fail((res: any) => {
@@ -679,14 +656,11 @@ module nts.uk.com.view.cmm021.a {
 
             private SaveOtherAcc() {
                 let _self = this;
-                let otherAcc = new SaveOtherSysAccountCommand();
-
-                otherAcc.userId = _self.userIdBeChoosen();
-                otherAcc.companyCode = _self.companyCode6();
-                otherAcc.userName = _self.userName6();
-                otherAcc.useAtr = 1;
-
-                //service.saveOtherSysAccount(otherAcc);
+                let otherAcc: SaveOtherSysAccountCommand = new SaveOtherSysAccountCommand(
+                    _self.userIdBeChoosen(), 
+                    _self.companyCode6(),
+                    _self.userName6(),
+                    1);
 
                 let dfd = $.Deferred<any>();
                 service.saveOtherSysAccount(otherAcc)
@@ -720,9 +694,9 @@ module nts.uk.com.view.cmm021.a {
             private checkSettingWinAccChoosen(newValue: string) {
                 let _self = this;
 
-                let dfd = $.Deferred<any>();
                 service.findListWindowAccByUserIdAndUseAtr(newValue).done((data: any) => {
-                    if (data) {
+                    // check data null or empty
+                    if (data && data.length) {
                         if (data[0]) {
                             _self.hostName1(data[0].hostName);
                             _self.userName1(data[0].userName);
@@ -786,16 +760,11 @@ module nts.uk.com.view.cmm021.a {
                     } else {
                         _self.newMode();
                     }
-                    dfd.resolve();
-                }).fail((res: any) => {
-                    dfd.reject(res);
                 });
-                return dfd.promise();
             }
 
             private checkSettingOtherAccChoosen(newValue: string) {
                 let _self = this;
-                let dfd = $.Deferred<any>();
 
                 service.findOtherSysAccByUserId(newValue).done((data: any) => {
                     //_self.loadUserInfo();
@@ -807,13 +776,7 @@ module nts.uk.com.view.cmm021.a {
                     } else {
                         _self.newMode();
                     }
-                    //_self.otherSysAcc(data);                    
-                    dfd.resolve();
-                })
-                    .fail((res: any) => {
-                        dfd.reject(res);
-                    });
-                return dfd.promise();
+                 });
             }
         }
     }
