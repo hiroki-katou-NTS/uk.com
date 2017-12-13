@@ -97,7 +97,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 * @param entity
 	 * @return
 	 */
-	private BpsmtPerson updateEntity(Person domain, BpsmtPerson entity) {
+	private void updateEntity(Person domain, BpsmtPerson entity) {
 		if (domain.getBirthDate() != null){
 			entity.birthday = domain.getBirthDate();
 		}
@@ -150,7 +150,6 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		if (domain.getPersonNameGroup().getPersonalNameMultilingual() != null && domain.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana() != null){
 			entity.perNameMultilLangKana = domain.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v();
 		}
-		return entity;
 	}
 
 	/*
