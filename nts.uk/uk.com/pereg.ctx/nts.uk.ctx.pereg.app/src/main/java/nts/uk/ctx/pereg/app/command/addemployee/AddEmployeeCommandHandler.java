@@ -25,6 +25,9 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.RecruitmentClassification;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
@@ -68,6 +71,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	@Inject
 	private AffCompanyHistRepository companyHistRepo;
+
+	@Inject
+	private AffCompanyInfoRepository companyInfoRepo;
 
 	@Inject
 	private EmployeeDataMngInfoRepository empDataRepo;
@@ -213,14 +219,19 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		List<AffCompanyHistItem> comHistItemList = new ArrayList<AffCompanyHistItem>();
 
-		comHistItemList.add(new AffCompanyHistItem(comHistId, false,
-				new DatePeriod(command.getHireDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"))));
+		comHistItemList.add(
+				new AffCompanyHistItem(comHistId, false, new DatePeriod(command.getHireDate(), GeneralDate.max())));
 
 		comHistList.add(new AffCompanyHistByEmployee(employeeId, comHistItemList));
 
 		AffCompanyHist newComHist = new AffCompanyHist(personId, comHistList);
 
 		this.companyHistRepo.add(newComHist);
+
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, "", GeneralDate.max(),
+				GeneralDate.max());
+
+		this.companyInfoRepo.add(newComInfo);
 
 	}
 

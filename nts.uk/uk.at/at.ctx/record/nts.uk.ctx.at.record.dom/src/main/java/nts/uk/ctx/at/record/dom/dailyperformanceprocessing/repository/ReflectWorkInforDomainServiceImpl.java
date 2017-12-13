@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,6 +35,9 @@ import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.AutomaticStampSetDetailOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPut;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
@@ -75,6 +79,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -192,25 +197,25 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			if (!employmentHasData.isPresent()) {
 				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 						new ErrMessageResource("001"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent("Msg_426"));
+						new ErrMessageContent(TextResource.localize("Msg_426")));
 				errMesInfos.add(employmentErrMes);
 			}
 			if (!workPlaceHasData.isPresent()) {
 				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 						new ErrMessageResource("002"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent("Msg_427"));
+						new ErrMessageContent(TextResource.localize("Msg_427")));
 				errMesInfos.add(employmentErrMes);
 			}
 			if (!classificationHasData.isPresent()) {
 				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 						new ErrMessageResource("003"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent("Msg_428"));
+						new ErrMessageContent(TextResource.localize("Msg_428")));
 				errMesInfos.add(employmentErrMes);
 			}
 			if (!jobTitleHasData.isPresent()) {
 				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 						new ErrMessageResource("004"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent("Msg_429"));
+						new ErrMessageContent(TextResource.localize("Msg_429")));
 				errMesInfos.add(employmentErrMes);
 			}
 
@@ -222,13 +227,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(), day,
 						new ClassificationCode(classificationHasData.get().getClassificationCode()), null);
 			}
-			// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
-			this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, affiliationInforOfDailyPerfor,
-					workPlaceHasData);
-
-			errMesInfos.forEach(action -> {
-				this.errMessageInfoRepository.add(action);
-			});
+			if(errMesInfos.isEmpty()){				
+				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
+				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, affiliationInforOfDailyPerfor,
+						workPlaceHasData);
+			} else {
+				errMesInfos.forEach(action -> {
+					this.errMessageInfoRepository.add(action);
+				});
+			}
 		}
 	}
 
@@ -242,93 +249,89 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 
+		WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate = new WorkInfoOfDailyPerformance();
+		
+
+		// 日別実績の出退勤
+		TimeLeavingOfDailyPerformance timeLeavingOptional = new TimeLeavingOfDailyPerformance();
+		
 		// ドメインモデル「個人労働条件．予定管理区分」を取得する
 		Optional<PersonalLaborCondition> personalLaborHasData = this.personalLaborConditionRepository
 				.findById(employeeID, day);
-
-		// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
-		Optional<BasicScheduleSidDto> basicScheduleHasData = this.basicScheduleAdapter.findAllBasicSchedule(employeeID,
-				day);
-
-		// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
-		List<WorkScheduleSidImport> workScheduleHasData = basicScheduleHasData.get().getWorkScheduleSidImports();
-
-		// ドメインモデル「打刻反映管理」を取得する
-		Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
-				.findByCid(companyId);
-		// 日別実績の出退勤
-		TimeLeavingOfDailyPerformance timeLeavingOptional = new TimeLeavingOfDailyPerformance();
-
-		// check data
-		// 存在しない - no data
-		WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate = new WorkInfoOfDailyPerformance();
-
-		workInfoOfDailyPerformanceUpdate.setEmployeeId(employeeID);
-		workInfoOfDailyPerformanceUpdate.setCalculationState(CalculationState.Calculated);
-		workInfoOfDailyPerformanceUpdate.setYmd(day);
-
 		if (!personalLaborHasData.isPresent()) {
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 					new ErrMessageResource("005"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-					new ErrMessageContent("Msg_430"));
+					new ErrMessageContent(TextResource.localize("Msg_430")));
 			errMesInfos.add(employmentErrMes);
-		} else {
+			this.errMessageInfoRepository.addList(errMesInfos);
+		} else {		
+
+			workInfoOfDailyPerformanceUpdate.setEmployeeId(employeeID);
+			workInfoOfDailyPerformanceUpdate.setCalculationState(CalculationState.Calculated);
+			workInfoOfDailyPerformanceUpdate.setYmd(day);
+			
+			errMesInfos = new ArrayList<>();
+			
 			if (personalLaborHasData.get().getScheduleManagementAtr() == UseAtr.USE) {
+
+				// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
+				Optional<BasicScheduleSidDto> basicScheduleHasData = this.basicScheduleAdapter
+						.findAllBasicSchedule(employeeID, day);
 				// 勤務予定から勤務種類と就業時間帯を写す
 				// 取得したImported(就業.勤務実績)「勤務予定基本情報」が存在するか確認する
 				// 存在しない - no data
 				if (!basicScheduleHasData.isPresent()) {
 					ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 							new ErrMessageResource("006"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-							new ErrMessageContent("Msg_431"));
+							new ErrMessageContent(TextResource.localize(TextResource.localize("Msg_431"))));
 					errMesInfos.add(employmentErrMes);
 				}
 				// 存在する - has data
 				else {
-					workInfoOfDailyPerformanceUpdate.setScheduleWorkInformation(
-							new WorkInformation(basicScheduleHasData.get().getWorkTypeCode(),
-									basicScheduleHasData.get().getWorkTimeCode()));
-					workInfoOfDailyPerformanceUpdate
-							.setRecordWorkInformation(new WorkInformation(basicScheduleHasData.get().getWorkTypeCode(),
-									basicScheduleHasData.get().getWorkTimeCode()));
-				}
+					workInfoOfDailyPerformanceUpdate.setScheduleWorkInformation(new WorkInformation(
+							basicScheduleHasData.get().getWorkTypeCode(), basicScheduleHasData.get().getWorkTimeCode()));
+					workInfoOfDailyPerformanceUpdate.setRecordWorkInformation(new WorkInformation(
+							basicScheduleHasData.get().getWorkTypeCode(), basicScheduleHasData.get().getWorkTimeCode()));
 
-				// 取得したImported(就業.勤務実績)「勤務予定時間帯」が存在するか確認する
-				// 存在しない - no data
-				if (workScheduleHasData.isEmpty()) {
-					ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
-							new ErrMessageResource("007"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-							new ErrMessageContent("Msg_432"));
-					errMesInfos.add(employmentErrMes);
-				}
+					// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
+					List<WorkScheduleSidImport> workScheduleHasData = basicScheduleHasData.get().getWorkScheduleSidImports();
+					// 存在しない - no data
+					if (workScheduleHasData.isEmpty()) {
+						ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
+								new ErrMessageResource("007"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+								new ErrMessageContent(TextResource.localize("Msg_432")));
+						errMesInfos.add(employmentErrMes);
+					} else {
+						// copy information for employeeId has data
+						List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+						workScheduleHasData.forEach(items -> {
 
-				// copy information for employeeId has data
-				List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
-				workScheduleHasData.forEach(items -> {
+							if (items.getBounceAtr() == 3) {
+								workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
+								workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
+							} else if (items.getBounceAtr() == 2) {
+								workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
+								workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
+							} else if (items.getBounceAtr() == 0) {
+								workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
+								workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
+							} else if (items.getBounceAtr() == 1) {
+								workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
+								workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
+							}
 
-					if (items.getBounceAtr() == 3) {
-						workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
-						workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-					} else if (items.getBounceAtr() == 2) {
-						workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
-						workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
-					} else if (items.getBounceAtr() == 0) {
-						workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
-						workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-					} else if (items.getBounceAtr() == 1) {
-						workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
-						workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
+							ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet();
+							scheduleTimeSheet.setWorkNo(new WorkNo(new BigDecimal(items.getScheduleCnt())));
+							scheduleTimeSheet.setAttendance(new TimeWithDayAttr(items.getScheduleStartClock()));
+							scheduleTimeSheet.setLeaveWork(new TimeWithDayAttr(items.getScheduleStartClock()));
+							scheduleTimeSheets.add(scheduleTimeSheet);
+						});
+
+						workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
 					}
+				}
 
-					ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet();
-					scheduleTimeSheet.setWorkNo(new WorkNo(new BigDecimal(items.getScheduleCnt())));
-					scheduleTimeSheet.setAttendance(new TimeWithDayAttr(items.getScheduleStartClock()));
-					scheduleTimeSheet.setLeaveWork(new TimeWithDayAttr(items.getScheduleStartClock()));
-					scheduleTimeSheets.add(scheduleTimeSheet);
-				});
-
-				workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
-
+				
 			} else {
 				// 個人情報から勤務種類と就業時間帯を写す
 				// 個人情報に処理中の曜日の設定が存在するか確認する
@@ -347,38 +350,38 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 								personalLaborHasData.get().getWorkDayOfWeek().getMonday().get().getWorkTypeCode().v()));
 						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getMonday()
 								.get().getWorkTimeCode().isPresent()
-										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getMonday()
-												.get().getWorkTimeCode().get().v())
+										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getMonday().get()
+												.getWorkTimeCode().get().v())
 										: new WorkTimeCode(""));
 					}
 					// tuesday
 					else if (day.dayOfWeek() == 2) {
-						recordWorkInformation.setWorkTypeCode(new WorkTypeCode(personalLaborHasData.get()
-								.getWorkDayOfWeek().getTuesday().get().getWorkTypeCode().v()));
+						recordWorkInformation.setWorkTypeCode(new WorkTypeCode(
+								personalLaborHasData.get().getWorkDayOfWeek().getTuesday().get().getWorkTypeCode().v()));
 						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getTuesday()
 								.get().getWorkTimeCode().isPresent()
-										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getTuesday()
-												.get().getWorkTimeCode().get().v())
+										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getTuesday().get()
+												.getWorkTimeCode().get().v())
 										: new WorkTimeCode(""));
 					}
 					// wednesday
 					else if (day.dayOfWeek() == 3) {
-						recordWorkInformation.setWorkTypeCode(new WorkTypeCode(personalLaborHasData.get()
-								.getWorkDayOfWeek().getWednesday().get().getWorkTypeCode().v()));
-						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek()
-								.getWednesday().get().getWorkTimeCode().isPresent()
+						recordWorkInformation.setWorkTypeCode(new WorkTypeCode(
+								personalLaborHasData.get().getWorkDayOfWeek().getWednesday().get().getWorkTypeCode().v()));
+						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getWednesday()
+								.get().getWorkTimeCode().isPresent()
 										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getWednesday()
 												.get().getWorkTimeCode().get().v())
 										: new WorkTimeCode(""));
 					}
 					// thursday
 					else if (day.dayOfWeek() == 4) {
-						recordWorkInformation.setWorkTypeCode(new WorkTypeCode(personalLaborHasData.get()
-								.getWorkDayOfWeek().getThursday().get().getWorkTypeCode().v()));
-						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek()
-								.getThursday().get().getWorkTimeCode().isPresent()
-										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getThursday()
-												.get().getWorkTimeCode().get().v())
+						recordWorkInformation.setWorkTypeCode(new WorkTypeCode(
+								personalLaborHasData.get().getWorkDayOfWeek().getThursday().get().getWorkTypeCode().v()));
+						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getThursday()
+								.get().getWorkTimeCode().isPresent()
+										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getThursday().get()
+												.getWorkTimeCode().get().v())
 										: new WorkTimeCode(""));
 					}
 					// friday
@@ -387,18 +390,18 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 								personalLaborHasData.get().getWorkDayOfWeek().getFriday().get().getWorkTypeCode().v()));
 						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getFriday()
 								.get().getWorkTimeCode().isPresent()
-										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getFriday()
-												.get().getWorkTimeCode().get().v())
+										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getFriday().get()
+												.getWorkTimeCode().get().v())
 										: new WorkTimeCode(""));
 					}
 					// saturday
 					else if (day.dayOfWeek() == 6) {
-						recordWorkInformation.setWorkTypeCode(new WorkTypeCode(personalLaborHasData.get()
-								.getWorkDayOfWeek().getSaturday().get().getWorkTypeCode().v()));
-						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek()
-								.getSaturday().get().getWorkTimeCode().isPresent()
-										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getSaturday()
-												.get().getWorkTimeCode().get().v())
+						recordWorkInformation.setWorkTypeCode(new WorkTypeCode(
+								personalLaborHasData.get().getWorkDayOfWeek().getSaturday().get().getWorkTypeCode().v()));
+						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getSaturday()
+								.get().getWorkTimeCode().isPresent()
+										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getSaturday().get()
+												.getWorkTimeCode().get().v())
 										: new WorkTimeCode(""));
 					}
 					// sunday
@@ -407,8 +410,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 								personalLaborHasData.get().getWorkDayOfWeek().getSunday().get().getWorkTypeCode().v()));
 						recordWorkInformation.setWorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getSunday()
 								.get().getWorkTimeCode().isPresent()
-										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getSunday()
-												.get().getWorkTimeCode().get().v())
+										? new WorkTimeCode(personalLaborHasData.get().getWorkDayOfWeek().getSunday().get()
+												.getWorkTimeCode().get().v())
 										: new WorkTimeCode(""));
 					}
 				}
@@ -428,8 +431,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// 直行直帰区分を写す - autoStampSetAtr of PersonalLaborCondition
 				// 自動打刻セット区分を判断
 				if (personalLaborHasData.get().getAutoStampSetAtr().value == 0) {
-					String workTypeCode = workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode()
-							.v();
+					String workTypeCode = workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v();
 					Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId, workTypeCode);
 					// 打刻の扱い方に従って、直行区分、直帰区分を更新
 					if (workType.get().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
@@ -466,307 +468,17 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// 所定時間設定
 				// this step can not processing, waiting Newwave
 			}
-		}
-
-		// 自動打刻セットする - set new 自動打刻セット詳細
-		// 自動打刻セット詳細をクリア
-		AutomaticStampSetDetailOutput automaticStampSetDetailDto = new AutomaticStampSetDetailOutput();
-		// ドメインモデル「個人労働条件」を取得する
-		if (personalLaborHasData.get().getAutoStampSetAtr() == UseAtr.USE) {
-			// 出勤と退勤を反映する設定にする
-			automaticStampSetDetailDto.setAttendanceReflectAttr(UseAtr.USE);
-			automaticStampSetDetailDto.setAttendanceStamp(StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO);
-			automaticStampSetDetailDto.setRetirementAttr(UseAtr.USE);
-			automaticStampSetDetailDto.setLeavingStamp(StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO);
-		}
-
-		// ドメインモデル「日別実績の勤務情報」を取得する
-		if (workInfoOfDailyPerformanceUpdate.getGoStraightAtr() == NotUseAttribute.Use) {
-			automaticStampSetDetailDto.setAttendanceReflectAttr(UseAtr.USE);
-			automaticStampSetDetailDto.setAttendanceStamp(StampSourceInfo.GO_STRAIGHT);
-		}
-		if (workInfoOfDailyPerformanceUpdate.getBackStraightAtr() == NotUseAttribute.Use) {
-			automaticStampSetDetailDto.setRetirementAttr(UseAtr.USE);
-			automaticStampSetDetailDto.setLeavingStamp(StampSourceInfo.GO_STRAIGHT);
-		}
-
-		// 自動打刻セット詳細に従って自動打刻セットする
-		// 自動打刻セット詳細を確認する - confirm automaticStampSetDetailDto data
-		if (automaticStampSetDetailDto.getAttendanceReflectAttr() == UseAtr.USE
-				|| automaticStampSetDetailDto.getRetirementAttr() == UseAtr.USE) {
-			// セットする打刻詳細を取得する
-			// 勤務実績の勤務情報と勤務予定の勤務情報を比較
-			// 予定時間帯を自動打刻セット詳細に入れる
-			// temp class
-			List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
-			if (workInfoOfDailyPerformanceUpdate.getRecordWorkInformation() != null) {
-
-				if (workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode()
-						.equals(workInfoOfDailyPerformanceUpdate.getScheduleWorkInformation().getWorkTimeCode())
-						&& workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().equals(
-								workInfoOfDailyPerformanceUpdate.getScheduleWorkInformation().getWorkTypeCode())) {
-
-					// 自動打刻セット詳細．出退勤 ← 勤務予定時間帯
-					workInfoOfDailyPerformanceUpdate.getScheduleTimeSheets().forEach(sheet -> {
-
-						TimeLeavingWork timeLeavingWork = new TimeLeavingWork();
-						TimeActualStamp attendanceStamp = new TimeActualStamp();
-						TimeActualStamp leaveStamp = new TimeActualStamp();
-
-						timeLeavingWork.setWorkNo(sheet.getWorkNo());
-
-						// 出勤系時刻を丸める (làm tròn thời gian 出勤)
-						// param : int workTimeMethodSet, String companyId,
-						// String siftCode, int superitory
-						// param : 0, companyId,
-						// workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
-						// superitory
-						// TODO - requetsList newwave
-						// InstantRounding instantRounding = new
-						// InstantRounding();
-						// int attendanceTimeAfterRouding =
-						// this.roudingTime(sheet.getAttendance().v(),
-						// instantRounding.getFontRearSection().value,
-						// instantRounding.getRoundingTimeUnit().value);
-						// int leaveTimeAfterRounding =
-						// this.roudingTime(sheet.getLeaveWork().v(),
-						// instantRounding.getFontRearSection().value,
-						// instantRounding.getRoundingTimeUnit().value);
-
-						// ドメインモデル「所属職場履歴」を取得する
-						attendanceStamp.setStamp(
-								new WorkStamp(new TimeWithDayAttr(sheet.getAttendance().v()), sheet.getAttendance(),
-										new WorkLocationCD("0001"), automaticStampSetDetailDto.getAttendanceStamp()));
-						leaveStamp.setStamp(
-								new WorkStamp(new TimeWithDayAttr(sheet.getLeaveWork().v()), sheet.getLeaveWork(),
-										new WorkLocationCD("0001"), automaticStampSetDetailDto.getLeavingStamp()));
-
-						timeLeavingWork.setAttendanceStamp(attendanceStamp);
-						timeLeavingWork.setLeaveStamp(leaveStamp);
-						timeLeavingWorks.add(timeLeavingWork);
-					});
-				} else {
-					// 出勤休日区分を確認する (Xác nhận 出勤休日区分)
-					Optional<WorkType> workTypeOptional = this.workTypeRepository.findByPK(companyId,
-							workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
-					WorkStyle workStyle = this.basicScheduleService
-							.checkWorkDay(workTypeOptional.get().getWorkTypeCode().v());
-					if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
-						// 所定時間帯を取得する - TODO
-						// waiting newwave
-						
-						// TODO - Fake Data
-						TimeLeavingWork timeLeavingWorkTemp = new TimeLeavingWork();
-						TimeActualStamp attendanceStamp = new TimeActualStamp();
-						TimeActualStamp leaveStamp = new TimeActualStamp();
-						
-						attendanceStamp.setStamp(
-								new WorkStamp(new TimeWithDayAttr(100), new TimeWithDayAttr(100),
-										new WorkLocationCD("0001"), automaticStampSetDetailDto.getAttendanceStamp()));
-						leaveStamp.setStamp(
-								new WorkStamp(new TimeWithDayAttr(100), new TimeWithDayAttr(100),
-										new WorkLocationCD("0001"), automaticStampSetDetailDto.getLeavingStamp()));
-
-						timeLeavingWorkTemp.setAttendanceStamp(attendanceStamp);
-						timeLeavingWorkTemp.setLeaveStamp(leaveStamp);
-						timeLeavingWorks.add(timeLeavingWorkTemp);
-						
-//						 PredetemineTimeSet predetemineTimeSet = null;
-//						 所定時間設定を自動打刻セット詳細に入れる
-//						 所定時間帯．時間帯を順次確認する
-//						 predetemineTimeSet.getPrescribedTimezoneSetting().getTimezone().forEach(timezone
-//						 -> {
-//						 if (timezone.getUseAtr() == UseSetting.USE) {
-//						 TimeLeavingWork timeLeavingWorkTemp = new
-//						 TimeLeavingWork();
-//						 TimeActualStamp attendanceStampTemp = new
-//						 TimeActualStamp();
-//						 TimeActualStamp leaveStampTemp = new
-//						 TimeActualStamp();
-						
-						 // param : int workTimeMethodSet, String
-						 // companyId, String siftCode, int
-						 // superitory
-						 // param : 0, companyId,
-						 //
-//						 workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
-						 // superitory
-						 // TODO - requetsList newwave
-//						 InstantRounding instantRounding = new
-//						 InstantRounding();
-						 // 出勤系時刻を丸める (làm tròn thời gian 出勤)
-//						 int attendanceTimeAfterRouding =
-//						 this.roudingTime(timezone.getStart().v(),
-//						 instantRounding.getFontRearSection().value,
-//						 instantRounding.getRoundingTimeUnit().value);
-//						 int leaveTimeAfterRounding =
-//						 this.roudingTime(timezone.getEnd().v(),
-//						 instantRounding.getFontRearSection().value,
-//						 instantRounding.getRoundingTimeUnit().value);
-						
-//						 timeLeavingWorkTemp.setWorkNo(new WorkNo(new
-//						 BigDecimal(timezone.getWorkNo())));
-//						 attendanceStampTemp.setStamp(
-//						 new WorkStamp(new
-//						 TimeWithDayAttr(attendanceTimeAfterRouding),
-//						 timezone.getStart(),
-//						 new
-//						 WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
-//						 automaticStampSetDetailDto.getAttendanceStamp()));
-//						 leaveStampTemp.setStamp(new WorkStamp(new
-//						 TimeWithDayAttr(leaveTimeAfterRounding),
-//						 timezone.getEnd(), new
-//						 WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
-//						 automaticStampSetDetailDto.getLeavingStamp()));
-//						
-//						 timeLeavingWorks.add(timeLeavingWorkTemp);
-//						 }
-//						 });
-					}
-				}
-			}
-			automaticStampSetDetailDto.setTimeLeavingWorks(timeLeavingWorks);
-
-			Calendar toDay = Calendar.getInstance();
-			int hour = toDay.get(Calendar.HOUR_OF_DAY);
-			int minute = toDay.get(Calendar.MINUTE);
-			int currentMinuteOfDay = ((hour * 60) + minute);
-
-			// 出勤反映 = true
-			// 出勤に自動打刻セットする
-			if (automaticStampSetDetailDto.getAttendanceReflectAttr() == UseAtr.USE) {
-				
-				List<TimeLeavingWork> timeLeavingWorkList = new ArrayList<>();
-				
-				// ドメインモデル「日別実績の出退勤」を取得する
-				// 自動打刻セット詳細．出退勤を順次確認する
-				automaticStampSetDetailDto.getTimeLeavingWorks().stream().forEach(timeLeaving -> {
-					TimeLeavingWork stamp = null;
-					if(timeLeavingOptional.getTimeLeavingWorks() != null){
-						stamp = timeLeavingOptional.getTimeLeavingWorks().stream().filter(itemx -> itemx.getWorkNo().v().equals(timeLeaving.getWorkNo().v())).findFirst().get();
-					}
-					
-					if (stampReflectionManagement.get()
-							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
-							|| (stampReflectionManagement.get()
-									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
-									&& timeLeaving.getAttendanceStamp().getStamp().getTimeWithDay()
-											.lessThanOrEqualTo(currentMinuteOfDay))) {
-						
-						TimeLeavingWork work = new TimeLeavingWork();
-						// 勤務NOが同じ実績．出退勤を確認する
-						// 存在しない
-						if (timeLeavingOptional.getTimeLeavingWorks() == null || (timeLeavingOptional.getTimeLeavingWorks() != null && !timeLeavingOptional.getTimeLeavingWorks().stream()
-								.anyMatch(item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v()))) {
-
-							// 実績．出退勤．出勤．打刻←詳細．出退勤．出勤．打刻
-							TimeActualStamp timeActualStamp = new TimeActualStamp();
-							timeActualStamp.setStamp(timeLeaving.getAttendanceStamp().getStamp());
-
-							work.setWorkNo(timeLeaving.getWorkNo());
-							work.setAttendanceStamp(timeActualStamp);
-
-							timeLeavingWorkList.add(work);
-							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
-							// .filter(item ->
-							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-							// .getAttendanceStamp());
-						}
-						// 存在する && 入っていない
-						if ((timeLeavingOptional.getTimeLeavingWorks() != null && timeLeavingOptional.getTimeLeavingWorks().stream()
-								.anyMatch(item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v()))
-								&& (stamp != null
-								&& (stamp.getLeaveStamp() == null 
-								|| (stamp.getLeaveStamp() != null && stamp.getLeaveStamp().getStamp() == null)))) {
-							
-							TimeActualStamp timeActualStamp = new TimeActualStamp();
-							timeActualStamp.setStamp(timeLeaving.getAttendanceStamp().getStamp());
-							
-							stamp.setAttendanceStamp(timeActualStamp);
-							
-							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
-							// .filter(item ->
-							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-							// .getAttendanceStamp());
-						}
-					}
-					;
-				});
-				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
-
-			}
-			
-			// 退勤反映 = true
-			if (automaticStampSetDetailDto.getRetirementAttr() == UseAtr.USE) {
-				
-				List<TimeLeavingWork> timeLeavingWorkLst = new ArrayList<>();
-				
-				automaticStampSetDetailDto.getTimeLeavingWorks().stream().forEach(timeLeavingWork -> {
-
-					TimeLeavingWork stamp = null;
-					if (!timeLeavingOptional.getTimeLeavingWorks().isEmpty()) {
-						stamp = timeLeavingOptional.getTimeLeavingWorks().stream()
-								.filter(itemm -> itemm.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v())).findAny().get();
-					}					
-
-					if (stampReflectionManagement.get()
-							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
-							|| (stampReflectionManagement.get()
-									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
-									&& timeLeavingWork.getLeaveStamp().getStamp().getTimeWithDay()
-											.lessThanOrEqualTo(currentMinuteOfDay))) {
-
-						TimeLeavingWork timeLeaving = new TimeLeavingWork();
-						// 勤務NOが同じ実績．出退勤を確認する
-						// 存在しない
-						if (timeLeavingOptional.getTimeLeavingWorks() != null && !timeLeavingOptional.getTimeLeavingWorks().stream()
-								.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v())) {
-
-							// 実績．出退勤．出勤．打刻←詳細．出退勤．出勤．打刻
-							TimeActualStamp actualStamp = new TimeActualStamp();
-							actualStamp.setStamp(timeLeavingWork.getLeaveStamp().getStamp());
-
-							timeLeaving.setWorkNo(timeLeavingWork.getWorkNo());
-							timeLeaving.setLeaveStamp(actualStamp);
-
-							timeLeavingWorkLst.add(timeLeaving);
-
-							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
-							// .filter(item ->
-							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-							// .getLeaveStamp());
-						}
-						// 存在する && 入っていない
-						if ((timeLeavingOptional.getTimeLeavingWorks() != null 
-								&& timeLeavingOptional.getTimeLeavingWorks().stream()
-								.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v())) 
-								&& (stamp != null 
-								&& (stamp.getLeaveStamp() == null 
-								|| (stamp.getLeaveStamp() != null && stamp.getLeaveStamp().getStamp() == null)))) {
-							
-							TimeActualStamp timeActualStamp = new TimeActualStamp();
-							timeActualStamp.setStamp(timeLeavingWork.getAttendanceStamp().getStamp());
-							
-							stamp.setLeaveStamp(timeActualStamp);
-							
-//							timeLeavingOptional.getTimeLeavingWorks().stream()
-//									.filter(item -> item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-//									.getLeaveStamp().setStamp(timeLeaving.getLeaveStamp().getStamp());
-							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
-							// .filter(item ->
-							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
-							// .getLeaveStamp());
-						}
-					}
-				});
-
-				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkLst);
-			}
-		}
+		}		
 
 		this.errMessageInfoRepository.addList(errMesInfos);
 
-		this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day, workInfoOfDailyPerformanceUpdate, timeLeavingOptional);
+		if (errMesInfos.isEmpty()) {
+			createStamp(companyId, workInfoOfDailyPerformanceUpdate, personalLaborHasData, timeLeavingOptional);
+		}
+
+		// check tay
+//		this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
+//				workInfoOfDailyPerformanceUpdate, timeLeavingOptional);
 
 		if (errMesInfos.isEmpty()) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する
@@ -789,9 +501,414 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 			// ドメインモデル「日別実績の出退勤」を更新する - update
 			// TimeLeavingOfDailyPerformance
-//			timeLeavingOptional.getTimeLeavingWorks();
+			// timeLeavingOptional.getTimeLeavingWorks();
 		}
 
+	}
+
+	private void createStamp(String companyId , WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate, Optional<PersonalLaborCondition> personalLaborHasData,
+			TimeLeavingOfDailyPerformance timeLeavingOptional) {
+		// ドメインモデル「打刻反映管理」を取得する
+		Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
+				.findByCid(companyId);
+
+		// 自動打刻セットする - set new 自動打刻セット詳細
+		// 自動打刻セット詳細をクリア
+		AutomaticStampSetDetailOutput automaticStampSetDetailDto = new AutomaticStampSetDetailOutput();
+		// ドメインモデル「個人労働条件」を取得する
+		if (personalLaborHasData.get().getAutoStampSetAtr() == UseAtr.USE) {
+			// 出勤と退勤を反映する設定にする
+			automaticStampSetDetailDto.setAttendanceReflectAttr(UseAtr.USE);
+			automaticStampSetDetailDto.setAttendanceStamp(StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO);
+			automaticStampSetDetailDto.setRetirementAttr(UseAtr.USE);
+			automaticStampSetDetailDto.setLeavingStamp(StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO);
+		}
+
+		// ドメインモデル「日別実績の勤務情報」を取得する
+		if (workInfoOfDailyPerformanceUpdate.getGoStraightAtr() == NotUseAttribute.Use) {
+			automaticStampSetDetailDto.setAttendanceReflectAttr(UseAtr.USE);
+			automaticStampSetDetailDto.setAttendanceStamp(StampSourceInfo.GO_STRAIGHT);
+		}
+		if (workInfoOfDailyPerformanceUpdate.getBackStraightAtr() == NotUseAttribute.Use) {
+			automaticStampSetDetailDto.setRetirementAttr(UseAtr.USE);
+			automaticStampSetDetailDto.setLeavingStamp(StampSourceInfo.GO_STRAIGHT);
+		}
+		// 自動打刻セット詳細に従って自動打刻セットする
+		// 自動打刻セット詳細を確認する - confirm automaticStampSetDetailDto data
+		if (automaticStampSetDetailDto.getAttendanceReflectAttr() == UseAtr.USE
+				|| automaticStampSetDetailDto.getRetirementAttr() == UseAtr.USE) {
+			// セットする打刻詳細を取得する
+			// 勤務実績の勤務情報と勤務予定の勤務情報を比較
+			// 予定時間帯を自動打刻セット詳細に入れる
+			// temp class
+			List<TimeLeavingWorkOutput> timeLeavingWorkTemps = new ArrayList<>();
+			List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+			if (workInfoOfDailyPerformanceUpdate.getRecordWorkInformation() != null) {
+
+				if (workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode()
+						.equals(workInfoOfDailyPerformanceUpdate.getScheduleWorkInformation().getWorkTimeCode())
+						&& workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().equals(
+								workInfoOfDailyPerformanceUpdate.getScheduleWorkInformation().getWorkTypeCode())) {
+
+					// 自動打刻セット詳細．出退勤 ← 勤務予定時間帯
+					workInfoOfDailyPerformanceUpdate.getScheduleTimeSheets().forEach(sheet -> {
+						
+						TimeLeavingWorkOutput timeLeavingWorkOutput = new TimeLeavingWorkOutput();
+						TimeActualStampOutPut attendanceStampTemp = new TimeActualStampOutPut();
+						TimeActualStampOutPut leaveStampTemp = new TimeActualStampOutPut();
+						
+						timeLeavingWorkOutput.setWorkNo(sheet.getWorkNo());
+
+						// 出勤系時刻を丸める (làm tròn thời gian 出勤)
+						// param : int workTimeMethodSet, String companyId,
+						// String siftCode, int superitory
+						// param : 0, companyId,
+						// workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
+						// superitory
+						// TODO - requetsList newwave
+						// InstantRounding instantRounding = new
+						// InstantRounding();
+						// int attendanceTimeAfterRouding =
+						// this.roudingTime(sheet.getAttendance().v(),
+						// instantRounding.getFontRearSection().value,
+						// instantRounding.getRoundingTimeUnit().value);
+						// int leaveTimeAfterRounding =
+						// this.roudingTime(sheet.getLeaveWork().v(),
+						// instantRounding.getFontRearSection().value,
+						// instantRounding.getRoundingTimeUnit().value);
+
+						// ドメインモデル「所属職場履歴」を取得する						
+						attendanceStampTemp.setStamp(new WorkStampOutPut(new TimeWithDayAttr(sheet.getAttendance().v()), sheet.getAttendance(),
+										new WorkLocationCD("0001"), automaticStampSetDetailDto.getAttendanceStamp()));
+						leaveStampTemp.setStamp(
+								new WorkStampOutPut(new TimeWithDayAttr(sheet.getLeaveWork().v()), sheet.getLeaveWork(),
+										new WorkLocationCD("0001"), automaticStampSetDetailDto.getLeavingStamp()));
+						timeLeavingWorkOutput.setAttendanceStamp(attendanceStampTemp);
+						timeLeavingWorkOutput.setLeaveStamp(leaveStampTemp);
+					});
+				} else {
+					// 出勤休日区分を確認する (Xác nhận 出勤休日区分)
+					Optional<WorkType> workTypeOptional = this.workTypeRepository.findByPK(companyId,
+							workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
+					WorkStyle workStyle = this.basicScheduleService
+							.checkWorkDay(workTypeOptional.get().getWorkTypeCode().v());
+					if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
+						// 所定時間帯を取得する - TODO
+						// waiting newwave
+
+						// TODO - Fake Data						
+						TimeLeavingWorkOutput timeLeavingWorkOutput = new TimeLeavingWorkOutput();
+						TimeActualStampOutPut attendanceStampTemp = new TimeActualStampOutPut();
+						TimeActualStampOutPut leaveStampTemp = new TimeActualStampOutPut();
+						
+						attendanceStampTemp.setStamp(new WorkStampOutPut(new TimeWithDayAttr(100), new TimeWithDayAttr(100),
+								new WorkLocationCD("0001"), automaticStampSetDetailDto.getAttendanceStamp()));
+						leaveStampTemp.setStamp(new WorkStampOutPut(new TimeWithDayAttr(100), new TimeWithDayAttr(100),
+								new WorkLocationCD("0001"), automaticStampSetDetailDto.getLeavingStamp()));
+						
+						timeLeavingWorkOutput.setAttendanceStamp(attendanceStampTemp);
+						timeLeavingWorkOutput.setLeaveStamp(leaveStampTemp);
+						timeLeavingWorkTemps.add(timeLeavingWorkOutput);
+
+						// PredetemineTimeSet predetemineTimeSet = null;
+						// 所定時間設定を自動打刻セット詳細に入れる
+						// 所定時間帯．時間帯を順次確認する
+						// predetemineTimeSet.getPrescribedTimezoneSetting().getTimezone().forEach(timezone
+						// -> {
+						// if (timezone.getUseAtr() == UseSetting.USE) {
+						// TimeLeavingWork timeLeavingWorkTemp = new
+						// TimeLeavingWork();
+						// TimeActualStamp attendanceStampTemp = new
+						// TimeActualStamp();
+						// TimeActualStamp leaveStampTemp = new
+						// TimeActualStamp();
+
+						// param : int workTimeMethodSet, String
+						// companyId, String siftCode, int
+						// superitory
+						// param : 0, companyId,
+						//
+						// workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode(),
+						// superitory
+						// TODO - requetsList newwave
+						// InstantRounding instantRounding = new
+						// InstantRounding();
+						// 出勤系時刻を丸める (làm tròn thời gian 出勤)
+						// int attendanceTimeAfterRouding =
+						// this.roudingTime(timezone.getStart().v(),
+						// instantRounding.getFontRearSection().value,
+						// instantRounding.getRoundingTimeUnit().value);
+						// int leaveTimeAfterRounding =
+						// this.roudingTime(timezone.getEnd().v(),
+						// instantRounding.getFontRearSection().value,
+						// instantRounding.getRoundingTimeUnit().value);
+
+						// timeLeavingWorkTemp.setWorkNo(new WorkNo(new
+						// BigDecimal(timezone.getWorkNo())));
+						// attendanceStampTemp.setStamp(
+						// new WorkStamp(new
+						// TimeWithDayAttr(attendanceTimeAfterRouding),
+						// timezone.getStart(),
+						// new
+						// WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
+						// automaticStampSetDetailDto.getAttendanceStamp()));
+						// leaveStampTemp.setStamp(new WorkStamp(new
+						// TimeWithDayAttr(leaveTimeAfterRounding),
+						// timezone.getEnd(), new
+						// WorkLocationCD(workPlaceHasData.get().getWorkLocationCode()),
+						// automaticStampSetDetailDto.getLeavingStamp()));
+						//
+						// timeLeavingWorks.add(timeLeavingWorkTemp);
+						// }
+						// });
+					}
+				}
+			}
+			timeLeavingWorks = timeLeavingWorkTemps.stream().map(item -> {
+				WorkStamp actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
+						item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
+						item.getAttendanceStamp().getActualStamp().getLocationCode(),
+						item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
+				WorkStamp stamp = new WorkStamp(item.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+						item.getAttendanceStamp().getStamp().getTimeWithDay(),
+						item.getAttendanceStamp().getStamp().getLocationCode(),
+						item.getAttendanceStamp().getStamp().getStampSourceInfo());
+				TimeActualStamp attendanceStamp = new TimeActualStamp(actualStamp, stamp, item.getAttendanceStamp().getNumberOfReflectionStamp());
+				
+				WorkStamp leaveActualStampTemp = new WorkStamp(item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
+						item.getLeaveStamp().getActualStamp().getTimeWithDay(),
+						item.getLeaveStamp().getActualStamp().getLocationCode(),
+						item.getLeaveStamp().getActualStamp().getStampSourceInfo());
+				WorkStamp leaveStampTemp = new WorkStamp(item.getLeaveStamp().getStamp().getAfterRoundingTime(),
+						item.getLeaveStamp().getStamp().getTimeWithDay(),
+						item.getLeaveStamp().getStamp().getLocationCode(),
+						item.getLeaveStamp().getStamp().getStampSourceInfo());
+				
+				TimeActualStamp leaveStamp = new TimeActualStamp(leaveActualStampTemp, leaveStampTemp, item.getLeaveStamp().getNumberOfReflectionStamp());
+				
+				
+				return new TimeLeavingWork(item.getWorkNo(), attendanceStamp, leaveStamp);
+			}).collect(Collectors.toList());
+			automaticStampSetDetailDto.setTimeLeavingWorks(timeLeavingWorks);
+
+			Calendar toDay = Calendar.getInstance();
+			int hour = toDay.get(Calendar.HOUR_OF_DAY);
+			int minute = toDay.get(Calendar.MINUTE);
+			int currentMinuteOfDay = ((hour * 60) + minute);
+
+			// 出勤反映 = true
+			// 出勤に自動打刻セットする
+			if (automaticStampSetDetailDto.getAttendanceReflectAttr() == UseAtr.USE) {
+
+				List<TimeLeavingWork> timeLeavingWorkList = new ArrayList<>();
+				List<TimeLeavingWorkOutput> timeLeavingWorkOutputs = new ArrayList<>();
+
+				// ドメインモデル「日別実績の出退勤」を取得する
+				// 自動打刻セット詳細．出退勤を順次確認する
+				automaticStampSetDetailDto.getTimeLeavingWorks().stream().forEach(timeLeaving -> {
+					TimeLeavingWork stamp = null;
+					if (timeLeavingOptional.getTimeLeavingWorks() != null) {
+						stamp = timeLeavingOptional.getTimeLeavingWorks().stream()
+								.filter(itemx -> itemx.getWorkNo().v().equals(timeLeaving.getWorkNo().v())).findFirst()
+								.get();
+					}
+
+					if (stampReflectionManagement.get()
+							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
+							|| (stampReflectionManagement.get()
+									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
+									&& timeLeaving.getAttendanceStamp().getStamp().getTimeWithDay()
+											.lessThanOrEqualTo(currentMinuteOfDay))) {
+						TimeLeavingWorkOutput outPut = new TimeLeavingWorkOutput();
+						// 勤務NOが同じ実績．出退勤を確認する
+						// 存在しない
+						if (timeLeavingOptional.getTimeLeavingWorks() == null
+								|| (timeLeavingOptional.getTimeLeavingWorks() != null
+										&& !timeLeavingOptional.getTimeLeavingWorks().stream().anyMatch(
+												item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v()))) {
+
+							// 実績．出退勤．出勤．打刻←詳細．出退勤．出勤．打刻							
+							TimeActualStampOutPut actualStampOutPut = new TimeActualStampOutPut();
+							WorkStampOutPut actualStampTemp = new WorkStampOutPut(timeLeaving.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+									timeLeaving.getAttendanceStamp().getStamp().getTimeWithDay(), 
+									timeLeaving.getAttendanceStamp().getStamp().getLocationCode(), 
+									timeLeaving.getAttendanceStamp().getStamp().getStampSourceInfo());
+							actualStampOutPut.setStamp(actualStampTemp);
+							outPut.setWorkNo(timeLeaving.getWorkNo());
+							outPut.setAttendanceStamp(actualStampOutPut);
+							
+							timeLeavingWorkOutputs.add(outPut);
+							
+							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
+							// .filter(item ->
+							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+							// .getAttendanceStamp());
+						}
+						// 存在する && 入っていない
+						if ((timeLeavingOptional.getTimeLeavingWorks() != null
+								&& timeLeavingOptional.getTimeLeavingWorks().stream()
+										.anyMatch(item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v()))
+								&& (stamp != null && (stamp.getLeaveStamp() == null || (stamp.getLeaveStamp() != null
+										&& stamp.getLeaveStamp().getStamp() == null)))) {
+							
+							TimeActualStamp leaveStamp = stamp.getLeaveStamp();
+							WorkNo workNo = stamp.getWorkNo();
+							int numberOfReflectionStamp = stamp.getAttendanceStamp().getNumberOfReflectionStamp();
+							WorkStamp actualStampTemp = stamp.getAttendanceStamp().getActualStamp();
+							WorkStamp stampTemp = new WorkStamp(timeLeaving.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+									timeLeaving.getAttendanceStamp().getStamp().getTimeWithDay(), 
+									timeLeaving.getAttendanceStamp().getStamp().getLocationCode(), 
+									timeLeaving.getAttendanceStamp().getStamp().getStampSourceInfo());
+							
+							TimeActualStamp attendanceStamp = new TimeActualStamp(actualStampTemp, stampTemp, numberOfReflectionStamp);
+							
+							stamp = new TimeLeavingWork(workNo, attendanceStamp, leaveStamp);
+
+							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
+							// .filter(item ->
+							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+							// .getAttendanceStamp());
+						}
+					}
+					;
+				});
+				timeLeavingWorkList = timeLeavingWorkOutputs.stream().map(item -> {
+					WorkStamp actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
+							item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
+							item.getAttendanceStamp().getActualStamp().getLocationCode(),
+							item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
+					WorkStamp workStampTemp = new WorkStamp(item.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+							item.getAttendanceStamp().getStamp().getTimeWithDay(),
+							item.getAttendanceStamp().getStamp().getLocationCode(),
+							item.getAttendanceStamp().getStamp().getStampSourceInfo());
+					TimeActualStamp attendanceStamp = new TimeActualStamp(actualStamp, workStampTemp, item.getAttendanceStamp().getNumberOfReflectionStamp());
+					
+					WorkStamp leaveActualStampTemp = new WorkStamp(item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
+							item.getLeaveStamp().getActualStamp().getTimeWithDay(),
+							item.getLeaveStamp().getActualStamp().getLocationCode(),
+							item.getLeaveStamp().getActualStamp().getStampSourceInfo());
+					WorkStamp leaveStampTemp = new WorkStamp(item.getLeaveStamp().getStamp().getAfterRoundingTime(),
+							item.getLeaveStamp().getStamp().getTimeWithDay(),
+							item.getLeaveStamp().getStamp().getLocationCode(),
+							item.getLeaveStamp().getStamp().getStampSourceInfo());
+					
+					TimeActualStamp leaveStamp = new TimeActualStamp(leaveActualStampTemp, leaveStampTemp, item.getLeaveStamp().getNumberOfReflectionStamp());
+					
+					
+					return new TimeLeavingWork(item.getWorkNo(), attendanceStamp, leaveStamp);
+				}).collect(Collectors.toList());
+				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
+
+			}
+
+			// 退勤反映 = true
+			if (automaticStampSetDetailDto.getRetirementAttr() == UseAtr.USE) {
+
+				List<TimeLeavingWork> timeLeavingWorkLst = new ArrayList<>();
+				List<TimeLeavingWorkOutput> newTimeLeavingWorkOutputs = new ArrayList<>();
+
+				automaticStampSetDetailDto.getTimeLeavingWorks().stream().forEach(timeLeavingWork -> {
+
+					TimeLeavingWork stamp = null;
+					if (!timeLeavingOptional.getTimeLeavingWorks().isEmpty()) {
+						stamp = timeLeavingOptional.getTimeLeavingWorks().stream()
+								.filter(itemm -> itemm.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v()))
+								.findAny().get();
+					}
+
+					if (stampReflectionManagement.get()
+							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
+							|| (stampReflectionManagement.get()
+									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
+									&& timeLeavingWork.getLeaveStamp().getStamp().getTimeWithDay()
+											.lessThanOrEqualTo(currentMinuteOfDay))) {
+
+						TimeLeavingWork timeLeaving = new TimeLeavingWork();
+						TimeLeavingWorkOutput newOutPut = new TimeLeavingWorkOutput();
+						// 勤務NOが同じ実績．出退勤を確認する
+						// 存在しない
+						if (timeLeavingOptional.getTimeLeavingWorks() != null
+								&& !timeLeavingOptional.getTimeLeavingWorks().stream()
+										.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v())) {
+
+							// 実績．出退勤．出勤．打刻←詳細．出退勤．出勤．打刻
+							
+							TimeActualStampOutPut leaveActualStampOutPut = new TimeActualStampOutPut();
+							WorkStampOutPut leaveActualStampTemp = new WorkStampOutPut(timeLeaving.getLeaveStamp().getStamp().getAfterRoundingTime(),
+									timeLeaving.getLeaveStamp().getStamp().getTimeWithDay(), 
+									timeLeaving.getLeaveStamp().getStamp().getLocationCode(), 
+									timeLeaving.getLeaveStamp().getStamp().getStampSourceInfo());
+							leaveActualStampOutPut.setStamp(leaveActualStampTemp);
+							newOutPut.setWorkNo(timeLeaving.getWorkNo());
+							newOutPut.setLeaveStamp(leaveActualStampOutPut);
+							
+							newTimeLeavingWorkOutputs.add(newOutPut);
+
+							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
+							// .filter(item ->
+							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+							// .getLeaveStamp());
+						}
+						// 存在する && 入っていない
+						if ((timeLeavingOptional.getTimeLeavingWorks() != null
+								&& timeLeavingOptional.getTimeLeavingWorks().stream()
+										.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v()))
+								&& (stamp != null && (stamp.getLeaveStamp() == null || (stamp.getLeaveStamp() != null
+										&& stamp.getLeaveStamp().getStamp() == null)))) {
+							
+							TimeActualStamp attendanceStamp = stamp.getAttendanceStamp();
+							WorkNo workNo = stamp.getWorkNo();
+							
+							int numberOfReflectionStamp = stamp.getLeaveStamp().getNumberOfReflectionStamp();
+							WorkStamp leaveActualStampTemp = stamp.getLeaveStamp().getActualStamp();
+							WorkStamp leaveStampTemp = new WorkStamp(timeLeaving.getLeaveStamp().getStamp().getAfterRoundingTime(),
+									timeLeaving.getLeaveStamp().getStamp().getTimeWithDay(), 
+									timeLeaving.getLeaveStamp().getStamp().getLocationCode(), 
+									timeLeaving.getLeaveStamp().getStamp().getStampSourceInfo());
+							
+							TimeActualStamp leaveStamp = new TimeActualStamp(leaveActualStampTemp, leaveStampTemp, numberOfReflectionStamp);
+							
+							stamp = new TimeLeavingWork(workNo, attendanceStamp, leaveStamp);
+
+							// timeLeavingOptional.getTimeLeavingWorks().stream()
+							// .filter(item ->
+							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+							// .getLeaveStamp().setStamp(timeLeaving.getLeaveStamp().getStamp());
+							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
+							// .filter(item ->
+							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
+							// .getLeaveStamp());
+						}
+					}
+				});
+				timeLeavingWorkLst = newTimeLeavingWorkOutputs.stream().map(item -> {
+					WorkStamp actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
+							item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
+							item.getAttendanceStamp().getActualStamp().getLocationCode(),
+							item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
+					WorkStamp workStampTemp = new WorkStamp(item.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+							item.getAttendanceStamp().getStamp().getTimeWithDay(),
+							item.getAttendanceStamp().getStamp().getLocationCode(),
+							item.getAttendanceStamp().getStamp().getStampSourceInfo());
+					TimeActualStamp attendanceStamp = new TimeActualStamp(actualStamp, workStampTemp, item.getAttendanceStamp().getNumberOfReflectionStamp());
+					
+					WorkStamp leaveActualStampTemp = new WorkStamp(item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
+							item.getLeaveStamp().getActualStamp().getTimeWithDay(),
+							item.getLeaveStamp().getActualStamp().getLocationCode(),
+							item.getLeaveStamp().getActualStamp().getStampSourceInfo());
+					WorkStamp leaveStampTemp = new WorkStamp(item.getLeaveStamp().getStamp().getAfterRoundingTime(),
+							item.getLeaveStamp().getStamp().getTimeWithDay(),
+							item.getLeaveStamp().getStamp().getLocationCode(),
+							item.getLeaveStamp().getStamp().getStampSourceInfo());
+					
+					TimeActualStamp leaveStamp = new TimeActualStamp(leaveActualStampTemp, leaveStampTemp, item.getLeaveStamp().getNumberOfReflectionStamp());
+					
+					
+					return new TimeLeavingWork(item.getWorkNo(), attendanceStamp, leaveStamp);
+				}).collect(Collectors.toList());
+				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkLst);
+			}
+		}
 	}
 
 	private int roudingTime(int time, int fontRearSection, int roundingTimeUnit) {

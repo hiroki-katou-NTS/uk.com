@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.auth.ws.user;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

@@ -136,9 +136,7 @@ public class DailyPerformanceCorrectionProcessor {
 							authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
 						} else {
 							// アルゴリズム「表示項目の選択を起動する」を実行する
-							/// 画面「表示フォーマットの選択」をモーダルで起動する(Chạy màn hình "Select
-							// display format" theo cách thức) -- chay man hinh
-							// C
+							/// 画面「表示フォーマットの選択」をモーダルで起動する(Chạy màn hình "Select  display format" theo cách thức) -- chay man hinh C
 							throw new BusinessException("KDW/003/a");
 						}
 					} else {

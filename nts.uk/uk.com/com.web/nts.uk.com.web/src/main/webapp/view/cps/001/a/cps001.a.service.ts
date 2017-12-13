@@ -73,12 +73,12 @@ module cps001.a.service {
         return ajax(paths.layout.register, command);
     }
 
-    export function getData() {
-        return ajax(paths.getData);
+    export function removeCurrentCategoryData(command: any) {
+        return ajax(paths.category.delete, command);
     }
 
-    export function saveData(command) {
-        return ajax(paths.saveData, command);
+    export function getData() {
+        return ajax(paths.getData);
     }
 
     export function getFileInfo(id: string) {

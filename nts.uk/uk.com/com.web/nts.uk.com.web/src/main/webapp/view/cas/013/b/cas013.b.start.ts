@@ -5,7 +5,6 @@ module nts.uk.com.view.cas013.b {
         $("#search").focus();
         $("#search").keyup(function(event) {
             if (event.keyCode == 13) {
-                console.log('enter');
                 $("#searchButton").click();
             }
         });

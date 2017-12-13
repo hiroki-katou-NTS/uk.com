@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -34,11 +34,11 @@ public class BsymtAffCompanyInfo extends UkJpaEntity implements Serializable {
 	public String recruitmentCategoryCode;
 
 	@Column(name = "ADOPTION_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate adoptionDate;
 
 	@Column(name = "RETIREMENT_CALC_STR_D")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate retirementAllowanceCalcStartDate;
 
 	@OneToOne(fetch = FetchType.LAZY, targetEntity = BsymtAffCompanyHist.class, optional = false, cascade = CascadeType.REMOVE)
