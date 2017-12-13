@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.schedule.ws.shift.businesscalendar.event;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -11,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.CompanyEventCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.CompanyEventCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.WorkplaceEventCommand;
@@ -40,7 +40,7 @@ public class EventDayWebService extends WebService {
 	
 	@POST
 	@Path("getCompanyEventsByListDate")
-	public List<CompanyEventDto> getCompanyEventsByListDate(List<GeneralDate> lstDate) {
+	public List<CompanyEventDto> getCompanyEventsByListDate(List<BigDecimal> lstDate) {
 		return this.eventDayFinder.getCompanyEventsByListDate(lstDate);
 	}
 	

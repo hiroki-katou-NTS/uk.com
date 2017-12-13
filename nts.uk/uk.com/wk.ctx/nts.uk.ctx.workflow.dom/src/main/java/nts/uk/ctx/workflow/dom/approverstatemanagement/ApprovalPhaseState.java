@@ -4,8 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
 /**
  * 承認フェーズインスタンス
  * @author Doan Duy Hung
@@ -13,18 +11,17 @@ import nts.arc.layer.dom.DomainObject;
  */
 @AllArgsConstructor
 @Getter
-public class ApprovalPhaseState extends DomainObject {
+public class ApprovalPhaseState {
 	
 	private String companyID;
 	
 	private String rootStateID;
 	
-	private RootType rootType;
+	private Integer rootType;
 	
 	private Integer phaseOrder;
 	
-	@Setter
-	private ApprovalBehaviorAtr approvalAtr;
+	private ApprovalAtr approvalAtr;
 	
 	private ApprovalForm approvalForm;
 	

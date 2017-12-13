@@ -20,13 +20,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 public class SacmtRoleByRoleTies extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Id
-	@Column(name = "ROLE_ID")
-	public String roleId;
 	
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
 	
+	@Id
+	@Column(name = "ROLE_ID")
+	public String roleId;
+
 	@Override
 	protected Object getKey() {
 		return this.roleId;
@@ -35,22 +36,21 @@ public class SacmtRoleByRoleTies extends UkJpaEntity implements Serializable {
 	
 	public static SacmtRoleByRoleTies toEntity(RoleByRoleTies domain) {
 		return new SacmtRoleByRoleTies(
-				domain.getRoleId(),
-				domain.getWebMenuCd().v()
+				domain.getRoleId(),domain.getWebMenuCd().v()
 				);
 	}
 	
 	public RoleByRoleTies toDomain() {
 		return new RoleByRoleTies(
-				this.roleId,
-				new WebMenuCode(this.webMenuCd)
+				new WebMenuCode(this.webMenuCd),
+				this.roleId
 				);
 	}
 
 
-	public SacmtRoleByRoleTies(String roleId,String webMenuCd) {
+	public SacmtRoleByRoleTies(String webMenuCd, String roleId) {
 		super();
-		this.roleId = roleId;
 		this.webMenuCd = webMenuCd;
+		this.roleId = roleId;
 	}
 }

@@ -22,14 +22,14 @@ public class UpdateRoleByRoleTiesCommandHandler extends CommandHandler<RoleByRol
 	protected void handle(CommandHandlerContext<RoleByRoleTiesCommand> context) {
 		RoleByRoleTiesCommand role = context.getCommand();
 		
-		RoleByRoleTies newRole = new RoleByRoleTies(role.getRoleId(),new WebMenuCode( role.getWebMenuCd()));
+		RoleByRoleTies newRole = new RoleByRoleTies(new WebMenuCode( role.getWebMenuCd()),role.getRoleId());
 		Optional<RoleByRoleTies> checkData = repo.getRoleByRoleTiesById(newRole.getRoleId());
 		
 		if(checkData.isPresent()) {
 			repo.updateRoleByRoleTies(newRole);
 			
 		} else {
-			repo.insertRoleByRoleTies(newRole);;
+			throw new BusinessException("k ton tai");
 		}
 		
 	}

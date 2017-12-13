@@ -58,11 +58,11 @@ module nts.uk.ui.jqueryExtentions {
                 $headerContainer.appendTo($header);
                 $header.appendTo($container);
                 $header.height($headerContainer.height());
-                let $headerScroll = $("<div>", {"class": "scroll-header nts-fixed-header", width: 16, height: $headerWrapper.outerHeight()}); 
+                let $headerScroll = $("<div>", {"class": "scroll-header nts-fixed-header", width: 17, height: $headerContainer.height()}); 
                 $headerScroll.appendTo($header);
                 
                 $originTable.addClass("nts-fixed-body-table");
-                let $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>"); 
+                let $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
                 let $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
                 let bodyHeight: any = "auto";
                 if (setting.height !== "auto") {
@@ -74,16 +74,27 @@ module nts.uk.ui.jqueryExtentions {
                     $header.height($headerContainer.height());
                     if(bodyHeight < $originTable.height()){
                         if(/Edge/.test(navigator.userAgent)){
-                            $headerScroll.width(11);
+                            $headerScroll.width(12);
                             $bodyContainer.css("padding-right", "12px");
                         }else {
-                            $headerScroll.width(16);
+                            $headerScroll.width(17);
                             $bodyContainer.css("padding-right", "17px");
-                        }    
-                        $headerScroll.css({ "border-right": "1px #CCC solid", "border-top": "1px #CCC solid", "border-bottom": "1px #CCC solid" });    
+                        }        
                     } else {
+//                        if($originTable.height() !== 0){
+//                            if(/Edge/.test(navigator.userAgent)){
+//                                $bodyWrapper.height($originTable.height());
+//                                $bodyContainer.height($originTable.height() + 12);
+//                            }else {
+//                                $bodyWrapper.height($originTable.height());
+//                                $bodyContainer.height($originTable.height() + 17);
+//                            } 
+//                            $headerScroll.width(0);   
+//                            $bodyWrapper.removeClass("body-no-record");   
+//                        } else {
+//                            $bodyWrapper.addClass("body-no-record");    
+//                        } 
                         $headerScroll.width(0);
-                        $headerScroll.css({ "border-right": "0px", "border-top": "0px", "border-bottom": "0px" });   
                         $bodyContainer.css("padding-right", "0px");
                     }
                 
@@ -93,7 +104,14 @@ module nts.uk.ui.jqueryExtentions {
                 
                 
                 $bodyContainer.scroll(function(evt, ui) {
-                    $headerContainer.scrollLeft($bodyContainer.scrollLeft());
+                    let bodyScroll = $bodyContainer.scrollLeft();
+                    if(bodyScroll > 0){
+                        bodyScroll = bodyScroll + 1.25;
+                        $headerContainer.css({"border-left": "1px solid #CCC"});
+                    }else {
+                        $headerContainer.css({"border-left": "0px solid #CCC"});    
+                    }
+                    $headerContainer.scrollLeft(bodyScroll);
                     
                 });
                 $bodyWrapper.width(width).height(bodyHeight);

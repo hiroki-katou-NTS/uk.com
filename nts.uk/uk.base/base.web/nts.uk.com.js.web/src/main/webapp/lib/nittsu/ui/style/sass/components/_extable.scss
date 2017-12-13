@@ -12,6 +12,9 @@
 .extable td.edit-cell {
 	padding: 0px;
 }
+.extable div.highlight, .extable td.highlight, .xheader td.highlight {
+	background-color: aqua;
+}
 .extable div.xdet, .extable td.xdet {
 	background-color: #D2B4DE;
 }
@@ -23,9 +26,6 @@
 }
 .extable div.xseal, .extable td.xseal {
 	background-color: #CCC;
-}
-.extable div.highlight, .extable td.highlight, .xheader td.highlight {
-	background-color: aqua;
 }
 .extable td.ex-round-go {
 	cursor: pointer;

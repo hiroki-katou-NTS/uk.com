@@ -17,7 +17,7 @@ module kcp003.a.viewmodel {
         multiBySelectedCode: KnockoutObservableArray<string>;
 
         listComponentOption: ComponentOption;
-        alreadySettingList: KnockoutObservableArray<any>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 
         hasSelectedJobTitle: KnockoutObservable<boolean>;
         jobTitleList: KnockoutObservableArray<UnitModel>;
@@ -165,18 +165,18 @@ module kcp003.a.viewmodel {
                     if (self.listComponentOption.isMultiSelect) {
                         self.listComponentOption.selectedCode().forEach((selected) => {
                             var existItem = self.alreadySettingList().filter((item) => {
-                                return item.id == selected;
+                                return item.code == selected;
                             })[0];
                             if (!existItem) {
-                                self.alreadySettingList.push({ "id": selected, "isAlreadySetting": true });
+                                self.alreadySettingList.push({ "code": selected, "isAlreadySetting": true });
                             }
                         });
                     } else {
                         var existItem = self.alreadySettingList().filter((item) => {
-                            return item.id == self.listComponentOption.selectedCode();
+                            return item.code == self.listComponentOption.selectedCode();
                         })[0];
                         if (!existItem) {
-                            self.alreadySettingList.push({ "id": self.listComponentOption.selectedCode(), "isAlreadySetting": true });
+                            self.alreadySettingList.push({ "code": self.listComponentOption.selectedCode(), "isAlreadySetting": true });
                         }
                     }
                     self.isAlreadySetting(true);
@@ -197,12 +197,12 @@ module kcp003.a.viewmodel {
                     if (self.listComponentOption.isMultiSelect) {
                         self.listComponentOption.selectedCode().forEach((selected) => {
                             self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                                return item.id == selected;
+                                return item.code == selected;
                             })[0]);
                         });
                     } else {
                         self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                            return item.id == self.listComponentOption.selectedCode();
+                            return item.code == self.listComponentOption.selectedCode();
                         })[0]);
                     }
                     self.isAlreadySetting(true);
@@ -246,10 +246,5 @@ module kcp003.a.viewmodel {
             });
             
         }
-    }
-    
-    export interface AlreadySettingModel {
-        id: string;
-        isAlreadySetting: boolean;
     }
 }

@@ -1,7 +1,5 @@
 package nts.uk.screen.com.app.command.sys.auth.role;
 
-import java.io.Console;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -14,7 +12,6 @@ import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.CreateWorkPlaceAuth
 import nts.uk.ctx.sys.auth.app.command.role.AddRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.role.AddRoleCommandHandler;
 import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.AddRoleByRoleTiesCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.RoleByRoleTiesCommand;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,13 +48,11 @@ public class CreateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
 		data.setRoleId(addRoleCommandHandler.handle(addRoleCommand));
 		if(!data.getRoleId().isEmpty()) {
 			//insert  RoleByRoleTies
-			if(data.getAssignAtr() == RoleAtr.INCHARGE.value ) {
-				RoleByRoleTiesCommand roleByRoleTiesCommand = new RoleByRoleTiesCommand(
-						data.getRoleId(),
-						data.getWebMenuCd()
-						);
-				addRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
-			}
+			RoleByRoleTiesCommand roleByRoleTiesCommand = new RoleByRoleTiesCommand(
+					data.getWebMenuCd(),
+					data.getRoleId()
+					);
+			addRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
 			//insert EmploymentRole
 			CreateEmploymentRoleCmd createEmploymentRoleCmd  = new CreateEmploymentRoleCmd(
 					AppContexts.user().companyId(),

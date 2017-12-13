@@ -18,9 +18,6 @@ public class CreateRoleIndividualGrantCommandHandler {
 			return null;
 		roleGrant.setCompanyID(companyId);
 		
-		if(roleGrant.userID == null)
-			return null;
-			
 		if(this.roleIndividualGrantRepository.findByUserCompanyRoleType(roleGrant.userID, roleGrant.companyID, roleGrant.roleType).isPresent()){
 			return null;
 		}else{

@@ -19,5 +19,5 @@ public interface INewLayoutReposotory {
 	/*
 	 * get first (once) layout
 	 */
-	Optional<NewLayout> getLayout(boolean createNewIfNull);
+	Optional<NewLayout> getLayout();
 }

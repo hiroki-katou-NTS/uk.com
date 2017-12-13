@@ -3,10 +3,9 @@
  */
 package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
-import nts.arc.time.GeneralDate;
 
 /**
  * @author hungnm
@@ -14,9 +13,9 @@ import nts.arc.time.GeneralDate;
  */
 public interface WorkplaceEventRepository {
 	
-	Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date);
+	Optional<WorkplaceEvent> findByPK(String workplaceId, BigDecimal date);
 
-	List<WorkplaceEvent> getWorkplaceEventsByListDate(String workplaceId, List<GeneralDate> lstDate);
+	List<WorkplaceEvent> getWorkplaceEventsByListDate(String workplaceId, List<BigDecimal> lstDate);
 
 	void addEvent(WorkplaceEvent event);
 

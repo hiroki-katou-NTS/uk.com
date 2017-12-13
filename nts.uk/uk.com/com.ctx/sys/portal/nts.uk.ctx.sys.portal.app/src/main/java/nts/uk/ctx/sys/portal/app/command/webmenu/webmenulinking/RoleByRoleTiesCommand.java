@@ -10,10 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleByRoleTiesCommand {
-
+	/** メニューコードリスト :WebMenuCode*/
+    private String webMenuCd;
     
     /**ロールID */
     private String roleId;
-	/** メニューコードリスト :WebMenuCode*/
-    private String webMenuCd;
 }

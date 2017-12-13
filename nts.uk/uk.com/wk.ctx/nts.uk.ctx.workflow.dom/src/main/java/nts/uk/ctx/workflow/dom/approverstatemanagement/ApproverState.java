@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 /**
  * 承認枠 : 承認者
  * @author Doan Duy Hung
@@ -10,13 +9,13 @@ import nts.arc.layer.dom.DomainObject;
  */
 @AllArgsConstructor
 @Getter
-public class ApproverState extends DomainObject {
+public class ApproverState {
 	
 	private String companyID;
 	
 	private String rootStateID;
 	
-	private RootType rootType;
+	private Integer rootType;
 	
 	private Integer phaseOrder;
 	

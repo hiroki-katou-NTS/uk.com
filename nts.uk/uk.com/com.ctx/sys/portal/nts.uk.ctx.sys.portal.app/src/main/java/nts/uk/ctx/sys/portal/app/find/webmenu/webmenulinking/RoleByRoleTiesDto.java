@@ -10,22 +10,21 @@ import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
 @Setter
 @NoArgsConstructor
 public class RoleByRoleTiesDto {
-
+	/** メニューコードリスト */
+    private String webMenuCd;
     
     /**ロールID */
     private String roleId;
-	/** メニューコードリスト */
-    private String webMenuCd;
 
-	public RoleByRoleTiesDto( String roleId,String webMenuCd) {
+	public RoleByRoleTiesDto(String webMenuCd, String roleId) {
 		super();
-		this.roleId = roleId;
 		this.webMenuCd = webMenuCd;
+		this.roleId = roleId;
 	}
     public static RoleByRoleTiesDto fromDomain(RoleByRoleTies domain) {
     	return new RoleByRoleTiesDto(
-    			domain.getRoleId(),
-    			domain.getWebMenuCd().v()
+    			domain.getWebMenuCd().v(),
+    			domain.getRoleId()
     			);
     }
 }

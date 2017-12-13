@@ -46,7 +46,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {
 
 		// get new layout domain and command
-		NewLayout update = layoutRepo.getLayout(true).get();
+		NewLayout update = layoutRepo.getLayout().get();
 		NewLayoutCommand command = context.getCommand();
 
 		// update layout

@@ -17,6 +17,9 @@ public class EmployeeDeleteToRestoreCommand {
 	
 	private String code;
 	
-	private String name;
+	/** The newCode, newName of Employee after RestoreData. */
+	private String newCode;
+	
+	private String newName;
 	
 }

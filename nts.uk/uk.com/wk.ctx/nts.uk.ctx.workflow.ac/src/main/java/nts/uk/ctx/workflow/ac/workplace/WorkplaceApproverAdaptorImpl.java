@@ -63,4 +63,14 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
+	 * EmployeeApproveAdapter#getWorkplaceId(java.lang.String, java.lang.String,
+	 * nts.arc.time.GeneralDate)
+	 */
+	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
+		return wpPub.getWorkplaceId(companyId, employeeId, baseDate);
+	}
 }

@@ -66,7 +66,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
             if (self.workplaceId == "0") {
                 if (self.companyEvent() && self.companyEvent().trim() != "") {
                     let command = {
-                        date: moment(self.date, "YYYY/MM/DD").utc().toISOString(),
+                        date: moment(self.date, "YYYY/MM/DD").format("YYYYMMDD"),
                         eventName: self.companyEvent()
                     };
                     service.addCompanyEvent(command).done(() => {
@@ -82,7 +82,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
                 if (self.workplaceEvent() && self.workplaceEvent().trim() != "") {
                     let command = {
                         workplaceId: self.workplaceId,
-                        date: moment(self.date, "YYYY/MM/DD").utc().toISOString(),
+                        date: moment(self.date, "YYYY/MM/DD").format("YYYYMMDD"),
                         eventName: self.workplaceEvent()
                     };
                     service.addWorkplaceEvent(command).done(() => {
@@ -103,7 +103,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
                 .ifYes(() => {
                     if (self.workplaceId == "0") {
                         let command = {
-                            date: moment(self.date, "YYYY/MM/DD").utc().toISOString(),
+                            date: moment(self.date, "YYYY/MM/DD").format("YYYYMMDD"),
                             eventName: self.companyEvent()
                         };
                         service.removeCompanyEvent(command).done(() => {
@@ -115,7 +115,7 @@ module nts.uk.at.view.kcp006.b.viewmodel {
                     } else {
                         let command = {
                             workplaceId: self.workplaceId,
-                            date: moment(self.date, "YYYY/MM/DD").utc().toISOString(),
+                            date: moment(self.date, "YYYY/MM/DD").format("YYYYMMDD"),
                             eventName: self.workplaceEvent()
                         };
                         service.removeWorkplaceEvent(command).done(() => {

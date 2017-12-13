@@ -25,10 +25,9 @@
 						<div class="cf">
 							<div id="test2"></div>
 							
-							<div id="test" data-bind="ntsTableButton: {source: source, row: 5, column: 6, contextMenu: contextMenu, selectedCell: selected}"></div>
+							<div id="test" data-bind="ntsTableButton: {source: source, row: 5, column: 6, contextMenu: contextMenu}"></div>
 							
 							<button data-bind="click: clear">Clear Source</button>
-							<button data-bind="click: selectFirst">Select First</button>
 						</div>
 						<article class="cf">
 							<div class="tabs">
@@ -41,7 +40,7 @@
 									<h2>HTML</h2>
 <pre><![CDATA[<div id="test2"></div>
 							
-<div id="test" data-bind="ntsTableButton: {source: source, row: 5, column: 6, contextMenu: contextMenu, selectedCell: selected}"></div>]]></pre>
+<div id="test" data-bind="ntsTableButton: {source: source, row: 5, column: 6, contextMenu: contextMenu}"></div>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -68,14 +67,6 @@
 																	<b>Type:</b> Function<br/>
 																	<b>Default:</b> undefined<br/>
 																	action when a button is clicked. Return type of function is cell data value (Can view at below).
-																</td>
-															</tr>
-															<tr>
-																<td>selectedCell<br/><i>(optional)</i></td>
-																<td>
-																	<b>Type:</b> Function<br/>
-																	<b>Default:</b> undefined<br/>
-																	Observe selected cell value. Value sample: {column: 0, row: 0}
 																</td>
 															</tr>
 															<tr>

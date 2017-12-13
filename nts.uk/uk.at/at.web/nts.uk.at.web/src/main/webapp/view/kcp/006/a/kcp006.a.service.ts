@@ -4,17 +4,16 @@ module nts.uk.at.view.kcp006.a.service {
         getCompanyEvent: "at/schedule/eventday/getCompanyEventsByListDate",
         getWorkplaceEvent: "at/schedule/eventday/getWorkplaceEventsByListDate"
     }
-
+    
     export function getPublicHoliday(lstDate): JQueryPromise<Array<model.EventObj>> {
-        return nts.uk.request.ajax(paths.getHoliday, lstDate.map((date) => { return moment(date, "YYYYMMDD").format("YYYY/MM/DD"); }));
+        return nts.uk.request.ajax(paths.getHoliday, lstDate);
     }
-
+    
     export function getCompanyEvent(lstDate): JQueryPromise<Array<model.EventObj>> {
-        return nts.uk.request.ajax(paths.getCompanyEvent, lstDate.map((date) => { return moment(date, "YYYYMMDD").utc().toISOString(); }));
+        return nts.uk.request.ajax(paths.getCompanyEvent, lstDate);
     }
-
+    
     export function getWorkplaceEvent(data): JQueryPromise<Array<model.EventObj>> {
-        data.lstDate = data.lstDate.map((date) => { return moment(date, "YYYYMMDD").utc().toISOString(); });
         return nts.uk.request.ajax(paths.getWorkplaceEvent, data);
     }
 }

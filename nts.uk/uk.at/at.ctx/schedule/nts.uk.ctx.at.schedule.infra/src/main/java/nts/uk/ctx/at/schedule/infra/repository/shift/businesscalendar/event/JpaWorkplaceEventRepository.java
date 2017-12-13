@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.event;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KsmmtWorkplaceEvent;
@@ -26,14 +26,14 @@ public class JpaWorkplaceEventRepository extends JpaRepository implements Workpl
 	private final String SELECT_BY_LISTDATE = "SELECT a FROM KsmmtWorkplaceEvent a WHERE a.ksmmtWorkplaceEventPK.workplaceId = :workplaceId AND a.ksmmtWorkplaceEventPK.date IN :lstDate";
 
 	@Override
-	public List<WorkplaceEvent> getWorkplaceEventsByListDate(String workplaceId, List<GeneralDate> lstDate) {
+	public List<WorkplaceEvent> getWorkplaceEventsByListDate(String workplaceId, List<BigDecimal> lstDate) {
 		return this.queryProxy().query(SELECT_BY_LISTDATE, KsmmtWorkplaceEvent.class)
 				.setParameter("workplaceId", workplaceId).setParameter("lstDate", lstDate).getList().stream()
 				.map(entity -> toDomain(entity)).collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
+	public Optional<WorkplaceEvent> findByPK(String workplaceId, BigDecimal date) {
 		return this.queryProxy().find(new KsmmtWorkplaceEventPK(workplaceId, date), KsmmtWorkplaceEvent.class)
 				.map(entity -> toDomain(entity));
 	}

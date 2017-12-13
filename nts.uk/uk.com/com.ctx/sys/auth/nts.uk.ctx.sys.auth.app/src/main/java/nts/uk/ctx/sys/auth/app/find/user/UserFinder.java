@@ -33,9 +33,5 @@ public class UserFinder {
 		return userRepo.getAllUser().stream().map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
 	}
 	
-	public List<UserDto> findByKey(UserKeyDto userKeyDto){
-		return userRepo.findByKey(userKeyDto.getKey(), userKeyDto.isSpecial(), userKeyDto.isMulti()).stream().map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());		
-	}
-	
  	
 }

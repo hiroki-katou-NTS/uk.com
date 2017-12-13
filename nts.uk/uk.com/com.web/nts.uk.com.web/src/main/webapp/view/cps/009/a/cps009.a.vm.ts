@@ -402,8 +402,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
             service.update(updateObj).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     $('#ctgName').focus();
+
                     self.initSettingId("");
-                    self.refresh(updateObj.settingId);
                     self.initSettingId(updateObj.settingId);
                     self.currentItemId("");
                     self.currentItemId(updateObj.perInfoCtgId);

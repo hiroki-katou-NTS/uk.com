@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.auth.dom.role.ContractCode;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
@@ -67,7 +66,6 @@ public class AddRoleCommand {
 	public Role toDomain() {
 		
 		return new Role(
-				IdentifierUtil.randomUniqueId(),
 				new RoleCode(this.roleCode),
 				EnumAdaptor.valueOf(this.roleType,RoleType.class),
 				EnumAdaptor.valueOf(this.employeeReferenceRange,EmployeeReferenceRange.class),

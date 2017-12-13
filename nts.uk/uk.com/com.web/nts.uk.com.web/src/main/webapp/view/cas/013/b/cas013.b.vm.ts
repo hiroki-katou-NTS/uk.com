@@ -3,29 +3,29 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
     export class ScreenModel {
         dataSource: any;
-        columns: Array<any>;
+        columns: KnockoutObservableArray<any>;
         //search
         searchValue: KnockoutObservable<string>;
         //user
         selectUserID: KnockoutObservable<string>;
         userName: KnockoutObservable<string>;
         
-        special : KnockoutObserveble<boolean>;
-        multi : KnockoutObserveble<boolean>;
+        enable1 : KnockoutObserveble<boolean>;
+        enable2 : KnockoutObserveble<boolean>;
 
         constructor() {
             var self = this;
 
-            self.special = ko.observable(true);
-            self.multi = ko.observable(true);
+            self.enable1 = ko.observable(true);
+            self.enable2 = ko.observable(true);
             
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
-            self.columns = [
+            self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText(""), key: 'userID', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_29"), key: 'loginID', width: 130 },
-                { headerText: nts.uk.resource.getText("CAS013_30"), key: 'userName', width: 200 }
-            ];
+                { headerText: nts.uk.resource.getText("CAS013_29"), key: 'loginID', width: 100 },
+                { headerText: nts.uk.resource.getText("CAS013_30"), key: 'userName', width: 230 }
+            ]);
             self.selectUserID = ko.observable('');
         }
 
@@ -35,10 +35,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_438" });
                 return;
             }
-            var key = self.searchValue();
-            var Special = self.special();
-            var Multi= self.multi();
-            service.searchUser(key,Special,Multi).done(function(data) {
+            service.searchUser(self.searchValue()).done(function(data) {
                 self.dataSource(data);
             });
         }

@@ -19,7 +19,7 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 
 	@Override
 	public void update(NewLayout domain) {
-		Optional<NewLayout> update = this.getLayout(true);
+		Optional<NewLayout> update = this.getLayout();
 		if (update.isPresent()) {
 			NewLayout _update = update.get();
 			_update.setLayoutCode(domain.getLayoutCode());
@@ -30,20 +30,18 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 	}
 
 	@Override
-	public Optional<NewLayout> getLayout(boolean createNewIfNull) {
+	public Optional<NewLayout> getLayout() {
 		String companyId = AppContexts.user().companyId();
 		PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
 				.setParameter("companyId", companyId).getSingleOrNull();
 
-		if (createNewIfNull) {
-			if (entity == null) {
-				// initial new data (if isn't present)
-				commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
-						companyId, "001", "レイアウト"));
+		if (entity == null) {
+			// initial new data (if isn't present)
+			commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
+					companyId, "001", "レイアウト"));
 
-				entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
-						.setParameter("companyId", companyId).getSingleOrNull();
-			}
+			entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
+					.setParameter("companyId", companyId).getSingleOrNull();
 		}
 
 		return Optional.of(toDomain(entity));

@@ -3,7 +3,8 @@
 	width: 100px;
 }
 
-.body-right {
+.body-left {
+	width: 800px;
     margin-left: 60px;
     float: left;
 	

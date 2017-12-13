@@ -164,13 +164,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         siftCD: self.siftCD(),
                         overtimeHours: ko.toJS(self.overtimeHours)    
                     }).done((data) =>{
-                        self.findBychangeAppDateData(data.listApproval);
+                        self.findBychangeAppDateData(data);
                         self.kaf000_a.objApprovalRootInput().standardDate = moment(new Date(value)).format(self.DATEFORMART);
                         self.kaf000_a.getAllApprovalRoot();
                         self.kaf000_a.getMessageDeadline(0, value);
-                        self.convertAppOvertimeReferDto(data.listApproval);
-                        self.preAppPanelFlg(data.listApproval.preAppPanelFlg);
-                        dfd.resolve(data.listApproval);
+                        self.convertAppOvertimeReferDto(data);
+                        self.preAppPanelFlg(data.preAppPanelFlg);
+                        dfd.resolve(data);
                     }).fail((res) =>{
                             dfd.reject(res);
                         });

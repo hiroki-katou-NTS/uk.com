@@ -70,6 +70,19 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 		return this.workplacePub.findWpkIdsBySid(companyId, sid, baseDate);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor#
+	 * getWorkplaceId(java.lang.String, java.lang.String,
+	 * nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
+		return this.workplacePub.getWorkplaceId(companyId, employeeId, baseDate);
+	}
+
 	/**
 	 * 
 	 * @param sID

@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let self = this;
             let dfd = $.Deferred<any>();
             nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
-                self.listApprovalRoot(data.listApproval);
+                self.listApprovalRoot(data);
                 self.approvalRoot([]);
                 if(self.listApprovalRoot() ==null || self.listApprovalRoot().length==0 ){
                                 

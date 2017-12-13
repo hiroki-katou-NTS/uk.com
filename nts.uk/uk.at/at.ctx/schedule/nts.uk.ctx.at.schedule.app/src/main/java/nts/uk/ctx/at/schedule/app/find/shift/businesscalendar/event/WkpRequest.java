@@ -3,11 +3,11 @@
  */
 package nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.event;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * @author hungnm
@@ -19,9 +19,9 @@ public class WkpRequest {
 	
 	private String workplaceId;
 	
-	private List<GeneralDate> lstDate;
+	private List<BigDecimal> lstDate;
 	
-	private WkpRequest(String workplaceId, List<GeneralDate> lstDate) {
+	private WkpRequest(String workplaceId, List<BigDecimal> lstDate) {
 		super();
 		this.workplaceId = workplaceId;
 		this.lstDate = lstDate;

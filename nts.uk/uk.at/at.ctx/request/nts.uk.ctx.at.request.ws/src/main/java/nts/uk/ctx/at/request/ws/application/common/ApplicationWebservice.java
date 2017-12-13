@@ -11,25 +11,25 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
+import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
+import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
+import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.CheckDisplayMessage;
 import nts.uk.ctx.at.request.app.find.application.common.GetAllDataAppPhaseFrame;
 import nts.uk.ctx.at.request.app.find.application.common.GetAllNameByAppID;
-import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
-import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
-import nts.uk.ctx.at.request.app.find.application.common.dto.RootData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
@@ -211,7 +211,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getdataapprovalroot")
-	public RootData getDataApprovalRoot(ObjApprovalRootInput objApprovalRootInput) {
+	public List<ApprovalRootOfSubjectRequestDto> getDataApprovalRoot(ObjApprovalRootInput objApprovalRootInput) {
 		return this.getDataApprovalRoot.getApprovalRootOfSubjectRequest(objApprovalRootInput);
 	}
 	

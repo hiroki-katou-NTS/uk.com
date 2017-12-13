@@ -119,10 +119,10 @@ public class Role extends AggregateRoot {
 		return true;
 	}
 
-	public Role(String roleId,RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
+	public Role(RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
 			RoleName name, ContractCode contractCode, RoleAtr assignAtr, String companyId) {
 		super();
-		this.roleId = roleId;
+		this.roleId = IdentifierUtil.randomUniqueId();
 		this.roleCode = roleCode;
 		this.roleType = roleType;
 		this.employeeReferenceRange = employeeReferenceRange;

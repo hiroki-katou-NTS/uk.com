@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeInDesignatedFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeSearchOutput;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.SearchEmpInput;
-import nts.uk.ctx.bs.employee.app.find.employee.mngdata.GetHeaderOfCPS001Finder;
+import nts.uk.ctx.bs.employee.app.find.employee.mngdata.EmployeeDataMngInfoFinder_ver1;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListQuery;
@@ -45,7 +45,7 @@ public class EmployeeWebService extends WebService {
 	private EmployeeInDesignatedFinder empInDesignatedFinder;
 	
 	@Inject
-	private GetHeaderOfCPS001Finder empFinder;
+	private EmployeeDataMngInfoFinder_ver1 empFinder;
 
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}/{baseDate}")

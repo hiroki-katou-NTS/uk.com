@@ -28,22 +28,7 @@ public class NewLayoutFinder {
 	private LayoutPersonInfoClsFinder clsFinder;
 
 	public NewLayoutDto getLayout() {
-		Optional<NewLayout> layout = repo.getLayout(true);
-		if (layout.isPresent()) {
-			NewLayout _layout = layout.get();
-			// get classifications
-
-			// Get list Classification Item by layoutID
-			List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
-
-			return NewLayoutDto.fromDomain(_layout, listItemCls);
-		} else {
-			return null;
-		}
-	}
-	
-	public NewLayoutDto getLayoutCanNull() {
-		Optional<NewLayout> layout = repo.getLayout(false);
+		Optional<NewLayout> layout = repo.getLayout();
 		if (layout.isPresent()) {
 			NewLayout _layout = layout.get();
 			// get classifications

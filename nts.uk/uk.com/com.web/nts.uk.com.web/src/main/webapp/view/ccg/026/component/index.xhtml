@@ -6,34 +6,7 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
     <ui:composition>
-        <!-- 
-
         <table id="permissionGrid"></table>
--->        
-        <table id="fixed-table">
-		    <colgroup>
-		        <col width="200px"/>
-		        <col width="100px"/>
-		        <col width="350px"/>
-		    </colgroup>
-		    <thead>
-               <tr> 
-                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_2')}</th>
-                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_3')}</th>
-                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_4')}</th>
-               </tr>
-		    </thead>
-		    <tbody data-bind = "foreach: listFunctionPermissions">
-		        <tr>
-		            <td><div data-bind = "text: displayName" style="display: inline-block; white-space: nowrap;"></div></td>
-		            <td style ="text-align: center;"><div data-bind="ntsCheckBox: {checked: availability, enable : !initialValue}"></div></td>
-		            <td><div data-bind = "text: description" style="display: inline-block; white-space: nowrap;"></div></td>
-		            
-		        </tr>
-		    </tbody>
-		</table>
-         
-        
     </ui:composition>
 </body>
 </html>

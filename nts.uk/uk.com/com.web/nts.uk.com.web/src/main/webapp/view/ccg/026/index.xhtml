@@ -10,8 +10,8 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/sample/catalog/catalog.css" />
 			<com:scriptfile path="/view/sample/catalog/catalog.js" />
-			<com:scriptfile path="ccg026.start.js" />
-
+			<com:scriptfile path="ccg026.a.start.js" />
+			
 			<com:stylefile path="component/component.css" />
 			<com:scriptfile path="component/component.service.js" />
 			<com:scriptfile path="component/component.vm.js" />
@@ -22,53 +22,39 @@
 				<div id="content" class="cf">
 					<h2>CCG026 Testing page</h2>
 					<div data-bind="with: componentViewmodel">
-					   <div data-bind="with: parameterInput">
-						   <h3>roleId: <span data-bind="text: ko.toJSON(roleId)"/>, classification: <span data-bind="text: ko.toJSON(classification)"/>, //workplace, maxRow: <span data-bind="text: ko.toJSON(maxRow)"/></h3><br/>
-						    
-						   <table>
-							   <tr>
-								   <td><b>Role Id</b></td>
-								   <td>
-									   <input class="nts-input" id="inpRoleId" 
-				                                        data-bind="ntsTextEditor:{
-				                                            value: roleId,
-				                                            required: true,
-				                                            enable: true}" />
-			                       </td>
-							   </tr>
-						   </table>
+					   <div data-bind="with: setting">
+					   <h3>roleId: <span data-bind="text: ko.toJSON(roleId)"/>, classification: <span data-bind="text: ko.toJSON(classification)"/>, //workplace, maxRow: <span data-bind="text: ko.toJSON(maxRow)"/></h3><br/>
+					    
+					   <table>
+						   <tr>
+							   <td><b>Role Id</b></td>
+							   <td>
+								   <input class="nts-input" id="inpRoleId" 
+			                                        data-bind="ntsTextEditor:{
+			                                            value: roleId,
+			                                            required: true,
+			                                            enable: true}" />
+		                       </td>
+						   </tr>
+						   <tr>
+                               <td><b>Classification</b></td>
+                               <td>
+                                   <input class="nts-input" id="inpClassification" 
+                                                    data-bind="ntsTextEditor:{
+                                                        value: classification,
+                                                        required: true,
+                                                        enable: true}" />
+                               </td>
+                           </tr>
+					   </table>
                        </div>
-   						<ui:include src="component/index.xhtml" />
-					
-						<div>
-						<b>Count:</b> <span data-bind="text: ko.toJSON(listFunctionPermissions.filter(item => item.availability).length)"></span></div>
-        
-                    <b>Result:</b>
-			        <table id="fixed-table">
-			            <colgroup>
-			                <col width="200px"/>
-			                <col width="100px"/>
-			                <col width="350px"/>
-			            </colgroup>
-			            <thead>
-			               <tr> 
-			                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_2')}</th>
-			                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_3')}</th>
-			                   <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CCG026_4')}</th>
-			               </tr>
-			            </thead>
-			            <tbody data-bind = "foreach: listFunctionPermissions">
-			                <tr>
-			                    <td><div data-bind = "text: displayName" style="display: inline-block; white-space: nowrap;"></div></td>
-			                    <td style ="text-align: center;"><div data-bind="ntsCheckBox: {checked: availability, enable : false}"></div></td>
-			                    <td><div data-bind = "text: description" style="display: inline-block; white-space: nowrap;"></div></td>
-			                    
-			                </tr>
-			            </tbody>
-			        </table>
 
-
-
+						<div id="pannel-top" data-bind="ntsPanel:{width: '400px', height: '200px', direction: '', showIcon: true, visible: true}">
+							<ui:include src="component/index.xhtml" />
+						</div>
+						<!-- 
+						<div><b>Selected count:</b> <span data-bind="text: ko.toJSON(currentCode)"></span></div>
+						 -->
 					</div>
 <!-- 					
 					<article class="cf">

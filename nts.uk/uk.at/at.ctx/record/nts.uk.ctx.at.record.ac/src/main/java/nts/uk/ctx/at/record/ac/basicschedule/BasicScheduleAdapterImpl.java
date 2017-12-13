@@ -23,9 +23,6 @@ public class BasicScheduleAdapterImpl implements BasicScheduleAdapter {
 	@Override
 	public Optional<BasicScheduleSidDto> findAllBasicSchedule(String employeeId, GeneralDate baseDate) {
 		Optional<ScBasicScheduleExport> basicScheduleExport = this.scBasicSchedulePub.findById(employeeId, baseDate);
-		if(!basicScheduleExport.isPresent()) {
-			return Optional.empty();
-		}
 		List<WorkScheduleSidImport> workScheduleSidImports = new ArrayList<>();
 		basicScheduleExport.get().getWorkScheduleTimeZones().forEach(item -> {
 			WorkScheduleSidImport workScheduleSidImport = new WorkScheduleSidImport(item.getScheduleCnt(), item.getScheduleStartClock(), item.getScheduleEndClock(), item.getBounceAtr());
