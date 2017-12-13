@@ -258,13 +258,18 @@ module cps001.a.vm {
                             });
                             break;
                         case IT_CAT_TYPE.CONTINU:
-                            service.getHistData(query).done(data => {
+                            service.getHistData(query).done((data: Array<any>) => {
                                 let source: MultiData = _.first(list());
-                                source.data(data);
-                                if (source.id() == data[0].optionValue) {
-                                    source.id.valueHasMutated();
+                                if (data && data.length) {
+                                    source.data(data);
+                                    if (source.id() == data[0].optionValue) {
+                                        source.id.valueHasMutated();
+                                    } else {
+                                        source.id(data[0].optionValue);
+                                    }
                                 } else {
-                                    source.id(data[0].optionValue);
+                                    source.data([]);
+                                    source.id(undefined);
                                 }
                             });
                             break;
@@ -307,9 +312,9 @@ module cps001.a.vm {
                         employeeId: employee.employeeId(),
                         recordId: item.id()
                     };
+
                     service.removeCurrentCategoryData(query).done(x => {
                         category.categoryType.valueHasMutated();
-                        // show info 
                     });
                 };
             });
