@@ -1,5 +1,7 @@
 module nts.uk.com.view.cas013.a.viewmodel {
 
+    import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
+    
     export class ScreenModel {
         // Metadata
         isCreateMode: KnockoutObservable<boolean> = ko.observable(false);
@@ -69,12 +71,33 @@ module nts.uk.com.view.cas013.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            dfd.resolve();
-            new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
-                self.listRoleType(data);
-            });
+            
+            /**
+             *実行時情報をチェックする- check runtime
+             */
+            new service.Service().getCompanyIdOfLoginUser().done((companyId: any) => {
+                if (!companyId) {
+                    self.backToTopPage();
+                    dfd.resolve();
+                 } else {
+                     // initial screen
+                     dfd.resolve();
+                    new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
+                        self.listRoleType(data);
+                    });
+                 }
+             }).fail(error => {
+                 self.backToTopPage();
+                 dfd.resolve();
+             });
             return dfd.promise();
-
+        }
+        
+        /**
+         * back to top page - トップページに戻る
+         */
+        backToTopPage() {
+            nts.uk.ui.windows.sub.modeless("/view/ccg/008/a/index.xhtml");
         }
 
         private getRoles(roleType: string): void {
@@ -183,6 +206,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 }
             } else if (nts.uk.text.isNullOrEmpty(self.userName())) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_218" });
+            }else if (nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)){
+                $(".nts-input").trigger("validate");
             }
 
         }
