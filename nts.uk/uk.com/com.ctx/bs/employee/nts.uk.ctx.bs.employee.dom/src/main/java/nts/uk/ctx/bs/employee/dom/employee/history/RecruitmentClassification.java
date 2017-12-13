@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /** 採用区分 */
-@StringMaxLength(12)
+@StringMaxLength(36)
 public class RecruitmentClassification extends StringPrimitiveValue<RecruitmentClassification> {
 	/**
 	 * Default serial version
