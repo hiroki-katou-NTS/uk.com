@@ -5,7 +5,11 @@ module cps001.b.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
-    let __viewContext: any = window['__viewContext'] || {};
+
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
 
@@ -22,7 +26,7 @@ module cps001.b.vm {
                 service.getEmployeeInfo(dataShare.sid).done((data: IModelDto) => {
                     if (data) {
                         empDelete.code(data.code); // scd
-                        empDelete.reason(data.reason); // reason delete
+                        //empDelete.reason(data.reason); // reason delete
                     }
                 });
 
@@ -76,6 +80,12 @@ module cps001.b.vm {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         reason: KnockoutObservable<string> = ko.observable('');
+        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+            resizeable: true,
+            placeholder: "Placeholder for text editor",
+            width: "",
+            textalign: "left"
+        }));
 
         constructor(param: IModelDto) {
             let self = this;
