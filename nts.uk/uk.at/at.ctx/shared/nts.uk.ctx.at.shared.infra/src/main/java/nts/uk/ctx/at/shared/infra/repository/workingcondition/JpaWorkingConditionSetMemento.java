@@ -90,7 +90,7 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 
 		// Remove not save entities
 		this.entities = this.entities.stream()
-				.filter(item -> !histIds.contains(item.getKshmtWorkingCondPK().getHistoryId()))
+				.filter(item -> histIds.contains(item.getKshmtWorkingCondPK().getHistoryId()))
 				.collect(Collectors.toList());
 
 		List<String> entityHistIds = new ArrayList<>();
