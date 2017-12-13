@@ -542,20 +542,6 @@ module ccg013.a.viewmodel {
             });
         }
 
-        optionFDialog(): void {
-            var self = this;
-            var dataTranfer = self.listWebMenu();
-            setShared("CCG013F_JOB_TITLE", dataTranfer);
-            modal("/view/ccg/013/f/index.xhtml");
-        }
-
-        optionGDialog(): void {
-            var self = this;
-            var dataTranfer = self.listWebMenu();
-            setShared("CCG013G_WEB_MENU", dataTranfer);
-            modal("/view/ccg/013/g/index.xhtml");
-        }
-
         openKdialog(): any {
             var self = this;
             modal("/view/ccg/013/k/index.xhtml");
@@ -763,7 +749,7 @@ module ccg013.a.viewmodel {
         displayOrder: KnockoutObservable<number>;
         classification: KnockoutObservable<number>;
         system: KnockoutObservable<number>;
-        constructor(param: ITreeMenu) {
+        constructor(param: ITreeMenu) {  
             this.treeMenuId = ko.observable(randomId());
             this.titleMenuId = ko.observable(param.titleMenuId);
             this.code = ko.observable(param.code);
