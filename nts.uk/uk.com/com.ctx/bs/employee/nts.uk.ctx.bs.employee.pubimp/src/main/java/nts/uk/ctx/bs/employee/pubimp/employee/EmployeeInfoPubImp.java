@@ -45,22 +45,27 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 	@Inject
 	AffCompanyHistRepository affCompanyHistRepo;
+	
+	
 
 	@Override
-	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode,
-			GeneralDate entryDate) {
-		// TODO Auto-generated method stub
+	public List<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode) {
+		// Req No.125
 
-		Optional<Employee> domain = repo.findByEmployeeCode(companyId, employeeCode, entryDate);
+		List<EmployeeDataMngInfo> emps = empDataMngRepo.getListEmployeeByCidScd(companyId, employeeCode);
 
-		if (!domain.isPresent()) {
-			return Optional.empty();
+		if (emps.isEmpty()) {
+			return null;
 		} else {
-			Employee _domain = domain.get();
-			return Optional.of(new EmployeeInfoDtoExport(_domain.getCompanyId(), _domain.getSCd().v(), _domain.getSId(),
-					_domain.getPId(), ""));
-		}
-
+			
+		return	emps.stream().map(emp ->{
+			return new EmployeeInfoDtoExport(
+					emp.getCompanyId(), 
+					emp.getEmployeeCode() == null ? null : emp.getEmployeeCode().v(), 
+					emp.getEmployeeId(), 
+					emp.getPersonId(), "");
+		   }).collect(Collectors.toList());
+	   }
 	}
 
 	@Override
