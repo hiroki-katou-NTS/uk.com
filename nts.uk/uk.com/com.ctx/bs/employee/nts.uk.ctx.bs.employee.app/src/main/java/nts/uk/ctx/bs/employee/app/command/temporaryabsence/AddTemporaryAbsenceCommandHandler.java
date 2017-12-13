@@ -79,10 +79,10 @@ public class AddTemporaryAbsenceCommandHandler
 			spouseIsLeave = falseValue.compareTo(command.getSpouseIsLeave()) == 0 ? false : true;
 		}
 		
-		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getLeaveHolidayAtr().intValue(),
-				newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory()!= null? command.getSoInsPayCategory().intValue(): 0,
-				multiple, command.getFamilyMemberId(), sameFamily, command.getChildType() != null? command.getChildType().intValue(): 0,
-				command.getCreateDate(), spouseIsLeave, command.getSameFamilyDays()!= null? command.getSameFamilyDays().intValue(): 0);
+		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getTempAbsenceFrNo()!= null ? command.getTempAbsenceFrNo().intValue():0,
+				newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory()!= null? command.getSoInsPayCategory().intValue(): null,
+				multiple, command.getFamilyMemberId(), sameFamily, command.getChildType() != null? command.getChildType().intValue(): null,
+				command.getCreateDate(), spouseIsLeave, command.getSameFamilyDays()!= null? command.getSameFamilyDays().intValue(): null);
 		temporaryAbsenceRepository.add(temporaryAbsence);
 
 		return new PeregAddCommandResult(newHistID);

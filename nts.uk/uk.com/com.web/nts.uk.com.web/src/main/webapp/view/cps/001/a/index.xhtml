@@ -254,7 +254,7 @@
 											<td>
 												<div class="info">
 													<span data-bind="text: _emp.employeeCode"></span> <span
-														data-bind="text: _pers.fullName"></span>
+														data-bind="text:  _emp.employeeName"></span>
 												</div>
 											</td>
 										</tr>
@@ -268,15 +268,15 @@
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_14')}</td>
-											<td><span data-bind="text: _emp.workplaceCode"></span> <span
-												data-bind="text: _emp.workplaceName"></span></td>
+											<td><span data-bind="text: _emp.departmentCode"></span> <span
+												data-bind="text: _emp.departmentName"></span></td>
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_15')}</td>
 											<td>
-												<div class="info first" data-bind="text: ''"></div>
+												<div class="info first" data-bind="text: _emp.position"></div>
 												<div class="info bg-calendar-ym-set">#{i18n.getText('CPS001_16')}</div>
-												<div class="info" data-bind="text: ''"></div>
+												<div class="info" data-bind="text: _emp.contractType"></div>
 											</td>
 										</tr>
 									</tbody>
