@@ -3,8 +3,6 @@
  */
 package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event;
 
-import java.math.BigDecimal;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -33,8 +31,7 @@ public class WorkplaceEventCommandHandler extends CommandHandler<WorkplaceEventC
 	}
 
 	private void insertCommand(WorkplaceEventCommand command) {
-		if (this.workplaceEventRepository.findByPK(command.getWorkplaceId(), new BigDecimal(command.getDate()))
-				.isPresent()) {
+		if (this.workplaceEventRepository.findByPK(command.getWorkplaceId(), command.getDate()).isPresent()) {
 			this.workplaceEventRepository.updateEvent(toDomain(command));
 		} else {
 			this.workplaceEventRepository.addEvent(toDomain(command));
@@ -46,8 +43,7 @@ public class WorkplaceEventCommandHandler extends CommandHandler<WorkplaceEventC
 	}
 
 	private WorkplaceEvent toDomain(WorkplaceEventCommand command) {
-		return WorkplaceEvent.createFromJavaType(command.getWorkplaceId(), new BigDecimal(command.date),
-				command.eventName);
+		return WorkplaceEvent.createFromJavaType(command.getWorkplaceId(), command.date, command.eventName);
 	}
 
 }

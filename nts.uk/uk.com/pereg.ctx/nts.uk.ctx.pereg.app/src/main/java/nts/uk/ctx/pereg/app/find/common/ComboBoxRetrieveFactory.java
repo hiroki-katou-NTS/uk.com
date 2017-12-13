@@ -20,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
@@ -56,7 +57,7 @@ public class ComboBoxRetrieveFactory {
 		// 予定管理区分
 		aMap.put("E00005", NotUseAtr.class);
 		// 労働制
-		// aMap.put("E00006", WorkingSystem.class);
+		aMap.put("E00006", WorkingSystem.class);
 		// 勤務予定基本作成方法
 		aMap.put("E00007", WorkScheduleBasicCreMethod.class);
 		// 勤務予定作成マスタ参照区分
