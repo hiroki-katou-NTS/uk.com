@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
-
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -24,7 +22,6 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 /**
  * The Class JpaWorkingConditionItemSetMemento.
  */
-@Stateless
 public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSetMemento {
 
 	/** The entity. */
