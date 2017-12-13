@@ -26,11 +26,13 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :key, '%')))"
 			+ " AND c.specialUser = :specialUser "
 			+ " AND c.multiCompanyConcurrent = :multiCompanyConcurrent";
+	
+	private final String SELECT_BY_LOGIN_ID = SELECT_ALL_USER+" WHERE c.loginID=:loginID";
+	
 
 	@Override
-	public Optional<User> getByLoginId(String loginId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> getByLoginId(String loginID) {
+		return this.queryProxy().query(SELECT_BY_LOGIN_ID, SacmtUser.class).setParameter("loginID", loginID).getList(c->c.toDomain());
 	}
 
 	@Override
