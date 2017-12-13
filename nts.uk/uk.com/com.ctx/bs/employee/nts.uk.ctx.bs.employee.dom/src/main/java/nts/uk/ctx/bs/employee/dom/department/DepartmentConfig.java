@@ -26,7 +26,7 @@ public class DepartmentConfig extends AggregateRoot
 
 	/** The dep config history. */
 	// 履歴
-	private List<DepartmentConfigHistory> depConfigHistory;
+	private List<DepartmentConfigHistory> depConfigHistories;
 
 	/*
 	 * (non-Javadoc)
@@ -63,12 +63,14 @@ public class DepartmentConfig extends AggregateRoot
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.shr.com.history.History#items()
 	 */
 	@Override
 	public List<DepartmentConfigHistory> items() {
-		return this.depConfigHistory;
+		return this.depConfigHistories;
 	}
 
 }

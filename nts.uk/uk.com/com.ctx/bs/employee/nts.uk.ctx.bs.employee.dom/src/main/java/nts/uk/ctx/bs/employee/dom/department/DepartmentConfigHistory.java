@@ -18,7 +18,7 @@ public class DepartmentConfigHistory extends HistoryItem<DatePeriod, GeneralDate
 
 	/** The history id. */
 	// ID
-	private String historyId;
+	private String depConfigHistoryId;
 
 	/** The period. */
 	// 期間
@@ -41,7 +41,7 @@ public class DepartmentConfigHistory extends HistoryItem<DatePeriod, GeneralDate
 	 */
 	@Override
 	public String identifier() {
-		return this.historyId;
+		return this.depConfigHistoryId;
 	}
 
 	/*
