@@ -4,11 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
@@ -36,14 +31,9 @@ public class JpaFlexHAWorkTimeGetMemento implements FlexHalfDayWorkTimeGetMement
 	 * getLstRestTimezone()
 	 */
 	@Override
-	public List<FlowWorkRestTimezone> getLstRestTimezone() {
-		if (CollectionUtil.isEmpty(this.entitySetting.getEntityGroups())) {
-			return new ArrayList<>();
-		}
-
-		return this.entitySetting.getEntityGroups().stream()
-				.map(entity -> new FlowWorkRestTimezone(new JpaFlexHAFWRestTZGetMemento(entity)))
-				.collect(Collectors.toList());
+	public FlowWorkRestTimezone getRestTimezone() {
+		// TODO chua update entity & table design
+		return null;
 	}
 
 	/*
