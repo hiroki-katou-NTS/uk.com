@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 /**
  * 承認枠
@@ -13,7 +14,7 @@ import nts.arc.time.GeneralDate;
  */
 @AllArgsConstructor
 @Getter
-public class ApprovalFrame {
+public class ApprovalFrame extends DomainObject {
 	
 	private String companyID;
 	
@@ -26,7 +27,7 @@ public class ApprovalFrame {
 	private Integer frameOrder;
 	
 	@Setter
-	private ApprovalAtr approvalAtr;
+	private ApprovalBehaviorAtr approvalAtr;
 	
 	private Boolean confirmAtr;
 	

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 /**
  * 承認ルートインスタンス
@@ -12,7 +13,7 @@ import nts.arc.time.GeneralDate;
  */
 @AllArgsConstructor
 @Getter
-public class ApprovalRootState {
+public class ApprovalRootState extends AggregateRoot {
 	
 	private String companyID;
 	
