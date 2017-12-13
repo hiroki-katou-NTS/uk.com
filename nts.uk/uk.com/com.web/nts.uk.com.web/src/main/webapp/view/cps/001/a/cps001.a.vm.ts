@@ -6,6 +6,7 @@ module cps001.a.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
+    import hasError = nts.uk.ui.errors.hasError;
     import clearError = nts.uk.ui.errors.clearAll;
     import liveView = nts.uk.request.liveView;
     import permision = service.getCurrentEmpPermision;
@@ -294,6 +295,23 @@ module cps001.a.vm {
                         lt.listItemCls(data.classificationItems);
                     });
                 });
+
+                item.add = () => {
+                    item.id(undefined);
+                };
+
+                item.remove = () => {
+                    let query = {
+                        categoryId: category.id(),
+                        personId: person.personId(),
+                        employeeId: employee.employeeId(),
+                        recordId: item.id()
+                    };
+                    service.removeCurrentCategoryData(query).done(x => {
+                        category.categoryType.valueHasMutated();
+                        // show info 
+                    });
+                };
             });
 
             self.start();
@@ -400,6 +418,10 @@ module cps001.a.vm {
                     employeeId: emp.employeeId(),
                     inputs: inputs
                 };
+
+            if (hasError()) {
+                return;
+            }
 
             // push data layout to webservice
             block();
@@ -693,6 +715,11 @@ module cps001.a.vm {
 
     class MultiData {
         id: KnockoutObservable<string> = ko.observable(undefined);
+
+        add = () => { };
+        replace = () => { };
+        remove = () => { };
+
         data: KnockoutObservableArray<IMultiData> = ko.observableArray([]);
     }
 

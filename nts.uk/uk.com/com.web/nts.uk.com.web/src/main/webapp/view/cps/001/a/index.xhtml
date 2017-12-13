@@ -159,7 +159,8 @@
 								</div>
 							</div>
 							<div
-								data-bind="let: {multiple: _.first(multipleData())}, css: { 'hidden' : cat.categoryType() != catType.CONTI }">
+								data-bind="let: { multiple: _.first(multipleData()) }, 
+										   css: { 'hidden' : cat.categoryType() != catType.CONTI }">
 								<div
 									data-bind="template: { name: 'list-history', data: {
 										list: {
@@ -172,9 +173,9 @@
 											]
 										},
 										event: {
-											add: function() {},
+											add: multiple.add,
 											replication: function() {},
-											delete: function() {}
+											delete: multiple.remove
 										}
 									} }">
 								</div>
