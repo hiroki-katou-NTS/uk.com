@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 
 /** 勤務実績（日次）Finder */
 @Stateless
-public class DailyWorkRecordFinder implements FinderFacade {
+public class DailyWorkRecordFinder extends FinderFacade {
 
 	/**
 	 * Find 勤務実績（日次）
