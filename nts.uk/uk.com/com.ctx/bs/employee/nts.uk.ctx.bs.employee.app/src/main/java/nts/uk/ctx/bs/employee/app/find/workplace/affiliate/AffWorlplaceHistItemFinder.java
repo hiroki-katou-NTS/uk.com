@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -75,7 +76,8 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getAffWorkplaceHistByEmployeeId(query.getEmployeeId());
+		String companyId = AppContexts.user().companyId();
+		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getAffWorkplaceHistByEmployeeId(companyId, query.getEmployeeId());
 		if (affWrkplcHist.isPresent())
 			return affWrkplcHist.get().getHistoryItems().stream()
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
