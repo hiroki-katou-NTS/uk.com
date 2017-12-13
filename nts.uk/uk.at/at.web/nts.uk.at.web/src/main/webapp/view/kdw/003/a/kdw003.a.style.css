@@ -105,5 +105,31 @@
 .nts-legendbutton-panel {
 	z-index: 2 !IMPORTANT;
 }
+
+#tooltip {
+    display: none;
+    width: 120px;
+    cursor: pointer;
+    background-color:  #ffffdd;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1000;
+    left: 10px;
+    top: 5px;
+}
+
+#tooltip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #ffffdd transparent transparent;
+}
+
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */
