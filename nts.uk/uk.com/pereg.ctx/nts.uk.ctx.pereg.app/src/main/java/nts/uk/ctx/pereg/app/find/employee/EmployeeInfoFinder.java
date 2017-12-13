@@ -5,22 +5,23 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmployeeBusiness;
-import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeInfoFinder {
 
 	@Inject
-	private EmployeeRepository employeeRepository;
+	private EmployeeDataMngInfoRepository empDataRepo;
 
 	@Inject
 	private EmployeeBusiness employeeBusiness;
 
-//	@Inject
-//	private UserRepository userRepo;
+	@Inject
+	private UserRepository userRepo;
 
 	public String getGenerateEmplCodeAndComId(String startLetters) {
 		String ComId = AppContexts.user().companyId();
@@ -30,12 +31,12 @@ public class EmployeeInfoFinder {
 
 	public void validateEmpInfo(EmpInfoDto empInfo) {
 
-//		Boolean isDuplicateEmpCode = this.employeeRepository.isDuplicateEmpCode(AppContexts.user().companyId(),
-//				empInfo.getEmployeeCode());
-//
-//		if (isDuplicateEmpCode) {
-//			throw new BusinessException(new RawErrorMessage("Msg_345"));
-//		}
+		Boolean isDuplicateEmpCode = !CollectionUtil.isEmpty(this.empDataRepo
+				.getEmployeeNotDeleteInCompany(AppContexts.user().companyId(), empInfo.getEmployeeCode()));
+
+		if (isDuplicateEmpCode) {
+			throw new BusinessException(new RawErrorMessage("Msg_345"));
+		}
 		// Boolean isDuplicateCardNo =
 		// this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
 		// empInfo.getCardNo());
@@ -43,13 +44,13 @@ public class EmployeeInfoFinder {
 		// if (isDuplicateCardNo) {
 		// throw new BusinessException(new RawErrorMessage("Msg_346"));
 		// }
-//		Boolean isDuplicateLoginId = this.userRepo.getByLoginId(empInfo.getLoginId()).isPresent();
+		Boolean isDuplicateLoginId = !CollectionUtil.isEmpty(this.userRepo.getByLoginId(empInfo.getLoginId()));
 
-//		if (isDuplicateLoginId) {
-//
-//			throw new BusinessException(new RawErrorMessage("Msg_757"));
-//
-//		}
+		if (isDuplicateLoginId) {
+
+			throw new BusinessException(new RawErrorMessage("Msg_757"));
+
+		}
 
 	}
 }

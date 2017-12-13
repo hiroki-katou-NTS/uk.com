@@ -45,17 +45,15 @@ public class FacadePeregWebService extends WebService {
 	@Path("register")
 	public void register(PeregInputContainer inputContainer) {
 		
-		PeregInputContainer registerPeregInputContainer = null;
 		
 		List<ItemsByCategory> addInputs = inputContainer.getInputs().stream().filter(p->StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 		if (addInputs!= null && !addInputs.isEmpty()){
-			registerPeregInputContainer = new PeregInputContainer(inputContainer.getPersonId(), inputContainer.getEmployeeId(), addInputs);
-			this.commandFacade.add(registerPeregInputContainer);
+			this.commandFacade.add(inputContainer);
 		}
 		
 		List<ItemsByCategory> updateInputs = inputContainer.getInputs().stream().filter(p->!StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 		if (updateInputs!= null && !updateInputs.isEmpty()){
-			registerPeregInputContainer = new PeregInputContainer(inputContainer.getPersonId(), inputContainer.getEmployeeId(), updateInputs);
+			PeregInputContainer registerPeregInputContainer = new PeregInputContainer(inputContainer.getPersonId(), inputContainer.getEmployeeId(), updateInputs);
 			this.commandFacade.update(registerPeregInputContainer);
 		}
 	}

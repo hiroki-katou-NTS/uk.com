@@ -45,8 +45,13 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 						.setParameter("companyId", companyId).getSingleOrNull();
 			}
 		}
+		if (entity == null) {
+			return Optional.empty();
+		} else {
 
-		return Optional.of(toDomain(entity));
+			return Optional.of(toDomain(entity));
+		}
+
 	}
 
 	private NewLayout toDomain(PpemtNewLayout entity) {
