@@ -61,7 +61,7 @@
 									primaryKey: 'employeeId',
 									columns: [
 										{ headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
-			                			{ headerText: text('CPS001_9'), key: 'employeeCode', width: 115, hidden: false },
+			                			{ headerText: text('CPS001_10'), key: 'employeeCode', width: 115, hidden: false },
 			                			{ headerText: '', key: 'employeeName', width: 125, hidden: false }
 									],
 								}
@@ -103,7 +103,7 @@
 									primaryKey: 'id',
 									columns: [
 										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: text('CPS001_25'), key: 'name', width: 232, hidden: false }
+			                			{ headerText: text('CPS001_26'), key: 'name', width: 232, hidden: false }
 									],
 								} }">
 							</div>
@@ -131,8 +131,8 @@
 											value: ko.observable(''),
 											primaryKey: 'id',
 											columns: [
-												{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-					                			{ headerText: text('CPS001_25'), key: 'name', width: 232, hidden: false }
+												{ headerText: '', key: 'id', width: 100, hidden: true },
+					                			{ headerText: '', key: 'name', width: 232, hidden: false }
 											],
 										}
 									}">
@@ -314,29 +314,45 @@
 								dateFormat: 'YYYY/MM/DD'}"></div>
 								<button data-bind="click: layout.filterData.bind(layout)">#{i18n.getText('CPS001_37')}</button>
 							</div>
-							<div
-								data-bind="template: { 
-									name: 'simple-layout', 
-									data: {
-										items: layout.listItemCls,
-										outData: layout.outData
-								 	}
-								}"></div>
+							<div style="padding-top: 10px"
+								data-bind="ntsLayoutControl: { 
+								data: layout.listItemCls,
+								outData: layout.outData,
+								editAble: 2 }"></div>
 						</div>
 						<div class="category-input"
-							data-bind="let: { resource: titleResource() },
-									   css: { 'hidden': tabActive() != 'category'}">
-							<div class="title" data-bind="text: text(resource)"></div>
-							<div data-bind="css: {'hidden': cat.hasChilds() == true}" class="cat-no-childs">
+							data-bind="css: { 'hidden': tabActive() != 'category'}">
+							<div class="title" data-bind="text: titleResource"></div>
+							<div data-bind="css: {'hidden': cat.hasChilds() == true}"
+								class="cat-no-childs">
 								<div
-									data-bind="template: { 
-									name: 'simple-layout', 
-									data: {
-										items: layout.listItemCls
-								 	}
-								}"></div>
+									data-bind="css: { 'hidden' : cat.categoryType() != catType.SINGLE }">
+									<div data-bind="foreach: { data: layouts().filter(function(m){ return m.listItemCls().length != 0}), as: 'lay' }">
+										<div style="padding-top: 10px"
+											data-bind="ntsLayoutControl: { 
+											data: lay.listItemCls,
+											outData: lay.outData,
+											editAble: 2 }"></div>
+									</div>
+								</div>
+								<div
+									data-bind="css: { 'hidden' : cat.categoryType() != catType.MULTI }">
+									MULTI</div>
+								<div
+									data-bind="css: { 'hidden' : cat.categoryType() != catType.CONTI }">
+									CONTI</div>
+								<div
+									data-bind="css: { 'hidden' : cat.categoryType() != catType.NODUP }">
+									NODUP</div>
+								<div
+									data-bind="css: { 'hidden' : cat.categoryType() != catType.DUPLI }">
+									DUPLI</div>
+								<div
+									data-bind="css: { 'hidden' : cat.categoryType() != catType.CONTIWED }">
+									CONTIWED</div>
 							</div>
-							<div data-bind="css: {'hidden': cat.hasChilds() == false}" class="cat-has-childs">
+							<div data-bind="css: {'hidden': cat.hasChilds() == false}"
+								class="cat-has-childs">
 								<div
 									data-bind="template: { 
 									name: 'cat-with-child', 
@@ -445,7 +461,7 @@
 			</script>
 			<script type="text/html" id="simple-layout"
 				data-structor="{
-					items: listItemClassification,
+					items: listItemCls,
 					outData: outData
 				}">
 				<div style="padding-top: 10px"

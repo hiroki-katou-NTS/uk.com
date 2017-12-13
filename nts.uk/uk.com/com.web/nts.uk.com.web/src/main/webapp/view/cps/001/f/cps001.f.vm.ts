@@ -110,7 +110,7 @@ module cps001.f.vm {
                 }).fail(function(err) {
                     showDialog.alertError(err);
                 });
-                setShared('CPS001F_VALUE', {});
+                setShared('CPS001F_VALUES', {});
             }
         }
 
