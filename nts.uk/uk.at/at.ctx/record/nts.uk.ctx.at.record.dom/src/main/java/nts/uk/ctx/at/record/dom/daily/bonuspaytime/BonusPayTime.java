@@ -1,6 +1,7 @@
-package nts.uk.ctx.at.record.dom.daily;
+package nts.uk.ctx.at.record.dom.daily.bonuspaytime;
 
 import lombok.Value;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 
 /**
  * 加給時間

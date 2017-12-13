@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.dom.bonuspay.timeitem;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.TimeItemId;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.HTCalSettingAtr;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.OTCalSettingAtr;
 import nts.uk.ctx.at.record.dom.bonuspay.enums.TimeItemTypeAtr;
