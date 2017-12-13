@@ -4,6 +4,7 @@ module cps001.c.vm {
     import text = nts.uk.resource.getText;
     import clearError = nts.uk.ui.errors.clearAll;
     import showDialog = nts.uk.ui.dialog;
+    import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
 
     let __viewContext: any = window['__viewContext'] || {},
@@ -12,54 +13,59 @@ module cps001.c.vm {
         invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
-
-        listEmpDelete: KnockoutObservableArray<IEmployees> = ko.observableArray([]);
+        listEmployee: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
-        detail: KnockoutObservable<EmployeeInfo> = ko.observable(null);
+        
+        enaBtnRes : KnockoutObservable<boolean> = ko.observable(true);
+        enaBtnDel : KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this,
-                currentEmployee = self.currentEmployee(),
-                listEmpDelete = self.listEmpDelete(),
-                detail = self.detail();
+                emps = self.listEmployee(),
+                emp = self.currentEmployee();
 
-            self.start();
-
-            currentEmployee.code.subscribe(x => {
+            emp.id.subscribe(x => {
                 if (x) {
-                    let self = this;
-                    let emp: IEmployees = self.findByCode(x, self.listEmpDelete());
-                    service.getDetail(emp.id).done((data: IEmployeeInfo) => {
+                    let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
+
+                    service.getDetail(x).done((data: IEmployee) => {
                         if (data) {
-                            self.currentEmployee(new Employee(emp));
-                            self.detail(new EmployeeInfo(data));
+                            emp.id(iem.id);
+                            emp.code(iem.code);
+                            emp.name(iem.name);
+
+                            emp.reason(data.reason || '');
+                            emp.dateDelete(data.dateDelete || undefined);
                         }
                     });
                 }
             });
+
+            self.start();
         }
 
         start(sid?: string): JQueryPromise<any> {
             let self = this,
-                currentEmployee = self.currentEmployee(),
-                dfd = $.Deferred();
-            self.listEmpDelete.removeAll();
-            service.getData().done((data: Array<IEmployees>) => {
+                dfd = $.Deferred(),
+                emps = self.listEmployee,
+                emp = self.currentEmployee();
+
+            emps.removeAll();
+
+            service.getData().done((data: Array<IEmployee>) => {
                 if (data && data.length) {
-                    self.listEmpDelete(data);
+                    emps(data);
 
                     if (!sid) {
-                        self.currentEmployee(new Employee(data[0]));
-                        currentEmployee.code(data[0].code);
+                        emp.id(data[0].id);
                     } else {
-                        debugger;
-                        let _item: IEmployees = _.find(ko.toJS(self.listEmpDelete()), function(item: IEmployees) { return item.id == sid; });
+
+                        let _item: IEmployee = _.find(ko.toJS(self.listEmployee), (item: IEmployee) => item.id == sid);
+
                         if (_item) {
-                            self.currentEmployee(new Employee(_item));
-                            currentEmployee.code(_item.code);
+                            emp.id(_item.id);
                         } else {
-                            self.currentEmployee(new Employee(data[0]));
-                            currentEmployee.code(data[0].code);
+                            emp.id(data[0].id);
                         }
                     }
                 } else {
@@ -73,14 +79,18 @@ module cps001.c.vm {
 
         reStoreData() {
             let self = this,
-                currentItem: IEmployees = ko.toJS(self.currentEmployee()),
-                listItem: Array<IEmployees> = ko.toJS(self.listEmpDelete()),
-                detail: IEmployeeInfo = ko.toJS(self.detail());
+                emp: IEmployee = ko.toJS(self.currentEmployee),
+                listItem: Array<IEmployee> = ko.toJS(self.listEmployee);
 
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_528" }).ifYes(() => {
-                let itemListLength = self.listEmpDelete().length;
-                let indexItemDelete = _.findIndex(ko.toJS(self.listEmpDelete), function(item: any) { return item.id == currentItem.id; });
-                let objToRestore = { id: currentItem.id, code: currentItem.code, newCode: detail.newCode, newName: detail.newName };
+            confirm({ messageId: "Msg_528" }).ifYes(() => {
+                let itemListLength = self.listEmployee().length,
+                    indexItemDelete = _.findIndex(ko.toJS(self.listEmployee), function(item: any) { return item.id == emp.id; }),
+                    objToRestore = {
+                        id: emp.id,
+                        code: emp.code,
+                        name: emp.name
+                    };
+
                 service.restoreData(objToRestore).done(() => {
                     if (itemListLength === 1) {
                         self.start();
@@ -100,16 +110,24 @@ module cps001.c.vm {
 
         deleteData() {
             let self = this,
-                currentItem: IEmployees = ko.toJS(self.currentEmployee()),
-                listItem: Array<IEmployees> = ko.toJS(self.listEmpDelete()),
-                detail: IEmployeeInfo = ko.toJS(self.detail());
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                let sid = currentItem.id;
+                emp: IEmployee = ko.toJS(self.currentEmployee()),
+                listItem: Array<IEmployee> = ko.toJS(self.listEmployee());
+
+            confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let sid = emp.id;
                 service.removedata(sid).done(() => {
                     showDialog.info({ messageId: "Msg_464" }).then(function() {
-                        self.start(sid).done(() => {
-
-                        });
+                        let itemListLength = self.listEmployee().length,
+                            indexItemDelete = _.findIndex(ko.toJS(self.listEmployee), function(item: any) { return item.id == emp.id; });
+                        if (itemListLength === 1) {
+                            self.start();
+                        } else if (itemListLength - 1 === indexItemDelete) {
+                            self.start(listItem[indexItemDelete - 1].id).done(() => {
+                            });
+                        } else if (itemListLength - 1 > indexItemDelete) {
+                            self.start(listItem[indexItemDelete + 1].id).done(() => {
+                            });
+                        }
                     });
 
 
@@ -117,7 +135,6 @@ module cps001.c.vm {
             }).ifCancel(() => {
 
             });
-
         }
 
         closeUp() {
@@ -125,76 +142,47 @@ module cps001.c.vm {
         }
 
         newMode() {
-            let self = this,
-                listItem: Array<IEmployees> = self.listEmpDelete(),
-                detail: EmployeeInfo = self.detail();
-            debugger;
-            detail.newCode('');
-            detail.newName('');
-        }
-
-        private findByCode(code: string, sources: any) {
-            let self = this;
-            if (!sources || !sources.length) {
-                return undefined;
-            }
-            let listEmp = ko.toJS(sources);
-            return _.find(listEmp, function(item: IEmployees) { return item.code == code; });
-        }
-
-        private findByIndex(code: string, sources: any) {
-            let self = this;
-            if (!sources || !sources.length) {
-                return undefined;
-            }
-
-            let indexOfItemSelected = _.findIndex(ko.toJS(sources), function(item: IEmployees) { return item.code == code; });
-
+           let self = this,
+                emps = self.listEmployee(),
+                emp = self.currentEmployee();
+            
+            emp.enableCode(false);
+            emp.enableName(false);
+            emp.code('');
+            emp.name('');
+            emp.reason('');
+            emp.dateDelete('');
+            self.enaBtnRes(false);
+            self.enaBtnDel(false);
         }
     }
 
-    interface IEmployees {
+    interface IEmployee {
+        id: string;
         code: string;
         name: string;
-        id: string;
+        reason?: string;
+        dateDelete?: string;
     }
 
     class Employee {
         id: KnockoutObservable<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
+        enableCode: KnockoutObservable<boolean> = ko.observable(true);
+        enableName: KnockoutObservable<boolean> = ko.observable(true);
 
-        constructor(param?: IEmployees) {
+        reason: KnockoutObservable<string> = ko.observable('');
+        dateDelete: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param?: IEmployee) {
             let self = this;
             if (param) {
+                self.id(param.id || '');
+
                 self.code(param.code || '');
                 self.name(param.name || '');
-                self.id(param.id || '');
             }
         }
     }
-
-    interface IEmployeeInfo {
-        datedelete: string;
-        reason: string;
-        newCode: string;
-        newName: string;
-    }
-
-    class EmployeeInfo {
-        datedelete: KnockoutObservable<string> = ko.observable('');
-        reason: KnockoutObservable<string> = ko.observable('');
-        newCode: KnockoutObservable<string> = ko.observable('');
-        newName: KnockoutObservable<string> = ko.observable('');
-
-        constructor(param: IEmployeeInfo) {
-            let self = this;
-
-            self.datedelete(param.datedelete || '');
-            self.reason(param.reason || '');
-            self.newCode(param.newCode || '');
-            self.newName(param.newName || '');
-        }
-    }
-
 }

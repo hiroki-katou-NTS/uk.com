@@ -1778,6 +1778,17 @@ var nts;
             }
             time_1.formatYearMonth = formatYearMonth;
             /**
+            * Format MonthDay
+            * @param  {any} [monthDay]  Input MonthDay
+            * @return {string}          Formatted MonthDay
+            */
+            function formatMonthDayLocalized(monthDay) {
+                monthDay = String(monthDay);
+                monthDay = uk.text.padLeft(monthDay, '0', 4);
+                return moment.utc(monthDay, "MMDD").format("MMMDo");
+            }
+            time_1.formatMonthDayLocalized = formatMonthDayLocalized;
+            /**
             * Format by pattern
             * @param  {Date}   [date]		 Input date
             * @param  {String} [inputFormat]  Input format
@@ -6275,6 +6286,29 @@ var nts;
                                 var $row = $("<tr></tr>");
                                 $row.click(function () {
                                     error.$control[0].focus();
+                                    var $dialogContainer = $dialog.closest("[role='dialog']");
+                                    var $self = nts.uk.ui.windows.getSelf();
+                                    var additonalTop = 0;
+                                    var additonalLeft = 0;
+                                    if (!$self.isRoot) {
+                                        var $currentDialog = $self.$dialog.closest("[role='dialog']");
+                                        var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                                        var currentDialogOffset = $currentDialog.offset();
+                                        additonalTop = currentDialogOffset.top + $currentHeadBar.height();
+                                        additonalLeft = currentDialogOffset.left;
+                                    }
+                                    var currentControlOffset = error.$control.offset();
+                                    var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - window.scrollY;
+                                    var left = additonalLeft + currentControlOffset.left - window.scrollX;
+                                    var $errorDialogOffset = $dialogContainer.offset();
+                                    var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                                    var maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                                    if ($errorDialogOffset.top < top && top < maxTop) {
+                                        $dialogContainer.css("top", top + 15);
+                                    }
+                                    if (($errorDialogOffset.left < left && left < maxLeft)) {
+                                        $dialogContainer.css("left", left);
+                                    }
                                 });
                                 $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
                                 headers.forEach(function (header) {
@@ -6309,10 +6343,13 @@ var nts;
                                 }
                                 $dialog.dialog("option", "height", maxrowsHeight);
                             });
+                            //                if($dialog.dialog("isOpen")){
                             $dialog.dialog("open");
+                            //                } else {
+                            $dialog.closest("[role='dialog']").show();
                         }
                         else {
-                            $dialog.dialog("close");
+                            $dialog.closest("[role='dialog']").hide();
                         }
                     };
                     return NtsErrorDialogBindingHandler;
@@ -6345,7 +6382,7 @@ var nts;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
-                        var immediate = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+                        var immediate = false;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var valueUpdate = (immediate === true) ? 'input' : 'change';
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
@@ -6487,23 +6524,11 @@ var nts;
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
-                                //                    $input.data("inputting", true);
-                                var hasError = $input.data("hasError");
                                 $input.ntsError('clear');
                                 if (!result.isValid) {
                                     $input.ntsError('set', result.errorMessage, result.errorCode);
                                 }
-                                if (hasError && $input.data("hasError") && !$input.is(":focus")) {
-                                    setTimeout(function () {
-                                        setTimeout(function () { return $input.focus(); }, 100);
-                                    }, 1);
-                                }
                             }
-                            //                setTimeout(function(){
-                            //                    $input.val(newText);
-                            //                    $input.focus(); 
-                            //                    $input.data("inputting", false);
-                            //                }, 10);
                         });
                         // Format on blur
                         $input.blur(function () {
@@ -6519,7 +6544,6 @@ var nts;
                         });
                         $input.on("change", function (e) {
                             if (!$input.attr('readonly')) {
-                                //                    if (!$input.data("inputting")) {
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
@@ -11545,13 +11569,18 @@ var nts;
                             }
                             var $container = $("<div class='nts-fixed-table cf'/>");
                             $originTable.after($container);
-                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").css({ "max-width": viewWidth });
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid nts-fixed-header'/>").css({ "max-width": viewWidth });
                             var $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(width);
                             var $headerTable = $("<table class='fixed-table'></table>");
                             $headerTable.append($colgroup.clone()).append($thead);
                             $headerTable.appendTo($headerWrapper);
                             $headerContainer.append($headerWrapper);
-                            $headerContainer.appendTo($container);
+                            var $header = $("<div>");
+                            $headerContainer.appendTo($header);
+                            $header.appendTo($container);
+                            $header.height($headerContainer.height());
+                            var $headerScroll = $("<div>", { "class": "scroll-header nts-fixed-header", width: 16, height: $headerWrapper.outerHeight() });
+                            $headerScroll.appendTo($header);
                             $originTable.addClass("nts-fixed-body-table");
                             var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
                             var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
@@ -11561,29 +11590,27 @@ var nts;
                                 bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
                             }
                             var resizeEvent = function () {
+                                $header.height($headerContainer.height());
                                 if (bodyHeight < $originTable.height()) {
                                     if (/Edge/.test(navigator.userAgent)) {
+                                        $headerScroll.width(11);
                                         $bodyContainer.css("padding-right", "12px");
                                     }
                                     else {
+                                        $headerScroll.width(16);
                                         $bodyContainer.css("padding-right", "17px");
                                     }
+                                    $headerScroll.css({ "border-right": "1px #CCC solid", "border-top": "1px #CCC solid", "border-bottom": "1px #CCC solid" });
                                 }
                                 else {
+                                    $headerScroll.width(0);
+                                    $headerScroll.css({ "border-right": "0px", "border-top": "0px", "border-bottom": "0px" });
                                     $bodyContainer.css("padding-right", "0px");
                                 }
                                 setTimeout(resizeEvent, 20);
                             };
                             $bodyContainer.scroll(function (evt, ui) {
-                                var bodyScroll = $bodyContainer.scrollLeft();
-                                if (bodyScroll > 0) {
-                                    bodyScroll = bodyScroll + 1.5;
-                                    $headerContainer.css({ "border-left": "1px solid #CCC" });
-                                }
-                                else {
-                                    $headerContainer.css({ "border-left": "0px solid #CCC" });
-                                }
-                                $headerContainer.scrollLeft(bodyScroll);
+                                $headerContainer.scrollLeft($bodyContainer.scrollLeft());
                             });
                             $bodyWrapper.width(width).height(bodyHeight);
                             $bodyWrapper.append($originTable);
@@ -11957,7 +11984,7 @@ var nts;
                         $fileuploadContainer.append($fileNameLabel);
                         $fileuploadContainer.append($fileInput);
                         $fileuploadContainer.appendTo(container);
-                        $fileBrowserButton.click(function () {
+                        $fileBrowserButton.attr("tabindex", -1).click(function () {
                             $fileInput.click();
                         });
                         $fileInput.change(function () {
@@ -12668,6 +12695,8 @@ var nts;
                                 var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
                                 isEnable = isEnable !== undefined ? isEnable : controlDef.enable === undefined ? true : controlDef.enable;
                                 var data = {
+                                    rowId: rowId,
+                                    columnKey: column.key,
                                     controlDef: controlDef,
                                     update: update,
                                     deleteRow: deleteRow,
@@ -13785,6 +13814,7 @@ var nts;
                         ntsControls.DELETE_BUTTON = 'DeleteButton';
                         ntsControls.TEXTBOX = 'TextBox';
                         ntsControls.TEXT_EDITOR = 'TextEditor';
+                        ntsControls.FLEX_IMAGE = 'FlexImage';
                         ntsControls.IMAGE = 'Image';
                         ntsControls.HEIGHT_CONTROL = "27px";
                         ntsControls.COMBO_CLASS = "nts-combo-container";
@@ -13807,6 +13837,8 @@ var nts;
                                     return new TextEditor();
                                 case ntsControls.LINK_LABEL:
                                     return new LinkLabel();
+                                case ntsControls.FLEX_IMAGE:
+                                    return new FlexImage();
                                 case ntsControls.IMAGE:
                                     return new Image();
                             }
@@ -14385,7 +14417,8 @@ var nts;
                             LinkLabel.prototype.draw = function (data) {
                                 return $('<div/>').addClass(this.containerClass()).append($("<a/>")
                                     .addClass("link-button").css({ backgroundColor: "inherit", color: "deepskyblue" })
-                                    .text(data.initValue).on("click", data.controlDef.click)).data("click", data.controlDef.click);
+                                    .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey)))
+                                    .data("click", data.controlDef.click);
                             };
                             LinkLabel.prototype.enable = function ($container) {
                                 var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
@@ -14396,6 +14429,35 @@ var nts;
                                 $wrapper.find("a").css("color", "#AAA").off("click");
                             };
                             return LinkLabel;
+                        }(NtsControlBase));
+                        var FlexImage = (function (_super) {
+                            __extends(FlexImage, _super);
+                            function FlexImage() {
+                                _super.apply(this, arguments);
+                            }
+                            FlexImage.prototype.containerClass = function () {
+                                return "nts-fleximage-container";
+                            };
+                            FlexImage.prototype.draw = function (data) {
+                                var $container = $("<div/>").addClass(this.containerClass());
+                                if (uk.util.isNullOrUndefined(data.initValue) || _.isEmpty(data.initValue))
+                                    return $container;
+                                var $image = $("<span/>").addClass(data.controlDef.source);
+                                if (data.controlDef.click && _.isFunction(data.controlDef.click)) {
+                                    $container.on(events.Handler.CLICK, $.proxy(data.controlDef.click, null, data.columnKey, data.rowId))
+                                        .css({ cursor: "pointer" }).data(events.Handler.CLICK, data.controlDef.click);
+                                }
+                                return $container.append($image);
+                            };
+                            FlexImage.prototype.enable = function ($container) {
+                                var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
+                                $wrapper.on(events.Handler.CLICK, $wrapper.data(events.Handler.CLICK));
+                            };
+                            FlexImage.prototype.disable = function ($container) {
+                                var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
+                                $wrapper.off(events.Handler.CLICK);
+                            };
+                            return FlexImage;
                         }(NtsControlBase));
                         var Image = (function (_super) {
                             __extends(Image, _super);
@@ -14479,7 +14541,7 @@ var nts;
                             var nextColumn = utils.nextColumnByKey(visibleColumnsMap, columnKey, isFixedColumn);
                             if (uk.util.isNullOrUndefined(nextColumn) || nextColumn.index === 0)
                                 return;
-                            specialColumn.onChange(pastedText).done(function (res) {
+                            specialColumn.onChange(columnKey, cell.id, pastedText).done(function (res) {
                                 var updatedRow = {};
                                 var $gridRow = utils.rowAt(cell);
                                 if (specialColumn.type === specialColumn_1.COMBO_CODE) {
@@ -14511,7 +14573,7 @@ var nts;
                             return true;
                         }
                         specialColumn_1.tryDo = tryDo;
-                        function identity(value) {
+                        function identity(key, id, value) {
                             var dfd = $.Deferred();
                             dfd.resolve(value);
                             return dfd.promise();
@@ -16266,6 +16328,7 @@ var nts;
                                 case ntsControls.CHECKBOX:
                                 case ntsControls.LINK_LABEL:
                                 case ntsControls.COMBOBOX:
+                                case ntsControls.FLEX_IMAGE:
                                 case ntsControls.IMAGE:
                                     return false;
                             }
@@ -16292,6 +16355,7 @@ var nts;
                                 case ntsControls.COMBOBOX:
                                 case ntsControls.BUTTON:
                                 case ntsControls.DELETE_BUTTON:
+                                case ntsControls.FLEX_IMAGE:
                                 case ntsControls.IMAGE:
                                 case ntsControls.TEXT_EDITOR:
                                     return true;
@@ -16676,6 +16740,7 @@ var nts;
                         var column = (data.column !== undefined) ? ko.unwrap(data.column) : 1;
                         var contextMenu = (data.contextMenu !== undefined) ? ko.unwrap(data.contextMenu) : [];
                         var disableMenuOnDataNotSet = (data.disableMenuOnDataNotSet !== undefined) ? ko.unwrap(data.disableMenuOnDataNotSet) : [];
+                        var selectedCell = ko.unwrap(data.selectedCell);
                         var width = (data.width !== undefined) ? ko.unwrap(data.width) : 400;
                         var clickAction = data.click;
                         var selectedCells = ko.unwrap(data.selectedCells);
@@ -16689,6 +16754,16 @@ var nts;
                             disableMenuOnDataNotSet: disableMenuOnDataNotSet,
                             contextMenu: contextMenu
                         });
+                        $(element).bind("cellselectedchanging", function (evt, value) {
+                            if (!nts.uk.util.isNullOrUndefined(data.selectedCell)) {
+                                data.selectedCell(value);
+                            }
+                        });
+                        $(element).bind("sourcechanging", function (evt, value) {
+                            if (!nts.uk.util.isNullOrUndefined(data.source)) {
+                                data.source(value.source);
+                            }
+                        });
                     };
                     /**
                      * Update
@@ -16698,7 +16773,7 @@ var nts;
                         var source = ko.unwrap(data.source);
                         var row = (data.row !== undefined) ? ko.unwrap(data.row) : 1;
                         var column = (data.column !== undefined) ? ko.unwrap(data.column) : 1;
-                        var selectedCells = (data.selectedCells !== undefined) ? ko.unwrap(data.selectedCells) : [];
+                        var selectedCell = ko.unwrap(data.selectedCell);
                         var container = $(element);
                         var oldSource = container.ntsButtonTable("dataSource");
                         if (!_.isEqual(oldSource, source)) {
@@ -16706,6 +16781,10 @@ var nts;
                         }
                         container.ntsButtonTable("row", row);
                         container.ntsButtonTable("column", column);
+                        if (!nts.uk.util.isNullOrUndefined(selectedCell) && !nts.uk.util.isNullOrUndefined(selectedCell.column)
+                            && !nts.uk.util.isNullOrUndefined(selectedCell.row)) {
+                            container.ntsButtonTable("setSelectedCell", selectedCell.row, selectedCell.column);
+                        }
                     };
                     return NtsTableButtonBindingHandler;
                 }());
@@ -17245,9 +17324,9 @@ var nts;
                             }
                             case "cellAt": {
                                 builder = $element.data("builder");
-                                var tbody = this.container.find("tbody");
-                                var rowAt = tbody.find("tr:nth-child(" + option + ")");
-                                var cellAt = tbody.find("td:nth-child(" + option2 + ")");
+                                var tbody = builder.container.find("tbody");
+                                var rowAt = tbody.find("tr:nth-child(" + (option + 1) + ")");
+                                var cellAt = rowAt.find("td:nth-child(" + (option2 + 1) + ")");
                                 return {
                                     element: cellAt,
                                     data: cellAt.data("cell-data"),
@@ -17257,19 +17336,20 @@ var nts;
                             }
                             case "setCellValue": {
                                 builder = $element.data("builder");
-                                var tbody = this.container.find("tbody");
-                                var rowAt = tbody.find("tr:nth-child(" + option + ")");
-                                var cellAt = tbody.find("td:nth-child(" + option2 + ")");
+                                var tbody = builder.container.find("tbody");
+                                var rowAt = tbody.find("tr:nth-child(" + (option + 1) + ")");
+                                var cellAt = rowAt.find("td:nth-child(" + (option2 + 1) + ")");
                                 builder.setCellValue(cellAt.find("button"), option3);
+                                break;
                             }
                             case "getSelectedCells": {
                                 builder = $element.data("builder");
-                                var selectedButton = builder.find(".ntsButtonCellSelected");
+                                var selectedButton = builder.container.find(".ntsButtonCellSelected");
                                 return _.map(selectedButton, function (c) {
                                     var button = $(c);
                                     var cell = button.parent();
-                                    var rowIdx = parseInt(cell.parent().attr("data-idx"));
-                                    var columnIdx = parseInt(cell.parent().attr("column-idx"));
+                                    var rowIdx = parseInt(cell.attr("row-idx"));
+                                    var columnIdx = parseInt(cell.attr("column-idx"));
                                     return {
                                         element: cell,
                                         data: cell.data("cell-data"),
@@ -17280,37 +17360,34 @@ var nts;
                             }
                             case "setSelectedCell": {
                                 builder = $element.data("builder");
-                                var tbody = this.container.find("tbody");
-                                var rowAt = tbody.find("tr:nth-child(" + option + ")");
-                                var cellAt = tbody.find("td:nth-child(" + option2 + ")");
-                                if (!cellAt.hasClass("ntsButtonCellSelected")) {
-                                    cellAt.addClass("ntsButtonCellSelected");
-                                }
+                                var tbody = builder.container.find("tbody");
+                                var rowAt = tbody.find("tr:nth-child(" + (option + 1) + ")");
+                                var cellAt = rowAt.find("td:nth-child(" + (option2 + 1) + ")");
+                                cellAt.find("button").trigger("cellselecting");
                                 break;
                             }
                             case "clearSelectedCellAt": {
                                 builder = $element.data("builder");
-                                var tbody = this.container.find("tbody");
-                                var rowAt = tbody.find("tr:nth-child(" + option + ")");
-                                var cellAt = tbody.find("td:nth-child(" + option2 + ")");
-                                if (cellAt.hasClass("ntsButtonCellSelected")) {
-                                    cellAt.removeClass("ntsButtonCellSelected");
-                                }
+                                var tbody = builder.container.find("tbody");
+                                var rowAt = tbody.find("tr:nth-child(" + (option + 1) + ")");
+                                var cellAt = rowAt.find("td:nth-child(" + (option2 + 1) + ")");
+                                cellAt.find("button").trigger("cellselecting");
                                 break;
                             }
                             case "clearAllSelectedCells": {
                                 builder = $element.data("builder");
-                                this.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
+                                this.container.find(".ntsButtonCellSelected").trigger("cellselecting");
+                                ;
                                 break;
                             }
                             case "getDataCells": {
                                 builder = $element.data("builder");
-                                var dataButton = builder.find(".ntsButtonCellData");
+                                var dataButton = builder.container.find(".ntsButtonCellData");
                                 return _.map(dataButton, function (c) {
                                     var button = $(c);
                                     var cell = button.parent();
-                                    var rowIdx = parseInt(cell.parent().attr("data-idx"));
-                                    var columnIdx = parseInt(cell.parent().attr("column-idx"));
+                                    var rowIdx = parseInt(cell.attr("row-idx"));
+                                    var columnIdx = parseInt(cell.attr("column-idx"));
                                     return {
                                         element: cell,
                                         data: cell.data("cell-data"),
@@ -17354,8 +17431,8 @@ var nts;
                             var self = this;
                             var menu = _.map(contextMenu, function (m) {
                                 var action = function () {
-                                    m.action().done(function (result) {
-                                        var element = self.container.data("context-opening");
+                                    var element = self.container.data("context-opening");
+                                    m.action(element).done(function (result) {
                                         element.trigger("contextmenufinished", result);
                                     });
                                 };
@@ -17389,13 +17466,13 @@ var nts;
                             var row = $("<tr>", { "class": "ntsRow ntsButtonTableRow", id: id, attr: { "data-idx": dataIdx, "data-id": id } });
                             for (var i = 0; i < this.column; i++) {
                                 var idx = dataIdx * this.column + i;
-                                this.buildCell(row, idx, id + "-cell-" + idx, isNull(rowData) || isNull(rowData[i]) ? {} : rowData[i], i);
+                                this.buildCell(row, dataIdx, idx, id + "-cell-" + idx, isNull(rowData) || isNull(rowData[i]) ? {} : rowData[i], i);
                             }
                             row.appendTo(container);
                         };
-                        TableBuildingConstructor.prototype.buildCell = function (container, dataIdx, id, data, columnIdx) {
+                        TableBuildingConstructor.prototype.buildCell = function (container, rowIdx, dataIdx, id, data, columnIdx) {
                             var self = this;
-                            var cell = $("<td>", { "class": "ntsCell ntsButtonTableCell", id: id, attr: { "data-idx": dataIdx, "data-id": id, "column-idx": columnIdx } });
+                            var cell = $("<td>", { "class": "ntsCell ntsButtonTableCell", id: id, attr: { "row-idx": rowIdx, "data-idx": dataIdx, "data-id": id, "column-idx": columnIdx } });
                             var contextClass = "menu" + this.id;
                             var button = $("<button>", { "class": "ntsButtonCell ntsButtonTableButton " + contextClass, attr: { "data-idx": dataIdx, "data-id": id } });
                             button.text(isEmpty(data.text) ? "+" : data.text);
@@ -17404,6 +17481,7 @@ var nts;
                                 button.addClass("ntsButtonCellData");
                                 button.attr("title", data.tooltip);
                                 button.data("empty-cell", false);
+                                cell.data("cell-data", _.cloneDeep(data));
                             }
                             else {
                                 button.data("empty-cell", true);
@@ -17418,13 +17496,31 @@ var nts;
                                     }
                                 }
                                 else {
-                                    if (!c.data("empty-cell")) {
-                                        if (c.hasClass("ntsButtonCellSelected")) {
-                                            c.removeClass("ntsButtonCellSelected");
-                                        }
-                                        else {
-                                            c.addClass("ntsButtonCellSelected");
-                                        }
+                                    c.trigger("cellselecting");
+                                }
+                            });
+                            button.bind("cellselecting", function (evt, data) {
+                                var c = $(this);
+                                if (!c.data("empty-cell")) {
+                                    if (c.hasClass("ntsButtonCellSelected")) {
+                                        c.removeClass("ntsButtonCellSelected");
+                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
+                                    }
+                                    else {
+                                        self.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
+                                        c.addClass("ntsButtonCellSelected");
+                                        var oCell = c.parent();
+                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                    }
+                                }
+                                else {
+                                    var oldSelected = self.container.find(".ntsButtonCellSelected");
+                                    if (!nts.uk.util.isNullOrEmpty(oldSelected)) {
+                                        var oCell = oldSelected.parent();
+                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                    }
+                                    else {
+                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
                                     }
                                 }
                             });
@@ -17454,25 +17550,39 @@ var nts;
                             cell.appendTo(container);
                         };
                         TableBuildingConstructor.prototype.setCellValue = function (button, data) {
-                            if (!isNull(data)) {
-                                button.data("cell-data", _.cloneDeep(data));
+                            var cell = button.parent();
+                            if (!isNull(data) && !isEmpty(data.text)) {
+                                cell.data("cell-data", _.cloneDeep(data));
                                 button.text(data.text);
                                 button.attr("title", data.tooltip);
                                 button.addClass("ntsButtonCellData");
                                 button.data("empty-cell", false);
                             }
                             else {
-                                button.data("cell-data", null);
+                                cell.data("cell-data", null);
                                 button.text("+");
                                 button.removeAttr("title");
                                 button.removeClass("ntsButtonCellData");
                                 button.data("empty-cell", true);
                                 data = {};
                             }
-                            var cell = button.parent();
-                            var rowIdx = parseInt(cell.parent().attr("data-idx"));
-                            var columnIdx = parseInt(cell.parent().attr("column-idx"));
+                            var rowIdx = parseInt(cell.attr("row-idx"));
+                            var columnIdx = parseInt(cell.attr("column-idx"));
+                            if (nts.uk.util.isNullOrUndefined(this.source[rowIdx])) {
+                                this.source[rowIdx] = [];
+                            }
                             this.source[rowIdx][columnIdx] = data;
+                            this.container.trigger("sourcechanging", { source: this.cloneSource() });
+                        };
+                        TableBuildingConstructor.prototype.cloneSource = function () {
+                            //                let clonedSource = [];
+                            //                _.forEach(this.source, function(row, idx){
+                            //                    clonedSource[idx] = [];
+                            //                    _.forEach(row, function(cell, idx2){
+                            //                        clonedSource[idx][idx2] = _.cloneDeep(cell);
+                            //                    });    
+                            //                });
+                            return _.cloneDeep(this.source);
                         };
                         return TableBuildingConstructor;
                     }());
@@ -18506,7 +18616,6 @@ var nts;
                                     });
                                 }
                                 else if (!uk.util.isNullOrUndefined(bodyCellStyleFt)) {
-                                    var count_1 = 0;
                                     _.forEach(bodyCellStyleFt.decorator, function (colorDef) {
                                         if (key === colorDef.columnKey && data[self.options.primaryKey] === colorDef.rowId) {
                                             var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
@@ -18517,8 +18626,6 @@ var nts;
                                                     $child.data("hide", $child.text());
                                                     $child.text("");
                                                 }
-                                                if (++count_1 >= 2)
-                                                    return false;
                                             }
                                             else {
                                                 $cell.addClass(colorDef.clazz);
@@ -18623,7 +18730,7 @@ var nts;
                                 var colIndex = helper.indexInParent($td[0]);
                                 var tr = helper.closest($td[0], "tr");
                                 var rowIndex = helper.indexInParent(tr);
-                                helper.addClass(tr.children, render.HIGHLIGHT_CLS);
+                                helper.addClass1n(tr.children, render.HIGHLIGHT_CLS);
                                 var horzSumHeader = helper.firstSibling($targetContainer[0], HEADER_PRF + HORIZONTAL_SUM);
                                 var horzSumContent = helper.firstSibling($targetContainer[0], BODY_PRF + HORIZONTAL_SUM);
                                 var bodies = helper.classSiblings($targetContainer[0], BODY_PRF);
@@ -18632,7 +18739,7 @@ var nts;
                                         && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
                                         var rowElm = bodies[i].getElementsByTagName("tr")[rowIndex];
                                         if (rowElm) {
-                                            helper.addClass(rowElm.getElementsByTagName("td"), render.HIGHLIGHT_CLS);
+                                            helper.addClass1n(rowElm.getElementsByTagName("td"), render.HIGHLIGHT_CLS);
                                         }
                                     }
                                 }
@@ -18640,70 +18747,70 @@ var nts;
                                     var tds = elm.getElementsByTagName("td");
                                     if (!tds || tds.length === 0)
                                         return;
-                                    helper.addClass(tds[colIndex], render.HIGHLIGHT_CLS);
+                                    helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                 });
                                 _.forEach(targetHeader.getElementsByTagName("tr"), function (t) {
                                     var tds = t.getElementsByTagName("td");
                                     if (!tds || tds.length === 0)
                                         return;
-                                    helper.addClass(tds[colIndex], render.HIGHLIGHT_CLS);
+                                    helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                 });
                                 if (horzSumHeader && horzSumHeader.style.display !== "none") {
                                     _.forEach(horzSumHeader.getElementsByTagName("tr"), function (t) {
                                         var tds = t.getElementsByTagName("td");
                                         if (!tds || tds.length === 0)
                                             return;
-                                        helper.addClass(tds[colIndex], render.HIGHLIGHT_CLS);
+                                        helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                     });
                                     _.forEach(horzSumContent.getElementsByTagName("tr"), function (t) {
                                         var tds = t.getElementsByTagName("td");
                                         if (!tds || tds.length === 0)
                                             return;
-                                        helper.addClass(tds[colIndex], render.HIGHLIGHT_CLS);
+                                        helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                     });
                                 }
                                 self.$container.data(internal.COLUMN_IN, colIndex);
                                 events.trigger(self.$container.closest("." + NAMESPACE), events.MOUSEIN_COLUMN, colIndex);
                             });
                             $td.on(events.MOUSE_OUT, function () {
-                                $td.removeClass(render.HIGHLIGHT_CLS);
+                                helper.removeClass1n($td[0], render.HIGHLIGHT_CLS);
                                 var colIndex = helper.indexInParent($td[0]);
                                 var tr = helper.closest($td[0], "tr");
                                 var rowIndex = helper.indexInParent(tr);
-                                helper.removeClass(tr.children, render.HIGHLIGHT_CLS);
+                                helper.removeClass1n(tr.children, render.HIGHLIGHT_CLS);
                                 var horzSumHeader = helper.firstSibling($targetContainer[0], HEADER_PRF + HORIZONTAL_SUM);
                                 var horzSumContent = helper.firstSibling($targetContainer[0], BODY_PRF + HORIZONTAL_SUM);
                                 var bodies = helper.classSiblings($targetContainer[0], BODY_PRF);
                                 for (var i = 0; i < bodies.length; i++) {
                                     if (!helper.hasClass(bodies[i], BODY_PRF + LEFT_HORZ_SUM)
                                         && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
-                                        helper.removeClass(bodies[i].getElementsByTagName("tr")[rowIndex].getElementsByTagName("td"), render.HIGHLIGHT_CLS);
+                                        helper.removeClass1n(bodies[i].getElementsByTagName("tr")[rowIndex].getElementsByTagName("td"), render.HIGHLIGHT_CLS);
                                     }
                                 }
                                 helper.consumeSiblings(tr, function (elm) {
                                     var tds = elm.getElementsByTagName("td");
                                     if (!tds || tds.length === 0)
                                         return;
-                                    helper.removeClass(tds[colIndex], render.HIGHLIGHT_CLS);
+                                    helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                 });
                                 _.forEach(targetHeader.getElementsByTagName("tr"), function (t) {
                                     var tds = t.getElementsByTagName("td");
                                     if (!tds || tds.length === 0)
                                         return;
-                                    helper.removeClass(tds[colIndex], render.HIGHLIGHT_CLS);
+                                    helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                 });
                                 if (horzSumHeader && horzSumHeader.style.display !== "none") {
                                     _.forEach(horzSumHeader.getElementsByTagName("tr"), function (t) {
                                         var tds = t.getElementsByTagName("td");
                                         if (!tds || tds.length === 0)
                                             return;
-                                        helper.removeClass(tds[colIndex], render.HIGHLIGHT_CLS);
+                                        helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                     });
                                     _.forEach(horzSumContent.getElementsByTagName("tr"), function (t) {
                                         var tds = t.getElementsByTagName("td");
                                         if (!tds || tds.length === 0)
                                             return;
-                                        helper.removeClass(tds[colIndex], render.HIGHLIGHT_CLS);
+                                        helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                     });
                                 }
                                 self.$container.data(internal.COLUMN_IN, -1);
@@ -19569,6 +19676,7 @@ var nts;
                             return;
                         events.trigger($exTable, events.STOP_EDIT, { land: land, rowIndex: coord.rowIdx, columnKey: coord.columnKey, innerIdx: innerIdx, value: value });
                     }
+                    update.triggerStopEdit = triggerStopEdit;
                     /**
                      * Edit done.
                      */
@@ -20427,6 +20535,8 @@ var nts;
                             if (startColumnIndex === -1)
                                 return;
                             var txId = uk.util.randomId();
+                            var ds = internal.getDataSource(self.$grid);
+                            var size = ds ? ds.length : 0;
                             _.forEach(data, function (row, idx) {
                                 var rowData = {};
                                 var columnKey = selectedCell.columnKey;
@@ -20443,6 +20553,8 @@ var nts;
                                     if (!columnKey)
                                         break;
                                 }
+                                if (rowIndex >= size)
+                                    return false;
                                 update.gridRowOw(self.$grid, rowIndex, rowData, txId);
                                 rowIndex++;
                             });
@@ -22735,6 +22847,12 @@ var nts;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
                                 break;
+                            case "lockCell":
+                                lockCell(self, params[0], params[1]);
+                                break;
+                            case "unlockCell":
+                                unlockCell(self, params[0], params[1]);
+                                break;
                             case "popupValue":
                                 returnPopupValue(self, params[0]);
                                 break;
@@ -23008,12 +23126,24 @@ var nts;
                         var exTable = $container.data(NAMESPACE);
                         if (!mode)
                             return exTable.viewMode;
-                        if (exTable.viewMode === mode)
-                            return;
-                        exTable.setViewMode(mode);
                         if (occupation) {
                             events.trigger($container, events.OCCUPY_UPDATE, occupation);
                         }
+                        if (exTable.viewMode === mode)
+                            return;
+                        if (exTable.updateMode === EDIT) {
+                            if (errors.occurred($container))
+                                return;
+                            var editor = $container.data(update.EDITOR);
+                            if (editor) {
+                                $editor = editor.$editor;
+                                $input = $editor.find("input");
+                                var $editingCell = $editor.closest("." + update.EDIT_CELL_CLS).removeClass(update.EDIT_CELL_CLS);
+                                update.triggerStopEdit($container, $editingCell, editor.land, $input.val());
+                                $container.data(update.EDITOR, null);
+                            }
+                        }
+                        exTable.setViewMode(mode);
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
                     }
@@ -23107,6 +23237,81 @@ var nts;
                                 break;
                         }
                         $grid.data(histType, null);
+                    }
+                    /**
+                     * Lock cell.
+                     */
+                    function lockCell($container, rowId, columnKey) {
+                        var $table = helper.getMainTable($container);
+                        var ds = helper.getDataSource($table);
+                        var pk = helper.getPrimaryKey($table);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var locks = $table.data(internal.DET);
+                        var found = -1;
+                        if (locks && locks[i] && locks[i].length > 0) {
+                            _.forEach(locks[i], function (c, j) {
+                                if (c === columnKey) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        if (found === -1) {
+                            var $cell = selection.cellAt($table, i, columnKey);
+                            if (!locks) {
+                                locks = {};
+                                locks[i] = [columnKey];
+                                $table.data(internal.DET, locks);
+                            }
+                            else if (locks && !locks[i]) {
+                                locks[i] = [columnKey];
+                            }
+                            else
+                                locks[i].push(columnKey);
+                            helper.markCellWith(style.DET_CLS, $cell);
+                        }
+                    }
+                    /**
+                     * Unlock cell.
+                     */
+                    function unlockCell($container, rowId, columnKey) {
+                        var $table = helper.getMainTable($container);
+                        var ds = helper.getDataSource($table);
+                        var pk = helper.getPrimaryKey($table);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var locks = $table.data(internal.DET);
+                        var found = -1;
+                        if (locks && locks[i] && locks[i].length > 0) {
+                            _.forEach(locks[i], function (c, j) {
+                                if (c === columnKey) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        if (found > -1) {
+                            var $cell = selection.cellAt($table, i, columnKey);
+                            locks[i].splice(found, 1);
+                            if (locks[i].length === 0)
+                                delete locks[i];
+                            helper.stripCellWith(style.DET_CLS, $cell);
+                        }
                     }
                     /**
                      * Return popup value.
@@ -23940,13 +24145,13 @@ var nts;
                             var tds = t.getElementsByTagName("td");
                             if (!tds || tds.length === 0)
                                 return;
-                            helper.addClass(tds[columnIndex], render.HIGHLIGHT_CLS);
+                            helper.addClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
                         });
                         _.forEach(header.getElementsByTagName("tr"), function (t) {
                             var tds = t.getElementsByTagName("td");
                             if (!tds || tds.length === 0)
                                 return;
-                            helper.addClass(tds[columnIndex], render.HIGHLIGHT_CLS);
+                            helper.addClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
                         });
                     }
                     helper.highlightColumn = highlightColumn;
@@ -23970,7 +24175,7 @@ var nts;
                             var tds = t.getElementsByTagName("td");
                             if (!tds || tds.length === 0)
                                 return;
-                            helper.removeClass(tds[columnIndex], render.HIGHLIGHT_CLS);
+                            helper.removeClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
                         });
                     }
                     helper.unHighlightGrid = unHighlightGrid;
@@ -24051,8 +24256,50 @@ var nts;
                     /**
                      * Add class.
                      */
-                    function addClass(node, clazz) {
+                    function addClass1n(node, clazz) {
                         if (node && node.constructor !== HTMLCollection) {
+                            var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                addClass(children, clazz);
+                            else
+                                addClass(node, clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            var children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                addClass(children, clazz);
+                            else
+                                addClass(node[i], clazz);
+                        }
+                    }
+                    helper.addClass1n = addClass1n;
+                    /**
+                     * Remove class.
+                     */
+                    function removeClass1n(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection) {
+                            var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                removeClass(children, clazz);
+                            else
+                                removeClass(node, clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            var children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                removeClass(children, clazz);
+                            else
+                                removeClass(node[i], clazz);
+                        }
+                    }
+                    helper.removeClass1n = removeClass1n;
+                    /**
+                     * Add class.
+                     */
+                    function addClass(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                             node.classList.add(clazz);
                             return;
                         }
@@ -24067,7 +24314,7 @@ var nts;
                      * Remove class.
                      */
                     function removeClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection) {
+                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                             node.classList.remove(clazz);
                             return;
                         }
@@ -24755,8 +25002,10 @@ var nts;
                         var freeResize = nts.uk.util.isNullOrUndefined(data.freeResize) ? true : ko.unwrap(data.freeResize);
                         var resizeRatio = nts.uk.util.isNullOrUndefined(data.resizeRatio) ? 1 : ko.unwrap(data.resizeRatio);
                         var height = nts.uk.util.isNullOrUndefined(data.height) ? 600 : ko.unwrap(data.height);
+                        var extension = nts.uk.util.isNullOrUndefined(data.accept) ? [] : ko.unwrap(data.accept);
+                        var msgIdForUnknownFile = nts.uk.util.isNullOrUndefined(data.msgIdForUnknownFile) ? 'Msg_77' : ko.unwrap(data.msgIdForUnknownFile);
                         var croppable = false;
-                        var helper = new ImageEditorHelper();
+                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile);
                         var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element).append($container);
                         var constructSite = new ImageEditorConstructSite($element, helper);
                         var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
@@ -24856,10 +25105,7 @@ var nts;
                             event.preventDefault();
                             var files = evt.originalEvent["dataTransfer"].files;
                             if (!nts.uk.util.isNullOrEmpty(files)) {
-                                var firstImageFile = self.helper.getFirstFile(files);
-                                if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                                    self.assignImageToView(firstImageFile);
-                                }
+                                self.validateFile(files);
                             }
                         });
                         this.$previewArea.on('dragenter', function (event) {
@@ -24994,8 +25240,18 @@ var nts;
                                 self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                                 return;
                             }
-                            self.assignImageToView(this.files[0]);
+                            self.validateFile(this.files);
                         });
+                    };
+                    ImageEditorConstructSite.prototype.validateFile = function (files) {
+                        var self = this;
+                        var firstImageFile = self.helper.getFirstFile(files);
+                        if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                            self.assignImageToView(firstImageFile);
+                        }
+                        else {
+                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), messageParams: [self.helper.toStringExtension()] });
+                        }
                     };
                     ImageEditorConstructSite.prototype.assignImageToView = function (file) {
                         var self = this;
@@ -25022,23 +25278,29 @@ var nts;
                     return ImageEditorConstructSite;
                 }());
                 var ImageEditorHelper = (function () {
-                    function ImageEditorHelper(query, extensions) {
+                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
                         this.IMAGE_EXTENSION = [".png", ".jpg", ".jpeg"];
                         this.BYTE_SIZE = 1024;
                         this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
                         this.data = query;
-                        if (!nts.uk.util.isNullOrUndefined(extensions)) {
+                        this.msgIdForUnknownFile = msgIdForUnknownFile;
+                        if (!nts.uk.util.isNullOrEmpty(extensions)) {
                             this.IMAGE_EXTENSION = extensions;
                         }
                     }
                     ImageEditorHelper.prototype.toStringExtension = function () {
-                        return this.IMAGE_EXTENSION.join(",");
+                        return this.IMAGE_EXTENSION.join(", ");
+                    };
+                    ImageEditorHelper.prototype.getMsgIdForUnknownFile = function () {
+                        return this.msgIdForUnknownFile;
                     };
                     ImageEditorHelper.prototype.getFirstFile = function (files) {
                         var IMAGE_EXTENSION = this.IMAGE_EXTENSION;
                         return _.find(files, function (file) {
                             return _.find(IMAGE_EXTENSION, function (ie) {
-                                return file.type.indexOf(ie.replace(".", "")) >= 0;
+                                var isType = file.type === ie.replace(".", "");
+                                var isType2 = file.name.substr(file.name.lastIndexOf(".")) === ie;
+                                return isType || isType2;
                             }) !== undefined;
                         });
                     };

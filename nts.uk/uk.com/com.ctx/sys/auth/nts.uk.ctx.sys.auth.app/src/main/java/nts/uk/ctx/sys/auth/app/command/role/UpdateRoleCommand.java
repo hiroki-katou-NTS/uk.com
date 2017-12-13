@@ -65,6 +65,7 @@ public class UpdateRoleCommand {
 	public Role toDomain() {
 		
 		return new Role(
+				this.roleId,
 				new RoleCode(this.roleCode),
 				EnumAdaptor.valueOf(this.roleType,RoleType.class),
 				EnumAdaptor.valueOf(this.employeeReferenceRange,EmployeeReferenceRange.class),

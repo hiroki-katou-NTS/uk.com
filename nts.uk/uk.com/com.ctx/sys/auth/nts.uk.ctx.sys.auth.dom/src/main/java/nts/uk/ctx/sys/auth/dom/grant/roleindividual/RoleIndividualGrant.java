@@ -16,10 +16,12 @@ import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
+ * ロール個人別付与
  * The Class RoleIndividualGrant.
  */
 @Getter
 @Setter
+
 public class RoleIndividualGrant extends AggregateRoot {
 
 	/** The user id. */

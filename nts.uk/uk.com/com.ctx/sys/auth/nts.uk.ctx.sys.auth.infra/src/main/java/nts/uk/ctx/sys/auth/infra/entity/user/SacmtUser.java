@@ -83,8 +83,6 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 	}
 
 	public User toDomain() {
-		boolean specialUser = this.specialUser == 1;
-		boolean multiCompanyConcurrent = this.multiCompanyConcurrent == 1;
 		boolean defaultUser = this.defaultUser == 1;
 		return User.createFromJavatype(
 				this.sacmtUserPK.userID, 

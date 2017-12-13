@@ -100,6 +100,7 @@ module cps002.a.vm {
 
                 service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
                     if (result.length) {
+                        self.categorySelectedCode("");
                         self.categoryList(_.map(result, item => {
                             return new CategoryItem(item);
                         }));
@@ -149,7 +150,7 @@ module cps002.a.vm {
             });
 
             self.currentEmployee().avatarId.subscribe((avartarId) => {
-            
+
 
                 var self = this,
                     avartarContent = $("#employeeAvatar");

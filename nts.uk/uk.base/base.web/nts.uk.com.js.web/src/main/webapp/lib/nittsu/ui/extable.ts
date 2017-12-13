@@ -915,7 +915,7 @@ module nts.uk.ui.exTable {
                     let colIndex = helper.indexInParent($td[0]);
                     let tr = helper.closest($td[0], "tr"); 
                     let rowIndex = helper.indexInParent(tr);
-                    helper.addClass(tr.children, HIGHLIGHT_CLS);
+                    helper.addClass1n(tr.children, HIGHLIGHT_CLS);
                     let horzSumHeader = helper.firstSibling($targetContainer[0], HEADER_PRF + HORIZONTAL_SUM);
                     let horzSumContent = helper.firstSibling($targetContainer[0], BODY_PRF + HORIZONTAL_SUM);
                     let bodies = helper.classSiblings($targetContainer[0], BODY_PRF);
@@ -924,30 +924,30 @@ module nts.uk.ui.exTable {
                             && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
                             let rowElm = bodies[i].getElementsByTagName("tr")[rowIndex];
                             if (rowElm) {
-                                helper.addClass(rowElm.getElementsByTagName("td"), HIGHLIGHT_CLS);
+                                helper.addClass1n(rowElm.getElementsByTagName("td"), HIGHLIGHT_CLS);
                             }
                         }
                     }
                     helper.consumeSiblings(tr, (elm) => { 
                         let tds = elm.getElementsByTagName("td");
                         if (!tds || tds.length === 0) return;
-                        helper.addClass(tds[colIndex], HIGHLIGHT_CLS); 
+                        helper.addClass1n(tds[colIndex], HIGHLIGHT_CLS); 
                     });
                     _.forEach(targetHeader.getElementsByTagName("tr"), function(t) {
                         let tds = t.getElementsByTagName("td");
                         if (!tds || tds.length === 0) return;
-                        helper.addClass(tds[colIndex], HIGHLIGHT_CLS);
+                        helper.addClass1n(tds[colIndex], HIGHLIGHT_CLS);
                     });
                     if (horzSumHeader && horzSumHeader.style.display !== "none") {
                         _.forEach(horzSumHeader.getElementsByTagName("tr"), function(t) {
                             let tds = t.getElementsByTagName("td");
                             if (!tds || tds.length === 0) return;
-                            helper.addClass(tds[colIndex], HIGHLIGHT_CLS);
+                            helper.addClass1n(tds[colIndex], HIGHLIGHT_CLS);
                         });
                         _.forEach(horzSumContent.getElementsByTagName("tr"), function(t) {
                             let tds = t.getElementsByTagName("td");
                             if (!tds || tds.length === 0) return;
-                            helper.addClass(tds[colIndex], HIGHLIGHT_CLS);
+                            helper.addClass1n(tds[colIndex], HIGHLIGHT_CLS);
                         });
                     }
                     self.$container.data(internal.COLUMN_IN, colIndex);
@@ -955,40 +955,40 @@ module nts.uk.ui.exTable {
                 });
                 
                 $td.on(events.MOUSE_OUT, function() {
-                    $td.removeClass(HIGHLIGHT_CLS);
+                    helper.removeClass1n($td[0], HIGHLIGHT_CLS);
                     let colIndex = helper.indexInParent($td[0]);
                     let tr = helper.closest($td[0], "tr"); 
                     let rowIndex = helper.indexInParent(tr);
-                    helper.removeClass(tr.children, HIGHLIGHT_CLS);
+                    helper.removeClass1n(tr.children, HIGHLIGHT_CLS);
                     let horzSumHeader = helper.firstSibling($targetContainer[0], HEADER_PRF + HORIZONTAL_SUM);
                     let horzSumContent = helper.firstSibling($targetContainer[0], BODY_PRF + HORIZONTAL_SUM);
                     let bodies = helper.classSiblings($targetContainer[0], BODY_PRF);
                     for (let i = 0; i < bodies.length; i++) {
                         if (!helper.hasClass(bodies[i], BODY_PRF + LEFT_HORZ_SUM)
                             && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
-                            helper.removeClass(bodies[i].getElementsByTagName("tr")[rowIndex].getElementsByTagName("td"), HIGHLIGHT_CLS);
+                            helper.removeClass1n(bodies[i].getElementsByTagName("tr")[rowIndex].getElementsByTagName("td"), HIGHLIGHT_CLS);
                         }
                     }
                     helper.consumeSiblings(tr, (elm) => { 
                         let tds = elm.getElementsByTagName("td");
                         if (!tds || tds.length === 0) return;
-                        helper.removeClass(tds[colIndex], HIGHLIGHT_CLS); 
+                        helper.removeClass1n(tds[colIndex], HIGHLIGHT_CLS); 
                     });
                     _.forEach(targetHeader.getElementsByTagName("tr"), function(t) { 
                         let tds = t.getElementsByTagName("td");
                         if (!tds || tds.length === 0) return;
-                        helper.removeClass(tds[colIndex], HIGHLIGHT_CLS);
+                        helper.removeClass1n(tds[colIndex], HIGHLIGHT_CLS);
                     });
                     if (horzSumHeader && horzSumHeader.style.display !== "none") {
                         _.forEach(horzSumHeader.getElementsByTagName("tr"), function(t) {
                             let tds = t.getElementsByTagName("td");
                             if (!tds || tds.length === 0) return;
-                            helper.removeClass(tds[colIndex], HIGHLIGHT_CLS);
+                            helper.removeClass1n(tds[colIndex], HIGHLIGHT_CLS);
                         });
                         _.forEach(horzSumContent.getElementsByTagName("tr"), function(t) {
                             let tds = t.getElementsByTagName("td");
                             if (!tds || tds.length === 0) return;
-                            helper.removeClass(tds[colIndex], HIGHLIGHT_CLS);
+                            helper.removeClass1n(tds[colIndex], HIGHLIGHT_CLS);
                         });
                     }
                     self.$container.data(internal.COLUMN_IN, -1);
@@ -1830,7 +1830,7 @@ module nts.uk.ui.exTable {
         /**
          * Trigger stop edit.
          */
-        function triggerStopEdit($exTable: JQuery, $cell: JQuery, land: any, value: any) {
+        export function triggerStopEdit($exTable: JQuery, $cell: JQuery, land: any, value: any) {
             if ($cell.length === 0) return;
             let innerIdx = -1;
             if ($cell.is("div")) {
@@ -2659,6 +2659,8 @@ module nts.uk.ui.exTable {
                 let startColumnIndex = helper.indexOf(selectedCell.columnKey, visibleColumns);
                 if (startColumnIndex === -1) return;
                 let txId = util.randomId();
+                let ds = internal.getDataSource(self.$grid);
+                let size = ds ? ds.length : 0;
                 _.forEach(data, function(row: any, idx: number) {
                     let rowData = {};
                     let columnKey = selectedCell.columnKey;
@@ -2673,6 +2675,7 @@ module nts.uk.ui.exTable {
                         columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
                         if (!columnKey) break;
                     }
+                    if (rowIndex >= size) return false; 
                     update.gridRowOw(self.$grid, rowIndex, rowData, txId);
                     rowIndex++;
                 });
@@ -5200,11 +5203,23 @@ module nts.uk.ui.exTable {
         function setViewMode($container: JQuery, mode: string, occupation?: any) {
             let exTable: any = $container.data(NAMESPACE);
             if (!mode) return exTable.viewMode;
-            if (exTable.viewMode === mode) return;
-            exTable.setViewMode(mode);
             if (occupation) {
                 events.trigger($container, events.OCCUPY_UPDATE, occupation);
             }
+            
+            if (exTable.viewMode === mode) return;
+            if (exTable.updateMode === EDIT) {
+                if (errors.occurred($container)) return;
+                let editor = $container.data(update.EDITOR);
+                if (editor) {
+                    $editor = editor.$editor;
+                    $input = $editor.find("input");
+                    let $editingCell = $editor.closest("." + update.EDIT_CELL_CLS).removeClass(update.EDIT_CELL_CLS);
+                    update.triggerStopEdit($container, $editingCell, editor.land, $input.val());
+                    $container.data(update.EDITOR, null);
+                }
+            }
+            exTable.setViewMode(mode);
             let $grid = $container.find("." + BODY_PRF + DETAIL);
             render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
         }
@@ -6166,12 +6181,12 @@ module nts.uk.ui.exTable {
             _.forEach(grid.getElementsByTagName("tr"), function(t) {
                 let tds = t.getElementsByTagName("td");
                 if (!tds || tds.length === 0) return;
-                helper.addClass(tds[columnIndex], render.HIGHLIGHT_CLS);
+                helper.addClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
             });
             _.forEach(header.getElementsByTagName("tr"), function(t) {
                 let tds = t.getElementsByTagName("td");
                 if (!tds || tds.length === 0) return;
-                helper.addClass(tds[columnIndex], render.HIGHLIGHT_CLS);
+                helper.addClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
             });
         }
         
@@ -6193,7 +6208,7 @@ module nts.uk.ui.exTable {
             _.forEach(grid.getElementsByTagName("tr"), function(t) {
                 let tds = t.getElementsByTagName("td");
                 if (!tds || tds.length === 0) return;
-                helper.removeClass(tds[columnIndex], render.HIGHLIGHT_CLS);
+                helper.removeClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
             });
         }
         
@@ -6271,8 +6286,42 @@ module nts.uk.ui.exTable {
         /**
          * Add class.
          */
-        export function addClass(node, clazz) {
+        export function addClass1n(node, clazz) {
             if (node && node.constructor !== HTMLCollection) {
+                let children = node.querySelectorAll("." + render.CHILD_CELL_CLS); 
+                if (children.length > 0) addClass(children, clazz);
+                else addClass(node, clazz);
+                return;
+            }
+            for (let i = 0; i < node.length; i++) {
+                let children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
+                if (children.length > 0) addClass(children, clazz);
+                else addClass(node[i], clazz);
+            }
+        }
+        
+        /**
+         * Remove class.
+         */
+        export function removeClass1n(node, clazz) {
+            if (node && node.constructor !== HTMLCollection) {
+                let children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
+                if (children.length > 0) removeClass(children, clazz);
+                else removeClass(node, clazz);
+                return;
+            }
+            for (let i = 0; i < node.length; i++) {
+                let children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
+                if (children.length > 0) removeClass(children, clazz);
+                else removeClass(node[i], clazz);
+            }
+        }
+        
+        /**
+         * Add class.
+         */
+        export function addClass(node, clazz) {
+            if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                 node.classList.add(clazz);
                 return;
             }
@@ -6287,7 +6336,7 @@ module nts.uk.ui.exTable {
          * Remove class.
          */
         export function removeClass(node, clazz) {
-            if (node && node.constructor !== HTMLCollection) {
+            if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                 node.classList.remove(clazz);
                 return;
             }
