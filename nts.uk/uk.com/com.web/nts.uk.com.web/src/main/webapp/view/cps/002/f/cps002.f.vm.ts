@@ -53,13 +53,13 @@ module cps002.f.vm {
             // let dataBind = self.lstPerInfoItemDef();
             let itemIds = self.currentPerInfoItem();
             let categoryId = self.currentPerInfoCtg();
-            service.updatePerInfoCtgCopy(categoryId).done(() => {
-                service.updatePerInfoItemCopy(categoryId, itemIds).done(() => {
-                    alertError({ messageId: "Msg_15" }).then(() => {
-                        self.start(self.currentPerInfoCtg());
-                    });
-                })
-            });
+
+            service.updatePerInfoItemCopy(categoryId, itemIds).done(() => {
+                alertError({ messageId: "Msg_15" }).then(() => {
+                    self.start(self.currentPerInfoCtg());
+                });
+            })
+
 
         }
         close() {

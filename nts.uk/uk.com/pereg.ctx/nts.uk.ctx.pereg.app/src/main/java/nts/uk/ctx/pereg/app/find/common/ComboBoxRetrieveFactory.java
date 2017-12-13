@@ -13,23 +13,35 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import com.aspose.cells.ComboBox;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.bs.employee.dom.classification.Classification;
+import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
+import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.pereg.app.find.person.info.item.CodeNameRefTypeDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.EnumRefConditionDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.MasterRefConditionDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 /**
@@ -42,6 +54,18 @@ public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private SelectionFinder selectionFinder;
+
+	@Inject
+	private ClassificationRepository classificationRepo;
+
+	@Inject
+	private EmploymentRepository employmentRepo;
+
+	@Inject
+	private BusinessTypesRepository businessTypeRepo;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepo;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -71,6 +95,7 @@ public class ComboBoxRetrieveFactory {
 	@SuppressWarnings("unchecked")
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto,
 			GeneralDate standardDate) {
+		String companyId = AppContexts.user().companyId();
 		switch (selectionItemDto.getReferenceType()) {
 		case ENUM:
 			EnumRefConditionDto enumTypeDto = (EnumRefConditionDto) selectionItemDto;
@@ -92,11 +117,84 @@ public class ComboBoxRetrieveFactory {
 			}
 			return lstComboBoxValue;
 		case DESIGNATED_MASTER:
+			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
 
+			switch (masterRefTypeDto.getMasterType()) {
+			case "M00001":
+
+				break;
+			case "M00002":
+
+				break;
+			case "M00003":
+				return getEmploymentList(companyId);
+			case "M00004":
+				return getClassificationList(companyId);
+			case "M00005":
+
+				break;
+			case "M00006":
+
+				break;
+			case "M00007":
+				return getBusinessType(companyId);
+			case "M00008":
+				return getWorkTypeList(companyId);
+			case "M00009":
+
+				break;
+
+			default:
+				break;
+			}
 			return null;
-
 		}
 		return null;
+	}
+
+	private List<ComboBoxObject> getEmploymentList(String companyId) {
+		List<Employment> employments = employmentRepo.findAll(companyId);
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		for (Employment employment : employments) {
+			comboBoxList
+					.add(new ComboBoxObject(employment.getEmploymentCode().v(), employment.getEmploymentName().v()));
+
+		}
+		return comboBoxList;
+	}
+
+	private List<ComboBoxObject> getClassificationList(String companyId) {
+		List<Classification> classifications = classificationRepo.getAllManagementCategory(companyId);
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		for (Classification classification : classifications) {
+			comboBoxList.add(new ComboBoxObject(classification.getClassificationCode().v(),
+					classification.getClassificationName().v()));
+
+		}
+		return comboBoxList;
+	}
+
+	private List<ComboBoxObject> getBusinessType(String companyId) {
+		List<BusinessType> businessTypeDescList = businessTypeRepo.findAll(companyId);
+		int sizeDescList = businessTypeDescList.size();
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		for (int i = sizeDescList - 1; i >= 0; i--) {
+			BusinessType businessType = businessTypeDescList.get(i);
+			comboBoxList.add(
+					new ComboBoxObject(businessType.getBusinessTypeCode().v(), businessType.getBusinessTypeName().v()));
+
+		}
+		return comboBoxList;
+	}
+	
+	private List<ComboBoxObject> getWorkTypeList(String companyId) {
+		// require repository sort
+		List<WorkType> workTypes = workTypeRepo.findByCompanyId(companyId);
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		for (WorkType workType : workTypes) {
+			comboBoxList.add(new ComboBoxObject(workType.getWorkTypeCode().v(), workType.getName().v()));
+		}
+		return comboBoxList;
 	}
 
 }

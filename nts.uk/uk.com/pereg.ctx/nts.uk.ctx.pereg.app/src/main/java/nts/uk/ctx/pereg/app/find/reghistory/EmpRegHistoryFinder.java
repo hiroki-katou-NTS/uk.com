@@ -37,8 +37,21 @@ public class EmpRegHistoryFinder {
 
 			EmpRegHistoryDto regHistDto = EmpRegHistoryDto.createFromDomain(opt.get());
 
-			if (!setLastRegName(regHistDto.getLastRegEmployee())
-					&& !setLastRegName(regHistDto.getLastRegEmployeeOfCompany())) {
+			boolean setEmpNameRes = regHistDto.getLastRegEmployee() != null
+					? setLastRegName(regHistDto.getLastRegEmployee()) : false;
+
+			boolean setComNameRes = false;
+			if (regHistDto.getLastRegEmployeeOfCompany() != null) {
+				if (regHistDto.getLastRegEmployee().EmployeeID != regHistDto.getLastRegEmployeeOfCompany().EmployeeID) {
+
+					setComNameRes = setLastRegName(regHistDto.getLastRegEmployeeOfCompany());
+				} else {
+
+					regHistDto.setLastRegEmployeeOfCompany(null);
+				}
+			}
+
+			if (!setEmpNameRes && !setComNameRes) {
 
 				return null;
 			}
@@ -68,7 +81,7 @@ public class EmpRegHistoryFinder {
 
 		String PersonName = person.getPersonNameGroup().getPersonName().getFullName().v();
 
-		regEmpDto.setEmployeeName(businessName != "" ? businessName : PersonName);
+		regEmpDto.setEmployeeName(!businessName.equals("") ? businessName : PersonName);
 
 		return true;
 

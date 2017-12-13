@@ -73,7 +73,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 
 			if (!comHist.getLastRegEmployeeID().equals(result.getLastRegEmployeeID())) {
 
-				result.setLastRegEmployeeOfCompanyID(comHist.getLastRegEmployeeID());
+				result.setLastRegEmployeeOfCompanyID(comHist.getRegisteredEmployeeID());
 				result.setLastRegEmployeeOfCompanyCd(comHist.getLastRegEmployeeCd());
 			}
 		}
@@ -110,8 +110,8 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 	@Override
 	public Optional<EmpRegHistory> getLastRegHistory(String registeredEmployeeID) {
 
-		return this.queryProxy().query(GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING, Object[].class).setParameter("employeeId", registeredEmployeeID).getSingle()
-				.map(x -> toDomain(x));
+		return this.queryProxy().query(GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING, Object[].class)
+				.setParameter("employeeId", registeredEmployeeID).getSingle().map(x -> toDomain(x));
 	}
 
 }

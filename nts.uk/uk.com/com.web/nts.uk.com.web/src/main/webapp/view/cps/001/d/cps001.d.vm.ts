@@ -23,7 +23,7 @@ module cps001.d.vm {
             self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
             service.getAvatar(self.empFileMn().employeeId).done(function(data){
-                if(data){
+                if(data.filedId){
                     self.empFileMn().fileId = data.fileId;
                     self.empFileMn().fileType =0;
                     if(self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
@@ -94,7 +94,11 @@ module cps001.d.vm {
         getImage(){
             let self = this;
             let id = self.empFileMn().fileId;
-            $("#test")["ntsImageEditor"]("selectByFileId", id); 
+            try{
+                 $("#test").ntsImageEditor("selectByFileId", id);
+            }catch(Error){
+                self.isChange(true);
+            }
         }
         close(){
             nts.uk.ui.block.clear();

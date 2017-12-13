@@ -65,7 +65,7 @@ public class EmpCopySettingFinder {
 		String contractCode = AppContexts.user().contractCode();
 		List<PersonInfoCategory> lstPerInfoCtg = null;
 		if (ctgName.equals(""))
-			lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode);
+			lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategoryNoMulAndDupHist(companyId, contractCode);
 		else {
 			lstPerInfoCtg = perInfoCtgRepositoty.getPerInfoCategoryByName(companyId, contractCode, ctgName);
 		}
