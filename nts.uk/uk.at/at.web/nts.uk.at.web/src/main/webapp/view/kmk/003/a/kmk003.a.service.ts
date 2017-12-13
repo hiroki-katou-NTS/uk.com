@@ -527,6 +527,8 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimeSettingEnumDto {
                     workTimeDailyAtr: EnumConstantDto[];
                     workTimeMethodSet: EnumConstantDto[];
+                    roundingTime: EnumConstantDto[];
+                    rounding: EnumConstantDto[];
                 }
             
             }

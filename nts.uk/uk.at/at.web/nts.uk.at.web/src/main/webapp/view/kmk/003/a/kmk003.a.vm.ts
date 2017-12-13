@@ -118,6 +118,7 @@ module nts.uk.at.view.kmk003.a {
             workTimeSettingModel: WorkTimeSettingModel;
             predetemineTimeSettingModel: PredetemineTimeSettingModel;
             settingEnum: WorkTimeSettingEnumDto;
+            dataModelOneDay: EmTimeZoneSetModel[];
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
