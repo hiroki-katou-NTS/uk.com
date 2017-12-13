@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -42,6 +43,23 @@ public class FlexHalfDayWorkTime extends DomainObject {
 		if (this.isNotFixRestTime() && this.hasNoNo1()) {
 			throw new BusinessException("Msg_847");
 		}
+
+		this.getFixRestTime().forEach(restTime -> {
+			if (!this.isInFixedWork(restTime)) {
+				throw new BusinessException("Msg_755");
+			}
+		});
+	}
+
+	/**
+	 * Checks if is in fixed work.
+	 *
+	 * @param flowRest the flow rest
+	 * @return true, if is in fixed work
+	 */
+	private boolean isInFixedWork(FlowWorkRestTimezone flowRest) {
+		return flowRest.getFixedRestTimezone().getTimezones().stream().allMatch(
+				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
 	}
 
 	/**
@@ -51,6 +69,15 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 */
 	private boolean isNotFixRestTime() {
 		return this.lstRestTimezone.stream().anyMatch(item -> !item.isFixRestTime());
+	}
+
+	/**
+	 * Gets the fix rest time.
+	 *
+	 * @return the fix rest time
+	 */
+	private List<FlowWorkRestTimezone> getFixRestTime() {
+		return this.lstRestTimezone.stream().filter(item -> item.isFixRestTime()).collect(Collectors.toList());
 	}
 
 	/**

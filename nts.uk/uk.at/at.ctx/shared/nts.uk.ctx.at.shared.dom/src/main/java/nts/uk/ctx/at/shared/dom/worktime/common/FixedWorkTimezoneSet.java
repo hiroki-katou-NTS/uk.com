@@ -102,6 +102,26 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	}
 
 	/**
+	 * Checks if is in over timezone.
+	 *
+	 * @param timezone the timezone
+	 * @return true, if is in over timezone
+	 */
+	public boolean isInOverTimezone(TimeZone timezone) {
+		return this.lstOTTimezone.stream().anyMatch(ot -> timezone.isBetweenOrEqual(ot.getTimezone()));
+	}
+
+	/**
+	 * Checks if is in em timezone.
+	 *
+	 * @param timezone the timezone
+	 * @return true, if is in em timezone
+	 */
+	public boolean isInEmTimezone(TimeZone timezone) {
+		return this.lstWorkingTimezone.stream().anyMatch(ot -> timezone.isBetweenOrEqual(ot.getTimezone()));
+	}
+
+	/**
 	 * Check overlap.
 	 */
 	private void checkOverlap() {
