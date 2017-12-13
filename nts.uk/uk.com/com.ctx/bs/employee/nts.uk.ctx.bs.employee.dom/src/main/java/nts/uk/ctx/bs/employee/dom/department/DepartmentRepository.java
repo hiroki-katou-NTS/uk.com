@@ -4,21 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.department;
 
-import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import java.util.List;
+
+import nts.arc.time.GeneralDate;
 
 /**
- * The Class WorkHierarchy.
+ * The Interface DepartmentRepository.
  */
-@Getter
-//職場階層
-public class DeapartmentHierarchy extends DomainObject {
+public interface DepartmentRepository {
 
-	/** The workplace id. */
-	// 職場ID
-	private String workplaceId;
+	/**
+	 * Find by.
+	 *
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<DepartmentInfo> findBy(GeneralDate baseDate);
 
-	/** The hierarchy code. */
-	// 階層コード
-	private HierarchyCode hierarchyCode;
 }
