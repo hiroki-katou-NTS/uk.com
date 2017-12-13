@@ -19,6 +19,7 @@ module nts.uk.ui.koExtentions {
             let column: any = (data.column !== undefined) ? ko.unwrap(data.column) : 1;
             let contextMenu = (data.contextMenu !== undefined) ? ko.unwrap(data.contextMenu) : [];
             let disableMenuOnDataNotSet = (data.disableMenuOnDataNotSet !== undefined) ? ko.unwrap(data.disableMenuOnDataNotSet) : [];
+            let selectedCell = ko.unwrap(data.selectedCell);
             let width: any = (data.width !== undefined) ? ko.unwrap(data.width) : 400;
             let clickAction = data.click;
             let selectedCells = ko.unwrap(data.selectedCells);
@@ -33,6 +34,17 @@ module nts.uk.ui.koExtentions {
                 disableMenuOnDataNotSet : disableMenuOnDataNotSet,
                 contextMenu: contextMenu
             });
+            
+            $(element).bind("cellselectedchanging", function(evt, value){
+                if(!nts.uk.util.isNullOrUndefined(data.selectedCell)){
+                    data.selectedCell(value);
+                }
+            });
+            $(element).bind("sourcechanging", function(evt, value){
+                if(!nts.uk.util.isNullOrUndefined(data.source)){
+                    data.source(value.source);
+                }
+            });
         }
 
         /**
@@ -44,7 +56,7 @@ module nts.uk.ui.koExtentions {
             let source: any = ko.unwrap(data.source);
             let row: any = (data.row !== undefined) ? ko.unwrap(data.row) : 1;
             let column: any = (data.column !== undefined) ? ko.unwrap(data.column) : 1;
-            let selectedCells = (data.selectedCells !== undefined) ? ko.unwrap(data.selectedCells) : [];
+            let selectedCell = ko.unwrap(data.selectedCell);
             
             let container = $(element);
             let oldSource = container.ntsButtonTable("dataSource");
@@ -54,6 +66,11 @@ module nts.uk.ui.koExtentions {
             
             container.ntsButtonTable("row", row);
             container.ntsButtonTable("column", column);
+            
+            if(!nts.uk.util.isNullOrUndefined(selectedCell) && !nts.uk.util.isNullOrUndefined(selectedCell.column) 
+                && !nts.uk.util.isNullOrUndefined(selectedCell.row)){
+                container.ntsButtonTable("setSelectedCell", selectedCell.row, selectedCell.column);
+            }
         }
     }
     
