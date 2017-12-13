@@ -384,12 +384,18 @@ module cps002.a.vm {
             if (self.copyEmployee().employeeId === '' && !self.isUseInitValue()) {
 
                 dialog({ messageId: "Msg_349" });
-
-            } else {
-
-                self.gotoStep3();
-
+                return;
             }
+
+            if (nts.uk.text.isNullOrEmpty(self.initSettingSelectedCode()) && self.isUseInitValue()) {
+
+                dialog({ messageId: "Msg_356" });
+                return;
+            }
+
+            self.gotoStep3();
+
+
         }
 
         isUseInitValue() {
