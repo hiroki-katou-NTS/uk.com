@@ -3,10 +3,9 @@
  */
 package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 
 /**
  * @author hungnm
@@ -17,11 +16,11 @@ public class WorkplaceEvent extends AggregateRoot {
 
 	private String workplaceId;
 
-	private BigDecimal date;
+	private GeneralDate date;
 
 	private EventName eventName;
 
-	private WorkplaceEvent(String workplaceId, BigDecimal date, EventName eventName) {
+	private WorkplaceEvent(String workplaceId, GeneralDate date, EventName eventName) {
 		super();
 		this.workplaceId = workplaceId;
 		this.date = date;
@@ -32,7 +31,7 @@ public class WorkplaceEvent extends AggregateRoot {
 		super();
 	}
 
-	public static WorkplaceEvent createFromJavaType(String workplaceId, BigDecimal date, String eventName) {
+	public static WorkplaceEvent createFromJavaType(String workplaceId, GeneralDate date, String eventName) {
 		return new WorkplaceEvent(workplaceId, date, new EventName(eventName));
 	}
 

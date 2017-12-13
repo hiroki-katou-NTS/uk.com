@@ -91,7 +91,14 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	@Override
 	public void update(Role role) {
-		this.commandProxy().update(toEntity(role));		
+		SacmtRole updateEntity = this.queryProxy().find(role.getRoleId(), SacmtRole.class).get();
+		updateEntity.setCid(role.getCompanyId());
+		updateEntity.setRoleType(role.getRoleType().value);
+		updateEntity.setReferenceRange(role.getEmployeeReferenceRange().value);
+		updateEntity.setName(role.getName().toString());
+		updateEntity.setContractCode(role.getContractCode().toString());
+		updateEntity.setAssignAtr(role.getAssignAtr().value);
+		this.commandProxy().update(updateEntity);		
 	}
 	@Override
 	public void remove(String roleId) {		
