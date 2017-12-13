@@ -3,7 +3,7 @@ package nts.uk.ctx.pereg.app.command.optional;
 import java.math.BigDecimal;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataState;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataState;
 import nts.uk.shr.pereg.app.ItemValue;
 
 public class OptionalUtil {
@@ -62,17 +62,19 @@ public class OptionalUtil {
 	 * @param item
 	 * @return
 	 */
-	public static void createDataState(ItemValue item, DataState state){
+	public static DataState createDataState(ItemValue item){
 		switch(item.itemValueType()){
 		case STRING:
-			state = DataState.createFromStringValue(convertToString(item.value()));
-		break;
+		case SELECTION:
+			return DataState.createFromStringValue(convertToString(item.value()));
 		case NUMERIC:
-			state = DataState.createFromNumberValue(convertToDecimal(item.value()));
-		break;
+		case TIME:
+		case TIMEPOINT:
+			return DataState.createFromNumberValue(convertToDecimal(item.value()));
 		case DATE:
-			state = DataState.createFromDateValue(convertToDate(item.value()));
-		break;
+			return DataState.createFromDateValue(convertToDate(item.value()));
+		default:
+			return null;
 		}
 	}
 }

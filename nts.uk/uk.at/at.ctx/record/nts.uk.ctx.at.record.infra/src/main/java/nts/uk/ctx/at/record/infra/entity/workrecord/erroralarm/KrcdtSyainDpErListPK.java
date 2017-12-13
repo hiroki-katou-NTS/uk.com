@@ -34,4 +34,7 @@ public class KrcdtSyainDpErListPK  implements Serializable {
 	@Column(name = "PROCESSING_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate processingDate;
+
+	@Column(name = "CID")
+	public String companyID;
 }

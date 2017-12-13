@@ -50,6 +50,13 @@ public class JpaCurrAffiDept extends JpaRepository implements CurrentAffiDeptRep
 		entity.depId = domain.getDepartmentId();
 	}
 	
+	private BsymtCurrAffiDept toEntity(CurrentAffiDept domain){
+		return new BsymtCurrAffiDept(domain.getAffiDeptId(),domain.getEmployeeId(),domain.getDepartmentId(),domain.getDateHistoryItem().get(0).identifier());
+	}
+	
+	private BsymtCurrAffiDeptHist toBsymtCurrAffiDeptHist(DateHistoryItem item){
+		return new BsymtCurrAffiDeptHist(item.identifier(),item.start(),item.end());
+	}
 	/**
 	 * Update history table from domain
 	 * @param item
@@ -87,8 +94,29 @@ public class JpaCurrAffiDept extends JpaRepository implements CurrentAffiDeptRep
 
 	@Override
 	public void deleteCurrentAffiDept(String currrentAffiDeptId) {
-		// TODO Auto-generated method stub
-		this.commandProxy().remove(CurrentAffiDept.class,currrentAffiDeptId);
+		Optional<BsymtCurrAffiDept> existItem = this.queryProxy().find(currrentAffiDeptId, BsymtCurrAffiDept.class);
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid Assign workplace");
+		}
+		this.commandProxy().remove(BsymtCurrAffiDept.class,currrentAffiDeptId);
+		
+		Optional<BsymtCurrAffiDeptHist> existItemHist = this.queryProxy().find(existItem.get().histId, BsymtCurrAffiDeptHist.class);
+		
+		if (!existItemHist.isPresent()){
+			throw new RuntimeException("invalid BsymtCurrAffiDeptHist");
+		}
+		this.commandProxy().remove(BsymtCurrAffiDeptHist.class, existItemHist.get().getHistoryId());
+	}
+
+	@Override
+	public void addCurrentAffiDept(CurrentAffiDept domain) {
+		if (domain.getDateHistoryItem().isEmpty()){
+			return;
+		}
+		this.commandProxy().insert(toEntity(domain));
+		for(DateHistoryItem item : domain.getDateHistoryItem()){
+			this.commandProxy().insert(toBsymtCurrAffiDeptHist(item));
+		}
 	}
 
 }

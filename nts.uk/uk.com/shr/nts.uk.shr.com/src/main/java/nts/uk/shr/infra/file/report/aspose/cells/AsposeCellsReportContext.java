@@ -3,16 +3,20 @@ package nts.uk.shr.infra.file.report.aspose.cells;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.enterprise.inject.spi.CDI;
 
 import com.aspose.cells.Encoding;
 import com.aspose.cells.ICellsDataTable;
+import com.aspose.cells.PageSetup;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.SaveOptions;
 import com.aspose.cells.TxtSaveOptions;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
+import com.aspose.cells.WorksheetCollection;
 
 import lombok.Getter;
 import nts.uk.shr.infra.i18n.resource.I18NResourceType;
@@ -78,6 +82,25 @@ public class AsposeCellsReportContext implements AutoCloseable {
 	
 	public void setDataSource(String nameOfVariable, Object data) {
 		this.designer.setDataSource(nameOfVariable, data);
+	}
+	
+	public void setHeader(int section, String content) {
+		WorksheetCollection sheets = workbook.getWorksheets();
+		if (sheets.getCount() == 0) return;
+		PageSetup pageSetup = sheets.get(0).getPageSetup();
+		Pattern pattern = Pattern.compile("(.*)\\#\\{([\\w_\\d]+)\\}(.*)", Pattern.DOTALL);
+		Matcher matcher = pattern.matcher(content);
+		if (matcher.matches()) {
+			String resourceId = matcher.group(2);
+			I18NResourcesForUK i18n = CDI.current().select(I18NResourcesForUK.class).get();
+			StringBuffer sb = new StringBuffer(matcher.group(1));
+			i18n.getRawContent(resourceId).ifPresent(resource -> {
+				sb.append(resource).append(matcher.group(3));
+				pageSetup.setHeader(section, sb.toString());
+			});
+			return;
+		}
+		pageSetup.setHeader(section, content);
 	}
 	
 	public void processDesigner() {

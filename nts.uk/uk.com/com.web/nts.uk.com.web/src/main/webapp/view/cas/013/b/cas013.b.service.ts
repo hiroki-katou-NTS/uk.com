@@ -1,11 +1,15 @@
 module nts.uk.com.view.cas013.b.service {
     var paths: any = {
-        searchUser : "ctx/sys/auth/user/searchUser",
+        searchUser : "ctx/sys/auth/user/findByKey",
     }
 
-    export function searchUser(searchValue: string): JQueryPromise<any> {
-        
-        return nts.uk.request.ajax("com", paths.searchUser, searchValue);
+    export function searchUser(key: string, Special: boolean, Multi: boolean): JQueryPromise<any> {
+        var userKeyDto = {
+                    key: key,
+                    Special: Special,
+                    Multi: Multi
+                };
+        return nts.uk.request.ajax("com", paths.searchUser, userKeyDto);
     }
 
 

@@ -28,14 +28,14 @@ module cps008.b.vm {
                 let initData = (arr: Array<any>) => {
                     // remove all sibling sperators
                     let maps = _(arr)
-                        .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                        .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
                         .filter(x => x != -1).value();
 
                     _.each(maps, (t, i) => {
                         if (maps[i + 1] == t + 1) {
                             _.remove(arr, (m: IItemClassification) => {
                                 let item: IItemClassification = ko.unwrap(arr)[maps[i + 1]];
-                                return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                                return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
                             });
                         }
                     });
@@ -90,7 +90,7 @@ module cps008.b.vm {
         dispOrder?: number;
         className?: string;
         personInfoCategoryID?: string;
-        layoutItemType: number;
+        layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>;
     }
 
@@ -130,5 +130,12 @@ module cps008.b.vm {
             // replace x by class that implement this interface
             self.itemsClassification(param.itemsClassification || []);
         }
+    }
+
+    // define ITEM_CLASSIFICATION_TYPE
+    enum IT_CLA_TYPE {
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 }

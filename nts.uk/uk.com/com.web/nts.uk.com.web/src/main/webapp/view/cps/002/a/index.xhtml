@@ -21,6 +21,14 @@
 			<com:scriptfile path="cps002.a.vm.js" />
 			<com:scriptfile path="cps002.a.start.js" />
 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+				nts.uk.ctx.sys.gateway.dom.login.UserName
+				nts.uk.ctx.at.record.dom.stamp.CardNumber
+				nts.uk.ctx.sys.gateway.dom.login.LoginId
+				nts.uk.ctx.sys.gateway.dom.login.RawPassword
+			</com:ValidatorScript>
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -64,19 +72,29 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_103')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<div class="form_step1"
-												data-bind="ntsDatePicker: {value: hireDate , dateFormat: 'YYYY/MM/DD'}"></div>
+											<div class="form_step1" id="hireDate"
+												data-bind="ntsDatePicker: {value: hireDate , dateFormat: 'YYYY/MM/DD',required:true ,name: '#{i18n.getText('CPS002_103')}'}"></div>
 										</div>
 
 									</div>
 
 									<div class="div_line">
 										<div class="step1_top_left_col1">
-											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_104')}</div>
+											<div
+												data-bind="ntsFormLabel: {  required: true,constraint:'EmployeeCode' }">#{i18n.getText('CPS002_104')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
-												data-bind="ntsTextEditor: {value: employeeCode,required:true}" />
+												data-bind="ntsTextEditor: {
+												constraint:'EmployeeCode' ,
+												name: '#{i18n.getText('CPS002_104')}',
+												value: employeeCode,
+												required:true,
+												option: {
+												 width: '160' 
+												 
+												 }
+												}" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
 										</div>
@@ -84,79 +102,112 @@
 
 									<div class="div_line">
 										<div class="step1_top_left_col1">
-											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_105')}</div>
+											<div
+												data-bind="ntsFormLabel: {  required: true,constraint:'UserName' }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
+											constraint:'UserName',
 											required:true,
+											name: '#{i18n.getText('CPS002_105')}',
 											option: {
-												 width: '300' 
+												 width: '295' 
 												 }}" />
 										</div>
 									</div>
 
 									<div class="div_line">
 										<div class="step1_top_left_col1">
-											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_18')}</div>
+											<div data-bind="ntsFormLabel: {  constraint:'CardNumber' }">#{i18n.getText('CPS002_18')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
-												data-bind="ntsTextEditor: {value: cardNo}" />
+												data-bind="ntsTextEditor: {value: cardNo,
+												constraint:'CardNumber',
+												name: '#{i18n.getText('CPS002_18')}',
+												option: {
+												 	width: '160' 
+												 }
+												 }" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 									<div class="div_line">
 										<div class="step1_top_left_col1">
-											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_108')}</div>
+											<div
+												data-bind="ntsFormLabel: {  required: true ,constraint:'LoginId' }">#{i18n.getText('CPS002_108')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: loginId ,
+											constraint:'LoginId',
+											name: '#{i18n.getText('CPS002_108')}',
 											required:true,
 											option: {
-												 width: '163' 
+												 width: '160' 
 												 }}" />
 										</div>
 									</div>
 									<div class="div_line">
 										<div class="step1_top_left_col1">
-											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_109')}</div>
+											<div
+												data-bind="ntsFormLabel: {  required: true ,constraint:'RawPassword'}">#{i18n.getText('CPS002_109')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
+											constraint:'RawPassword',
+											name: '#{i18n.getText('CPS002_109')}',
 											value: password ,
 											required:true,
 											option: {
-												 width: '163',
+												 width: '160',
 												 textmode:'password' 
 												 }}" />
 										</div>
 									</div>
 
 								</div>
-								<div id="step1_content_top_right">
-									<div class="div_line">
-										<label>#{i18n.getText('CPS002_19')}</label>
-									</div>
-									<hr id="top_right_hr" />
-									<div class="div_line">
-										<div class="last_reg_title">
-											<b>#{i18n.getText('CPS002_20')}</b>
+								<com:ko-if bind="empRegHistory">
+									<div id="step1_content_top_right"
+										data-bind="with:empRegHistory">
+										<div class="div_line">
+											<label>#{i18n.getText('CPS002_19')}</label>
 										</div>
-										<label><b>#{i18n.getText('CPS002_21')}</b> </label>
+										<hr id="top_right_hr" />
+										<com:ko-if bind="lastRegEmployee">
+											<div class="div_line" data-bind="with:lastRegEmployee">
+												<div class="last_reg_title">
+													<b>#{i18n.getText('CPS002_20')}</b>
+												</div>
+												<div style="display: inline-block; float: left;">
+													<label><b>#{i18n.getText('CPS002_21')}</b></label> <label><b
+														data-bind="text:employeeCd"></b> </label>
+												</div>
+												<div class="lastHistName" data-bind="text:employeeName">
+												</div>
+											</div>
+										</com:ko-if>
+										<com:ko-if bind="lastRegEmployeeOfCompany">
+											<div class="div_line"
+												data-bind="with:lastRegEmployeeOfCompany">
+												<div class="last_reg_title">
+													<b>#{i18n.getText('CPS002_22')} </b>
+												</div>
+												<div style="display: inline-block; float: left;">
+													<label><b>#{i18n.getText('CPS002_21')}</b></label> <label><b
+														data-bind="text:employeeCd"></b> </label>
+												</div>
+												<div class="lastHistName" data-bind="text:employeeName">
+												</div>
+											</div>
+										</com:ko-if>
 									</div>
-									<div class="div_line">
-										<div class="last_reg_title">
-											<b>#{i18n.getText('CPS002_22')} </b>
-										</div>
-										<label><b>#{i18n.getText('CPS002_21')}</b></label>
-									</div>
-								</div>
+								</com:ko-if>
 							</div>
 							<hr id="top_hr" />
 							<div id="step1_content_bottom">
@@ -176,22 +227,22 @@
 														optionsValue: 'id' ,
 														optionsText: 'name' ,
 														value: createTypeId ,
-														enable: enable
+														enable: true
 														       		}">
 										</div>
 									</div>
 
 									<div class="step1_bot_col2">
 										<div class="div_line">
-											<button data-bind="click:openFModal">#{i18n.getText('CPS002_30')}</button>
+											<button class="small" data-bind="click:openFModal">#{i18n.getText('CPS002_30')}</button>
 										</div>
 										<div class="div_line">
-											<button data-bind="click:JumpToInitValueSettingPage">#{i18n.getText('CPS002_31')}</button>
+											<button class="small" data-bind="click:openInitModal">#{i18n.getText('CPS002_31')}</button>
 										</div>
 									</div>
 								</div>
 								<div class='div_line'>
-									<button class="large proceed next_btn" id="next_btn"
+									<button class="x-large proceed next_btn" id="step1_next_btn"
 										data-bind="click:completeStep1">#{i18n.getText('CPS002_29')}</button>
 								</div>
 							</div>
@@ -213,7 +264,7 @@
 									</com:ko-if>
 								</div>
 
-								<div class="float_left " id="search_panel">
+								<div class="float_left " id="initSettingPanel">
 									<div id="search_box" class="bg-green">
 										<i class="icon icon-searchbox"></i>
 										<div class="div_line">
@@ -321,7 +372,7 @@
 									<div class='div_line'>
 										<button class="prev_btn" id="step2_prev_btn"
 											data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
-										<button class="large proceed next_btn" id="next_btn"
+										<button class="x-large proceed next_btn" id="next_btn"
 											data-bind="click:completeStep2">#{i18n.getText('CPS002_29')}</button>
 									</div>
 								</div>
@@ -357,7 +408,7 @@
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_108')}</td>
-												<td data-bind="text:currentEmployee().employeeCode()"></td>
+												<td data-bind="text:currentEmployee().loginId()"></td>
 											</tr>
 										</tbody>
 									</table>
@@ -369,16 +420,18 @@
 							<div class="div_line" data-bind="with: layout">
 								<div
 									data-bind="ntsLayoutControl: { 
-											data: itemsClassification,
-											editAble: 2 }"></div>
+											data: listItemClsDto,
+											editAble: 2 ,
+											outData: $parent.layoutData
+											}"></div>
 							</div>
 							<!-- layout end -->
 							<div class='div_line' style="padding-bottom: 20px;">
-								<com:ko-if bind="createTypeId()!==3">
+								<com:ko-if bind="createTypeId()===3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
 								</com:ko-if>
-								<com:ko-if bind="createTypeId()===3">
+								<com:ko-if bind="createTypeId()!==3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_52')}</button>
 								</com:ko-if>

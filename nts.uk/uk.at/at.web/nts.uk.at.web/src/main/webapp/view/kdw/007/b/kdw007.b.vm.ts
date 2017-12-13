@@ -155,7 +155,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 if (self.currentAtdItemCondition.conditionAtr() === 2) {
                     //Open dialog KDL021
                     nts.uk.ui.windows.setShared('Multiple', false);
-                    nts.uk.ui.windows.setShared('AllAttendanceObj', [270, 271, 272, 273, 274, 275]);
+                    nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.uncountableAtdItem()]);
                     nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
                         let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
@@ -167,7 +167,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 } else {
                     //Open dialog KDW007C
                     let param = {
-                        lstAllItems: [270, 271, 272, 273, 274, 275],
+                        lstAllItems: lstItemCode,
                         lstAddItems: self.currentAtdItemCondition.countableAddAtdItems(),
                         lstSubItems: self.currentAtdItemCondition.countableSubAtdItems()
                     };
@@ -191,7 +191,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
                 // example wait
-                nts.uk.ui.windows.setShared('AllAttendanceObj', [270, 271, 272, 273, 274, 275]);
+                nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.singleAtdItem()]);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
                     let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
@@ -238,7 +238,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
     export class ErAlAtdItemCondition {
 
-        NO: KnockoutObservable<number>;
+        targetNO: KnockoutObservable<number>;
         conditionAtr: KnockoutObservable<number>;
         useAtr: KnockoutObservable<boolean>;
         uncountableAtdItem: KnockoutObservable<number>;
@@ -251,7 +251,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         compareEndValue: KnockoutObservable<number>;
 
         constructor(param) {
-            this.NO = ko.observable(param.NO);
+            this.targetNO = ko.observable(param.NO);
             this.conditionAtr = ko.observable(param.conditionAtr);
             this.useAtr = ko.observable(param.useAtr);
             this.uncountableAtdItem = ko.observable(param.uncountableAtdItem);

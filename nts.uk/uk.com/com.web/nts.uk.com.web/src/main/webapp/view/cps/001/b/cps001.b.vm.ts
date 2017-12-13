@@ -5,7 +5,11 @@ module cps001.b.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
-    let __viewContext: any = window['__viewContext'] || {};
+
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
 
@@ -14,17 +18,25 @@ module cps001.b.vm {
         constructor() {
             let self = this,
                 empDelete: ModelDelete = self.empDelete(),
-                employeeId: IModelDto = getShared('CPS001B_PARAM') || null;
-            var employeeIdq = "90000000-0000-0000-0000-000000000001";
-            if (employeeIdq) {
+                dataShare: IDataShare = getShared('CPS001B_PARAMS') || null;
+
+            if (dataShare) {
 
                 // Gọi service tải dữ liệu employee
-                service.getEmployee(employeeIdq).done((data: IModelDto) => {
+                service.getEmployeeInfo(dataShare.sid).done((data: IModelDto) => {
                     if (data) {
-                        empDelete.code(data.code);
+                        empDelete.code(data.code); // scd
+                        //empDelete.reason(data.reason); // reason delete
+                    }
+                });
+
+                // Gọi service tải dữ liệu name of person
+                service.getPersonInfo(dataShare.pid).done((data: IModelDto) => {
+                    if (data) {
                         empDelete.name(data.name);
                     }
                 });
+
             }
         }
 
@@ -33,16 +45,14 @@ module cps001.b.vm {
                 empDelete: IModelDto = ko.toJS(self.empDelete);
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this,
-                    //employeeId: any = getShared('CPS001B_PARAM') || null;
-                    employeeId = "90000000-0000-0000-0000-000000000001";
-                if (employeeId) {
-                    let command = { sId: employeeId, reason: empDelete.reason };
+                    dataShare: IDataShare = getShared('CPS001B_PARAMS') || null;
+                if (dataShare) {
+                    let command = { sId: dataShare.sid, reason: empDelete.reason };
                     service.deleteEmp(command).done(() => {
                         showDialog.info({ messageId: "Msg_16" }).then(function() {
                             setShared('CPS001B_VALUE', {});
                             close();
                         });
-
                     });
                 }
             }).ifCancel(() => {
@@ -52,6 +62,12 @@ module cps001.b.vm {
         close() {
             close();
         }
+    }
+
+    // Object truyen tu man A sang
+    interface IDataShare {
+        sid: string;
+        pid: string;
     }
 
     interface IModelDto {
@@ -64,6 +80,12 @@ module cps001.b.vm {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         reason: KnockoutObservable<string> = ko.observable('');
+        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+            resizeable: true,
+            placeholder: "Placeholder for text editor",
+            width: "",
+            textalign: "left"
+        }));
 
         constructor(param: IModelDto) {
             let self = this;

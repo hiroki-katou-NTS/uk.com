@@ -1,13 +1,20 @@
 package nts.uk.ctx.bs.employee.app.command.department;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
-import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryService;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
@@ -15,11 +22,17 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 	implements PeregUpdateCommandHandler<UpdateAffiliationDepartmentCommand>{
 
 	@Inject
-	private AffDepartmentRepository affDepartmentRepository;
+	private AffDepartmentHistoryRepository affDepartmentHistoryRepository;
+	
+	@Inject
+	private AffDepartmentHistoryItemRepository affDepartmentHistoryItemRepository;
+	
+	@Inject
+	private AffDepartmentHistoryService affDepartmentHistoryService;
 	
 	@Override
 	public String targetCategoryCd() {
-		return "CS00011";
+		return "CS00015";
 	}
 
 	@Override
@@ -31,9 +44,26 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 	protected void handle(CommandHandlerContext<UpdateAffiliationDepartmentCommand> context) {
 		val command = context.getCommand();
 		
-		AffiliationDepartment domain = AffiliationDepartment.createDmainFromJavaType(command.getId(), command.getStartDate(), command.getEndDate(), command.getEmployeeId(), command.getDepartmentId());
+		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
+		if (!itemHist.isPresent()){
+			throw new RuntimeException("Invalid AffDepartmentHistory");
+		}
+		Optional<DateHistoryItem> itemToBeChanged = itemHist.get().getHistoryItems().stream()
+				.filter(d->d.identifier().equals(command.getHistoryId())).findFirst();
 		
-		affDepartmentRepository.updateAffDepartment(domain);
+		if (!itemToBeChanged.isPresent()){
+			throw new RuntimeException("Invalid AffDepartmentHistory");
+		}
+		
+		itemHist.get().changeSpan(itemToBeChanged.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
+		
+		affDepartmentHistoryService.update(itemHist.get(), itemToBeChanged.get());
+		
+		
+		AffDepartmentHistoryItem histItem = AffDepartmentHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getDepartmentId(), command.getAffHistoryTranfsType(), command.getDistributionRatio());
+		affDepartmentHistoryItemRepository.update(histItem);
+		
+		
 	}
 
 }

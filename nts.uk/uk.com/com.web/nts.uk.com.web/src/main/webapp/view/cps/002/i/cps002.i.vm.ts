@@ -18,7 +18,7 @@ module cps002.i.vm {
         start(){
             let self = this;
             self.imageId(getShared("imageId"));
-            if(self.imageId() != ""){
+            if(self.imageId() != "" && self.imageId() != undefined){
                 self.getImage();
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
@@ -27,13 +27,17 @@ module cps002.i.vm {
                     }
                     self.isInit = false;
                 });
-            }
+            }else self.isChange(true);
             
         }
         upload(){
             let self = this;
             nts.uk.ui.block.grayout();
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
+            if($("#test").data("cropper") == undefined) {
+                self.close();
+                return;
+            }
             if($("#test").data("cropper").cropped)
                 self.isChange(true);
             if(isImageLoaded.imgOnView){
@@ -44,8 +48,8 @@ module cps002.i.vm {
                         setShared("imageId", self.imageId());
                         self.close();
                     });
-                }
-            }else self.close();            
+                }else self.close();
+            }else self.close();          
         }
         getImage(){
             let self = this;
@@ -53,6 +57,7 @@ module cps002.i.vm {
             $("#test").ntsImageEditor("selectByFileId", id); 
         }
         close(){
+           nts.uk.ui.block.clear();
            close();
         }
         

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +15,17 @@ import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOnHolidayOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.OutPutProcess;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.DoubleStampAlgorithm;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.LackOfStampingAlgorithm;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.StampIncorrectOrderAlgorithm;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
@@ -40,10 +48,19 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 	@Inject
 	private BasicScheduleAdapter basicScheduleAdapter;
+	
+	@Inject
+	private LackOfStampingAlgorithm lackOfStamping;
+	
+	@Inject
+	private StampIncorrectOrderAlgorithm stampIncorrectOrderAlgorithm;
+	
+	@Inject
+	private DoubleStampAlgorithm doubleStampAlgorithm;
 
 	@Override
 	public void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
-			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 
 		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode();
 
@@ -58,13 +75,27 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// after check 打刻反映時の出勤休日扱いチェック
 		// 終了状態：休日扱い - 休日系の打刻範囲を取得する
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
-			this.holidayStampRange(companyID, workInfoOfDailyPerformance, processingDate, employeeID);
+			stampReflectRangeOutput = this.holidayStampRange(companyID, workInfoOfDailyPerformance, processingDate, employeeID);
 		}
 		// 終了状態：出勤扱い - 出勤系の打刻範囲を取得する
 		else {
 			stampReflectRangeOutput = this.attendanSytemStampRange(workTimeCode, companyID, workInfoOfDailyPerformance);
 		}
+		
+		// 外出の打刻反映範囲を取得する
+		// TODO - wait Japan side
+		StampReflectTimezoneOutput stampReflectGoLeaving = stampReflectRangeOutput.getLstStampReflectTimezone().stream().filter(item -> item.getWorkNo().v() == new BigDecimal(1) && item.getClassification() == GoLeavingWorkAtr.GO_WORK)
+					.findFirst().get();
 
+		// 打刻取得範囲の作成 
+		this.createStampReflectRangeInaDay(stampReflectRangeOutput);
+		
+		
+		// part of Dung - param : stampReflectRangeOutput
+		
+		
+		// エラーチェック
+		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
 	}
 
 	/*
@@ -285,6 +316,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			deleteBeforeDesignatedTimeFromStampReflect(GoLeavingWorkAtr.LEAVING_WORK, lastestTimeLeavingWork, stampReflectRangeOutput);
 		}
 	};
+	
 	/*
 	 * next day correction
 	 */
@@ -297,14 +329,62 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			// 出勤の打刻反映範囲を補正
 			deleteAfterDesignatedTimeFromStampReflect(GoLeavingWorkAtr.GO_WORK, earliestTimeGoWork, stampReflectRangeOutput);
 			
-			//翌日の打刻反映範囲から一番早い時刻を取得
+			// 翌日の打刻反映範囲から一番早い時刻を取得
 			TimeWithDayAttr earliestLeavingWork = getEarliestTimeFromStampReflect(GoLeavingWorkAtr.LEAVING_WORK, stampReflectRangeOutput);
 			
 			// 退勤の打刻反映範囲を補正
 			deleteAfterDesignatedTimeFromStampReflect(GoLeavingWorkAtr.LEAVING_WORK, earliestLeavingWork, stampReflectRangeOutput);
 		}
 	}
+
+	/*
+	 * 	1日の打刻反映範囲を作成
+	 */
+	private void createStampReflectRangeInaDay(StampReflectRangeOutput stampReflectRangeOutput){
+		
+		// 一番早い時刻を取得
+		TimeWithDayAttr earliestTime = getEarliestTimeFromStampReflect(null, stampReflectRangeOutput);
+		
+		// 一番遅い時刻を取得
+		TimeWithDayAttr lastestTime = getLastestTimeFromListStampReflect(null, stampReflectRangeOutput);
+		
+		TimeZoneOutput temporary = new TimeZoneOutput(earliestTime, lastestTime);
+		
+		stampReflectRangeOutput.setTemporary(temporary);
+	}
 	
+	/*
+	 * エラーチェック
+	 */
+	private void errorCheck(String companyID, String employeeID, GeneralDate processingDate, WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance){
+		
+		// 出勤系打刻漏れをチェックする
+		OutPutProcess outPutLackOfStamping = this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
+		
+		// 出勤系打刻順序不正をチェックする
+		OutPutProcess outPutIncorrectOrder = this.stampIncorrectOrderAlgorithm.stampIncorrectOrder(companyID, employeeID, processingDate, timeLeavingOfDailyPerformance);
+		
+		// 出勤系二重打刻をチェックする
+		OutPutProcess outPutDoubleStamp = this.doubleStampAlgorithm.doubleStamp(companyID, employeeID, processingDate, timeLeavingOfDailyPerformance);
+		
+		// TODO: ドメインモデル「臨時勤務管理」を取得する
+		// get data from domain : 臨時勤務管理, this domain, now haven't created
+		// fake data :
+		UseAtr useAtr = UseAtr.USE;
+		if (useAtr == UseAtr.USE) {
+			
+			// 臨時系打刻漏れをチェックする
+			
+		} else {
+			
+		}
+		
+	}
+	
+	/*
+	 * 打刻反映範囲のListから一番早い時刻を取得
+	 */
 	public TimeWithDayAttr getEarliestTimeFromStampReflect(GoLeavingWorkAtr goLeavingWorkAtr,
 			StampReflectRangeOutput stampReflectRangeOutput){
 		
@@ -377,4 +457,5 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			}
 		}
 	}
+	
 }

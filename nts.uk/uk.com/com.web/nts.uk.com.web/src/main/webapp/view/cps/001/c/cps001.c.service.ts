@@ -3,14 +3,14 @@ module cps001.c.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getListTemporaryEmpDelete': 'basic/organization/deleteempmanagement/getallemployeetodelete',
+        'getListEmployeeDataMngInfo': 'basic/organization/deleteempmanagement/getallemployeetodelete',
         'getDetail': 'basic/organization/deleteempmanagement/getdetailemployeetodelete/{0}',
         'restoreData': 'basic/organization/deleteempmanagement/restoredata',
         'deleteEmp': 'basic/organization/deleteempmanagement/deleteemp/{0}'
     };
 
     export function getData() {
-        return ajax(paths.getListTemporaryEmpDelete);
+        return ajax(paths.getListEmployeeDataMngInfo);
     }
 
     export function getDetail(employeeId: any) {

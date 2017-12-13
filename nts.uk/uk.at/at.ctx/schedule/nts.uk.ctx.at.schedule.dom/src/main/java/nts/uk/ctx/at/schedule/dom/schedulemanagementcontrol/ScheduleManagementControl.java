@@ -35,5 +35,12 @@ public class ScheduleManagementControl extends AggregateRoot{
 		this.scheduleManagementAtr = scheduleManagementAtr;
 	}
 	
-	
+	/**
+	 * Checks if is schedule management atr.
+	 *
+	 * @return true, if is schedule management atr
+	 */
+	public boolean isScheduleManagementAtr(){
+		return this.scheduleManagementAtr == UseAtr.USE;
+	}
 }

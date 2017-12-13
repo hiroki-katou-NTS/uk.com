@@ -3,8 +3,8 @@ package nts.uk.ctx.pereg.app.find.processor;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 
 @Data
 public class PeregQueryResult {
@@ -33,7 +33,6 @@ public class PeregQueryResult {
 		} catch (Exception e) {
 			return null;
 		}
-		
 		return self;
 	}
 }

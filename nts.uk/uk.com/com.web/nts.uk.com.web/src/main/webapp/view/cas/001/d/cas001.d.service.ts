@@ -3,9 +3,9 @@ module nts.uk.com.view.cas001.d.service {
     import format = nts.uk.text.format;
 
     var paths = {
-        getAllCategory: "ctx/bs/person/roles/auth/category/findAllCategory/{0}",
-        getAllCategoryAuth:"ctx/bs/person/roles/auth/category/find/categoryAuth/{0}",
-        update: "ctx/bs/person/roles/auth/category/update"
+        getAllCategory: "ctx/pereg/roles/auth/category/findAllCategory/{0}",
+        getAllCategoryAuth:"ctx/pereg/roles/auth/category/find/categoryAuth/{0}",
+        update: "ctx/pereg/roles/auth/category/update"
     }
     /**
      * Get all category 
