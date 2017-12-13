@@ -30,7 +30,7 @@
 						<ui:include src="/view/ccg/026/component/index.xhtml" />
 						<div>
 							<b>Count:</b> <span
-								data-bind="text: ko.toJSON(listPermissions.filter(item => item.availability).length)"></span>
+								data-bind="text: ko.toJSON(listPermissions.length)"></span>
 						</div>
 						<b>Result:</b>
 						<table id="fixed-table">
@@ -64,7 +64,9 @@
 <com:scriptfile path="view/ccg/026/component/component.vm.js" />
 
 // Use in HTML
-<ui:include src="/view/ccg/026/component/index.xhtml" />]]></pre>
+<div bind-data = "with: component">
+<ui:include src="/view/ccg/026/component/index.xhtml" />
+</div>]]></pre>
 								<h2>TypeScript</h2>
 <pre><![CDATA[module nts.uk.com.view.cdl026.a {
 	import getText = nts.uk.resource.getText;
