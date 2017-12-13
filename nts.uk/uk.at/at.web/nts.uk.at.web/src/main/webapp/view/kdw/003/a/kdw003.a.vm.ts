@@ -113,8 +113,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.showProfileIcon.subscribe((val) => {
                 self.reloadGrid();
             });
+            $(document).mouseup(function(e) {
+                var container = $(".ui-tooltip");
+                if (!container.is(e.target) &&
+                    container.has(e.target).length === 0) {
+                     $("#tooltip").hide();
+                }
+            });
         }
-
+         helps(event){
+             var self = this;
+             $('#tooltip').css({
+                 'left': event.pageX+40,
+                 'top':  event.pageY-20
+             });
+             $("#tooltip").show();
+         }
         initLegendButton() {
             var self = this;
             self.legendOptions = {
@@ -806,25 +820,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: self.fixColGrid() },
                     { name: 'Resizing', columnSettings: [{ columnKey: 'id', allowResizing: false, minimumWidth: 0 }] },
                     { name: 'MultiColumnHeaders' },
-                    {
-                        name: "Tooltips", columnSettings: [
-                            { columnKey: "state", allowTooltips: true },
-                        ],
-                        visibility: "always",
-                        showDelay: 1000,
-                        tooltipShowing: function(evt, args) {
-                            if(args.columnKey =="state")
-                            args.tooltip = "custom text";
-                        }
-                    }
                 ],
                 ntsFeatures: self.createNtsFeatures(),
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     {
                         name: 'Link2',
-                        click: function() {
-                            let cell = $("#dpGrid").igGrid("activeCell");
+                        click: function(event) {
+                           // self.helps(event);
+                            let cell : any = $("#dpGrid").igGrid("activeCell");
                             if (cell) {
                                 let rowId = cell.id;
                                 let key = cell.columnKey;
@@ -844,6 +848,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             $(document).delegate("#dpGrid", 'iggridupdatingeditcellending', function(evt, ui) {
                 // self.editValue({ rowId: ui.rowID, key: ui.columnKey, value: ui.value });
+                let dfd = $.Deferred();
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
                 if (ui.columnKey.indexOf("Code") != -1) {
                     let item = _.find(self.lstAttendanceItem(), function(data) {
                         return data.id == ui.columnKey.substring(4, ui.columnKey.length);
@@ -882,9 +889,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 param.param.workplaceId = employee.workplaceId;
                                 break
                         }
-                        let dfd = $.Deferred();
                         service.findCodeName(param).done((data) => {
                             $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
+                            nts.uk.ui.block.clear();
                             dfd.resolve();
                         });
                         dfd.promise();
@@ -1364,7 +1371,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }, true);
 
                     nts.uk.ui.windows.sub.modal('com', '/view/cdl/002/a/index.xhtml').onClosed(function(): any {
-                        nts.uk.ui.block.clear();
+                       // nts.uk.ui.block.clear();
                         var isCancel = nts.uk.ui.windows.getShared('CDL002Cancel');
                         if (isCancel) {
                             return;
@@ -1374,6 +1381,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             typeDialog: 8,
                         }
                         service.findAllCodeName(param8).done((data: any) => {
+                            nts.uk.ui.block.clear();
                             codeName = _.find(data, (item: any) => {
                                 return item.code == output;
                             });

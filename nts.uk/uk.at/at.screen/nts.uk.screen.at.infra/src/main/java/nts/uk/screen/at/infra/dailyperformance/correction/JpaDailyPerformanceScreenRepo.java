@@ -53,7 +53,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime_old.KwtmtWorkTime;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
-import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployee;
+import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmploymentPK;
 import nts.uk.ctx.bs.employee.infra.entity.employment.affiliate.KmnmtAffiliEmploymentHist;
@@ -240,7 +240,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_WORKPLACE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT DISTINCT s FROM BsymtEmployee s ");
+		builderString.append("SELECT DISTINCT s FROM BsymtEmployeeDataMngInfo s ");
 		// builderString.append("JOIN KmnmtAffiliClassificationHist c ");
 		// builderString.append("JOIN KmnmtAffiliEmploymentHist e ");
 		// builderString.append("JOIN KmnmtAffiliJobTitleHist j ");
@@ -251,7 +251,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		// builderString.append("AND j.kmnmtJobTitleHistPK.jobId IN :lstJob ");
 		// builderString.append("AND c.kmnmtClassificationHistPK.clscd IN
 		// :lstClas ");
-		builderString.append("AND s.bsymtEmployeePk.sId = w.kmnmtAffiliWorkplaceHistPK.empId ");
+		builderString.append("AND s.bsymtEmployeeDataMngInfoPk.sId = w.kmnmtAffiliWorkplaceHistPK.empId ");
 		// builderString.append("OR s.bsymtEmployeePk.sId =
 		// e.kmnmtEmploymentHistPK.empId ");
 		// builderString.append("OR s.bsymtEmployeePk.sId =
@@ -505,21 +505,21 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
-		List<BsymtEmployee> lstEmployee = this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployee.class)
+		List<BsymtEmployeeDataMngInfo> lstEmployee = this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployeeDataMngInfo.class)
 				.setParameter("lstWkp", lstWorkplace.keySet().stream().collect(Collectors.toList())).getList();
 		List<BpsmtPerson> lstPerson = this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
 				.setParameter("lstPersonId", lstEmployee.stream().map((employee) -> {
-					return employee.personId;
+					return employee.bsymtEmployeeDataMngInfoPk.pId;
 				}).collect(Collectors.toList())).getList();
 		return lstEmployee.stream().map((employee) -> {
 			for (BpsmtPerson person : lstPerson) {
-				if (person.bpsmtPersonPk.pId.equals(employee.personId)) {
-					return new DailyPerformanceEmployeeDto(employee.bsymtEmployeePk.sId, employee.employeeCode,
+				if (person.bpsmtPersonPk.pId.equals(employee.bsymtEmployeeDataMngInfoPk.pId)) {
+					return new DailyPerformanceEmployeeDto(employee.bsymtEmployeeDataMngInfoPk.sId, employee.employeeCode,
 							person.personName, lstWorkplace.values().stream().findFirst().get(),
 							lstWorkplace.keySet().stream().findFirst().get(), "", false);
 				}
 			}
-			return new DailyPerformanceEmployeeDto(employee.bsymtEmployeePk.sId, employee.employeeCode, "",
+			return new DailyPerformanceEmployeeDto(employee.bsymtEmployeeDataMngInfoPk.sId, employee.employeeCode, "",
 					lstWorkplace.values().stream().findFirst().get(), lstWorkplace.keySet().stream().findFirst().get(),
 					"", false);
 		}).collect(Collectors.toList());

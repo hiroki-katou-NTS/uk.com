@@ -459,6 +459,9 @@ module kcp.share.list {
             if (this.isMultiple) {
                 return [data.code];
             }
+            if (option.listType = ListType.JOB_TITLE) {
+                return data.id;
+            }
             return data.code;
         }
         
