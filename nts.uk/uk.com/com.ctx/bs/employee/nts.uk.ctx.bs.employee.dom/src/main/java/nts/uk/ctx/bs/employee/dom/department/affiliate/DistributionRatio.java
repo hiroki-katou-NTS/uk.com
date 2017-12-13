@@ -1,19 +1,23 @@
 package nts.uk.ctx.bs.employee.dom.department.affiliate;
 
-import nts.arc.primitive.StringPrimitiveValue;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMaxValue;
+import nts.arc.primitive.constraint.DecimalMinValue;
 
 
-//@StringMaxLength(100)
-public class DistributionRatio extends StringPrimitiveValue<DistributionRatio>{
+@DecimalMinValue("0")
+@DecimalMaxValue("100")
+public class DistributionRatio extends DecimalPrimitiveValue<DistributionRatio>{
 
 	/**
 	 *  
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public DistributionRatio(String rawValue) {
+	public DistributionRatio(BigDecimal rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }
