@@ -23,7 +23,7 @@ public class RegisterRoleSetGrantedPersonCommandHandler extends CommandHandler<R
 		String companyId = AppContexts.user().companyId();
 		if (command.getMode() == 0) {
 			if (roleSetPersonRepo.getByEmployeeId(command.getEmployeeId()).isPresent()) {
-				throw new BusinessException("Msg_716");
+				throw new BusinessException("Msg_716", "CAS014_26");
 			}
 			roleSetPersonRepo.insert(new RoleSetGrantedPerson(command.getRoleSetCd(), companyId, command.getStartDate(),
 					command.getEndDate(), command.getEmployeeId()));
