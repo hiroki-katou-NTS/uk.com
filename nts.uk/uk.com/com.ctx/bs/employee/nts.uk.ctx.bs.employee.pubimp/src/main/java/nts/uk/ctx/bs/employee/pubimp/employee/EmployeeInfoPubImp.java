@@ -17,11 +17,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
-import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
@@ -45,6 +41,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 	@Inject
 	AffCompanyHistRepository affCompanyHistRepo;
+	
+
 
 	@Override
 	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode) {
@@ -186,12 +184,12 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 											person.getPersonNameGroup().getPersonName().toString() == null ? "" : null);
 									empInfoExport.setEmployeeId(affCompanyHistByEmployee.getSId() == null ? "" : null);
 									if (affCompanyHistByEmployee.getSId() != null) {
-										Optional<Employee> employeeOpt = this.repo
-												.getBySid(affCompanyHistByEmployee.getSId());
+										Optional<EmployeeDataMngInfo> employeeOpt = this.empDataMngRepo
+												.findByEmpId(affCompanyHistByEmployee.getSId());
 										if (employeeOpt.isPresent()) {
-											Employee employee = employeeOpt.get();
+											EmployeeDataMngInfo employee = employeeOpt.get();
 											empInfoExport.setEmployeeCode(
-													employee.getSCd() == null ? "" : employee.getSCd().v());
+													employee.getEmployeeCode() == null ? "" : employee.getEmployeeCode().v());
 											empInfoExport.setCompanyId(employee.getCompanyId());
 										}
 									}
