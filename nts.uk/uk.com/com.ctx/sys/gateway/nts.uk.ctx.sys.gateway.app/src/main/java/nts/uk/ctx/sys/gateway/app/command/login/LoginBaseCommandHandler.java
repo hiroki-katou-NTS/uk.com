@@ -15,7 +15,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
@@ -25,13 +24,12 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
- * The Class BaseCommand.
+ * The Class LoginBaseCommandHandler.
  *
- * @param <T>
- *            the generic type
+ * @param <T> the generic type
  */
 @Stateless
-public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
+public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 
 	/** The employee adapter. */
 	@Inject
@@ -76,18 +74,8 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode().v(), em.getCompanyId(),
 				companyCode, em.getEmployeeId(), em.getEmployeeCode());
 	}
-
-//	protected void setLoggedInfo(User user) {
-//		EmployeeImport em = this.getEmployeeInfo("",user.getAssociatedPersonId());
-//		CompanyInformationImport com = this.getCompanyInfo("");
-//		if (em == null || com == null) {
-//			throw new BusinessException("");
-//		}
-//		//set info to session 
-//		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode().v(), em.getCompanyId(),
-//				com.getCompanyCode(), em.getEmployeeId(), em.getEmployeeCode());
-//	}
 	
+	//init session 
 	protected void initSession(User user) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatedPersonId());
 		if (lstCompanyId.isEmpty()) {
@@ -97,56 +85,17 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
 					user.getAssociatedPersonId());
-			// save to session
-			if (opEm.isPresent()) {
-				// TODO get company info
 
-				this.setLoggedInfo(user, opEm.get(), "TODO companyCode");
-			}
+			// save to session
+			CompanyInformationImport companyInformation = this.companyInformationAdapter
+					.findById(opEm.get().getCompanyId());
+
+			this.setLoggedInfo(user, opEm.get(), companyInformation.getCompanyCode());
 		}
 		this.setRoleId(user.getUserId());
 	}
 	
-//	protected List<String> getListCompany(User user) {
-//		List<String> lstCompanyId = new ArrayList<String>();
-//		// get roleIndividualGrant
-//		RoleIndividualGrantImport individualGrant = roleIndividualGrantAdapter.getByUser(user.getUserId(),
-//				GeneralDate.today());
-//		// get roles by roleId
-//		List<RoleImport> lstRole = roleAdapter.getAllById(individualGrant.getRoleId());
-//		// TODO get list employee imported by User associated Id #No.124
-//		List<EmployeeImport> lstEm = Arrays.asList();
-//
-//		// merge duplicate companyId from lstRole and lstEm
-//		for (RoleImport item : lstRole) {
-//			if (item.getCompanyId() != null) {
-//				lstCompanyId.add(item.getCompanyId());
-//			}
-//		}
-//
-//		for (EmployeeImport em : lstEm) {
-//			boolean haveComId = lstCompanyId.stream().anyMatch(item -> {
-//				return em.getCompanyId().equals(item);
-//			});
-//			if (!haveComId) {
-//				lstCompanyId.add(em.getCompanyId());
-//			}
-//		}
-//		return lstCompanyId;
-//	}
-	protected EmployeeImport getEmployeeInfo(String companyId, String employeeCode) {
-		// TODO
-		EmployeeImport em = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode).get();
-		return em;
-//		return null;
-	}
-	
-	protected CompanyInformationImport getCompanyInfo(String companyId) {
-		// TODO
-		CompanyInformationImport com = companyInformationAdapter.findAll().get(0);
-		return com;
-	}
-	
+	//set roll id into login user context 
 	protected void setRoleId(String userId)
 	{
 		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);

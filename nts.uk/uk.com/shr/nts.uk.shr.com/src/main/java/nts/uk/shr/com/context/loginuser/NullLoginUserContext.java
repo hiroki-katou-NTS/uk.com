@@ -63,8 +63,7 @@ public class NullLoginUserContext implements LoginUserContext, Serializable {
 
 	@Override
 	public SelectedLanguage language() {
-		// TODO Auto-generated method stub
-		return null;
+		return new SelectedLanguage();
 	}
 
 }

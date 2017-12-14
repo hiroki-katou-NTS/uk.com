@@ -36,6 +36,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.companyId = :cId AND e.employeeCode= :sCd AND e.delStatus=0");
+	
+	private static final String GET_LIST_BY_CID_SCD = String.join(" ", SELECT_NO_PARAM,
+			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
@@ -305,6 +308,22 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("pid", pid)
 				.getSingleOrNull();
 
+		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
+		if (entity != null) {
+			empDataMng = toDomain(entity);
+			return Optional.of(empDataMng);
+
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd) {
+		// query to Req 125
+		BsymtEmployeeDataMngInfo entity =  queryProxy().query(GET_LIST_BY_CID_SCD, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cId", cId).setParameter("sCd", sCd).getSingleOrNull();
+		
 		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
 		if (entity != null) {
 			empDataMng = toDomain(entity);
