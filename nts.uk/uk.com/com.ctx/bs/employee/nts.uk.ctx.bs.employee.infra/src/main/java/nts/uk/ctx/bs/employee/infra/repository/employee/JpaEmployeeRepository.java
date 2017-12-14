@@ -96,7 +96,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	private final String SELECT_EMPLOYEE_BY_EMP_ID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :employeeId";
 
-	public final String SELECT_BY_EMP_ID = "SELECT distinct c FROM BsymtEmployee c "
+	public final String SELECT_BY_EMP_ID = "SELECT distinct c FROM BsymtEmployeeDataMngInfo c "
 			+ " INNER JOIN BsymtJobEntryHistory d " + " ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
 			+ " AND c.companyId = d.companyId" + " WHERE c.companyId = :companyId " + " AND c.bsymtEmployeePk.sId =:sId"
 			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate" + " AND d.retireDate >= :standardDate";
@@ -293,7 +293,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 		return returnStr;
 	}
-
 
 	// laitv
 	@Override
