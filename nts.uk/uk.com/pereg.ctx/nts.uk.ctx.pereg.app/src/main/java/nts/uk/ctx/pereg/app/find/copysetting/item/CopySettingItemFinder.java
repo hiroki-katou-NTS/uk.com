@@ -53,6 +53,11 @@ public class CopySettingItemFinder {
 			}
 		}
 
+		itemList.forEach(x -> {
+			result.add(new SettingItemDto(x.getCategoryCode(), x.getItemDefId(), x.getItemCode(), x.getItemName(),
+					x.getIsRequired().value, SettingItemDto.createSaveDataDto(1, ""), x.getDataType()));
+		});
+
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
@@ -61,16 +66,12 @@ public class CopySettingItemFinder {
 
 		dataMap.forEach((k, v) -> {
 
-			Optional<EmpCopySettingItem> itemInfoOpt = itemList.stream().filter(x -> x.getItemCode().equals(k))
-					.findFirst();
+			Optional<SettingItemDto> itemDtoOpt = result.stream().filter(x -> x.getItemCode().equals(k)).findFirst();
 
-			if (itemInfoOpt.isPresent()) {
-				EmpCopySettingItem itemInfo = itemInfoOpt.get();
+			if (itemDtoOpt.isPresent()) {
+				SettingItemDto itemInfo = itemDtoOpt.get();
 
-				result.add(new SettingItemDto(itemInfo.getCategoryCode(), itemInfo.getItemDefId(), k,
-						itemInfo.getItemName(), itemInfo.getIsRequired().value,
-						SettingItemDto.createSaveDataDto(1, v != null ? v.toString() : ""),
-						itemInfo.getDataType()));
+				itemInfo.setData(v != null ? v.toString() : "");
 			}
 
 		});
