@@ -317,7 +317,9 @@ module cps001.a.vm {
                     };
 
                     service.removeCurrentCategoryData(query).done(x => {
-                        category.categoryType.valueHasMutated();
+                        info({ messageId: "Msg_16" }).then(() => {
+                            category.categoryType.valueHasMutated();
+                        });
                     });
                 };
             });
@@ -442,7 +444,7 @@ module cps001.a.vm {
                     if (tab == TABS.CATEGORY) {
                         cbid.id.valueHasMutated();
                     } else {
-                        
+
                     }
                 });
             }).fail((mes) => {
