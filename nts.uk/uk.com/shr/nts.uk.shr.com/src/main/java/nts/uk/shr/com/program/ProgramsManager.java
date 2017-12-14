@@ -1131,7 +1131,9 @@ public class ProgramsManager {
 	
 	public static final Program CDL025 = new Program(WebAppId.COM, ProgramIdConsts.CDL025, "CDL025_1",
 			"/view/cdl/025/index.xhtml");
-
+	
+	public static final Program CCG026 = new Program(WebAppId.COM, ProgramIdConsts.CCG026, "CCG025_2",
+			"/view/ccg/026/component/index.xhtml");
 	
 	// TODO: Define new programs here.
 
