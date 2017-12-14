@@ -213,7 +213,20 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 			addOptinalInputs(fixedInputs);
 
-			PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, fixedInputs);
+			List<ItemsByCategory> updateInputs = new ArrayList<ItemsByCategory>();
+
+			fixedInputs.forEach(ctg -> {
+				List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'S')
+						.collect(Collectors.toList());
+				if (!CollectionUtil.isEmpty(lstItem)) {
+					ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+					updateInputs.add(newItemCtg);
+
+				}
+
+			});
+
+			PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
 
 			this.commandFacade.update(updateContainer);
 
@@ -229,10 +242,18 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Transactional
 	private void addOptinalInputs(List<ItemsByCategory> fixedInputs) {
 		List<ItemsByCategory> addInputs = new ArrayList<ItemsByCategory>();
-		addInputs = fixedInputs;
 
-		addInputs.forEach(ctg -> ctg.setItems(
-				ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O').collect(Collectors.toList())));
+		fixedInputs.forEach(ctg -> {
+
+			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O')
+					.collect(Collectors.toList());
+			if (!CollectionUtil.isEmpty(lstItem)) {
+				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+				addInputs.add(newItemCtg);
+
+			}
+
+		});
 
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, addInputs);
 
@@ -321,31 +342,29 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		dataList.forEach(x -> {
 
-			String StringData = getItemValueById(inputs, x.getItemCode());
+			ItemValue itemVal = getItemById(inputs, x.getItemCode());
 
-			if (StringData != null) {
-				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value, StringData));
+			if (itemVal != null) {
+				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
+						itemVal.value() != null ? itemVal.value().toString() : ""));
+				x.setDataType(itemVal.itemValueType().value);
 			}
 		});
 
 	}
 
-	private String getItemValueById(List<ItemsByCategory> inputs, String itemCode) {
-		String returnString = null;
+	private ItemValue getItemById(List<ItemsByCategory> inputs, String itemCode) {
 
 		for (ItemsByCategory ctg : inputs) {
 
 			Optional<ItemValue> optItem = ctg.getItems().stream().filter(x -> x.itemCode().equals(itemCode))
 					.findFirst();
 			if (optItem.isPresent()) {
-				if (optItem.get().value() != null) {
-					returnString = optItem.get().value().toString();
-				}
-				break;
+				return optItem.get();
 			}
 
 		}
-		return returnString;
+		return null;
 
 	}
 

@@ -27,49 +27,56 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 			+ "WHERE aw.sid = :sid and aw.cid = :companyId ORDER BY aw.strDate";
 	private static final String SELECT_BY_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
-	
+
 	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.hisId = :histId";
-	
+
 	/**
 	 * Convert from domain to entity
+	 * 
 	 * @param employeeID
 	 * @param item
 	 * @return
 	 */
-	private BsymtAffiWorkplaceHist toEntity(String cid, String employeeID, DateHistoryItem item){
-		return new BsymtAffiWorkplaceHist(cid,item.identifier(),employeeID,item.start(),item.end());
+	private BsymtAffiWorkplaceHist toEntity(String cid, String employeeID, DateHistoryItem item) {
+		return new BsymtAffiWorkplaceHist(item.identifier(), employeeID, cid, item.start(), item.end());
 	}
-	
+
 	/**
 	 * Update entity from domain
+	 * 
 	 * @param employeeID
 	 * @param item
 	 * @return
 	 */
-	private void updateEntity(DateHistoryItem item,BsymtAffiWorkplaceHist entity){	
+	private void updateEntity(DateHistoryItem item, BsymtAffiWorkplaceHist entity) {
 		entity.setStrDate(item.start());
 		entity.setEndDate(item.end());
 	}
+
 	/**
 	 * Convert from entity to domain
+	 * 
 	 * @param entity
 	 * @return
 	 */
-	private AffWorkplaceHistory_ver1 toDomainTemp(List<BsymtAffiWorkplaceHist> listHist){
-		AffWorkplaceHistory_ver1 domain = new AffWorkplaceHistory_ver1(listHist.get(0).getCid(), listHist.get(0).getSid(), new ArrayList<DateHistoryItem>());
-		for (BsymtAffiWorkplaceHist item : listHist){
-			DateHistoryItem dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
+	private AffWorkplaceHistory_ver1 toDomainTemp(List<BsymtAffiWorkplaceHist> listHist) {
+		AffWorkplaceHistory_ver1 domain = new AffWorkplaceHistory_ver1(listHist.get(0).getCid(),
+				listHist.get(0).getSid(), new ArrayList<DateHistoryItem>());
+		for (BsymtAffiWorkplaceHist item : listHist) {
+			DateHistoryItem dateItem = new DateHistoryItem(item.getHisId(),
+					new DatePeriod(item.getStrDate(), item.getEndDate()));
 			domain.getHistoryItems().add(dateItem);
 		}
 		return domain;
 	}
+
 	@Override
 	public Optional<AffWorkplaceHistory_ver1> getAffWorkplaceHistByEmployeeId(String companyId, String employeeId) {
-		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(QUERY_GET_AFFWORKPLACEHIST_BYSID,BsymtAffiWorkplaceHist.class)
-				.setParameter("sid", employeeId)
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy()
+				.query(QUERY_GET_AFFWORKPLACEHIST_BYSID, BsymtAffiWorkplaceHist.class).setParameter("sid", employeeId)
 				.setParameter("companyId", companyId).getList();
-		if (listHist != null && !listHist.isEmpty()){
+		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
@@ -77,14 +84,14 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 
 	@Override
 	public void add(String cid, String sid, DateHistoryItem item) {
-		this.commandProxy().insert(toEntity(cid, sid,item));
+		this.commandProxy().insert(toEntity(cid, sid, item));
 	}
 
 	@Override
 	public void delete(String histId) {
-		
+
 		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(histId, BsymtAffiWorkplaceHist.class);
-		if (!histItem.isPresent()){
+		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 		}
 		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, histId);
@@ -92,19 +99,21 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 
 	@Override
 	public void update(DateHistoryItem item) {
-		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(item.identifier(), BsymtAffiWorkplaceHist.class);
-		if (!histItem.isPresent()){
+		Optional<BsymtAffiWorkplaceHist> histItem = this.queryProxy().find(item.identifier(),
+				BsymtAffiWorkplaceHist.class);
+		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtAffiWorkplaceHist");
 		}
 		updateEntity(item, histItem.get());
 		this.commandProxy().update(histItem.get());
 	}
+
 	@Override
 	public Optional<AffWorkplaceHistory_ver1> getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
-		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_EMPID_STANDDATE,BsymtAffiWorkplaceHist.class)
-				.setParameter("employeeId", employeeId)
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy()
+				.query(SELECT_BY_EMPID_STANDDATE, BsymtAffiWorkplaceHist.class).setParameter("employeeId", employeeId)
 				.setParameter("standDate", standDate).getList();
-		if (!listHist.isEmpty()){
+		if (!listHist.isEmpty()) {
 			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
@@ -112,12 +121,12 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 
 	@Override
 	public Optional<AffWorkplaceHistory_ver1> getByHistId(String histId) {
-		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_HISTID,BsymtAffiWorkplaceHist.class)
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_HISTID, BsymtAffiWorkplaceHist.class)
 				.setParameter("histId", histId).getList();
-		if (!listHist.isEmpty()){
+		if (!listHist.isEmpty()) {
 			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
 	}
-	
+
 }

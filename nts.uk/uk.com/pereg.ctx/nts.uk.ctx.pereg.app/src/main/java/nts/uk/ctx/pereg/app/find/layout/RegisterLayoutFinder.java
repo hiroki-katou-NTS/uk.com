@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
@@ -24,11 +25,14 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -60,6 +64,9 @@ public class RegisterLayoutFinder {
 
 	private InitValueSetItemFinder initItemFinder;
 
+	@Inject
+	private I18NResourcesForUK ukResouce;
+	
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
 
@@ -125,7 +132,7 @@ public class RegisterLayoutFinder {
 			listItemCls.forEach(itemCls -> {
 				if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
 					itemCls.getListItemDf().forEach(itemDef -> {
-						LayoutPersonInfoValueDto newLayoutDto = createLayoutInfoDtoFromDef(null, itemDef,
+						LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
 								ActionRole.EDIT.value);
 
 						if (CollectionUtil.isEmpty(itemCls.getItems())) {
@@ -180,11 +187,17 @@ public class RegisterLayoutFinder {
 			LayoutPersonInfoClsDto cls = clsOpt.get();
 			Optional<PerInfoItemDefDto> itemDef = cls.getListItemDf().stream()
 					.filter(itemDf -> itemDf.getId().equals(setItem.getItemDefId())).findFirst();
-			LayoutPersonInfoValueDto newLayoutDto = createLayoutInfoDtoFromDef(setItem, itemDef.get(),
+			LayoutPersonInfoValueDto infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef.get(),
 					ActionRole.EDIT.value);
+
+			PerInfoItemDefForLayoutDto newLayoutDto = createLayoutInfoDtoFromDef(setItem, itemDef.get(),
+					ActionRole.EDIT.value);
+			cls.getListItemDf().remove(itemDef);
+			cls.getListItemDf().add(newLayoutDto);
+
 			if (CollectionUtil.isEmpty(cls.getItems())) {
 				List<Object> itemList = new ArrayList<Object>();
-				itemList.add(newLayoutDto);
+				itemList.add(infoValue);
 				cls.setItems(itemList);
 			} else {
 
@@ -194,7 +207,7 @@ public class RegisterLayoutFinder {
 		}
 	}
 
-	private LayoutPersonInfoValueDto createLayoutInfoDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
+	private LayoutPersonInfoValueDto createPersonInfoValueDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
 			int actionRole) {
 
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
@@ -211,12 +224,50 @@ public class RegisterLayoutFinder {
 			dataObject.setValue(setItem.getValueAsString());
 			dataObject.setCategoryCode(setItem.getCategoryCode());
 		}
+
 		int dataTypeValue = dataObject.getItem().getDataTypeValue();
 		if (dataTypeValue == 6) {
 			SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
 			List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
 					GeneralDate.today());
 			dataObject.setLstComboBoxValue(lstComboBox);
+		}
+
+		return dataObject;
+
+	}
+
+	private PerInfoItemDefForLayoutDto createLayoutInfoDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
+			int actionRole) {
+
+		PerInfoItemDefForLayoutDto dataObject = new PerInfoItemDefForLayoutDto();
+
+		dataObject.setPerInfoCtgId(itemDef.getPerInfoCtgId());
+		dataObject.setId(itemDef.getId());
+		dataObject.setItemName(itemDef.getItemName());
+		dataObject.setItemCode(itemDef.getItemCode());
+		dataObject.setRow(0);
+		dataObject.setIsRequired(itemDef.getIsRequired());
+		dataObject.setItemTypeState(itemDef.getItemTypeState());
+		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
+
+		dataObject.setSelectionItemRefType(itemDef.getSelectionItemRefType());
+		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
+		dataObject.setSelectionItemRefTypes(selectionItemRefTypes);
+		if (setItem != null) {
+			dataObject.setPerInfoCtgCd(setItem.getCategoryCode());
+		}
+		if (itemDef.getItemTypeState().getItemType() == 2) {
+
+			SingleItemDto singleItem = (SingleItemDto) itemDef.getItemTypeState();
+
+			int dataTypeValue = singleItem.getDataTypeState().getDataTypeValue();
+			if (dataTypeValue == 6) {
+				SelectionItemDto selectionItemDto = (SelectionItemDto) singleItem.getDataTypeState();
+				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
+						GeneralDate.today());
+				dataObject.setLstComboxBoxValue(lstComboBox);
+			}
 		}
 
 		return dataObject;
