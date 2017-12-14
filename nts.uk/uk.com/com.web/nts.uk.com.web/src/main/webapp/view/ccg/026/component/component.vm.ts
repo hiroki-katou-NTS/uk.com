@@ -93,7 +93,7 @@ module nts.uk.com.view.ccg026.component {
                                 }
                             } else {
                                 for (var i = 0, len = self.listPermissions().length; i < len; i++) {
-                                    self.listPermissions()[i].availability(self.listPermissions()[i].initialValue);
+                                    self.listPermissions()[i].availability(self.listPermissions()[i].initialValue || false);
                                 }
                             }
                             self.listPermissions.valueHasMutated();
@@ -104,7 +104,7 @@ module nts.uk.com.view.ccg026.component {
                         });
                 } else {
                     for (var i = 0, len = self.listPermissions().length; i < len; i++) {
-                        self.listPermissions()[i].availability(self.listPermissions()[i].initialValue);
+                        self.listPermissions()[i].availability(self.listPermissions()[i].initialValue || false);
                     }
                     self.listPermissions.valueHasMutated();
                     dfd.resolve();
