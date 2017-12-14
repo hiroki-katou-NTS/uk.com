@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.pereg.infra.repository.person.persinfoctgdata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 	public List<PerInfoCtgData> getByPerIdAndCtgId(String perId, String ctgId) {
 		List<PpemtPerInfoCtgData> datas = this.queryProxy().query(GET_BY_CTGID_PID, PpemtPerInfoCtgData.class)
 				.setParameter("pInfoCtgId", ctgId).setParameter("pId", perId).getList();
+		if(datas == null) return new ArrayList<>();
 		return datas.stream().map(entity -> new PerInfoCtgData(entity.recordId, entity.pInfoCtgId, entity.pId))
 				.collect(Collectors.toList());
 
