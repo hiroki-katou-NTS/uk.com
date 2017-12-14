@@ -82,13 +82,19 @@ module nts.uk.com.view.ccg026.component {
                         .done((dataAvailability: Array<model.IAvailabilityPermission>) => {
                             //process data
                             //filter get only function have availability permission
-                            dataAvailability = dataAvailability.filter(item => item.availability);
-                            //setting check for ListOfFunctionPermission and show
-                            for (var i = 0, len = self.listPermissions().length; i < len; i++) {
-                                var index = _.findIndex(dataAvailability, function(x: model.IAvailabilityPermission)
-                                { return x.functionNo == self.listPermissions()[i].functionNo });
-                                var isAvailability: boolean = (index > -1);
-                                self.listPermissions()[i].availability(isAvailability || false);
+                            if (dataAvailability || dataAvailability.length > 0) {
+                                dataAvailability = dataAvailability.filter(item => item.availability);
+                                //setting check for ListOfFunctionPermission and show
+                                for (var i = 0, len = self.listPermissions().length; i < len; i++) {
+                                    var index = _.findIndex(dataAvailability, function(x: model.IAvailabilityPermission)
+                                    { return x.functionNo == self.listPermissions()[i].functionNo });
+                                    var isAvailability: boolean = (index > -1);
+                                    self.listPermissions()[i].availability(isAvailability || false);
+                                }
+                            } else {
+                                for (var i = 0, len = self.listPermissions().length; i < len; i++) {
+                                    self.listPermissions()[i].availability(self.listPermissions()[i].initialValue);
+                                }
                             }
                             self.listPermissions.valueHasMutated();
                             dfd.resolve();
@@ -98,8 +104,9 @@ module nts.uk.com.view.ccg026.component {
                         });
                 } else {
                     for (var i = 0, len = self.listPermissions().length; i < len; i++) {
-                        self.listPermissions()[i].availability(false);
+                        self.listPermissions()[i].availability(self.listPermissions()[i].initialValue);
                     }
+                    self.listPermissions.valueHasMutated();
                     dfd.resolve();
                 }
                 return dfd.promise();
