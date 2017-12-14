@@ -84,15 +84,6 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return
 	 */
 	Optional<EmployeeDataMngInfo> findByCidPid(String cid, String pid);
-	
-	/**
-	 * Get EmployeeDataMngInfo
-	 * 
-	 * @param cid
-	 * @param sid
-	 * @return
-	 */
-	Optional<EmployeeDataMngInfo> findByCidSid(String cid, String sid);
 
 	/**
 	 * Req No.125
