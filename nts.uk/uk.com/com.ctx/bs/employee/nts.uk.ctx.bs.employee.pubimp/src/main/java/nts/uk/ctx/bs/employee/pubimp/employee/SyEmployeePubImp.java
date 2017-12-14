@@ -221,7 +221,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<EmployeeBasicInfoExport> findBySIds(List<String> sIds) {
 
-		EmployeeBasicInfoExport result = null;
+		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
 
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);

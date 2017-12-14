@@ -18,6 +18,8 @@ import nts.uk.ctx.sys.auth.app.command.person.role.SavePersonRoleCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRole;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
+import nts.uk.ctx.sys.auth.dom.adapter.persettingmenu.PermissionSettingMenuAdapter;
+import nts.uk.ctx.sys.auth.dom.adapter.persettingmenu.PermissionSettingMenuImport;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -33,6 +35,8 @@ public class RoleWebservice extends WebService {
 	private RemovePersonRoleCommandHandler removePersonRoleHandler; 
 	@Inject
 	private I18NResourcesForUK i18n;
+	@Inject
+	private PermissionSettingMenuAdapter permissionSettingMenuAdapter;
 	
 	@POST
 	@Path("getlistrolebytype/{roleType}")
@@ -80,4 +84,11 @@ public class RoleWebservice extends WebService {
 	public Boolean userHasRoleType( @PathParam("roleType") int roleType){
 		return 	personInforRoleFinder.userHasRoleType(roleType);
 	}
+	
+	@POST
+	@Path("per/setting/menu/{roleType}")
+	public List<PermissionSettingMenuImport> perSettingMenu( @PathParam("roleType") int roleType){
+		return 	permissionSettingMenuAdapter.findByRoleType(roleType);
+	}
+	
 }

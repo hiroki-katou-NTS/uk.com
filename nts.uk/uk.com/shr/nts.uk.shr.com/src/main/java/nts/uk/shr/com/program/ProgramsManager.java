@@ -1131,7 +1131,27 @@ public class ProgramsManager {
 	
 	public static final Program CDL025 = new Program(WebAppId.COM, ProgramIdConsts.CDL025, "CDL025_1",
 			"/view/cdl/025/index.xhtml");
+	
+	public static final Program CMM007A = new Program(WebAppId.COM, ProgramIdConsts.CMM007A, "CMM007_1",
+			"/view/cmm/007/a/index.xhtml");
+	
+	public static final Program CMM007B = new Program(WebAppId.COM, ProgramIdConsts.CMM007B, "CMM007_1",
+			"/view/cmm/007/b/index.xhtml");
+	
+	public static final Program CMM007C = new Program(WebAppId.COM, ProgramIdConsts.CMM007C, "CMM007_1",
+			"/view/cmm/007/c/index.xhtml");
+	
+	public static final Program CMM007D = new Program(WebAppId.COM, ProgramIdConsts.CMM007D, "CMM007_1",
+			"/view/cmm/007/d/index.xhtml");
+	
+	public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.CMM007E, "CMM007_1",
+			"/view/cmm/007/e/index.xhtml");
+	
+	public static final Program CMM007G = new Program(WebAppId.COM, ProgramIdConsts.CMM007G, "CMM007_1",
+			"/view/cmm/007/g/index.xhtml");
 
+	public static final Program CCG026 = new Program(WebAppId.COM, ProgramIdConsts.CCG026, "CCG025_2",
+			"/view/ccg/026/component/index.xhtml");
 	
 	// TODO: Define new programs here.
 

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.ac.bs;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,7 +78,7 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	 */
 	@Override
 	public String getEmployeeName(String sID) {
-		return this.personPub.getPersonInfo(sID).getEmployeeName();
+		return this.personPub.getPersonInfo(sID).getPname();
 	}
 
 	@Override
@@ -85,27 +86,22 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 		PersonInfoExport personIn = this.personPub.getPersonInfo(sID);
 		PesionInforImport person = new PesionInforImport(personIn.getEmployeeCode(),
 				personIn.getEmployeeId(),
-				personIn.getEmployeeName(),
-				personIn.getCompanyMail(), 
-				personIn.getListJobEntryHist().stream().map(x -> new JobEntryHistoryImport(
-						x.getCompanyId(), 
-						x.getSId(), 
-						x.getHiringType(), 
-						x.getRetirementDate(), 
-						x.getJoinDate(), 
-						x.getAdoptDate())).collect(Collectors.toList()));
+				personIn.getPname(),
+				"",//TODO mail can xem lai 
+				new ArrayList<JobEntryHistoryImport>());
 		return person;
 	}
 
 	@Override
 	public String empEmail(String sID) {
 		PersonInfoExport data = this.personPub.getPersonInfo(sID);
-		if(!data.getCompanyMail().isEmpty()) {
+		/*if(!data.getCompanyMail().isEmpty()) {
 			return data.getCompanyMail();
 		}else {
 			return null;
-		}
-		
+		}*/
+		//TODO mail can xem lai
+		return null;
 	}
 
 	@Override

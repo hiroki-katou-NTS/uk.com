@@ -9,15 +9,21 @@ import javax.inject.Inject;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 
 @Stateless
 public class EmployeeFileManagementFinder {
 
 	@Inject
 	private EmpFileManagementRepository empFileManagementRepository;
+	
+	@Inject
+	private EmployeeDataMngInfoRepository emplRepo;
 
 	@Inject
 	private FileStorage fileStorage;
+	
 
 	public EmployeeFileManagementDto getAvaOrMap(String employeeId, int fileType) {
 		List<EmployeeFileManagementDto> lst = empFileManagementRepository.getDataByParams(employeeId, fileType).stream()
@@ -27,7 +33,8 @@ public class EmployeeFileManagementFinder {
 	}
 
 	public boolean checkEmpFileMnExist(String employeeId, int fileType) {
-		return empFileManagementRepository.checkObjectExist(employeeId, fileType);
+		EmployeeDataMngInfo employee = emplRepo.findByEmpId(employeeId).get();
+		return empFileManagementRepository.checkObjectExist(employee.getPersonId(), fileType);
 	}
 
 	public List<EmployeeFileManagementDto> getListDocumentFile(String employeeId) {
