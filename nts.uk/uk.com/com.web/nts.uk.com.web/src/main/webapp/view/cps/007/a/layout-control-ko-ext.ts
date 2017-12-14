@@ -1304,6 +1304,7 @@ module nts.custombinding {
                                     .filter(x => _.has(x, "items") && _.isFunction(x.items))
                                     .map(x => ko.toJS(x.items))
                                     .flatten()
+                                    .filter(x => _.has(x, "item"))
                                     .map((x: any) => {
                                         if (_.isArray(x)) {
                                             return x.map((m: any) => {
