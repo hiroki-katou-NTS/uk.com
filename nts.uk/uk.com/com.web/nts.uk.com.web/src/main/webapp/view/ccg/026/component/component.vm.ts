@@ -77,24 +77,31 @@ module nts.uk.com.view.ccg026.component {
             private buildAvialabilityFunctionPermission(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getListOfAviabilityFunctionPermission(self.roleId(), self.setting.classification)
-                    .done((dataAvailability: Array<model.IAvailabilityPermission>) => {
-                        //process data
-                        //filter get only function have availability permission
-                        dataAvailability = dataAvailability.filter(item => item.availability);
-                        //setting check for ListOfFunctionPermission and show
-                        for (var i = 0, len = self.listPermissions().length; i < len; i++) {
-                            var index = _.findIndex(dataAvailability, function(x: model.IAvailabilityPermission)
-                            { return x.functionNo == self.listPermissions()[i].functionNo });
-                            var isAvailability: boolean = (index > -1);
-                            self.listPermissions()[i].availability(isAvailability || self.listPermissions()[i].initialValue);
-                        }
-                        self.listPermissions.valueHasMutated();
-                        dfd.resolve();
-                    }).fail(function(res: any) {
-                        dfd.reject();
-                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-                    });
+                if (self.roleId()) {
+                    service.getListOfAviabilityFunctionPermission(self.roleId(), self.setting.classification)
+                        .done((dataAvailability: Array<model.IAvailabilityPermission>) => {
+                            //process data
+                            //filter get only function have availability permission
+                            dataAvailability = dataAvailability.filter(item => item.availability);
+                            //setting check for ListOfFunctionPermission and show
+                            for (var i = 0, len = self.listPermissions().length; i < len; i++) {
+                                var index = _.findIndex(dataAvailability, function(x: model.IAvailabilityPermission)
+                                { return x.functionNo == self.listPermissions()[i].functionNo });
+                                var isAvailability: boolean = (index > -1);
+                                self.listPermissions()[i].availability(isAvailability || false);
+                            }
+                            self.listPermissions.valueHasMutated();
+                            dfd.resolve();
+                        }).fail(function(res: any) {
+                            dfd.reject();
+                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                        });
+                } else {
+                    for (var i = 0, len = self.listPermissions().length; i < len; i++) {
+                        self.listPermissions()[i].availability(false);
+                    }
+                    dfd.resolve();
+                }
                 return dfd.promise();
             }
 
@@ -141,7 +148,7 @@ module nts.uk.com.view.ccg026.component {
                 self.displayName = param.displayName;
                 self.displayOrder = param.displayOrder;
                 self.description = param.description;
-                self.availability(param.availability || self.initialValue);
+                self.availability(param.availability || false);
             }
 
         }
