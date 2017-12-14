@@ -129,8 +129,8 @@ public class InitValueSetItemFinder {
 
 		dataMap.forEach((k, v) -> {
 
-			Optional<PerInfoInitValueSetItem> itemInfoOpt = itemList.stream()
-					.filter(x -> x.getItemCode() == k && x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
+			Optional<PerInfoInitValueSetItem> itemInfoOpt = itemList.stream().filter(
+					x -> x.getItemCode().equals(k) && x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
 					.findFirst();
 
 			if (itemInfoOpt.isPresent()) {

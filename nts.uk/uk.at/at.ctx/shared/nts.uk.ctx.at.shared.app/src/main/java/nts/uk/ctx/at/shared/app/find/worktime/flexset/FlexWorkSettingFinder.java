@@ -4,14 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.flexset;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktime.flexset.dto.FlexWorkSettingDto;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
@@ -28,26 +25,25 @@ public class FlexWorkSettingFinder {
 	private FlexWorkSettingRepository repository;
 	
 	/**
-	 * Find all.
+	 * Find by id.
 	 *
-	 * @return the list
+	 * @param workTimeCode the work time code
+	 * @return the optional
 	 */
-	public List<FlexWorkSettingDto> findAll(){
+	public FlexWorkSettingDto findById(String workTimeCode){
 		
 		// get company id
 		String companyId = AppContexts.user().companyId();
 		
-		// call repository find all
-		List<FlexWorkSetting> flexWorkSettings = this.repository.findAll(companyId);
+		// call repository find by id
+		Optional<FlexWorkSetting> flexWorkSetting = this.repository.findById(companyId,workTimeCode);
 		
-		if(CollectionUtil.isEmpty(flexWorkSettings)){
-			return new ArrayList<>();
-		}
-		return flexWorkSettings.stream().map(domain->{
+		if(flexWorkSetting.isPresent()){
 			FlexWorkSettingDto dto = new FlexWorkSettingDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+			flexWorkSetting.get().saveToMemento(dto);
+			return dto; 
+		}
+		return null;
 	}
 
 }

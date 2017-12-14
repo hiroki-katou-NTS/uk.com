@@ -13,10 +13,8 @@ module nts.uk.com.view.cmm050.b {
             constructor(){
                 let _self = this;
                 
-                let params = getShared('CMM050Params');
-                
-                _self.emailFrom = ko.observable(params.emailAuth);
-                _self.emailTo = ko.observable(params.emailAuth);
+                _self.emailFrom = ko.observable("");
+                _self.emailTo = ko.observable("");
                 _self. emailAuthOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "350px"
                 }));
@@ -33,6 +31,20 @@ module nts.uk.com.view.cmm050.b {
                         _self.emailTo(emailString.trim());
                     }
                });
+            }
+            
+            public start_page(): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                let _self = this;
+                
+                let params = getShared('CMM050Params');
+                
+                _self.emailFrom(params.emailAuth);
+                _self.emailTo(params.emailAuth);
+                
+                dfd.resolve();
+                
+                return dfd.promise();
             }
             
              /**

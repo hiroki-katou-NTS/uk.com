@@ -19,8 +19,8 @@ public class FlTimeSettingDto implements FlTimeGetMemento {
 	/** The rounding. */
 	private TimeRoundingSettingDto rounding;
 
-	/** The passage time. */
-	private Integer passageTime;
+	/** The elapsed time. */
+	private Integer elapsedTime;
 
 	/*
 	 * (non-Javadoc)
@@ -41,7 +41,7 @@ public class FlTimeSettingDto implements FlTimeGetMemento {
 	 * ()
 	 */
 	@Override
-	public AttendanceTime getPassageTime() {
-		return new AttendanceTime(this.passageTime);
+	public AttendanceTime getElapsedTime() {
+		return new AttendanceTime(this.elapsedTime);
 	}
 }

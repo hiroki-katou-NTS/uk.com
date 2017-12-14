@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
- * The Interface FlowTimeSettingGetMemento.
+ * The Interface FlTimeGetMemento.
  */
 public interface FlTimeGetMemento {
 
@@ -20,9 +20,9 @@ public interface FlTimeGetMemento {
 	TimeRoundingSetting getRouding();
 
 	/**
-	 * Gets the passage time.
+	 * Gets the elapsed time.
 	 *
-	 * @return the passage time
+	 * @return the elapsed time
 	 */
-	AttendanceTime getPassageTime();
+	AttendanceTime getElapsedTime();
 }

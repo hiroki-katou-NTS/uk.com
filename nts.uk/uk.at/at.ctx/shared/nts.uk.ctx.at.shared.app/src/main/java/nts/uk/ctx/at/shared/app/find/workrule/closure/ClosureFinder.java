@@ -246,7 +246,7 @@ public class ClosureFinder {
 		GeneralDate startDate = GeneralDate.min();
 
 		for (Closure closure : lstClousreUse) {
-			DatePeriod period = this.findByIdGetMonthDay(closure.getClosureId());
+			DatePeriod period = this.findByIdGetMonthDay(closure.getClosureId().value);
 
 			if (period.start().compareTo(startDate) > ZERO_START_DATE) {
 				startDate = period.start();

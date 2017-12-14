@@ -40,7 +40,8 @@ public class WorkTimeCommonSaveCommand {
 	 *
 	 * @return the work time setting
 	 */
-	public WorkTimeSetting toDomainWorkTimeSetting() {
+	public WorkTimeSetting toDomainWorkTimeSetting(String companyId) {
+		worktimeSetting.setCompanyId(companyId);
 		return new WorkTimeSetting(this.worktimeSetting);
 	}
 

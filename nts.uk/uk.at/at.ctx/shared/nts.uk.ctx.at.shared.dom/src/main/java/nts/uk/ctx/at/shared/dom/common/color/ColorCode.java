@@ -20,8 +20,7 @@ public class ColorCode extends StringPrimitiveValue<ColorCode> {
 	/**
 	 * Instantiates a new color code.
 	 *
-	 * @param rawValue
-	 *            the raw value
+	 * @param rawValue the raw value
 	 */
 	public ColorCode(String rawValue) {
 		super(rawValue);

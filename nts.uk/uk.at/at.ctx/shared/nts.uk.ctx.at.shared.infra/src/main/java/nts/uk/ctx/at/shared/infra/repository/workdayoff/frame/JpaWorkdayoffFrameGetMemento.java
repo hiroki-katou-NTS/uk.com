@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.repository.workdayoff.frame;
 
 import java.math.BigDecimal;
 
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
@@ -19,8 +18,6 @@ import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame;
 public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	
 	/** The kshst workdayoff frame. */
-
-	@Setter
 	private KshstWorkdayoffFrame kshstWorkdayoffFrame;
 	
 	/**
@@ -33,16 +30,15 @@ public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationGetMemento#getCompanyId()
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
 		return this.kshstWorkdayoffFrame.getKshstWorkdayoffFramePK().getCid();
 	}
 
-
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento#getUseClassification()
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento#getUseClassification()
 	 */
 	@Override
 	public NotUseAtr getUseClassification() {

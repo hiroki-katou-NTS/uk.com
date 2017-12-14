@@ -42,4 +42,17 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 		return lstCompany;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter#findById(java.lang.String)
+	 */
+	@Override
+	public CompanyInformationImport findById(String companyId) {
+
+		CompanyExport companyExport = iCompanyPub.getCompanyByCid(companyId);
+		
+		CompanyInformationImport companyInformationImport = new CompanyInformationImport(companyExport.getCompanyId(),
+				companyExport.getCompanyCode(), companyExport.getCompanyName());
+		return companyInformationImport;
+	}
+
 }
