@@ -53,13 +53,10 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getWinAcc1().getUserId());
 
-			for (WindowAccount wd : listWindowAcc) {
-				windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+			for (WindowAccount windowAcc : listWindowAcc) {
+				windowAccountRepository.remove(windowAcc.getUserId(), windowAcc.getUserName(), windowAcc.getHostName());
 			}
-			// listWinAccDto.forEach(wd ->
-			// this.windowAccountRepository.remove(wd.getUserId(),
-			// wd.getUserName(), wd.getHostName()));
-
+			
 			// TODO: need refactor
 			if (command.getWinAcc1() != null) {
 				if (command.getWinAcc1().getIsChange()) {
@@ -98,7 +95,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			}
 
 			// Save domain
-				listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));
+			listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));
 			
 		}
 	}

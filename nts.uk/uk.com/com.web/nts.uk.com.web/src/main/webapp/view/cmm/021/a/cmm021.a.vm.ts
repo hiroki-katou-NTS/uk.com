@@ -228,6 +228,7 @@ module nts.uk.com.view.cmm021.a {
                         _self.loadUserUnsetting();
                     }
                 });
+                
 
                 _self.listUserUnsetting = [];
 
@@ -235,16 +236,24 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenCSelected = ko.observable(false);
                 _self.isScreenBSelected.subscribe((newValue) => {
                     if (newValue) {
-                        _self.userId(null);
+                        _self.userId("");
                         _self.userId(_self.listUserDto[0].userId);
                         _self.findListWindowAccByUserId(_self.userId());
+                        
+                        // show first item in list item
+                        _self.selectedEmployeeId("");
+                        _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
                     }
                 });
                 _self.isScreenCSelected.subscribe((newValue) => {
                     if (newValue) {
-                        _self.userId(null);
+                        _self.userId("");
                         _self.userId(_self.listUserDto[0].userId);
                         _self.findFirstOtherAcc(_self.userId());
+                        
+                        // show first item in list item
+                        _self.selectedEmployeeId("");
+                        _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
                     }
                 });
 
@@ -276,6 +285,8 @@ module nts.uk.com.view.cmm021.a {
                         _self.listUserDto = data;
                         _self.loadUserDto();
                         _self.onSelectScreenB();
+                        
+                        // show first item in list item
                         _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
                         _self.addLockIcon();
                         dfd.resolve();
@@ -666,6 +677,8 @@ module nts.uk.com.view.cmm021.a {
                 service.saveOtherSysAccount(otherAcc)
                     .done((data: any) => {
                         _self.loadUserInfo();
+                        _self.updateMode();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     })
                     .fail((res: any) => {
                         dfd.reject(res);
@@ -765,10 +778,9 @@ module nts.uk.com.view.cmm021.a {
 
             private checkSettingOtherAccChoosen(newValue: string) {
                 let _self = this;
-
-                service.findOtherSysAccByUserId(newValue).done((data: any) => {
-                    //_self.loadUserInfo();
-                    if (data) {
+                
+                service.findOtherSysAccByUserId(newValue).done((data: any) => {                  
+                    if (data != null) {
                         _self.companyCode6(data.companyCode);
                         _self.userName6(data.userName);
                         _self.enable_C1_1(true);
@@ -778,6 +790,8 @@ module nts.uk.com.view.cmm021.a {
                     }
                  });
             }
+            
+            
         }
     }
 
