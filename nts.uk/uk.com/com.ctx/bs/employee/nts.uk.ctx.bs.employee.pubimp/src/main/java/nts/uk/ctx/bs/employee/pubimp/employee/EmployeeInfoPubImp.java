@@ -26,7 +26,6 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 @Stateless
 public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
-
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
 
@@ -38,8 +37,6 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 	@Inject
 	AffCompanyHistRepository affCompanyHistRepo;
-	
-
 
 	@Override
 	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode) {
@@ -51,7 +48,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			return null;
 		} else {
 			EmployeeDataMngInfo emp = empInfo.get();
-			EmployeeInfoDtoExport result=  new  EmployeeInfoDtoExport(emp.getCompanyId(),
+			EmployeeInfoDtoExport result = new EmployeeInfoDtoExport(emp.getCompanyId(),
 					emp.getEmployeeCode() == null ? null : emp.getEmployeeCode().v(), emp.getEmployeeId(),
 					emp.getPersonId(), "");
 			return Optional.of(result);
@@ -104,40 +101,43 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		}).collect(Collectors.toList());
 	}
 
-/*	@Override
-	public List<EmpBasicInfoExport> getListEmpBasicInfo(List<String> sid) {
-		List<Employee> listEmpDomain = repo.getByListEmployeeId(sid);
-		List<EmpBasicInfoExport> listResult = new ArrayList<>();
-
-		if (!listEmpDomain.isEmpty()) {
-
-			listResult = listEmpDomain.stream()
-					.map(item -> EmpBasicInfoExport.builder().employeeId(item.getSId()).employeeCode(item.getSCd().v())
-							.pId(item.getPId()).companyMailAddress(item.getCompanyMail().v())
-							.entryDate(item.getListEntryJobHist().get(0).getJoinDate())
-							.retiredDate(item.getListEntryJobHist().get(0).getRetirementDate()).build())
-					.collect(Collectors.toList());
-
-			List<String> pids = listEmpDomain.stream().map(Employee::getPId).collect(Collectors.toList());
-
-			List<Person> listPersonDomain = personRepo.getPersonByPersonIds(pids);
-
-			if (!listPersonDomain.isEmpty()) {
-				for (int j = 0; j < listResult.size(); j++) {
-					EmpBasicInfoExport resultItem = listResult.get(j);
-					Person per = listPersonDomain.stream().filter(m -> m.getPersonId().equals(resultItem.getPId()))
-							.collect(Collectors.toList()).get(0);
-					listResult.get(j).setPersonMailAddress(null);
-					listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().getFullName() == null ? ""
-							: per.getPersonNameGroup().getPersonName().getFullName().v());
-					listResult.get(j).setGender(per.getGender() == null ? 0 : per.getGender().value);
-					listResult.get(j).setBirthDay(per.getBirthDate());
-				}
-			}
-		}
-
-		return listResult;
-	} */
+	/*
+	 * @Override public List<EmpBasicInfoExport>
+	 * getListEmpBasicInfo(List<String> sid) { List<Employee> listEmpDomain =
+	 * repo.getByListEmployeeId(sid); List<EmpBasicInfoExport> listResult = new
+	 * ArrayList<>();
+	 * 
+	 * if (!listEmpDomain.isEmpty()) {
+	 * 
+	 * listResult = listEmpDomain.stream() .map(item ->
+	 * EmpBasicInfoExport.builder().employeeId(item.getSId()).employeeCode(item.
+	 * getSCd().v())
+	 * .pId(item.getPId()).companyMailAddress(item.getCompanyMail().v())
+	 * .entryDate(item.getListEntryJobHist().get(0).getJoinDate())
+	 * .retiredDate(item.getListEntryJobHist().get(0).getRetirementDate()).build
+	 * ()) .collect(Collectors.toList());
+	 * 
+	 * List<String> pids =
+	 * listEmpDomain.stream().map(Employee::getPId).collect(Collectors.toList())
+	 * ;
+	 * 
+	 * List<Person> listPersonDomain = personRepo.getPersonByPersonIds(pids);
+	 * 
+	 * if (!listPersonDomain.isEmpty()) { for (int j = 0; j < listResult.size();
+	 * j++) { EmpBasicInfoExport resultItem = listResult.get(j); Person per =
+	 * listPersonDomain.stream().filter(m ->
+	 * m.getPersonId().equals(resultItem.getPId()))
+	 * .collect(Collectors.toList()).get(0);
+	 * listResult.get(j).setPersonMailAddress(null);
+	 * listResult.get(j).setPersonName(per.getPersonNameGroup().getPersonName().
+	 * getFullName() == null ? "" :
+	 * per.getPersonNameGroup().getPersonName().getFullName().v());
+	 * listResult.get(j).setGender(per.getGender() == null ? 0 :
+	 * per.getGender().value);
+	 * listResult.get(j).setBirthDay(per.getBirthDate()); } } }
+	 * 
+	 * return listResult; }
+	 */
 
 	/**
 	 * Get Employee Info By Pid. Requets List No.124
@@ -185,8 +185,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 												.findByEmpId(affCompanyHistByEmployee.getSId());
 										if (employeeOpt.isPresent()) {
 											EmployeeDataMngInfo employee = employeeOpt.get();
-											empInfoExport.setEmployeeCode(
-													employee.getEmployeeCode() == null ? "" : employee.getEmployeeCode().v());
+											empInfoExport.setEmployeeCode(employee.getEmployeeCode() == null ? ""
+													: employee.getEmployeeCode().v());
 											empInfoExport.setCompanyId(employee.getCompanyId());
 										}
 									}

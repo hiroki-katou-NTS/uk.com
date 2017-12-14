@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.app.command.JavaTypeResult;
-import nts.uk.ctx.bs.employee.app.find.classification.employee.mngdata.EmployeeDataMngInfoFinder;
+import nts.uk.ctx.pereg.app.find.employee.mngdata.EmployeeDataMngInfoFinder;
 
 @Path("bs/employee/mngdata")
 @Produces(MediaType.APPLICATION_JSON)

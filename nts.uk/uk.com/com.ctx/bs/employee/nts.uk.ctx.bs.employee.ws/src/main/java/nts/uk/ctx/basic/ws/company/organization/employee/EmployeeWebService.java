@@ -74,18 +74,6 @@ public class EmployeeWebService extends WebService {
 	public List<EmployeeDto> getAllEmployee() {
 		return this.employeeFinder.getAllEmployee();
 	}
-
-	@POST
-	@Path("getGenerateEmplCode")
-	public JavaTypeResult<String> getGenerateEmplCode(String startLetters) {
-		return new JavaTypeResult<String>(this.employeeFinder.getGenerateEmplCode(startLetters));
-	}
-
-	@POST
-	@Path("getGenerateCardNo")
-	public JavaTypeResult<String> getGenerateCardNo(String startLetters) {
-		return new JavaTypeResult<String>(this.employeeFinder.getGenerateCardNo(startLetters));
-	}
 	
 	/**
 	 * Search all employee.

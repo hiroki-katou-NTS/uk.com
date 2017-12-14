@@ -56,6 +56,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 
 	private EmpInfoItemData toDomainNew(Object[] entity) {
+		try{
 		PpemtEmpInfoItemData itemData = (PpemtEmpInfoItemData) entity[0];
 		PpemtPerInfoItem personInforItem = (PpemtPerInfoItem) entity[1];
 		PpemtPerInfoCtg personInforCategory = (PpemtPerInfoCtg) entity[2];
@@ -66,7 +67,13 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 				personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
 				personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
 				itemData.intValue, itemData.dateValue, perInfoItemCm.dataType.intValue());
-
+		}catch(Exception e){
+			PpemtEmpInfoItemData itemData = (PpemtEmpInfoItemData) entity[0];
+			PpemtPerInfoItem personInforItem = (PpemtPerInfoItem) entity[1];
+			PpemtPerInfoCtg personInforCategory = (PpemtPerInfoCtg) entity[2];
+			PpemtPerInfoItemCm perInfoItemCm = (PpemtPerInfoItemCm) entity[3];
+			return new EmpInfoItemData();
+		}
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {
