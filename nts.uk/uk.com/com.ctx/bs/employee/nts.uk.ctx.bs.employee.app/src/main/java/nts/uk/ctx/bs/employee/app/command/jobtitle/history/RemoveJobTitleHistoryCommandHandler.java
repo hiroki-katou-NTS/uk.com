@@ -91,7 +91,7 @@ public class RemoveJobTitleHistoryCommandHandler extends CommandHandler<RemoveJo
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
 		// Only 1 history remain, can't remove
-		if (jobTitleInfo.getJobTitleHistory().size() <= LIST_HISTORY_MIN_SIZE) {
+		if (jobTitleInfo.getJobTitleHistories().size() <= LIST_HISTORY_MIN_SIZE) {
 			isError = true;
 			exceptions.addMessage("Msg_57");
 		}
