@@ -72,24 +72,24 @@ module nts.uk.com.view.cas005.a {
                 let self = this;
                 //table enum RoleType,EmployeeReferenceRange
                 self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
-                self.listEnumRoleType.push({
+                self.listEnumRoleType.unshift({
                     value: -1,
-                    name: "None"
+                    name: ""
                 });
                 self.listEmployeeReferenceRange = ko.observableArray(__viewContext.enums.EmployeeReferenceRange);
-                self.listEmployeeReferenceRange.push({
+                self.listEmployeeReferenceRange.unshift({
                     value: -1,
-                    name: "None"
+                    name: ""
                 });
                 self.listEmployeeRefRange = ko.observableArray(__viewContext.enums.EmployeeRefRange);
-                self.listEmployeeRefRange.push({
+                self.listEmployeeRefRange.unshift({
                     value: -1,
-                    name: "None"
+                    name: ""
                 });
                 self.listScheduleEmployeeRef = ko.observableArray(__viewContext.enums.ScheduleEmployeeRef);
-                self.listScheduleEmployeeRef.push({
+                self.listScheduleEmployeeRef.unshift({
                     value: -1,
-                    name: "None"
+                    name: ""
                 });
                 self.selectedEmployeeReferenceRange = ko.observable(0);
                 self.bookingScreen = ko.observable(0);
@@ -171,8 +171,10 @@ module nts.uk.com.view.cas005.a {
                                 value[i].functionNo, value[i].availability());
                             self.listWorkPlaceAuthorityCommand().push(tempCommand);
                         }
-                    self.objCommandScreenB().listWorkPlaceAuthority = self.listWorkPlaceAuthorityCommand();
-                    self.listWorkPlaceAuthorityParam(self.listWorkPlaceAuthorityCommand());
+                    if(self.objCommandScreenB()){
+                        self.objCommandScreenB().listWorkPlaceAuthority = self.listWorkPlaceAuthorityCommand();
+                     }
+                     self.listWorkPlaceAuthorityParam(self.listWorkPlaceAuthorityCommand());
                 });
                 //obj roleCas005Command
                 self.roleCas005Command = ko.observable(null);
@@ -199,7 +201,11 @@ module nts.uk.com.view.cas005.a {
                     self.isCategoryAssign(false);
                 }
                 self.enableRoleCode(false);
-                self.visibleWebmenu(false);
+                if(self.assignAtr() ==0){
+                    self.visibleWebmenu(true);    
+                }else{
+                    self.visibleWebmenu(false);    
+                }
                 errors.clearAll();
                 self.isDelete(true);
                 self.isCopy(true);
@@ -219,6 +225,7 @@ module nts.uk.com.view.cas005.a {
                         self.bookingScreen(-1);
                         self.specifyingAgent(-1);
                         self.registeredInquiries(-1);
+                        self.visibleWebmenu(true);
                     } else {
                         self.getEmploymentRoleById(value);
                     }
