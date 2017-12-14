@@ -55,7 +55,6 @@ import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageResource;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -72,11 +71,9 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
-import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -478,9 +475,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						.findByWorkTimeCode(companyId, calendarInfoDto.getWorkTypeCode());
 
 				if (predetemineTimeSetting != null) {
-					List<Timezone> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting().getLstTimezone();
+					List<TimezoneUse> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting().getLstTimezone();
 					List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
-					for (Timezone timezone : lstTimezone) {
+					for (TimezoneUse timezone : lstTimezone) {
 						if (timezone.getUseAtr() == UseSetting.USE) {
 							ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(
 									new BigDecimal(timezone.getWorkNo()), timezone.getStart().v(),
@@ -624,9 +621,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										.getRecordWorkInformation().getWorkTypeCode().v());
 
 						if (predetemineTimeSetting != null) {
-							List<Timezone> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting()
+							List<TimezoneUse> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting()
 									.getLstTimezone();
-							for (Timezone timezone : lstTimezone) {
+							for (TimezoneUse timezone : lstTimezone) {
 								if (timezone.getUseAtr() == UseSetting.USE) {
 									TimeLeavingWorkOutput timeLeavingWorkOutput = new TimeLeavingWorkOutput();
 									timeLeavingWorkOutput.setWorkNo(new WorkNo(new BigDecimal(timezone.getWorkNo())));

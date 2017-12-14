@@ -57,7 +57,11 @@ module nts.uk.at.view.ksm001.f {
 
                 nts.uk.ui.block.invisible();
 
-                service.saveCommonGuidelineSetting(self.commonGuidelineSettingModel.toDto()).done(function() {
+                // set CommonGuidelineSettingDto
+                let dto: CommonGuidelineSettingDto = self.commonGuidelineSettingModel.toDto();
+                dto.estimateComparison = self.comparisonTarget.selectedCompaTarget();
+                
+                service.saveCommonGuidelineSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // close windows
@@ -194,7 +198,8 @@ module nts.uk.at.view.ksm001.f {
                         alarmColors: alarmColors,
                         estimateTime: this.estimateTime.toDto(),
                         estimatePrice: this.estimatePrice.toDto(),
-                        estimateNumberOfDays: this.estimateNumberOfDays.toDto()
+                        estimateNumberOfDays: this.estimateNumberOfDays.toDto(),
+                        estimateComparison: 0
                     };
                 return dto;
             }

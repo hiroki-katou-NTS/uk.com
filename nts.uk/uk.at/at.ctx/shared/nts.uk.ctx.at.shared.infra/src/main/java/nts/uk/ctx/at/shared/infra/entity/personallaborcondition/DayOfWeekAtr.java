@@ -19,7 +19,7 @@ public enum DayOfWeekAtr {
 	
 	/** The wednesday. */
 	// 水曜日
-	WEDNESDAY(4, "Enum_DayOfWeekAtr_wednesday", "水曜日"),
+	WEDNESDAY(2, "Enum_DayOfWeekAtr_wednesday", "水曜日"),
 		
 	/** The thursday. */
 	// 木曜日
@@ -27,15 +27,15 @@ public enum DayOfWeekAtr {
 	
 	/** The friday. */
 	// 金曜日
-	FRIDAY(6, "Enum_DayOfWeekAtr_friday", "火曜日"),
+	FRIDAY(4, "Enum_DayOfWeekAtr_friday", "火曜日"),
 	
 	/** The saturday. */
 	// 土曜日
-	SATURDAY(0, "Enum_DayOfWeekAtr_saturday", "土曜日"),
+	SATURDAY(5, "Enum_DayOfWeekAtr_saturday", "土曜日"),
 
 	/** The sunday. */
 	// 日曜日
-	SUNDAY(1, "Enum_DayOfWeekAtr_sunday", "日曜日");
+	SUNDAY(6, "Enum_DayOfWeekAtr_sunday", "日曜日");
 
 
 	/** The value. */

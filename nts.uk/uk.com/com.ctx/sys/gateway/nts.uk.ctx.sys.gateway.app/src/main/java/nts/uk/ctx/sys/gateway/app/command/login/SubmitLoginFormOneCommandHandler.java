@@ -23,7 +23,7 @@ import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
  * The Class SubmitLoginFormOneCommandHandler.
  */
 @Stateless
-public class SubmitLoginFormOneCommandHandler extends LoginBaseCommand<SubmitLoginFormOneCommand> {
+public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<SubmitLoginFormOneCommand> {
 
 	/** The user repository. */
 	@Inject
