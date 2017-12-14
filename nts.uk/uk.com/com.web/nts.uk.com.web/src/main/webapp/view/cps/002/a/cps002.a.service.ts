@@ -5,8 +5,8 @@ module cps002.a.service {
     let
         regpath = "ctx/pereg/",
         paths: any = {
-            getEmployeeCode: 'basic/organization/employee/getGenerateEmplCode',
-            getCardNumber: 'basic/organization/employee/getGenerateCardNo',
+            getEmployeeCode: 'employee/mngdata/getGenerateEmplCode',
+            getCardNumber: 'employee/mngdata/getGenerateCardNo',
             getLayout: 'person/newlayout/get-layout-can-null',
             getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
             getSelfRoleAuth: 'roles/auth/get-self-auth',

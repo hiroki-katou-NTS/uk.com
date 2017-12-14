@@ -7,14 +7,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.app.command.JavaTypeResult;
-import nts.uk.ctx.pereg.app.find.employee.mngdata.EmployeeDataMngInfoFinder;
+import nts.uk.ctx.pereg.app.find.employee.EmployeeInfoFinder;
 
-@Path("bs/employee/mngdata")
+@Path("ctx/pereg/employee/mngdata")
 @Produces(MediaType.APPLICATION_JSON)
 public class EmployeeDataMngInfoWebService {
 
 	@Inject
-	private EmployeeDataMngInfoFinder employeeFinder;
+	private EmployeeInfoFinder employeeFinder;
 
 	@POST
 	@Path("getGenerateEmplCode")
