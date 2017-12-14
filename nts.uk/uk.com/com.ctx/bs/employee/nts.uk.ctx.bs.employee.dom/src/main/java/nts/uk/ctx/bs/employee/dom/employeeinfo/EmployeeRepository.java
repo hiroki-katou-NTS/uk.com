@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 
 /**
  * The Interface EmployeeRepository.
@@ -63,7 +64,7 @@ public interface EmployeeRepository {
 	 *            the employee id
 	 * @return the optional
 	 */
-	Optional<Employee> findBySid(String companyId, String employeeId);
+	Optional<EmployeeDataMngInfo> findBySid(String companyId, String employeeId);
 
 	/**
 	 * Find last employee in db

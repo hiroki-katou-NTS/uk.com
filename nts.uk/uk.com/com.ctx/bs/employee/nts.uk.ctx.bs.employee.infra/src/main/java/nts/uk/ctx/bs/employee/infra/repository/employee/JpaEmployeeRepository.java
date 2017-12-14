@@ -15,12 +15,14 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployeePk;
 import nts.uk.ctx.bs.employee.infra.entity.employee.jobentryhistory.BsymtJobEntryHistory;
+import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
@@ -118,6 +120,13 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 		domain.setListEntryJobHist(lstEntryHistory);
 		return domain;
+	}
+	
+	private EmployeeDataMngInfo tpDomainEmployeeDataMngInfo(BsymtEmployeeDataMngInfo entity){
+		return EmployeeDataMngInfo.createFromJavaType(entity.companyId, entity.bsymtEmployeeDataMngInfoPk.pId, 
+				entity.bsymtEmployeeDataMngInfoPk.sId,
+				entity.employeeCode, entity.delStatus, entity.delDateTmp, 
+				entity.removeReason, entity.extCode);
 	}
 
 	/**
@@ -220,21 +229,13 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 * findBySid(java.lang.String)
 	 */
 	@Override
-	public Optional<Employee> findBySid(String companyId, String employeeId) {
+	public Optional<EmployeeDataMngInfo> findBySid(String companyId, String employeeId) {
 
-		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_CID_SID, BsymtEmployee.class)
+		BsymtEmployeeDataMngInfo entity = this.queryProxy().query(SELECT_BY_CID_SID, BsymtEmployeeDataMngInfo.class)
 				.setParameter("companyId", companyId).setParameter("sId", employeeId).getSingleOrNull();
 
-		Employee person = new Employee();
-		if (entity != null) {
-			person = toDomainEmployee(entity);
-
-			if (!entity.listEntryHist.isEmpty()) {
-				person.setListEntryJobHist(
-						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
-			}
-		}
-		return Optional.of(person);
+		EmployeeDataMngInfo employee = new EmployeeDataMngInfo();
+		return Optional.of(employee);
 
 	}
 
