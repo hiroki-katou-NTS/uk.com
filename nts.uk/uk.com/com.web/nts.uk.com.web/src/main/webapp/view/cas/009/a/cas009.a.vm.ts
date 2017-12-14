@@ -90,11 +90,12 @@ module cas009.a.viewmodel {
             self.getListRole().done(()=>{
                 if(self.listRole().length==0) 
                 {
-                    self.createNew(); block.clear();
+                    self.createNew();
                 }else{
-                    self.component.currentCode(self.component.listRole()[0].roleId)
-                    block.clear();                  
+                    self.component.currentCode(self.component.listRole()[0].roleId)                
                 }  
+            }).always(()=>{
+                      block.clear();  
             });
            // self.userHasRole();
 
@@ -162,11 +163,13 @@ module cas009.a.viewmodel {
                  
                     self.getListRole().done(()=>{
                            self.component.currentCode(_.find(self.listRole(), function(o){ return o.roleCode == role.roleCode  }).roleId);
-                           block.clear();
+                 }).always(()=>{
+                           block.clear();    
                  });
           
             }).fail((error) => {
                  nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                 block.clear();
             });    
         }
         public remove(): any{
@@ -179,12 +182,14 @@ module cas009.a.viewmodel {
                             let index = _.findIndex(self.listRole(), ['roleId', self.roleId()]);
                             index = _.min([self.listRole().length - 2, index]);
                             self.getListRole().done(function(){
-                                 self.selectRoleByIndex(index);
-                                block.clear();
+                                 self.selectRoleByIndex(index);                               
+                            }).always(() =>{
+                                 block.clear();    
                             });
                             
                         }).fail((error) => {
                                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                                block.clear();
                         });   
                    }); 
                }   
