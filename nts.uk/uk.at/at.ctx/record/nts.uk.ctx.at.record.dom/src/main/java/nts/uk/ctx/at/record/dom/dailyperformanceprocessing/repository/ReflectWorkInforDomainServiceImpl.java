@@ -662,7 +662,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			}
 			timeLeavingWorks = timeLeavingWorkTemps.stream().map(item -> {
 				TimeActualStamp attendanceStamp = null;
-				if(item.getAttendanceStamp().getActualStamp() != null){
+				if(item.getAttendanceStamp() != null){
 					WorkStamp actualStamp = null;
 					if(item.getAttendanceStamp().getActualStamp() != null){
 						actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
@@ -742,15 +742,17 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 												item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v()))) {
 
 							// 実績．出退勤．出勤．打刻←詳細．出退勤．出勤．打刻
-							TimeActualStampOutPut actualStampOutPut = new TimeActualStampOutPut();
-							WorkStampOutPut actualStampTemp = new WorkStampOutPut(
-									timeLeaving.getAttendanceStamp().getStamp().getAfterRoundingTime(),
-									timeLeaving.getAttendanceStamp().getStamp().getTimeWithDay(),
-									timeLeaving.getAttendanceStamp().getStamp().getLocationCode(),
-									timeLeaving.getAttendanceStamp().getStamp().getStampSourceInfo());
-							actualStampOutPut.setStamp(actualStampTemp);
-							outPut.setWorkNo(timeLeaving.getWorkNo());
-							outPut.setAttendanceStamp(actualStampOutPut);
+							if(timeLeaving.getAttendanceStamp() != null){
+								TimeActualStampOutPut actualStampOutPut = new TimeActualStampOutPut();
+								WorkStampOutPut actualStampTemp = new WorkStampOutPut(
+										timeLeaving.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+										timeLeaving.getAttendanceStamp().getStamp().getTimeWithDay(),
+										timeLeaving.getAttendanceStamp().getStamp().getLocationCode(),
+										timeLeaving.getAttendanceStamp().getStamp().getStampSourceInfo());
+								actualStampOutPut.setStamp(actualStampTemp);
+								outPut.setWorkNo(timeLeaving.getWorkNo());
+								outPut.setAttendanceStamp(actualStampOutPut);
+							}							
 
 							timeLeavingWorkOutputs.add(outPut);
 
