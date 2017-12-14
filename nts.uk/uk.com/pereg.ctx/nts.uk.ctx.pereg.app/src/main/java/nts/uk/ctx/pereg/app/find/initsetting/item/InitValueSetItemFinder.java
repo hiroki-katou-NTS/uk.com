@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
@@ -116,8 +117,22 @@ public class InitValueSetItemFinder {
 
 	private void setOptinalLoginData(List<SettingItemDto> result) {
 
-		result.addAll(
-				this.infoItemDataFinder.loadInfoItemDataList(categoryCd, AppContexts.user().companyId(), employeeId));
+		List<SettingItemDto> optList = this.infoItemDataFinder.loadInfoItemDataList(categoryCd,
+				AppContexts.user().companyId(), employeeId);
+
+		optList.forEach(itemDto -> {
+			Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
+
+					x -> x.getItemCode().equals(itemDto.getItemCode())).findFirst();
+
+			if (itemInfoOpt.isPresent()) {
+				SettingItemDto itemInfo = itemInfoOpt.get();
+
+				itemInfo.setData(itemDto.getValueAsString());
+			}
+
+		});
+
 	}
 
 	private void setSystemLoginData(List<SettingItemDto> result) {
@@ -129,17 +144,14 @@ public class InitValueSetItemFinder {
 
 		dataMap.forEach((k, v) -> {
 
-			Optional<PerInfoInitValueSetItem> itemInfoOpt = itemList.stream().filter(
-					x -> x.getItemCode().equals(k) && x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
-					.findFirst();
+			Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
+
+					x -> x.getItemCode().equals(k)).findFirst();
 
 			if (itemInfoOpt.isPresent()) {
-				PerInfoInitValueSetItem itemInfo = itemInfoOpt.get();
+				SettingItemDto itemInfo = itemInfoOpt.get();
 
-				result.add(new SettingItemDto(itemInfo.getCtgCode(), itemInfo.getPerInfoItemDefId(), k,
-						itemInfo.getItemName(), itemInfo.getIsRequired().value,
-						SettingItemDto.createSaveDataDto(itemInfo.getSaveDataType().value, v.toString()),
-						itemInfo.getDataType()));
+				itemInfo.setData(v != null ? v.toString() : "");
 			}
 
 		});

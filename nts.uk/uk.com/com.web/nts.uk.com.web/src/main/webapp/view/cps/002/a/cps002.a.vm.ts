@@ -219,7 +219,7 @@ module cps002.a.vm {
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
                         //move to toppage
-                        jump('/view/cps/008/a/index.xhtml');
+                        jump('/view/cps/007/a/index.xhtml');
                     });
                 }
             });

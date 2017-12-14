@@ -81,12 +81,6 @@ public interface EmployeeRepository {
 
 	List<Employee> getListEmpByStandardDate(String companyId, GeneralDate standardDate);
 
-	// SONNLB
-
-	Boolean isDuplicateEmpCode(String companyId, String employeeCode);
-
-	Boolean isDuplicateCardNo(String companyId, String cardNumber);
-
 	// laitv
 	/**
 	 * Get Employee Info
@@ -128,12 +122,6 @@ public interface EmployeeRepository {
 	 */
 	Optional<Employee> findBySidCidSystemDate(String companyId, String personId, GeneralDate systemDate);
 
-	// sonnlb code start
-
-	void addNewEmployee(Employee newEmployee);
-
-	// sonnlb code end
-
 	/**
 	 * Gets the list Employee by list employeeIds.
 	 *
@@ -146,8 +134,7 @@ public interface EmployeeRepository {
 	Optional<Employee> getInfoById(String employeeId);
 
 	/**
-	 * @author lanlt 
-	 * find employee
+	 * @author lanlt find employee
 	 * @param companyId
 	 * @param sid
 	 * @param standardDate
