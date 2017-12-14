@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -133,18 +132,15 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		super.validate();
 		
 		// valid timezone must increase
-		TimezoneUse tzWorkNo1 = this.getTimezone(SHIFT_ONE);
-		TimezoneUse tzWorkNo2 = this.getTimezone(SHIFT_TWO);
+		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
+		TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
 		if (tzWorkNo2.getStart().lessThanOrEqualTo(tzWorkNo1.getEnd())) {
 			throw new BusinessException("Msg_772");
 		}
 		
 		// valid 時間帯.終了 >= 0:01
-		boolean isValidEnd = this.lstTimezone.stream()
-				.filter(timezone -> timezone.getEnd().lessThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))
-				.collect(Collectors.toList())
-				.isEmpty();
-		if (!isValidEnd) {
+		if (this.lstTimezone.stream()
+				.anyMatch(timezone -> !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
 			throw new BusinessException("Msg_778");
 		}
 		
