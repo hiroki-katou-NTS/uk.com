@@ -57,8 +57,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	// Lanlt end
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ";
 
-	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
-
 	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.delStatus = 0 AND e.employeeCode = :empcode AND e.companyId = :cid");
 	
@@ -327,23 +325,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		BsymtEmployeeDataMngInfo entity =  queryProxy().query(GET_LIST_BY_CID_SCD, BsymtEmployeeDataMngInfo.class)
 				.setParameter("cId", cId).setParameter("sCd", sCd).getSingleOrNull();
 		
-		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
-		if (entity != null) {
-			empDataMng = toDomain(entity);
-			return Optional.of(empDataMng);
-
-		} else {
-			return Optional.empty();
-		}
-	}
-
-	@Override
-	public Optional<EmployeeDataMngInfo> findByCidSid(String cid, String sid) {
-		BsymtEmployeeDataMngInfo entity = this.queryProxy().query(SELECT_BY_CID_SID, BsymtEmployeeDataMngInfo.class)
-				.setParameter("cid", cid)
-				.setParameter("sid", sid)
-				.getSingleOrNull();
-
 		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
 		if (entity != null) {
 			empDataMng = toDomain(entity);
