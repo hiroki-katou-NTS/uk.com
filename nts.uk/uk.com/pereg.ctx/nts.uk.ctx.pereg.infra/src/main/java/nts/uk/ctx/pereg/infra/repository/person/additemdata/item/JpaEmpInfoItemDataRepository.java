@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -59,13 +60,19 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		PpemtPerInfoItem personInforItem = (PpemtPerInfoItem) entity[1];
 		PpemtPerInfoCtg personInforCategory = (PpemtPerInfoCtg) entity[2];
 		PpemtPerInfoItemCm perInfoItemCm = (PpemtPerInfoItemCm) entity[3];
-
+		try{
 		return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
 				personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
 				personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
 				personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
 				itemData.intValue, itemData.dateValue, perInfoItemCm.dataType.intValue());
-
+		}catch(Exception e){
+			return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
+					personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
+					personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
+					personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
+					itemData.intValue, itemData.dateValue, itemData.saveDataType);
+		}
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {
@@ -87,12 +94,14 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 	@Override
 	public List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId) {
-		List<EmpInfoItemData> lstObj = this.queryProxy()
+		List<Object[]> lstEntity = this.queryProxy()
 				.query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
-				.setParameter("recordId", recordId).getList(c -> toDomainNew(c));
-		return lstObj == null ? new ArrayList<>() : lstObj;
+				.setParameter("recordId", recordId).getList();
+		if(lstEntity == null) return new ArrayList<>();
+		return lstEntity.stream().map(c -> toDomainNew(c)).collect(Collectors.toList());
 	}
 
+	
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -153,7 +162,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(), domain.getRecordId());
 		Optional<PpemtEmpInfoItemData> existItem = this.queryProxy().find(key, PpemtEmpInfoItemData.class);
 		if (!existItem.isPresent()) {
-			return;
+			throw new RuntimeException("Invalid PpemtEmpInfoItemData");
 		}
 		updateEntiy(domain, existItem.get());
 		// Update table

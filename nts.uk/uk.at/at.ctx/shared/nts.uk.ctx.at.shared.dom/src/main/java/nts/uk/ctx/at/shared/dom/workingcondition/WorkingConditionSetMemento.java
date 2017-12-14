@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
 
+import nts.uk.shr.com.history.DateHistoryItem;
+
 /**
  * The Interface WorkingConditionSetMemento.
  */

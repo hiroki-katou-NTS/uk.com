@@ -52,11 +52,10 @@ public class StampService {
 	}
 
 	public List<StampItem> handleData(StampReflectRangeOutput s, ExecutionType reCreateAttr,
-			String empCalAndSumExecLogID, GeneralDate date, String employeeId) {
+			String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId) {
 		if (s == null) {
-			GeneralDate currentDate = GeneralDate.ymd(2017, 01, 01);
-			ErrMessageInfo employmentErrMes = new ErrMessageInfo("companyId", "empCalAndSumExecLogID",
-					new ErrMessageResource("009"), EnumAdaptor.valueOf(0, ExecutionContent.class), currentDate,
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(companyId, empCalAndSumExecLogID,
+					new ErrMessageResource("009"), EnumAdaptor.valueOf(0, ExecutionContent.class), date,
 					new ErrMessageContent("Msg_466"));
 			errRepo.add(employmentErrMes);
 			return null;
@@ -77,9 +76,8 @@ public class StampService {
 		}
 
 		if (this.stampNumber == null || this.stampNumber.isEmpty()) {
-			GeneralDate currentDate = GeneralDate.ymd(2017, 01, 01);
-			ErrMessageInfo employmentErrMes = new ErrMessageInfo("companyId", "empCalAndSumExecLogID",
-					new ErrMessageResource("008"), EnumAdaptor.valueOf(0, ExecutionContent.class), currentDate,
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(companyId, empCalAndSumExecLogID,
+					new ErrMessageResource("008"), EnumAdaptor.valueOf(0, ExecutionContent.class), date,
 					new ErrMessageContent("Msg_433"));
 			errRepo.add(employmentErrMes);
 			return null;

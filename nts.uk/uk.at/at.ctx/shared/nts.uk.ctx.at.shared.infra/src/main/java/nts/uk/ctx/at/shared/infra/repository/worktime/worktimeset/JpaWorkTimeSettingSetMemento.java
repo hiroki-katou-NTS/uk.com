@@ -14,42 +14,99 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSetPK;
 import nts.uk.shr.com.primitive.Memo;
 
+/**
+ * The Class JpaWorkTimeSettingSetMemento.
+ */
 public class JpaWorkTimeSettingSetMemento implements WorkTimeSettingSetMemento {
 
+	/** The entity. */
 	private KshmtWorkTimeSet entity;
 
+	/**
+	 * Instantiates a new jpa work time setting set memento.
+	 *
+	 * @param entity the entity
+	 */
 	public JpaWorkTimeSettingSetMemento(KshmtWorkTimeSet entity) {
+		if(entity.getKshmtWorkTimeSetPK() == null){
+			entity.setKshmtWorkTimeSetPK(new KshmtWorkTimeSetPK());
+		}
 		this.entity = entity;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
+	 * setCompanyId(java.lang.String)
+	 */
 	@Override
 	public void setCompanyId(String companyId) {
 		this.entity.getKshmtWorkTimeSetPK().setCid(companyId);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
+	 * setWorktimeCode(nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode)
+	 */
 	@Override
 	public void setWorktimeCode(WorkTimeCode worktimeCode) {
 		this.entity.getKshmtWorkTimeSetPK().setWorktimeCd(worktimeCode.v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
+	 * setWorkTimeDivision(nts.uk.ctx.at.shared.dom.worktime.worktimeset.
+	 * WorkTimeDivision)
+	 */
 	@Override
 	public void setWorkTimeDivision(WorkTimeDivision workTimeDivision) {
 		this.entity.setDailyWorkAtr(workTimeDivision.getWorkTimeDailyAtr().value);
 		this.entity.setWorktimeSetMethod(workTimeDivision.getWorkTimeMethodSet().value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
+	 * setAbolishAtr(nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr)
+	 */
 	@Override
 	public void setAbolishAtr(AbolishAtr abolishAtr) {
 		this.entity.setAbolitionAtr(abolishAtr.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
+	 * setColorCode(nts.uk.ctx.at.shared.dom.common.color.ColorCode)
+	 */
 	@Override
 	public void setColorCode(ColorCode colorCode) {
 		this.entity.setColor(colorCode.v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
+	 * setWorkTimeDisplayName(nts.uk.ctx.at.shared.dom.worktime.worktimeset.
+	 * WorkTimeDisplayName)
+	 */
 	@Override
 	public void setWorkTimeDisplayName(WorkTimeDisplayName workTimeDisplayName) {
 		this.entity.setName(workTimeDisplayName.getWorkTimeName().v());
@@ -57,6 +114,13 @@ public class JpaWorkTimeSettingSetMemento implements WorkTimeSettingSetMemento {
 		this.entity.setSymbol(workTimeDisplayName.getWorkTimeSymbol().v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
+	 * setMemo(nts.uk.shr.com.primitive.Memo)
+	 */
 	@Override
 	public void setMemo(Memo memo) {
 		if (!Objects.isNull(memo)) {
@@ -64,6 +128,13 @@ public class JpaWorkTimeSettingSetMemento implements WorkTimeSettingSetMemento {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
+	 * setNote(nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote)
+	 */
 	@Override
 	public void setNote(WorkTimeNote note) {
 		if (!Objects.isNull(note)) {

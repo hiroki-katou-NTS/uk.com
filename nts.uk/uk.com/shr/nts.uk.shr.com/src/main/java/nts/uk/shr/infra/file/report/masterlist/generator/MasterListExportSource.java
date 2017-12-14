@@ -19,5 +19,9 @@ public class MasterListExportSource {
 	
 	private List<MasterData> masterList;
 	
+	private Map<String, List<MasterHeaderColumn>> extraHeaderColumns;
+	
+	private Map<String, List<MasterData>> extraMasterList;
+	
 	private ReportType reportType;
 }

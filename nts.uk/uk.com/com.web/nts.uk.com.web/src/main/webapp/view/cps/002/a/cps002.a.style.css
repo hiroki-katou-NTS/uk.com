@@ -203,16 +203,23 @@
 	background-color: #FAEC82;
 }
 
+.notRequiredCell {
+	background-color: #E0F59E;
+}
+
 .disabledCell {
 	background-color: #d9d9d9;
 }
 /* step 3 start */
 #employeeAvatar {
-	cursor: pointer;
 	border: 1px solid #B1B1B1;
 	width: 100px;
 	height: 130px;
 	border-radius: 5px;
+}
+
+.isAllowUpload {
+	cursor: pointer;
 }
 
 .drag-panel {

@@ -17,9 +17,11 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
@@ -65,13 +67,16 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 public class LayoutFinder {
 
 	@Inject
+	private EmployeeDataMngInfoRepository employeeDataRepo;
+	
+	@Inject
+	private AffCompanyHistRepository affCompanyHistRepo;
+	
+	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
 
 	@Inject
 	private ILayoutPersonInfoClsRepository itemClsRepo;
-
-	@Inject
-	private EmployeeRepository employeeRepository;
 
 	@Inject
 	private PersonInfoItemAuthRepository perInfoItemAuthRepo;
@@ -137,10 +142,12 @@ public class LayoutFinder {
 		GeneralDate standardDate = GeneralDate.legacyDate(layoutQuery.getStandardDate());
 		String browsingEmpId = layoutQuery.getBrowsingEmpId();
 
-		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), browsingEmpId).get();
-		String browsingPeronId = employee.getPId();
+		EmployeeDataMngInfo employee = employeeDataRepo.findByEmpId(browsingEmpId).get();
+		String browsingPeronId = employee.getPersonId();
+		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(browsingEmpId)
+				.getAffCompanyHistByEmployee(browsingEmpId);
 		// validate standard date
-		standardDate = validateStandardDate(standardDate, employee, result);
+		standardDate = validateStandardDate(standardDate, employeeHistory, result);
 
 		// check authority & get data
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
@@ -212,7 +219,7 @@ public class LayoutFinder {
 			});
 		}
 
-		result.setClassificationItems(removeDuplicateSeparator(authItemClasList));
+		result.setClassificationItems(authItemClasList);
 		return result;
 
 	}
@@ -243,17 +250,18 @@ public class LayoutFinder {
 	 * @param employee
 	 * @param result
 	 */
-	private GeneralDate validateStandardDate(GeneralDate stardardDate, Employee employee, EmpMaintLayoutDto result) {
-		if (employee.getHistoryWithReferDate(stardardDate).isPresent()) {
+	private GeneralDate validateStandardDate(GeneralDate stardardDate, AffCompanyHistByEmployee employeeHistory,
+			EmpMaintLayoutDto result) {
+		if (employeeHistory.getHistoryWithReferDate(stardardDate).isPresent()) {
 			result.setStandardDate(stardardDate);
 		} else {
-			Optional<JobEntryHistory> hitoryOption = employee.getHistoryBeforeReferDate(stardardDate);
+			Optional<AffCompanyHistItem> hitoryOption = employeeHistory.getHistoryBeforeReferDate(stardardDate);
 			if (hitoryOption.isPresent()) {
-				stardardDate = hitoryOption.get().getRetirementDate();
+				stardardDate = hitoryOption.get().getDatePeriod().end();
 			} else {
-				hitoryOption = employee.getHistoryAfterReferDate(stardardDate);
+				hitoryOption = employeeHistory.getHistoryAfterReferDate(stardardDate);
 				if (hitoryOption.isPresent()) {
-					stardardDate = hitoryOption.get().getJoinDate();
+					stardardDate = hitoryOption.get().getDatePeriod().start();
 				}
 			}
 		}
@@ -619,22 +627,6 @@ public class LayoutFinder {
 			}
 		}
 
-	}
-
-	private List<LayoutPersonInfoClsDto> removeDuplicateSeparator(List<LayoutPersonInfoClsDto> classItemList) {
-		List<LayoutPersonInfoClsDto> authItemClasList1 = new ArrayList<>();
-		for (int i = 0; i < classItemList.size(); i++) {
-			if (i == 0) {
-				authItemClasList1.add(classItemList.get(i));
-			} else {
-				boolean notAcceptElement = classItemList.get(i).getLayoutItemType() == LayoutItemType.SeparatorLine
-						&& classItemList.get(i - 1).getLayoutItemType() == LayoutItemType.SeparatorLine;
-				if (!notAcceptElement) {
-					authItemClasList1.add(classItemList.get(i));
-				}
-			}
-		}
-		return authItemClasList1;
 	}
 
 }

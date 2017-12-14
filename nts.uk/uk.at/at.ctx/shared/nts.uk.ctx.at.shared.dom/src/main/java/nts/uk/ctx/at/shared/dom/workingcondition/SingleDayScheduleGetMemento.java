@@ -5,7 +5,9 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
+import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -32,6 +34,6 @@ public interface SingleDayScheduleGetMemento {
 	 *
 	 * @return the work time code
 	 */
-	WorkTimeCode getWorkTimeCode();
+	Optional<WorkTimeCode> getWorkTimeCode();
 
 }

@@ -32,9 +32,8 @@ public class PredetermineTimeDto implements PredetermineTimeSetMemento{
 	 */
 	@Override
 	public void setAddTime(BreakDownTimeDay addTime) {
-		this.addTime.setOneDay(addTime.getOneDay().valueAsMinutes());
-		this.addTime.setMorning(addTime.getMorning().valueAsMinutes());
-		this.addTime.setAfternoon(addTime.getAfternoon().valueAsMinutes());
+		this.addTime = new BreakDownTimeDayDto(addTime.getOneDay().valueAsMinutes(),
+				addTime.getMorning().valueAsMinutes(), addTime.getAfternoon().valueAsMinutes());
 	}
 
 	/*
@@ -46,9 +45,8 @@ public class PredetermineTimeDto implements PredetermineTimeSetMemento{
 	 */
 	@Override
 	public void setPredTime(BreakDownTimeDay predTime) {
-		this.predTime.setOneDay(predTime.getOneDay().valueAsMinutes());
-		this.predTime.setMorning(predTime.getMorning().valueAsMinutes());
-		this.predTime.setAfternoon(predTime.getAfternoon().valueAsMinutes());
+		this.predTime = new BreakDownTimeDayDto(predTime.getOneDay().valueAsMinutes(),
+				predTime.getMorning().valueAsMinutes(), predTime.getAfternoon().valueAsMinutes());
 	}
 
 }

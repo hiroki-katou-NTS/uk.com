@@ -20,10 +20,9 @@ public class ClosureForLogDto {
 	
 	public static ClosureForLogDto fromDomain(Closure domain) {
 		return new ClosureForLogDto(
-				domain.getClosureId(),
+				domain.getClosureId().value,
 				domain.getClosureHistories().stream().map(c ->ClosureHistoryForLogDto.fromDomain(c) ).collect(Collectors.toList())
 				);
-		
 		
 	}
 }

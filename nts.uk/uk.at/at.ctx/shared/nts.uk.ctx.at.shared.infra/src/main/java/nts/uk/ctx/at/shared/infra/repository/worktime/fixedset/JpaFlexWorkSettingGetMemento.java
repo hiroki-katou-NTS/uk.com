@@ -81,7 +81,8 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public CoreTimeSetting getCoreTimeSetting() {
-		return new CoreTimeSetting(new JpaCoreTimeSettingGetMemento(this.entity));
+		return null;
+		//return new CoreTimeSetting(new JpaCoreTimeSettingGetMemento(this.entity));
 	}
 
 	/*
@@ -104,7 +105,8 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public FlexOffdayWorkTime getOffdayWorkTime() {
-		return new FlexOffdayWorkTime(new JpaFlexODWorkTimeGetMemento(this.entityODGrounp));
+		return null;
+		//return new FlexOffdayWorkTime(new JpaFlexODWorkTimeGetMemento(this.entityODGrounp));
 	}
 
 	/*

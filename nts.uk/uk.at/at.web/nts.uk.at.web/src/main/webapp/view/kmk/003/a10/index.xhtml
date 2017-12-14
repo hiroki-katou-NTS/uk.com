@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+	<table style="width: 100%;">
+		
+		<tr>
+			<td style="width: 100px;">
+				<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_24')}</div>
+			</td>
+			<td>
+				<button>#{i18n.getText('KMK003_103')}</button>
+			</td>
+			<td>
+				<div data-bind="text: bonusPaySettingCode" class="label"></div>
+			</td>
+		</tr>				
+	</table>
+</ui:composition>

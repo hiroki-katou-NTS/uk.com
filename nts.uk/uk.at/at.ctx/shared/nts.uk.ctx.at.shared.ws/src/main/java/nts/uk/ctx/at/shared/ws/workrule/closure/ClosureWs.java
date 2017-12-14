@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
@@ -60,6 +61,12 @@ public class ClosureWs {
 	
 	/** The Constant TOTAL_MONTH_OF_YEAR. */
 	public static final int TOTAL_MONTH_OF_YEAR = 12;
+	
+	@POST
+	@Path("getClosureEmploy/{referDate}")
+	public ClosureEmployDto getClosureEmploy(@PathParam("referDate") int referDate){
+		return this.finder.getClosureEmploy(referDate);
+	}
 	
 	/**
 	 * Find all.

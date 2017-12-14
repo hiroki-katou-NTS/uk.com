@@ -66,4 +66,21 @@ public interface RoleSetRepository {
      * @return
      */
     List<RoleSet> findByCompanyIdAndPersonRole(String companyId, String personRoleId);
+    
+    /**
+     * find by employmentRoleId
+     * 
+     * @param personRoleId
+     * @return
+     */
+    List<RoleSet> findByemploymentRoleId(String employmentRoleId);
+    
+    /**
+     * find by employmentRoleId, companyId
+     * 
+     * @param companyId
+     * @param personRoleId
+     * @return
+     */
+    List<RoleSet> findByCidEmploymentRoleId(String companyId,String employmentRoleId);
 }

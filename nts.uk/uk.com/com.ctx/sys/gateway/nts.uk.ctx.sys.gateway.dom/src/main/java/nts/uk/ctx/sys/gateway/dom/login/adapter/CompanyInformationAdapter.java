@@ -19,4 +19,12 @@ public interface CompanyInformationAdapter {
 	 * @return the list
 	 */
 	List<CompanyInformationImport> findAll();
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param companyId the company id
+	 * @return the company information import
+	 */
+	CompanyInformationImport findById(String companyId);
 }

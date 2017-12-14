@@ -3,12 +3,12 @@ module cps002.a.vm {
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
     import subModal = nts.uk.ui.windows.sub.modal;
     import jump = nts.uk.request.jump;
     import liveView = nts.uk.request.liveView;
     import character = nts.uk.characteristics;
+    import block = nts.uk.ui.block;
 
     export class ViewModel {
 
@@ -85,7 +85,24 @@ module cps002.a.vm {
 
             self.employeeBasicInfo.subscribe((data) => {
                 if (data) {
-                    self.currentEmployee().hireDate
+                    self.currentEmployee().hireDate(data.jobEntryDate);
+
+                    self.createTypeId(data.employeeCreationMethod);
+
+
+                    if (data.copyEmployeeId != "" && self.employeeBasicInfo().copyEmployeeId != data.copyEmployeeId) {
+                        let command = {
+                            baseDate: moment().toDate(),
+                            employeeIds: [data.copyEmployeeId]
+
+                        }
+
+
+                        service.getEmployeeInfo(command).done((result) => {
+                            self.copyEmployee(new EmployeeCopy(result[0]));
+
+                        });
+                    }
                 }
             });
 
@@ -97,21 +114,22 @@ module cps002.a.vm {
                 let InitSetting = _.find(self.initValueList(), item => {
                     return item.itemCode == initCode;
                 });
+                if (InitSetting) {
+                    service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                        if (result.length) {
+                            self.categorySelectedCode("");
+                            self.categoryList(_.map(result, item => {
+                                return new CategoryItem(item);
+                            }));
 
-                service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
-                    if (result.length) {
-                        self.categorySelectedCode("");
-                        self.categoryList(_.map(result, item => {
-                            return new CategoryItem(item);
-                        }));
+                            self.categorySelectedCode(result[0].categoryCd);
+                        } else {
+                            self.categoryList.removeAll();
+                        }
+                    });
 
-                        self.categorySelectedCode(result[0].categoryCd);
-                    } else {
-                        self.categoryList.removeAll();
-                    }
-                });
-
-                self.currentInitSetting(InitSetting);
+                    self.currentInitSetting(InitSetting);
+                }
 
             });
 
@@ -176,7 +194,9 @@ module cps002.a.vm {
                 categorySelectedCode = self.categorySelectedCode(),
                 baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
 
-            if (currentCopyEmployeeId != "" && categorySelectedCode != "") {
+            if (currentCopyEmployeeId != "" && categorySelectedCode) {
+
+
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
                     if (result.length) {
                         self.itemSettingList(_.map(result, item => {
@@ -219,7 +239,7 @@ module cps002.a.vm {
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
                         //move to toppage
-                        jump('/view/cps/008/a/index.xhtml');
+                        jump('/view/cps/007/a/index.xhtml');
                     });
                 }
             });
@@ -259,32 +279,32 @@ module cps002.a.vm {
         }
 
         getCardNumber(userSetting: IUserSetting) {
-            let self = this,
-                genType = userSetting.cardNumberType,
-                eployee = self.currentEmployee();
-
-            if (genType === 1 || genType === 4) {
-
-                service.getCardNumber(genType === 1 ? userSetting.cardNumberLetter : '').done((result) => {
-
-                    eployee.cardNo(result);
-
-                });
-            } else {
-
-                if (genType === 3) {
-
-                    eployee.cardNo(eployee.employeeCode());
-                }
-
-                if (genType === 5) {
-
-                    service.getEmployeeCodeAndComId(userSetting.employeeCodeLetter).done((result) => {
-
-                        eployee.cardNo(result);
-                    });
-                }
-            }
+            //            let self = this,
+            //                genType = userSetting.cardNumberType,
+            //                eployee = self.currentEmployee();
+            //
+            //            if (genType === 1 || genType === 4) {
+            //
+            //                //                service.getCardNumber(genType === 1 ? userSetting.cardNumberLetter : '').done((result) => {
+            //                //
+            //                //                    eployee.cardNo(result);
+            //                //
+            //                //                });
+            //            } else {
+            //
+            //                if (genType === 3) {
+            //
+            //                    eployee.cardNo(eployee.employeeCode());
+            //                }
+            //
+            //                if (genType === 5) {
+            //
+            //                    service.getEmployeeCodeAndComId(userSetting.employeeCodeLetter).done((result) => {
+            //
+            //                        eployee.cardNo(result);
+            //                    });
+            //                }
+            //            }
 
         }
 
@@ -340,6 +360,8 @@ module cps002.a.vm {
             let self = this;
 
             self.currentStep(0);
+
+            self.start();
         }
 
         gotoStep3() {
@@ -371,8 +393,7 @@ module cps002.a.vm {
 
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
-                if (result.allowAvatarUpload) {
-
+                if (result) {
                     self.isAllowAvatarUpload(result ? result.allowAvatarUpload == 0 ? false : true : false);
                 }
 
@@ -428,8 +449,9 @@ module cps002.a.vm {
                 $('#initSettingPanel').hide();
 
                 self.loadCopySettingCtgData();
-
-                $('#hor-scroll-button-show').trigger('click');
+                if (self.copyEmployee().employeeId == '') {
+                    $('#hor-scroll-button-show').trigger('click');
+                }
                 $('#inp_baseDate').focus();
 
             }
@@ -475,7 +497,11 @@ module cps002.a.vm {
                     }));
 
                     if (self.initSettingSelectedCode() == '') {
-                        self.initSettingSelectedCode(result[0].settingCode);
+                        if (self.employeeBasicInfo()) {
+                            self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
+                        } else {
+                            self.initSettingSelectedCode(result[0].settingCode);
+                        }
                     }
 
                 }
@@ -503,6 +529,33 @@ module cps002.a.vm {
 
         }
 
+        saveBasicInfo(command, employeeId) {
+            let self = this,
+                isInit = self.isUseInitValue(),
+                currentEmpInfo = self.employeeBasicInfo(),
+                newEmpInfo = {
+                    copyEmployeeId: command.employeeCopyId,
+                    jobEntryDate: command.hireDate,
+                    initialValueCode: self.initSettingSelectedCode(),
+                    employeeID: employeeId,
+                    employeeCreationMethod: self.createTypeId()
+                };
+
+            if (currentEmpInfo) {
+                if (isInit) {
+                    newEmpInfo.copyEmployeeId = !newEmpInfo.copyEmployeeId ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
+                } else {
+                    newEmpInfo.initialValueCode = !newEmpInfo.initialValueCode ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
+
+                }
+
+            }
+
+
+
+
+            character.save('NewEmployeeBasicInfo', newEmpInfo);
+        }
 
 
         finish() {
@@ -516,16 +569,10 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
+                block.grayout();
                 service.addNewEmployee(command).done((employeeId) => {
-
-                    character.save('NewEmployeeBasicInfo', {
-                        copyEmployeeId: command.employeeCopyId,
-                        jobEntryDate: command.hireDate,
-                        initialValueCode: self.initSettingSelectedCode(),
-                        employeeID: employeeId,
-                        employeeCreationMethod: self.createTypeId()
-
-                    });
+                    self.saveBasicInfo(command, employeeId);
+                    block.clear();
 
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
@@ -598,15 +645,19 @@ module cps002.a.vm {
             if (avatarId != "") {
                 setShared("imageId", avatarId);
             }
-            subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
+            if (self.isAllowAvatarUpload()) {
 
-                let imageResult = getShared("imageId");
+                subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
-                if (imageResult) {
-                    self.currentEmployee().avatarId(imageResult);
-                }
+                    let imageResult = getShared("imageId");
 
-            });
+                    if (imageResult) {
+                        self.currentEmployee().avatarId(imageResult);
+                    }
+
+                });
+
+            }
         }
 
 
