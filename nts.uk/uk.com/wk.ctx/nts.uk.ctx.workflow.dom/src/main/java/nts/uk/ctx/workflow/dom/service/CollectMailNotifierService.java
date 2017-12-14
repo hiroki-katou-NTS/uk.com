@@ -2,7 +2,7 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.List;
 /**
- * 
+ * 削除時のメール通知者を取得する
  * @author Doan Duy Hung
  *
  */
