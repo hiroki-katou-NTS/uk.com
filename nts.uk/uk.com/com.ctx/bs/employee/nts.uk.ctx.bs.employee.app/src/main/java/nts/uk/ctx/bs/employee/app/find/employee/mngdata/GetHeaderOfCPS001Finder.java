@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.app.find.employee.mngdata;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,9 +12,12 @@ import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
@@ -45,7 +50,10 @@ public class GetHeaderOfCPS001Finder {
 	private EmploymentHistoryItemRepository employmentHisItemRepo;
 
 	@Inject
-	private EmployeeRepository employeeRepo;
+	AffCompanyHistRepository achFinder;
+
+	@Inject
+	AffCompanyInfoRepository aciFinder;
 
 	@Inject
 	private TempAbsHistRepository tempHistRepo;
@@ -57,22 +65,56 @@ public class GetHeaderOfCPS001Finder {
 		Optional<EmployeeInfo> empInfo = this.employeeMngRepo.findById(sid);
 		if (empInfo.isPresent()) {
 			EmployeeInfo _emp = empInfo.get();
-			Optional<Employee> empFull = this.employeeRepo.findByEmployeeID(companyId, sid, date);
+
+			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(sid);
 			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(sid);
 
-			if (empFull.isPresent() && tempHist.isPresent()) {
-				empFull.get().setTemporaryAbsenceHistory(tempHist.get());
-				_emp.setNumberOfWork(empFull.get().getDaysOfEntire() - empFull.get().getDaysOfTemporaryAbsence());
+			if (tempHist.isPresent()) {
+				_emp.setNumberOfTempHist(tempHist
+						.get().items().stream().filter(
+								f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
+						.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
+								m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate()
+										: LocalDate.now()))
+						.mapToInt(m -> Math.abs(m.intValue())).sum());
 			}
 
-			Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid, date);
+			if (comHist != null) {
+				AffCompanyHistByEmployee emp = comHist.getAffCompanyHistByEmployee(sid);
+				if (emp != null) {
+					_emp.setNumberOfWork(emp.getLstAffCompanyHistoryItem().stream()
+							.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
+							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(), m.end().localDate()))
+							.mapToInt(m -> Math.abs(m.intValue())).sum());
 
-			Optional<EmploymentInfo> emp = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId, sid,
-					date);
+					Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,
+							date);
+
+					if (jobTitleHisItem.isPresent()) {
+						Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo
+								.find(jobTitleHisItem.get().getJobTitleId(), date);
+
+						if (jobInfo.isPresent()) {
+							_emp.setPosition(jobInfo.get().getJobTitleName().toString());
+						}
+					} else {
+						_emp.setPosition(" ");
+					}
+
+					Optional<EmploymentInfo> employment = this.employmentHisItemRepo
+							.getDetailEmploymentHistoryItem(companyId, sid, date);
+
+					if (employment.isPresent()) {
+						_emp.setContractCodeType(employment.get().getEmploymentName());
+					}
+				}
+			}
+
 			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid, date);
 
 			if (department.isPresent()) {
 				String historyId = department.get().getHistoryItems().get(0).identifier();
+
 				Optional<AffDepartmentHistoryItem> historyItem = this.historyItemRepo.getByHistId(historyId);
 				if (historyItem.isPresent()) {
 					Optional<EmployeeInfo> departmentInfo = this.employeeMngRepo
@@ -80,30 +122,13 @@ public class GetHeaderOfCPS001Finder {
 
 					if (departmentInfo.isPresent()) {
 						EmployeeInfo _dept = departmentInfo.get();
-
 						_emp.setDepartmentCode(_dept.getDepartmentCode());
 						_emp.setDepartmentName(_dept.getDepartmentName());
+					} else {
+						_emp.setDepartmentCode(" ");
+						_emp.setDepartmentName(" ");
 					}
-				} else {
-					_emp.setDepartmentName(" ");
 				}
-			}
-
-			if (jobTitleHisItem.isPresent()) {
-				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(),
-						date);
-
-				if (jobInfo.isPresent()) {
-					_emp.setPosition(jobInfo.get().getJobTitleName().toString());
-				}
-			} else {
-				_emp.setPosition(" ");
-			}
-
-			if (emp.isPresent()) {
-				_emp.setContractCodeType(emp.get().getEmploymentName());
-			} else {
-				_emp.setContractCodeType(" ");
 			}
 
 			return _emp;

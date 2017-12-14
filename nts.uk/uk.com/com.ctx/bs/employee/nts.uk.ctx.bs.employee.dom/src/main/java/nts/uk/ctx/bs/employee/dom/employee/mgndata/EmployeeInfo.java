@@ -20,5 +20,5 @@ public class EmployeeInfo {
 	private String contractCodeType;
 	private GeneralDate birthday;
 	private int numberOfWork;
-
+	private int numberOfTempHist;
 }
