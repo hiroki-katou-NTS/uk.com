@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<com:ValidatorScript>
+		nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime
+	</com:ValidatorScript>
+	<table>
+		<tbody>
+			<tr>
+				<td colspan="2">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_115')}</div>
+					<hr />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="padding-radio" tabindex="156" class="radioChildCare" data-bind="ntsRadioBoxGroup: {
+							name: '#[KMK003_115]'
+							options: lstChildCareEnum,
+							optionsValue: 'value',
+							optionsText: 'localizedName',
+							value: selectedChildCare,
+							enable: true}"></div>
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="2">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_189')}</div>
+					<hr />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="padding-radio" tabindex="157" class="radioNursingTime" data-bind="ntsRadioBoxGroup: {
+							name: '#[KMK003_189]'
+							options: lstNursingTimeEnum,
+							optionsValue: 'value',
+							optionsText: 'localizedName',
+							value: selectedNursingTime,
+							enable: true}"></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</ui:composition>
