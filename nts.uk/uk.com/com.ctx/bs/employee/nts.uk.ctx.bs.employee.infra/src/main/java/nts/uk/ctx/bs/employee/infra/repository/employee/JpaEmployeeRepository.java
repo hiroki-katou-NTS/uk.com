@@ -350,14 +350,26 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 * GetByListEmployeeId(java.util.List)
 	 */
 	@Override
-	public List<Employee> getByListEmployeeId(List<String> employeeIds) {
-
+	public List<EmployeeDataMngInfo> getByListEmployeeId(List<String> employeeIds) {
+		
+		List<EmployeeDataMngInfo> result = new ArrayList<>();
+		
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-		List<BsymtEmployee> listEmpEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_ID_2, BsymtEmployee.class)
+		List<BsymtEmployeeDataMngInfo> listEmpEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_ID_2, BsymtEmployeeDataMngInfo.class)
 				.setParameter("employeeIds", employeeIds).getList();
-		return toListEmployee(listEmpEntity);
+		
+		if (CollectionUtil.isEmpty(listEmpEntity)) {
+			return new ArrayList<>();
+		}else {
+			
+			for (BsymtEmployeeDataMngInfo bsymtEmployeeDataMngInfo : listEmpEntity) {
+				EmployeeDataMngInfo emp = tpDomainEmployeeDataMngInfo(bsymtEmployeeDataMngInfo);
+				result.add(emp);
+			}
+		}
+		return result;
 	}
 
 	@Override

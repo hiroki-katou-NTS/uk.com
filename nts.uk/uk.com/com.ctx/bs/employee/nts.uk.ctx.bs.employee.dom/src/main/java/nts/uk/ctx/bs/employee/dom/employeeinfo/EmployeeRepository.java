@@ -130,7 +130,7 @@ public interface EmployeeRepository {
 	 *            the employee ids
 	 * @return the list person by list employee
 	 */
-	List<Employee> getByListEmployeeId(List<String> employeeIds);
+	List<EmployeeDataMngInfo> getByListEmployeeId(List<String> employeeIds);
 
 	Optional<Employee> getInfoById(String employeeId);
 
