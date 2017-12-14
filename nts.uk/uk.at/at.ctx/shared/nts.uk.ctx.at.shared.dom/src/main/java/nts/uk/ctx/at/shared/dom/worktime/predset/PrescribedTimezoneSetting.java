@@ -144,8 +144,6 @@ public class PrescribedTimezoneSetting extends DomainObject {
 			throw new BusinessException("Msg_778");
 		}
 		
-		// TODO: valid message Msg_516
-		
 		// valid: 2 時間帯 có 勤務NO=1 và 2 not overlap
 		boolean isWorkNoOverlap = this.getTimezone(SHIFT_ONE).getWorkNo() == this.getTimezone(SHIFT_TWO).getWorkNo();
 		if (isWorkNoOverlap) {
