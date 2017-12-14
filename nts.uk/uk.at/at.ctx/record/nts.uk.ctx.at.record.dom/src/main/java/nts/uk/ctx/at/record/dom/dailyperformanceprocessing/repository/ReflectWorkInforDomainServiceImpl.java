@@ -472,7 +472,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 				// 所定時間帯を取得する
 				PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingRepository
-						.findByWorkTimeCode(companyId, calendarInfoDto.getWorkTypeCode());
+						.findByWorkTimeCode(companyId, calendarInfoDto.getWorkTimeCode());
 
 				if (predetemineTimeSetting != null) {
 					List<TimezoneUse> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting().getLstTimezone();
@@ -763,6 +763,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									numberOfReflectionStamp);
 
 							stamp = new TimeLeavingWork(workNo, attendanceStamp, leaveStamp);
+							
+							TimeLeavingWork timeLeavingWorkOld = timeLeavingOptional.getTimeLeavingWorks().stream()
+									.filter(itemx -> itemx.getWorkNo().v().equals(timeLeaving.getWorkNo().v())).findFirst()
+									.get();
+							timeLeavingWorkOld.setTimeLeavingWork(workNo, attendanceStamp, leaveStamp);
 
 							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
 							// .filter(item ->
@@ -874,8 +879,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							TimeActualStamp leaveStamp = new TimeActualStamp(leaveActualStampTemp, leaveStampTemp,
 									numberOfReflectionStamp);
 
-							stamp = new TimeLeavingWork(workNo, attendanceStamp, leaveStamp);
-
+//							stamp = new TimeLeavingWork(workNo, attendanceStamp, leaveStamp);
+							
+							TimeLeavingWork timeLeavingWorkOld = timeLeavingOptional.getTimeLeavingWorks().stream()
+									.filter(itemm -> itemm.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v()))
+									.findAny().get();
+							timeLeavingWorkOld.setTimeLeavingWork(workNo, attendanceStamp, leaveStamp);
+							
 							// timeLeavingOptional.getTimeLeavingWorks().stream()
 							// .filter(item ->
 							// item.getWorkNo().equals(timeLeaving.getWorkNo())).findFirst().get()
