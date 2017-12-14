@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -12,7 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmployeeBusinessIml implements EmployeeBusiness {
 
 	@Inject
-	private EmployeeRepository employeeRepository;
+	private EmployeeDataMngInfoRepository employeeRepository;
 
 	@Inject
 	private PersonRepository personRepository;

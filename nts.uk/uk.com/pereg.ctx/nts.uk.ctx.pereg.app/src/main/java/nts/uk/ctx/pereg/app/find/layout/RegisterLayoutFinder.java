@@ -104,6 +104,11 @@ public class RegisterLayoutFinder {
 			}
 
 			setData(dataServer, listItemCls);
+			if (command.getCreateType() == 1) {
+
+				return listItemCls;
+
+			}
 
 			if (command.getCreateType() == 2) {
 
@@ -113,6 +118,28 @@ public class RegisterLayoutFinder {
 						.collect(Collectors.toList());
 			}
 
+		}
+
+		if (command.getCreateType() == 3) {
+
+			listItemCls.forEach(itemCls -> {
+				if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
+					itemCls.getListItemDf().forEach(itemDef -> {
+						LayoutPersonInfoValueDto newLayoutDto = createLayoutInfoDtoFromDef(null, itemDef,
+								ActionRole.EDIT.value);
+
+						if (CollectionUtil.isEmpty(itemCls.getItems())) {
+							List<Object> itemList = new ArrayList<Object>();
+							itemList.add(newLayoutDto);
+							itemCls.setItems(itemList);
+						} else {
+
+							itemCls.getItems().add(newLayoutDto);
+						}
+					});
+				}
+
+			});
 		}
 
 		return listItemCls;
@@ -161,7 +188,7 @@ public class RegisterLayoutFinder {
 				cls.setItems(itemList);
 			} else {
 
-				cls.getItems().add(newLayoutDto); 
+				cls.getItems().add(newLayoutDto);
 			}
 
 		}
@@ -172,7 +199,6 @@ public class RegisterLayoutFinder {
 
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
-		dataObject.setCategoryCode(setItem.getCategoryCode());
 		dataObject.setItemDefId(itemDef.getId());
 		dataObject.setItemName(itemDef.getItemName());
 		dataObject.setItemCode(itemDef.getItemCode());
@@ -181,15 +207,18 @@ public class RegisterLayoutFinder {
 		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 		dataObject.setItem(sigleItem.getDataTypeState());
 		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
-		dataObject.setValue(setItem.getValueAsString());
+		if (setItem != null) {
+			dataObject.setValue(setItem.getValueAsString());
+			dataObject.setCategoryCode(setItem.getCategoryCode());
+		}
 		int dataTypeValue = dataObject.getItem().getDataTypeValue();
-			if (dataTypeValue == 6) {
-				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
-				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-						GeneralDate.today());
-				dataObject.setLstComboBoxValue(lstComboBox);
-			}
-		
+		if (dataTypeValue == 6) {
+			SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
+			List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
+					GeneralDate.today());
+			dataObject.setLstComboBoxValue(lstComboBox);
+		}
+
 		return dataObject;
 
 	}

@@ -85,7 +85,24 @@ module cps002.a.vm {
 
             self.employeeBasicInfo.subscribe((data) => {
                 if (data) {
-                    self.currentEmployee().hireDate
+                    self.currentEmployee().hireDate(data.jobEntryDate);
+
+                    self.createTypeId(data.employeeCreationMethod);
+
+
+                    if (data.copyEmployeeId != "") {
+                        let command = {
+                            baseDate: moment().toDate(),
+                            employeeIds: [data.copyEmployeeId]
+
+                        }
+
+
+                        service.getEmployeeInfo(command).done((result) => {
+                            self.copyEmployee(new EmployeeCopy(result[0]));
+
+                        });
+                    }
                 }
             });
 
@@ -97,21 +114,22 @@ module cps002.a.vm {
                 let InitSetting = _.find(self.initValueList(), item => {
                     return item.itemCode == initCode;
                 });
+                if (InitSetting) {
+                    service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                        if (result.length) {
+                            self.categorySelectedCode("");
+                            self.categoryList(_.map(result, item => {
+                                return new CategoryItem(item);
+                            }));
 
-                service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
-                    if (result.length) {
-                        self.categorySelectedCode("");
-                        self.categoryList(_.map(result, item => {
-                            return new CategoryItem(item);
-                        }));
+                            self.categorySelectedCode(result[0].categoryCd);
+                        } else {
+                            self.categoryList.removeAll();
+                        }
+                    });
 
-                        self.categorySelectedCode(result[0].categoryCd);
-                    } else {
-                        self.categoryList.removeAll();
-                    }
-                });
-
-                self.currentInitSetting(InitSetting);
+                    self.currentInitSetting(InitSetting);
+                }
 
             });
 
@@ -176,7 +194,9 @@ module cps002.a.vm {
                 categorySelectedCode = self.categorySelectedCode(),
                 baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
 
-            if (currentCopyEmployeeId != "" && categorySelectedCode != "") {
+            if (currentCopyEmployeeId != "" && categorySelectedCode) {
+
+
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
                     if (result.length) {
                         self.itemSettingList(_.map(result, item => {
@@ -219,7 +239,7 @@ module cps002.a.vm {
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
                         //move to toppage
-                        jump('/view/cps/008/a/index.xhtml');
+                        jump('/view/cps/007/a/index.xhtml');
                     });
                 }
             });
@@ -427,8 +447,9 @@ module cps002.a.vm {
                 $('#initSettingPanel').hide();
 
                 self.loadCopySettingCtgData();
-
-                $('#hor-scroll-button-show').trigger('click');
+                if (self.copyEmployee().employeeId == '') {
+                    $('#hor-scroll-button-show').trigger('click');
+                }
                 $('#inp_baseDate').focus();
 
             }
@@ -474,7 +495,11 @@ module cps002.a.vm {
                     }));
 
                     if (self.initSettingSelectedCode() == '') {
-                        self.initSettingSelectedCode(result[0].settingCode);
+                        if (self.employeeBasicInfo()) {
+                            self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
+                        } else {
+                            self.initSettingSelectedCode(result[0].settingCode);
+                        }
                     }
 
                 }
@@ -502,6 +527,33 @@ module cps002.a.vm {
 
         }
 
+        saveBasicInfo(command, employeeId) {
+            let self = this,
+                isInit = self.isUseInitValue(),
+                currentEmpInfo = self.employeeBasicInfo(),
+                newEmpInfo = {
+                    copyEmployeeId: command.employeeCopyId,
+                    jobEntryDate: command.hireDate,
+                    initialValueCode: self.initSettingSelectedCode(),
+                    employeeID: employeeId,
+                    employeeCreationMethod: self.createTypeId()
+                };
+
+            if (currentEmpInfo) {
+                if (isInit) {
+                    newEmpInfo.copyEmployeeId = !newEmpInfo.copyEmployeeId ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
+                } else {
+                    newEmpInfo.initialValueCode = !newEmpInfo.initialValueCode ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
+
+                }
+
+            }
+
+
+
+
+            character.save('NewEmployeeBasicInfo', newEmpInfo);
+        }
 
 
         finish() {
@@ -516,15 +568,8 @@ module cps002.a.vm {
 
             if (!self.isError()) {
                 service.addNewEmployee(command).done((employeeId) => {
+                    self.saveBasicInfo(command, employeeId);
 
-                    character.save('NewEmployeeBasicInfo', {
-                        copyEmployeeId: command.employeeCopyId,
-                        jobEntryDate: command.hireDate,
-                        initialValueCode: self.initSettingSelectedCode(),
-                        employeeID: employeeId,
-                        employeeCreationMethod: self.createTypeId()
-
-                    });
 
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {

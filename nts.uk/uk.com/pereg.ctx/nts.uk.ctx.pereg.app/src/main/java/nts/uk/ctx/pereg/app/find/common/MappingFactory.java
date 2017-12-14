@@ -349,6 +349,7 @@ public class MappingFactory {
 		Optional<PersonOptionalDto> perOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
 			return data.getItemCode().equals(item.getItemCode());
 		}).findFirst();
+		if(!perOptionalDto.isPresent()) item.setRecordId(null);
 		Object value = perOptionalDto.isPresent() ? perOptionalDto.get().getValue() : null;
 		setOptionValueToClsDto(layoutPerInfoClsDto, item, value);
 	}
@@ -358,6 +359,7 @@ public class MappingFactory {
 		Optional<EmpOptionalDto> empOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
 			return data.getItemCode().equals(item.getItemCode());
 		}).findFirst();
+		if(!empOptionalDto.isPresent())item.setRecordId(null);
 		Object value = empOptionalDto.isPresent() ? empOptionalDto.get().getValue() : null;
 		setOptionValueToClsDto(layoutPerInfoClsDto, item, value);
 	}

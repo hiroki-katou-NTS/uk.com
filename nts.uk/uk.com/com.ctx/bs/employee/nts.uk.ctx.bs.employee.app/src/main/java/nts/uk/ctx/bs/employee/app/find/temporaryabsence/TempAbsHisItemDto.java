@@ -106,12 +106,12 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 
 	}
 
-	public TempAbsHisItemDto(String recordId, String employeeId) {
-		super(recordId, employeeId, null);
+	public TempAbsHisItemDto(String recordId) {
+		super(recordId);
 	}
 
 	public static TempAbsHisItemDto createFromDomain(DateHistoryItem history, TempAbsenceHisItem histItem) {
-		TempAbsHisItemDto dto = new TempAbsHisItemDto(histItem.getHistoryId(), histItem.getEmployeeId());
+		TempAbsHisItemDto dto = new TempAbsHisItemDto(histItem.getHistoryId());
 		dto.setRemarks(histItem.getRemarks().v());
 		dto.setSoInsPayCategory(histItem.getSoInsPayCategory());
 		dto.setStartDate(history.start());

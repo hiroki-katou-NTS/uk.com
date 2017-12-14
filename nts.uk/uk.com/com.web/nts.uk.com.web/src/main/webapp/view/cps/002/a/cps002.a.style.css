@@ -203,6 +203,10 @@
 	background-color: #FAEC82;
 }
 
+.notRequiredCell {
+	background-color: #E0F59E;
+}
+
 .disabledCell {
 	background-color: #d9d9d9;
 }

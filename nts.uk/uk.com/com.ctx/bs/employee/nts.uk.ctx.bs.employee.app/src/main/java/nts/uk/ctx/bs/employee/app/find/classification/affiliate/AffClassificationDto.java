@@ -41,16 +41,13 @@ public class AffClassificationDto extends PeregDomainDto {
 	@PeregItem("IS00028")
 	private String classificationCode;
 
-	public AffClassificationDto() {
-
+	public AffClassificationDto(String recordId) {
+		super(recordId);
 	}
 
-	public AffClassificationDto(String recordId, String employeeId) {
-		super(recordId, employeeId, null);
-	}
-
-	public static AffClassificationDto createFromDomain(AffClassHistItem_ver1 histItem, DateHistoryItem dateHistoryItem) {
-		AffClassificationDto dto = new AffClassificationDto(histItem.getHistoryId(), histItem.getEmployeeId());
+	public static AffClassificationDto createFromDomain(AffClassHistItem_ver1 histItem,
+			DateHistoryItem dateHistoryItem) {
+		AffClassificationDto dto = new AffClassificationDto(histItem.getHistoryId());
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
 		dto.setClassificationCode(histItem.getClassificationCode().v());
