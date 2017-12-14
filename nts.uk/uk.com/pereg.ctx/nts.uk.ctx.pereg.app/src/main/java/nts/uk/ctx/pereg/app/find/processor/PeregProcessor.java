@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
@@ -55,7 +55,7 @@ public class PeregProcessor {
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 	
 	@Inject
-	private EmployeeRepository employeeRepository;
+	private EmployeeDataMngInfoRepository empRepo;
 	
 	
 	/**
@@ -115,7 +115,7 @@ public class PeregProcessor {
 		String roleId = AppContexts.user().roles().forCompanyAdmin();
 
 		// get Employee
-		EmployeeDataMngInfo employee = employeeRepository.findBySid(AppContexts.user().companyId(), query.getEmployeeId()).get();
+		EmployeeDataMngInfo employee = empRepo.findByEmpId(query.getEmployeeId()).get();
 		query.setPersonId(employee.getPersonId());
 		
 		// get ctgCd
