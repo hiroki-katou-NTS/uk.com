@@ -38,8 +38,11 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	private int dataType;
 
+	private BigDecimal selectionItemRefType;
+
 	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
-			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType) {
+			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType
+			) {
 		super();
 		this.itemCode = itemCode;
 		this.perInfoDefId = perInfoDefId;

@@ -49,6 +49,7 @@ import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -342,12 +343,18 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		dataList.forEach(x -> {
 
+			if (x.getDataType() == ItemValueType.SELECTION.value) {
+				if (x.getSelectionItemRefType().intValue() == 3) {
+					x.setDataType(2);
+				}
+			}
+
 			ItemValue itemVal = getItemById(inputs, x.getItemCode());
 
 			if (itemVal != null) {
 				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
 						itemVal.value() != null ? itemVal.value().toString() : ""));
-				x.setDataType(itemVal.itemValueType().value);
+
 			}
 		});
 
