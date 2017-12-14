@@ -123,7 +123,7 @@ public class DPHeaderDto {
 	public static List<DPHeaderDto> GenerateFixedHeader() {
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
 		lstHeader.add(new DPHeaderDto("ID", "id", "String", "30px", "", false, "Label", true, true));
-		lstHeader.add(new DPHeaderDto("状<br/>態", "state", "String", "30px", "", false, "Label", true, true));
+		lstHeader.add(new DPHeaderDto("状<br/>態", "state", "String", "30px", "", false, "Image", true, true));
 		lstHeader.add(new DPHeaderDto("ER/AL", "error", "String", "60px", "", false, "Label", true, true));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_41"), "date", "String", "90px", "", false, "Label", true, true));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_42"), "sign", "boolean", "35px", "", false, "Checkbox", true, true));

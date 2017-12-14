@@ -15,12 +15,14 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployeePk;
 import nts.uk.ctx.bs.employee.infra.entity.employee.jobentryhistory.BsymtJobEntryHistory;
+import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
@@ -31,7 +33,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	// + " AND d.bsydtJobEntryHistoryPk.entryDate <= :entryDate "
 	// + " AND d.retireDate >= :entryDate ";
 
-	public final String SELECT_NO_WHERE = "SELECT c FROM BsymtEmployee c";
+	public final String SELECT_NO_WHERE = "SELECT c FROM BsymtEmployeeDataMngInfo c";
 
 	/*
 	 * public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE +
@@ -44,16 +46,16 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " AND c.employeeCode IN :listEmployeeCode ";
 
 	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.bsymtEmployeePk.sId IN :employeeIds ";
+			+ " AND c.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ";
 
-	public final String SELECT_BY_LIST_EMP_ID_2 = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId IN :employeeIds ";
+	public final String SELECT_BY_LIST_EMP_ID_2 = SELECT_NO_WHERE + " WHERE c.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ";
 
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
 
-	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :sId";
+	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeeDataMngInfoPk.sId = :sId";
 
 	public final String SELECT_BY_CID_SID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.bsymtEmployeePk.sId = :sId";
+			+ " AND c.bsymtEmployeeDataMngInfoPk.sId = :sId";
 
 	// public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE
 	// c.bsydtEmployeePk.sId = :sId";
@@ -97,8 +99,10 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	private final String SELECT_EMPLOYEE_BY_EMP_ID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :employeeId";
 
 	public final String SELECT_BY_EMP_ID = "SELECT distinct c FROM BsymtEmployeeDataMngInfo c "
-			+ " INNER JOIN BsymtJobEntryHistory d " + " ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
-			+ " AND c.companyId = d.companyId" + " WHERE c.companyId = :companyId " + " AND c.bsymtEmployeePk.sId =:sId"
+			+ " INNER JOIN BsymtJobEntryHistory d "
+			+ " ON c.bsymtEmployeeDataMngInfoPk.sId = d.bsymtJobEntryHistoryPk.sId "
+			+ " AND c.companyId = d.companyId"
+			+ " WHERE c.companyId = :companyId " + " AND c.bsymtEmployeeDataMngInfoPk.sId =:sId"
 			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate" + " AND d.retireDate >= :standardDate";
 
 	/**
@@ -116,6 +120,13 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 		domain.setListEntryJobHist(lstEntryHistory);
 		return domain;
+	}
+	
+	private EmployeeDataMngInfo tpDomainEmployeeDataMngInfo(BsymtEmployeeDataMngInfo entity){
+		return EmployeeDataMngInfo.createFromJavaType(entity.companyId, entity.bsymtEmployeeDataMngInfoPk.pId, 
+				entity.bsymtEmployeeDataMngInfoPk.sId,
+				entity.employeeCode, entity.delStatus, entity.delDateTmp, 
+				entity.removeReason, entity.extCode);
 	}
 
 	/**
@@ -218,21 +229,13 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 * findBySid(java.lang.String)
 	 */
 	@Override
-	public Optional<Employee> findBySid(String companyId, String employeeId) {
+	public Optional<EmployeeDataMngInfo> findBySid(String companyId, String employeeId) {
 
-		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_CID_SID, BsymtEmployee.class)
+		BsymtEmployeeDataMngInfo entity = this.queryProxy().query(SELECT_BY_CID_SID, BsymtEmployeeDataMngInfo.class)
 				.setParameter("companyId", companyId).setParameter("sId", employeeId).getSingleOrNull();
 
-		Employee person = new Employee();
-		if (entity != null) {
-			person = toDomainEmployee(entity);
-
-			if (!entity.listEntryHist.isEmpty()) {
-				person.setListEntryJobHist(
-						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
-			}
-		}
-		return Optional.of(person);
+		EmployeeDataMngInfo employee = new EmployeeDataMngInfo();
+		return Optional.of(employee);
 
 	}
 
@@ -347,14 +350,26 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 * GetByListEmployeeId(java.util.List)
 	 */
 	@Override
-	public List<Employee> getByListEmployeeId(List<String> employeeIds) {
-
+	public List<EmployeeDataMngInfo> getByListEmployeeId(List<String> employeeIds) {
+		
+		List<EmployeeDataMngInfo> result = new ArrayList<>();
+		
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-		List<BsymtEmployee> listEmpEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_ID_2, BsymtEmployee.class)
+		List<BsymtEmployeeDataMngInfo> listEmpEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_ID_2, BsymtEmployeeDataMngInfo.class)
 				.setParameter("employeeIds", employeeIds).getList();
-		return toListEmployee(listEmpEntity);
+		
+		if (CollectionUtil.isEmpty(listEmpEntity)) {
+			return new ArrayList<>();
+		}else {
+			
+			for (BsymtEmployeeDataMngInfo bsymtEmployeeDataMngInfo : listEmpEntity) {
+				EmployeeDataMngInfo emp = tpDomainEmployeeDataMngInfo(bsymtEmployeeDataMngInfo);
+				result.add(emp);
+			}
+		}
+		return result;
 	}
 
 	@Override

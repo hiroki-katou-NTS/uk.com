@@ -133,8 +133,7 @@
 								</tr>
 								<tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
-										<div class="left20 border_none"
-											data-bind="ntsFormLabel:{required: true, constraint: 'KNName'}">
+										<div data-bind="ntsFormLabel:{required: true, constraint: 'KNName'}">
 											<!-- A3_7 -->
 											<label id="LBLCompanyNameKana">#{i18n.getText('CMM001_12')}</label>
 										</div>
@@ -151,8 +150,7 @@
 								<tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
 										<!-- data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameAbb'}" -->
-										<div class="left20 border_none"
-											data-bind="ntsFormLabel: {required: true, constraint: 'ABName'}">
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'ABName'}">
 											<!-- A3_9 -->
 											<label id="LBLCompanyNameAbb">#{i18n.getText('CMM001_14')}</label>
 										</div>
@@ -188,7 +186,7 @@
 											<tr style="margin-top: 10px;">
 												<th colspan="1" class="th-col1" style="width: 150px">
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'TaxNo'}"
+														data-bind="ntsFormLabel:{required: false}"
 														style="margin-top: 5px;">
 														<!-- B1_1 -->
 														<label>#{i18n.getText('CMM001_19')} </label>
@@ -197,9 +195,8 @@
 												<th colspan="2" class="th-col2">
 													<div>
 														<!-- B1_2 -->
-														<input id="corporateMyNumber" tabindex="17"
-															class="save-error"
-															data-bind="ntsNumberEditor: {value: taxNum, constraint: 'TaxNo', required: true, name: '#[CMM001_19]'}" />
+														<input id="corporateMyNumber" tabindex="17" class="save-error"
+															data-bind="ntsNumberEditor: {value: taxNum, constraint: 'TaxNo', name: '#[CMM001_19]'}" />
 													</div>
 												</th>
 											</tr>
@@ -207,7 +204,7 @@
 											<tr style="margin-top: 10px;">
 												<th colspan="1" class="th-col1">
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'RepName'}">
+														data-bind="ntsFormLabel:{required: false, constraint: 'RepName'}">
 														<!-- B1_3 -->
 														<label>#{i18n.getText('CMM001_20')}</label>
 													</div>
@@ -217,7 +214,7 @@
 													<div>
 														<!-- B1_4 -->
 														<input id="presidentName" tabindex="18" class="save-error"
-															data-bind="ntsTextEditor: {value: repname, constraint: 'RepName', required: true, name: '#[CMM001_20]'}" />
+															data-bind="ntsTextEditor: {value: repname, constraint: 'RepName', name: '#[CMM001_20]'}" />
 													</div>
 												</th>
 											</tr>
@@ -226,7 +223,7 @@
 											<tr style="margin-top: 20px;">
 												<th colspan="1" class="th-col1">
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'RepJob'}">
+														data-bind="ntsFormLabel:{required: false, constraint: 'RepJob'}">
 														<!-- B1_5 -->
 														<label>#{i18n.getText('CMM001_21')}</label>
 													</div>
@@ -234,14 +231,10 @@
 
 												<th colspan="2" class="th-col2">
 													<div>
-														<!-- 
-															 immediate: true,
-															 }" -->
 														<!-- B1_6 -->
 														<input id="presidentJobTitle" tabindex="19"
 															class="save-error"
-															data-bind="ntsTextEditor: {value: repJob, name: '#[CMM001_21]',
-																										constraint: 'RepJob', required: true}" />
+															data-bind="ntsTextEditor: {value: repJob, constraint: 'RepJob', name: '#[CMM001_21]'}" />
 													</div>
 												</th>
 											</tr>
@@ -257,7 +250,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: 'PostCd'}">
+														data-bind="ntsFormLabel:{required: false}">
 														<!-- C1_1 -->
 														<label>#{i18n.getText('CMM001_22')}</label>
 													</div>
@@ -267,8 +260,7 @@
 													<div id="colum1">
 														<!-- C1_2 -->
 														<input id="postal" tabindex="17" class="save-error"
-															data-bind="ntsTextEditor: {value: addinfor().postCd, name: '#[CMM001_22]',
-																								constraint: 'PostCd', required: true}"></input>
+															data-bind="ntsTextEditor: {value: addinfor().postCd, constraint: 'PostCd', name: '#[CMM001_22]'}"></input>
 													</div>
 												</th>
 
@@ -284,7 +276,7 @@
 												<th colspan="2" class="th-col1">
 													<!-- C1_4 -->
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true,}">
+														data-bind="ntsFormLabel:{required: false, constraint: ['Add_1', 'Add_2']}">
 														#{i18n.getText('CMM001_24')}</div>
 												</th>
 											</tr>
@@ -293,7 +285,7 @@
 												<!-- C1_5 -->
 												<th colspan="1" class="th-col1"><div
 														class="left20 border_none"
-														data-bind="ntsFormLabel:{required: true}">
+														data-bind="ntsFormLabel:{required: false}">
 														<label id="LBLAddress1">#{i18n.getText('CMM001_25')}</label>
 													</div></th>
 
@@ -304,7 +296,7 @@
 															type="text" placeholder=""
 															style="width: 200px; text-align: left; margin-bottom: 10px;"
 															data-bind="ntsTextEditor: {value: addinfor().add_1, constraint: 'Add_1',
-																		required: true, name: '#[CMM001_25]'}">
+																		required: false, name: '#[CMM001_25]'}">
 														</input>
 
 													</div>
@@ -316,7 +308,7 @@
 												<th colspan="1" class="th-col1">
 												<div
 														class="left20 border_none"
-														data-bind="ntsFormLabel:{required: true}">
+														data-bind="ntsFormLabel:{required: false}">
 												<label id="LBLAddress2">#{i18n.getText('CMM001_26')}</label>
 												</div>
 												</th>
@@ -326,7 +318,7 @@
 														<input id="address2" tabindex="20" class="save-error"
 															data-name="#{i18n.getText('CMM001_26')}"
 															data-bind="ntsTextEditor: {value: addinfor().add_2, constraint: 'Add_2',
-																				required: true, name: '#[CMM001_26]'}" />
+																				required: false, name: '#[CMM001_26]'}" />
 													</div>
 												</th>
 											</tr>
@@ -335,7 +327,7 @@
 												<th colspan="2" class="th-col1">
 													<!-- C1_9 --> 
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true,}">
+														data-bind="ntsFormLabel:{required: false, constraint: ['Add_Kana_1', 'Add_Kana_2']}">
 														#{i18n.getText('CMM001_27')}</div>
 												</th>
 											</tr>
@@ -344,7 +336,7 @@
 												<!-- C1_10 -->
 												<th colspan="1" class="th-col1">
 												<div class="left20 border_none"
-														data-bind="ntsFormLabel:{required: true}">
+														data-bind="ntsFormLabel:{required: false}">
 												<label id="LBLAddressKana1">#{i18n.getText('CMM001_25')}</label>
 												</div>
 												</th>
@@ -354,7 +346,7 @@
 														<!-- C1_11 -->
 														<input id="addressKana1" tabindex="20" class="save-error"
 															data-bind="ntsTextEditor: {value: addinfor().addKana_1, constraint: 'Add_Kana_1',
-															 required: true, name: '#[CMM001_25]'}" />
+															 required: false, name: '#[CMM001_25]'}" />
 													</div>
 												</th>
 											</tr>
@@ -371,8 +363,7 @@
 													<div id="colum1">
 														<!-- c1_13 -->
 														<input id="addressKana2" tabindex="21" class="save-error"
-															data-bind="ntsTextEditor: {value: addinfor().addKana_2, constraint: 'Add_Kana_2',
-																													required: true, name: '#[CMM001_26]'}" />
+															data-bind="ntsTextEditor: {value: addinfor().addKana_2, constraint: 'Add_Kana_2', required: false, name: '#[CMM001_26]'}" />
 													</div>
 												</th>
 											</tr>
@@ -380,7 +371,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
 													<!-- C1_14 --> 
-													<div class="form-label" data-bind="ntsFormLabel:{required: true}">
+													<div class="form-label" data-bind="ntsFormLabel:{required: false}">
 														#{i18n.getText('CMM001_28')}</div>
 												</th>
 
@@ -389,7 +380,7 @@
 														<!-- C1_15 -->
 														<input id="telephoneNo" tabindex="22" class="save-error"
 															data-bind="ntsTextEditor: {value: addinfor().phoneNum, constraint: 'PhoneNum',
-																			required: true, name: '#[CMM001_28]'}" />
+																			required: false, name: '#[CMM001_28]'}" />
 													</div>
 												</th>
 											</tr>
@@ -397,7 +388,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
 													<!-- " -->
-													<div id = "fax" class=" border_none left20" data-bind="ntsFormLabel:{required: true}">
+													<div id = "fax" class=" border_none left20" data-bind="ntsFormLabel:{required: false}">
 														<!-- C1_16 -->
 														<label style="margin-left: 3px;">#{i18n.getText('CMM001_29')}</label>
 													</div>
@@ -406,8 +397,7 @@
 												<th colspan="2" class="th-col2">
 												 <input
 													id="faxNo" tabindex="23" class="save-error"
-													data-bind="ntsTextEditor: {value: addinfor().faxNum, constraint: 'FaxNum',
-																required: true, name: '#[CMM001_29]'}" />
+													data-bind="ntsTextEditor: {value: addinfor().faxNum, constraint: 'FaxNum', name: '#[CMM001_29]'}" />
 												</th>
 											</tr>
 
@@ -532,7 +522,7 @@
 																			 optionsValue: 'code',
 																			 value: startMonth,
 																			 optionsText: 'name',
-																			 editable: true,
+																			 editable: false,
 																			 enable: true,
 																			 dropDownAttachedToBody: true,
 																			 columns: [{ prop: 'name' }]}">

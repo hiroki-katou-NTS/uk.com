@@ -18,8 +18,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
@@ -38,6 +36,7 @@ import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SimpleJobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -48,10 +47,6 @@ public class JobTitlePubImp implements SyJobTitlePub {
 
 	/** The first item index. */
 	private final int FIRST_ITEM_INDEX = 0;
-
-	/** The employee repository. */
-	@Inject
-	private EmployeeRepository employeeRepository;
 
 	/** The job title repository. */
 	@Inject
@@ -87,11 +82,11 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		List<AffJobTitleHistory> affJobTitleHistories = this.jobTitleHistoryRepository
 				.findBySid(employeeId);
 
-		Employee employee = employeeRepository.getBySid(employeeId).get();
+		String companyId = AppContexts.user().companyId();
 
 		// Return
 		return affJobTitleHistories.stream().map(item -> {
-			JobTitleInfo jobTitleInfo = this.jobTitleInfoRepository.find(employee.getCompanyId(),
+			JobTitleInfo jobTitleInfo = this.jobTitleInfoRepository.find(companyId,
 					item.getJobTitleId().v(), item.getPeriod().start()).get();
 			return JobTitleExport.builder().companyId(jobTitleInfo.getCompanyId().v())
 					.jobTitleId(jobTitleInfo.getJobTitleId())
@@ -116,9 +111,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 					.findByHitoryId(dateHistoryItem.identifier()).get();
 
 			// Get information of employee
-			Employee employee = this.employeeRepository.getBySid(employeeId).get();
+			String companyId = AppContexts.user().companyId();
 
-			List<SimpleJobTitleExport> simpleJobTitleExports = findByIds(employee.getCompanyId(),
+			List<SimpleJobTitleExport> simpleJobTitleExports = findByIds(companyId,
 					Arrays.asList(affJobTitleHistItem.getJobTitleId()), baseDate);
 			
 			if ( !simpleJobTitleExports.isEmpty()) {
@@ -135,7 +130,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 			}
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
 	/*

@@ -35,7 +35,8 @@ public class MustNotDuplicate<H extends HistoryItem<S, D>, S extends GeneralPeri
 	public void validateIfCanChangeSpan(History<H, S, D> history, HistoryItem<S, D> itemToBeChanged, S newSpan) {
 		
 		boolean isDuplicated = history.items().stream()
-				.anyMatch(e -> !e.equals(itemToBeChanged) && isDuplicated(e.span().compare(newSpan)));
+				.filter(e -> !e.equals(itemToBeChanged))
+				.anyMatch(e -> isDuplicated(e.span().compare(newSpan)));
 		
 		if (isDuplicated) {
 			throw new BusinessException("Msg_107");

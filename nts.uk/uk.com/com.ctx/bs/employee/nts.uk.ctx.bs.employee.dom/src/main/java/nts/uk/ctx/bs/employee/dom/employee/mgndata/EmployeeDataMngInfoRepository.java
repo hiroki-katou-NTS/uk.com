@@ -32,6 +32,8 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findByPersonId(String pid);
 
 	List<EmployeeDataMngInfo> findByCompanyId(String cid);
+	
+	Optional<EmployeeDataMngInfo> findByEmpId(String sId);
 
 	// sonnlb code start
 

@@ -1,44 +1,56 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.department;
+
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 
 /**
- * The Class DepartmentInfo. 部門情報
+ * The Class DepartmentInfo.
  */
 @Getter
+// 部門情報
 public class DepartmentInfo extends AggregateRoot {
 
 	/** The company id. */
-	/* 会社ID */
+	// 会社ID
 	private CompanyId companyId;
-	
+
 	/** The dep history id. */
-	/* 履歴ID */
+	// 履歴ID
 	private String depHistoryId;
-	
+
 	/** The department id. */
-	/* 部門ID */
+	// 部門ID
 	private String departmentId;
-	
+
 	/** The department code. */
-	/* 部門コード */
+	// 部門コード
 	private DepartmentCode departmentCode;
-	
+
 	/** The department name. */
-	/* 部門名称 */
+	// 部門名称
 	private DepartmentName departmentName;
-	
+
+	// 部門表示名
+	private DepartmentDisplayName depDisplayName;
+
 	/** The dep generic name. */
-	/* 部門総称 */
+	// 部門総称
 	private DepartmentGenericName depGenericName;
-	
-	/* (non-Javadoc)
+
+	/** The outside dep code. */
+	// 部門外部コード
+	private Optional<DepartmentExternalCode> outsideDepCode;
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -51,7 +63,9 @@ public class DepartmentInfo extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -80,5 +94,5 @@ public class DepartmentInfo extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
+
 }
