@@ -20,14 +20,14 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	private final String SELECT_ALL_WORKPLACE = SELECT_FROM_WORKPLACE
 			+ " WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ";
 	private final String SELECT_WORKPLACE_BY_DATE = SELECT_ALL_WORKPLACE
-			+ " AND w.ksmmtCalendarWorkplacePK.dateId = :dateId";
+			+ " AND w.ksmmtCalendarWorkplacePK.date = :date";
 	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_WORKPLACE 
-			+ " AND w.ksmmtCalendarWorkplacePK.dateId >= :startYM "
-			+ " AND w.ksmmtCalendarWorkplacePK.dateId <= :endYM";
+			+ " AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
+			+ " AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
 	private final String DELETE_BY_YEAR_MONTH = "delete FROM KsmmtCalendarWorkplace w "
 			+" WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
-			+" AND w.ksmmtCalendarWorkplacePK.dateId >= :startYM "
-			+" AND w.ksmmtCalendarWorkplacePK.dateId <= :endYM";
+			+" AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
+			+" AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
 	
 	/**
 	 * toDomain calendar workplace
@@ -114,7 +114,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	public Optional<CalendarWorkplace> findCalendarWorkplaceByDate(String workPlaceId, GeneralDate date) {
 		return this.queryProxy().query(SELECT_WORKPLACE_BY_DATE,KsmmtCalendarWorkplace.class)
 				.setParameter("workPlaceId", workPlaceId )
-				.setParameter("dateId", date)
+				.setParameter("date", date)
 				.getSingle(c->toDomainCalendarWorkplace(c));
 	}
 	/**
