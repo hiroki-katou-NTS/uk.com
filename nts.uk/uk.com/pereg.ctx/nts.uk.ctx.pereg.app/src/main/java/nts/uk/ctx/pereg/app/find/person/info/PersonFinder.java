@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 
@@ -16,16 +16,16 @@ public class PersonFinder {
 
 	/** The employee repository. */
 	@Inject
-	private EmployeeRepository empRepo;
+	private EmployeeDataMngInfoRepository empRepo;
 
 	@Inject
 	private PersonRepository personRepo;
 
 	public PersonDto getPersonByEmpId(String employeeId) {
-		Optional<Employee> emp = empRepo.getBySid(employeeId);
+		Optional<EmployeeDataMngInfo> emp = empRepo.findByEmpId(employeeId);
 
 		if (emp.isPresent()) {
-			Optional<Person> person = personRepo.getByPersonId(emp.get().getPId());
+			Optional<Person> person = personRepo.getByPersonId(emp.get().getPersonId());
 
 			if (person.isPresent()) {
 				return PersonDto.fromDomain(person.get());
