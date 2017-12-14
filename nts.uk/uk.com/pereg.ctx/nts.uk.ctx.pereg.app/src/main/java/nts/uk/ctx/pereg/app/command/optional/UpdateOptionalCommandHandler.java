@@ -32,14 +32,14 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 	@Inject 
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 	
-	@Inject
-	private PerInfoCtgDataRepository perInfoCtgDataRepository;
+//	@Inject
+//	private PerInfoCtgDataRepository perInfoCtgDataRepository;
 	
 	@Inject
 	private PerInfoItemDataRepository perInfoItemDataRepository;
 	
-	@Inject
-	private EmInfoCtgDataRepository emInfoCtgDataRepository;
+//	@Inject
+//	private EmInfoCtgDataRepository emInfoCtgDataRepository;
 	
 	@Inject
 	private EmpInfoItemDataRepository empInfoItemDataRepository;
