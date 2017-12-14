@@ -112,6 +112,7 @@
 											endDate: dateRanger().endDate}">
 							</div>
 						</div>
+						<div style="height: 20px">
 						<button id="btn-signAll" data-bind="click: signAll, visible: showButton().available25">#{i18n.getText('KDW003_23')}</button>
 						<div class="setting-container">
 							<button id="btn-setting" data-bind="click: btnSetting_Click" >&#9881;</button>
@@ -131,7 +132,6 @@
 								<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div><br/>
 							</div>
 						</div>
-						<div style="height: 20px">
 						<button id="btn-saveColumnWidth" data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
 						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
 						</div>

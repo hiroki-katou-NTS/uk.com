@@ -480,9 +480,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                    nts.uk.ui.windows.setShared("kdl014startDateA", moment(self.dateRanger().startDate).utc().toISOString());
-                    nts.uk.ui.windows.setShared("kdl014endDateA", moment(self.dateRanger().startDate).utc().toISOString());
-                    nts.uk.ui.windows.setShared("kdl014employeeCodeA", lstEmployee[0].code);
+                    nts.uk.ui.windows.setShared("KDL014A_PARAM", {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                        employeeID: lstEmployee[0].code
+                    });
                     nts.uk.ui.windows.sub.modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
@@ -490,9 +492,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee = self.lstEmployee().map((data) => {
                         return data.code;
                     });
-                    nts.uk.ui.windows.setShared("kdl014startDateB", moment(self.dateRanger().startDate).utc().toISOString());
-                    nts.uk.ui.windows.setShared("kdl014endDateB", moment(self.dateRanger().startDate).utc().toISOString());
-                    nts.uk.ui.windows.setShared("kdl014lstEmployeeB", lstEmployee);
+                     nts.uk.ui.windows.setShared("KDL014B_PARAM", {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                        lstEmployee: lstEmployee
+                    });
                     nts.uk.ui.windows.sub.modal("/view/kdl/014/b/index.xhtml").onClosed(() => {
                     });
                 }
