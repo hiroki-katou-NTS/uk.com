@@ -53,19 +53,21 @@ public class UpdateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
 					
 					);
 			updateRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
+		}else {
+			//update EmploymentRole
+			
+			UpdateEmploymentRoleCmd updateEmploymentRoleCmd = new UpdateEmploymentRoleCmd(
+					AppContexts.user().companyId(),
+					data.getRoleId(),
+					data.getScheduleEmployeeRef(),
+					data.getBookEmployeeRef(),
+					data.getEmployeeRefSpecAgent(),
+					data.getPresentInqEmployeeRef(),
+					data.getFutureDateRefPermit()
+					);
+			updateEmploymentRoleCmdHandler.handle(updateEmploymentRoleCmd);
 		}
-		//update EmploymentRole
 		
-		UpdateEmploymentRoleCmd updateEmploymentRoleCmd = new UpdateEmploymentRoleCmd(
-				AppContexts.user().companyId(),
-				data.getRoleId(),
-				data.getScheduleEmployeeRef(),
-				data.getBookEmployeeRef(),
-				data.getEmployeeRefSpecAgent(),
-				data.getPresentInqEmployeeRef(),
-				data.getFutureDateRefPermit()
-				);
-		updateEmploymentRoleCmdHandler.handle(updateEmploymentRoleCmd);
 		
 		//update WorkPlaceAuthority
 		for(WorkPlaceAuthorityCommand workPlaceAuthorityCommand :data.getListWorkPlaceAuthority()) {
