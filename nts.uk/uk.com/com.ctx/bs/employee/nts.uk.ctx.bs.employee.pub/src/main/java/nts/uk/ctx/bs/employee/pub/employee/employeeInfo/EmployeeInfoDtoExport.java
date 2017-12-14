@@ -27,5 +27,7 @@ public class EmployeeInfoDtoExport {
 
 	/** The person Id. */
 	private String personId;
+	
+	private String perName;
 
 }

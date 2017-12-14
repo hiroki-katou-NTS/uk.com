@@ -27,7 +27,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
-import nts.uk.ctx.bs.employee.dom.employee.history.RecruitmentClassification;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
@@ -155,7 +154,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Transactional
 	private void inputsProcess() {
 
-		List<SettingItemDto> dataServer = this.layoutFinder.itemListByCreateType(command);
+		List<SettingItemDto> dataServer = this.layoutFinder.getItemListByCreateType(command);
 
 		// merge data from client with dataServer
 		mergeData(dataServer, command.getInputs());
@@ -300,8 +299,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			String StringData = getItemValueById(inputs, x.getItemCode());
 
 			if (StringData != null) {
-				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
-						getItemValueById(inputs, x.getItemCode())));
+				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value, StringData));
 			}
 		});
 

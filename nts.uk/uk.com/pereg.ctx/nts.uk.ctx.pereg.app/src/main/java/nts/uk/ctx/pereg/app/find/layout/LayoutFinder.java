@@ -212,7 +212,7 @@ public class LayoutFinder {
 			});
 		}
 
-		result.setClassificationItems(removeDuplicateSeparator(authItemClasList));
+		result.setClassificationItems(authItemClasList);
 		return result;
 
 	}
@@ -619,22 +619,6 @@ public class LayoutFinder {
 			}
 		}
 
-	}
-
-	private List<LayoutPersonInfoClsDto> removeDuplicateSeparator(List<LayoutPersonInfoClsDto> classItemList) {
-		List<LayoutPersonInfoClsDto> authItemClasList1 = new ArrayList<>();
-		for (int i = 0; i < classItemList.size(); i++) {
-			if (i == 0) {
-				authItemClasList1.add(classItemList.get(i));
-			} else {
-				boolean notAcceptElement = classItemList.get(i).getLayoutItemType() == LayoutItemType.SeparatorLine
-						&& classItemList.get(i - 1).getLayoutItemType() == LayoutItemType.SeparatorLine;
-				if (!notAcceptElement) {
-					authItemClasList1.add(classItemList.get(i));
-				}
-			}
-		}
-		return authItemClasList1;
 	}
 
 }

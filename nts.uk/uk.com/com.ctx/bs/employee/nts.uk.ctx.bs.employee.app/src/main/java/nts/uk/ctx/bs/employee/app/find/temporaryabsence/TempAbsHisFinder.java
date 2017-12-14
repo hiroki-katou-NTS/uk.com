@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -47,7 +47,7 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
 		Optional<TempAbsenceHisItem> histItemOpt;
-		Optional<TempAbsenceHistory> historyOpt;
+		Optional<DateHistoryItem> historyOpt;
 		if (query.getInfoId() != null) {
 			historyOpt = tempAbsHistRepo.getByHistId(query.getInfoId());
 		} else {
@@ -55,7 +55,7 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 
 		}
 		if (historyOpt.isPresent()) {
-			histItemOpt = tempAbsItemRepo.getItemByHitoryID(historyOpt.get().getDateHistoryItems().get(0).identifier());
+			histItemOpt = tempAbsItemRepo.getItemByHitoryID(historyOpt.get().identifier());
 			return TempAbsHisItemDto.createFromDomain(historyOpt.get(), histItemOpt.get());
 		}
 		return null;

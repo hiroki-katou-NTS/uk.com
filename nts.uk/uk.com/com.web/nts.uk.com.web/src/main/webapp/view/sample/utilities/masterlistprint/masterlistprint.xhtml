@@ -48,6 +48,7 @@
 									<li>Attach annotation @DomainID at top of class declaration and pass domain id corresponding to master list.</li>
 									<li>Override method getHeaderColumns for return attributes of master and style for them.</li>
 									<li>Override method getMasterDatas for return master list datas.</li>
+									<li><b><i>Note: (optional) If there are many table, override getExtraMasterData and getExtraHeaderColumn</i></b></li>
 								</ul>
 <pre><![CDATA[@Stateless
 @DomainID(value = "test") 

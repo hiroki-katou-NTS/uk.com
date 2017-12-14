@@ -35,7 +35,7 @@ module cps002.a.service {
     }
 
     export function getEmployeeCode(employeeLetter) {
-        return ajax(paths.getEmployeeCode, employeeLetter);
+        return ajax("com", paths.getEmployeeCode, employeeLetter);
     }
 
     export function getCardNumber(cardLetter) {
