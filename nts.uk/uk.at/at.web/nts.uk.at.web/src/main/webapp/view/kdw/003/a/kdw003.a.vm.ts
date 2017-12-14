@@ -874,8 +874,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             $(document).delegate("#dpGrid", 'iggridupdatingeditcellending', function(evt, ui) {
                 // self.editValue({ rowId: ui.rowID, key: ui.columnKey, value: ui.value });
                 let dfd = $.Deferred();
-                nts.uk.ui.block.invisible();
-                nts.uk.ui.block.grayout();
+//                nts.uk.ui.block.invisible();
+//                nts.uk.ui.block.grayout();
                 if (ui.columnKey.indexOf("Code") != -1) {
                     let item = _.find(self.lstAttendanceItem(), function(data) {
                         return data.id == ui.columnKey.substring(4, ui.columnKey.length);
@@ -916,7 +916,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                         $.when(service.findCodeName(param)).done((data) => {
                             $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
-                            nts.uk.ui.block.clear();
+                           // nts.uk.ui.block.clear();
                             dfd.resolve();
                         });
                         dfd.promise();
