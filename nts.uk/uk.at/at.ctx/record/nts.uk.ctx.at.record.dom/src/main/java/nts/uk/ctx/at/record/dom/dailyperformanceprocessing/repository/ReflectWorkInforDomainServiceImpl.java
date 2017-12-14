@@ -661,22 +661,30 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}
 			}
 			timeLeavingWorks = timeLeavingWorkTemps.stream().map(item -> {
-				WorkStamp actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
-						item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
-						item.getAttendanceStamp().getActualStamp().getLocationCode(),
-						item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
+				WorkStamp actualStamp = null;
+				if(item.getAttendanceStamp().getActualStamp() != null){
+					actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
+							item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
+							item.getAttendanceStamp().getActualStamp().getLocationCode(),
+							item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
+				}
+				
 				WorkStamp stamp = new WorkStamp(item.getAttendanceStamp().getStamp().getAfterRoundingTime(),
 						item.getAttendanceStamp().getStamp().getTimeWithDay(),
 						item.getAttendanceStamp().getStamp().getLocationCode(),
 						item.getAttendanceStamp().getStamp().getStampSourceInfo());
 				TimeActualStamp attendanceStamp = new TimeActualStamp(actualStamp, stamp,
 						item.getAttendanceStamp().getNumberOfReflectionStamp());
-
-				WorkStamp leaveActualStampTemp = new WorkStamp(
-						item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
-						item.getLeaveStamp().getActualStamp().getTimeWithDay(),
-						item.getLeaveStamp().getActualStamp().getLocationCode(),
-						item.getLeaveStamp().getActualStamp().getStampSourceInfo());
+				
+				WorkStamp leaveActualStampTemp= null;
+				if(item.getLeaveStamp().getActualStamp() != null){
+					leaveActualStampTemp = new WorkStamp(
+							item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
+							item.getLeaveStamp().getActualStamp().getTimeWithDay(),
+							item.getLeaveStamp().getActualStamp().getLocationCode(),
+							item.getLeaveStamp().getActualStamp().getStampSourceInfo());
+				}
+				
 				WorkStamp leaveStampTemp = new WorkStamp(item.getLeaveStamp().getStamp().getAfterRoundingTime(),
 						item.getLeaveStamp().getStamp().getTimeWithDay(),
 						item.getLeaveStamp().getStamp().getLocationCode(),
@@ -779,11 +787,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					;
 				});
 				timeLeavingWorkList = timeLeavingWorkOutputs.stream().map(item -> {
-					WorkStamp actualStamp = new WorkStamp(
-							item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
-							item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
-							item.getAttendanceStamp().getActualStamp().getLocationCode(),
-							item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
+					WorkStamp actualStamp = null;
+					if(item.getAttendanceStamp().getActualStamp() != null){
+						actualStamp = new WorkStamp(
+								item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
+								item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
+								item.getAttendanceStamp().getActualStamp().getLocationCode(),
+								item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
+					}
+					
 					WorkStamp workStampTemp = new WorkStamp(item.getAttendanceStamp().getStamp().getAfterRoundingTime(),
 							item.getAttendanceStamp().getStamp().getTimeWithDay(),
 							item.getAttendanceStamp().getStamp().getLocationCode(),
@@ -791,11 +803,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					TimeActualStamp attendanceStamp = new TimeActualStamp(actualStamp, workStampTemp,
 							item.getAttendanceStamp().getNumberOfReflectionStamp());
 
-					WorkStamp leaveActualStampTemp = new WorkStamp(
-							item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
-							item.getLeaveStamp().getActualStamp().getTimeWithDay(),
-							item.getLeaveStamp().getActualStamp().getLocationCode(),
-							item.getLeaveStamp().getActualStamp().getStampSourceInfo());
+					WorkStamp leaveActualStampTemp = null;
+					if(item.getLeaveStamp().getActualStamp() != null){
+						leaveActualStampTemp = new WorkStamp(
+								item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
+								item.getLeaveStamp().getActualStamp().getTimeWithDay(),
+								item.getLeaveStamp().getActualStamp().getLocationCode(),
+								item.getLeaveStamp().getActualStamp().getStampSourceInfo());
+					}
 					WorkStamp leaveStampTemp = new WorkStamp(item.getLeaveStamp().getStamp().getAfterRoundingTime(),
 							item.getLeaveStamp().getStamp().getTimeWithDay(),
 							item.getLeaveStamp().getStamp().getLocationCode(),
