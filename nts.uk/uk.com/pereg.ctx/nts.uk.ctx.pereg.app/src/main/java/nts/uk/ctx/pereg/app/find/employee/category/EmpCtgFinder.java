@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
@@ -67,7 +68,8 @@ public class EmpCtgFinder {
 	@Inject
 	private EmpInfoItemDataRepository empInfoItemDataRepository;
 	
-	@Inject EmployeeRepository employeeRepository;
+	@Inject 
+	private EmployeeDataMngInfoRepository employeeRepository;
 	
 	/**
 	 * Get all category by selected employee
@@ -121,49 +123,49 @@ public class EmpCtgFinder {
 				.get();
 		
 		//get combobox object
-//		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
-//			return getInfoListOfOptionalCtg(perInfoCtg, query);
-		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO  || perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
+		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
+			return getInfoListOfOptionalCtg(perInfoCtg, query);
+		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
 			return new ArrayList<>();
 		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
 		return layoutingProcessor.getListFirstItems(query);
 	}
 	
-//	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query){
-//		if(perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO) return new ArrayList<>();
-//		else if(perInfoCtg.getCategoryType() == CategoryType.MULTIINFO){ return null;}
-//		else return getInfoListHistType(perInfoCtg, query);
-//	}
-//
-//	private List<ComboBoxObject> getInfoListHistType(PersonInfoCategory perInfoCtg, PeregQuery query) {
-//		// app contexts
-//		String contractCode = AppContexts.user().contractCode();
-//		String companyId = AppContexts.user().companyId();
-//		String loginEmpId = AppContexts.user().employeeId();
-//		String roleId = AppContexts.user().roles().forCompanyAdmin();
-//
-//		// get item def
-//		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
-//				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
-//						companyId, contractCode, loginEmpId.equals(query.getEmployeeId())));
-//		DateRangeItem dateRangeItem = perInfoCtgRepositoty
-//				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
-//		Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> {
-//			return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());
-//		}).findFirst();
-//		if (!period.isPresent())
-//			return new ArrayList<>();
-//		List<String> timePerInfoItemDefIds = ((SetItem) period.get().getItemTypeState()).getItems();
-//		return perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE
-//				? getHistInfoEmployeeType(timePerInfoItemDefIds, query) : getHistInfoPersonType(timePerInfoItemDefIds, query);
-//	}
+	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query){
+		if(perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO) return new ArrayList<>();
+		else if(perInfoCtg.getCategoryType() == CategoryType.MULTIINFO){ return null;}
+		else return getInfoListHistType(perInfoCtg, query);
+	}
+
+	private List<ComboBoxObject> getInfoListHistType(PersonInfoCategory perInfoCtg, PeregQuery query) {
+		// app contexts
+		String contractCode = AppContexts.user().contractCode();
+		String companyId = AppContexts.user().companyId();
+		String loginEmpId = AppContexts.user().employeeId();
+		String roleId = AppContexts.user().roles().forCompanyAdmin();
+
+		// get item def
+		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
+				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
+						companyId, contractCode, loginEmpId.equals(query.getEmployeeId())));
+		DateRangeItem dateRangeItem = perInfoCtgRepositoty
+				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
+		Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> {
+			return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());
+		}).findFirst();
+		if (!period.isPresent())
+			return new ArrayList<>();
+		List<String> timePerInfoItemDefIds = ((SetItem) period.get().getItemTypeState()).getItems();
+		return perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE
+				? getHistInfoEmployeeType(timePerInfoItemDefIds, query) : getHistInfoPersonType(timePerInfoItemDefIds, query);
+	}
 	
 	private List<ComboBoxObject> getHistInfoPersonType(List<String> timePerInfoItemDefIds, PeregQuery query){
 		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
 		
-		Employee employee = employeeRepository.getBySid(query.getEmployeeId()).get();
+		EmployeeDataMngInfo employee = employeeRepository.findByCidSid(AppContexts.user().companyId(), query.getEmployeeId()).get();
 		// get EmpInfoCtgData to get record id
-		List<PerInfoCtgData> lstPerInfoCtgData = perInfoCtgDataRepository.getByPerIdAndCtgId(employee.getPId(), query.getCategoryId());
+		List<PerInfoCtgData> lstPerInfoCtgData = perInfoCtgDataRepository.getByPerIdAndCtgId(employee.getPersonId(), query.getCategoryId());
 		if(lstPerInfoCtgData.size() == 0) return lstComboBoxObject;
 		
 		//get lst item data and filter base on item def
@@ -185,27 +187,27 @@ public class EmpCtgFinder {
 		return lstComboBoxObject;
 	}
 	
-//	private List<ComboBoxObject> getHistInfoEmployeeType(List<String> timePerInfoItemDefIds, PeregQuery query){
-//		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
-//		// get EmpInfoCtgData to get record id
-//		List<EmpInfoCtgData> lstEmpInfoCtgData = emInfoCtgDataRepository.getByEmpIdAndCtgId(query.getEmployeeId(), query.getCategoryId());
-//		if(lstEmpInfoCtgData.size() == 0) return lstComboBoxObject;
-//		
-//		
-//		for(EmpInfoCtgData empInfoCtgData :  lstEmpInfoCtgData){
-//			//get option value value combo box
-//			String value = empInfoCtgData.getRecordId();
-//			//get option text
-//			List<String> optionText = new ArrayList<>();
-//			List<EmpInfoItemData> lstEmpInfoCtgItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
-//			if(lstEmpInfoCtgItemData.size() != 0) {
-//				for(EmpInfoItemData itemData : lstEmpInfoCtgItemData){
-//					if(timePerInfoItemDefIds.contains(itemData.getPerInfoDefId()))
-//						optionText.add(itemData.getDataState().getDateValue().toString());				
-//				}
-//				lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
-//			}
-//		}
-//		return lstComboBoxObject;
-//	}
+	private List<ComboBoxObject> getHistInfoEmployeeType(List<String> timePerInfoItemDefIds, PeregQuery query){
+		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
+		// get EmpInfoCtgData to get record id
+		List<EmpInfoCtgData> lstEmpInfoCtgData = emInfoCtgDataRepository.getByEmpIdAndCtgId(query.getEmployeeId(), query.getCategoryId());
+		if(lstEmpInfoCtgData.size() == 0) return lstComboBoxObject;
+		
+		
+		for(EmpInfoCtgData empInfoCtgData :  lstEmpInfoCtgData){
+			//get option value value combo box
+			String value = empInfoCtgData.getRecordId();
+			//get option text
+			List<String> optionText = new ArrayList<>();
+			List<EmpInfoItemData> lstEmpInfoCtgItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
+			if(lstEmpInfoCtgItemData.size() != 0) {
+				for(EmpInfoItemData itemData : lstEmpInfoCtgItemData){
+					if(timePerInfoItemDefIds.contains(itemData.getPerInfoDefId()))
+						optionText.add(itemData.getDataState().getDateValue().toString());				
+				}
+				lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
+			}
+		}
+		return lstComboBoxObject;
+	}
 }
