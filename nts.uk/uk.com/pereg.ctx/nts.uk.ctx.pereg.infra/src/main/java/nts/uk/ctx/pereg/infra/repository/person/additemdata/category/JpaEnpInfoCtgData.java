@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.infra.repository.person.additemdata.category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,8 +30,10 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public List<EmpInfoCtgData> getByEmpIdAndCtgId(String employeeId, String categoryId) {
-		return this.queryProxy().query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtEmpInfoCtgData.class)
-				.setParameter("employeeId", employeeId).setParameter("personInfoCtgId", categoryId).getList().stream()
+		List<PpemtEmpInfoCtgData> lstEntities = this.queryProxy().query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtEmpInfoCtgData.class)
+				.setParameter("employeeId", employeeId).setParameter("personInfoCtgId", categoryId).getList();
+		if(lstEntities == null) return new ArrayList<>();
+		return lstEntities.stream()
 				.map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 

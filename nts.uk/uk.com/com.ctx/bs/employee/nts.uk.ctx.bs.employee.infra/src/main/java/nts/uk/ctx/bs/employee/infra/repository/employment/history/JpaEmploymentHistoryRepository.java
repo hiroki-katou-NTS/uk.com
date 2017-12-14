@@ -37,7 +37,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		DateHistoryItem dateItem = null;
 		for (BsymtEmploymentHist item : listHist) {
 			dateItem = new DateHistoryItem(item.hisId, new DatePeriod(item.strDate, item.endDate));
-			empment.add(dateItem);
+			empment.getHistoryItems().add(dateItem);
 		}
 		return empment;
 	}

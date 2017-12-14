@@ -201,7 +201,7 @@ public class PerInfoItemDefForLayoutFinder {
 	
 	
 	
-	private List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto){
+	public List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto){
 		SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
 		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, GeneralDate.today());
 	}
