@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -87,12 +88,14 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 	@Override
 	public List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId) {
-		List<EmpInfoItemData> lstObj = this.queryProxy()
+		List<Object[]> lstEntity = this.queryProxy()
 				.query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
-				.setParameter("recordId", recordId).getList(c -> toDomainNew(c));
-		return lstObj == null ? new ArrayList<>() : lstObj;
+				.setParameter("recordId", recordId).getList();
+		if(lstEntity == null) return new ArrayList<>();
+		return lstEntity.stream().map(c -> toDomainNew(c)).collect(Collectors.toList());
 	}
 
+	
 	/**
 	 * Convert from domain to entity
 	 * 
