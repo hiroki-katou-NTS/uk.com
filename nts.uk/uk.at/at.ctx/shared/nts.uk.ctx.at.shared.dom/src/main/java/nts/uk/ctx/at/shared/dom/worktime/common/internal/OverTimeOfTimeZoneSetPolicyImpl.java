@@ -7,6 +7,9 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingPolicy;
@@ -31,7 +34,35 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet) {
+	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet, EmTimeZoneSet emTimezone) {
+		val otTimezone = otSet.getTimezone();
+		val shift1Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftOne();
+		val shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();
+
+		// validate msg_516
 		this.tzrPolicy.validateRange(predTime, otSet.getTimezone());
+
+		// validate msg_519
+		// TODO: trong ea chua mo ta truong hop khong co shift timezone
+		if (otTimezone.isBetweenOrEqual(shift1Timezone) || otTimezone.isBetweenOrEqual(shift2Timezone)) {
+			throw new BusinessException("Msg_519");
+		}
+
+		// validate msg_779
+		boolean isNotEarlyAndPred = !otSet.isEarlyOTUse() && !predTime.isPredetermine();
+		boolean condition1 = !shift2Timezone.isUsed() && (otTimezone.getStart().lessThan(shift1Timezone.getEnd())
+				|| otTimezone.getEnd().lessThan(shift1Timezone.getEnd()));
+		boolean condition2 = shift2Timezone.isUsed() && (otTimezone.getStart().lessThan(shift2Timezone.getEnd())
+				|| otTimezone.getEnd().lessThan(shift2Timezone.getEnd()));
+		if (isNotEarlyAndPred && (condition1 || condition2)) {
+			throw new BusinessException("Msg_779");
+		}
+
+		// validate msg_780
+		if (!predTime.isPredetermine() && otSet.isEarlyOTUse()
+				&& (otTimezone.getStart().greaterThan(shift1Timezone.getStart())
+						|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart()))) {
+			throw new BusinessException("Msg_780");
+		}
 	}
 }

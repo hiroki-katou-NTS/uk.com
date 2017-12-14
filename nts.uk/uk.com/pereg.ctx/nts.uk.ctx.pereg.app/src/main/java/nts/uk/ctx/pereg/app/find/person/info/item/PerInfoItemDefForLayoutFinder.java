@@ -70,7 +70,9 @@ public class PerInfoItemDefForLayoutFinder {
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode().v());
 		perInfoItemDefForLayoutDto.setItemName(itemDef.getItemName().v());
 		perInfoItemDefForLayoutDto.setItemDefType(itemDef.getItemTypeState().getItemType().value);
-		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
+		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder);
+		if(lstChildren.size() == 0 && itemDef.getItemTypeState().getItemType().value == 1) return null;
+		perInfoItemDefForLayoutDto.setLstChildItemDef(lstChildren);
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired().value);
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
 		

@@ -13,12 +13,12 @@ import java.util.Optional;
 public interface WorkTimeSettingRepository {
 
 	/**
-	 * Find by company ID.
+	 * Find by company id.
 	 *
-	 * @param companyID the company ID
+	 * @param companyId the company id
 	 * @return the list
 	 */
-	public List<WorkTimeSetting> findByCompanyID(String companyID);
+	public List<WorkTimeSetting> findByCompanyId(String companyId);
 
 	/**
 	 * Find all.
@@ -31,27 +31,35 @@ public interface WorkTimeSettingRepository {
 	/**
 	 * Find by codes.
 	 *
-	 * @param companyID the company ID
+	 * @param companyId the company id
 	 * @param codes the codes
 	 * @return the list
 	 */
-	public List<WorkTimeSetting> findByCodes(String companyID, List<String> codes);
+	public List<WorkTimeSetting> findByCodes(String companyId, List<String> codes);
 
 	/**
 	 * Find by code.
 	 *
-	 * @param companyID the company ID
+	 * @param companyId the company id
 	 * @param workTimeCode the work time code
-	 * @return the work time setting
+	 * @return the optional
 	 */
-	public Optional<WorkTimeSetting> findByCode(String companyID, String workTimeCode);
+	public Optional<WorkTimeSetting> findByCode(String companyId, String workTimeCode);
 
 	/**
 	 * Find by code list.
 	 *
-	 * @param companyID the company ID
-	 * @param siftCDs the sift C ds
+	 * @param companyId the company id
+	 * @param worktimeCode the worktime code
 	 * @return the list
 	 */
-	public List<WorkTimeSetting> findByCodeList(String companyID, List<String> siftCDs);
+	public List<WorkTimeSetting> findByCodeList(String companyId, List<String> worktimeCode);
+	
+	
+	/**
+	 * Save.
+	 *
+	 * @param domain the domain
+	 */
+	public void save(WorkTimeSetting domain);
 }

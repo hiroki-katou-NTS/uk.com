@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workdayoff.frame;
 
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameNo;
@@ -18,8 +17,6 @@ import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK
 public class JpaWorkdayoffFrameSetMemento implements WorkdayoffFrameSetMemento{
 	
 	/** The kshst workdayoff frame. */
-	
-	@Setter
 	private KshstWorkdayoffFrame kshstWorkdayoffFrame;
 	
 	/**
@@ -34,18 +31,16 @@ public class JpaWorkdayoffFrameSetMemento implements WorkdayoffFrameSetMemento{
 		this.kshstWorkdayoffFrame = kshstWorkdayoffFrame;
 	}
 
-	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationSetMemento#setCompanyId(nts.uk.ctx.bs.employee.dom.common.CompanyId)
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
 		this.kshstWorkdayoffFrame.getKshstWorkdayoffFramePK().setCid(companyId);
 	}
 
-
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameSetMemento#setUseClassification(nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr)
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameSetMemento#setUseClassification(nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr)
 	 */
 	@Override
 	public void setUseClassification(NotUseAtr useAtr) {

@@ -3,12 +3,12 @@ module cps002.a.vm {
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
     import subModal = nts.uk.ui.windows.sub.modal;
     import jump = nts.uk.request.jump;
     import liveView = nts.uk.request.liveView;
     import character = nts.uk.characteristics;
+    import block = nts.uk.ui.block;
 
     export class ViewModel {
 
@@ -90,7 +90,7 @@ module cps002.a.vm {
                     self.createTypeId(data.employeeCreationMethod);
 
 
-                    if (data.copyEmployeeId != "") {
+                    if (data.copyEmployeeId != "" && self.employeeBasicInfo().copyEmployeeId != data.copyEmployeeId) {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
@@ -360,6 +360,8 @@ module cps002.a.vm {
             let self = this;
 
             self.currentStep(0);
+
+            self.start();
         }
 
         gotoStep3() {
@@ -567,9 +569,10 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
+                block.grayout();
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
-
+                    block.clear();
 
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {

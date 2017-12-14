@@ -15,13 +15,13 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class TimeZone extends DomainObject {
 
-	/** The times. */
-	// 回数
-	private int times;
-
 	/** The use atr. */
 	// 使用区分
 	private NotUseAtr useAtr;
+
+	/** The cnt. */
+	// 勤務NO
+	private int cnt;
 
 	/** The start. */
 	// 開始
@@ -32,29 +32,48 @@ public class TimeZone extends DomainObject {
 	private TimeWithDayAttr end;
 
 	/**
-	 * Instantiates a new time zone.
+	 * Update start time.
 	 *
-	 * @param useAtr
-	 *            the use atr
+	 * @param start
+	 *            the start
 	 */
-	public TimeZone(NotUseAtr useAtr) {
-		this.useAtr = useAtr;
+	public void updateStartTime(TimeWithDayAttr start) {
+		this.start = start;
 	}
 
 	/**
-	 * Default time zone.
+	 * Update end time.
 	 *
-	 * @param times
-	 *            the times
-	 * @param start
-	 *            the start
 	 * @param end
 	 *            the end
 	 */
-	public void defaultTimeZone(int times, int start, int end) {
-		this.times = times;
-		this.start = new TimeWithDayAttr(start);
-		this.end = new TimeWithDayAttr(end);
+	public void updateEndTime(TimeWithDayAttr end) {
+		this.end = end;
 	}
 
+	/**
+	 * Instantiates a new time zone.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public TimeZone(TimezoneGetMemento memento) {
+		this.useAtr = memento.getUseAtr();
+		this.cnt = memento.getCnt();
+		this.start = memento.getStart();
+		this.end = memento.getEnd();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(TimezoneSetMemento memento) {
+		memento.setUseAtr(this.useAtr);
+		memento.setCnt(this.cnt);
+		memento.setStart(this.start);
+		memento.setEnd(this.end);
+	}
 }

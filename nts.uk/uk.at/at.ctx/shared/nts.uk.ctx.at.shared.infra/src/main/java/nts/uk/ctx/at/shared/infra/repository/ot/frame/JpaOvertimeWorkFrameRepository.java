@@ -33,26 +33,24 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame_;
 public class JpaOvertimeWorkFrameRepository extends JpaRepository
 	implements OvertimeWorkFrameRepository {
 
+	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository#findClassification(java.lang.String, java.lang.String)
+	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository#findOvertimeWorkFrame(nts.uk.ctx.at.shared.dom.common.CompanyId, int)
 	 */
 	@Override
-	public Optional<OvertimeWorkFrame> findOvertimeWorkFrame(CompanyId companyId, int planYearHdFrNo) {
+	public Optional<OvertimeWorkFrame> findOvertimeWorkFrame(CompanyId companyId, int overtimeWorkFrNo) {
 		return this.queryProxy()
-				.find(new KshstOvertimeFramePK(companyId.v(), (short) planYearHdFrNo), KshstOvertimeFrame.class)
+				.find(new KshstOvertimeFramePK(companyId.v(), (short) overtimeWorkFrNo), KshstOvertimeFrame.class)
 				.map(e -> this.toDomain(e));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.basic.dom.company.organization.category.
-	 * ManagementCategoryRepository#update(nts.uk.ctx.basic.dom.company.
-	 * organization.category.ManagementCategory)
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository#update(nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame)
 	 */
 	@Override
-	public void update(OvertimeWorkFrame planYearHolidayFrame) {
-		this.commandProxy().update(this.toEntity(planYearHolidayFrame));
+	public void update(OvertimeWorkFrame overtimeWorkFrame) {
+		this.commandProxy().update(this.toEntity(overtimeWorkFrame));
 	}
 	
 	/* (non-Javadoc)

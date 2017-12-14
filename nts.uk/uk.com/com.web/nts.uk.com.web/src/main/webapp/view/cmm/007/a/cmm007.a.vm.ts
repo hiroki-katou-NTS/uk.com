@@ -1,16 +1,41 @@
 module nts.uk.com.view.cmm007.a {
+    import viewModelTabB = nts.uk.com.view.cmm007.b.viewmodel;
+    import viewModelTabC = nts.uk.com.view.cmm007.c.viewmodel;
+    import viewModelTabD = nts.uk.com.view.cmm007.d.viewmodel;
+    import viewModelTabE = nts.uk.com.view.cmm007.e.viewmodel;
+    import viewModelTabG = nts.uk.com.view.cmm007.g.viewmodel;
+    
     export module viewmodel {
         export class ScreenModel {
             
+            systemDefine: KnockoutObservable<any>;
+            temporaryAbsenceFr: KnockoutObservable<any>;
+            planYearHolidayFr: KnockoutObservable<any>;
+            overtimeWorkFr: KnockoutObservable<any>;
+            workdayoffFr: KnockoutObservable<any>;
+            
             constructor(){
                 let _self = this;
+                _self.systemDefine = ko.observable(new viewModelTabB.ScreenModel());
+                _self.temporaryAbsenceFr = ko.observable(new viewModelTabC.ScreenModel());
+                _self.planYearHolidayFr = ko.observable(new viewModelTabD.ScreenModel());
+                _self.overtimeWorkFr = ko.observable(new viewModelTabE.ScreenModel());
+                _self.workdayoffFr = ko.observable(new viewModelTabG.ScreenModel());
             }
             
-            public start_page(): JQueryPromise<void> {
-                var dfd = $.Deferred<void>();
+            public start_page(): JQueryPromise<any> {
+                
+                var dfd = $.Deferred<any>();
+                
                 let _self = this;
                 
-                dfd.resolve();
+                $.when(_self.systemDefine().start_page(),
+                    _self.temporaryAbsenceFr().start_page(),
+                    _self.planYearHolidayFr().start_page(),
+                    _self.overtimeWorkFr().start_page(),
+                    _self.workdayoffFr().start_page()).done(function() {
+                        dfd.resolve(_self);
+                    });
                 
                 return dfd.promise();
             }
@@ -23,8 +48,9 @@ module nts.uk.com.view.cmm007.a {
                 $("#sidebar").ntsSideBar("init", {
                     active: SideBarTabIndex.FIRST,
                     activate: (event, info) => {
-                       $('#com_person').focus();
+                        $('#com_person').focus();
                         let _self = this;
+                        _self.start_page();
                         _self.removeErrorMonitor();
                     }
                 });
@@ -37,8 +63,9 @@ module nts.uk.com.view.cmm007.a {
                 $("#sidebar").ntsSideBar("init", {
                     active: SideBarTabIndex.SECOND,
                     activate: (event, info) => {
-                       $('#tempAbsenceNo7').focus();
+                        $('#tempAbsenceNo7').focus();
                         let _self = this;
+                        _self.start_page();
                         _self.removeErrorMonitor();
                     }
                 });
@@ -51,8 +78,9 @@ module nts.uk.com.view.cmm007.a {
                  $("#sidebar").ntsSideBar("init", {
                     active: SideBarTabIndex.THIRD,
                     activate: (event, info) => {
-                       $('#plan_year_hd_frame1').focus();
+                        $('#plan_year_hd_frame1').focus();
                         let _self = this;
+                        _self.start_page();
                         _self.removeErrorMonitor();
                     }
                 });   
@@ -65,8 +93,9 @@ module nts.uk.com.view.cmm007.a {
                  $("#sidebar").ntsSideBar("init", {
                     active: SideBarTabIndex.FOURTH,
                     activate: (event, info) => {
-                      $('#overtime_work_name1').focus();
+                        $('#overtime_work_name1').focus();
                         let _self = this;
+                        _self.start_page();
                         _self.removeErrorMonitor();
                     }
                 }); 
@@ -79,8 +108,9 @@ module nts.uk.com.view.cmm007.a {
                  $("#sidebar").ntsSideBar("init", {
                     active: SideBarTabIndex.FIFTH,
                     activate: (event, info) => {
-                      $('#work_day_off_name1').focus();
+                        $('#work_day_off_name1').focus();
                         let _self = this;
+                        _self.start_page();
                         _self.removeErrorMonitor();
                     }
                 });

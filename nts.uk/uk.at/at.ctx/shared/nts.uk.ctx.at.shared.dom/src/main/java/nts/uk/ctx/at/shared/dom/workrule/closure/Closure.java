@@ -23,7 +23,7 @@ public class Closure extends AggregateRoot {
 
 	/** The closure id. */
 	// 締めＩＤ
-	private Integer closureId;
+	private ClosureId closureId;
 
 	/** The use classification. */
 	// 使用区分

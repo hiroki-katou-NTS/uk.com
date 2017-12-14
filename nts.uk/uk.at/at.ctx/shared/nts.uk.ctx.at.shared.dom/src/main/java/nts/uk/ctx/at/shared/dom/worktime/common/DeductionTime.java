@@ -5,24 +5,13 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class DeductionTime.
  */
 @Getter
 // 控除時間帯(丸め付き)
-public class DeductionTime extends DomainObject {
-
-	/** The start. */
-	// 開始
-	private TimeWithDayAttr start;
-
-	/** The end. */
-	// 終了
-	private TimeWithDayAttr end;
+public class DeductionTime extends TimeZone {
 
 	/**
 	 * Instantiates a new deduction time.
@@ -45,18 +34,6 @@ public class DeductionTime extends DomainObject {
 	}
 	
 	/* (non-Javadoc)
-	 * @see nts.arc.layer.dom.DomainObject#validate()
-	 */
-	@Override
-	public void validate() {
-		super.validate();
-		
-		if (this.start.greaterThanOrEqualTo(this.end)) {
-			throw new BusinessException("Msg_770");
-		}
-	}
-	
-	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -64,10 +41,6 @@ public class DeductionTime extends DomainObject {
 		return this.start.v() + "," + this.end.v();
 	}
 	
-	public boolean isOverlap(DeductionTime deduct) {
-		return !(this.end.lessThanOrEqualTo(deduct.getStart()) || this.start.greaterThanOrEqualTo(deduct.getEnd()));
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
