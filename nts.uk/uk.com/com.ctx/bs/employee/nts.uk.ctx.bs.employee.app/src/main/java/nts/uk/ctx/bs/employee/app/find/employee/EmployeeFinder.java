@@ -6,15 +6,11 @@ package nts.uk.ctx.bs.employee.app.find.employee;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisFinder;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmployeeBusiness;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -26,8 +22,8 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class EmployeeFinder {
 
 	/** The employee repository. */
-	@Inject
-	private EmployeeRepository employeeRepository;
+	//@Inject
+	//private EmployeeRepository employeeRepository;
 
 	@Inject
 	private EmployeeBusiness employeeBusiness;
@@ -47,8 +43,8 @@ public class EmployeeFinder {
 		// get company id
 		String companyId = loginUserContext.companyId();
 
-		return this.employeeRepository.findByEmployeeCode(companyId, employeeCode, entryDate)
-				.map(item -> EmployeeDto.fromDomain(item));
+		return null;// this.employeeRepository.findByEmployeeCode(companyId, employeeCode,
+					// entryDate).map(item -> EmployeeDto.fromDomain(item));
 	}
 
 	/**
@@ -65,8 +61,9 @@ public class EmployeeFinder {
 
 		// get company id
 		String companyId = loginUserContext.companyId();
-		return this.employeeRepository.findByListEmployeeCode(companyId, listEmployeeCode).stream()
-				.map(item -> EmployeeDto.fromDomain(item)).collect(Collectors.toList());
+		return null;// this.employeeRepository.findByListEmployeeCode(companyId,
+					// listEmployeeCode).stream().map(item ->
+					// EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 	/**
@@ -81,8 +78,8 @@ public class EmployeeFinder {
 
 		// get company id
 		String companyId = loginUserContext.companyId();
-		return this.employeeRepository.findAll(companyId).stream().map(item -> EmployeeDto.fromDomain(item))
-				.collect(Collectors.toList());
+		return null;// this.employeeRepository.findAll(companyId).stream().map(item ->
+					// EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 	/**
@@ -105,20 +102,16 @@ public class EmployeeFinder {
 		return employeeBusiness.generateCardNo(startLetters);
 	}
 
-	
-
-
 	public Optional<EmployeeDto> getInfoById(String employeeId) {
-		Optional<Employee> emp = employeeRepository.getBySid(employeeId);
+		// Optional<Employee> emp = employeeRepository.getBySid(employeeId);
 
-		/*if (emp.isPresent()) {
-			return emp.map(m -> {
-				// set list temporary absence to employee domain
-				m.setListTemporaryAbsence(tAbsFinder.getListBySid(employeeId));
-
-				return EmployeeDto.fromDomain(m);
-			});
-		}*/
+		/*
+		 * if (emp.isPresent()) { return emp.map(m -> { // set list temporary absence to
+		 * employee domain
+		 * m.setListTemporaryAbsence(tAbsFinder.getListBySid(employeeId));
+		 * 
+		 * return EmployeeDto.fromDomain(m); }); }
+		 */
 
 		return Optional.empty();
 	}
