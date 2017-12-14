@@ -442,7 +442,7 @@
 				<div class="form-group search-box">
 					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}">#{i18n.getText('CPS001_32')}</button>
 					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}">#{i18n.getText('CPS001_33')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.list.dataSource.length">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: ko.toJS($data.list.dataSource).length">#{i18n.getText('CPS001_34')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
