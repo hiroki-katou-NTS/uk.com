@@ -84,6 +84,7 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 		AffCompanyHist affCompanyHist = achFinder.getAffCompanyHistoryOfEmployee(query.getEmployeeId());
 		if (affCompanyHist != null)
 			return affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
+					.sorted((a, b) -> b.start().compareTo(a.start()))
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 					.collect(Collectors.toList());
 		return new ArrayList<>();

@@ -90,6 +90,7 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 		if(periods.size() == 0)
 			return new ArrayList<>();
 		return periods.stream()
+				.sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 				.collect(Collectors.toList());
 		
