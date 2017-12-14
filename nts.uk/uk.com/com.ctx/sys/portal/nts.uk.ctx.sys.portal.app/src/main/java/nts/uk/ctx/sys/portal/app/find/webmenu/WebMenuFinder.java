@@ -1,7 +1,10 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,20 +12,37 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.i18n.custom.IInternationalization;
+import nts.arc.scoped.request.RequestContextProvider;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
+import nts.uk.ctx.sys.portal.app.find.webmenu.detail.MenuBarDetailDto;
+import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TitleBarDetailDto;
+import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
+import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TreeMenuDetailDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.JobPosition;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.SelectedAtr;
 import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTying;
+import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
+import nts.uk.shr.com.context.AppContextsConfig;
+import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.program.Program;
+import nts.uk.shr.com.program.ProgramsManager;
+import nts.uk.shr.com.program.WebAppId;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 
 @Stateless
 public class WebMenuFinder {
@@ -34,10 +54,16 @@ public class WebMenuFinder {
 	private StandardMenuRepository standardMenuRepository;
 	
 	@Inject
-	private I18NResourcesForUK ukResource;
+	private IInternationalization internationalization;
 	
 	@Inject
 	private PersonalTyingRepository personalTyingRepository;
+	
+	@Inject
+	private JobTitleTyingRepository jobTitleTyingRepository;
+	
+	@Inject
+	private TopPageSelfSetRepository topPageRepository;
 
 	/**
 	 * Find a web menu by code
@@ -61,6 +87,17 @@ public class WebMenuFinder {
 					webMenuItem.getDefaultMenu().value,
 					menuBars);
 		}).get();
+	}
+	
+	/**
+	 * Find menu list.
+	 * @param codes codes
+	 * @return menu list
+	 */
+	public List<WebMenuDetailDto> find(List<String> codes) {
+		String companyId = AppContexts.user().companyId();
+		List<WebMenu> webMenus = webMenuRepository.find(companyId, codes);
+		return webMenus.stream().map(m -> toMenuDetails(m, companyId)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -88,12 +125,170 @@ public class WebMenuFinder {
 	}
 	
 	/**
+	 * Find all menu details.
+	 * @return menu details
+	 */
+	public List<WebMenuDetailDto> findAllDetails() {
+		LoginUserContext userCtx = AppContexts.user();
+		String companyId = userCtx.companyId();
+		String employeeId = userCtx.employeeId();
+		List<PersonalTying> personTyings = null;
+		List<JobTitleTying> jobTitleTyings = null;
+		WebMenuDetailDto defaultMenu = null;
+		// TODO: Change later, get menu by companyId and userId
+		List<WebMenu> menus = webMenuRepository.findAll(companyId);
+		if (userCtx.isEmployee()) {
+			personTyings = personalTyingRepository.findAll(companyId, employeeId);
+			Optional<JobPosition> jobPositionOpt = topPageRepository.getJobPosition(employeeId, GeneralDate.today());
+			if (jobPositionOpt.isPresent()) {
+				 jobTitleTyings = jobTitleTyingRepository.findWebMenuCode(companyId, Arrays.asList(jobPositionOpt.get().getJobId()));
+			}
+			if (!jobPositionOpt.isPresent() || jobTitleTyings == null || jobTitleTyings.size() == 0) {
+				 defaultMenu = findDefault();
+			}
+		}
+		
+		Set<String> resultSet = new HashSet<>();
+		resultSet = menus.stream().map(m -> m.getWebMenuCode().v()).collect(Collectors.toSet());
+		if (personTyings != null) {
+			resultSet.addAll(personTyings.stream().map(p -> p.getWebMenuCode()).collect(Collectors.toSet()));
+		}
+		if (jobTitleTyings != null) {
+			resultSet.addAll(jobTitleTyings.stream().map(j -> j.getWebMenuCode()).collect(Collectors.toSet()));
+		}
+		if (defaultMenu != null) {
+			resultSet.add(defaultMenu.getWebMenuCode());
+		}
+		
+		return find(resultSet.stream().collect(Collectors.toList()));
+	}
+	
+	/**
+	 * Find default menu.
+	 * @return default menu
+	 */
+	public WebMenuDetailDto findDefault() {
+		String companyId = AppContexts.user().companyId();
+		Optional<WebMenu> menuOpt = webMenuRepository.findDefault(companyId);
+		if (!menuOpt.isPresent()) return null;
+		WebMenu menu = menuOpt.get();
+		return toMenuDetails(menu, companyId);
+	}
+	
+	/**
+	 * To menu details.
+	 * @param menu menu
+	 * @param companyId company Id
+	 * @return web menu details
+	 */
+	private WebMenuDetailDto toMenuDetails(WebMenu menu, String companyId) {
+		List<MenuBarDetailDto> menuBar = menu.getMenuBars().stream().map(m -> {
+			String link = null;
+			if (m.getSelectedAtr() == SelectedAtr.DirectActivation) {
+				StandardMenu sMenu = findStandardMenu(companyId, m.getCode().v(), m.getSystem().value, m.getMenuCls().value);
+				link = getProgramPath(sMenu);
+			}
+			
+			List<TitleBarDetailDto> titleBars = m.getTitleMenu().stream().map(t -> {
+				List<TreeMenuDetailDto> treeMenus = t.getTreeMenu().stream().map(tm -> {
+					String menuCode = tm.getCode().v();
+					int system = tm.getSystem().value;
+					int classification = tm.getClassification().value;
+					StandardMenu stdMenu = findStandardMenu(companyId, menuCode, system, classification);
+					String path = getProgramPath(stdMenu);
+					return new TreeMenuDetailDto(menuCode, stdMenu.getTargetItems(), stdMenu.getDisplayName().v(),
+							path, tm.getDisplayOrder(), system, stdMenu.getMenuAtr().value, classification, 
+							stdMenu.getAfterLoginDisplay(), stdMenu.getProgramId(), stdMenu.getScreenId(), stdMenu.getQueryString());
+				}).sorted((tm1, tm2) -> tm1.getDisplayOrder() - tm2.getDisplayOrder()).collect(Collectors.toList());
+				
+				return new TitleBarDetailDto(t.getTitleMenuId().toString(), 
+						t.getTitleMenuName().v(), t.getBackgroundColor().v(), t.getImageFile(),
+						t.getTextColor().v(), t.getTitleMenuAtr().value, t.getTitleMenuCode().v(),
+						t.getDisplayOrder(), treeMenus);
+			}).sorted((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder()).collect(Collectors.toList());
+			
+			return new MenuBarDetailDto(m.getMenuBarId().toString(),
+					m.getCode().v(), m.getMenuBarName().v(), m.getSelectedAtr().value, link,
+					m.getSystem().value, m.getMenuCls().value, m.getBackgroundColor().v(),
+					m.getTextColor().v(), m.getDisplayOrder().intValue(), titleBars);
+		}).sorted((m1, m2) -> m1.getDisplayOrder() - m2.getDisplayOrder()).collect(Collectors.toList());
+		return new WebMenuDetailDto(companyId, menu.getWebMenuCode().v(),
+				menu.getWebMenuName().v(), menu.getDefaultMenu().value, menuBar);
+	}
+	
+	/**
+	 * Find standard menu.
+	 * @param companyId companyId
+	 * @param menuCode menuCode
+	 * @param system system
+	 * @param classification classification
+	 * @return standard menu
+	 */
+	private StandardMenu findStandardMenu(String companyId, String menuCode, int system, int classification) {
+		Optional<StandardMenu> standardMenu = standardMenuRepository.getStandardMenubyCode(companyId, menuCode, system, classification);
+		return standardMenu.orElseThrow(() -> new RuntimeException("Menu not found."));
+	}
+	
+	/**
+	 * Find program path.
+	 * @param companyId companyId
+	 * @param menuCode menuCode
+	 * @param system system
+	 * @param classification classification
+	 * @return program path
+	 */
+	private String getProgramPath(StandardMenu stdMenu) {
+		// Get system
+		System sys = stdMenu.getSystem();
+		WebAppId appId = null;
+		if (sys == System.COMMON) {
+			appId = WebAppId.COM;
+		} else if (sys == System.TIME_SHEET) {
+			appId = WebAppId.AT;
+		} else if (sys == System.KYUYOU) {
+			appId = WebAppId.PR;
+		}
+		
+		String url = stdMenu.getUrl();
+		if (url == null || "".equals(url)) {
+			Optional<Program> programOpt = ProgramsManager.findById(appId, 
+					stdMenu.getProgramId() + (stdMenu.getScreenId() == null ? "" : stdMenu.getScreenId()));
+			if (programOpt.isPresent()) {
+				url = programOpt.get().getPPath();
+			}
+		}
+		return url;
+	}
+	
+	/**
+	 * Get program string.
+	 * @return program string
+	 */
+	public String getProgram() {
+		String companyId = AppContexts.user().companyId();
+		String pgId = RequestContextProvider.get().get(AppContextsConfig.KEY_PROGRAM_ID);
+		if (pgId == null) return "";
+		String programId = pgId, screenId = null;
+		if (pgId.length() > 6) {
+			 programId = pgId.substring(0, 6);
+			 screenId = pgId.substring(6);
+		}
+		Optional<StandardMenu> menuOpt = standardMenuRepository.getProgram(companyId, programId, screenId);
+		if (menuOpt.isPresent()) {
+			StandardMenu menu = menuOpt.get(); 
+			return pgId + " " + menu.getDisplayName().v();
+		}
+		return "";
+	}
+	
+	
+	/**
 	 * 
 	 * @return
 	 */
 	public EditMenuBarDto getEditMenuBarDto() {
-		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class, ukResource);
-		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, ukResource);
+		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class, internationalization);
+		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, internationalization);
 		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
 		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
