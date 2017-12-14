@@ -71,7 +71,7 @@ module a14 {
             bindingContext: KnockoutBindingContext): void {
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/a11/index.xhtml').serialize();
+                .mergeRelativePath('/view/kmk/003/a14/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
 
