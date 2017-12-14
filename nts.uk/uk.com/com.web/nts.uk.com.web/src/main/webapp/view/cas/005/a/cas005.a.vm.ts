@@ -3,7 +3,7 @@ module nts.uk.com.view.cas005.a {
     import ccg = nts.uk.com.view.ccg025.a;
     import ccg026 = nts.uk.com.view.ccg026;
     import errors = nts.uk.ui.errors;
-
+    import block = nts.uk.ui.block;
 
     export module viewmodel {
         export class ScreenModel {
@@ -313,17 +313,19 @@ module nts.uk.com.view.cas005.a {
 
                 let self = this;
                 let dfd = $.Deferred();
-
+                block.invisible();
                 self.isRegister(true);
                 self.isDelete(true);
                 self.getAllWorkPlaceFunction();
                 self.getListWebMenu();
                 self.getData().done(function() {
                     self.getListWorkplace().done(() => {
+                        block.clear();
                         if (self.component.listRole().length != 0)
                             self.selectRoleCodeByIndex(0);
                         else
                             self.createButton();
+                        
                         dfd.resolve();
                     });
                 });
@@ -512,28 +514,26 @@ module nts.uk.com.view.cas005.a {
 
                     self.listWorkPlaceAuthorityCommand().push(tempCommand);
                 }
+                
                 if (self.assignAtr() == 1) {
                     if (self.bookingScreen() == -1) {
-                        alert(-1);
                         return;
                     }
 
                     if (self.specifyingAgent() == -1) {
-                        alert(-1);
                         return;
                     }
                     if (self.registeredInquiries() == -1) {
-                        alert(-1);
                         return;
                     }
                     if (self.scheduleScreen() == -1) {
-                        alert(-1);
                         return;
                     }
                 }
+                
 
                 if (!$(".nts-input").ntsError("hasError")) {
-
+                    block.invisible();
                     self.roleCas005Command(new model.RoleCas005Command(
                         "",
                         self.roleCode(),
@@ -578,10 +578,11 @@ module nts.uk.com.view.cas005.a {
                             self.isDelete(true);
                         });
 
-
+                
                     }
 
-                    //self.selectRoleCodeByIndex(0);    
+                    //self.selectRoleCodeByIndex(0); 
+                    block.clear();   
                 }
 
             }
@@ -591,6 +592,7 @@ module nts.uk.com.view.cas005.a {
             deleteButton() {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    block.invisible();
                     let temp = new model.DeleteRoleCas005Command(self.component.currentCode());
                     let index = 0;
                     for (let i = 0; i < self.component.listRole().length; i++) {
@@ -611,7 +613,7 @@ module nts.uk.com.view.cas005.a {
                             }
                         });
                     });
-
+                    block.clear();
                 });
             }
             /**
@@ -670,7 +672,6 @@ Role screen Cas005
                 let self = this;
                 let dfd = $.Deferred<any>();
                 service.deleteRoleCas005(command).done(function() {
-                    alert("xoa thanh cong");
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();

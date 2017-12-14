@@ -2,9 +2,10 @@ module nts.uk.com.view.csa005.c {
     import getText = nts.uk.resource.getText;
     export module viewmodel {
         export class ScreenModel {
-           
+            listMenu : KnockoutObservableArray<model.Menu>; 
             constructor() {
                 let self = this;
+                self.listMenu = ko.observableArray([]);
             }
 
             /**
@@ -13,6 +14,9 @@ module nts.uk.com.view.csa005.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                service.getPerMissingMenu().done(function(res){                    
+                    self.listMenu(_.map(res,  x =>{return new model.Menu(x.code, x.displayName, x.screenId, x.programId, x.queryString)}));
+                });
                 dfd.resolve();
                 return dfd.promise();
             }//end start page
@@ -27,31 +31,26 @@ module nts.uk.com.view.csa005.c {
     export module model {
         
         /**
-         * class Role
+         * class Mnu
          */
-        export class Role {
-            roleId : string;
-            roleCode : string;
-            roleType : number;
-            employeeReferenceRange: number;
-            name: string;
-            contractCode : string;
-            assignAtr :number;
-            companyId : string;
-            constructor(roleId : string,roleCode : string,
-            roleType : number,employeeReferenceRange: number,name: string,
-            contractCode : string,assignAtr :number,companyId : string) {
-                this.roleId = roleId;
-                this.roleCode = roleCode;
-                this.roleType = roleType;
-                this.employeeReferenceRange = employeeReferenceRange;
-                this.name = name;
-                this.contractCode = contractCode;
-                this.assignAtr = assignAtr;
-                this.companyId = companyId;
-                
-                       
+        export class Menu {
+            code: string;
+            displayName: string;
+            screenId: string;
+            programId: string;
+            queryString : string;
+            url: string;
+            
+            constructor(code: string, displayName: string, screenId: string, 
+                            programId: string, queryString: string) {
+                this.code = code;
+                this.displayName = displayName;
+                this.screenId = screenId;
+                this.programId = programId;
+                this.queryString = queryString;
+                this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6) + "/" + queryString + "/index.xhtml";
             }
+       }
         }//end class Role
         
 
