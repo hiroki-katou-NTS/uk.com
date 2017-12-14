@@ -13,11 +13,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
  */
 //流動勤務の平日出勤用勤務時間帯
 @Getter
-public class FlHalfDayWtz extends DomainObject{
+public class FlowHalfDayWorkTimezone extends DomainObject{
 
 	/** The work time zone. */
 	//勤務時間帯
-	private FlWtzSetting workTimeZone;
+	private FlowWorkTimezoneSetting workTimeZone;
 	
 	/** The rest timezone. */
 	//休憩時間帯
@@ -28,7 +28,7 @@ public class FlHalfDayWtz extends DomainObject{
 	 *
 	 * @param memento the memento
 	 */
-	public FlHalfDayWtz(FlHalfDayWtzGetMemento memento) {
+	public FlowHalfDayWorkTimezone(FlHalfDayWtzGetMemento memento) {
 		this.restTimezone = memento.getRestTimezone();
 		this.workTimeZone = memento.getWorkTimeZone();
 	}

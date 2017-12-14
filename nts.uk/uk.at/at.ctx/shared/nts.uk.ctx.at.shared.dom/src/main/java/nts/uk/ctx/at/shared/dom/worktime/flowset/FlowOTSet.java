@@ -12,7 +12,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 //流動残業設定
 @Getter
-public class FlOTSet extends DomainObject {
+public class FlowOTSet extends DomainObject {
 
 	/** The fixed change atr. */
 	//所定変動区分
@@ -23,7 +23,7 @@ public class FlOTSet extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public FlOTSet(FlOTGetMemento memento) {
+	public FlowOTSet(FlOTGetMemento memento) {
 		this.fixedChangeAtr = memento.getFixedChangeAtr();
 	}
 

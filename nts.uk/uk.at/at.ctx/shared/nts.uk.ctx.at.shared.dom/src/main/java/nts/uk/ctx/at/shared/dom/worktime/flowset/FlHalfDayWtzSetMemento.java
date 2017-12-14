@@ -23,5 +23,5 @@ public interface FlHalfDayWtzSetMemento {
 	 *
 	 * @param tzone the new work time zone
 	 */
-	 void setWorkTimeZone(FlWtzSetting tzone);
+	 void setWorkTimeZone(FlowWorkTimezoneSetting tzone);
 }

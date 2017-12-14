@@ -8,7 +8,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
  * The Enum PrePlanWorkTimeCalcMethod.
  */
 // 予定前出勤時の計算方法
-public enum PrePlanWTCalcMethod {
+public enum PrePlanWorkTimeCalcMethod {
 
 	/** The not change. */
 	// 予定開始時刻から計算する
@@ -28,7 +28,7 @@ public enum PrePlanWTCalcMethod {
 	public final String description;
 
 	/** The Constant values. */
-	private final static PrePlanWTCalcMethod[] values = PrePlanWTCalcMethod.values();
+	private final static PrePlanWorkTimeCalcMethod[] values = PrePlanWorkTimeCalcMethod.values();
 
 	/**
 	 * Instantiates a new fixed change atr.
@@ -37,7 +37,7 @@ public enum PrePlanWTCalcMethod {
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private PrePlanWTCalcMethod(int value, String nameId, String description) {
+	private PrePlanWorkTimeCalcMethod(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -49,14 +49,14 @@ public enum PrePlanWTCalcMethod {
 	 * @param value the value
 	 * @return the fixed change atr
 	 */
-	public static PrePlanWTCalcMethod valueOf(Integer value) {
+	public static PrePlanWorkTimeCalcMethod valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (PrePlanWTCalcMethod val : PrePlanWTCalcMethod.values) {
+		for (PrePlanWorkTimeCalcMethod val : PrePlanWorkTimeCalcMethod.values) {
 			if (val.value == value) {
 				return val;
 			}

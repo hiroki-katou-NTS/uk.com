@@ -10,11 +10,11 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
- * The Class FlTimeSetting.
+ * The Class FlowTimeSetting.
  */
 //流動時間設定
 @Getter
-public class FlTimeSetting extends DomainObject {
+public class FlowTimeSetting extends DomainObject {
 
 	/** The rounding. */
 	// 丸め
@@ -29,7 +29,7 @@ public class FlTimeSetting extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public FlTimeSetting(FlTimeGetMemento memento) {
+	public FlowTimeSetting(FlTimeGetMemento memento) {
 		this.rounding = memento.getRouding();
 		this.elapsedTime = memento.getElapsedTime();
 	}

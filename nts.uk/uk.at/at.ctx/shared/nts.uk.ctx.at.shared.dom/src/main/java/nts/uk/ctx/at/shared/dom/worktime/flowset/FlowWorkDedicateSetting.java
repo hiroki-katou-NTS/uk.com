@@ -12,22 +12,22 @@ import nts.arc.layer.dom.DomainObject;
  */
 //流動勤務専用設定
 @Getter
-public class FlWorkDedSetting extends DomainObject {
+public class FlowWorkDedicateSetting extends DomainObject {
 
 	/** The overtime setting. */
 	//残業設定
-	private FlOTSet overtimeSetting;
+	private FlowOTSet overtimeSetting;
 	
 	/** The calculate setting. */
 	//計算設定
-	private FlCalcSet calculateSetting;
+	private FlowCalculateSet calculateSetting;
 
 	/**
 	 * Instantiates a new flow work dedicate setting.
 	 *
 	 * @param memento the memento
 	 */
-	public FlWorkDedSetting(FlWorkDedGetMemento memento) {
+	public FlowWorkDedicateSetting(FlWorkDedGetMemento memento) {
 		this.overtimeSetting = memento.getOvertimeSetting();
 		this.calculateSetting = memento.getCalculateSetting();
 	}

@@ -15,11 +15,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
  */
 // 流動打刻反映時間帯
 @Getter
-public class FlStampReflectTz extends DomainObject {
+public class FlowStampReflectTimezone extends DomainObject {
 
 	 /** The two times work reflect basic time. */
 	// ２回目勤務の反映基準時間
- 	private ReflectRefTwoWT twoTimesWorkReflectBasicTime;
+ 	private ReflectReferenceTwoWorkTime twoTimesWorkReflectBasicTime;
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯
@@ -30,7 +30,7 @@ public class FlStampReflectTz extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public FlStampReflectTz(FlStampReflectTzGetMemento memento) {
+	public FlowStampReflectTimezone(FlStampReflectTzGetMemento memento) {
 		this.twoTimesWorkReflectBasicTime = memento.getTwoTimesWorkReflectBasicTime();
 		this.stampReflectTimezones = memento.getStampReflectTimezone();
 	}

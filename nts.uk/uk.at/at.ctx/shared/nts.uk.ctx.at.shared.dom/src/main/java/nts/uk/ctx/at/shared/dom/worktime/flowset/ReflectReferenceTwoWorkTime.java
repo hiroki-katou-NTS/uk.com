@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.TimeRange;
  */
 // ２回目勤務の反映基準時間
 @TimeRange(min = "00:00", max = "72:00")
-public class ReflectRefTwoWT extends TimeClockPrimitiveValue<ReflectRefTwoWT> {
+public class ReflectReferenceTwoWorkTime extends TimeClockPrimitiveValue<ReflectReferenceTwoWorkTime> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -22,7 +22,7 @@ public class ReflectRefTwoWT extends TimeClockPrimitiveValue<ReflectRefTwoWT> {
 	 *
 	 * @param minutesFromZeroOClock the minutes from zero O clock
 	 */
-	public ReflectRefTwoWT(int minutesFromZeroOClock) {
+	public ReflectReferenceTwoWorkTime(int minutesFromZeroOClock) {
 		super(minutesFromZeroOClock);
 	}
 

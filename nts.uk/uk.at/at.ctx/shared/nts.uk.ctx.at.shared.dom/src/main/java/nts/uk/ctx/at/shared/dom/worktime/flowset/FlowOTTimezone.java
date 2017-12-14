@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
  */
 // 流動残業時間帯
 @Getter
-public class FlOTTimezone extends DomainObject {
+public class FlowOTTimezone extends DomainObject {
 
 	/** The worktime no. */
 	// 就業時間帯NO
@@ -30,7 +30,7 @@ public class FlOTTimezone extends DomainObject {
 
 	/** The flow time setting. */
 	// 流動時間設定
-	private FlTimeSetting flowTimeSetting;
+	private FlowTimeSetting flowTimeSetting;
 
 	/** The in legal OT frame no. */
 	// 法定内残業枠NO
@@ -46,7 +46,7 @@ public class FlOTTimezone extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public FlOTTimezone(FlOTTimezoneGetMemento memento) {
+	public FlowOTTimezone(FlOTTimezoneGetMemento memento) {
 		this.worktimeNo = memento.getWorktimeNo();
 		this.restrictTime = memento.getRestrictTime();
 		this.oTFrameNo = memento.getOTFrameNo();

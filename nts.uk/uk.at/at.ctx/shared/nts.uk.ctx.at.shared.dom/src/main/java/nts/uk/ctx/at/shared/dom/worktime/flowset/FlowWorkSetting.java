@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
  */
 // 流動勤務設定
 @Getter
-public class FlWorkSetting extends AggregateRoot {
+public class FlowWorkSetting extends AggregateRoot {
 
 	/** The company code. */
 	// 会社ID
@@ -28,16 +28,16 @@ public class FlWorkSetting extends AggregateRoot {
 
 	/** The half day work timezone. */
 	// 平日勤務時間帯
-	private FlHalfDayWtz halfDayWorkTimezone;
+	private FlowHalfDayWorkTimezone halfDayWorkTimezone;
 
 	/** The offday work timezone. */
 	// 休日勤務時間帯
-	private FlOffdayWtz offdayWorkTimezone;
+	private FlowOffdayWorkTimezone offdayWorkTimezone;
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯
 	// TODO: NOT USE IN UI
-	private FlStampReflectTz stampReflectTimezone;
+	private FlowStampReflectTimezone stampReflectTimezone;
 
 	/** The designated setting. */
 	// 法定内残業設定
@@ -53,7 +53,7 @@ public class FlWorkSetting extends AggregateRoot {
 
 	/** The flow setting. */
 	// 流動設定
-	private FlWorkDedSetting flowSetting;
+	private FlowWorkDedicateSetting flowSetting;
 
 	/**
 	 * Instantiates a new flow work setting.
@@ -61,7 +61,7 @@ public class FlWorkSetting extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public FlWorkSetting(FlWorkSettingGetMemento memento) {
+	public FlowWorkSetting(FlWorkSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workingCode = memento.getWorkingCode();
 		this.restSetting = memento.getRestSetting();

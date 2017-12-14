@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
  */
 //流動休出時間帯
 @Getter
-public class FlWorkHdTimeZone extends DomainObject {
+public class FlowWorkHolidayTimeZone extends DomainObject {
 
 	/** The worktime no. */
 	// 就業時間帯NO
@@ -44,14 +44,14 @@ public class FlWorkHdTimeZone extends DomainObject {
 	private BreakFrameNo outLegalPubHolFrameNo;
 	
 	//流動時間設定
-	private FlTimeSetting flowTimeSetting;
+	private FlowTimeSetting flowTimeSetting;
 
 	/**
 	 * Instantiates a new flow work holiday time zone.
 	 *
 	 * @param memento the memento
 	 */
-	public FlWorkHdTimeZone(FlWorkHdTzGetMemento memento) {
+	public FlowWorkHolidayTimeZone(FlWorkHdTzGetMemento memento) {
 		this.worktimeNo = memento.getWorktimeNo();
 		this.useInLegalBreakRestrictTime = memento.getUseInLegalBreakRestrictTime();
 		this.inLegalBreakFrameNo = memento.getInLegalBreakFrameNo();

@@ -40,7 +40,7 @@ public interface FlWorkSettingGetMemento {
 	 *
 	 * @return the offday work timezone
 	 */
-	FlOffdayWtz getOffdayWorkTimezone();
+	FlowOffdayWorkTimezone getOffdayWorkTimezone();
 
 	/**
 	 * Gets the common setting.
@@ -54,14 +54,14 @@ public interface FlWorkSettingGetMemento {
 	 *
 	 * @return the half day work timezone
 	 */
-	FlHalfDayWtz getHalfDayWorkTimezone();
+	FlowHalfDayWorkTimezone getHalfDayWorkTimezone();
 
 	/**
 	 * Gets the stamp reflect timezone.
 	 *
 	 * @return the stamp reflect timezone
 	 */
-	FlStampReflectTz getStampReflectTimezone();
+	FlowStampReflectTimezone getStampReflectTimezone();
 
 	/**
 	 * Gets the designated setting.
@@ -75,5 +75,5 @@ public interface FlWorkSettingGetMemento {
 	 *
 	 * @return the flow setting
 	 */
-	FlWorkDedSetting getFlowSetting();
+	FlowWorkDedicateSetting getFlowSetting();
 }

@@ -15,11 +15,11 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
- * The Class FlWtzSetting.
+ * The Class FlowWorkTimezoneSetting.
  */
 // 流動勤務時間帯設定
 @Getter
-public class FlWtzSetting extends DomainObject {
+public class FlowWorkTimezoneSetting extends DomainObject {
 
 	/** The work time rounding. */
 	// 就業時間丸め
@@ -27,14 +27,14 @@ public class FlWtzSetting extends DomainObject {
 
 	/** The lst OT timezone. */
 	// 残業時間帯
-	private List<FlOTTimezone> lstOTTimezone;
+	private List<FlowOTTimezone> lstOTTimezone;
 
 	/**
 	 * Instantiates a new fl wtz setting.
 	 *
 	 * @param memento the memento
 	 */
-	public FlWtzSetting(FlWtzSettingGetMemento memento) {
+	public FlowWorkTimezoneSetting(FlWtzSettingGetMemento memento) {
 		this.workTimeRounding = memento.getWorkTimeRounding();
 		this.lstOTTimezone = memento.getLstOTTimezone();
 	}
