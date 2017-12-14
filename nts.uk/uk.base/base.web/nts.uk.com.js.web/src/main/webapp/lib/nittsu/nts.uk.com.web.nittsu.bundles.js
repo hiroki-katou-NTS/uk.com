@@ -2809,7 +2809,7 @@ var nts;
                 specials.getAsyncTaskInfo = getAsyncTaskInfo;
                 function donwloadFile(fileId) {
                     var dfd = $.Deferred();
-                    $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+                    $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
                         successCallback: function (url) {
                             dfd.resolve();
                         },

@@ -13,7 +13,6 @@ import lombok.val;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
-import nts.gul.web.URLEncode;
 
 @Path("/shr/infra/file/storage")
 public class FileStorageWebService {
@@ -27,9 +26,9 @@ public class FileStorageWebService {
 	@GET
 	@Path("get/{fileid}")
 	public Response download(@PathParam("fileid") String fileId) {
-
-		return this.fileInfoRepository.find(fileId).map(fileInfo -> this.buildFileResponse(fileInfo))
-				.orElseThrow(() -> new RuntimeException("stored file info is not found."));
+		return this.fileInfoRepository.find(fileId)
+				.map(fileInfo -> this.buildFileResponse(fileInfo))
+				.orElseGet(() -> Response.status(404).build());
 	}
 	
 	@GET
@@ -37,15 +36,15 @@ public class FileStorageWebService {
 	public Response download(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
 		return this.fileInfoRepository.findZipEntry(fileId, entryName)
 				.map(fileInfo -> this.buildFileResponse(fileInfo))
-				.orElseThrow(() -> new RuntimeException("File not found."));
+				.orElseGet(() -> Response.status(404).build());
 	}
 
 	private Response buildFileResponse(StoredFileInfo fileInfo) {
-
-		val fileInputStream = this.getInputStream(fileInfo);
-
-		return Response.ok(fileInputStream, fileInfo.getMimeType()).encoding("UTF-8")
-				.header("Content-Disposition", contentDisposition(fileInfo)).build();
+		return Response.ok()
+				.entity(new StreamingOutputFile(() -> this.getInputStream(fileInfo)))
+				.encoding("UTF-8")
+				.header("Content-Disposition", Helper.contentDisposition(fileInfo))
+				.build();
 	}
 
 	private InputStream getInputStream(StoredFileInfo fileInfo) {
@@ -57,20 +56,11 @@ public class FileStorageWebService {
 		}
 	}
 
-	static String contentDisposition(StoredFileInfo fileInfo) {
-		String originalName = fileInfo.getOriginalName();
-		if (fileInfo.getOriginalName().indexOf("/") > -1) {
-			 originalName = fileInfo.getOriginalName().split("/")[1];
-		}
-		String encodedName = URLEncode.encodeAsUtf8(originalName);
-		return String.format("attachment; filename=\"%s\"", encodedName);
-	}
-
 	@GET
 	@Path("liveview/{fileid}")
 	public Response liveview(@PathParam("fileid") String fileId) {
-
-		return this.fileInfoRepository.find(fileId).map(fileInfo -> this.buildFileResponseInLine(fileInfo))
+		return this.fileInfoRepository.find(fileId)
+				.map(fileInfo -> this.buildFileResponseInLine(fileInfo))
 				.orElseThrow(() -> new RuntimeException("stored file info is not found."));
 	}
 	
@@ -85,7 +75,9 @@ public class FileStorageWebService {
 	private Response buildFileResponseInLine(StoredFileInfo fileInfo) {
 		val fileInputStream = this.getInputStream(fileInfo);
 		return Response.ok(fileInputStream, fileInfo.getMimeType())
-				.encoding("UTF-8").header("Content-Disposition", "inline").build();
+				.encoding("UTF-8")
+				.header("Content-Disposition", "inline")
+				.build();
 	}
 
 	@POST

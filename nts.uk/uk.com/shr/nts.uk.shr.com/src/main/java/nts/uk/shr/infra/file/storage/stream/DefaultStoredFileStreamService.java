@@ -88,7 +88,7 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	@Override
 	public void delete(String fileId) {
 		try {
-			Files.delete(pathToTargetStoredFile(fileId));
+			Files.deleteIfExists(pathToTargetStoredFile(fileId));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
