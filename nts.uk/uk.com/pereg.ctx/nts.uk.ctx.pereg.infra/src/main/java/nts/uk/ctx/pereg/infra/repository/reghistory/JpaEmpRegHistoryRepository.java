@@ -18,7 +18,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 			+ " INNER JOIN BsymtEmployeeDataMngInfo em ON rh.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID = em.bsymtEmployeeDataMngInfoPk.sId";
 
 	private static final String GET_LAST_REG_BY_COMPANY_QUERY_STRING = SELECT_ALL
-			+ " WHERE rh.companyId= :companyId  ORDER BY rh.registeredDate ";
+			+ " WHERE rh.companyId= :companyId  ORDER BY rh.registeredDate DESC ";
 
 	private static final String GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING = SELECT_ALL
 			+ " WHERE rh.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID= :employeeId";

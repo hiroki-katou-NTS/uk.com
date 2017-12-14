@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.auth.dom.user;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+
 public interface EmployeeDataMngInfoRepository {
 	void add(EmployeeDataMngInfo domain);
 
@@ -43,40 +44,53 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> getListEmpToDelete(String cid);
 
 	Optional<EmployeeDataMngInfo> findByEmployeCD(String empcode, String cid);
-	
+
 	// add by duongtv
 	/**
 	 * Find by list employee id.
 	 *
-	 * @param companyId the company id
-	 * @param employeeIds the employee ids
+	 * @param companyId
+	 *            the company id
+	 * @param employeeIds
+	 *            the employee ids
 	 * @return the list
 	 */
 	List<EmployeeDataMngInfo> findByListEmployeeId(String companyId, List<String> employeeIds);
-	
+
 	/**
 	 * Find by list employee code.
 	 *
-	 * @param companyId the company id
-	 * @param employeeCodes the employee codes
+	 * @param companyId
+	 *            the company id
+	 * @param employeeCodes
+	 *            the employee codes
 	 * @return the list
 	 */
 	List<EmployeeDataMngInfo> findByListEmployeeCode(String companyId, List<String> employeeCodes);
-	
-	
+
 	/**
-	 *  Get List EmployeeDataMngInfo By List Sid
+	 * Get List EmployeeDataMngInfo By List Sid
+	 * 
 	 * @param listSid
 	 * @return
 	 */
 	List<EmployeeDataMngInfo> findByListEmployeeId(List<String> listSid);
-	
+
 	/**
 	 * Get EmployeeDataMngInfo
+	 * 
 	 * @param cid
 	 * @param pid
 	 * @return
 	 */
 	Optional<EmployeeDataMngInfo> findByCidPid(String cid, String pid);
-	
+
+	/**
+	 * Req No.125
+	 * @param cId
+	 * @param sCd
+	 * @return
+	 */
+	List<EmployeeDataMngInfo> getListEmployeeByCidScd(String cId, String sCd);
+
 }

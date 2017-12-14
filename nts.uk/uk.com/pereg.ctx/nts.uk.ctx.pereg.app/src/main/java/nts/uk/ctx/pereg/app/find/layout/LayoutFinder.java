@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -133,13 +134,13 @@ public class LayoutFinder {
 	public EmpMaintLayoutDto getLayout(LayoutQuery layoutQuery) {
 		EmpMaintLayoutDto result = new EmpMaintLayoutDto();
 		// query properties
-		GeneralDate stardardDate = GeneralDate.legacyDate(layoutQuery.getStandardDate());
+		GeneralDate standardDate = GeneralDate.legacyDate(layoutQuery.getStandardDate());
 		String browsingEmpId = layoutQuery.getBrowsingEmpId();
 
 		Employee employee = employeeRepository.findBySid(AppContexts.user().companyId(), browsingEmpId).get();
 		String browsingPeronId = employee.getPId();
 		// validate standard date
-		validateStandardDate(stardardDate, employee, result);
+		standardDate = validateStandardDate(standardDate, employee, result);
 
 		// check authority & get data
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
@@ -195,21 +196,23 @@ public class LayoutFinder {
 
 		}
 
-		classItemInCategoryMap.forEach((categoryId, classItemList) -> {
-			PersonInfoCategory perInfoCategory = perInfoCateRepo
+		for (Entry<String, List<LayoutPersonInfoClsDto>> entry : classItemInCategoryMap.entrySet())
+		{
+			String categoryId = entry.getKey();
+			List<LayoutPersonInfoClsDto> classItemList = entry.getValue(); 
+		    PersonInfoCategory perInfoCategory = perInfoCateRepo
 					.getPerInfoCategory(categoryId, AppContexts.user().contractCode()).get();
 			PeregQuery query = new PeregQuery(perInfoCategory.getCategoryCode().v(), layoutQuery.getBrowsingEmpId(),
-					browsingPeronId, stardardDate);
+					browsingPeronId, standardDate);
 			// get data
-			getDataforSingleItem(perInfoCategory, classItemList, stardardDate, browsingPeronId, browsingEmpId, query);
+			getDataforSingleItem(perInfoCategory, classItemList, standardDate, browsingPeronId, browsingEmpId, query);
 
 			classItemList.forEach(classItem -> {
 				checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
 			});
+		}
 
-		});
-
-		result.setClassificationItems(removeDuplicateSeparator(authItemClasList));
+		result.setClassificationItems(authItemClasList);
 		return result;
 
 	}
@@ -240,7 +243,7 @@ public class LayoutFinder {
 	 * @param employee
 	 * @param result
 	 */
-	private void validateStandardDate(GeneralDate stardardDate, Employee employee, EmpMaintLayoutDto result) {
+	private GeneralDate validateStandardDate(GeneralDate stardardDate, Employee employee, EmpMaintLayoutDto result) {
 		if (employee.getHistoryWithReferDate(stardardDate).isPresent()) {
 			result.setStandardDate(stardardDate);
 		} else {
@@ -254,6 +257,7 @@ public class LayoutFinder {
 				}
 			}
 		}
+		return stardardDate;
 	}
 
 	/**
@@ -615,22 +619,6 @@ public class LayoutFinder {
 			}
 		}
 
-	}
-
-	private List<LayoutPersonInfoClsDto> removeDuplicateSeparator(List<LayoutPersonInfoClsDto> classItemList) {
-		List<LayoutPersonInfoClsDto> authItemClasList1 = new ArrayList<>();
-		for (int i = 0; i < classItemList.size(); i++) {
-			if (i == 0) {
-				authItemClasList1.add(classItemList.get(i));
-			} else {
-				boolean notAcceptElement = classItemList.get(i).getLayoutItemType() == LayoutItemType.SeparatorLine
-						&& classItemList.get(i - 1).getLayoutItemType() == LayoutItemType.SeparatorLine;
-				if (!notAcceptElement) {
-					authItemClasList1.add(classItemList.get(i));
-				}
-			}
-		}
-		return authItemClasList1;
 	}
 
 }

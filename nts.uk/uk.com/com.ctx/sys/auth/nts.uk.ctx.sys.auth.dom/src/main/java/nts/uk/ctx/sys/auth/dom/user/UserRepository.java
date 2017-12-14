@@ -12,7 +12,7 @@ public interface UserRepository {
 	 * @param loginId the login id
 	 * @return the by login id
 	 */
-	Optional<User> getByLoginId(String loginId); 
+	 List<User> getByLoginId(String loginId); 
 	
 	/**
 	 * Gets the by associated person id.
@@ -24,7 +24,7 @@ public interface UserRepository {
 	
 	Optional<User> getByUserID(String userID);
 	
-	List<User> findByKey(String key, boolean Special, boolean Multi);
+    List<User> searchBySpecialAndMulti(GeneralDate systemDate, int special, int multi);
 	
 	List<User> searchUser(String userIDName , GeneralDate date);
 	

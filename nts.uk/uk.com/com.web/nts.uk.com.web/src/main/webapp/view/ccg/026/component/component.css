@@ -1,25 +1,9 @@
-table {
+#table-permission {
     width:  100%;
     border-collapse: collapse;
 }
-td {
-    border: 1px solid black;
-}
-.scrollingTable {
-    width: 30em;
-    overflow-y: auto;
-}
-.readOnlyColorIsUse {
-    background-color: #BFBFBF;
-    pointer-events: none;
-}
-.readOnlyColor {
-    background-color: #BFBFBF;
-}
 
-.readOnlyCheckBox {
-    pointer-events: none;
-}
-.row {
-	height:50px;
+#table-permission .description {
+	display: inline-block;
+	white-space: nowrap;
 }

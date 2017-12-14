@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.daycalendar;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 @Data
 public class UpdateCalendarClassCommand {
@@ -11,7 +10,7 @@ private String companyId;
 	
 	private String classId;
 	
-	private BigDecimal dateId;
+	private String date;
 	
 	private int workingDayAtr;
 }

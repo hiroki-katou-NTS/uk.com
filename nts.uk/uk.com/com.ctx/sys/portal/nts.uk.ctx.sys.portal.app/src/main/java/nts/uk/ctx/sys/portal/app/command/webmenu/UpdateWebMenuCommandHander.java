@@ -42,11 +42,11 @@ public class UpdateWebMenuCommandHander extends CommandHandler<WebMenuCommandBas
 		
 		List<MenuBar> menuBars = command.getMenuBars().stream()
 				.map(mn -> { 
-					String menuBarId = MenuBar.createMenuBarId().toString();
+					String menuBarId = MenuBar.createMenuBarId();
 					
 					List<TitleBar> titleMenu = mn.getTitleMenu().stream()
 							.map(ti -> {
-								String titleMenuId = TitleBar.createTitleMenuId().toString();
+								String titleMenuId = TitleBar.createTitleMenuId();
 								List<TreeMenu> treeMenu = ti.getTreeMenu().stream()
 										.map(tr -> {									
 											TreeMenu domainTreeMenu = TreeMenu.createFromJavaType(titleMenuId,tr.getCode(), tr.getDisplayOrder(), tr.getClassification(), tr.getSystem());

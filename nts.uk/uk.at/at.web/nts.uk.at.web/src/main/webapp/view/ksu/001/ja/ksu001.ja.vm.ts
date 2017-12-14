@@ -23,10 +23,9 @@ module ksu001.ja.viewmodel {
                 { id: "copy", text: nts.uk.resource.getText("KSU001_1706"), action: null },
                 { id: "delete", text: nts.uk.resource.getText("KSU001_1708"), action: self.remove }
             ];
-            $("#test2").ntsButtonTable("init", { row: 3, column: 10, source: self.source(), contextMenu: self.contextMenu, click: self.openDialogJB(), mode: "master" });
         }
 
-        clear(): void {
+        clear() {
             let self = this;
             self.source([]);
         }
@@ -38,7 +37,7 @@ module ksu001.ja.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        openDialogJB() {
+        openDialogJB(): JQueryPromise<any> {
             let dfd = $.Deferred();
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
                 dfd.resolve();
@@ -47,7 +46,7 @@ module ksu001.ja.viewmodel {
             return dfd.promise();
         }
 
-        remove() {
+        remove(): JQueryPromise<any> {
             let dfd = $.Deferred();
 
             setTimeout(function() {

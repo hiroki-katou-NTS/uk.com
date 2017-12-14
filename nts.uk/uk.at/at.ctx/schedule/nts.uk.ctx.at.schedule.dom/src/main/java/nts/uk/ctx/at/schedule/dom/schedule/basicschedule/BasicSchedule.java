@@ -11,6 +11,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
@@ -77,7 +78,8 @@ public class BasicSchedule extends AggregateRoot {
 		this.employeeId = memento.getEmployeeId();
 		this.date = memento.getDate();
 		this.workTypeCode = memento.getWorkTypeCode();
-		this.workTimeCode = memento.getWorkTimeCode();
+		this.workTimeCode = StringUtil.isNullOrEmpty(memento.getWorkTimeCode(), true)
+				|| ("000").equals(memento.getWorkTimeCode()) ? "   " : memento.getWorkTimeCode();
 		this.confirmedAtr = memento.getConfirmedAtr();
 		this.workDayAtr = memento.getWorkDayAtr();
 		this.workScheduleTimeZones = memento.getWorkScheduleTimeZones();

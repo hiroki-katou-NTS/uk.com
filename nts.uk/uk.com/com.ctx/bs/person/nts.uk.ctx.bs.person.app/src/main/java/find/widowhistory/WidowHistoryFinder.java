@@ -3,6 +3,7 @@
  */
 package find.widowhistory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -60,7 +61,7 @@ public class WidowHistoryFinder implements PeregFinder<WidowHistoryDto>{
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	

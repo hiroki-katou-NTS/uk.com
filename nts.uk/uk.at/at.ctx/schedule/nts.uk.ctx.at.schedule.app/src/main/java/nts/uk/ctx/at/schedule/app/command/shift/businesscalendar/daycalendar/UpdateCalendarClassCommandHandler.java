@@ -8,12 +8,15 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClassRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdateCalendarClassCommandHandler extends CommandHandler<List<UpdateCalendarClassCommand>> {
+	
+	private final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Inject
 	private CalendarClassRepository calendarClassRepo;
@@ -25,11 +28,11 @@ public class UpdateCalendarClassCommandHandler extends CommandHandler<List<Updat
 		for(UpdateCalendarClassCommand calendarClassCommand: calendarClassCommands) {
 			CalendarClass calendarClass = CalendarClass.createFromJavaType(companyId,
 					calendarClassCommand.getClassId(), 
-					calendarClassCommand.getDateId(),
+					GeneralDate.fromString(calendarClassCommand.getDate(), DATE_FORMAT),
 					calendarClassCommand.getWorkingDayAtr());
 			Optional<CalendarClass> calendarCla =calendarClassRepo.findCalendarClassByDate(companyId,
 					calendarClassCommand.getClassId(),
-					calendarClassCommand.getDateId());
+					GeneralDate.fromString(calendarClassCommand.getDate(), DATE_FORMAT));
 			// neu da ton tai
 			if (calendarCla.isPresent()) {
 				calendarClassRepo.updateCalendarClass(calendarClass);

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 /**
@@ -16,7 +17,7 @@ import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 @Value
 public class MenuBar {
 	
-	private UUID menuBarId;
+	private String menuBarId;
 	
 	private MenuCode code;
 	
@@ -40,7 +41,7 @@ public class MenuBar {
 			int system, int menuCls, String code, String backgroundColor, String textColor,
 			Integer displayOrder, List<TitleBar> titleMenu) {
 		return new MenuBar(
-				UUID.fromString(menuBarId),
+				menuBarId,
 				new MenuCode(code),
 				new MenuBarName(menuBarName),
 				EnumAdaptor.valueOf(selectedAtr, SelectedAtr.class),
@@ -52,8 +53,8 @@ public class MenuBar {
 				titleMenu);
 	}
 	
-	public static UUID createMenuBarId() {
-		return UUID.randomUUID();
+	public static String createMenuBarId() {
+		return IdentifierUtil.randomUniqueId();
 	}
 	
 	

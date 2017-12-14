@@ -73,8 +73,8 @@ public class Employee extends AggregateRoot {
 	}
 
 	public Optional<JobEntryHistory> getHistoryWithReferDate(GeneralDate referenceDate) {
-		return this.listEntryJobHist.stream().filter(history -> history.getJoinDate().before(referenceDate)
-				&& history.getRetirementDate().after(referenceDate)).findFirst();
+		return this.listEntryJobHist.stream().filter(history -> history.getJoinDate().beforeOrEquals(referenceDate)
+				&& history.getRetirementDate().afterOrEquals(referenceDate)).findFirst();
 	}
 
 	public Optional<JobEntryHistory> getHistoryBeforeReferDate(GeneralDate referenceDate) {

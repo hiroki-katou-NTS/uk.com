@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.AfterChildbirth;
@@ -22,11 +23,25 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 @Transactional
 public class JpaTempAbsItem extends JpaRepository implements TempAbsItemRepository {
 	
+	private final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
+			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
+			+ " WHERE h.sid = :sid AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
+	
 	@Override
 	public Optional<TempAbsenceHisItem> getItemByHitoryID(String historyId) {
 		Optional<BsymtTempAbsHisItem> option = this.queryProxy().find(historyId, BsymtTempAbsHisItem.class);
 		if (option.isPresent()) {
 			return Optional.of(toDomain(option.get()));
+		}
+		return Optional.empty();
+	}
+	
+	@Override
+	public Optional<TempAbsenceHisItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		Optional<BsymtTempAbsHisItem> optionData = this.queryProxy().query(GET_BY_SID_DATE, BsymtTempAbsHisItem.class)
+				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
+		if ( optionData.isPresent()) {
+			return Optional.of(toDomain(optionData.get()));
 		}
 		return Optional.empty();
 	}

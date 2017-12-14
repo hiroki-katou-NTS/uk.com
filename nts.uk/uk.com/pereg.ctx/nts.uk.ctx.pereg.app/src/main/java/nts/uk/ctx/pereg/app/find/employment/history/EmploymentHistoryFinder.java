@@ -1,7 +1,9 @@
 package nts.uk.ctx.pereg.app.find.employment.history;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -49,20 +52,18 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 
 	@Override
 	public EmploymentHistoryDto getSingleData(PeregQuery query) {
-		Optional<EmploymentHistory> optHis;
-		if ( query.getInfoId() != null ) {
+		Optional<DateHistoryItem> optHis;
+		if (query.getInfoId() != null) {
 			optHis = this.empHistRepo.getByHistoryId(query.getInfoId());
 		} else {
 			optHis = this.empHistRepo.getByEmployeeIdAndStandardDate(query.getEmployeeId(), query.getStandardDate());
 		}
-		if ( optHis.isPresent()) {
-			
-			Optional<EmploymentHistoryItem> hisItemOpt = empHistItemRepo
-					.getByHistoryId(optHis.get().getHistoryItems().get(0).identifier());
+		if (optHis.isPresent()) {
+			Optional<EmploymentHistoryItem> hisItemOpt = empHistItemRepo.getByHistoryId(optHis.get().identifier());
 			if (hisItemOpt.isPresent()) {
 				return EmploymentHistoryDto.createFromDomain(optHis.get(), hisItemOpt.get());
 			}
-			
+
 		}
 		return null;
 	}
@@ -75,8 +76,12 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<EmploymentHistory> optHis = this.empHistRepo.getByEmployeeId(query.getEmployeeId());
+		if(!optHis.isPresent()) return new ArrayList<>();
+		List<DateHistoryItem> items = optHis.get().getHistoryItems();
+		if(items.size() == 0) return new ArrayList<>();
+		return items.stream().map(x -> ComboBoxObject.toComboBoxObject
+				(x.identifier(), x.start().toString(), x.end().toString())).collect(Collectors.toList());
 	}
 
 }
