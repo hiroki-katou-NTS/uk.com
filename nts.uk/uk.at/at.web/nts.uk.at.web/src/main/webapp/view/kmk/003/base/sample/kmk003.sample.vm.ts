@@ -5,9 +5,13 @@ module nts.uk.at.view.kmk003.sample {
         export class ScreenModel {
             
             enable: KnockoutObservable<boolean>;
-            fixTableOption: any;
+            fixTableOption1: any;
+            dataSource1: KnockoutObservableArray<any>;
+            
             itemList: KnockoutObservableArray<any>;
-            dataSource: KnockoutObservableArray<any>;
+            
+            fixTableOption2: any;
+            dataSource2: KnockoutObservableArray<any>;
             
             constructor() {
                 let self = this;
@@ -20,20 +24,31 @@ module nts.uk.at.view.kmk003.sample {
                     {code: 3, name: '基本給3'}
                 ]);
                 
-                self.dataSource = ko.observableArray([]);
-                
-                self.fixTableOption = {
+                self.dataSource1 = ko.observableArray([]);
+                self.fixTableOption1 = {
                     maxRow: 7,
                     minRow: 0,
                     maxRowDisplay: 5,
                     isShowButton: true,
-                    dataSource: self.dataSource,
+                    dataSource: self.dataSource1,
                     isMultipleSelect: self.enable(),
                     columns: self.columnSetting(),
                     tabindex: 10
                 }
                 
-                self.dataSource.subscribe((newList) => {
+                self.dataSource2 = ko.observableArray([]);
+                self.fixTableOption2 = {
+                    maxRow: 10,
+                    minRow: 2,
+                    maxRowDisplay: 5,
+                    isShowButton: true,
+                    dataSource: self.dataSource2,
+                    isMultipleSelect: self.enable(),
+                    columns: self.columnSetting(),
+                    tabindex: 10
+                }
+                
+                self.dataSource1.subscribe((newList) => {
                     console.log(newList);
                 });
             }
@@ -45,11 +60,11 @@ module nts.uk.at.view.kmk003.sample {
                 let self = this;
                 let dfd = $.Deferred<any>();
 
-                self.dataSource.push({
+                self.dataSource1.push({
                     column1: ko.observable("23:00"), column2: ko.observable(false),
                     column3: ko.observable({startTime:"13:00", endTime:"14:00"}), column4: ko.observable(3)
                 });
-                self.dataSource.push({
+                self.dataSource1.push({
                     column1: ko.observable("10:00"), column2: ko.observable(false),
                     column3: ko.observable({startTime:"10:00", endTime:"12:00"}), column4: ko.observable(3)
                 });
@@ -62,7 +77,7 @@ module nts.uk.at.view.kmk003.sample {
              * testDataSource
              */
             public testDataSource() {
-                console.log(this.dataSource());
+                console.log(this.dataSource1());
             }
             
             /**
