@@ -82,7 +82,7 @@ module nts.uk.com.view.ccg026.component {
                         .done((dataAvailability: Array<model.IAvailabilityPermission>) => {
                             //process data
                             //filter get only function have availability permission
-                            if (dataAvailability || dataAvailability.length > 0) {
+                            if (dataAvailability && dataAvailability.length > 0) {
                                 dataAvailability = dataAvailability.filter(item => item.availability);
                                 //setting check for ListOfFunctionPermission and show
                                 for (var i = 0, len = self.listPermissions().length; i < len; i++) {
