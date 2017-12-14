@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.ParamForGetPerItem;
@@ -163,7 +162,7 @@ public class EmpCtgFinder {
 	private List<ComboBoxObject> getHistInfoPersonType(List<String> timePerInfoItemDefIds, PeregQuery query){
 		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
 		
-		EmployeeDataMngInfo employee = employeeRepository.findByCidSid(AppContexts.user().companyId(), query.getEmployeeId()).get();
+		EmployeeDataMngInfo employee = employeeRepository.findByEmpId(query.getEmployeeId()).get();
 		// get EmpInfoCtgData to get record id
 		List<PerInfoCtgData> lstPerInfoCtgData = perInfoCtgDataRepository.getByPerIdAndCtgId(employee.getPersonId(), query.getCategoryId());
 		if(lstPerInfoCtgData.size() == 0) return lstComboBoxObject;
