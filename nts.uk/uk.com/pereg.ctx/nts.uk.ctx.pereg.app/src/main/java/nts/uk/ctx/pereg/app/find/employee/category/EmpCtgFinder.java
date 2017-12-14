@@ -204,7 +204,8 @@ public class EmpCtgFinder {
 					if(timePerInfoItemDefIds.contains(itemData.getPerInfoDefId()))
 						optionText.add(itemData.getDataState().getDateValue().toString());				
 				}
-				lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
+				if(optionText.size() > 0)
+					lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
 		}
 		return lstComboBoxObject;
