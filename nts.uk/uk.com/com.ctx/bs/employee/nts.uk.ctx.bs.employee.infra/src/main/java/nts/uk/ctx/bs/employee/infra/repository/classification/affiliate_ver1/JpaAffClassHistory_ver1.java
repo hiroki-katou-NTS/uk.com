@@ -67,7 +67,7 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 		entities.forEach(entity -> {
 			DateHistoryItem dateItem = new DateHistoryItem(entity.historyId,
 					new DatePeriod(entity.startDate, entity.endDate));
-			domain.add(dateItem);
+			domain.getPeriods().add(dateItem);
 		});
 		return Optional.of(domain);
 	}
