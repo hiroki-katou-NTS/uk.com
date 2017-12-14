@@ -332,6 +332,10 @@ module nts.uk.request {
             return dfd.promise();
         }
         
+        export function createPathToFile(fileId: string) {
+            return resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId);
+        }
+        
         export function isFileExist(fileId: string): boolean {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
         }

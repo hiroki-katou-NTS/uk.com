@@ -20,6 +20,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
@@ -47,8 +48,8 @@ public class EmployeeInDesignatedFinder {
 
 	/** The temporary absence repo. */
 	@Inject
-	private TempAbsItemRepository temporaryAbsenceRepo;
-
+	private TempAbsItemRepository temporaryAbsenceItemRepo;
+	
 	/** The workplace info repo. */
 	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepo;
@@ -254,12 +255,12 @@ public class EmployeeInDesignatedFinder {
 					// BaseDate <= RetirementDate) is not empty
 
 				// Get TemporaryAbsence By employee ID and BaseDate
-				Optional<TempAbsenceHisItem> temporaryAbsOpt = Optional.empty();
-				if (temporaryAbsOpt.isPresent()) {
+				Optional<TempAbsenceHisItem> tempAbsItemDomain = temporaryAbsenceItemRepo
+						.getByEmpIdAndStandardDate(employee.getSId(), referenceDate);
+				if (tempAbsItemDomain.isPresent()) {
 					// Domain TemporaryAbsence is Present
-					TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsOpt.get();
 					// set LeaveHolidayType
-					int tempAbsNo = temporaryAbsenceDomain.getTempAbsenceFrNo().v().intValue();
+					int tempAbsNo = tempAbsItemDomain.get().getTempAbsenceFrNo().v().intValue();
 					int tempAbsenceType = tempAbsNo <= 6 ? tempAbsNo : 7;
 					statusOfEmploymentExport.setLeaveHolidayType(tempAbsenceType);
 

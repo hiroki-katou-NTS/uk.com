@@ -17,4 +17,11 @@ public interface PredetemineTimeSettingRepository {
 	 * @return the predetemine time set
 	 */
 	public PredetemineTimeSetting findByWorkTimeCode(String companyId, String workTimeCode);
+	
+	/**
+	 * Save.
+	 *
+	 * @param domain the domain
+	 */
+	public void save(PredetemineTimeSetting domain);
 }

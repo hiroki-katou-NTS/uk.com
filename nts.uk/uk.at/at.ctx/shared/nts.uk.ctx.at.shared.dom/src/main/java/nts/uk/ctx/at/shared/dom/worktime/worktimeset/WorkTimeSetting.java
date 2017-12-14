@@ -81,6 +81,15 @@ public class WorkTimeSetting extends AggregateRoot {
 		memento.setMemo(this.memo);
 		memento.setNote(this.note);
 	}
+	
+	/**
+	 * Checks if is abolish.
+	 *
+	 * @return true, if is abolish
+	 */
+	public boolean isAbolish(){
+		return this.abolishAtr == AbolishAtr.ABOLISH;
+	}
 
 	/*
 	 * (non-Javadoc)

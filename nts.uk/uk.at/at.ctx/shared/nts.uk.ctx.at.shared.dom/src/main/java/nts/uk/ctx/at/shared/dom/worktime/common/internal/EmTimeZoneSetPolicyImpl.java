@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingPolicy;
@@ -32,7 +34,23 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 	 */
 	@Override
 	public void validate(PredetemineTimeSetting predTime, EmTimeZoneSet etzSet) {
-		this.tzrPolicy.validateRange(predTime, etzSet.getTimezone());
+		val emTimezon = etzSet.getTimezone();
+		val prescribed = predTime.getPrescribedTimezoneSetting();
+
+		// validate msg_516
+		this.tzrPolicy.validateRange(predTime, emTimezon);
+
+		// validate msg_773
+		if (!prescribed.getTimezoneShiftTwo().isUsed()
+				&& !emTimezon.isBetweenOrEqual(prescribed.getTimezoneShiftOne())) {
+			throw new BusinessException("Msg_773");
+		}
+
+		// validate msg_774
+		if (prescribed.getTimezoneShiftTwo().isUsed() && (!emTimezon.isBetweenOrEqual(prescribed.getTimezoneShiftOne())
+				|| !emTimezon.isBetweenOrEqual(prescribed.getTimezoneShiftTwo()))) {
+			throw new BusinessException("Msg_774");
+		}
 	}
 
 }

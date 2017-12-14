@@ -2,6 +2,8 @@ module a9 {
     
     /**
      * Screen Model - Tab 9
+     * 就業時間帯の共通設定 -> 遅刻早退設定
+     * WorkTimeCommonSet -> LateLeaveEarlySettingOfWorkTime
      */
     class ScreenModel {
         
@@ -20,10 +22,8 @@ module a9 {
         /**
          * Constructor
          */
-        constructor(data: any) {
+        constructor() {
             let _self = this;
-            
-            _self.data = ko.observable(data());
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -75,6 +75,7 @@ module a9 {
         
         constructor() {
             let _self = this;
+            //TODO replace with enum value
             _self.listRoundingTimeValue = ko.observableArray([
                 new ItemModel(1, nts.uk.resource.getText("KMK003_91")),
                 new ItemModel(2, nts.uk.resource.getText("KMK003_92"))
@@ -125,13 +126,11 @@ module a9 {
                 .mergeRelativePath('/view/kmk/003/a9/index.xhtml').serialize();
             // Get data
             let input = valueAccessor();
-            let data = input.data;
 
-            let screenModel = new ScreenModel(data);
+            let screenModel = new ScreenModel();
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
             });
         }
 

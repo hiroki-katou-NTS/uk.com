@@ -92,13 +92,14 @@ public class FixOffdayWorkTimezone extends DomainObject {
 	 * Check rest timezone.
 	 */
 	private void checkRestTimezone() {
-		List<String> lstWorkTime = this.lstWorkTimezone.stream()
-				.map(item -> item.getTimezone().toString())
-				.collect(Collectors.toList());
-
 		this.restTimezone.getLstTimezone().forEach((timezone) -> {
-			// has in 休出時間帯.時間帯
-			boolean isHasWorkTime = lstWorkTime.contains(timezone.toString());
+			// Is timezone in WorkTimezone -  休出時間帯.時間帯
+			boolean isHasWorkTime = this.lstWorkTimezone.stream()
+					.map(item -> item.getTimezone())
+					.anyMatch((timeZoneRounding) -> {
+						return timezone.getStart().greaterThanOrEqualTo(timeZoneRounding.getStart())
+								&& timezone.getEnd().lessThanOrEqualTo(timeZoneRounding.getEnd());
+					});
 
 			if (!isHasWorkTime) {
 				throw new BusinessException("Msg_756");
