@@ -510,6 +510,8 @@ module cps001.a.vm {
         employeeName?: string;
 
         numberOfWork?: number;
+        numberOfTempHist?: number;
+        
         departmentCode?: string;
         departmentName?: string;
 
@@ -581,7 +583,7 @@ module cps001.a.vm {
                             self.employeeName(data.employeeName);
 
                             // set entire days with data receive
-                            self.numberOfWork(data.numberOfWork);
+                            self.numberOfWork(data.numberOfWork - data.numberOfTempHist);
 
                             self.position(data.position);
                             self.contractType(data.contractCodeType);
