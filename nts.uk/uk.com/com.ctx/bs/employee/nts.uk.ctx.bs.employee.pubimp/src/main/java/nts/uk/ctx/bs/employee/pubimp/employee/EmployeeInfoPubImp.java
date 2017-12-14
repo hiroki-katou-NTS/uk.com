@@ -15,6 +15,8 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -33,43 +35,78 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	private EmployeeRepository repo;
 
 	@Inject
+	private EmployeeDataMngInfoRepository empDataMngRepo;
+
+	@Inject
+	private AffCompanyHistRepository affComHistRepo;
+
+	@Inject
 	PersonRepository personRepo;
 
 	@Inject
 	AffCompanyHistRepository affCompanyHistRepo;
 
 	@Override
-	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode,
-			GeneralDate entryDate) {
-		// TODO Auto-generated method stub
+	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode) {
+		// Req No.125
 
-		Optional<Employee> domain = repo.findByEmployeeCode(companyId, employeeCode, entryDate);
+		Optional<EmployeeDataMngInfo> empInfo = empDataMngRepo.getEmployeeByCidScd(companyId, employeeCode);
 
-		if (!domain.isPresent()) {
-			return Optional.empty();
+		if (!empInfo.isPresent()) {
+			return null;
 		} else {
-			Employee _domain = domain.get();
-			return Optional.of(new EmployeeInfoDtoExport(_domain.getCompanyId(), _domain.getSCd().v(), _domain.getSId(),
-					_domain.getPId()));
-		}
+			EmployeeDataMngInfo emp = empInfo.get();
+			EmployeeInfoDtoExport result=  new  EmployeeInfoDtoExport(emp.getCompanyId(),
+					emp.getEmployeeCode() == null ? null : emp.getEmployeeCode().v(), emp.getEmployeeId(),
+					emp.getPersonId(), "");
+			return Optional.of(result);
 
+		}
 	}
 
 	@Override
 	public List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate standardDate) {
 
-		List<Employee> listEmpDomain = repo.getListEmpByStandardDate(companyId, standardDate);
+		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
 
-		List<EmployeeInfoDtoExport> result = new ArrayList<>();
+		EmployeeInfoDtoExport result = null;
 
-		if (!listEmpDomain.isEmpty()) {
-			listEmpDomain.forEach(c -> {
-				EmployeeInfoDtoExport empDto = new EmployeeInfoDtoExport(c.getCompanyId(), c.getSCd().v(), c.getSId(),
-						c.getPId());
-				result.add(empDto);
-			});
-		}
-		return result;
+		Date date = new Date();
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
+
+		return listEmpDomain.stream().map(employee -> {
+
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
+
+			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
+
+			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
+
+			if (affComHistByEmp.items() != null) {
+
+				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
+					return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+				}).collect(Collectors.toList());
+
+				if (!filter.isEmpty()) {
+					affComHistItem = filter.get(0);
+
+					Optional<Person> personOpt = this.personRepo.getByPersonId(affComHist.getPId());
+					if (personOpt.isPresent()) {
+						Person person = personOpt.get();
+						result.setPersonId(person.getPersonId());
+						result.setPerName(person.getPersonNameGroup().getBusinessName() == null ? null
+								: person.getPersonNameGroup().getBusinessName().v());
+					}
+				}
+			}
+
+			result.setCompanyId(employee.getCompanyId());
+			result.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+			result.setEmployeeId(employee.getEmployeeId());
+
+			return result;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -130,13 +167,14 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			if (!CollectionUtil.isEmpty(affCompanyHist.getLstAffCompanyHistByEmployee())) {
 
 				// check all item in List<AffCompanyHistItem>
-				for (AffCompanyHistByEmployee affCompanyHistByEmployee : affCompanyHist.getLstAffCompanyHistByEmployee()) {
+				for (AffCompanyHistByEmployee affCompanyHistByEmployee : affCompanyHist
+						.getLstAffCompanyHistByEmployee()) {
 
 					if (!CollectionUtil.isEmpty(affCompanyHistByEmployee.getLstAffCompanyHistoryItem())) {
 
 						for (AffCompanyHistItem affCompanyHistItem : affCompanyHistByEmployee
 								.getLstAffCompanyHistoryItem()) {
-							
+
 							if (systemDate.beforeOrEquals(affCompanyHistItem.end())
 									&& systemDate.afterOrEquals(affCompanyHistItem.start())) {
 								Optional<Person> personOpt = personRepo.getByPersonId(affCompanyHist.getPId());
@@ -144,13 +182,16 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 									Person person = personOpt.get();
 									EmpInfoExport empInfoExport = new EmpInfoExport();
 									empInfoExport.setPId(person.getPersonId() == null ? "" : null);
-									empInfoExport.setPersonName(person.getPersonNameGroup().getPersonName().toString() == null ? "" : null);
+									empInfoExport.setPersonName(
+											person.getPersonNameGroup().getPersonName().toString() == null ? "" : null);
 									empInfoExport.setEmployeeId(affCompanyHistByEmployee.getSId() == null ? "" : null);
 									if (affCompanyHistByEmployee.getSId() != null) {
-										Optional<Employee> employeeOpt = this.repo.getBySid(affCompanyHistByEmployee.getSId());
+										Optional<Employee> employeeOpt = this.repo
+												.getBySid(affCompanyHistByEmployee.getSId());
 										if (employeeOpt.isPresent()) {
 											Employee employee = employeeOpt.get();
-											empInfoExport.setEmployeeCode(employee.getSCd() == null ? "" : employee.getSCd().v());
+											empInfoExport.setEmployeeCode(
+													employee.getSCd() == null ? "" : employee.getSCd().v());
 											empInfoExport.setCompanyId(employee.getCompanyId());
 										}
 									}

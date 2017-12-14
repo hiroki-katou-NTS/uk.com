@@ -25,7 +25,7 @@ public interface TempAbsHistRepository {
 	 * @param histId
 	 * @return
 	 */
-	Optional<TempAbsenceHistory> getByHistId( String histId);
+	Optional<DateHistoryItem> getByHistId( String histId);
 	
 	/**
 	 * get a TemporaryAbsenceHist with employeeId and standard date
@@ -33,7 +33,7 @@ public interface TempAbsHistRepository {
 	 * @param referenceDate
 	 * @return
 	 */
-	Optional<TempAbsenceHistory> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
+	Optional<DateHistoryItem> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
 	// ------------------------------ COMMAND HISTORY---------------------------------
 	/**

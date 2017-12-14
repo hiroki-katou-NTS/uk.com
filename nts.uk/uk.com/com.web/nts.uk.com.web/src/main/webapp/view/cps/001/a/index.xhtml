@@ -360,10 +360,26 @@
 								</div>
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.NODUP }">
-									NODUP</div>
+									<div
+										data-bind="foreach: { data: layouts().filter(function(m){ return m.listItemCls().length != 0}), as: 'lay' }">
+										<div style="padding-top: 10px"
+											data-bind="ntsLayoutControl: { 
+											data: lay.listItemCls,
+											outData: lay.outData,
+											editAble: 2 }"></div>
+									</div>
+								</div>
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.DUPLI }">
-									DUPLI</div>
+									<div
+										data-bind="foreach: { data: layouts().filter(function(m){ return m.listItemCls().length != 0}), as: 'lay' }">
+										<div style="padding-top: 10px"
+											data-bind="ntsLayoutControl: { 
+											data: lay.listItemCls,
+											outData: lay.outData,
+											editAble: 2 }"></div>
+									</div>
+								</div>
 								<div
 									data-bind="css: { 'hidden' : cat.categoryType() != catType.CONTIWED }">
 									CONTIWED</div>
@@ -426,7 +442,7 @@
 				<div class="form-group search-box">
 					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}">#{i18n.getText('CPS001_32')}</button>
 					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}">#{i18n.getText('CPS001_33')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: ko.toJS($data.list.dataSource).length">#{i18n.getText('CPS001_34')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
@@ -460,7 +476,7 @@
 				}">
 				<div class="form-group search-box">
 					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}">#{i18n.getText('CPS001_32')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.list.dataSource.length">#{i18n.getText('CPS001_34')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',

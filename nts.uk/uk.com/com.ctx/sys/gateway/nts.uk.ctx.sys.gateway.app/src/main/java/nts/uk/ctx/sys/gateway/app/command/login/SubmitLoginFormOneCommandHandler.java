@@ -63,11 +63,8 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommand<SubmitLog
 		// check time limit
 		this.checkLimitTime(user);
 		
-//		//set info to session
-//		this.setLoggedInfo(user.get());
-//		
-//		//set role Id for LoginUserContextManager
-//		this.setRoleId(user.get().getUserId());
+		//set info to session
+		this.initSession(user.get());
 	}
 
 	/**

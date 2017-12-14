@@ -13,10 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
@@ -30,9 +28,6 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 	@Inject
 	private TempAbsItemRepository temporaryAbsenceItemRepo;
 	
-	@Inject 
-	private TempAbsHistRepository temporaryAbsenceRepo;
-
 	@Override
 	public StatusOfEmploymentExport getStatusOfEmployment(String employeeId, GeneralDate referenceDate) {
 
@@ -82,14 +77,13 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 			// <= RetirementDate 退職年月日
 
 			// lấy domain 休職休業 TemporaryAbsence theo employeeId và referenceDate
-			Optional<TempAbsenceHistory> temporaryAbsOpt = temporaryAbsenceRepo.getItemByEmpIdAndStandardDate(employeeId, referenceDate);
-			if (temporaryAbsOpt.isPresent()) {
+			Optional<TempAbsenceHisItem> temporaryAbsenceDomain = temporaryAbsenceItemRepo
+					.getByEmpIdAndStandardDate(employeeId, referenceDate);
+			if (temporaryAbsenceDomain.isPresent()) {
 				// tốn tại domain 
-				TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsenceItemRepo
-						.getItemByHitoryID(temporaryAbsOpt.get().getDateHistoryItems().get(0).identifier()).get();
-				// set LeaveHolidayType 
-				int tempAbsenceFrNo = temporaryAbsenceDomain.getTempAbsenceFrNo().v().intValue();
-				int leaveHolidayType = tempAbsenceFrNo <= 6 ? tempAbsenceFrNo : 7; 
+				// set LeaveHolidayType
+				int tempAbsenceFrNo = temporaryAbsenceDomain.get().getTempAbsenceFrNo().v().intValue();
+				int leaveHolidayType = tempAbsenceFrNo <= 6 ? tempAbsenceFrNo : 7;
 				statusOfEmploymentExport.setLeaveHolidayType(leaveHolidayType);
 
 				if (leaveHolidayType == 1) {

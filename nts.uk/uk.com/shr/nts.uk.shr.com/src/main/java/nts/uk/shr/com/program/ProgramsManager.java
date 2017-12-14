@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * 
  */
 public class ProgramsManager {
-
+	
 	/**
 	 * CCG008A
 	 */
@@ -1172,6 +1172,21 @@ public class ProgramsManager {
 			return Optional.empty();
 		return programsOpt.get().stream().filter(a -> path.equals(a.getPPath())).findFirst();
 	}
+	
+	/**
+	 * Finds program by Id.
+	 * @param appId appId
+	 * @param programId programId
+	 * @return optional program
+	 */
+	public static Optional<Program> findById(WebAppId appId, String programId) {
+		if (appId == null || programId == null) 
+			return Optional.empty();
+		Optional<Set<Program>> programsOpt = getSet(appId);
+		if (!programsOpt.isPresent())
+			return Optional.empty();
+		return programsOpt.get().stream().filter(a -> programId.equals(a.getPId())).findFirst();
+	}
 
 	/**
 	 * Finds program Id.
@@ -1197,6 +1212,16 @@ public class ProgramsManager {
 	 */
 	public static Optional<String> nameOf(WebAppId appId, String path) {
 		return Optional.ofNullable(find(appId, path).orElse(new Program()).getPName());
+	}
+	
+	/**
+	 * Finds program name by Id.
+	 * @param appId appId
+	 * @param programId programId
+	 * @return optional program name.
+	 */
+	public static Optional<String> nameById(WebAppId appId, String programId) {
+		return Optional.ofNullable(findById(appId, programId).orElse(new Program()).getPName());
 	}
 
 	/**

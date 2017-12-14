@@ -18,7 +18,7 @@ public interface EmployeeInfoPub {
 	 * Find Employee by companyId,employeeCode For request No.18
 	 *
 	 */
-	Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode, GeneralDate entryDate);
+	Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode);
 
 	/**
 	 * Get List Employee by companyId,baseDate For request No.60
