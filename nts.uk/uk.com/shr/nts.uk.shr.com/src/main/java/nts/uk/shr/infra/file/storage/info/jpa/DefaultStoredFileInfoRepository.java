@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.file.storage.info;
+package nts.uk.shr.infra.file.storage.info.jpa;
 
 import java.util.Optional;
 
@@ -8,7 +8,6 @@ import lombok.val;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
-import nts.uk.shr.infra.file.storage.info.entity.CisdtStoredFile;
 
 /**
  * DefaultStoredFileInfoRepository

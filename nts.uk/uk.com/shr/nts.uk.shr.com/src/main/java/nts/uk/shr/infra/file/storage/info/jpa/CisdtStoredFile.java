@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.file.storage.info.entity;
+package nts.uk.shr.infra.file.storage.info.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
