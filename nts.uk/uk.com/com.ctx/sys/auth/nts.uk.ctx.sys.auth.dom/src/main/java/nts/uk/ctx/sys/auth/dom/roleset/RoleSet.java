@@ -119,4 +119,11 @@ public class RoleSet extends AggregateRoot {
     public void removePersonInfRole() {
         this.personInfRoleId = null;
     }
+    
+    /**
+     * remove value of PersonInfRole field
+     */
+    public void setEmploymentRoleId() {
+        this.employmentRoleId = null;
+    }
 }

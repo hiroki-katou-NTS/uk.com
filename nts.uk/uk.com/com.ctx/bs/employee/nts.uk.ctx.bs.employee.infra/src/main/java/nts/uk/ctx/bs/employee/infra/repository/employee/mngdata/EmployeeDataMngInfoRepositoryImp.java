@@ -319,11 +319,19 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	@Override
-	public List<EmployeeDataMngInfo> getListEmployeeByCidScd(String cId, String sCd) {
+	public Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd) {
 		// query to Req 125
-		return queryProxy().query(GET_LIST_BY_CID_SCD, BsymtEmployeeDataMngInfo.class)
-				.setParameter("cId", cId).setParameter("sCd", sCd).getList().stream().map(x -> toDomain(x))
-				.collect(Collectors.toList());
+		BsymtEmployeeDataMngInfo entity =  queryProxy().query(GET_LIST_BY_CID_SCD, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cId", cId).setParameter("sCd", sCd).getSingleOrNull();
+		
+		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
+		if (entity != null) {
+			empDataMng = toDomain(entity);
+			return Optional.of(empDataMng);
+
+		} else {
+			return Optional.empty();
+		}
 	}
 
 }

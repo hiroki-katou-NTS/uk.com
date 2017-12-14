@@ -74,6 +74,9 @@ module nts.uk.ui {
                 .map(v => JSON.parse(v));
             
             _.defer(() => _start.call(__viewContext));
+            
+            // Menu
+            nts.uk.ui.menu.request();
         });
     }
 }
