@@ -1,8 +1,15 @@
 module nts.uk.at.view.kmk012.e {
     import getText = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
         export class ScreenModel {
-
+            startDate:number;
+            
+            
             items = (function() {
                 var list = [];
                 for (var i = 0; i < 500; i++) {
@@ -12,8 +19,8 @@ module nts.uk.at.view.kmk012.e {
             })();
 
             constructor() {
-
-
+                let self = this;
+                self.startDate = getShared("startDate");
             }
 
             closeWindowns(): void {

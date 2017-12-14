@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.app.find.workrule.closure;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureCdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
@@ -24,6 +24,8 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.EmpCdNameDto;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -48,33 +50,47 @@ public class ClosureFinder {
 	@Inject
 	ShareEmploymentAdapter shareEmploymentAdapter;
 
+	@Inject
+	ClosureEmploymentRepository closureEmpRepo;
+	
 	/**
 	 * 締め日の割付を起動する
-	 * @param referDate 
+	 * 
+	 * @param referDate
 	 */
-	public List<ClosureEmployDto> getClosureEmploy(int referDate) {
-		// get login user
+	public ClosureEmployDto getClosureEmploy(int referDate) {
+		// Get companyID.
 		LoginUserContext loginUserContext = AppContexts.user();
-		// get company id
 		String companyId = loginUserContext.companyId();
-		
-		//Get list Employment by companyId
+
+		//Get List Employment Dto by companyId. 雇用を取得する 
 		List<EmpCdNameImport> data = shareEmploymentAdapter.findAll(companyId);
 		List<EmpCdNameDto> empCdNameDtoList = data.stream().map(x -> {
 			return new EmpCdNameDto(x.getCode(), x.getName(), null);
 		}).collect(Collectors.toList());
-		
-		//Get list Closure by company Id and UseAtr = 1;
+
+		// Get List Closure Dom by company Id and UseAtr = 1. 就業の締めを取得する
 		List<Closure> listClosure = repository.findAllActive(companyId, UseClassification.UseClass_Use);
+		// Get List ClosureHistory Dom by companyID, closureID, startDay.
 		List<ClosureHistory> lstClosureHistory = new ArrayList<>();
-		//Get list 
-		listClosure.stream().forEach(x ->{
-			ClosureHistory closureInf = repository.findById(companyId, x.getClosureId(), referDate).get();
+		listClosure.stream().forEach(x -> {
+			ClosureHistory closureInf = repository.findById(companyId, x.getClosureId().value, referDate).get();
 			lstClosureHistory.add(closureInf);
-		});	
+		});
+		//Get List ClosureCdName Dto from ClosureHistory Dom.
+		List<ClosureCdNameDto> closureCdNameDtoList = lstClosureHistory.stream().map(x ->{
+			return ClosureCdNameDto.fromDomain(x);
+		}).collect(Collectors.toList());
+
+		// Map list Employment Dto and list EmployClosure Dom. 取得した雇用コードをもとにドメイン「雇用に紐づく就業締め」を取得する
+		empCdNameDtoList.stream().forEach(x->{
+			Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, x.getCode());
+			if(closureEmp.get().getClosureId()!= null){
+				x.setClosureId(closureEmp.get().getClosureId());
+			}
+		});
 		
-		
-		return null;
+		return new ClosureEmployDto(empCdNameDtoList, closureCdNameDtoList);
 	}
 
 	/**

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.workrule.closure;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -65,7 +64,7 @@ public class ClosureWs {
 	
 	@POST
 	@Path("getClosureEmploy/{referDate}")
-	public List<ClosureEmployDto> getClosureEmploy(@PathParam("referDate") int referDate){
+	public ClosureEmployDto getClosureEmploy(@PathParam("referDate") int referDate){
 		return this.finder.getClosureEmploy(referDate);
 	}
 	
