@@ -449,7 +449,7 @@
 
 								<!-- Start dataType is selected value 6 - 選択(Selection)
 								<com:ko-if bind="(dataType() === 6)"> --> 
-								<div id="data-type-value-selection" data-bind="with: selectionItem, visible: ((dataType() == 6) )">
+								<div id="data-type-value-selection" data-bind="with: selectionItem, visible: ((dataType() == 6)  &amp; (selectionItem().selectionItemRefType() == 2))">
 									<div >
 									<div  
 										class="valign-center control-group control-group-margin-custom">
@@ -662,7 +662,7 @@
 								<!-- Start dataType is selected value 6 - 選択(Selection) -->
 								
 								<div id="data-type-value-selection"
-									data-bind="with: selectionItem, visible: dataType() == 6">
+									data-bind="with: selectionItem, visible: ((dataType() == 6) &amp; (selectionItem().selectionItemRefType() == 2))">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
