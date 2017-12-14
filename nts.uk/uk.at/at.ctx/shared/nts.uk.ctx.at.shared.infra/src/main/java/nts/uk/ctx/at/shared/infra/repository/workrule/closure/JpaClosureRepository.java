@@ -261,7 +261,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	private KclmtClosure toEntityUpdate(Closure domain) {
 		KclmtClosure entity = new KclmtClosure();
 		Optional<KclmtClosure> optionalEntity = this.queryProxy()
-				.find(new KclmtClosurePK(domain.getCompanyId().v(), domain.getClosureId()), KclmtClosure.class);
+				.find(new KclmtClosurePK(domain.getCompanyId().v(), domain.getClosureId().value), KclmtClosure.class);
 		if (optionalEntity.isPresent()) {
 			entity = optionalEntity.get();
 		}

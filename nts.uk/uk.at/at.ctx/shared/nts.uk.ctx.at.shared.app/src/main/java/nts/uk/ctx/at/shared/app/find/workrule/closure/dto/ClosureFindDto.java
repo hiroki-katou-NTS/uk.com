@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
@@ -57,8 +58,8 @@ public class ClosureFindDto implements ClosureSetMemento{
 	 * setClosureId(java.lang.Integer)
 	 */
 	@Override
-	public void setClosureId(Integer closureId) {
-		this.closureId = closureId;
+	public void setClosureId(ClosureId closureId) {
+		this.closureId = closureId.value;
 	}
 
 	/*

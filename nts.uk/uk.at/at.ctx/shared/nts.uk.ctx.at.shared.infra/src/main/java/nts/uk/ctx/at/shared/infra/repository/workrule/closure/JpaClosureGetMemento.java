@@ -13,6 +13,7 @@ import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -54,8 +55,8 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento#getClosureId()
 	 */
 	@Override
-	public Integer getClosureId() {
-		return this.kclmtClosure.getKclmtClosurePK().getClosureId();
+	public ClosureId getClosureId() {
+		return ClosureId.valueOf(this.kclmtClosure.getKclmtClosurePK().getClosureId());
 	}
 
 	/* (non-Javadoc)
