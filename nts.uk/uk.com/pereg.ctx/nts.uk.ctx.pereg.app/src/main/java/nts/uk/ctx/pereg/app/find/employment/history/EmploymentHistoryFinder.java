@@ -1,11 +1,14 @@
 package nts.uk.ctx.pereg.app.find.employment.history;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
@@ -73,8 +76,12 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<EmploymentHistory> optHis = this.empHistRepo.getByEmployeeId(query.getEmployeeId());
+		if(!optHis.isPresent()) return new ArrayList<>();
+		List<DateHistoryItem> items = optHis.get().getHistoryItems();
+		if(items.size() == 0) return new ArrayList<>();
+		return items.stream().map(x -> ComboBoxObject.toComboBoxObject
+				(x.identifier(), x.start().toString(), x.end().toString())).collect(Collectors.toList());
 	}
 
 }

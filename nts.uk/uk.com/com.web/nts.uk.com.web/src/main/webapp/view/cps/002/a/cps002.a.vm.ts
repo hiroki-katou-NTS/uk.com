@@ -259,32 +259,32 @@ module cps002.a.vm {
         }
 
         getCardNumber(userSetting: IUserSetting) {
-            let self = this,
-                genType = userSetting.cardNumberType,
-                eployee = self.currentEmployee();
-
-            if (genType === 1 || genType === 4) {
-
-                service.getCardNumber(genType === 1 ? userSetting.cardNumberLetter : '').done((result) => {
-
-                    eployee.cardNo(result);
-
-                });
-            } else {
-
-                if (genType === 3) {
-
-                    eployee.cardNo(eployee.employeeCode());
-                }
-
-                if (genType === 5) {
-
-                    service.getEmployeeCodeAndComId(userSetting.employeeCodeLetter).done((result) => {
-
-                        eployee.cardNo(result);
-                    });
-                }
-            }
+            //            let self = this,
+            //                genType = userSetting.cardNumberType,
+            //                eployee = self.currentEmployee();
+            //
+            //            if (genType === 1 || genType === 4) {
+            //
+            //                //                service.getCardNumber(genType === 1 ? userSetting.cardNumberLetter : '').done((result) => {
+            //                //
+            //                //                    eployee.cardNo(result);
+            //                //
+            //                //                });
+            //            } else {
+            //
+            //                if (genType === 3) {
+            //
+            //                    eployee.cardNo(eployee.employeeCode());
+            //                }
+            //
+            //                if (genType === 5) {
+            //
+            //                    service.getEmployeeCodeAndComId(userSetting.employeeCodeLetter).done((result) => {
+            //
+            //                        eployee.cardNo(result);
+            //                    });
+            //                }
+            //            }
 
         }
 
@@ -371,8 +371,7 @@ module cps002.a.vm {
 
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
-                if (result.allowAvatarUpload) {
-
+                if (result) {
                     self.isAllowAvatarUpload(result ? result.allowAvatarUpload == 0 ? false : true : false);
                 }
 
@@ -598,15 +597,19 @@ module cps002.a.vm {
             if (avatarId != "") {
                 setShared("imageId", avatarId);
             }
-            subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
+            if (self.isAllowAvatarUpload()) {
 
-                let imageResult = getShared("imageId");
+                subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
-                if (imageResult) {
-                    self.currentEmployee().avatarId(imageResult);
-                }
+                    let imageResult = getShared("imageId");
 
-            });
+                    if (imageResult) {
+                        self.currentEmployee().avatarId(imageResult);
+                    }
+
+                });
+
+            }
         }
 
 
