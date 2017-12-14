@@ -43,8 +43,8 @@ public class AddEmployeeWebService extends WebService {
 
 	@POST
 	@Path("addNewEmployee")
-	public String addNewEmployee(AddEmployeeCommand command) {
-		return this.addEmpHandler.handle(command);
+	public JavaTypeResult<String> addNewEmployee(AddEmployeeCommand command) {
+		return new JavaTypeResult<String>(this.addEmpHandler.handle(command));
 	}
 
 	// sonnlb end

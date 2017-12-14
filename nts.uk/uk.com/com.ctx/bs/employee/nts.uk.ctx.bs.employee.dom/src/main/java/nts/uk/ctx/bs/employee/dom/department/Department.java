@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.department;
@@ -8,27 +8,34 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.shr.com.history.strategic.ContinuousHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * The Class Department. 部門
+ * The Class Department.
  */
 @Getter
-public class Department extends AggregateRoot {
-	
+// 部門
+public class Department extends AggregateRoot
+		implements ContinuousHistory<DepartmentHistory, DatePeriod, GeneralDate> {
+
 	/** The company id. */
 	/* 会社ID */
 	private CompanyId companyId;
-	
+
 	/** The id. */
 	/* 会社コード */
 	private String id;
-	
-	/** The histories. */
-	/* 部門履歴  */
+
+	/** The dep history. */
+	/* 部門履歴 */
 	private List<DepartmentHistory> depHistory;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -40,7 +47,9 @@ public class Department extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -64,7 +73,15 @@ public class Department extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.shr.com.history.History#items()
+	 */
+	@Override
+	public List<DepartmentHistory> items() {
+		return this.depHistory;
+	}
+
 }

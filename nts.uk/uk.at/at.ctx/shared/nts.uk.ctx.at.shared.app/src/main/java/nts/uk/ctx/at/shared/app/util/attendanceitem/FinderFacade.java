@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.app.util.attendanceitem;
 
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
 
-public interface FinderFacade {
+public abstract class FinderFacade {
 
-	public <T extends ConvertibleAttendanceItem> T find();
+	public abstract <T extends ConvertibleAttendanceItem> T find();
 }

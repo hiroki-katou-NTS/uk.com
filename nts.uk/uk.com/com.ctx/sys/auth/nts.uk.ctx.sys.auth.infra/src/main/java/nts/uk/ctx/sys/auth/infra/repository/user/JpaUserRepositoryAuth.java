@@ -13,6 +13,18 @@ import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
 
 @Stateless
 public class JpaUserRepositoryAuth extends JpaRepository implements UserRepository {
+	
+	private final String SELECT_BY_LOGIN_ID = "SELECT c FROM SacmtUser c WHERE c.loginID=:loginID";
+	@Override
+	public List<User> getByLoginId(String loginID) {
+		return this.queryProxy().query(SELECT_BY_LOGIN_ID, SacmtUser.class).setParameter("loginID", loginID).getList(c->c.toDomain());
+	}
+
+	@Override
+	public Optional<User> getByAssociatedPersonId(String associatedPersonId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	private final String SELECT_BY_USER = "SELECT c FROM SacmtUser c" + " WHERE c.sacmtUserPK.userID = :userID";
 	@Override

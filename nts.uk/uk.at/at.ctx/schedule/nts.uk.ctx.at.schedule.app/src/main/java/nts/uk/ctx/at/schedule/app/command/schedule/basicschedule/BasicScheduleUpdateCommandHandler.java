@@ -98,7 +98,8 @@ public class BasicScheduleUpdateCommandHandler extends CommandHandler<BasicSched
 						}
 
 					});
-					// TODO Checkhandler
+					// TO-DO
+					// Checkhandler
 					basicScheduleRepository.update(newBasicSchedule);
 				}
 			});

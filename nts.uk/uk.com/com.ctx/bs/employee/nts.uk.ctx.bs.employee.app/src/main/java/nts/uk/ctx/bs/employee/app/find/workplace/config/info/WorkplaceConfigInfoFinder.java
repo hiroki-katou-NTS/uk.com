@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.config.info;
@@ -76,8 +76,7 @@ public class WorkplaceConfigInfoFinder {
 		if (!opWkpConfigInfo.isPresent()) {
 			return Collections.emptyList();
 		}
-		GeneralDate endDateLatest = wkpConfig.getWkpConfigHistoryLatest().end();
-		return this.initTree(endDateLatest, opWkpConfigInfo.get());
+		return this.initTree(opWkpConfigInfo.get());
 	}
 
 	/**
@@ -104,25 +103,23 @@ public class WorkplaceConfigInfoFinder {
 			throw new BusinessException("Msg_373");
 		}
 		
-		GeneralDate endDateLatest = wkpConfig.getWkpConfigHistoryLatest().end();
-		return this.initTree(endDateLatest, opWkpConfigInfo.get());
+		return this.initTree(opWkpConfigInfo.get());
 	}
 
 	/**
 	 * Inits the tree.
 	 *
-	 * @param historyId
-	 *            the history id
+	 * @param wkpConfigInfo the wkp config info
 	 * @return the list
 	 */
-	private List<WorkplaceHierarchyDto> initTree(GeneralDate endDateLatest, WorkplaceConfigInfo wkpConfigInfo) {
+	private List<WorkplaceHierarchyDto> initTree(WorkplaceConfigInfo wkpConfigInfo) {
 		String companyId = AppContexts.user().companyId();
 
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getLstWkpHierarchy();
 		
 		// filter workplace infor latest
-		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findDetailLatestByWkpIds(companyId, endDateLatest);
+		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findDetailLatestByWkpIds(companyId);
 		return this.createTree(lstHierarchy.iterator(), lstWkpInfo, new ArrayList<>());
 	}
 

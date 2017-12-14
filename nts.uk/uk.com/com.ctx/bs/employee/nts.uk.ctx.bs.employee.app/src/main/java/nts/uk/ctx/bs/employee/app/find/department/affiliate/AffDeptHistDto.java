@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.find.department.affiliate;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class AffDeptHistDto extends PeregDomainDto{
 
 	// 分配率
 	@PeregItem("IS00075")
-	private String distributionRatio;
+	private BigDecimal distributionRatio;
 		
 	private AffDeptHistDto(String recordId, String employeeId) {
 		super(recordId, employeeId, null);
@@ -67,8 +68,9 @@ public class AffDeptHistDto extends PeregDomainDto{
 		dto.setRecordId(affDeptHistItem.getHistoryId());
 		dto.setDepartmentCode(affDeptHistItem.getDepartmentId());
 		dto.setAffHistoryTranfsType(affDeptHistItem.getAffHistoryTranfsType());
-		dto.setDistributionRatio(affDeptHistItem.getDistributionRatio().v().trim());
+		dto.setDistributionRatio(affDeptHistItem.getDistributionRatio().v());
 		dto.setStartDate(startDate);
+		dto.setEndDate(endDate);
 		return dto;
 	}
 }

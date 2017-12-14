@@ -31,6 +31,7 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstWebMenuPK;
 public class JpaWebMenuRepository extends JpaRepository implements WebMenuRepository {
 
 	private final String SEL_1 = "SELECT a FROM CcgstWebMenu a WHERE a.ccgstWebMenuPK.companyId = :companyId";
+	private final String FIND_DEFAULT = "SELECT a FROM CcgstWebMenu a WHERE a.ccgstWebMenuPK.companyId = :companyId AND a.defaultMenu = 1";
 	private final String UPD_NOT_DEFAULT = "UPDATE CcgstWebMenu a SET a.defaultMenu = 0 "
 			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId "
 			+ "AND a.ccgstWebMenuPK.webMenuCd != :webMenuCd " ; 
@@ -43,10 +44,32 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	}
 	
 	@Override
+	public Optional<WebMenu> findDefault(String companyId) {
+		Optional<CcgstWebMenu> menuOpt = this.queryProxy().query(FIND_DEFAULT, CcgstWebMenu.class)
+				.setParameter("companyId", companyId).getSingle();
+		if (menuOpt.isPresent()) {
+			return Optional.ofNullable(toDomain(companyId, menuOpt.get()));
+		}
+		return Optional.empty();
+	}
+	
+	@Override
 	public Optional<WebMenu> find(String companyId, String webMenuCode) {
 		CcgstWebMenuPK key = new CcgstWebMenuPK(companyId, webMenuCode);
 		return this.queryProxy().find(key, CcgstWebMenu.class)
 				.map(wm -> toDomain(companyId, wm));
+	}
+	
+	@Override
+	public List<WebMenu> find(String companyId, List<String> webMenuCodes) {
+		StringBuilder queryStr = new StringBuilder(SEL_1);
+		if (webMenuCodes == null) return null;
+		queryStr.append(" AND a.ccgstWebMenuPK.webMenuCd IN :codes");
+		return this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("codes", webMenuCodes).getList(w -> {
+			return toDomain(companyId, w);
+		});
 	}
 
 	@Override

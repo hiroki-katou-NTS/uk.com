@@ -32,6 +32,13 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
             + " ORDER BY rs.roleSetPK.roleSetCd ASC ";
     private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID_AND_PERSON_ROLE = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId AND rs.personInfRole = :personRoleId ";
+    
+    private static final String SELECT_ROLE_SET_BY_EMPLOYMENT_ROLE_CODE = "SELECT rs FROM SacmtRoleSet rs"
+            + " WHERE rs.employmentRole = :employmentRole ";
+    
+    private static final String SELECT_ROLE_SET_BY_CID_EMPLOYMENT_ROLE_CODE = "SELECT rs FROM SacmtRoleSet rs"
+            + " WHERE rs.roleSetPK.companyId = :companyId"
+            + " AND rs.employmentRole = :employmentRole ";
 
     /**
      * Build Domain from Entity
@@ -142,4 +149,29 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
         }
         return result;
     }
+
+	@Override
+	public List<RoleSet> findByemploymentRoleId(String employmentRoleId) {
+		List<RoleSet> result = new ArrayList<RoleSet>();
+        List<SacmtRoleSet> entities = this.queryProxy()
+                .query(SELECT_ROLE_SET_BY_EMPLOYMENT_ROLE_CODE, SacmtRoleSet.class)
+                .setParameter("employmentRole", employmentRoleId).getList();
+        if(entities !=null && !entities.isEmpty()){
+            result = entities.stream().map(e ->toDomain(e)).collect(Collectors.toList());
+        }
+        return result;
+	}
+
+	@Override
+	public List<RoleSet> findByCidEmploymentRoleId(String companyId, String employmentRoleId) {
+		List<RoleSet> result = new ArrayList<RoleSet>();
+        List<SacmtRoleSet> entities = this.queryProxy()
+                .query(SELECT_ROLE_SET_BY_CID_EMPLOYMENT_ROLE_CODE, SacmtRoleSet.class)
+                .setParameter("companyId", companyId)
+                .setParameter("employmentRole", employmentRoleId).getList();
+        if(entities !=null && !entities.isEmpty()){
+            result = entities.stream().map(e ->toDomain(e)).collect(Collectors.toList());
+        }
+        return result;
+	}
 }

@@ -21,6 +21,10 @@ public class SyEmploymentAdapterImpl implements SyEmploymentAdapter {
 	public Optional<SyEmploymentImport> findByEmployeeId(String companyId, String employeeId, GeneralDate baseDate) {
 
 		Optional<SEmpHistExport> empHist = this.syEmploymentPub.findSEmpHistBySid(companyId, employeeId, baseDate);
+		
+		if (!empHist.isPresent()) {
+			return Optional.empty();
+		}
 
 		SyEmploymentImport syEmploymentImport = new SyEmploymentImport(empHist.get().getEmployeeId(),
 				empHist.get().getEmploymentCode(), empHist.get().getEmploymentName(), empHist.get().getPeriod());

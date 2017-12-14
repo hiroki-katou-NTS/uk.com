@@ -23,16 +23,16 @@ public class CreateEmployeeDailyPerError {
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 
 	public OutPutProcess createEmployeeDailyPerError(String companyID, String employeeID, GeneralDate processingDate,
-			ErrorAlarmWorkRecordCode errorCode, List<Integer> attendanceItemID) {
+			ErrorAlarmWorkRecordCode errorCode, List<Integer> attendanceItemIDList) {
 
 		OutPutProcess outPutProcess = OutPutProcess.HAS_ERROR;
 		// ドメインモデル「社員の日別実績エラー一覧」の事前条件をチェックする
-		// TODO- hoi tuan
-		if (outPutProcess != OutPutProcess.HAS_ERROR) {
+		Boolean existErrorCode = this.employeeDailyPerErrorRepository.checkExistErrorCode(employeeID, processingDate, errorCode.v());
+		if (existErrorCode == true) {
 			return outPutProcess;
 		} else {
 			EmployeeDailyPerError employeeDailyPerformanceError = new EmployeeDailyPerError(companyID, employeeID,
-					processingDate, errorCode, attendanceItemID, 0);
+					processingDate, errorCode, attendanceItemIDList, 0);
 			this.employeeDailyPerErrorRepository.insert(employeeDailyPerformanceError);
 			return outPutProcess = OutPutProcess.NO_ERROR;
 		}

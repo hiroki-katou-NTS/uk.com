@@ -22,6 +22,9 @@ public class AffClassificationAdapterImpl implements AffClassificationAdapter {
 			GeneralDate baseDate) {
 		Optional<SClsHistExport> hisExport = this.syClassificationPub.findSClsHistBySid(companyId, employeeId,
 				baseDate);
+		if(!hisExport.isPresent()){
+			return Optional.empty();
+		}
 		AffClassificationSidImport affClassificationSidImport = new AffClassificationSidImport(
 				hisExport.get().getEmployeeId(), hisExport.get().getClassificationCode(), hisExport.get().getPeriod());
 		return Optional.of(affClassificationSidImport);
