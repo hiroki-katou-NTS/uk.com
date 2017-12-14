@@ -151,7 +151,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		JobTitle jobTitle = this.jobTitleRepository
 				.findByHistoryId(companyId, jobInfo.getJobTitleHistoryId()).get();
 
-		JobTitleHistory jobTitleHistory = jobTitle.getJobTitleHistory().get(FIRST_ITEM_INDEX);
+		JobTitleHistory jobTitleHistory = jobTitle.getJobTitleHistories().get(FIRST_ITEM_INDEX);
 
 		// Return
 		return Optional.of(JobTitleExport.builder().companyId(jobInfo.getCompanyId().v())
@@ -180,7 +180,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return jobInfos.stream().map(jobInfo -> {
 			JobTitle jobTitle = this.jobTitleRepository
 					.findByHistoryId(companyId, jobInfo.getJobTitleHistoryId()).get();
-			JobTitleHistory jobTitleHistory = jobTitle.getJobTitleHistory().get(FIRST_ITEM_INDEX);
+			JobTitleHistory jobTitleHistory = jobTitle.getJobTitleHistories().get(FIRST_ITEM_INDEX);
 			return JobTitleExport.builder().companyId(jobInfo.getCompanyId().v())
 					.jobTitleId(jobInfo.getJobTitleId()).jobTitleCode(jobInfo.getJobTitleCode().v())
 					.jobTitleName(jobInfo.getJobTitleName().v())
