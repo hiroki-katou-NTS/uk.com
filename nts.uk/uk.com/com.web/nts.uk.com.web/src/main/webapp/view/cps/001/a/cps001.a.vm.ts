@@ -310,7 +310,7 @@ module cps001.a.vm {
 
                 item.remove = () => {
                     let query = {
-                        categoryId: category.id(),
+                        categoryId: category.categoryCode(),
                         personId: person.personId(),
                         employeeId: employee.employeeId(),
                         recordId: item.id()
