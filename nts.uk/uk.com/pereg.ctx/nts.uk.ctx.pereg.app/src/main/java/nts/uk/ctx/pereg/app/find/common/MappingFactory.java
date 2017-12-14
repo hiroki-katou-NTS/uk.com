@@ -37,12 +37,6 @@ public class MappingFactory {
 	I18NResourcesForUK ukResouce;
 
 	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
-		// map record ID
-		String recordId = peregDto.getDomainDto().getRecordId();
-		for (Object item : classItem.getItems()) {
-			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-			valueItem.setRecordId(recordId);
-		}
 
 		// get dto value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
@@ -53,6 +47,16 @@ public class MappingFactory {
 		// set option value
 		setOptionData(peregDto, classItem);
 
+		// map record ID
+		String recordId = peregDto.getDomainDto().getRecordId();
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+			if ( valueItem.getValue() != null ) {
+				valueItem.setRecordId(recordId);
+			}
+			
+		}
+
 	}
 
 	/**
@@ -62,14 +66,6 @@ public class MappingFactory {
 	 * @param classItemList
 	 */
 	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
-		// map record ID
-		String recordId = peregDto.getDomainDto().getRecordId();
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				valueItem.setRecordId(recordId);
-			}
-		}
 
 		// get DTO value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
@@ -79,6 +75,17 @@ public class MappingFactory {
 
 		// set option value
 		setOptionData(peregDto, classItemList);
+
+		// map record ID
+		String recordId = peregDto.getDomainDto().getRecordId();
+		for (LayoutPersonInfoClsDto classItem : classItemList) {
+			for (Object item : classItem.getItems()) {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				if ( valueItem.getValue() != null ) {
+					valueItem.setRecordId(recordId);
+				}
+			}
+		}
 
 	}
 

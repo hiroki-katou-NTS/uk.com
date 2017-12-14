@@ -3,7 +3,7 @@ module nts.uk.com.view.cps005.b {
         export class Service {
             paths = {
                 getAllPerInfoItemDefByCtgId: "ctx/pereg/person/info/ctgItem/findby/categoryId1/{0}/{1}",
-                getPerInfoItemDefById: "ctx/pereg/person/info/ctgItem/findby/itemId/{0}",
+                getPerInfoItemDefById: "ctx/pereg/person/info/ctgItem/findby/itemId/{0}/{1}",
                 addItemDef: "ctx/pereg/person/info/ctgItem/add",
                 updateItemDef: "ctx/pereg/person/info/ctgItem/update",
                 removeItemDef: "ctx/pereg/person/info/ctgItem/remove",

@@ -21,7 +21,10 @@ module nts.uk.com.view.csa005.c {
                 return dfd.promise();
             }//end start page
             
-
+            public closeDialog(): any{
+                let self = this;
+                nts.uk.ui.windows.close() ;   
+            }  
             
             
         }//end screenModel
