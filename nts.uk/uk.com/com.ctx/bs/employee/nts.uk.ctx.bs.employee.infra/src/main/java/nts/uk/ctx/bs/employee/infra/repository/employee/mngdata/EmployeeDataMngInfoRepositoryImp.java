@@ -42,6 +42,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
+	private final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
+			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
+			+ " ORDER BY  c.employeeCode DESC";
+
 	// Lanlt end
 	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday "
 			+ " FROM BsymtEmployeeDataMngInfo e " + " INNER JOIN BpsmtPerson p"
@@ -340,5 +344,23 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			return Optional.empty();
 		}
 	}
+
+	// sonnlb code start
+	@Override
+	public String findLastEml(String companyId, String startLetters) {
+		if (startLetters == null)
+			startLetters = "";
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
+				.setParameter("emlCode", startLetters).getList();
+		String returnStr = "";
+		if (lst.size() > 0) {
+			Object obj = lst.get(0);
+			returnStr = obj.toString();
+		}
+
+		return returnStr;
+	}
+
+	// sonnlb code end
 
 }

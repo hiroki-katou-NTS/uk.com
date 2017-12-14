@@ -46,6 +46,9 @@ public class EmployeeWebService extends WebService {
 	
 	@Inject
 	private GetHeaderOfCPS001Finder empFinder;
+	
+	
+	
 
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}/{baseDate}")
@@ -218,6 +221,9 @@ public class EmployeeWebService extends WebService {
 	public EmployeeInfo getEmployeeInfo(@PathParam(value = "employeeId") String employeeId) {
 		return this.empFinder.getEmployeeInfo(employeeId);
 	}	
+	
+	
+	
 	
 	
 	

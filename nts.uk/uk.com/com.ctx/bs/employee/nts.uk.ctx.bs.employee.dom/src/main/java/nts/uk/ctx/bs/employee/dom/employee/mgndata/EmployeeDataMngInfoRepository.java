@@ -94,5 +94,11 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return
 	 */
 	Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd);
+	
+	//sonnlb start
+
+	String findLastEml(String companyId, String startLetters);
+	
+	//sonnlb end
 
 }

@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisFinder;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmployeeBusiness;
@@ -29,8 +28,6 @@ public class EmployeeFinder {
 	@Inject
 	private EmployeeRepository employeeRepository;
 
-	@Inject
-	private EmployeeBusiness employeeBusiness;
 
 	/**
 	 * Gets the person id by employee code.
@@ -85,25 +82,7 @@ public class EmployeeFinder {
 				.collect(Collectors.toList());
 	}
 
-	/**
-	 * get generate employee code
-	 * 
-	 * @param startLetter
-	 * @return
-	 */
-	public String getGenerateEmplCode(String startLetters) {
-		return employeeBusiness.generateEmplCode(startLetters);
-	}
 
-	/**
-	 * get generate card no
-	 * 
-	 * @param startLetter
-	 * @return
-	 */
-	public String getGenerateCardNo(String startLetters) {
-		return employeeBusiness.generateCardNo(startLetters);
-	}
 
 	
 

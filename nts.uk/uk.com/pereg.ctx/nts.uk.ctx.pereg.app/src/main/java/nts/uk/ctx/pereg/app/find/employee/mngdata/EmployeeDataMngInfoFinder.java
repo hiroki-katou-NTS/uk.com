@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.employeeinfo.service;
+package nts.uk.ctx.pereg.app.find.employee.mngdata;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,30 +9,31 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class EmployeeBusinessIml implements EmployeeBusiness {
+public class EmployeeDataMngInfoFinder {
 
 	@Inject
-	private EmployeeDataMngInfoRepository employeeRepository;
+	private EmployeeDataMngInfoRepository empDataMngInfoRepo;
 
 	@Inject
 	private PersonRepository personRepository;
 
-	@Override
 	public String generateEmplCode(String startLetters) {
 		String returnString = "";
 		String companyId = AppContexts.user().companyId();
-		String lastEmployeeCode = employeeRepository.findLastEml(companyId, startLetters);
+		String lastEmployeeCode = empDataMngInfoRepo.findLastEml(companyId, startLetters);
 		returnString = generateCode(lastEmployeeCode, "Msg_505");
 		return returnString;
+
 	}
 
-	@Override
 	public String generateCardNo(String startLetters) {
+
 		String returnString = "";
 		String companyId = AppContexts.user().companyId();
 		String lastCardNo = personRepository.getLastCardNo(companyId, startLetters);
 		returnString = generateCode(lastCardNo, "Msg_505");
 		return returnString;
+
 	}
 
 	private String generateCode(String value, String errMsgId) {
@@ -84,6 +85,5 @@ public class EmployeeBusinessIml implements EmployeeBusiness {
 		}
 		return returnString;
 	}
-
 
 }
