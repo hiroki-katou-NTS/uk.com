@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -30,6 +31,10 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -79,6 +84,13 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	@Inject
 	private PersonRepository personRepo;
+
+	/** The workplace history repository. */
+	@Inject
+	private AffWorkplaceHistoryRepository workplaceHistRepo;
+
+	@Inject
+	private WorkplaceInfoRepository workPlaceInfoRepo;
 
 	AddEmployeeCommand command;
 	String employeeId;
@@ -137,8 +149,21 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		addAvatar();
 
+		// for test
+		addAffHist();
+
 		// Update employee registration history
 		updateEmployeeRegHist();
+	}
+
+	private void addAffHist() {
+		List<WorkplaceInfo> wplst = this.workPlaceInfoRepo.findAll(companyId, GeneralDate.today());
+		Random rnd = new Random();
+		WorkplaceInfo wp = wplst.get(rnd.nextInt(wplst.size()));
+		AffWorkplaceHistory newAffWork = AffWorkplaceHistory.createFromJavaType(wp.getWorkplaceId(), GeneralDate.min(),
+				GeneralDate.max(), employeeId);
+		this.workplaceHistRepo.addAffWorkplaceHistory(newAffWork);
+
 	}
 
 	private void addNewPerson() {
