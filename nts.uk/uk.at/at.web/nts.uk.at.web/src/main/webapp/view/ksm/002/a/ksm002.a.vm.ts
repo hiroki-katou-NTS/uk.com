@@ -30,7 +30,7 @@ module ksm002.a.viewmodel {
         workplaceName: KnockoutObservable<string>;
         //data server 
         serverSource: Array<OptinalDate> = [];
-
+        dateFormat = "YYYY/MM/DD";
         constructor() {
             var self = this;
             self.isNew = ko.observable(true);
@@ -52,7 +52,7 @@ module ksm002.a.viewmodel {
             self.eventUpdatable = ko.observable(false);
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(true);
-
+            
             $("#calendar").ntsCalendar("init", {
                 buttonClick: function(date) {
                     self.openKsm002EDialog(date);
@@ -147,7 +147,8 @@ module ksm002.a.viewmodel {
             //Array Name to fill on  one Date
             let arrName: Array<string> = [];
             let arrId: Array<string> = [];
-            service.getCompanySpecificDateByCompanyDateWithName(processMonth).done(function(lstComSpecDate: any) {
+            let selectedDate = moment(processMonth, self.dateFormat);
+            service.getCompanySpecificDateByCompanyDateWithName(selectedDate.format(self.dateFormat)).done(function(lstComSpecDate: any) {
                 if (lstComSpecDate.length > 0) {
                     self.isNew(false);
                     for (let j = 1; j < endOfMonth + 1; j++) {
@@ -161,7 +162,7 @@ module ksm002.a.viewmodel {
                                 arrId.push(comItem.specificDateItemNo);
                             };
                         });
-                        arrOptionaDates.push(new OptionalDate(moment(processDay).format('YYYY-MM-DD'), arrName, arrId));
+                        arrOptionaDates.push(new OptionalDate(moment(processDay).format(self.dateFormat), arrName, arrId));
                     };
                 }
                 //Return Array of Data in Month
@@ -310,13 +311,13 @@ module ksm002.a.viewmodel {
                 let before = _.find(self.serverSource, o => o.start == item.start);
                 if (nts.uk.util.isNullOrUndefined(before)) {
                     arrCommand.push({
-                        specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                        specificDate: moment(item.start, 'YYYYMMDD').format(self.dateFormat),
                         specificDateItemNo: self.getSpecIdfromName(item.listText),
                         isUpdate: false
                     });
                 } else {
                     let current = {
-                        specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                        specificDate: Number(moment(item.start, 'YYYYMMDD').format(self.dateFormat),
                         specificDateItemNo: self.getSpecIdfromName(item.listText)
                     };
                     if (!_.isEqual(ko.mapping.toJSON(before), ko.mapping.toJSON(current))) {
@@ -337,7 +338,7 @@ module ksm002.a.viewmodel {
             _.forEach(self.optionDates(), function(processDay) {
                 if (processDay.listId.length > 0) {
                     _.forEach(processDay.listId, function(id) {
-                        lstComSpecificDateCommand.push({ specificDate: Number(moment(processDay.start).format('YYYYMMDD')), specificDateNo: Number(id) });
+                        lstComSpecificDateCommand.push({ specificDate: moment(processDay.start, 'YYYYMMDD').format(self.dateFormat), specificDateNo: Number(id) });
                     });
                 };
             });
@@ -408,7 +409,7 @@ module ksm002.a.viewmodel {
             nts.uk.ui.windows.setShared('KSM002_D_PARAM',
                 {
                     util: 1,
-                    startDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').startOf('month').format('YYYYMMDD')),
+                    startDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').startOf('month').format('YYYY/MM/DD')),
                     endDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').endOf('month').format('YYYYMMDD'))
                 });
             nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
@@ -491,7 +492,7 @@ module ksm002.a.viewmodel {
         }
     }
     export class ICompanySpecificDateCommand {
-        specificDate: number;
+        specificDate: string;
         specificDateNo: number;
         isUpdate?: boolean;
     }
