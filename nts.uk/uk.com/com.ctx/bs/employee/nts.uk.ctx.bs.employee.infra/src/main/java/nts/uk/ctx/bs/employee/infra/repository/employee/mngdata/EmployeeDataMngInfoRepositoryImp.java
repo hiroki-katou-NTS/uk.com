@@ -57,8 +57,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	// Lanlt end
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ";
 
-	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
-
 	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.delStatus = 0 AND e.employeeCode = :empcode AND e.companyId = :cid");
 
@@ -77,9 +75,12 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	public final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM + " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
 
 	/** The select by cid and pid. */
-	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM
-			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
 
+	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM + " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
+	
+	/** The select by cid and sid. */
+	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM + " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
+	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
