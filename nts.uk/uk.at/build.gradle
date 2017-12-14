@@ -636,12 +636,12 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: '0.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: '0.2.2')
 		
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.app', version: '0.2')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: '0.2.3')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: '0.2.5')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2.2')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: '0.2.2')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: '0.2.1')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.app', version: '0.2.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: '0.2.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: '0.2.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: '0.2.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: '0.2.6')
 		
 		// Add by ThanhNC - pls review 
 		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: '0.1.1')

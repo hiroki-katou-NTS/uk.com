@@ -17,11 +17,9 @@
 
 		<ui:define name="content">
 			<div id="contents-area" >
-					<div tabindex="1" id="list_link" >
-						<a class="hyperlink" href="#">アイコン無し、ただのリンク</a>
-						<a class="hyperlink" href="#">アイコン無し、ただのリンク</a>
-						<a class="hyperlink" href="#">アイコン無し、ただのリンク</a>
-					</div>
+				<div tabindex="1" id="list_link" data-bind="foreach: listMenu">
+					<a class="hyperlink"  target="_blank" data-bind="attr: { href: url }"><span data-bind="text: displayName"></span></a>
+				</div>
 			</div>
 			<div id="functions-area-bottom" >
 				<button tabindex="2" data-bind='click: closeDialog'>#{i18n.getText('CAS009_21')}</button>

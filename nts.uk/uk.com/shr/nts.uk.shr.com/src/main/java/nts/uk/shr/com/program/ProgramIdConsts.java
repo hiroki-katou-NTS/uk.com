@@ -470,9 +470,9 @@ public class ProgramIdConsts {
 	public static final String CAS014A = "CAS014A";
 	public static final String CAS014B = "CAS014B";
 
-	public static final String CCG025 = "CAS013A";
+	public static final String CCG025 = "CCG025";
 	
-	public static final String CCG026 = "CCG025";
+	public static final String CCG026 = "CCG026";
 	
 	public static final String CDL025 = "CDL025";
 	
@@ -487,4 +487,13 @@ public class ProgramIdConsts {
 	public static final String CPS001E = "CPS001E";
 	
 	public static final String CPS001F = "CPS001F";
+	
+	public static final String CMM007A = "CMM007A";
+	public static final String CMM007B = "CMM007B";
+	public static final String CMM007C = "CMM007C";
+	public static final String CMM007D = "CMM007D";
+	public static final String CMM007E = "CMM007E";
+	public static final String CMM007G = "CMM007G";
+	
+	
 }

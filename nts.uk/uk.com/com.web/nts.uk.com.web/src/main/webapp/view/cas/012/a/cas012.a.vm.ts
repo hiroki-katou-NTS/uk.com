@@ -103,6 +103,8 @@ module nts.uk.com.view.cas012.a.viewmodel {
             let self = this;
             self.isCreate(true);
             self.currentCode("");
+            self.selectRoleIndividual().userName("");
+            self.datePeriod({});
             nts.uk.ui.errors.clearAll();
         }
 
