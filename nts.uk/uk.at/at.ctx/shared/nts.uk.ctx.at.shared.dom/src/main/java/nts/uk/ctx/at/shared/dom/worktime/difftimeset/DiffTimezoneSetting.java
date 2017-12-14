@@ -53,7 +53,7 @@ public class DiffTimezoneSetting extends DomainObject{
 		// Validate overlap employmentTimezones
 		for (int i = 0; i < this.employmentTimezones.size(); i++) {
 			EmTimeZoneSet em = this.employmentTimezones.get(i);
-			for (int j = i + 1; j < this.employmentTimezones.size(); i++) {
+			for (int j = i + 1; j < this.employmentTimezones.size(); j++) {
 				EmTimeZoneSet em2 = this.employmentTimezones.get(j);
 				// check overlap
 				if (em.getTimezone().isOverlap(em2.getTimezone())) {
@@ -65,7 +65,7 @@ public class DiffTimezoneSetting extends DomainObject{
 		// validate overlap oTTimezones
 		for (int i = 0; i < this.oTTimezones.size(); i++) {
 			DiffTimeOTTimezoneSet em = this.oTTimezones.get(i);
-			for (int j = i + 1; j < this.oTTimezones.size(); i++) {
+			for (int j = i + 1; j < this.oTTimezones.size(); j++) {
 				DiffTimeOTTimezoneSet em2 = this.oTTimezones.get(j);
 				// check overlap
 				if (em.getTimezone().isOverlap(em2.getTimezone())) {

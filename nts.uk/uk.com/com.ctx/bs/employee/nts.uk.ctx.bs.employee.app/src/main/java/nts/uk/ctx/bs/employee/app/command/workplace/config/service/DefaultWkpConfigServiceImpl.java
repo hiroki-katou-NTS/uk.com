@@ -89,9 +89,14 @@ public class DefaultWkpConfigServiceImpl implements WkpConfigService {
 		// check date of workplace
 		List<Workplace> lstWorkplace = this.workplaceRepo.findByWkpIds(lstWkpId);
 
-		lstWorkplace.forEach(workplace -> {
-			this.processRemoveWKp(workplace, latestWkpConfigHist.span().start(), newHistStartDate);
-		});
+		for(Workplace workplace : lstWorkplace) {
+			GeneralDate startDWkpConfigHistCurrent = latestWkpConfigHist.span().start();
+			if (newHistStartDate.after(startDWkpConfigHistCurrent) 
+					&& !startDWkpConfigHistCurrent.equals(workplace.getWkpHistoryLatest().start())) {
+				continue;
+			}
+			this.processRemoveWKp(workplace, startDWkpConfigHistCurrent, newHistStartDate);
+		}
 	}
 
 	/**
@@ -121,15 +126,15 @@ public class DefaultWkpConfigServiceImpl implements WkpConfigService {
 				if (isChangedEndDate && !lstHistIdRemove.contains(wkpHistoryCurrent.identifier())) {
 					DatePeriod period = wkpHistoryCurrent.span();
 					int dayOfAgo = -1;
-					wkpHistoryCurrent
-							.changeSpan(period.newSpan(period.start(), newStartDWkpConfigHist.addDays(dayOfAgo)));
+					wkpHistoryCurrent.changeSpan(period.newSpan(period.start(), 
+							newStartDWkpConfigHist.addDays(dayOfAgo)));
 					break;
 				}
 				continue;
 			}
 			// find date range need to remove
-			lstHistIdRemove
-					.addAll(this.findExistedDateInRange(workplace.items(), newStartDWkpConfigHist, startDateWkpHist));
+			lstHistIdRemove.addAll(this.findExistedDateInRange(workplace.items(), 
+					newStartDWkpConfigHist, startDateWkpHist));
 
 			// remove workplace infor in date range
 			this.removeWkpHistory(workplace, lstHistIdRemove);
@@ -163,7 +168,7 @@ public class DefaultWkpConfigServiceImpl implements WkpConfigService {
 	private List<String> findExistedDateInRange(List<WorkplaceHistory> lstWkpHistory, GeneralDate startDate,
 			GeneralDate endDate) {
 		return lstWkpHistory.stream()
-				.filter(item -> item.span().start().after(startDate) && item.span().start().before(endDate))
+				.filter(item -> item.span().start().afterOrEquals(startDate) && item.span().start().before(endDate))
 				.map(item -> item.identifier()).collect(Collectors.toList());
 	}
 

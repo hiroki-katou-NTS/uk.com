@@ -5,9 +5,13 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * The Class FlowRestTimezone.
@@ -16,7 +20,7 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class FlowRestTimezone extends DomainObject {
 
-	/** The flow rest set. */
+	/** The flow rest sets. */
 	// 流動休憩設定
 	private List<FlowRestSetting> flowRestSets;
 
@@ -48,5 +52,43 @@ public class FlowRestTimezone extends DomainObject {
 		memento.setFlowRestSet(this.flowRestSets);
 		memento.setUseHereAfterRestSet(this.useHereAfterRestSet);
 		memento.setHereAfterRestSet(this.hereAfterRestSet);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		this.validateAfterRestSetting();
+		this.validateOverlapFlowRestSets();
+	}
+
+	/**
+	 * Validate after rest setting.
+	 */
+	private void validateAfterRestSetting() {
+		// Validate hereAfterRestSet.flowPassageTime > 0 when useHereAfterRestSet is true
+		if (this.useHereAfterRestSet) {
+			if (this.hereAfterRestSet.getFlowPassageTime().lessThanOrEqualTo(0)) {
+				throw new BusinessException("Msg_871");
+			}
+		}
+	}
+
+	/**
+	 * Validate overlap flow rest sets.
+	 */
+	private void validateOverlapFlowRestSets() {
+		// Validate flowRestSets.flowPassageTime must not be duplicated
+		Set<AttendanceTime> setFlowPassageTime = this.flowRestSets.stream()
+				.map(flowRestSet -> flowRestSet.getFlowPassageTime())
+				.collect(Collectors.toSet());
+		// If Set size < List size => there're duplicated value
+		if (setFlowPassageTime.size() < this.flowRestSets.size()) {
+			throw new BusinessException("Msg_869");
+		}
 	}
 }

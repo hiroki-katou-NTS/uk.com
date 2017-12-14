@@ -5,9 +5,11 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -15,25 +17,25 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  */
 // 単一日勤務予定
 @Getter
-public class SingleDaySchedule extends DomainObject{
-	
+public class SingleDaySchedule extends DomainObject {
+
 	/** The work type code. */
 	// 勤務種類コード
-	private WorkTypeCode workTypeCode; 
-	
+	private WorkTypeCode workTypeCode;
+
 	/** The working hours. */
 	// 勤務時間帯
 	private List<TimeZone> workingHours;
-	
+
 	/** The work time code. */
 	// 就業時間帯コード
-	private WorkTimeCode workTimeCode;
-	
-	
+	private Optional<WorkTimeCode> workTimeCode;
+
 	/**
 	 * Instantiates a new single day schedule.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public SingleDaySchedule(SingleDayScheduleGetMemento memento) {
 		this.workTypeCode = memento.getWorkTypeCode();
@@ -44,12 +46,13 @@ public class SingleDaySchedule extends DomainObject{
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(SingleDayScheduleSetMemento memento){
+	public void saveToMemento(SingleDayScheduleSetMemento memento) {
 		memento.setWorkTypeCode(this.workTypeCode);
 		memento.setWorkTimeCode(this.workTimeCode);
-		memento.setWorkingHours(workingHours);
+		memento.setWorkingHours(this.workingHours);
 	}
-	
+
 }

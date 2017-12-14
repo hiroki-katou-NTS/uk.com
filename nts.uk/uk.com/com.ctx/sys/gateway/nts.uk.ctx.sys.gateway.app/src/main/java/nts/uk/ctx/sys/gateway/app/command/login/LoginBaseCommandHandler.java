@@ -24,13 +24,12 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
- * The Class BaseCommand.
+ * The Class LoginBaseCommandHandler.
  *
- * @param <T>
- *            the generic type
+ * @param <T> the generic type
  */
 @Stateless
-public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
+public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 
 	/** The employee adapter. */
 	@Inject

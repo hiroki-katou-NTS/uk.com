@@ -113,7 +113,7 @@ subprojects {
         compile group: 'nts.gul', name: 'nts.gul', version: '0.38.1'
         compile group: 'nts.arc', name: 'nts.arc', version: '0.49'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.13.2'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.13.3'
 	}
 }
 
@@ -525,7 +525,7 @@ project (':at.web:nts.uk.at.web') {
 	}
 	
 	dependencies {
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.13.2'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.13.3'
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
@@ -611,9 +611,9 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.10.9')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.10.5')
 		
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: '0.1.4')
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: '0.1.2')
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: '0.1.2')		
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: '0.1.5')
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: '0.1.5')
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: '0.1.5')		
 		
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.10.4')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.4')

@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.repository.ot.frame;
 
 import java.math.BigDecimal;
 
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
@@ -19,7 +18,6 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
 public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemento{
 	
 	/** The kshst overtime frame. */
-	@Setter
 	private KshstOvertimeFrame kshstOvertimeFrame;
 	
 	/**
@@ -31,8 +29,9 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 		this.kshstOvertimeFrame = kshstOvertimeFrame;
 	}
 
+	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationGetMemento#getCompanyId()
+	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
@@ -40,8 +39,9 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 	}
 
 
+	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento#getUseClassification()
+	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento#getUseClassification()
 	 */
 	@Override
 	public NotUseAtr getUseClassification() {
@@ -49,6 +49,7 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 	}
 
 
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento#getOvertimeWorkFrameNo()
 	 */
@@ -57,6 +58,7 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 		return new OvertimeWorkFrameNo(BigDecimal.valueOf(this.kshstOvertimeFrame.getKshstOvertimeFramePK().getOtFrNo()));
 	}
 
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento#getTransferFrameName()
 	 */
@@ -65,6 +67,7 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 		return new OvertimeWorkFrameName(this.kshstOvertimeFrame.getTransFrName());
 	}
 
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento#getOvertimeWorkFrameName()
 	 */

@@ -33,8 +33,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaPlanYearHolidayFrameRepository extends JpaRepository
 	implements PlanYearHolidayFrameRepository {
 
+	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository#findClassification(java.lang.String, java.lang.String)
+	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameRepository#findPlanYearHolidayFrame(nts.uk.ctx.at.shared.dom.common.CompanyId, int)
 	 */
 	@Override
 	public Optional<PlanYearHolidayFrame> findPlanYearHolidayFrame(CompanyId companyId, int planYearHdFrNo) {
@@ -43,12 +44,9 @@ public class JpaPlanYearHolidayFrameRepository extends JpaRepository
 				.map(e -> this.toDomain(e));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.basic.dom.company.organization.category.
-	 * ManagementCategoryRepository#update(nts.uk.ctx.basic.dom.company.
-	 * organization.category.ManagementCategory)
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameRepository#update(nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrame)
 	 */
 	@Override
 	public void update(PlanYearHolidayFrame planYearHolidayFrame) {
@@ -56,11 +54,9 @@ public class JpaPlanYearHolidayFrameRepository extends JpaRepository
 	}
 	
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.basic.dom.company.organization.category.
-	 * ManagementCategoryRepository#getAllManagementCategory(java.lang.String)
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameRepository#getAllPlanYearHolidayFrame(java.lang.String)
 	 */
 	@Override
 	public List<PlanYearHolidayFrame> getAllPlanYearHolidayFrame(String companyId) {
