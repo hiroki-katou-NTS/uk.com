@@ -69,7 +69,7 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 		if (!optionalType.isPresent()) {
 			return null;
 		}
-		BusinessTypeDto dto = new BusinessTypeDto(bHistory.getHistory().get(0).start(),
+		BusinessTypeDto dto = new BusinessTypeDto(query.getInfoId(), bHistory.getHistory().get(0).start(),
 				bHistory.getHistory().get(0).end(), query.getInfoId());
 
 		return dto;

@@ -5,13 +5,13 @@
 package nts.uk.ctx.sys.auth.pubimp.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeAdapter;
 import nts.uk.ctx.sys.auth.dom.employee.dto.EmployeeImport;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
@@ -31,7 +31,11 @@ public class ListCompanyServiceImpl implements ListCompanyService {
 	
 	/** The role repository. */
 	@Inject 
-	private RoleRepository roleRepository; 
+	private RoleRepository roleRepository;
+	
+	@Inject 
+	private EmployeeAdapter employeeAdapter;
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.pub.service.ListCompanyService#getListCompanyId(java.lang.String)
 	 */
@@ -42,8 +46,9 @@ public class ListCompanyServiceImpl implements ListCompanyService {
 		RoleIndividualGrant individualGrant = roleIndividualGrantRepository.findByUserAndDate(userId, GeneralDate.today()).get();
 		// get roles by roleId
 		List<Role> lstRole = roleRepository.findById(individualGrant.getRoleId());
-		// TODO get list employee imported by User associated Id #No.124
-		List<EmployeeImport> lstEm = Arrays.asList();
+		
+		// get list employee imported by User associated Id #No.124
+		List<EmployeeImport> lstEm = employeeAdapter.findByEmployeeId(associatedPersonId);
 
 		// merge duplicate companyId from lstRole and lstEm
 		for (Role item : lstRole) {

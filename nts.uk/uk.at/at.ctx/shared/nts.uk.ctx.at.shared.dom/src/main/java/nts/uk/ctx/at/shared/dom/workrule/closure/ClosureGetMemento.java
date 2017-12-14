@@ -23,7 +23,7 @@ public interface ClosureGetMemento {
 	 *
 	 * @return the closure id
 	 */
-	Integer getClosureId();
+	ClosureId getClosureId();
 
 	/**
 	 * Gets the use classification.

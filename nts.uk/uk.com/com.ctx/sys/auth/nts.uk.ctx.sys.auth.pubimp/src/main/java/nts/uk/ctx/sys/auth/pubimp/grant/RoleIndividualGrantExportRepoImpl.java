@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.grant;
 
-import java.util.Optional;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,9 +28,12 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 
 	@Override
 	public RoleIndividualGrantExport getByUserAndRoleType(String userId, Integer roleType) {
-		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository
-				.findByUserAndRole(userId, RoleType.valueOf(roleType).value).get(0);
-		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
+		List<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository
+				.findByUserAndRole(userId, RoleType.valueOf(roleType).value);
+		if (roleIndividualGrant.isEmpty()) {
+			return null;
+		}
+		return new RoleIndividualGrantExport(roleIndividualGrant.get(0).getRoleId());
 	}
 
 	@Override

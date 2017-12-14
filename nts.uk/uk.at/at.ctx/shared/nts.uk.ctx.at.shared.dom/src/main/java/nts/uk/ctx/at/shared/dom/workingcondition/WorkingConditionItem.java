@@ -69,13 +69,13 @@ public class WorkingConditionItem extends AggregateRoot {
 	 *            the memento
 	 */
 	public WorkingConditionItem(WorkingConditionItemGetMemento memento) {
+		this.historyId = memento.getHistoryId();
 		this.scheduleManagementAtr = memento.getScheduleManagementAtr();
 		this.vacationAddedTimeAtr = memento.getVacationAddedTimeAtr();
 		this.laborSystem = memento.getLaborSystem();
 		this.workCategory = memento.getWorkCategory();
 		this.contractTime = memento.getContractTime();
 		this.autoIntervalSetAtr = memento.getAutoIntervalSetAtr();
-		this.historyId = memento.getHistoryId();
 		this.workDayOfWeek = memento.getWorkDayOfWeek();
 		this.employeeId = memento.getEmployeeId();
 		this.autoStampSetAtr = memento.getAutoStampSetAtr();
@@ -90,13 +90,13 @@ public class WorkingConditionItem extends AggregateRoot {
 	 *            the memento
 	 */
 	public void saveToMemento(WorkingConditionItemSetMemento memento) {
+		memento.setHistoryId(this.historyId);
 		memento.setScheduleManagementAtr(this.scheduleManagementAtr);
 		memento.setVacationAddedTimeAtr(this.vacationAddedTimeAtr);
 		memento.setLaborSystem(this.laborSystem);
 		memento.setWorkCategory(this.workCategory);
 		memento.setContractTime(this.contractTime);
 		memento.setAutoIntervalSetAtr(this.autoIntervalSetAtr);
-		memento.setHistoryId(this.historyId);
 		memento.setWorkDayOfWeek(this.workDayOfWeek);
 		memento.setEmployeeId(this.employeeId);
 		memento.setAutoStampSetAtr(this.autoStampSetAtr);
@@ -113,7 +113,6 @@ public class WorkingConditionItem extends AggregateRoot {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((employeeId == null) ? 0 : employeeId.hashCode());
 		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
 		return result;
 	}
@@ -132,18 +131,12 @@ public class WorkingConditionItem extends AggregateRoot {
 		if (getClass() != obj.getClass())
 			return false;
 		WorkingConditionItem other = (WorkingConditionItem) obj;
-		if (employeeId == null) {
-			if (other.employeeId != null)
-				return false;
-		} else if (!employeeId.equals(other.employeeId))
-			return false;
-
 		if (historyId == null) {
 			if (other.historyId != null)
 				return false;
 		} else if (!historyId.equals(other.historyId))
 			return false;
-
 		return true;
 	}
+
 }

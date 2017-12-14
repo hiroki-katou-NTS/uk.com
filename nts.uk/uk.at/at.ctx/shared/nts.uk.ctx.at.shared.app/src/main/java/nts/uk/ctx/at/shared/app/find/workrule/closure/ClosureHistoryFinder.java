@@ -53,7 +53,7 @@ public class ClosureHistoryFinder {
 
 		closures.forEach(closure -> {
 			Optional<ClosureHistory> closureHistoryLast = this.repository.findBySelectedYearMonth(companyId,
-					closure.getClosureId(), closure.getClosureMonth().getProcessingYm().v());
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().v());
 
 			if (closureHistoryLast.isPresent()) {
 				closureHistories.add(closureHistoryLast.get());

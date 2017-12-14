@@ -91,6 +91,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         editValue: KnockoutObservable<InfoCellEdit> = ko.observable(null);
 
+        dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("12","13","11","11","11","11"));
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
@@ -113,6 +114,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.showProfileIcon.subscribe((val) => {
                 self.reloadGrid();
             });
+            //$("#fixed-table").ntsFixedTable({ height: 50, width: 300 });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
                 if (!container.is(e.target) &&
@@ -285,12 +287,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (self.displayFormat() == 0) {
                     $("#emp-component").css("display", "block");
                     $("#cbListDate").css("display", "none");
+                    $('#numberHoliday').show();
+                     $('#fixed-table').show();
                 } else if (self.displayFormat() == 1) {
                     $("#cbListDate").css("display", "block");
                     $("#emp-component").css("display", "none");
+                    $('#numberHoliday').hide();
+                    $('#fixed-table').hide();
                 } else {
                     $("#cbListDate").css("display", "none");
                     $("#emp-component").css("display", "none");
+                    $('#numberHoliday').hide();
+                    $('#fixed-table').hide();
                 }
                 let lstEmployee = [];
                 if (self.displayFormat() === 0) {
@@ -352,12 +360,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (self.displayFormat() == 0) {
                     $("#emp-component").css("display", "block");
                     $("#cbListDate").css("display", "none");
+                    $('#numberHoliday').show();
+                    $('#fixed-table').show();
+                    
                 } else if (self.displayFormat() == 1) {
                     $("#cbListDate").css("display", "block");
                     $("#emp-component").css("display", "none");
+                    $('#numberHoliday').hide();
+                    $('#fixed-table').hide();
                 } else {
                     $("#cbListDate").css("display", "none");
                     $("#emp-component").css("display", "none");
+                    $('#numberHoliday').hide();
+                    $('#fixed-table').hide();
                 }
                 let lstEmployee = [];
                 if (self.displayFormat() === 0) {
@@ -410,12 +425,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (self.displayFormat() == 0) {
                             $("#emp-component").css("display", "block");
                             $("#cbListDate").css("display", "none");
+                            $('#numberHoliday').show();
+                            $('#fixed-table').show();
                         } else if (self.displayFormat() == 1) {
                             $("#cbListDate").css("display", "block");
                             $("#emp-component").css("display", "none");
+                            $('#numberHoliday').hide();
+                            $('#fixed-table').hide();
                         } else {
                             $("#cbListDate").css("display", "none");
                             $("#emp-component").css("display", "none");
+                            $('#numberHoliday').hide();
+                            $('#fixed-table').hide();
                         }
                         let lstEmployee = [];
                         if (self.displayFormat() === 0) {
@@ -459,9 +480,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                    nts.uk.ui.windows.setShared("kdl014startDateA", moment(self.dateRanger().startDate).utc().toISOString());
-                    nts.uk.ui.windows.setShared("kdl014endDateA", moment(self.dateRanger().startDate).utc().toISOString());
-                    nts.uk.ui.windows.setShared("kdl014employeeCodeA", lstEmployee[0].code);
+                    nts.uk.ui.windows.setShared("KDL014A_PARAM", {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                        employeeID: lstEmployee[0].code
+                    });
                     nts.uk.ui.windows.sub.modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
@@ -469,9 +492,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee = self.lstEmployee().map((data) => {
                         return data.code;
                     });
-                    nts.uk.ui.windows.setShared("kdl014startDateB", moment(self.dateRanger().startDate).utc().toISOString());
-                    nts.uk.ui.windows.setShared("kdl014endDateB", moment(self.dateRanger().startDate).utc().toISOString());
-                    nts.uk.ui.windows.setShared("kdl014lstEmployeeB", lstEmployee);
+                     nts.uk.ui.windows.setShared("KDL014B_PARAM", {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                        lstEmployee: lstEmployee
+                    });
                     nts.uk.ui.windows.sub.modal("/view/kdl/014/b/index.xhtml").onClosed(() => {
                     });
                 }
@@ -849,8 +874,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             $(document).delegate("#dpGrid", 'iggridupdatingeditcellending', function(evt, ui) {
                 // self.editValue({ rowId: ui.rowID, key: ui.columnKey, value: ui.value });
                 let dfd = $.Deferred();
-                nts.uk.ui.block.invisible();
-                nts.uk.ui.block.grayout();
+//                nts.uk.ui.block.invisible();
+//                nts.uk.ui.block.grayout();
                 if (ui.columnKey.indexOf("Code") != -1) {
                     let item = _.find(self.lstAttendanceItem(), function(data) {
                         return data.id == ui.columnKey.substring(4, ui.columnKey.length);
@@ -889,9 +914,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 param.param.workplaceId = employee.workplaceId;
                                 break
                         }
-                        service.findCodeName(param).done((data) => {
+                        $.when(service.findCodeName(param)).done((data) => {
                             $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
-                            nts.uk.ui.block.clear();
+                           // nts.uk.ui.block.clear();
                             dfd.resolve();
                         });
                         dfd.promise();
@@ -1125,7 +1150,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.yearHoliday19(yearHoliday && authentication.available19());
             this.compensLeave(compensLeave && authentication.available17());
             this.com60HVacation(com60HVacation && authentication.available21());
-            this.allVacation(yearHoliday || substVacation || yearHoliday || com60HVacation);
+            this.allVacation(this.yearHoliday20() || this.substVacation() || this.yearHoliday19() || this.compensLeave() ||  this.com60HVacation());
         }
     }
 
@@ -1419,5 +1444,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         rowId: any;
         key: any;
         value: any;
+    }
+    
+    class DataHoliday {
+        compensation: string;
+        substitute: string;
+        paidYear: string;
+        paidHalf: string;
+        paidHours: string;
+        fundedPaid: string;
+        constructor(compensation: string, substitute: string, paidYear: string, paidHalf: string, paidHours: string, fundedPaid: string) {
+            this.compensation = nts.uk.resource.getText("KDW003_8", compensation)
+            this.substitute = nts.uk.resource.getText("KDW003_8", substitute)
+            this.paidYear = nts.uk.resource.getText("KDW003_9", paidYear)
+            this.paidHalf = nts.uk.resource.getText("KDW003_10", paidHalf)
+            this.paidHours = nts.uk.resource.getText("KDW003_11", paidHours)
+            this.fundedPaid = nts.uk.resource.getText("KDW003_8", fundedPaid)
+        }
     }
 }

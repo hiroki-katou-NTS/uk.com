@@ -19,24 +19,42 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
 import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet;
 import nts.uk.shr.com.primitive.Memo;
 
+/**
+ * The Class JpaWorkTimeSettingGetMemento.
+ */
 public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 
+	/** The entity. */
 	private KshmtWorkTimeSet entity;
 
+	/**
+	 * Instantiates a new jpa work time setting get memento.
+	 *
+	 * @param entity the entity
+	 */
 	public JpaWorkTimeSettingGetMemento(KshmtWorkTimeSet entity) {
 		this.entity = entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getCompanyId()
+	 */
 	@Override
 	public String getCompanyId() {
 		return this.entity.getKshmtWorkTimeSetPK().getCid();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getWorktimeCode()
+	 */
 	@Override
 	public WorkTimeCode getWorktimeCode() {
 		return new WorkTimeCode(this.entity.getKshmtWorkTimeSetPK().getWorktimeCd());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getWorkTimeDivision()
+	 */
 	@Override
 	public WorkTimeDivision getWorkTimeDivision() {
 		return WorkTimeDivision.builder()
@@ -45,16 +63,25 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 				.build();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getAbolishAtr()
+	 */
 	@Override
 	public AbolishAtr getAbolishAtr() {
 		return AbolishAtr.valueOf(this.entity.getAbolitionAtr());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getColorCode()
+	 */
 	@Override
 	public ColorCode getColorCode() {
 		return new ColorCode(this.entity.getColor());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getWorkTimeDisplayName()
+	 */
 	@Override
 	public WorkTimeDisplayName getWorkTimeDisplayName() {
 		return WorkTimeDisplayName.builder()
@@ -64,14 +91,21 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 				.build();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getMemo()
+	 */
 	@Override
 	public Memo getMemo() {
 		return new Memo(this.entity.getMemo());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getNote()
+	 */
 	@Override
 	public WorkTimeNote getNote() {
 		return new WorkTimeNote(this.entity.getNote());
 	}
 
+	
 }
