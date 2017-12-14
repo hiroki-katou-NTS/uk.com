@@ -94,16 +94,18 @@ public class MappingFactory {
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 
 		lstPerInfoItemDef.forEach(item -> {
-			LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
-			if (item.getItemDefType() == 2) {
-				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
-			} else {
-				setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
-				item.getLstChildItemDef().forEach(x -> {
-					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoFieldValue);
-				});
+			if (item.getItemCode().charAt(1) == 'S') {
+				LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
+				if (item.getItemDefType() == 2) {
+					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+				} else {
+					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+					item.getLstChildItemDef().forEach(x -> {
+						setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoFieldValue);
+					});
+				}
+				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 			}
-			empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 		});
 
 	}

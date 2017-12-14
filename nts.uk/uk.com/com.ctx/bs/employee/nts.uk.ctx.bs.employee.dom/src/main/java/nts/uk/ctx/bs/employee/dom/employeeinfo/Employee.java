@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +92,7 @@ public class Employee extends AggregateRoot {
 		}
 		return Optional.of(lastJobEntryHistory);
 	}
-	
+
 	public Optional<JobEntryHistory> getHistoryAfterReferDate(GeneralDate referenceDate) {
 		List<JobEntryHistory> matchedListEntryJobHist = this.listEntryJobHist.stream()
 				.filter(history -> history.getJoinDate().after(referenceDate)).collect(Collectors.toList());
@@ -113,8 +114,10 @@ public class Employee extends AggregateRoot {
 			return 0;
 		}
 
-		return listEntryJobHist.stream()
-				.map(m -> ChronoUnit.DAYS.between(m.getJoinDate().localDate(), m.getAdoptDate().localDate()))
+		return listEntryJobHist.stream().filter(f -> f.getJoinDate().localDate().compareTo(LocalDate.now()) < 0)
+				.map(m -> ChronoUnit.DAYS.between(m.getJoinDate().localDate(),
+						m.getAdoptDate().localDate().compareTo(LocalDate.now()) < 0 ? m.getAdoptDate().localDate()
+								: LocalDate.now()))
 				.mapToInt(m -> Math.abs(m.intValue())).sum();
 	}
 
@@ -124,7 +127,9 @@ public class Employee extends AggregateRoot {
 		}
 
 		return temporaryAbsenceHistory.items().stream()
-				.map(m -> ChronoUnit.DAYS.between(m.start().localDate(), m.end().localDate()))
+				.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
+				.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
+						m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate() : LocalDate.now()))
 				.mapToInt(m -> Math.abs(m.intValue())).sum();
 	}
 }
