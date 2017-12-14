@@ -109,7 +109,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		}).collect(Collectors.toList());
 	}
 
-	@Override
+/*	@Override
 	public List<EmpBasicInfoExport> getListEmpBasicInfo(List<String> sid) {
 		List<Employee> listEmpDomain = repo.getByListEmployeeId(sid);
 		List<EmpBasicInfoExport> listResult = new ArrayList<>();
@@ -142,7 +142,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		}
 
 		return listResult;
-	}
+	} */
 
 	/**
 	 * Get Employee Info By Pid. Requets List No.124
