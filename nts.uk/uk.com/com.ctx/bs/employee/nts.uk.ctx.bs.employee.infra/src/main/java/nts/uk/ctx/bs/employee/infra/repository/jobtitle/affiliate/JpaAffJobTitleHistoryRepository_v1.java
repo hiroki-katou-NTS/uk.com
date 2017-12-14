@@ -112,7 +112,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		DateHistoryItem dateItem = new DateHistoryItem(ent.getHisId(),
 				new DatePeriod(ent.getStrDate(), ent.getEndDate()));
 
-		domain.add(dateItem);
+		domain.getHistoryItems().add(dateItem);
 
 		return domain;
 	}

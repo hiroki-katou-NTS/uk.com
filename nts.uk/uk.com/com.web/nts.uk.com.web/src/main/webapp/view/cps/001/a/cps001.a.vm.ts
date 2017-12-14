@@ -274,7 +274,10 @@ module cps001.a.vm {
                             });
                             break;
                         case IT_CAT_TYPE.DUPLICATE:
-                            debugger;
+                            service.getCatData(query).done(data => {
+                                debugger;
+                                layout.listItemCls(data.classificationItems);
+                            });
                             break;
                         case IT_CAT_TYPE.CONTINUWED:
                             debugger;

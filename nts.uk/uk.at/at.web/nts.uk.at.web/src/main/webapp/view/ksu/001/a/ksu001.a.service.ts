@@ -6,9 +6,6 @@ module ksu001.a.service {
         getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition",
         getShiftConditionCategory: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftConCategory",
         checkStateWorkTypeCode: "screen/at/schedule/basicschedule/checkStateWorkTypeCode",
-        //        getDataWkpSpecificDate: "screen/at/schedule/basicschedule/getDataWkpSpecificDate",
-        //        getDataComSpecificDate: "screen/at/schedule/basicschedule/getDataComSpecificDate",
-        //        getDataPublicHoliday: "screen/at/schedule/basicschedule/getDataPublicHoliday",
         getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
         getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday"

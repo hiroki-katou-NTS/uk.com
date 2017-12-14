@@ -20,7 +20,7 @@ public interface AffClassHistoryRepository_ver1 {
 	 * @param historyId
 	 * @return
 	 */
-	Optional<AffClassHistory_ver1> getByHistoryId(String historyId);
+	Optional<DateHistoryItem> getByHistoryId(String historyId);
 	
 	/**
 	 * get with employeeId and standardDate
@@ -28,7 +28,7 @@ public interface AffClassHistoryRepository_ver1 {
 	 * @param standardDate
 	 * @return
 	 */
-	Optional<AffClassHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
+	Optional<DateHistoryItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
 	/**
 	 * return historyDomain with periods
