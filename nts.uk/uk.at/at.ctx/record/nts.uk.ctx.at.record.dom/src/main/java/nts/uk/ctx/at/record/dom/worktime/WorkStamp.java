@@ -46,5 +46,16 @@ public class WorkStamp extends DomainObject{
 		this.locationCode = locationCode;
 		this.stampSourceInfo = stampSourceInfo;
 	}
+	
+	public void setPropertyWorkStamp(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
+			StampSourceInfo stampSourceInfo){
+		this.AfterRoundingTime = afterRoundingTime;
+		this.timeWithDay = timeWithDay;
+		this.locationCode = locationCode;
+		this.stampSourceInfo = stampSourceInfo;
+		
+	}
+	
+	
 
 }
