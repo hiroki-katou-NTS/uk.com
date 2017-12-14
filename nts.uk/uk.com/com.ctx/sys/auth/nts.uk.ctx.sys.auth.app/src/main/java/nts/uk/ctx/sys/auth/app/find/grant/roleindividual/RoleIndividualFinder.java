@@ -22,6 +22,7 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.auth.dom.user.UserName;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -114,20 +115,45 @@ public class RoleIndividualFinder {
 		String companyId = AppContexts.user().companyId();
 		if (companyId == null)
 			return null;
+		List<RoleIndividualGrantDto> rGrants = new ArrayList<>();
 		
 		if(roleId == null)
-			return null;
+			return rGrants;
 		
 		List<RoleIndividualGrant> ListRoleGrants = new ArrayList<>();
 		ListRoleGrants = this.roleIndividualGrantRepo.findByCompanyRole(companyId, roleId);
 
 		List<String> userId = ListRoleGrants.stream().map(c -> c.getUserId()).distinct().collect(Collectors.toList());
-		List<User> listUsers = userRepo.getByListUser(userId);
-
-		List<RoleIndividualGrantDto> rGrants = new ArrayList<>();
+        
+        if(userId.size()==0){
+			return rGrants;
+		}
+        List<User> listUsers = userRepo.getByListUser(userId);
+        
+        List<String> userIdRequest = new ArrayList<String>();
+        for(User user : listUsers){
+        	if(user.getAssociatedPersonID() != null){
+        		userIdRequest.add(user.getAssociatedPersonID());
+        	}
+        }
+        
+        if(userIdRequest.size() > 0){
+        	List<PersonImport> listPerson = personAdapter.findByPersonIds(userIdRequest);
+        	for(User user:listUsers){
+        		if(user.getAssociatedPersonID() != null){
+	        		for(PersonImport person: listPerson){
+	        			if(user.getAssociatedPersonID().equals(person.getPersonId())){
+	        				user.setUserName(new UserName(person.getPersonName()));
+	        			}
+	        		}
+        		}
+        	}
+        }
+		
 		for (RoleIndividualGrant rGrant : ListRoleGrants) {
-			User user = listUsers.stream().filter(c -> c.getUserID().equals(rGrant.getUserId())).findFirst().get();
-			rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, user.getUserName().v(), user.getLoginID().v()));
+            User user = listUsers.stream().filter(c -> c.getUserID().equals(rGrant.getUserId())).findFirst().get();
+            rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, user.getUserName().v(), user.getLoginID().v()));
+
 		}
 		return rGrants;
 
@@ -142,8 +168,18 @@ public class RoleIndividualFinder {
 			return null;
 		
 		Optional<RoleIndividualGrant> rGrant = this.roleIndividualGrantRepo.findByKey(userId, companyId, roleId);
+		
 		try {
 			Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
+			if(user.get().getAssociatedPersonID() != null){
+				List<String> PersonID = new ArrayList<>();
+				PersonID.add(user.get().getAssociatedPersonID());
+				
+				List<PersonImport> listPerson = personAdapter.findByPersonIds(PersonID);
+				if(listPerson.size()>0){
+					user.get().setUserName(new UserName(listPerson.get(0).getPersonName()));
+				}
+			}
 			return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
 		} catch (Exception e) {
 			return null;

@@ -1150,6 +1150,8 @@ public class ProgramsManager {
 	public static final Program CMM007G = new Program(WebAppId.COM, ProgramIdConsts.CMM007G, "CMM007_1",
 			"/view/cmm/007/g/index.xhtml");
 
+	public static final Program CCG026 = new Program(WebAppId.COM, ProgramIdConsts.CCG026, "CCG025_2",
+			"/view/ccg/026/component/index.xhtml");
 	
 	// TODO: Define new programs here.
 

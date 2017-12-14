@@ -38,8 +38,12 @@ module nts.uk.com.view.cas013.b.viewmodel {
             var key = self.searchValue();
             var Special = self.special();
             var Multi= self.multi();
+            nts.uk.ui.block.invisible();
             service.searchUser(key,Special,Multi).done(function(data) {
-                self.dataSource(data);
+                var items = _.sortBy(data, ["loginID"]);
+                self.dataSource(items);
+            }).always(() => {
+                nts.uk.ui.block.clear();    
             });
         }
 

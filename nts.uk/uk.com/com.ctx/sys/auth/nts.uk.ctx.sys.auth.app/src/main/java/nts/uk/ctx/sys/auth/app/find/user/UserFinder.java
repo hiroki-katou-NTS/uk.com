@@ -15,6 +15,7 @@ import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.user.DisabledSegment;
 import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.auth.dom.user.UserName;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -62,6 +63,7 @@ public class UserFinder {
 				if (associatedEmployee.isPresent()) {
 					if (user.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase()) ||
 						associatedEmployee.get().getEmployeeName().toLowerCase().contains(userKeyDto.getKey().toLowerCase())) {
+						user.setUserName(new UserName(associatedEmployee.get().getEmployeeName()));
 						result.add(UserDto.fromDomain(user));
 					}
 				}
