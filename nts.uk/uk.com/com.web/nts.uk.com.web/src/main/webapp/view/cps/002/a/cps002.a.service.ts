@@ -36,15 +36,15 @@ module cps002.a.service {
     }
 
     export function getEmployeeCode(employeeLetter) {
-        return ajax("com", paths.getEmployeeCode, employeeLetter);
+        return ajax("com", regpath + paths.getEmployeeCode, employeeLetter);
     }
 
     export function getCardNumber(cardLetter) {
-        return ajax(paths.getCardNumber, cardLetter);
+        return ajax("com", regpath + paths.getCardNumber, cardLetter);
     }
 
     export function getEmployeeCodeAndComId(employeeLetter) {
-        return ajax(paths.getCardNumber, employeeLetter);
+        return ajax("com", regpath + paths.getCardNumber, employeeLetter);
     }
 
     export function validateEmpInfo(command) {
