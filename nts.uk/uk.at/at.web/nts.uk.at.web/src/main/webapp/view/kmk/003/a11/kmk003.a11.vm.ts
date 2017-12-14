@@ -32,6 +32,7 @@ module a11 {
     class TimeSetModel {
         
         timeOption: KnockoutObservable<any>;
+        isCertainDaySet: KnockoutObservable<boolean>;
         
         checked: KnockoutObservable<boolean>;
         subTransferSelected: KnockoutObservable<number>;
@@ -56,17 +57,16 @@ module a11 {
             self.halfDayTime = ko.observable(null);
             self.certainDayTime = ko.observable(null);
             self.nameIdRadioGroup = nts.uk.util.randomId();
+            
+            self.isCertainDaySet = ko.computed(() => {
+                return self.subTransferSelected() == 1;
+            });
         }
     }
     
     /**
-     * EnumModel
+     * KMK003A11BindingHandler
      */
-    interface EnumModel {
-        value: number;
-        localizedName: string;
-    }
-    
     class KMK003A11BindingHandler implements KnockoutBindingHandler {
         
         /**

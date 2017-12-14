@@ -19,7 +19,7 @@
 					<div class="padding-radio">
 						<label class="ntsRadioBox">
 							<input class="inputRadioHol" type="radio" data-bind="checkedValue: 0,
-								checked: subTransferSelected, enable: true" />
+								checked: subTransferSelected, enable: checked" />
 							<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
 						</label>
 						<div class="padding-time">
@@ -30,8 +30,8 @@
 								constraint:'OneDayTime',
 								option: timeOption,
 								inputFormat: 'time',
-								enable: true,
-								required: true}" />
+								enable: !isCertainDaySet() &amp;&amp; checked(),
+								required: false}" />
 						</div>
 						<div class="padding-time">
 							<label style="margin-right: 35px;">#{i18n.getText('KMK003_107')}</label>
@@ -41,15 +41,15 @@
 								constraint:'OneDayTime',
 								option: timeOption,
 								inputFormat: 'time',
-								enable: true,
-								required: true}" />
+								enable: !isCertainDaySet() &amp;&amp; checked(),
+								required: false}" />
 						</div>
 					</div>
 					
 					<div class="padding-radio">
 						<label class="ntsRadioBox">
 							<input class="inputRadioHol" type="radio" data-bind="checkedValue: 1,
-								checked: subTransferSelected, enable: true" />
+								checked: subTransferSelected, enable: checked" />
 							<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
 						</label>
 						<div class="padding-time">
@@ -60,8 +60,8 @@
 								constraint:'OneDayTime',
 								option: timeOption,
 								inputFormat: 'time',
-								enable: true,
-								required: true}" />
+								enable: checked() &amp;&amp; isCertainDaySet(),
+								required: false}" />
 						</div>
 					</div>
 				</div>
@@ -74,7 +74,7 @@
 					<div class="padding-radio">
 						<label class="ntsRadioBox">
 							<input class="inputRadioOT" type="radio" data-bind="checkedValue: 0,
-								checked: subTransferSelected, enable: true" />
+								checked: subTransferSelected, enable: checked" />
 							<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
 						</label>
 						<div class="padding-time">
@@ -85,8 +85,8 @@
 								constraint:'OneDayTime',
 								option: timeOption,
 								inputFormat: 'time',
-								enable: true,
-								required: true}" />
+								enable: checked() &amp;&amp; !isCertainDaySet(),
+								required: false}" />
 						</div>
 						<div class="padding-time">
 							<label style="margin-right: 35px;">#{i18n.getText('KMK003_107')}</label>
@@ -96,15 +96,15 @@
 								constraint:'OneDayTime',
 								option: timeOption,
 								inputFormat: 'time',
-								enable: true,
-								required: true}" />
+								enable: checked() &amp;&amp; !isCertainDaySet(),
+								required: false}" />
 						</div>
 					</div>
 					
 					<div class="padding-radio">
 						<label class="ntsRadioBox">
 							<input class="inputRadioOT" type="radio" data-bind="checkedValue: 1,
-								checked: subTransferSelected, enable: true" />
+								checked: subTransferSelected, enable: checked" />
 							<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
 						</label>
 						<div class="padding-time">
@@ -115,8 +115,8 @@
 								constraint:'OneDayTime',
 								option: timeOption,
 								inputFormat: 'time',
-								enable: true,
-								required: true}" />
+								enable: checked() &amp;&amp; isCertainDaySet(),
+								required: false}" />
 						</div>
 					</div>
 				</div>
