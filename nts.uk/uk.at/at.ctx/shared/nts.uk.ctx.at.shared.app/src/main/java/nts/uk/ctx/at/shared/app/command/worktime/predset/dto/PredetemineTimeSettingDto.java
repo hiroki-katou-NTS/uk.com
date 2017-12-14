@@ -118,8 +118,7 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingGetMemen
 	 */
 	@Override
 	public TimeWithDayAttr getStartDateClock() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TimeWithDayAttr(this.startDateClock);
 	}
 
 	/*
@@ -130,8 +129,7 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingGetMemen
 	 */
 	@Override
 	public boolean isPredetermine() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.predetermine;
 	}
 
 }

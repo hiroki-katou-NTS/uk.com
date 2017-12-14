@@ -74,6 +74,7 @@ module nts.uk.com.view.cmm007.e {
                         } else {
                             _self.mapObj.get(value.overtimeWorkFrNo).overtimeWorkFrName(value.overtimeWorkFrName);
                             _self.mapObj.get(value.overtimeWorkFrNo).transferFrName(value.transferFrName);
+                            _self.mapObj.get(value.overtimeWorkFrNo).useAtr(value.useAtr);
                         }
                         
                     });

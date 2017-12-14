@@ -11,7 +11,7 @@ module a7 {
         /**
         * Constructor.
         */
-        constructor(data: any, screenMode: string, settingMethod: any, workTimeCode: string) {
+        constructor(screenMode: string, settingMethod: any, workTimeCode: string) {
             let self = this;
 
             self.dataSource = ko.observableArray([]);
@@ -82,12 +82,11 @@ module a7 {
 
             //get data
             let input = valueAccessor();
-            let data = input.data;
             let screenMode = ko.unwrap(input.screenMode);
             let settingMethod = input.settingMethod;
             let workTimeCode = input.workTimeCode;
 
-            var screenModel = new ScreenModel(data, screenMode, settingMethod, workTimeCode);
+            var screenModel = new ScreenModel(screenMode, settingMethod, workTimeCode);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

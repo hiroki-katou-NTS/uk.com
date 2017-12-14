@@ -34,5 +34,5 @@ public interface PrescribedTimezoneSettingSetMemento {
 	 *
 	 * @param lstTimezone the new lst timezone
 	 */
-	void setLstTimezone(List<Timezone> lstTimezone);
+	void setLstTimezone(List<TimezoneUse> lstTimezone);
 }

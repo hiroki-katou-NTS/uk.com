@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.PredetemineTimeSetFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -25,6 +27,10 @@ public class WorkTimeSettingFinder {
 	/** The work time setting repository. */
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	/** The pred finder. */
+	@Inject
+	private PredetemineTimeSetFinder predetemineTimeSetFinder;
 
 	/**
 	 * Find all simple.
@@ -46,11 +52,14 @@ public class WorkTimeSettingFinder {
 	 *
 	 * @return the work time setting dto
 	 */
-	public WorkTimeSettingDto findByCode(String worktimeCode) {
+	public WorkTimeSettingInfoDto findByCode(String worktimeCode) {
 		String companyId = AppContexts.user().companyId();
+		WorkTimeSettingInfoDto dto = new WorkTimeSettingInfoDto();
+		dto.setPredseting(this.predetemineTimeSetFinder.findByWorkTimeCode(worktimeCode));
 		WorkTimeSetting worktimeSetting = workTimeSettingRepository.findByCode(companyId, worktimeCode).get();
-		WorkTimeSettingDto dto = new WorkTimeSettingDto();
-		worktimeSetting.saveToMemento(dto);
+		WorkTimeSettingDto worktimeSettingDto = new WorkTimeSettingDto();
+		worktimeSetting.saveToMemento(worktimeSettingDto);
+		dto.setWorktimeSetting(worktimeSettingDto);
 		return dto;
 	}
 

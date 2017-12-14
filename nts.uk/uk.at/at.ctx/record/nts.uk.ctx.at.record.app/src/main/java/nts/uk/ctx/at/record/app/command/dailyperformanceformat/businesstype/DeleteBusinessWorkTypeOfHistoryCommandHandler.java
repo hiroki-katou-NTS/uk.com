@@ -52,7 +52,7 @@ public class DeleteBusinessWorkTypeOfHistoryCommandHandler
 			throw new BusinessException("No data to update!");
 		}
 		Optional<DateHistoryItem> currentItem = bEmployeeHistory.getHistory().stream().filter(x -> {
-			return x.identifier() == historyId;
+			return x.identifier().equals(historyId);
 		}).findFirst();
 		if (currentItem.isPresent()) {
 			bEmployeeHistory.remove(currentItem.get());

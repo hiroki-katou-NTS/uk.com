@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset;
 
-import java.util.List;
-
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;

@@ -213,7 +213,7 @@ public class PeregProcessor {
 		if(recordId != null)
 			lstCtgItemOptionalDto = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-		setRecordId(lstPerInfoItemDef, recordId);
+	    setRecordId(lstPerInfoItemDef, lstCtgItemOptionalDto.size() > 0 ? recordId: null);
 		MappingFactory.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 	
@@ -229,7 +229,7 @@ public class PeregProcessor {
 		if(recordId != null)
 			lstCtgItemOptionalDto = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-		setRecordId(lstPerInfoItemDef, recordId);
+		setRecordId(lstPerInfoItemDef, lstCtgItemOptionalDto.size() > 0 ? recordId: null);
 		MappingFactory.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 	

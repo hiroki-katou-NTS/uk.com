@@ -36,7 +36,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	private void checkOverlap() {
 		for (int i = 0; i < this.timezones.size(); i++) {
 			DeductionTime deduct1 = this.timezones.get(i);
-			for (int j = i + 1; j < this.timezones.size(); i++) {
+			for (int j = i + 1; j < this.timezones.size(); j++) {
 				DeductionTime deduct2 = this.timezones.get(j);
 				// check overlap
 				if (deduct1.isOverlap(deduct2)) {

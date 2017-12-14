@@ -130,6 +130,27 @@
     border-style: solid;
     border-color: transparent #ffffdd transparent transparent;
 }
-
+#fixed-table .ui-widget-header{
+	background-color: #CFF1A5;
+	border: 1px solid #CCC;
+	margin-left: 10px;
+}
+#fixed-table .ui-widget-body{
+	border: 1px solid #CCC;
+}
+#fixed-table {
+	border: 2px solid #CCC;
+	text-align: center;
+	padding: 0 2px;
+	width: 400px;
+	height: 80px;
+}
+#numberHoliday{
+    margin-left: 850px;
+	height: 80px ; 
+	margin-top: 10px; 
+	margin-bottom: 10px; 
+	width: 1200px"
+}
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */

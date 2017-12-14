@@ -25,7 +25,7 @@ module a4 {
         /**
         * Constructor.
         */
-        constructor(data: any, screenMode: string, settingMethod: string, workTimeCode: string) {
+        constructor(screenMode: string, settingMethod: string, workTimeCode: string) {
             let self = this;
 
             self.priorityOptions = ko.observableArray([
@@ -92,12 +92,11 @@ module a4 {
 
             //get data
             let input = valueAccessor();
-            let data = input.data;
             let screenMode = ko.unwrap(input.screenMode);
             let settingMethod = ko.unwrap(input.settingMethod);
             let workTimeCode = input.workTimeCode;
 
-            var screenModel = new ScreenModel(data, screenMode, settingMethod, workTimeCode);
+            var screenModel = new ScreenModel(screenMode, settingMethod, workTimeCode);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

@@ -32,4 +32,10 @@ public class TimeLeavingWork extends DomainObject{
 		this.leaveStamp = leaveStamp;
 	}
 	
+	public void setTimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp){
+		this.workNo = workNo;
+		this.attendanceStamp = attendanceStamp;
+		this.leaveStamp = leaveStamp;
+	}
+	
 }

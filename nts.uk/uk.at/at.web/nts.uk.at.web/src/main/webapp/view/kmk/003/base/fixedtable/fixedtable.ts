@@ -29,11 +29,6 @@ module kmk003.base.fixedtable {
         dataSource: KnockoutObservableArray<any>;
 
         /**
-         * is Multiple select.
-         */
-        isMultipleSelect: boolean;
-        
-        /**
          * Show/hide addItem and removeItem button
          */
         isShowButton: boolean;
@@ -140,10 +135,10 @@ module kmk003.base.fixedtable {
         
         isEnaleAddButton: KnockoutObservable<boolean>;
         isEnaleRemoveButton: KnockoutObservable<boolean>;
+        
         // needed when has comboBox, ...
         lstDataSource: any;
         
-        isMultiple: boolean;
         isShowButton: boolean;
         columns: Array<FixColumn>;
         maxRow: number;
@@ -162,7 +157,6 @@ module kmk003.base.fixedtable {
             let self = this;
             
             // set data parameter
-            self.isMultiple = data.isMultipleSelect;
             self.isShowButton = data.isShowButton;
             self.columns = data.columns;
             self.maxRow = data.maxRow;
@@ -177,10 +171,15 @@ module kmk003.base.fixedtable {
             }
             self.itemList = data.dataSource;
             
+            self.sortTimeASC();
+            
+            // add properties isChecked when multiple select
+            self.addCheckBoxItemAtr();
+            
             self.isSelectAll = ko.observable(false);
             
             self.isVisibleSelectAll = ko.computed(() => {
-                return self.isMultiple && self.minRow < 1;
+                return self.minRow < 1;
             });
             
             self.isEnaleAddButton = ko.observable(false);
@@ -215,10 +214,8 @@ module kmk003.base.fixedtable {
                     return;
                 }
                 // add properties isChecked when multiple select
-                if (self.isMultiple) {
-                    self.addCheckBoxItemAtr();
-                }
-                 self.subscribeChangeCheckbox();
+                self.addCheckBoxItemAtr();
+                self.subscribeChangeCheckbox();
             });
         }
 
@@ -272,6 +269,45 @@ module kmk003.base.fixedtable {
         }
         
         /**
+         * Sort Time editor ASC
+         */
+        private sortTimeASC() {
+            let self = this;
+            let firstColumn: FixColumn = self.columns[0];
+            
+            self.itemList().sort(function(a, b) {
+                
+                // get & unwrap value
+                let rawValue1: any = ko.utils.unwrapObservable(a[firstColumn.key]);
+                if (!rawValue1) {
+                    return;
+                }
+                if (typeof rawValue1 == 'object') {
+                    rawValue1 = rawValue1.startTime ? rawValue1.startTime : null;
+                }
+                
+                let rawValue2: any = ko.utils.unwrapObservable(b[firstColumn.key]);
+                if (!rawValue2) {
+                    return;
+                }
+                if (typeof rawValue2 == 'object') {
+                    rawValue2 = rawValue2.startTime ? rawValue2.startTime : null;
+                }
+                
+                // convert time to minutes
+                let value1: any = nts.uk.time.parseTime(rawValue1).toValue();
+                let value2: any = nts.uk.time.parseTime(rawValue2).toValue();
+                
+                if (value1 < value2) {
+                    return -1;
+                } else if (value1 > value2) {
+                    return 1;
+                }
+                return 0;
+            });
+        }
+        
+        /**
          * calStyleTable
          */
         public calStyleTable() {
@@ -287,6 +323,7 @@ module kmk003.base.fixedtable {
          */
         private subscribeChangeCheckbox() {
             let self = this;
+            
             // case empty list
             if (!self.itemList() || self.itemList().length <= 0) {
                 self.isSelectAll(false);
@@ -339,10 +376,8 @@ module kmk003.base.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            if (self.isMultiple) {
-                rowHtml += "<td style='text-align: center;'><div data-bind=\"ntsCheckBox: { checked: isChecked, "
+            rowHtml += "<td style='text-align: center;'><div data-bind=\"visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
-            }
             
             // add html column base setting
             _.forEach(self.columns, (item: FixColumn) => {
@@ -540,10 +575,6 @@ module kmk003.base.fixedtable {
             
         }
 
-        private getData() {
-            let self = this;
-        }
-
         /**
          * Update
          */
@@ -559,6 +590,7 @@ module kmk003.base.fixedtable {
             let data: FixTableOption = input.option;
 
             let screenModel = new FixTableScreenModel(data);
+            screenModel.$element = $(element);
             $(element).load(webserviceLocator, function() {
                 screenModel.initialScreen().done(() => {
                     ko.cleanNode($(element)[0]);

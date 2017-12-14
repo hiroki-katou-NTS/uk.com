@@ -89,7 +89,9 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setCoreTimeSetting(CoreTimeSetting coreTimeSetting) {
-		coreTimeSetting.saveToMemento(this.coreTimeSetting);
+		if (coreTimeSetting != null) {
+			coreTimeSetting.saveToMemento(this.coreTimeSetting);
+		}
 	}
 
 	/*
@@ -101,7 +103,9 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setRestSetting(FlowWorkRestSetting restSetting) {
-		restSetting.saveToMemento(this.restSetting);
+		if (restSetting != null) {
+			restSetting.saveToMemento(this.restSetting);
+		}
 	}
 
 	/*
@@ -113,7 +117,9 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setOffdayWorkTime(FlexOffdayWorkTime offdayWorkTime) {
-		offdayWorkTime.saveToMemento(this.offdayWorkTime);
+		if (offdayWorkTime != null) {
+			offdayWorkTime.saveToMemento(this.offdayWorkTime);
+		}
 	}
 
 	/*
@@ -125,7 +131,9 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setCommonSetting(WorkTimezoneCommonSet commonSetting) {
-		commonSetting.saveToMemento(this.commonSetting);
+		if (commonSetting != null) {
+			commonSetting.saveToMemento(this.commonSetting);
+		}
 	}
 
 	/*
@@ -176,7 +184,9 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setCalculateSetting(FlexCalcSetting calculateSetting) {
-		calculateSetting.saveToMemento(this.calculateSetting);
+		if (calculateSetting != null) {
+			calculateSetting.saveToMemento(this.calculateSetting);
+		}
 	}
 
 	

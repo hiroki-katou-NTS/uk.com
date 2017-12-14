@@ -12,19 +12,13 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class PrescribedTimezoneSettingDto.
  */
 @Getter
-
-/**
- * Sets the lst timezone.
- *
- * @param lstTimezone the new lst timezone
- */
 @Setter
 public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingGetMemento{
 	
@@ -67,11 +61,11 @@ public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingGe
 	 * PrescribedTimezoneSettingGetMemento#getLstTimezone()
 	 */
 	@Override
-	public List<Timezone> getLstTimezone() {
+	public List<TimezoneUse> getLstTimezone() {
 		if(CollectionUtil.isEmpty(this.lstTimezone)){
 			return new ArrayList<>();
 		}
-		return this.lstTimezone.stream().map(dto-> new Timezone(dto)).collect(Collectors.toList());
+		return this.lstTimezone.stream().map(dto-> new TimezoneUse(dto)).collect(Collectors.toList());
 	}
 
 }

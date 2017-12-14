@@ -5,17 +5,36 @@ module nts.uk.at.view.kmk003.a {
         *  Service paths
         */
         let servicePath: any = {
-            getAllWorktime: "at/shared/worktimeset/findAll",
+            findAllWorktime: "at/shared/worktimeset/findAll",
+            findWorktimeSetingInfoByCode: "at/shared/worktimeset/findByCode",
+            getEnumWorktimeSeting: "at/shared/worktimeset/getenum",
             getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",
-            findAllFlexWorkSetting: "ctx/at/shared/worktime/flexset/findAl"
+            findByCodeFlexWorkSetting: "ctx/at/shared/worktime/flexset/findByCode",
+            saveFlexWorkSetting: "ctx/at/shared/worktime/flexset/save"
         };
 
-        export function findAllWorkTimeSet(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getAllWorktime);
+        /**
+         * function find all work time set
+         */
+        export function findAllWorkTimeSet(): JQueryPromise<model.worktimeset.SimpleWorkTimeSettingDto[]> {
+            return nts.uk.request.ajax(servicePath.findAllWorktime);
+        }
+        
+         /**
+         * function find work time set by code
+         */
+        export function findWorktimeSetingInfoByCode(workTimeCode: string): JQueryPromise<model.common.WorkTimeSettingInfoDto> {
+            return nts.uk.request.ajax(servicePath.findWorktimeSetingInfoByCode + '/' + workTimeCode);
+        }
+         /**
+         * function get all enum by setting work time
+         */
+        export function getEnumWorktimeSeting(): JQueryPromise<model.worktimeset.WorkTimeSettingEnumDto> {
+            return nts.uk.request.ajax(servicePath.getEnumWorktimeSeting);
         }
 
-        export function getPredByWorkTimeCode(workTimeCode: string): JQueryPromise<any> {
+        export function getPredByWorkTimeCode(workTimeCode: string): JQueryPromise<model.worktimeset.WorkTimeSettingDto> {
             return nts.uk.request.ajax(servicePath.getPredByWorkTimeCode + "/" + workTimeCode);
         }
         
@@ -23,11 +42,18 @@ module nts.uk.at.view.kmk003.a {
             return nts.uk.request.ajax(servicePath.savePred, data);
         }
         /**
-         * function find all data by call service
+         * function find by work time code flex work setting data by call service
          */
-        export function findAllFlexWorkSetting(): JQueryPromise<model.flexset.FlexWorkSettingDto[]> {
-            return nts.uk.request.ajax(servicePath.findAllFlexWorkSetting);
+        export function findByCodeFlexWorkSetting(worktimeCode: string): JQueryPromise<model.flexset.FlexWorkSettingDto> {
+            return nts.uk.request.ajax(servicePath.findByCodeFlexWorkSetting + '/' + worktimeCode);
         } 
+        
+        /**
+         * function save flex work setting by call service
+         */
+        export function saveFlexWorkSetting(command: model.command.FlexWorkSettingSaveCommand): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.saveFlexWorkSetting, command);
+        }
 
         /**
          * Data Model
@@ -291,6 +317,18 @@ module nts.uk.at.view.kmk003.a {
                     lateEarlySet: WorkTimezoneLateEarlySetDto;
                 }
                 
+                export interface WorkTimeCommonDto {
+                    predseting: predset.PredetemineTimeSettingDto;
+                    worktimeSetting: worktimeset.WorkTimeSettingDto;
+                }
+                
+                export interface WorkTimeSettingInfoDto extends WorkTimeCommonDto {
+                    flexWorkSetting: flexset.FlexWorkSettingDto;
+                    /*fixedWorkSetting:FixedWorkSettingDto ;
+                     flowWorkSetting: FlWorkSettingDto;
+                    diffTimeWorkSetting: DiffTimeWorkSettingDto ;
+                    */
+                }
                 
             }
             export module flexset {
@@ -299,6 +337,7 @@ module nts.uk.at.view.kmk003.a {
                     startTime: number;
                     endTime: number;
                 }
+                
                 
                 export interface CoreTimeSettingDto{
                     coreTimeSheet: TimeSheetDto;
@@ -436,10 +475,10 @@ module nts.uk.at.view.kmk003.a {
                 export interface PrescribedTimezoneSettingDto{
                     morningEndTime: number;
                     afternoonStartTime: number;
-                    timezone: TimezoneDto[];
+                    lstTimezone: TimezoneDto[];
                 }
                 
-                export interface PredetemineTimeSetDto{
+                export interface PredetemineTimeSettingDto{
                     rangeTimeDay: number;
                     workTimeCode: string;
                     predTime: PredetermineTimeDto;    
@@ -448,7 +487,7 @@ module nts.uk.at.view.kmk003.a {
                     startDateClock: number;
                     predetermine: boolean;
                 }   
-                
+                                
             }
             
             export module worktimeset{
@@ -467,18 +506,37 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimeSettingDto{
                     worktimeCode: string;
                     workTimeDivision: WorkTimeDivisionDto;    
-                    abolishAtr: number;
+                    isAbolish: boolean;
                     colorCode: string;
                     workTimeDisplayName: WorkTimeDisplayNameDto;
                     memo: string;
                     note: string;
                 }    
+                
+                export interface SimpleWorkTimeSettingDto {
+                    worktimeCode: string;
+                    workTimeName: string;
+                }
+                
+                export interface EnumConstantDto {
+                    value: number;
+                    fieldName: string;
+                    localizedName: string;
+                }
+                
+                export interface WorkTimeSettingEnumDto {
+                    workTimeDailyAtr: EnumConstantDto[];
+                    workTimeMethodSet: EnumConstantDto[];
+                    roundingTime: EnumConstantDto[];
+                    rounding: EnumConstantDto[];
+                }
+            
             }
             
             export module command {
                 export interface FlexWorkSettingSaveCommand {
                     flexWorkSetting: flexset.FlexWorkSettingDto;
-                    predseting: predset.PredetemineTimeSetDto;
+                    predseting: predset.PredetemineTimeSettingDto;
                     worktimeSetting: worktimeset.WorkTimeSettingDto;
                 }
             }
